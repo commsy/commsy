@@ -52,6 +52,7 @@ class UserController extends Controller
         // get the user manager service
         $userService = $this->get('commsy.user_service');
 
+        $userService->resetLimits();
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isValid()) {
@@ -159,6 +160,75 @@ class UserController extends Controller
         );
     }
 
+    /**
+     * @Route("/room/{roomId}/user/feedaction")
+     */
+    public function feedActionAction($roomId, Request $request)
+    {
+        $translator = $this->get('translator');
+        
+        $action = $request->request->get('act');
+        
+        $selectedIds = $request->request->get('data');
+        if (!is_array($selectedIds)) {
+            $selectedIds = json_decode($selectedIds);
+        }
+        
+        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
+        
+        if ($action == 'markread') {
+            $userService = $this->get('commsy_legacy.user_service');
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $noticedManager = $legacyEnvironment->getNoticedManager();
+            $readerManager = $legacyEnvironment->getReaderManager();
+            foreach ($selectedIds as $id) {
+                $item = $userService->getUser($id);
+                $versionId = $item->getVersionID();
+                $noticedManager->markNoticed($id, $versionId);
+                $readerManager->markRead($id, $versionId);
+                $annotationList =$item->getAnnotationList();
+                if ( !empty($annotationList) ){
+                    $annotationItem = $annotationList->getFirst();
+                    while($annotationItem){
+                       $noticedManager->markNoticed($annotationItem->getItemID(),'0');
+                       $annotationItem = $annotationList->getNext();
+                    }
+                }
+            }
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
+        } else if ($action == 'copy') {
+           $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('%count% copied entries',count($selectedIds), array('%count%' => count($selectedIds)));
+        } else if ($action == 'save') {
+            $zipfile = $this->download($roomId, $selectedIds);
+            $content = file_get_contents($zipfile);
+
+            $response = new Response($content, Response::HTTP_OK, array('content-type' => 'application/zip'));
+            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,'zipfile.zip');   
+            $response->headers->set('Content-Disposition', $contentDisposition);
+            
+            return $response;
+        } else if ($action == 'delete') {
+            $userService = $this->get('commsy_legacy.user_service');
+            foreach ($selectedIds as $id) {
+                $item = $userService->getUser($id);
+                $item->delete();
+            }
+           $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> '.$translator->transChoice('%count% deleted entries',count($selectedIds), array('%count%' => count($selectedIds)));
+        }
+        
+        $response = new JsonResponse();
+ /*       $response->setData(array(
+            'message' => $message,
+            'status' => $status
+        ));
+  */      
+        $response->setData(array(
+            'message' => $message,
+            'timeout' => '5550',
+            'layout'   => 'cs-notify-message'
+        ));
+        return $response;
+    }
 
     
     /**

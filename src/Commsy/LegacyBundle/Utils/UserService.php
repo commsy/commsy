@@ -42,10 +42,13 @@ class UserService
     }
 
 
+    public function resetLimits(){
+        $this->userManager->resetLimits();
+    }
+
     public function getListUsers($roomId, $max = NULL, $start = NULL)
     {
        $this->userManager->setContextLimit($roomId);
-       $this->userManager->resetLimits();
         if ($max !== NULL && $start !== NULL) {
             $this->userManager->setIntervalLimit($start, $max);
         }
@@ -63,10 +66,6 @@ class UserService
     {
         $formData = $filterForm->getData();
 
-        // activated
-        if ($formData['activated']) {
-            $this->userManager->showNoNotActivatedEntries();
-        }
 
         // rubrics
         if ($formData['rubrics']) {

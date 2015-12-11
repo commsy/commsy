@@ -3,11 +3,13 @@
 {% for user in users %}
 
         <div class="uk-width-medium-1-2">
+
             <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
+ 
                 <div class="uk-panel-teaser cs-panel-teaser-user">
                     {{ macros.statusColor(readerList, user.itemId, 'grid') }}
  
-                   <div class="items-checkbox uk-margin-right uk-margin-top uk-hidden">
+                    <div class="items-checkbox uk-float-left uk-margin-right uk-hidden">
                         {% if is_granted('ITEM_EDIT', user.itemId) %}
                             <form class="uk-form">
                                 <input type="checkbox" value="{{ user.itemId }}">
@@ -16,7 +18,7 @@
                             <i class="uk-icon-ban uk-icon-small red"></i>
                         {% endif %}
                     </div>
-                    <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
+                   <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
                     <span class="uk-text-large uk-text-middle">
                         <a href="">{{ user.title }} {{user.fullname}}</a>
                     </span>
@@ -28,8 +30,8 @@
                         {'no email'|trans({}) }
                     {% endif %}
                 </span><br/>
-                <div class="uk-grid">
-                    <div class="uk-width-medium-1-2">
+                <div class="uk-flex uk-flex-space-between">
+                    <div>
                         {% if user.telephone %}
                             <span data-uk-tooltip title="{{user.telephone}}" >{{ user.telephone|truncate(20) }}</span><br/>
                         {% else %}
@@ -41,7 +43,7 @@
                             <span class="uk-text-muted" data-uk-tooltip title="{{'no handy'|trans({}) }}">---</span>
                         {% endif %}
                     </div>
-                    <div class="uk-width-medium-1-2">
+                    <div>
                         {% if user.street %}
                             <span data-uk-tooltip title="{{user.street}}">{{ user.street |truncate(20)}}</span><br/>
                         {% else %}

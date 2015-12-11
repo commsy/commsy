@@ -10,16 +10,15 @@ class UserFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('activated', 'filter_checkbox', array(
-                'attr' => array(
-                    'onchange' => 'this.form.submit()',
-                ),
-                'translation_domain' => 'form',
-            ))
             ->add('rubrics', 'rubric_filter', array(
                 'label' => false,
             ))
         ;
+     /*   $builder
+            ->add('status', 'status_filter', array(
+                'label' => false,
+            ))
+        ;*/
 
         if ($options['hasHashtags']) {
             $builder->add('hashtag', 'hashtag_filter', array(
