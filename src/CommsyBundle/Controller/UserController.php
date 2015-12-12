@@ -232,20 +232,288 @@ class UserController extends Controller
 
     
     /**
-     * @Route("/room/{roomId}/user/{itemId}")
+     * @Route("/room/{roomId}/user/{itemId}", requirements={
+     *     "itemId": "\d+"
+     * }))
      * @Template()
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
-        // get room user list
-        $userService = $this->get("commsy.user_service");
-        $user = $userService->getUser($itemId);
+
+        $infoArray = $this->getDetailInfo($roomId, $itemId);
         
         return array(
             'roomId' => $roomId,
-            'user' => $user
+            'user' => $infoArray['user'],
+            'readerList' => $infoArray['readerList'],
+            'modifierList' => $infoArray['modifierList'],
+            'userList' => $infoArray['userList'],
+            'counterPosition' => $infoArray['counterPosition'],
+            'count' => $infoArray['count'],
+            'firstItemId' => $infoArray['firstItemId'],
+            'prevItemId' => $infoArray['prevItemId'],
+            'nextItemId' => $infoArray['nextItemId'],
+            'lastItemId' => $infoArray['lastItemId'],
+            'readCount' => $infoArray['readCount'],
+            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
+            'userCount' => $infoArray['userCount'],
+            'draft' => $infoArray['draft'],
+            'showRating' => false,
+            'showHashtags' => $infoArray['showHashtags'],
+            'showCategories' => $infoArray['showCategories'],
+            'currentUser' => $infoArray['currentUser'],
+            'linkedGroups' => $infoArray['linkedGroups'],
+
+       );
+    }
+
+
+    private function getDetailInfo ($roomId, $itemId) {
+        $infoArray = array();
+        
+        $userService = $this->get('commsy.user_service');
+        $itemService = $this->get('commsy.item_service');
+
+        
+        $user = $userService->getUser($itemId);
+        
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $item = $user;
+        $reader_manager = $legacyEnvironment->getReaderManager();
+        $reader = $reader_manager->getLatestReader($item->getItemID());
+        if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
+            $reader_manager->markRead($item->getItemID(), $item->getVersionID());
+        }
+
+        $noticed_manager = $legacyEnvironment->getNoticedManager();
+        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
+        if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
+            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
+        }
+
+        
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+ 
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $readerManager = $legacyEnvironment->getReaderManager();
+        $roomItem = $roomManager->getItem($user->getContextId());        
+        $numTotalMember = $roomItem->getAllUsers();
+
+        $userManager = $legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager->setUserLimit();
+        $userManager->select();
+        $user_list = $userManager->get();
+        $all_user_count = $user_list->getCount();
+        $read_count = 0;
+        $read_since_modification_count = 0;
+
+        $current_user = $user_list->getFirst();
+        $id_array = array();
+        while ( $current_user ) {
+           $id_array[] = $current_user->getItemID();
+           $current_user = $user_list->getNext();
+        }
+        $readerManager->getLatestReaderByUserIDArray($id_array,$user->getItemID());
+        $current_user = $user_list->getFirst();
+        while ( $current_user ) {
+            $current_reader = $readerManager->getLatestReaderForUserByID($user->getItemID(), $current_user->getItemID());
+            if ( !empty($current_reader) ) {
+                if ( $current_reader['read_date'] >= $user->getModificationDate() ) {
+                    $read_count++;
+                    $read_since_modification_count++;
+                } else {
+                    $read_count++;
+                }
+            }
+            $current_user = $user_list->getNext();
+        }
+        $read_percentage = round(($read_count/$all_user_count) * 100);
+        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
+        $readerService = $this->get('commsy.reader_service');
+        
+        $readerList = array();
+        $modifierList = array();
+        $reader = $readerService->getLatestReader($user->getItemId());
+        if ( empty($reader) ) {
+           $readerList[$item->getItemId()] = 'new';
+        } elseif ( $reader['read_date'] < $user->getModificationDate() ) {
+           $readerList[$user->getItemId()] = 'changed';
+        }
+        
+        $modifierList[$user->getItemId()] = $itemService->getAdditionalEditorsForItem($user);
+        
+        $users = $userService->getListUsers($roomId);
+        $userList = array();
+        $counterBefore = 0;
+        $counterAfter = 0;
+        $counterPosition = 0;
+        $foundUser = false;
+        $firstItemId = false;
+        $prevItemId = false;
+        $nextItemId = false;
+        $lastItemId = false;
+        foreach ($users as $tempUser) {
+            if (!$foundUser) {
+                if ($counterBefore > 5) {
+                    array_shift($userList);
+                } else {
+                    $counterBefore++;
+                }
+                $userList[] = $tempUser;
+                if ($tempUser->getItemID() == $user->getItemID()) {
+                    $foundUser = true;
+                }
+                if (!$foundUser) {
+                    $prevItemId = $tempUser->getItemId();
+                }
+                $counterPosition++;
+            } else {
+                if ($counterAfter < 5) {
+                    $userList[] = $tempUser;
+                    $counterAfter++;
+                    if (!$nextItemId) {
+                        $nextItemId = $tempUser->getItemId();
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
+        if (!empty($users)) {
+            if ($prevItemId) {
+                $firstItemId = $users[0]->getItemId();
+            }
+            if ($nextItemId) {
+                $lastItemId = $users[sizeof($users)-1]->getItemId();
+            }
+        }
+
+        $this->groupManager = $legacyEnvironment->getGroupManager();
+        $this->groupManager->reset();
+        $this->groupManager->setContextLimit($roomId);
+        $this->groupManager->select();
+        $groupList = $this->groupManager->get()->to_array();
+        
+        $infoArray['user'] = $user;
+        $infoArray['readerList'] = $readerList;
+        $infoArray['modifierList'] = $modifierList;
+        $infoArray['userList'] = $userList;
+        $infoArray['counterPosition'] = $counterPosition;
+        $infoArray['count'] = sizeof($users);
+        $infoArray['firstItemId'] = $firstItemId;
+        $infoArray['prevItemId'] = $prevItemId;
+        $infoArray['nextItemId'] = $nextItemId;
+        $infoArray['lastItemId'] = $lastItemId;
+        $infoArray['readCount'] = $read_count;
+        $infoArray['readSinceModificationCount'] = $read_since_modification_count;
+        $infoArray['userCount'] = $all_user_count;
+        $infoArray['draft'] = $itemService->getItem($itemId)->isDraft();
+        $infoArray['showRating'] = false;
+        $infoArray['showWorkflow'] = false;
+        $infoArray['currentUser'] = $legacyEnvironment->getCurrentUserItem();
+        $infoArray['showCategories'] = $current_context->withTags();
+        $infoArray['showHashtags'] = $current_context->withBuzzwords();
+        $infoArray['linkedGroups'] = $groupList;
+
+
+        
+        return $infoArray;
+    }
+
+
+    /**
+     * @Route("/room/{roomId}/user/create")
+     * @Template()
+     */
+    public function createAction($roomId, Request $request)
+    {
+        $translator = $this->get('translator');
+        
+        $userData = array();
+        $userService = $this->get('commsy.user_service');
+        $transformer = $this->get('commsy_legacy.transformer.user');
+        
+        // create new user item
+        $userItem = $userService->getNewuser();
+        $userItem->setTitle('['.$translator->trans('insert title').']');
+        $userItem->setBibKind('none');
+        $userItem->setDraftStatus(1);
+        $userItem->save();
+
+ 
+        return $this->redirectToRoute('commsy_user_detail', array('roomId' => $roomId, 'itemId' => $userItem->getItemId()));
+
+    }
+
+
+    /**
+     * @Route("/room/{roomId}/user/{itemId}/edit")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function editAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy.item_service');
+        $item = $itemService->getItem($itemId);
+        
+        $userService = $this->get('commsy_legacy.user_service');
+        $transformer = $this->get('commsy_legacy.transformer.user');
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+        
+        $formData = array();
+        $userItem = NULL;
+        
+        if ($item->getItemType() == 'user') {
+            // get user from userService
+            $userItem = $userService->getuser($itemId);
+            if (!$userItem) {
+                throw $this->createNotFoundException('No user found for id ' . $roomId);
+            }
+            $formData = $transformer->transform($userItem);
+            $form = $this->createForm('user', $formData, array(
+                'action' => $this->generateUrl('commsy_user_edit', array(
+                    'roomId' => $roomId,
+                    'itemId' => $itemId,
+                ))
+            ));
+        } 
+        
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            if ($form->get('save')->isClicked()) {
+                $userItem = $transformer->applyTransformation($userItem, $form->getData());
+
+                // update modifier
+                $userItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                $userItem->save();
+                
+                if ($item->isDraft()) {
+                    $item->setDraftStatus(0);
+                    $item->saveAsItem();
+                }
+            } else if ($form->get('cancel')->isClicked()) {
+                // ToDo ...
+            }
+            return $this->redirectToRoute('commsy_user_save', array('roomId' => $roomId, 'itemId' => $itemId));
+        }
+        
+        return array(
+            'form' => $form->createView(),
+            'showHashtags' => $current_context->withBuzzwords(),
+            'showCategories' => $current_context->withTags(),
+
         );
     }
+
+
+
+
     
     /**
      * @Route("/room/{roomId}/user/{itemId}/image")

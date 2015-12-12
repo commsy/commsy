@@ -178,6 +178,46 @@
                 <source>no city</source>
                 <target>Keine Stadt angegeben</target>
             </trans-unit>
+            <trans-unit id="45">
+                <source>linked groups</source>
+                <target>Gruppenzugehörigkeit</target>
+            </trans-unit>
+            <trans-unit id="46">
+                <source>user data</source>
+                <target>Informationen zur Person</target>
+            </trans-unit>
+            <trans-unit id="47">
+                <source>date of birth</source>
+                <target>Geburtsdatum</target>
+            </trans-unit>
+            <trans-unit id="48">
+                <source>telephone</source>
+                <target>Telefon</target>
+            </trans-unit>
+            <trans-unit id="49">
+                <source>handy</source>
+                <target>Mobilnumme</target>
+            </trans-unit>
+            <trans-unit id="50">
+                <source>street</source>
+                <target>Straße</target>
+            </trans-unit>
+            <trans-unit id="51">
+                <source>city</source>
+                <target>Stadt</target>
+            </trans-unit>
+            <trans-unit id="52">
+                <source>user status</source>
+                <target>Rolle in diesem Raum</target>
+            </trans-unit>
+            <trans-unit id="53">
+                <source>email</source>
+                <target>E-Mail</target>
+            </trans-unit>
+            <trans-unit id="54">
+                <source>account information</source>
+                <target>Informationen zur Kennung</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

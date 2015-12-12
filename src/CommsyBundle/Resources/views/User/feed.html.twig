@@ -33,12 +33,12 @@
                 <div class="uk-flex uk-flex-space-between">
                     <div>
                         {% if user.telephone %}
-                            <span data-uk-tooltip title="{{user.telephone}}" >{{ user.telephone|truncate(20) }}</span><br/>
+                            <a href="tel:{{user.telephone}}" data-uk-tooltip title="{{user.telephone}}" >{{ user.telephone|truncate(20) }}</a><br/>
                         {% else %}
                             <span class="uk-text-muted" data-uk-tooltip title="{{'no telephone'|trans({}) }}">---</span><br/>
                         {% endif %}
                         {% if user.cellularphone %}
-                            <span data-uk-tooltip title="{{user.cellularphone}}" >{{ user.cellularphone|truncate(20) }}</span>
+                            <a href="tel:{{user.cellularphone}}" data-uk-tooltip title="{{user.cellularphone}}" >{{ user.cellularphone|truncate(20) }}</a>
                         {% else %}
                             <span class="uk-text-muted" data-uk-tooltip title="{{'no handy'|trans({}) }}">---</span>
                         {% endif %}

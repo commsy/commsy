@@ -1,101 +1,235 @@
-{% extends 'CommsyBundle:Base:detail.html.twig' %}
+{% extends 'CommsyBundle:Base:room.html.twig' %}
+
+{% import 'CommsyBundle:Item:macros.html.twig' as macrosItem %}
+{% import 'CommsyBundle:User:macros.html.twig' as macrosUser %}
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
 {% set item = user %}
 
-{% block content_left_column %}
-    <div class="uk-panel">
-        <h3 class="uk-panel-title">{{ user.fullname }}</h3>
-    </div>
-    <div class="uk-flex">
-        <div class="uk-margin-right">
-            <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:120px; width:120px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ user.itemID }}/image" alt="">
-        </div>
-        <div>
-            <table class="uk-table-condensed">
-                <tbody>
-                    {% if not user.birthday is empty %}
-                    <tr>
-                        <td class="uk-text-bold">{{ 'date of birth'|trans({})|capitalize }}</td>
-                        <td>{{ user.birthday }}</td>
-                    </tr>
-                    {% endif %}
-                    {% if not user.email is empty %}
-                    <tr>
-                        <td class="uk-text-bold">{{ 'email'|trans({})|capitalize }}</td>
-                        <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
-                    </tr>
-                    {% endif %}
-                    {% if not user.telephone is empty %}
-                    <tr>
-                        <td class="uk-text-bold">{{ 'telephone'|trans({})|capitalize }}</td>
-                        <td><a href="tel:{{ user.telephone }}">{{ user.telephone }}</a></td>
-                    </tr>
-                    {% endif %}
-                    {% if not user.cellularphone is empty %}
-                    <tr>
-                        <td class="uk-text-bold">{{ 'mobile'|trans({})|capitalize }}</td>
-                        <td><a href="tel:{{ user.cellularphone }}">{{ user.cellularphone }}</a></td>
-                    </tr>
-                    {% endif %}
-                    {% if not user.street is empty %}
-                    <tr>
-                        <td class="uk-text-bold">{{ 'street'|trans({})|capitalize }}</td>
-                        <td>{{ user.street }}</td>
-                    </tr>
-                    {% endif %}
-                    {% if not user.city is empty %}
-                    <tr>
-                        <td class="uk-text-bold">{{ 'city'|trans({})|capitalize }}</td>
-                        <td>{{ user.city }}</td>
-                    </tr>
-                    {% endif %}
-                    {% if not user.userid is empty %}
-                    <tr>
-                        <td class="uk-text-bold">{{ 'userid'|trans({})|capitalize }}</td>
-                        <td>{{ user.userid }}</td>
-                    </tr>
-                    {% endif %}
-                    {% if not user.status is empty %}
-                    <tr>
-                        <td class="uk-text-bold">{{ 'status'|trans({})|capitalize }}</td>
-                        <td>{{ macros.userStatus(user) }}</td>
-                    </tr>
-                    {% endif %}
-                    {% if not user.description is empty %}
-                    <tr>
-                        <td colspan="2">{{ user.description|raw }}</td>
-                    </tr>
-                    {% endif %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-{% endblock %}
-        
-{% block content_right_column %}
-    <div class="uk-panel uk-panel-box uk-panel-box-primary">
-        <div class="uk-panel-teaser cs-panel-teaser-primary">
-            <div class="uk-clearfix">
-                <div class="uk-float-right">
-                    <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-main', animation: 'uk-animation-fade'}">
-                        <i class="uk-icon-chevron-up"></i>
-                    </a>
-                </div>
-                <div class="uk-float-left">
-                    {{ 'Info'|trans({}, "room") }}
-                </div>
-            </div>
-        </div>
-        
-        <div id="user-main" class="uk-overflow-container">
-            <div class="">
-                {{ macros.lastModified(user) }} 
-            </div>
-        </div>
-    </div>
+{% block content %}
+    <div class="uk-grid">
 
-    {{ render(controller(
-        'CommsyBundle:Link:show',
-        { 'roomId': app.request.attributes.get('roomId'), 'itemId': user.itemId }
-    ))}}
+        <div class="uk-width-medium-4-5">
+
+            {# user content panel #}
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+
+                {# panel teaser #}
+                <div class="uk-panel-teaser cs-panel-teaser-primary cs-remove-overflow">
+                    <div class="uk-grid">
+
+                        {# quick item navigation #}
+                        <div class="uk-flex-inline uk-width-2-5 ">
+
+                            {# back navigation #}
+                            <div class="uk-margin-right">
+                                {% if firstItemId %}
+                                    <a class="uk-button-primary" href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': firstItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-left"></i></a>
+                                {% else %}
+                                    <i class="uk-icon-small uk-icon-angle-double-left uk-button-primary"></i>
+                                {% endif %}
+                                {% if prevItemId %}
+                                    <a class="uk-button-primary" href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': prevItemId}) }}"><i class="uk-icon-small uk-icon-angle-left"></i></a>
+                                {% else %}
+                                    <i class="uk-icon-small uk-icon-angle-left uk-button-primary"></i>
+                                {% endif %}
+                            </div>
+
+                            {# item dropdown #}
+                            <div class="uk-button-dropdown uk-margin-right" data-uk-dropdown>
+                                <button class="uk-button uk-button-mini">
+                                    {{ 'user'|transchoice(0, {}, "rubric")}} {{ counterPosition }} / {{ count }}
+                                    <i class="uk-icon-caret-down"></i>
+                                </button>
+                                <div id="cs-entry-navigation" class="uk-dropdown uk-padding-remove">
+                                   <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+                                       {% for tempUser in userList %}
+                                            {% if tempUser.itemId != user.itemId %}
+                                                <li><a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': tempUser.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempUser.title|raw}} {{ tempUser.fullname|raw }}">{{ tempUser.title|raw}} {{ tempUser.fullname|raw|truncate(25) }}</a></li>
+                                            {% else %}
+                                                <li><a href="#" data-uk-tooltip="{delay:'250'}" title="{{ tempUser.title|raw}} {{ tempUser.title|raw }}" class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempUser.title|raw}} {{ tempUser.fullname|raw|truncate(20)  }}</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+
+                            {# forward navigation #}
+                            <div>
+                                {% if nextItemId %}
+                                    <a class="uk-button-primary" href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': nextItemId}) }}"><i class="uk-icon-small uk-icon-angle-right"></i></a>
+                                {% else %}
+                                    <i class="uk-icon-small uk-icon-angle-right uk-button-primary"></i>
+                                {% endif %}
+                                {% if lastItemId %}
+                                    <a class="uk-button-primary" href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': lastItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-right"></i></a>
+                                {% else %}
+                                    <i class="uk-icon-small uk-icon-angle-double-right uk-button-primary"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {# actions #}
+                        <div class="uk-width-3-5 uk-text-right">
+
+
+                            {# additional actions #}
+                            <div class="uk-margin-left uk-button-dropdown" data-uk-dropdown>
+                                <button class="uk-button uk-button-mini">
+                                    {{ 'selected entries'|trans({}, 'rubric') }}
+                                    <i class="uk-icon-caret-down"></i>
+                                </button>
+
+                                <div id="cs-additional-actions" class="uk-dropdown  uk-padding-remove">
+                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+
+                                        {# print #}
+ 
+                                        <li>
+                                            <a class="" href="#" id="print">
+                                                <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
+                                            </a>
+                                        </li>
+
+
+                                        {# send #}
+                                        <li>
+                                            <a class="" href="#">
+                                                <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send mail'|trans({})|capitalize }}
+                                            </a>
+                                        </li>
+
+                                        {# delete #}
+                                        <li>
+                                            {% if is_granted('ITEM_EDIT', item.itemId) %}
+                                                <a class="" href="#">
+                                                    <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                </a>
+                                            {% else %}
+                                                <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                            {% endif %}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                
+                {# content #}
+                <article class="uk-article uk-position-relative" data-uk-observe>
+
+
+
+                    <div id="userdata{{ user.itemId }}" class="cs-toggle" data-uk-observe>
+                        {{ macrosUser.title(user, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) }}
+                    </div>
+            
+                    {# description #}
+                    <div id="description{{ user.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': user.contextId, 'itemId': user.itemId}) }}' }">
+                        {{ macros.editContent('description', user, true, user.description, user.description, false, false, 0) }}
+                    </div>
+                    
+                    {# links #}
+
+                    <div id="links{{ user.itemId }}">
+                        <hr class="uk-width-9-10"/>
+                        <article class="uk-article uk-margin-left uk-margin-right">
+                            <a name="linked-groups"></a>
+                            {# title row #}
+                            <div class="uk-grid uk-margin-small-bottom">
+                                <div class="uk-width-9-10">
+                                    <h4 class="cs-detail-section-header">
+                                        {{'linked groups'|trans({}) }}
+                                       ({{linkedGroups|length}})
+                                    </h4>
+                                </div>
+                            </div>
+                            <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
+                                <div class="uk-grid">
+                                   {% for group in linkedGroups %}
+
+
+                                        <div class="uk-width-medium-1-4">
+
+                                            <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
+                                 
+                                                <div class="uk-panel-teaser cs-panel-teaser-user">
+                                
+                                                    <a href="{{ path('commsy_group_detail', {'roomId': roomId, 'itemId': group.itemId}) }}">{{ group.title }} </a>
+                                                </div>
+                                                <div>
+                                                    <span data-uk-tooltip title="TODO: Group Content - look at list view" >TODO Group Content - look at list view</span><br/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+
+
+                    {# account #}
+                    {% if user.itemId == currentUser.itemId or currentUser.isModerator %}
+                    <div id="account{{ user.itemId }}">
+                        <hr class="uk-width-9-10"/>
+                        <article class="uk-article uk-margin-left uk-margin-right">
+                            <a name="account"></a>
+                            {# title row #}
+                            <div class="uk-grid uk-margin-small-bottom">
+                                <div class="uk-width-9-10">
+                                    <h4 class="cs-detail-section-header">
+                                        {{'account information'|trans({}) }} 
+                                    </h4>
+                                </div>
+                            </div>
+                            <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
+                                <table class="uk-table-condensed" style="margin-bottom:30px;">
+                                    <tbody>
+                                        <tr>
+                                            <td class="uk-text-bold">{{ 'account'|trans({})|capitalize }}</td>
+                                            <td>{{ user.userId }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </article>
+                    </div>
+                    {% endif %}
+ 
+
+                </article>
+            </div>
+
+
+
+        </div>
+
+        <div class="uk-width-medium-1-5 cs-addon-navigation">
+
+            {# quick navigation #}
+            <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" data-uk-sticky>
+                <div class="uk-panel-teaser uk-text-large cs-panel-teaser-primary uk-margin-remove">
+                    {{ 'quick navigation'|trans({})|capitalize }}
+                </div>
+                <div id="cs-nav-quick" class="cs-nav-quick">
+                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ user.itemId }}\']'}" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
+                        <li><a href="#userdata{{ user.itemId }}">{{ 'user data'|trans({})}}</a></li>
+                        <li><a href="#description{{ user.itemId }}">{{ 'entry description'|trans({})}}</a></li>
+                        <li><a href="#links{{ user.itemId }}">{{ 'linked groups'|trans({})}}</a></li>
+                        {% if user.itemId == currentUser.itemId or currentUser.isModerator %}
+                            <li><a href="#account{{ user.itemId }}">{{ 'account information'|trans({})}}</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+      
+    </div>
+    </div>
 {% endblock %}
+
+{# end #}

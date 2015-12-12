@@ -38,7 +38,7 @@
                             {# item dropdown #}
                             <div class="uk-button-dropdown uk-margin-right" data-uk-dropdown>
                                 <button class="uk-button uk-button-mini">
-                                    Announcement {{ counterPosition }} / {{ count }}
+                                    {{ 'announcement'|transchoice(0, {}, "rubric")}} {{ counterPosition }} / {{ count }}
                                     <i class="uk-icon-caret-down"></i>
                                 </button>
                                 <div id="cs-entry-navigation" class="uk-dropdown uk-padding-remove">
@@ -76,7 +76,7 @@
                             {# additional actions #}
                             <div class="uk-margin-left uk-button-dropdown" data-uk-dropdown>
                                 <button class="uk-button uk-button-mini">
-                                    {{ 'actions'|trans({}, 'rubric') }}
+                                    {{ 'selected entries'|trans({}, 'rubric') }}
                                     <i class="uk-icon-caret-down"></i>
                                 </button>
 
