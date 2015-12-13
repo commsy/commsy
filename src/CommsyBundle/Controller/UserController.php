@@ -391,12 +391,22 @@ class UserController extends Controller
             }
         }
 
+        $groupUser = $userService->getUser($itemId);
+
         $this->groupManager = $legacyEnvironment->getGroupManager();
         $this->groupManager->reset();
         $this->groupManager->setContextLimit($roomId);
         $this->groupManager->select();
-        $groupList = $this->groupManager->get()->to_array();
-        
+        $groupList = $this->groupManager->get();
+
+
+        $group = $groupList->getFirst();
+        while ( $group ) {
+            if (!$groupUser->isInGroup($group)){
+                $groupList->removeElement($group);
+            }
+            $group = $groupList->getNext();
+        }       
         $infoArray['user'] = $user;
         $infoArray['readerList'] = $readerList;
         $infoArray['modifierList'] = $modifierList;
@@ -416,7 +426,7 @@ class UserController extends Controller
         $infoArray['currentUser'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
-        $infoArray['linkedGroups'] = $groupList;
+        $infoArray['linkedGroups'] = $groupList->to_array();;
 
 
         
