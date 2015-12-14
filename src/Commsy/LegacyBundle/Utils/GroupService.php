@@ -20,18 +20,33 @@ class GroupService
         $this->groupManager->reset();
     }
 
+
+    public function getCountArray($roomId)
+    {
+        $this->groupManager->setContextLimit($roomId);
+        $this->groupManager->select();
+        $countGroup = array();
+        $countGroupArray['count'] = sizeof($this->groupManager->get()->to_array());
+        $this->groupManager->select();
+        $countGroupArray['countAll'] = $this->groupManager->getCountAll();
+
+        return $countGroupArray;
+    }
+
+
     public function getGroup($itemId)
     {
         $group = $this->groupManager->getItem($itemId);
         return $group;
     }
     
-    public function getListGroups($roomId, $max, $start)
+    public function getListGroups($roomId, $max = NULL, $start = NULL)
     {
-        $this->groupManager->reset();
         $this->groupManager->setContextLimit($roomId);
-        $this->groupManager->setIntervalLimit($start, $max);
-        
+        if ($max !== NULL && $start !== NULL) {
+            $this->groupManager->setIntervalLimit($start, $max);
+        }
+
         $this->groupManager->select();
         $groupList = $this->groupManager->get();
 

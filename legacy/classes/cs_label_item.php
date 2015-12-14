@@ -241,6 +241,17 @@ class cs_label_item extends cs_item {
       return $members;
    }
 
+
+   function getCountMemberItemList(){
+      $members = $this->getMemberItemList();
+      return $members->getCount();
+   }
+
+   function getCountAllLinkItemList(){
+      $entries = $this->getAllLinkItemList();
+      return $entries->getCount();
+   }
+
    /** checks the data of the item.
     */
    function isValid() {

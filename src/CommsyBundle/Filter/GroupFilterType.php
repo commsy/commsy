@@ -22,6 +22,17 @@ class GroupFilterType extends AbstractType
             ))
         ;
 
+        if ($options['hasHashtags']) {
+            $builder->add('hashtag', 'hashtag_filter', array(
+                'label' => false,
+            ));
+        }
+
+        if ($options['hasCategories']) {
+            $builder->add('category', 'category_filter', array(
+                'label' => false,
+            ));
+        }
 
 
         // $builder
@@ -53,9 +64,16 @@ class GroupFilterType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'csrf_protection'   => false,
-            'validation_groups' => array('filtering') // avoid NotBlank() constraint-related message
-        ));
+        $resolver
+            ->setDefaults(array(
+                'csrf_protection'   => false,
+                'validation_groups' => array('filtering'), // avoid NotBlank() constraint-related message
+                'method'            => 'get',
+            ))
+            ->setRequired(array(
+                'hasHashtags',
+                'hasCategories'
+            ))
+        ;
     }
 }

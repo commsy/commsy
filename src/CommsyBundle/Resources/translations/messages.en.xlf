@@ -218,7 +218,18 @@
                 <source>account information</source>
                 <target>Account information</target>
             </trans-unit>
- 
+            <trans-unit id="55">
+                <source>members</source>
+                <target>Members</target>
+            </trans-unit>
+            <trans-unit id="56">
+                <source>send mail to group</source>
+                <target>Send email to group</target>
+            </trans-unit>
+            <trans-unit id="57">
+                <source>enter grouproom</source>
+                <target>Enter grouproom</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

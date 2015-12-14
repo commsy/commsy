@@ -218,6 +218,18 @@
                 <source>account information</source>
                 <target>Informationen zur Kennung</target>
             </trans-unit>
+            <trans-unit id="55">
+                <source>members</source>
+                <target>Mitglieder</target>
+            </trans-unit>
+            <trans-unit id="56">
+                <source>send mail to group</source>
+                <target>E-Mail an die Gruppe senden</target>
+            </trans-unit>
+            <trans-unit id="57">
+                <source>enter grouproom</source>
+                <target>Den Gruppenraum betreten</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
