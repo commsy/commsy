@@ -11,7 +11,7 @@
     </div>
     {% if group.isGroupRoomActivated %}
         <div class="uk-margin">
-            {{ 'grouproom'|trans({})|capitalize }}:
+            {{ 'grouproom'|trans({}) }}:
             <a href="{{ path('commsy_room_home', {'roomId': group.groupRoomItem.itemId}) }}">
                 {{group.groupRoomItem.title}}
             </a>
