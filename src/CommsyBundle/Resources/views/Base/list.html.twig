@@ -2,11 +2,16 @@
 
 {% form_theme form 'CommsyBundle:Form:uikit_horizontal_dynamic_layout.html.twig' %}
 
+
+
+
 {% block content %}
     <div class="uk-grid">
 
         {# feed #}
-        <div class="uk-width-medium-3-5">
+        {% block contentwidth %}
+            <div class="uk-width-medium-2-3">
+        {% endblock %}    
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
@@ -30,10 +35,10 @@
                         </div>
                         <div>
                         {% block sortbox %}
-                        {% endblock%}
+                        {% endblock %}
 
                         {% block editbox %}
-                        {% endblock%}
+                        {% endblock %}
 
                             {# selection mode old code
                             <button class="uk-button uk-button-mini" data-uk-button data-commsy-select="{target:'.feed ul', actionUrl: '{{ path('commsy_material_feedaction', {'roomId': roomId}) }}'}" data-title="{{ 'list choice'|trans({},'rubric')|capitalize }}" data-alt-title="{{ 'unset list choice'|trans({},'rubric')|capitalize }}" data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}">
@@ -112,7 +117,7 @@
     {% block listsidebar %}
 
         {# sidebar #}
-        <div class="uk-width-medium-2-5">
+        <div class="uk-width-medium-1-3 cs-right-column">
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-clearfix">
