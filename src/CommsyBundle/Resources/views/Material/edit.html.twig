@@ -12,7 +12,7 @@
             {% if not form.vars.name == "section"  %}
                 <div class="uk-flex">
                     <label class="uk-form-label">
-                        {{ 'permission'|trans({'%name%': 'Test'}, "form") }}
+                        {{ 'permission'|trans({'%name%': currentUser.fullName}, "form") }}
                     </label>
                     {{ form_widget(form.permission) }}
                 </div>
@@ -35,7 +35,7 @@
         {% else %}
             <div class="uk-flex">
                 <label class="uk-form-label">
-                    {{ 'permission'|trans({'%name%': 'Test'}, "form") }}
+                    {{ 'permission'|trans({'%name%': currentUser.fullName}, "form") }}
                 </label>
                 {{ form_widget(form.permission) }}
             </div>
