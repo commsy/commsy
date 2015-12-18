@@ -9,10 +9,10 @@
             </div>
         </div>
         {% if not form.biblio_sub is defined %}
-            {% if not form.vars.name == "section"  %}
+            {% if form.vars.name != "section"  %}
                 <div class="uk-flex">
                     <label class="uk-form-label">
-                        {{ 'permission'|trans({'%name%': currentUser.fullName}, "form") }}
+                        {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
                     </label>
                     {{ form_widget(form.permission) }}
                 </div>
@@ -24,6 +24,7 @@
                     </div>
                 </div>
             {% endif %}
+
             <div class="uk-flex uk-margin-small-top">
                 <div class="uk-margin-small-left">
                     {{ form_row(form.save) }}
@@ -35,7 +36,7 @@
         {% else %}
             <div class="uk-flex">
                 <label class="uk-form-label">
-                    {{ 'permission'|trans({'%name%': currentUser.fullName}, "form") }}
+                    {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
                 </label>
                 {{ form_widget(form.permission) }}
             </div>
@@ -46,15 +47,17 @@
                     {# {{ form_widget(form.biblio_sub) }} #}
                 </div>
             </div>
-            <div id="material_biblio_sub">
-                {% for subField in form.biblio_sub %}
-                    <div class="uk-flex uk-margin-small-top">
-                        <div>
-                            {# {{ form_errors(subField) }} #}
-                            {{ form_row(subField) }}
+            <div class="uk-flex uk-margin-small-top">
+                <div id="material_biblio_sub">
+                    {% for subField in form.biblio_sub %}
+                        <div class="uk-flex uk-margin-small-top">
+                            <div>
+                                {# {{ form_errors(subField) }} #}
+                                {{ form_row(subField) }}
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
             </div>
             <div class="uk-flex uk-margin-small-top">
                 <div>
