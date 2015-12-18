@@ -43,6 +43,7 @@ class ItemDescriptionType extends AbstractType
             ->add('cancel', 'submit', array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
+                    'formnovalidate' => '',
                 ),
                 'label' => 'cancel',
                 'translation_domain' => 'form',
