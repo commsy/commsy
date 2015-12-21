@@ -19,6 +19,11 @@
 
     UIkit.on('changed.uk.dom', function(event) {
         $("#sorting_save").unbind().on('click', function() {
+            var article = $("#sorting_cancel").parents('.cs-edit-section');
+
+            // show the loading spinner
+            $(article).find('.cs-edit-spinner').toggleClass('uk-hidden', false);
+            
             var sorting = [];
             $(".section-list li").each(function() {
                 console.log($(this));
@@ -38,6 +43,10 @@
         });
 
         $("#sorting_cancel").unbind().on('click', function() {
+            var article = $("#sorting_cancel").parents('.cs-edit-section');
+
+            // show the loading spinner
+            $(article).find('.cs-edit-spinner').toggleClass('uk-hidden', false);
             location.reload();
         });
 
