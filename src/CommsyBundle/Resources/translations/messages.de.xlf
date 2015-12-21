@@ -230,6 +230,10 @@
                 <source>enter grouproom</source>
                 <target>Den Gruppenraum betreten</target>
             </trans-unit>
+            <trans-unit id="insertTitle">
+                <source>insert title</source>
+                <target>Titel eingeben</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
