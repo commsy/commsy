@@ -89,10 +89,14 @@ class MaterialTransformer implements DataTransformerInterface
     {
         $materialObject->setTitle($materialData['title']);
         $materialObject->setDescription($materialData['description']);
-        $materialObject->setPrivateEditing($materialData['permission']);
+        
+        if ($materialData['permission']) {
+            $materialObject->setPrivateEditing('0');
+        } else {
+            $materialObject->setPrivateEditing('1');
+        }
 
         if (get_class($materialObject) != 'cs_section_item') {
-            var_dump($materialData['biblio_sub']);
             // bibliographic data
             if ($materialData['biblio_sub']) {
                 $bibData = $materialData['biblio_sub'];

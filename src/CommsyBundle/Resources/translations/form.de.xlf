@@ -22,7 +22,6 @@
                 <source>cancel</source>
                 <target>Abbrechen</target>
             </trans-unit>
-
             <trans-unit id="form-upload-1">
                 <source>Attach files by dropping them here or</source>
                 <target>Ziehen Sie die Dateien in dieses Feld (Drag&amp;Drop).</target>
@@ -109,7 +108,7 @@
             </trans-unit>
             <trans-unit id="form-bib-field-author">
                 <source>author</source>
-                <target>Autor</target>
+                <target>AutorInnen</target>
             </trans-unit>
             <trans-unit id="form-bib-field-date">
                 <source>publishing date</source>
@@ -205,7 +204,7 @@
             </trans-unit>
             <trans-unit id="form-bib-field-url-date">
                 <source>url date</source>
-                <target>URL Datum</target>
+                <target>Besucht am</target>
             </trans-unit>
             <trans-unit id="form-bib-field-thesis-term">
                 <source>term</source>

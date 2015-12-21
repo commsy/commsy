@@ -1,16 +1,23 @@
-
 <div class="uk-margin-right uk-margin-bottom uk-position-relative uk-padding-remove">
     {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
     <div class="uk-form-horizontal">
         {{ form_start(form) }}
         {{ form_errors(form) }}
-        {% if not form.biblio_sub is defined %}
-            <div class="uk-flex">
-                <div class="uk-width-9-10">
+        <div class="uk-flex">
+            <div class="uk-width-9-10">
                     {{ form_widget(form.title) }}
-                </div>
             </div>
-            {% if not form.vars.name == "section"  %}
+        </div>
+        {% if not form.biblio_sub is defined %}
+            {% if form.vars.name != "section"  %}
+                <div class="uk-flex">
+                    <label class="uk-form-label">
+                        {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
+                    </label>
+                    <div>
+                        {{ form_widget(form.permission) }}  
+                    </div>
+                </div>
                 <div class="uk-flex uk-margin-small-top">
                     <div>
                         {{ form_label(form.biblio_select) }}
@@ -19,6 +26,7 @@
                     </div>
                 </div>
             {% endif %}
+
             <div class="uk-flex uk-margin-small-top">
                 <div class="uk-margin-small-left">
                     {{ form_row(form.save) }}
@@ -29,13 +37,13 @@
             </div>
         {% else %}
             <div class="uk-flex">
-                <div class="uk-width-9-10">
-                    {{ form_widget(form.title) }}
+                <label class="uk-form-label">
+                    {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
+                </label>
+                <div>
+                    {{ form_widget(form.permission) }}  
                 </div>
-            </div>
-            <div>
-                {{ form_label(form.permission) }}
-                {{ form_widget(form.permission) }}
+                
             </div>
             <div class="uk-flex uk-margin-small-top">
                 <div>
@@ -44,15 +52,17 @@
                     {# {{ form_widget(form.biblio_sub) }} #}
                 </div>
             </div>
-            <div id="material_biblio_sub">
-                {% for subField in form.biblio_sub %}
-                    <div class="uk-flex uk-margin-small-top">
-                        <div>
-                            {# {{ form_errors(subField) }} #}
-                            {{ form_row(subField) }}
+            <div class="uk-flex uk-margin-small-top">
+                <div id="material_biblio_sub">
+                    {% for subField in form.biblio_sub %}
+                        <div class="uk-flex uk-margin-small-top">
+                            <div>
+                                {# {{ form_errors(subField) }} #}
+                                {{ form_row(subField) }}
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
             </div>
             <div class="uk-flex uk-margin-small-top">
                 <div>
@@ -72,37 +82,36 @@
 var $biblio = $('#material_biblio_select');
 // When sport gets selected ...
 $biblio.change(function() {
-  // ... retrieve the corresponding form.
-  var $form = $(this).closest('form');
-  // Simulate form data, but only include the selected sport value.
-  var data = {};
+    // ... retrieve the corresponding form.
+    var $form = $(this).closest('form');
+    // Simulate form data, but only include the selected sport value.
+    var data = {};
 
-  data[$(this).attr('name')] = $(this).val();
-  // Submit data via AJAX to the form's action path.
-  $.ajax({
-    url : $form.attr('action'),
-    type: $form.attr('method'),
-    data : data,
-    success: function(html) {
-      // Replace current position field ...
-      // add field
-      if (!$('#material_biblio_sub').length) {
-        $('#material_biblio_select').after(
-          // ... with the returned one from the AJAX response.
-          $(html).find('#material_biblio_sub')
-          // html
-        );
-      } else {
-        $('#material_biblio_sub').replaceWith(
-          // ... with the returned one from the AJAX response.
-          $(html).find('#material_biblio_sub')
-          // html
-        );
-      }
-      
-      // console.log(html);
-      // Position field now displays the appropriate positions.
-    }
-  });
+    data[$(this).attr('name')] = $(this).val();
+    // Submit data via AJAX to the form's action path.
+    $.ajax({
+        url : $form.attr('action'),
+        type: $form.attr('method'),
+        data : data,
+        success: function(html) {
+            // Replace current position field ...
+            // add field
+            if (!$('#material_biblio_sub').length) {
+                $('#material_biblio_select').after(
+                // ... with the returned one from the AJAX response.
+                $(html).find('#material_biblio_sub')
+                // html
+                );
+            } else {
+                $('#material_biblio_sub').replaceWith(
+                // ... with the returned one from the AJAX response.
+                $(html).find('#material_biblio_sub')
+                // html
+                );
+            }
+            // console.log(html);
+            // Position field now displays the appropriate positions.
+        }
+    });
 });
 </script>

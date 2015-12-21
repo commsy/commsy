@@ -131,7 +131,7 @@
                         {{ macros.editContent('description', user, true, user.description, user.description, false, false, 0) }}
                     </div>
                     
-                    {# links #}
+                    {# groups #}
 
                     <div id="links{{ user.itemId }}">
                         <hr class="uk-width-9-10"/>
@@ -151,19 +151,35 @@
                                    {% for group in linkedGroups %}
 
 
-                                        <div class="uk-width-medium-1-4">
-
-                                            <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
-                                 
-                                                <div class="uk-panel-teaser cs-panel-teaser-user">
-                                
-                                                    <a href="{{ path('commsy_group_detail', {'roomId': roomId, 'itemId': group.itemId}) }}">{{ group.title }} </a>
+                                    <div class="uk-width-medium-1-3">
+                                        <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
+                                            <div class="uk-panel-teaser cs-panel-teaser-user">
+                                               <div class="uk-grid">
+                                                    <div class="uk-width-2-3">
+                                                       <span class="uk-text-large uk-text-middle">
+                                                           <a href="{{ path('commsy_group_detail', {'roomId': roomId, 'itemId': group.itemId}) }}">{{ group.title }} </a>
+                                                       </span>
+                                                    </div>
+                                                    {% if group.isGroupRoomActivated %}
+                                                        <div class="uk-width-1-3 uk-text-right">
+                                                            <a href="{{ path('commsy_room_home', {'roomId': roomId}) }}" class="uk-icon-button uk-icon-sign-in cs-grouproom-sign-in" data-uk-tooltip title="{{'enter grouproom'|trans({}) }}"></a>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <span>
+                                               <!-- <i class="uk-icon-send-o"></i> --><a href="mailto:">{{'send mail to group'|trans({}) }}</a>
+                                            </span><br/>
+                                            <div class="uk-flex uk-flex-space-between">
+                                                <div>
+                                                    {{'members'|trans({}) }}: {{group.getCountMemberItemList}}                   
                                                 </div>
                                                 <div>
-                                                    <span data-uk-tooltip title="TODO: Group Content - look at list view" >TODO Group Content - look at list view</span><br/>
+                                                    {{'links'|trans({}) }}: {{group.getCountAllLinkItemList}}              
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
                                     {% endfor %}
                                 </div>
                             </div>

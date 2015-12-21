@@ -2,17 +2,39 @@
 {% import 'CommsyBundle:Material:macros.html.twig' as macrosMaterial %}
 
 <hr class="uk-width-9-10  cs-detail-divider"/>
-<div class="uk-width-9-10" data-uk-observe>
-    {% if not sectionList is empty %}
-        <ul class="uk-list uk-sortable section-list" data-uk-sortable>
-            {% set counter = 1 %}                        
+<article class="uk-article uk-margin-left uk-margin-right">
+    <div class="cs-edit-spinner uk-hidden uk-position-cover uk-text-center uk-position-z-index">
+        <div class="uk-margin-small-top uk-container-center">
+            <i class="uk-icon-spinner uk-icon-small uk-icon-spin"></i>
+        </div>
+    </div>
+    <div class="uk-width-9-10">
+        <h4 class="cs-brand-color">
+            {{ 'sections'|trans }} ({{sectionList|length}})
+        </h4>
+    </div>
+    <div class="uk-width-9-10" data-uk-observe>
+        <div style="position:absolute;" class="uk-list section-list uk-list-striped">
+            {% set counter = 1 %}
             {% for section in sectionList %}
-                <li class="uk-panel uk-panel-box uk-sortable-handle" id="section_{{section.itemId}}">
-                    {{counter}}.<a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a> {{ macros.fileListShort(section) }}
-                </li>
-            {% set counter = counter + 1  %}                        
+                <div class="uk-panel uk-panel-box cs-remove-padding cs-brand-color">
+                    {{counter}}.
+                </div>
+            {% set counter = counter + 1  %}
             {% endfor %}
-        </ul>
-        <button id="sorting_save" name="sorting" class="uk-button-primary uk-button" data-uk-url="{{ path('commsy_material_sortsections', {'roomId': material.contextId, 'itemId': material.itemId}) }}">Speichern</button>
-    {% endif %}
-</div>
+        </div>
+        {% if not sectionList is empty %}
+            <ul class="uk-list uk-sortable section-list cs-padding-left-20 uk-list-striped uk-width-2-3" data-uk-sortable>
+                {% set counter = 1 %}
+                {% for section in sectionList %}
+                    <li class="uk-panel uk-panel-box uk-sortable-handle" id="section_{{section.itemId}}">
+                        <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a> {{ macros.fileListShort(section) }}
+                    </li>
+                {% set counter = counter + 1  %}
+                {% endfor %}
+            </ul>
+            <button id="sorting_save" name="sorting" class="uk-button-primary uk-button" data-uk-url="{{ path('commsy_material_sortsections', {'roomId': material.contextId, 'itemId': material.itemId}) }}">{{ 'save'|trans({}, 'form') }}</button>
+            <button id="sorting_cancel" name="sorting" class="uk-button-primary uk-button" data-uk-url="{{ path('commsy_material_sortsections', {'roomId': material.contextId, 'itemId': material.itemId}) }}">{{ 'cancel'|trans({}, 'form') }}</button>
+        {% endif %}
+    </div>
+</article>

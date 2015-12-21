@@ -525,7 +525,7 @@ class MaterialController extends Controller
             'form' => $form->createView(),
             'showHashtags' => $current_context->withBuzzwords(),
             'showCategories' => $current_context->withTags(),
-
+            'currentUser' => $legacyEnvironment->getCurrentUserItem(),
         );
     }
     
@@ -684,7 +684,10 @@ class MaterialController extends Controller
                 $section->save();
                 
             } else if ($form->get('cancel')->isClicked()) {
-                // ToDo ...
+                // remove not saved item
+                $section->delete();
+
+                $section->save();
             }
             return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));
         }

@@ -2,7 +2,7 @@
 
     "use strict";
 
-    $("#newSection").on('click', function(){
+    $(".newSection").on('click', function(){
         // Create new section element in material view
         
         var url = $(this).data('sectionUrl');
@@ -13,14 +13,22 @@
         .done(function(result) {
             // set section item in material view
             $('.material-section').last().after(result);
-            $('.material-section').last()[0].scrollIntoView();
+            if ($('.material-section').last()) {
+                $('.material-section').last()[0].scrollIntoView();
+            }
+            
         });
     });
 
     UIkit.on('changed.uk.dom', function(event) {
         $("#sorting_save").unbind().on('click', function() {
+            var article = $("#sorting_cancel").parents('.cs-edit-section');
+
+            // show the loading spinner
+            $(article).find('.cs-edit-spinner').toggleClass('uk-hidden', false);
+
             var sorting = [];
-            $(".section-list").children().each(function() {
+            $(".section-list li").each(function() {
                 var id = $(this).attr('id').match(/([\d]+)/g);
                 sorting.push(id);
             });
@@ -35,6 +43,20 @@
             });
             
         });
+
+        $("#sorting_cancel").unbind().on('click', function() {
+            var article = $("#sorting_cancel").parents('.cs-edit-section');
+
+            // show the loading spinner
+            $(article).find('.cs-edit-spinner').toggleClass('uk-hidden', false);
+            location.reload();
+        });
+
+        // remove insert title on click
+        $('#remove-on-click input[type=text]').on('focus', function() {
+            $(this).val("");
+        });
+
     });
 
 })(UIkit);

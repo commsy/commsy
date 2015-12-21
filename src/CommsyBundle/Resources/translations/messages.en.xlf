@@ -230,6 +230,14 @@
                 <source>enter grouproom</source>
                 <target>Enter grouproom</target>
             </trans-unit>
+            <trans-unit id="58">
+                <source>show all</source>
+                <target>Show all</target>
+            </trans-unit>
+            <trans-unit id="insertTitle">
+                <source>insert title</source>
+                <target>Insert title</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
