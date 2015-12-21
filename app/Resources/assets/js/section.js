@@ -23,10 +23,9 @@
 
             // show the loading spinner
             $(article).find('.cs-edit-spinner').toggleClass('uk-hidden', false);
-            
+
             var sorting = [];
             $(".section-list li").each(function() {
-                console.log($(this));
                 var id = $(this).attr('id').match(/([\d]+)/g);
                 sorting.push(id);
             });
@@ -48,6 +47,11 @@
             // show the loading spinner
             $(article).find('.cs-edit-spinner').toggleClass('uk-hidden', false);
             location.reload();
+        });
+
+        // remove insert title on click
+        $('#remove-on-click input[type=text]').on('focus', function() {
+            $(this).val("");
         });
 
     });
