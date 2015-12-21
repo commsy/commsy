@@ -451,6 +451,26 @@ class cs_context_item extends cs_item {
      return $return;
   }
 
+  function getModeratorListString(){
+    $list = new cs_list();
+    $counter = 1;
+    $return = '';
+    $list = $this->getModeratorList();      
+    $length = $list->getCount();
+    if (!$list->isEmpty()){
+        $contact = $list->getFirst();
+        while ($contact){
+            $return .= $contact->getFullname();
+            if ($counter < $length){
+                $return .=', ';
+                $counter++;  
+            }
+            $contact = $list->getNext();  
+        } 
+     }  
+     return $return;
+  }
+
 
   /** get description of a context
    * this method returns the description of the context

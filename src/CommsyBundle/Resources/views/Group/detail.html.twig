@@ -1,66 +1,256 @@
-{% extends 'CommsyBundle:Base:detail.html.twig' %}
+{% extends 'CommsyBundle:Base:room.html.twig' %}
+
+{% import 'CommsyBundle:Item:macros.html.twig' as macrosItem %}
+{% import 'CommsyBundle:Group:macros.html.twig' as macrosGroup %}
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
 {% set item = group %}
 
-{% block content_left_column %}
-    <div class="uk-panel">
-        <h3 class="uk-panel-title">{{ group.title|raw }}</h3>
-    </div>
-    <div class="uk-margin">
-        {{ group.description|raw }}
-    </div>
-    {% if group.isGroupRoomActivated %}
-        <div class="uk-margin">
-            {{ 'grouproom'|trans({}) }}:
-            <a href="{{ path('commsy_room_home', {'roomId': group.groupRoomItem.itemId}) }}">
-                {{group.groupRoomItem.title}}
-            </a>
-        </div>
-    {% endif %}
-    <div data-uk-grid="{gutter: 20}">
-        {% for member in members %}
-            <div class="uk-width-medium-1-2 uk-width-large-1-3">
-                <div class="uk-panel">
-                    {% if member.isUser %}
-                        {{  macros.userIconLink(member) }}
-                    {% else %}
-                        {{  macros.userIcon(member) }}
-                    {% endif %}
-                    <span class="uk-text-middle">
-                        <a href="{{ path('commsy_user_detail', {'roomId': app.request.attributes.get('roomId'), 'itemId': member.itemId}) }}">
-                            {{ member.fullname }}
-                        </a>
-                    </span>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-{% endblock %}
-        
-{% block content_right_column %}
-    <div class="uk-panel uk-panel-box uk-panel-box-primary">
-        <div class="uk-panel-teaser cs-panel-teaser-primary">
-            <div class="uk-clearfix">
-                <div class="uk-float-right">
-                    <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-main', animation: 'uk-animation-fade'}">
-                        <i class="uk-icon-chevron-up"></i>
-                    </a>
-                </div>
-                <div class="uk-float-left">
-                    {{ 'Info'|trans({}, "room") }}
-                </div>
-            </div>
-        </div>
-        
-        <div id="user-main" class="uk-overflow-container">
-            <div class="">
-                {{ macros.lastModified(group) }} 
-            </div>
-        </div>
-    </div>
+{% block content %}
+    <div class="uk-grid">
 
-    {{ render(controller(
-        'CommsyBundle:Link:show',
-        { 'roomId': app.request.attributes.get('roomId'), 'itemId': group.itemId }
-    ))}}
+        <div class="uk-width-medium-4-5">
+
+            {# group content panel #}
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+
+                {# panel teaser #}
+                <div class="uk-panel-teaser cs-panel-teaser-primary cs-remove-overflow">
+                    <div class="uk-grid">
+
+                        {# quick item navigation #}
+                        <div class="uk-flex-inline uk-width-2-5 ">
+
+                            {# back navigation #}
+                            <div class="uk-margin-right">
+                                {% if firstItemId %}
+                                    <a class="uk-button-primary" href="{{ path('commsy_group_detail', {'roomId': roomId, 'itemId': firstItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-left"></i></a>
+                                {% else %}
+                                    <i class="uk-icon-small uk-icon-angle-double-left uk-button-primary"></i>
+                                {% endif %}
+                                {% if prevItemId %}
+                                    <a class="uk-button-primary" href="{{ path('commsy_group_detail', {'roomId': roomId, 'itemId': prevItemId}) }}"><i class="uk-icon-small uk-icon-angle-left"></i></a>
+                                {% else %}
+                                    <i class="uk-icon-small uk-icon-angle-left uk-button-primary"></i>
+                                {% endif %}
+                            </div>
+
+                            {# item dropdown #}
+                            <div class="uk-button-dropdown uk-margin-right" data-uk-dropdown>
+                                <button class="uk-button uk-button-mini">
+                                    {{ 'group'|transchoice(0, {}, "rubric")}} {{ counterPosition }} / {{ count }}
+                                    <i class="uk-icon-caret-down"></i>
+                                </button>
+                                <div id="cs-entry-navigation" class="uk-dropdown uk-padding-remove">
+                                   <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+                                       {% for tempGroup in groupList %}
+                                            {% if tempGroup.itemId != group.itemId %}
+                                                <li><a href="{{ path('commsy_group_detail', {'roomId': roomId, 'itemId': tempGroup.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempGroup.title|raw }}">{{ tempGroup.title|raw|truncate(25) }}</a></li>
+                                            {% else %}
+                                                <li><a href="#" data-uk-tooltip="{delay:'250'}" title="{{ tempGroup.title|raw }}" class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempGroup.title|raw|truncate(20)  }}</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+
+                            {# forward navigation #}
+                            <div>
+                                {% if nextItemId %}
+                                    <a class="uk-button-primary" href="{{ path('commsy_group_detail', {'roomId': roomId, 'itemId': nextItemId}) }}"><i class="uk-icon-small uk-icon-angle-right"></i></a>
+                                {% else %}
+                                    <i class="uk-icon-small uk-icon-angle-right uk-button-primary"></i>
+                                {% endif %}
+                                {% if lastItemId %}
+                                    <a class="uk-button-primary" href="{{ path('commsy_group_detail', {'roomId': roomId, 'itemId': lastItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-right"></i></a>
+                                {% else %}
+                                    <i class="uk-icon-small uk-icon-angle-double-right uk-button-primary"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {# actions #}
+                        <div class="uk-width-3-5 uk-text-right">
+
+
+                            {# additional actions #}
+                            <div class="uk-margin-left uk-button-dropdown" data-uk-dropdown>
+                                <button class="uk-button uk-button-mini">
+                                    {{ 'selected entries'|trans({}, 'rubric') }}
+                                    <i class="uk-icon-caret-down"></i>
+                                </button>
+
+                                <div id="cs-additional-actions" class="uk-dropdown  uk-padding-remove">
+                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+
+                                        {# new entry #}
+                                        <li>
+                                            <a class="" href="{{ path('commsy_group_create', {'roomId': roomId}) }}" id="newEntry">
+                                                <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
+                                            </a>
+                                        </li>
+                                        {# print #}
+ 
+                                        <li>
+                                            <a class="" href="#" id="print">
+                                                <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
+                                            </a>
+                                        </li>
+
+
+                                        {# save #}
+                                        <li>
+                                            <a class="" href="#">
+                                                <i class="uk-icon-small uk-icon-save uk-icon-justify uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
+                                            </a>
+                                        </li>
+
+                                        {# copy #}
+                                        <li>
+                                            <a class="" href="#">
+                                                <i class="uk-icon-small uk-icon-copy uk-icon-justify uk-visible-large"></i> {{ 'copy'|trans({})|capitalize }}
+                                            </a>
+                                        </li>
+
+                                        {# send #}
+                                        <li>
+                                            <a class="" href="#">
+                                                <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send'|trans({})|capitalize }}
+                                            </a>
+                                        </li>
+
+                                        {# delete #}
+                                        <li>
+                                            {% if is_granted('ITEM_EDIT', item.itemId) %}
+                                                <a class="" href="#">
+                                                    <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                </a>
+                                            {% else %}
+                                                <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                            {% endif %}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                
+                {# content #}
+                <article class="uk-article uk-position-relative" data-uk-observe>
+                    {# title, etc. #}
+                    <div class="cs-toggle" data-uk-observe>
+                        {{ macrosGroup.title(group, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) }}
+                    </div>
+            
+                    {# description #}
+                    <div id="description{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': group.contextId, 'itemId': group.itemId}) }}' }">
+                        {{ macros.editContent('description', group, true, group.description, group.description, false, false, 0) }}
+                    </div>
+            
+                    {# members #}
+                    <div id="member{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': group.contextId, 'itemId': group.itemId}) }}' }">
+                        {{ macrosGroup.members(group,members) }}
+                    </div>
+ 
+                    <div id="grouproom{{ group.itemId }}">
+                        <hr class="uk-width-9-10"/>
+                        <article class="uk-article uk-margin-left uk-margin-right">
+                            <a name="grouproom"></a>
+                            {# title row #}
+                            <div class="uk-grid uk-margin-small-bottom">
+                                <div class="uk-width-9-10">
+                                    <h4 class="cs-detail-section-header">
+                                        {{'grouproom'|trans({},'group') }} 
+                                    </h4>
+                                </div>
+                            </div>
+                            <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
+                                <div class="uk-flex">
+                                <div class="uk-width-1-5 uk-text-left">
+                                {% if group.isGroupRoomActivated %}
+                                    <a href="{{ path('commsy_room_home', {'roomId': group.groupRoomItem.ItemId}) }}" class="uk-icon-large uk-icon-button uk-icon-sign-in" data-uk-tooltip title="{{'enter grouproom'|trans({}) }}"></a>
+                                {% else %}
+                                    <span class="uk-icon-large uk-icon-button uk-icon-remove" data-uk-tooltip title="{{'no grouproom'|trans({},'group') }}"> </span>
+                                {% endif %}
+                                </div>
+                                <div class="uk-width-2-5 uk-text-left uk-margin-right">
+                                {% if group.isGroupRoomActivated %}
+                                    <span class="uk-text-bold">{{group.groupRoomItem.Title}}</span><br/>
+                                    <p>
+                                    {{'grouproom description text'|trans({},'group') }}    
+                                    </p>
+                                {% else %}
+                                    <span class="uk-text-bold">{{'no grouproom'|trans({},'group') }}</span><br/>
+                                    <p>
+                                    {{'no grouproom description text'|trans({},'group') }}    
+                                    </p>
+                                {% endif %}
+                                </div>
+                                <div class="uk-width-2-5 uk-text-left">
+                                {% if group.isGroupRoomActivated %}
+                                    <span class="uk-text-bold">{{'grouproom information'|trans({},'group') }}</span><br/>
+                                    <p>
+                                    {{'grouproom moderators'|trans({},'group') }}: {{group.groupRoomItem.ModeratorListString}}     
+                                    </p>
+                                    <p>
+                                      ToDo: Zuganglinks
+                                    </p>
+                                {% endif %}
+                                </div>
+                               </div>
+
+                            </div>
+                        </article>
+                    </div>
+
+
+                    {# links #}
+                    <div id="links{{ group.itemId }}" class="cs-toggle" data-uk-observe>
+                       <hr class="uk-width-9-10"/>
+                        <article class="uk-article uk-margin-left uk-margin-right">
+                            <a name="grouproom"></a>
+                            {# title row #}
+                            <div class="uk-grid uk-margin-small-bottom">
+                                <div class="uk-width-9-10">
+                                    <h4 class="cs-detail-section-header">
+                                        {{'links'|trans({}) }} 
+                                    </h4>
+                                </div>
+                            </div>
+ 
+            {{ render(controller(
+                'CommsyBundle:Link:showDetailLong',
+                { 'roomId': item.contextId, 'itemId': item.itemId }
+            ))}}            
+                        </article>
+                    </div>
+        
+                </article>
+            </div>
+                    </div>
+
+        <div class="uk-width-medium-1-5 cs-addon-navigation">
+
+            {# quick navigation #}
+            <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" data-uk-sticky>
+                <div class="uk-panel-teaser uk-text-large cs-panel-teaser-primary uk-margin-remove">
+                    {{ 'quick navigation'|trans({})|capitalize }}
+                </div>
+                <div id="cs-nav-quick" class="cs-nav-quick">
+                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ group.itemId }}\']'}" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
+                        <li><a href="#description{{ group.itemId }}">{{ 'entry description'|trans({})}}</a></li>
+                        <li><a href="#member{{ group.itemId }}">{{ 'members'|trans({})}}</a></li>
+                        <li><a href="#grouproom{{ group.itemId }}">{{ 'grouproom'|trans({},'group')}}</a></li>
+                        <li><a href="#links{{ group.itemId }}">{{ 'links'|trans({})}}</a></li>
+                     </ul>
+                </div>
+            </div>
+
+        </div>
+      
+    </div>
 {% endblock %}
+
+{# end #}
