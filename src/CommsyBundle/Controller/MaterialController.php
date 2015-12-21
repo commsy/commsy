@@ -684,7 +684,10 @@ class MaterialController extends Controller
                 $section->save();
                 
             } else if ($form->get('cancel')->isClicked()) {
-                // ToDo ...
+                // remove not saved item
+                $section->delete();
+
+                $section->save();
             }
             return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));
         }

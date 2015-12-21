@@ -230,9 +230,15 @@
                 <source>enter grouproom</source>
                 <target>Den Gruppenraum betreten</target>
             </trans-unit>
+<<<<<<< HEAD
             <trans-unit id="58">
                 <source>show all</source>
                 <target>Alle anzeigen</target>
+=======
+            <trans-unit id="insertTitle">
+                <source>insert title</source>
+                <target>Titel eingeben</target>
+>>>>>>> 731e574a4834734d5696be668513a2a8b512a75f
             </trans-unit>
         </body>
     </file>

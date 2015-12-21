@@ -230,9 +230,15 @@
                 <source>enter grouproom</source>
                 <target>Enter grouproom</target>
             </trans-unit>
+<<<<<<< HEAD
             <trans-unit id="58">
                 <source>show all</source>
                 <target>Show all</target>
+=======
+            <trans-unit id="insertTitle">
+                <source>insert title</source>
+                <target>Insert title</target>
+>>>>>>> 731e574a4834734d5696be668513a2a8b512a75f
             </trans-unit>
         </body>
     </file>
