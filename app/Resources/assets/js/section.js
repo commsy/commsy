@@ -36,6 +36,11 @@
             });
             
         });
+
+        $("#sorting_cancel").unbind().on('click', function() {
+            location.reload();
+        });
+
     });
 
 })(UIkit);

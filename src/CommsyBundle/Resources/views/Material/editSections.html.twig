@@ -28,7 +28,8 @@
                 {% set counter = counter + 1  %}
                 {% endfor %}
             </ul>
-            <button id="sorting_save" name="sorting" class="uk-button-primary uk-button" data-uk-url="{{ path('commsy_material_sortsections', {'roomId': material.contextId, 'itemId': material.itemId}) }}">Speichern</button>
+            <button id="sorting_save" name="sorting" class="uk-button-primary uk-button" data-uk-url="{{ path('commsy_material_sortsections', {'roomId': material.contextId, 'itemId': material.itemId}) }}">{{ 'save'|trans({}, 'form') }}</button>
+            <button id="sorting_cancel" name="sorting" class="uk-button-primary uk-button" data-uk-url="{{ path('commsy_material_sortsections', {'roomId': material.contextId, 'itemId': material.itemId}) }}">{{ 'cancel'|trans({}, 'form') }}</button>
         {% endif %}
     </div>
 </article>
