@@ -230,6 +230,10 @@
                 <source>enter grouproom</source>
                 <target>Den Gruppenraum betreten</target>
             </trans-unit>
+            <trans-unit id="58">
+                <source>show all</source>
+                <target>Alle anzeigen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
