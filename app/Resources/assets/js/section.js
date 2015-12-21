@@ -2,7 +2,7 @@
 
     "use strict";
 
-    $("#newSection").on('click', function(){
+    $(".newSection").on('click', function(){
         // Create new section element in material view
         
         var url = $(this).data('sectionUrl');
@@ -13,7 +13,10 @@
         .done(function(result) {
             // set section item in material view
             $('.material-section').last().after(result);
-            $('.material-section').last()[0].scrollIntoView();
+            if ($('.material-section').last()) {
+                $('.material-section').last()[0].scrollIntoView();
+            }
+            
         });
     });
 
