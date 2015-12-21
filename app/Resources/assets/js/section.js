@@ -20,7 +20,8 @@
     UIkit.on('changed.uk.dom', function(event) {
         $("#sorting_save").unbind().on('click', function() {
             var sorting = [];
-            $(".section-list").children().each(function() {
+            $(".section-list li").each(function() {
+                console.log($(this));
                 var id = $(this).attr('id').match(/([\d]+)/g);
                 sorting.push(id);
             });
