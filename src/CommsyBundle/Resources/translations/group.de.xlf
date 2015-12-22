@@ -24,7 +24,7 @@
             </trans-unit>
            <trans-unit id="6">
                 <source>no grouproom description text</source>
-                <target>Zu dieser Gruppe wurde kein Gruppenraum eingrichtet</target>
+                <target>Zu dieser Gruppe wurde kein Gruppenraum eingerichtet</target>
             </trans-unit>
         </body>
     </file>
