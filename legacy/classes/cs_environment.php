@@ -2302,16 +2302,7 @@ class cs_environment {
 
       	include_once('classes/db_mysql_connector.php');
          $this->_db_mysql_connector = new db_mysql_connector($db[$db_choice]);
-         global $c_show_debug_infos;
-         #if ( isset($c_show_debug_infos) and $c_show_debug_infos ) {
-            $this->_db_mysql_connector->setLogQueries();
-         #}
-         $db_read_only = $this->getConfiguration('db_read_only');
-         if ( isset($db_read_only)
-              and $db_read_only
-            ) {
-            $this->_db_mysql_connector->setReadOnly();
-         }
+         $this->_db_mysql_connector->setLogQueries();
       }
       return $this->_db_mysql_connector;
    }
