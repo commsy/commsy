@@ -22,7 +22,6 @@
 
     $('#commsy-section-action-delete').on('click', function() {
         let $this = this;
-        console.log($($this).parents('.material-section'));
         event.preventDefault();
         UIkit.modal.confirm($(this).data('confirm-delete'), function() {
             $.ajax({
