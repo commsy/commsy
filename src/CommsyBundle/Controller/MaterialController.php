@@ -840,13 +840,7 @@ class MaterialController extends Controller
 
         $tempItem->delete();
 
-        // redirect
-        if ($item->getType() == 'material') {
-            return $this->redirectToRoute('commsy_material_list', array('roomId' => $roomId));    
-        } else {
-            return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $item->getItemID()));
-        }
-        
+        return $this->redirectToRoute('commsy_material_list', array('roomId' => $roomId));        
     }
     
     private function download($roomId, $selectedIds) {

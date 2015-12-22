@@ -20,27 +20,6 @@
         });
     });
 
-    $('#commsy-section-action-delete').on('click', function() {
-        let $this = this;
-        event.preventDefault();
-        UIkit.modal.confirm($(this).data('confirm-delete'), function() {
-            $.ajax({
-                url: $($this).data('sectionUrl'),
-                type: 'POST',
-                data: {}
-            })
-            .done(function(result) {
-                $($this).parents('.material-section').hide();
-            });
-
-        }, {
-            labels: {
-                Cancel: $(this).data('confirm-delete-cancel'),
-                Ok: $(this).data('confirm-delete-confirm')
-            }
-        });
-    })
-
     UIkit.on('changed.uk.dom', function(event) {
         $("#sorting_save").unbind().on('click', function() {
             var article = $("#sorting_cancel").parents('.cs-edit-section');
