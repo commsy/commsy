@@ -12,9 +12,13 @@
         })
         .done(function(result) {
             // set section item in material view
-            $('.material-section').last().after(result);
-            if ($('.material-section').last()) {
+
+            if ($('.material-section').last()[0]) {
+                $('.material-section').last().after(result);
                 $('.material-section').last()[0].scrollIntoView();
+            } else {
+                $('#section-content').html(result);
+                $('#section-content').children()[0].scrollIntoView();
             }
             
         });
