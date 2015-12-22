@@ -128,7 +128,7 @@
                                         {# delete #}
                                         <li>
                                             {% if is_granted('ITEM_EDIT', item.itemId) %}
-                                                <a class="" href="#">
+                                                <a class="" id="commsy-material-action-delete" href="#">
                                                     <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                 </a>
                                             {% else %}
@@ -210,7 +210,7 @@
                                                 {# delete #}
                                                 <li>
                                                     {% if is_granted('ITEM_EDIT', item.itemId) %}
-                                                        <a class="" href="#">
+                                                        <a class="" id="commsy-section-action-delete" href="#" data-section-url="{{ path('commsy_material_delete', {'roomId': roomId, 'itemId': section.itemId}) }}" data-title="{{ 'list choice'|trans({},'rubric')|capitalize }}" data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}">
                                                             <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                         </a>
                                                     {% else %}

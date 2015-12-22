@@ -818,6 +818,36 @@ class MaterialController extends Controller
         ));
         return $response;
     }
+
+    /**
+     * @Route("/room/{roomId}/material/{itemId}/delete")
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     **/
+    public function deleteAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy.item_service');
+        $item = $itemService->getItem($itemId);
+        
+        $materialService = $this->get('commsy_legacy.material_service');
+        
+        $tempItem = null;
+        
+        if ($item->getItemType() == 'material') {
+            $tempItem = $materialService->getMaterial($itemId);
+        } else if ($item->getItemType() == 'section') {
+            $tempItem = $materialService->getSection($itemId); 
+        }
+
+        $tempItem->delete();
+
+        // redirect
+        if ($item->getType() == 'material') {
+            return $this->redirectToRoute('commsy_material_list', array('roomId' => $roomId));    
+        } else {
+            return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $item->getItemID()));
+        }
+        
+    }
     
     private function download($roomId, $selectedIds) {
         $itemId = $selectedIds[0];
