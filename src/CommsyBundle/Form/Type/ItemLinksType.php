@@ -181,10 +181,12 @@ class ItemLinksType extends AbstractType
         $tempItem = $itemList->getFirst();
         while ($tempItem) {
             $tempTypedItem = $this->itemService->getTypedItem($tempItem->getItemId());
-            if ($tempTypedItem->getItemType() != 'user') {
-                $optionsData['items'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
-            } else {
-                $optionsData['items'][$tempTypedItem->getItemId()] = $tempTypedItem->getFullname();
+            if ($tempTypedItem) {
+                if ($tempTypedItem->getItemType() != 'user') {
+                    $optionsData['items'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
+                } else {
+                    $optionsData['items'][$tempTypedItem->getItemId()] = $tempTypedItem->getFullname();
+                }
             }
             $tempItem = $itemList->getNext();
         }
