@@ -193,6 +193,8 @@ class ItemController extends Controller
         
         $itemService = $this->get('commsy.item_service');
         $item = $itemService->getTypedItem($itemId);
+
+        $roomItem = $roomService->getRoomItem($roomId);
         
         $formData = array();
         $optionsData = array();
@@ -214,12 +216,15 @@ class ItemController extends Controller
         $itemManager->setIntervalLimit($feedAmount);
         $itemManager->select();
         $itemList = $itemManager->get();
-        
+
         $tempItem = $itemList->getFirst();
         while ($tempItem) {
             $tempTypedItem = $itemService->getTypedItem($tempItem->getItemId());
-            $optionsData['items'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
+            if ($tempTypedItem) {
+                $optionsData['items'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
+            }
             $tempItem = $itemList->getNext();
+            
         }
         
         $itemLinkedList = $itemManager->getItemList($item->getAllLinkedItemIDArray());
@@ -325,7 +330,9 @@ class ItemController extends Controller
         return array(
             'itemId' => $itemId,
             'roomId' => $roomId,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'showCategories' => $roomItem->withTags(),
+            'showHashtags' => $roomItem->withBuzzwords(),
         );
     }
     
