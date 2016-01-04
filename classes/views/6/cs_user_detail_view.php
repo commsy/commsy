@@ -811,12 +811,15 @@ class cs_user_detail_view extends cs_detail_view {
                 }
                 $temp_string .= $room_item->getTitle();
                 // status
-                $status = $this->_getStatus($related_user_array[$room_item->getItemID()],$room_item);
-                if (!empty($status)) {
-                   $temp_string .= ' ('.$status.')';
+                if ($related_user_array[$room_item->getItemID()] != null) {
+                  $status = $this->_getStatus($related_user_array[$room_item->getItemID()],$room_item);
+                   if (!empty($status)) {
+                      $temp_string .= ' ('.$status.')';
+                   }
                 }
-                unset($room_item);
-                $room_item = $room_list->getNext();
+                  unset($room_item);
+                  $room_item = $room_list->getNext();
+                
              }
              $temp_array[] = $temp_string;
              unset($temp_string);
