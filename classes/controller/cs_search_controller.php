@@ -96,16 +96,17 @@
 					$this->_params[$key.'_'.$value] = "true";
 				}
 			}
-			$seltag_tmp = $this->_params['seltag'];
-			if(!empty($seltag_tmp)){
-				$this->_params['seltag'] = '';
-				$this->_params['seltag'] = $seltag_tmp;
-			}
+			// $seltag_tmp = $seltag_array['seltag'];
+			// if(!empty($seltag_tmp)){
+			// 	$seltag_array['seltag'] = '';
+			// 	$seltag_array['seltag'] = $seltag_tmp;
+			// }
 			
-			
-			$this->assign('search', 'parameters', $this->_params);
-			
-			
+            unset($this->_params['seltag']);
+            
+            // $this->assign('search', 'seltag', $seltag_array);
+
+            $this->assign('search', 'parameters', $this->_params);
 			
 			$this->assign("search", "indexed_search", $this->_indexed_search);
 
