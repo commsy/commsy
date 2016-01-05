@@ -1,0 +1,221 @@
+{% extends 'CommsyBundle:Base:room.html.twig' %}
+
+{% import 'CommsyBundle:Item:macros.html.twig' as macrosItem %}
+{% import 'CommsyBundle:Topic:macros.html.twig' as macrosTopic %}
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+
+{% set item = topic %}
+
+{% block content %}
+    <div class="uk-grid">
+
+        <div class="uk-width-medium-4-5">
+
+            {# topic content panel #}
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+
+                {# panel teaser #}
+                <div class="uk-panel-teaser cs-panel-teaser-primary cs-remove-overflow">
+                    <div class="uk-grid">
+
+                        {# quick item navigation #}
+                        <div class="uk-flex-inline uk-width-2-5 ">
+
+                            {# back navigation #}
+                            <div class="uk-margin-right">
+                                {% if firstItemId %}
+                                    <a class="uk-button-primary" href="{{ path('commsy_topic_detail', {'roomId': roomId, 'itemId': firstItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-left"></i></a>
+                                {% else %}
+                                    <i class="uk-icon-small uk-icon-angle-double-left uk-button-primary"></i>
+                                {% endif %}
+                                {% if prevItemId %}
+                                    <a class="uk-button-primary" href="{{ path('commsy_topic_detail', {'roomId': roomId, 'itemId': prevItemId}) }}"><i class="uk-icon-small uk-icon-angle-left"></i></a>
+                                {% else %}
+                                    <i class="uk-icon-small uk-icon-angle-left uk-button-primary"></i>
+                                {% endif %}
+                            </div>
+
+                            {# item dropdown #}
+                            <div class="uk-button-dropdown uk-margin-right" data-uk-dropdown>
+                                <button class="uk-button uk-button-mini">
+                                    {{ 'topic'|transchoice(0, {}, "rubric")}} {{ counterPosition }} / {{ count }}
+                                    <i class="uk-icon-caret-down"></i>
+                                </button>
+                                <div id="cs-entry-navigation" class="uk-dropdown uk-padding-remove">
+                                   <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+                                       {% for tempTopic in topicList %}
+                                            {% if tempTopic.itemId != topic.itemId %}
+                                                <li><a href="{{ path('commsy_topic_detail', {'roomId': roomId, 'itemId': tempTopic.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempTopic.title|raw }}">{{ tempTopic.title|raw|truncate(25) }}</a></li>
+                                            {% else %}
+                                                <li><a href="#" data-uk-tooltip="{delay:'250'}" title="{{ tempTopic.title|raw }}" class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempTopic.title|raw|truncate(20)  }}</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+
+                            {# forward navigation #}
+                            <div>
+                                {% if nextItemId %}
+                                    <a class="uk-button-primary" href="{{ path('commsy_topic_detail', {'roomId': roomId, 'itemId': nextItemId}) }}"><i class="uk-icon-small uk-icon-angle-right"></i></a>
+                                {% else %}
+                                    <i class="uk-icon-small uk-icon-angle-right uk-button-primary"></i>
+                                {% endif %}
+                                {% if lastItemId %}
+                                    <a class="uk-button-primary" href="{{ path('commsy_topic_detail', {'roomId': roomId, 'itemId': lastItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-right"></i></a>
+                                {% else %}
+                                    <i class="uk-icon-small uk-icon-angle-double-right uk-button-primary"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {# actions #}
+                        <div class="uk-width-3-5 uk-text-right">
+
+
+                            {# additional actions #}
+                            <div class="uk-margin-left uk-button-dropdown" data-uk-dropdown>
+                                <button class="uk-button uk-button-mini">
+                                    {{ 'selected entries'|trans({}, 'rubric') }}
+                                    <i class="uk-icon-caret-down"></i>
+                                </button>
+
+                                <div id="cs-additional-actions" class="uk-dropdown  uk-padding-remove">
+                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+
+                                        {# new entry #}
+                                        <li>
+                                            <a class="" href="{{ path('commsy_topic_create', {'roomId': roomId}) }}" id="newEntry">
+                                                <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
+                                            </a>
+                                        </li>
+                                        {# print #}
+ 
+                                        <li>
+                                            <a class="" href="#" id="print">
+                                                <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
+                                            </a>
+                                        </li>
+
+
+                                        {# save #}
+                                        <li>
+                                            <a class="" href="#">
+                                                <i class="uk-icon-small uk-icon-save uk-icon-justify uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
+                                            </a>
+                                        </li>
+
+                                        {# copy #}
+                                        <li>
+                                            <a class="" href="#">
+                                                <i class="uk-icon-small uk-icon-copy uk-icon-justify uk-visible-large"></i> {{ 'copy'|trans({})|capitalize }}
+                                            </a>
+                                        </li>
+
+                                        {# send #}
+                                        <li>
+                                            <a class="" href="#">
+                                                <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send'|trans({})|capitalize }}
+                                            </a>
+                                        </li>
+
+                                        {# delete #}
+                                        <li>
+                                            {% if is_granted('ITEM_EDIT', item.itemId) %}
+                                                <a class="" href="#">
+                                                    <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                </a>
+                                            {% else %}
+                                                <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                            {% endif %}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                
+                {# content #}
+                <article class="uk-article uk-position-relative" data-uk-observe>
+                    {# title, etc. #}
+                    <div class="cs-toggle" data-uk-observe>
+                        {{ macrosTopic.title(topic, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) }}
+                    </div>
+            
+                    {# description #}
+                    <div id="description{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
+                        {{ macros.editContent('description', topic, true, topic.description, topic.description, false, false, 0) }}
+                    </div>
+            
+            
+                    {# path #}
+                    <div id="path{{ topic.itemId }}" class="cs-toggle" data-uk-observe>
+                       <hr class="uk-width-9-10"/>
+                        <article class="uk-article uk-margin-left uk-margin-right">
+                            <a name="topicpath"></a>
+                            {# title row #}
+                            <div class="uk-grid uk-margin-small-bottom">
+                                <div class="uk-width-9-10">
+                                    <h4 class="cs-detail-section-header">
+                                        {{'TODO: PATH'|trans({}) }} 
+                                    </h4>
+                                </div>
+                            </div>
+                            <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
+                                ToDo: Path
+                            </div>
+ 
+                        </article>
+                    </div>
+
+
+
+                    {# links #}
+                    <div id="links{{ topic.itemId }}" class="cs-toggle" data-uk-observe>
+                       <hr class="uk-width-9-10"/>
+                        <article class="uk-article uk-margin-left uk-margin-right">
+                            <a name="topicroom"></a>
+                            {# title row #}
+                            <div class="uk-grid uk-margin-small-bottom">
+                                <div class="uk-width-9-10">
+                                    <h4 class="cs-detail-section-header">
+                                        {{'links'|trans({}) }} 
+                                    </h4>
+                                </div>
+                            </div>
+ 
+                            {{ render(controller(
+                                'CommsyBundle:Link:showDetailLong',
+                                { 'roomId': item.contextId, 'itemId': item.itemId }
+                            ))}}            
+                        </article>
+                    </div>
+        
+                </article>
+            </div>
+                    </div>
+
+        <div class="uk-width-medium-1-5 cs-addon-navigation">
+
+            {# quick navigation #}
+            <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" data-uk-sticky>
+                <div class="uk-panel-teaser uk-text-large cs-panel-teaser-primary uk-margin-remove">
+                    {{ 'quick navigation'|trans({})|capitalize }}
+                </div>
+                <div id="cs-nav-quick" class="cs-nav-quick">
+                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ topic.itemId }}\']'}" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
+                        <li><a href="#description{{ topic.itemId }}">{{ 'entry description'|trans({})}}</a></li>
+                        <li><a href="#topicpath{{ topic.itemId }}">{{ 'topicpath'|trans({},'topic')}}</a></li>
+                        <li><a href="#links{{ topic.itemId }}">{{ 'links'|trans({})}}</a></li>
+                     </ul>
+                </div>
+            </div>
+
+        </div>
+      
+    </div>
+{% endblock %}
+
+{# end #}
