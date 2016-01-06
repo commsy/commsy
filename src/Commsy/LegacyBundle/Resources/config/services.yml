@@ -66,6 +66,10 @@ services:
         class: Commsy\LegacyBundle\Utils\GroupService
         arguments: ["@commsy_legacy.environment"]
 
+    commsy.topic_service:
+        class: Commsy\LegacyBundle\Utils\TopicService
+        arguments: ["@commsy_legacy.environment"]
+
     commsy.dashboard_feed_generator:
         class: Commsy\LegacyBundle\Utils\DashboardFeedGenerator
         arguments: ["@commsy_legacy.environment", @commsy.room_service]
