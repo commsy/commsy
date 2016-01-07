@@ -42,11 +42,11 @@ class ItemWorkflowType extends AbstractType
                 'translation_domain' => 'item',
                 'required' => false,
             ))
-            ->add('workflowResubmissionDate', 'datetime', array(
+            ->add('workflowResubmissionDate', 'text', array(
                 'label' => 'workflowResubmissionDate',
                 'translation_domain' => 'item',
-                'input'  => 'datetime',
-                'widget' => 'single_text',
+                // 'input'  => 'datetime',
+                // 'widget' => 'single_text',
                 'required' => false,
                 'attr' => array(
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}'
@@ -88,12 +88,15 @@ class ItemWorkflowType extends AbstractType
                 'translation_domain' => 'item',
                 'required' => false,
             ))
-            ->add('workflowValidityDate', 'datetime', array(
+            ->add('workflowValidityDate', 'text', array(
                 'label' => 'workflowValidityDate',
                 'translation_domain' => 'item',
-                'input'  => 'datetime',
-                'widget' => 'single_text',
+                // 'input'  => 'datetime',
+                // 'widget' => 'single_text',
                 'required' => false,
+                'attr' => array(
+                    'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}'
+                )
             ))
             ->add('workflowValidityWho', 'choice', array(
                 'placeholder' => false,
