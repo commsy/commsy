@@ -28,6 +28,8 @@
 
             this.articles = target.find('article');
             this.inputs = target.find('input');
+            this.selectedCounter = 0;
+            var selectedCounter = this.selectedCounter;
 
             // bind event handler
             this.bind();
@@ -51,6 +53,8 @@
                     $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '65px');
                     $(this).html($(this).data('alt-title'));
                 }
+
+                $('#commsy-list-count-selected').html('0');
 
                 $this.articles.toggleClass('selectable');
             });
@@ -78,6 +82,11 @@
                 $this.articles.each(function() {
                     $(this).removeClass('uk-comment-primary');
                 });
+                
+                selectedCounter = 0;
+                $('#commsy-list-count-selected').html('0');
+                
+                $this.bind();
             });
             
             $('#commsy-select-actions-mark-read').on('click', function(event) {
@@ -96,8 +105,6 @@
             });
             
             $('#commsy-select-actions-delete').on('click', function(event) {
-
-
                 event.preventDefault();
                 UIkit.modal.confirm($($this.element).data('confirm-delete'), function() {
                     $this.action('delete');
@@ -124,6 +131,8 @@
 
         bind: function() {
             // handle clicks on articles
+            var selectedCounter = this.selectedCounter;
+            
             this.articles.off().on('click', function(event) {
                 let article = $(this);
 
@@ -138,6 +147,13 @@
 
                         // toggle checkbox
                         checkbox.prop('checked', article.hasClass('uk-comment-primary'));
+
+                        if (checkbox.prop('checked')) {
+                            selectedCounter++;
+                        } else {
+                            selectedCounter--;
+                        }
+                        $('#commsy-list-count-selected').html(selectedCounter);
 
                         // disable normal click behaviour
                         event.preventDefault();
