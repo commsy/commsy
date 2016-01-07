@@ -170,7 +170,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 													    }
 													}
 												]
-											},
+											}
 										]
 									},
 									{
@@ -275,26 +275,26 @@ CKEDITOR.plugins.add( "CommSyAudio",
 												id : 'border',
 												width : '60px',
 												label : 'Rahmen',
-												'default' : '',
+												'default' : ''
 											},
 											{
 												type : 'text',
 												id : 'marginH',
 												width : '60px',
 												label : 'H-Abstand',
-												'default' : '',
+												'default' : ''
 											},
 											{
 												type : 'text',
 												id : 'marginV',
 												width : '60px',
 												label : 'V-Abstand',
-												'default' : '',
-											},
+												'default' : ''
+											}
 										]
 									}
 								]
-							},
+							}
 //							{
 //								id:	'tab2',
 //								label: 'internal Video',
@@ -314,7 +314,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 								var height = this.getValueOf( 'audioTab', 'audioHeight' );
 								var audioUrl = this.getValueOf( 'audioTab', 'audioUrl');
 								var autostart = this.getValueOf( 'audioTab', 'autostart');
-								var float = this.getValueOf( 'audioTab', 'float');
+								var htmlFloat = this.getValueOf( 'audioTab', 'float');
 								
 								
 								
@@ -340,9 +340,9 @@ CKEDITOR.plugins.add( "CommSyAudio",
 									style += 'margin-right:' + verticalMargin + 'px;';
 								}
 								
-								if(float != 'null' && float == 'right'){
+								if(htmlFloat != 'null' && htmlFloat == 'right'){
 									style += 'float:right;';
-								} else if (float != 'null' && float == 'left') {
+								} else if (htmlFloat != 'null' && htmlFloat == 'left') {
 									style += 'float:left;';
 								}
 								style += '"';
@@ -397,7 +397,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 				});
 		
 	}
-} );
+});
 
 function getUrlParam( param )
 {
