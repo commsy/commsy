@@ -58,6 +58,10 @@
                 <source>annotation</source>
                 <target>Annotation</target>
             </trans-unit>
+            <trans-unit id="workflowNoStatus">
+                <source>workflowNoStatus</source>
+                <target>No status</target>
+            </trans-unit>
          </body>
     </file>
 </xliff>

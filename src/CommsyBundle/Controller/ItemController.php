@@ -107,6 +107,9 @@ class ItemController extends Controller
      */
     public function editWorkflowAction($roomId, $itemId, Request $request)
     {
+        $roomService = $this->get('commsy.room_service');
+        $room = $roomService->getRoomItem($roomId);
+
         $itemService = $this->get('commsy.item_service');
         $item = $itemService->getItem($itemId);
         
@@ -143,9 +146,14 @@ class ItemController extends Controller
             // $em->flush();
         }
 
+        $workflowData['textGreen'] = $room->getWorkflowTrafficLightTextGreen();
+        $workflowData['textYellow'] = $room->getWorkflowTrafficLightTextYellow();
+        $workflowData['textRed'] = $room->getWorkflowTrafficLightTextRed();
+
         return array(
             'item' => $tempItem,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'workflow' => $workflowData
         );
     }
     

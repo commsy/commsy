@@ -23,7 +23,7 @@
     {{ form_label(form.workflowTrafficLight) }}
     <div class="uk-flex">
         <div class="uk-flex">
-            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="TODO CommSy Config Status Name">
+            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="{{ 'workflowNoStatus'|trans({}, 'item') }}">
                 <div>
                     {{ form_widget(form.workflowTrafficLight[0]) }}
                 </div>
@@ -31,7 +31,7 @@
                     {{ macros.workflowStatus('3_none') }}
                 </div>
             </div>
-            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="TODO CommSy Config Status Name">
+            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="{{workflow.textGreen}}">
                 <div>
                     {{ form_widget(form.workflowTrafficLight[1]) }}
                 </div>
@@ -39,7 +39,7 @@
                     {{ macros.workflowStatus('0_green') }}
                 </div>
             </div>
-            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="TODO CommSy Config Status Name">
+            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="{{workflow.textYellow}}">
                 <div>
                     {{ form_widget(form.workflowTrafficLight[2]) }}
                 </div>
@@ -47,7 +47,7 @@
                     {{ macros.workflowStatus('1_yellow') }}
                 </div>
             </div>
-            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="TODO CommSy Config Status Name">
+            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="{{workflow.textRed}}">
                 <div>
                     {{ form_widget(form.workflowTrafficLight[3]) }}
                 </div>
@@ -97,7 +97,7 @@
     {{ form_label(form.workflowResubmissionTrafficLight) }}
     <div class="uk-flex uk-margin-small-top">
         <div class="uk-flex">
-            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="TODO CommSy Config Status Name">
+            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="{{ 'workflowNoStatus'|trans({}, 'item') }}">
                 <div>
                     {{ form_widget(form.workflowResubmissionTrafficLight[0]) }}
                 </div>
@@ -105,7 +105,7 @@
                     {{ macros.workflowStatus('3_none') }}
                 </div>
             </div>
-            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="TODO CommSy Config Status Name">
+            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="{{workflow.textGreen}}">
                 <div>
                     {{ form_widget(form.workflowResubmissionTrafficLight[1]) }}
                 </div>
@@ -113,7 +113,7 @@
                     {{ macros.workflowStatus('0_green') }}
                 </div>
             </div>
-            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="TODO CommSy Config Status Name">
+            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="{{workflow.textYellow}}">
                 <div>
                     {{ form_widget(form.workflowResubmissionTrafficLight[2]) }}
                 </div>
@@ -121,7 +121,7 @@
                     {{ macros.workflowStatus('1_yellow') }}
                 </div>
             </div>
-            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="TODO CommSy Config Status Name">
+            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="{{workflow.textRed}}">
                 <div>
                     {{ form_widget(form.workflowResubmissionTrafficLight[3]) }}
                 </div>
@@ -171,7 +171,7 @@
     {{ form_label(form.workflowValidityTrafficLight) }}
     <div class="uk-flex uk-margin-small-top">
         <div class="uk-flex">
-            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="TODO CommSy Config Status Name">
+            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="{{ 'workflowNoStatus'|trans({}, 'item') }}">
                 <div>
                     {{ form_widget(form.workflowValidityTrafficLight[0]) }}
                 </div>
@@ -179,7 +179,7 @@
                     {{ macros.workflowStatus('3_none') }}
                 </div>
             </div>
-            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="TODO CommSy Config Status Name">
+            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="{{workflow.textGreen}}">
                 <div>
                     {{ form_widget(form.workflowValidityTrafficLight[1]) }}
                 </div>
@@ -187,7 +187,7 @@
                     {{ macros.workflowStatus('0_green') }}
                 </div>
             </div>
-            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="TODO CommSy Config Status Name">
+            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="{{workflow.textYellow}}">
                 <div>
                     {{ form_widget(form.workflowValidityTrafficLight[2]) }}
                 </div>
@@ -195,7 +195,7 @@
                     {{ macros.workflowStatus('1_yellow') }}
                 </div>
             </div>
-            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="TODO CommSy Config Status Name">
+            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="{{workflow.textRed}}">
                 <div>
                     {{ form_widget(form.workflowValidityTrafficLight[3]) }}
                 </div>
