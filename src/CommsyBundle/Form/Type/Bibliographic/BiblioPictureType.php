@@ -21,9 +21,12 @@ class BiblioPictureType extends AbstractType
                 'label' => 'picture reason',
                 'translation_domain' => $translationDomain,
                 ))
-            ->add('foto_date', 'date', array(
+            ->add('foto_date', 'text', array(
                 'label' => 'picture date',
                 'translation_domain' => $translationDomain,
+                'attr' => array(
+                    'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}'
+                )
                 ))
         ;
     }

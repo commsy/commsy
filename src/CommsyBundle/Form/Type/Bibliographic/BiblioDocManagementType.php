@@ -25,9 +25,12 @@ class BiblioDocManagementType extends AbstractType
                 'label' => 'version',
                 'translation_domain' => $translationDomain,
                 ))
-            ->add('url_date', 'date', array(
+            ->add('url_date', 'text', array(
                 'label' => 'url date',
                 'translation_domain' => $translationDomain,
+                'attr' => array(
+                    'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}'
+                )
                 ))
         ;
     }

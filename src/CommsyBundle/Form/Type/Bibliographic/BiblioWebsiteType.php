@@ -21,10 +21,13 @@ class BiblioWebsiteType extends AbstractType
                 'label' => 'url',
                 'translation_domain' => $translationDomain,
                 ))
-            ->add('url_date', 'date', array(
+            ->add('url_date', 'text', array(
                 'label' => 'visited',
                 'translation_domain' => $translationDomain,
                 'required' => false,
+                'attr' => array(
+                    'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}'
+                )
                 ))
         ;
     }

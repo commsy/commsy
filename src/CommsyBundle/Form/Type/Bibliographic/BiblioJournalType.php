@@ -57,10 +57,13 @@ class BiblioJournalType extends AbstractType
                 'translation_domain' => $translationDomain,
                 'required' => false,
                 ))
-            ->add('url_date', 'date', array(
+            ->add('url_date', 'text', array(
                 'label' => 'url date',
                 'translation_domain' => $translationDomain,
                 'required' => false,
+                'attr' => array(
+                    'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}'
+                )
                 ))
         ;
     }

@@ -56,7 +56,7 @@ class MaterialTransformer implements DataTransformerInterface
                 $materialData['biblio_sub']['volume'] = $materialItem->getVolume();
                 $materialData['biblio_sub']['isbn'] = $materialItem->getISBN();
                 $materialData['biblio_sub']['url'] = $materialItem->getURL();
-                $materialData['biblio_sub']['url_date'] = new \DateTime($materialItem->getURLDate());
+                $materialData['biblio_sub']['url_date'] = $materialItem->getURLDate();
                 $materialData['biblio_sub']['editor'] = $materialItem->getEditor();
                 $materialData['biblio_sub']['booktitle'] = $materialItem->getBooktitle();
                 $materialData['biblio_sub']['issn'] = $materialItem->getISSN();
@@ -157,7 +157,8 @@ class MaterialTransformer implements DataTransformerInterface
         foreach ($bibFields as $key => $value) {
             $form_data[$value] = isset($form_data[$value]) ? $form_data[$value] : '';
             if($value == 'url_date' && $form_data[$value] != '') {
-                $form_data[$value] = $form_data[$value]->format('Y-m-d');
+                // $form_data[$value] = new \DateTime($form_data[$value]);
+                // $form_data[$value] = $form_data[$value]->format('Y-m-d');
             }
         }
 
