@@ -48,6 +48,9 @@ class ItemWorkflowType extends AbstractType
                 'input'  => 'datetime',
                 'widget' => 'single_text',
                 'required' => false,
+                'attr' => array(
+                    'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}'
+                )
             ))
             ->add('workflowResubmissionWho', 'choice', array(
                 'placeholder' => false,

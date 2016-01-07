@@ -146,6 +146,7 @@ gulp.task('js', function() {
         config.bowerDir + '/uikit/js/components/sortable.js',
         config.bowerDir + '/uikit/js/components/notify.js',
         config.bowerDir + '/uikit/js/components/parallax.js',
+        config.bowerDir + '/uikit/js/components/datepicker.js',
 
         config.assetsDir + '/js/**/*.js'
     ], 'commsy.js');
