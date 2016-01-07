@@ -28,10 +28,10 @@
 
                                 {{module|transchoice(1, {}, "rubric")|capitalize }}
                             {% else %}
-                               Missing rubric title
+                                Missing rubric title
                             {% endif %}
 
-                            ({{itemsCountArray.count}} {{ 'of'|trans({},'messages')}} {{itemsCountArray.countAll}})
+                            (<span id="commsy-list-count-selected">{{itemsCountArray.count}}</span> {{ 'of'|trans({},'messages')}} <span id="commsy-list-count-total">{{itemsCountArray.countAll}}</span>)
                         </div>
                         <div>
                         {% block sortbox %}
@@ -100,7 +100,7 @@
                                 </div>
 
                             </div>
-                                <button id="commsy-select-actions-unselect" class="uk-button" type="button" data-uk-button>{{ 'cancel'|trans({},'rubric')}}</button>
+                                <button id="commsy-select-actions-cancel" class="uk-button" type="button" data-uk-button>{{ 'cancel'|trans({},'rubric')}}</button>
                         </div>
                         
 

@@ -28,6 +28,8 @@
 
             this.articles = target.find('article');
             this.inputs = target.find('input');
+            this.selectedCounter = 0;
+            var selectedCounter = this.selectedCounter;
 
             // bind event handler
             this.bind();
@@ -37,8 +39,8 @@
                 // show / hide further actions
                 $('#commsy-select-actions').toggleClass('uk-hidden');
 
-                if ($('#commsy-select-actions').hasClass('uk-hidden')) {
-                    $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '0px');
+                //if ($('#commsy-select-actions').hasClass('uk-hidden')) {
+                    /* $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '0px');
 
                     $this.inputs.find('input[type="checkbox"]').each(function() {
                         $(this).prop('checked', false);
@@ -46,11 +48,13 @@
                     $this.articles.each(function() {
                         $(this).removeClass('uk-comment-primary');
                     });
-                    $(this).html($(this).data('title'));
-                } else {
+                    $(this).html($(this).data('title')); */
+                //} else {
                     $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '65px');
                     $(this).html($(this).data('alt-title'));
-                }
+                //}
+
+                $('#commsy-list-count-selected').html('0');
 
                 $this.articles.toggleClass('selectable');
             });
@@ -78,6 +82,11 @@
                 $this.articles.each(function() {
                     $(this).removeClass('uk-comment-primary');
                 });
+                
+                selectedCounter = 0;
+                $('#commsy-list-count-selected').html('0');
+                
+                $this.bind();
             });
             
             $('#commsy-select-actions-mark-read').on('click', function(event) {
@@ -96,8 +105,6 @@
             });
             
             $('#commsy-select-actions-delete').on('click', function(event) {
-
-
                 event.preventDefault();
                 UIkit.modal.confirm($($this.element).data('confirm-delete'), function() {
                     $this.action('delete');
@@ -107,6 +114,21 @@
                         Ok: $($this.element[0]).data('confirm-delete-confirm')
                     }
                 });
+            });
+
+            $('#commsy-select-actions-cancel').on('change.uk.button', function(event) {
+                $('#commsy-select-actions').toggleClass('uk-hidden');
+                $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '0px');
+
+                $this.inputs.find('input[type="checkbox"]').each(function() {
+                    $(this).prop('checked', false);
+                });
+                $this.articles.each(function() {
+                    $(this).removeClass('uk-comment-primary');
+                });
+                $(this).html($(this).data('title'));
+                
+                $this.articles.toggleClass('selectable');
             });
 
             // listen for dom changes
@@ -124,6 +146,8 @@
 
         bind: function() {
             // handle clicks on articles
+            var selectedCounter = this.selectedCounter;
+            
             this.articles.off().on('click', function(event) {
                 let article = $(this);
 
@@ -138,6 +162,13 @@
 
                         // toggle checkbox
                         checkbox.prop('checked', article.hasClass('uk-comment-primary'));
+
+                        if (checkbox.prop('checked')) {
+                            selectedCounter++;
+                        } else {
+                            selectedCounter--;
+                        }
+                        $('#commsy-list-count-selected').html(selectedCounter);
 
                         // disable normal click behaviour
                         event.preventDefault();
