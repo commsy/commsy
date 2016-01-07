@@ -143,7 +143,7 @@ CKEDITOR.dialog.add( 'CommSyVideo', function ( instance )
 												label : 'Video Vorschläge'
 											}
 										]
-									},
+									}
 								]
 							}
 						],
