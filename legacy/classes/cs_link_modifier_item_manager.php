@@ -73,9 +73,13 @@ class cs_link_modifier_item_manager extends cs_link_father_manager {
          $user_id = $this->_current_user_id;
       }
 	   if ( !empty($user_id) ) {
+
 	      $query = 'INSERT INTO '.$this->addDatabasePrefix('link_modifier_item').' SET '.
 	               ' item_id="'.encode(AS_DB,$item_id).'", '.
-	               ' modifier_id="'.encode(AS_DB,$user_id).'"';
+	               ' modifier_id="'.encode(AS_DB,$user_id).'"'.
+                 ' ON DUPLICATE KEY UPDATE'.
+                 ' item_id="'.encode(AS_DB,$item_id).'", '.
+                 ' modifier_id="'.encode(AS_DB,$user_id).'"';
 	      $this->_db_connector->setDisplayOff();
          $result = $this->_db_connector->performQuery($query);
 	      $this->_db_connector->setDisplayOn();
