@@ -153,19 +153,28 @@
                 $this.bind();
             });
             
-            window.addEventListener('feedLoaded', function (e) {
-              if ($this.selectAll == true) {
+            window.addEventListener('feedDidLoad', function (e) {
+                if ($this.selectAll == true) {
                     $this.articles = target.find('article');
                     $this.inputs = target.find('input');
-                  
+
+                    var inputCounter = 0;
                     $this.inputs.each(function() {
-                    if (this.type == 'checkbox') {
-                        $(this).prop('checked', true);
-                    }
+                        if (inputCounter >= e.detail.feedStart) {
+                            if (this.type == 'checkbox') {
+                                $(this).prop('checked', true);
+                            }
+                        }
+                        inputCounter++;
                     });
+
+                    var articlesCounter = 0;
                     $this.articles.each(function() {
-                        $(this).addClass('uk-comment-primary');
-                    });
+                        if (articlesCounter >= e.detail.feedStart) {
+                            $(this).addClass('uk-comment-primary');
+                        }
+                        articlesCounter++;
+                    }); 
                 }
             });
         },

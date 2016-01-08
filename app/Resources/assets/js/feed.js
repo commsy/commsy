@@ -24,21 +24,20 @@
                 var target = el.data('feed').target;
                 $(target).append(result);
     
-                // increase for next run
-                feedStart += 20;
-                
                 var event = new CustomEvent(
-                	"feedLoaded", 
+                	"feedDidLoad", 
                 	{
                 		detail: {
-                			message: "feedLoaded",
-                			time: new Date(),
+                			feedStart: feedStart,
                 		},
                 		bubbles: true,
                 		cancelable: true
                 	}
                 );
                 window.dispatchEvent(event);
+    
+                // increase for next run
+                feedStart += 10;
             } else {
                 $('.feed-load-more').css('display', 'none');
             }
