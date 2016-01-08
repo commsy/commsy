@@ -29,8 +29,8 @@
             this.articles = target.find('article');
             this.inputs = target.find('input');
             this.selectedCounter = 0;
-            var selectedCounter = this.selectedCounter;
-
+            this.selectAll = false;
+            
             // bind event handler
             this.bind();
 
@@ -38,37 +38,35 @@
             this.on('change.uk.button', function(event) {
                 // show / hide further actions
                 $('#commsy-select-actions').toggleClass('uk-hidden');
-
-                //if ($('#commsy-select-actions').hasClass('uk-hidden')) {
-                    /* $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '0px');
-
-                    $this.inputs.find('input[type="checkbox"]').each(function() {
-                        $(this).prop('checked', false);
-                    });
-                    $this.articles.each(function() {
-                        $(this).removeClass('uk-comment-primary');
-                    });
-                    $(this).html($(this).data('title')); */
-                //} else {
-                    $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '65px');
-                    $(this).html($(this).data('alt-title'));
-                //}
+                $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '65px');
+                $(this).html($(this).data('alt-title'));
 
                 $('#commsy-list-count-selected').html('0');
 
                 $this.articles.toggleClass('selectable');
+                
+                $('#commsy-list-count-display').toggleClass('uk-hidden');
+                $('#commsy-list-count-edit').toggleClass('uk-hidden');
             });
             
             $('#commsy-select-actions-select-all').on('change.uk.button', function(event) {
                 $(this).addClass('uk-active');
                 $('#commsy-select-actions-select-shown').removeClass('uk-active');
                 
-                $this.inputs.find('input[type="checkbox"]').each(function() {
-                    $(this).prop('checked', true);
+                $this.inputs.each(function() {
+                    if (this.type == 'checkbox') {
+                        $(this).prop('checked', true);
+                    }
                 });
                 $this.articles.each(function() {
                     $(this).addClass('uk-comment-primary');
                 });
+                
+                $this.selectedCounter = parseInt($('#commsy-list-count-all').html());
+                
+                $('#commsy-list-count-selected').html($('#commsy-list-count-all').html());
+                
+                $this.selectAll = true;
             });
             
             $('#commsy-select-actions-unselect').on('change.uk.button', function(event) {
@@ -76,17 +74,19 @@
                 $('#commsy-select-actions-select-all').removeClass('uk-active');
                 $(this).removeClass('uk-active');
                 
-                $this.inputs.find('input[type="checkbox"]').each(function() {
-                    $(this).prop('checked', false);
+                $this.inputs.each(function() {
+                    if (this.type == 'checkbox') {
+                        $(this).prop('checked', false);
+                    }
                 });
                 $this.articles.each(function() {
                     $(this).removeClass('uk-comment-primary');
                 });
                 
-                selectedCounter = 0;
+                $this.selectedCounter = 0;
                 $('#commsy-list-count-selected').html('0');
-                
-                $this.bind();
+
+                $this.selectAll = false;
             });
             
             $('#commsy-select-actions-mark-read').on('click', function(event) {
@@ -120,8 +120,10 @@
                 $('#commsy-select-actions').toggleClass('uk-hidden');
                 $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '0px');
 
-                $this.inputs.find('input[type="checkbox"]').each(function() {
-                    $(this).prop('checked', false);
+                $this.inputs.each(function() {
+                    if (this.type == 'checkbox') {
+                        $(this).prop('checked', false);
+                    }
                 });
                 $this.articles.each(function() {
                     $(this).removeClass('uk-comment-primary');
@@ -129,6 +131,14 @@
                 $(this).html($(this).data('title'));
                 
                 $this.articles.toggleClass('selectable');
+                
+                $this.selectedCounter = 0;
+                $('#commsy-list-count-selected').html('0');
+                
+                $('#commsy-list-count-display').toggleClass('uk-hidden');
+                $('#commsy-list-count-edit').toggleClass('uk-hidden');
+                
+                $this.selectAll = false;
             });
 
             // listen for dom changes
@@ -142,11 +152,28 @@
 
                 $this.bind();
             });
+            
+            window.addEventListener('feedLoaded', function (e) {
+              if ($this.selectAll == true) {
+                    $this.articles = target.find('article');
+                    $this.inputs = target.find('input');
+                  
+                    $this.inputs.each(function() {
+                    if (this.type == 'checkbox') {
+                        $(this).prop('checked', true);
+                    }
+                    });
+                    $this.articles.each(function() {
+                        $(this).addClass('uk-comment-primary');
+                    });
+                }
+            });
         },
 
         bind: function() {
+            let $this = this;
+            
             // handle clicks on articles
-            var selectedCounter = this.selectedCounter;
             
             this.articles.off().on('click', function(event) {
                 let article = $(this);
@@ -164,11 +191,11 @@
                         checkbox.prop('checked', article.hasClass('uk-comment-primary'));
 
                         if (checkbox.prop('checked')) {
-                            selectedCounter++;
+                            $this.selectedCounter++;
                         } else {
-                            selectedCounter--;
+                            $this.selectedCounter--;
                         }
-                        $('#commsy-list-count-selected').html(selectedCounter);
+                        $('#commsy-list-count-selected').html($this.selectedCounter);
 
                         // disable normal click behaviour
                         event.preventDefault();

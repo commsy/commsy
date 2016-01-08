@@ -138,7 +138,7 @@ class ItemController extends Controller
                 // ToDo ...
             }
             
-            return $this->redirectToRoute('commsy_item_saveworkflow', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('commsy_material_saveworkflow', array('roomId' => $roomId, 'itemId' => $itemId));
 
             // persist
             // $em = $this->getDoctrine()->getManager();
@@ -154,38 +154,6 @@ class ItemController extends Controller
             'item' => $tempItem,
             'form' => $form->createView(),
             'workflow' => $workflowData
-        );
-    }
-    
-    /**
-     * @Route("/room/{roomId}/item/{itemId}/saveworkflow")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     */
-    public function saveWorkflowAction($roomId, $itemId, Request $request)
-    {
-        $itemService = $this->get('commsy.item_service');
-        $item = $itemService->getItem($itemId);
-        
-        $materialService = $this->get('commsy_legacy.material_service');
-        
-        $tempItem = NULL;
-        
-        if ($item->getItemType() == 'material') {
-            $tempItem = $materialService->getMaterial($itemId);
-        }
-
-        $itemArray = array($tempItem);
-    
-        $modifierList = array();
-        foreach ($itemArray as $item) {
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
-        }
-        
-        return array(
-            'roomId' => $roomId,
-            'item' => $tempItem,
-            'modifierList' => $modifierList
         );
     }
     

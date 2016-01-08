@@ -26,6 +26,19 @@
     
                 // increase for next run
                 feedStart += 20;
+                
+                var event = new CustomEvent(
+                	"feedLoaded", 
+                	{
+                		detail: {
+                			message: "feedLoaded",
+                			time: new Date(),
+                		},
+                		bubbles: true,
+                		cancelable: true
+                	}
+                );
+                window.dispatchEvent(event);
             } else {
                 $('.feed-load-more').css('display', 'none');
             }

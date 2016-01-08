@@ -238,6 +238,10 @@
                 <source>insert title</source>
                 <target>Insert title</target>
             </trans-unit>
+            <trans-unit id="selected">
+                <source>selected</source>
+                <target>selected</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

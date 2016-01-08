@@ -446,6 +446,45 @@ class MaterialController extends Controller
     }
 
     /**
+     * @Route("/room/{roomId}/material/{itemId}/saveworkflow")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function saveWorkflowAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy.item_service');
+        $item = $itemService->getItem($itemId);
+        
+        $materialService = $this->get('commsy_legacy.material_service');
+        
+        $tempItem = NULL;
+        
+        if ($item->getItemType() == 'material') {
+            $tempItem = $materialService->getMaterial($itemId);
+        }
+
+        $itemArray = array($tempItem);
+    
+        $modifierList = array();
+        foreach ($itemArray as $item) {
+            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+        }
+
+        $infoArray = $this->getDetailInfo($roomId, $itemId);
+        
+        return array(
+            'roomId' => $roomId,
+            'item' => $tempItem,
+            'modifierList' => $modifierList,
+            'workflowGroupArray' => $infoArray['workflowGroupArray'],
+            'workflowUserArray' => $infoArray['workflowUserArray'],
+            'workflowText' => $infoArray['workflowText'],
+            'workflowValidityDate' => $infoArray['workflowValidityDate'],
+            'workflowResubmissionDate' => $infoArray['workflowResubmissionDate']
+        );
+    }
+
+    /**
      * @Route("/room/{roomId}/material/new")
      * @Template()
      */
