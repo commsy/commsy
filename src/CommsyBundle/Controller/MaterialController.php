@@ -22,10 +22,10 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 class MaterialController extends Controller
 {
     /**
-     * @Route("/room/{roomId}/material/feed/{start}")
+     * @Route("/room/{roomId}/material/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0, Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'modification_date', Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -59,7 +59,7 @@ class MaterialController extends Controller
         }
 
         // get material list from manager service 
-        $materials = $materialService->getListMaterials($roomId, $max, $start);
+        $materials = $materialService->getListMaterials($roomId, $max, $start, $sort);
 
         $readerService = $this->get('commsy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
