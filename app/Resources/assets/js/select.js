@@ -227,11 +227,15 @@
                 return this.value;
             }).get();
             
+            let input =  target.find('input').map(function() {
+                return this.value;
+            }).get();
+            
             if (action != 'save') {
                 $.ajax({
                     url: $this.options.actionUrl,
                     type: 'POST',
-                    data: {act: action, data : JSON.stringify(entries)}
+                    data: {act: action, data: JSON.stringify(entries), selectAll: $this.selectAll, selectAllStart: input.length}
                 })
                 .done(function(result) {
                     $('#commsy-select-actions-select-shown').removeClass('uk-active');
@@ -296,6 +300,8 @@
                 $('body').append($form);
                 $form.submit();
             }
+            
+            $this.selectAll = false;
         }
     });
 

@@ -802,6 +802,16 @@ class MaterialController extends Controller
             $selectedIds = json_decode($selectedIds);
         }
         
+        $selectAll = $request->request->get('selectAll');
+        $selectAllStart = $request->request->get('selectAllStart');
+        
+        if ($selectAll == 'true') {
+            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $request);
+            foreach ($entries['materials'] as $key => $value) {
+                $selectedIds[] = $value->getItemId();
+            }
+        }
+        
         $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
         
         if ($action == 'markread') {
