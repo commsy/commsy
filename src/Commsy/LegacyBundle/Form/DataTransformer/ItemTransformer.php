@@ -32,7 +32,10 @@ class ItemTransformer implements DataTransformerInterface
             } else {
                 $itemData['workflowResubmission'] = false;
             }
-            $itemData['workflowResubmissionDate'] = new \DateTime($item->getWorkflowResubmissionDate());
+            if ($item->getWorkflowResubmissionDate() != '0000-00-00 00:00:00') {
+                $itemData['workflowResubmissionDate'] = new \DateTime($item->getWorkflowResubmissionDate());
+            }
+            
             $itemData['workflowResubmissionWho'] = $item->getWorkflowResubmissionWho();
             $itemData['workflowResubmissionWhoAdditional'] = $item->getWorkflowResubmissionWhoAdditional();
             $itemData['workflowResubmissionTrafficLight'] = $item->getWorkflowResubmissionTrafficLight();
@@ -41,7 +44,9 @@ class ItemTransformer implements DataTransformerInterface
             } else {
                 $itemData['workflowValidity'] = false;
             }
-            $itemData['workflowValidityDate'] = new \DateTime($item->getWorkflowValidityDate());
+            if ($item->getWorkflowValidityDate() != '0000-00-00 00:00:00') {
+                $itemData['workflowValidityDate'] = new \DateTime($item->getWorkflowValidityDate());
+            }
             $itemData['workflowValidityWho'] = $item->getWorkflowValidityWho();
             $itemData['workflowValidityWhoAdditional'] = $item->getWorkflowValidityWhoAdditional();
             $itemData['workflowValidityTrafficLight'] = $item->getWorkflowValidityTrafficLight();
