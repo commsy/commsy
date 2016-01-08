@@ -66,7 +66,7 @@ app.addStyle = function(paths, outputFilename) {
             ]
         }))
         .pipe(plugins.concat('css/build/' + outputFilename))
-        .pipe(plugins.if(config.production, plugins.minifyCss()))
+        .pipe(plugins.if(config.production, plugins.cssnano()))
         .pipe(plugins.rev())
         .pipe(plugins.if(config.sourceMaps, plugins.sourcemaps.write('.')))
         .pipe(gulp.dest('web'))
