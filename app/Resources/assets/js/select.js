@@ -29,8 +29,7 @@
             this.articles = target.find('article');
             this.inputs = target.find('input');
             this.selectedCounter = 0;
-            var selectedCounter = this.selectedCounter;
-
+            
             // bind event handler
             this.bind();
 
@@ -62,7 +61,7 @@
                     $(this).addClass('uk-comment-primary');
                 });
                 
-                selectedCounter = parseInt($('#commsy-list-count-all').html());
+                $this.selectedCounter = parseInt($('#commsy-list-count-all').html());
                 
                 $('#commsy-list-count-selected').html($('#commsy-list-count-all').html());
             });
@@ -81,10 +80,10 @@
                     $(this).removeClass('uk-comment-primary');
                 });
                 
-                selectedCounter = 0;
+                $this.selectedCounter = 0;
                 $('#commsy-list-count-selected').html('0');
                 
-                $this.bind();
+                //$this.bind();
             });
             
             $('#commsy-select-actions-mark-read').on('click', function(event) {
@@ -130,13 +129,13 @@
                 
                 $this.articles.toggleClass('selectable');
                 
-                selectedCounter = 0;
+                $this.selectedCounter = 0;
                 $('#commsy-list-count-selected').html('0');
                 
                 $('#commsy-list-count-display').toggleClass('uk-hidden');
                 $('#commsy-list-count-edit').toggleClass('uk-hidden');
                 
-                $this.bind();
+                //$this.bind();
             });
 
             // listen for dom changes
@@ -148,13 +147,14 @@
                     $this.articles.addClass('selectable');
                 }
 
-                $this.bind();
+                //$this.bind();
             });
         },
 
         bind: function() {
+            let $this = this;
+            
             // handle clicks on articles
-            var selectedCounter = this.selectedCounter;
             
             this.articles.off().on('click', function(event) {
                 let article = $(this);
@@ -172,11 +172,11 @@
                         checkbox.prop('checked', article.hasClass('uk-comment-primary'));
 
                         if (checkbox.prop('checked')) {
-                            selectedCounter++;
+                            $this.selectedCounter++;
                         } else {
-                            selectedCounter--;
+                            $this.selectedCounter--;
                         }
-                        $('#commsy-list-count-selected').html(selectedCounter);
+                        $('#commsy-list-count-selected').html($this.selectedCounter);
 
                         // disable normal click behaviour
                         event.preventDefault();
