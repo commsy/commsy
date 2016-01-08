@@ -29,6 +29,7 @@
             this.articles = target.find('article');
             this.inputs = target.find('input');
             this.selectedCounter = 0;
+            this.selectAll = false;
             
             // bind event handler
             this.bind();
@@ -64,6 +65,8 @@
                 $this.selectedCounter = parseInt($('#commsy-list-count-all').html());
                 
                 $('#commsy-list-count-selected').html($('#commsy-list-count-all').html());
+                
+                $this.selectAll = true;
             });
             
             $('#commsy-select-actions-unselect').on('change.uk.button', function(event) {
@@ -82,8 +85,8 @@
                 
                 $this.selectedCounter = 0;
                 $('#commsy-list-count-selected').html('0');
-                
-                //$this.bind();
+
+                $this.selectAll = false;
             });
             
             $('#commsy-select-actions-mark-read').on('click', function(event) {
@@ -135,7 +138,7 @@
                 $('#commsy-list-count-display').toggleClass('uk-hidden');
                 $('#commsy-list-count-edit').toggleClass('uk-hidden');
                 
-                //$this.bind();
+                $this.selectAll = false;
             });
 
             // listen for dom changes
@@ -147,7 +150,23 @@
                     $this.articles.addClass('selectable');
                 }
 
-                //$this.bind();
+                $this.bind();
+            });
+            
+            window.addEventListener('feedLoaded', function (e) {
+              if ($this.selectAll == true) {
+                    $this.articles = target.find('article');
+                    $this.inputs = target.find('input');
+                  
+                    $this.inputs.each(function() {
+                    if (this.type == 'checkbox') {
+                        $(this).prop('checked', true);
+                    }
+                    });
+                    $this.articles.each(function() {
+                        $(this).addClass('uk-comment-primary');
+                    });
+                }
             });
         },
 
