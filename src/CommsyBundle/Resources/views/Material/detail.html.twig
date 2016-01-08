@@ -166,7 +166,7 @@
                     </div>
         
                     {# workflow #}
-                    {%if showWorkflow%}
+                    {% if showWorkflow %}
                         <div id="workflow{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editworkflow', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                             {{ macrosItem.workflow(material, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate) }}
                         </div>
