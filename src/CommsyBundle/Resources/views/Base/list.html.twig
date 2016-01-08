@@ -31,7 +31,12 @@
                                 Missing rubric title
                             {% endif %}
 
-                            (<span id="commsy-list-count-selected">{{itemsCountArray.count}}</span> {{ 'of'|trans({},'messages')}} <span id="commsy-list-count-total">{{itemsCountArray.countAll}}</span>)
+                            <div id="commsy-list-count-display" style="display:inline;">
+                                ({{itemsCountArray.count}} {{ 'of'|trans({},'messages')}} {{itemsCountArray.countAll}})
+                            </div>
+                            <div id="commsy-list-count-edit" style="display:inline;" class="uk-hidden">
+                                (<span id="commsy-list-count-selected">{{itemsCountArray.count}}</span> {{ 'of'|trans({},'messages')}} {{itemsCountArray.countAll}} {{ 'selected'|trans({},'messages')}})
+                            </div>
                         </div>
                         <div>
                         {% block sortbox %}

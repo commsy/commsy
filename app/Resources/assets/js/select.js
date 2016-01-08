@@ -44,6 +44,9 @@
                 $('#commsy-list-count-selected').html('0');
 
                 $this.articles.toggleClass('selectable');
+                
+                $('#commsy-list-count-display').toggleClass('uk-hidden');
+                $('#commsy-list-count-edit').toggleClass('uk-hidden');
             });
             
             $('#commsy-select-actions-select-all').on('change.uk.button', function(event) {
@@ -123,6 +126,9 @@
                 
                 selectedCounter = 0;
                 $('#commsy-list-count-selected').html('0');
+                
+                $('#commsy-list-count-display').toggleClass('uk-hidden');
+                $('#commsy-list-count-edit').toggleClass('uk-hidden');
                 
                 $this.bind();
             });
