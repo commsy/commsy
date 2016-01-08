@@ -203,8 +203,7 @@ php:
             - curl
             - gd
         pear: {  }
-        pecl:
-            - pecl_http
+        pecl: {  }
     ini:
         display_errors: 'On'
         error_reporting: '-1'
@@ -263,7 +262,7 @@ python:
 nodejs:
     install: '1'
     settings:
-        version: null
+        version: '5'
     npm_packages:
         - bower
         - less
