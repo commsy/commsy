@@ -263,7 +263,7 @@ python:
 nodejs:
     install: '1'
     settings:
-        version: null
+        version: '5'
     npm_packages:
         - bower
         - less
