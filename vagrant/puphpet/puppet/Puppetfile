@@ -27,6 +27,9 @@ mod 'garethr/erlang',
 mod 'puppetlabs/firewall',
     :git => 'https://github.com/puppetlabs/puppetlabs-firewall.git',
     :ref => '1.1.1'
+mod 'n1tr0g/gnupg',
+    :git => 'https://github.com/n1tr0g/golja-gnupg.git',
+    :ref => '1.2.1'
 mod 'puppetlabs/inifile',
     :git => 'https://github.com/puppetlabs/puppetlabs-inifile.git',
     :ref => '1.2.0'
@@ -50,13 +53,13 @@ mod 'puppetlabs/ntp',
     :ref => '4.1.1'
 mod 'puphpet/php',
     :git => 'https://github.com/puphpet/puppet-php.git',
-    :ref => 'f693a75'
+    :ref => 'c5aa4bf'
 mod 'puppetlabs/postgresql',
     :git => 'https://github.com/puppetlabs/puppetlabs-postgresql.git',
     :ref => '4.6.0'
 mod 'puphpet/puphpet',
     :git => 'https://github.com/puphpet/puppet-puphpet.git',
-    :ref => 'c6e6692'
+    :ref => '08a00e2'
 mod 'example42/puppi',
     :git => 'https://github.com/puphpet/puppi.git',
     :ref => '5dd5091'

@@ -9,6 +9,13 @@ define puphpet::php::module (
   $package = $::osfamily ? {
     'Debian' => {
       'mbstring' => false, # Comes packaged with PHP, not available in repos
+      'memcached' => $::operatingsystem ? {
+        'ubuntu' => $puphpet::php::settings::version ? {
+          '70'    => 'php-memcached',
+          default => false,
+        },
+        default  => false,
+      },
     },
     'Redhat' => {
       #
@@ -18,10 +25,12 @@ define puphpet::php::module (
   $downcase_name = downcase($name)
 
   if has_key($package, $downcase_name) {
-    $package_name = $package[$downcase_name]
+    $package_name  = $package[$downcase_name]
+    $module_prefix = false
   }
   else {
-    $package_name = $name
+    $package_name  = $name
+    $module_prefix = $puphpet::php::settings::prefix
   }
 
   if $package_name and ! defined(Php::Module[$package_name])
@@ -29,7 +38,7 @@ define puphpet::php::module (
   {
     ::php::module { $package_name:
       service_autorestart => $service_autorestart,
-      module_prefix       => $puphpet::php::settings::prefix
+      module_prefix       => $module_prefix,
     }
   }
 

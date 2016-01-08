@@ -7,7 +7,7 @@
 
 define puphpet::php::pecl (
   $service_autorestart,
-  $prefix = $puphpet::php::settings::prefix
+  $prefix = $puphpet::php::settings::pecl_prefix
 ){
 
   $ignore = {
@@ -56,20 +56,25 @@ define puphpet::php::pecl (
         'precise' => false,
         default   => "${prefix}mongo",
       },
-      'redis'       => "${prefix}redis",
+      'redis'       => $puphpet::php::settings::version ? {
+        '54'    => false,
+        '5.4'   => false,
+        default => "${prefix}redis",
+      },
       'sqlite'      => "${prefix}sqlite",
       'zendopcache' => "${prefix}zendopcache",
     },
     'Redhat' => {
-      'apc'         => 'php-pecl-apcu',
-      'apcu'        => 'php-pecl-apcu',
-      'imagick'     => 'php-pecl-imagick',
-      'memcache'    => 'php-pecl-memcache',
-      'memcached'   => 'php-pecl-memcached',
-      'mongo'       => 'php-pecl-mongo',
-      'redis'       => 'php-pecl-redis',
-      'sqlite'      => 'php-pecl-sqlite',
-      'zendopcache' => 'php-pecl-zendopcache',
+      'amqp'        => "${prefix}amqp",
+      'apc'         => "${prefix}apcu",
+      'apcu'        => "${prefix}apcu",
+      'imagick'     => "${prefix}imagick",
+      'memcache'    => "${prefix}memcache",
+      'memcached'   => "${prefix}memcached",
+      'mongo'       => "${prefix}mongo",
+      'redis'       => "${prefix}redis",
+      'sqlite'      => "${prefix}sqlite",
+      'zendopcache' => "${prefix}zendopcache",
     }
   }
 

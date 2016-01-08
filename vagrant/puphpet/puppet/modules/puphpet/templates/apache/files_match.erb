@@ -23,7 +23,7 @@
     <% scope['_directories'] = filesMatchArr -%>
     <% result = scope.function_template(['apache/vhost/_directories.erb']) -%>
     <% result = result.gsub("\n  ## Directories, there should at least be a declaration for \n", "") -%>
-    <% @directories_hash[key]['custom_fragment'] << result.gsub("\n  ", "\n    ") -%>
+    <% @directories_hash[key]['custom_fragment'] += result.gsub("\n  ", "\n    ") -%>
   <% end -%>
 <% end -%>
 <% end -%>

@@ -10,7 +10,7 @@ vagrantfile:
         network:
             private_network: 192.168.56.101
             forwarded_port:
-                vflnp_4rwip7w74lsr:
+                vflnp_502jyjzi310a:
                     host: '7539'
                     guest: '22'
         post_up_message: ''
@@ -31,7 +31,7 @@ vagrantfile:
                     - '--verbose'
                     - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
         synced_folder:
-            vflsf_0pbm84oxtbr0:
+            vflsf_hpwhtt62t93r:
                 source: ../
                 target: /var/www/commsy
                 sync_type: nfs
@@ -98,7 +98,7 @@ nginx:
         names_hash_bucket_size: 128
     upstreams: {  }
     vhosts:
-        nxv_m3xrnjr3ku8l:
+        nxv_ch8otu36ieyy:
             server_name: commsy.vm
             server_aliases:
                 - www.commsy.vm
@@ -118,7 +118,7 @@ nginx:
             rewrite_to_https: '1'
             spdy: '1'
             locations:
-                nxvl_kzk8k75fheng:
+                nxvl_03jw0oqz7ae9:
                     location: /
                     autoindex: 'off'
                     internal: 'false'
@@ -130,7 +130,7 @@ nginx:
                     fastcgi_split_path: ''
                     proxy: ''
                     proxy_redirect: ''
-                nxvl_3xtn88we48io:
+                nxvl_m0bdxpm2ou7j:
                     location: '~ \.php(/|$)'
                     autoindex: 'off'
                     internal: 'false'
@@ -156,7 +156,7 @@ apache:
         - proxy_fcgi
         - rewrite
     vhosts:
-        av_apyz1r9xafpk:
+        av_ei8ndr0c3jjl:
             servername: awesome.dev
             serveraliases:
                 - www.awesome.dev
@@ -173,7 +173,7 @@ apache:
             ssl_protocol: ''
             ssl_cipher: ''
             directories:
-                avd_wakmmt5xm8jw:
+                avd_awal25ypyk90:
                     path: /var/www/awesome
                     options:
                         - Indexes
@@ -185,7 +185,7 @@ apache:
                         - 'all granted'
                     custom_fragment: ''
                     files_match:
-                        avdfm_5z7cu7zs3m29:
+                        avdfm_38ut0zcuhifn:
                             path: \.php$
                             sethandler: 'proxy:fcgi://127.0.0.1:9000'
                             custom_fragment: ''
@@ -213,7 +213,7 @@ php:
     fpm_ini:
         error_log: /var/log/php-fpm.log
     fpm_pools:
-        phpfp_0hf7vl2vatjm:
+        phpfp_afz5dagq9gqz:
             ini:
                 prefix: www
                 listen: '127.0.0.1:9000'
@@ -262,6 +262,8 @@ python:
     versions: {  }
 nodejs:
     install: '1'
+    settings:
+        version: null
     npm_packages:
         - bower
         - less
@@ -289,15 +291,15 @@ mariadb:
         override_options: {  }
     adminer: 0
     users:
-        mariadbnu_2fxeylkzz0tk:
+        mariadbnu_ge6uabcmk33a:
             name: dbuser
             password: '123'
     databases:
-        mariadbnd_d3l38cb3p9lf:
+        mariadbnd_wfdxy7fam0do:
             name: dbname
             sql: ''
     grants:
-        mariadbng_ivdv803dne3c:
+        mariadbng_dg9zzpwhj11s:
             user: dbuser
             table: '*.*'
             privileges:
@@ -310,15 +312,15 @@ mysql:
         override_options: {  }
     adminer: '1'
     users:
-        mysqlnu_k2ebysfpcawr:
+        mysqlnu_7wmyrq2wufjq:
             name: commsy
             password: commsy
     databases:
-        mysqlnd_o3y8jt4i3lz4:
+        mysqlnd_axx2boqw78nu:
             name: commsy
             sql: ''
     grants:
-        mysqlng_kiqdjayb6y9m:
+        mysqlng_iqvvouxd4iym:
             user: commsy
             table: 'commsy.*'
             privileges:

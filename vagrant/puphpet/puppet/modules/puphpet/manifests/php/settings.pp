@@ -15,11 +15,19 @@ class puphpet::php::settings (
 
   if $version == '70' {
     $prefix = $::osfamily ? {
-      'Debian' => $::operatingsystem ? {
+      'debian' => $::operatingsystem ? {
         'ubuntu' => 'php7.0-',
         'debian' => 'php7-'
       },
-      'Redhat' => 'php-'
+      'redhat' => 'php-'
+    }
+
+    $pecl_prefix = $::osfamily ? {
+      'debian' => $::operatingsystem ? {
+        'ubuntu' => 'php7.0-',
+        'debian' => 'php7-'
+      },
+      'redhat' => 'php70-php-pecl-'
     }
 
     $package_devel = $::osfamily ? {
@@ -45,6 +53,11 @@ class puphpet::php::settings (
     $prefix = $::osfamily ? {
       'debian' => 'php5-',
       'redhat' => 'php-',
+    }
+
+    $pecl_prefix = $::osfamily ? {
+      'debian' => 'php5-',
+      'redhat' => 'php-pecl-',
     }
 
     $package_devel = $php::params::package_devel
