@@ -118,9 +118,6 @@ class MaterialTransformer implements DataTransformerInterface
                 } else {
                     $materialObject->setBibKind('none');
                 }
-                
-
-                $materialObject->save();
             }
         }
         
