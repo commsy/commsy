@@ -53,12 +53,18 @@
                 $(this).addClass('uk-active');
                 $('#commsy-select-actions-select-shown').removeClass('uk-active');
                 
-                $this.inputs.find('input[type="checkbox"]').each(function() {
-                    $(this).prop('checked', true);
+                $this.inputs.each(function() {
+                    if (this.type == 'checkbox') {
+                        $(this).prop('checked', true);
+                    }
                 });
                 $this.articles.each(function() {
                     $(this).addClass('uk-comment-primary');
                 });
+                
+                selectedCounter = parseInt($('#commsy-list-count-all').html());
+                
+                $('#commsy-list-count-selected').html($('#commsy-list-count-all').html());
             });
             
             $('#commsy-select-actions-unselect').on('change.uk.button', function(event) {
