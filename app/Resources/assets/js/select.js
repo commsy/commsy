@@ -38,21 +38,8 @@
             this.on('change.uk.button', function(event) {
                 // show / hide further actions
                 $('#commsy-select-actions').toggleClass('uk-hidden');
-
-                //if ($('#commsy-select-actions').hasClass('uk-hidden')) {
-                    /* $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '0px');
-
-                    $this.inputs.find('input[type="checkbox"]').each(function() {
-                        $(this).prop('checked', false);
-                    });
-                    $this.articles.each(function() {
-                        $(this).removeClass('uk-comment-primary');
-                    });
-                    $(this).html($(this).data('title')); */
-                //} else {
-                    $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '65px');
-                    $(this).html($(this).data('alt-title'));
-                //}
+                $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '65px');
+                $(this).html($(this).data('alt-title'));
 
                 $('#commsy-list-count-selected').html('0');
 
@@ -76,8 +63,10 @@
                 $('#commsy-select-actions-select-all').removeClass('uk-active');
                 $(this).removeClass('uk-active');
                 
-                $this.inputs.find('input[type="checkbox"]').each(function() {
-                    $(this).prop('checked', false);
+                $this.inputs.each(function() {
+                    if (this.type == 'checkbox') {
+                        $(this).prop('checked', false);
+                    }
                 });
                 $this.articles.each(function() {
                     $(this).removeClass('uk-comment-primary');
@@ -120,8 +109,10 @@
                 $('#commsy-select-actions').toggleClass('uk-hidden');
                 $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '0px');
 
-                $this.inputs.find('input[type="checkbox"]').each(function() {
-                    $(this).prop('checked', false);
+                $this.inputs.each(function() {
+                    if (this.type == 'checkbox') {
+                        $(this).prop('checked', false);
+                    }
                 });
                 $this.articles.each(function() {
                     $(this).removeClass('uk-comment-primary');
@@ -129,6 +120,11 @@
                 $(this).html($(this).data('title'));
                 
                 $this.articles.toggleClass('selectable');
+                
+                selectedCounter = 0;
+                $('#commsy-list-count-selected').html('0');
+                
+                $this.bind();
             });
 
             // listen for dom changes
