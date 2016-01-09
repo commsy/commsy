@@ -4,7 +4,7 @@
 
     var feedStart = 10;
     var sort = 'modification_date';
-    var sortOrder = '';
+    var sortOrder = '_rev';
 
     // listen to "inview.uk.scrollspy" event on "feed-load-more" classes
     $('.feed-load-more').on('inview.uk.scrollspy', function() {
@@ -76,37 +76,54 @@
 
     $('#commsy-sort-title').on('click', function(event) {
         sort = 'title';
+        sortOrder = '';
         reloadCurrent();
+        setCheckSort('commsy-sort-title');
+        setCheckOrder('commsy-sort-ascending');
     });
     
     $('#commsy-sort-modificator').on('click', function(event) {
         sort = 'modificator';
+        sortOrder = '';
         reloadCurrent();
+        setCheckSort('commsy-sort-modificator');
+        setCheckOrder('commsy-sort-ascending');
     });
     
     $('#commsy-sort-modification_date').on('click', function(event) {
         sort = 'modification_date';
+        sortOrder = '_rev';
         reloadCurrent();
+        setCheckSort('commsy-sort-modification_date');
+        setCheckOrder('commsy-sort-descending');
     });
     
     $('#commsy-sort-assessment').on('click', function(event) {
         sort = 'assessment';
+        sortOrder = '_rev';
         reloadCurrent();
+        setCheckSort('commsy-sort-assessment');
+        setCheckOrder('commsy-sort-descending');
     });
     
     $('#commsy-sort-workflow_status').on('click', function(event) {
         sort = 'workflow_status';
+        sortOrder = '_rev';
         reloadCurrent();
+        setCheckSort('commsy-sort-workflow_status');
+        setCheckOrder('commsy-sort-descending');
     });
     
     $('#commsy-sort-ascending').on('click', function(event) {
         sortOrder = '';
         reloadCurrent();
+        setCheckOrder('commsy-sort-ascending');
     });
     
     $('#commsy-sort-descending').on('click', function(event) {
         sortOrder = '_rev';
         reloadCurrent();
+        setCheckOrder('commsy-sort-descending');
     });
 
     function reloadCurrent () {
@@ -147,6 +164,16 @@
             // increase for next run
             feedStart += 10;
         });
+    }
+
+    function setCheckSort (check) {
+        $('i[id*="-check-sort"]').removeClass('uk-icon-check');
+        $('#'+check+'-check-sort').addClass('uk-icon-check');
+    }
+    
+    function setCheckOrder (check) {
+        $('i[id*="-check-order"]').removeClass('uk-icon-check');
+        $('#'+check+'-check-order').addClass('uk-icon-check');
     }
 
 })(UIkit);
