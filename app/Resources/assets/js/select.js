@@ -31,6 +31,7 @@
             this.selectedCounter = 0;
             this.selectAll = false;
             this.selectable = false;
+            this.sort = 'modification_date';
             
             // bind event handler
             this.bind();
@@ -192,6 +193,18 @@
 
                 $this.bind();
             });
+            
+            $('#commsy-sort-title').on('click', function(event) {
+                $this.sort = 'title';
+            });
+            
+            $('#commsy-sort-modificator').on('click', function(event) {
+                $this.sort = 'modificator';
+            });
+            
+            $('#commsy-sort-modification_date').on('click', function(event) {
+                $this.sort = 'modification_date';
+            });
         },
 
         bind: function() {
@@ -266,7 +279,7 @@
                     
                     let el = $('.feed-load-more');
                     let queryString = document.location.search;
-                    let url = el.data('feed').url  + 0 + queryString;
+                    let url = el.data('feed').url  + 0 + '/' + $this.sort + queryString;
             
                     let message = result.message;
                     let status = result.status;
