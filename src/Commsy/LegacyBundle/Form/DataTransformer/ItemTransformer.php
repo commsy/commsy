@@ -65,25 +65,49 @@ class ItemTransformer implements DataTransformerInterface
      */
     public function applyTransformation($item, $itemData)
     {
+        // workflow resubmission
         $item->setWorkflowTrafficLight($itemData['workflowTrafficLight']);
         if ($itemData['workflowResubmission']) {
             $item->setWorkflowResubmission('1');
+
+            if ($itemData['workflowResubmissionDate']) {
+                $item->setWorkflowResubmissionDate($itemData['workflowResubmissionDate']->format('Y-m-d H:i:s'));
+            } else {
+                $item->setWorkflowResubmissionDate($itemData['workflowResubmissionDate']);
+            }
+            $item->setWorkflowResubmissionWho($itemData['workflowResubmissionWho']);
+            $item->setWorkflowResubmissionWhoAdditional($itemData['workflowResubmissionWhoAdditional']);
+            $item->setWorkflowResubmissionTrafficLight($itemData['workflowResubmissionTrafficLight']);
         } else {
+            // reset data
             $item->setWorkflowResubmission('-1');
+            $item->setWorkflowResubmissionDate(null);
+            $item->setWorkflowResubmissionWho('');
+            $item->setWorkflowResubmissionWhoAdditional(null);
+            $item->setWorkflowResubmissionTrafficLight('3_none');
         }
-        $item->setWorkflowResubmissionDate($itemData['workflowResubmissionDate']->format('Y-m-d H:i:s'));
-        $item->setWorkflowResubmissionWho($itemData['workflowResubmissionWho']);
-        $item->setWorkflowResubmissionWhoAdditional($itemData['workflowResubmissionWhoAdditional']);
-        $item->setWorkflowResubmissionTrafficLight($itemData['workflowResubmissionTrafficLight']);
+
+        // workflow validity
         if ($itemData['workflowValidity']) {
             $item->setWorkflowValidity('1');
+            
+            if ($itemData['workflowValidityDate']) {
+                $item->setWorkflowValidityDate($itemData['workflowValidityDate']->format('Y-m-d H:i:s'));
+            } else {
+                $item->setWorkflowValidityDate($itemData['workflowValidityDate']);
+            }
+            $item->setWorkflowValidityWho($itemData['workflowValidityWho']);
+            $item->setWorkflowValidityWhoAdditional($itemData['workflowValidityWhoAdditional']);
+            $item->setWorkflowValidityTrafficLight($itemData['workflowValidityTrafficLight']);
         } else {
+            // reset data
             $item->setWorkflowValidity('-1');
+            $item->setWorkflowValidityDate(null);
+            $item->setWorkflowValidityWho('');
+            $item->setWorkflowValidityWhoAdditional(null);
+            $item->setWorkflowValidityTrafficLight('3_none');
         }
-        $item->setWorkflowValidityDate($itemData['workflowValidityDate']->format('Y-m-d H:i:s'));
-        $item->setWorkflowValidityWho($itemData['workflowValidityWho']);
-        $item->setWorkflowValidityWhoAdditional($itemData['workflowValidityWhoAdditional']);
-        $item->setWorkflowValidityTrafficLight($itemData['workflowValidityTrafficLight']);
+        
         return $item;
     }
 }
