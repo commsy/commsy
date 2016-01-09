@@ -88,28 +88,14 @@
         reloadCurrent();
     });
     
-    $('#commsy-sort-rating').on('click', function(event) {
-        sort = 'rating';
-        //reloadCurrent();
-        
-        UIkit.notify({
-            message : 'Work in progress ...',
-            status  : 'info',
-            timeout : 2000,
-            pos     : 'top-center'
-        });
+    $('#commsy-sort-assessment').on('click', function(event) {
+        sort = 'assessment';
+        reloadCurrent();
     });
     
     $('#commsy-sort-workflow_status').on('click', function(event) {
         sort = 'workflow_status';
-        //reloadCurrent();
-        
-        UIkit.notify({
-            message : 'Work in progress ...',
-            status  : 'info',
-            timeout : 2000,
-            pos     : 'top-center'
-        });
+        reloadCurrent();
     });
 
     function reloadCurrent () {
