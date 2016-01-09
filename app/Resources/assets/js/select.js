@@ -30,6 +30,7 @@
             this.inputs = target.find('input');
             this.selectedCounter = 0;
             this.selectAll = false;
+            this.selectable = false;
             
             // bind event handler
             this.bind();
@@ -47,6 +48,8 @@
                 
                 $('#commsy-list-count-display').toggleClass('uk-hidden');
                 $('#commsy-list-count-edit').toggleClass('uk-hidden');
+                
+                $this.selectable = true;
             });
             
             $('#commsy-select-actions-select-all').on('change.uk.button', function(event) {
@@ -139,6 +142,7 @@
                 $('#commsy-list-count-edit').toggleClass('uk-hidden');
                 
                 $this.selectAll = false;
+                $this.selectable = false;
             });
 
             // listen for dom changes
@@ -176,6 +180,17 @@
                         articlesCounter++;
                     }); 
                 }
+            });
+            
+            window.addEventListener('feedDidReload', function (e) {
+                $this.articles = target.find('article');
+                $this.inputs = target.find('input');
+
+                if ($this.selectable) {
+                    $this.articles.addClass('selectable');
+                }
+
+                $this.bind();
             });
         },
 

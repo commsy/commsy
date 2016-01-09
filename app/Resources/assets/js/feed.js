@@ -109,6 +109,16 @@
                 var target = el.data('feed').target;
                 //$(target).append(result);
                 $(target).html($(result));
+                
+                var event = new CustomEvent(
+                	"feedDidReload", 
+                	{
+                		detail: {},
+                		bubbles: true,
+                		cancelable: true
+                	}
+                );
+                window.dispatchEvent(event);
             } else {
                 $('.feed-load-more').css('display', 'none');
             }
