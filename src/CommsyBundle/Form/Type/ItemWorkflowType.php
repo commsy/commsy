@@ -41,6 +41,9 @@ class ItemWorkflowType extends AbstractType
                 'label'    => 'workflowResubmission',
                 'translation_domain' => 'item',
                 'required' => false,
+                'attr' => array(
+                    'data-uk-toggle' => '{target:\'#workflowResubmission\'}'
+                )
             ))
             ->add('workflowResubmissionDate', 'datetime', array(
                 'label' => 'workflowResubmissionDate',
@@ -88,6 +91,9 @@ class ItemWorkflowType extends AbstractType
                 'label'    => 'workflowValidity',
                 'translation_domain' => 'item',
                 'required' => false,
+                'attr' => array(
+                    'data-uk-toggle' => '{target:\'#workflowValidity\'}'
+                )
             ))
             ->add('workflowValidityDate', 'datetime', array(
                 'label' => 'workflowValidityDate',
