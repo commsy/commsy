@@ -32,6 +32,7 @@
             this.selectAll = false;
             this.selectable = false;
             this.sort = 'modification_date';
+            this.sortOrder = '';
             
             // bind event handler
             this.bind();
@@ -213,6 +214,14 @@
             $('#commsy-sort-workflow_status').on('click', function(event) {
                 $this.sort = 'workflow_status';
             });
+            
+            $('#commsy-sort-ascending').on('click', function(event) {
+                $this.sortOrder = '';
+            });
+            
+            $('#commsy-sort-descending').on('click', function(event) {
+                $this.sortOrder = '_rev';
+            });
         },
 
         bind: function() {
@@ -287,7 +296,7 @@
                     
                     let el = $('.feed-load-more');
                     let queryString = document.location.search;
-                    let url = el.data('feed').url  + 0 + '/' + $this.sort + queryString;
+                    let url = el.data('feed').url  + 0 + '/' + $this.sort + $this.sortOrder + queryString;
             
                     let message = result.message;
                     let status = result.status;

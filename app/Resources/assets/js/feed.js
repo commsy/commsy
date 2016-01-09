@@ -4,6 +4,7 @@
 
     var feedStart = 10;
     var sort = 'modification_date';
+    var sortOrder = '';
 
     // listen to "inview.uk.scrollspy" event on "feed-load-more" classes
     $('.feed-load-more').on('inview.uk.scrollspy', function() {
@@ -13,7 +14,7 @@
         var queryString = document.location.search;
 
         // build up the url
-        var url = el.data('feed').url  + feedStart + '/' + sort + queryString;
+        var url = el.data('feed').url  + feedStart + '/' + sort + sortOrder + queryString;
 
         // send ajax request to get more items
         $.ajax({
@@ -97,6 +98,16 @@
         sort = 'workflow_status';
         reloadCurrent();
     });
+    
+    $('#commsy-sort-ascending').on('click', function(event) {
+        sortOrder = '';
+        reloadCurrent();
+    });
+    
+    $('#commsy-sort-descending').on('click', function(event) {
+        sortOrder = '_rev';
+        reloadCurrent();
+    });
 
     function reloadCurrent () {
         feedStart = 0;
@@ -107,7 +118,7 @@
         var queryString = document.location.search;
 
         // build up the url
-        var url = el.data('feed').url  + feedStart + '/' + sort + queryString;
+        var url = el.data('feed').url  + feedStart + '/' + sort + sortOrder + queryString;
         
         // send ajax request to get more items
         $.ajax({
