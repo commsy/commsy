@@ -142,6 +142,10 @@
                 <source>workflow resubmission date</source>
                 <target>Wiedervorlage am</target>
             </trans-unit>
+            <trans-unit id="workflow_status">
+                <source>Workflow (status)</source>
+                <target>Workflow (Status)</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -205,6 +205,14 @@
             $('#commsy-sort-modification_date').on('click', function(event) {
                 $this.sort = 'modification_date';
             });
+            
+            $('#commsy-sort-rating').on('click', function(event) {
+                $this.sort = 'rating';
+            });
+            
+            $('#commsy-sort-workflow_status').on('click', function(event) {
+                $this.sort = 'workflow_status';
+            });
         },
 
         bind: function() {
