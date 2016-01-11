@@ -244,7 +244,7 @@
             </trans-unit>
              <trans-unit id="59">
                 <source>no files</source>
-                <target>No attached files</target>
+                <target>No files</target>
             </trans-unit>
              <trans-unit id="60">
                 <source>topic path</source>

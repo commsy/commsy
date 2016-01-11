@@ -149,6 +149,11 @@
                         {{ macros.editContent('description', topic, true, topic.description, topic.description, false, false, 0) }}
                     </div>
             
+                    {# files #}
+                    <div id="files{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
+                        {{ macrosItem.files(topic) }}
+                    </div>
+        
             
                     {# path #}
                     <div id="path{{ topic.itemId }}" class="cs-toggle" data-uk-observe>
