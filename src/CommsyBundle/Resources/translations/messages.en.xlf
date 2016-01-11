@@ -242,6 +242,22 @@
                 <source>selected</source>
                 <target>selected</target>
             </trans-unit>
+             <trans-unit id="59">
+                <source>no files</source>
+                <target>No attached files</target>
+            </trans-unit>
+             <trans-unit id="60">
+                <source>topic path</source>
+                <target>Path</target>
+            </trans-unit>
+             <trans-unit id="61">
+                <source>topic path activated</source>
+                <target>activated</target>
+            </trans-unit>
+             <trans-unit id="62">
+                <source>topic path not activated</source>
+                <target>not activated</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
