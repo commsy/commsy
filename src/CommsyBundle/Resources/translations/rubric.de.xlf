@@ -162,6 +162,18 @@
                 <source>rating</source>
                 <target>Bewertung</target>
             </trans-unit>
+            <trans-unit id="41">
+                <source>list sort order</source>
+                <target>Reihenfolge</target>
+            </trans-unit>
+            <trans-unit id="42">
+                <source>ascending</source>
+                <target>aufsteigend</target>
+            </trans-unit>
+            <trans-unit id="43">
+                <source>descending</source>
+                <target>absteigend</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

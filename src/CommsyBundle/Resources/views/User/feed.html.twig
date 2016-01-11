@@ -19,7 +19,7 @@
                         {% endif %}
                     </div>
                    <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
-                    <span class="uk-text-large uk-text-middle">
+                    <span class="uk-text-large uk-text-middle uk-text-truncate">
                         <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">{{ user.title }} {{user.fullname}}</a>
                     </span>
                 </div>

@@ -30,6 +30,9 @@
             this.inputs = target.find('input');
             this.selectedCounter = 0;
             this.selectAll = false;
+            this.selectable = false;
+            this.sort = 'modification_date';
+            this.sortOrder = '';
             
             // bind event handler
             this.bind();
@@ -47,6 +50,8 @@
                 
                 $('#commsy-list-count-display').toggleClass('uk-hidden');
                 $('#commsy-list-count-edit').toggleClass('uk-hidden');
+                
+                $this.selectable = true;
             });
             
             $('#commsy-select-actions-select-all').on('change.uk.button', function(event) {
@@ -139,6 +144,7 @@
                 $('#commsy-list-count-edit').toggleClass('uk-hidden');
                 
                 $this.selectAll = false;
+                $this.selectable = false;
             });
 
             // listen for dom changes
@@ -153,20 +159,68 @@
                 $this.bind();
             });
             
-            window.addEventListener('feedLoaded', function (e) {
-              if ($this.selectAll == true) {
+            window.addEventListener('feedDidLoad', function (e) {
+                if ($this.selectAll == true) {
                     $this.articles = target.find('article');
                     $this.inputs = target.find('input');
-                  
+
+                    var inputCounter = 0;
                     $this.inputs.each(function() {
-                    if (this.type == 'checkbox') {
-                        $(this).prop('checked', true);
-                    }
+                        if (inputCounter >= e.detail.feedStart) {
+                            if (this.type == 'checkbox') {
+                                $(this).prop('checked', true);
+                            }
+                        }
+                        inputCounter++;
                     });
+
+                    var articlesCounter = 0;
                     $this.articles.each(function() {
-                        $(this).addClass('uk-comment-primary');
-                    });
+                        if (articlesCounter >= e.detail.feedStart) {
+                            $(this).addClass('uk-comment-primary');
+                        }
+                        articlesCounter++;
+                    }); 
                 }
+            });
+            
+            window.addEventListener('feedDidReload', function (e) {
+                $this.articles = target.find('article');
+                $this.inputs = target.find('input');
+
+                if ($this.selectable) {
+                    $this.articles.addClass('selectable');
+                }
+
+                $this.bind();
+            });
+            
+            $('#commsy-sort-title').on('click', function(event) {
+                $this.sort = 'title';
+            });
+            
+            $('#commsy-sort-modificator').on('click', function(event) {
+                $this.sort = 'modificator';
+            });
+            
+            $('#commsy-sort-modification_date').on('click', function(event) {
+                $this.sort = 'modification_date';
+            });
+            
+            $('#commsy-sort-assessment').on('click', function(event) {
+                $this.sort = 'assessment';
+            });
+            
+            $('#commsy-sort-workflow_status').on('click', function(event) {
+                $this.sort = 'workflow_status';
+            });
+            
+            $('#commsy-sort-ascending').on('click', function(event) {
+                $this.sortOrder = '';
+            });
+            
+            $('#commsy-sort-descending').on('click', function(event) {
+                $this.sortOrder = '_rev';
             });
         },
 
@@ -218,11 +272,15 @@
                 return this.value;
             }).get();
             
+            let input =  target.find('input').map(function() {
+                return this.value;
+            }).get();
+            
             if (action != 'save') {
                 $.ajax({
                     url: $this.options.actionUrl,
                     type: 'POST',
-                    data: {act: action, data : JSON.stringify(entries)}
+                    data: {act: action, data: JSON.stringify(entries), selectAll: $this.selectAll, selectAllStart: input.length}
                 })
                 .done(function(result) {
                     $('#commsy-select-actions-select-shown').removeClass('uk-active');
@@ -238,7 +296,7 @@
                     
                     let el = $('.feed-load-more');
                     let queryString = document.location.search;
-                    let url = el.data('feed').url  + 0 + queryString;
+                    let url = el.data('feed').url  + 0 + '/' + $this.sort + $this.sortOrder + queryString;
             
                     let message = result.message;
                     let status = result.status;
@@ -287,6 +345,8 @@
                 $('body').append($form);
                 $form.submit();
             }
+            
+            $this.selectAll = false;
         }
     });
 
