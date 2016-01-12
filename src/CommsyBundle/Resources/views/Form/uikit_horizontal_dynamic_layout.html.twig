@@ -1,7 +1,7 @@
 {% extends "CommsyBundle:Form:uikit_horizontal_layout.html.twig" %}
 
 {% macro nestedList(choices, level) %}
-    {% set opened = level <= 2 %}
+    {% set opened = false %}
 
     {% for child in choices %}
         {% if child.choices is defined %}
