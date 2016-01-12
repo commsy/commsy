@@ -65,7 +65,7 @@
                                                 <div class="uk-clearfix">
                                                     <div class="cs-align-center"  data-uk-tooltip title="{{ file.filename}} ({{ file.fileSize }} kb)">
                                                         <div class="cs-align-center uk-vertical-align-middle">                        
-                                                            <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" ><i class="cs-icon-medium  cs-slider {{ macros.iconClassForFileType(file.extension) }}"></i></a>
+                                                            <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" ><i class="cs-icon-medium  cs-slider {{ macrosUtils.iconClassForFileType(file.extension) }}"></i></a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -103,7 +103,7 @@
                                         <div class="uk-clearfix">
                                             <div class="cs-align-center">
                                                 <div class="cs-align-center uk-vertical-align-middle">                        
-                                                    <i class="cs-icon-xxl-large  cs-slider {{ macros.iconClassForFileType(file.extension) }}"></i>
+                                                    <i class="cs-icon-xxl-large  cs-slider {{ macrosUtils.iconClassForFileType(file.extension) }}"></i>
                                                 </div>
                                             </div>
                                         </div>
