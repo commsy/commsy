@@ -3,7 +3,7 @@
     "use strict";
 
     var feedStart = 10;
-    var sort = 'modification_date';
+    var sort = 'date';
     var sortOrder = '_rev';
 
     // listen to "inview.uk.scrollspy" event on "feed-load-more" classes
@@ -82,8 +82,8 @@
         reloadCurrent('modificator', '');
     });
     
-    $('#commsy-sort-modification_date').on('click', function(event) {
-        reloadCurrent('modification_date', '_rev');
+    $('#commsy-sort-date').on('click', function(event) {
+        reloadCurrent('date', '_rev');
     });
     
     $('#commsy-sort-assessment').on('click', function(event) {
@@ -115,6 +115,7 @@
             } else {
                 $('#commsy-sort-'+newSort+'-chevron').addClass('uk-icon-chevron-down');
             }
+            sortOrder = newOrder;
         }
         sort = newSort;
         
@@ -125,7 +126,7 @@
 
         // build up the url
         var url = el.data('feed').url  + feedStart + '/' + sort + sortOrder + queryString;
-        
+
         // send ajax request to get more items
         $.ajax({
           url: url

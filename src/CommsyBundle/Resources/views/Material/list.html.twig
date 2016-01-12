@@ -20,15 +20,15 @@
         <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
             <button class="uk-button uk-button-mini cs-button-list">{{ 'list sort'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
             <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
-                <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
-                    <li><a href="#" id="commsy-sort-title">{{ 'title'|trans({},'rubric')}} <i id="commsy-sort-title-chevron"></i></a></li>
-                    <li><a href="#" id="commsy-sort-modificator">{{ 'modifier'|trans({},'rubric') }} <i id="commsy-sort-modificator-chevron"></i></a></li>
-                    <li><a href="#" id="commsy-sort-modification_date">{{ 'modification_date'|trans({},'rubric') }} <i id="commsy-sort-modification_date-chevron" class="uk-icon-chevron-down"></i></a></li>
+                <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left uk-clearfix">
+                    <li><a href="#" id="commsy-sort-title">{{ 'title'|trans({},'rubric')}} <i id="commsy-sort-title-chevron" class="uk-float-right"></i></a></li>
+                    <li><a href="#" id="commsy-sort-modificator">{{ 'modifier'|trans({},'rubric') }} <i id="commsy-sort-modificator-chevron" class="uk-float-right"></i></a></li>
+                    <li><a href="#" id="commsy-sort-date">{{ 'modification_date'|trans({},'rubric') }} <i id="commsy-sort-date-chevron" class="uk-icon-chevron-down uk-float-right"></i></a></li>
                     {% if showRating %}
-                        <li><a href="#" id="commsy-sort-assessment">{{ 'rating'|trans({},'rubric') }} <i id="commsy-sort-assessment-chevron"></i></a></li>
+                        <li><a href="#" id="commsy-sort-assessment">{{ 'rating'|trans({},'rubric') }} <i id="commsy-sort-assessment-chevron" class="uk-float-right"></i></a></li>
                     {% endif %}
                     {% if showWorkflow %}
-                        <li><a href="#" id="commsy-sort-workflow_status">{{ 'Workflow (status)'|trans({},'rubric') }} <i id="commsy-sort-workflow_status-chevron"></i></a></li>
+                        <li><a href="#" id="commsy-sort-workflow_status">{{ 'Workflow (status)'|trans({},'rubric') }} <i id="commsy-sort-workflow_status-chevron" class="uk-float-right"></i></a></li>
                     {% endif %}
                </ul>
             </div>

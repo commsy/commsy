@@ -31,8 +31,8 @@
             this.selectedCounter = 0;
             this.selectAll = false;
             this.selectable = false;
-            this.sort = 'modification_date';
-            this.sortOrder = '';
+            this.sort = 'date';
+            this.sortOrder = '_rev';
             
             // bind event handler
             this.bind();
@@ -203,8 +203,8 @@
                 $this.sort = 'modificator';
             });
             
-            $('#commsy-sort-modification_date').on('click', function(event) {
-                $this.sort = 'modification_date';
+            $('#commsy-sort-date').on('click', function(event) {
+                $this.sort = 'date';
             });
             
             $('#commsy-sort-assessment').on('click', function(event) {
@@ -213,14 +213,6 @@
             
             $('#commsy-sort-workflow_status').on('click', function(event) {
                 $this.sort = 'workflow_status';
-            });
-            
-            $('#commsy-sort-ascending').on('click', function(event) {
-                $this.sortOrder = '';
-            });
-            
-            $('#commsy-sort-descending').on('click', function(event) {
-                $this.sortOrder = '_rev';
             });
         },
 
