@@ -20,6 +20,9 @@
             // needed to update the display when a dynamic grid or slider is inside the hidden element
             UIkit.$html.trigger('changed.uk.dom');
 
+            // toggle show more / show less
+            this.element.closest('article').find('span.cs-readmoreless').toggleClass('uk-hidden');
+
             return ret;
         };
     });

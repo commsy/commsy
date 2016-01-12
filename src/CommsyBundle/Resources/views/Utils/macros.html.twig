@@ -207,7 +207,6 @@
     </a>
 {% endmacro %}
 
-
 {% macro actionIcons(title, item, edit) %}
     <div class="uk-width-1-10 uk-flex uk-text-right">
         {% if edit %}
@@ -222,36 +221,6 @@
         </div>
    </div>
 {% endmacro %}
-
-
-{% macro editAnnotationContent(title, item, edit, content, preview, shortPreview, displaycount, count) %}
-    <div class="uk-grid uk-margin-top-remove">
-        <div class="uk-width-9-10">
-            <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-preview-small">
-                <div class="uk-panel">
-                    {{ preview|raw }}
-                </div>
-            </div>
-            <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-content uk-hidden">
-                <div class="uk-panel">
-                    <div class="uk-comment-meta">
-                        {{ 'by'|trans({})|capitalize }}: {{item.creator.getFullName}}
-                    </div>   
-                    <div class="uk-comment-meta uk-margin-bottom">
-                        {{ 'last changed'|trans({})|capitalize }}: {{item.getModificationDate|date("d.m.Y H:i")}}
-                    </div>
-
-                    {{ content|raw }}
-                </div>
-            </div>
-        </div>
-        {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
-        <div class="uk-width-1-10 uk-grid uk-margin-small-bottom">                
-            {{ _self.actionIcons(title, item, edit) }}
-        </div>   
-    </div>    
-{% endmacro %}
-
 
 {% macro editContent(title, item, edit, content, preview, shortPreview, displayCount, count) %}
     <hr class="uk-width-9-10"/>
@@ -278,9 +247,14 @@
         {% if not content is empty and not preview is empty %}
             <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
 
+                {# preview #}
                 <div class="toggle-{{ title }}-{{ item.itemId }} {% if shortPreview %}cs-toggle-preview-small{% else %}cs-toggle-preview{% endif %}">
                     {{ preview|raw }}
+
+                    <a href="#">more</a>
                 </div>
+
+                {# full content #}
                 <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-content uk-hidden">
                     {{ content|raw }}
                 </div>

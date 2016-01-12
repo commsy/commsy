@@ -340,36 +340,73 @@
 {% endmacro %}
 
 {% macro sections(item, sectionList) %}
-    {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+    {% import 'CommsyBundle:Utils:macros.html.twig' as macrosUtils %}
 
-    {% set preview = '' %}
-    {% set content = '' %}
-    
-    {% if not sectionList is empty %}
-        {% set preview %}
-        <ul class="uk-list uk-list-striped uk-width-2-3">
-            {% set counter = 1 %}                        
-            {% for section in sectionList %}
-                <li>
-                    <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ counter }}. {{ section.title|raw }}</a> {{ macros.fileListShort(section) }}
-                </li>
-            {% set counter = counter + 1  %}                        
-            {% endfor %}
-        </ul>
-        {% endset %}
-    
-        {% set content %}
-        <ul class="uk-list uk-list-striped uk-width-2-3">
-            {% set counter = 1 %}                        
-            {% for section in sectionList %}
-                <li>
-                    <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ counter }}. {{ section.title|raw }}</a> {{ macros.fileListShort(section) }}
-                </li>
-            {% set counter = counter + 1  %}                        
-            {% endfor %}
-        </ul>
-        {% endset %}
-    {% endif %}
-       
-    {{ macros.editContent('sections', item, true, content, preview, false, true, sectionList|length) }}
+    <hr class="uk-width-9-10"/>
+
+    <article class="uk-article uk-margin-left uk-margin-right">
+        <a name="description"></a>
+        {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
+
+        {# title row #}
+        <div class="uk-grid uk-margin-small-bottom">
+            <div class="uk-width-9-10">
+                <h4 class="cs-detail-section-header">
+                    {{- "sections"|trans({}) }}
+                    ({{ sectionList|length }})
+                </h4>
+            </div>
+
+            <div class="uk-width-1-10 uk-flex uk-text-right">
+                {# edit action #}
+                {% if is_granted('ITEM_EDIT', item.itemId) %}
+                    <div class="cs-edit uk-hidden">
+                        <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+                    </div>
+                {% endif %}
+
+                {# toggle action #}
+                {% if not sectionList is empty %}
+                    <div class="cs-toggle-icon uk-margin-left uk-width-1-1 uk-hidden" data-cs-unhide-collapsed="{src: '.toggle-sections-{{ item.itemId }}'}">
+                        <a class="cs-toggle" data-uk-toggle="{target:'.toggle-sections-{{ item.itemId }}', cls: 'cs-toggle-full'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+                    </div>
+                {% endif %}
+           </div>
+        </div>
+
+        {# content #}
+        {% if not sectionList is empty %}
+            <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
+
+                {# preview #}
+                <div class="toggle-sections-{{ item.itemId }} cs-toggle-preview">
+                    <ul class="uk-list uk-list-striped uk-width-2-3">          
+                        {% for section in sectionList %}
+                            <li>
+                                <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">
+                                    {{ loop.index }}. {{ section.title|raw }}
+                                </a>
+
+                                {{ macrosUtils.fileListShort(section) }}
+                            </li>                      
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <a class="uk-invisible" href="#" data-cs-unhide-collapsed="{src: '.toggle-sections-{{ item.itemId }}'}" data-cs-readmore>
+                    <span class="cs-readmoreless">{{- "read more"|trans({}) -}}</span>
+                    <span class="cs-readmoreless uk-hidden">{{- "read less"|trans({}) -}}</span>
+                </a>
+
+            </div>
+        {% else %}
+            <div class="uk-width-9-10 uk-margin-top-remove">
+                
+                <div class="toggle-sections-{{ item.itemId }} cs-toggle-empty">
+                    <span class="uk-text-muted">{{ 'no content'|trans({}, "room") }}</span>
+                </div>
+
+            </div>
+        {% endif %}
+    </article>
 {% endmacro %}

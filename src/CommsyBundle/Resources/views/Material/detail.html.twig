@@ -72,7 +72,6 @@
                         {# actions #}
                         <div class="uk-width-3-5 uk-text-right">
 
-
                             {# additional actions #}
                             <div class="uk-margin-left uk-button-dropdown" data-uk-dropdown>
                                 <button class="uk-button uk-button-mini">
@@ -152,7 +151,7 @@
             
                     {# description #}
                     <div id="description{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                        {{ macros.editContent('description', material, true, material.description, material.description, false, false, 0) }}
+                        {{ macrosItem.itemDescription('description', material, true, material.description) }}
                     </div>
             
                     {# files #}
@@ -201,7 +200,7 @@
                                 </div>
                                 <div class="uk-width-3-5 uk-text-right">
 
-                                    {# secton actions #}
+                                    {# section actions #}
                                     <div class="uk-margin-left uk-button-dropdown" data-uk-dropdown>
                                         <button class="uk-button uk-button-mini">
                                             {{ 'selected entries'|trans({}, 'rubric') }}
@@ -234,6 +233,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <article class="uk-article uk-position-relative">
                             {# title #}
                             <div class="cs-toggle" data-uk-observe>
@@ -241,10 +241,10 @@
                             </div>
                             
                             {# description #}
-                            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
-                                {{ macros.editContent('description', section, true, section.description, section.description, false, false, 0) }}
+                            <div id="description{{ section.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+                                {{ macrosItem.itemDescription('description', section, true, section.description) }}
                             </div>
-                    
+
                             {# files #}
                             <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
                                 {{ macrosItem.files(section) }}

@@ -12,8 +12,6 @@
     }
 }
 
-
-
 @media (max-width: 960px) {
     .cs-avatar-user-detail {
       width:180px;
@@ -48,9 +46,6 @@
     }
 }
 
-
-
-
 div.cs-edit-spinner,
 div.cs-save-spinner {
     > div {
@@ -62,14 +57,37 @@ div.cs-save-spinner {
 }
 
 div.cs-toggle-preview {
-    height: 140px;
+    max-height: 140px;
     overflow: hidden;
+
+    .uk-margin-bottom;
 }
 
 div.cs-toggle-preview-small {
-    height: 60px;
+    max-height: 60px;
     overflow: hidden;
+
+    .uk-margin-small-bottom;
+
+    .cs-comment-head {
+        .uk-hidden;
+    }
 }
+
+div.cs-toggle-full {
+    max-height: 100%;
+
+    .uk-margin-bottom-remove;
+
+    .cs-comment-head {
+        display: block !important;
+        visibility: visible !important;
+    }
+}
+
+
+
+
 
 div.cs-toggle-content {
     min-height: 120px;

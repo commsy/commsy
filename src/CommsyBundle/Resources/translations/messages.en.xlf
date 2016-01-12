@@ -238,6 +238,14 @@
                 <source>insert title</source>
                 <target>Insert title</target>
             </trans-unit>
+            <trans-unit id="readMore">
+                <source>read more</source>
+                <target>more...</target>
+            </trans-unit>
+            <trans-unit id="readLess">
+                <source>read less</source>
+                <target>less...</target>
+            </trans-unit>
             <trans-unit id="selected">
                 <source>selected</source>
                 <target>selected</target>

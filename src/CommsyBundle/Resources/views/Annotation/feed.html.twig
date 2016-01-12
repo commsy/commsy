@@ -1,27 +1,33 @@
-{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
-
+{% import 'CommsyBundle:Utils:macros.html.twig' as utilMacros %}
+{% import 'CommsyBundle:Annotation:macros.html.twig' as annotationMacros %}
 
 {% for annotation in annotations %}
     <article class="uk-comment">
-        {{ macros.statusColor(readerList, annotation.itemId) }}
+        {{ utilMacros.statusColor(readerList, annotation.itemId) }}
+
         <header class="uk-comment-header uk-flex">
+
+            {# user icon #}
             <div class="uk-margin-right uk-flex-item-none toggle-{{ annotation.itemId }}">
                 {% if annotation.creator.isUser %}
-                    {{  macros.userIconLink(annotation.creator) }}
+                    {{  utilMacros.userIconLink(annotation.creator) }}
                 {% else %}
-                    {{  macros.userIcon(annotation.creator) }}
+                    {{  utilMacros.userIcon(annotation.creator) }}
                 {% endif %}
             </div>
+
+            {# user link #}
             <div class="uk-margin-right uk-flex-item-none toggle-{{ annotation.itemId }} uk-hidden">
                 {% if annotation.creator.isUser %}
-                    {{  macros.userIconLink(annotation.creator) }}
+                    {{  utilMacros.userIconLink(annotation.creator) }}
                 {% endif %}
             </div>
-            <div class="uk-width">
 
-                
+            {# content #}
+            <div class="uk-width">
                 <div id="description{{ annotation.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_annotation_edit', {'roomId': annotation.contextId, 'itemId': annotation.itemId}) }}' }">
-                    {{ macros.editAnnotationContent('description', annotation, true, annotation.description, annotation.description, false, false, 0) }}
+                    {{ annotationMacros.editAnnotationContent('description', annotation, annotation.description) }}
+                </div>
             </div>
         </header>
     </article>

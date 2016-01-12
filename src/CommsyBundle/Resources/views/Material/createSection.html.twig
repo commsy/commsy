@@ -28,7 +28,7 @@
         
         {# description #}
         <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
-            {{ macros.editContent('description', section, true, section.description, section.description, false, false, 0) }}
+            {{ macrosItem.itemDescription('description', section, true, section.description) }}
         </div>
 
         {# files #}

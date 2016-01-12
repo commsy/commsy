@@ -238,6 +238,14 @@
                 <source>insert title</source>
                 <target>Titel eingeben</target>
             </trans-unit>
+            <trans-unit id="readMore">
+                <source>read more</source>
+                <target>mehr...</target>
+            </trans-unit>
+            <trans-unit id="readLess">
+                <source>read less</source>
+                <target>weniger...</target>
+            </trans-unit>
             <trans-unit id="selected">
                 <source>selected</source>
                 <target>ausgewählt</target>

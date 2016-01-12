@@ -1,0 +1,56 @@
+{% macro editAnnotationContent(title, item, content) %}
+    <div class="uk-grid uk-margin-top-remove">
+
+        {# content #}
+        {% if not content is empty %}
+            <div class="uk-width-9-10">
+
+                {# preview #}
+                <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-preview-small">
+
+                    <div class="cs-comment-head">
+                        <div class="uk-comment-meta">
+                            {{ 'by'|trans({})|capitalize }}: {{item.creator.getFullName}}
+                        </div>   
+                        <div class="uk-comment-meta uk-margin-bottom">
+                            {{ 'last changed'|trans({})|capitalize }}: {{item.getModificationDate|date("d.m.Y H:i")}}
+                        </div>
+                    </div>
+
+                    {{ content|raw }}
+                </div>
+
+                <a class="uk-invisible" href="#" data-cs-unhide-collapsed="{src: '.toggle-{{ title }}-{{ item.itemId }}'}" data-cs-readmore>
+                    <span class="cs-readmoreless">{{- "read more"|trans({}) -}}</span>
+                    <span class="cs-readmoreless uk-hidden">{{- "read less"|trans({}) -}}</span>
+                </a>
+
+            </div>
+        {% endif %}
+
+        {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
+
+        {# title row #}
+        <div class="uk-width-1-10 uk-grid uk-margin-small-bottom">
+
+            <div class="uk-width-1-10 uk-flex uk-text-right">
+
+                {# edit action #}
+                {% if is_granted('ITEM_EDIT', item.itemId) %}
+                    <div class="cs-edit uk-hidden">
+                        <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+                    </div>
+                {% endif %}
+
+                {# toggle action #}
+                <div class="cs-toggle-icon uk-margin-left uk-width-1-1 uk-hidden" data-cs-unhide-collapsed="{src: '.toggle-{{ title }}-{{ item.itemId }}', limit: 70}">
+                    <a class="cs-toggle" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}', cls: 'cs-toggle-full'}">
+                        <i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i>
+                    </a>
+                </div>
+
+            </div>
+
+       </div>
+    </div>    
+{% endmacro %}
