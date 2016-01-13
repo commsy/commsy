@@ -97,7 +97,7 @@ class MaterialController extends Controller
 
 
 
-       // get the material manager service
+        // get the material manager service
         $materialService = $this->get('commsy_legacy.material_service');
         $defaultFilterValues = array(
             'activated' => true,
@@ -192,9 +192,11 @@ class MaterialController extends Controller
             'userCount' => $infoArray['userCount'],
             'workflowGroupArray'=> $infoArray['workflowGroupArray'],
             'workflowUserArray'=> $infoArray['workflowUserArray'],
-            'workflowText'=>$infoArray['workflowText'],
-            'workflowValidityDate'=>$infoArray['workflowValidityDate'],
-            'workflowResubmissionDate'=>$infoArray['workflowResubmissionDate'],
+            'workflowText' => $infoArray['workflowText'],
+            'workflowValidityDate' => $infoArray['workflowValidityDate'],
+            'workflowResubmissionDate' => $infoArray['workflowResubmissionDate'],
+            'workflowUnread' => $infoArray['workflowUnread'],
+            'workflowRead' => $infoArray['workflowRead'],
             'draft' => $infoArray['draft'],
             'showRating' => $infoArray['showRating'],
             'showWorkflow' => $infoArray['showWorkflow'],
@@ -203,6 +205,31 @@ class MaterialController extends Controller
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
        );
+    }
+
+    /**
+     * @Route("/room/{roomId}/material/{itemId}/workflow", condition="request.isXmlHttpRequest()")
+     **/
+    public function workflowAction($roomId, $itemId, Request $request)
+    {
+        if ($request->request->has('read')) {
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+            $itemManager = $legacyEnvironment->getItemManager();
+            $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+
+            $read = $request->request->get('read');
+
+            if ($read) {
+                $itemManager->markItemAsWorkflowRead($itemId, $currentUserItem->getItemID());
+            } else {
+                $itemManager->markItemAsWorkflowNotRead($itemId, $currentUserItem->getItemID());
+            }
+        }
+
+        $response = new JsonResponse();
+
+        return $response;
     }
 
     private function getDetailInfo ($roomId, $itemId) {
@@ -339,15 +366,21 @@ class MaterialController extends Controller
                 $lastItemId = $materials[sizeof($materials)-1]->getItemId();
             }
         }
+
+        // workflow
         $workflowGroupArray = array();
         $workflowUserArray = array();
-       if($current_context->withWorkflowReader()){
+        $workflowRead = false;
+        $workflowUnread = false;
+
+        if ($current_context->withWorkflowReader()) {
             $itemManager = $legacyEnvironment->getItemManager();
             $users_read_array = $itemManager->getUsersMarkedAsWorkflowReadForItem($material->getItemID());
             $persons_array = array();
             foreach($users_read_array as $user_read){
-            $persons_array[] = $userManager->getItem($user_read['user_id']);
+                $persons_array[] = $userManager->getItem($user_read['user_id']);
             }
+
             if($current_context->getWorkflowReaderGroup() == '1'){
                 $group_manager = $legacyEnvironment->getGroupManager();
                 $group_manager->setContextLimit($legacyEnvironment->getCurrentContextID());
@@ -359,18 +392,19 @@ class MaterialController extends Controller
                     $link_user_list = $group_item->getLinkItemList('user');
                     $user_count_complete = $link_user_list->getCount();
                     $user_count = 0;
-                    foreach($persons_array as $person){
-                    if (!empty($persons_array[0])){
-                        $temp_link_list = $person->getLinkItemList('group');
-                        $temp_link_item = $temp_link_list->getFirst();
-                        while($temp_link_item){
-                            $temp_group_item = $temp_link_item->getLinkedItem($person);
-                            if($group_item->getItemID() == $temp_group_item->getItemID()){
-                                $user_count++;
+                    foreach($persons_array as $person) {
+                        if (!empty($persons_array[0])) {
+                            $temp_link_list = $person->getLinkItemList('group');
+                            $temp_link_item = $temp_link_list->getFirst();
+
+                            while ($temp_link_item) {
+                                $temp_group_item = $temp_link_item->getLinkedItem($person);
+                                if($group_item->getItemID() == $temp_group_item->getItemID()) {
+                                    $user_count++;
+                                }
+                                $temp_link_item = $temp_link_list->getNext();
                             }
-                            $temp_link_item = $temp_link_list->getNext();
                         }
-                    }
                     }
                     $tmpArray = array();
                     $tmpArray['iid'] = $group_item->getItemID();
@@ -381,13 +415,27 @@ class MaterialController extends Controller
                     $group_item = $group_list->getNext();
                 }
             }
-            if($current_context->getWorkflowReaderPerson() == '1'){
-                foreach($persons_array as $person){
-                if (!empty($persons_array[0])){
+
+            if ($current_context->getWorkflowReaderPerson() == '1'){
+                foreach ($persons_array as $person) {
+                    if (!empty($persons_array[0])){
                         $tmpArray = array();
                         $tmpArray['iid'] = $person->getItemID();
                         $tmpArray['name']=  $person->getFullname();
                         $workflowUserArray[] = $tmpArray;
+                    }
+                }
+            }
+
+            $currentContextItem = $legacyEnvironment->getCurrentContextItem();
+            $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+            
+            if ($currentContextItem->withWorkflow()) {
+                if (!$currentUserItem->isRoot()) {
+                    if (!$currentUserItem->isGuest() && $material->isReadByUser($currentUserItem)) {
+                        $workflowUnread = true;
+                    } else  {
+                        $workflowRead = true;
                     }
                 }
             }
@@ -434,13 +482,14 @@ class MaterialController extends Controller
         $infoArray['workflowText'] = $workflowText;
         $infoArray['workflowValidityDate'] = $material->getWorkflowValidityDate();
         $infoArray['workflowResubmissionDate'] = $material->getWorkflowResubmissionDate();
+        $infoArray['workflowUnread'] = $workflowUnread;
+        $infoArray['workflowRead'] = $workflowRead;
         $infoArray['draft'] = $itemService->getItem($itemId)->isDraft();
         $infoArray['showRating'] = $current_context->isAssessmentActive();
         $infoArray['showWorkflow'] = $current_context->withWorkflow();
         $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
-
         
         return $infoArray;
     }

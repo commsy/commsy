@@ -79,7 +79,7 @@
                                     <i class="uk-icon-caret-down"></i>
                                 </button>
 
-                                <div id="cs-additional-actions" class="uk-dropdown  uk-padding-remove">
+                                <div id="cs-additional-actions" class="uk-dropdown uk-padding-remove">
                                     <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
 
                                         {# new entry #}
@@ -88,8 +88,8 @@
                                                 <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
                                             </a>
                                         </li>
+
                                         {# print #}
- 
                                         <li>
                                             <a class="" href="#" id="print" data-section-url="">
                                                 <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
@@ -134,6 +134,45 @@
                                                 <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                             {% endif %}
                                         </li>
+
+                                        {# workflow #}
+                                        {% if workflowRead or true %}
+                                            <li>
+                                                <a class="" href="#" data-cs-action-workflow="{
+                                                    'url': '{{ path('commsy_material_workflow', {'roomId': roomId, 'itemId': material.itemId}) }}',
+                                                    'read': true
+                                                }">
+                                                    <i class="uk-icon-small uk-icon-eye uk-icon-justify uk-visible-large"></i> {{ 'Mark as read'|trans({}, 'material')|capitalize }}
+                                                </a>
+                                            </li>
+                                        {% endif %}
+
+                                        {% if workflowUnread or true %}
+                                            <li>
+                                                <a class="" href="#" data-cs-action-workflow="{
+                                                    'url': '{{ path('commsy_material_workflow', {'roomId': roomId, 'itemId': material.itemId}) }}',
+                                                    'read': false
+                                                }">
+                                                    <i class="uk-icon-small uk-icon-eye-slash uk-icon-justify uk-visible-large"></i> {{ 'Mark as not read'|trans({}, 'material')|capitalize }}
+                                                </a>
+                                            </li>
+                                        {% endif %}
+
+
+
+
+
+{# {if !isset($popup.overflow) || (isset($popup.overflow) && $popup.overflow == false)}
+                    {if $detail.export_to_wordpress}
+                        <a class="ajax_action" data-custom="iid: {$detail.item_id}, action: 'exportToWordpress'" href="#">___ITEM_EXPORT_TO_WORDPRESS___</a> |
+                    {/if}
+                    {if $detail.export_to_wordpress_not_allowed}
+                        <span title="___COMMON_NO_ACTION___" class="disabled_actions">___ITEM_EXPORT_TO_WORDPRESS___</span> |
+                    {/if}
+                    {if $detail.export_to_wiki}
+                        <a class="ajax_action" data-custom="iid: {$detail.item_id}, action: 'exportToWiki'" href="#">___ITEM_EXPORT_TO_WIKI___</a> |
+                    {/if}
+                {/if} #}
                                     </ul>
                                 </div>
                             </div>

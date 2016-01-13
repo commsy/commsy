@@ -146,6 +146,14 @@
                 <source>Workflow (status)</source>
                 <target>Workflow (status)</target>
             </trans-unit>
+            <trans-unit id="workflow_mark_read">
+                <source>Mark as read</source>
+                <target>Mark as read</target>
+            </trans-unit>
+            <trans-unit id="workflow_mark_not_read">
+                <source>Mark as not read</source>
+                <target>Mark as not read</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
