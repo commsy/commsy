@@ -250,6 +250,46 @@
                 <source>edit workflow</source>
                 <target>Workflow bearbeiten</target>
             </trans-unit>
+            <trans-unit id="announcement">
+                <source>announcement</source>
+                <target>Ankündigungen</target>
+            </trans-unit>
+            <trans-unit id="date">
+                <source>date</source>
+                <target>Termine</target>
+            </trans-unit>
+            <trans-unit id="todo">
+                <source>todo</source>
+                <target>Aufgaben</target>
+            </trans-unit>
+            <trans-unit id="material">
+                <source>material</source>
+                <target>Materialien</target>
+            </trans-unit>
+            <trans-unit id="discussion">
+                <source>discussion</source>
+                <target>Diskussionen</target>
+            </trans-unit>
+            <trans-unit id="person">
+                <source>person</source>
+                <target>Personen</target>
+            </trans-unit>
+            <trans-unit id="topic">
+                <source>topic</source>
+                <target>Themen</target>
+            </trans-unit>
+            <trans-unit id="group">
+                <source>group</source>
+                <target>Gruppen</target>
+            </trans-unit>
+            <trans-unit id="all">
+                <source>all</source>
+                <target>Alle</target>
+            </trans-unit>
+            <trans-unit id="public">
+                <source>public</source>
+                <target>Freigeschaltete Einträge</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

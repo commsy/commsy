@@ -14,7 +14,7 @@
             {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
         
             <ul id="linksFormTabs" class="uk-tab" data-uk-tab="{connect:'#linksForm'}">
-                <li><a href="">{{ 'linked entries'|trans({})|capitalize }}</a></li>
+                <li><a href="">{{ 'linkedEntries'|trans({}) }}</a></li>
                 <li><a href="">{{ 'categories'|trans({})|capitalize }}</a></li>
                 <li><a href="">{{ 'hashtags'|trans({})|capitalize }}</a></li>
             </ul>
@@ -28,7 +28,7 @@
                     <div class="uk-grid">
                         <div class="uk-width-3-4">
                             <div id="itemsListWrapper" class="uk-block uk-block-muted uk-padding-remove uk-margin cs-form-scroll form-load-more">
-                                <ul id="itemsList">
+                                <ul id="itemsList" class="uk-list">
                                 {% for entry in form.items %}
                                     <li>{{ form_widget(entry) }} {{ form_label(entry) }}</li>
                                 {% endfor %}
@@ -36,7 +36,7 @@
                             </div>
                             
                             <div id="itemsLinkedListWrapper" class="uk-block uk-block-muted uk-padding-remove uk-margin cs-form-scroll">
-                                <ul id="itemsLinkedList">
+                                <ul id="itemsLinkedList" class="uk-list">
                                 {% for entry in form.itemsLinked %}
                                     <li>{{ form_widget(entry) }} {{ form_label(entry) }}</li>
                                 {% endfor %}

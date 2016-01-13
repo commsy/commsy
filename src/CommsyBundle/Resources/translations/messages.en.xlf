@@ -266,6 +266,14 @@
                 <source>topic path not activated</source>
                 <target>not activated</target>
             </trans-unit>
+            <trans-unit id="linkedEntries">
+                <source>linkedEntries</source>
+                <target>Referenced entries</target>
+            </trans-unit>
+            <trans-unit id="categories">
+                <source>categories</source>
+                <target>Categories</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -35,14 +35,15 @@ class ItemLinksType extends AbstractType
                 'placeholder' => false,
                 'choices' => $options['filterRubric'],
                 'label' => 'filterRubric',
-                'translation_domain' => 'item',
+                'choice_translation_domain' => true,
+                'translation_domain' => 'form',
                 'required' => false
             ))
             ->add('filterPublic', 'choice', array(
                 'placeholder' => false,
                 'choices' => $options['filterPublic'],
                 'label' => 'filterPublic',
-                'translation_domain' => 'item',
+                'translation_domain' => 'form',
                 'required' => false
             ))
             ->add('categories', 'treechoice', array(
