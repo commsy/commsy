@@ -32,7 +32,7 @@
             this.selectAll = false;
             this.selectable = false;
             this.sort = 'date';
-            this.sortOrder = '_rev';
+            this.sortOrder = '';
             
             // bind event handler
             this.bind();
@@ -196,24 +196,37 @@
             });
             
             $('#commsy-sort-title').on('click', function(event) {
-                $this.sort = 'title';
+                setSort('title');
             });
             
             $('#commsy-sort-modificator').on('click', function(event) {
-                $this.sort = 'modificator';
+                setSort('modificator');
             });
             
             $('#commsy-sort-date').on('click', function(event) {
-                $this.sort = 'date';
+                setSort('date');
             });
             
             $('#commsy-sort-assessment').on('click', function(event) {
-                $this.sort = 'assessment';
+                setSort('assessment');
             });
             
             $('#commsy-sort-workflow_status').on('click', function(event) {
-                $this.sort = 'workflow_status';
+                setSort('workflow_status');
             });
+            
+            function setSort (newSort) {
+                if (newSort == $this.sort) {
+                    if ($this.sortOrder == '') {
+                        $this.sortOrder = '_rev';
+                    } else {
+                        $this.sortOrder = '';
+                    }
+                } else {
+                    $this.sortOrder = '';
+                }
+                $this.sort = newSort;
+            }
         },
 
         bind: function() {

@@ -4,7 +4,7 @@
 
     var feedStart = 10;
     var sort = 'date';
-    var sortOrder = '_rev';
+    var sortOrder = '';
 
     // listen to "inview.uk.scrollspy" event on "feed-load-more" classes
     $('.feed-load-more').on('inview.uk.scrollspy', function() {
@@ -75,47 +75,53 @@
     });
 
     $('#commsy-sort-title').on('click', function(event) {
-        reloadCurrent('title', '');
+        reloadCurrent('title', false);
     });
     
     $('#commsy-sort-modificator').on('click', function(event) {
-        reloadCurrent('modificator', '');
+        reloadCurrent('modificator', false);
     });
     
     $('#commsy-sort-date').on('click', function(event) {
-        reloadCurrent('date', '_rev');
+        reloadCurrent('date', true);
     });
     
     $('#commsy-sort-assessment').on('click', function(event) {
-        reloadCurrent('assessment', '');
+        reloadCurrent('assessment', false);
     });
     
     $('#commsy-sort-workflow_status').on('click', function(event) {
-        reloadCurrent('workflow_status', '');
+        reloadCurrent('workflow_status', false);
     });
 
-    function reloadCurrent (newSort, newOrder) {
+    function reloadCurrent (newSort, invert) {
         feedStart = 0;
         
+        $('#commsy-sort-'+sort+'-chevron').removeClass('uk-icon-chevron-up');
+        $('#commsy-sort-'+sort+'-chevron').removeClass('uk-icon-chevron-down');
         if (newSort == sort) {
-            $('#commsy-sort-'+sort+'-chevron').removeClass('uk-icon-chevron-up');
-            $('#commsy-sort-'+sort+'-chevron').removeClass('uk-icon-chevron-down');
             if (sortOrder == '') {
                 sortOrder = '_rev';
-                $('#commsy-sort-'+sort+'-chevron').addClass('uk-icon-chevron-down');
+                if (!invert) {
+                    $('#commsy-sort-'+newSort+'-chevron').addClass('uk-icon-chevron-down');
+                } else {
+                    $('#commsy-sort-'+newSort+'-chevron').addClass('uk-icon-chevron-up');
+                }
             } else {
                 sortOrder = '';
-                $('#commsy-sort-'+sort+'-chevron').addClass('uk-icon-chevron-up');
+                if (!invert) {
+                    $('#commsy-sort-'+newSort+'-chevron').addClass('uk-icon-chevron-up');
+                } else {
+                    $('#commsy-sort-'+newSort+'-chevron').addClass('uk-icon-chevron-down');
+                }
             }
         } else {
-            $('#commsy-sort-'+sort+'-chevron').removeClass('uk-icon-chevron-up');
-            $('#commsy-sort-'+sort+'-chevron').removeClass('uk-icon-chevron-down');
-            if (newOrder == '') {
+            if (!invert) {
                 $('#commsy-sort-'+newSort+'-chevron').addClass('uk-icon-chevron-up');
             } else {
                 $('#commsy-sort-'+newSort+'-chevron').addClass('uk-icon-chevron-down');
             }
-            sortOrder = newOrder;
+            sortOrder = '';
         }
         sort = newSort;
         
