@@ -2,7 +2,6 @@
 // ========================================================================
 
 #commsy_navigation {
-    width: 40px;
     height: 100%;
     background: #2B2F3E;
     position: fixed;
@@ -18,15 +17,34 @@
     font-weight:bold;
 }
     
-#commsy_navigation:hover {
-    width: 200px;
-}
     
+
+@media (max-width: 1300px) {
+    #commsy_navigation{
+        width: 40px;
+    }
+    #commsy_navigation:hover {
+        width: 200px;
+    }
+}
+
+@media (min-width: 1300px) {
+    #commsy_navigation{
+        width: 200px;
+    }
+    #content {
+        margin: 0 auto 0 200px;
+    }
+}
+
+
 #commsy_navigation #portal_logo {
     background: #FF404B url(../../img/commsy_logo_short.png) 10px 5px no-repeat;
     height: 50px;
     transition: ease-in-out 0.3s;
 }
+
+
     
 #commsy_navigation #portal_logo p {
     text-indent: 100%;
@@ -37,6 +55,15 @@
 #commsy_navigation:hover #portal_logo {
     background: #FF404B url(../../img/commsy_logo_120.png) 30px 5px no-repeat;
     transition: ease-in-out 0.3s;
+}
+
+
+
+@media (min-width: 1300px) {
+ #commsy_navigation #portal_logo {
+        background: #FF404B url(../../img/commsy_logo_120.png) 30px 5px no-repeat;
+        transition: ease-in-out 0.3s;
+    }
 }
 
 #my_avatar {
@@ -216,6 +243,15 @@ ul#switch_room li ul li a:hover {
   padding-top: 5px;
   padding-left:70px;
 }
+
+
+@media (min-width: 1300px) {
+    #commsy_navigation #profile-nav {
+        padding-left:70px;
+    }
+}
+
+
 
 #profile-nav .uk-thumbnail-caption {
   color: #cfcfcf;
