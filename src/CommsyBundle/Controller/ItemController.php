@@ -184,25 +184,13 @@ class ItemController extends Controller
         
         $optionsData['filterPublic']['public'] = 'public';
         $optionsData['filterPublic']['all'] = 'all';
-        
+
         $itemManager = $environment->getItemManager();
         $itemManager->reset();
         $itemManager->setContextLimit($roomId);
         $itemManager->setTypeArrayLimit($rubricInformation);
-        $itemManager->setIntervalLimit($feedAmount);
-        $itemManager->select();
-        $itemList = $itemManager->get();
 
-        $tempItem = $itemList->getFirst();
-        while ($tempItem) {
-            $tempTypedItem = $itemService->getTypedItem($tempItem->getItemId());
-            if ($tempTypedItem) {
-                $optionsData['items'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
-            }
-            $tempItem = $itemList->getNext();
-            
-        }
-        
+        // get all linked items
         $itemLinkedList = $itemManager->getItemList($item->getAllLinkedItemIDArray());
         $tempLinkedItem = $itemLinkedList->getFirst();
         while ($tempLinkedItem) {
@@ -217,7 +205,25 @@ class ItemController extends Controller
         if (empty($optionsData['itemsLinked'])) {
             $optionsData['itemsLinked'] = array();
         }
+        // add number of linked items to feed amount
+        $countLinked = count($optionsData['itemsLinked']);
+
+        $itemManager->setIntervalLimit($feedAmount + $countLinked);
+        $itemManager->select();
+        $itemList = $itemManager->get();
         
+        // get all items except linked items
+        $tempItem = $itemList->getFirst();
+        while ($tempItem) {
+            $tempTypedItem = $itemService->getTypedItem($tempItem->getItemId());
+            // skip already linked items
+            if ($tempTypedItem && !array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) {
+                $optionsData['items'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
+            }
+            $tempItem = $itemList->getNext();
+            
+        }
+
         $formData['itemsLinked'] = $item->getAllLinkedItemIDArray();
         
         // get all categories -> tree
