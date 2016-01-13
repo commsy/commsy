@@ -206,7 +206,7 @@ class ItemController extends Controller
         $itemLinkedList = $itemManager->getItemList($item->getAllLinkedItemIDArray());
         $tempLinkedItem = $itemLinkedList->getFirst();
         while ($tempLinkedItem) {
-            $tempTypedLinkedItem = $this->itemService->getTypedItem($tempLinkedItem->getItemId());
+            $tempTypedLinkedItem = $itemService->getTypedItem($tempLinkedItem->getItemId());
             if ($tempTypedLinkedItem->getItemType() != 'user') {
                 $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getTitle();
             } else {
@@ -255,15 +255,15 @@ class ItemController extends Controller
             'categories' => $optionsData['categories'],
             'hashtags' => $optionsData['hashtags']
         ));
-        
+
         $form->handleRequest($request);
         if ($form->isValid()) {
-            if ($form->get('save')->isClicked()) {
+            // if ($form->get('save')->isClicked()) {
                 // ToDo ...
                 $data = $form->getData();
                 
                 // save linked entries
-                // ToDo ...
+                $item->setLinkedItemsByIDArray($data['items']);
 
                 // save categories
                 $item->setTagListByID($data['categories']);
@@ -291,10 +291,10 @@ class ItemController extends Controller
                     $buzzwordItem = $buzzwordList->getNext();
                 }
     			
-            } else if ($form->get('cancel')->isClicked()) {
+            // } else if ($form->get('cancel')->isClicked()) {
                 // ToDo ...
-            }
-            
+            // }
+            // exit;
             return $this->redirectToRoute('commsy_item_savelinks', array('roomId' => $roomId, 'itemId' => $itemId));
 
             // persist
