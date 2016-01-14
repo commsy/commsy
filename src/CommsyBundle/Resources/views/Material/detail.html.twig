@@ -96,13 +96,6 @@
                                             </a>
                                         </li>
 
-                                        {# new section #}
-                                         <li>
-                                            <a class="newSection" href="#" id="newSection" data-section-url="{{ path('commsy_material_createsection', {'roomId': roomId, 'itemId': material.itemId}) }}">
-                                                <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
-                                            </a>
-                                        </li>
-
                                         {# save #}
                                         <li>
                                             <a class="" href="#">
@@ -135,6 +128,9 @@
                                             {% endif %}
                                         </li>
 
+                                        <li>&nbsp;
+                                        </li>
+
                                         {# workflow #}
                                         {% if workflowRead or true %}
                                             <li>
@@ -150,6 +146,8 @@
                                         {% endif %}
 
                                         {% if workflowUnread or true %}
+                                            {# separator #}
+
                                             <li>
                                                 <a class="" href="#" data-cs-action-workflow="{
                                                     'url': '{{ path('commsy_material_workflow', {'roomId': roomId, 'itemId': material.itemId}) }}',
@@ -161,6 +159,17 @@
                                                 </a>
                                             </li>
                                         {% endif %}
+
+                                        {# separator #}
+                                        <li>&nbsp;
+                                        </li>
+
+                                        {# new section #}
+                                         <li>
+                                            <a class="newSection" href="#" id="newSection" data-section-url="{{ path('commsy_material_createsection', {'roomId': roomId, 'itemId': material.itemId}) }}">
+                                                <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
+                                            </a>
+                                        </li>
 
 
 
@@ -237,11 +246,16 @@
                                     {% if loop.last %}
                                         <div class="uk-margin-right">
                                             <a class="uk-button-primary" href="#section_{{count-1}}"><i class="uk-icon-small uk-icon-angle-up"></i></a>
+                                            <i class="uk-icon-small uk-icon-angle-down uk-text-muted"></i>
                                         </div>
-                                    {% endif %}
-                                    {# forward navigation #}
-                                    {% if loop.first %}
+                                    {% elseif loop.first %}
                                         <div>
+                                            <i class="uk-icon-small uk-icon-angle-up uk-text-muted"></i>
+                                            <a class="uk-button-primary" href="#section_{{count+1}}"><i class="uk-icon-small uk-icon-angle-down"></i></a>
+                                        </div>
+                                    {% else %}
+                                        <div class="uk-margin-right">
+                                            <a class="uk-button-primary" href="#section_{{count-1}}"><i class="uk-icon-small uk-icon-angle-up"></i></a>
                                             <a class="uk-button-primary" href="#section_{{count+1}}"><i class="uk-icon-small uk-icon-angle-down"></i></a>
                                         </div>
                                     {% endif %}
