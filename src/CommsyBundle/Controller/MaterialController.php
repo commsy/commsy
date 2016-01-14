@@ -247,21 +247,6 @@ class MaterialController extends Controller
 
         }
         
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $item = $material;
-        $reader_manager = $legacyEnvironment->getReaderManager();
-        $reader = $reader_manager->getLatestReader($item->getItemID());
-        if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
-            $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
-
-        $noticed_manager = $legacyEnvironment->getNoticedManager();
-        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
-            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
-        }
-
-        
         $sectionList = $material->getSectionList()->to_array();
         
         $itemArray = array($material);
@@ -459,10 +444,47 @@ class MaterialController extends Controller
             }
         }
 
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $reader_manager = $legacyEnvironment->getReaderManager();
+        $noticed_manager = $legacyEnvironment->getNoticedManager();
+
+        $item = $material;
+        $reader = $reader_manager->getLatestReader($item->getItemID());
+        if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
+            $reader_manager->markRead($item->getItemID(), $item->getVersionID());
+        }
+
+        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
+        if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
+            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
+        }
+
+
         // mark annotations as readed
         $annotationList = $material->getAnnotationList();
         $annotationService->markAnnotationsReadedAndNoticed($annotationList);
+
         
+ 
+        $readsectionList = $material->getSectionList();
+
+        $section = $readsectionList->getFirst();
+        while($section) {
+            $reader = $reader_manager->getLatestReader($section->getItemID());
+            if(empty($reader) || $reader['read_date'] < $section->getModificationDate()) {
+                $reader_manager->markRead($section->getItemID(), 0);
+            }
+
+            $noticed = $noticed_manager->getLatestNoticed($section->getItemID());
+            if(empty($noticed) || $noticed['read_date'] < $section->getModificationDate()) {
+                $noticed_manager->markNoticed($section->getItemID(), 0);
+            }
+
+            $section = $readsectionList->getNext();
+        }
+
+
+
         $infoArray['material'] = $material;
         $infoArray['sectionList'] = $sectionList;
         $infoArray['readerList'] = $readerList;

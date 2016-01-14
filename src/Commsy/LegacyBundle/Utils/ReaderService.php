@@ -70,6 +70,55 @@ class ReaderService
            } 
         } 
 
+         $itemType = $item->getItemType();  
+         
+         #var_dump($itemType);exit;
+         if ($return == '' and ($itemType == 'material' or $itemType == 'discussion' or $itemType == 'todo')){
+
+          if ($itemType == 'material'){
+              $materialManager = $this->legacyEnvironment->getEnvironment()->getMaterialManager();
+              $material = $materialManager->getItem($item->getItemID());
+              $itemList = $material->getSectionList();
+          }
+          if ($itemType == 'discussion'){
+              $discussionManager = $this->legacyEnvironment->getEnvironment()->getDiscussionManager();
+              $discussion = $discussionManager->getItem($item->getItemID());
+              $itemList = $discussion->getAllArticles();
+          }
+          if ($itemType == 'todo'){
+              $todoManager = $this->legacyEnvironment->getEnvironment()->getToDoManager();
+              $todo = $todoManager->getItem($item->getItemID());
+              $itemList = $todo->getStepItemList();
+          }
+
+           $readerItem = $itemList->getFirst();
+           $new = false;
+           $changed = false;
+           $date = "0000-00-00 00:00:00";
+           while ( $readerItem ) {
+                $reader = $readerManager->getLatestReader($readerItem->getItemID());
+                if ( empty($reader) ) {
+                 if ($date < $readerItem->getModificationDate() ) {
+                       $new = true;
+                       $changed = false;
+                       $date = $readerItem->getModificationDate();
+                 }
+                } elseif ( $reader['read_date'] < $readerItem->getModificationDate() ) {
+                 if ($date < $readerItem->getModificationDate() ) {
+                       $new = false;
+                       $changed = true;
+                       $date = $readerItem->getModificationDate();
+                 }
+                }
+                $readerItem = $itemList->getNext();
+           }
+           if ( $new ) {
+                   $return ='changed';
+           } else if ( $changed ) {
+                   $return = 'changed';
+           }  
+        }
+
       } 
       return $return;
    }
