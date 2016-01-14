@@ -274,6 +274,10 @@
                 <source>categories</source>
                 <target>Kategorien</target>
             </trans-unit>
+            <trans-unit id="63">
+                <source>sort sections</source>
+                <target>Abschnitte sortieren</target>
+            </trans-unit>
        </body>
     </file>
 </xliff>
