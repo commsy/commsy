@@ -140,7 +140,9 @@
                                             <li>
                                                 <a class="" href="#" data-cs-action-workflow="{
                                                     'url': '{{ path('commsy_material_workflow', {'roomId': roomId, 'itemId': material.itemId}) }}',
-                                                    'read': true
+                                                    'read': true,
+                                                    'successMessage': '<i class=\'uk-icon-eye\'></i> {{ 'marked as read'|trans({}, 'material') }}',
+                                                    'errorMessage': '<i class=\'uk-icon-info\'></i> {{ 'action error'|trans }}'
                                                 }">
                                                     <i class="uk-icon-small uk-icon-eye uk-icon-justify uk-visible-large"></i> {{ 'Mark as read'|trans({}, 'material')|capitalize }}
                                                 </a>
@@ -151,7 +153,9 @@
                                             <li>
                                                 <a class="" href="#" data-cs-action-workflow="{
                                                     'url': '{{ path('commsy_material_workflow', {'roomId': roomId, 'itemId': material.itemId}) }}',
-                                                    'read': false
+                                                    'read': false,
+                                                    'successMessage': '<i class=\'uk-icon-eye-slash\'></i> {{ 'marked as not read'|trans({}, 'material') }}',
+                                                    'errorMessage': '<i class=\'uk-icon-info\'></i> {{ 'action error'|trans }}'
                                                 }">
                                                     <i class="uk-icon-small uk-icon-eye-slash uk-icon-justify uk-visible-large"></i> {{ 'Mark as not read'|trans({}, 'material')|capitalize }}
                                                 </a>
