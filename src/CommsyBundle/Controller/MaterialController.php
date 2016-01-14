@@ -216,14 +216,19 @@ class MaterialController extends Controller
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
             $itemManager = $legacyEnvironment->getItemManager();
+            $currentContextItem = $legacyEnvironment->getCurrentContextItem();
             $currentUserItem = $legacyEnvironment->getCurrentUserItem();
 
             $read = $request->request->get('read');
 
-            if ($read) {
-                $itemManager->markItemAsWorkflowRead($itemId, $currentUserItem->getItemID());
+            if ($currentContextItem->withWorkflow()) {
+                if ($read) {
+                    $itemManager->markItemAsWorkflowRead($itemId, $currentUserItem->getItemID());
+                } else {
+                    $itemManager->markItemAsWorkflowNotRead($itemId, $currentUserItem->getItemID());
+                }
             } else {
-                $itemManager->markItemAsWorkflowNotRead($itemId, $currentUserItem->getItemID());
+                throw new \Exception('workflow is not enabled');
             }
         }
 

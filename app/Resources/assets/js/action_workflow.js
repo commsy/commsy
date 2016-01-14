@@ -39,6 +39,8 @@
                     }
                 }).done(function(data) {
                     UIkit.notify($this.options.successMessage, "success");
+
+                    $('.cs-workflow-action').toggleClass('uk-hidden');
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     UIkit.notify($this.options.errorMessage, "danger");
                 });
