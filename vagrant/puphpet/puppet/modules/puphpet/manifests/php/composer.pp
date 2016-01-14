@@ -31,11 +31,10 @@ class puphpet::php::composer (
   class { '::composer':
     target_dir      => '/usr/local/bin',
     composer_file   => 'composer',
-    download_method => 'curl',
+    download_method => 'wget',
     logoutput       => false,
     tmp_path        => '/tmp',
     php_package     => $php_package,
-    curl_package    => 'curl',
     suhosin_enabled => false,
   }
 
