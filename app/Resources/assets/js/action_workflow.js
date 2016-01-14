@@ -5,7 +5,10 @@
     UI.component('actionWorkflow', {
 
         defaults: {
-
+            url: '',
+            read: false,
+            successMessage: '',
+            errorMessage: ''
         },
 
         boot: function() {
@@ -22,7 +25,7 @@
         },
 
         init: function() {
-            var $this = this;
+            let $this = this;
 
             this.element.on('click', function() {
                 event.preventDefault();
@@ -35,41 +38,13 @@
                         read: $this.options.read
                     }
                 }).done(function(data) {
-                    console.log(data);
+                    UIkit.notify($this.options.successMessage, "success");
 
-                    UIkit.notify("done", "success");
+                    $('.cs-workflow-action').toggleClass('uk-hidden');
                 }).fail(function(jqXHR, textStatus, errorThrown) {
-                    UIkit.notify("error", "danger");
+                    UIkit.notify($this.options.errorMessage, "danger");
                 });
             });
-
-
-            // $('.commsy-action-delete').on('click', function() {
-            //     let $this = this;
-            //     event.preventDefault();
-            //     UIkit.modal.confirm($(this).data('confirm-delete'), function() {
-            //         $.ajax({
-            //             url: $($this).data('deleteUrl'),
-            //             type: 'POST',
-            //             data: {}
-            //         })
-            //         .done(function(result) {
-            //             var type = $($this).data('itemType');
-            //             // material
-            //             if (type == 'material') {
-            //                 location.href = $($this).data('returnUrl');
-            //                 // location.reload();
-            //             } else if (type == 'section') {
-            //                 $($this).parents('.material-section').hide();
-            //             }
-            //         });
-            //     }, {
-            //         labels: {
-            //             Cancel: $(this).data('confirm-delete-cancel'),
-            //             Ok: $(this).data('confirm-delete-confirm')
-            //         }
-            //     });
-            // });
         }
     });
 

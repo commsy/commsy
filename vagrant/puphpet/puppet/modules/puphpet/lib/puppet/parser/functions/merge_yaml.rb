@@ -25,7 +25,7 @@ module Puppet::Parser::Functions
       hashB = { }
     end
 
-    return hashA.deep_merge(hashB)
+    return hashA.deep_merge!(hashB)
   end
 
 end

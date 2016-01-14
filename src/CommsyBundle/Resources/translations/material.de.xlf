@@ -150,9 +150,17 @@
                 <source>Mark as read</source>
                 <target>Als gelesen markieren</target>
             </trans-unit>
+            <trans-unit id="workflow_mark_read_success">
+                <source>marked as read</source>
+                <target>Eintrag als gelesen markiert</target>
+            </trans-unit>
             <trans-unit id="workflow_mark_not_read">
                 <source>Mark as not read</source>
                 <target>Als nicht gelesen markieren</target>
+            </trans-unit>
+            <trans-unit id="workflow_mark_not_read_success">
+                <source>marked as not read</source>
+                <target>Eintrag als ungelesen markiert</target>
             </trans-unit>
         </body>
     </file>

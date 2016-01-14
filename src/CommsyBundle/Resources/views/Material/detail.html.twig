@@ -128,37 +128,36 @@
                                             {% endif %}
                                         </li>
 
-                                        <li>&nbsp;
+                                        {# workflow #}
+                                        {% if workflowRead or workflowUnread %}
+                                            {# separator #}
+                                            <li>&nbsp;</li>
+                                        {% endif %}
+
+                                        <li class="cs-workflow-action{% if not workflowRead %} uk-hidden{% endif %}">
+                                            <a href="#" data-cs-action-workflow="{
+                                                'url': '{{ path('commsy_material_workflow', {'roomId': roomId, 'itemId': material.itemId}) }}',
+                                                'read': true,
+                                                'successMessage': '<i class=\'uk-icon-eye\'></i> {{ 'marked as read'|trans({}, 'material') }}',
+                                                'errorMessage': '<i class=\'uk-icon-info\'></i> {{ 'action error'|trans }}'
+                                            }">
+                                                <i class="uk-icon-small uk-icon-eye uk-icon-justify uk-visible-large"></i> {{ 'Mark as read'|trans({}, 'material')|capitalize }}
+                                            </a>
                                         </li>
 
-                                        {# workflow #}
-                                        {% if workflowRead or true %}
-                                            <li>
-                                                <a class="" href="#" data-cs-action-workflow="{
-                                                    'url': '{{ path('commsy_material_workflow', {'roomId': roomId, 'itemId': material.itemId}) }}',
-                                                    'read': true
-                                                }">
-                                                    <i class="uk-icon-small uk-icon-eye uk-icon-justify uk-visible-large"></i> {{ 'Mark as read'|trans({}, 'material')|capitalize }}
-                                                </a>
-                                            </li>
-                                        {% endif %}
-
-                                        {% if workflowUnread or true %}
-                                            {# separator #}
-
-                                            <li>
-                                                <a class="" href="#" data-cs-action-workflow="{
-                                                    'url': '{{ path('commsy_material_workflow', {'roomId': roomId, 'itemId': material.itemId}) }}',
-                                                    'read': false
-                                                }">
-                                                    <i class="uk-icon-small uk-icon-eye-slash uk-icon-justify uk-visible-large"></i> {{ 'Mark as not read'|trans({}, 'material')|capitalize }}
-                                                </a>
-                                            </li>
-                                        {% endif %}
+                                        <li class="cs-workflow-action{% if not workflowUnread %} uk-hidden{% endif %}">
+                                            <a href="#" data-cs-action-workflow="{
+                                                'url': '{{ path('commsy_material_workflow', {'roomId': roomId, 'itemId': material.itemId}) }}',
+                                                'read': false,
+                                                'successMessage': '<i class=\'uk-icon-eye-slash\'></i> {{ 'marked as not read'|trans({}, 'material') }}',
+                                                'errorMessage': '<i class=\'uk-icon-info\'></i> {{ 'action error'|trans }}'
+                                            }">
+                                                <i class="uk-icon-small uk-icon-eye-slash uk-icon-justify uk-visible-large"></i> {{ 'Mark as not read'|trans({}, 'material')|capitalize }}
+                                            </a>
+                                        </li>
 
                                         {# separator #}
-                                        <li>&nbsp;
-                                        </li>
+                                        <li>&nbsp;</li>
 
                                         {# new section #}
                                          <li>
