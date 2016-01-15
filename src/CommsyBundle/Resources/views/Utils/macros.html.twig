@@ -277,13 +277,89 @@
 
 {% endmacro %}
 
-{% macro ratingStatus(item) %}
-    <div class="uk-text-nowrap">
-        <i class="cs-icon-star-small uk-icon-star-o"></i>
-        <i class="cs-icon-star-small uk-icon-star-o"></i>
-        <i class="cs-icon-star-small uk-icon-star-o"></i>
-        <i class="cs-icon-star-small uk-icon-star-o"></i>
-        <i class="cs-icon-star-small uk-icon-star-o"></i>
+{% macro ratingStatus(item, ratingList) %}
+    {% set rating = 0 %}
+    {% for ratingItemId, ratingValues in ratingList %}
+        {% if item.itemId == ratingItemId %}
+            {% set rating = ratingValues.average_assessment|round %}
+        {% endif %}
+    {% endfor %}
+    <div class="uk-text-nowrap" data-uk-dropdown="{pos:'bottom-right', remaintime:200}">
+        {% for i in 1..5 %}
+            {% if rating >= i %}
+                <i class="cs-icon-star-small uk-icon-star uk-text-warning"></i>
+            {% endif %}
+        {% endfor %}
+        {% for i in 1..5 %}
+            {% if rating < i %}
+                <i class="cs-icon-star-small uk-icon-star-o"></i>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endmacro %}
+
+{% macro ratingStatusDetail(item, ratingArray) %}
+    {% set rating = 0 %}
+    {% if ratingArray.ratingAverageDetail.0 is defined %}
+        {% set rating = ratingArray.ratingAverageDetail.0 %}
+    {% endif %}
+    <div class="uk-text-nowrap" data-uk-dropdown="{pos:'bottom-right', remaintime:200}">
+        <div>
+            {% for i in 1..5 %}
+                {% if rating >= i %}
+                    {% if not ratingArray.ratingOwnDetail %}
+                        <a href=""><i class="cs-icon-star-small uk-icon-star uk-text-warning"></i></a>
+                    {% else %}
+                        <i class="cs-icon-star-small uk-icon-star uk-text-warning"></i>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            {% for i in 1..5 %}
+                {% if rating < i %}
+                    {% if not ratingArray.ratingOwnDetail %}
+                        <a href=""><i class="cs-icon-star-small uk-icon-star-o"></i></a>
+                    {% else %}
+                        <i class="cs-icon-star-small uk-icon-star-o"></i>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="uk-dropdown uk-dropdown-width-2">
+            <div class="uk-grid uk-dropdown-grid">
+                <div class="uk-width-1-1 uk-text-left">
+                    <b>{{ 'ratingTitle'|trans({}, 'material') }}</b><br/>
+                    {% for ratingValue in 1..5 %}
+                        {% for i in 1..5 %}
+                            {% if ratingValue >= i %}
+                                <i class="cs-icon-star-small uk-icon-star uk-text-warning"></i>
+                            {% endif %}
+                        {% endfor %}
+                        {% for i in 1..5 %}
+                            {% if ratingValue < i %}
+                                <i class="cs-icon-star-small uk-icon-star-o"></i>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% set ratingDisplay = 'rating'|transchoice(1, {}, 'material') %}
+                        {% if ratingArray.ratingDetail[ratingValue] is defined %}
+                            {{ ratingArray.ratingDetail[ratingValue] }}
+                            {% if ratingArray.ratingDetail[ratingValue] == 1 %}
+                                {% set ratingDisplay = 'rating'|transchoice(0, {}, 'material') %}
+                            {% endif %}
+                        {% else %}
+                            0
+                        {% endif %}
+                        {{ ratingDisplay }}
+                        <br/>
+                    {% endfor %}
+                    {% if not ratingArray.ratingOwnDetail %}
+                        {{ 'ratingNoOwn'|trans({}, 'material') }}
+                    {% else %}
+                        {{ 'ratingOwn'|trans({}, 'material') }} {{ ratingArray.ratingOwnDetail }} (<a href="">{{ 'ratingDelete'|trans({}, 'material') }}</a>)
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
 {% endmacro %}
 

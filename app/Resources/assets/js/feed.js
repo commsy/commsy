@@ -87,7 +87,7 @@
     });
     
     $('#commsy-sort-assessment').on('click', function(event) {
-        reloadCurrent('assessment', false);
+        reloadCurrent('assessment', true);
     });
     
     $('#commsy-sort-workflow_status').on('click', function(event) {
@@ -116,6 +116,8 @@
                 }
             }
         } else {
+            $('#commsy-sort-'+sort).removeClass('cs-sort-active');
+            $('#commsy-sort-'+newSort).addClass('cs-sort-active');
             if (!invert) {
                 $('#commsy-sort-'+newSort+'-chevron').addClass('uk-icon-chevron-up');
             } else {

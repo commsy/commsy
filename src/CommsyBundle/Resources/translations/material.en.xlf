@@ -162,6 +162,26 @@
                 <source>marked as not read</source>
                 <target>Marked as not read</target>
             </trans-unit>
+            <trans-unit id="rating">
+                <source>rating</source>
+                <target>{0}rating|{1}ratings</target>
+            </trans-unit>
+            <trans-unit id="ratingTitle">
+                <source>ratingTitle</source>
+                <target>This item was assessed as follows:</target>
+            </trans-unit>
+            <trans-unit id="ratingOwn">
+                <source>ratingOwn</source>
+                <target>Own voting:</target>
+            </trans-unit>
+            <trans-unit id="ratingDelete">
+                <source>ratingDelete</source>
+                <target>Delete assessment</target>
+            </trans-unit>
+            <trans-unit id="ratingNoOwn">
+                <source>ratingNoOwn</source>
+                <target>No own vote</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -162,6 +162,26 @@
                 <source>marked as not read</source>
                 <target>Eintrag als ungelesen markiert</target>
             </trans-unit>
+            <trans-unit id="rating">
+                <source>rating</source>
+                <target>{0}Bewertung|{1}Bewertungen</target>
+            </trans-unit>
+            <trans-unit id="ratingTitle">
+                <source>ratingTitle</source>
+                <target>Dieser Eintrag wurde bisher wie folgt bewertet:</target>
+            </trans-unit>
+            <trans-unit id="ratingOwn">
+                <source>ratingOwn</source>
+                <target>Eigene Bewertung:</target>
+            </trans-unit>
+            <trans-unit id="ratingDelete">
+                <source>ratingDelete</source>
+                <target>Bewertung löschen</target>
+            </trans-unit>
+            <trans-unit id="ratingNoOwn">
+                <source>ratingNoOwn</source>
+                <target>Noch keine eigene Bewertung abgegeben</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
