@@ -14,10 +14,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Filter\MaterialFilterType;
 
-use \ZipArchive;
-
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 class MaterialController extends Controller
 {
@@ -706,10 +708,9 @@ class MaterialController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/material/print")
-     * @Template()
+     * @Route("/room/{roomId}/material/{itemId}/print")
      */
-    public function printAction($roomId)
+    public function printAction($roomId, $itemId)
     {
         $html = $this->renderView('CommsyBundle:Material:detailPrint.html.twig', [
         ]);
@@ -722,6 +723,19 @@ class MaterialController extends Controller
                 'Content-Disposition' => 'inline; filename="print.pdf"'
             ]
         );
+    }
+
+    /**
+     * @Route("/room/{roomId}/material/{itemId}/download")
+     */
+    public function downloadAction($roomId, $itemId)
+    {
+        $zipFile = $this->download($roomId, [$itemId]);
+
+        $response = new BinaryFileResponse($zipFile);
+        $response->deleteFileAfterSend(true);
+
+        return $response;
     }
         
     /**
@@ -1016,22 +1030,18 @@ class MaterialController extends Controller
         $detailArray['annotationForm'] = $this->createForm('annotation')->createView();
         
         $environment = $this->get('commsy_legacy.environment')->getEnvironment();
-        
-        global $symfonyContainer;
-        $export_temp_folder = $symfonyContainer->getParameter('commsy.settings.export_temp_folder');
-        if(!isset($export_temp_folder)) {
-            $export_temp_folder = 'var/temp/zip_export';
+
+        $exportTempFolder = $this->container->getParameter('kernel.root_dir') . '/../files/temp/zip_export/' . time();
+
+        $fileSystem = new Filesystem();
+
+        try {
+            $fileSystem->mkdir($exportTempFolder, 0777);
+        } catch (IOExceptionInterface $e) {
+            echo "An error occurred while creating a directory at " . $e->getPath();
         }
-        $directory_split = explode("/",$export_temp_folder);
-        $done_dir = "./";
-        foreach($directory_split as $dir) {
-            if(!is_dir($done_dir.'/'.$dir)) {
-               mkdir($done_dir.'/'.$dir, 0777);
-            }
-            $done_dir .= '/'.$dir;
-        }
-        $directory = './'.$export_temp_folder.'/'.time();
-        mkdir($directory,0777);
+        $directory = $exportTempFolder;
+
         $filemanager = $environment->getFileManager();
     
         //create HTML-File
@@ -1186,35 +1196,28 @@ class MaterialController extends Controller
         unset($output);
 
         //create ZIP File
-         
-        $zipfile = $export_temp_folder.DIRECTORY_SEPARATOR.'RUBRIC_NAME'.'_'.$itemId.'.zip';
+        $zipfile = $exportTempFolder.DIRECTORY_SEPARATOR.'RUBRIC_NAME'.'_'.$itemId.'.zip';
          
         if(file_exists(realpath($zipfile))) {
             unlink($zipfile);
         }
-    
-        if ( class_exists('ZipArchive') ) {
-            include_once('functions/misc_functions.php');
-            $zip = new ZipArchive();
-            $filename = $zipfile;
-    
-            if ( $zip->open($filename, ZIPARCHIVE::CREATE) !== TRUE ) {
-                include_once('functions/error_functions.php');
-                trigger_error('can not open zip-file '.$filename_zip,E_USER_WARNING);
-            }
-            $temp_dir = getcwd();
-            chdir($directory);
-    
-            $zip = addFolderToZip('.',$zip);
-            chdir($temp_dir);
-    
-            $zip->close();
-            unset($zip);
-            //unset($params['downloads']);
-        } else {
+
+        include_once('functions/misc_functions.php');
+        $zip = new \ZipArchive();
+        $filename = $zipfile;
+
+        if ( $zip->open($filename, \ZipArchive::CREATE) !== TRUE ) {
             include_once('functions/error_functions.php');
-            trigger_error('can not initiate ZIP class, please contact your system administrator',E_USER_WARNING);
+            trigger_error('can not open zip-file '.$filename,E_USER_WARNING);
         }
+        $temp_dir = getcwd();
+        chdir($directory);
+
+        $zip = addFolderToZip('.',$zip);
+        chdir($temp_dir);
+
+        $zip->close();
+        unset($zip);
     
         //send zipfile by header
         $translator = $environment->getTranslationObject();

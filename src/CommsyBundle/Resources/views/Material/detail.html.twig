@@ -91,14 +91,14 @@
 
                                         {# print #}
                                         <li>
-                                            <a href="{{ path('commsy_material_print', {'roomId': roomId}) }}" target="_blank" id="print">
+                                            <a href="{{ path('commsy_material_print', {'roomId': roomId, 'itemId': material.itemId}) }}" target="_blank" id="print">
                                                 <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
                                         {# save #}
                                         <li>
-                                            <a href="#">
+                                            <a href="{{ path('commsy_material_download', {'roomId': roomId, 'itemId': material.itemId}) }}" target="_blank">
                                                 <i class="uk-icon-small uk-icon-save uk-icon-justify uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
                                             </a>
                                         </li>
