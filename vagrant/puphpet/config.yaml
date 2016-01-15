@@ -68,7 +68,9 @@ vagrantfile:
         host: detect
 server:
     install: '1'
-    packages: {  }
+    packages:
+        - wkhtmltopdf
+        - xvfb
 users_groups:
     install: '1'
     groups: {  }

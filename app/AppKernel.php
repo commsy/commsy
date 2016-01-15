@@ -24,6 +24,7 @@ class AppKernel extends Kernel
             new Ivory\OrderedFormBundle\IvoryOrderedFormBundle(),
             new Ivory\CKEditorBundle\IvoryCKEditorBundle(),
             new Craue\TwigExtensionsBundle\CraueTwigExtensionsBundle(),
+            new Knp\Bundle\SnappyBundle\KnpSnappyBundle(),
            
             new CommsyBundle\CommsyBundle(),
             new Commsy\LegacyBundle\CommsyLegacyBundle(),

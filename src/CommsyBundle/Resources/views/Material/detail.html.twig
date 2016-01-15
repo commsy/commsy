@@ -84,35 +84,35 @@
 
                                         {# new entry #}
                                         <li>
-                                            <a class="" href="{{ path('commsy_material_create', {'roomId': roomId}) }}" id="newEntry">
+                                            <a href="{{ path('commsy_material_create', {'roomId': roomId}) }}" id="newEntry">
                                                 <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
                                             </a>
                                         </li>
 
                                         {# print #}
                                         <li>
-                                            <a class="" href="#" id="print" data-section-url="">
+                                            <a href="{{ path('commsy_material_print', {'roomId': roomId}) }}" target="_blank" id="print">
                                                 <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
                                         {# save #}
                                         <li>
-                                            <a class="" href="#">
+                                            <a href="#">
                                                 <i class="uk-icon-small uk-icon-save uk-icon-justify uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
                                         {# copy #}
                                         <li>
-                                            <a class="" href="#">
+                                            <a href="#">
                                                 <i class="uk-icon-small uk-icon-copy uk-icon-justify uk-visible-large"></i> {{ 'copy'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
                                         {# send #}
                                         <li>
-                                            <a class="" href="#">
+                                            <a href="#">
                                                 <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send'|trans({})|capitalize }}
                                             </a>
                                         </li>

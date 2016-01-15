@@ -683,6 +683,25 @@ class MaterialController extends Controller
             'showWorkflow' => $infoArray['showWorkflow']
         );
     }
+
+    /**
+     * @Route("/room/{roomId}/material/print")
+     * @Template()
+     */
+    public function printAction($roomId)
+    {
+        $html = $this->renderView('CommsyBundle:Material:detailPrint.html.twig', [
+        ]);
+
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="print.pdf"'
+            ]
+        );
+    }
         
     /**
      * @Route("/room/{roomId}/material/create")
