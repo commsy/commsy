@@ -304,11 +304,11 @@
         {% set rating = ratingArray.ratingAverageDetail.0 %}
     {% endif %}
     <div class="uk-text-nowrap" data-uk-dropdown="{pos:'bottom-right', remaintime:200}">
-        <div>
+        <div id="cs-rating-wrapper">
             {% for i in 1..5 %}
                 {% if rating >= i %}
                     {% if not ratingArray.ratingOwnDetail %}
-                        <a href=""><i class="cs-icon-star-small uk-icon-star uk-text-warning"></i></a>
+                        <a id="cs-rating-{{ i }}" class="cs-rating" href="" data-cs-rating='{"rating": "{{ i }}"}'><i class="cs-icon-star-small uk-icon-star uk-text-warning"></i></a>
                     {% else %}
                         <i class="cs-icon-star-small uk-icon-star uk-text-warning"></i>
                     {% endif %}
@@ -317,7 +317,7 @@
             {% for i in 1..5 %}
                 {% if rating < i %}
                     {% if not ratingArray.ratingOwnDetail %}
-                        <a href=""><i class="cs-icon-star-small uk-icon-star-o"></i></a>
+                        <a id="cs-rating-{{ i }}" class="cs-rating" href="" data-cs-rating='{"rating": "{{ i }}"}'><i class="cs-icon-star-small uk-icon-star-o"></i></a>
                     {% else %}
                         <i class="cs-icon-star-small uk-icon-star-o"></i>
                     {% endif %}
