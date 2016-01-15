@@ -332,7 +332,7 @@
                     });
                 });
             } else {
-                let form = $(document.createElement('form'))
+                let $form = $(document.createElement('form'))
                     .css({
                         display: 'none'
                     })
