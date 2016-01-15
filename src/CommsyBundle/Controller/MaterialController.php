@@ -533,7 +533,11 @@ class MaterialController extends Controller
         $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
-        $infoArray['ratingArray'] = array('ratingDetail' => $ratingDetail, 'ratingAverageDetail' => $ratingAverageDetail, 'ratingOwnDetail' => $ratingOwnDetail);
+        $infoArray['ratingArray'] = $current_context->isAssessmentActive() ? [
+            'ratingDetail' => $ratingDetail,
+            'ratingAverageDetail' => $ratingAverageDetail,
+            'ratingOwnDetail' => $ratingOwnDetail,
+        ] : [];
         
         return $infoArray;
     }
