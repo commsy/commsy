@@ -277,13 +277,24 @@
 
 {% endmacro %}
 
-{% macro ratingStatus(item) %}
+{% macro ratingStatus(item, ratingList) %}
+    {% set rating = 0 %}
+    {% for ratingItemId, ratingValues in ratingList %}
+        {% if item.itemId == ratingItemId %}
+            {% set rating = ratingValues.average_assessment|round %}
+        {% endif %}
+    {% endfor %}
     <div class="uk-text-nowrap">
-        <i class="cs-icon-star-small uk-icon-star-o"></i>
-        <i class="cs-icon-star-small uk-icon-star-o"></i>
-        <i class="cs-icon-star-small uk-icon-star-o"></i>
-        <i class="cs-icon-star-small uk-icon-star-o"></i>
-        <i class="cs-icon-star-small uk-icon-star-o"></i>
+        {% for i in 1..5 %}
+            {% if rating >= i %}
+                <i class="cs-icon-star-small uk-icon-star uk-text-warning"></i>
+            {% endif %}
+        {% endfor %}
+        {% for i in 1..5 %}
+            {% if rating < i %}
+                <i class="cs-icon-star-small uk-icon-star-o"></i>
+            {% endif %}
+        {% endfor %}
     </div>
 {% endmacro %}
 

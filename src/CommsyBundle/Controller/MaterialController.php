@@ -71,12 +71,23 @@ class MaterialController extends Controller
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
         }
 
+        $ratingList = array();
+        if ($current_context->isAssessmentActive()) {
+            $assessmentService = $this->get('commsy_legacy.assessment_service');
+            $itemIds = array();
+            foreach ($materials as $material) {
+                $itemIds[] = $material->getItemId();
+            }
+            $ratingList = $assessmentService->getListAverageRatings($itemIds);
+        }
+
         return array(
             'roomId' => $roomId,
             'materials' => $materials,
             'readerList' => $readerList,
             'showRating' => $current_context->isAssessmentActive(),
-            'showWorkflow' => $current_context->withWorkflow()
+            'showWorkflow' => $current_context->withWorkflow(),
+            'ratingList' => $ratingList
         );
     }
 
@@ -204,6 +215,7 @@ class MaterialController extends Controller
             'showCategories' => $infoArray['showCategories'],
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
+            'ratingList' => $infoArray['ratingList'],
        );
     }
 
@@ -449,6 +461,13 @@ class MaterialController extends Controller
             }
         }
 
+        $ratingList = array();
+        if ($current_context->isAssessmentActive()) {
+            $assessmentService = $this->get('commsy_legacy.assessment_service');
+            $itemIds = array($material->getItemId());
+            $ratingList = $assessmentService->getListAverageRatings($itemIds);
+        }
+
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $reader_manager = $legacyEnvironment->getReaderManager();
         $noticed_manager = $legacyEnvironment->getNoticedManager();
@@ -464,12 +483,9 @@ class MaterialController extends Controller
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
-
-        // mark annotations as readed
+        // mark annotations as read
         $annotationList = $material->getAnnotationList();
         $annotationService->markAnnotationsReadedAndNoticed($annotationList);
-
-        
  
         $readsectionList = $material->getSectionList();
 
@@ -487,7 +503,6 @@ class MaterialController extends Controller
 
             $section = $readsectionList->getNext();
         }
-
 
 
         $infoArray['material'] = $material;
@@ -517,6 +532,7 @@ class MaterialController extends Controller
         $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
+        $infoArray['ratingList'] = $ratingList;
         
         return $infoArray;
     }

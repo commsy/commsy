@@ -163,6 +163,7 @@ class cs_assessments_manager extends cs_manager {
                $this->_average_assessment_id_array[$rs['item_link_id']]['count_assessment'] = $rs['count_assessment'];
                }
             }
+            return $this->_average_assessment_id_array;
          }
       }
    }

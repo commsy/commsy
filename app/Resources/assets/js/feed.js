@@ -87,7 +87,7 @@
     });
     
     $('#commsy-sort-assessment').on('click', function(event) {
-        reloadCurrent('assessment', false);
+        reloadCurrent('assessment', true);
     });
     
     $('#commsy-sort-workflow_status').on('click', function(event) {
