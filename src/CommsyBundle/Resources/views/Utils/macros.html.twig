@@ -303,7 +303,7 @@
     {% if ratingArray.ratingAverageDetail.0 is defined %}
         {% set rating = ratingArray.ratingAverageDetail.0 %}
     {% endif %}
-    <div class="uk-text-nowrap" data-uk-dropdown="{pos:'bottom-right', remaintime:200}">
+    <div id="cs-rating-div" class="uk-text-nowrap" data-uk-dropdown="{pos:'bottom-right', remaintime:200}">
         {% set hasVoted = false %}
         {% if ratingArray.ratingOwnDetail %}
             {% set hasVoted = true %}
@@ -329,7 +329,7 @@
                 {% endif %}
             {% endfor %}
         </div>
-        <div class="uk-dropdown uk-dropdown-width-2">
+        <div class="uk-dropdown uk-dropdown-width-2 uk-dropdown-close">
             <div class="uk-grid uk-dropdown-grid">
                 <div class="uk-width-1-1 uk-text-left">
                     <b>{{ 'ratingTitle'|trans({}, 'material') }}</b><br/>

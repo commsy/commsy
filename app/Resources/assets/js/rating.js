@@ -1,42 +1,66 @@
 ;(function(UI) {
-
+    
     "use strict";
 
-    var hasVoted = $('#cs-rating-wrapper').data('cs-rating-wrapper').hasVoted;
+    if ($('#cs-rating-wrapper').data('cs-rating-wrapper')) {
+        var hasVoted = $('#cs-rating-wrapper').data('cs-rating-wrapper').hasVoted;
+    }
 
-    $('.cs-rating').hover(function(e){
-            if (!hasVoted) {
-                let ratingData = $(this).data('cs-rating');
-                $('.cs-rating').each(function(){
-                    changeStar($(this), false);
-                    let tempDataRating = $(this).data('cs-rating');
-                    if (tempDataRating.rating <= ratingData.rating) {
-                        changeStar($(this), true);
-                    }
-                });
+    initRating();
+
+    function initRating() {
+        $('.cs-rating').hover(function(e){
+                if (!hasVoted) {
+                    let ratingData = $(this).data('cs-rating');
+                    $('.cs-rating').each(function(){
+                        changeStar($(this), false);
+                        let tempDataRating = $(this).data('cs-rating');
+                        if (tempDataRating.rating <= ratingData.rating) {
+                            changeStar($(this), true);
+                        }
+                    });
+                }
             }
-        }
-    );
-
-    $('.cs-rating').on('click', function(e){
-            e.preventDefault();
-            hasVoted = true;
-            $.ajax({
-              url: $(this).data('cs-rating').url
-            })
-            .done(function(result) {
-            });
-        }
-    );
+        );
     
-    $('#cs-rating-wrapper').mouseleave(function(e){
-            if (!hasVoted) {
-                $('.cs-rating').each(function(){
-                    changeStar($(this), false);
+        $('.cs-rating').on('click', function(e){
+                e.preventDefault();
+                hasVoted = true;
+                $.ajax({
+                  url: $(this).data('cs-rating').url
+                })
+                .done(function(result) {
+                    $('#cs-rating-div').replaceWith(result);
+                    initRating();
                 });
             }
-        }
-    );
+        );
+        
+        $('#cs-rating-wrapper').mouseleave(function(e){
+                if (!hasVoted) {
+                    $('.cs-rating').each(function(){
+                        changeStar($(this), false);
+                    });
+                }
+            }
+        );
+        
+        $('#cs-rating-remove').on('click', function(e){
+                e.preventDefault();
+                hasVoted = false;
+                $.ajax({
+                  url: $(this).data('cs-rating-remove').url
+                })
+                .done(function(result) {
+                    $('.cs-rating').each(function(){
+                        changeStar($(this), false);
+                    });
+                    $('#cs-rating-div').replaceWith(result);
+                    initRating();
+                });
+            }
+        );
+    }
     
     function changeStar (el, selected) {
         if (selected) {
@@ -50,18 +74,4 @@
         }
     }
     
-    $('#cs-rating-remove').on('click', function(e){
-            e.preventDefault();
-            hasVoted = false;
-            $.ajax({
-              url: $(this).data('cs-rating-remove').url
-            })
-            .done(function(result) {
-                $('.cs-rating').each(function(){
-                    changeStar($(this), false);
-                });
-            });
-        }
-    );
-
 })(UIkit);

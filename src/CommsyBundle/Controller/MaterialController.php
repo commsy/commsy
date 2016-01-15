@@ -253,6 +253,7 @@ class MaterialController extends Controller
     
     /**
      * @Route("/room/{roomId}/material/{itemId}/rating/{vote}")
+     * @Template()
      **/
     public function ratingAction($roomId, $itemId, $vote, Request $request)
     {
@@ -266,9 +267,20 @@ class MaterialController extends Controller
             $assessmentService->removeRating($material);
         }
         
-        $response = new JsonResponse();
-
-        return $response;
+        $assessmentService = $this->get('commsy_legacy.assessment_service');
+        $ratingDetail = $assessmentService->getRatingDetail($material);
+        $ratingAverageDetail = $assessmentService->getAverageRatingDetail($material);
+        $ratingOwnDetail = $assessmentService->getOwnRatingDetail($material);
+        
+        return array(
+            'roomId' => $roomId,
+            'material' => $material,
+            'ratingArray' =>  array(
+                'ratingDetail' => $ratingDetail,
+                'ratingAverageDetail' => $ratingAverageDetail,
+                'ratingOwnDetail' => $ratingOwnDetail,
+            ),
+        );
     }
 
     private function getDetailInfo ($roomId, $itemId) {
