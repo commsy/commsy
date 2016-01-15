@@ -250,6 +250,26 @@ class MaterialController extends Controller
 
         return $response;
     }
+    
+    /**
+     * @Route("/room/{roomId}/material/{itemId}/rating/{vote}")
+     **/
+    public function ratingAction($roomId, $itemId, $vote, Request $request)
+    {
+        $materialService = $this->get('commsy_legacy.material_service');
+        $material = $materialService->getMaterial($itemId);
+        
+        $assessmentService = $this->get('commsy_legacy.assessment_service');
+        if ($vote != 'remove') {
+            $assessmentService->rateItem($material, $vote);
+        } else {
+            $assessmentService->removeRating($material);
+        }
+        
+        $response = new JsonResponse();
+
+        return $response;
+    }
 
     private function getDetailInfo ($roomId, $itemId) {
         $infoArray = array();

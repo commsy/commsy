@@ -2,7 +2,7 @@
 
     "use strict";
 
-    var hasVoted = false;
+    var hasVoted = $('#cs-rating-wrapper').data('cs-rating-wrapper').hasVoted;
 
     $('.cs-rating').hover(function(e){
             if (!hasVoted) {
@@ -20,8 +20,12 @@
 
     $('.cs-rating').on('click', function(e){
             e.preventDefault();
-            console.log($(this).data('cs-rating'));
             hasVoted = true;
+            $.ajax({
+              url: $(this).data('cs-rating').url
+            })
+            .done(function(result) {
+            });
         }
     );
     
@@ -45,5 +49,19 @@
             el.find('i').addClass('uk-icon-star-o');
         }
     }
+    
+    $('#cs-rating-remove').on('click', function(e){
+            e.preventDefault();
+            hasVoted = false;
+            $.ajax({
+              url: $(this).data('cs-rating-remove').url
+            })
+            .done(function(result) {
+                $('.cs-rating').each(function(){
+                    changeStar($(this), false);
+                });
+            });
+        }
+    );
 
 })(UIkit);

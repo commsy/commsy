@@ -304,11 +304,16 @@
         {% set rating = ratingArray.ratingAverageDetail.0 %}
     {% endif %}
     <div class="uk-text-nowrap" data-uk-dropdown="{pos:'bottom-right', remaintime:200}">
-        <div id="cs-rating-wrapper">
+        {% set hasVoted = false %}
+        {% if ratingArray.ratingOwnDetail %}
+            {% set hasVoted = true %}
+        {% endif %}
+    
+        <div id="cs-rating-wrapper" data-cs-rating-wrapper='{"hasVoted": "{{ hasVoted }}"}'>
             {% for i in 1..5 %}
                 {% if rating >= i %}
                     {% if not ratingArray.ratingOwnDetail %}
-                        <a id="cs-rating-{{ i }}" class="cs-rating" href="" data-cs-rating='{"rating": "{{ i }}"}'><i class="cs-icon-star-small uk-icon-star uk-text-warning"></i></a>
+                        <a id="cs-rating-{{ i }}" class="cs-rating" href="" data-cs-rating='{"rating": "{{ i }}", "url": "{{ path('commsy_material_rating', {'roomId': item.contextId, 'itemId': item.itemId, 'vote': i}) }}"}'><i class="cs-icon-star-small uk-icon-star uk-text-warning"></i></a>
                     {% else %}
                         <i class="cs-icon-star-small uk-icon-star uk-text-warning"></i>
                     {% endif %}
@@ -317,7 +322,7 @@
             {% for i in 1..5 %}
                 {% if rating < i %}
                     {% if not ratingArray.ratingOwnDetail %}
-                        <a id="cs-rating-{{ i }}" class="cs-rating" href="" data-cs-rating='{"rating": "{{ i }}"}'><i class="cs-icon-star-small uk-icon-star-o"></i></a>
+                        <a id="cs-rating-{{ i }}" class="cs-rating" href="" data-cs-rating='{"rating": "{{ i }}", "url": "{{ path('commsy_material_rating', {'roomId': item.contextId, 'itemId': item.itemId, 'vote': i}) }}"}'><i class="cs-icon-star-small uk-icon-star-o"></i></a>
                     {% else %}
                         <i class="cs-icon-star-small uk-icon-star-o"></i>
                     {% endif %}
@@ -352,10 +357,10 @@
                         {{ ratingDisplay }}
                         <br/>
                     {% endfor %}
-                    {% if not ratingArray.ratingOwnDetail %}
+                    {% if not hasVoted %}
                         {{ 'ratingNoOwn'|trans({}, 'material') }}
                     {% else %}
-                        {{ 'ratingOwn'|trans({}, 'material') }} {{ ratingArray.ratingOwnDetail }} (<a href="">{{ 'ratingDelete'|trans({}, 'material') }}</a>)
+                        {{ 'ratingOwn'|trans({}, 'material') }} {{ ratingArray.ratingOwnDetail }} (<a id="cs-rating-remove" href="" data-cs-rating-remove='{"url": "{{ path('commsy_material_rating', {'roomId': item.contextId, 'itemId': item.itemId, 'vote': 'remove'}) }}"}'>{{ 'ratingDelete'|trans({}, 'material') }}</a>)
                     {% endif %}
                 </div>
             </div>

@@ -39,4 +39,15 @@ class AssessmentService
     {
         return $this->assessmentManager->getAssessmentForItemOwn($item);
     }
+    
+    public function rateItem($item, $vote)
+    {
+        return $this->assessmentManager->addAssessmentForItem($item, $vote);
+    }
+    
+    public function removeRating($item)
+    {
+        $item_id = $this->assessmentManager->getItemIDForOwn($item->getItemId());
+		return $this->assessmentManager->delete($item_id);
+    }   
 }
