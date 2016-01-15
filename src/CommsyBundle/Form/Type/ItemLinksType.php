@@ -37,14 +37,20 @@ class ItemLinksType extends AbstractType
                 'label' => 'filterRubric',
                 'choice_translation_domain' => true,
                 'translation_domain' => 'form',
-                'required' => false
+                'required' => false,
+                'attr' => array(
+                    'class' => 'uk-form-row uk-form-width-medium',
+                )
             ))
             ->add('filterPublic', 'choice', array(
                 'placeholder' => false,
                 'choices' => $options['filterPublic'],
                 'label' => 'filterPublic',
                 'translation_domain' => 'form',
-                'required' => false
+                'required' => false,
+                'attr' => array(
+                    'class' => 'uk-form-row uk-form-width-medium',
+                )
             ))
             ->add('categories', 'treechoice', array(
                 'placeholder' => false,
