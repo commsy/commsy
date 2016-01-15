@@ -116,6 +116,8 @@
                 }
             }
         } else {
+            $('#commsy-sort-'+sort).removeClass('cs-sort-active');
+            $('#commsy-sort-'+newSort).addClass('cs-sort-active');
             if (!invert) {
                 $('#commsy-sort-'+newSort+'-chevron').addClass('uk-icon-chevron-up');
             } else {
