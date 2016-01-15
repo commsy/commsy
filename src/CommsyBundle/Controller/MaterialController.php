@@ -27,7 +27,7 @@ class MaterialController extends Controller
      * @Route("/room/{roomId}/material/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'modification_date', Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
