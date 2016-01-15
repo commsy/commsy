@@ -24,4 +24,19 @@ class AssessmentService
     {
         return $this->assessmentManager->getAssessmentForItemAverageByIDArray($itemIds);
     }
+    
+    public function getRatingDetail($item)
+    {
+        return $this->assessmentManager->getAssessmentForItemDetail($item);
+    }
+    
+    public function getAverageRatingDetail($item)
+    {
+        return $this->assessmentManager->getAssessmentForItemAverage($item);
+    }
+    
+    public function getOwnRatingDetail($item)
+    {
+        return $this->assessmentManager->getAssessmentForItemOwn($item);
+    }
 }

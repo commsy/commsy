@@ -215,7 +215,7 @@ class MaterialController extends Controller
             'showCategories' => $infoArray['showCategories'],
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
-            'ratingList' => $infoArray['ratingList'],
+            'ratingArray' => $infoArray['ratingArray'],
        );
     }
 
@@ -461,11 +461,12 @@ class MaterialController extends Controller
             }
         }
 
-        $ratingList = array();
+        $ratingDetail = array();
         if ($current_context->isAssessmentActive()) {
             $assessmentService = $this->get('commsy_legacy.assessment_service');
-            $itemIds = array($material->getItemId());
-            $ratingList = $assessmentService->getListAverageRatings($itemIds);
+            $ratingDetail = $assessmentService->getRatingDetail($material);
+            $ratingAverageDetail = $assessmentService->getAverageRatingDetail($material);
+            $ratingOwnDetail = $assessmentService->getOwnRatingDetail($material);
         }
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -532,7 +533,7 @@ class MaterialController extends Controller
         $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
-        $infoArray['ratingList'] = $ratingList;
+        $infoArray['ratingArray'] = array('ratingDetail' => $ratingDetail, 'ratingAverageDetail' => $ratingAverageDetail, 'ratingOwnDetail' => $ratingOwnDetail);
         
         return $infoArray;
     }
