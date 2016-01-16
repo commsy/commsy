@@ -303,7 +303,7 @@
     {% if ratingArray.ratingAverageDetail.0 is defined %}
         {% set rating = ratingArray.ratingAverageDetail.0 %}
     {% endif %}
-    <div id="cs-rating-div" class="uk-text-nowrap" data-uk-dropdown="{pos:'bottom-right', remaintime:200}">
+    <div id="cs-rating-div" data-uk-dropdown="{pos:'bottom-right', remaintime:200}">
         {% set hasVoted = false %}
         {% if ratingArray.ratingOwnDetail %}
             {% set hasVoted = true %}
@@ -313,7 +313,7 @@
             {% for i in 1..5 %}
                 {% if rating >= i %}
                     {% if not ratingArray.ratingOwnDetail %}
-                        <a id="cs-rating-{{ i }}" class="cs-rating" href="" data-cs-rating='{"rating": "{{ i }}", "url": "{{ path('commsy_material_rating', {'roomId': item.contextId, 'itemId': item.itemId, 'vote': i}) }}"}'><i class="cs-icon-star-small uk-icon-star uk-text-warning"></i></a>
+                        <a id="cs-rating-{{ i }}" class="cs-rating uk-text-muted" href="" data-cs-rating='{"rating": "{{ i }}", "url": "{{ path('commsy_material_rating', {'roomId': item.contextId, 'itemId': item.itemId, 'vote': i}) }}"}'><i class="cs-icon-star-small uk-icon-star uk-text-warning"></i></a>
                     {% else %}
                         <i class="cs-icon-star-small uk-icon-star uk-text-warning"></i>
                     {% endif %}
@@ -322,47 +322,55 @@
             {% for i in 1..5 %}
                 {% if rating < i %}
                     {% if not ratingArray.ratingOwnDetail %}
-                        <a id="cs-rating-{{ i }}" class="cs-rating" href="" data-cs-rating='{"rating": "{{ i }}", "url": "{{ path('commsy_material_rating', {'roomId': item.contextId, 'itemId': item.itemId, 'vote': i}) }}"}'><i class="cs-icon-star-small uk-icon-star-o"></i></a>
+                        <a id="cs-rating-{{ i }}" class="cs-rating uk-text-muted" href="" data-cs-rating='{"rating": "{{ i }}", "url": "{{ path('commsy_material_rating', {'roomId': item.contextId, 'itemId': item.itemId, 'vote': i}) }}"}'><i class="cs-icon-star-small uk-icon-star-o"></i></a>
                     {% else %}
-                        <i class="cs-icon-star-small uk-icon-star-o"></i>
+                        <i class="cs-icon-star-small uk-icon-star-o uk-text-muted"></i>
                     {% endif %}
                 {% endif %}
             {% endfor %}
         </div>
-        <div class="uk-dropdown uk-dropdown-width-2 uk-dropdown-close">
-            <div class="uk-grid uk-dropdown-grid">
-                <div class="uk-width-1-1 uk-text-left">
-                    <b>{{ 'ratingTitle'|trans({}, 'material') }}</b><br/>
-                    {% for ratingValue in 1..5 %}
-                        {% for i in 1..5 %}
-                            {% if ratingValue >= i %}
-                                <i class="cs-icon-star-small uk-icon-star uk-text-warning"></i>
-                            {% endif %}
+        <div class="uk-dropdown uk-dropdown-close">
+            <div class="uk-text-left">
+                <b>{{ 'ratingTitle'|trans({}, 'material') }}</b><br/>
+                <div class="uk-margin-small-top uk-margin-small-bottom">
+                    <table class="uk-table uk-table-condensed">
+                        {% for ratingValue in 1..5 %}
+                            <tr>
+                                <td class="uk-padding-top-remove uk-padding-bottom-remove">
+                                    {% for i in 1..5 %}
+                                        {% if ratingValue >= i %}
+                                            <i class="cs-icon-star-small uk-icon-star uk-text-warning"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% for i in 1..5 %}
+                                        {% if ratingValue < i %}
+                                            <i class="cs-icon-star-small uk-icon-star-o uk-text-muted"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td class="uk-padding-top-remove uk-padding-bottom-remove uk-text-right">
+                                    {% set ratingDisplay = 'rating'|transchoice(1, {}, 'material') %}
+                                    <span class="uk-text-bold uk-margin-left">
+                                    {% if ratingArray.ratingDetail[ratingValue] is defined %}
+                                        {{ ratingArray.ratingDetail[ratingValue] }}
+                                        {% if ratingArray.ratingDetail[ratingValue] == 1 %}
+                                            {% set ratingDisplay = 'rating'|transchoice(0, {}, 'material') %}
+                                        {% endif %}
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                    </span>
+                                    <!-- {{ ratingDisplay }} -->
+                                </td>
+                            </tr>
                         {% endfor %}
-                        {% for i in 1..5 %}
-                            {% if ratingValue < i %}
-                                <i class="cs-icon-star-small uk-icon-star-o"></i>
-                            {% endif %}
-                        {% endfor %}
-                        
-                        {% set ratingDisplay = 'rating'|transchoice(1, {}, 'material') %}
-                        {% if ratingArray.ratingDetail[ratingValue] is defined %}
-                            {{ ratingArray.ratingDetail[ratingValue] }}
-                            {% if ratingArray.ratingDetail[ratingValue] == 1 %}
-                                {% set ratingDisplay = 'rating'|transchoice(0, {}, 'material') %}
-                            {% endif %}
-                        {% else %}
-                            0
-                        {% endif %}
-                        {{ ratingDisplay }}
-                        <br/>
-                    {% endfor %}
-                    {% if not hasVoted %}
-                        {{ 'ratingNoOwn'|trans({}, 'material') }}
-                    {% else %}
-                        {{ 'ratingOwn'|trans({}, 'material') }} {{ ratingArray.ratingOwnDetail }} (<a id="cs-rating-remove" href="" data-cs-rating-remove='{"url": "{{ path('commsy_material_rating', {'roomId': item.contextId, 'itemId': item.itemId, 'vote': 'remove'}) }}"}'>{{ 'ratingDelete'|trans({}, 'material') }}</a>)
-                    {% endif %}
+                    </table>
                 </div>
+                {% if not hasVoted %}
+                    {{ 'ratingNoOwn'|trans({}, 'material') }}
+                {% else %}
+                    {{ 'ratingOwn'|trans({}, 'material') }} <span class="uk-text-bold">{{ ratingArray.ratingOwnDetail }}</span> (<a id="cs-rating-remove" href="" data-cs-rating-remove='{"url": "{{ path('commsy_material_rating', {'roomId': item.contextId, 'itemId': item.itemId, 'vote': 'remove'}) }}"}'>{{ 'ratingDelete'|trans({}, 'material') }}</a>)
+                {% endif %}
             </div>
         </div>
     </div>

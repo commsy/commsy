@@ -176,7 +176,7 @@
             </trans-unit>
             <trans-unit id="ratingDelete">
                 <source>ratingDelete</source>
-                <target>Bewertung löschen</target>
+                <target>löschen</target>
             </trans-unit>
             <trans-unit id="ratingNoOwn">
                 <source>ratingNoOwn</source>

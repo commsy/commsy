@@ -176,7 +176,7 @@
             </trans-unit>
             <trans-unit id="ratingDelete">
                 <source>ratingDelete</source>
-                <target>Delete assessment</target>
+                <target>delete</target>
             </trans-unit>
             <trans-unit id="ratingNoOwn">
                 <source>ratingNoOwn</source>
