@@ -95,7 +95,7 @@ services:
     # EventListener
     kernel.listener.comsy_request:
         class: CommsyBundle\EventListener\CommsyRequestListener
-        arguments: [@commsy.room_service, @liip_theme.active_theme, %liip_theme.themes%]
+        arguments: [@commsy.room_service, @liip_theme.active_theme, %liip_theme.themes%, @commsy_legacy.environment]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 

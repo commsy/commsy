@@ -48,7 +48,6 @@ class RoomController extends Controller
         $timeSpread = $roomItem->getTimeSpread();
         $numNewEntries = $roomItem->getNewEntries($timeSpread);
         $pageImpressions = $roomItem->getPageImpressions($timeSpread);
-        $pageImpressions = '';
 
         $numActiveMember = $roomItem->getActiveMembers($timeSpread);
         $numTotalMember = $roomItem->getAllUsers();

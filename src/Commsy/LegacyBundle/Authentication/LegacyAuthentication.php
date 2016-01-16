@@ -33,19 +33,10 @@ class LegacyAuthentication
                 // $authentication->setModule($current_module);
                 // $authentication->setFunction($current_function);
                 
-                $authenticated = $authentication->check(
+                return $authentication->check(
                     $sessionItem->getValue('user_id'),
                     $sessionItem->getValue('auth_source')
                 );
-                
-                if ($authenticated) {
-                    $user = $this->legacyEnvironment->getCurrentUser();
-                    if ($user->isUser() and !$user->isRoot()) {
-                        $user->updateLastLogin();
-                    }
-                }
-                
-                return $authenticated;
             }
         }
 
