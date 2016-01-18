@@ -48,6 +48,15 @@ class LegacyEnvironment
             $environment = new \cs_environment();
             $this->environment = $environment;
 
+            // session
+            global $session;
+
+            if (isset($_COOKIE['SID'])) {
+                $sessionId = $_COOKIE['SID'];
+                $sessionManager = $this->environment->getSessionManager();
+                $session = $sessionManager->get($sessionId);
+            }
+
             // try to find the current room id from the request and set context in legacy environment
             $requestStack = $this->serviceContainer->get('request_stack');
             $currentRequest = $requestStack->getCurrentRequest();

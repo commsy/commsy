@@ -62,6 +62,10 @@
                 <source>workflowNoStatus</source>
                 <target>Kein Status</target>
             </trans-unit>
+            <trans-unit id="clipboardCopySuccess">
+                <source>Entry stored in clipboard|%count% entries stored in clipboard</source>
+                <target>Eintrag in Zwischenablage gespeichert|%count% Einträge in Zwischenablage gespeichert</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

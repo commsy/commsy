@@ -105,7 +105,11 @@
 
                                         {# copy #}
                                         <li>
-                                            <a href="#">
+                                            <a href="#" data-cs-action-copy="{
+                                                'url': '{{ path('commsy_item_copy', {'roomId': roomId, 'itemId': material.itemId}) }}',
+                                                'successMessage': '<i class=\'uk-icon-copy\'></i> {{ 'Entry stored in clipboard|%count% entries stored in clipboard'|transchoice(1, {}, 'item') }}',
+                                                'errorMessage': '<i class=\'uk-icon-info\'></i> {{ 'action error'|trans }}'
+                                            }">
                                                 <i class="uk-icon-small uk-icon-copy uk-icon-justify uk-visible-large"></i> {{ 'copy'|trans({})|capitalize }}
                                             </a>
                                         </li>

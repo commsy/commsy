@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ItemController extends Controller
 {
@@ -348,6 +349,33 @@ class ItemController extends Controller
             'item' => $tempItem,
             'modifierList' => $modifierList
         );
+    }
+
+    /**
+     * @Route("/room/{roomId}/item/{itemId}/copy", condition="request.isXmlHttpRequest()")
+     **/
+    public function copyAction($roomId, $itemId, Request $request)
+    {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $sessionItem = $legacyEnvironment->getSessionItem();
+
+        $currentClipboardIds = array();
+        if ($sessionItem->issetValue('clipboard_ids')) {
+            $currentClipboardIds = $sessionItem->getValue('clipboard_ids');
+        }
+
+        if (!in_array($itemId, $currentClipboardIds)) {
+            $currentClipboardIds[] = $itemId;
+            $sessionItem->setValue('clipboard_ids', $currentClipboardIds);
+        }
+
+        $sessionManager = $legacyEnvironment->getSessionManager();
+        $sessionManager->save($sessionItem);
+
+        return new JsonResponse([
+            'count' => sizeof($currentClipboardIds)
+        ]);
     }
     
     private function getChoicesAsTree ($choicesArray) {
