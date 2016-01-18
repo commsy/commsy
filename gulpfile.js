@@ -122,6 +122,7 @@ gulp.task('clean', function(done) {
 gulp.task('less', function() {
     return app.addStyle([
         config.bowerDir + '/jstree/dist/themes/default/style.css',
+        config.bowerDir + '/nprogress/nprogress.css',
         config.assetsDir + '/uikit-commsy/commsy.less'
     ], 'commsy.css');
 });
@@ -131,6 +132,8 @@ gulp.task('js', function() {
         config.bowerDir + '/jquery/dist/jquery.js',
 
         config.bowerDir + '/jstree/dist/jstree.js',
+
+        config.bowerDir + '/nprogress/nprogress.js',
 
         config.bowerDir + '/uikit/js/uikit.js',
         config.bowerDir + '/uikit/js/components/autocomplete.js',

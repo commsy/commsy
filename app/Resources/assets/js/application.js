@@ -12,4 +12,13 @@
             });
     });
 
+    // global AJAX event handler
+    $(document).ajaxSend(function() {
+        NProgress.start();
+    });
+
+    $(document).ajaxStop(function() {
+        NProgress.done();
+    });
+
 })(jQuery, document, window);
