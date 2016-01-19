@@ -48,7 +48,7 @@ class CommsyRequestListener
         
         $this->updateUserLogin();
         
-        $this->logRequest();
+        $this->logRequest($event);
     }
     
     private function updateUserLogin () {
@@ -58,17 +58,19 @@ class CommsyRequestListener
         }
     }
     
-    private function logRequest () {
-        $environment = $this->legacyEnvironment->getEnvironment();
-        $l_current_user = $environment->getCurrentUserItem();
-        
-        if ($l_current_user->isUser() && !$l_current_user->isRoot()) {
-            $array = array();
+    private function logRequest (GetResponseEvent $event) {
+        if ($event->isMasterRequest()) {
+            $environment = $this->legacyEnvironment->getEnvironment();
+            $l_current_user = $environment->getCurrentUserItem();
+          
+            $request = $event->getRequest();
+            
+            /* $array = array();
             if ( isset($_GET['iid']) ) {
                $array['iid'] = $_GET['iid'];
             } elseif ( isset($_POST['iid']) ) {
                $array['iid'] = $_POST['iid'];
-            }
+            } */
             if ( isset($_SERVER['HTTP_USER_AGENT']) ) {
                $array['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
             } else {
@@ -94,9 +96,9 @@ class CommsyRequestListener
             unset($server_item);
             unset ($current_context);
             
-            $array['script_name']      = $_SERVER['SCRIPT_NAME'];
-            $array['query_string']     = str_ireplace($_SERVER['SCRIPT_NAME'], '', $_SERVER['REQUEST_URI']);
-            $array['request_method']   = $_SERVER['REQUEST_METHOD'];
+            $array['script_name']      = $request->getScriptName();
+            $array['query_string']     = str_ireplace($request->getScriptName(), '', $request->getRequestUri());
+            $array['request_method']   = $request->getMethod();
             $array['post_content']     = $post_content;
             if ( !empty($l_current_user) ) {
                $array['user_item_id']     = $l_current_user->getItemID();
