@@ -12,6 +12,11 @@
             });
     });
 
+    // NProgress configuration
+    NProgress.configure({
+        showSpinner: false
+    });
+
     // global AJAX event handler
     $(document).ajaxSend(function() {
         NProgress.start();
@@ -23,7 +28,6 @@
 
     // global unload event
     $(window).on('beforeunload', function() {
-        console.log("trigger");
         NProgress.start();
     });
 
