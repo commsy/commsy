@@ -21,4 +21,10 @@
         NProgress.done();
     });
 
+    // global unload event
+    $(window).on('beforeunload', function() {
+        console.log("trigger");
+        NProgress.start();
+    });
+
 })(jQuery, document, window);
