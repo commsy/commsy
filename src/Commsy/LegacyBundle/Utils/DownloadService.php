@@ -190,6 +190,12 @@ class DownloadService
         $output = str_replace($c_single_entry_point.'/'.$c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=picture&fct=getfile&picture=','',$output);
         $output = preg_replace('~cid\d{1,}_\d{1,}_~u','',$output); */
     
+        // add user images
+        //preg_match_all('~<img([\w\W]+?)>~u', $output, $user_image_array);
+        //foreach($user_image_array[2] as $img) {
+        //}
+        //error_log(print_r($user_image_array, true));
+    
         //write string into file
         fwrite($handle, $output);
         fclose($handle);
