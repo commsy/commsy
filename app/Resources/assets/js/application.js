@@ -14,12 +14,15 @@
 
     // NProgress configuration
     NProgress.configure({
-        showSpinner: false
+        showSpinner: false,
+        speed: 700,
+        minimum: 0.2
     });
 
     // global AJAX event handler
     $(document).ajaxSend(function() {
         NProgress.start();
+        NProgress.inc(0.1);   
     });
 
     $(document).ajaxStop(function() {
@@ -29,6 +32,7 @@
     // global unload event
     $(window).on('beforeunload', function() {
         NProgress.start();
+        NProgress.inc(0.1);
     });
 
 })(jQuery, document, window);
