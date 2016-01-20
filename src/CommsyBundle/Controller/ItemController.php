@@ -182,7 +182,7 @@ class ItemController extends Controller
         foreach ($rubricInformation as $rubric) {
             $optionsData['filterRubric'][$rubric] = $rubric;
         }
-        
+
         $optionsData['filterPublic']['public'] = 'public';
         $optionsData['filterPublic']['all'] = 'all';
 
@@ -226,6 +226,23 @@ class ItemController extends Controller
         }
 
         $formData['itemsLinked'] = $item->getAllLinkedItemIDArray();
+
+        // get latest edited items from current user
+        $itemManager->setContextLimit($roomId);
+        $itemManager->setUserUserIDLimit($environment->getCurrentUser()->getUserId());
+        $itemManager->setIntervalLimit(10);
+        $itemManager->select();
+        $latestItemList = $itemManager->get();
+
+        $latestItem = $latestItemList->getFirst();
+        while ($latestItem) {
+            $tempTypedItem = $itemService->getTypedItem($latestItem->getItemId());
+            if ($tempTypedItem && !array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) {
+                $optionsData['itemsLatest'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
+            }
+            $latestItem = $latestItemList->getNext();
+
+        }
         
         // get all categories -> tree
         $categoryService = $this->get('commsy.category_service');
@@ -259,6 +276,7 @@ class ItemController extends Controller
             'filterPublic' => $optionsData['filterPublic'],
             'items' => $optionsData['items'],
             'itemsLinked' => $optionsData['itemsLinked'],
+            'itemsLatest' => $optionsData['itemsLatest'],
             'categories' => $optionsData['categories'],
             'hashtags' => $optionsData['hashtags']
         ));

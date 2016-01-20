@@ -31,6 +31,14 @@ class ItemLinksType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('filterSearch', 'text', array(
+                'label' => 'filterSearch',
+                'required' => false,
+                'translation_domain' => 'form',
+                'attr' => array(
+                    'class' => 'uk-form-row uk-form-width-medium',
+                )
+            ))
             ->add('filterRubric', 'choice', array(
                 'placeholder' => false,
                 'choices' => $options['filterRubric'],
@@ -113,6 +121,16 @@ class ItemLinksType extends AbstractType
                 'expanded' => true,
                 'multiple' => true
             ));
+
+            $form->add('itemsLatest', 'choice', array(
+                'placeholder' => false,
+                'choices' => $options['itemsLatest'],
+                'label' => 'itemsLatest',
+                'translation_domain' => 'item',
+                'required' => false,
+                'expanded' => true,
+                'multiple' => true
+            ));
         };
 
         $builder->addEventListener(
@@ -148,6 +166,9 @@ class ItemLinksType extends AbstractType
                 if (isset($eventData['itemsLinked'])) {
                     $event->getForm()->get('itemsLinked')->setData($eventData['itemsLinked']);
                 }
+                if (isset($eventData['itemsLatest'])) {
+                    $event->getForm()->get('itemsLatest')->setData($eventData['itemsLatest']);
+                }
             }
         );
     }
@@ -155,7 +176,7 @@ class ItemLinksType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(array('filterRubric', 'filterPublic', 'items', 'itemsLinked', 'categories', 'hashtags'))
+            ->setRequired(array('filterRubric', 'filterPublic', 'items', 'itemsLinked', 'itemsLatest', 'categories', 'hashtags'))
         ;
     }
 
@@ -179,6 +200,10 @@ class ItemLinksType extends AbstractType
         $itemManager->setContextLimit($this->environment->getCurrentContextId());
         $itemManager->setTypeArrayLimit($rubricInformation);
         //$itemManager->setNoIntervalLimit();
+        if (isset($filterData['filterSearch'])) {
+            // only works with the specific rubric manager
+            $itemManager->setSearchLimit($filterData['filterSearch']);
+        }
         if (isset($filterData['feedAmount'])) {
             $itemManager->setIntervalLimit($filterData['feedAmount']);
         }
