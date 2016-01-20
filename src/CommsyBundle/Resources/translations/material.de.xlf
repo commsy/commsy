@@ -182,6 +182,14 @@
                 <source>ratingNoOwn</source>
                 <target>Noch keine eigene Bewertung abgegeben</target>
             </trans-unit>
+            <trans-unit id="ratingStored">
+                <source>ratingStored</source>
+                <target>Bewertung gespeichert</target>
+            </trans-unit>
+            <trans-unit id="ratingDeleted">
+                <source>ratingDeleted</source>
+                <target>Bewertung gelöscht</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
