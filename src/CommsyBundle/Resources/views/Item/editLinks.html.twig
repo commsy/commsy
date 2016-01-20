@@ -27,7 +27,38 @@
                 <li>
                     <div class="uk-grid">
                         <div class="uk-width-3-4">
-                            <div id="itemsListWrapper" class="uk-block uk-block-muted uk-padding-remove uk-margin cs-form-scroll form-load-more">
+                            <div id="linksSubTab" class="uk-switcher">
+                                <!-- latest entries -->
+                                <div>
+                                    <ul class="uk-grid uk-grid-width-medium-1-1 uk-text-left">
+                                        {% for entry in form.itemsLatest %}
+                                            <li>
+                                                <div class="uk-panel uk-panel-box cs-linked-item">
+                                                    <div class="uk-hidden">{{ form_widget(entry) }}</div>
+                                                    <a href="">{{ form_label(entry) }}</a>
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <!-- search entries -->
+                                <div>
+                                    {{ form_widget(form.filterSearch) }} {{ form_widget(form.filterRubric) }}
+                                </div>
+                            </div>
+                            <div id="itemsLinkedListWrapper" class="uk-block uk-block-muted uk-padding-remove uk-margin cs-form-scroll">
+                                <ul id="itemsLinkedList" class="uk-grid uk-grid-width-medium-1-2 uk-text-center" data-uk-grid-margin>
+                                {% for entry in form.itemsLinked %}
+                                    <li>
+                                        <div class="uk-panel uk-panel-box cs-linked-item-selected">
+                                            <div class="uk-hidden">{{ form_widget(entry) }}</div>
+                                            <a href="">{{ form_label(entry) }}</a>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                            {# <div id="itemsListWrapper" class="uk-block uk-block-muted uk-padding-remove uk-margin cs-form-scroll form-load-more">
                                 <ul id="itemsList" class="uk-list">
                                 {% for entry in form.items %}
                                     <li>{{ form_widget(entry) }} {{ form_label(entry) }}</li>
@@ -41,11 +72,30 @@
                                     <li>{{ form_widget(entry) }} {{ form_label(entry) }}</li>
                                 {% endfor %}
                                 </ul>
-                            </div>
+                            </div> #}
                         </div>
                         <div class="uk-width-1-4">
+                            <ul class="uk-tab uk-tab-right" data-uk-tab="{connect:'#linksSubTab'}">
+                                <li class="uk-active">
+                                    <a href="#">{{ 'lastModifiedEntries'|trans({}) }}</a>
+                                </li>
+                                <li>
+                                    <a href="#">{{ 'searchLinkedEntries'|trans({}) }}</a>
+                                </li>
+                                {# <li>
+                                    <a href="#">{{ 'linkedEntries'|trans({}) }}</a>
+                                </li> #}
+                                <li class="uk-tab-responsive uk-active uk-hidden" aria-haspopup="true" aria-expanded="false">
+                                    <a>Active</a>
+                                    <div class="uk-dropdown uk-dropdown-small">
+                                        <ul class="uk-nav uk-nav-dropdown"></ul>
+                                        <div></div>
+                                    </div>
+                                </li>
+                            </ul>
+                            {# 
                             {{ form_widget(form.filterRubric) }}
-                            {{ form_widget(form.filterPublic) }}
+                            {{ form_widget(form.filterPublic) }} #}
                         </div>
                     </div>
                 </li>
@@ -103,12 +153,18 @@
     $('#itemLinks_filterPublic').change(function(){
         filterItems($(this));
     });
+
+    $('#itemLinks_filterSearch').change(function(){
+        filterItems($(this));
+    });
     
     function filterItems(element) {
         var article = element.parents('.cs-edit-section');
         $(article).find('.cs-save-spinner').toggleClass('uk-hidden', false);
         $data = $("select[id^='itemLinks_filter']").add($("input[id^='itemLinks']:checked"));
         $data = $data.add($('<input type="hidden" id="itemLinks_feedAmount" name="itemLinks[feedAmount]" value="20" />'));
+        $data = $data.add($('input[id^=itemLinks_filterSearch]'));
+
         var $form = element.closest('form');
         $.ajax({
             url : '/commsy.php/room/{{ roomId }}/item/{{ itemId }}/editlinks',
