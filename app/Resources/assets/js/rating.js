@@ -26,12 +26,18 @@
         $('.cs-rating').on('click', function(e){
                 e.preventDefault();
                 hasVoted = true;
+                
+                let options = $(this).data('cs-rating');
+                
                 $.ajax({
-                  url: $(this).data('cs-rating').url
-                })
-                .done(function(result) {
+                  url: options.url
+                }).done(function(result) {
+                    UIkit.notify(options.successMessage, "success");
+                    
                     $('#cs-rating-div').replaceWith(result);
                     initRating();
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    UIkit.notify(options.errorMessage, "danger");
                 });
             }
         );
@@ -48,15 +54,21 @@
         $('#cs-rating-remove').on('click', function(e){
                 e.preventDefault();
                 hasVoted = false;
+
+                let options = $(this).data('cs-rating-remove');
+                
                 $.ajax({
-                  url: $(this).data('cs-rating-remove').url
-                })
-                .done(function(result) {
+                  url: options.url
+                }).done(function(result) {
+                    UIkit.notify(options.successMessage, "success");
+                    
                     $('.cs-rating').each(function(){
                         changeStar($(this), false);
                     });
                     $('#cs-rating-div').replaceWith(result);
                     initRating();
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    UIkit.notify(options.errorMessage, "danger");
                 });
             }
         );

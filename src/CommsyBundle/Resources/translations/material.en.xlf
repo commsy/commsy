@@ -182,6 +182,14 @@
                 <source>ratingNoOwn</source>
                 <target>No own vote</target>
             </trans-unit>
+            <trans-unit id="ratingStored">
+                <source>ratingStored</source>
+                <target>Rating stored</target>
+            </trans-unit>
+            <trans-unit id="ratingDeleted">
+                <source>ratingDeleted</source>
+                <target>Rating deleted</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
