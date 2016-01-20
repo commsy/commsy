@@ -105,6 +105,10 @@ services:
     commsy_legacy.assessment_service:
         class: Commsy\LegacyBundle\Utils\AssessmentService
         arguments: ["@commsy_legacy.environment"]
+        
+    commsy_legacy.download_service:
+        class: Commsy\LegacyBundle\Utils\DownloadService
+        arguments: ["@commsy_legacy.environment", "@service_container"]
 
     # Transformer
     commsy_legacy.transformer.room:
