@@ -63,6 +63,8 @@ class DownloadService
             copy($this->serviceContainer->get('kernel')->getRootDir().'/../web/'.$tempCssMatch, $directory.'/'.$tempCssMatch);
         }
     
+        mkdir($directory.'/fonts', 0777);
+        copy($this->serviceContainer->get('kernel')->getRootDir().'/../web/fonts/fontawesome-webfont.woff2', $directory.'/fonts/fontawesome-webfont.woff2');
         
         /* //find images in string
         $reg_exp = '~\<a\s{1}href=\"(.*)\"\s{1}t~u';
