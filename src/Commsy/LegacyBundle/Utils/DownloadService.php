@@ -23,8 +23,6 @@ class DownloadService
 
     public function zipFile($roomId, $itemId)
     {
-        //$itemId = $selectedIds[0];
-        
         $detailArray = $this->getDetailInfo($roomId, $itemId);
         $detailArray['roomId'] = $roomId;
         $detailArray['annotationForm'] = $this->serviceContainer->get('form.factory')->create('annotation')->createView();

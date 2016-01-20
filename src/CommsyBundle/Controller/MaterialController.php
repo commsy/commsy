@@ -1055,9 +1055,4 @@ class MaterialController extends Controller
 
         return $this->redirectToRoute('commsy_material_list', array('roomId' => $roomId));        
     }
-    
-    private function download($roomId, $selectedIds) {
-        
-    }
-
 }
