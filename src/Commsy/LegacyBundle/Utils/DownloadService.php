@@ -47,6 +47,7 @@ class DownloadService
         $handle = fopen($filename, 'a');
         //Put page into string
         $output = $this->serviceContainer->get('templating')->renderResponse('CommsyBundle:Material:detail.html.twig', $detailArray);
+        //$output = $this->serviceContainer->get('templating')->renderResponse('CommsyBundle:Material:detailPrint.html.twig', $detailArray);
     
         //String replacements
         //$output = str_replace('commsy_print_css.php?cid='.$environment->getCurrentContextID(),'stylesheet.css', $output);
@@ -58,9 +59,11 @@ class DownloadService
         $cssMatchArray = array();
         preg_match_all('~\/css\/build\/commsy[^\.]*.css~', $output, $cssMatchArray);
         foreach ($cssMatchArray as $cssMatch) {
-            $tempCssMatch = str_ireplace('/css', 'css', $cssMatch[0]);
-            $output = str_ireplace($cssMatch, $tempCssMatch, $output);
-            copy($this->serviceContainer->get('kernel')->getRootDir().'/../web/'.$tempCssMatch, $directory.'/'.$tempCssMatch);
+            if (isset($cssMatch[0])) {
+                $tempCssMatch = str_ireplace('/css', 'css', $cssMatch[0]);
+                $output = str_ireplace($cssMatch, $tempCssMatch, $output);
+                copy($this->serviceContainer->get('kernel')->getRootDir().'/../web/'.$tempCssMatch, $directory.'/'.$tempCssMatch);
+            }
         }
     
         mkdir($directory.'/fonts', 0777);
@@ -195,6 +198,15 @@ class DownloadService
         //foreach($user_image_array[2] as $img) {
         //}
         //error_log(print_r($user_image_array, true));
+    
+        // add files
+        $files = $detailArray['material']->getFileListWithFilesFromSections()->to_array();
+        if (!empty($files)) {
+            mkdir($directory.'/files', 0777);
+            foreach ($files as $file) {
+                copy($this->serviceContainer->get('kernel')->getRootDir().'/'.$file->getDiskFileName(), $directory.'/files/'.$file->getFilename());
+            }
+        }
     
         //write string into file
         fwrite($handle, $output);
