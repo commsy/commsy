@@ -281,74 +281,83 @@
                 return this.value;
             }).get();
             
-            if (action != 'save') {
-                $.ajax({
-                    url: $this.options.actionUrl,
-                    type: 'POST',
-                    data: {act: action, data: JSON.stringify(entries), selectAll: $this.selectAll, selectAllStart: input.length}
-                })
-                .done(function(result) {
-                    $('#commsy-select-actions-select-shown').removeClass('uk-active');
-                    $('#commsy-select-actions-select-all').removeClass('uk-active');
-                    $('#commsy-select-actions-unselect').removeClass('uk-active');
-                    
-                    target.find('input[type="checkbox"]').each(function() {
-                        $(this).prop('checked', false);
-                    });
-                    target.find('article').each(function() {
-                        $(this).removeClass('uk-comment-primary');
-                    });
-                    
-                    let el = $('.feed-load-more');
-                    let queryString = document.location.search;
-                    let url = el.data('feed').url  + 0 + '/' + $this.sort + $this.sortOrder + queryString;
-            
-                    let message = result.message;
-                    let status = result.status;
-                    let timeout = result.timeout;
-            
+            if (entries.length > 0) {
+                if (action != 'save') {
                     $.ajax({
-                      url: url
+                        url: $this.options.actionUrl,
+                        type: 'POST',
+                        data: {act: action, data: JSON.stringify(entries), selectAll: $this.selectAll, selectAllStart: input.length}
                     })
                     .done(function(result) {
-                        if ($(result).filter('article').length) {
-                            let target = el.data('feed').target;
-                            $(target).empty();
-                            $(target).html(result);
-                            
-                            $(target).find('article').each(function() {
-                                $(this).toggleClass('selectable');
-                            });
-                            
-                            $this.bind();
-                            
-                            UIkit.notify({
-                                message : message,
-                                status  : status,
-                                timeout : timeout,
-                                pos     : 'top-center'
-                            });
-                        }
+                        $('#commsy-select-actions-select-shown').removeClass('uk-active');
+                        $('#commsy-select-actions-select-all').removeClass('uk-active');
+                        $('#commsy-select-actions-unselect').removeClass('uk-active');
+                        
+                        target.find('input[type="checkbox"]').each(function() {
+                            $(this).prop('checked', false);
+                        });
+                        target.find('article').each(function() {
+                            $(this).removeClass('uk-comment-primary');
+                        });
+                        
+                        let el = $('.feed-load-more');
+                        let queryString = document.location.search;
+                        let url = el.data('feed').url  + 0 + '/' + $this.sort + $this.sortOrder + queryString;
+                
+                        let message = result.message;
+                        let status = result.status;
+                        let timeout = result.timeout;
+                
+                        $.ajax({
+                          url: url
+                        })
+                        .done(function(result) {
+                            if ($(result).filter('article').length) {
+                                let target = el.data('feed').target;
+                                $(target).empty();
+                                $(target).html(result);
+                                
+                                $(target).find('article').each(function() {
+                                    $(this).toggleClass('selectable');
+                                });
+                                
+                                $this.bind();
+                                
+                                UIkit.notify({
+                                    message : message,
+                                    status  : status,
+                                    timeout : timeout,
+                                    pos     : 'top-center'
+                                });
+                            }
+                        });
                     });
-                });
-            } else {
-                let $form = $(document.createElement('form'))
-                    .css({
-                        display: 'none'
-                    })
-                    .attr('method', 'POST')
-                    .attr('action', $this.options.actionUrl);
-
-                for (let i = 0; i < entries.length; i++) { 
-                    let input = $(document.createElement('input')).attr('name','data[]').val(entries[i]);
+                } else {
+                    let $form = $(document.createElement('form'))
+                        .css({
+                            display: 'none'
+                        })
+                        .attr('method', 'POST')
+                        .attr('action', $this.options.actionUrl);
+    
+                    for (let i = 0; i < entries.length; i++) { 
+                        let input = $(document.createElement('input')).attr('name','data[]').val(entries[i]);
+                        $form.append(input);
+                    }
+    
+                    let input = $(document.createElement('input')).attr('name','act').val('save');
+    
                     $form.append(input);
+                    $('body').append($form);
+                    $form.submit();
                 }
-
-                let input = $(document.createElement('input')).attr('name','act').val('save');
-
-                $form.append(input);
-                $('body').append($form);
-                $form.submit();
+            } else {
+                UIkit.notify({
+                    message : $($this.element[0]).data('no-selection'),
+                    status  : 'warning',
+                    timeout : 5550,
+                    pos     : 'top-center'
+                });
             }
             
             $this.selectAll = false;
