@@ -322,17 +322,17 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
 	  }
 
       if ( isset($this->_sort_order) ) {
-         if ( $this->_sort_order == 'modified' ) {
+         if ( $this->_sort_order == 'date' ) {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('announcement').'.modification_date DESC';
-         } elseif ( $this->_sort_order == 'modified_rev' ) {
+         } elseif ( $this->_sort_order == 'date_rev' ) {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('announcement').'.modification_date';
          } elseif ( $this->_sort_order == 'title' ) {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('announcement').'.title';
          } elseif ( $this->_sort_order == 'title_rev' ) {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('announcement').'.title DESC';
-		 } elseif( $this->_sort_order == 'assessment' ) {
+		 } elseif( $this->_sort_order == 'assessment_rev' ) {
 		 	$query .= ' ORDER BY assessments_avg';
-		 } elseif( $this->_sort_order == 'assessment_rev') {
+		 } elseif( $this->_sort_order == 'assessment') {
 		 	$query .= ' ORDER BY assessments_avg DESC';
          } elseif ( $this->_sort_order == 'modificator' ) {
             $query .= ' ORDER BY people.lastname';

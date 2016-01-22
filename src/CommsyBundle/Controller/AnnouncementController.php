@@ -23,10 +23,10 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 class AnnouncementController extends Controller
 {
     /**
-     * @Route("/room/{roomId}/announcement/feed/{start}")
+     * @Route("/room/{roomId}/announcement/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0, Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0,  $sort = 'date', Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -60,7 +60,7 @@ class AnnouncementController extends Controller
         }
 
         // get announcement list from manager service 
-        $announcements = $announcementService->getListAnnouncements($roomId, $max, $start);
+        $announcements = $announcementService->getListAnnouncements($roomId, $max, $start, $sort);
 
         $readerService = $this->get('commsy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -72,11 +72,22 @@ class AnnouncementController extends Controller
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
         }
 
+        $ratingList = array();
+        if ($current_context->isAssessmentActive()) {
+            $assessmentService = $this->get('commsy_legacy.assessment_service');
+            $itemIds = array();
+            foreach ($announcements as $announcement) {
+                $itemIds[] = $announcement->getItemId();
+            }
+            $ratingList = $assessmentService->getListAverageRatings($itemIds);
+        }
+
         return array(
             'roomId' => $roomId,
             'announcements' => $announcements,
             'readerList' => $readerList,
             'showRating' => $current_context->isAssessmentActive(),
+            'ratingList' => $ratingList
        );
     }
     
