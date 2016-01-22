@@ -31,12 +31,12 @@ class ItemLinksType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('filterSearch', 'text', array(
+            ->add('filterSearch', 'search', array(
                 'label' => 'filterSearch',
                 'required' => false,
                 'translation_domain' => 'form',
                 'attr' => array(
-                    'class' => 'uk-form-row uk-form-width-medium',
+                    'class' => 'uk-form-row uk-form-width-medium uk-search-field',
                 )
             ))
             ->add('filterRubric', 'choice', array(
@@ -50,16 +50,43 @@ class ItemLinksType extends AbstractType
                     'class' => 'uk-form-row uk-form-width-medium',
                 )
             ))
-            ->add('filterPublic', 'choice', array(
+            // ->add('items', 'choice', array(
+            //     'placeholder' => false,
+            //     'choices' => $options['items'],
+            //     'label' => 'items',
+            //     'translation_domain' => 'item',
+            //     'required' => false,
+            //     'expanded' => true,
+            //     'multiple' => true
+            // ))
+            ->add('itemsLinked', 'choice', array(
                 'placeholder' => false,
-                'choices' => $options['filterPublic'],
-                'label' => 'filterPublic',
-                'translation_domain' => 'form',
+                'choices' => $options['itemsLinked'],
+                'label' => 'itemsLinked',
+                'translation_domain' => 'item',
                 'required' => false,
-                'attr' => array(
-                    'class' => 'uk-form-row uk-form-width-medium',
-                )
+                'expanded' => true,
+                'multiple' => true
             ))
+            ->add('itemsLatest', 'choice', array(
+                'placeholder' => false,
+                'choices' => $options['itemsLatest'],
+                'label' => 'itemsLatest',
+                'translation_domain' => 'item',
+                'required' => false,
+                'expanded' => true,
+                'multiple' => true
+            ))
+            // ->add('filterPublic', 'choice', array(
+            //     'placeholder' => false,
+            //     'choices' => $options['filterPublic'],
+            //     'label' => 'filterPublic',
+            //     'translation_domain' => 'form',
+            //     'required' => false,
+            //     'attr' => array(
+            //         'class' => 'uk-form-row uk-form-width-medium',
+            //     )
+            // ))
             ->add('categories', 'treechoice', array(
                 'placeholder' => false,
                 'choices' => $options['categories'],
@@ -133,44 +160,46 @@ class ItemLinksType extends AbstractType
             ));
         };
 
-        $builder->addEventListener(
-            FormEvents::PRE_SET_DATA,
-            function (FormEvent $event) use ($formModifier, $options) {
-                $formModifier($event->getForm(), $options);
-            }
-        );
+        // $builder->addEventListener(
+        //     FormEvents::PRE_SET_DATA,
+        //     function (FormEvent $event) use ($formModifier, $options) {
+        //         $formModifier($event->getForm(), $options);
+        //     }
+        // );
 
-        $builder->addEventListener(
-            FormEvents::PRE_SUBMIT,
-            function (FormEvent $event) use ($formModifier) {
-                $data = $event->getData();
-                $tempData = $this->getTempData($data);
+        // $builder->addEventListener(
+        //     FormEvents::PRE_SUBMIT,
+        //     function (FormEvent $event) use ($formModifier) {
+        //         $data = $event->getData();
+        //         $tempData = $this->getTempData($data);
                 
-                $formModifier($event->getForm(), $tempData);
+        //         $formModifier($event->getForm(), $tempData);
 
-                $eventData = array();
-                if (isset($tempData['itemsLinked'])) {
-                    if (!empty(array_keys($tempData['itemsLinked']))) {
-                        $eventData['items'] = array_keys($tempData['itemsLinked']);
-                        $eventData['itemsLinked'] = array_keys($tempData['itemsLinked']);
-                    } else {
-                        $eventData['items'] = $tempData['itemsLinked'];
-                        $eventData['itemsLinked'] = $tempData['itemsLinked'];
-                    }
-                }
+        //         $eventData = array();
+        //         if (isset($tempData['itemsLinked'])) {
+        //             if (!empty(array_keys($tempData['itemsLinked']))) {
+        //                 $eventData['items'] = array_keys($tempData['itemsLinked']);
+        //                 $eventData['itemsLinked'] = array_keys($tempData['itemsLinked']);
+        //                 $eventData['itemsLatest'] = array_keys($tempData['itemsLinked']);
+        //             } else {
+        //                 $eventData['items'] = $tempData['itemsLinked'];
+        //                 $eventData['itemsLinked'] = $tempData['itemsLinked'];
+        //                 $eventData['itemLastest'] = $tempData['itemsLinked'];
+        //             }
+        //         }
                 
-                $event->setData($eventData);
-                if (isset($eventData['items'])) {
-                    $event->getForm()->get('items')->setData($eventData['items']);
-                }
-                if (isset($eventData['itemsLinked'])) {
-                    $event->getForm()->get('itemsLinked')->setData($eventData['itemsLinked']);
-                }
-                if (isset($eventData['itemsLatest'])) {
-                    $event->getForm()->get('itemsLatest')->setData($eventData['itemsLatest']);
-                }
-            }
-        );
+        //         $event->setData($eventData);
+        //         if (isset($eventData['items'])) {
+        //             $event->getForm()->get('items')->setData($eventData['items']);
+        //         }
+        //         if (isset($eventData['itemsLinked'])) {
+        //             $event->getForm()->get('itemsLinked')->setData($eventData['itemsLinked']);
+        //         }
+        //         if (isset($eventData['itemsLatest'])) {
+        //             $event->getForm()->get('itemsLatest')->setData($eventData['itemsLatest']);
+        //         }
+        //     }
+        // );
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -199,11 +228,7 @@ class ItemLinksType extends AbstractType
         $itemManager->reset();
         $itemManager->setContextLimit($this->environment->getCurrentContextId());
         $itemManager->setTypeArrayLimit($rubricInformation);
-        //$itemManager->setNoIntervalLimit();
-        if (isset($filterData['filterSearch'])) {
-            // only works with the specific rubric manager
-            $itemManager->setSearchLimit($filterData['filterSearch']);
-        }
+        
         if (isset($filterData['feedAmount'])) {
             $itemManager->setIntervalLimit($filterData['feedAmount']);
         }
@@ -249,6 +274,8 @@ class ItemLinksType extends AbstractType
             }
             $tempLinkedItem = $itemLinkedList->getNext();
         }
+
+        $itemManager->reset();
         
         //$optionsData['itemsLinked'] = $filterData['items'];
         if (empty($optionsData['itemsLinked'])) {
@@ -263,7 +290,6 @@ class ItemLinksType extends AbstractType
                 unset($optionsData['itemsLinked'][$filterData['remove']]);
             }
         }
-        
         return $optionsData;
     }
 }

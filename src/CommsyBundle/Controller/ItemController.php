@@ -286,9 +286,11 @@ class ItemController extends Controller
             // if ($form->get('save')->isClicked()) {
                 // ToDo ...
                 $data = $form->getData();
-                
+
+                $itemData = array_merge($data['itemsLinked'], $data['itemsLatest']);
+
                 // save linked entries
-                $item->setLinkedItemsByIDArray($data['items']);
+                $item->setLinkedItemsByIDArray($itemData);
 
                 // save categories
                 $item->setTagListByID($data['categories']);

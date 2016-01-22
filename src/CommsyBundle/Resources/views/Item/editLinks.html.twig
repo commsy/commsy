@@ -32,10 +32,10 @@
                                 <div>
                                     <ul class="uk-grid uk-grid-width-medium-1-1 uk-text-left">
                                         {% for entry in form.itemsLatest %}
-                                            <li>
+                                            <li data-cs-linked-items="targetDiv:'#itemsLinkedList'">
                                                 <div class="uk-panel uk-panel-box cs-linked-item">
                                                     <div class="uk-hidden">{{ form_widget(entry) }}</div>
-                                                    <a href="">{{ form_label(entry) }}</a>
+                                                    {{ form_label(entry) }}
                                                 </div>
                                             </li>
                                         {% endfor %}
@@ -47,9 +47,9 @@
                                 </div>
                             </div>
                             <div id="itemsLinkedListWrapper" class="uk-block uk-block-muted uk-padding-remove uk-margin cs-form-scroll">
-                                <ul id="itemsLinkedList" class="uk-grid uk-grid-width-medium-1-2 uk-text-center" data-uk-grid-margin>
+                                <ul id="itemsLinkedList" class="uk-grid uk-grid-width-medium-1-2 uk-text-center" data-uk-grid="{gutter: 20}">
                                 {% for entry in form.itemsLinked %}
-                                    <li>
+                                    <li data-cs-linked-items>
                                         <div class="uk-panel uk-panel-box cs-linked-item-selected">
                                             <div class="uk-hidden">{{ form_widget(entry) }}</div>
                                             <a href="">{{ form_label(entry) }}</a>
