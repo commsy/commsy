@@ -10,7 +10,7 @@ use Liip\ThemeBundle\ActiveTheme;
 use Commsy\LegacyBundle\Utils\RoomService;
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
-class CommsyPageCountListener
+class CommsyLoggingListener
 {
     private $roomService;
 

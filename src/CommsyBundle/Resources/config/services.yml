@@ -105,8 +105,8 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
-    kernel.listener.commsy_page_count:
-        class: CommsyBundle\EventListener\CommsyPageCountListener
+    kernel.listener.commsy_logging:
+        class: CommsyBundle\EventListener\CommsyLoggingListener
         arguments: [@commsy.room_service, @liip_theme.active_theme, %liip_theme.themes%, @commsy_legacy.environment]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
