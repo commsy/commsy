@@ -9,12 +9,28 @@
      
     {%if widthHomeInformation %}
         <div id="cover" class="uk-cover-background cs-cover-background" aria-hidden="false">
+            <div class="uk-grid cs-cover-grid">
             {% if not homeInformation is empty%}
-                <div id="cover-text" data-uk-parallax="{y: '-40px'}">
-                {{homeInformation | raw}}
+                <div class="uk-width-medium-2-3 cs-cover-height" style="margin-bottom:15px;">
+                    <div class="uk-panel uk-panel-box cs-cover-grid-opacity" data-uk-parallax="{opacity: '0.5'}">
+                        {{homeInformation | raw}}
+                    </div>
                 </div>
             {% endif %}
+            {% if countAnnouncements > 0 %}
+                <div class="uk-width-medium-1-3 cs-cover-height">
+                    <div class="uk-panel uk-panel-box cs-cover-grid-opacity" data-uk-parallax="{opacity: '0.5'}">
+                        <ul id="announcements-feed" class="uk-comment-list" data-uk-observe>
+                            {{ render(controller(
+                                'CommsyBundle:Announcement:shortfeed',
+                                { 'roomId': roomItem.itemId }
+                            ))}}
+                        </ul>
+                    </div>
+                </div>    
+            {% endif %}
             </div>
+        </div>
      {% endif %}
 {% endblock %}
 

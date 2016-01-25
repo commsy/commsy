@@ -10,6 +10,12 @@ class AnnouncementFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('active', 'filter_checkbox', array(
+                'attr' => array(
+                    'onchange' => 'this.form.submit()',
+                ),
+                'translation_domain' => 'form',
+            ))
             ->add('activated', 'filter_checkbox', array(
                 'attr' => array(
                     'onchange' => 'this.form.submit()',

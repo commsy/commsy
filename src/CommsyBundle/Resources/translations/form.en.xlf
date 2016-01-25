@@ -14,7 +14,11 @@
                 <source>Activated</source>
                 <target>accessible entries</target>
             </trans-unit>
-            <trans-unit id="form-save">
+            <trans-unit id="form-filter-active">
+                <source>Active</source>
+                <target>Still active</target>
+            </trans-unit>
+             <trans-unit id="form-save">
                 <source>save</source>
                 <target>Save</target>
             </trans-unit>

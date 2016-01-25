@@ -41,7 +41,15 @@
 
                 <div class="uk-comment-meta">
                     {% if announcement.secondDateTime != '' %}
+                        {% if "now"|date("U") <= announcement.getSecondDateTime|date("U") %}
+                            <span class="uk-text-bold">
+                        {% endif %}
+                        
                         {{ 'valid until'|trans({})}}: {{announcement.getSecondDateTime|date("d.m.Y")}}
+                        
+                        {% if "now"|date("U") <= announcement.getSecondDateTime|date("U") %}
+                            </span>
+                        {% endif %}
                     {% else %}
                         {{ 'valid until'|trans({})}}: 
                     {% endif %}

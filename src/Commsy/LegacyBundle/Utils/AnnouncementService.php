@@ -17,6 +17,7 @@ class AnnouncementService
 
         $this->announcementManager = $this->legacyEnvironment->getAnnouncementManager();
         $this->announcementManager->reset();
+        $this->announcementManager->showNoNotActivatedEntries();
     }
 
     public function getCountArray($roomId)
@@ -49,13 +50,21 @@ class AnnouncementService
         return $announcementList->to_array();
     }
 
+    public function setDateLimit(){
+        $this->announcementManager->setDateLimit(getCurrentDateTimeInMySQL());
+    }
+
     public function setFilterConditions(Form $filterForm)
     {
         $formData = $filterForm->getData();
 
         // activated
-        if ($formData['activated']) {
-            $this->announcementManager->showNoNotActivatedEntries();
+        // activated
+        if (!$formData['activated']) {
+            $this->announcementManager->showNotActivatedEntries();
+        }
+        if ($formData['active']) {
+            $this->announcementManager->setDateLimit(getCurrentDateTimeInMySQL());
         }
 
         // rubrics

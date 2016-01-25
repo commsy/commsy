@@ -46,11 +46,17 @@ class RoomController extends Controller
 
         // ...and prepare some data
         $timeSpread = $roomItem->getTimeSpread();
-        $numNewEntries = $roomItem->getNewEntries($timeSpread);
+/*        $numNewEntries = $roomItem->getNewEntries($timeSpread);
         $pageImpressions = $roomItem->getPageImpressions($timeSpread);
-
+        
         $numActiveMember = $roomItem->getActiveMembers($timeSpread);
         $numTotalMember = $roomItem->getAllUsers();
+*/
+        $numNewEntries = 0;
+        $numActiveMember = 10;
+        $numTotalMember = 1000;
+        $pageImpressions = 1001;
+
 
         $moderators = array();
         $moderatorList = $roomItem->getModeratorList();
@@ -60,6 +66,11 @@ class RoomController extends Controller
 
             $moderatorUserItem = $moderatorList->getNext();
         }
+
+        $announcementManager = $legacyEnvironment->getAnnouncementManager();
+        $announcementManager->setContextLimit($roomId);
+        $announcementManager->setDateLimit(getCurrentDateTimeInMySQL());
+        $countAnnouncements = $announcementManager->getCountAll();
 
         return array(
             'form' => $filterForm->createView(),
@@ -71,14 +82,15 @@ class RoomController extends Controller
             'numTotalMember' => $numTotalMember,
             'roomModerators' => $moderators,
             'showCategories' => $roomItem->withTags(),
+            'countAnnouncements' => $countAnnouncements,
         );
     }
 
     /**
-     * @Route("/room/{roomId}/feed/{start}/{sort}")
+     * @Route("/room/{roomId}/feed/{start}")
      * @Template("CommsyBundle:Room:list.html.twig")
      */
-    public function feedAction($roomId, $max = 10, $start = 0, $sort = '', Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
