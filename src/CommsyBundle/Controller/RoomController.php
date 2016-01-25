@@ -46,17 +46,17 @@ class RoomController extends Controller
 
         // ...and prepare some data
         $timeSpread = $roomItem->getTimeSpread();
-/*        $numNewEntries = $roomItem->getNewEntries($timeSpread);
+        $numNewEntries = $roomItem->getNewEntries($timeSpread);
         $pageImpressions = $roomItem->getPageImpressions($timeSpread);
         
         $numActiveMember = $roomItem->getActiveMembers($timeSpread);
         $numTotalMember = $roomItem->getAllUsers();
-*/
-        $numNewEntries = 0;
+
+/*        $numNewEntries = 0;
         $numActiveMember = 10;
         $numTotalMember = 1000;
         $pageImpressions = 1001;
-
+*/
 
         $moderators = array();
         $moderatorList = $roomItem->getModeratorList();
