@@ -66,6 +66,14 @@
                 <source>Entry stored in clipboard|%count% entries stored in clipboard</source>
                 <target>Eintrag in Zwischenablage gespeichert|%count% Einträge in Zwischenablage gespeichert</target>
             </trans-unit>
+            <trans-unit id="exportToWordpress">
+                <source>Export to Wordpress</source>
+                <target>Export zu Wordpress</target>
+            </trans-unit>
+            <trans-unit id="exportToWiki">
+                <source>Export to Wiki</source>
+                <target>Export zum Wiki</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

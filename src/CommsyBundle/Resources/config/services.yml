@@ -92,6 +92,15 @@ services:
         tags:
             - { name: security.voter }
 
+    # Exporter
+    commsy.export.wordpress:
+        class: CommsyBundle\Export\WordpressExporter
+        arguments: [@commsy_legacy.environment]
+
+    commsy.export.wiki:
+        class: CommsyBundle\Export\WikiExporter
+        arguments: [@commsy_legacy.environment]
+
     # EventListener
     kernel.listener.comsy_request:
         class: CommsyBundle\EventListener\CommsyRequestListener
