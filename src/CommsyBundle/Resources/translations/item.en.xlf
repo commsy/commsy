@@ -66,6 +66,14 @@
                 <source>Entry stored in clipboard|%count% entries stored in clipboard</source>
                 <target>Entry stored in clipboard|%count% entries stored in clipboard</target>
             </trans-unit>
+            <trans-unit id="exportToWordpress">
+                <source>Export to Wordpress</source>
+                <target>Export to Wordpress</target>
+            </trans-unit>
+            <trans-unit id="exportToWiki">
+                <source>Export to Wiki</source>
+                <target>Export to Wiki</target>
+            </trans-unit>
          </body>
     </file>
 </xliff>

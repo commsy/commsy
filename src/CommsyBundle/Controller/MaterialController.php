@@ -181,8 +181,34 @@ class MaterialController extends Controller
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
+        $materialService = $this->get('commsy_legacy.material_service');
+        $material = $materialService->getMaterial($itemId);
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
+
+        $wordpressExporter = $this->get('commsy.export.wordpress');
+        $canExportToWordpress = false;
+        // TODO: check if no version is specified
+        // !isset($_GET['version_id'])
+        if ($wordpressExporter->isEnabled()) {
+            if ($wordpressExporter->isExportAllowed($material)) {
+                if ($this->isGranted('ITEM_EDIT', $material->getItemID())) {
+                    $canExportToWordpress = true;
+                }
+            }
+        }
+
+        $wikiExporter = $this->get('commsy.export.wiki');
+        $canExportToWiki = false;
+        // TODO: check if no version is specified
+        // !isset($_GET['version_id'])
+        if ($wikiExporter->isEnabled()) {
+            if ($wikiExporter->isExportAllowed($material)) {
+                if ($this->isGranted('ITEM_EDIT', $material->getItemID())) {
+                    $canExportToWiki = true;
+                }
+            }
+        }
 
         // annotation form
         $form = $this->createForm('annotation');
@@ -218,6 +244,8 @@ class MaterialController extends Controller
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
             'ratingArray' => $infoArray['ratingArray'],
+            'canExportToWordpress' => $canExportToWordpress,
+            'canExportToWiki' => $canExportToWiki,
        );
     }
 
