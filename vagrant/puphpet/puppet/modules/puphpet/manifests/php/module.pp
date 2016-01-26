@@ -8,13 +8,13 @@ define puphpet::php::module (
 
   $package = $::osfamily ? {
     'Debian' => {
-      'mbstring' => false, # Comes packaged with PHP, not available in repos
+      'mbstring'  => false, # Comes packaged with PHP, not available in repos
       'memcached' => $::operatingsystem ? {
         'ubuntu' => $puphpet::php::settings::version ? {
           '70'    => 'php-memcached',
-          default => false,
+          default => 'php5-memcached',
         },
-        default  => false,
+        default  => 'php5-memcached',
       },
     },
     'Redhat' => {

@@ -5,6 +5,10 @@
 #
 # I have listed a bunch of places:
 #
+# 5.3
+#     CENTOS 6
+#         CLI   /etc/php.d
+#         FPM   /etc/php.d
 # 5.4
 #     CENTOS 6
 #         CLI   /etc/php.d
@@ -43,6 +47,7 @@ define puphpet::php::ini (
     'httpd'      => 'fpm',
     'apache2'    => 'fpm',
     'nginx'      => 'fpm',
+    'php53u-fpm' => 'php53u-fpm',
     'php5-fpm'   => 'fpm',
     'php7-fpm'   => 'php7-fpm',
     'php7.0-fpm' => 'fpm',
@@ -55,6 +60,22 @@ define puphpet::php::ini (
   }
 
   case $php_version {
+    '5.3', '53': {
+      case $::osfamily {
+        'redhat': {
+          $target_dir  = '/etc/php.d'
+          $target_file = "${target_dir}/${ini_filename}"
+
+          if ! defined(File[$target_file]) {
+            file { $target_file:
+              replace => no,
+              ensure  => present,
+            }
+          }
+        }
+        default: { fail('This OS has not yet been defined for PHP 5.3!') }
+      }
+    }
     '5.4', '54': {
       case $::osfamily {
         'debian': {
@@ -212,9 +233,16 @@ define puphpet::php::ini (
     $notify_service = []
   }
 
-  $changes = $ensure ? {
-    present => [ "set '${entry}' \"'${value}'\"" ],
-    absent  => [ "rm \"'${entry}'\"" ],
+  if '=' in $value {
+    $changes = $ensure ? {
+      present => [ "set '${entry}' \"'${value}'\"" ],
+      absent  => [ "rm \"'${entry}'\"" ],
+    }
+  } else {
+    $changes = $ensure ? {
+      present => [ "set '${entry}' '${value}'" ],
+      absent  => [ "rm '${entry}'" ],
+    }
   }
 
   augeas { "${entry}: ${value}":

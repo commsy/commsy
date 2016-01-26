@@ -52,7 +52,13 @@ class puphpet_nginx (
       "${name}" => $merged
     })
 
-    each( $upstream['members'] ) |$key, $member| {
+    # upstream hash could contain no members key
+    $members = array_true($upstream, 'members') ? {
+      true    => $upstream['members'],
+      default => { }
+    }
+
+    each( $members ) |$key, $member| {
       $member_array = $package_array = split($member, ':')
 
       if count($member_array) == 2
@@ -245,8 +251,17 @@ class puphpet_nginx (
       $vhost
     )
 
+    # rewrites
+    $rewrites = array_true($vhost, 'rewrites') ? {
+      true    =>  $vhost['rewrites'],
+      default =>  {}
+    }
+    $vhost_rewrites_append = deep_merge($vhost_cfg_append, {
+      'rewrites'  => $rewrites
+    })
+
     # puppet-nginx is stupidly strict about ssl value datatypes
-    $merged = delete(merge($vhost_cfg_append, {
+    $merged = delete(merge($vhost_rewrites_append, {
       'server_name'          => $server_names,
       'use_default_location' => false,
       'ssl'                  => $ssl,
@@ -309,12 +324,20 @@ class puphpet_nginx (
       # If www_root was removed with all the trimmings,
       # add it back it
       if ! array_true($location_no_root, 'fastcgi') {
-        $location_merged = merge({
+        $location_root_merged = merge({
           'www_root' => $vhost['www_root'],
         }, $location_no_root)
       } else {
-        $location_merged = $location_no_root
+        $location_root_merged = $location_no_root
       }
+
+      # location rewrites
+      $location_merged = deep_merge($location_root_merged, {
+        'rewrites'  => array_true($location_root_merged, 'rewrites') ? {
+          true    => $location_root_merged['rewrites'],
+          default => { }
+        }
+      })
 
       create_resources(nginx::resource::location, { "${lkey}" => $location_merged })
     }
@@ -328,21 +351,23 @@ class puphpet_nginx (
     puphpet::firewall::port { '443': }
   }
 
-  $default_vhost_index_file =
-    "${puphpet::params::nginx_webroot_location}/index.html"
+  if array_true($nginx['settings'], 'default_vhost') {
+    $default_vhost_index_file =
+      "${puphpet::params::nginx_webroot_location}/index.html"
 
-  $default_vhost_source_file =
-    '/vagrant/puphpet/puppet/modules/puphpet/files/webserver_landing.html'
+    $default_vhost_source_file =
+      '/vagrant/puphpet/puppet/modules/puphpet/files/webserver_landing.html'
 
-  exec { "Set ${default_vhost_index_file} contents":
-    command => "cat ${default_vhost_source_file} > ${default_vhost_index_file} && \
-                chmod 644 ${default_vhost_index_file} && \
-                chown root ${default_vhost_index_file} && \
-                chgrp ${webroot_group} ${default_vhost_index_file} && \
-                touch /.puphpet-stuff/default_vhost_index_file_set",
-    returns => [0, 1],
-    creates => '/.puphpet-stuff/default_vhost_index_file_set',
-    require => File[$puphpet::params::nginx_webroot_location],
+    exec { "Set ${default_vhost_index_file} contents":
+      command => "cat ${default_vhost_source_file} > ${default_vhost_index_file} && \
+                  chmod 644 ${default_vhost_index_file} && \
+                  chown root ${default_vhost_index_file} && \
+                  chgrp ${webroot_group} ${default_vhost_index_file} && \
+                  touch /.puphpet-stuff/default_vhost_index_file_set",
+      returns => [0, 1],
+      creates => '/.puphpet-stuff/default_vhost_index_file_set',
+      require => File[$puphpet::params::nginx_webroot_location],
+    }
   }
 
 }

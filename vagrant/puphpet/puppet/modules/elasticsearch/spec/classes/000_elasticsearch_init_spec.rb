@@ -62,7 +62,7 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_file('/usr/share/elasticsearch/scripts') }
         it { should contain_file('/usr/share/elasticsearch') }
         it { should contain_file('/usr/share/elasticsearch/lib') }
-        it { should contain_file('/usr/share/elasticsearch/plugins') }
+        # it { should contain_file('/usr/share/elasticsearch/plugins') }
         it { should contain_file('/usr/share/elasticsearch/bin').with(:mode => '0755') }
 	it { should contain_augeas("#{defaults_path}/elasticsearch") }
 
@@ -178,7 +178,7 @@ describe 'elasticsearch', :type => 'class' do
             it { should contain_exec('download_package_elasticsearch').with(:command => "wget --no-check-certificate -O /opt/elasticsearch/swdl/package.#{pkg_ext} http://www.domain.com/path/to/package.#{pkg_ext} 2> /dev/null", :require => 'File[/opt/elasticsearch/swdl]') }
             it { should contain_package('elasticsearch').with(:ensure => 'present', :source => "/opt/elasticsearch/swdl/package.#{pkg_ext}", :provider => "#{pkg_prov}") }
           end
-          
+
           context 'using http:// schema with proxy_url' do
 
             let (:params) {
@@ -245,6 +245,7 @@ describe 'elasticsearch', :type => 'class' do
         }
 
         it { should contain_package('elasticsearch').with(:ensure => 'purged') }
+        it { should contain_file('/usr/share/elasticsearch/plugins').with(:ensure => 'absent') }
 
       end
 
@@ -293,7 +294,7 @@ describe 'elasticsearch', :type => 'class' do
         it { should contain_file('/etc/elasticsearch').with(:owner => 'myesuser', :group => 'myesgroup') }
         it { should contain_file('/var/log/elasticsearch').with(:owner => 'myesuser') }
         it { should contain_file('/usr/share/elasticsearch').with(:owner => 'myesuser', :group => 'myesgroup') }
-        it { should contain_file('/usr/share/elasticsearch/plugins').with(:owner => 'myesuser', :group => 'myesgroup') }
+        # it { should contain_file('/usr/share/elasticsearch/plugins').with(:owner => 'myesuser', :group => 'myesgroup') }
         it { should contain_file('/usr/share/elasticsearch/data').with(:owner => 'myesuser', :group => 'myesgroup') }
         it { should contain_file('/var/run/elasticsearch').with(:owner => 'myesuser') } if facts[:osfamily] == 'RedHat'
       end

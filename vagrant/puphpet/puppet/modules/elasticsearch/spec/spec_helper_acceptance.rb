@@ -52,7 +52,11 @@ hosts.each do |host|
 
     case fact('osfamily')
       when 'RedHat'
-        ext='rpm'
+        if ENV['ES_VERSION'][0,1] == '1'
+          ext='noarch.rpm'
+        else
+          ext='rpm'
+        end
       when 'Debian'
         ext='deb'
       when  'Suse'
@@ -82,6 +86,7 @@ hosts.each do |host|
     end
 
     scp_to(host, "#{files_dir}/elasticsearch-bigdesk.zip", "/tmp/elasticsearch-bigdesk.zip")
+    scp_to(host, "#{files_dir}/elasticsearch-kopf.zip", "/tmp/elasticsearch-kopf.zip")
 
   end
 
@@ -111,6 +116,7 @@ RSpec.configure do |c|
 
       copy_hiera_data_to(host, 'spec/fixtures/hiera/hieradata/')
       on host, puppet('module','install','puppetlabs-java'), { :acceptable_exit_codes => [0,1] }
+      on host, puppet('module','install','richardc-datacat'), { :acceptable_exit_codes => [0,1] }
 
       if fact('osfamily') == 'Debian'
         on host, puppet('module','install','puppetlabs-apt', '--version=1.8.0'), { :acceptable_exit_codes => [0,1] }
@@ -123,7 +129,12 @@ RSpec.configure do |c|
         on host, puppet('module', 'install', 'ceritsc-yum'), { :acceptable_exit_codes => [0,1] }
       end
 
-    on(host, 'mkdir -p etc/puppet/modules/another/files/')
+      if host.is_pe?
+        on(host, 'sed -i -e "s/PATH=PATH:\/opt\/puppet\/bin:/PATH=PATH:/" ~/.ssh/environment')
+      end
+
+      on(host, 'mkdir -p etc/puppet/modules/another/files/')
+
     end
   end
 

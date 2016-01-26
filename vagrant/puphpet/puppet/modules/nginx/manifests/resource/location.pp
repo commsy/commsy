@@ -80,6 +80,7 @@
 #     401-499, 501-599. If the priority is higher than the default priority,
 #     the location will be defined after root, or before root.
 #   [*set*]                   - An array of variables to set
+#   [*rewrites*]              - Rewrite rules for the location
 #
 #
 # Actions:
@@ -152,8 +153,9 @@ define nginx::resource::location (
   $auth_basic           = undef,
   $auth_basic_user_file = undef,
   $rewrite_rules        = [],
+  $rewrites             = {},
   $priority             = 500,
-  $set                  = []
+  $set                  = [],
 ) {
 
   include nginx::params
@@ -267,6 +269,7 @@ define nginx::resource::location (
   if ($priority < 401) or ($priority > 899) {
     fail('$priority must be in the range 401-899.')
   }
+  validate_hash($rewrites)
 
   # # Shared Variables
   $ensure_real = $ensure ? {

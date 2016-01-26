@@ -66,9 +66,16 @@ define puphpet::php::fpm::pool_ini (
 
   $conf_filename = delete("${pool_dir}/${pool_name}.conf", ' ')
 
-  $changes = $ensure ? {
-    present => [ "set '${pool_name}/${entry}' '${value}'" ],
-    absent  => [ "rm '${pool_name}/${entry}'" ],
+  if '=' in $value {
+    $changes = $ensure ? {
+      present => [ "set '${pool_name}/${entry}' \"'${value}'\"" ],
+      absent  => [ "rm \"'${pool_name}/${entry}'\"" ],
+    }
+  } else {
+    $changes = $ensure ? {
+      present => [ "set '${pool_name}/${entry}' '${value}'" ],
+      absent  => [ "rm \"'${pool_name}/${entry}'\"" ],
+    }
   }
 
   if ! defined(File[$conf_filename]) {

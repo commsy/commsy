@@ -1,5 +1,6 @@
 $yaml = merge_yaml(
   '/vagrant/puphpet/config.yaml',
+  "/vagrant/puphpet/config-${::provisioner_type}.yaml",
   '/vagrant/puphpet/config-custom.yaml'
 )
 

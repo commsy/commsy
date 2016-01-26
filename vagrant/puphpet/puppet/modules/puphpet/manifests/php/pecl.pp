@@ -17,13 +17,10 @@ define puphpet::php::pecl (
 
   $pecl = $::osfamily ? {
     'Debian' => {
-      'mongo' => $::lsbdistcodename ? {
-        'precise' => 'mongo',
-        default   => false,
-      },
+      'mongo' => 'mongodb',
     },
     'Redhat' => {
-      #
+      'mongo' => 'mongodb',
     }
   }
 
@@ -52,10 +49,6 @@ define puphpet::php::pecl (
       'imagick'     => "${prefix}imagick",
       'memcache'    => "${prefix}memcache",
       'memcached'   => "${prefix}memcached",
-      'mongo'       => $::lsbdistcodename ? {
-        'precise' => false,
-        default   => "${prefix}mongo",
-      },
       'redis'       => $puphpet::php::settings::version ? {
         '54'    => false,
         '5.4'   => false,
@@ -66,12 +59,15 @@ define puphpet::php::pecl (
     },
     'Redhat' => {
       'amqp'        => "${prefix}amqp",
-      'apc'         => "${prefix}apcu",
+      'apc'         => $puphpet::php::settings::version ? {
+        '53'    => "${prefix}apc",
+        '5.3'   => "${prefix}apc",
+        default => "${prefix}apcu",
+      },
       'apcu'        => "${prefix}apcu",
       'imagick'     => "${prefix}imagick",
       'memcache'    => "${prefix}memcache",
       'memcached'   => "${prefix}memcached",
-      'mongo'       => "${prefix}mongo",
       'redis'       => "${prefix}redis",
       'sqlite'      => "${prefix}sqlite",
       'zendopcache' => "${prefix}zendopcache",
@@ -79,7 +75,7 @@ define puphpet::php::pecl (
   }
 
   $auto_answer_hash = {
-    'mongo' => 'no\n'
+    #
   }
 
   $downcase_name = downcase($name)
@@ -122,6 +118,16 @@ define puphpet::php::pecl (
       preferred_state     => $preferred_state,
       auto_answer         => $auto_answer,
       service_autorestart => $service_autorestart,
+    }
+
+    if ! defined(Puphpet::Php::Ini[$pecl_name]) {
+      puphpet::php::ini { $pecl_name:
+        entry        => 'MODULE/extension',
+        value        => "${pecl_name}.so",
+        php_version  => $puphpet::php::settings::version,
+        webserver    => $puphpet::php::settings::service,
+        ini_filename => "${pecl_name}.ini",
+      }
     }
   }
   elsif $package_name and ! defined(Package[$package_name])

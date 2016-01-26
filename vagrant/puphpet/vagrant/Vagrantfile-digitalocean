@@ -3,6 +3,7 @@
 ENV['VAGRANT_DEFAULT_PROVIDER'] = 'digital_ocean'
 
 Vagrant.configure('2') do |config|
+  config.vm.define   :digital_ocean
   config.vm.box      = 'dummy'
   config.vm.hostname = "#{data['vm']['hostname']}"
   config.nfs.functional = false
@@ -36,6 +37,10 @@ Vagrant.configure('2') do |config|
   end
   config.vm.provision :shell, :path => 'puphpet/shell/check-puppet-modules.sh'
   config.vm.provision :shell, :path => 'puphpet/shell/install-puppet.sh'
+  config.vm.provision :shell do |s|
+    s.path = 'puphpet/shell/execute-files.sh'
+    s.args = ['exec-preprovision']
+  end
 
   config.vm.provision :puppet do |puppet|
     ssh_username = !data['ssh']['username'].nil? ? data['ssh']['username'] : 'vagrant'

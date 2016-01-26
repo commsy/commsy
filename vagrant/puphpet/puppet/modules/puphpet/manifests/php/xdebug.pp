@@ -14,7 +14,7 @@ class puphpet::php::xdebug (
 
   $xdebug_package = $::osfamily ? {
     'Debian' => "${puphpet::php::settings::prefix}xdebug",
-    'Redhat' => 'php-pecl-xdebug'
+    'Redhat' => "${puphpet::php::settings::pecl_prefix}xdebug"
   }
 
   if !$compile and ! defined(Package[$xdebug_package])

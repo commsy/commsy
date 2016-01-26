@@ -7,22 +7,25 @@ vagrantfile:
         memory: '1024'
         cpus: '1'
         chosen_provider: virtualbox
+        box_version: ''
         network:
             private_network: 192.168.56.101
             forwarded_port:
-                vflnp_2q0vomieusql:
+                vflnp_ijenpofxqq5v:
                     host: '7539'
                     guest: '22'
         post_up_message: ''
         provider:
             virtualbox:
                 modifyvm:
-                    natdnshostresolver1: 'on'
+                    natdnshostresolver1: false
                 showgui: ''
             vmware:
                 numvcpus: 1
             parallels:
-                cpus: 1
+                use_linked_clone: '0'
+                check_guest_tools: '0'
+                update_guest_tools: '0'
         provision:
             puppet:
                 manifests_path: puphpet/puppet/manifests
@@ -31,7 +34,7 @@ vagrantfile:
                     - '--verbose'
                     - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
         synced_folder:
-            vflsf_ejpe29c1xxpr:
+            vflsf_o9ymgv7ugebm:
                 source: ../
                 target: /var/www/commsy
                 sync_type: nfs
@@ -39,6 +42,9 @@ vagrantfile:
                     smb_host: ''
                     smb_username: ''
                     smb_password: ''
+                    mount_options:
+                        dir_mode: '0775'
+                        file_mode: '0664'
                 rsync:
                     args:
                         - '--verbose'
@@ -66,6 +72,12 @@ vagrantfile:
         insert_key: false
     vagrant:
         host: detect
+    proxy:
+        http: ''
+        https: ''
+        ftp: ''
+        no_proxy: ''
+        enabled: ''
 server:
     install: '1'
     packages:
@@ -82,6 +94,7 @@ locale:
         locales:
             - en_GB.UTF-8
             - en_US.UTF-8
+        timezone: UTC
 firewall:
     install: '1'
     rules: {  }
@@ -100,7 +113,7 @@ nginx:
         names_hash_bucket_size: 128
     upstreams: {  }
     vhosts:
-        nxv_ju8ugt7bxxno:
+        nxv_h996zvjuhl2i:
             server_name: commsy.vm
             server_aliases:
                 - www.commsy.vm
@@ -120,7 +133,7 @@ nginx:
             rewrite_to_https: '1'
             spdy: '1'
             locations:
-                nxvl_1k99cutgrua0:
+                nxvl_7ftgemu90sop:
                     location: /
                     autoindex: 'off'
                     internal: 'false'
@@ -132,7 +145,7 @@ nginx:
                     fastcgi_split_path: ''
                     proxy: ''
                     proxy_redirect: ''
-                nxvl_nj0dacqhdxyo:
+                nxvl_qdwu2ppieogw:
                     location: '~ \.php(/|$)'
                     autoindex: 'off'
                     internal: 'false'
@@ -148,6 +161,7 @@ nginx:
 apache:
     install: '0'
     settings:
+        version: 2.4
         user: www-data
         group: www-data
         default_vhost: true
@@ -158,7 +172,7 @@ apache:
         - proxy_fcgi
         - rewrite
     vhosts:
-        av_dr47te3t4hzz:
+        av_3fxnnl4tjw14:
             servername: awesome.dev
             serveraliases:
                 - www.awesome.dev
@@ -175,7 +189,7 @@ apache:
             ssl_protocol: ''
             ssl_cipher: ''
             directories:
-                avd_638adp7imtju:
+                avd_u5ttngl2frvj:
                     path: /var/www/awesome
                     options:
                         - Indexes
@@ -187,7 +201,7 @@ apache:
                         - 'all granted'
                     custom_fragment: ''
                     files_match:
-                        avdfm_gnurljs1ule7:
+                        avdfm_7nvml62ikd8w:
                             path: \.php$
                             sethandler: 'proxy:fcgi://127.0.0.1:9000'
                             custom_fragment: ''
@@ -214,7 +228,7 @@ php:
     fpm_ini:
         error_log: /var/log/php-fpm.log
     fpm_pools:
-        phpfp_voevgylx3pk0:
+        phpfp_ckeuy6z8q7q2:
             ini:
                 prefix: www
                 listen: '127.0.0.1:9000'
@@ -292,15 +306,15 @@ mariadb:
         override_options: {  }
     adminer: 0
     users:
-        mariadbnu_0uhd2hwk7jbi:
+        mariadbnu_ei8qxz7gilzh:
             name: dbuser
             password: '123'
     databases:
-        mariadbnd_0jd3c0x90pnd:
+        mariadbnd_qy9btlinwp7f:
             name: dbname
             sql: ''
     grants:
-        mariadbng_a9rymrwxx7xo:
+        mariadbng_7xfk7appqcrg:
             user: dbuser
             table: '*.*'
             privileges:
@@ -313,15 +327,15 @@ mysql:
         override_options: {  }
     adminer: '1'
     users:
-        mysqlnu_l816sgv8vu0i:
+        mysqlnu_rwhdyifjlezp:
             name: commsy
             password: commsy
     databases:
-        mysqlnd_p59jvl3t3qpe:
+        mysqlnd_5kbi13maex45:
             name: commsy
             sql: ''
     grants:
-        mysqlng_bmrqg39xhiap:
+        mysqlng_05vdefxvrxvx:
             user: commsy
             table: 'commsy.*'
             privileges:
@@ -350,7 +364,7 @@ mongodb:
 redis:
     install: '0'
     settings:
-        conf_port: '6379'
+        port: '6379'
 sqlite:
     install: '0'
     adminer: 0
@@ -386,6 +400,7 @@ elastic_search:
     settings:
         version: 2.1.0
         java_install: true
+    instances: {  }
 solr:
     install: '0'
     settings:

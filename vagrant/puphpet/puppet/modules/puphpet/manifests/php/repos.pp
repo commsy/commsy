@@ -15,9 +15,11 @@ class puphpet::php::repos (
           release           => 'squeeze-php54',
           repos             => 'all',
           required_packages => 'debian-keyring debian-archive-keyring',
-          key               => '89DF5277',
-          key_server        => 'pgp.mit.edu',
-          include_src       => true
+          key               => {
+            'id'      => '89DF5277',
+            'server'  => 'hkp://keyserver.ubuntu.com:80',
+          },
+          include           => { 'src' => true }
         }
       }
       # Wheezy : 5.4 (default) && 5.5 && 5.6
@@ -27,9 +29,11 @@ class puphpet::php::repos (
           release           => 'wheezy-php55',
           repos             => 'all',
           required_packages => 'debian-keyring debian-archive-keyring',
-          key               => '89DF5277',
-          key_server        => 'pgp.mit.edu',
-          include_src       => true
+          key               => {
+            'id'      => '89DF5277',
+            'server'  => 'hkp://keyserver.ubuntu.com:80',
+          },
+          include           => { 'src' => true }
         }
       }
       elsif $::lsbdistcodename == 'wheezy' and $php_version == '56' {
@@ -38,16 +42,18 @@ class puphpet::php::repos (
           release           => 'wheezy-php56',
           repos             => 'all',
           required_packages => 'debian-keyring debian-archive-keyring',
-          key               => '89DF5277',
-          key_server        => 'pgp.mit.edu',
-          include_src       => true
+          key               => {
+            'id'      => '89DF5277',
+            'server'  => 'hkp://keyserver.ubuntu.com:80',
+          },
+          include           => { 'src' => true }
         }
       }
     }
     'ubuntu': {
       if ! defined(Apt::Key['14AA40EC0831756756D7F66C4F4EA0AAE5267A6C']) {
         ::apt::key { '14AA40EC0831756756D7F66C4F4EA0AAE5267A6C':
-          key_server => 'hkp://keyserver.ubuntu.com:80'
+          server => 'hkp://keyserver.ubuntu.com:80'
         }
       }
 
@@ -56,14 +62,21 @@ class puphpet::php::repos (
       if $::lsbdistcodename in ['lucid', 'precise', 'quantal', 'raring', 'trusty']
         and $php_version == '54'
       {
-        $options = $::lsbdistcodename ? {
-          'lucid' => '',
-          default => '-y'
+        ::apt::pin { 'ppa-ondrej-php5-oldstable':
+          priority   => 1000,
+          originator => 'LP-PPA-ondrej-php5-oldstable',
         }
 
-        ::apt::ppa { 'ppa:ondrej/php5-oldstable':
-          require => ::Apt::Key['14AA40EC0831756756D7F66C4F4EA0AAE5267A6C'],
-          options => $options
+        ::apt::source { 'ppa-ondrej-php5-oldstable':
+          comment  => 'ppa:ondrej/php5-oldstable',
+          location => 'http://ppa.launchpad.net/ondrej/php5-oldstable/ubuntu',
+          release  => 'precise',
+          repos    => 'main',
+          include  => {
+            'src' => true,
+            'deb' => true,
+          },
+          require  => Apt::Pin['ppa-ondrej-php5-oldstable'],
         }
       }
       # 12.04/10, 13.04/10, 14.04: 5.5
@@ -91,7 +104,29 @@ class puphpet::php::repos (
       }
     }
     'redhat', 'centos': {
-      include ::yum::repo::remi
+      if $php_version == '53' {
+        $ius_gpg_key_url = 'https://dl.iuscommunity.org/pub/ius/IUS-COMMUNITY-GPG-KEY'
+        $ius_gpg_key_dl  = '/etc/pki/rpm-gpg/IUS-COMMUNITY-GPG-KEY'
+
+        exec { 'ius gpg key':
+          command => "wget --quiet --tries=5 --connect-timeout=10 -O '${ius_gpg_key_dl}' ${ius_gpg_key_url}",
+          creates => $ius_gpg_key_dl,
+          path    => '/usr/bin:/bin',
+        }
+
+        ::yum::managed_yumrepo { 'ius6-archive':
+          descr          => 'IUS Community Project Archive',
+          mirrorlist     => 'http://dmirr.iuscommunity.org/mirrorlist/?repo=ius-el6-archive&arch=$basearch',
+          enabled        => 1,
+          gpgcheck       => 1,
+          gpgkey         => "file://${ius_gpg_key_dl}",
+          priority       => 1,
+        }
+      }
+
+      if $php_version != '53' {
+        include ::yum::repo::remi
+      }
 
       # remi_php55 requires the remi repo as well
       if $php_version == '55' {

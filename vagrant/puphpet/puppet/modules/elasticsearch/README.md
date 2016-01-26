@@ -1,7 +1,5 @@
 #Elasticsearch Puppet module
 
-[![Build Status](https://travis-ci.org/elastic/puppet-elasticsearch.png?branch=master)](https://travis-ci.org/elastic/puppet-elasticsearch)
-
 ####Table of Contents
 
 1. [Overview](#overview)
@@ -25,7 +23,7 @@ This module manages Elasticsearch (http://www.elasticsearch.org/overview/elastic
 
 The elasticsearch module sets up Elasticsearch instances and can manage plugins and templates.
 
-This module has been tested against ES 1.0 and up.
+This module has been tested against all versions of ES 1.x and 2.x
 
 ##Setup
 
@@ -42,12 +40,13 @@ This module has been tested against ES 1.0 and up.
 
 * The [stdlib](https://forge.puppetlabs.com/puppetlabs/stdlib) Puppet library.
 * [ceritsc/yum](https://forge.puppetlabs.com/ceritsc/yum) For yum version lock.
-* Augeas
+* [richardc/datacat](https://forge.puppetlabs.com/richardc/datacat)
+* [Augeas](http://augeas.net/)
 
 #### Repository management
 When using the repository management you will need the following dependency modules:
 
-* Debian/Ubuntu: [Puppetlabs/apt](http://forge.puppetlabs.com/puppetlabs/apt) Version 1.8.x or lower.
+* Debian/Ubuntu: [Puppetlabs/apt](http://forge.puppetlabs.com/puppetlabs/apt)
 * OpenSuSE: [Darin/zypprepo](https://forge.puppetlabs.com/darin/zypprepo)
 
 ##Usage
@@ -65,7 +64,7 @@ class { 'elasticsearch':
 Note: This will only work when using the repository.
 
 ####Automatic upgrade of the software ( default set to false )
-```
+```puppet
 class { 'elasticsearch':
   autoupgrade => true
 }
@@ -161,10 +160,15 @@ elasticsearch::plugin { 'elasticsearch/elasticsearch-cloud-aws/2.4.1':
 
 Please note that this does not work when you specify 'latest' as a version number.
 
+####ES 2.x official plugins
+For the Elasticsearch commercial plugins you can refer them to the simple name.
+
+See the [Plugin installation](https://www.elastic.co/guide/en/elasticsearch/plugins/current/installation.html) for more details.
+
 ###Scripts
 
 Install [scripts](http://www.elastic.co/guide/en/elasticsearch/reference/current/modules-scripting.html) to be used by Elasticsearch.
-These scripts are shared accross all defined instances on the same host.
+These scripts are shared across all defined instances on the same host.
 
 ```puppet
 elasticsearch::script { 'myscript':
