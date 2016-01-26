@@ -1020,7 +1020,8 @@ class MaterialController extends Controller
     	        if ( !empty($annotationList) ){
     	            $annotationItem = $annotationList->getFirst();
     	            while($annotationItem){
-    	               $noticedManager->markNoticed($annotationItem->getItemID(),'0');
+    	               $noticedManager->markNoticed($annotationItem->getItemID(),$versionId);
+    	               $readerManager->markRead($annotationItem->getItemID(),$versionId);
     	               $annotationItem = $annotationList->getNext();
     	            }
     	        }

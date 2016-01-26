@@ -26,49 +26,28 @@ body {
     width: 100%;
 }
 
-#cover-text {
-    background: rgba(255, 255, 255, 0.80) none repeat scroll 0 0;
-    border-radius: 2px;
-    color: #000;
-    max-height: 230px;
-    xleft: 54px;
-    max-width: 855px;
-    overflow: auto;
-    padding: 10px;
-    position: absolute;
-    xtop: 104px;
-    width: 60%;
-
-    margin-left:12px;
-    margin-top:15px;
+.cs-cover-grid{
+    padding:15px;    
 }
 
-@media (max-width: 960px) {
-    #cover{
-           height: 250px;
-    }
-    #cover-text{
-           max-height: 200px;
-            width: 70%;
-    }
+.cs-cover-grid-opacity{
+    opacity:0.8;
 }
+
+.cs-cover-height{
+    max-height: 250px;
+    overflow: auto;    
+}
+
 
 @media (max-width: 768px) {
-    #cover{
-           height: 220px;
-    }
-    #cover-text{
-           max-height: 170px;
-            width: 85%;
+    .cs-cover-height{
+           max-height: 122px;
     }
 }
 
 @media (max-width: 480px) {
-    #cover{
-           height: 180px;
-    }
-    #cover-text{
-           max-height: 130px;
-           width: 80%;
+    .cs-cover-height{
+           max-height: 122px;
     }
 }

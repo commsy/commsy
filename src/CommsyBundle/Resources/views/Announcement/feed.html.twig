@@ -41,7 +41,15 @@
 
                 <div class="uk-comment-meta">
                     {% if announcement.secondDateTime != '' %}
+                        {% if "now"|date("U") <= announcement.getSecondDateTime|date("U") %}
+                            <span class="uk-text-bold">
+                        {% endif %}
+                        
                         {{ 'valid until'|trans({})}}: {{announcement.getSecondDateTime|date("d.m.Y")}}
+                        
+                        {% if "now"|date("U") <= announcement.getSecondDateTime|date("U") %}
+                            </span>
+                        {% endif %}
                     {% else %}
                         {{ 'valid until'|trans({})}}: 
                     {% endif %}
@@ -51,10 +59,10 @@
                     {{  macros.fileListShort(announcement) }}
                 </div>
             </div>
-            {%if showRating or showWorkflow%}
+            {%if showRating %}
                 <div class="uk-width-2-10 uk-text-right">
                 {%if showRating%}
-                    {{  macros.ratingStatus(announcement) }}
+                    {{  macros.ratingStatus(announcement, ratingList) }}
                 {% endif %}
             </div>
             {% endif %}

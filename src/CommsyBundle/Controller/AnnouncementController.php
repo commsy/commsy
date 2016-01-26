@@ -23,10 +23,10 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 class AnnouncementController extends Controller
 {
     /**
-     * @Route("/room/{roomId}/announcement/feed/{start}")
+     * @Route("/room/{roomId}/announcement/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0, Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0,  $sort = NULL, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -40,6 +40,7 @@ class AnnouncementController extends Controller
         // setup filter form
         $defaultFilterValues = array(
             'activated' => true,
+            'active' => true,
         );
         $filterForm = $this->createForm(new AnnouncementFilterType(), $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_announcement_list', array(
@@ -57,10 +58,13 @@ class AnnouncementController extends Controller
         if ($filterForm->isValid()) {
             // set filter conditions in announcement manager
             $announcementService->setFilterConditions($filterForm);
+        }else{
+            $announcementService->setDateLimit();
+            $sort = 'date';
         }
 
         // get announcement list from manager service 
-        $announcements = $announcementService->getListAnnouncements($roomId, $max, $start);
+        $announcements = $announcementService->getListAnnouncements($roomId, $max, $start, $sort);
 
         $readerService = $this->get('commsy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -72,11 +76,95 @@ class AnnouncementController extends Controller
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
         }
 
+        $ratingList = array();
+        if ($current_context->isAssessmentActive()) {
+            $assessmentService = $this->get('commsy_legacy.assessment_service');
+            $itemIds = array();
+            foreach ($announcements as $announcement) {
+                $itemIds[] = $announcement->getItemId();
+            }
+            $ratingList = $assessmentService->getListAverageRatings($itemIds);
+        }
+
         return array(
             'roomId' => $roomId,
             'announcements' => $announcements,
             'readerList' => $readerList,
             'showRating' => $current_context->isAssessmentActive(),
+            'ratingList' => $ratingList
+       );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/announcement/shortfeed/{start}/{sort}")
+     * @Template()
+     */
+       public function shortfeedAction($roomId, $max = 10, $start = 0,  $sort = NULL, Request $request)
+    {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        if (!$roomItem) {
+            throw $this->createNotFoundException('The requested room does not exist');
+        }
+
+        // setup filter form
+        $defaultFilterValues = array(
+            'activated' => true,
+            'active' => true,
+        );
+        $filterForm = $this->createForm(new AnnouncementFilterType(), $defaultFilterValues, array(
+            'action' => $this->generateUrl('commsy_announcement_list', array(
+                'roomId' => $roomId,
+            )),
+            'hasHashtags' => $roomItem->withBuzzwords(),
+            'hasCategories' => $roomItem->withTags(),
+        ));
+
+        // get the announcement manager service
+        $announcementService = $this->get('commsy_legacy.announcement_service');
+
+        // apply filter
+        $filterForm->handleRequest($request);
+        if ($filterForm->isValid()) {
+            // set filter conditions in announcement manager
+            $announcementService->setFilterConditions($filterForm);
+        }else{
+            $announcementService->setDateLimit();
+            $sort = 'date';
+        }
+
+        // get announcement list from manager service 
+        $announcements = $announcementService->getListAnnouncements($roomId, $max, $start, $sort);
+
+        $readerService = $this->get('commsy.reader_service');
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+
+
+        $readerList = array();
+        foreach ($announcements as $item) {
+            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+        }
+
+        $ratingList = array();
+        if ($current_context->isAssessmentActive()) {
+            $assessmentService = $this->get('commsy_legacy.assessment_service');
+            $itemIds = array();
+            foreach ($announcements as $announcement) {
+                $itemIds[] = $announcement->getItemId();
+            }
+            $ratingList = $assessmentService->getListAverageRatings($itemIds);
+        }
+
+        return array(
+            'roomId' => $roomId,
+            'announcements' => $announcements,
+            'readerList' => $readerList,
+            'showRating' => $current_context->isAssessmentActive(),
+            'ratingList' => $ratingList
        );
     }
     
@@ -101,6 +189,7 @@ class AnnouncementController extends Controller
         $announcementService = $this->get('commsy_legacy.announcement_service');
         $defaultFilterValues = array(
             'activated' => true,
+            'active' =>true,
         );
         $filterForm = $this->createForm(new AnnouncementFilterType(), $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_announcement_list', array(
@@ -115,38 +204,14 @@ class AnnouncementController extends Controller
         if ($filterForm->isValid()) {
             // set filter conditions in announcement manager
             $announcementService->setFilterConditions($filterForm);
+        }else{
+            $announcementService->setDateLimit();
         }
 
         // get announcement list from manager service 
         $itemsCountArray = $announcementService->getCountArray($roomId);
 
 
-
-
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true,
-        );
-        $filterForm = $this->createForm(new AnnouncementFilterType(), $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_announcement_list', array(
-                'roomId' => $roomId,
-            )),
-            'hasHashtags' => $roomItem->withBuzzwords(),
-            'hasCategories' => $roomItem->withTags(),
-        ));
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-
-        // get the announcement manager service
-        $announcementService = $this->get('commsy_legacy.announcement_service');
-
-        // apply filter
-        $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
-            // set filter conditions in announcement manager
-            $announcementService->setFilterConditions($filterForm);
-        }
 
         return array(
             'roomId' => $roomId,

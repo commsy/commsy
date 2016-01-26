@@ -174,6 +174,10 @@
                 <source>descending</source>
                 <target>absteigend</target>
             </trans-unit>
+            <trans-unit id="no selection">
+                <source>no selection</source>
+                <target>No items selected</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -278,6 +278,14 @@
                 <source>sort sections</source>
                 <target>Sort sections</target>
             </trans-unit>
+            <trans-unit id="lastModifiedEntries">
+                <source>lastModifiedEntries</source>
+                <target>Last modified</target>
+            </trans-unit>
+            <trans-unit id="searchLinkedEntries">
+                <source>searchLinkedEntries</source>
+                <target>Search</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

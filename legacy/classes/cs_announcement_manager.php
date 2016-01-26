@@ -322,10 +322,10 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
 	  }
 
       if ( isset($this->_sort_order) ) {
-         if ( $this->_sort_order == 'modified' ) {
+         if ( $this->_sort_order == 'date' ) {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('announcement').'.modification_date DESC';
-         } elseif ( $this->_sort_order == 'modified_rev' ) {
-            $query .= ' ORDER BY '.$this->addDatabasePrefix('announcement').'.modification_date';
+         } elseif ( $this->_sort_order == 'date_rev' ) {
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('announcement').'.modification_date ASC';
          } elseif ( $this->_sort_order == 'title' ) {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('announcement').'.title';
          } elseif ( $this->_sort_order == 'title_rev' ) {

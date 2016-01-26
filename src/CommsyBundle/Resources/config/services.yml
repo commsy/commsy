@@ -104,6 +104,18 @@ services:
     # EventListener
     kernel.listener.comsy_request:
         class: CommsyBundle\EventListener\CommsyRequestListener
+        arguments: [@commsy.room_service, @liip_theme.active_theme, %liip_theme.themes%]
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+            
+    kernel.listener.commsy_login:
+        class: CommsyBundle\EventListener\CommsyLoginListener
+        arguments: [@commsy_legacy.environment]
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    kernel.listener.commsy_logging:
+        class: CommsyBundle\EventListener\CommsyLoggingListener
         arguments: [@commsy.room_service, @liip_theme.active_theme, %liip_theme.themes%, @commsy_legacy.environment]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
