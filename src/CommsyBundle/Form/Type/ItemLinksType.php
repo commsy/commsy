@@ -71,7 +71,7 @@ class ItemLinksType extends AbstractType
             ->add('itemsLatest', 'choice', array(
                 'placeholder' => false,
                 'choices' => $options['itemsLatest'],
-                'label' => 'itemsLatest',
+                // 'label' => 'itemsLatest',
                 'translation_domain' => 'item',
                 'required' => false,
                 'expanded' => true,
@@ -90,7 +90,7 @@ class ItemLinksType extends AbstractType
             ->add('categories', 'treechoice', array(
                 'placeholder' => false,
                 'choices' => $options['categories'],
-                'label' => 'categories',
+                // 'label' => 'categories',
                 'translation_domain' => 'item',
                 'required' => false,
                 'expanded' => true,

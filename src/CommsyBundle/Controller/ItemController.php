@@ -241,7 +241,9 @@ class ItemController extends Controller
                 $optionsData['itemsLatest'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
             }
             $latestItem = $latestItemList->getNext();
-
+        }
+        if (empty($optionsData['itemsLatest'])) {
+            $optionsData['itemsLatest'] = array();
         }
         
         // get all categories -> tree
