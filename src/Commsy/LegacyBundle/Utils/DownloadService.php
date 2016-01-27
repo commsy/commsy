@@ -42,176 +42,35 @@ class DownloadService
 
         $filemanager = $environment->getFileManager();
     
-        //create HTML-File
-        $filename = $directory.'/index.html';
-        $handle = fopen($filename, 'a');
-        //Put page into string
-        $output = $this->serviceContainer->get('templating')->renderResponse('CommsyBundle:Material:detail.html.twig', $detailArray);
-        //$output = $this->serviceContainer->get('templating')->renderResponse('CommsyBundle:Material:detailPrint.html.twig', $detailArray);
-    
-        //String replacements
-        //$output = str_replace('commsy_print_css.php?cid='.$environment->getCurrentContextID(),'stylesheet.css', $output);
-        //$params = $environment->getCurrentParameterArray();
-
-        //copy CSS File
-        mkdir($directory.'/css', 0777);
-        mkdir($directory.'/css/build', 0777);
-        $cssMatchArray = array();
-        preg_match_all('~\/css\/build\/commsy[^\.]*.css~', $output, $cssMatchArray);
-        foreach ($cssMatchArray as $cssMatch) {
-            if (isset($cssMatch[0])) {
-                $tempCssMatch = str_ireplace('/css', 'css', $cssMatch[0]);
-                $output = str_ireplace($cssMatch, $tempCssMatch, $output);
-                copy($this->serviceContainer->get('kernel')->getRootDir().'/../web/'.$tempCssMatch, $directory.'/'.$tempCssMatch);
-            }
-        }
-    
-        mkdir($directory.'/fonts', 0777);
-        copy($this->serviceContainer->get('kernel')->getRootDir().'/../web/fonts/fontawesome-webfont.woff2', $directory.'/fonts/fontawesome-webfont.woff2');
-        
-        /* //find images in string
-        $reg_exp = '~\<a\s{1}href=\"(.*)\"\s{1}t~u';
-        preg_match_all($reg_exp, $output, $matches_array);
-        $i = 0;
-        $iids = array();
-    
-        if ( !empty($matches_array[1]) ) {
-            mkdir($directory.'/images', 0777);
-        }
-    
-        foreach($matches_array[1] as $match) {
-            $new = parse_url($matches_array[1][$i],PHP_URL_QUERY);
-            parse_str($new,$out);
-    
-            if(isset($out['amp;iid'])) {
-                $index = $out['amp;iid'];
-            }
-            elseif(isset($out['iid'])) {
-                $index = $out['iid'];
-            }
-            if(isset($index)) {
-                $file = $filemanager->getItem($index);
-                if ( isset($file) ) {
-                    $icon = $directory.'/images/'.$file->getIconFilename();
-                    $filearray[$i] = $file->getDiskFileName();
-                    if(file_exists(realpath($file->getDiskFileName()))) {
-                        include_once('functions/text_functions.php');
-                        copy($file->getDiskFileName(),$directory.'/'.toggleUmlaut($file->getFilename()));
-                        $output = str_replace($match, toggleUmlaut($file->getFilename()), $output);
-                        copy('htdocs/images/'.$file->getIconFilename(),$icon);
-    
-                        // thumbs gehen nicht
-                        // warum nicht allgemeiner mit <img? (siehe unten)
-                        // geht unten aber auch nicht
-                        $thumb_name = $file->getFilename() . '_thumb';
-                        $thumb_disk_name = $file->getDiskFileName() . '_thumb';
-                        if ( file_exists(realpath($thumb_disk_name)) ) {
-                            copy($thumb_disk_name,$directory.'/images/'.$thumb_name);
-                            $output = str_replace($match, $thumb_name, $output);
-                        }
-                    }
-                }
-            }
-           $i++;
-        } */
-    
-        /* global $c_single_entry_point;
-        global $c_commsy_url_path;
-        global $c_commsy_domain;
-    
-        $imgatt_array = array();
-        preg_match_all('~\<img\s{1}style=" padding:5px;"\s{1}src=\"(.*)\"\s{1}a~u', $output, $imgatt_array);
-         
-        $i = 0;
-        foreach($imgatt_array[1] as $img) {
-            $img = str_replace($c_single_entry_point.'/'.$c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&amp;mod=picture&amp;fct=getfile&amp;picture=','',$img);
-            $img = str_replace($c_single_entry_point.'/'.$c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=picture&fct=getfile&picture=','',$img);
-            #$img = str_replace($c_single_entry_point.'/','',$img);
-            #$img = str_replace('?cid='.$environment->getCurrentContextID().'&amp;mod=picture&amp;fct=getfile&amp;picture=','',$img);
-            #$img = str_replace('?cid='.$environment->getCurrentContextID().'&mod=picture&fct=getfile&picture=','',$img);
-            $imgatt_array[1][$i] = str_replace('_thumb.png','',$img);
-            foreach($filearray as $fi) {
-                $imgname = strstr($fi,$imgatt_array[1][$i]);
-                $img = preg_replace('~cid\d{1,}_\d{1,}_~u','',$img);
-    
-                if($imgname != false) {
-                    $disc_manager = $environment->getDiscManager();
-                    $disc_manager->setPortalID($environment->getCurrentPortalID());
-                    $disc_manager->setContextID($environment->getCurrentContextID());
-                    $path_to_file = $disc_manager->getFilePath();
-                    unset($disc_manager);
-                    $srcfile = $path_to_file.$imgname;
-                    $target = $directory.'/'.$img;
-                    $size = getimagesize($srcfile);
-    
-                    $x_orig= $size[0];
-                    $y_orig= $size[1];
-                    $verhaeltnis = $x_orig/$y_orig;
-                    $max_width = 200;
-    
-                    if ($x_orig > $max_width) {
-                       $show_width = $max_width;
-                       $show_height = $y_orig * ($max_width/$x_orig);
-                    } else {
-                       $show_width = $x_orig;
-                       $show_height = $y_orig;
-                    }
-                    switch ($size[2]) {
-                        case '1':
-                            $im = imagecreatefromgif($srcfile);
-                            break;
-                        case '2':
-                            $im = imagecreatefromjpeg($srcfile);
-                            break;
-                        case '3':
-                            $im = imagecreatefrompng($srcfile);
-                            break;
-                    }
-                    $newimg = imagecreatetruecolor($show_width,$show_height);
-                    imagecopyresampled($newimg, $im, 0, 0, 0, 0, $show_width, $show_height, $size[0], $size[1]);
-                    imagepng($newimg,$target);
-                    imagedestroy($im);
-                    imagedestroy($newimg);
-                }
-            }
-           $i++;
-        } */
-    
-        /* // thumbs_new
-        preg_match_all('~\<img(.*)src=\"((.*)_thumb.png)\"~u', $output, $imgatt_array);
-        foreach($imgatt_array[2] as $img) {
-            $img_old = $img;
-            $img = str_replace($c_single_entry_point.'/','',$img);
-            $img = str_replace('?cid='.$environment->getCurrentContextID().'&amp;mod=picture&amp;fct=getfile&amp;picture=','',$img);
-            $img = str_replace('?cid='.$environment->getCurrentContextID().'&mod=picture&fct=getfile&picture=','',$img);
-            $img = mb_substr($img,0,mb_strlen($img)/2);
-            $img = preg_replace('~cid\d{1,}_\d{1,}_~u','',$img);
-            $output = str_replace($img_old,$img,$output);
-        } */
-    
-        /* $output = str_replace($c_single_entry_point.'/'.$c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&amp;mod=picture&amp;fct=getfile&amp;picture=','',$output);
-        $output = str_replace($c_single_entry_point.'/'.$c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=picture&fct=getfile&picture=','',$output);
-        $output = preg_replace('~cid\d{1,}_\d{1,}_~u','',$output); */
-    
-        // add user images
-        //preg_match_all('~<img([\w\W]+?)>~u', $output, $user_image_array);
-        //foreach($user_image_array[2] as $img) {
-        //}
-        //error_log(print_r($user_image_array, true));
+        // create PDF-file
+        $output = $this->serviceContainer->get('templating')->renderResponse('CommsyBundle:Material:detailPrint.html.twig', $detailArray);
+        $pdf = $this->serviceContainer->get('knp_snappy.pdf')->getOutputFromHtml($output);
+        file_put_contents($directory.'/test.pdf', $pdf);
     
         // add files
         $files = $detailArray['material']->getFileListWithFilesFromSections()->to_array();
+        $filesCounter = array();
         if (!empty($files)) {
             mkdir($directory.'/files', 0777);
             foreach ($files as $file) {
-                copy($this->serviceContainer->get('kernel')->getRootDir().'/'.$file->getDiskFileName(), $directory.'/files/'.$file->getFilename());
+                if (!file_exists($directory.'/files/'.$file->getFilename())) {
+                    copy($this->serviceContainer->get('kernel')->getRootDir().'/'.$file->getDiskFileName(), $directory.'/files/'.$file->getFilename());
+                } else {
+                    $fileNameWithoutExtension = mb_substr($file->getFilename(), 0, strlen($file->getFilename())-(strlen($file->getExtension())+1));
+                    
+                    $counter = 1;
+                    if (isset($filesCounter[$fileNameWithoutExtension])) {
+                        $filesCounter[$fileNameWithoutExtension] = $filesCounter[$fileNameWithoutExtension] + 1;
+                        $counter = $filesCounter[$fileNameWithoutExtension];
+                    } else {
+                        $filesCounter[$fileNameWithoutExtension] = $counter;
+                    }
+                    
+                    $newFilename = $fileNameWithoutExtension.' ('.$counter.').'.$file->getExtension();
+                    copy($this->serviceContainer->get('kernel')->getRootDir().'/'.$file->getDiskFileName(), $directory.'/files/'.$newFilename);
+                }
             }
         }
-    
-        //write string into file
-        fwrite($handle, $output);
-        fclose($handle);
-        unset($output);
 
         //create ZIP File
         $zipfile = $exportTempFolder.DIRECTORY_SEPARATOR.'RUBRIC_NAME'.'_'.$itemId.'.zip';
