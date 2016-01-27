@@ -341,11 +341,13 @@
                 {% endif %}
 
                 {# toggle action #}
-                <div class="cs-toggle-icon uk-margin-left uk-width-1-1 uk-hidden" data-cs-unhide-collapsed="{src: '.toggle-{{ title }}-{{ item.itemId }}'}">
-                    <a class="cs-toggle" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}', cls: 'cs-toggle-full'}">
-                        <i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i>
-                    </a>
-                </div>
+                {% if not content is empty %}
+                    <div class="cs-toggle-icon uk-margin-left uk-width-1-1 uk-hidden" data-cs-unhide-collapsed="{src: '.toggle-{{ title }}-{{ item.itemId }}'}">
+                        <a class="cs-toggle" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}', cls: 'cs-toggle-full'}">
+                            <i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i>
+                        </a>
+                    </div>
+                {% endif %}
             </div>
         </div>
 
