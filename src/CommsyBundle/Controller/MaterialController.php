@@ -1030,13 +1030,22 @@ class MaterialController extends Controller
         } else if ($action == 'copy') {
            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('%count% copied entries',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'save') {
-            $zipfile = $this->download($roomId, $selectedIds);
+            /* $zipfile = $this->download($roomId, $selectedIds);
             $content = file_get_contents($zipfile);
 
             $response = new Response($content, Response::HTTP_OK, array('content-type' => 'application/zip'));
             $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,'zipfile.zip');   
             $response->headers->set('Content-Disposition', $contentDisposition);
             
+            return $response; */
+            
+            $downloadService = $this->get('commsy_legacy.download_service');
+        
+            $zipFile = $downloadService->zipFile($roomId, $selectedIds);
+    
+            $response = new BinaryFileResponse($zipFile);
+            $response->deleteFileAfterSend(true);
+    
             return $response;
         } else if ($action == 'delete') {
             $materialService = $this->get('commsy_legacy.material_service');

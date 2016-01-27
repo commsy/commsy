@@ -21,12 +21,8 @@ class DownloadService
         $this->serviceContainer = $container;
     }
 
-    public function zipFile($roomId, $itemId)
+    public function zipFile($roomId, $itemIds)
     {
-        $detailArray = $this->getDetailInfo($roomId, $itemId);
-        $detailArray['roomId'] = $roomId;
-        $detailArray['annotationForm'] = $this->serviceContainer->get('form.factory')->create('annotation')->createView();
-        
         $environment = $this->serviceContainer->get('commsy_legacy.environment')->getEnvironment();
 
         $exportTempFolder = $this->serviceContainer->getParameter('kernel.root_dir') . '/../files/temp/zip_export/' . time();
@@ -42,32 +38,45 @@ class DownloadService
 
         $filemanager = $environment->getFileManager();
     
-        // create PDF-file
-        $output = $this->serviceContainer->get('templating')->renderResponse('CommsyBundle:Material:detailPrint.html.twig', $detailArray);
-        $pdf = $this->serviceContainer->get('knp_snappy.pdf')->getOutputFromHtml($output);
-        file_put_contents($directory.'/test.pdf', $pdf);
+        if (!is_array($itemIds)) {
+            $itemIds = array($itemIds);
+        }
     
-        // add files
-        $files = $detailArray['material']->getFileListWithFilesFromSections()->to_array();
-        $filesCounter = array();
-        if (!empty($files)) {
-            mkdir($directory.'/files', 0777);
-            foreach ($files as $file) {
-                if (!file_exists($directory.'/files/'.$file->getFilename())) {
-                    copy($this->serviceContainer->get('kernel')->getRootDir().'/'.$file->getDiskFileName(), $directory.'/files/'.$file->getFilename());
-                } else {
-                    $fileNameWithoutExtension = mb_substr($file->getFilename(), 0, strlen($file->getFilename())-(strlen($file->getExtension())+1));
-                    
-                    $counter = 1;
-                    if (isset($filesCounter[$fileNameWithoutExtension])) {
-                        $filesCounter[$fileNameWithoutExtension] = $filesCounter[$fileNameWithoutExtension] + 1;
-                        $counter = $filesCounter[$fileNameWithoutExtension];
+        foreach ($itemIds as $itemId) {
+            $detailArray = $this->getDetailInfo($roomId, $itemId);
+            $detailArray['roomId'] = $roomId;
+            $detailArray['annotationForm'] = $this->serviceContainer->get('form.factory')->create('annotation')->createView();
+            
+            $tempDirectory = $directory.'/'.$detailArray['material']->getTitle();
+            mkdir($tempDirectory);
+            
+            // create PDF-file
+            $output = $this->serviceContainer->get('templating')->renderResponse('CommsyBundle:Material:detailPrint.html.twig', $detailArray);
+            $pdf = $this->serviceContainer->get('knp_snappy.pdf')->getOutputFromHtml($output);
+            file_put_contents($tempDirectory.'/test.pdf', $pdf);
+        
+            // add files
+            $files = $detailArray['material']->getFileListWithFilesFromSections()->to_array();
+            $filesCounter = array();
+            if (!empty($files)) {
+                mkdir($tempDirectory.'/files', 0777);
+                foreach ($files as $file) {
+                    if (!file_exists($tempDirectory.'/files/'.$file->getFilename())) {
+                        copy($this->serviceContainer->get('kernel')->getRootDir().'/'.$file->getDiskFileName(), $tempDirectory.'/files/'.$file->getFilename());
                     } else {
-                        $filesCounter[$fileNameWithoutExtension] = $counter;
+                        $fileNameWithoutExtension = mb_substr($file->getFilename(), 0, strlen($file->getFilename())-(strlen($file->getExtension())+1));
+                        
+                        $counter = 1;
+                        if (isset($filesCounter[$fileNameWithoutExtension])) {
+                            $filesCounter[$fileNameWithoutExtension] = $filesCounter[$fileNameWithoutExtension] + 1;
+                            $counter = $filesCounter[$fileNameWithoutExtension];
+                        } else {
+                            $filesCounter[$fileNameWithoutExtension] = $counter;
+                        }
+                        
+                        $newFilename = $fileNameWithoutExtension.' ('.$counter.').'.$file->getExtension();
+                        copy($this->serviceContainer->get('kernel')->getRootDir().'/'.$file->getDiskFileName(), $tempDirectory.'/files/'.$newFilename);
                     }
-                    
-                    $newFilename = $fileNameWithoutExtension.' ('.$counter.').'.$file->getExtension();
-                    copy($this->serviceContainer->get('kernel')->getRootDir().'/'.$file->getDiskFileName(), $directory.'/files/'.$newFilename);
                 }
             }
         }
