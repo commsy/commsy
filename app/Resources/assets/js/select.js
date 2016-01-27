@@ -283,12 +283,17 @@
             
             if (entries.length > 0) {
                 if (action != 'save') {
+                    // send action request
                     $.ajax({
                         url: $this.options.actionUrl,
                         type: 'POST',
-                        data: {act: action, data: JSON.stringify(entries), selectAll: $this.selectAll, selectAllStart: input.length}
-                    })
-                    .done(function(result) {
+                        data: {
+                            act: action,
+                            data: JSON.stringify(entries),
+                            selectAll: $this.selectAll,
+                            selectAllStart: input.length
+                        }
+                    }).done(function(result) {
                         $('#commsy-select-actions-select-shown').removeClass('uk-active');
                         $('#commsy-select-actions-select-all').removeClass('uk-active');
                         $('#commsy-select-actions-unselect').removeClass('uk-active');
@@ -299,38 +304,16 @@
                         target.find('article').each(function() {
                             $(this).removeClass('uk-comment-primary');
                         });
+
+                        if (action == 'copy') {
+                            let $indicator = $('#cs-nav-copy-indicator');
+                            $indicator.html(result.data.count);
+                        }
                         
-                        let el = $('.feed-load-more');
-                        let queryString = document.location.search;
-                        let url = el.data('feed').url  + 0 + '/' + $this.sort + $this.sortOrder + queryString;
-                
-                        let message = result.message;
-                        let status = result.status;
-                        let timeout = result.timeout;
-                
-                        $.ajax({
-                          url: url
-                        })
-                        .done(function(result) {
-                            if ($(result).filter('article').length) {
-                                let target = el.data('feed').target;
-                                $(target).empty();
-                                $(target).html(result);
-                                
-                                $(target).find('article').each(function() {
-                                    $(this).toggleClass('selectable');
-                                });
-                                
-                                $this.bind();
-                                
-                                UIkit.notify({
-                                    message : message,
-                                    status  : status,
-                                    timeout : timeout,
-                                    pos     : 'top-center'
-                                });
-                            }
-                        });
+                        // reload feed
+                        $this.reloadFeed(result);
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        UIkit.notify($this.options.errorMessage, 'danger');
                     });
                 } else {
                     let $form = $(document.createElement('form'))
@@ -361,6 +344,43 @@
             }
             
             $this.selectAll = false;
+        },
+
+        copy: function() {
+
+        },
+
+        reloadFeed: function({message, status, timeout}) {
+            let $this = this;
+
+            let el = $('.feed-load-more');
+            let queryString = document.location.search;
+            let url = el.data('feed').url  + 0 + '/' + $this.sort + $this.sortOrder + queryString;
+
+            $.ajax({
+              url: url
+            }).done(function(result) {
+                if ($(result).filter('article').length) {
+                    let target = el.data('feed').target;
+                    $(target).empty();
+                    $(target).html(result);
+                    
+                    $(target).find('article').each(function() {
+                        $(this).toggleClass('selectable');
+                    });
+                    
+                    $this.bind();
+                    
+                    UIkit.notify({
+                        message : message,
+                        status  : status,
+                        timeout : timeout,
+                        pos     : 'top-center'
+                    });
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                UIkit.notify($this.options.errorMessage, 'danger');
+            });
         }
     });
 
