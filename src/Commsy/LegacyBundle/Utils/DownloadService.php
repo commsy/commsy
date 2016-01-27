@@ -61,21 +61,23 @@ class DownloadService
             if (!empty($files)) {
                 mkdir($tempDirectory.'/files', 0777);
                 foreach ($files as $file) {
-                    if (!file_exists($tempDirectory.'/files/'.$file->getFilename())) {
-                        copy($this->serviceContainer->get('kernel')->getRootDir().'/'.$file->getDiskFileName(), $tempDirectory.'/files/'.$file->getFilename());
-                    } else {
-                        $fileNameWithoutExtension = mb_substr($file->getFilename(), 0, strlen($file->getFilename())-(strlen($file->getExtension())+1));
-                        
-                        $counter = 1;
-                        if (isset($filesCounter[$fileNameWithoutExtension])) {
-                            $filesCounter[$fileNameWithoutExtension] = $filesCounter[$fileNameWithoutExtension] + 1;
-                            $counter = $filesCounter[$fileNameWithoutExtension];
+                    if (file_exists($this->serviceContainer->get('kernel')->getRootDir().'/'.$file->getDiskFileName())) {
+                        if (!file_exists($tempDirectory.'/files/'.$file->getFilename())) {
+                            copy($this->serviceContainer->get('kernel')->getRootDir().'/'.$file->getDiskFileName(), $tempDirectory.'/files/'.$file->getFilename());
                         } else {
-                            $filesCounter[$fileNameWithoutExtension] = $counter;
+                            $fileNameWithoutExtension = mb_substr($file->getFilename(), 0, strlen($file->getFilename())-(strlen($file->getExtension())+1));
+                            
+                            $counter = 1;
+                            if (isset($filesCounter[$fileNameWithoutExtension])) {
+                                $filesCounter[$fileNameWithoutExtension] = $filesCounter[$fileNameWithoutExtension] + 1;
+                                $counter = $filesCounter[$fileNameWithoutExtension];
+                            } else {
+                                $filesCounter[$fileNameWithoutExtension] = $counter;
+                            }
+                            
+                            $newFilename = $fileNameWithoutExtension.' ('.$counter.').'.$file->getExtension();
+                            copy($this->serviceContainer->get('kernel')->getRootDir().'/'.$file->getDiskFileName(), $tempDirectory.'/files/'.$newFilename);
                         }
-                        
-                        $newFilename = $fileNameWithoutExtension.' ('.$counter.').'.$file->getExtension();
-                        copy($this->serviceContainer->get('kernel')->getRootDir().'/'.$file->getDiskFileName(), $tempDirectory.'/files/'.$newFilename);
                     }
                 }
             }
