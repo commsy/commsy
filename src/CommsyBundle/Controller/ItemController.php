@@ -175,6 +175,7 @@ class ItemController extends Controller
         
         $formData = array();
         $optionsData = array();
+        $items = array();
         
         // get all items that are linked or can be linked
         $rubricInformation = $roomService->getRubricInformation($roomId);
@@ -198,8 +199,10 @@ class ItemController extends Controller
             $tempTypedLinkedItem = $itemService->getTypedItem($tempLinkedItem->getItemId());
             if ($tempTypedLinkedItem->getItemType() != 'user') {
                 $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getTitle();
+                $items[$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem;
             } else {
                 $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getFullname();
+                $items[$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem;
             }
             $tempLinkedItem = $itemLinkedList->getNext();
         }
@@ -220,6 +223,7 @@ class ItemController extends Controller
             // skip already linked items
             if ($tempTypedItem && !array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) {
                 $optionsData['items'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
+                $items[$tempTypedItem->getItemId()] = $tempTypedItem;
             }
             $tempItem = $itemList->getNext();
             
@@ -338,6 +342,7 @@ class ItemController extends Controller
             'form' => $form->createView(),
             'showCategories' => $roomItem->withTags(),
             'showHashtags' => $roomItem->withBuzzwords(),
+            'items' => $items,
         );
     }
     

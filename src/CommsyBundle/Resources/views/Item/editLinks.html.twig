@@ -26,35 +26,106 @@
             <ul id="linksForm" class="uk-switcher uk-margin">
                 <li>
                     <div class="uk-grid">
-                        <div class="uk-width-3-4">
-                            <div id="linksSubTab" class="uk-switcher">
+                        <div class="uk-width-1-1">
+                            <!-- search entries -->
+                            <div>
+                                {{ form_widget(form.filterSearch) }} {{ form_widget(form.filterRubric) }}
+                            </div>
+                            <div id="linksSubTab" class="">
                                 <!-- latest entries -->
+                                {{ 'lastModifiedEntries'|trans({}) }}
                                 <div>
-                                    <ul class="uk-grid uk-grid-width-medium-1-1 uk-text-left">
+                                    <ul class="uk-comment-list">
                                         {% for entry in form.itemsLatest %}
-                                            <li data-cs-linked-items="targetDiv:'#itemsLinkedList'">
-                                                <div class="uk-panel uk-panel-box cs-linked-item">
-                                                    <div class="uk-hidden">{{ form_widget(entry) }}</div>
-                                                    {{ form_label(entry) }}
-                                                </div>
-                                            </li>
+                                            {# {{dump(items[entry.vars.value])}} #}
+                                            {% set currentItem = items[entry.vars.value] %}
+                                            <article class="uk-comment" data-cs-linked-items>
+                                                <header class="uk-comment-header uk-flex">
+                                                    <div class="items-checkbox uk-margin-right">
+                                                        {{ form_widget(entry) }}
+                                                    </div>
+                                                    <div class="uk-margin-right uk-flex-item-none">
+                                                        {% if currentItem.modificatorItem.isUser %}
+                                                            {{  macros.userIconLink(currentItem.modificatorItem) }}
+                                                        {% else %}
+                                                            {{  macros.userIcon(currentItem.modificatorItem) }}
+                                                        {% endif %}
+                                                        <div class="uk-comment-meta">
+                                                            {% if currentItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                                                {{ 'today'|trans({})|capitalize }}, {{currentItem.getModificationDate|date("H:i")}}
+                                                            {% else %}
+                                                                {{currentItem.getModificationDate|date("d.m.Y")}}
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                    <div class="uk-width-8-10">
+                                                        <h4 class="uk-comment-title">
+                                                            <a href="Bla">{{ form_label(entry) }}</a>
+                                                        </h4>
+                                                        <div class="uk-comment-meta">
+                                                            {% if currentItem.author != '' %}
+                                                                {{ 'by'|trans({})|capitalize }}: {{currentItem.author}} ({{currentItem.publishingdate}})
+                                                            {% else %}
+                                                                {{ 'by'|trans({})|capitalize }}: {{currentItem.modificatorItem.fullname}} ({{currentItem.getCreationDate|date("d.m.Y")}})
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="uk-comment-meta">
+                                                            {{  macros.fileListShort(currentItem) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="uk-width-2-10 uk-text-right">
+                                                        <i class="{{ macros.iconClassForItemType(currentItem.itemType) }} uk-icon-small"></i>
+                                                    </div>
+                                                </header>
+                                            </article>
                                         {% endfor %}
                                     </ul>
                                 </div>
-                                <!-- search entries -->
-                                <div>
-                                    {{ form_widget(form.filterSearch) }} {{ form_widget(form.filterRubric) }}
-                                </div>
                             </div>
+                            {{ 'linkedEntries'|trans({}) }}
                             <div id="itemsLinkedListWrapper" class="uk-block uk-block-muted uk-padding-remove uk-margin cs-form-scroll">
-                                <ul id="itemsLinkedList" class="uk-grid uk-grid-width-medium-1-2 uk-text-center" data-uk-grid="{gutter: 20}">
+                                <ul id="itemsLinkedList" class="uk-comment-list">
                                 {% for entry in form.itemsLinked %}
-                                    <li data-cs-linked-items>
-                                        <div class="uk-panel uk-panel-box cs-linked-item-selected">
-                                            <div class="uk-hidden">{{ form_widget(entry) }}</div>
-                                            <a href="">{{ form_label(entry) }}</a>
-                                        </div>
-                                    </li>
+                                    {% set currentItem = items[entry.vars.value] %}
+                                    <article class="uk-comment" data-cs-linked-items>
+                                        <header class="uk-comment-header uk-flex">
+                                            <div class="items-checkbox uk-margin-right">
+                                                {{ form_widget(entry) }}
+                                            </div>
+                                            <div class="uk-margin-right uk-flex-item-none">
+                                                {% if currentItem.modificatorItem.isUser %}
+                                                    {{  macros.userIconLink(currentItem.modificatorItem) }}
+                                                {% else %}
+                                                    {{  macros.userIcon(currentItem.modificatorItem) }}
+                                                {% endif %}
+                                                <div class="uk-comment-meta">
+                                                    {% if currentItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                                        {{ 'today'|trans({})|capitalize }}, {{currentItem.getModificationDate|date("H:i")}}
+                                                    {% else %}
+                                                        {{currentItem.getModificationDate|date("d.m.Y")}}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="uk-width-8-10">
+                                                <h4 class="uk-comment-title">
+                                                    <a href="Bla">{{ form_label(entry) }}</a>
+                                                </h4>
+                                                <div class="uk-comment-meta">
+                                                    {% if currentItem.author != '' %}
+                                                        {{ 'by'|trans({})|capitalize }}: {{currentItem.author}} ({{currentItem.publishingdate}})
+                                                    {% else %}
+                                                        {{ 'by'|trans({})|capitalize }}: {{currentItem.modificatorItem.fullname}} ({{currentItem.getCreationDate|date("d.m.Y")}})
+                                                    {% endif %}
+                                                </div>
+                                                <div class="uk-comment-meta">
+                                                    {{  macros.fileListShort(currentItem) }}
+                                                </div>
+                                            </div>
+                                            <div class="uk-width-2-10 uk-text-right">
+                                                <i class="{{ macros.iconClassForItemType(currentItem.itemType) }} uk-icon-small"></i>
+                                            </div>
+                                        </header>
+                                    </article>
                                 {% endfor %}
                                 </ul>
                             </div>
@@ -74,7 +145,7 @@
                                 </ul>
                             </div> #}
                         </div>
-                        <div class="uk-width-1-4">
+                        {# <div class="uk-width-1-4">
                             <ul class="uk-tab uk-tab-right" data-uk-tab="{connect:'#linksSubTab'}">
                                 <li class="uk-active">
                                     <a href="#">{{ 'lastModifiedEntries'|trans({}) }}</a>
@@ -85,7 +156,7 @@
                                 {# <li>
                                     <a href="#">{{ 'linkedEntries'|trans({}) }}</a>
                                 </li> #}
-                                <li class="uk-tab-responsive uk-active uk-hidden" aria-haspopup="true" aria-expanded="false">
+                                {# <li class="uk-tab-responsive uk-active uk-hidden" aria-haspopup="true" aria-expanded="false">
                                     <a>Active</a>
                                     <div class="uk-dropdown uk-dropdown-small">
                                         <ul class="uk-nav uk-nav-dropdown"></ul>
@@ -96,7 +167,7 @@
                             {# 
                             {{ form_widget(form.filterRubric) }}
                             {{ form_widget(form.filterPublic) }} #}
-                        </div>
+                        {# </div> #}
                     </div>
                 </li>
                 {%if showCategories %}
