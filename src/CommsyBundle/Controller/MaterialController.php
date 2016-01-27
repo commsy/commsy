@@ -797,6 +797,10 @@ class MaterialController extends Controller
         $response = new BinaryFileResponse($zipFile);
         $response->deleteFileAfterSend(true);
 
+        $filename = 'CommSy_Material.zip';
+        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$filename);   
+        $response->headers->set('Content-Disposition', $contentDisposition);
+
         return $response;
     }
         
@@ -1045,6 +1049,10 @@ class MaterialController extends Controller
     
             $response = new BinaryFileResponse($zipFile);
             $response->deleteFileAfterSend(true);
+    
+            $filename = 'CommSy_Material.zip';
+            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$filename);   
+            $response->headers->set('Content-Disposition', $contentDisposition);
     
             return $response;
         } else if ($action == 'delete') {
