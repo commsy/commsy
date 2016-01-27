@@ -27,10 +27,15 @@
 
             let source = $($this.options.src);
 
-            if (source.get(0).scrollHeight > $this.options.limit) {
-                $this.element
-                    .removeClass('uk-hidden')
-                    .removeClass('uk-invisible');
+            if (source.length) {
+                if (source.get(0).scrollHeight > $this.options.limit) {
+                    $this.element
+                        .removeClass('uk-hidden')
+                        .removeClass('uk-invisible');
+                }
+            } else {
+                console.log('missing source:');
+                console.dir(source);
             }
         }
     });
