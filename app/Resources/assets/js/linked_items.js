@@ -15,7 +15,6 @@
                     let element = UI.$(this);
 
                     if (!element.data("linkedItems")) {
-                        console.log(element.attr("data-cs-linked-items"));
                         var obj = UI.linkedItems(element, UI.Utils.options(element.attr("data-cs-linked-items")));
                     }
                 });
@@ -46,7 +45,8 @@
                     element.removeClass('cs-linked-item-selected');
                 }
 
-                element.addClass('cs-linked-item-preselected');
+                // element.addClass('cs-linked-item-selected');
+                element.children('div').addClass('cs-linked-item-selected');
                 // element.children('div').toggleClass('cs-linked-item');
 
                 //unset checkbox
@@ -55,7 +55,7 @@
             } else if (element.parents('#itemsLinkedListWrapper')[0]) {
                 $("#linksSubTab ul").append(element[0]);
 
-                element.removeClass('cs-linked-item-preselected');
+                element.children('div').removeClass('cs-linked-item-selected');
                 // element.children('div').removeClass('cs-linked-item');
                 // remove grid style
                 element.removeAttr('style');

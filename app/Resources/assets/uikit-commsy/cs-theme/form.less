@@ -172,5 +172,49 @@ textarea[id*=descriptionedit] {
     float:left;
 }
 
+#linksSubTab ul li {
+    cursor: pointer;
+}
+
+#itemsLinkedList li {
+    cursor: pointer;
+}
+
+#itemsLinkedList li div:hover {
+    border-color: #73A0C0;
+    background: #73A0C0;
+    color: #059;
+    outline: none;
+}
+
+.cs-linked-item:hover {
+    border-color: #f5f5f5;
+    background: #f5f5f5;
+    color: #059;
+    outline: none;
+}
+
+.cs-linked-item-selected {
+    border-color: @cs-brand-color;
+    background: @cs-brand-color;
+    color: white;
+    outline: none;
+}
+
+.cs-linked-item-selected a {
+    color: white;
+}
+
+.cs-linked-item-preselected div {
+    border-color: @cs-brand-color;
+    border: 1px solid @cs-brand-color;
+    background-color: @cs-brand-color;
+    color: white;
+}
+
+#itemLinks_filterSearch {
+  margin-top: 15px;
+}
+
 // Hooks
 // ========================================================================
