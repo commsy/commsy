@@ -107,8 +107,8 @@
                                         <li>
                                             <a href="#" data-cs-action-copy="{
                                                 'url': '{{ path('commsy_item_copy', {'roomId': roomId, 'itemId': material.itemId}) }}',
-                                                'successMessage': '<i class=\'uk-icon-copy\'></i> {{ 'Entry stored in clipboard|%count% entries stored in clipboard'|transchoice(1, {}, 'item') }}',
-                                                'errorMessage': '<i class=\'uk-icon-info\'></i> {{ 'action error'|trans }}'
+                                                'successMessage': '<i class=\'uk-icon-medium uk-icon-copy\'></i> {{ 'Entry stored in clipboard|%count% entries stored in clipboard'|transchoice(1, {}, 'item') }}',
+                                                'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}'
                                             }">
                                                 <i class="uk-icon-small uk-icon-copy uk-icon-justify uk-visible-large"></i> {{ 'copy'|trans({})|capitalize }}
                                             </a>
@@ -142,8 +142,8 @@
                                             <a href="#" data-cs-action-workflow="{
                                                 'url': '{{ path('commsy_material_workflow', {'roomId': roomId, 'itemId': material.itemId}) }}',
                                                 'read': true,
-                                                'successMessage': '<i class=\'uk-icon-eye\'></i> {{ 'marked as read'|trans({}, 'material') }}',
-                                                'errorMessage': '<i class=\'uk-icon-info\'></i> {{ 'action error'|trans }}'
+                                                'successMessage': '<i class=\'uk-icon-medium uk-icon-eye\'></i> {{ 'marked as read'|trans({}, 'material') }}',
+                                                'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}'
                                             }">
                                                 <i class="uk-icon-small uk-icon-eye uk-icon-justify uk-visible-large"></i> {{ 'Mark as read'|trans({}, 'material')|capitalize }}
                                             </a>
@@ -153,8 +153,8 @@
                                             <a href="#" data-cs-action-workflow="{
                                                 'url': '{{ path('commsy_material_workflow', {'roomId': roomId, 'itemId': material.itemId}) }}',
                                                 'read': false,
-                                                'successMessage': '<i class=\'uk-icon-eye-slash\'></i> {{ 'marked as not read'|trans({}, 'material') }}',
-                                                'errorMessage': '<i class=\'uk-icon-info\'></i> {{ 'action error'|trans }}'
+                                                'successMessage': '<i class=\'uk-icon-medium uk-icon-eye-slash\'></i> {{ 'marked as not read'|trans({}, 'material') }}',
+                                                'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}'
                                             }">
                                                 <i class="uk-icon-small uk-icon-eye-slash uk-icon-justify uk-visible-large"></i> {{ 'Mark as not read'|trans({}, 'material')|capitalize }}
                                             </a>

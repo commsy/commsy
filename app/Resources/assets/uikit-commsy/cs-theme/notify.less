@@ -23,6 +23,8 @@
 // Variables
 // ========================================================================
 
+@notify-width: 400px;
+
 @notify-message-primary-background: @notify-message-background;
 @notify-message-primary-color: @notify-message-color;
 @notify-message-primary-highlight: #2d7091;
@@ -53,19 +55,9 @@
 }
 
 .hook-notify-message-primary() {
-    box-shadow: 3px 3px @notify-message-primary-highlight;
-
-    i {
-        color: @notify-message-primary-highlight;
-    }
 }
 
 .hook-notify-message-success() {
-    box-shadow: 3px 3px @notify-message-success-highlight;
-
-    i {
-        color: @notify-message-success-highlight;
-    }
 }
 
 .hook-notify-message-warning() {
