@@ -206,6 +206,11 @@ services:
         tags:
             - { name: form.type, alias: annotation }
 
+    commsy.form.type.send:
+        class: CommsyBundle\Form\Type\SendType
+        tags:
+            - { name: form.type, alias: send }
+
     # Twig
     twig.extension.room:
         class: CommsyBundle\Twig\Extension\RoomExtension

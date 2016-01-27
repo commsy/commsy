@@ -415,6 +415,24 @@ class ItemController extends Controller
             'count' => sizeof($currentClipboardIds)
         ]);
     }
+
+    /**
+     * @Route("/room/{roomId}/item/send", condition="request.isXmlHttpRequest()")
+     * @Template()
+     **/
+    public function sendAction($roomId, Request $request)
+    {
+        $form = $this->createForm('send', array());
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+        }
+
+        return [
+            'form' => $form->createView()
+        ];
+    }
     
     private function getChoicesAsTree ($choicesArray) {
         $result = array();
