@@ -106,9 +106,10 @@
                                         {# copy #}
                                         <li>
                                             <a href="#" data-cs-action-copy="{
-                                                'url': '{{ path('commsy_item_copy', {'roomId': roomId, 'itemId': material.itemId}) }}',
+                                                'url': '{{ path('commsy_item_copy', {'roomId': roomId}) }}',
                                                 'successMessage': '<i class=\'uk-icon-medium uk-icon-copy\'></i> {{ 'Entry stored in clipboard|%count% entries stored in clipboard'|transchoice(1, {}, 'item') }}',
-                                                'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}'
+                                                'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}',
+                                                'itemIds': [ {{ material.itemId}} ]
                                             }">
                                                 <i class="uk-icon-small uk-icon-copy uk-icon-justify uk-visible-large"></i> {{ 'copy'|trans({})|capitalize }}
                                             </a>

@@ -374,9 +374,9 @@ class ItemController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/item/{itemId}/copy", condition="request.isXmlHttpRequest()")
+     * @Route("/room/{roomId}/item/copy", condition="request.isXmlHttpRequest()")
      **/
-    public function copyAction($roomId, $itemId, Request $request)
+    public function copyAction($roomId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -387,9 +387,25 @@ class ItemController extends Controller
             $currentClipboardIds = $sessionItem->getValue('clipboard_ids');
         }
 
-        if (!in_array($itemId, $currentClipboardIds)) {
-            $currentClipboardIds[] = $itemId;
-            $sessionItem->setValue('clipboard_ids', $currentClipboardIds);
+        // extract ids from request data
+        $requestContent = $request->getContent();
+        if (empty($requestContent)) {
+            throw new \Exception('no request content given');
+        }
+
+        $jsonArray = json_decode($requestContent, true);
+
+        if (!isset($jsonArray['itemIds']) || empty($jsonArray['itemIds'])) {
+            throw new \Exception('no item ids given');
+        }
+
+        $itemIds = $jsonArray['itemIds'];
+
+        foreach ($itemIds as $itemId) {
+            if (!in_array($itemId, $currentClipboardIds)) {
+                $currentClipboardIds[] = $itemId;
+                $sessionItem->setValue('clipboard_ids', $currentClipboardIds);
+            }
         }
 
         $sessionManager = $legacyEnvironment->getSessionManager();

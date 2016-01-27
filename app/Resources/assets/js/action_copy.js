@@ -6,9 +6,9 @@
 
         defaults: {
             url: '',
-            read: false,
             successMessage: '',
-            errorMessage: ''
+            errorMessage: '',
+            itemIds: []
         },
 
         boot: function() {
@@ -34,9 +34,9 @@
                 $.ajax({
                     url: $this.options.url,
                     type: 'POST',
-                    data: {
-                        read: $this.options.read
-                    }
+                    data: JSON.stringify({
+                        itemIds: $this.options.itemIds
+                    })
                 }).done(function(data) {
                     UIkit.notify($this.options.successMessage, "success");
 
