@@ -81,8 +81,13 @@ vagrantfile:
 server:
     install: '1'
     packages:
+        - libfontenc1
+        - libxfont1
+        - xfonts-encodings
+        - xfonts-utils
+        - xfonts-75dpi
+        - xfonts-base
         - wkhtmltopdf
-        - xvfb
 users_groups:
     install: '1'
     groups: {  }
