@@ -2,7 +2,9 @@
 
 <article class="uk-article uk-position-relative cs-send">
     {{ form_start(form) }}
-    {{ form_widget(form) }}
+        {{ form_widget(form) }}
+
+        <a href="#" id="cs-form-send-add-recipient">add</a>
     {{ form_end(form) }}
 </article>
 
@@ -51,7 +53,7 @@
                 <div class="clear"></div>
             </div>
             
-            <div class="hidden" data-dojo-attach-point="addAdditionalWrapperNode">
+            <div data-dojo-attach-point="addAdditionalWrapperNode">
                 <div class="input_row">
                     <div style="float: left; width: 180px;">${popupTranslations.additionalLabel}</div>
                     <div class="column_585">${popupTranslations.additionalDescription}</div>

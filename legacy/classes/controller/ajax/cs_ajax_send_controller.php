@@ -291,7 +291,6 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 		$response['showInstitutionRecipients'] = $showInstitutionRecipients;
 		$response['institutions'] = $institutionArray;
 		$response['allMembers'] = $allMembers;
-		$response['allowAdditional'] = true;
 		
 		$this->setSuccessfullDataReturn($response);
 		echo $this->_return;
@@ -558,33 +557,7 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 		    exit;
 		}
 	}
-
-// 	private function getRecieverList() {
-// 		$translator = $this->_environment->getTranslationObject();
-
-// 		$context_item = $this->_environment->getCurrentContextItem();
-// 		$mod_list = $context_item->getModeratorList();
-// 		$receiver_array = array();
-// 		if (!$mod_list->isEmpty()) {
-// 			$mod_item = $mod_list->getFirst();
-// 			while ($mod_item) {
-// 				$temp_array = array();
-// 				$temp_array['value'] = $mod_item->getEmail();
-// 				if ($mod_item->isEmailVisible()) {
-// 					$temp_array['text'] = $mod_item->getFullName().' ('.$mod_item->getEmail().')';
-// 				} else {
-// 					$temp_array['text'] = $mod_item->getFullName().' ('.$translator->getMessage('USER_EMAIL_HIDDEN2').')';
-// 				}
-// 				$receiver_array[] = $temp_array;
-// 				$mod_item = $mod_list->getNext();
-// 			}
-// 		}
-
-// 		return $receiver_array;
-// 	}
-
-
-
+	
 	/** Retrieves all labels of a type in the current context
 	 *   @param $type: typ of label, e.g. 'topic', 'group' or 'institution'
 	 *   @return list of names and id's of desired labels

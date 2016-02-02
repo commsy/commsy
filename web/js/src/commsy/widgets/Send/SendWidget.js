@@ -125,11 +125,6 @@ define(
 					if (response.data.allMembers) {
 						this.createAllMembersHTML();
 					}
-					
-					// add additional
-					if (response.data.allowAdditional) {
-						domclass.remove(this.addAdditionalWrapperNode, 'hidden');
-					}
 				}
 			}));
 		},

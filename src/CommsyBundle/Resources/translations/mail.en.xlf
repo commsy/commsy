@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="mailFromProjectRoom">
+                <source>This email was sent from project room...</source>
+                <target><![CDATA[This email was sent from project room "%room_name%".<br/>---<br/>]]></target>
+            </trans-unit>
+            <trans-unit id="mailFromGroupRoom">
+                <source>This email was sent from group room...</source>
+                <target><![CDATA[This email was sent from group room "%room_name%".<br/>---<br/>]]></target>
+            </trans-unit>
+            <trans-unit id="mailFromCommunityRoom">
+                <source>This email was sent from community room...</source>
+                <target><![CDATA[This email was sent from community room "%room_name%".<br/>---<br/>]]></target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

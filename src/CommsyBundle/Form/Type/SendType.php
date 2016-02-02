@@ -2,6 +2,8 @@
 namespace CommsyBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -23,9 +25,19 @@ class SendType extends AbstractType
                 ],
             ])
             ->add('message', 'ckeditor', [
-                'label' => 'Message',
+                'label' => false,
                 'translation_domain' => 'form',
                 'required' => true,
+            ])
+            ->add('additional_recipients', CollectionType::class, [
+                'entry_type' => EmailType::class,
+                'entry_options' => [
+                    'required' => false,
+                    'label' => false,
+                ],
+                'allow_add' => true,
+                'prototype' => true,
+                'required' => false,
             ])
             ->add('save', 'submit', [
                 'label' => 'Send',

@@ -48,6 +48,8 @@
                                 firstArticleDom.before(data);
                             }
                         }
+
+                        $this.setupForm();
                     } else {
                         console.log('json response');
                         console.log(data);
@@ -56,6 +58,30 @@
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     UIkit.notify($this.options.errorMessage, 'danger');
                 });
+            });
+        },
+
+        setupForm: function() {
+            let $this = this;
+
+            $('#cs-form-send-add-recipient').on('click', function(event) {
+                event.preventDefault();
+
+                let emailContainer = $('#send_additional_recipients');
+
+                // grab the prototype template
+                let newWidget = emailContainer.data('prototype');
+
+                // get the number of current used email fields
+                let currentEmailCount = $('send[additional_recipients]').length;
+
+                // replace the "__name__" used in the id and name of the prototype
+                // with a number that's unique to the other fields
+                newWidget = newWidget.replace(/__name__/g, currentEmailCount);
+                currentEmailCount++;
+
+                // add the new element
+                $(newWidget).appendTo(emailContainer);
             });
         }
     });
