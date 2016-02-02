@@ -111,14 +111,29 @@
             
             $('#commsy-select-actions-delete').on('click', function(event) {
                 event.preventDefault();
-                UIkit.modal.confirm($($this.element).data('confirm-delete'), function() {
-                    $this.action('delete');
-                }, {
-                    labels: {
-                        Cancel: $($this.element[0]).data('confirm-delete-cancel'),
-                        Ok: $($this.element[0]).data('confirm-delete-confirm')
-                    }
-                });
+                
+                let target = $this.options.target ? UI.$($this.options.target) : [];
+                let entries =  target.find('input:checked').map(function() {
+                    return this.value;
+                }).get();
+                
+                if (entries.length > 0) {
+                    UIkit.modal.confirm($($this.element).data('confirm-delete'), function() {
+                        $this.action('delete');
+                    }, {
+                        labels: {
+                            Cancel: $($this.element[0]).data('confirm-delete-cancel'),
+                            Ok: $($this.element[0]).data('confirm-delete-confirm')
+                        }
+                    });
+                } else {
+                    UIkit.notify({
+                        message : $($this.element[0]).data('no-selection'),
+                        status  : 'warning',
+                        timeout : 5550,
+                        pos     : 'top-center'
+                    });
+                }
             });
 
             $('#commsy-select-actions-cancel').on('change.uk.button', function(event) {
