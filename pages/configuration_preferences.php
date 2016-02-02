@@ -1009,6 +1009,9 @@ if ($current_user->isGuest()) {
                         $item->setHtmlTextAreaStatus($current_portal_item->getHtmlTextAreaStatus());
                      }
                      unset($current_portal_item);
+
+                     // disable RRS-Feed for new project and community rooms
+                     $item->turnRSSOff();
                   }
                   $item->save();
                   $form_view->setItemIsSaved();
