@@ -1,6 +1,6 @@
 ;(function(UI) {
 
-    "use strict";
+    'use strict';
 
     var feedStart = 10;
     var sort = 'date';
@@ -27,7 +27,7 @@
                 $(target).append(result);
     
                 var event = new CustomEvent(
-                	"feedDidLoad", 
+                	'feedDidLoad', 
                 	{
                 		detail: {
                 			feedStart: feedStart,
@@ -147,7 +147,7 @@
                 $(target).html($(result));
                 
                 var event = new CustomEvent(
-                	"feedDidReload", 
+                	'feedDidReload', 
                 	{
                 		detail: {},
                 		bubbles: true,
