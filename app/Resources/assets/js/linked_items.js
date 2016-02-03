@@ -38,6 +38,8 @@
             // toggle linked items
             var checkbox = element.find('input[type=checkbox]')[0];
             $(checkbox).prop("checked", !$(checkbox).prop("checked"));
+
+            element.toggleClass('uk-comment-primary');
             
         }
     });
