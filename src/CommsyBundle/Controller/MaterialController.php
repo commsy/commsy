@@ -1022,6 +1022,17 @@ class MaterialController extends Controller
     	        $versionId = $item->getVersionID();
     	        $noticedManager->markNoticed($id, $versionId);
     	        $readerManager->markRead($id, $versionId);
+    	        
+    	        $sectionList =$item->getSectionList();
+    	        if ( !empty($sectionList) ){
+    	            $sectionItem = $sectionList->getFirst();
+    	            while($sectionItem){
+    	               $noticedManager->markNoticed($sectionItem->getItemID(),$versionId);
+    	               $readerManager->markRead($sectionItem->getItemID(),$versionId);
+    	               $sectionItem = $sectionList->getNext();
+    	            }
+    	        }
+    	        
     	        $annotationList =$item->getAnnotationList();
     	        if ( !empty($annotationList) ){
     	            $annotationItem = $annotationList->getFirst();
