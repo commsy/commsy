@@ -107,7 +107,7 @@ services:
         arguments: [@commsy.room_service, @liip_theme.active_theme, %liip_theme.themes%]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
-            
+
     kernel.listener.commsy_login:
         class: CommsyBundle\EventListener\CommsyLoginListener
         arguments: [@commsy_legacy.environment]
@@ -221,3 +221,8 @@ services:
     # Controller
     commsy.item_controller:
         class: CommsyBundle\Controller\ItemController
+
+    # Utils
+    commsy.utils.mail_assistant:
+        class: CommsyBundle\Utils\MailAssistant
+        arguments: [@commsy_legacy.environment, @translator, @twig]

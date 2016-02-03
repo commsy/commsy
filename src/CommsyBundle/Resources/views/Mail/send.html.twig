@@ -1,0 +1,20 @@
+{% set link = url('commsy_' ~ item.type ~ '_detail', {'roomId': app.request.attributes.get('roomId'), 'itemId': item.itemId}) %}
+
+{% if contextItem.isProjectRoom %}
+    {{ 'This email was sent from project room...'|trans({'%room_name%': contextItem.title}, 'mail') }}
+{% elseif contextItem.isGroupRoom %}
+    {{ 'This email was sent from group room...'|trans({'%room_name%': contextItem.title}, 'mail') }}
+{% else %}
+    {{ 'This email was sent from community room...'|trans({'%room_name%': contextItem.title}, 'mail') }}
+{% endif %}
+
+<br>
+---<br>
+
+{{ content }}
+
+{% if content is not empty %}
+    <br>---<br>
+{% endif %}
+
+<a href="{{ link }}">{{ link }}</a>

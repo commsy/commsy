@@ -38,6 +38,10 @@
                 <source>topic</source>
                 <target>{0}Thema|{1}Themen</target>
             </trans-unit>
+            <trans-unit id="rubric_institution">
+                <source>institution</source>
+                <target>one: Institution|some: Institutionen</target>
+            </trans-unit>
             <trans-unit id="10">
                 <source>filter entries</source>
                 <target>Einschränkungen nach Einträgen</target>
