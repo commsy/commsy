@@ -234,15 +234,17 @@ class ItemController extends Controller
         // get latest edited items from current user
         $itemManager->setContextLimit($roomId);
         $itemManager->setUserUserIDLimit($environment->getCurrentUser()->getUserId());
-        $itemManager->setIntervalLimit(10);
+        // $itemManager->setIntervalLimit(10);
         $itemManager->select();
         $latestItemList = $itemManager->get();
 
+        $i = 0;
         $latestItem = $latestItemList->getFirst();
-        while ($latestItem) {
+        while ($latestItem && $i < 5) {
             $tempTypedItem = $itemService->getTypedItem($latestItem->getItemId());
             if ($tempTypedItem && !array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) {
                 $optionsData['itemsLatest'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
+                $i++;
             }
             $latestItem = $latestItemList->getNext();
         }
@@ -762,6 +764,90 @@ class ItemController extends Controller
             }
         }
         return $result;
+    }
+
+    /**
+     * @Route("/room/{roomId}/item/{itemId}/autocomplete/{feedAmount}", defaults={"feedAmount" = 20})
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function autocompleteAction($roomId, $itemId, $feedAmount, Request $request)
+    {
+        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomService = $this->get('commsy.room_service');
+        
+        $itemService = $this->get('commsy.item_service');
+        $item = $itemService->getTypedItem($itemId);
+
+        $roomItem = $roomService->getRoomItem($roomId);
+        
+        $formData = array();
+        $optionsData = array();
+        $items = array();
+        
+        // get all items that are linked or can be linked
+        $rubricInformation = $roomService->getRubricInformation($roomId);
+        $optionsData['filterRubric']['all'] = 'all';
+        foreach ($rubricInformation as $rubric) {
+            $optionsData['filterRubric'][$rubric] = $rubric;
+        }
+
+        $optionsData['filterPublic']['public'] = 'public';
+        $optionsData['filterPublic']['all'] = 'all';
+
+        $itemManager = $environment->getItemManager();
+        $itemManager->reset();
+        $itemManager->setContextLimit($roomId);
+        $itemManager->setTypeArrayLimit($rubricInformation);
+
+
+        $itemManager->setIntervalLimit($feedAmount);
+        $itemManager->select();
+        $itemList = $itemManager->get();
+        
+        // get all items except linked items
+        $tempItem = $itemList->getFirst();
+        while ($tempItem) {
+            $tempTypedItem = $itemService->getTypedItem($tempItem->getItemId());
+            // skip already linked items
+            if ($tempTypedItem) {
+                $optionsData['items'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
+                $items[$tempTypedItem->getItemId()] = $tempTypedItem;
+            }
+            $tempItem = $itemList->getNext();
+            
+        }
+
+        // get latest edited items from current user
+        $itemManager->setContextLimit($roomId);
+        $itemManager->setUserUserIDLimit($environment->getCurrentUser()->getUserId());
+        $itemManager->setIntervalLimit(10);
+        $itemManager->select();
+        $latestItemList = $itemManager->get();
+
+        $latestItem = $latestItemList->getFirst();
+        while ($latestItem) {
+            $tempTypedItem = $itemService->getTypedItem($latestItem->getItemId());
+            if ($tempTypedItem) {
+                $optionsData['itemsLatest'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
+            }
+            $latestItem = $latestItemList->getNext();
+        }
+        if (empty($optionsData['itemsLatest'])) {
+            $optionsData['itemsLatest'] = array();
+        }
+
+        return new JsonResponse([
+            $optionsData['itemsLatest']
+        ]);
+
+        // return array(
+        //     'itemId' => $itemId,
+        //     'roomId' => $roomId,
+        //     'form' => $form->createView(),
+        //     'showCategories' => $roomItem->withTags(),
+        //     'showHashtags' => $roomItem->withBuzzwords(),
+        //     'items' => $items,
+        // );
     }
 
 }
