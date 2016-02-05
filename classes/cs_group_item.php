@@ -147,6 +147,9 @@ class cs_group_item extends cs_label_item {
          $grouproom_item->open();
          $grouproom_item->setHtmlTextAreaStatus($current_context->getHtmlTextAreaStatus());
 
+         // disable RRS-Feed for new project and community rooms
+         $grouproom_item->turnRSSOff();
+
          $item_id = $this->getItemID();
          if ( !empty($item_id) ) {
             $grouproom_item->setLinkedGroupItemID($item_id);
