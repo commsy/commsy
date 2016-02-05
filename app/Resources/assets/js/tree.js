@@ -77,5 +77,20 @@
                 .jstree(this.options.tree);
         }
     });
+    
+    $('.cs-tree-plain').first('ul').jstree({
+                                                core: {
+                                                    themes: {
+                                                        icons: false
+                                                    },
+                                                    multiple: true
+                                                },
+                                                checkbox: {
+                                                    keep_selected_style: false
+                                                },
+                                                plugins: [
+                                                    "wholerow"
+                                                ]
+                                            });
 
 })(UIkit);

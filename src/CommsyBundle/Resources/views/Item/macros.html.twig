@@ -131,7 +131,7 @@
     </article>
 {% endmacro %}
 
-{% macro links(item,withTags,withCategories) %}
+{% macro links(item,withTags,withCategories,roomCategories) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
     
     {%set countEntries = item.tagsArray|length + item.buzzwordArray|length + item.AllLinkeditemIDArray|length %}
@@ -195,21 +195,10 @@
             ))}}            
         </div>
         <div class="uk-width-1-3">
-            <strong>{{ 'categories'|trans({}, "room") }}:</strong> <br/>
-            TODO: Tree-View for Detailview <br/>
-            {% set count = 1 %}
-            {% if (item.tagsArray|length) < 4 %}
-                {% if (item.tagsArray|length) == 0 %}
-                    {{ 'no linked items'|trans({}, "room")}}    
-                {%else%}
-                    {% for tag in item.tagsArray %}
-                        {{tag.title}}{% if count < item.tagsArray|length %}, {% endif %}
-                        {% set count = count +1 %}
-                    {% endfor %}
-                {% endif %}
-             {% else %}
-                    {{item.tagsArray|length}} {{ 'categories'|trans({}, "room") }}
-             {% endif %}
+            <strong>{{ 'categories'|trans({}, "room") }}:</strong>
+            <div class="cs-tree-plain">
+                {{ _self.nestedTagList(item.tagsArray, roomCategories, 1) }}
+            </div>
         </div>
         <div class="uk-width-1-3">
             <strong>{{ 'hashtags'|trans({}, "room") }}:</strong> <br/>
@@ -367,4 +356,34 @@
 
             </div>
         {% endif %}
+{% endmacro %}
+
+{% macro nestedTagList(tags, roomTags, level) %}
+    {% set opened = false %}
+    <ul class="uk-list">
+    {% for child in roomTags %}
+    
+        {% set childTitle %}
+            <div><i class="uk-icon-square-o"></i> <span class="uk-text-muted">{{ child.title }}</span></div>
+        {% endset %}
+        {% for tag in tags %}
+            {% if tag.id == child.item_id %}
+                {% set childTitle %}
+                    <div><i class="uk-icon-check-square-o"></i> <span class="uk-text-bold">{{ child.title }}</span></div>
+                {% endset %}
+            {% endif %}
+        {% endfor %}
+    
+        {% if child.children is defined and not child.children is empty %}
+            <li id="tag_{{ child.title }}" data-jstree='{"opened": {{ opened }}}'>
+                {{ childTitle }}
+                {{ _self.nestedTagList(tags, child.children, level+1) }}
+            </li>
+        {% else %}
+            <li id="tag_{{ child.title }}" data-jstree='{"opened": {{ opened }}}'>
+                {{ childTitle }}
+            </li>
+        {% endif %}
+    {% endfor %}
+    </ul>
 {% endmacro %}

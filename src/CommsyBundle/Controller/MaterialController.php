@@ -246,6 +246,7 @@ class MaterialController extends Controller
             'ratingArray' => $infoArray['ratingArray'],
             'canExportToWordpress' => $canExportToWordpress,
             'canExportToWiki' => $canExportToWiki,
+            'roomCategories' => $infoArray['roomCategories'],
        );
     }
 
@@ -567,6 +568,10 @@ class MaterialController extends Controller
             $section = $readsectionList->getNext();
         }
 
+        $categories = array();
+        if ($current_context->withTags()) {
+            $categories = $this->get('commsy.category_service')->getTags($roomId);
+        }
 
         $infoArray['material'] = $material;
         $infoArray['sectionList'] = $sectionList;
@@ -600,6 +605,7 @@ class MaterialController extends Controller
             'ratingAverageDetail' => $ratingAverageDetail,
             'ratingOwnDetail' => $ratingOwnDetail,
         ] : [];
+        $infoArray['roomCategories'] = $categories;
         
         return $infoArray;
     }
