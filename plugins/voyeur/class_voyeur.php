@@ -41,7 +41,7 @@ class class_voyeur extends cs_plugin {
    }
 
    public function getHomepage () {
-      return 'http://voyeur.hermeneuti.ca';
+      return 'http://docs.voyant-tools.org';
    }
 
    public function isConfigurableInPortal () {
