@@ -2,6 +2,10 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
+            <trans-unit id="mailSubject">
+                <source>Subject</source>
+                <target>Betreff</target>
+            </trans-unit>
             <trans-unit id="mailFromProjectRoom">
                 <source>This email was sent from project room...</source>
                 <target>Diese Email wurde über den Projektraum "%room_name%" versendet.</target>
@@ -13,6 +17,42 @@
             <trans-unit id="mailFromCommunityRoom">
                 <source>This email was sent from community room...</source>
                 <target>Diese Email wurde über den Gemeinschaftsraum "%room_name%" versendet.</target>
+            </trans-unit>
+            <trans-unit id="mailCopyToSender">
+                <source>Copy to sender</source>
+                <target>Kopie an Absender</target>
+            </trans-unit>
+            <trans-unit id="mailSendToAttendees">
+                <source>Send to attendees</source>
+                <target>An Teilnehmer versenden</target>
+            </trans-unit>
+            <trans-unit id="mailSendToAssigned">
+                <source>Send to assigned</source>
+                <target>An zugeordnete Mitglieder versenden</target>
+            </trans-unit>
+            <trans-unit id="mailSendToGroups">
+                <source>Send to groups</source>
+                <target>An folgende Gruppen senden</target>
+            </trans-unit>
+            <trans-unit id="mailSendToInstitution">
+                <source>Send to institution</source>
+                <target>An Institution senden</target>
+            </trans-unit>
+            <trans-unit id="mailSendToAll">
+                <source>Send to all room members</source>
+                <target>An alle Raummitglieder versenden</target>
+            </trans-unit>
+            <trans-unit id="mailAdditionalRecipients">
+                <source>Additional recipients</source>
+                <target>Zusätzliche Empfänger</target>
+            </trans-unit>
+            <trans-unit id="mailAddRecipients">
+                <source>Add another recipient</source>
+                <target>Einen weiteren Empfänger hinzufügen</target>
+            </trans-unit>
+            <trans-unit id="mailSend">
+                <source>Send</source>
+                <target>Versenden</target>
             </trans-unit>
         </body>
     </file>

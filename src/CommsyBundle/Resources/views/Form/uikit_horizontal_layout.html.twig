@@ -2,6 +2,18 @@
 
 {# Widgets #}
 
+{%- block choice_widget_expanded -%}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' uk-form-controls uk-form-controls-text')|trim}) %}
+
+    <div {{ block('widget_container_attributes') }}>
+    {%- for child in form %}
+        {{- form_widget(child) -}}
+        {{- form_label(child, null, {translation_domain: choice_translation_domain}) -}}
+        <br>
+    {% endfor -%}
+    </div>
+{%- endblock choice_widget_expanded -%}
+
 {%- block choice_widget_collapsed -%}
     <div class="uk-form-controls">
         {{- parent() -}}
@@ -9,10 +21,16 @@
 {%- endblock choice_widget_collapsed -%}
 
 {% block form_widget_simple %}
-    <div class="uk-form-controls">
+    {% if label is not empty -%}
+        <div class="uk-form-controls">
+    {%- endif -%}
+    
         {% set type = type|default('text') %}
         <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
-    </div>
+
+    {% if label is not empty -%}
+        </div>
+    {%- endif -%}
 {% endblock form_widget_simple %}
 
 {% block file_widget -%}
@@ -27,11 +45,29 @@
     </div>
 {%- endblock textarea_widget -%}
 
-{%- block checkbox_widget -%}
-    <div class="uk-form-controls">
-        {{- parent() -}}
-    </div>
-{%- endblock checkbox_widget -%}
+{# Labels #}
+
+{%- block checkbox_label -%}
+    {% if label is not same as(false) -%}
+        {% if not compound -%}
+            {% set label_attr = label_attr|merge({'for': id}) %}
+        {%- endif -%}
+        {% if required -%}
+            {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+        {%- endif -%}
+        {% if label is empty -%}
+            {%- if label_format is not empty -%}
+                {% set label = label_format|replace({
+                    '%name%': name,
+                    '%id%': id,
+                }) %}
+            {%- else -%}
+                {% set label = name|humanize %}
+            {%- endif -%}
+        {%- endif -%}
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ translation_domain is same as(false) ? label : label|trans({}, translation_domain) }}</label>
+    {%- endif -%}
+{%- endblock checkbox_label -%}
 
 {# Rows #}
 

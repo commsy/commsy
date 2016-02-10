@@ -294,6 +294,14 @@
                 <source>public</source>
                 <target>Freigeschaltete Einträge</target>
             </trans-unit>
+            <trans-unit id="formYes">
+                <source>Yes</source>
+                <target>Ja</target>
+            </trans-unit>
+            <trans-unit id="formNo">
+                <source>No</source>
+                <target>Nein</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

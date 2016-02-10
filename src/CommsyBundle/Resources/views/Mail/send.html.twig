@@ -11,10 +11,27 @@
 <br>
 ---<br>
 
-{{ content }}
+{# content #}
+{% if item.type == 'material' or item.type == 'materials' %}
+    {{ 'material'|transchoice(0, {}, 'rubric') }}: {{ item.title }}
+{% elseif item.type == 'announcement' or item.type == 'announcements' %}
+    {{ 'announcement'|transchoice(0, {}, 'rubric') }}: {{ item.title }}
+{% elseif item.type == 'label' or item.type == 'labels' %}
+    {% set labelType = item.labelType %}
 
-{% if content is not empty %}
-    <br>---<br>
+    {% if labelType == 'group' or labelType == 'groups' %}
+        {{ 'group'|transchoice(0, {}, 'rubric') }}: {{ item.title }}
+    {% elseif labelType == 'institution' or labelType == 'institutions' %}
+        {{ 'institution'|transchoice(1, {}, 'rubric') }}: {{ item.title }}
+    {% endif %}
+{% elseif item.type == 'discussion' or item.type == 'discussions' %}
+    {{ 'discussion'|transchoice(0, {}, 'rubric') }}: {{ item.title }}
+    {{ 'Number of entries'|trans({}, 'discussion') }}: {{ item.allArticlesCount }}
+    {{ 'Last entry'|trans({}, 'discussion') }}: {{ iten.latestArticleModificationDate|craue_date }}
+{% elseif item.type == 'date' %}
+
 {% endif %}
+
+<br>---<br>
 
 <a href="{{ link }}">{{ link }}</a>

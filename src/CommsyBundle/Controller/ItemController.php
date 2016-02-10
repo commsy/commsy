@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+use CommsyBundle\Form\Type\SendType;
+
 class ItemController extends Controller
 {
     /**
@@ -453,14 +455,25 @@ class ItemController extends Controller
 
         // prepare form
         $mailAssistant = $this->get('commsy.utils.mail_assistant');
+
+        $groupChoices = $mailAssistant->getGroupChoices($item);
+        $defaultGroupId = array_values($groupChoices)[0];
+
         $formData = [
             'additional_recipients' => [
                 'a', 'b', 'c'
             ],
+            'send_to_groups' => [
+                $defaultGroupId
+            ],
+            'send_to_group_all' => 'Yes',
+            'send_to_all' => 'Yes',
             'message' => $mailAssistant->prepareMessage($item),
         ];
 
-        $form = $this->createForm('send', $formData);
+        $form = $this->createForm(SendType::class, $formData, [
+            'item' => $item,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

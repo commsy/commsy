@@ -28,16 +28,99 @@ class MailAssistant
         return $this->twig->render('CommsyBundle:Mail:send.html.twig', [
             'contextItem' => $currentContextItem,
             'item' => $item,
-            'content' => $this->generateMessageContent($item),
+            'content' => $this->generateMessageData($item),
         ]);
     }
 
-    private function generateMessageContent($item)
+    public function showGroupRecipients($item) {
+        $groupArray = $this->getChoicesByLabelType("group");
+
+        if ($this->legacyEnvironment->inProjectRoom() && !empty($groupArray)) {
+            $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
+
+            if ($currentContextItem->withRubric('group')) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function showInstitutionRecipients($item) {
+        $institutionArray = $this->getChoicesByLabelType("institution");
+
+        if ($this->legacyEnvironment->inCommunityRoom() && !empty($institutionArray)) {
+            $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
+
+            if ($currentContextItem->withRubric('institution')) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function showGroupAllRecipients($item) {
+        $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
+
+        if ($currentContextItem->isProjectRoom() && !$currentContextItem->withRubric('group')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function getGroupChoices($item) {
+        return $this->getChoicesByLabelType("group");
+    }
+
+    public function getInstitutionChoices($item) {
+        return $this->getChoicesByLabelType("institution");
+    }
+
+    public function showAllMembersRecipients($item) {
+        $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
+
+        if ($currentContextItem->isCommunityRoom() && !$currentContextItem->withRubric('institution') ||
+            $currentContextItem->isGroupRoom()) {
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /** Retrieves all form choices by label type in the current context
+     *   @param $type: typ of label, e.g. 'topic', 'group' or 'institution'
+     *   @return array with label name as key and id as value
+     */
+    private function getChoicesByLabelType($type) {
+        $labelManager = $this->legacyEnvironment->getLabelManager();
+        $labelManager->resetLimits();
+        $labelManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
+        $labelManager->setTypeLimit($type);
+        $labelManager->select();
+        $labelList = $labelManager->get();
+
+        $choiceArray = array();
+        if ($labelList->getCount() > 0) {
+            $labelItem =  $labelList->getFirst();
+
+            while ($labelItem) {
+                $choiceArray[$labelItem->getName()] = $labelItem->getItemID();
+
+                $labelItem =  $labelList->getNext();
+            }
+        }
+
+        return $choiceArray;
+    }
+
+    private function generateMessageData($item)
     {
-        $content = '';
+        $data = [];
 
         $type = $item->getType();
-
         if ($type === 'date') {
             /*
             // set up style of days and times
@@ -157,123 +240,8 @@ class MailAssistant
             $content = $dates_content;
 
             */
-        } elseif ($type === 'discussion' || $type === 'discussions') {
-            /*
-                $discussion_content = $translator->getMessage('COMMON_DISCUSSION').': '.$item->getTitle().LF;
-            $article_count = $item->getAllArticlesCount();
-            $discussion_content .= $translator->getMessage('DISCUSSION_DISCARTICLE_COUNT').': '.$article_count.LF;
-            $time = $item->getLatestArticleModificationDate();
-            $discussion_content .= $translator->getMessage('DISCUSSION_LAST_ENTRY').': '.getDateTimeInLang($time).LF;
-            $content = $discussion_content;
-
-            */
-        } elseif ($type === 'material' | $type === 'materials') {
-            $content = $this->translator->transChoice('material', 0, [], 'rubric');
-            $content .= ': ' . $item->getTitle();
-        } elseif ($type === 'announcement') {
-            $content = $this->translator->transChoice('announcement', 0, [], 'rubric');
-            $content .= ': ' . $item->getTitle();
-        } elseif ($type === 'label' || $type === 'labels') {
-            $labelType = $item->getLabelType();
-
-            if ($labelType === 'group' || $labelType === 'groups') {
-                $content = $this->translator->transChoice('group', 0, [], 'rubric');
-                $content .= ': ' . $item->getTitle();
-            } else if ($labelType === 'institution' || $labelType === 'institutions') {
-                $content = $this->translator->transChoice('institution', 1, [], 'rubric');
-                $content .= ': ' . $item->getTitle();
-            }
         }
 
-        return $content;
+        return $data;
     }
 }
-
-/*
-
-    public function actionInit() {
-        
-       
-        // context information
-        $contextInformation = array();
-        $contextInformation["name"] = $current_context->getTitle();
-        $response['context'] = $contextInformation;
-
-        // group information
-        $groupArray = $this->getAllLabelsByType("group");
-
-        // institutions information
-        $institutionArray = $this->getAllLabelsByType("institution");
-
-        // receiver
-        $showAttendees = false;
-
-        if ($module === CS_DATE_TYPE) {
-            $showAttendees = true;
-            $attendeeType = CS_DATE_TYPE;
-        }
-        if ($module === CS_TODO_TYPE) {
-            $showAttendees = true;
-            $attendeeType = CS_TODO_TYPE;
-        }
-        
-        $response['showAttendees'] = $showAttendees;
-        $response['attendeeType'] = $attendeeType;
-
-
-        $showGroupRecipients = false;
-        $showInstitutionRecipients = false;
-        if ( $this->_environment->inProjectRoom() and !empty($groupArray) ) {
-            if ( $current_context->withRubric(CS_GROUP_TYPE) ) {
-                $showGroupRecipients = true;
-            }
-        } else {
-            if ( $current_context->withRubric(CS_INSTITUTION_TYPE) and !empty($institutionArray) ) {
-                $showInstitutionRecipients = true;
-            }
-        }
-
-        //Projectroom and no groups enabled -> send mails to group all
-        $withGroups = true;
-        if ( $current_context->isProjectRoom() && !$current_context->withRubric(CS_GROUP_TYPE)) {
-            $showGroupRecipients = true;
-            $withGroups = false;
-
-            // get number of users
-            $cid = $this->_environment->getCurrentContextId();
-            $user_manager = $this->_environment->getUserManager();
-            $user_manager->setUserLimit();
-            $user_manager->setContextLimit($cid);
-            $count = $user_manager->getCountAll();
-         $response['numMebers'] = $count;
-
-            $groupArray = array_slice($groupArray, 0, 1);
-        }
-        
-        $response['showGroupRecipients'] = $showGroupRecipients;
-        $response['withGroups'] = $withGroups;
-        $response['groups'] = $groupArray;
-
-        $allMembers = false;
-        if ( ($current_context->isCommunityRoom() && !$current_context->withRubric(CS_INSTITUTION_TYPE)) || $current_context->isGroupRoom()) {
-            $allMembers = true;
-
-            // get number of users
-            $cid = $this->_environment->getCurrentContextId();
-            $user_manager = $this->_environment->getUserManager();
-            $user_manager->setUserLimit();
-            $user_manager->setContextLimit($cid);
-            $count = $user_manager->getCountAll();
-            
-            $response['numMebers'] = $count;
-        }
-        
-        $response['showInstitutionRecipients'] = $showInstitutionRecipients;
-        $response['institutions'] = $institutionArray;
-        $response['allMembers'] = $allMembers;
-        
-        $this->setSuccessfullDataReturn($response);
-        echo $this->_return;
-    }
-
-    */

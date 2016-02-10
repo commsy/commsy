@@ -208,6 +208,7 @@ services:
 
     commsy.form.type.send:
         class: CommsyBundle\Form\Type\SendType
+        arguments: [@commsy.utils.mail_assistant]
         tags:
             - { name: form.type, alias: send }
 

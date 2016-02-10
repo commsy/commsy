@@ -294,6 +294,14 @@
                 <source>public</source>
                 <target>Accessable Entries</target>
             </trans-unit>
+            <trans-unit id="formYes">
+                <source>Yes</source>
+                <target>Yes</target>
+            </trans-unit>
+            <trans-unit id="formNo">
+                <source>No</source>
+                <target>No</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
