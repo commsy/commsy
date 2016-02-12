@@ -78,6 +78,7 @@
         }
     });
     
+    jQuery.jstree.plugins.nohover = function () { this.hover_node = jQuery.noop; };
     $('.cs-tree-plain').first('ul').jstree({
                                                 core: {
                                                     themes: {
@@ -89,7 +90,7 @@
                                                     keep_selected_style: false
                                                 },
                                                 plugins: [
-                                                    "wholerow"
+                                                    "wholerow", "nohover"
                                                 ]
                                             });
 

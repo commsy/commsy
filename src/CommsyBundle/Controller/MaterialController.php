@@ -570,7 +570,9 @@ class MaterialController extends Controller
 
         $categories = array();
         if ($current_context->withTags()) {
-            $categories = $this->get('commsy.category_service')->getTags($roomId);
+            $roomCategories = $this->get('commsy.category_service')->getTags($roomId);
+            $materialCategories = $material->getTagsArray();
+            $categories = $this->getTagDetailArray($roomCategories, $materialCategories);
         }
 
         $infoArray['material'] = $material;
@@ -608,6 +610,40 @@ class MaterialController extends Controller
         $infoArray['roomCategories'] = $categories;
         
         return $infoArray;
+    }
+
+    private function getTagDetailArray ($baseCategories, $itemCategories) {
+        $result = array();
+        $tempResult = array();
+        $addCategory = false;
+        foreach ($baseCategories as $baseCategory) {
+            if (!empty($baseCategory['children'])) {
+                $tempResult = $this->getTagDetailArray($baseCategory['children'], $itemCategories);
+            }
+            if (!empty($tempResult)) {
+                $addCategory = true;
+            }
+            $tempArray = array();
+            $foundCategory = false;
+            foreach ($itemCategories as $itemCategory) {
+                if ($baseCategory['item_id'] == $itemCategory['id']) {
+                    if ($addCategory) {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                    } else {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
+                    }
+                    $foundCategory = true;
+                }
+            }
+            if (!$foundCategory) {
+                if ($addCategory) {
+                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                }
+            }
+            $tempResult = array();
+            $addCategory = false;
+        }
+        return $result;
     }
 
     /**

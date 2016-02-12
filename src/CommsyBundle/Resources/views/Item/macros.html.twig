@@ -359,17 +359,17 @@
 {% endmacro %}
 
 {% macro nestedTagList(tags, roomTags, level) %}
-    {% set opened = false %}
+    {% set opened = true %}
     <ul class="uk-list">
     {% for child in roomTags %}
     
         {% set childTitle %}
-            <div><i class="uk-icon-square-o"></i> <span class="uk-text-muted">{{ child.title }}</span></div>
+            <div><span class="uk-text-muted">{{ child.title }}</span></div>
         {% endset %}
         {% for tag in tags %}
             {% if tag.id == child.item_id %}
                 {% set childTitle %}
-                    <div><i class="uk-icon-check-square-o"></i> <span class="uk-text-bold">{{ child.title }}</span></div>
+                    <div><span class="uk-text-bold">{{ child.title }}</span></div>
                 {% endset %}
             {% endif %}
         {% endfor %}
