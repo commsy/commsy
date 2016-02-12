@@ -136,6 +136,11 @@
                 }
             });
 
+            $('#commsy-select-actions-send-email').on('click', function(event) {
+                event.preventDefault();
+                $this.action('send-email');
+            });
+
             $('#commsy-select-actions-cancel').on('change.uk.button', function(event) {
                 $('#commsy-select-actions').toggleClass('uk-hidden');
                 $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '0px');

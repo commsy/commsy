@@ -215,6 +215,12 @@ services:
         arguments: [@commsy.utils.mail_assistant]
         tags:
             - { name: form.type, alias: send }
+            
+    commsy.form.type.sendList:
+        class: CommsyBundle\Form\Type\SendListType
+        arguments: [@commsy.utils.mail_assistant]
+        tags:
+            - { name: form.type, alias: sendList }
 
     # Twig
     twig.extension.room:

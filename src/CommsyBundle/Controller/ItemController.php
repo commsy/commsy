@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Form\Type\SendType;
+use CommsyBundle\Form\Type\SendListType;
 
 class ItemController extends Controller
 {
@@ -578,6 +579,61 @@ class ItemController extends Controller
         //     'showHashtags' => $roomItem->withBuzzwords(),
         //     'items' => $items,
         // );
+    }
+
+    /**
+     * @Route("/room/{roomId}/item/sendlist", condition="request.isXmlHttpRequest()")
+     * @Template()
+     **/
+    public function sendlistAction($roomId, Request $request)
+    {
+        // extract item id from request data
+        $requestContent = $request->getContent();
+        if (empty($requestContent)) {
+            throw new \Exception('no request content given');
+        }
+
+        $jsonArray = json_decode($requestContent, true);
+
+        /* if (!isset($jsonArray['itemId']) || empty($jsonArray['itemId'])) {
+            throw new \Exception('no item id given');
+        } */
+
+        //$itemId = $jsonArray['itemId'];
+
+        // get item
+        //$itemService = $this->get('commsy.item_service');
+        //$item = $itemService->getTypedItem($itemId);
+
+        //if (!$item) {
+        //    throw $this->createNotFoundException('no item found for id ' . $itemId);
+        //}
+
+        // prepare form
+        $mailAssistant = $this->get('commsy.utils.mail_assistant');
+
+        //$groupChoices = $mailAssistant->getGroupChoices($item);
+        //$defaultGroupId = array_values($groupChoices)[0];
+
+        $formData = [
+            'additional_recipients' => [],
+            'send_to_groups' => [],
+            'send_to_group_all' => 'NO',
+            'send_to_all' => 'NO',
+            'message' => 'E-Mail', //$mailAssistant->prepareMessage($item),
+        ];
+
+        $form = $this->createForm(SendListType::class, $formData, []);
+        
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+        }
+
+        return [
+            'form' => $form->createView()
+        ];
     }
 
 }

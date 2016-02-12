@@ -45,10 +45,12 @@
         </a>
     </li>
     
-    
     <li>
-        <a href="#" id="commsy-select-actions-send-email">
-            <i class="uk-icon-justify uk-icon-small uk-icon-envelope-o uk-visible-large"></i> {{ 'send email'|trans({},'rubric')|capitalize }}
+        <a href="#" data-cs-action-send-list="{
+            'url': '{{ path('commsy_item_sendlist', {'roomId': roomId}) }}',
+            'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}'
+        }">
+            <i class="uk-icon-small uk-icon-envelope-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({})|capitalize }}
         </a>
     </li>
 {% endblock %}
