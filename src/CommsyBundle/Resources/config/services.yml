@@ -25,6 +25,10 @@ services:
         class: CommsyBundle\Converter\RoomConverter
         arguments: [@doctrine.orm.entity_manager]
 
+    commsy.converter.materials:
+        class: CommsyBundle\Converter\MaterialsConverter
+        arguments: [@doctrine.orm.entity_manager]
+
     # Menu
     commsy.menu.builder:
         class: CommsyBundle\Menu\MenuBuilder

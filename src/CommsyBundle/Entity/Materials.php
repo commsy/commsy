@@ -128,7 +128,7 @@ class Materials
     /**
      * @var string
      *
-     * @ORM\Column(name="extras", type="text", length=16777215, nullable=true)
+     * @ORM\Column(name="extras", type="mbarray", nullable=true)
      */
     private $extras;
 
