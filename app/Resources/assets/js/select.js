@@ -379,7 +379,14 @@
             $.ajax({
               url: url
             }).done(function(result) {
+                let foundArticles = false;
                 if ($(result).filter('article').length) {
+                    foundArticles = true;
+                } else if ($(result).find('article').length) {
+                    foundArticles = true
+                }
+                
+                if (foundArticles) {
                     let target = el.data('feed').target;
                     $(target).empty();
                     $(target).html(result);
