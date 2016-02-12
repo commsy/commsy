@@ -27,13 +27,11 @@
                     </a>
                 </li>
                 <li>
-                    
                     {% if not module is empty %}
-                           <a href="#" data-uk-button data-commsy-select="{target:'.feed ul', actionUrl: '{{ path('commsy_user_feedaction', {'roomId': roomId}) }}'}" data-title="{{ 'list choice'|trans({},'rubric')|capitalize }}" data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}">
+                        <a href="#" data-uk-button data-commsy-select="{target:'.feed #user-feed', actionUrl: '{{ path('commsy_user_feedaction', {'roomId': roomId}) }}'}" data-title="{{ 'list choice'|trans({},'rubric')|capitalize }}" data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}" data-no-selection ="{{'no selection'|trans({},'rubric')}}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-edit"></i> {{ 'list choice'|trans({},'rubric')|capitalize }}
-                            </a>
+                        </a>    
                     {% endif %}
-
                </li>
             </ul>
         </div>
