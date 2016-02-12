@@ -174,10 +174,22 @@ class UserController extends Controller
             $selectedIds = json_decode($selectedIds);
         }
         
+        $selectAll = $request->request->get('selectAll');
+        $selectAllStart = $request->request->get('selectAllStart');
+        
+        if ($selectAll == 'true') {
+            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $request);
+            foreach ($entries['materials'] as $key => $value) {
+                $selectedIds[] = $value->getItemId();
+            }
+        }
+        
         $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
         
+        $result = [];
+        
         if ($action == 'markread') {
-            $userService = $this->get('commsy_legacy.user_service');
+            $userService = $this->get('commsy.user_service');
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             $noticedManager = $legacyEnvironment->getNoticedManager();
             $readerManager = $legacyEnvironment->getReaderManager();
@@ -196,38 +208,14 @@ class UserController extends Controller
                 }
             }
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
-        } else if ($action == 'copy') {
-           $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('%count% copied entries',count($selectedIds), array('%count%' => count($selectedIds)));
-        } else if ($action == 'save') {
-            $zipfile = $this->download($roomId, $selectedIds);
-            $content = file_get_contents($zipfile);
-
-            $response = new Response($content, Response::HTTP_OK, array('content-type' => 'application/zip'));
-            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,'zipfile.zip');   
-            $response->headers->set('Content-Disposition', $contentDisposition);
-            
-            return $response;
-        } else if ($action == 'delete') {
-            $userService = $this->get('commsy_legacy.user_service');
-            foreach ($selectedIds as $id) {
-                $item = $userService->getUser($id);
-                $item->delete();
-            }
-           $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> '.$translator->transChoice('%count% deleted entries',count($selectedIds), array('%count%' => count($selectedIds)));
         }
         
-        $response = new JsonResponse();
- /*       $response->setData(array(
-            'message' => $message,
-            'status' => $status
-        ));
-  */      
-        $response->setData(array(
+        return new JsonResponse([
             'message' => $message,
             'timeout' => '5550',
-            'layout'   => 'cs-notify-message'
-        ));
-        return $response;
+            'layout' => 'cs-notify-message',
+            'data' => $result,
+        ]);
     }
 
     

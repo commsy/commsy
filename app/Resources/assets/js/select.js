@@ -369,6 +369,10 @@
             let $this = this;
 
             let el = $('.feed-load-more');
+            if (!el.length) {
+                el = $('.feed-load-more-grid');    
+            }
+            
             let queryString = document.location.search;
             let url = el.data('feed').url  + 0 + '/' + $this.sort + $this.sortOrder + queryString;
 
