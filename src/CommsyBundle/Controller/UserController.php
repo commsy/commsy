@@ -208,8 +208,6 @@ class UserController extends Controller
                 }
             }
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
-        } else if ($action == 'send-email') {
-            // ToDo ...
         }
         
         return new JsonResponse([

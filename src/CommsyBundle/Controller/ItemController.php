@@ -595,32 +595,11 @@ class ItemController extends Controller
 
         $jsonArray = json_decode($requestContent, true);
 
-        /* if (!isset($jsonArray['itemId']) || empty($jsonArray['itemId'])) {
-            throw new \Exception('no item id given');
-        } */
-
-        //$itemId = $jsonArray['itemId'];
-
-        // get item
-        //$itemService = $this->get('commsy.item_service');
-        //$item = $itemService->getTypedItem($itemId);
-
-        //if (!$item) {
-        //    throw $this->createNotFoundException('no item found for id ' . $itemId);
-        //}
-
         // prepare form
         $mailAssistant = $this->get('commsy.utils.mail_assistant');
 
-        //$groupChoices = $mailAssistant->getGroupChoices($item);
-        //$defaultGroupId = array_values($groupChoices)[0];
-
         $formData = [
-            'additional_recipients' => [],
-            'send_to_groups' => [],
-            'send_to_group_all' => 'NO',
-            'send_to_all' => 'NO',
-            'message' => 'E-Mail', //$mailAssistant->prepareMessage($item),
+            'message' => 'ToDo: E-Mail standard text',
         ];
 
         $form = $this->createForm(SendListType::class, $formData, []);
@@ -628,7 +607,7 @@ class ItemController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
+            error_log(print_r('send list', true));
         }
 
         return [
