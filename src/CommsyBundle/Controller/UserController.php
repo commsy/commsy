@@ -23,10 +23,10 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 class UserController extends Controller
 {
     /**
-     * @Route("/room/{roomId}/user/feed/{start}")
+     * @Route("/room/{roomId}/user/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0, Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
