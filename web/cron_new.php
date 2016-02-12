@@ -416,11 +416,12 @@ function cron_workflow($logFile, $portal){
 set_time_limit(0);
 header("Content-Type: text/html; charset=utf-8");
 
-if ( !empty($_GET['cid']) ) {
-   $context_id = $_GET['cid'];
-} else if ( !empty($_SERVER["argv"][1]) ) {
-   $context_id = $_SERVER["argv"][1];
-}
+// if ( !empty($_GET['cid']) ) {
+//    $context_id = $_GET['cid'];
+// } else if ( !empty($_SERVER["argv"][1]) ) {
+//    $context_id = $_SERVER["argv"][1];
+// }
+$context_id = $cid;
 
 if ( !isset($context_id) ) {
    $filename = 'cronresult';
@@ -428,15 +429,15 @@ if ( !isset($context_id) ) {
    $filename = 'cronresult_'.$context_id;
 }
 
-if ( file_exists('var/'.$filename) ) {
-   $file_contents = file_get_contents('var/'.$filename);
+if ( file_exists('../files/'.$filename) ) {
+   $file_contents = file_get_contents('../files/'.$filename);
    if(stristr($file_contents, '-----CRON-OK-----')){
-      unlink('var/'.$filename);
+      unlink('../files/'.$filename);
    } else {
-      rename('var/'.$filename, 'var/'.$filename.'_error_'.date('dmY'));
+      rename('../files/'.$filename, '../files/'.$filename.'_error_'.date('dmY'));
    }
 }
-$file = fopen('var/'.$filename,'w+');
+$file = fopen('../files/'.$filename,'w+');
 
 fwrite($file,'<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head><body>');
 
@@ -466,10 +467,13 @@ $start_time = date('d.m.Y H:i:s');
 
 // setup commsy-environment
 include_once('etc/cs_constants.php');
-include_once('etc/cs_config.php');
-include_once('classes/cs_environment.php');
-$environment = new cs_environment();
-$environment->setCacheOff();
+// include_once('etc/cs_config.php');
+// include_once('classes/cs_environment.php');
+// $environment = new cs_environment();
+// $environment->setCacheOff();
+
+$environment = $legacyEnvironment;
+
 $result_array = array();
 
 echo('<h1>CommSy Cron Jobs</h1>'.LF);

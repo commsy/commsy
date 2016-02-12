@@ -231,3 +231,10 @@ services:
     commsy.utils.mail_assistant:
         class: CommsyBundle\Utils\MailAssistant
         arguments: [@commsy_legacy.environment, @translator, @twig]
+
+    # Commands
+    commsy.command.cron_command:
+        class: CommsyBundle\Command\CronCommand
+        arguments: [%kernel.root_dir%, @commsy_legacy.environment]
+        tags:
+            - { name: console.command }
