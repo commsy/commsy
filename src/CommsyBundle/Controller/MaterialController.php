@@ -863,6 +863,7 @@ class MaterialController extends Controller
         $materialItem->setTitle('['.$translator->trans('insert title').']');
         $materialItem->setBibKind('none');
         $materialItem->setDraftStatus(1);
+        $materialItem->setPrivateEditing('1');
         $materialItem->save();
 
         /* $form = $this->createForm('material', $materialData, array());
