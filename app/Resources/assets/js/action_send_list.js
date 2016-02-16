@@ -56,9 +56,34 @@
             });
         },
 
-
         setupForm: function() {
             let $this = this;
+            
+            $('.feed').find('form').submit(function (event) {
+                event.preventDefault();
+    
+                let entries =  $('.feed').find('input:checked').map(function() {
+                    return this.value;
+                }).get();
+    
+                // submit the form manually
+                $.ajax({
+                    url: $this.options.url,
+                    type: "POST",
+                    data: JSON.stringify(entries)
+                })
+                .done(function(result) {
+                    $('.feed').find('form').remove();
+                    
+                    UIkit.notify({
+                        message : message,
+                        status  : status,
+                        timeout : timeout,
+                        pos     : 'top-center'
+                    });
+                });
+            });
+            
         }
     });
 

@@ -607,7 +607,12 @@ class ItemController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            error_log(print_r('send list', true));
+            return new JsonResponse([
+                'message' => 'send ...',
+                'timeout' => '5550',
+                'layout' => 'cs-notify-message',
+                'data' => NULL,
+            ]);
         }
 
         return [
