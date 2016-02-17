@@ -5,6 +5,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormEvent;
@@ -173,6 +174,9 @@ class SendListType extends AbstractType
                 'required' => false,
                 'translation_domain' => 'mail',
             ]) */
+            ->add('entries', HiddenType::class, array(
+                'data' => '',
+            ))
             ->add('save', 'submit', [
                 'label' => 'Send',
                 'translation_domain' => 'mail',

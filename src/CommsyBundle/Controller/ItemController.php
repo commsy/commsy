@@ -607,6 +607,8 @@ class ItemController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
             return new JsonResponse([
                 'message' => 'send ...',
                 'timeout' => '5550',

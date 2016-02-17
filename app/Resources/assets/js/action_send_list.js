@@ -66,19 +66,21 @@
                     return this.value;
                 }).get();
     
+                $('#sendList_entries').attr('value', entries);
+    
                 // submit the form manually
                 $.ajax({
                     url: $this.options.url,
                     type: "POST",
-                    data: JSON.stringify(entries)
+                    data: $(this).serialize()
                 })
                 .done(function(result) {
                     $('.feed').find('form').remove();
                     
                     UIkit.notify({
-                        message : message,
-                        status  : status,
-                        timeout : timeout,
+                        message : result.message,
+                        status  : result.status,
+                        timeout : result.timeout,
                         pos     : 'top-center'
                     });
                 });
