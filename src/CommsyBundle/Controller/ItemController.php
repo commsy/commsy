@@ -609,6 +609,33 @@ class ItemController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
 
+            error_log(print_r($data, true));
+
+
+            $message = \Swift_Message::newInstance()
+                ->setSubject($data['subject'])
+                ->setFrom('schultze@effective-webwork.de')
+                ->setTo('schultze@effective-webwork.de')
+                ->setBody(
+                    $this->renderView(
+                        'CommsyBundle:Email:itemList.html.twig',
+                        array('message' => $data['subject'])
+                    ),
+                    'text/html'
+                )
+                /*
+                 * If you also want to include a plaintext version of the message
+                ->addPart(
+                    $this->renderView(
+                        'Emails/registration.txt.twig',
+                        array('name' => $name)
+                    ),
+                    'text/plain'
+                )
+                */
+            ;
+            $this->get('mailer')->send($message);
+
             return new JsonResponse([
                 'message' => 'send ...',
                 'timeout' => '5550',
