@@ -321,49 +321,119 @@ class cs_manager {
       }
    }
 
-   //Help function to provide the sql code for the search limit
-   // @param Array with names of DB-Fields where search must find a match
-   function _generateSearchLimitCode($field_array) {
-      $search_limit_query = '';
-      //text to be searched for
-      for ($i = 0; $i < count($this->_search_array); $i++) {
-         $search_limit_query .= '(';
-         for($j = 0; $j < count($field_array); $j++) {
-            $search_limit_query .= 'UPPER('.$field_array[$j].') LIKE BINARY "%'.encode(AS_DB,mb_strtoupper(htmlentities($this->_search_array[$i], ENT_NOQUOTES, 'UTF-8'), 'UTF-8')).'%"';
-            $search_limit_query .= ' OR ';
-            $search_limit_query .= 'UPPER('.$field_array[$j].') LIKE BINARY "%'.encode(AS_DB,mb_strtoupper($this->_search_array[$i], 'UTF-8')).'%"';
-            if ($j+1 < count($field_array)) {
-               $search_limit_query .= ' OR ';
+   /**
+    * Helper function to provide sql code for search limit
+    *
+    * @param Array with names of DB-Fields where search must find a match
+    * @param Array with names of fields and additional checks that must match
+    */
+    function _generateSearchLimitCode($fieldArray, $checkedFieldArray = array())
+    {
+        $searchLimitQuery = '';
+
+        // criteria that must match
+        $numSearchArray = count($this->_search_array);
+        for ($i=0; $i < $numSearchArray; $i++) {
+            $search = $this->_search_array[$i];
+
+            $searchLimitQuery .= '(';
+
+            $numFieldArray = count($fieldArray);
+            for ($j=0; $j < $numFieldArray; $j++) {
+                $field = $fieldArray[$j];
+
+                $searchLimitQuery .= 'UPPER(' . $field . ') LIKE BINARY "%' . encode(AS_DB, mb_strtoupper(htmlentities($search, ENT_NOQUOTES, 'UTF-8'), 'UTF-8')) . '%"';
+                $searchLimitQuery .= ' OR ';
+                $searchLimitQuery .= 'UPPER(' . $field . ') LIKE BINARY "%' . encode(AS_DB, mb_strtoupper($search, 'UTF-8')) . '%"';
+
+                if ($j+1 < $numFieldArray) {
+                    $searchLimitQuery .= ' OR ';
+                }
             }
-         }
-         if ($i+1 < count($this->_search_array)) {
-               $search_limit_query .= ') AND ';
-         }
-      }
-      $search_limit_query .= ')';
-      // text to be excluded- if any
-      if (count($this->_search_negative_array[1]) > 0) {
-         $search_limit_query .= ' AND ';
-         for ($i = 0; $i < count($this->_search_negative_array[1]); $i++) {
-            $search_limit_query .= '(';
-            for ($j = 0; $j < count($field_array); $j++) {
-               $search_limit_query .= '(';
-               $search_limit_query .= 'UPPER('.$field_array[$j].') NOT LIKE BINARY "%'.encode(AS_DB,$this->_search_negative_array[1][$i]).'%"';
-               $search_limit_query .= ' AND ';
-               $search_limit_query .= 'UPPER('.$field_array[$j].') NOT LIKE BINARY "%'.encode(AS_DB,mb_strtoupper(htmlentities($this->_search_negative_array[1][$i], ENT_NOQUOTES, 'UTF-8'), 'UTF-8')).'%"';
-               $search_limit_query .= ')';
-               if ($j+1 < count($field_array)) {
-                  $search_limit_query .= ' AND ';
-               }
+
+            // criteria that must match with additional checks
+            if (!empty($checkedFieldArray)) {
+                $searchLimitQuery .= ' OR (';
+
+                $numCheckedFields = count($checkedFieldArray['fields']);
+                if ($numCheckedFields > 0) {
+                    $searchLimitQuery .= '(';
+
+                    for ($k=0; $k < $numCheckedFields; $k++) {
+                        $checkedField = $checkedFieldArray['fields'][$k];
+
+                        $searchLimitQuery .= 'UPPER(' . $checkedField . ') LIKE BINARY "%' . encode(AS_DB, mb_strtoupper(htmlentities($search, ENT_NOQUOTES, 'UTF-8'), 'UTF-8')) . '%"';
+                        $searchLimitQuery .= ' OR ';
+                        $searchLimitQuery .= 'UPPER(' . $checkedField . ') LIKE BINARY "%' . encode(AS_DB, mb_strtoupper($search, 'UTF-8')) . '%"';
+
+                        if ($k+1 < $numCheckedFields) {
+                            $searchLimitQuery .= ' OR ';
+                        }
+                    }
+
+                    $searchLimitQuery .= ')';
+                }
+
+                $numCheckedFieldChecks = count($checkedFieldArray['checks']);
+                if ($numCheckedFieldChecks > 0) {
+                    $searchLimitQuery .= ' AND ';
+
+                    for ($k=0; $k < $numCheckedFieldChecks; $k++) {
+                        $checkedFieldCheck = $checkedFieldArray['checks'][$k];
+
+                        $searchLimitQuery .= $checkedFieldCheck;
+
+                        if ($k+1 < $numCheckedFieldChecks) {
+                            $searchLimitQuery .= ' AND ';
+                        }
+                    }
+                }
+
+                $searchLimitQuery .= ')';
             }
-            if ($i+1 < count($this->_search_negative_array[1])) {
-               $search_limit_query .= ') AND ';
+
+            if ($i+1 < $numSearchArray) {
+                $searchLimitQuery .= ' OR ';
             }
-         }
-         $search_limit_query .= ')';
-      }
-      return $search_limit_query;
-   }
+        }
+
+        $searchLimitQuery .= ')';
+
+        // criteria that must not match
+        if (count($this->_search_negative_array[1]) > 0) {
+            $searchLimitQuery .= ' AND ';
+
+            $numNegativeArray = sizeof($this->_search_negative_array[1]);
+            for ($i=0; $i < $numNegativeArray[1]; $i++) {
+                $negativeSearch = $this->_search_negative_array[1][$i];
+
+                $searchLimitQuery .= '(';
+
+                $numFieldArray = count($fieldArray);
+                for ($j=0; $j < $numFieldArray; $j++) {
+                    $field = $fieldArray[$j];
+
+                    $searchLimitQuery .= '(';
+                    $searchLimitQuery .= 'UPPER(' . $field . ') NOT LIKE BINARY "%' . encode(AS_DB, $negativeSearch) . '%"';
+                    $searchLimitQuery .= ' AND ';
+                    $searchLimitQuery .= 'UPPER(' . $field . ') NOT LIKE BINARY "%' . encode(AS_DB, mb_strtoupper(htmlentities($search, ENT_NOQUOTES, 'UTF-8'), 'UTF-8')) . '%"';
+                    $searchLimitQuery .= ')';
+
+                    if ($j+1 < $numFieldArray) {
+                        $searchLimitQuery .= ' AND ';
+                    }
+                }
+
+                if ($i+1 < $numNegativeArray) {
+                    $searchLimitQuery .= ') AND ';
+                }
+            }
+
+            $searchLimitQuery .= ')';
+        }
+
+        return $searchLimitQuery;
+    }
 
    function setUserLimit ($limit) {
       $this->_user_limit = (int)$limit;
