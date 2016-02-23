@@ -375,7 +375,7 @@ sqlite:
     adminer: 0
     databases: {  }
 mailhog:
-    install: '0'
+    install: '1'
     settings:
         smtp_ip: 0.0.0.0
         smtp_port: 1025
