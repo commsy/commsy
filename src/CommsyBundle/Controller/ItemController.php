@@ -607,33 +607,39 @@ class ItemController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $currentUser = $environment->getCurrentUser();
+            
+            $userService = $this->get('commsy.user_service');
+            
             $data = $form->getData();
 
-            error_log(print_r($data, true));
-
+            $userIds = explode(',', $data['entries']);
+            $toArray = array();
+            foreach ($userIds as $userId) {
+                $user = $userService->getUser($userId);
+                if ($user) {
+                    $toArray[$user->getEmail()] = $user->getFullname();
+                }
+            }
 
             $message = \Swift_Message::newInstance()
                 ->setSubject($data['subject'])
-                ->setFrom('schultze@effective-webwork.de')
-                ->setTo('schultze@effective-webwork.de')
+                ->setFrom(array($currentUser->getEmail() => $currentUser->getFullname()))
+                ->setTo($toArray)
                 ->setBody(
                     $this->renderView(
-                        'CommsyBundle:Email:itemList.html.twig',
-                        array('message' => $data['subject'])
-                    ),
-                    'text/html'
-                )
-                /*
-                 * If you also want to include a plaintext version of the message
-                ->addPart(
-                    $this->renderView(
-                        'Emails/registration.txt.twig',
-                        array('name' => $name)
+                        'CommsyBundle:Email:itemList.txt.twig',
+                        array('message' => strip_tags($data['message']))
                     ),
                     'text/plain'
                 )
-                */
             ;
+            
+            if ($data['copy_to_sender']) {
+                $message->setCc(array($currentUser->getEmail() => $currentUser->getFullname()));
+            }
+            
             $this->get('mailer')->send($message);
 
             return new JsonResponse([
