@@ -40,7 +40,7 @@ class SendListType extends AbstractType
                     'placeholder' => 'Subject',
                 ],
             ])
-            ->add('message', 'ckeditor', [
+            ->add('message', 'textarea', [
                 'label' => false,
                 'translation_domain' => 'form',
                 'required' => true,
