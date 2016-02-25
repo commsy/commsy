@@ -592,14 +592,22 @@ class ItemController extends Controller
         if (empty($requestContent)) {
             throw new \Exception('no request content given');
         }
+        
+        $roomService = $this->get('commsy.room_service');
+        $room = $roomService->getRoomItem($roomId);
+
+        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUser = $environment->getCurrentUser();
 
         $jsonArray = json_decode($requestContent, true);
 
         // prepare form
         $mailAssistant = $this->get('commsy.utils.mail_assistant');
 
+        $formMessage = $this->renderView('CommsyBundle:Email:itemListTemplate.txt.twig',array('user' => $currentUser, 'room' => $room));
+
         $formData = [
-            'message' => 'ToDo: E-Mail standard text',
+            'message' => $formMessage,
         ];
 
         $form = $this->createForm(SendListType::class, $formData, []);
@@ -607,9 +615,6 @@ class ItemController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $environment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $currentUser = $environment->getCurrentUser();
-            
             $userService = $this->get('commsy.user_service');
             
             $data = $form->getData();

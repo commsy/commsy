@@ -41,9 +41,10 @@ class SendListType extends AbstractType
                 ],
             ])
             ->add('message', 'textarea', [
-                'label' => false,
+                'label' => 'Message',
                 'translation_domain' => 'form',
                 'required' => true,
+                'attr' => array('cols' => '80', 'rows' => '10'),
             ])
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options, $mailAssistant) {
                 $form = $event->getForm();
