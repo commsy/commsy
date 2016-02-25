@@ -136,6 +136,11 @@
                 }
             });
 
+            $('#commsy-select-actions-send-list').on('click', function(event) {
+                event.preventDefault();
+                $this.action('send-list');
+            });
+
             $('#commsy-select-actions-cancel').on('change.uk.button', function(event) {
                 $('#commsy-select-actions').toggleClass('uk-hidden');
                 $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '0px');
@@ -297,7 +302,7 @@
             }).get();
             
             if (entries.length > 0) {
-                if (action != 'save') {
+                if (action != 'save' && action != 'send-list') {
                     // send action request
                     $.ajax({
                         url: $this.options.actionUrl,
@@ -330,7 +335,7 @@
                     }).fail(function(jqXHR, textStatus, errorThrown) {
                         UIkit.notify($this.options.errorMessage, 'danger');
                     });
-                } else {
+                } else if (action == 'save') {
                     let $form = $(document.createElement('form'))
                         .css({
                             display: 'none'
@@ -348,6 +353,31 @@
                     $form.append(input);
                     $('body').append($form);
                     $form.submit();
+                } else if (action == 'send-list') {
+                    // send ajax request
+                    $.ajax({
+                        url: $('#commsy-select-actions-send-list').data('cs-action-send-list').url,
+                        type: 'POST',
+                        data: JSON.stringify({
+                        })
+                    }).done(function(data, textStatus, jqXHR) {
+                        if (!jqXHR.responseJSON) {
+                            // if we got back html, embed the form
+                            let feedDom = $('.feed');
+    
+                            if (feedDom.length) {
+                                feedDom.prepend(data);
+                            }
+    
+                            $this.setupForm();
+                        } else {
+                            console.log('json response');
+                            console.log(data);
+                        }
+    
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        UIkit.notify($this.options.errorMessage, 'danger');
+                    });
                 }
             } else {
                 UIkit.notify({
@@ -406,6 +436,44 @@
                 }
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 UIkit.notify($this.options.errorMessage, 'danger');
+            });
+        },
+        
+        setupForm: function() {
+            let $this = this;
+            let target = this.options.target ? UI.$(this.options.target) : [];
+            
+            $('.feed').find('form').submit(function (event) {
+                event.preventDefault();
+    
+                let entries =  $('.feed').find('input:checked').map(function() {
+                    return this.value;
+                }).get();
+    
+                $('#sendList_entries').attr('value', entries);
+    
+                // submit the form manually
+                $.ajax({
+                    url: $('#commsy-select-actions-send-list').data('cs-action-send-list').url,
+                    type: "POST",
+                    data: $(this).serialize()
+                })
+                .done(function(result) {
+                    $('.feed').find('form').remove();
+                    
+                    $('#commsy-select-actions-select-shown').removeClass('uk-active');
+                    $('#commsy-select-actions-select-all').removeClass('uk-active');
+                    $('#commsy-select-actions-unselect').removeClass('uk-active');
+                        
+                    target.find('input[type="checkbox"]').each(function() {
+                        $(this).prop('checked', false);
+                    });
+                    target.find('article').each(function() {
+                        $(this).removeClass('uk-comment-primary');
+                    });
+                    
+                    $this.reloadFeed(result);
+                });
             });
         }
     });

@@ -46,10 +46,10 @@
     </li>
     
     <li>
-        <a href="#" data-cs-action-send-list="{
-            'url': '{{ path('commsy_item_sendlist', {'roomId': roomId}) }}',
-            'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}'
-        }">
+        <a href="#" id="commsy-select-actions-send-list" data-cs-action-send-list='{
+            "url": "{{ path('commsy_item_sendlist', {'roomId': roomId}) }}",
+            "errorMessage": "<i class=\"uk-icon-medium uk-icon-info\"></i> {{ 'action error'|trans }}"
+        }'>
             <i class="uk-icon-small uk-icon-envelope-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({})|capitalize }}
         </a>
     </li>
