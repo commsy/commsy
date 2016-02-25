@@ -1,2 +1,2 @@
 {{ 'regards'|trans({}, "email") }} {{ user.fullname }}
-CommSy-Projektraum {{ room.title }}
+CommSy-{{ room.type|trans({}, "room") }} {{ room.title }}

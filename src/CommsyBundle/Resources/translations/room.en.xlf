@@ -62,7 +62,10 @@
                 <source>no hashtags</source>
                 <target>No hashtags available</target>
             </trans-unit>
-
+            <trans-unit id="17">
+                <source>project</source>
+                <target>Project room</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
