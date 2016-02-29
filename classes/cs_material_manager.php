@@ -723,10 +723,32 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
       // restrict sql-statement by search limit, create wheres
       elseif (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND (';
-         $field_array = array('TRIM(CONCAT(modificator.firstname," ",modificator.lastname))','TRIM(CONCAT(creator.firstname," ",creator.lastname))',$this->addDatabasePrefix('section').'.description',$this->addDatabasePrefix('section').'.title',$this->addDatabasePrefix('materials').'.publishing_date',$this->addDatabasePrefix('materials').'.author',$this->addDatabasePrefix('materials').'.title',$this->addDatabasePrefix('materials').'.description','buzzwords.name',$this->addDatabasePrefix('files').'.filename');
-         $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
-         $query .= $search_limit_query_code;
-         $query .= ' )';
+
+        $fieldArray = array(
+            'TRIM(CONCAT(modificator.firstname," ",modificator.lastname))',
+            'TRIM(CONCAT(creator.firstname," ",creator.lastname))',
+            $this->addDatabasePrefix('materials') . '.publishing_date',
+            $this->addDatabasePrefix('materials') . '.author',
+            $this->addDatabasePrefix('materials') . '.title',
+            $this->addDatabasePrefix('materials') . '.description',
+            'buzzwords.name',
+            $this->addDatabasePrefix('files') . '.filename'
+        );
+
+        $checkedFieldArray = array(
+            'fields' => array(
+                $this->addDatabasePrefix('section') . '.description',
+                $this->addDatabasePrefix('section') . '.title'
+            ),
+            'checks' => array(
+                $this->addDatabasePrefix('section') . '.deleter_id IS NULL',
+                $this->addDatabasePrefix('section') . '.deletion_date IS NULL'
+            )
+        );
+
+        $search_limit_query_code = $this->_generateSearchLimitCode($fieldArray, $checkedFieldArray);
+        $query .= $search_limit_query_code;
+        $query .= ' )';
       }
 
       // init and perform ft search action
@@ -760,9 +782,7 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
          $query .= ' AND lf1.deleter_id IS NULL AND lf1.deletion_date IS NULL';
       }
 
-      if ( ( isset($this->_search_array) AND !empty($this->_search_array) )
-           or ( isset($this->_only_files_limit) and $this->_only_files_limit )
-         ) {
+      if (isset($this->_only_files_limit) && $this->_only_files_limit) {
          $query .= ' AND '.$this->addDatabasePrefix('section').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('section').'.deletion_date IS NULL';
       }
 
