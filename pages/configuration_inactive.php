@@ -106,6 +106,8 @@ if (!$current_user->isModerator()
                 } else {
                     $current_context->setInactivitySendMailBeforeDeleteDays('');
                 }
+                // save configuration
+                $current_context->save();
 
                 if (empty($_POST['delete_user']) and empty($_POST['lock_user'])) {
                     $params = array();
@@ -174,10 +176,10 @@ if (!$current_user->isModerator()
                         if ($count_delete != 0 or $count_lock != 0) {
                             $html = '';
                             if ($count_delete > 0) {
-                                $html .= $count_delete.' '.$translator->getMessage('CONFIGURATION_INACTIVITY_ALERT_DELETE');
+                                $html .= $count_delete.' '.$translator->getMessage('CONFIGURATION_INACTIVITY_ALERT_DELETE', $delete_days);
                             }
                             if ($count_lock > 0) {
-                                $html .= $count_lock.' '.$translator->getMessage('CONFIGURATION_INACTIVITY_ALERT_LOCK');
+                                $html .= $count_lock.' '.$translator->getMessage('CONFIGURATION_INACTIVITY_ALERT_LOCK', $lock_days);
                             }
                             #$html .= $translator->getMessage('CONFIGURATION_INACTIVITY_ALERT_INFO');
                       
