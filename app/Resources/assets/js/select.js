@@ -420,6 +420,7 @@
                     let target = el.data('feed').target;
                     $(target).empty();
                     $(target).html(result);
+                    $(target).trigger('changed.uk.dom');
                     
                     $(target).find('article').each(function() {
                         $(this).toggleClass('selectable');
