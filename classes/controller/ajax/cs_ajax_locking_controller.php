@@ -31,8 +31,24 @@ class cs_ajax_locking_controller extends cs_ajax_controller {
 		$itemType = $itemManager->getItemType($itemId);
 
 		if (!empty($itemType)) {
-			// get the corresponding manager
-			$manager = $this->_environment->getManager($itemType);
+
+            if ($itemType == CS_STEP_TYPE) {
+                $itemTypeNew = CS_TODO_TYPE;
+            } else if ($itemType == CS_SECTION_TYPE){
+                $itemTypeNew = CS_MATERIAL_TYPE;
+            }
+
+            // get the corresponding manager
+            $manager = $this->_environment->getManager($itemType);
+
+            if ($itemType == CS_STEP_TYPE || $itemType == CS_SECTION_TYPE) {
+                $item = $manager->getItem($itemId);
+                $linkedItem = $item->getLinkedItem();
+                $itemId = $linkedItem->getItemId();
+
+                $manager = $this->_environment->getManager($linkedItem->getItemType());
+                $itemType = $itemTypeNew;
+            }
 			if ($manager) {
 				// check if the update method exists
 				if (method_exists($manager, "updateLocking")) {
@@ -120,8 +136,23 @@ class cs_ajax_locking_controller extends cs_ajax_controller {
 		$itemType = $itemManager->getItemType($itemId);
 
 		if (!empty($itemType)) {
-			// get the corresponding manager
-			$manager = $this->_environment->getManager($itemType);
+			if ($itemType == CS_STEP_TYPE) {
+                $itemTypeNew = CS_TODO_TYPE;
+            } else if ($itemType == CS_SECTION_TYPE){
+                $itemTypeNew = CS_MATERIAL_TYPE;
+            }
+
+            // get the corresponding manager
+            $manager = $this->_environment->getManager($itemType);
+
+            if ($itemType == CS_STEP_TYPE || $itemType == CS_SECTION_TYPE) {
+                $item = $manager->getItem($itemId);
+                $linkedItem = $item->getLinkedItem();
+                $itemId = $linkedItem->getItemId();
+
+                $manager = $this->_environment->getManager($linkedItem->getItemType());
+                $itemType = $itemTypeNew;
+            }
 			if ($manager) {
 				// check if the clear method exists
 				if (method_exists($manager, "clearLocking")) {
