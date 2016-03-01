@@ -615,13 +615,17 @@ class AnnouncementController extends Controller
 
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('%count% copied entries',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'save') {
-            $zipfile = $this->download($roomId, $selectedIds);
-            $content = file_get_contents($zipfile);
-
-            $response = new Response($content, Response::HTTP_OK, array('content-type' => 'application/zip'));
-            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,'zipfile.zip');   
+            $downloadService = $this->get('commsy_legacy.download_service');
+        
+            $zipFile = $downloadService->zipFile($roomId, $selectedIds);
+    
+            $response = new BinaryFileResponse($zipFile);
+            $response->deleteFileAfterSend(true);
+    
+            $filename = 'CommSy_Announcement.zip';
+            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$filename);   
             $response->headers->set('Content-Disposition', $contentDisposition);
-            
+    
             return $response;
         } else if ($action == 'delete') {
             $announcementService = $this->get('commsy_legacy.announcement_service');
@@ -638,6 +642,25 @@ class AnnouncementController extends Controller
             'layout' => 'cs-notify-message',
             'data' => $result,
         ]);
+    }
+
+    /**
+     * @Route("/room/{roomId}/announcement/{itemId}/download")
+     */
+    public function downloadAction($roomId, $itemId)
+    {
+        $downloadService = $this->get('commsy_legacy.download_service');
+        
+        $zipFile = $downloadService->zipFile($roomId, $itemId);
+
+        $response = new BinaryFileResponse($zipFile);
+        $response->deleteFileAfterSend(true);
+
+        $filename = 'CommSy_Announcement.zip';
+        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$filename);   
+        $response->headers->set('Content-Disposition', $contentDisposition);
+
+        return $response;
     }
 
 }
