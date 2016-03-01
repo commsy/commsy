@@ -568,6 +568,8 @@ class AnnouncementController extends Controller
         
         $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
         
+        $result = [];
+        
         if ($action == 'markread') {
             $announcementService = $this->get('commsy_legacy.announcement_service');
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -589,7 +591,29 @@ class AnnouncementController extends Controller
             }
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'copy') {
-           $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('%count% copied entries',count($selectedIds), array('%count%' => count($selectedIds)));
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $sessionItem = $legacyEnvironment->getSessionItem();
+
+            $currentClipboardIds = array();
+            if ($sessionItem->issetValue('clipboard_ids')) {
+                $currentClipboardIds = $sessionItem->getValue('clipboard_ids');
+            }
+
+            foreach ($selectedIds as $itemId) {
+                if (!in_array($itemId, $currentClipboardIds)) {
+                    $currentClipboardIds[] = $itemId;
+                    $sessionItem->setValue('clipboard_ids', $currentClipboardIds);
+                }
+            }
+
+            $result = [
+                'count' => sizeof($currentClipboardIds)
+            ];
+
+            $sessionManager = $legacyEnvironment->getSessionManager();
+            $sessionManager->save($sessionItem);
+
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('%count% copied entries',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'save') {
             $zipfile = $this->download($roomId, $selectedIds);
             $content = file_get_contents($zipfile);
@@ -608,18 +632,12 @@ class AnnouncementController extends Controller
            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> '.$translator->transChoice('%count% deleted entries',count($selectedIds), array('%count%' => count($selectedIds)));
         }
         
-        $response = new JsonResponse();
- /*       $response->setData(array(
-            'message' => $message,
-            'status' => $status
-        ));
-  */      
-        $response->setData(array(
+        return new JsonResponse([
             'message' => $message,
             'timeout' => '5550',
-            'layout'   => 'cs-notify-message'
-        ));
-        return $response;
+            'layout' => 'cs-notify-message',
+            'data' => $result,
+        ]);
     }
 
 }
