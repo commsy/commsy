@@ -31,6 +31,19 @@ class DiscussionService
         return $discussionList->to_array();
     }
 
+    public function getCountArray($roomId)
+    {
+        $this->discussionManager->setContextLimit($roomId);
+        $this->discussionManager->select();
+        $countDiscussion = array();
+        $countDiscussionArray['count'] = sizeof($this->discussionManager->get()->to_array());
+        $this->discussionManager->resetLimits();
+        $this->discussionManager->select();
+        $countDiscussionArray['countAll'] = $this->discussionManager->getCountAll();
+
+        return $countDiscussionArray;
+    }
+
     public function setFilterConditions(Form $filterForm)
     {
         $formData = $filterForm->getData();
