@@ -7,15 +7,17 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 use CommsyBundle\Filter\DiscussionFilterType;
 
 class DiscussionController extends Controller
 {
     /**
-     * @Route("/room/{roomId}/dicussion/feed/{start}")
+     * @Route("/room/{roomId}/discussion/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0, Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         
@@ -160,7 +162,9 @@ class DiscussionController extends Controller
     }
     
     /**
-     * @Route("/room/{roomId}/discussion/{itemId}")
+     * @Route("/room/{roomId}/discussion/{itemId}", requirements={
+     *     "itemId": "\d+"
+     * }))
      * @Template()
      */
     public function detailAction($roomId, $itemId, Request $request)
@@ -259,8 +263,6 @@ class DiscussionController extends Controller
      */
     public function feedActionAction($roomId, Request $request)
     {
-        error_log(print_r('feedAction', true));
-        
         $translator = $this->get('translator');
         
         $action = $request->request->get('act');
@@ -279,7 +281,7 @@ class DiscussionController extends Controller
                 $selectedIds[] = $value->getItemId();
             }
         }
-        
+
         $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
 
         $result = [];
