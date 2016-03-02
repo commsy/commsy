@@ -212,4 +212,150 @@ class DiscussionController extends Controller
             'modifierList' => $modifierList
         );
     }
+    
+    /**
+     * @Route("/room/{roomId}/discussion/create")
+     * @Template()
+     */
+    public function createAction($roomId, Request $request)
+    {
+        $translator = $this->get('translator');
+        
+        $discussionData = array();
+        $discussionService = $this->get('commsy_legacy.discussion_service');
+        $transformer = $this->get('commsy_legacy.transformer.discussion');
+        
+        // create new material item
+        $discussionItem = $discussionService->getNewDiscussion();
+        $discussionItem->setTitle('['.$translator->trans('insert title').']');
+        $discussionItem->setDraftStatus(1);
+        $discussionItem->setPrivateEditing('1');
+        $discussionItem->save();
+
+        /* $form = $this->createForm('material', $materialData, array());
+        
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $materialItem = $transformer->applyTransformation($materialItem, $form->getData());
+            $materialItem->save();
+            return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $materialItem->getItemId()));
+
+            // persist
+            // $em = $this->getDoctrine()->getManager();
+            // $em->persist($room);
+            // $em->flush();
+        } */
+
+        return $this->redirectToRoute('commsy_discussion_detail', array('roomId' => $roomId, 'itemId' => $discussionItem->getItemId()));
+
+        /* return array(
+            'material' => $materialItem,
+            'form' => $form->createView()
+        ); */
+    }
+    
+    /**
+     * @Route("/room/{roomId}/discussion/feedaction")
+     */
+    public function feedActionAction($roomId, Request $request)
+    {
+        error_log(print_r('feedAction', true));
+        
+        $translator = $this->get('translator');
+        
+        $action = $request->request->get('act');
+        
+        $selectedIds = $request->request->get('data');
+        if (!is_array($selectedIds)) {
+            $selectedIds = json_decode($selectedIds);
+        }
+        
+        $selectAll = $request->request->get('selectAll');
+        $selectAllStart = $request->request->get('selectAllStart');
+        
+        if ($selectAll == 'true') {
+            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $request);
+            foreach ($entries['discussions'] as $key => $value) {
+                $selectedIds[] = $value->getItemId();
+            }
+        }
+        
+        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
+
+        $result = [];
+        
+        if ($action == 'markread') {
+	        $discussionService = $this->get('commsy_legacy.discussion_service');
+	        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $noticedManager = $legacyEnvironment->getNoticedManager();
+            $readerManager = $legacyEnvironment->getReaderManager();
+            foreach ($selectedIds as $id) {
+    	        $item = $discussionService->getDiscussion($id);
+    	        $versionId = $item->getVersionID();
+    	        $noticedManager->markNoticed($id, $versionId);
+    	        $readerManager->markRead($id, $versionId);
+	        }
+	        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
+        } else if ($action == 'copy') {
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $sessionItem = $legacyEnvironment->getSessionItem();
+
+            $currentClipboardIds = array();
+            if ($sessionItem->issetValue('clipboard_ids')) {
+                $currentClipboardIds = $sessionItem->getValue('clipboard_ids');
+            }
+
+            foreach ($selectedIds as $itemId) {
+                if (!in_array($itemId, $currentClipboardIds)) {
+                    $currentClipboardIds[] = $itemId;
+                    $sessionItem->setValue('clipboard_ids', $currentClipboardIds);
+                }
+            }
+
+            $result = [
+                'count' => sizeof($currentClipboardIds)
+            ];
+
+            $sessionManager = $legacyEnvironment->getSessionManager();
+            $sessionManager->save($sessionItem);
+
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('%count% copied entries',count($selectedIds), array('%count%' => count($selectedIds)));
+        } else if ($action == 'save') {
+            /* $zipfile = $this->download($roomId, $selectedIds);
+            $content = file_get_contents($zipfile);
+
+            $response = new Response($content, Response::HTTP_OK, array('content-type' => 'application/zip'));
+            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,'zipfile.zip');   
+            $response->headers->set('Content-Disposition', $contentDisposition);
+            
+            return $response; */
+            
+            $downloadService = $this->get('commsy_legacy.download_service');
+        
+            $zipFile = $downloadService->zipFile($roomId, $selectedIds);
+    
+            $response = new BinaryFileResponse($zipFile);
+            $response->deleteFileAfterSend(true);
+    
+            $filename = 'CommSy_Material.zip';
+            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$filename);   
+            $response->headers->set('Content-Disposition', $contentDisposition);
+    
+            return $response;
+        } else if ($action == 'delete') {
+            $materialService = $this->get('commsy_legacy.material_service');
+  		    foreach ($selectedIds as $id) {
+  		        $item = $materialService->getMaterial($id);
+  		        $item->delete();
+  		    }
+           $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> '.$translator->transChoice('%count% deleted entries',count($selectedIds), array('%count%' => count($selectedIds)));
+        }
+
+        return new JsonResponse([
+            'message' => $message,
+            'timeout' => '5550',
+            'layout' => 'cs-notify-message',
+            'data' => $result,
+        ]);
+    }
 }

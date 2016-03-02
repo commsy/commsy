@@ -3,46 +3,61 @@
 {% for discussion in discussions %}
     <article class="uk-comment">
            
+        {# item change information #}
             {{ macros.statusColor(readerList, discussion.itemId) }}
+            
         <header class="uk-comment-header uk-flex">
             <div class="discussions-checkbox uk-margin-right uk-margin-top uk-hidden">
-
                 {% if is_granted('ITEM_EDIT', discussion.itemId) %}
                     <form class="uk-form">
-                        <input type="checkbox">
+                        <input type="checkbox" value="{{ discussion.itemId }}">
                     </form>
                 {% else %}
                     <i class="uk-icon-ban uk-icon-small red"></i>
                 {% endif %}
-                
             </div>
+            
+            {# user icon and modification time #}
             <div class="uk-margin-right uk-flex-item-none">
-                    {% if discussion.creator.isUser %}
-                        {{  macros.userIconLink(discussion.creator) }}
+                {% if discussion.creator.isUser %}
+                    {{  macros.userIconLink(discussion.creator) }}
+                {% else %}
+                    {{  macros.userIcon(discussion.creator) }}
+                {% endif %}
+                <div class="uk-comment-meta">
+                    {% if discussion.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                        {{ 'today'|trans({})|capitalize }}, {{discussion.getModificationDate|date("H:i")}}
                     {% else %}
-                        {{  macros.userIcon(discussion.creator) }}
+                        {{discussion.getModificationDate|date("d.m.Y")}}
                     {% endif %}
-                    <div class="uk-comment-meta">
-                        {% if discussion.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                            {{ 'today'|trans({})|capitalize }}, {{discussion.getModificationDate|date("H:i")}}
-                        {% else %}
-                            {{discussion.getModificationDate|date("d.m.Y")}}
-                        {% endif %}
-                    </div>
+                </div>
              </div>
-            <div>
+            
+            {# title and meta #}
+            <div class="uk-width-8-10">
                 <h4 class="uk-comment-title">
                     <a href="{{ path('commsy_discussion_detail', {'roomId': roomId, 'itemId': discussion.itemId}) }}">{{ discussion.title }}</a>
                 </h4>
 
                 <div class="uk-comment-meta">
-                    {{ 'by'|trans({})|capitalize }}: {{discussion.creator.fullname}} ({{discussion.getCreationDate|date("d.m.Y")}})
+                    {{ 'by'|trans({})|capitalize }}: {{discussion.modificatorItem.fullname}} ({{discussion.getCreationDate|date("d.m.Y")}})
                 </div>
                
                 <div class="uk-comment-meta">
                     {{  macros.fileListShort(discussion) }}
                 </div>
             </div>
+            {%if showRating or showWorkflow%}
+                <div class="uk-width-2-10 uk-text-right">
+                {%if showRating%}
+                    {{  macros.ratingStatus(discussion, ratingList) }}
+                {% endif %}
+                {%if showWorkflow%}
+                    {{  macros.workflowTrafficLight(discussion) }}
+                {% endif %}
+            </div>
+            {% endif %}
+            
         </header>
     </article>
 {% else %}
