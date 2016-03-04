@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -170,30 +171,86 @@ class DiscussionController extends Controller
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
+        $infoArray = $this->getDetailInfo($roomId, $itemId);
+
+        return array(
+            'roomId' => $roomId,
+            'discussion' => $infoArray['discussion'],
+            'articleList' => $infoArray['articleList'],
+            'readerList' => $infoArray['readerList'],
+            'modifierList' => $infoArray['modifierList'],
+            'discussionList' => $infoArray['discussionList'],
+            'counterPosition' => $infoArray['counterPosition'],
+            'count' => $infoArray['count'],
+            'firstItemId' => $infoArray['firstItemId'],
+            'prevItemId' => $infoArray['prevItemId'],
+            'nextItemId' => $infoArray['nextItemId'],
+            'lastItemId' => $infoArray['lastItemId'],
+            'readCount' => $infoArray['readCount'],
+            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
+            'userCount' => $infoArray['userCount'],
+            'draft' => $infoArray['draft'],
+            'showRating' => $infoArray['showRating'],
+            'showHashtags' => $infoArray['showHashtags'],
+            'showCategories' => $infoArray['showCategories'],
+            'user' => $infoArray['user'],
+            'ratingArray' => $infoArray['ratingArray'],
+            'roomCategories' => $infoArray['roomCategories'],
+       );
+    }
+    
+    private function getDetailInfo ($roomId, $itemId) {
+        $infoArray = array();
+        
         $discussionService = $this->get('commsy_legacy.discussion_service');
         $itemService = $this->get('commsy.item_service');
-        
+
         $discussion = $discussionService->getDiscussion($itemId);
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $item = $discussion;
-        $reader_manager = $legacyEnvironment->getReaderManager();
-        $reader = $reader_manager->getLatestReader($item->getItemID());
-        if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
-            $reader_manager->markRead($item->getItemID(), $item->getVersionID());
-        }
-
-        $noticed_manager = $legacyEnvironment->getNoticedManager();
-        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
-            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
-        }
-
-
-        $discussionArticleList = $discussion->getAllArticles()->to_array();
+        
+        $articleList = $discussion->getAllArticles()->to_array();
         
         $itemArray = array($discussion);
-        $itemArray = array_merge($itemArray, $discussionArticleList);
+        $itemArray = array_merge($itemArray, $articleList);
 
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+ 
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $readerManager = $legacyEnvironment->getReaderManager();
+        $roomItem = $roomManager->getItem($discussion->getContextId());        
+        $numTotalMember = $roomItem->getAllUsers();
+
+        $userManager = $legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager->setUserLimit();
+        $userManager->select();
+        $user_list = $userManager->get();
+        $all_user_count = $user_list->getCount();
+        $read_count = 0;
+        $read_since_modification_count = 0;
+
+        $current_user = $user_list->getFirst();
+        $id_array = array();
+        while ( $current_user ) {
+		   $id_array[] = $current_user->getItemID();
+		   $current_user = $user_list->getNext();
+		}
+		$readerManager->getLatestReaderByUserIDArray($id_array, $discussion->getItemID());
+		$current_user = $user_list->getFirst();
+		while ( $current_user ) {
+	   	    $current_reader = $readerManager->getLatestReaderForUserByID($discussion->getItemID(), $current_user->getItemID());
+            if ( !empty($current_reader) ) {
+                if ( $current_reader['read_date'] >= $discussion->getModificationDate() ) {
+                    $read_count++;
+                    $read_since_modification_count++;
+                } else {
+                    $read_count++;
+                }
+            }
+		    $current_user = $user_list->getNext();
+		}
+        $read_percentage = round(($read_count/$all_user_count) * 100);
+        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
         $readerService = $this->get('commsy.reader_service');
         
         $readerList = array();
@@ -209,13 +266,143 @@ class DiscussionController extends Controller
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
         
-        return array(
-            'roomId' => $roomId,
-            'discussion' => $discussionService->getDiscussion($itemId),
-            'discussionArticleList' => $discussionArticleList,
-            'readerList' => $readerList,
-            'modifierList' => $modifierList
-        );
+        $discussions = $discussionService->getListDiscussions($roomId);
+        $discussionList = array();
+        $counterBefore = 0;
+        $counterAfter = 0;
+        $counterPosition = 0;
+        $foundDiscussion = false;
+        $firstItemId = false;
+        $prevItemId = false;
+        $nextItemId = false;
+        $lastItemId = false;
+        foreach ($discussions as $tempDiscussion) {
+            if (!$foundDiscussion) {
+                if ($counterBefore > 5) {
+                    array_shift($discussionList);
+                } else {
+                    $counterBefore++;
+                }
+                $discussionList[] = $tempDiscussion;
+                if ($tempDiscussion->getItemID() == $discussion->getItemID()) {
+                    $foundDiscussion = true;
+                }
+                if (!$foundDiscussion) {
+                    $prevItemId = $tempDiscussion->getItemId();
+                }
+                $counterPosition++;
+            } else {
+                if ($counterAfter < 5) {
+                    $discussionList[] = $tempDiscussion;
+                    $counterAfter++;
+                    if (!$nextItemId) {
+                        $nextItemId = $tempDiscussion->getItemId();
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
+        if (!empty($discussions)) {
+            if ($prevItemId) {
+                $firstItemId = $discussions[0]->getItemId();
+            }
+            if ($nextItemId) {
+                $lastItemId = $discussions[sizeof($discussions)-1]->getItemId();
+            }
+        }
+
+        $ratingDetail = array();
+        if ($current_context->isAssessmentActive()) {
+            $assessmentService = $this->get('commsy_legacy.assessment_service');
+            $ratingDetail = $assessmentService->getRatingDetail($discussion);
+            $ratingAverageDetail = $assessmentService->getAverageRatingDetail($discussion);
+            $ratingOwnDetail = $assessmentService->getOwnRatingDetail($discussion);
+        }
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $reader_manager = $legacyEnvironment->getReaderManager();
+        $noticed_manager = $legacyEnvironment->getNoticedManager();
+
+        $item = $discussion;
+        $reader = $reader_manager->getLatestReader($item->getItemID());
+        if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
+            $reader_manager->markRead($item->getItemID(), $item->getVersionID());
+        }
+
+        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
+        if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
+            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
+        }
+
+        $categories = array();
+        if ($current_context->withTags()) {
+            $roomCategories = $this->get('commsy.category_service')->getTags($roomId);
+            $discussionCategories = $discussion->getTagsArray();
+            $categories = $this->getTagDetailArray($roomCategories, $discussionCategories);
+        }
+
+        $infoArray['discussion'] = $discussion;
+        $infoArray['articleList'] = $articleList;
+        $infoArray['readerList'] = $readerList;
+        $infoArray['modifierList'] = $modifierList;
+        $infoArray['discussionList'] = $discussionList;
+        $infoArray['counterPosition'] = $counterPosition;
+        $infoArray['count'] = sizeof($discussions);
+        $infoArray['firstItemId'] = $firstItemId;
+        $infoArray['prevItemId'] = $prevItemId;
+        $infoArray['nextItemId'] = $nextItemId;
+        $infoArray['lastItemId'] = $lastItemId;
+        $infoArray['readCount'] = $read_count;
+        $infoArray['readSinceModificationCount'] = $read_since_modification_count;
+        $infoArray['userCount'] = $all_user_count;
+        $infoArray['draft'] = $itemService->getItem($itemId)->isDraft();
+        $infoArray['showRating'] = $current_context->isAssessmentActive();
+        $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
+        $infoArray['showCategories'] = $current_context->withTags();
+        $infoArray['showHashtags'] = $current_context->withBuzzwords();
+        $infoArray['ratingArray'] = $current_context->isAssessmentActive() ? [
+            'ratingDetail' => $ratingDetail,
+            'ratingAverageDetail' => $ratingAverageDetail,
+            'ratingOwnDetail' => $ratingOwnDetail,
+        ] : [];
+        $infoArray['roomCategories'] = $categories;
+        
+        return $infoArray;
+    }
+    
+    private function getTagDetailArray ($baseCategories, $itemCategories) {
+        $result = array();
+        $tempResult = array();
+        $addCategory = false;
+        foreach ($baseCategories as $baseCategory) {
+            if (!empty($baseCategory['children'])) {
+                $tempResult = $this->getTagDetailArray($baseCategory['children'], $itemCategories);
+            }
+            if (!empty($tempResult)) {
+                $addCategory = true;
+            }
+            $tempArray = array();
+            $foundCategory = false;
+            foreach ($itemCategories as $itemCategory) {
+                if ($baseCategory['item_id'] == $itemCategory['id']) {
+                    if ($addCategory) {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                    } else {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
+                    }
+                    $foundCategory = true;
+                }
+            }
+            if (!$foundCategory) {
+                if ($addCategory) {
+                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                }
+            }
+            $tempResult = array();
+            $addCategory = false;
+        }
+        return $result;
     }
     
     /**
@@ -369,5 +556,94 @@ class DiscussionController extends Controller
             'layout' => 'cs-notify-message',
             'data' => $result,
         ]);
+    }
+    
+    /**
+     * @Route("/room/{roomId}/discussion/{itemId}/print")
+     */
+    public function printAction($roomId, $itemId)
+    {
+        $html = $this->renderView('CommsyBundle:Discussion:detailPrint.html.twig', [
+        ]);
+
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="print.pdf"'
+            ]
+        );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/discussion/{itemId}/download")
+     */
+    public function downloadAction($roomId, $itemId)
+    {
+        $downloadService = $this->get('commsy_legacy.download_service');
+        
+        $zipFile = $downloadService->zipFile($roomId, $itemId);
+
+        $response = new BinaryFileResponse($zipFile);
+        $response->deleteFileAfterSend(true);
+
+        $filename = 'CommSy_Discussion.zip';
+        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$filename);   
+        $response->headers->set('Content-Disposition', $contentDisposition);
+
+        return $response;
+    }
+    
+    /**
+     * @Route("/room/{roomId}/discussion/{itemId}/delete")
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     **/
+    public function deleteAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy.item_service');
+        $item = $itemService->getItem($itemId);
+        
+        $discussionService = $this->get('commsy_legacy.discussion_service');
+        
+        $tempItem = null;
+        
+        if ($item->getItemType() == 'discussion') {
+            $tempItem = $discussionService->getDiscussion($itemId);
+        } else if ($item->getItemType() == 'article') {
+            $tempItem = $discussionService->getArticle($itemId); 
+        }
+
+        $tempItem->delete();
+
+        return $this->redirectToRoute('commsy_discussion_list', array('roomId' => $roomId));        
+    }
+    
+    /**
+     * @Route("/room/{roomId}/discussion/{itemId}/createarticle")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function createArticleAction($roomId, $itemId, Request $request)
+    {
+    }
+    
+        /**
+     * @Route("/room/{roomId}/discussion/{itemId}/editarticles")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function editArticlesAction($roomId, $itemId, Request $request)
+    {
+        $discussionService = $this->get('commsy_legacy.discussion_service');
+
+        $discussion = $discussionService->getMaterial($itemId);
+
+        $articlesList = $discussion->getSectionList()->to_array();
+
+        return array(
+            'articlesList' => $articlesList,
+            'discussion' => $discussion
+        );
     }
 }

@@ -19,16 +19,23 @@ class DiscussionService
         $this->discussionManager->reset();
     }
 
-    public function getListDiscussions($roomId, $max, $start)
+    public function getListDiscussions($roomId, $max = NULL, $start = NULL, $sort = NULL)
     {
         $this->discussionManager->reset();
         $this->discussionManager->setContextLimit($roomId);
-        $this->discussionManager->setIntervalLimit($start, $max);
+        if ($max !== NULL && $start !== NULL) {
+            $this->discussionManager->setIntervalLimit($start, $max);
+        }
+
+        if ($sort) {
+            $this->discussionManager->setOrder($sort);
+        }
 
         $this->discussionManager->select();
         $discussionList = $this->discussionManager->get();
 
         return $discussionList->to_array();
+        
     }
 
     public function getCountArray($roomId)
