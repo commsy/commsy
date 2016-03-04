@@ -21,26 +21,37 @@
           url: url
         })
         .done(function(result) {
-            if ($(result).filter('article').length) {
-                // append the data
-                var target = el.data('feed').target;
-                $(target).append(result);
-    
-                var event = new CustomEvent(
-                	'feedDidLoad', 
-                	{
-                		detail: {
-                			feedStart: feedStart,
-                		},
-                		bubbles: true,
-                		cancelable: true
-                	}
-                );
-                window.dispatchEvent(event);
-    
-                // increase for next run
-                feedStart += 10;
-            } else {
+            try {
+                let foundArticles = false;
+                if ($(result).filter('article').length) {
+                    foundArticles = true;
+                } else if ($(result).find('article').length) {
+                    foundArticles = true
+                }
+                
+                if (foundArticles) {
+                    // append the data
+                    var target = el.data('feed').target;
+                    $(target).append(result);
+        
+                    var event = new CustomEvent(
+                    	'feedDidLoad', 
+                    	{
+                    		detail: {
+                    			feedStart: feedStart,
+                    		},
+                    		bubbles: true,
+                    		cancelable: true
+                    	}
+                    );
+                    window.dispatchEvent(event);
+        
+                    // increase for next run
+                    feedStart += 10;
+                } else {
+                    $('.feed-load-more').css('display', 'none');
+                }
+            } catch (error) {
                 $('.feed-load-more').css('display', 'none');
             }
         });
@@ -61,14 +72,25 @@
           url: url
         })
         .done(function(result) {
-            if ($(result).filter('div').length) {
-                // append the data
-                var target = el.data('feed').target;
-                $(target).append(result);
-    
-                // increase for next run
-                feedStart += 10;
-            } else {
+            try {
+                let foundArticles = false;
+                if ($(result).filter('article').length) {
+                    foundArticles = true;
+                } else if ($(result).find('article').length) {
+                    foundArticles = true
+                }
+                
+                if (foundArticles) {
+                    // append the data
+                    var target = el.data('feed').target;
+                    $(target).append(result);
+        
+                    // increase for next run
+                    feedStart += 10;
+                } else {
+                    $('.feed-load-more-grid').css('display', 'none');
+                }
+            } catch (error) {
                 $('.feed-load-more-grid').css('display', 'none');
             }
         });
@@ -140,22 +162,33 @@
           url: url
         })
         .done(function(result) {
-            if ($(result).filter('article').length) {
-                // append the data
-                var target = el.data('feed').target;
-                //$(target).append(result);
-                $(target).html($(result));
+            try {
+                let foundArticles = false;
+                if ($(result).filter('article').length) {
+                    foundArticles = true;
+                } else if ($(result).find('article').length) {
+                    foundArticles = true
+                }
                 
-                var event = new CustomEvent(
-                	'feedDidReload', 
-                	{
-                		detail: {},
-                		bubbles: true,
-                		cancelable: true
-                	}
-                );
-                window.dispatchEvent(event);
-            } else {
+                if (foundArticles) {
+                    // append the data
+                    var target = el.data('feed').target;
+                    //$(target).append(result);
+                    $(target).html($(result));
+                    
+                    var event = new CustomEvent(
+                    	'feedDidReload', 
+                    	{
+                    		detail: {},
+                    		bubbles: true,
+                    		cancelable: true
+                    	}
+                    );
+                    window.dispatchEvent(event);
+                } else {
+                    $('.feed-load-more').css('display', 'none');
+                }
+            } catch (error) {
                 $('.feed-load-more').css('display', 'none');
             }
             
