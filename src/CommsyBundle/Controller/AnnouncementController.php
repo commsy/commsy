@@ -26,7 +26,7 @@ class AnnouncementController extends Controller
      * @Route("/room/{roomId}/announcement/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0,  $sort = NULL, Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0,  $sort = 'date', Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -60,7 +60,6 @@ class AnnouncementController extends Controller
             $announcementService->setFilterConditions($filterForm);
         }else{
             $announcementService->setDateLimit();
-            $sort = 'date';
         }
 
         // get announcement list from manager service 
