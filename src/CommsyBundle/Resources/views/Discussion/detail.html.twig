@@ -1,7 +1,7 @@
 {% extends 'CommsyBundle:Base:room.html.twig' %}
 
 {% import 'CommsyBundle:Item:macros.html.twig' as macrosItem %}
-{% import 'CommsyBundle:Material:macros.html.twig' as macrosMaterial %}
+{% import 'CommsyBundle:Discussion:macros.html.twig' as macrosDiscussion %}
 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
 {% set item = discussion %}
@@ -158,7 +158,7 @@
                 <article class="uk-article uk-position-relative" data-uk-observe>
                     {# title, etc. #}
                     <div class="cs-toggle" data-uk-observe>
-                        {#{ macrosMaterial.title(discussion, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, true, ratingArray) }#}
+                        {{ macrosDiscussion.title(discussion, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, true, ratingArray) }}
                     </div>
             
                     {# description #}
@@ -182,7 +182,7 @@
                         data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_discussion_editarticles', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}' }"
                     {% endif %}
                     >
-                        {{ macrosMaterial.sections(discussion, articleList) }}
+                        {{ macrosDiscussion.articles(discussion, articleList) }}
                     </div>
                     
                 </article>
@@ -258,7 +258,7 @@
                         <article class="uk-article uk-position-relative">
                             {# title #}
                             <div class="cs-toggle" data-uk-observe>
-                                {#{ macrosMaterial.title(article, modifierList, userCount, readCount, readSinceModificationCount) }#}
+                                {{ macrosDiscussion.title(article, modifierList, userCount, readCount, readSinceModificationCount) }}
                             </div>
                             
                             {# description #}

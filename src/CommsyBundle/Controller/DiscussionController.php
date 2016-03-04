@@ -646,4 +646,79 @@ class DiscussionController extends Controller
             'discussion' => $discussion
         );
     }
+    
+    /**
+     * @Route("/room/{roomId}/discussion/{itemId}/edit")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function editAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy.item_service');
+        $item = $itemService->getItem($itemId);
+        
+        $materialService = $this->get('commsy_legacy.material_service');
+        $transformer = $this->get('commsy_legacy.transformer.material');
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+        
+        $formData = array();
+        $materialItem = NULL;
+        
+        if ($item->getItemType() == 'material') {
+            // get material from MaterialService
+            $materialItem = $materialService->getMaterial($itemId);
+            if (!$materialItem) {
+                throw $this->createNotFoundException('No material found for id ' . $roomId);
+            }
+            $formData = $transformer->transform($materialItem);
+            $form = $this->createForm('material', $formData, array(
+                'action' => $this->generateUrl('commsy_material_edit', array(
+                    'roomId' => $roomId,
+                    'itemId' => $itemId,
+                ))
+            ));
+        } else if ($item->getItemType() == 'section') {
+            // get section from MaterialService
+            $materialItem = $materialService->getSection($itemId);
+            if (!$materialItem) {
+                throw $this->createNotFoundException('No section found for id ' . $roomId);
+            }
+            $formData = $transformer->transform($materialItem);
+            $form = $this->createForm('section', $formData, array());
+        }
+        
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            if ($form->get('save')->isClicked()) {
+                $materialItem = $transformer->applyTransformation($materialItem, $form->getData());
+
+                // update modifier
+                $materialItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                $materialItem->save();
+                
+                if ($item->isDraft()) {
+                    $item->setDraftStatus(0);
+                    $item->saveAsItem();
+                }
+            } else if ($form->get('cancel')->isClicked()) {
+                // ToDo ...
+            }
+            return $this->redirectToRoute('commsy_material_save', array('roomId' => $roomId, 'itemId' => $itemId));
+            
+            // persist
+            // $em = $this->getDoctrine()->getManager();
+            // $em->persist($room);
+            // $em->flush();
+        }
+        
+        return array(
+            'form' => $form->createView(),
+            'showHashtags' => $current_context->withBuzzwords(),
+            'showCategories' => $current_context->withTags(),
+            'currentUser' => $legacyEnvironment->getCurrentUserItem(),
+        );
+    }
 }
