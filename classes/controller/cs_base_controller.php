@@ -592,6 +592,8 @@
             $to_javascript['autosave']['mode'] = 0;
             $to_javascript['autosave']['limit'] = 0;
 
+            $to_javascript["environment"]['portal_id'] = $this->_environment->getCurrentPortalID();
+
             global $c_media_integration;
             if($c_media_integration) {
                 $to_javascript['c_media_integration'] = true;

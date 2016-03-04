@@ -29,27 +29,29 @@ require([	"dojo/_base/declare",
 					}
 				}));
 
-				// MDO on click
-				On(query(".mdoLink"), "click", function(event) {
-					console.log("TEST");
-					var cid = dojo.queryToObject(dojo.doc.location.search.substr((dojo.doc.location.search[0] === "?" ? 1 : 0))).cid;
-					var link = domAttr.get(this, "href");
-					xhr.get({
-						// The URL to request
-						url: 'commsy.php?cid=' + cid + '&mod=ajax&fct=mdo_perform_search&action=search',
-						// The method that handles the request's successful result
-						// Handle the response any way you'd like!
-						load: function(message) {
-							var result = eval('(' + message + ')');
-            				if(result.status === 'success') {
-								window.open(result.data.url ,'_new');
-							} else {
-								window.open(link, '_new');
+				if (this.from_php.c_media_integration) {
+					// MDO on click
+					On(query(".mdoLink"), "click", function(event) {
+						console.log("TEST");
+						var cid = dojo.queryToObject(dojo.doc.location.search.substr((dojo.doc.location.search[0] === "?" ? 1 : 0))).cid;
+						var link = domAttr.get(this, "href");
+						xhr.get({
+							// The URL to request
+							url: 'commsy.php?cid=' + cid + '&mod=ajax&fct=mdo_perform_search&action=search',
+							// The method that handles the request's successful result
+							// Handle the response any way you'd like!
+							load: function(message) {
+								var result = eval('(' + message + ')');
+	            				if(result.status === 'success') {
+									window.open(result.data.url ,'_new');
+								} else {
+									window.open(link, '_new');
+								}
 							}
-						}
+						});
+						event.preventDefault();
 					});
-					event.preventDefault();
-				});
+				}
 				
 				// setup rubric forms
 				query(".open_popup").forEach(Lang.hitch(this, function(node, index, arr) {
