@@ -31,10 +31,10 @@ require([	"dojo/_base/declare",
 
 				if (this.from_php.c_media_integration) {
 					// MDO on click
-					On(query(".mdoLink"), "click", function(event) {
+					On(query(".mdoLink"), "click", Lang.hitch(this, function(event) {
 						console.log(this.from_php);
 						var cid = this.from_php.environment.portal_id;
-						var link = domAttr.get(this, "href");
+						var link = domAttr.get(event.target, "href");
 						xhr.get({
 							// The URL to request
 							url: 'commsy.php?cid=' + cid + '&mod=ajax&fct=mdo_perform_search&action=search',
