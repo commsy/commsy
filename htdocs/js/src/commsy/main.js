@@ -32,6 +32,7 @@ require([	"dojo/_base/declare",
 				if (this.from_php.c_media_integration) {
 					// MDO on click
 					On(query(".mdoLink"), "click", function(event) {
+						console.log(this.from_php);
 						var cid = this.from_php.environment.portal_id;
 						var link = domAttr.get(this, "href");
 						xhr.get({
