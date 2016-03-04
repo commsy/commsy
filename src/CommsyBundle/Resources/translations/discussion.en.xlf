@@ -10,6 +10,18 @@
                 <source>Last entry</source>
                 <target>Last entry</target>
             </trans-unit>
+            <trans-unit id="discussionArticle">
+                <source>article</source>
+                <target>Article</target>
+            </trans-unit>
+            <trans-unit id="discussionArticles">
+                <source>articles</source>
+                <target>Articles</target>
+            </trans-unit>
+            <trans-unit id="discussionNewArticle">
+                <source>new article</source>
+                <target>New article</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
