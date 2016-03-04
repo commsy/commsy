@@ -42,9 +42,9 @@ require([	"dojo/_base/declare",
 							load: function(message) {
 								var result = eval('(' + message + ')');
 	            				if(result.status === 'success') {
-									window.open(result.data.url ,'_new');
+									window.open(result.data.url ,'_blank');
 								} else {
-									window.open(link, '_new');
+									window.open(link, '_blank');
 								}
 							}
 						});
