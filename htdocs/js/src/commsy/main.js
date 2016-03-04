@@ -3,7 +3,8 @@ togglePopups = [];
 
 require([	"dojo/_base/declare",
          	"commsy/base",
-         	"dojo/_base/lang"], function(declare, BaseClass, Lang) {
+         	"dojo/_base/lang",
+         	"dojo/_base/xhr"], function(declare, BaseClass, Lang, xhr) {
 	var Controller = declare(BaseClass, {
 		constructor: function(args) {
 			
@@ -27,6 +28,30 @@ require([	"dojo/_base/declare",
 						alert("Bitte schließen Sie zuerst das Popup-Fenster, bevor Sie sonstige Seitenoperationen ausführen");
 					}
 				}));
+
+				if (this.from_php.c_media_integration) {
+					// MDO on click
+					On(query(".mdoLink"), "click", Lang.hitch(this, function(event) {
+						console.log(this.from_php);
+						var cid = this.from_php.environment.portal_id;
+						var link = domAttr.get(event.target, "href");
+						xhr.get({
+							// The URL to request
+							url: 'commsy.php?cid=' + cid + '&mod=ajax&fct=mdo_perform_search&action=search',
+							// The method that handles the request's successful result
+							// Handle the response any way you'd like!
+							load: function(message) {
+								var result = eval('(' + message + ')');
+	            				if(result.status === 'success') {
+									window.open(result.data.url);
+								} else {
+									window.open(link);
+								}
+							}
+						});
+						event.preventDefault();
+					}));
+				}
 				
 				// setup rubric forms
 				query(".open_popup").forEach(Lang.hitch(this, function(node, index, arr) {
