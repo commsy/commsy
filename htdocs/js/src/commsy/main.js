@@ -50,7 +50,7 @@ require([	"dojo/_base/declare",
 							}
 						});
 						event.preventDefault();
-					});
+					}));
 				}
 				
 				// setup rubric forms
