@@ -101,10 +101,10 @@ class GroupController extends Controller
     }
     
    /**
-     * @Route("/room/{roomId}/group/feed/{start}")
+     * @Route("/room/{roomId}/group/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0, Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -176,12 +176,12 @@ class GroupController extends Controller
         $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
         
         if ($action == 'markread') {
-            $groupService = $this->get('commsy.group/{itemId_service');
+            $groupService = $this->get('commsy.group_service');
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             $noticedManager = $legacyEnvironment->getNoticedManager();
             $readerManager = $legacyEnvironment->getReaderManager();
             foreach ($selectedIds as $id) {
-                $item = $groupService->getItem($id);
+                $item = $groupService->getGroup($id);
                 $versionId = $item->getVersionID();
                 $noticedManager->markNoticed($id, $versionId);
                 $readerManager->markRead($id, $versionId);

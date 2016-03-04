@@ -4,19 +4,19 @@
 
         <div class="uk-width-medium-1-4">
 
-            <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
+            <article class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
  
                 <div class="uk-panel-teaser cs-panel-teaser-user">
                     {{ macros.statusColor(readerList, group.itemId, 'grid') }}
  
                     <div class="items-checkbox uk-float-left uk-margin-right uk-hidden">
-                        {% if is_granted('ITEM_EDIT', group.itemId) %}
+                        {#% if is_granted('ITEM_EDIT', group.itemId) %#}
                             <form class="uk-form">
                                 <input type="checkbox" value="{{ group.itemId }}">
                             </form>
-                        {% else %}
-                            <i class="uk-icon-ban uk-icon-small red"></i>
-                        {% endif %}
+                        {#% else %#}
+                            <!-- <i class="uk-icon-ban uk-icon-small red"></i> -->
+                        {#% endif %#}
                     </div>
                     <div class="uk-grid">
                         <div class="uk-width-3-4 uk-text-truncate">
@@ -42,7 +42,7 @@
                         {{'links'|trans({}) }}: {{group.getCountAllLinkItemList}}              
                     </div>
                 </div>
-            </div>
+            </article>
         </div>
 
 
