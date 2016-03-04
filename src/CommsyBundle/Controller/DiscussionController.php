@@ -61,6 +61,7 @@ class DiscussionController extends Controller
         foreach ($discussions as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
         }
+        error_log(print_r($readerList, true));
 
         $ratingList = array();
         if ($current_context->isAssessmentActive()) {
@@ -296,6 +297,15 @@ class DiscussionController extends Controller
     	        $versionId = $item->getVersionID();
     	        $noticedManager->markNoticed($id, $versionId);
     	        $readerManager->markRead($id, $versionId);
+    	        
+    	        $itemList = $item->getAllArticles();
+    	        $articleItem = $itemList->getFirst();
+                while ( $articleItem ) {
+                    $versionId = $articleItem->getVersionID();
+                    $noticedManager->markNoticed($articleItem->getItemId(), $versionId);
+                    $readerManager->markRead($articleItem->getItemId(), $versionId);
+                    $articleItem = $itemList->getNext();
+                }
 	        }
 	        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'copy') {
