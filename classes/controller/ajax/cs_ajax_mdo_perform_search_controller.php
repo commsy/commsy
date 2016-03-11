@@ -107,6 +107,7 @@
                         if(!$response) {
                             $this->setErrorReturn("1234", "No response search", "Detail");
                         } else {
+                            var_dump($response);
                             $xml_object = simplexml_load_string($response);
                             $result = $xml_object->xpath("/link/a[@href][text()='direct']");
                             $url = (string) $result[0]->attributes()->href;
