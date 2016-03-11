@@ -45,8 +45,7 @@ require([	"dojo/_base/declare",
 						
 						xhr.post({
 							// The URL to request
-							url: 'commsy.php?cid=' + cid + '&mod=ajax&fct=mdo_perform_search&action=search',
-							content: {identifier:identifier},
+							url: 'commsy.php?cid=' + cid + '&mod=ajax&fct=mdo_perform_search&action=search&identifier='+identifier,
 							// The method that handles the request's successful result
 							// Handle the response any way you'd like!
 							load: function(message) {
