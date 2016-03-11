@@ -35,11 +35,10 @@ require([	"dojo/_base/declare",
 						// var cid = this.from_php.environment.portal_id;
 						var cid = dojo.queryToObject(dojo.doc.location.search.substr((dojo.doc.location.search[0] === "?" ? 1 : 0))).cid;
 						var link = domAttr.get(event.target, "href");
-						var identifier = domAttr.get(event.target, "id");
 						var json_data;
 						var regEx = /xplay\.datenbank-bildungsmedien.net\/(\d|\w)*\/(.*)\//;
 						var match = link.match(regEx);
-						console.log(match);
+						var identifier = match[2];
 						if (identifier) {
 							json_data = {identifier:identifier};
 						}
