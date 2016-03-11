@@ -683,6 +683,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 
 
 function mdoAjax (cid, linkText, json_data, callback) {
+	var identifier = json_data.identifier;
     jQuery.ajax({
         url:      'commsy.php?cid=' + cid + '&mod=ajax&fct=mdo_perform_search&action=search',
         data:     json_data,
@@ -691,7 +692,7 @@ function mdoAjax (cid, linkText, json_data, callback) {
             if(result.status === 'success') {
                 // get content by ajax
                 // link in die Mediathek
-                content = '<a href="'+result.data.url+'" class="mdoLink" id="'+json_data.identifier+'" target="_new">'+linkText+'</a>';
+                content = '<a href="'+result.data.url+'" class="mdoLink" id="'+identifier+'" target="_new">'+linkText+'</a>';
                 callback(content);
             }
 

@@ -35,9 +35,11 @@ require([	"dojo/_base/declare",
 						console.log(this.from_php);
 						var cid = this.from_php.environment.portal_id;
 						var link = domAttr.get(event.target, "href");
-						xhr.get({
+						var identifier = domAttr.get(event.target, "id");
+						xhr.post({
 							// The URL to request
 							url: 'commsy.php?cid=' + cid + '&mod=ajax&fct=mdo_perform_search&action=search',
+							content: {identifier: identifier}
 							// The method that handles the request's successful result
 							// Handle the response any way you'd like!
 							load: function(message) {
