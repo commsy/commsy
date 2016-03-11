@@ -39,14 +39,14 @@ require([	"dojo/_base/declare",
 						var regEx = /xplay\.datenbank-bildungsmedien.net\/(\d|\w)*\/(.*)\//;
 						var match = link.match(regEx);
 						var identifier = match[2];
-						if (identifier) {
-							json_data = {identifier:identifier};
+						if (!identifier) {
+							identifier = '';
 						}
 						
 						xhr.post({
 							// The URL to request
 							url: 'commsy.php?cid=' + cid + '&mod=ajax&fct=mdo_perform_search&action=search',
-							content: {json_data},
+							content: {identifier:identifier},
 							// The method that handles the request's successful result
 							// Handle the response any way you'd like!
 							load: function(message) {
