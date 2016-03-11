@@ -37,6 +37,9 @@ require([	"dojo/_base/declare",
 						var link = domAttr.get(event.target, "href");
 						var identifier = domAttr.get(event.target, "id");
 						var json_data;
+						var regEx = /xplay\.datenbank-bildungsmedien.net\/(\d|\w)*\/(.*)\//;
+						var match = link.match(regEx);
+						console.log(match);
 						if (identifier) {
 							json_data = {identifier:identifier};
 						}
