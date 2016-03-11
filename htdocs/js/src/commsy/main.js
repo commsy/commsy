@@ -36,10 +36,15 @@ require([	"dojo/_base/declare",
 						var cid = dojo.queryToObject(dojo.doc.location.search.substr((dojo.doc.location.search[0] === "?" ? 1 : 0))).cid;
 						var link = domAttr.get(event.target, "href");
 						var identifier = domAttr.get(event.target, "id");
+						var json_data;
+						if (identifier) {
+							json_data = {identifier:identifier};
+						}
+						
 						xhr.post({
 							// The URL to request
 							url: 'commsy.php?cid=' + cid + '&mod=ajax&fct=mdo_perform_search&action=search',
-							content: {identifier: identifier}
+							content: {json_data},
 							// The method that handles the request's successful result
 							// Handle the response any way you'd like!
 							load: function(message) {
