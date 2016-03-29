@@ -31,9 +31,12 @@ class ArrayType extends BaseType
             return "s:$length:\"$data\";";
         }, $value );
 
-        $val = unserialize($value);
+        $val = @unserialize($value);
         if ($val === false && $value != 'b:0;') {
-            throw ConversionException::conversionFailed($value, $this->getName());
+            // TODO: this is temporary, we need to fix db entries
+            return array();
+
+            //throw ConversionException::conversionFailed($value, $this->getName());
         }
 
         return $val;
