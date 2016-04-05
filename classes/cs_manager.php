@@ -393,7 +393,7 @@ class cs_manager {
             }
 
             if ($i+1 < $numSearchArray) {
-                $searchLimitQuery .= ') OR ';
+                $searchLimitQuery .= ') AND ';
             }
         }
 
