@@ -282,7 +282,8 @@ class cs_context_item extends cs_item {
     // if this is in room context
     if(   $this->_environment->inGroupRoom() ||
             $this->_environment->inPrivateRoom() ||
-            $this->_environment->inProjectRoom()) {
+            $this->_environment->inProjectRoom() ||
+            $this->_environment->inCommunityRoom()) {
       // check for portal limit
       $portal_item = $this->_environment->getCurrentPortalItem();
       $portal_limit = $portal_item->getMaxUploadSizeExtraOnly();
