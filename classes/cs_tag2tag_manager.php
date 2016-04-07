@@ -412,6 +412,7 @@ class cs_tag2tag_manager extends cs_manager {
             // change sort order and save
             if(isset($item)){
 	            $item->setPosition($root_id, $new_sort_order);
+	            $item->setSavePositionWithoutChange(true);
 	            $item->save();
 	            unset($item);
              // 4. call recursive
@@ -537,6 +538,11 @@ class cs_tag2tag_manager extends cs_manager {
             $result = $this->_db_connector->performQuery($update);
          }
       }
+   }
+   
+   public function changeUpdate ($item_id,$place) {
+        $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place='.encode(AS_DB,$place).' WHERE to_item_id='.encode(AS_DB,$item_id).';';
+        $result = $this->_db_connector->performQuery($update); 
    }
 
    /**
