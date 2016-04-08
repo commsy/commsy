@@ -59,6 +59,46 @@
         stopEdit();
     });
 
+    $('#commsy-select-actions-select-all').on('change.uk.button', function(event) {
+        $(this).addClass('uk-active');
+        $('#commsy-select-actions-select-shown').removeClass('uk-active');
+        
+        inputs.each(function() {
+            if (this.type == 'checkbox') {
+                $(this).prop('checked', true);
+            }
+        });
+        articles.each(function() {
+            $(this).addClass('uk-comment-primary');
+        });
+        
+        selectedCounter = parseInt($('#commsy-list-count-all').html());
+        
+        $('#commsy-list-count-selected').html($('#commsy-list-count-all').html());
+        
+        selectAll = true;
+    });
+    
+    $('#commsy-select-actions-unselect').on('change.uk.button', function(event) {
+        $('#commsy-select-actions-select-shown').removeClass('uk-active');
+        $('#commsy-select-actions-select-all').removeClass('uk-active');
+        $(this).removeClass('uk-active');
+        
+        inputs.each(function() {
+            if (this.type == 'checkbox') {
+                $(this).prop('checked', false);
+            }
+        });
+        articles.each(function() {
+            $(this).removeClass('uk-comment-primary');
+        });
+        
+        selectedCounter = 0;
+        $('#commsy-list-count-selected').html('0');
+
+        selectAll = false;
+    });
+
     function stopEdit () {
         $('#commsy-select-actions').toggleClass('uk-hidden');
         $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '0px');
@@ -91,8 +131,6 @@
         element = el;
         
         actionUrl = element.data('commsy-list-action').actionUrl;
-        
-        let $this = this;
 
         let target = $(element.data('commsy-list-action').target) ? UI.$(element.data('commsy-list-action').target) : [];
         if (!target.length) return;
@@ -120,6 +158,92 @@
         selectable = true; 
         
         bind();       
+    }
+    
+    UI.$html.on('changed.uk.dom', function(e) {
+        let target = $(element.data('commsy-list-action').target) ? UI.$(element.data('commsy-list-action').target) : [];
+        if (!target.length) return;
+        
+        articles = target.find('article');
+        inputs = target.find('input');
+
+        if (articles.first().hasClass('selectable')) {
+            articles.addClass('selectable');
+        }
+
+        bind();
+    });
+    
+    window.addEventListener('feedDidLoad', function (e) {
+        if (selectAll == true) {
+            let target = $(element.data('commsy-list-action').target) ? UI.$(element.data('commsy-list-action').target) : [];
+            if (!target.length) return;
+            
+            articles = target.find('article');
+            inputs = target.find('input');
+
+            var inputCounter = 0;
+            inputs.each(function() {
+                if (inputCounter >= e.detail.feedStart) {
+                    if (this.type == 'checkbox') {
+                        $(this).prop('checked', true);
+                    }
+                }
+                inputCounter++;
+            });
+
+            var articlesCounter = 0;
+            articles.each(function() {
+                if (articlesCounter >= e.detail.feedStart) {
+                    $(this).addClass('uk-comment-primary');
+                }
+                articlesCounter++;
+            }); 
+        }
+    });
+    
+    window.addEventListener('feedDidReload', function (e) {
+        articles = target.find('article');
+        inputs = target.find('input');
+
+        if (selectable) {
+            articles.addClass('selectable');
+        }
+
+        bind();
+    });
+    
+    $('#commsy-sort-title').on('click', function(event) {
+        setSort('title');
+    });
+    
+    $('#commsy-sort-modificator').on('click', function(event) {
+        setSort('modificator');
+    });
+    
+    $('#commsy-sort-date').on('click', function(event) {
+        setSort('date');
+    });
+    
+    $('#commsy-sort-assessment').on('click', function(event) {
+        setSort('assessment');
+    });
+    
+    $('#commsy-sort-workflow_status').on('click', function(event) {
+        setSort('workflow_status');
+    });
+    
+    function setSort (newSort) {
+        if (newSort == sort) {
+            if (sortOrder == '') {
+                sortOrder = '_rev';
+            } else {
+                sortOrder = '';
+            }
+        } else {
+            sortOrder = '';
+        }
+        sort = newSort;
     }
     
     function bind () {
@@ -204,7 +328,7 @@
                     reloadFeed(result);
                     stopEdit();
                 }).fail(function(jqXHR, textStatus, errorThrown) {
-                    UIkit.notify($this.options.errorMessage, 'danger');
+                    UIkit.notify(errorMessage, 'danger');
                 });
             } else if (action == 'save') {
                 let $form = $(document.createElement('form'))
@@ -212,7 +336,7 @@
                         display: 'none'
                     })
                     .attr('method', 'POST')
-                    .attr('action', $this.options.actionUrl);
+                    .attr('action', actionUrl);
 
                 for (let i = 0; i < entries.length; i++) { 
                     let input = $(document.createElement('input')).attr('name','data[]').val(entries[i]);
@@ -240,19 +364,19 @@
                             feedDom.prepend(data);
                         }
 
-                        $this.setupForm();
+                        setupForm();
                     } else {
                         console.log('json response');
                         console.log(data);
                     }
 
                 }).fail(function(jqXHR, textStatus, errorThrown) {
-                    UIkit.notify($this.options.errorMessage, 'danger');
+                    UIkit.notify(errorMessage, 'danger');
                 });
             }
         } else {
             UIkit.notify({
-                message : $($this.element[0]).data('no-selection'),
+                message : $(element[0]).data('no-selection'),
                 status  : 'warning',
                 timeout : 5550,
                 pos     : 'top-center'
@@ -287,9 +411,9 @@
                 $(target).html(result);
                 $(target).trigger('changed.uk.dom');
                 
-                /* $(target).find('article').each(function() {
+                $(target).find('article').each(function() {
                     $(this).toggleClass('selectable');
-                }); */
+                });
                 
                 bind();
                 
