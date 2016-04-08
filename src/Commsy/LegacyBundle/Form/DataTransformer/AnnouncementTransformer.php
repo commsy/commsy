@@ -24,6 +24,7 @@ class AnnouncementTransformer implements DataTransformerInterface
         $announcementData = array();
 
         if ($announcementItem) {
+            $announcementData['title'] = $announcementItem->getTitle();
             $announcementData['description'] = $announcementItem->getDescription();
         }
 
@@ -40,6 +41,7 @@ class AnnouncementTransformer implements DataTransformerInterface
      */
     public function applyTransformation($announcementObject, $announcementData)
     {
+        $announcementObject->setTitle($announcementData['title']);
         $announcementObject->setDescription($announcementData['description']);
         
         return $announcementObject;

@@ -170,7 +170,6 @@
                             <h1 class="uk-article-title">{{ item.title|raw }}</h1>
                             {% if item.itemType == 'announcement' %}
                                 {% set announcement = item %}
-                                {% include 'CommsyBundle:Announcement:biblio.html.twig' %}
                             {% endif %}
                         </div>
                         {%if showRating %}
