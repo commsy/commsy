@@ -405,7 +405,9 @@ elastic_search:
     settings:
         version: 2.1.0
         java_install: true
-    instances: {  }
+    instances:
+        esi_6ew9pahk6efc:
+            name: es-01
 solr:
     install: '0'
     settings:
