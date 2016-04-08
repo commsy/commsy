@@ -29,7 +29,7 @@ class MaterialType extends AbstractType
                 'label' => 'title',
                 'attr' => array(
                     'placeholder' => 'title',
-                    'class' => 'uk-form-width-medium',
+                    'class' => 'uk-form-width-medium cs-form-title',
                 ),
                 'translation_domain' => 'material',
             ))

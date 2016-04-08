@@ -147,6 +147,11 @@ services:
         tags:
             - { name: form.type, alias: material }
 
+    commsy.form.type.announcement:
+        class: CommsyBundle\Form\Type\AnnouncementType
+        tags:
+            - { name: form.type, alias: announcement }
+
     commsy.form.type.itemDescription:
         class: CommsyBundle\Form\Type\ItemDescriptionType
         tags:

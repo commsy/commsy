@@ -134,3 +134,7 @@ services:
     commsy_legacy.transformer.annotation:
         class: Commsy\LegacyBundle\Form\DataTransformer\AnnotationTransformer
         arguments: [@commsy_legacy.environment]
+
+    commsy_legacy.transformer.announcement:
+        class: Commsy\LegacyBundle\Form\DataTransformer\AnnouncementTransformer
+        arguments: [@commsy_legacy.environment]
