@@ -56,6 +56,10 @@
     });
 
     $('#commsy-select-actions-cancel').on('change.uk.button', function(event) {
+        stopEdit();
+    });
+
+    function stopEdit () {
         $('#commsy-select-actions').toggleClass('uk-hidden');
         $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '0px');
 
@@ -79,7 +83,7 @@
         
         selectAll = false;
         selectable = false;
-    });
+    }
 
     function startEdit (el) {
         console.log('startEdit ...');
@@ -198,6 +202,7 @@
                     
                     // reload feed
                     reloadFeed(result);
+                    stopEdit();
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     UIkit.notify($this.options.errorMessage, 'danger');
                 });
@@ -282,9 +287,9 @@
                 $(target).html(result);
                 $(target).trigger('changed.uk.dom');
                 
-                $(target).find('article').each(function() {
+                /* $(target).find('article').each(function() {
                     $(this).toggleClass('selectable');
-                });
+                }); */
                 
                 bind();
                 
