@@ -22,8 +22,8 @@
 {# Widgets #}
 
 {%- block choice_widget_collapsed -%}
-        {% set attr = attr|merge({class: (attr.class|default('') ~ ' cs-form-horizontal-full-width')|trim}) %}
-        {{- parent() -}}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' cs-form-horizontal-full-width')|trim}) %}
+    {{- parent() -}}
 {%- endblock choice_widget_collapsed -%}
 
 {% block hashtag_widget %}
