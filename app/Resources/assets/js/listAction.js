@@ -126,8 +126,6 @@
     }
 
     function startEdit (el) {
-        console.log('startEdit ...');
-        
         element = el;
         
         actionUrl = element.data('commsy-list-action').actionUrl;
@@ -155,23 +153,31 @@
         $('#commsy-list-count-display').toggleClass('uk-hidden');
         $('#commsy-list-count-edit').toggleClass('uk-hidden');
         
+        $('#commsy-select-actions-select-shown').removeClass('uk-active');
+        $('#commsy-select-actions-select-all').removeClass('uk-active');
+        $('#commsy-select-actions-unselect').removeClass('uk-active');
+        $('#commsy-select-actions-ok').removeClass('uk-active');
+        $('#commsy-select-actions-cancel').removeClass('uk-active');
+        
         selectable = true; 
         
         bind();       
     }
     
     UI.$html.on('changed.uk.dom', function(e) {
-        let target = $(element.data('commsy-list-action').target) ? UI.$(element.data('commsy-list-action').target) : [];
-        if (!target.length) return;
-        
-        articles = target.find('article');
-        inputs = target.find('input');
-
-        if (articles.first().hasClass('selectable')) {
-            articles.addClass('selectable');
+        if  (element) {
+            let target = $(element.data('commsy-list-action').target) ? UI.$(element.data('commsy-list-action').target) : [];
+            if (!target.length) return;
+            
+            articles = target.find('article');
+            inputs = target.find('input');
+    
+            if (articles.first().hasClass('selectable')) {
+                articles.addClass('selectable');
+            }
+    
+            bind();
         }
-
-        bind();
     });
     
     window.addEventListener('feedDidLoad', function (e) {
@@ -283,8 +289,6 @@
     }
      
     function performAction () {
-        console.log('performAction ...');
-        
         let target = $(element.data('commsy-list-action').target) ? UI.$(element.data('commsy-list-action').target) : [];
         
         let entries =  target.find('input:checked').map(function() {
@@ -298,38 +302,53 @@
         if (entries.length > 0) {
             if (action != 'save' && action != 'send-list') {
                 // send action request
-                $.ajax({
-                    url: actionUrl,
-                    type: 'POST',
-                    data: {
-                        act: action,
-                        data: JSON.stringify(entries),
-                        selectAll: selectAll,
-                        selectAllStart: input.length
-                    }
-                }).done(function(result) {
-                    $('#commsy-select-actions-select-shown').removeClass('uk-active');
-                    $('#commsy-select-actions-select-all').removeClass('uk-active');
-                    $('#commsy-select-actions-unselect').removeClass('uk-active');
-                    
-                    target.find('input[type="checkbox"]').each(function() {
-                        $(this).prop('checked', false);
+                
+                let execute = true;
+                if (action == 'delete') {
+                    execute = false;
+                    UIkit.modal.confirm(element.data('confirm-delete'), function() {
+                        execute = true;
+                    }, {
+                        labels: {
+                            Cancel: element.data('confirm-delete-cancel'),
+                            Ok: element.data('confirm-delete-confirm')
+                        }
                     });
-                    target.find('article').each(function() {
-                        $(this).removeClass('uk-comment-primary');
+                }
+                if (execute) {
+                    $.ajax({
+                        url: actionUrl,
+                        type: 'POST',
+                        data: {
+                            act: action,
+                            data: JSON.stringify(entries),
+                            selectAll: selectAll,
+                            selectAllStart: input.length
+                        }
+                    }).done(function(result) {
+                        $('#commsy-select-actions-select-shown').removeClass('uk-active');
+                        $('#commsy-select-actions-select-all').removeClass('uk-active');
+                        $('#commsy-select-actions-unselect').removeClass('uk-active');
+                        
+                        target.find('input[type="checkbox"]').each(function() {
+                            $(this).prop('checked', false);
+                        });
+                        target.find('article').each(function() {
+                            $(this).removeClass('uk-comment-primary');
+                        });
+    
+                        if (action == 'copy') {
+                            let $indicator = $('#cs-nav-copy-indicator');
+                            $indicator.html(result.data.count);
+                        }
+                        
+                        // reload feed
+                        reloadFeed(result);
+                        stopEdit();
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        UIkit.notify(errorMessage, 'danger');
                     });
-
-                    if (action == 'copy') {
-                        let $indicator = $('#cs-nav-copy-indicator');
-                        $indicator.html(result.data.count);
-                    }
-                    
-                    // reload feed
-                    reloadFeed(result);
-                    stopEdit();
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    UIkit.notify(errorMessage, 'danger');
-                });
+                }
             } else if (action == 'save') {
                 let $form = $(document.createElement('form'))
                     .css({
