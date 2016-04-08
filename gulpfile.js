@@ -123,6 +123,7 @@ gulp.task('less', function() {
     return app.addStyle([
         config.bowerDir + '/jstree/dist/themes/default/style.css',
         config.bowerDir + '/nprogress/nprogress.css',
+        config.bowerDir + '/fullcalendar/dist/fullcalendar.css',
         config.assetsDir + '/uikit-commsy/commsy.less'
     ], 'commsy.css');
 });
@@ -134,6 +135,10 @@ gulp.task('js', function() {
         config.bowerDir + '/jstree/dist/jstree.js',
 
         config.bowerDir + '/nprogress/nprogress.js',
+
+        config.bowerDir + '/moment/moment.js',
+        config.bowerDir + '/fullcalendar/dist/fullcalendar.js',
+        config.bowerDir + '/fullcalendar/dist/lang-all.js',
 
         config.bowerDir + '/uikit/js/uikit.js',
         config.bowerDir + '/uikit/js/components/autocomplete.js',

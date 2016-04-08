@@ -112,4 +112,9 @@ class AnnouncementService
     {
         return $this->announcementManager->getItem($itemId);
     }
+
+    public function getNewAnnouncement()
+    {
+        return $this->announcementManager->getNewItem();
+    }
 }

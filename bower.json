@@ -13,6 +13,7 @@
     "jquery": "latest",
     "uikit": "latest",
     "jstree": "latest",
-    "nprogress": "latest"
+    "nprogress": "latest",
+    "fullcalendar": "latest"
   }
 }

@@ -9,7 +9,7 @@
 
         boot: function() {
             // init code
-            UI.ready(function(context) {
+            /* UI.ready(function(context) {
                 UI.$('[data-commsy-select]', context).each(function() {
                     let element = UI.$(this);
 
@@ -17,7 +17,7 @@
                         let obj = UI.select(element, UI.Utils.options(element.attr('data-commsy-select')));
                     }
                 });
-            });
+            }); */
         },
 
         init: function() {
@@ -94,7 +94,7 @@
                 $this.selectAll = false;
             });
             
-            $('#commsy-select-actions-mark-read').on('click', function(event) {
+            /* $('#commsy-select-actions-mark-read').on('click', function(event) {
                 event.preventDefault();
                 $this.action('markread');
             });
@@ -139,7 +139,7 @@
             $('#commsy-select-actions-send-list').on('click', function(event) {
                 event.preventDefault();
                 $this.action('send-list');
-            });
+            }); */
 
             $('#commsy-select-actions-cancel').on('change.uk.button', function(event) {
                 $('#commsy-select-actions').toggleClass('uk-hidden');

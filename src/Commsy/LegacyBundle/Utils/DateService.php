@@ -67,4 +67,16 @@ class DateService
     {
         return $this->dateManager->getItem($itemId);
     }
+    
+    public function getCalendarEvents($roomId, $start, $end)
+    {
+        $this->dateManager->reset();
+        $this->dateManager->setContextLimit($roomId);
+        $this->dateManager->setWithoutDateModeLimit();
+        $this->dateManager->setBetweenLimit($start, $end);
+        $this->dateManager->select();
+        $dateList = $this->dateManager->get();
+
+        return $dateList->to_array();
+    }
 }

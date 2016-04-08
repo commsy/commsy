@@ -429,9 +429,8 @@ class AnnouncementController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.announcement');
         
         // create new announcement item
-        $announcementItem = $announcementService->getNewannouncement();
+        $announcementItem = $announcementService->getNewAnnouncement();
         $announcementItem->setTitle('['.$translator->trans('insert title').']');
-        $announcementItem->setBibKind('none');
         $announcementItem->setDraftStatus(1);
         $announcementItem->save();
 
@@ -509,6 +508,7 @@ class AnnouncementController extends Controller
             'form' => $form->createView(),
             'showHashtags' => $current_context->withBuzzwords(),
             'showCategories' => $current_context->withTags(),
+            'currentUser' => $legacyEnvironment->getCurrentUserItem(),
 
         );
     }
