@@ -1423,5 +1423,14 @@ class cs_item_manager extends cs_manager {
      $query = 'DELETE FROM '.$this->addDatabasePrefix('workflow_read').' WHERE item_id = '.$item_id.';';
      $result = $this->_db_connector->performQuery($query);
   }
+
+    public function getAllDraftItems()
+    {
+        $result = array();
+        $query = 'SELECT * FROM '.$this->addDatabasePrefix('items').' WHERE draft = 1 AND deletion_date IS NULL AND deleter_id IS NULL;';
+        $result = $this->_db_connector->performQuery($query);
+
+        return $result;
+    }
 }
 ?>

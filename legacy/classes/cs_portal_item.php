@@ -1002,9 +1002,40 @@ class cs_portal_item extends cs_guide_item {
          }
       }
       $cron_array[] = $this->_cronTemporaryLoginAs();
-      
+      $cron_array[] = $this->_cronDraftCleanUp();
       return $cron_array;
    }
+
+    function _cronDraftCleanUp()
+    {
+        $time_start = getmicrotime();
+        $cron_array = array();
+        $cron_array['title'] = 'Delete draft items';
+        $cron_array['description'] = 'Delete all drafts';
+        $success = false;
+
+        // clean up all drafts
+        $itemManager = $this->_environment->getItemManager();
+        $draftItems = $itemManager->getAllDraftItems();
+
+        foreach ($draftItems as $key => $value) {
+            $manager = $this->_environment->getManager($value['type']);
+            $item = $manager->getItem($value['item_id']);
+
+            if($item) {
+                $item->delete();
+            }
+        }
+        $success = true;
+        $cron_array['success'] = true;
+        $cron_array['success_text'] = 'Drafts deleted';
+        $time_end = getmicrotime();
+        $time = round($time_end - $time_start,0);
+        $cron_array['time'] = $time;
+
+        return $cron_array;
+
+    }
    
    function _cronTemporaryLoginAs() {
    	$time_start = getmicrotime();
