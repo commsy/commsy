@@ -229,6 +229,8 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
    }
 
    function _performQuery ($mode = 'select') {
+       xdebug_break();
+       
       if ($mode == 'count') {
          $query = 'SELECT count('.$this->addDatabasePrefix('dates').'.item_id) AS count';
       } elseif ($mode == 'id_array') {

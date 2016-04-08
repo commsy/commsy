@@ -7,6 +7,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 use CommsyBundle\Filter\DateFilterType;
 
 class DateController extends Controller
@@ -89,7 +91,9 @@ class DateController extends Controller
     }
     
     /**
-     * @Route("/room/{roomId}/date/{itemId}")
+     * @Route("/room/{roomId}/date/{itemId}", requirements={
+     *     "itemId": "\d+"
+     * }))
      * @Template()
      */
     public function detailAction($roomId, $itemId, Request $request)
@@ -137,5 +141,39 @@ class DateController extends Controller
             'readerList' => $readerList,
             'modifierList' => $modifierList
         );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/date/events")
+     */
+    public function eventsAction($roomId, Request $request)
+    {
+        // get the material manager service
+        $dateService = $this->get('commsy_legacy.date_service');
+
+        $listDates = $dateService->getCalendarEvents($roomId, $_GET['start'], $_GET['end']);
+
+        $events = array();
+        foreach ($listDates as $date) {
+            $start = $date->getStartingDay();
+            if ($date->getStartingTime() != '') {
+                $start .= 'T'.$date->getStartingTime().'Z';
+            }
+            $end = $date->getEndingDay();
+            if ($end == '') {
+                $end = $date->getStartingDay();
+            }
+            if ($date->getEndingTime() != '') {
+                $end .= 'T'.$date->getEndingTime().'Z';
+            } 
+            
+            $events[] = array(//'id' => $date->getItemId(),
+                              'title' => $date->getTitle(),
+                              'start' => $start,
+                              'end' => $end
+                             );
+        }
+
+        return new JsonResponse($events);
     }
 }
