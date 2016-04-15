@@ -1,31 +1,31 @@
 vagrantfile:
     target: local
     vm:
-        box: puphpet/debian75-x64
-        box_url: puphpet/debian75-x64
-        hostname: commsy9.puphpet
-        memory: '1024'
-        cpus: '1'
-        chosen_provider: virtualbox
-        box_version: ''
-        network:
-            private_network: 192.168.56.101
-            forwarded_port:
-                vflnp_ijenpofxqq5v:
-                    host: '7539'
-                    guest: '22'
-        post_up_message: ''
         provider:
-            virtualbox:
-                modifyvm:
-                    natdnshostresolver1: false
-                showgui: ''
-            vmware:
-                numvcpus: 1
-            parallels:
-                use_linked_clone: '0'
-                check_guest_tools: '0'
-                update_guest_tools: '0'
+            local:
+                box: puphpet/debian75-x64
+                box_url: puphpet/debian75-x64
+                box_version: 'false'
+                chosen_virtualizer: virtualbox
+                virtualizers:
+                    virtualbox:
+                        modifyvm:
+                            natdnshostresolver1: false
+                        showgui: 0
+                    vmware:
+                        numvcpus: 1
+                    parallels:
+                        use_linked_clone: 0
+                        check_guest_tools: 0
+                        update_guest_tools: 0
+                machines:
+                    vflm_2dzog5wxu6w5:
+                        id: commsy9
+                        network:
+                            private_network: 192.168.56.101
+                        hostname: commsy9.puphpet
+                        memory: '1024'
+                        cpus: '1'
         provision:
             puppet:
                 manifests_path: puphpet/puppet/manifests
@@ -34,7 +34,7 @@ vagrantfile:
                     - '--verbose'
                     - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
         synced_folder:
-            vflsf_o9ymgv7ugebm:
+            vflsf_epjjvb6p11us:
                 source: ../
                 target: /var/www/commsy
                 sync_type: nfs
@@ -59,17 +59,18 @@ vagrantfile:
         usable_port_range:
             start: 10200
             stop: 10500
+        post_up_message: ''
     ssh:
-        host: null
-        port: null
-        private_key_path: null
+        host: 'false'
+        port: 'false'
+        private_key_path: 'false'
         username: vagrant
-        guest_port: null
-        keep_alive: true
-        forward_agent: false
-        forward_x11: false
+        guest_port: 'false'
+        keep_alive: '1'
+        forward_agent: 'false'
+        forward_x11: 'false'
         shell: 'bash -l'
-        insert_key: false
+        insert_key: 'false'
     vagrant:
         host: detect
     proxy:
@@ -118,7 +119,7 @@ nginx:
         names_hash_bucket_size: 128
     upstreams: {  }
     vhosts:
-        nxv_h996zvjuhl2i:
+        nxv_t14td2glxdw6:
             server_name: commsy.vm
             server_aliases:
                 - www.commsy.vm
@@ -138,7 +139,7 @@ nginx:
             rewrite_to_https: '1'
             spdy: '1'
             locations:
-                nxvl_7ftgemu90sop:
+                nxvl_xhcsa62i3pnl:
                     location: /
                     autoindex: 'off'
                     internal: 'false'
@@ -150,7 +151,7 @@ nginx:
                     fastcgi_split_path: ''
                     proxy: ''
                     proxy_redirect: ''
-                nxvl_qdwu2ppieogw:
+                nxvl_919fq7scci15:
                     location: '~ \.php(/|$)'
                     autoindex: 'off'
                     internal: 'false'
@@ -177,7 +178,7 @@ apache:
         - proxy_fcgi
         - rewrite
     vhosts:
-        av_3fxnnl4tjw14:
+        av_wczeregk6gpa:
             servername: awesome.dev
             serveraliases:
                 - www.awesome.dev
@@ -194,7 +195,7 @@ apache:
             ssl_protocol: ''
             ssl_cipher: ''
             directories:
-                avd_u5ttngl2frvj:
+                avd_r8d89zylgn98:
                     path: /var/www/awesome
                     options:
                         - Indexes
@@ -206,7 +207,7 @@ apache:
                         - 'all granted'
                     custom_fragment: ''
                     files_match:
-                        avdfm_7nvml62ikd8w:
+                        avdfm_jyh6385p28rh:
                             path: \.php$
                             sethandler: 'proxy:fcgi://127.0.0.1:9000'
                             custom_fragment: ''
@@ -233,7 +234,7 @@ php:
     fpm_ini:
         error_log: /var/log/php-fpm.log
     fpm_pools:
-        phpfp_ckeuy6z8q7q2:
+        phpfp_eu1x8jcf239c:
             ini:
                 prefix: www
                 listen: '127.0.0.1:9000'
@@ -304,43 +305,43 @@ hhvm:
         error_reporting: '-1'
         date.timezone: UTC
 mariadb:
-    install: '0'
+    install: '1'
     settings:
-        version: '10.0'
-        root_password: '123'
+        version: '10.1'
+        root_password: root
         override_options: {  }
-    adminer: 0
+    adminer: '1'
     users:
-        mariadbnu_ei8qxz7gilzh:
-            name: dbuser
-            password: '123'
+        mariadbnu_qj3vuqkly78n:
+            name: commsy
+            password: commsy
     databases:
-        mariadbnd_qy9btlinwp7f:
-            name: dbname
+        mariadbnd_6xtohr7xplta:
+            name: commsy
             sql: ''
     grants:
-        mariadbng_7xfk7appqcrg:
-            user: dbuser
-            table: '*.*'
+        mariadbng_9396ec7z1306:
+            user: commsy
+            table: 'commsy.*'
             privileges:
                 - ALL
 mysql:
-    install: '1'
+    install: 0
     settings:
         version: '5.6'
         root_password: root
         override_options: {  }
     adminer: '1'
     users:
-        mysqlnu_rwhdyifjlezp:
+        mysqlnu_kvrp1dgj2g7s:
             name: commsy
             password: commsy
     databases:
-        mysqlnd_5kbi13maex45:
+        mysqlnd_txaowkap4hyq:
             name: commsy
             sql: ''
     grants:
-        mysqlng_05vdefxvrxvx:
+        mysqlng_7zxarrltvgez:
             user: commsy
             table: 'commsy.*'
             privileges:
@@ -360,7 +361,6 @@ postgresql:
 mongodb:
     install: '0'
     settings:
-        auth: 1
         bind_ip: 127.0.0.1
         port: '27017'
     globals:
@@ -403,10 +403,10 @@ rabbitmq:
 elastic_search:
     install: '1'
     settings:
-        version: 2.1.0
+        version: 2.1.2
         java_install: true
     instances:
-        esi_6ew9pahk6efc:
+        esi_jwz2nknf5vyr:
             name: es-01
 solr:
     install: '0'

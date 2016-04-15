@@ -26,6 +26,7 @@ define puphpet::php::pecl (
 
   $pecl_beta = $::osfamily ? {
     'Debian' => {
+      'amqp'          => 'amqp',
       'augeas'        => 'augeas',
       'mcrypt_filter' => 'mcrypt_filter',
       'pdo_user'      => 'pdo_user',
@@ -35,7 +36,7 @@ define puphpet::php::pecl (
       },
     },
     'Redhat' => {
-      #
+      'amqp' => 'amqp',
     }
   }
 
@@ -135,7 +136,7 @@ define puphpet::php::pecl (
   {
     package { $package_name:
       ensure  => present,
-      require => Class['Php::Devel'],
+      require => Package[$puphpet::php::settings::package_devel]
     }
   }
 

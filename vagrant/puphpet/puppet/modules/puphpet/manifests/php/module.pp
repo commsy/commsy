@@ -8,10 +8,16 @@ define puphpet::php::module (
 
   $package = $::osfamily ? {
     'Debian' => {
-      'mbstring'  => false, # Comes packaged with PHP, not available in repos
+      'mbstring'  => $::operatingsystem ? {
+        'ubuntu' => $puphpet::php::settings::version ? {
+          '70'    => 'php7.0-mbstring',
+          '56'    => 'php5.6-mbstring',
+          default => false,
+        },
+        default  => false,
+      },
       'memcached' => $::operatingsystem ? {
         'ubuntu' => $puphpet::php::settings::version ? {
-          '70'    => 'php-memcached',
           default => 'php5-memcached',
         },
         default  => 'php5-memcached',
