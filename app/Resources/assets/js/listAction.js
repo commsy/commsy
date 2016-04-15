@@ -181,34 +181,45 @@
     });
     
     window.addEventListener('feedDidLoad', function (e) {
-        if (selectAll == true) {
+        if  (element) {
             let target = $(element.data('commsy-list-action').target) ? UI.$(element.data('commsy-list-action').target) : [];
             if (!target.length) return;
-            
+                
             articles = target.find('article');
             inputs = target.find('input');
-
-            var inputCounter = 0;
-            inputs.each(function() {
-                if (inputCounter >= e.detail.feedStart) {
-                    if (this.type == 'checkbox') {
-                        $(this).prop('checked', true);
+            
+            if (articles.first().hasClass('selectable')) {
+                articles.addClass('selectable');
+            }
+            
+            if (selectAll == true) {
+                var inputCounter = 0;
+                inputs.each(function() {
+                    if (inputCounter >= e.detail.feedStart) {
+                        if (this.type == 'checkbox') {
+                            $(this).prop('checked', true);
+                        }
                     }
-                }
-                inputCounter++;
-            });
-
-            var articlesCounter = 0;
-            articles.each(function() {
-                if (articlesCounter >= e.detail.feedStart) {
-                    $(this).addClass('uk-comment-primary');
-                }
-                articlesCounter++;
-            }); 
+                    inputCounter++;
+                });
+    
+                var articlesCounter = 0;
+                articles.each(function() {
+                    if (articlesCounter >= e.detail.feedStart) {
+                        $(this).addClass('uk-comment-primary');
+                    }
+                    articlesCounter++;
+                }); 
+            }
+            
+            bind();
         }
     });
     
     window.addEventListener('feedDidReload', function (e) {
+        let target = $(element.data('commsy-list-action').target) ? UI.$(element.data('commsy-list-action').target) : [];
+        if (!target.length) return;
+        
         articles = target.find('article');
         inputs = target.find('input');
 
