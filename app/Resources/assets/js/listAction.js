@@ -378,6 +378,8 @@
                 $form.append(input);
                 $('body').append($form);
                 $form.submit();
+                
+                stopEdit();
             } else if (action == 'send-list') {
                 // send ajax request
                 $.ajax({
