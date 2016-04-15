@@ -313,52 +313,17 @@
         if (entries.length > 0) {
             if (action != 'save' && action != 'send-list') {
                 // send action request
-                
-                let execute = true;
                 if (action == 'delete') {
-                    execute = false;
                     UIkit.modal.confirm(element.data('confirm-delete'), function() {
-                        execute = true;
+                        executeAction (actionUrl, entries, input, target);
                     }, {
                         labels: {
                             Cancel: element.data('confirm-delete-cancel'),
                             Ok: element.data('confirm-delete-confirm')
                         }
                     });
-                }
-                if (execute) {
-                    $.ajax({
-                        url: actionUrl,
-                        type: 'POST',
-                        data: {
-                            act: action,
-                            data: JSON.stringify(entries),
-                            selectAll: selectAll,
-                            selectAllStart: input.length
-                        }
-                    }).done(function(result) {
-                        $('#commsy-select-actions-select-shown').removeClass('uk-active');
-                        $('#commsy-select-actions-select-all').removeClass('uk-active');
-                        $('#commsy-select-actions-unselect').removeClass('uk-active');
-                        
-                        target.find('input[type="checkbox"]').each(function() {
-                            $(this).prop('checked', false);
-                        });
-                        target.find('article').each(function() {
-                            $(this).removeClass('uk-comment-primary');
-                        });
-    
-                        if (action == 'copy') {
-                            let $indicator = $('#cs-nav-copy-indicator');
-                            $indicator.html(result.data.count);
-                        }
-                        
-                        // reload feed
-                        reloadFeed(result);
-                        stopEdit();
-                    }).fail(function(jqXHR, textStatus, errorThrown) {
-                        UIkit.notify(errorMessage, 'danger');
-                    });
+                } else {
+                    executeAction (actionUrl, entries, input, target);
                 }
             } else if (action == 'save') {
                 let $form = $(document.createElement('form'))
@@ -416,6 +381,41 @@
         }
         
         selectAll = false;
+    }
+    
+    function executeAction (actionUrl, entries, input, target) {
+        $.ajax({
+            url: actionUrl,
+            type: 'POST',
+            data: {
+                act: action,
+                data: JSON.stringify(entries),
+                selectAll: selectAll,
+                selectAllStart: input.length
+            }
+        }).done(function(result) {
+            $('#commsy-select-actions-select-shown').removeClass('uk-active');
+            $('#commsy-select-actions-select-all').removeClass('uk-active');
+            $('#commsy-select-actions-unselect').removeClass('uk-active');
+            
+            target.find('input[type="checkbox"]').each(function() {
+                $(this).prop('checked', false);
+            });
+            target.find('article').each(function() {
+                $(this).removeClass('uk-comment-primary');
+            });
+
+            if (action == 'copy') {
+                let $indicator = $('#cs-nav-copy-indicator');
+                $indicator.html(result.data.count);
+            }
+            
+            // reload feed
+            reloadFeed(result);
+            stopEdit();
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            UIkit.notify(errorMessage, 'danger');
+        });
     }
     
     function reloadFeed ({message, status, timeout}) {
