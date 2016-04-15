@@ -180,7 +180,11 @@
             </trans-unit>
             <trans-unit id="no selection">
                 <source>no selection</source>
-                <target>No items selected</target>
+                <target>Keine Einträge ausgewählt</target>
+            </trans-unit>
+            <trans-unit id="execute">
+                <source>execute</source>
+                <target>Aktion ausführen</target>
             </trans-unit>
         </body>
     </file>

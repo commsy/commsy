@@ -79,7 +79,7 @@
                     
                     
                     <li>
-                        <a href="#" id="commsy-select-actions-delete" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_material_feedaction', {'roomId': roomId}) }}"}'>
+                        <a href="#" id="commsy-select-actions-delete" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_material_feedaction', {'roomId': roomId}) }}"}' data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
                         </a>
                     </li>
