@@ -69,8 +69,8 @@ class LegacyEnvironment
                     // check server bag
                     $requestUri = $currentRequest->getRequestUri();
                     
-                    if (preg_match('/room\/(\d+)/', $requestUri, $matches)) {
-                        $roomId = $matches[1];
+                    if (preg_match('/(room|dashboard)\/(\d+)/', $requestUri, $matches)) {
+                        $roomId = $matches[2];
                         $this->environment->setCurrentContextID($roomId);
                     }
                 }
