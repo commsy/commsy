@@ -19,26 +19,14 @@
             },
             events: $('#calendar').data('events').url,
             dayClick: function(date, jsEvent, view) {
-                console.log('Clicked on: ' + date.format());
-                console.log('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-                console.log('Current view: ' + view.name);
-        
-                // change the day's background color just for fun
-                $(this).css('background-color', 'red');
-        
+                window.location.href = $('#calendar').data('events').createUrl;
             },
             eventClick: function(calEvent, jsEvent, view) {
-                console.log('Event: ' + calEvent.title);
-                console.log('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-                console.log('View: ' + view.name);
-        
-                // change the border color just for fun
-                $(this).css('border-color', 'red');
-        
+                
             },
             eventMouseover: function(calEvent, jsEvent, view) {
                 $(jsEvent.currentTarget).tooltipster({
-                    content: $('<div>'+calEvent.title+'</div>')
+                    content: $(renderEvent(calEvent))
                 }).tooltipster('show');
             },
             eventMouseout: function(calEvent, jsEvent, view) {
@@ -46,5 +34,27 @@
             },
         });
     };
+
+    function renderEvent(calEvent) {
+        return '<div>'
+                +'<table>'
+                +'<tr>'
+                +'<td colspan="2"><b>'+calEvent.title+'</b></td>'
+                +'</tr>'
+                +'<tr>'
+                +'<td>Datum:</td>'
+                +'<td>'+calEvent.description+'</td>'
+                +'</tr>'
+                +'<tr>'
+                +'<td>Ort:</td>'
+                +'<td>'+calEvent.place+'</td>'
+                +'</tr>'
+                +'<td>Teilnehmer:</td>'
+                +'<td>'+calEvent.participants+'</td>'
+                +'</tr>'
+                +'</table>'
+                +'</div>';
+        
+    }
 
 })(UIkit);

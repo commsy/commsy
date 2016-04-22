@@ -167,13 +167,40 @@ class DateController extends Controller
                 $end .= 'T'.$date->getEndingTime().'Z';
             } 
             
+            $participantsList = $date->getParticipantsItemList();
+            $participantItem = $participantsList->getFirst();
+            $participantsNameArray = array();
+            while ($participantItem) {
+                $participantsNameArray[] = $participantItem->getFullname();
+                $participantItem = $participantsList->getNext();    
+            }
+            $participantsDisplay = 'keine Zuordnung';
+            if (!empty($participantsNameArray)) {
+                implode(',', $participantsNameArray);
+            }
+            
+            
             $events[] = array(//'id' => $date->getItemId(),
                               'title' => $date->getTitle(),
                               'start' => $start,
-                              'end' => $end
+                              'end' => $end,
+                              'color' => $date->getColor(),
+                              'editable' => $date->isPublic(),
+                              'description' => $date->getDateDescription(),
+                              'place' => $date->getPlace(),
+                              'participants' => $participantsDisplay
                              );
         }
 
         return new JsonResponse($events);
+    }
+    
+    /**
+     * @Route("/room/{roomId}/date/create")
+     * @Template()
+     */
+    public function createAction($roomId, Request $request)
+    {
+        
     }
 }
