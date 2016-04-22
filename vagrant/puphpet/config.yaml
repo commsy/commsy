@@ -88,6 +88,13 @@ server:
         - xfonts-75dpi
         - xfonts-base
         - wkhtmltopdf
+        - gzip
+        - git
+        - curl
+        - python
+        - libssl-dev
+        - pkg-config
+        - build-essential
 users_groups:
     install: '1'
     groups: {  }
@@ -103,7 +110,13 @@ locale:
         timezone: Europe/Berlin
 firewall:
     install: '1'
-    rules: {  }
+    rules:
+        fr_aimzo5wkivoz:
+            port:
+                - '9001'
+            priority: '100'
+            proto: tcp
+            action: 'accept'
 cron:
     install: '1'
     jobs: {  }
