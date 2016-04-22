@@ -10,7 +10,7 @@ class redis::params {
   $activerehashing              = true
   $appendfsync                  = 'everysec'
   $appendonly                   = false
-  $auto_aof_rewrite_min_size    = '64mb'
+  $auto_aof_rewrite_min_size    = '64min'
   $auto_aof_rewrite_percentage  = 100
   $bind                         = '127.0.0.1'
   $conf_template                = 'redis/redis.conf.erb'
@@ -56,10 +56,8 @@ class redis::params {
   $set_max_intset_entries       = 512
   $slowlog_log_slower_than      = 10000
   $slowlog_max_len              = 1024
-  $stop_writes_on_bgsave_error  = true
   $syslog_enabled               = undef
   $syslog_facility              = undef
-  $tcp_keepalive                = 0
   $timeout                      = 0
   $ulimit                       = 65536
   $workdir                      = '/var/lib/redis/'
@@ -93,7 +91,6 @@ class redis::params {
       $package_name              = 'redis-server'
       $sentinel_config_file      = '/etc/redis/redis-sentinel.conf'
       $sentinel_config_file_orig = '/etc/redis/redis-sentinel.conf.puppet'
-      $sentinel_daemonize        = true
       $sentinel_init_script      = '/etc/init.d/redis-sentinel'
       $sentinel_package_name     = 'redis-server'
       $sentinel_package_ensure   = 'present'
@@ -115,13 +112,12 @@ class redis::params {
       $config_file_mode          = '0644'
       $config_group              = 'root'
       $config_owner              = 'redis'
-      $daemonize                 = true
+      $daemonize                 = false
       $log_dir_mode              = '0755'
       $package_ensure            = 'present'
       $package_name              = 'redis'
       $sentinel_config_file      = '/etc/redis-sentinel.conf'
       $sentinel_config_file_orig = '/etc/redis-sentinel.conf.puppet'
-      $sentinel_daemonize        = false
       $sentinel_init_script      = undef
       $sentinel_package_name     = 'redis'
       $sentinel_package_ensure   = 'present'
@@ -149,7 +145,6 @@ class redis::params {
       $package_name              = 'redis'
       $sentinel_config_file      = '/usr/local/etc/redis-sentinel.conf'
       $sentinel_config_file_orig = '/usr/local/etc/redis-sentinel.conf.puppet'
-      $sentinel_daemonize        = true
       $sentinel_init_script      = undef
       $sentinel_package_name     = 'redis'
       $sentinel_package_ensure   = 'present'
@@ -177,7 +172,6 @@ class redis::params {
       $package_name              = 'redis'
       $sentinel_config_file      = '/etc/redis/redis-sentinel.conf'
       $sentinel_config_file_orig = '/etc/redis/redis-sentinel.conf.puppet'
-      $sentinel_daemonize        = true
       $sentinel_init_script      = undef
       $sentinel_package_name     = 'redis'
       $sentinel_package_ensure   = 'present'

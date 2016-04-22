@@ -23,7 +23,7 @@
 # [*auto_aof_rewrite_min_size*]
 #   Adjust minimum size for auto-aof-rewrite.
 #
-#   Default: 64mb
+#   Default: 64min
 #
 # [*auto_aof_rewrite_percentage*]
 #   Adjust percentatge for auto-aof-rewrite.
@@ -331,12 +331,6 @@
 #
 #   Default: 1024
 #
-# [*stop_writes_on_bgsave_error*]
-#   If false then Redis will continue to work as usual even if there
-#   are problems with disk, permissions, and so forth.
-#
-#   Default: true
-#
 # [*syslog_enabled*]
 #   Enable/disable logging to the system logger.
 #
@@ -347,22 +341,6 @@
 #   Must be USER or between LOCAL0-LOCAL7.
 #
 #   Default: undef
-#
-# [*tcp_keepalive*]
-#   TCP keepalive.
-#
-#   If non-zero, use SO_KEEPALIVE to send TCP ACKs to clients in absence
-#   of communication. This is useful for two reasons:
-#
-#   1) Detect dead peers.
-#   2) Take the connection alive from the point of view of network
-#      equipment in the middle.
-#
-#   On Linux, the specified value (in seconds) is the period used to send ACKs.
-#   Note that to close the connection the double of the time is needed.
-#   On other kernels the period depends on the kernel configuration.
-#
-#   A reasonable value for this option is 60 seconds.
 #
 # [*timeout*]
 #   Close the connection after a client is idle for N seconds (0 to disable).
@@ -478,10 +456,8 @@ class redis (
   $slaveof                     = $::redis::params::slaveof,
   $slowlog_log_slower_than     = $::redis::params::slowlog_log_slower_than,
   $slowlog_max_len             = $::redis::params::slowlog_max_len,
-  $stop_writes_on_bgsave_error = $::redis::params::stop_writes_on_bgsave_error,
   $syslog_enabled              = $::redis::params::syslog_enabled,
   $syslog_facility             = $::redis::params::syslog_facility,
-  $tcp_keepalive               = $::redis::params::tcp_keepalive,
   $timeout                     = $::redis::params::timeout,
   $ulimit                      = $::redis::params::ulimit,
   $workdir                     = $::redis::params::workdir,

@@ -699,19 +699,6 @@ describe 'redis', :type => :class do
     }
   end
 
-  describe 'with parameter stop_writes_on_bgsave_error' do
-    let (:params) {
-      {
-        :stop_writes_on_bgsave_error => true
-      }
-    }
-
-    it { should contain_file('/etc/redis/redis.conf').with(
-        'content' => /stop-writes-on-bgsave-error.*yes/
-      )
-    }
-  end
-
   describe 'with parameter syslog_enabled' do
     let (:params) {
       {
@@ -735,19 +722,6 @@ describe 'redis', :type => :class do
 
     it { should contain_file('/etc/redis/redis.conf').with(
         'content' => /syslog-facility.*_VALUE_/
-      )
-    }
-  end
-
-  describe 'with parameter tcp_keepalive' do
-    let (:params) {
-      {
-        :tcp_keepalive => '_VALUE_'
-      }
-    }
-
-    it { should contain_file('/etc/redis/redis.conf').with(
-        'content' => /tcp-keepalive.*_VALUE_/
       )
     }
   end
@@ -812,7 +786,7 @@ describe 'redis', :type => :class do
     }
 
     it { should_not contain_file('/etc/redis/redis.conf').with(
-        'content' => /cluster-enabled/
+        'content' => /cluster-enabled.*/
       )
     }
   end

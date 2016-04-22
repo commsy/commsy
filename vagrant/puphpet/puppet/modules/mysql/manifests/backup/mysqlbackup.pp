@@ -1,29 +1,27 @@
 # See README.me for usage.
 class mysql::backup::mysqlbackup (
-  $backupuser         = '',
-  $backuppassword     = '',
-  $backupdir          = '',
-  $backupdirmode      = '0700',
-  $backupdirowner     = 'root',
-  $backupdirgroup     = $mysql::params::root_group,
-  $backupcompress     = true,
-  $backuprotate       = 30,
-  $ignore_events      = true,
+  $backupuser,
+  $backuppassword,
+  $backupdir,
+  $backupdirmode = '0700',
+  $backupdirowner = 'root',
+  $backupdirgroup = 'root',
+  $backupcompress = true,
+  $backuprotate = 30,
+  $ignore_events = true,
   $delete_before_dump = false,
-  $backupdatabases    = [],
-  $file_per_database  = false,
-  $include_triggers   = true,
-  $include_routines   = false,
-  $ensure             = 'present',
-  $time               = ['23', '5'],
-  $prescript          = false,
-  $postscript         = false,
-  $execpath           = '/usr/bin:/usr/sbin:/bin:/sbin',
+  $backupdatabases = [],
+  $file_per_database = false,
+  $ensure = 'present',
+  $time = ['23', '5'],
+  $postscript = false,
+  $execpath   = '/usr/bin:/usr/sbin:/bin:/sbin',
 ) {
 
   mysql_user { "${backupuser}@localhost":
     ensure        => $ensure,
     password_hash => mysql_password($backuppassword),
+    provider      => 'mysql',
     require       => Class['mysql::server::root_password'],
   }
 
@@ -62,7 +60,7 @@ class mysql::backup::mysqlbackup (
     user    => 'root',
     hour    => $time[0],
     minute  => $time[1],
-    weekday => '0',
+    weekday => 0,
     require => Package['meb'],
   }
 
@@ -72,7 +70,7 @@ class mysql::backup::mysqlbackup (
     user    => 'root',
     hour    => $time[0],
     minute  => $time[1],
-    weekday => '1-6',
+    weekday => 1-6,
     require => Package['meb'],
   }
 
