@@ -124,6 +124,7 @@ gulp.task('less', function() {
         config.bowerDir + '/jstree/dist/themes/default/style.css',
         config.bowerDir + '/nprogress/nprogress.css',
         config.bowerDir + '/fullcalendar/dist/fullcalendar.css',
+        config.bowerDir + '/tooltipster/css/tooltipster.css',
         config.assetsDir + '/uikit-commsy/commsy.less'
     ], 'commsy.css');
 });
@@ -139,6 +140,8 @@ gulp.task('js', function() {
         config.bowerDir + '/moment/moment.js',
         config.bowerDir + '/fullcalendar/dist/fullcalendar.js',
         config.bowerDir + '/fullcalendar/dist/lang-all.js',
+        
+        config.bowerDir + '/tooltipster/js/jquery.tooltipster.min.js',
 
         config.bowerDir + '/uikit/js/uikit.js',
         config.bowerDir + '/uikit/js/components/autocomplete.js',

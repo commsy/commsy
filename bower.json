@@ -14,6 +14,7 @@
     "uikit": "latest",
     "jstree": "latest",
     "nprogress": "latest",
-    "fullcalendar": "latest"
+    "fullcalendar": "latest",
+    "tooltipster": "latest"
   }
 }
