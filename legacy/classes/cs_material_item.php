@@ -334,6 +334,17 @@ class cs_material_item extends cs_item {
 /** End: detailed bib values **/
 
 
+    public function setEtherpadEditor($value)
+    {
+        // use etherpad editor for material
+        $this->_addExtra('etherpad', $value);
+    }
+
+    public function getEtherpadEditor()
+    {
+        return $this->_getExtra('etherpad');
+    }
+
    /** set description of a material
     * this method sets the description of the material an marks it as 'changed'
     *
