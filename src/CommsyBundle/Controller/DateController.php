@@ -196,12 +196,54 @@ class DateController extends Controller
     }
     
     /**
-     * @Route("/room/{roomId}/date/create")
+     * @Route("/room/{roomId}/date/create/{dateDescription}")
      * @Template()
      */
-    public function createAction($roomId, Request $request)
+    public function createAction($roomId, $dateDescription, Request $request)
     {
+        $translator = $this->get('translator');
         
+        $dateService = $this->get('commsy_legacy.date_service');
+
+        // create new material item
+        $dateItem = $dateService->getNewDate();
+        $dateItem->setTitle('['.$translator->trans('insert title').']');
+        $dateItem->setDraftStatus(1);
+        $dateItem->setPrivateEditing('1');
+
+        $dateDescriptionArray = date_parse(urldecode($dateDescription));
+        
+        $year = $dateDescriptionArray['year'];
+        $month = $dateDescriptionArray['month'];
+        if ($month < 10) {
+            $month = '0'.$month;
+        }
+        $day = $dateDescriptionArray['day'];
+        if ($day < 10) {
+            $day = '0'.$day;
+        }
+        $hour = $dateDescriptionArray['hour'];
+        if ($hour < 10) {
+            $hour = '0'.$hour;
+        }
+        $minute = $dateDescriptionArray['minute'];
+        if ($minute < 10) {
+            $minute = '0'.$minute;
+        }
+        $second = $dateDescriptionArray['second'];
+        if ($second < 10) {
+            $second = '0'.$second;
+        }
+        
+        $dateItem->setStartingDay($year.'-'.$month.'-'.$day);
+        $dateItem->setStartingTime($hour.':'.$minute.':'.$second);
+        
+        $dateItem->setDateTime_start($year.'-'.$month.'-'.$day.' '.$hour.':'.$minute.':'.$second);
+        $dateItem->setDateTime_end($year.'-'.$month.'-'.$day.' '.$hour.':'.$minute.':'.$second);
+
+        $dateItem->save();
+
+        return $this->redirectToRoute('commsy_date_detail', array('roomId' => $roomId, 'itemId' => $dateItem->getItemId()));
     }
     
     /**

@@ -79,4 +79,9 @@ class DateService
 
         return $dateList->to_array();
     }
+    
+    public function getNewDate()
+    {
+        return $this->dateManager->getNewItem();
+    }
 }

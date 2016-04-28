@@ -19,7 +19,7 @@
             },
             events: $('#calendar').data('events').url,
             dayClick: function(date, jsEvent, view) {
-                window.location.href = $('#calendar').data('events').createUrl;
+                window.location.href = $('#calendar').data('events').editUrl+'/create/'+encodeURIComponent(date.format('YYYY-MM-DD hh:mm:ss a'));
             },
             eventClick: function(calEvent, jsEvent, view) {
                 window.location.href = $('#calendar').data('events').editUrl+'/'+calEvent.itemId+'/edit';
@@ -52,9 +52,6 @@
                 event,
             })
         }).done(function(data, textStatus, jqXHR) {
-            console.log('json response');
-            console.log(data);
-            
             event.description = data.data.description;
             
             $('#calendar').fullCalendar('updateEvent', event);
