@@ -2,3 +2,13 @@ services:
 #    etherpad.example:
 #        class: EtherpadBundle\Example
 #        arguments: ["@service_id", "plain_value", %parameter%]
+
+    commsy.etherpad_service:
+        class: EtherpadBundle\Services\EtherpadService
+        arguments: ["@service_container"]
+
+    etherpad.etherpad_edit_subscriber:
+        class: EtherpadBundle\EventSubscriber\EtherpadEditSubscriber
+        arguments: ["@service_container"]
+        tags:
+            - { name: kernel.event_subscriber }
