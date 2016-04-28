@@ -209,6 +209,8 @@ class DateController extends Controller
      */
     public function calendareditAction($roomId, $itemId, Request $request)
     {
+        $translator = $this->get('translator');
+        
         $dateService = $this->get('commsy_legacy.date_service');
         $date = $dateService->getDate($itemId);
         
@@ -244,15 +246,33 @@ class DateController extends Controller
         
         $date->save();
         
-        return new JsonResponse(array('itemId' => $date->getItemId(),
-                                      'title' => $date->getTitle(),
-                                      'start' => $start,
-                                      'end' => $end,
-                                      'color' => $date->getColor(),
-                                      'editable' => $date->isPublic(),
-                                      'description' => $date->getDateDescription(),
-                                      'place' => $date->getPlace(),
-                                      'participants' => $participantsDisplay
-                                     ));
+        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->trans('date changed');
+        
+        $start = $date->getStartingDay();
+        if ($date->getStartingTime() != '') {
+            $start .= 'T'.$date->getStartingTime().'Z';
+        }
+        $end = $date->getEndingDay();
+        if ($end == '') {
+            $end = $date->getStartingDay();
+        }
+        if ($date->getEndingTime() != '') {
+            $end .= 'T'.$date->getEndingTime().'Z';
+        }
+        
+        return new JsonResponse(array('message' => $message,
+                                      'timeout' => '5550',
+                                      'layout' => 'cs-notify-message',
+                                      'data' => array('itemId' => $date->getItemId(),
+                                          'title' => $date->getTitle(),
+                                          'start' => $start,
+                                          'end' => $end,
+                                          'color' => $date->getColor(),
+                                          'editable' => $date->isPublic(),
+                                          'description' => $date->getDateDescription(),
+                                          'place' => $date->getPlace(),
+                                          'participants' => $participantsDisplay
+                                      ),
+                                    ));
     }
 }

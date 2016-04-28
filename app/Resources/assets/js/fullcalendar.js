@@ -42,6 +42,9 @@
     };
 
     function editEvent (event) {
+        event.description = '...';
+        $('#calendar').fullCalendar('updateEvent', event);
+        
         $.ajax({
             url: $('#calendar').data('events').editUrl+'/'+event.itemId+'/calendaredit',
             type: 'POST',
@@ -51,9 +54,17 @@
         }).done(function(data, textStatus, jqXHR) {
             console.log('json response');
             console.log(data);
-            $(event.currentTarget).tooltipster({
-                content: $(renderEvent(event))
-            }).tooltipster('show');
+            
+            event.description = data.data.description;
+            
+            $('#calendar').fullCalendar('updateEvent', event);
+            
+            UIkit.notify({
+                message : data.message,
+                status  : data.status,
+                timeout : data.timeout,
+                pos     : 'top-center'
+            });
         }).fail(function(jqXHR, textStatus, errorThrown) {
             UIkit.notify(errorMessage, 'danger');
         });
