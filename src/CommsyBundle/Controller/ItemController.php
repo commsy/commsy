@@ -29,8 +29,10 @@ class ItemController extends Controller
         
         $formData = array();
         $tempItem = NULL;
+        $isMaterial = false;
         
         if ($item->getItemType() == 'material') {
+            $isMaterial = true;
             // get material from MaterialService
             $tempItem = $materialService->getMaterial($itemId);
             if (!$tempItem) {
@@ -65,7 +67,9 @@ class ItemController extends Controller
         }
 
         return array(
+            'isMaterial' => $isMaterial,
             'itemId' => $itemId,
+            'roomId' => $roomId,
             'form' => $form->createView()
         );
     }
