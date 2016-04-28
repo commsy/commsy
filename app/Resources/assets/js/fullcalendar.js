@@ -22,7 +22,7 @@
                 window.location.href = $('#calendar').data('events').createUrl;
             },
             eventClick: function(calEvent, jsEvent, view) {
-                
+                window.location.href = $('#calendar').data('events').editUrl+'/'+calEvent.itemId+'/edit';
             },
             eventMouseover: function(calEvent, jsEvent, view) {
                 $(jsEvent.currentTarget).tooltipster({
@@ -32,8 +32,32 @@
             eventMouseout: function(calEvent, jsEvent, view) {
                 //UIkit.modal('#tooltip-'+calEvent._id).hide();
             },
+            eventDrop: function(event, delta, revertFunc) {
+                editEvent(event);
+            },
+            eventResize: function(event, delta, revertFunc) {
+                editEvent(event);
+            },
         });
     };
+
+    function editEvent (event) {
+        $.ajax({
+            url: $('#calendar').data('events').editUrl+'/'+event.itemId+'/calendaredit',
+            type: 'POST',
+            data: JSON.stringify({
+                event,
+            })
+        }).done(function(data, textStatus, jqXHR) {
+            console.log('json response');
+            console.log(data);
+            $(event.currentTarget).tooltipster({
+                content: $(renderEvent(event))
+            }).tooltipster('show');
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            UIkit.notify(errorMessage, 'danger');
+        });
+    }
 
     function renderEvent(calEvent) {
         return '<div>'

@@ -180,7 +180,7 @@ class DateController extends Controller
             }
             
             
-            $events[] = array(//'id' => $date->getItemId(),
+            $events[] = array('itemId' => $date->getItemId(),
                               'title' => $date->getTitle(),
                               'start' => $start,
                               'end' => $end,
@@ -202,5 +202,57 @@ class DateController extends Controller
     public function createAction($roomId, Request $request)
     {
         
+    }
+    
+    /**
+     * @Route("/room/{roomId}/date/{itemId}/calendaredit")
+     */
+    public function calendareditAction($roomId, $itemId, Request $request)
+    {
+        $dateService = $this->get('commsy_legacy.date_service');
+        $date = $dateService->getDate($itemId);
+        
+        $requestContent = json_decode($request->getContent());
+        
+        $startTimeArray = explode('T', $requestContent->event->start);
+        $endTimeArray = explode('T', $requestContent->event->end);
+        
+        $date->setStartingDay($startTimeArray[0]);
+        
+        if (isset($startTimeArray[1])) {
+            $date->setStartingTime($startTimeArray[1]);
+        } else {
+            $date->setStartingTime('');
+        }
+        
+        if (isset($endTimeArray[0])) {
+            $date->setEndingDay($endTimeArray[0]);
+        } else {
+            $date->setEndingDay('');
+        }
+        
+        if (isset($endTimeArray[1])) {
+            $date->setEndingTime($endTimeArray[1]);
+        } else {
+            $date->setEndingTime('');
+        }
+        
+        $date->setDateTime_start(str_ireplace('T', ' ', $requestContent->event->start));
+        if ($requestContent->event->end != '') {
+            $date->setDateTime_end(str_ireplace('T', ' ', $requestContent->event->end));    
+        }
+        
+        $date->save();
+        
+        return new JsonResponse(array('itemId' => $date->getItemId(),
+                                      'title' => $date->getTitle(),
+                                      'start' => $start,
+                                      'end' => $end,
+                                      'color' => $date->getColor(),
+                                      'editable' => $date->isPublic(),
+                                      'description' => $date->getDateDescription(),
+                                      'place' => $date->getPlace(),
+                                      'participants' => $participantsDisplay
+                                     ));
     }
 }
