@@ -11,6 +11,8 @@ use Doctrine\ORM\EntityManager;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
+use CommsyBundle\Form\Type\Custom\DateTimeType;
+
 class AnnouncementType extends AbstractType
 {
     private $em;
@@ -31,6 +33,11 @@ class AnnouncementType extends AbstractType
                     'class' => 'uk-form-width-medium cs-form-title',
                 ),
                 'translation_domain' => 'announcement',
+            ))
+            // add custom datetime picker
+            ->add('validdate', new DateTimeType(), array(
+                'label' => 'valid until',
+                'translation_domain' => 'announcement'
             ))
             ->add('permission', 'checkbox', array(
                 'label' => 'permission',
