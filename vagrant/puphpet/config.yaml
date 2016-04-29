@@ -19,7 +19,7 @@ vagrantfile:
                         check_guest_tools: 0
                         update_guest_tools: 0
                 machines:
-                    vflm_6n737rd1bfjx:
+                    vflm_7vaf2wnbydwq:
                         id: commsy9
                         hostname: commsy9.puphpet
                         network:
@@ -34,7 +34,7 @@ vagrantfile:
                     - '--verbose'
                     - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
         synced_folder:
-            vflsf_4s6t6tywhmxu:
+            vflsf_5lntvy49sfj5:
                 source: ../
                 target: /var/www/commsy
                 sync_type: nfs
@@ -111,7 +111,7 @@ locale:
 firewall:
     install: '1'
     rules:
-        fr_fmhpforpdvpy:
+        fr_xrqsmetc36np:
             port:
                 - '9001'
             priority: '100'
@@ -132,7 +132,7 @@ nginx:
         names_hash_bucket_size: 128
     upstreams: {  }
     vhosts:
-        nxv_fl37pnqextor:
+        nxv_hale23dm87xq:
             server_name: commsy.vm
             server_aliases:
                 - www.commsy.vm
@@ -152,7 +152,7 @@ nginx:
             rewrite_to_https: '1'
             spdy: '1'
             locations:
-                nxvl_6a0n3i6062s2:
+                nxvl_aapptipqsrtz:
                     location: /
                     try_files:
                         - $uri
@@ -162,7 +162,7 @@ nginx:
                     fastcgi_split_path: ''
                     proxy: ''
                     proxy_redirect: ''
-                nxvl_hcmsy9bvvuoo:
+                nxvl_e30bwgwqstqe:
                     location: '~ \.php(/|$)'
                     fastcgi: '127.0.0.1:9000'
                     fastcgi_index: ''
@@ -187,7 +187,7 @@ apache:
         - proxy_fcgi
         - rewrite
     vhosts:
-        av_db7cicb8wx0s:
+        av_ikcf8q5t544z:
             servername: awesome.dev
             serveraliases:
                 - www.awesome.dev
@@ -204,7 +204,7 @@ apache:
             ssl_protocol: ''
             ssl_cipher: ''
             directories:
-                avd_elt5wab1kymv:
+                avd_dr63jkgh10ax:
                     path: /var/www/awesome
                     options:
                         - Indexes
@@ -216,7 +216,7 @@ apache:
                         - 'all granted'
                     custom_fragment: ''
                     files_match:
-                        avdfm_pqcjppwr2qc0:
+                        avdfm_xy4p7ah5m8jd:
                             path: \.php$
                             sethandler: 'proxy:fcgi://127.0.0.1:9000'
                             custom_fragment: ''
@@ -248,7 +248,7 @@ php:
     fpm_ini:
         error_log: /var/log/php-fpm.log
     fpm_pools:
-        phpfp_hacg831qj0hq:
+        phpfp_8i836po96mal:
             ini:
                 prefix: www
                 listen: '127.0.0.1:9000'
@@ -326,15 +326,15 @@ mariadb:
         override_options: {  }
     adminer: '1'
     users:
-        mariadbnu_1tbfswtz058m:
+        mariadbnu_kcs140ow1fyk:
             name: commsy
             password: commsy
     databases:
-        mariadbnd_6521knbj30j1:
+        mariadbnd_8h83pb44sql3:
             name: commsy
             sql: ''
     grants:
-        mariadbng_dkybqlwzniko:
+        mariadbng_2nj6bz5qlzuj:
             user: commsy
             table: 'commsy.*'
             privileges:
@@ -347,15 +347,15 @@ mysql:
         override_options: {  }
     adminer: '1'
     users:
-        mysqlnu_0fpt5fh2lcth:
+        mysqlnu_rhvsr9wpwrfd:
             name: commsy
             password: commsy
     databases:
-        mysqlnd_0bbjmbi1x1il:
+        mysqlnd_cyuo4v8q3v3p:
             name: commsy
             sql: ''
     grants:
-        mysqlng_6ap2zi0h57wx:
+        mysqlng_2qu96ulgxqzm:
             user: commsy
             table: 'commsy.*'
             privileges:
@@ -420,7 +420,7 @@ elastic_search:
         version: 2.1.2
         java_install: true
     instances:
-        esi_cc2bifyhhg4g:
+        esi_bc2rdh02s45q:
             name: commsy9
 solr:
     install: '0'
