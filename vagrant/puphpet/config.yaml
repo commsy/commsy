@@ -5,7 +5,7 @@ vagrantfile:
             local:
                 box: puphpet/debian75-x64
                 box_url: puphpet/debian75-x64
-                box_version: 'false'
+                box_version: '0'
                 chosen_virtualizer: virtualbox
                 virtualizers:
                     virtualbox:
@@ -19,11 +19,15 @@ vagrantfile:
                         check_guest_tools: 0
                         update_guest_tools: 0
                 machines:
-                    vflm_7vaf2wnbydwq:
+                    vflm_vv75wlpvqxmw:
                         id: commsy9
                         hostname: commsy9.puphpet
                         network:
                             private_network: 192.168.56.101
+                            forwarded_port:
+                                vflmnfp_zwltjcrr74mu:
+                                    host: '6676'
+                                    guest: '22'
                         memory: '1024'
                         cpus: '1'
         provision:
@@ -34,7 +38,7 @@ vagrantfile:
                     - '--verbose'
                     - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
         synced_folder:
-            vflsf_5lntvy49sfj5:
+            vflsf_wtx4k20q0mc5:
                 source: ../
                 target: /var/www/commsy
                 sync_type: nfs
@@ -102,16 +106,16 @@ users_groups:
 locale:
     install: '1'
     settings:
-        default_locale: ''
+        default_locale: en_US.UTF-8
         locales:
-            - de_DE.UTF-8
             - en_GB.UTF-8
             - en_US.UTF-8
+            - de_DE.UTF-8
         timezone: Europe/Berlin
 firewall:
     install: '1'
     rules:
-        fr_xrqsmetc36np:
+        fr_rdxorqpiwkr4:
             port:
                 - '9001'
             priority: '100'
@@ -132,7 +136,7 @@ nginx:
         names_hash_bucket_size: 128
     upstreams: {  }
     vhosts:
-        nxv_hale23dm87xq:
+        nxv_4stcisvq8z5r:
             server_name: commsy.vm
             server_aliases:
                 - www.commsy.vm
@@ -152,7 +156,7 @@ nginx:
             rewrite_to_https: '1'
             spdy: '1'
             locations:
-                nxvl_aapptipqsrtz:
+                nxvl_vbxpmwbd9xs4:
                     location: /
                     try_files:
                         - $uri
@@ -162,10 +166,10 @@ nginx:
                     fastcgi_split_path: ''
                     proxy: ''
                     proxy_redirect: ''
-                nxvl_e30bwgwqstqe:
+                nxvl_xfrsqple6h0v:
                     location: '~ \.php(/|$)'
                     fastcgi: '127.0.0.1:9000'
-                    fastcgi_index: ''
+                    fastcgi_index: index.php
                     fastcgi_split_path: '^(.+\.php)(/.*)$'
                     fast_cgi_params_extra:
                         - 'SCRIPT_FILENAME $document_root$fastcgi_script_name'
@@ -187,7 +191,7 @@ apache:
         - proxy_fcgi
         - rewrite
     vhosts:
-        av_ikcf8q5t544z:
+        av_2r554cyri7ne:
             servername: awesome.dev
             serveraliases:
                 - www.awesome.dev
@@ -195,6 +199,8 @@ apache:
             port: '80'
             setenv:
                 - 'APP_ENV dev'
+            setenvif:
+                - 'Authorization "(.*)" HTTP_AUTHORIZATION=$1'
             custom_fragment: ''
             ssl: '0'
             ssl_cert: ''
@@ -204,7 +210,7 @@ apache:
             ssl_protocol: ''
             ssl_cipher: ''
             directories:
-                avd_dr63jkgh10ax:
+                avd_5tky14epk5k9:
                     path: /var/www/awesome
                     options:
                         - Indexes
@@ -216,7 +222,7 @@ apache:
                         - 'all granted'
                     custom_fragment: ''
                     files_match:
-                        avdfm_xy4p7ah5m8jd:
+                        avdfm_0g921ea4g994:
                             path: \.php$
                             sethandler: 'proxy:fcgi://127.0.0.1:9000'
                             custom_fragment: ''
@@ -248,7 +254,7 @@ php:
     fpm_ini:
         error_log: /var/log/php-fpm.log
     fpm_pools:
-        phpfp_8i836po96mal:
+        phpfp_yssu7wvoscqm:
             ini:
                 prefix: www
                 listen: '127.0.0.1:9000'
@@ -284,10 +290,10 @@ xhprof:
     install: '0'
 wpcli:
     install: '0'
-    version: v0.19.0
+    version: v0.21.1
 drush:
     install: '0'
-    version: 6.3.0
+    version: 8.0.5
 ruby:
     install: '1'
     versions: {  }
@@ -326,15 +332,15 @@ mariadb:
         override_options: {  }
     adminer: '1'
     users:
-        mariadbnu_kcs140ow1fyk:
+        mariadbnu_b4h2qoiugedp:
             name: commsy
             password: commsy
     databases:
-        mariadbnd_8h83pb44sql3:
+        mariadbnd_elpa7ovgqijw:
             name: commsy
             sql: ''
     grants:
-        mariadbng_2nj6bz5qlzuj:
+        mariadbng_5fokod16zsru:
             user: commsy
             table: 'commsy.*'
             privileges:
@@ -343,21 +349,21 @@ mysql:
     install: '0'
     settings:
         version: '5.6'
-        root_password: root
+        root_password: '123'
         override_options: {  }
-    adminer: '1'
+    adminer: 0
     users:
-        mysqlnu_rhvsr9wpwrfd:
-            name: commsy
-            password: commsy
+        mysqlnu_kjmb36xw723f:
+            name: dbuser
+            password: '123'
     databases:
-        mysqlnd_cyuo4v8q3v3p:
-            name: commsy
+        mysqlnd_7xmr7u1dw7my:
+            name: dbname
             sql: ''
     grants:
-        mysqlng_2qu96ulgxqzm:
-            user: commsy
-            table: 'commsy.*'
+        mysqlng_m3okwcvfrn06:
+            user: dbuser
+            table: '*.*'
             privileges:
                 - ALL
 postgresql:
@@ -365,7 +371,7 @@ postgresql:
     settings:
         global:
             encoding: UTF8
-            version: '9.3'
+            version: '9.4'
         server:
             postgres_password: '123'
     databases: {  }
@@ -400,7 +406,7 @@ beanstalkd:
     install: '0'
     settings:
         listenaddress: 0.0.0.0
-        listenport: '13000'
+        listenport: '11300'
         maxjobsize: '65535'
         maxconnections: '1024'
         binlogdir: /var/lib/beanstalkd/binlog
@@ -422,8 +428,8 @@ elastic_search:
         manage_repo: true
         repo_version: '2.x'
     instances:
-        esi_bc2rdh02s45q:
-            name: commsy9
+        esi_2gyempyy2ap8:
+            name: es-01
 solr:
     install: '0'
     settings:
