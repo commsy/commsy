@@ -19,6 +19,9 @@
             },
             events: $('#calendar').data('events').url,
             dayClick: function(date, jsEvent, view) {
+                if (!date.hasTime()) {
+                    date.time('12:00:00');
+                }
                 window.location.href = $('#calendar').data('events').editUrl+'/create/'+encodeURIComponent(date.format('YYYY-MM-DD hh:mm:ss a'));
             },
             eventClick: function(calEvent, jsEvent, view) {
