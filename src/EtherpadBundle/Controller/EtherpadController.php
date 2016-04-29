@@ -28,10 +28,13 @@ class EtherpadController extends Controller
         $group = $client->createGroupIfNotExistsFor($roomId);
 
         # If pad does not exist, create one
-        // $pad = $client->createGroupPad($group->groupID, $materialId);
+        if (!$material->getEtherpadEditorID()) {
 
-        // $material->setEtherpadEditorID($pad->padID);
-        // $materialItem->save();
+            $pad = $client->createGroupPad($group->groupID, $materialId);
+
+            $material->setEtherpadEditorID($pad->padID);
+            $material->save();
+        }
         
         # create etherpad session with author and group
         $timestamp = time() + (60 * 60 * 24);

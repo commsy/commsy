@@ -712,8 +712,10 @@ class MaterialController extends Controller
         
         $formData = array();
         $materialItem = NULL;
+        $isMaterial = false;
         
         if ($item->getItemType() == 'material') {
+            $isMaterial = true;
             // get material from MaterialService
             $materialItem = $materialService->getMaterial($itemId);
             if (!$materialItem) {
@@ -762,6 +764,8 @@ class MaterialController extends Controller
         }
         
         return array(
+            'isDraft' => false,
+            'isMaterial' => $isMaterial,
             'form' => $form->createView(),
             'showHashtags' => $current_context->withBuzzwords(),
             'showCategories' => $current_context->withTags(),
