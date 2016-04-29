@@ -22,10 +22,10 @@
                 if (!date.hasTime()) {
                     date.time('12:00:00');
                 }
-                window.location.href = $('#calendar').data('events').editUrl+'/create/'+encodeURIComponent(date.format('YYYY-MM-DD hh:mm:ss a'));
+                window.location.href = $('#calendar').data('events').dateUrl+'/create/'+encodeURIComponent(date.format('YYYY-MM-DD hh:mm:ss a'));
             },
             eventClick: function(calEvent, jsEvent, view) {
-                window.location.href = $('#calendar').data('events').editUrl+'/'+calEvent.itemId+'/edit';
+                window.location.href = $('#calendar').data('events').dateUrl+'/'+calEvent.itemId;
             },
             eventMouseover: function(calEvent, jsEvent, view) {
                 $(jsEvent.currentTarget).tooltipster({
