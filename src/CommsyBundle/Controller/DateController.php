@@ -167,13 +167,154 @@ class DateController extends Controller
                 $end .= 'T'.$date->getEndingTime().'Z';
             } 
             
-            $events[] = array(//'id' => $date->getItemId(),
+            $participantsList = $date->getParticipantsItemList();
+            $participantItem = $participantsList->getFirst();
+            $participantsNameArray = array();
+            while ($participantItem) {
+                $participantsNameArray[] = $participantItem->getFullname();
+                $participantItem = $participantsList->getNext();    
+            }
+            $participantsDisplay = 'keine Zuordnung';
+            if (!empty($participantsNameArray)) {
+                implode(',', $participantsNameArray);
+            }
+            
+            
+            $events[] = array('itemId' => $date->getItemId(),
                               'title' => $date->getTitle(),
                               'start' => $start,
-                              'end' => $end
+                              'end' => $end,
+                              'color' => $date->getColor(),
+                              'editable' => $date->isPublic(),
+                              'description' => $date->getDateDescription(),
+                              'place' => $date->getPlace(),
+                              'participants' => $participantsDisplay
                              );
         }
 
         return new JsonResponse($events);
+    }
+    
+    /**
+     * @Route("/room/{roomId}/date/create/{dateDescription}")
+     * @Template()
+     */
+    public function createAction($roomId, $dateDescription, Request $request)
+    {
+        $translator = $this->get('translator');
+        
+        $dateService = $this->get('commsy_legacy.date_service');
+
+        // create new material item
+        $dateItem = $dateService->getNewDate();
+        $dateItem->setTitle('['.$translator->trans('insert title').']');
+        $dateItem->setDraftStatus(1);
+        $dateItem->setPrivateEditing('1');
+
+        $dateDescriptionArray = date_parse(urldecode($dateDescription));
+        
+        $year = $dateDescriptionArray['year'];
+        $month = $dateDescriptionArray['month'];
+        if ($month < 10) {
+            $month = '0'.$month;
+        }
+        $day = $dateDescriptionArray['day'];
+        if ($day < 10) {
+            $day = '0'.$day;
+        }
+        $hour = $dateDescriptionArray['hour'];
+        if ($hour < 10) {
+            $hour = '0'.$hour;
+        }
+        $minute = $dateDescriptionArray['minute'];
+        if ($minute < 10) {
+            $minute = '0'.$minute;
+        }
+        $second = $dateDescriptionArray['second'];
+        if ($second < 10) {
+            $second = '0'.$second;
+        }
+        
+        $dateItem->setStartingDay($year.'-'.$month.'-'.$day);
+        $dateItem->setStartingTime($hour.':'.$minute.':'.$second);
+        
+        $dateItem->setDateTime_start($year.'-'.$month.'-'.$day.' '.$hour.':'.$minute.':'.$second);
+        $dateItem->setDateTime_end($year.'-'.$month.'-'.$day.' '.$hour.':'.$minute.':'.$second);
+
+        $dateItem->save();
+
+        return $this->redirectToRoute('commsy_date_detail', array('roomId' => $roomId, 'itemId' => $dateItem->getItemId()));
+    }
+    
+    /**
+     * @Route("/room/{roomId}/date/{itemId}/calendaredit")
+     */
+    public function calendareditAction($roomId, $itemId, Request $request)
+    {
+        $translator = $this->get('translator');
+        
+        $dateService = $this->get('commsy_legacy.date_service');
+        $date = $dateService->getDate($itemId);
+        
+        $requestContent = json_decode($request->getContent());
+        
+        $startTimeArray = explode('T', $requestContent->event->start);
+        $endTimeArray = explode('T', $requestContent->event->end);
+        
+        $date->setStartingDay($startTimeArray[0]);
+        
+        if (isset($startTimeArray[1])) {
+            $date->setStartingTime($startTimeArray[1]);
+        } else {
+            $date->setStartingTime('');
+        }
+        
+        if (isset($endTimeArray[0])) {
+            $date->setEndingDay($endTimeArray[0]);
+        } else {
+            $date->setEndingDay('');
+        }
+        
+        if (isset($endTimeArray[1])) {
+            $date->setEndingTime($endTimeArray[1]);
+        } else {
+            $date->setEndingTime('');
+        }
+        
+        $date->setDateTime_start(str_ireplace('T', ' ', $requestContent->event->start));
+        if ($requestContent->event->end != '') {
+            $date->setDateTime_end(str_ireplace('T', ' ', $requestContent->event->end));    
+        }
+        
+        $date->save();
+        
+        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->trans('date changed');
+        
+        $start = $date->getStartingDay();
+        if ($date->getStartingTime() != '') {
+            $start .= 'T'.$date->getStartingTime().'Z';
+        }
+        $end = $date->getEndingDay();
+        if ($end == '') {
+            $end = $date->getStartingDay();
+        }
+        if ($date->getEndingTime() != '') {
+            $end .= 'T'.$date->getEndingTime().'Z';
+        }
+        
+        return new JsonResponse(array('message' => $message,
+                                      'timeout' => '5550',
+                                      'layout' => 'cs-notify-message',
+                                      'data' => array('itemId' => $date->getItemId(),
+                                          'title' => $date->getTitle(),
+                                          'start' => $start,
+                                          'end' => $end,
+                                          'color' => $date->getColor(),
+                                          'editable' => $date->isPublic(),
+                                          'description' => $date->getDateDescription(),
+                                          'place' => $date->getPlace(),
+                                          'participants' => $participantsDisplay
+                                      ),
+                                    ));
     }
 }

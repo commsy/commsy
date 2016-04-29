@@ -123,6 +123,8 @@
         
         selectAll = false;
         selectable = false;
+        
+        reloadFeed (new Array('', 0, 0), true);
     }
 
     function startEdit (el) {
@@ -133,7 +135,9 @@
         let target = $(element.data('commsy-list-action').target) ? UI.$(element.data('commsy-list-action').target) : [];
         if (!target.length) return;
 
-        articles = target.find('article');    
+        articles = target.find('article');
+        addCheckboxes(articles);
+        
         inputs = target.find('input');
         selectedCounter = 0;
         selectAll = false;
@@ -170,6 +174,8 @@
             if (!target.length) return;
             
             articles = target.find('article');
+            addCheckboxes(articles);
+            
             inputs = target.find('input');
     
             if (articles.first().hasClass('selectable')) {
@@ -186,6 +192,8 @@
             if (!target.length) return;
                 
             articles = target.find('article');
+            addCheckboxes(articles);
+            
             inputs = target.find('input');
             
             if (articles.first().hasClass('selectable')) {
@@ -221,6 +229,8 @@
         if (!target.length) return;
         
         articles = target.find('article');
+        addCheckboxes(articles);
+        
         inputs = target.find('input');
 
         if (selectable) {
@@ -411,14 +421,14 @@
             }
             
             // reload feed
-            reloadFeed(result);
+            reloadFeed(result, false);
             stopEdit();
         }).fail(function(jqXHR, textStatus, errorThrown) {
             UIkit.notify(errorMessage, 'danger');
         });
     }
     
-    function reloadFeed ({message, status, timeout}) {
+    function reloadFeed ({message, status, timeout}, hideMessage) {
         let el = $('.feed-load-more');
         if (!el.length) {
             el = $('.feed-load-more-grid');    
@@ -445,16 +455,29 @@
                 
                 bind();
                 
-                UIkit.notify({
-                    message : message,
-                    status  : status,
-                    timeout : timeout,
-                    pos     : 'top-center'
-                });
+                if (!hideMessage) {
+                    UIkit.notify({
+                        message : message,
+                        status  : status,
+                        timeout : timeout,
+                        pos     : 'top-center'
+                    });
+                }
             }
         }).fail(function(jqXHR, textStatus, errorThrown) {
             UIkit.notify(errorMessage, 'danger');
         });
+    }
+    
+    function addCheckboxes (articles) {
+        if (action == 'markread' || action == 'copy' || action == 'save') {
+            articles.each(function() {
+                if (!$(this).find('input').length) {
+                    let itemId = $(this).find('i.uk-icon-ban').data('itemid');
+                    $(this).find('i.uk-icon-ban').replaceWith('<form class="uk-form"><input type="checkbox" value="'+itemId+'"></form>');
+                }
+            });
+        }
     }
 
 })(UIkit);

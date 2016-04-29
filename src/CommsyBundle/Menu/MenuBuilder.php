@@ -313,7 +313,7 @@ class MenuBuilder
             $privateRoom = $privateRoomManager->getRelatedOwnRoomForUser($user,$this->legacyEnvironment->getCurrentPortalID());
             
             $menu->addChild('dashboard', array(
-                'route' => 'commsy_dashboard_index',
+                'route' => 'commsy_dashboard_overview',
                 'routeParameters' => array('roomId' => $privateRoom->getItemId()),
             ));
 

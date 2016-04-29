@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 use Commsy\LegacyBundle\Services\UserService;
 use Commsy\LegacyBundle\Services\ReaderService;
+use CommsyBundle\Filter\HomeFilterType;
 
 class DashboardController extends Controller
 {
@@ -16,14 +17,25 @@ class DashboardController extends Controller
      * @Route("/dashboard/{roomId}")
      * @Template()
      */
-    public function indexAction($roomId, Request $request)
+     public function overviewAction($roomId, Request $request)
     {
-        $userService = $this->get("commsy.user_service");
-        $user = $userService->getPortalUserFromSessionId();
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        // get room item for information panel
+        $roomManager = $legacyEnvironment->getPrivateRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        if (!$roomItem) {
+            throw $this->createNotFoundException('The requested room does not exist');
+        }
+
+        
+        $roomFeedGenerator = $this->get('commsy.dashboard_feed_generator');
+
         return array(
-            'user' => $user
-        );
+            'roomItem' => $roomItem);
     }
+
     
     /**
      * @Route("/dashboard/{itemId}/feed/{start}")
@@ -32,8 +44,10 @@ class DashboardController extends Controller
     public function feedAction($itemId, $max = 10, $start = 0)
     {
         // collect information for feed panel
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $userid=$legacyEnvironment->getCurrentUser()->getUserID();
         $dashboardFeedGenerator = $this->get('commsy.dashboard_feed_generator');
-        $feedList = $dashboardFeedGenerator->getFeedList($itemId, $max, $start);
+        $feedList = $dashboardFeedGenerator->getFeedList($userid, $max, $start);
 
         $userService = $this->get("commsy.user_service");
         $user = $userService->getPortalUserFromSessionId();
