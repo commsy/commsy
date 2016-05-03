@@ -49,7 +49,7 @@
         $('#calendar').fullCalendar('updateEvent', event);
         
         $.ajax({
-            url: $('#calendar').data('events').editUrl+'/'+event.itemId+'/calendaredit',
+            url: $('#calendar').data('events').dateUrl+'/'+event.itemId+'/calendaredit',
             type: 'POST',
             data: JSON.stringify({
                 event,
@@ -66,7 +66,7 @@
                 pos     : 'top-center'
             });
         }).fail(function(jqXHR, textStatus, errorThrown) {
-            UIkit.notify(errorMessage, 'danger');
+            UIkit.notify(textStatus, 'danger');
         });
     }
 
