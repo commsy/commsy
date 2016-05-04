@@ -177,6 +177,12 @@ if (isOption($option, $translator->getMessage('CONTACT_MAIL_SEND_BUTTON'))){
    $user_item = $environment->getCurrentUserItem();
    $room_manager = $environment->getRoomManager();
    $room_item = $room_manager->getItem($current_item_id);
+   if ($room_item == null) {
+    $environment->activateArchiveMode();
+    $room_manager = $environment->getRoomManager();
+    $room_item = $room_manager->getItem($current_item_id);
+    $environment->deactivateArchiveMode();
+   }
    $user_list = $room_item->getContactModeratorList();
    $email_addresses = array();
    $moderator_item = $user_list->getFirst();
