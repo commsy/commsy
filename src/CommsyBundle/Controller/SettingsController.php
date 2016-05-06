@@ -115,4 +115,15 @@ class SettingsController extends Controller
             'form' => $form->createView()
         );
     }
+    
+    /**
+     * @Route("/room/{roomId}/settings/extensions")
+     * @Template
+     * @Security("is_granted('MODERATOR')")
+     */
+    public function extensionsAction($roomId, Request $request)
+    {
+        return array(
+        );
+    }
 }

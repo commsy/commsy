@@ -139,6 +139,14 @@ class MenuBuilder
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-eyedropper uk-icon-small'),
             ));
+            
+            // extensions
+            $menu->addChild('extensions', array(
+                'label' => 'extensions',
+                'route' => 'commsy_settings_extensions',
+                'routeParameters' => array('roomId' => $roomId),
+                'extras' => array('icon' => 'uk-icon-gears uk-icon-small'),
+            ));
         }
         
         // identifier
