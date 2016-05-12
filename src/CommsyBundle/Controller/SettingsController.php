@@ -148,7 +148,12 @@ class SettingsController extends Controller
                 $formData = $form->getData();
                 
                 if ($formData['wikiEnabled']) {
-                    $roomItem->setWikiEnabled(true);
+                    if (!$roomItem->isWikiEnabled()) {
+                        $roomItem->setWikiEnabled(true);
+                        
+                        $mediawikiService = $this->get('commsy_mediawiki.mediawiki');
+                        $mediawikiService->createWiki($roomId);
+                    }
                 } else {
                     $roomItem->setWikiEnabled(false);
                 }

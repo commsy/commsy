@@ -28,6 +28,7 @@ class AppKernel extends Kernel
            
             new CommsyBundle\CommsyBundle(),
             new Commsy\LegacyBundle\CommsyLegacyBundle(),
+            new CommsyMediawikiBundle\CommsyMediawikiBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {

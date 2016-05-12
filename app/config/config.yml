@@ -5,6 +5,7 @@ imports:
     - { resource: commsy.yml }
     - { resource: fos_elastica.yml }
     - { resource: ckeditor.yml }
+    - { resource: "@CommsyMediawikiBundle/Resources/config/services.yml" }
 
 framework:
     #esi:             ~
