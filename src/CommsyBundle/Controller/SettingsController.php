@@ -145,8 +145,6 @@ class SettingsController extends Controller
         if ($form->isValid()) {
 
             if ($form->get('save')->isClicked()) {
-                error_log(print_r($form->getData(), true));
-                
                 $formData = $form->getData();
                 
                 if ($formData['wikiEnabled']) {
