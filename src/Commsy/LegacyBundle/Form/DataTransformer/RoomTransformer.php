@@ -38,6 +38,8 @@ class RoomTransformer implements DataTransformerInterface
             }
 
             $roomData['description'] = $roomItem->getDescription();
+            
+            $roomData['wikiEnabled'] = $roomItem->isWikiEnabled();
         }
 
         return $roomData;

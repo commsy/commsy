@@ -141,6 +141,12 @@ services:
         arguments: [@commsy_legacy.environment]
         tags:
             - { name: form.type, alias: appearance_settings }
+            
+    commsy.form.type.settings.extension:
+        class: CommsyBundle\Form\Type\ExtensionSettingsType
+        arguments: [@commsy_legacy.environment]
+        tags:
+            - { name: form.type, alias: extension_settings }
 
     commsy.form.type.material:
         class: CommsyBundle\Form\Type\MaterialType

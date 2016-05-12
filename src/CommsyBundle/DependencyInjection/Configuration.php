@@ -150,6 +150,16 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->arrayNode('mediawiki')
+                    ->children()
+                        ->booleanNode('enabled')
+                            ->defaultFalse()
+                        ->end()
+                        ->scalarNode('url')
+                            ->defaultValue('')
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 

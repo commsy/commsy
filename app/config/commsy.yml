@@ -132,3 +132,9 @@ commsy:
     limesurvey:
         # set the following variable to activate limesurvey extension
         enabled: false
+        
+        # Limesurvey
+    mediawiki:
+        # set the following variable to activate limesurvey extension
+        enabled: true
+        url: http://127.0.0.1:8080/

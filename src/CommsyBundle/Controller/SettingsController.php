@@ -123,7 +123,44 @@ class SettingsController extends Controller
      */
     public function extensionsAction($roomId, Request $request)
     {
+        // get room from RoomService
+        $roomService = $this->get('commsy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
+
+        if (!$roomItem) {
+            throw $this->createNotFoundException('No room found for id ' . $roomId);
+        }
+
+        $transformer = $this->get('commsy_legacy.transformer.room');
+        $roomData = $transformer->transform($roomItem);
+
+        // get the configured LiipThemeBundle themes
+        $mediaWikiUrl = $this->container->getParameter('commsy.mediawiki.url');
+
+        $form = $this->createForm('extension_settings', $roomData, array(
+            'roomId' => $roomId,
+        ));
+        
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+
+            if ($form->get('save')->isClicked()) {
+                error_log(print_r($form->getData(), true));
+                
+                $formData = $form->getData();
+                
+                if ($formData['wikiEnabled']) {
+                    $roomItem->setWikiEnabled(true);
+                } else {
+                    $roomItem->setWikiEnabled(false);
+                }
+                
+                $roomItem->save();
+            }
+        }
+
         return array(
+            'form' => $form->createView()
         );
     }
 }

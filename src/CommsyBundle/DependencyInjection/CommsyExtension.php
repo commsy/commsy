@@ -71,6 +71,10 @@ class CommsyExtension extends Extension
 
         // limesurvey
         $container->setParameter('commsy.limesurvey.enabled', $config['limesurvey']['enabled']);
+        
+        // mediawiki
+        $container->setParameter('commsy.mediawiki.enabled', $config['mediawiki']['enabled']);
+        $container->setParameter('commsy.mediawiki.url', $config['mediawiki']['url']);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
