@@ -966,11 +966,11 @@ class cs_page_guide_view extends cs_page_view {
 
 
       // add-ons
-      if ( $item->showHomepageDescLink() or
-            ( $item->showWikiLink()
-              and $item->existWiki()
-              and $item->issetWikiPortalLink()
-            )
+      if ( $item->showHomepageDescLink() //or
+            //( $item->showWikiLink()
+            //  and $item->existWiki()
+            //  and $item->issetWikiPortalLink()
+            //)
          ) {
          $html .= '<span style="font-weight:bold;">'.$this->_translator->getMessage('COMMON_PORTAL_LINKS').':</span>'.LF;
          $html .= '<ul style="margin-left:0px;margin-top:0em; margin-bottom:0.5em; padding-top:0px;padding-left:1em;">'.LF;
