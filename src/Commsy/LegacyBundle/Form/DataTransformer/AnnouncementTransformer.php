@@ -26,6 +26,10 @@ class AnnouncementTransformer implements DataTransformerInterface
         if ($announcementItem) {
             $announcementData['title'] = $announcementItem->getTitle();
             $announcementData['description'] = $announcementItem->getDescription();
+
+            $datetime = new \DateTime($announcementItem->getSecondDateTime());
+            $announcementData['validdate']['date'] = $datetime;
+            $announcementData['validdate']['time'] = $datetime;
         }
 
         return $announcementData;
@@ -43,6 +47,18 @@ class AnnouncementTransformer implements DataTransformerInterface
     {
         $announcementObject->setTitle($announcementData['title']);
         $announcementObject->setDescription($announcementData['description']);
+
+        if ($announcementData['validdate']['date'] && $announcementData['validdate']['time']) {
+            // add validdate to validdate
+            $datetime = $announcementData['validdate']['date'];
+            $time = explode(":", $announcementData['validdate']['time']->format('H:i'));
+            $datetime->setTime($time[0], $time[1]);
+
+            $announcementObject->setSecondDateTime($datetime->format('Y-m-d H:i:s'));
+
+        } else {
+            $datetime = $announcementData['validdate']['date'];
+        }
         
         return $announcementObject;
     }

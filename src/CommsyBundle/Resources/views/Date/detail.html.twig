@@ -56,19 +56,4 @@
             </div>
         </div>
     </div>
-    
-    {{ render(controller(
-        'CommsyBundle:Link:show',
-        { 'roomId': app.request.attributes.get('roomId'), 'itemId': date.itemId }
-    ))}}
-
-    {{ render(controller(
-        'CommsyBundle:Hashtag:show',
-        { 'roomId': roomId }
-    ))}}
-
-    {{ render(controller(
-        'CommsyBundle:Category:show',
-        { 'roomId': roomId }
-    ))}}
 {% endblock %}

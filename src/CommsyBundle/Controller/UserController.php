@@ -577,8 +577,11 @@ class UserController extends Controller
 
         // Room list feed
         $rooms = $userService->getRoomList($user);
+        $privateRoom= $user->getOwnRoom();
 
-        return array('roomList' => $rooms);
+        return array(
+            'roomList' => $rooms,
+            'privateRoom'=> $privateRoom);
 
 
     }
