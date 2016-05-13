@@ -19,13 +19,13 @@ vagrantfile:
                         check_guest_tools: 0
                         update_guest_tools: 0
                 machines:
-                    vflm_vv75wlpvqxmw:
+                    vflm_2s0rcpmppt1w:
                         id: commsy9
                         hostname: commsy9.puphpet
                         network:
                             private_network: 192.168.56.101
                             forwarded_port:
-                                vflmnfp_zwltjcrr74mu:
+                                vflmnfp_4l23vo07zimh:
                                     host: '6676'
                                     guest: '22'
                         memory: '1024'
@@ -38,7 +38,7 @@ vagrantfile:
                     - '--verbose'
                     - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
         synced_folder:
-            vflsf_wtx4k20q0mc5:
+            vflsf_dcsf385jrnwb:
                 source: ../
                 target: /var/www/commsy
                 sync_type: nfs
@@ -108,14 +108,14 @@ locale:
     settings:
         default_locale: en_US.UTF-8
         locales:
+            - de_DE.UTF-8
             - en_GB.UTF-8
             - en_US.UTF-8
-            - de_DE.UTF-8
         timezone: Europe/Berlin
 firewall:
     install: '1'
     rules:
-        fr_rdxorqpiwkr4:
+        fr_ljon513ynhb8:
             port:
                 - '9001'
             priority: '100'
@@ -136,7 +136,7 @@ nginx:
         names_hash_bucket_size: 128
     upstreams: {  }
     vhosts:
-        nxv_4stcisvq8z5r:
+        nxv_oghu35qgj8kg:
             server_name: commsy.vm
             server_aliases:
                 - www.commsy.vm
@@ -156,7 +156,7 @@ nginx:
             rewrite_to_https: '1'
             spdy: '1'
             locations:
-                nxvl_vbxpmwbd9xs4:
+                nxvl_t0tf9oochim5:
                     location: /
                     try_files:
                         - $uri
@@ -166,7 +166,7 @@ nginx:
                     fastcgi_split_path: ''
                     proxy: ''
                     proxy_redirect: ''
-                nxvl_xfrsqple6h0v:
+                nxvl_fkhj2rgc1uo7:
                     location: '~ \.php(/|$)'
                     fastcgi: '127.0.0.1:9000'
                     fastcgi_index: index.php
@@ -191,7 +191,7 @@ apache:
         - proxy_fcgi
         - rewrite
     vhosts:
-        av_2r554cyri7ne:
+        av_taihswziyfvf:
             servername: awesome.dev
             serveraliases:
                 - www.awesome.dev
@@ -210,7 +210,7 @@ apache:
             ssl_protocol: ''
             ssl_cipher: ''
             directories:
-                avd_5tky14epk5k9:
+                avd_g8gay7wj0l4d:
                     path: /var/www/awesome
                     options:
                         - Indexes
@@ -222,7 +222,7 @@ apache:
                         - 'all granted'
                     custom_fragment: ''
                     files_match:
-                        avdfm_0g921ea4g994:
+                        avdfm_2ns321ey9hnp:
                             path: \.php$
                             sethandler: 'proxy:fcgi://127.0.0.1:9000'
                             custom_fragment: ''
@@ -254,7 +254,7 @@ php:
     fpm_ini:
         error_log: /var/log/php-fpm.log
     fpm_pools:
-        phpfp_yssu7wvoscqm:
+        phpfp_8xks7cg49muz:
             ini:
                 prefix: www
                 listen: '127.0.0.1:9000'
@@ -332,15 +332,15 @@ mariadb:
         override_options: {  }
     adminer: '1'
     users:
-        mariadbnu_b4h2qoiugedp:
+        mariadbnu_v5m6vh3rnfsb:
             name: commsy
             password: commsy
     databases:
-        mariadbnd_elpa7ovgqijw:
+        mariadbnd_6y0ry97ouh0i:
             name: commsy
             sql: ''
     grants:
-        mariadbng_5fokod16zsru:
+        mariadbng_zlfwhx55zps8:
             user: commsy
             table: 'commsy.*'
             privileges:
@@ -353,15 +353,15 @@ mysql:
         override_options: {  }
     adminer: 0
     users:
-        mysqlnu_kjmb36xw723f:
+        mysqlnu_gzxo1my8pmsv:
             name: dbuser
             password: '123'
     databases:
-        mysqlnd_7xmr7u1dw7my:
+        mysqlnd_ez9ftytte6vk:
             name: dbname
             sql: ''
     grants:
-        mysqlng_m3okwcvfrn06:
+        mysqlng_kr77x8l0mdxt:
             user: dbuser
             table: '*.*'
             privileges:
@@ -427,8 +427,11 @@ elastic_search:
         java_install: true
         manage_repo: true
         repo_version: '2.x'
+        plugins:
+            elasticsearch/elasticsearch-mapper-attachments/3.1.2:
+                instances: es-01
     instances:
-        esi_2gyempyy2ap8:
+        esi_djov7thc3gar:
             name: es-01
 solr:
     install: '0'
