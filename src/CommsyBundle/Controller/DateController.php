@@ -91,6 +91,37 @@ class DateController extends Controller
     }
     
     /**
+     * @Route("/room/{roomId}/date/calendar")
+     * @Template()
+     */
+    public function calendarAction($roomId, Request $request)
+    {
+        // setup filter form
+        $defaultFilterValues = array(
+            'activated' => true
+        );
+        $filterForm = $this->createForm(new DateFilterType(), $defaultFilterValues, array(
+            'action' => $this->generateUrl('commsy_date_calendar', array('roomId' => $roomId)),
+        ));
+
+        // get the material manager service
+        $dateService = $this->get('commsy_legacy.date_service');
+
+        // apply filter
+        $filterForm->handleRequest($request);
+        if ($filterForm->isValid()) {
+            // set filter conditions in material manager
+            $dateService->setFilterConditions($filterForm);
+        }
+
+        return array(
+            'roomId' => $roomId,
+            'form' => $filterForm->createView(),
+            'module' => 'date'
+        );
+    }
+    
+    /**
      * @Route("/room/{roomId}/date/{itemId}", requirements={
      *     "itemId": "\d+"
      * }))
