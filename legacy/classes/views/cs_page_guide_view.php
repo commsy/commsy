@@ -2096,7 +2096,7 @@ class cs_page_guide_view extends cs_page_view {
 			}
 		
 			// wiki
-			if (!empty($ownRoomItem)) {
+			/* if (!empty($ownRoomItem)) {
    			if($ownRoomItem->showWikiLink() && $ownRoomItem->existWiki() && $ownRoomItem->issetWikiHomeLink()) {
    				global $c_pmwiki_path_url;
    		
@@ -2115,7 +2115,7 @@ class cs_page_guide_view extends cs_page_view {
    				}
    				$return['wiki']['session'] = $url_session_id;
    			}
-			}
+			}*/
 		
 			// chat
 			if($current_context->showChatLink()) {
