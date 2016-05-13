@@ -9,7 +9,8 @@ class puphpet::php::repos (
   case $::operatingsystem {
     'debian': {
       # Squeeze: 5.3 (default) && 5.4
-      if $::lsbdistcodename == 'squeeze' and $php_version == '54' {
+      if $::lsbdistcodename == 'squeeze' and $php_version == '54'
+        and ! defined(Apt::Source['packages.dotdeb.org-php54-repo.puphpet']) {
        ::apt::source { 'packages.dotdeb.org-php54-repo.puphpet':
           location          => 'http://repo.puphpet.com/dotdeb/',
           release           => 'squeeze-php54',
@@ -23,7 +24,8 @@ class puphpet::php::repos (
         }
       }
       # Wheezy : 5.4 (default) && 5.5 && 5.6
-      elsif $::lsbdistcodename == 'wheezy' and $php_version == '55' {
+      elsif $::lsbdistcodename == 'wheezy' and $php_version == '55'
+        and ! defined(Apt::Source['packages.dotdeb.org-php55-repo.puphpet']) {
        ::apt::source { 'packages.dotdeb.org-php55-repo.puphpet':
           location          => 'http://repo.puphpet.com/dotdeb/',
           release           => 'wheezy-php55',
@@ -36,7 +38,8 @@ class puphpet::php::repos (
           include           => { 'src' => true }
         }
       }
-      elsif $::lsbdistcodename == 'wheezy' and $php_version == '56' {
+      elsif $::lsbdistcodename == 'wheezy' and $php_version == '56'
+        and ! defined(Apt::Source['packages.dotdeb.org-php56-repo.puphpet']) {
        ::apt::source { 'packages.dotdeb.org-php56-repo.puphpet':
           location          => 'http://repo.puphpet.com/dotdeb/',
           release           => 'wheezy-php56',
@@ -60,7 +63,7 @@ class puphpet::php::repos (
       # Lucid 10.04, Precise 12.04, Quantal 12.10,
       # Raring 13.04: 5.3 (default <= 12.10) && 5.4 (default <= 13.04)
       if $::lsbdistcodename in ['lucid', 'precise', 'quantal', 'raring', 'trusty']
-        and $php_version == '54'
+        and $php_version == '54' and ! defined(Apt::Source['ppa-ondrej-php5-oldstable'])
       {
         ::apt::pin { 'ppa-ondrej-php5-oldstable':
           priority   => 1000,
@@ -81,7 +84,7 @@ class puphpet::php::repos (
       }
       # 12.04/10, 13.04/10, 14.04: 5.5
       elsif $::lsbdistcodename in ['precise', 'quantal', 'raring', 'saucy', 'trusty']
-        and $php_version == '55'
+        and $php_version == '55' and ! defined(Apt::Ppa['ppa:ondrej/php5'])
       {
         ::apt::ppa { 'ppa:ondrej/php5':
           require => ::Apt::Key['14AA40EC0831756756D7F66C4F4EA0AAE5267A6C']
@@ -90,15 +93,10 @@ class puphpet::php::repos (
       elsif $::lsbdistcodename in ['lucid'] and $php_version == '55' {
         err('You have chosen to install PHP 5.5 on Ubuntu 10.04 Lucid. This will probably not work!')
       }
-      # Ubuntu 14.04 can do PHP 5.6
-      elsif $::lsbdistcodename == 'trusty' and $php_version == '56' {
-        ::apt::ppa { 'ppa:ondrej/php5-5.6':
-          require => ::Apt::Key['14AA40EC0831756756D7F66C4F4EA0AAE5267A6C']
-        }
-      }
-      # Ubuntu 14.04 can do PHP 7
-      elsif $::lsbdistcodename == 'trusty' and $php_version == '70' {
-        ::apt::ppa { 'ppa:ondrej/php-7.0':
+      # Ubuntu 14.04 can do PHP 5.6 and PHP 7
+      elsif $::lsbdistcodename == 'trusty' and $php_version in ['56', '70']
+        and ! defined(Apt::Ppa['ppa:ondrej/php']) {
+        ::apt::ppa { 'ppa:ondrej/php':
           require => ::Apt::Key['14AA40EC0831756756D7F66C4F4EA0AAE5267A6C']
         }
       }

@@ -30,7 +30,8 @@
         "egeloen/ordered-form-bundle": "~2.0",
         "egeloen/ckeditor-bundle": "~3.0",
         "craue/twigextensions-bundle": "~2.0",
-        "knplabs/knp-snappy-bundle": "^1.4"
+        "knplabs/knp-snappy-bundle": "^1.4",
+        "ruflin/elastica": "3.1.1 as 2.99.0"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0",

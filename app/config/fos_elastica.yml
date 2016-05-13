@@ -48,7 +48,7 @@ fos_elastica:
                         contextId: ~
                         title:
                             type: string
-                            index_analyzer: autocomplete
+                            analyzer: autocomplete
                             search_analyzer: standard
                         description: ~
                         sections:
