@@ -75,6 +75,7 @@ class CommsyExtension extends Extension
         // mediawiki
         $container->setParameter('commsy.mediawiki.enabled', $config['mediawiki']['enabled']);
         $container->setParameter('commsy.mediawiki.url', $config['mediawiki']['url']);
+        $container->setParameter('commsy.mediawiki.apiPath', $config['mediawiki']['apiPath']);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');

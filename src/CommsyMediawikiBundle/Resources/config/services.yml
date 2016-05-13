@@ -1,4 +1,4 @@
 services:
     commsy_mediawiki.mediawiki:
         class: CommsyMediawikiBundle\Services\MediawikiService
-        arguments:
+        arguments: [@service_container]
