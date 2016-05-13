@@ -28,7 +28,7 @@ vagrantfile:
                                 vflmnfp_4l23vo07zimh:
                                     host: '6676'
                                     guest: '22'
-                        memory: '1024'
+                        memory: '2048'
                         cpus: '1'
         provision:
             puppet:
