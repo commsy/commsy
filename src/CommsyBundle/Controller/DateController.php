@@ -14,10 +14,10 @@ use CommsyBundle\Filter\DateFilterType;
 class DateController extends Controller
 {    
     /**
-     * @Route("/room/{roomId}/date/feed/{start}")
+     * @Route("/room/{roomId}/date/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0, Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'time_rev', Request $request)
     {
         // setup filter form
         $defaultFilterValues = array(
@@ -38,7 +38,7 @@ class DateController extends Controller
         }
 
         // get material list from manager service 
-        $dates = $dateService->getListDates($roomId, $max, $start);
+        $dates = $dateService->getListDates($roomId, $max, $start, $sort);
 
         $readerService = $this->get('commsy.reader_service');
 

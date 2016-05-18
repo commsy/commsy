@@ -108,6 +108,10 @@
         reloadCurrent('date', true);
     });
     
+    $('#commsy-sort-time').on('click', function(event) {
+        reloadCurrent('time', true);
+    });
+    
     $('#commsy-sort-assessment').on('click', function(event) {
         reloadCurrent('assessment', true);
     });
