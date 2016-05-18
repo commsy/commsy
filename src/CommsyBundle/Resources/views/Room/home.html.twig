@@ -7,7 +7,7 @@
     {% set imgSrc = '/images/simpsons-wallpaper.jpg' %}
     {% set homeInformation = '<h2>Hallo Leute</h2><p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>' %}
      
-    {%if widthHomeInformation %}
+    {% if widthHomeInformation %}
         <div id="cover" class="uk-cover-background cs-cover-background" aria-hidden="false">
             <div class="uk-grid cs-cover-grid">
             {% if not homeInformation is empty%}

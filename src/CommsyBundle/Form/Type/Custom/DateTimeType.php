@@ -3,22 +3,17 @@ namespace CommsyBundle\Form\Type\Custom;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Doctrine\ORM\EntityManager;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
-
-// use CommsyBundle\Form\DataTransformer\DateTimeTransformer;
 
 class DateTimeType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('date', 'datetime', array(
+            ->add('date', DateTimeType::class, array(
                 'input'  => 'datetime',
                 'label' => false,
                 'widget' => 'single_text',
@@ -28,7 +23,7 @@ class DateTimeType extends AbstractType
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}'
                 )
             ))
-            ->add('time', 'datetime', array(
+            ->add('time', DateTimeType::class, array(
                 'input'  => 'datetime',
                 'label' => false,
                 'widget' => 'single_text',
@@ -38,17 +33,26 @@ class DateTimeType extends AbstractType
                     'data-uk-timepicker' => ''
                 )
             ));
-
-            // $builder->appendClientTransformer(new DateTimeTransformer());
-
     }
 
+    /**
+     * Returns the name of the parent type.
+     * 
+     * @return string|null The name of the parent type if any, null otherwise
+     */
     public function getParent()
     {
-        return 'form';
+        return FormType::class;
     }
 
-    public function getName()
+    /**
+     * Returns the prefix of the template block name for this type.
+     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
+     * (e.g. "UserProfileType" => "user_profile").
+     * 
+     * @return string The prefix of the template block name
+     */
+    public function getBlockPrefix()
     {
         return 'date_time';
     }

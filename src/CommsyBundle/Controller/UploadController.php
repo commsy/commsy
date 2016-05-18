@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
+use CommsyBundle\Form\Type\UploadType;
+
 class UploadController extends Controller
 {
     /**
@@ -191,7 +193,7 @@ class UploadController extends Controller
             $optionsData['oldFiles'][$oldFileId] = $tempFile->getFilename().' ('.$tempFile->getCreationDate().')';
         }
 
-        $form = $this->createForm('upload', $uploadData, array(
+        $form = $this->createForm(UploadType::class, $uploadData, array(
             'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId

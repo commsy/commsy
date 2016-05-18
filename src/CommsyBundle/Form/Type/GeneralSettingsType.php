@@ -9,6 +9,13 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityManager;
 
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
 class GeneralSettingsType extends AbstractType
@@ -24,19 +31,27 @@ class GeneralSettingsType extends AbstractType
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
+    /**
+     * Builds the form.
+     * This method is called for each type in the hierarchy starting from the top most type.
+     * Type extensions can further modify the form.
+     * 
+     * @param  FormBuilderInterface $builder The form builder
+     * @param  array                $options The options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $this->roomItem = $roomManager->getItem($options['roomId']);
 
         $builder
-            ->add('title', 'text', array(
+            ->add('title', TextType::class, array(
                 'constraints' => array(
                     new NotBlank(),
                 ),
                 'translation_domain' => 'settings',
             ))
-            ->add('language', 'choice', array(
+            ->add('language', ChoiceType::class, array(
                 'choices' => array(
                     'User' => 'user',
                     'German' => 'de',
@@ -44,14 +59,14 @@ class GeneralSettingsType extends AbstractType
                 ),
                 'choices_as_values' => true,
             ))
-            ->add('room_image', 'file', array(
+            ->add('room_image', FileType::class, array(
                 'attr' => array(
                     'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
                 ),
                 'required' => false,
                 //'image_path' => 'webPath',
             ))
-            ->add('access_check', 'choice', array(
+            ->add('access_check', ChoiceType::class, array(
                 'choices' => array(
                     'Never' => 'never',
                     'Always' => 'always',
@@ -59,7 +74,7 @@ class GeneralSettingsType extends AbstractType
                 ),
                 'choices_as_values' => true,
             ))
-            ->add('room_description', 'textarea', array(
+            ->add('room_description', TextareaType::class, array(
                 'attr' => array(
                     'class' => 'uk-form-width-large',
                 ),
@@ -68,7 +83,7 @@ class GeneralSettingsType extends AbstractType
                 ),
                 'required' => false,
             ))
-            ->add('save', 'submit', array(
+            ->add('save', SubmitType::class, array(
                 'position' => 'last'
             ));
         ;
@@ -84,15 +99,15 @@ class GeneralSettingsType extends AbstractType
             // add form fields for this case
             if ($this->roomItem->isCommunityRoom()) {
                 $form
-                    ->add('open_for_guest', 'checkbox', array(
+                    ->add('open_for_guest', CheckboxType::class, array(
                         'label' => 'Is this room open for guests?',
                         'required' => false
                     ))
-                    ->add('material_open_for_guest', 'checkbox', array(
+                    ->add('material_open_for_guest', CheckboxType::class, array(
                         'label' => 'Are materials open for guests?',
                         'required' => false
                     ))
-                    ->add('assignment_restricted', 'checkbox', array(
+                    ->add('assignment_restricted', CheckboxType::class, array(
                         'label' => 'Only members are allow to assign project rooms',
                         'required' => false
                     ))
@@ -112,7 +127,7 @@ class GeneralSettingsType extends AbstractType
                         //     'multiple' => true,
                         //     'required' => false,
                         // ))
-                        ->add('community_rooms', 'choice', array(
+                        ->add('community_rooms', ChoiceType::class, array(
                             'choices' => $choices,
                             'multiple' => true,
                             'required' => false,
@@ -126,7 +141,7 @@ class GeneralSettingsType extends AbstractType
             $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
             if ($portalItem->showTime()) {
                 $form
-                    ->add('time_list', 'choice', array(
+                    ->add('time_list', ChoiceType::class, array(
                         'choices' => $this->getTimeChoices(),
                         'multiple' => true,
                     ))
@@ -135,14 +150,26 @@ class GeneralSettingsType extends AbstractType
         });
     }
 
+    /**
+     * Configures the options for this type.
+     * 
+     * @param  OptionsResolver $resolver The resolver for the options
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(array('roomId', 'uploadUrl'))
+            ->setRequired(['roomId', 'uploadUrl'])
         ;
     }
 
-    public function getName()
+    /**
+     * Returns the prefix of the template block name for this type.
+     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
+     * (e.g. "UserProfileType" => "user_profile").
+     * 
+     * @return string The prefix of the template block name
+     */
+    public function getBlockPrefix()
     {
         return 'general_settings';
     }

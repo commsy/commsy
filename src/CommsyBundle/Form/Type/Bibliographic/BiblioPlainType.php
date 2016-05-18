@@ -3,40 +3,42 @@ namespace CommsyBundle\Form\Type\Bibliographic;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class BiblioPlainType extends AbstractType
 {
-
+    /**
+     * Builds the form.
+     * This method is called for each type in the hierarchy starting from the top most type.
+     * Type extensions can further modify the form.
+     * 
+     * @param  FormBuilderInterface $builder The form builder
+     * @param  array                $options The options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         $translationDomain = 'form';
 
         $builder
-            ->add('author', 'text', array(
+            ->add('author', TextType::class, array(
                 'label' => 'author',
                 'translation_domain' => $translationDomain,
-                ))
-            ->add('publishing_date', 'text', array(
+            ))
+            ->add('publishing_date', TextType::class, array(
                 'label' => 'publishing date',
                 'translation_domain' => $translationDomain,
-                ))
-            // ->add('bib', 'text', array(
-            //     // 'constraints' => array(
-            //     //     new NotBlank(),
-            //     // ),
-            //     'label' => ' ',
-            //     'attr' => array(
-            //         'placeholder' => 'annotation',
-            //         'class' => 'uk-form-width-large',
-            //     ),
-            //     'translation_domain' => 'item',
-            // ))
+            ))
         ;
     }
 
-    public function getName()
+    /**
+     * Returns the prefix of the template block name for this type.
+     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
+     * (e.g. "UserProfileType" => "user_profile").
+     * 
+     * @return string The prefix of the template block name
+     */
+    public function getBlockPrefix()
     {
         return 'biblio_plain';
     }

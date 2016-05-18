@@ -23,7 +23,7 @@ class DateController extends Controller
         $defaultFilterValues = array(
             'activated' => true
         );
-        $filterForm = $this->createForm(new DateFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
         ));
 
@@ -69,7 +69,7 @@ class DateController extends Controller
         $defaultFilterValues = array(
             'activated' => true
         );
-        $filterForm = $this->createForm(new DateFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
         ));
 
@@ -100,7 +100,7 @@ class DateController extends Controller
         $defaultFilterValues = array(
             'activated' => true
         );
-        $filterForm = $this->createForm(new DateFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_date_calendar', array('roomId' => $roomId)),
         ));
 

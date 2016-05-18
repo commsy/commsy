@@ -6,14 +6,17 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Doctrine\ORM\EntityManager;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\SearchType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use Commsy\LegacyBundle\Utils\RoomService;
 use Commsy\LegacyBundle\Utils\ItemService;
 use CommsyBundle\Entity\Materials;
+use CommsyBundle\Form\Type\TreeChoiceType;
 
 class ItemLinksType extends AbstractType
 {
@@ -28,10 +31,18 @@ class ItemLinksType extends AbstractType
         $this->itemService = $itemService;
     }
 
+    /**
+     * Builds the form.
+     * This method is called for each type in the hierarchy starting from the top most type.
+     * Type extensions can further modify the form.
+     * 
+     * @param  FormBuilderInterface $builder The form builder
+     * @param  array                $options The options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('filterSearch', 'search', array(
+            ->add('filterSearch', SearchType::class, array(
                 'label' => 'filterSearch',
                 'required' => false,
                 'translation_domain' => 'form',
@@ -39,7 +50,7 @@ class ItemLinksType extends AbstractType
                     'class' => 'uk-form-row uk-form-width-medium uk-search-field',
                 )
             ))
-            ->add('filterRubric', 'choice', array(
+            ->add('filterRubric', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => $options['filterRubric'],
                 'label' => 'filterRubric',
@@ -59,7 +70,7 @@ class ItemLinksType extends AbstractType
             //     'expanded' => true,
             //     'multiple' => true
             // ))
-            ->add('itemsLinked', 'choice', array(
+            ->add('itemsLinked', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => $options['itemsLinked'],
                 'label' => 'itemsLinked',
@@ -68,7 +79,7 @@ class ItemLinksType extends AbstractType
                 'expanded' => true,
                 'multiple' => true
             ))
-            ->add('itemsLatest', 'choice', array(
+            ->add('itemsLatest', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => $options['itemsLatest'],
                 // 'label' => 'itemsLatest',
@@ -87,7 +98,7 @@ class ItemLinksType extends AbstractType
             //         'class' => 'uk-form-row uk-form-width-medium',
             //     )
             // ))
-            ->add('categories', 'treechoice', array(
+            ->add('categories', TreeChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => $options['categories'],
                 // 'label' => 'categories',
@@ -97,7 +108,7 @@ class ItemLinksType extends AbstractType
                 'multiple' => true,
                 'choices_as_values' => true
             ))
-            ->add('hashtags', 'choice', array(
+            ->add('hashtags', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => $options['hashtags'],
                 'label' => 'hashtags',
@@ -106,19 +117,19 @@ class ItemLinksType extends AbstractType
                 'expanded' => true,
                 'multiple' => true
             ))
-            ->add('newHashtag', 'text', array(
+            ->add('newHashtag', TextType::class, array(
                 'label' => 'newHashtag',
                 'translation_domain' => 'item',
                 'required' => false
             ))
-            ->add('save', 'submit', array(
+            ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 ),
                 'label' => 'save',
                 'translation_domain' => 'form',
             ))
-            ->add('cancel', 'submit', array(
+            ->add('cancel', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
                     'formnovalidate' => '',
@@ -129,7 +140,7 @@ class ItemLinksType extends AbstractType
         ;
         
         $formModifier = function (FormInterface $form, array $options) {
-            $form->add('items', 'choice', array(
+            $form->add('items', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => $options['items'],
                 'label' => 'items',
@@ -139,7 +150,7 @@ class ItemLinksType extends AbstractType
                 'multiple' => true
             ));
             
-            $form->add('itemsLinked', 'choice', array(
+            $form->add('itemsLinked', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => $options['itemsLinked'],
                 'label' => 'itemsLinked',
@@ -149,7 +160,7 @@ class ItemLinksType extends AbstractType
                 'multiple' => true
             ));
 
-            $form->add('itemsLatest', 'choice', array(
+            $form->add('itemsLatest', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => $options['itemsLatest'],
                 'label' => 'itemsLatest',
@@ -202,6 +213,11 @@ class ItemLinksType extends AbstractType
         // );
     }
 
+    /**
+     * Configures the options for this type.
+     * 
+     * @param  OptionsResolver $resolver The resolver for the options
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
@@ -209,7 +225,14 @@ class ItemLinksType extends AbstractType
         ;
     }
 
-    public function getName()
+    /**
+     * Returns the prefix of the template block name for this type.
+     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
+     * (e.g. "UserProfileType" => "user_profile").
+     * 
+     * @return string The prefix of the template block name
+     */
+    public function getBlockPrefix()
     {
         return 'itemLinks';
     }

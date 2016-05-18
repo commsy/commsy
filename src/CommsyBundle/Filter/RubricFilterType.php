@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Commsy\LegacyBundle\Utils\RoomService;
 use CommsyBundle\Repository\LabelRepository;
 
+use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
+
 class RubricFilterType extends AbstractType
 {
     private $roomService;
@@ -19,6 +21,14 @@ class RubricFilterType extends AbstractType
         $this->requestStack = $requestStack;
     }
 
+    /**
+     * Builds the form.
+     * This method is called for each type in the hierarchy starting from the top most type.
+     * Type extensions can further modify the form.
+     * 
+     * @param  FormBuilderInterface $builder The form builder
+     * @param  array                $options The options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         // extract room id from request and build filter accordingly
@@ -33,7 +43,7 @@ class RubricFilterType extends AbstractType
                 // group
                 if (in_array('group', $filterableRubrics)) {
                     $builder
-                        ->add('group', 'filter_entity', array(
+                        ->add('group', Filters\EntityFilterType::class, array(
                             'label' => 'group',
                             'attr' => array(
                                 'onchange' => 'this.form.submit()',
@@ -58,7 +68,7 @@ class RubricFilterType extends AbstractType
                 // todo
                 if (in_array('topic', $filterableRubrics)) {
                     $builder
-                        ->add('topic', 'filter_entity', array(
+                        ->add('topic', Filters\EntityFilterType::class, array(
                             'label' => 'topic',
                             'attr' => array(
                                 'onchange' => 'this.form.submit()',
@@ -82,7 +92,7 @@ class RubricFilterType extends AbstractType
                 // institution
                 if (in_array('institution', $filterableRubrics)) {
                     $builder
-                        ->add('institution', 'filter_entity', array(
+                        ->add('institution', Filters\EntityFilterType::class, array(
                             'attr' => array(
                                 'onchange' => 'this.form.submit()',
                             ),
@@ -105,7 +115,14 @@ class RubricFilterType extends AbstractType
         }
     }
 
-    public function getName()
+    /**
+     * Returns the prefix of the template block name for this type.
+     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
+     * (e.g. "UserProfileType" => "user_profile").
+     * 
+     * @return string The prefix of the template block name
+     */
+    public function getBlockPrefix()
     {
         return 'rubric_filter';
     }

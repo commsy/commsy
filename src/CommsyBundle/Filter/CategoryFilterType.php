@@ -4,9 +4,11 @@ namespace CommsyBundle\Filter;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Commsy\LegacyBundle\Utils\CategoryService;
+
+use CommsyBundle\Form\Type\CategoryType;
 
 use Doctrine\ORM\EntityRepository;
 
@@ -22,6 +24,14 @@ class CategoryFilterType extends AbstractType
         $this->categoryService = $categoryService;
     }
 
+    /**
+     * Builds the form.
+     * This method is called for each type in the hierarchy starting from the top most type.
+     * Type extensions can further modify the form.
+     * 
+     * @param  FormBuilderInterface $builder The form builder
+     * @param  array                $options The options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         // extract room id from request and build filter accordingly
@@ -35,7 +45,7 @@ class CategoryFilterType extends AbstractType
                 $formCategories = $this->transformTagArray($categories);
 
                 $builder
-                    ->add('category', 'category', array(
+                    ->add('category', CategoryType::class, array(
                         'choices' => $formCategories,
                         'multiple' => true,
                         'expanded' => true,
@@ -46,12 +56,24 @@ class CategoryFilterType extends AbstractType
         }
     }
 
-    public function getName()
+    /**
+     * Returns the prefix of the template block name for this type.
+     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
+     * (e.g. "UserProfileType" => "user_profile").
+     * 
+     * @return string The prefix of the template block name
+     */
+    public function getBlockPrefix()
     {
         return 'category_filter';
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    /**
+     * Configures the options for this type.
+     * 
+     * @param  OptionsResolver $resolver The resolver for the options
+     */
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'csrf_protection'   => false,
