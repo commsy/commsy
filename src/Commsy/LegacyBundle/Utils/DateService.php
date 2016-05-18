@@ -84,4 +84,17 @@ class DateService
     {
         return $this->dateManager->getNewItem();
     }
+    
+        public function getCountArray($roomId)
+    {
+        $this->dateManager->setContextLimit($roomId);
+        $this->dateManager->select();
+        $countDatelArray = array();
+        $countDatelArray['count'] = sizeof($this->dateManager->get()->to_array());
+        $this->dateManager->resetLimits();
+        $this->dateManager->select();
+        $countDatelArray['countAll'] = $this->dateManager->getCountAll();
+
+        return $countDatelArray;
+    }
 }

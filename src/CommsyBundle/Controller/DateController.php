@@ -83,10 +83,13 @@ class DateController extends Controller
             $dateService->setFilterConditions($filterForm);
         }
 
+        $itemsCountArray = $dateService->getCountArray($roomId);
+
         return array(
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
-            'module' => 'date'
+            'module' => 'date',
+            'itemsCountArray' => $itemsCountArray
         );
     }
     
