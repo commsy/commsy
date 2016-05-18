@@ -1,3 +1,121 @@
-<h1>Print</h1>
+<!DOCTYPE html>
+{% import 'CommsyBundle:Base:printmacro.html.twig' as macros %}
 
-...
+{% set item = material %}
+
+<html lang="de">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>{% block title %}CommSy{% endblock %}</title>
+
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ absolute_url(asset('css/build/commsy.css'|asset_version)) }}" />
+        {% endblock %}
+
+    </head>
+
+    <body>
+
+        {% block content %}
+                <div class="uk-grid">
+
+        <div class="uk-width-medium-4-5">
+
+            {# material content panel #}
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                {# content #}
+                <article class="uk-article uk-position-relative" data-uk-observe>
+                    {# title, etc. #}
+                    <div>
+                        {{ macros.title(material, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, ratingArray) }}
+                    </div>
+            
+                    {# description #}
+                    <div>
+                        {{ macros.itemDescription('description', material, true, material.description) }}
+                    </div>
+            
+                    {# files #}
+                    <div>
+                        {{ macros.files(material) }}
+                    </div>
+        
+                    {# links #}
+                    <div>
+                        {{ macros.links(material,showHashtags,showCategories,roomCategories) }}
+                    </div>
+        
+                    {# workflow #}
+                    {% if showWorkflow %}
+                        <div>
+                            {{ macros.workflow(material, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate) }}
+                        </div>
+                    {% endif %}
+        
+                    {# sections #}
+                    <div>
+                        {{ macros.sections(material, sectionList) }}
+                    </div>
+                </article>
+            
+            
+            
+                {# material sections #}
+                {% for section in sectionList %}
+                    {% set count = loop.index0 %}
+                    
+                        
+                            
+                        
+
+                        <article class="uk-article uk-position-relative">
+                            {# title #}
+                            <div>
+                                {{ macros.title(section, modifierList, userCount, readCount, readSinceModificationCount) }}
+                            </div>
+                            
+                            {# description #}
+                            <div>
+                                {{ macros.itemDescription('description', section, true, section.description) }}
+                            </div>
+
+                            {# files #}
+                            <div>
+                                {{ macros.files(section) }}
+                            </div>
+                        </article>
+                    
+                {% endfor %}
+            
+
+            {# annotations #}
+            {% if item.itemType != 'discussion' %}
+                <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
+                    <div class="uk-grid">
+                        <div class="uk-width-3-5 uk-text-large">
+                            {{ 'annotations'|trans({})|capitalize }}
+                        </div>
+                    </div>
+                </div>              
+                
+                    {{ render(controller(
+                        'CommsyBundle:Annotation:feedPrint',
+                        { 'roomId': roomId, 'linkedItemId': item.itemId }
+                    ))}}
+
+
+            {% endif %}
+        </div>
+        </div>
+            
+
+
+			        
+				{% endblock %}
+          
+        
+    </body>
+</html>

@@ -814,9 +814,45 @@ class MaterialController extends Controller
      */
     public function printAction($roomId, $itemId)
     {
+        $materialService = $this->get('commsy_legacy.material_service');
+        $material = $materialService->getMaterial($itemId);
+
+        $infoArray = $this->getDetailInfo($roomId, $itemId);
+
         $html = $this->renderView('CommsyBundle:Material:detailPrint.html.twig', [
+            'roomId' => $roomId,
+            'material' => $infoArray['material'],
+            'sectionList' => $infoArray['sectionList'],
+            'readerList' => $infoArray['readerList'],
+            'modifierList' => $infoArray['modifierList'],
+            'materialList' => $infoArray['materialList'],
+            'counterPosition' => $infoArray['counterPosition'],
+            'count' => $infoArray['count'],
+            'firstItemId' => $infoArray['firstItemId'],
+            'prevItemId' => $infoArray['prevItemId'],
+            'nextItemId' => $infoArray['nextItemId'],
+            'lastItemId' => $infoArray['lastItemId'],
+            'readCount' => $infoArray['readCount'],
+            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
+            'userCount' => $infoArray['userCount'],
+            'workflowGroupArray'=> $infoArray['workflowGroupArray'],
+            'workflowUserArray'=> $infoArray['workflowUserArray'],
+            'workflowText' => $infoArray['workflowText'],
+            'workflowValidityDate' => $infoArray['workflowValidityDate'],
+            'workflowResubmissionDate' => $infoArray['workflowResubmissionDate'],
+            'workflowUnread' => $infoArray['workflowUnread'],
+            'workflowRead' => $infoArray['workflowRead'],
+            'draft' => $infoArray['draft'],
+            'showRating' => $infoArray['showRating'],
+            'showWorkflow' => $infoArray['showWorkflow'],
+            'showHashtags' => $infoArray['showHashtags'],
+            'showCategories' => $infoArray['showCategories'],
+            'user' => $infoArray['user'],
+            'ratingArray' => $infoArray['ratingArray'],
+            'roomCategories' => $infoArray['roomCategories'],
         ]);
 
+        //return new Response($html);
         return new Response(
             $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
             200,

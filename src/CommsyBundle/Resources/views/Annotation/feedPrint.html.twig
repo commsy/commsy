@@ -1,0 +1,28 @@
+{% import 'CommsyBundle:Base:printmacro.html.twig' as utilMacros %}
+
+{% for annotation in annotations %}
+    <article class="uk-comment">
+        {{ utilMacros.statusColor(readerList, annotation.itemId) }}
+
+        <header>
+
+            {# user icon #}
+            <div>
+                {% if annotation.creator.isUser %}
+                    {{  utilMacros.userIconLink(annotation.creator) }}
+                {% else %}
+                    {{  utilMacros.userIcon(annotation.creator) }}
+                {% endif %}
+            </div>
+
+            {# content #}
+            <div>
+                <div>
+                    {{ utilMacros.editAnnotationContent('description', annotation, annotation.description) }}
+                </div>
+            </div>
+        </header>
+    </article>
+{% endfor %}
+
+
