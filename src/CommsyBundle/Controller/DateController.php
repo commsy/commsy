@@ -14,10 +14,10 @@ use CommsyBundle\Filter\DateFilterType;
 class DateController extends Controller
 {    
     /**
-     * @Route("/room/{roomId}/date/feed/{start}")
+     * @Route("/room/{roomId}/date/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0, Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
         // setup filter form
         $defaultFilterValues = array(
@@ -38,7 +38,7 @@ class DateController extends Controller
         }
 
         // get material list from manager service 
-        $dates = $dateService->getListDates($roomId, $max, $start);
+        $dates = $dateService->getListDates($roomId, $max, $start, $sort);
 
         $readerService = $this->get('commsy.reader_service');
 
@@ -57,6 +57,119 @@ class DateController extends Controller
             'dates' => $dates,
             'readerList' => $readerList
         );
+    }
+
+    /**
+     * @Route("/room/{roomId}/date/feedaction")
+     */
+    public function feedActionAction($roomId, Request $request)
+    {
+        $translator = $this->get('translator');
+        
+        $action = $request->request->get('act');
+        
+        $selectedIds = $request->request->get('data');
+        if (!is_array($selectedIds)) {
+            $selectedIds = json_decode($selectedIds);
+        }
+        
+        $selectAll = $request->request->get('selectAll');
+        $selectAllStart = $request->request->get('selectAllStart');
+        
+        if ($selectAll == 'true') {
+            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $request);
+            foreach ($entries['materials'] as $key => $value) {
+                $selectedIds[] = $value->getItemId();
+            }
+        }
+        
+        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
+
+        $result = [];
+        
+        if ($action == 'markread') {
+	        $dateService = $this->get('commsy_legacy.date_service');
+	        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $noticedManager = $legacyEnvironment->getNoticedManager();
+            $readerManager = $legacyEnvironment->getReaderManager();
+            foreach ($selectedIds as $id) {
+    	        $item = $dateService->getDate($id);
+    	        $versionId = $item->getVersionID();
+    	        $noticedManager->markNoticed($id, $versionId);
+    	        $readerManager->markRead($id, $versionId);
+
+    	        $annotationList =$item->getAnnotationList();
+    	        if ( !empty($annotationList) ){
+    	            $annotationItem = $annotationList->getFirst();
+    	            while($annotationItem){
+    	               $noticedManager->markNoticed($annotationItem->getItemID(),$versionId);
+    	               $readerManager->markRead($annotationItem->getItemID(),$versionId);
+    	               $annotationItem = $annotationList->getNext();
+    	            }
+    	        }
+	        }
+	        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
+        } else if ($action == 'copy') {
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $sessionItem = $legacyEnvironment->getSessionItem();
+
+            $currentClipboardIds = array();
+            if ($sessionItem->issetValue('clipboard_ids')) {
+                $currentClipboardIds = $sessionItem->getValue('clipboard_ids');
+            }
+
+            foreach ($selectedIds as $itemId) {
+                if (!in_array($itemId, $currentClipboardIds)) {
+                    $currentClipboardIds[] = $itemId;
+                    $sessionItem->setValue('clipboard_ids', $currentClipboardIds);
+                }
+            }
+
+            $result = [
+                'count' => sizeof($currentClipboardIds)
+            ];
+
+            $sessionManager = $legacyEnvironment->getSessionManager();
+            $sessionManager->save($sessionItem);
+
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('%count% copied entries',count($selectedIds), array('%count%' => count($selectedIds)));
+        } else if ($action == 'save') {
+            /* $zipfile = $this->download($roomId, $selectedIds);
+            $content = file_get_contents($zipfile);
+
+            $response = new Response($content, Response::HTTP_OK, array('content-type' => 'application/zip'));
+            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,'zipfile.zip');   
+            $response->headers->set('Content-Disposition', $contentDisposition);
+            
+            return $response; */
+            
+            $downloadService = $this->get('commsy_legacy.download_service');
+        
+            $zipFile = $downloadService->zipFile($roomId, $selectedIds);
+    
+            $response = new BinaryFileResponse($zipFile);
+            $response->deleteFileAfterSend(true);
+    
+            $filename = 'CommSy_Material.zip';
+            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$filename);   
+            $response->headers->set('Content-Disposition', $contentDisposition);
+    
+            return $response;
+        } else if ($action == 'delete') {
+            $dateService = $this->get('commsy_legacy.date_service');
+  		    foreach ($selectedIds as $id) {
+  		        $item = $dateService->getDate($id);
+  		        $item->delete();
+  		    }
+           $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> '.$translator->transChoice('%count% deleted entries',count($selectedIds), array('%count%' => count($selectedIds)));
+        }
+
+        return new JsonResponse([
+            'message' => $message,
+            'timeout' => '5550',
+            'layout' => 'cs-notify-message',
+            'data' => $result,
+        ]);
     }
 
     /**
@@ -83,10 +196,13 @@ class DateController extends Controller
             $dateService->setFilterConditions($filterForm);
         }
 
+        $itemsCountArray = $dateService->getCountArray($roomId);
+
         return array(
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
-            'module' => 'date'
+            'module' => 'date',
+            'itemsCountArray' => $itemsCountArray
         );
     }
     
