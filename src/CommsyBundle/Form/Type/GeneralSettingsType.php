@@ -57,7 +57,6 @@ class GeneralSettingsType extends AbstractType
                     'German' => 'de',
                     'English' => 'en',
                 ),
-                'choices_as_values' => true,
             ))
             ->add('room_image', FileType::class, array(
                 'attr' => array(
@@ -72,7 +71,6 @@ class GeneralSettingsType extends AbstractType
                     'Always' => 'always',
                     'Code' => 'code',
                 ),
-                'choices_as_values' => true,
             ))
             ->add('room_description', TextareaType::class, array(
                 'attr' => array(
@@ -131,7 +129,6 @@ class GeneralSettingsType extends AbstractType
                             'choices' => $choices,
                             'multiple' => true,
                             'required' => false,
-                            'choices_as_values' => true,
                         ))
                     ;
                 }

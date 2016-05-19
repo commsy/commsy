@@ -106,7 +106,6 @@ class ItemLinksType extends AbstractType
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true,
-                'choices_as_values' => true
             ))
             ->add('hashtags', ChoiceType::class, array(
                 'placeholder' => false,

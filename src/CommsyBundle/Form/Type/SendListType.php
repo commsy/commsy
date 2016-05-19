@@ -73,7 +73,6 @@ class SendListType extends AbstractType
                             'translation_domain' => 'mail',
                             'choice_translation_domain' => 'form',
                             'required' => true,
-                            'choices_as_values' => true,
                         ])
                     ;
                 }
@@ -90,7 +89,6 @@ class SendListType extends AbstractType
                             'translation_domain' => 'mail',
                             'choice_translation_domain' => 'form',
                             'required' => true,
-                            'choices_as_values' => true,
                         ])
                     ;
                 }
@@ -107,7 +105,6 @@ class SendListType extends AbstractType
                             'translation_domain' => 'mail',
                             'choice_translation_domain' => 'form',
                             'required' => true,
-                            'choices_as_values' => true,
                         ])
                     ;
                 }
@@ -124,7 +121,6 @@ class SendListType extends AbstractType
                             'translation_domain' => 'mail',
                             'choice_translation_domain' => 'form',
                             'required' => true,
-                            'choices_as_values' => true,
                         ])
                     ;
                 } else if ($mailAssistant->showInstitutionRecipients($item)) {
@@ -139,7 +135,6 @@ class SendListType extends AbstractType
                             'translation_domain' => 'mail',
                             'choice_translation_domain' => 'form',
                             'required' => true,
-                            'choices_as_values' => true,
                         ])
                     ;
                 }
@@ -156,7 +151,6 @@ class SendListType extends AbstractType
                             'translation_domain' => 'mail',
                             'choice_translation_domain' => 'form',
                             'required' => true,
-                            'choices_as_values' => true,
                         ])
                     ;
                 } */
@@ -171,7 +165,6 @@ class SendListType extends AbstractType
                 'translation_domain' => 'mail',
                 'choice_translation_domain' => 'form',
                 'required' => true,
-                'choices_as_values' => true,
             ])
             /* ->add('additional_recipients', CollectionType::class, [
                 'label' => 'Additional recipients',

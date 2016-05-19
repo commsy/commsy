@@ -38,7 +38,6 @@ class AppearanceSettingsType extends AbstractType
             ->add('theme', ChoiceType::class, array(
                 'label' => 'theme',
                 'choices' => $themeChoices,
-                'choices_as_values' => true,
                 'constraints' => array(
                     new NotBlank(),
                 ),
