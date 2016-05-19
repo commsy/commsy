@@ -86,10 +86,10 @@ class CategoryFilterType extends AbstractType
         $array = [];
 
         foreach ($tagArray as $tag) {
-            $array[$tag['item_id']] = $tag['title'];
+            $array[$tag['title']] = $tag['item_id'];
 
             if (!empty($tag['children'])) {
-                $array[$tag['item_id'] . 'sub'] = $this->transformTagArray($tag['children']);
+                $array[$tag['title'] . 'sub'] = $this->transformTagArray($tag['children']);
             }
         }
 
