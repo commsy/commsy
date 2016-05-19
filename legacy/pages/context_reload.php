@@ -53,7 +53,6 @@ $url2 = curl( $environment->getCurrentContextID(),
      <noscript>
        <meta http-equiv="refresh" content="0; URL=<?PHP echo($url2); ?>">
       </noscript>
-      <script src="javascript/Adobe/AC_OETags.js" language="javascript"></script>
       <script type="text/javascript">
          <!--
             function reload () {
@@ -62,12 +61,8 @@ $url2 = curl( $environment->getCurrentContextID(),
                if ( https == "https" ) {
                   var ssl = 1;
                }
-               var flash = -1;
-               var hasReqestedVersionForUploadify = DetectFlashVer(9, 0, 24);
-               if(hasReqestedVersionForUploadify){
-            	   var flash = 1;
-               }
-               document.location.href="<?PHP echo($url1); ?>&https="+ssl+"&flash="+flash;
+               
+               document.location.href="<?PHP echo($url1); ?>&https="+ssl;
             }
          -->
       </script>
