@@ -51,10 +51,10 @@ class AddBibliographicFieldListener implements EventSubscriberInterface
             // $class = $bibNamespace.'\Biblio'.ucfirst($data['biblio_select']).'Type';
             if (!empty($data['biblio_select'])) {
                 $class = $bibNamespace.'\\'.$data['biblio_select'];
-                $form->add('biblio_sub', new $class());
+                $form->add('biblio_sub', $class);
             } else {
                 $class = $bibNamespace.'\\'.'BiblioNoneType';
-                $form->add('biblio_sub', new $class());
+                $form->add('biblio_sub', $class);
             }
             
 
@@ -71,10 +71,10 @@ class AddBibliographicFieldListener implements EventSubscriberInterface
             
             if (!empty($data['biblio_select']) && $data['biblio_select'] != 'BiblioType') {
                 $class = $bibNamespace.'\\'.$data['biblio_select'];
-                $form->add('biblio_sub', new $class());
+                $form->add('biblio_sub', $class);
             } else {
                 $class = $bibNamespace.'\\'.'BiblioNoneType';
-                $form->add('biblio_sub', new $class());
+                $form->add('biblio_sub', $class);
             }
 
         }
