@@ -150,23 +150,21 @@ class DownloadService
         
         $itemService = $this->serviceContainer->get('commsy.item_service');
         $item = $itemService->getTypedItem($itemId);
-        error_log(print_r($itemId, true));
         
         if ($item->getItemType() == 'material') {
             $materialService = $this->serviceContainer->get('commsy_legacy.material_service');
     
             $annotationService = $this->serviceContainer->get('commsy_legacy.annotation_service');
             
-            $material = $materialService->getMaterial($itemId);
-            if($material == null) {
-                $section = $materialService->getSection($itemId);
-                $material = $materialService->getMaterial($section->getLinkedItemID());
-    
-            }
+            //$material = $materialService->getMaterial($itemId);
+            //if($material == null) {
+            //    $section = $materialService->getSection($itemId);
+            //    $material = $materialService->getMaterial($section->getLinkedItemID());    
+            //}
             
-            $sectionList = $material->getSectionList()->to_array();
+            $sectionList = $item->getSectionList()->to_array();
             
-            $itemArray = array($material);
+            $itemArray = array($item);
             $itemArray = array_merge($itemArray, $sectionList);
     
             $legacyEnvironment = $this->serviceContainer->get('commsy_legacy.environment')->getEnvironment();
@@ -174,7 +172,7 @@ class DownloadService
      
             $roomManager = $legacyEnvironment->getRoomManager();
             $readerManager = $legacyEnvironment->getReaderManager();
-            $roomItem = $roomManager->getItem($material->getContextId());        
+            $roomItem = $roomManager->getItem($item->getContextId());        
             $numTotalMember = $roomItem->getAllUsers();
     
             $userManager = $legacyEnvironment->getUserManager();
@@ -192,12 +190,12 @@ class DownloadService
     		   $id_array[] = $current_user->getItemID();
     		   $current_user = $user_list->getNext();
     		}
-    		$readerManager->getLatestReaderByUserIDArray($id_array,$material->getItemID());
+    		$readerManager->getLatestReaderByUserIDArray($id_array,$item->getItemID());
     		$current_user = $user_list->getFirst();
     		while ( $current_user ) {
-    	   	    $current_reader = $readerManager->getLatestReaderForUserByID($material->getItemID(), $current_user->getItemID());
+    	   	    $current_reader = $readerManager->getLatestReaderForUserByID($item->getItemID(), $current_user->getItemID());
                 if ( !empty($current_reader) ) {
-                    if ( $current_reader['read_date'] >= $material->getModificationDate() ) {
+                    if ( $current_reader['read_date'] >= $item->getModificationDate() ) {
                         $read_count++;
                         $read_since_modification_count++;
                     } else {
@@ -212,15 +210,14 @@ class DownloadService
             
             $readerList = array();
             $modifierList = array();
-            foreach ($itemArray as $item) {
-                $reader = $readerService->getLatestReader($item->getItemId());
+            foreach ($itemArray as $tempItem) {
+                $reader = $readerService->getLatestReader($tempItem->getItemId());
                 if ( empty($reader) ) {
-                   $readerList[$item->getItemId()] = 'new';
-                } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-                   $readerList[$item->getItemId()] = 'changed';
+                   $readerList[$tempItem->getItemId()] = 'new';
+                } elseif ( $reader['read_date'] < $tempItem->getModificationDate() ) {
+                   $readerList[$tempItem->getItemId()] = 'changed';
                 }
-                
-                $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+                $modifierList[$tempItem->getItemId()] = $itemService->getAdditionalEditorsForItem($tempItem);
             }
             
             $materials = $materialService->getListMaterials($roomId);
@@ -241,7 +238,7 @@ class DownloadService
                         $counterBefore++;
                     }
                     $materialList[] = $tempMaterial;
-                    if ($tempMaterial->getItemID() == $material->getItemID()) {
+                    if ($tempMaterial->getItemID() == $item->getItemID()) {
                         $foundMaterial = true;
                     }
                     if (!$foundMaterial) {
@@ -277,7 +274,7 @@ class DownloadService
     
             if ($current_context->withWorkflowReader()) {
                 $itemManager = $legacyEnvironment->getItemManager();
-                $users_read_array = $itemManager->getUsersMarkedAsWorkflowReadForItem($material->getItemID());
+                $users_read_array = $itemManager->getUsersMarkedAsWorkflowReadForItem($item->getItemID());
                 $persons_array = array();
                 foreach($users_read_array as $user_read){
                     $persons_array[] = $userManager->getItem($user_read['user_id']);
@@ -334,7 +331,7 @@ class DownloadService
                 
                 if ($currentContextItem->withWorkflow()) {
                     if (!$currentUserItem->isRoot()) {
-                        if (!$currentUserItem->isGuest() && $material->isReadByUser($currentUserItem)) {
+                        if (!$currentUserItem->isGuest() && $item->isReadByUser($currentUserItem)) {
                             $workflowUnread = true;
                         } else  {
                             $workflowRead = true;
@@ -345,7 +342,7 @@ class DownloadService
     
             $workflowText = '';
             if ($current_context->withWorkflow()) {
-                switch ($material->getWorkflowTrafficLight()) {
+                switch ($item->getWorkflowTrafficLight()) {
                     case '0_green':
                         $workflowText = $current_context->getWorkflowTrafficLightTextGreen();
                         break;
@@ -364,16 +361,16 @@ class DownloadService
             $ratingDetail = array();
             if ($current_context->isAssessmentActive()) {
                 $assessmentService = $this->serviceContainer->get('commsy_legacy.assessment_service');
-                $ratingDetail = $assessmentService->getRatingDetail($material);
-                $ratingAverageDetail = $assessmentService->getAverageRatingDetail($material);
-                $ratingOwnDetail = $assessmentService->getOwnRatingDetail($material);
+                $ratingDetail = $assessmentService->getRatingDetail($item);
+                $ratingAverageDetail = $assessmentService->getAverageRatingDetail($item);
+                $ratingOwnDetail = $assessmentService->getOwnRatingDetail($item);
             }
     
             $legacyEnvironment = $this->serviceContainer->get('commsy_legacy.environment')->getEnvironment();
             $reader_manager = $legacyEnvironment->getReaderManager();
             $noticed_manager = $legacyEnvironment->getNoticedManager();
     
-            $item = $material;
+            //$item = $material;
             $reader = $reader_manager->getLatestReader($item->getItemID());
             if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
                 $reader_manager->markRead($item->getItemID(), $item->getVersionID());
@@ -385,10 +382,10 @@ class DownloadService
             }
     
             // mark annotations as read
-            $annotationList = $material->getAnnotationList();
+            $annotationList = $item->getAnnotationList();
             $annotationService->markAnnotationsReadedAndNoticed($annotationList);
      
-            $readsectionList = $material->getSectionList();
+            $readsectionList = $item->getSectionList();
     
             $section = $readsectionList->getFirst();
             while($section) {
@@ -406,7 +403,7 @@ class DownloadService
             }
     
     
-            $infoArray['item'] = $material;
+            $infoArray['item'] = $item;
             $infoArray['sectionList'] = $sectionList;
             $infoArray['readerList'] = $readerList;
             $infoArray['modifierList'] = $modifierList;
@@ -423,8 +420,8 @@ class DownloadService
             $infoArray['workflowGroupArray'] = $workflowGroupArray;
             $infoArray['workflowUserArray'] = $workflowUserArray;
             $infoArray['workflowText'] = $workflowText;
-            $infoArray['workflowValidityDate'] = $material->getWorkflowValidityDate();
-            $infoArray['workflowResubmissionDate'] = $material->getWorkflowResubmissionDate();
+            $infoArray['workflowValidityDate'] = $item->getWorkflowValidityDate();
+            $infoArray['workflowResubmissionDate'] = $item->getWorkflowResubmissionDate();
             $infoArray['workflowUnread'] = $workflowUnread;
             $infoArray['workflowRead'] = $workflowRead;
             $infoArray['draft'] = $itemService->getItem($itemId)->isDraft();
@@ -440,10 +437,7 @@ class DownloadService
             ] : [];
             
         } else if ($item->getItemType() == 'date') {
-            $dateService = $this->serviceContainer->get('commsy_legacy.date_service');
-            $date = $dateService->getDate($itemId);
-            
-            $infoArray['item'] = $date;
+            $infoArray['item'] = $item;
         }
         
         return $infoArray;
