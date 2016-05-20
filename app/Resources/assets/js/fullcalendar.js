@@ -36,37 +36,46 @@
                 //UIkit.modal('#tooltip-'+calEvent._id).hide();
             },
             eventDrop: function(event, delta, revertFunc) {
-                editEvent(event);
+                editEvent(event, revertFunc);
             },
             eventResize: function(event, delta, revertFunc) {
-                editEvent(event);
+                editEvent(event, revertFunc);
             },
         });
     };
 
-    function editEvent (event) {
-        event.description = '...';
-        $('#calendar').fullCalendar('updateEvent', event);
-        
-        $.ajax({
-            url: $('#calendar').data('events').dateUrl+'/'+event.itemId+'/calendaredit',
-            type: 'POST',
-            data: JSON.stringify({
-                event,
-            })
-        }).done(function(data, textStatus, jqXHR) {
-            event.description = data.data.description;
-            
+    function editEvent (event, revertFunc) {
+        UIkit.modal.confirm($('#calendar').data('confirm-change'), function() {
+            event.description = '...';
             $('#calendar').fullCalendar('updateEvent', event);
             
-            UIkit.notify({
-                message : data.message,
-                status  : data.status,
-                timeout : data.timeout,
-                pos     : 'top-center'
+            $.ajax({
+                url: $('#calendar').data('events').dateUrl+'/'+event.itemId+'/calendaredit',
+                type: 'POST',
+                data: JSON.stringify({
+                    event,
+                })
+            }).done(function(data, textStatus, jqXHR) {
+                event.description = data.data.description;
+                
+                $('#calendar').fullCalendar('updateEvent', event);
+                
+                UIkit.notify({
+                    message : data.message,
+                    status  : data.status,
+                    timeout : data.timeout,
+                    pos     : 'top-center'
+                });
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                UIkit.notify(textStatus, 'danger');
             });
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            UIkit.notify(textStatus, 'danger');
+        }, function () {
+            revertFunc();
+        }, {
+            labels: {
+                Cancel: $('#calendar').data('confirm-change-cancel'),
+                Ok: $('#calendar').data('confirm-change.ok')
+            }
         });
     }
 

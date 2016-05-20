@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="confirmChange">
+                <source>confirm change</source>
+                <target>Termin ändern</target>
+            </trans-unit>
+            <trans-unit id="confirmChangeCancel">
+                <source>confirm change cancel</source>
+                <target>Abbrechen</target>
+            </trans-unit>
+            <trans-unit id="confirmChangeOk">
+                <source>confirm change ok</source>
+                <target>Ok</target>
+            </trans-unit>
+            <trans-unit id="dateChanged">
+                <source>date changed</source>
+                <target>Termin geändert</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
