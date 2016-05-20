@@ -67,34 +67,23 @@ fos_elastica:
                 # materials:
                 # room:
                 # todos:
-                # user:
+                
+                # User
+                user:
+                    indexable_callback: isIndexable
+                    mappings:
+                        userId: ~
+                        contextId: ~
+                        firstName: ~
+                        lastName: ~
+                    persistence:
+                        driver: orm
+                        model: CommsyBundle\Entity\User
+                        identifier: itemId
+                        finder: ~
+                        provider: ~
+                        listener: ~
 
-
-
-
-
-
-
-
-
-
-
-                # user:
-                #     indexable_callback: 'isIndexable'
-                #     mappings:
-                #         userId: ~
-                #         contextId: ~
-                #         status: ~
-                #         firstname: ~
-                #         lastname: ~
-                #         city: ~
-                #     persistence:
-                #         driver: orm
-                #         model: CommsyBundle\Entity\User
-                #         identifier: itemId
-                #         finder: ~
-                #         provider: ~
-                #         listener: ~
 
                 # material:
                 #     indexable_callback: 'isIndexable'
