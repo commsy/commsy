@@ -11,6 +11,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Filter\DiscussionFilterType;
+use CommsyBundle\Form\Type\MaterialType;
+use CommsyBundle\Form\Type\SectionType;
 
 class DiscussionController extends Controller
 {
@@ -33,7 +35,7 @@ class DiscussionController extends Controller
         $defaultFilterValues = array(
             'activated' => true
         );
-        $filterForm = $this->createForm(new DiscussionFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(DiscussionFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_discussion_list', array(
                 'roomId' => $roomId)
             ),
@@ -104,7 +106,7 @@ class DiscussionController extends Controller
         $defaultFilterValues = array(
             'activated' => true,
         );
-        $filterForm = $this->createForm(new DiscussionFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(DiscussionFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_discussion_list', array(
                 'roomId' => $roomId,
             )),
@@ -129,7 +131,7 @@ class DiscussionController extends Controller
         $defaultFilterValues = array(
             'activated' => true,
         );
-        $filterForm = $this->createForm(new DiscussionFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(DiscussionFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_discussion_list', array(
                 'roomId' => $roomId,
             )),
@@ -424,7 +426,7 @@ class DiscussionController extends Controller
         $discussionItem->setPrivateEditing('1');
         $discussionItem->save();
 
-        /* $form = $this->createForm('material', $materialData, array());
+        /* $form = $this->createForm(MaterialType::class, $materialData, array());
         
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -673,7 +675,7 @@ class DiscussionController extends Controller
                 throw $this->createNotFoundException('No material found for id ' . $roomId);
             }
             $formData = $transformer->transform($materialItem);
-            $form = $this->createForm('material', $formData, array(
+            $form = $this->createForm(MaterialType::class, $formData, array(
                 'action' => $this->generateUrl('commsy_material_edit', array(
                     'roomId' => $roomId,
                     'itemId' => $itemId,
@@ -686,7 +688,7 @@ class DiscussionController extends Controller
                 throw $this->createNotFoundException('No section found for id ' . $roomId);
             }
             $formData = $transformer->transform($materialItem);
-            $form = $this->createForm('section', $formData, array());
+            $form = $this->createForm(SectionType::class, $formData, array());
         }
         
         $form->handleRequest($request);

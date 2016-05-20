@@ -13,6 +13,8 @@ use Symfony\Component\Translation\Loader\ArrayLoader;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Filter\AnnouncementFilterType;
+use CommsyBundle\Form\Type\AnnotationType;
+use CommsyBundle\Form\Type\AnnouncementType;
 
 use \ZipArchive;
 
@@ -42,7 +44,7 @@ class AnnouncementController extends Controller
             'activated' => true,
             'active' => true,
         );
-        $filterForm = $this->createForm(new AnnouncementFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(AnnouncementFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_announcement_list', array(
                 'roomId' => $roomId,
             )),
@@ -98,7 +100,7 @@ class AnnouncementController extends Controller
      * @Route("/room/{roomId}/announcement/shortfeed/{start}/{sort}")
      * @Template()
      */
-       public function shortfeedAction($roomId, $max = 10, $start = 0,  $sort = NULL, Request $request)
+    public function shortfeedAction($roomId, $max = 10, $start = 0,  $sort = NULL, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -114,7 +116,7 @@ class AnnouncementController extends Controller
             'activated' => true,
             'active' => true,
         );
-        $filterForm = $this->createForm(new AnnouncementFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(AnnouncementFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_announcement_list', array(
                 'roomId' => $roomId,
             )),
@@ -130,7 +132,7 @@ class AnnouncementController extends Controller
         if ($filterForm->isValid()) {
             // set filter conditions in announcement manager
             $announcementService->setFilterConditions($filterForm);
-        }else{
+        } else {
             $announcementService->setDateLimit();
             $sort = 'date';
         }
@@ -236,7 +238,7 @@ class AnnouncementController extends Controller
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         // annotation form
-        $form = $this->createForm('annotation');
+        $form = $this->createForm(AnnotationType::class);
         
         return array(
             'roomId' => $roomId,
@@ -476,7 +478,7 @@ class AnnouncementController extends Controller
                 throw $this->createNotFoundException('No announcement found for id ' . $roomId);
             }
             $formData = $transformer->transform($announcementItem);
-            $form = $this->createForm('announcement', $formData, array(
+            $form = $this->createForm(AnnouncementType::class, $formData, array(
                 'action' => $this->generateUrl('commsy_announcement_edit', array(
                     'roomId' => $roomId,
                     'itemId' => $itemId,

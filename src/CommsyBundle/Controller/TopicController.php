@@ -13,6 +13,7 @@ use Symfony\Component\Translation\Loader\ArrayLoader;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Filter\TopicFilterType;
+use CommsyBundle\Form\Type\AnnotationType;
 
 use \ZipArchive;
 
@@ -43,7 +44,7 @@ class TopicController extends Controller
         $defaultFilterValues = array(
             'activated' => false,
         );
-        $filterForm = $this->createForm(new TopicFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(TopicFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_topic_list', array(
                 'roomId' => $roomId,
             )),
@@ -68,7 +69,7 @@ class TopicController extends Controller
         $defaultFilterValues = array(
             'activated' => false,
         );
-        $filterForm = $this->createForm(new TopicFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(TopicFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_topic_list', array(
                 'roomId' => $roomId,
             )),
@@ -119,7 +120,7 @@ class TopicController extends Controller
         $defaultFilterValues = array(
             'activated' => false,
         );
-        $filterForm = $this->createForm(new TopicFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(TopicFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_topic_list', array(
                 'roomId' => $roomId,
             )),
@@ -242,7 +243,7 @@ class TopicController extends Controller
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         // annotation form
-        $form = $this->createForm('annotation');
+        $form = $this->createForm(AnnotationType::class);
         
         return array(
             'roomId' => $roomId,

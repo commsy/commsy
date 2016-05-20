@@ -3,26 +3,21 @@ namespace CommsyBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Doctrine\ORM\EntityManager;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
-use CommsyBundle\Entity\Materials;
 use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
 
 class MaterialType extends AbstractType
 {
-    private $em;
-    private $legacyEnvironment;
-
-    private $roomItem;
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', 'text', array(
+            ->add('title', TextType::class, array(
                 'constraints' => array(
                     new NotBlank(),
                 ),
@@ -33,12 +28,12 @@ class MaterialType extends AbstractType
                 ),
                 'translation_domain' => 'material',
             ))
-            ->add('permission', 'checkbox', array(
+            ->add('permission', CheckboxType::class, array(
                 'label' => 'permission',
                 'required' => false,
                 'translation_domain' => 'form',
             ))
-            ->add('biblio_select', 'choice', array(
+            ->add('biblio_select', ChoiceType::class, array(
                 'choices'  => array(
                     'BiblioPlainType' => 'plain',
                     'BiblioBookType' => 'book',
@@ -60,15 +55,14 @@ class MaterialType extends AbstractType
                 'translation_domain' => 'form'
             ))
             ->addEventSubscriber(new AddBibliographicFieldListener())
-            // ->get('biblio_select')->addEventSubscriber() // post submit
-            ->add('save', 'submit', array(
+            ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 ),
                 'label' => 'save',
                 'translation_domain' => 'form',
             ))
-            ->add('cancel', 'submit', array(
+            ->add('cancel', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
                     'formnovalidate' => '',
@@ -78,49 +72,28 @@ class MaterialType extends AbstractType
             ))
         ;
         
-        
-//         $formModifier = function (FormInterface $form, Materials $material = null) {
-//             $form->add('biblio', 'textarea', array(
-//                 'label' => 'Biblio',
-//                 'attr' => array(
-//                     'placeholder' => 'Biblio',
-//                     'class' => 'uk-form-width-large',
-//                 ),
-//                 'translation_domain' => 'material',
-//                 'required' => false,
-//             ));
-//         };
-
-//         $builder->addEventListener(
-//             FormEvents::PRE_SET_DATA,
-//             function (FormEvent $event) use ($formModifier) {
-//                 $formModifier($event->getForm(), new Materials());
-//             }
-//         );
-
-//         $builder->get('biblio_select')->addEventListener(
-//             FormEvents::POST_SUBMIT,
-//             function (FormEvent $event) use ($formModifier) {
-//                 // It's important here to fetch $event->getForm()->getData(), as
-//                 // $event->getData() will get you the client data (that is, the ID)
-//                 $material = $event->getForm()->getData();
-// var_dump($material);
-//                 // since we've added the listener to the child, we'll have to pass on
-//                 // the parent to the callback functions!
-//                 $formModifier($event->getForm()->getParent(), $material);
-//             }
-//         );
-        
     }
 
+    /**
+     * Configures the options for this type.
+     * 
+     * @param  OptionsResolver $resolver The resolver for the options
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(array())
+            ->setRequired([])
         ;
     }
 
-    public function getName()
+    /**
+     * Returns the prefix of the template block name for this type.
+     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
+     * (e.g. "UserProfileType" => "user_profile").
+     * 
+     * @return string The prefix of the template block name
+     */
+    public function getBlockPrefix()
     {
         return 'material';
     }

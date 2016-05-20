@@ -1,14 +1,14 @@
 <?php
 namespace CommsyBundle\Security\Authorization\Voter;
 
-use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use Commsy\LegacyBundle\Utils\ItemService;
 
-class ItemVoter implements VoterInterface
+class ItemVoter extends Voter
 {
     const SEE = 'ITEM_SEE';
     const EDIT = 'ITEM_EDIT';
@@ -22,7 +22,7 @@ class ItemVoter implements VoterInterface
         $this->itemService = $itemService;
     }
 
-    public function supportsAttribute($attribute)
+    protected function supports($attribute, $object)
     {
         return in_array($attribute, array(
             self::SEE,
@@ -30,35 +30,17 @@ class ItemVoter implements VoterInterface
         ));
     }
 
-    public function supportsClass($class)
+    protected function voteOnAttribute($attribute, $object, TokenInterface $token)
     {
-        return true;
-    }
-
-    public function vote(TokenInterface $token, $itemId, array $attributes)
-    {
-        // check if the voter is used correct, only allow one attribute
-        // this isn't a requirement, it's just one easy way for you to
-        // design your voter
-        if (1 !== count($attributes)) {
-            throw new \InvalidArgumentException('Only one attribute is allowed');
-        }
-
-        // set the attribute to check against
-        $attribute = $attributes[0];
-
-        // check if the given attribute is covered by this voter
-        if (!$this->supportsAttribute($attribute)) {
-            return VoterInterface::ACCESS_ABSTAIN;
-        }
-
         // get current logged in user
         // $user = $token->getUser();
 
         // make sure there is a user object (i.e. that the user is logged in)
-        // if (!$user instanceof UserInterface) {
-        //     return VoterInterface::ACCESS_DENIED;
+        // if (!$user instanceof User) {
+        //     return false
         // }
+        
+        $itemId = $object;
         
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         $item = $this->itemService->getTypedItem($itemId);
@@ -66,25 +48,35 @@ class ItemVoter implements VoterInterface
         if ($item) {
             switch ($attribute) {
                 case self::SEE:
-                    if ($item->maySee($currentUser)) {
-                        return VoterInterface::ACCESS_GRANTED;
-                    }
-
-                    break;
+                    return $this->canView($item, $currentUser);
 
                 case self::EDIT:
-                    if ($item->mayEdit($currentUser)) {
-                        return VoterInterface::ACCESS_GRANTED;
-                    }
-
-                    break;
+                    return $this->canEdit($item, $currentUser);
             }
         } else if ($itemId == 'NEW') {
             if ($attribute == self::EDIT) {
-                return VoterInterface::ACCESS_GRANTED;
+                return true;
             }
         }
 
-        return VoterInterface::ACCESS_DENIED;
+        throw new \LogicException('This code should not be reached!');
+    }
+
+    private function canView($item, $currentUser)
+    {
+        if ($item->maySee($currentUser)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function canEdit($item, $currentUser)
+    {
+        if ($item->mayEdit($currentUser)) {
+            return true;
+        }
+
+        return false;
     }
 }

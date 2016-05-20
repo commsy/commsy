@@ -41,7 +41,7 @@ class ProfileController extends Controller
 
         $userData = array_merge($userData, $privateRoomData);
 
-        $form = $this->createForm('room_profile', $userData, array(
+        $form = $this->createForm(RoomProfileType::class, $userData, array(
             'itemId' => $itemId,
             'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
                 'roomId' => $roomId,
@@ -49,7 +49,7 @@ class ProfileController extends Controller
             )),
         ));
         
-        $formCombine = $this->createForm('combine_profile', $userData, array(
+        $formCombine = $this->createForm(CombineProfileType::class, $userData, array(
             'itemId' => $itemId,
         ));
         

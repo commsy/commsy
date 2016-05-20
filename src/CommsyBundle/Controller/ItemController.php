@@ -11,6 +11,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Form\Type\SendType;
 use CommsyBundle\Form\Type\SendListType;
+use CommsyBundle\Form\Type\ItemDescriptionType;
+use CommsyBundle\Form\Type\ItemLinksType;
+use CommsyBundle\Form\Type\ItemWorkflowType;
 
 class ItemController extends Controller
 {
@@ -46,7 +49,7 @@ class ItemController extends Controller
             $formData = $transformer->transform($tempItem);
         }
         
-        $form = $this->createForm('itemDescription', $formData, array('itemId' => $itemId));
+        $form = $this->createForm(ItemDescriptionType::class, $formData, array('itemId' => $itemId));
         $form->handleRequest($request);
         if ($form->isValid()) {
             if ($form->get('save')->isClicked()) {
@@ -132,7 +135,7 @@ class ItemController extends Controller
             $formData = $transformer->transform($tempItem);
         }
         
-        $form = $this->createForm('itemWorkflow', $formData, array());
+        $form = $this->createForm(ItemWorkflowType::class, $formData, array());
         $form->handleRequest($request);
         if ($form->isValid()) {
             if ($form->get('save')->isClicked()) {
@@ -282,7 +285,7 @@ class ItemController extends Controller
             $buzzwordItem = $buzzwordList->getNext();
         }
         
-        $form = $this->createForm('itemLinks', $formData, array(
+        $form = $this->createForm(ItemLinksType::class, $formData, array(
             'filterRubric' => $optionsData['filterRubric'],
             'filterPublic' => $optionsData['filterPublic'],
             'items' => $optionsData['items'],

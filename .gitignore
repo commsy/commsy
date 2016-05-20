@@ -31,20 +31,23 @@ Icon
 ######################
 # Symfony 2 related  #
 ######################
-# Bootstrap
-app/bootstrap*
+/app/config/parameters.yml
+/build/
+/phpunit.xml
+/vendor/
+/web/bundles/
 
-# Symfony directories
-vendor/*
-*/logs/*
-*/cache/*
-web/uploads/*
-web/bundles/*
-
-# Configuration files
-app/config/parameters.ini
-app/config/parameters.yml
-app/phpunit.xml
+/var/*
+!/var/cache
+/var/cache/*
+!var/cache/.gitkeep
+!/var/logs
+/var/logs/*
+!var/logs/.gitkeep
+!/var/sessions
+/var/sessions/*
+!var/sessions/.gitkeep
+!var/SymfonyRequirements.php
 
 ######################
 # Eclipse related    #

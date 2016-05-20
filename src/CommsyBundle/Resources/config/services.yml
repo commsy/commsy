@@ -4,94 +4,95 @@ services:
     # Filter types
     commsy.filter.rubric:
         class: CommsyBundle\Filter\RubricFilterType
-        arguments: [@commsy.room_service, @request_stack]
+        arguments: ['@commsy.room_service', '@request_stack']
         tags:
-            - { name: form.type, alias: rubric_filter }
+            - { name: form.type }
 
     commsy.filter.hashtag:
         class: CommsyBundle\Filter\HashTagFilterType
-        arguments: [@request_stack]
+        arguments: ['@request_stack']
         tags:
-            - { name: form.type, alias: hashtag_filter }
+            - { name: form.type }
 
     commsy.filter.category:
         class: CommsyBundle\Filter\CategoryFilterType
-        arguments: [@request_stack, @commsy.category_service]
+        arguments: ['@request_stack', '@commsy.category_service']
         tags:
-            - { name: form.type, alias: category_filter }
+            - { name: form.type }
 
     # Converter
     commsy.converter.room:
         class: CommsyBundle\Converter\RoomConverter
-        arguments: [@doctrine.orm.entity_manager]
+        arguments: ['@doctrine.orm.entity_manager']
 
     commsy.converter.materials:
         class: CommsyBundle\Converter\MaterialsConverter
-        arguments: [@doctrine.orm.entity_manager]
+        arguments: ['@doctrine.orm.entity_manager']
 
     # Menu
     commsy.menu.builder:
         class: CommsyBundle\Menu\MenuBuilder
-        arguments: ["@knp_menu.factory", "@commsy.room_service", "@commsy_legacy.environment", "@commsy.user_service", "@security.authorization_checker"]
+        arguments: ['@knp_menu.factory', '@commsy.room_service', '@commsy_legacy.environment', '@commsy.user_service', '@security.authorization_checker']
+        # tags:
+        #     - { name: knp_menu.menu_builder, method: createProfileMenu, alias: profile }
+        #     - { name: knp_menu.menu_builder, method: createRoomlistMenu, alias: roomlist }
+        #     - { name: knp_menu.menu_builder, method: createSettingsMenu, alias: settings }
+        #     - { name: knp_menu.menu_builder, method: createMainMenu, alias: main }
+        #     - { name: knp_menu.menu_builder, method: createBreadcrumbMenu, alias: breadcrumb }
 
     commsy.menu.main:
         class: Knp\Menu\MenuItem # the service definition requires setting the class
-        factory_service: commsy.menu.builder
-        factory_method: createMainMenu
-        arguments: ["@request_stack"]
+        factory: ['@commsy.menu.builder', createMainMenu]
+        arguments: ['@request_stack']
         tags:
             - { name: knp_menu.menu, alias: main } # The alias is what is used to retrieve the menu
 
     commsy.menu.settings:
         class: Knp\Menu\MenuItem
-        factory_service: commsy.menu.builder
-        factory_method: createSettingsMenu
-        arguments: [@request_stack]
+        factory: ['@commsy.menu.builder', createSettingsMenu]
+        arguments: ['@request_stack']
         tags:
             - { name: knp_menu.menu, alias: settings }
 
     commsy.menu.breadcrumb:
           class: Knp\Menu\MenuItem
-          factory_service: commsy.menu.builder
-          factory_method: createBreadcrumbMenu
-          arguments: ["@request_stack"]
+          factory: ['@commsy.menu.builder', createBreadcrumbMenu]
+          arguments: ['@request_stack']
           tags:
               - { name: knp_menu.menu, alias: breadcrumb }
 
     commsy.menu.profile:
         class: Knp\Menu\MenuItem
-        factory_service: commsy.menu.builder
-        factory_method: createProfileMenu
-        arguments: ["@request_stack"]
+        factory: ['@commsy.menu.builder', createProfileMenu]
+        arguments: ['@request_stack']
         tags:
             - { name: knp_menu.menu, alias: profile }
 
     commsy.menu.roomlist:
         class: Knp\Menu\MenuItem
-        factory_service: commsy.menu.builder
-        factory_method: createRoomlistMenu
-        arguments: ["@request_stack"]
+        factory: ['@commsy.menu.builder', createRoomlistMenu]
+        arguments: ['@request_stack']
         tags:
             - { name: knp_menu.menu, alias: roomlist }
 
     # Voter
     commsy.security.category_voter:
         class: CommsyBundle\Security\Authorization\Voter\CategoryVoter
-        arguments: [@commsy_legacy.environment]
+        arguments: ['@commsy_legacy.environment']
         public: false
         tags:
             - { name: security.voter }
 
     commsy.security.item_voter:
         class: CommsyBundle\Security\Authorization\Voter\ItemVoter
-        arguments: [@commsy_legacy.environment, @commsy.item_service]
+        arguments: ['@commsy_legacy.environment', '@commsy.item_service']
         public: false
         tags:
             - { name: security.voter }
 
     commsy.security.user_voter:
         class: CommsyBundle\Security\Authorization\Voter\UserVoter
-        arguments: [@commsy_legacy.environment]
+        arguments: ['@commsy_legacy.environment']
         public: false
         tags:
             - { name: security.voter }
@@ -99,144 +100,145 @@ services:
     # Exporter
     commsy.export.wordpress:
         class: CommsyBundle\Export\WordpressExporter
-        arguments: [@commsy_legacy.environment]
+        arguments: ['@commsy_legacy.environment']
 
     commsy.export.wiki:
         class: CommsyBundle\Export\WikiExporter
-        arguments: [@commsy_legacy.environment]
+        arguments: ['@commsy_legacy.environment']
 
     # EventListener
     kernel.listener.comsy_request:
         class: CommsyBundle\EventListener\CommsyRequestListener
-        arguments: [@commsy.room_service, @liip_theme.active_theme, %liip_theme.themes%]
+        arguments: ['@commsy.room_service', '@liip_theme.active_theme', '%liip_theme.themes%']
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
     kernel.listener.commsy_login:
         class: CommsyBundle\EventListener\CommsyLoginListener
-        arguments: [@commsy_legacy.environment]
+        arguments: ['@commsy_legacy.environment']
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
     kernel.listener.commsy_logging:
         class: CommsyBundle\EventListener\CommsyLoggingListener
-        arguments: [@commsy.room_service, @liip_theme.active_theme, %liip_theme.themes%, @commsy_legacy.environment]
+        arguments: ['@commsy.room_service', '@liip_theme.active_theme', '%liip_theme.themes%', '@commsy_legacy.environment']
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
     # Search
     commsy.search_builder:
         class: CommsyBundle\Search\SearchBuilder
-        arguments: [@fos_elastica.finder.commsy.material]
+        arguments: ['@fos_elastica.finder.commsy.material']
 
-    # Form
+    # Form types
     commsy.form.type.general_settings:
         class: CommsyBundle\Form\Type\GeneralSettingsType
-        arguments: [@doctrine.orm.entity_manager, @commsy_legacy.environment]
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
         tags:
-            - { name: form.type, alias: general_settings }
+            - { name: form.type }
 
     commsy.form.type.settings.appearance:
         class: CommsyBundle\Form\Type\AppearanceSettingsType
-        arguments: [@commsy_legacy.environment]
+        arguments: ['@commsy_legacy.environment']
         tags:
-            - { name: form.type, alias: appearance_settings }
+            - { name: form.type }
             
     commsy.form.type.settings.extension:
         class: CommsyBundle\Form\Type\ExtensionSettingsType
-        arguments: [@commsy_legacy.environment]
+        arguments: ['@commsy_legacy.environment']
         tags:
-            - { name: form.type, alias: extension_settings }
+            - { name: form.type }
 
     commsy.form.type.material:
         class: CommsyBundle\Form\Type\MaterialType
         tags:
-            - { name: form.type, alias: material }
+            - { name: form.type }
 
     commsy.form.type.announcement:
         class: CommsyBundle\Form\Type\AnnouncementType
         tags:
-            - { name: form.type, alias: announcement }
+            - { name: form.type }
 
     commsy.form.type.itemDescription:
         class: CommsyBundle\Form\Type\ItemDescriptionType
         tags:
-            - { name: form.type, alias: itemDescription }
+            - { name: form.type }
 
     commsy.form.type.itemWorkflow:
         class: CommsyBundle\Form\Type\ItemWorkflowType
         tags:
-            - { name: form.type, alias: itemWorkflow }
+            - { name: form.type }
 
     commsy.form.type.itemLinks:
         class: CommsyBundle\Form\Type\ItemLinksType
-        arguments: ["@commsy_legacy.environment", @commsy.room_service, @commsy.item_service]
+        arguments: ['@commsy_legacy.environment', '@commsy.room_service', '@commsy.item_service']
         tags:
-            - { name: form.type, alias: itemLinks }
+            - { name: form.type }
 
     commsy.form.type.section:
         class: CommsyBundle\Form\Type\SectionType
         tags:
-            - { name: form.type, alias: section }
-
-    commsy.form.extension.image_type:
-        class: CommsyBundle\Form\Extension\ImageTypeExtension
-        tags:
-            - { name: form.type_extension, alias: file }
+            - { name: form.type }
 
     commsy.form.type.room_profile:
         class: CommsyBundle\Form\Type\RoomProfileType
-        arguments: [@doctrine.orm.entity_manager, @commsy_legacy.environment]
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
         tags:
-            - { name: form.type, alias: room_profile }
+            - { name: form.type }
 
     commsy.form.type.combine_profile:
         class: CommsyBundle\Form\Type\CombineProfileType
-        arguments: [@doctrine.orm.entity_manager, @commsy_legacy.environment]
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
         tags:
-            - { name: form.type, alias: combine_profile }
+            - { name: form.type }
 
     commsy.form.type.upload:
         class: CommsyBundle\Form\Type\UploadType
         tags:
-            - { name: form.type, alias: upload }
+            - { name: form.type }
 
     commsy.form.type.treechoice:
         class: CommsyBundle\Form\Type\TreeChoiceType
         tags:
-            - { name: form.type, alias: treechoice }
+            - { name: form.type }
 
     commsy.form.type.hashtag:
         class: CommsyBundle\Form\Type\HashtagType
         tags:
-            - { name: form.type, alias: hashtag }
+            - { name: form.type }
 
     commsy.form.type.category:
         class: CommsyBundle\Form\Type\CategoryType
         tags:
-            - { name: form.type, alias: category }
+            - { name: form.type }
 
     commsy.form.type.annotation:
         class: CommsyBundle\Form\Type\AnnotationType
         tags:
-            - { name: form.type, alias: annotation }
+            - { name: form.type }
 
     commsy.form.type.send:
         class: CommsyBundle\Form\Type\SendType
-        arguments: [@commsy.utils.mail_assistant]
+        arguments: ['@commsy.utils.mail_assistant']
         tags:
-            - { name: form.type, alias: send }
+            - { name: form.type }
             
     commsy.form.type.sendList:
         class: CommsyBundle\Form\Type\SendListType
-        arguments: [@commsy.utils.mail_assistant]
+        arguments: ['@commsy.utils.mail_assistant']
         tags:
-            - { name: form.type, alias: sendList }
+            - { name: form.type }
+
+    # Form type extension
+    commsy.form.extension.image_type:
+        class: CommsyBundle\Form\Extension\ImageTypeExtension
+        tags:
+            - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FileType }
 
     # Twig
     twig.extension.room:
         class: CommsyBundle\Twig\Extension\RoomExtension
-        arguments: ["@commsy_legacy.environment"]
+        arguments: ['@commsy_legacy.environment']
         tags:
             - { name: twig.extension }
 
@@ -247,11 +249,11 @@ services:
     # Utils
     commsy.utils.mail_assistant:
         class: CommsyBundle\Utils\MailAssistant
-        arguments: [@commsy_legacy.environment, @translator, @twig]
+        arguments: ['@commsy_legacy.environment', '@translator', '@twig']
 
     # Commands
     commsy.command.cron_command:
         class: CommsyBundle\Command\CronCommand
-        arguments: [%kernel.root_dir%, @commsy_legacy.environment]
+        arguments: ['%kernel.root_dir%', '@commsy_legacy.environment']
         tags:
             - { name: console.command }

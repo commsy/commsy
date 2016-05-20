@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use CommsyBundle\Entity\Room;
 use CommsyBundle\Form\Type\GeneralSettingsType;
 use CommsyBundle\Form\Type\AppearanceSettingsType;
+use CommsyBundle\Form\Type\ExtensionSettingsType;
 
 class SettingsController extends Controller
 {
@@ -46,7 +47,7 @@ class SettingsController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.room');
         $roomData = $transformer->transform($roomItem);
 
-        $form = $this->createForm('general_settings', $roomData, array(
+        $form = $this->createForm(GeneralSettingsType::class, $roomData, array(
             'roomId' => $roomId,
             'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
                 'roomId' => $roomId,
@@ -91,7 +92,7 @@ class SettingsController extends Controller
         // get the configured LiipThemeBundle themes
         $themeArray = $this->container->getParameter('liip_theme.themes');
 
-        $form = $this->createForm('appearance_settings', $roomData, array(
+        $form = $this->createForm(AppearanceSettingsType::class, $roomData, array(
             'roomId' => $roomId,
             'themes' => $themeArray,
             // 'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
@@ -137,7 +138,7 @@ class SettingsController extends Controller
         // get the configured LiipThemeBundle themes
         $mediaWikiUrl = $this->container->getParameter('commsy.mediawiki.url');
 
-        $form = $this->createForm('extension_settings', $roomData, array(
+        $form = $this->createForm(ExtensionSettingsType::class, $roomData, array(
             'roomId' => $roomId,
         ));
         
