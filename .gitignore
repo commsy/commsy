@@ -55,7 +55,6 @@ Icon
 *.pydevproject
 .project
 .metadata
-bin/**
 tmp/**
 tmp/**/*
 *.tmp
