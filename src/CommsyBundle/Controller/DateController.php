@@ -9,6 +9,10 @@ use Symfony\Component\HttpFoundation\Request;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
 use CommsyBundle\Filter\DateFilterType;
 
 class DateController extends Controller
@@ -150,7 +154,7 @@ class DateController extends Controller
             $response = new BinaryFileResponse($zipFile);
             $response->deleteFileAfterSend(true);
     
-            $filename = 'CommSy_Material.zip';
+            $filename = 'CommSy_Date.zip';
             $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$filename);   
             $response->headers->set('Content-Disposition', $contentDisposition);
     
