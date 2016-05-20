@@ -41,7 +41,7 @@ class UserController extends Controller
         $defaultFilterValues = array(
             'activated' => true,
         );
-        $filterForm = $this->createForm(new UserFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(UserFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_user_list', array(
                 'roomId' => $roomId,
             )),
@@ -103,7 +103,7 @@ class UserController extends Controller
         $defaultFilterValues = array(
             'activated' => true,
         );
-        $filterForm = $this->createForm(new UserFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(UserFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_user_list', array(
                 'roomId' => $roomId,
             )),
@@ -128,7 +128,7 @@ class UserController extends Controller
         $defaultFilterValues = array(
             'activated' => true,
         );
-        $filterForm = $this->createForm(new UserFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(UserFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_user_list', array(
                 'roomId' => $roomId,
             )),

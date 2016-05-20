@@ -966,16 +966,16 @@ class cs_page_guide_view extends cs_page_view {
 
 
       // add-ons
-      if ( $item->showHomepageDescLink() or
-            ( $item->showWikiLink()
-              and $item->existWiki()
-              and $item->issetWikiPortalLink()
-            )
+      if ( $item->showHomepageDescLink() //or
+            //( $item->showWikiLink()
+            //  and $item->existWiki()
+            //  and $item->issetWikiPortalLink()
+            //)
          ) {
          $html .= '<span style="font-weight:bold;">'.$this->_translator->getMessage('COMMON_PORTAL_LINKS').':</span>'.LF;
          $html .= '<ul style="margin-left:0px;margin-top:0em; margin-bottom:0.5em; padding-top:0px;padding-left:1em;">'.LF;
 
-         if (
+         /* if (
                ( $item->showWikiLink()
                  and $item->existWiki()
                  and $item->issetWikiPortalLink()
@@ -991,7 +991,7 @@ class cs_page_guide_view extends cs_page_view {
             }
             $html .= '<span style="white-space:nowrap;"> <a href="'.$c_pmwiki_path_url.'/wikis/'.$item->getContextID().'/'.$item->getItemID().'/'.$url_session_id.'" target="_blank">'.$item->getWikiTitle().'</a> ('.$this->_translator->getMessage('COMMON_WIKI_LINK').')</span>';
             $html .= '</li>'.LF;
-         }
+         } */
 
          if ( $item->showHomepageDescLink() ) {
             $html .= '<li style="font-weight:normal; font-size:8pt;">'.LF;
@@ -2096,7 +2096,7 @@ class cs_page_guide_view extends cs_page_view {
 			}
 		
 			// wiki
-			if (!empty($ownRoomItem)) {
+			/* if (!empty($ownRoomItem)) {
    			if($ownRoomItem->showWikiLink() && $ownRoomItem->existWiki() && $ownRoomItem->issetWikiHomeLink()) {
    				global $c_pmwiki_path_url;
    		
@@ -2115,7 +2115,7 @@ class cs_page_guide_view extends cs_page_view {
    				}
    				$return['wiki']['session'] = $url_session_id;
    			}
-			}
+			}*/
 		
 			// chat
 			if($current_context->showChatLink()) {

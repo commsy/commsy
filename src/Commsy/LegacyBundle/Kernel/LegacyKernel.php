@@ -47,6 +47,11 @@ class LegacyKernel implements HttpKernelInterface
 				sprintf('Invalid legacy app path (%s), unable to handle request', $this->legacyAppPath));
 		}
 
+		// disable symfony profiler
+		if ($this->container->has('profiler')) {
+			$this->container->get('profiler')->disable();
+		}
+
 		// Assign container to local variable so it can be used in legacy app
 		$container = $this->container;
 

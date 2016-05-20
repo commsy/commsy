@@ -25,10 +25,10 @@ GIT
 
 GIT
   remote: https://github.com/elastic/puppet-elasticsearch.git
-  ref: 0.10.1
-  sha: 785afdc9783a2d4e79584514b1b6fb6c223a32ba
+  ref: 0.10.3
+  sha: 36409eae08800fb2107d9ea4fef031f5348cb1ca
   specs:
-    elasticsearch-elasticsearch (0.10.1)
+    elasticsearch-elasticsearch (0.10.3)
       puppetlabs-apt (< 3.0.0, >= 1.4.0)
       puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
       richardc-datacat (< 1.0.0, >= 0.6.2)
@@ -93,8 +93,8 @@ GIT
 
 GIT
   remote: https://github.com/puphpet/puppet-nginx.git
-  ref: 3ab5c5ab549b56f641ae4d842415de8b99e3a522
-  sha: 3ab5c5ab549b56f641ae4d842415de8b99e3a522
+  ref: 6245b64bdaab0c5044fab77f6ebf3ed785d050e6
+  sha: 6245b64bdaab0c5044fab77f6ebf3ed785d050e6
   specs:
     jfryman-nginx (0.0.10)
       puppetlabs-apt (>= 1.0.0)
@@ -111,8 +111,8 @@ GIT
 
 GIT
   remote: https://github.com/puphpet/puppet-puphpet.git
-  ref: 65f9a8ad9287a1b8d9c21a3f4d2f2541c2b40bb2
-  sha: 65f9a8ad9287a1b8d9c21a3f4d2f2541c2b40bb2
+  ref: c80a6f2b9d4ae3f6a3656d1ee92afb25edbf8971
+  sha: c80a6f2b9d4ae3f6a3656d1ee92afb25edbf8971
   specs:
     puphpet-puphpet (1.0)
 
@@ -199,7 +199,7 @@ GIT
 
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-mysql.git
-  ref: 3.3.0
+  ref: a3d0de3e053daa14aeaaa05badaa3867dc2533f7
   sha: c01682597524ae9395daa1133e11f576a80569a0
   specs:
     puppetlabs-mysql (3.3.0)

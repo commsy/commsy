@@ -80,7 +80,7 @@
             </trans-unit>
             <trans-unit id="20">
                 <source>files</source>
-                <target>Atteched files</target>
+                <target>Attached files</target>
             </trans-unit>
             <trans-unit id="21">
                 <source>links</source>

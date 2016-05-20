@@ -49,10 +49,16 @@ class puphpet_mysql (
     }
   })
 
+  $install_options = $::osfamily ? {
+    'Debian' => '--force-yes',
+    default  => undef,
+  }
+
   $settings = delete(deep_merge({
     'package_name'     => $server_package,
     'restart'          => true,
     'override_options' => $override_options,
+    'install_options'  => $install_options,
     require            => Class['puphpet::mysql::repo'],
   }, $mysql['settings']), ['version', 'root_password'])
 
@@ -173,6 +179,8 @@ class puphpet_mysql (
     } elsif $::lsbdistcodename == 'lucid' or $::lsbdistcodename == 'squeeze' {
       $php_module = 'mysql'
     } elsif $::osfamily == 'debian' and $php['settings']['version'] in ['7.0', '70'] {
+      $php_module = 'mysql'
+    } elsif $::operatingsystem == 'ubuntu' and $php['settings']['version'] in ['5.6', '56'] {
       $php_module = 'mysql'
     } else {
       $php_module = 'mysqlnd'

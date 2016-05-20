@@ -6,36 +6,43 @@
         "psr-4": {
             "": "src/"
         },
-        "files": [
-            "app/AppKernel.php"
+        "classmap": [
+            "app/AppKernel.php",
+            "app/AppCache.php"
         ]
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "require": {
-        "php": ">=5.3.9",
-        "symfony/symfony": "2.8.*",
-        "doctrine/orm": "~2.4",
-        "doctrine/doctrine-bundle": "~1.4",
-        "twig/extensions": "~1.0",
-        "symfony/swiftmailer-bundle": "~2.3",
-        "symfony/monolog-bundle": "~2.4",
-        "sensio/distribution-bundle": "~5.0",
-        "sensio/framework-extra-bundle": "~3.0",
-        "incenteev/composer-parameter-handler": "~2.0",
-        "doctrine/migrations": "~1.1",
-        "doctrine/doctrine-migrations-bundle": "~1.1",
-        "liip/theme-bundle": "~1.3",
-        "knplabs/knp-menu-bundle":"~2.1",
-        "lexik/form-filter-bundle": "~4.0",
-        "friendsofsymfony/elastica-bundle": "~3.1",
-        "egeloen/ordered-form-bundle": "~2.0",
-        "egeloen/ckeditor-bundle": "~3.0",
-        "craue/twigextensions-bundle": "~2.0",
+        "php": ">=5.5.9",
+        "symfony/symfony": "3.0.*",
+        "doctrine/orm": "^2.5",
+        "doctrine/doctrine-bundle": "^1.6",
+        "doctrine/doctrine-cache-bundle": "^1.2",
+        "twig/extensions": "^1.3",
+        "symfony/swiftmailer-bundle": "^2.3",
+        "symfony/monolog-bundle": "^2.8",
+        "sensio/distribution-bundle": "^5.0",
+        "sensio/framework-extra-bundle": "^3.0.2",
+        "incenteev/composer-parameter-handler": "^2.0",
+        "doctrine/migrations": "^1.4",
+        "doctrine/doctrine-migrations-bundle": "^1.1",
+        "liip/theme-bundle": "^1.4",
+        "knplabs/knp-menu-bundle":"^2.1",
+        "lexik/form-filter-bundle": "^5.0",
+        "friendsofsymfony/elastica-bundle": "dev-master",
+        "egeloen/ordered-form-bundle": "^2.0",
+        "craue/twigextensions-bundle": "^2.1",
         "knplabs/knp-snappy-bundle": "^1.4",
-        "tomnomnom/etherpad-lite-client": "^0.1.2"
+        "ruflin/elastica": "3.2 as 2.99.0",
+        "egeloen/ckeditor-bundle": "^4.0"
     },
     "require-dev": {
-        "sensio/generator-bundle": "~3.0",
-        "symfony/phpunit-bridge": "~2.7"
+        "sensio/generator-bundle": "^3.0",
+        "symfony/phpunit-bridge": "^3.0"
     },
     "scripts": {
         "post-install-cmd": [
@@ -60,7 +67,10 @@
     },
     "extra": {
         "symfony-app-dir": "app",
+        "symfony-bin-dir": "bin",
+        "symfony-var-dir": "var",
         "symfony-web-dir": "web",
+        "symfony-tests-dir": "tests",
         "symfony-assets-install": "relative",
         "incenteev-parameters": {
             "file": "app/config/parameters.yml"

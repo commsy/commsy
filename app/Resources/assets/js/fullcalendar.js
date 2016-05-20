@@ -19,10 +19,13 @@
             },
             events: $('#calendar').data('events').url,
             dayClick: function(date, jsEvent, view) {
-                window.location.href = $('#calendar').data('events').createUrl;
+                if (!date.hasTime()) {
+                    date.time('12:00:00');
+                }
+                window.location.href = $('#calendar').data('events').dateUrl+'/create/'+encodeURIComponent(date.format('YYYY-MM-DD hh:mm:ss a'));
             },
             eventClick: function(calEvent, jsEvent, view) {
-                
+                window.location.href = $('#calendar').data('events').dateUrl+'/'+calEvent.itemId;
             },
             eventMouseover: function(calEvent, jsEvent, view) {
                 $(jsEvent.currentTarget).tooltipster({
@@ -32,8 +35,40 @@
             eventMouseout: function(calEvent, jsEvent, view) {
                 //UIkit.modal('#tooltip-'+calEvent._id).hide();
             },
+            eventDrop: function(event, delta, revertFunc) {
+                editEvent(event);
+            },
+            eventResize: function(event, delta, revertFunc) {
+                editEvent(event);
+            },
         });
     };
+
+    function editEvent (event) {
+        event.description = '...';
+        $('#calendar').fullCalendar('updateEvent', event);
+        
+        $.ajax({
+            url: $('#calendar').data('events').dateUrl+'/'+event.itemId+'/calendaredit',
+            type: 'POST',
+            data: JSON.stringify({
+                event,
+            })
+        }).done(function(data, textStatus, jqXHR) {
+            event.description = data.data.description;
+            
+            $('#calendar').fullCalendar('updateEvent', event);
+            
+            UIkit.notify({
+                message : data.message,
+                status  : data.status,
+                timeout : data.timeout,
+                pos     : 'top-center'
+            });
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            UIkit.notify(textStatus, 'danger');
+        });
+    }
 
     function renderEvent(calEvent) {
         return '<div>'

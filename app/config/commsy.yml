@@ -132,9 +132,10 @@ commsy:
     limesurvey:
         # set the following variable to activate limesurvey extension
         enabled: false
-
-    # Etherpad
-    etherpad:
-        enabled: false
-        api_key: '1a9e8671c856540a6a823bfb1044b00cfc98addee6fe3c479b444910288ec529'
-        api_url: 'http://192.168.56.101:9001/api'
+        
+        # Limesurvey
+    mediawiki:
+        # set the following variable to activate limesurvey extension
+        enabled: true
+        url: http://127.0.0.1:8080
+        apiPath: /w/api.php

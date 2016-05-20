@@ -51,6 +51,18 @@ define puphpet::php::fpm::pool_ini (
         $dir_name = 'php'
       }
     }
+  } elsif $fpm_version in ['5.6', '56'] {
+    case $::operatingsystem {
+      'debian': {
+        $dir_name = 'php5'
+      }
+      'ubuntu': {
+        $dir_name = 'php/5.6'
+      }
+      'redhat', 'centos': {
+        $dir_name = 'php5'
+      }
+    }
   } else {
     $dir_name = 'php5'
   }

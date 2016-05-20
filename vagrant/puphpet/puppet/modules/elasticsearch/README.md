@@ -127,7 +127,6 @@ elasticsearch::plugin{ 'jetty':
 }
 ```
 
-
 ####Using a proxy
 You can also use a proxy if required by setting the `proxy_host` and `proxy_port` options:
 ```puppet
@@ -335,8 +334,7 @@ class { 'elasticsearch':
 #####hash representation
 ```puppet
 $config_hash = {
-  'ES_USER' => 'elasticsearch',
-  'ES_GROUP' => 'elasticsearch',
+  'ES_HEAP_SIZE' => '30g',
 }
 
 class { 'elasticsearch':

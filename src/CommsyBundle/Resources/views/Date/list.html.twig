@@ -1,87 +1,87 @@
 {% extends 'CommsyBundle:Base:list.html.twig' %}
 {% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
 
-{% block content %}
+{% block feed %}
+    <ul id="dates-feed" class="uk-comment-list" data-uk-observe>
+        {{ render(controller(
+            'CommsyBundle:Date:feed',
+            { 'roomId': roomId }
+        ))}}
+    </ul>
 
-    <div class="uk-grid">
-
-    {% block contentwidth %}
-        <div class="uk-width-medium-2-3">
-    {% endblock %}
-
-    <div class="uk-panel uk-panel-box uk-panel-box-primary">
-    
-    <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div class="uk-text-large">
-                            {% if not module is empty %}
-                            {#
-                                {% if module == 'material' %}
-                                    <i class="uk-icon-justify uk-icon-medium uk-icon-file-o"></i>
-                                {% elseif module == 'announcement'%}
-                                    <i class="uk-icon-justify uk-icon-small uk-icon-comment-o"></i>
-                                {% endif %}
-                            #}
-
-                                {{module|transchoice(1, {}, "rubric")|capitalize }}
-                            {% else %}
-                                Missing rubric title
-                            {% endif %}
-
-                            <div id="commsy-list-count-display" style="display:inline;">
-                                <!-- ({#{itemsCountArray.count}} {{ 'of'|trans({},'messages')}} {{itemsCountArray.countAll}#}) -->
-                            </div>
-                            <div id="commsy-list-count-edit" style="display:inline;" class="uk-hidden">
-                                <!-- (<span id="commsy-list-count-selected">{#{itemsCountArray.count}#}</span> {#{ 'of'|trans({},'messages')}#} <span id="commsy-list-count-all">{#{itemsCountArray.countAll}#}</span> {#{ 'selected'|trans({},'messages')}#}) -->
-                            </div>
-                        </div>
-                        <div>
-                        {% block sortbox %}
-                        {% endblock %}
-
-                        {% block editbox %}
-                        {% endblock %}
-
-                            {# selection mode old code
-                            <button class="uk-button uk-button-mini" data-uk-button data-commsy-select="{target:'.feed ul', actionUrl: '{{ path('commsy_material_feedaction', {'roomId': roomId}) }}'}" data-title="{{ 'list choice'|trans({},'rubric')|capitalize }}" data-alt-title="{{ 'unset list choice'|trans({},'rubric')|capitalize }}" data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}">
-                                {{ 'list choice'|trans({},'rubric')|capitalize }}
-                            </button>
-                            #}
-                        </div>
-                    </div>
-                </div>
-    
-    <div id='calendar' data-events='{"url": "{{ path('commsy_date_events', {'roomId': roomId}) }}", "createUrl": "{{ path('commsy_date_create', {'roomId': roomId}) }}"}'></div>
-    
+    <div class="feed-load-more" data-uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomId }}/date/feed/", "target": "#dates-feed"}'>
+        <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
+        <div class="cs-toggle-class"></div>
     </div>
-        </div>
+{% endblock %}
 
-    {% block listsidebar %}
-
-        {# sidebar #}
-        <div class="uk-width-medium-1-3 cs-right-column">
-            <div class="uk-panel uk-panel-box uk-panel-box-primary">
-                <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-clearfix">
-                        <div class="uk-float-right">
-                            <a href="#" class="button-toggle uk-button-mini uk-button-secondary" data-uk-toggle="{target: '#list-filter', animation: 'uk-animation-fade'}">
-                                <i class="uk-icon-chevron-up"></i>
-                            </a>
-                        </div>
-                        <div class="uk-text-large uk-float-left">
-                            {{ 'list filter'|trans({},"room")}}
-                        </div>
-                    </div>
-                </div>
-                <div id="list-filter">
-                    {{ form_start(form) }}
-                    {{ form_widget(form) }}
-                    {{ form_end(form) }}
-                </div>
+{% block sortbox %}
+        {# sort dropdown #}
+        <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+            <button class="uk-button uk-button-mini cs-button-list">{{ 'list sort'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
+            <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
+                <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+                    <li><a href="#" id="commsy-sort-title" class="uk-clearfix"><span class="uk-float-left">{{ 'title'|trans({},'rubric')}}</span><span class="uk-float-right"><i id="commsy-sort-title-chevron" class=""></i></span></a></li>
+                    <li><a href="#" id="commsy-sort-modificator" class="uk-clearfix"><span class="uk-float-left">{{ 'modifier'|trans({},'rubric') }}</span><span class="uk-float-right"><i id="commsy-sort-modificator-chevron" class=""></i></span></a></li>
+                    <li><a href="#" id="commsy-sort-date" class="cs-sort-active uk-clearfix"><span class="uk-float-left">{{ 'modification_date'|trans({},'rubric') }}</span><span class="uk-float-right"><i id="commsy-sort-date-chevron" class="uk-icon-chevron-down"></i></span></a></li>
+               </ul>
             </div>
         </div>
-    {% endblock%}
-        
-    </div>
+{% endblock %}
 
+{% block editbox %}
+    <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+        <button class="uk-button uk-button-mini cs-button-list">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
+        <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
+            <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+                <li>
+                     <a href="{{ path('commsy_material_create', {'roomId': roomId}) }}">
+                        <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
+                    </a>
+                </li>
+                <li>
+                    <a class="" href="#" id="print" data-section-url="">
+                        <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
+                    </a>
+                </li>
+               {#% block listaction %#}
+                    <li>
+                        <a href="#" id="commsy-select-actions-mark-read" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_date_feedaction', {'roomId': roomId}) }}"}'>
+                            <i class="uk-icon-justify uk-icon-small uk-icon-check-square-o uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a href="#" id="commsy-select-actions-copy" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_date_feedaction', {'roomId': roomId}) }}"}'>
+                            <i class="uk-icon-justify uk-icon-small uk-icon-copy uk-visible-large"></i> {{ 'copy'|trans({},'rubric')|capitalize }}
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a href="#" id="commsy-select-actions-save" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_date_feedaction', {'roomId': roomId}) }}"}'>
+                            <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({},'rubric')|capitalize }}
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a href="#" id="commsy-select-actions-delete" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_date_feedaction', {'roomId': roomId}) }}"}' data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
+                        </a>
+                    </li>
+                {#% endblock %#}
+            </ul>
+        </div>
+    </div>
+{% endblock%}
+
+{% block listAddons %}
+    <div class="uk-float-right uk-margin-small-left">
+        <a href="{{ path('commsy_date_calendar', {'roomId': roomId}) }}" class="uk-text-contrast"><i class="uk-icon-calendar uk-icon-small"></i></a>
+    </div>
+    <div class="uk-float-right uk-margin-small-left">
+        <i class="uk-icon-list-ul uk-icon-small cs-icon-mute"></i>
+    </div>
 {% endblock %}

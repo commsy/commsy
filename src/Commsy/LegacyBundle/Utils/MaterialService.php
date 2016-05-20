@@ -46,7 +46,7 @@ class MaterialService
     {
         $this->materialManager->setContextLimit($roomId);
         $this->materialManager->select();
-        $countMaterial = array();
+        $countMaterialArray = array();
         $countMaterialArray['count'] = sizeof($this->materialManager->get()->to_array());
         $this->materialManager->resetLimits();
         $this->materialManager->select();

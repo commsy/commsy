@@ -7,6 +7,10 @@ imports:
     - { resource: ckeditor.yml }
     - { resource: "@EtherpadBundle/Resources/config/services.yml" }
 
+# Put parameters here that don't need to change on each machine where the app is deployed
+# http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+
 framework:
     #esi:             ~
     translator:      { fallback: "%locale%" }
@@ -17,19 +21,20 @@ framework:
     form:            ~
     csrf_protection: ~
     validation:      { enable_annotations: true }
+    #serializer:      { enable_annotations: true }
     templating:
         engines: ['twig']
-        #assets_version: SomeVersionScheme
     default_locale:  "%locale%"
     trusted_hosts:   ~
     trusted_proxies: ~
     session:
-        #storage_id: session.storage.php_bridge
-        # handler_id set to null will use default session handler from php.ini
+        # http://symfony.com/doc/current/reference/configuration/framework.html#handler-id
+        #handler_id:  session.handler.native_file
+        #save_path:   "%kernel.root_dir%/../var/sessions/%kernel.environment%"
         handler_id: ~
-        #handler_id:  session.handler.pdo
     fragments:       ~
     http_method_override: true
+    assets: ~
 
 # Twig Configuration
 twig:
@@ -62,6 +67,7 @@ doctrine:
 
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
+        naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
 
 # Swiftmailer Configuration

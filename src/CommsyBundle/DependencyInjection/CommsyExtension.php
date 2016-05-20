@@ -71,6 +71,11 @@ class CommsyExtension extends Extension
 
         // limesurvey
         $container->setParameter('commsy.limesurvey.enabled', $config['limesurvey']['enabled']);
+        
+        // mediawiki
+        $container->setParameter('commsy.mediawiki.enabled', $config['mediawiki']['enabled']);
+        $container->setParameter('commsy.mediawiki.url', $config['mediawiki']['url']);
+        $container->setParameter('commsy.mediawiki.apiPath', $config['mediawiki']['apiPath']);
 
         // etherpad
         $container->setParameter('commsy.etherpad.enabled', $config['etherpad']['enabled']);

@@ -182,6 +182,9 @@
 #   package upgrades.
 #   Defaults to: true
 #
+# [*logdir*]
+#   Use different directory for logging
+#
 # The default values for the parameters are set in elasticsearch::params. Have
 # a look at the corresponding <tt>params.pp</tt> manifest file if you need more
 # technical information about them.
@@ -227,9 +230,10 @@ class elasticsearch(
   $service_provider      = 'init',
   $init_defaults         = undef,
   $init_defaults_file    = undef,
-  $init_template         = undef,
+  $init_template         = "${module_name}/etc/init.d/${elasticsearch::params::init_template}",
   $config                = undef,
   $datadir               = $elasticsearch::params::datadir,
+  $logdir                = $elasticsearch::params::logdir,
   $plugindir             = $elasticsearch::params::plugindir,
   $plugintool            = $elasticsearch::params::plugintool,
   $java_install          = false,

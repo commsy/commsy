@@ -139,6 +139,14 @@ class MenuBuilder
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-eyedropper uk-icon-small'),
             ));
+            
+            // extensions
+            $menu->addChild('extensions', array(
+                'label' => 'extensions',
+                'route' => 'commsy_settings_extensions',
+                'routeParameters' => array('roomId' => $roomId),
+                'extras' => array('icon' => 'uk-icon-gears uk-icon-small'),
+            ));
         }
         
         // identifier
@@ -203,9 +211,17 @@ class MenuBuilder
     
                 // loop through rubrics to build the menu
                 foreach ($rubrics as $value) {
+                    $route = 'commsy_'.$value.'_list';
+                    if ($value == 'date') {
+                        $room = $this->roomService->getRoomItem($roomId);
+                        if ($room->getDatesPresentationStatus() != 'normal') {
+                            $route = 'commsy_date_calendar';
+                        }
+                    }
+                    
                     $menu->addChild($value, array(
                         'label' => $value,
-                        'route' => 'commsy_'.$value.'_list',
+                        'route' => $route,
                         'routeParameters' => array('roomId' => $roomId),
                         'extras' => array('icon' => $this->getRubricIcon($value))
                     ));

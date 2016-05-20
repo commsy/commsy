@@ -19,12 +19,23 @@ class DateService
         $this->dateManager->reset();
     }
 
-    public function getListDates($roomId, $max, $start)
+    public function getListDates($roomId, $max, $start, $sort)
     {
-        $this->dateManager->reset();
         $this->dateManager->setContextLimit($roomId);
-        $this->dateManager->setIntervalLimit($start, $max);
-        $this->dateManager->setSortOrder('time_rev');
+        if ($max !== NULL && $start !== NULL) {
+            $this->dateManager->setIntervalLimit($start, $max);
+        }
+
+        if ($sort) {
+            if ($sort == 'date') {
+                $sort = 'time_rev';
+            } else if ($sort == 'date_rev') {
+                $sort = 'time';
+            }
+            $this->dateManager->setSortOrder($sort);
+        }
+
+        $this->dateManager->setWithoutDateModeLimit();
 
         $this->dateManager->select();
         $dateList = $this->dateManager->get();
@@ -78,5 +89,25 @@ class DateService
         $dateList = $this->dateManager->get();
 
         return $dateList->to_array();
+    }
+    
+    public function getNewDate()
+    {
+        return $this->dateManager->getNewItem();
+    }
+    
+        public function getCountArray($roomId)
+    {
+        $this->dateManager->setContextLimit($roomId);
+        $this->dateManager->setWithoutDateModeLimit();
+        $this->dateManager->select();
+        $countDatelArray = array();
+        $countDatelArray['count'] = sizeof($this->dateManager->get()->to_array());
+        $this->dateManager->resetLimits();
+        $this->dateManager->setWithoutDateModeLimit();
+        $this->dateManager->select();
+        $countDatelArray['countAll'] = $this->dateManager->getCountAll();
+
+        return $countDatelArray;
     }
 }

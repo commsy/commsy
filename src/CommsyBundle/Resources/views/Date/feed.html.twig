@@ -9,10 +9,10 @@
 
                 {% if is_granted('ITEM_EDIT', date.itemId) %}
                     <form class="uk-form">
-                        <input type="checkbox">
+                        <input type="checkbox" value="{{ date.itemId }}">
                     </form>
                 {% else %}
-                    <i class="uk-icon-ban uk-icon-small red"></i>
+                    <i class="uk-icon-ban uk-icon-small red" data-itemid="{{ date.itemId }}"></i>
                 {% endif %}
                 
             </div>

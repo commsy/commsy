@@ -253,6 +253,67 @@ describe 'elasticsearch::instance', :type => 'define' do
 
   end
 
+  context "logs directory" do
+    let(:pre_condition) { 'class {"elasticsearch": }'  }
+
+    context "default" do
+      it { should contain_file('/var/log/elasticsearch/es-01').with( :ensure => 'directory') }
+      it { should contain_file('/var/log/elasticsearch/').with( :ensure => 'directory') }
+    end
+
+    context "single from main config " do
+      let(:pre_condition) { 'class {"elasticsearch": logdir => "/var/log/elasticsearch-logs" }'  }
+
+      it { should contain_file('/var/log/elasticsearch-logs').with( :ensure => 'directory') }
+      it { should contain_file('/var/log/elasticsearch-logs/es-01').with( :ensure => 'directory') }
+    end
+
+    context "single from instance config" do
+      let(:pre_condition) { 'class {"elasticsearch": }'  }
+      let :params do {
+        :logdir => '/var/log/elasticsearch/logs-a'
+      } end
+
+      it { should contain_file('/var/log/elasticsearch/logs-a').with( :ensure => 'directory') }
+
+    end
+
+   context "Conflicting setting path.logs" do
+     let(:pre_condition) { 'class {"elasticsearch": }'  }
+     let :params do {
+       :logdir => '/var/log/elasticsearch/logs-a',
+       :config  => { 'path.logs' => '/var/log/elasticsearch/otherlogs' }
+     } end
+
+      it { should contain_file('/var/log/elasticsearch/logs-a').with( :ensure => 'directory') }
+      it { should_not contain_file('/var/log/elasticsearch/otherlogs').with( :ensure => 'directory') }
+   end
+
+   context "Conflicting setting path => logs" do
+     let(:pre_condition) { 'class {"elasticsearch": }'  }
+     let :params do {
+       :logdir => '/var/log/elasticsearch/logs-a',
+       :config  => { 'path' => { 'logs' => '/var/log/elasticsearch/otherlogs' } }
+     } end
+
+      it { should contain_file('/var/log/elasticsearch/logs-a').with( :ensure => 'directory') }
+      it { should_not contain_file('/var/log/elasticsearch/otherlogs').with( :ensure => 'directory') }
+   end
+
+   context "With other path options defined" do
+     let(:pre_condition) { 'class {"elasticsearch": }'  }
+     let :params do {
+       :logdir => '/var/log/elasticsearch/logs-a',
+       :config  => { 'path' => { 'home' => '/var/log/elasticsearch' } }
+     } end
+
+      it { should contain_file('/var/log/elasticsearch/logs-a').with( :ensure => 'directory') }
+   end
+
+
+  end
+
+
   context "Logging" do
 
     let(:pre_condition) { 'class {"elasticsearch": }'  }
@@ -312,11 +373,11 @@ describe 'elasticsearch::instance', :type => 'define' do
     it { should contain_file('/etc/elasticsearch/es-01/logging.yml').with(:owner => 'myesuser', :group => 'myesgroup') }
   end
 
-    context "setting different service status then main class" do
+  context "setting different service status then main class" do
 
     let(:pre_condition) { 'class {"elasticsearch": status => "enabled" }'  }
 
-    context "staus option" do
+    context "status option" do
 
       let :params do {
         :status => 'running'
@@ -325,5 +386,22 @@ describe 'elasticsearch::instance', :type => 'define' do
       it { should contain_service('elasticsearch-instance-es-01').with(:ensure => 'running', :enable => false) }
 
     end
+
+  end
+
+  context "init_template" do
+
+    context "default" do
+      let(:pre_condition) { 'class {"elasticsearch": }'  }
+
+      it { should contain_elasticsearch__service('es-01').with(:init_template => 'elasticsearch/etc/init.d/elasticsearch.RedHat.erb') }
+    end
+
+    context "override in main class" do
+      let(:pre_condition) { 'class {"elasticsearch": init_template => "elasticsearch/etc/init.d/elasticsearch.systemd.erb" }'  }
+
+      it { should contain_elasticsearch__service('es-01').with(:init_template => 'elasticsearch/etc/init.d/elasticsearch.systemd.erb') }
+    end
+
   end
 end

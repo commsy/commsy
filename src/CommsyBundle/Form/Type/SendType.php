@@ -2,16 +2,18 @@
 namespace CommsyBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormEvent;
-
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\NotBlank;
+
+use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 
 use CommsyBundle\Utils\MailAssistant;
 
@@ -23,12 +25,20 @@ class SendType extends AbstractType
         $this->mailAssistant = $mailAssistant;
     }
 
+    /**
+     * Builds the form.
+     * This method is called for each type in the hierarchy starting from the top most type.
+     * Type extensions can further modify the form.
+     * 
+     * @param  FormBuilderInterface $builder The form builder
+     * @param  array                $options The options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $mailAssistant = $this->mailAssistant;
 
         $builder
-            ->add('subject', 'text', [
+            ->add('subject', TextType::class, [
                 'constraints' => [
                     new NotBlank(),
                 ],
@@ -39,7 +49,7 @@ class SendType extends AbstractType
                     'placeholder' => 'Subject',
                 ],
             ])
-            ->add('message', 'ckeditor', [
+            ->add('message', CKEditorType::class, [
                 'label' => false,
                 'translation_domain' => 'form',
                 'required' => true,
@@ -60,7 +70,6 @@ class SendType extends AbstractType
                             'translation_domain' => 'mail',
                             'choice_translation_domain' => 'form',
                             'required' => true,
-                            'choices_as_values' => true,
                         ])
                     ;
                 }
@@ -77,7 +86,6 @@ class SendType extends AbstractType
                             'translation_domain' => 'mail',
                             'choice_translation_domain' => 'form',
                             'required' => true,
-                            'choices_as_values' => true,
                         ])
                     ;
                 }
@@ -94,7 +102,6 @@ class SendType extends AbstractType
                             'translation_domain' => 'mail',
                             'choice_translation_domain' => 'form',
                             'required' => true,
-                            'choices_as_values' => true,
                         ])
                     ;
                 }
@@ -111,7 +118,6 @@ class SendType extends AbstractType
                             'translation_domain' => 'mail',
                             'choice_translation_domain' => 'form',
                             'required' => true,
-                            'choices_as_values' => true,
                         ])
                     ;
                 } else if ($mailAssistant->showInstitutionRecipients($item)) {
@@ -126,7 +132,6 @@ class SendType extends AbstractType
                             'translation_domain' => 'mail',
                             'choice_translation_domain' => 'form',
                             'required' => true,
-                            'choices_as_values' => true,
                         ])
                     ;
                 }
@@ -143,7 +148,6 @@ class SendType extends AbstractType
                             'translation_domain' => 'mail',
                             'choice_translation_domain' => 'form',
                             'required' => true,
-                            'choices_as_values' => true,
                         ])
                     ;
                 }
@@ -158,7 +162,6 @@ class SendType extends AbstractType
                 'translation_domain' => 'mail',
                 'choice_translation_domain' => 'form',
                 'required' => true,
-                'choices_as_values' => true,
             ])
             ->add('additional_recipients', CollectionType::class, [
                 'label' => 'Additional recipients',
@@ -173,17 +176,22 @@ class SendType extends AbstractType
                 'required' => false,
                 'translation_domain' => 'mail',
             ])
-            ->add('save', 'submit', [
+            ->add('save', SubmitType::class, [
                 'label' => 'Send',
                 'translation_domain' => 'mail',
             ])
-            ->add('cancel', 'submit', [
+            ->add('cancel', SubmitType::class, [
                 'label' => 'cancel',
                 'translation_domain' => 'form'
             ])
         ;
     }
 
+    /**
+     * Configures the options for this type.
+     * 
+     * @param  OptionsResolver $resolver The resolver for the options
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
@@ -192,7 +200,14 @@ class SendType extends AbstractType
         ;
     }
 
-    public function getName()
+    /**
+     * Returns the prefix of the template block name for this type.
+     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
+     * (e.g. "UserProfileType" => "user_profile").
+     * 
+     * @return string The prefix of the template block name
+     */
+    public function getBlockPrefix()
     {
         return 'send';
     }

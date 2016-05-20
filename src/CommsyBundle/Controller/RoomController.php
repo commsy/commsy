@@ -28,7 +28,7 @@ class RoomController extends Controller
         }
 
         // setup filter form
-        $filterForm = $this->createForm(new HomeFilterType(), null, array(
+        $filterForm = $this->createForm(HomeFilterType::class, null, array(
             'action' => $this->generateUrl('commsy_room_home', array(
                 'roomId' => $roomId,
             )),
@@ -103,7 +103,7 @@ class RoomController extends Controller
         }
 
         // setup filter form
-        $filterForm = $this->createForm(new HomeFilterType(), null, array(
+        $filterForm = $this->createForm(HomeFilterType::class, null, array(
             'action' => $this->generateUrl('commsy_room_home', array(
                 'roomId' => $roomId,
             )),
