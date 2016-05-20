@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7e5f2b79aa52850843810c9282e61568",
-    "content-hash": "c4ddfb76b239ead540bf2230ca18f16a",
+    "hash": "ca828a8bb741e88daf206cf280c079f5",
+    "content-hash": "ad4789923b68a7aa45af19d65adf5b93",
     "packages": [
         {
             "name": "craue/twigextensions-bundle",
@@ -2750,6 +2750,37 @@
                 "framework"
             ],
             "time": "2016-05-09 22:13:31"
+        },
+        {
+            "name": "tomnomnom/etherpad-lite-client",
+            "version": "0.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TomNomNom/etherpad-lite-client.git",
+                "reference": "932ac4903d7982038d5d04c03f8f9c809a5356bd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TomNomNom/etherpad-lite-client/zipball/932ac4903d7982038d5d04c03f8f9c809a5356bd",
+                "reference": "932ac4903d7982038d5d04c03f8f9c809a5356bd",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "EtherpadLite\\": "EtherpadLite/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache"
+            ],
+            "description": "Etherpad Lite client for PHP",
+            "homepage": "https://github.com/TomNomNom/etherpad-lite-client/",
+            "time": "2016-02-09 14:27:44"
         },
         {
             "name": "twig/extensions",

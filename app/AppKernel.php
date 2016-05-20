@@ -28,6 +28,7 @@ class AppKernel extends Kernel
            
             new CommsyBundle\CommsyBundle(),
             new Commsy\LegacyBundle\CommsyLegacyBundle(),
+            new EtherpadBundle\EtherpadBundle(),
             new CommsyMediawikiBundle\CommsyMediawikiBundle(),
         ];
 
