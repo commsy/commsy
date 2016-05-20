@@ -1,0 +1,11 @@
+{% extends 'CommsyBundle:Base:room.html.twig' %}
+
+{% block content %}
+    {{ searchResults|length }} results
+
+    <ul class="uk-list">
+        {% for searchResult in searchResults %}
+            <li>{{ searchResult.searchTitle }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

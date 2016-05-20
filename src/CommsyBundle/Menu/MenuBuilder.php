@@ -332,13 +332,14 @@ class MenuBuilder
                 // get route information
                 $route = explode('_', $currentStack->attributes->get('_route'));
                 
-                // room
+                // home
                 $menu->addChild($roomItem->getTitle(), array(
                     'route' => 'commsy_room_home',
                     'routeParameters' => array('roomId' => $roomId)
                 ));
         
-                if ($route[1] && $route[1] != "room" && $route[1] != "dashboard" && $route[2] != "search") {
+                if ($route[1] && $route[1] != "room" && $route[1] != "dashboard" && $route[1] != "search") {
+
                     // rubric
                     $menu->addChild($route[1], array(
                         'route' => 'commsy_'.$route[1].'_'.'list',

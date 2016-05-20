@@ -126,9 +126,9 @@ services:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
     # Search
-    # commsy.search_builder:
-    #     class: CommsyBundle\Search\SearchBuilder
-    #     arguments: ['@fos_elastica.finder.commsy.material']
+    commsy.search.manager:
+        class: CommsyBundle\Search\SearchManager
+        arguments: ['@fos_elastica.finder.commsy']
 
     # Form types
     commsy.form.type.general_settings:

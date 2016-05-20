@@ -5,6 +5,8 @@ namespace CommsyBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use FOS\ElasticaBundle\Configuration\Search;
 
+use CommsyBundle\Search\Searchable;
+
 /**
  * User
  *
@@ -12,7 +14,7 @@ use FOS\ElasticaBundle\Configuration\Search;
  * @Search
  * @ORM\Entity
  */
-class User
+class User implements Searchable
 {
     /**
      * @var integer
@@ -643,11 +645,6 @@ class User
         return $this->expireDate;
     }
 
-    public function isIndexable()
-    {
-        return ($this->deleterId == null && $this->deletionDate == null);
-    }
-
     /**
      * Get itemId
      *
@@ -656,5 +653,15 @@ class User
     public function getItemId()
     {
         return $this->itemId;
+    }
+
+    public function isIndexable()
+    {
+        return ($this->deleterId == null && $this->deletionDate == null);
+    }
+
+    public function getSearchTitle()
+    {
+        return $this->getUserId();
     }
 }

@@ -1,0 +1,13 @@
+<form name="{{ form.vars.full_name }}" action="{{ form.vars.action }}" method="{{ form.vars.method }}" class="uk-search" data-uk-search="{
+    source:'{{ path('commsy_search_instant', {'roomId': roomId }) }}',
+    delay: 300
+}">
+    
+    {{ form_widget(form.query) }}
+
+    <!-- This is the dropdown, which is injected through JavaScript -->
+    <div class="uk-dropdown uk-dropdown-search">
+        <ul class="uk-nav uk-nav-search">...</ul>
+    </div>
+
+{{ form_end(form) }}
