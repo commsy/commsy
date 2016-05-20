@@ -116,15 +116,6 @@ class MenuBuilder
         $menu = $this->factory->createItem('root');
 
         if ($roomId) {
-        /*
-            // dashboard
-            $menu->addChild('dashboard', array(
-                'label' => 'Dashboard',
-                'route' => 'commsy_settings_dashboard',
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-dashboard uk-icon-small'),
-            ));
-        */
             // general settings
             $menu->addChild('general', array(
                 'label' => 'General',
