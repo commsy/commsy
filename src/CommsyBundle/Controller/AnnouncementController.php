@@ -192,7 +192,7 @@ class AnnouncementController extends Controller
             'activated' => true,
             'active' =>true,
         );
-        $filterForm = $this->createForm(new AnnouncementFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(AnnouncementFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_announcement_list', array(
                 'roomId' => $roomId,
             )),
