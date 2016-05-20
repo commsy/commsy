@@ -16,16 +16,6 @@ use CommsyBundle\Form\Type\ExtensionSettingsType;
 class SettingsController extends Controller
 {
     /**
-    * @Route("/room/{roomId}/settings")
-    * @Template
-    * @Security("is_granted('MODERATOR')")
-    */
-    public function dashboardAction($roomId, Request $request)
-    {
-        return array();
-    }
-
-    /**
     * @Route("/room/{roomId}/settings/general")
     * @Template
     * @Security("is_granted('MODERATOR')")

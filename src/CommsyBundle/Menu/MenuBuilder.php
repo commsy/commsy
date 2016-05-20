@@ -116,6 +116,7 @@ class MenuBuilder
         $menu = $this->factory->createItem('root');
 
         if ($roomId) {
+        /*
             // dashboard
             $menu->addChild('dashboard', array(
                 'label' => 'Dashboard',
@@ -123,7 +124,7 @@ class MenuBuilder
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-dashboard uk-icon-small'),
             ));
-
+        */
             // general settings
             $menu->addChild('general', array(
                 'label' => 'General',
@@ -170,12 +171,12 @@ class MenuBuilder
     public function createMainMenu(RequestStack $requestStack)
     {
         // get room id
-        $currentStack = $requestStack->getCurrentRequest();
+        $currentRequest = $requestStack->getCurrentRequest();
 
         // create root item for knpmenu
         $menu = $this->factory->createItem('root');
 
-        $roomId = $currentStack->attributes->get('roomId');
+        $roomId = $currentRequest->attributes->get('roomId');
 
         if ($roomId) {
             // dashboard
@@ -253,14 +254,14 @@ class MenuBuilder
                     ));
                     $menu->addChild('room_configuration', array(
                         'label' => 'settings',
-                        'route' => 'commsy_settings_dashboard',
+                        'route' => 'commsy_settings_general',
                         'routeParameters' => array('roomId' => $roomId),
                         'extras' => array('icon' => 'uk-icon-wrench uk-icon-small')
                     ));
                 }
             }
         }
-
+        dump($menu);
         return $menu;
     }
 
