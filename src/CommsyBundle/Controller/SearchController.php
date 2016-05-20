@@ -43,15 +43,15 @@ class SearchController extends Controller
 
         if ($query) {
 
-            $searchBuilder = $this->get('commsy.search_builder');
-            $searchBuilder->setQuery($query);
-            $searchBuilder->setContext($roomId);
+            // $searchBuilder = $this->get('commsy.search_builder');
+            // $searchBuilder->setQuery($query);
+            // $searchBuilder->setContext($roomId);
 
-            //
-            $searchBuilder->setRubric('material');
-            //
+            // //
+            // $searchBuilder->setRubric('material');
+            // //
             
-            $materials = $searchBuilder->getResults();
+            // $materials = $searchBuilder->getResults();
 
             $dataset = array();
 
