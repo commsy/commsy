@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
-class DateTimeType extends AbstractType
+class DateTimeSelectType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

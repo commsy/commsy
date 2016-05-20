@@ -10,7 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
-use CommsyBundle\Form\Type\Custom\DateTimeType;
+use CommsyBundle\Form\Type\Custom\DateTimeSelectType;
 
 class AnnouncementType extends AbstractType
 {
@@ -37,7 +37,7 @@ class AnnouncementType extends AbstractType
                 'translation_domain' => 'announcement',
             ))
             // add custom datetime picker
-            ->add('validdate', DateTimeType::class, array(
+            ->add('validdate', DateTimeSelectType::class, array(
                 'label' => 'valid until',
                 'translation_domain' => 'announcement'
             ))
