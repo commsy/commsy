@@ -35,14 +35,12 @@ fos_elastica:
                                 userId: ~
                                 firstName: ~
                                 lastName: ~
-                                email: ~
                         modifier:
                             type: object
                             properties:
                                 userId: ~
                                 firstName: ~
                                 lastName: ~
-                                email: ~
 
                         creationDate:
                             type: date
