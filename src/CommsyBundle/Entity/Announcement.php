@@ -466,4 +466,9 @@ class Announcement
     {
         return $this->modifier;
     }
+
+    public function isIndexable()
+    {
+        return ($this->deleterId == null && $this->deletionDate == null);
+    }
 }
