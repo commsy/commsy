@@ -77,9 +77,11 @@
                 <a href="" class="uk-navbar-toggle uk-visible-small"></a>
 
                 <div class="uk-navbar-brand cs-padding-5">
-                    <a href="{{ path('commsy_room_home', {'roomId': app.request.attributes.get('roomId') }) }}">
-                        {{ app.request.attributes.get('roomId')|roomTitle }}
-                    </a>
+                    {% block roomTitle %}
+                        <a href="{{ path('commsy_room_home', {'roomId': app.request.attributes.get('roomId') }) }}">
+                            {{ app.request.attributes.get('roomId')|roomTitle }}
+                        </a>
+                    {% endblock %}
                 </div>
             </nav>
 
