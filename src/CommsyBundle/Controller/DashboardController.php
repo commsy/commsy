@@ -7,6 +7,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 use Commsy\LegacyBundle\Services\UserService;
 use Commsy\LegacyBundle\Services\ReaderService;
 use CommsyBundle\Filter\HomeFilterType;
@@ -28,12 +30,13 @@ class DashboardController extends Controller
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
-
         
         $roomFeedGenerator = $this->get('commsy.dashboard_feed_generator');
 
         return array(
-            'roomItem' => $roomItem);
+            'roomItem' => $roomItem,
+            'dashboardLayout' => $roomItem->getDashboardLayout(),
+        );
     }
 
     
@@ -73,5 +76,32 @@ class DashboardController extends Controller
             'feedList' => $tempFeedList,
             'readerList' => $readerList
         );
-    }    
+    }
+    
+    /**
+     * @Route("/dashboard/{roomId}/edit")
+     */
+    public function editAction($roomId, Request $request)
+    {
+        $translator = $this->get('translator');
+        
+        $requestContent = json_decode($request->getContent());
+        
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        // get room item for information panel
+        $roomManager = $legacyEnvironment->getPrivateRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+        
+        $roomItem->setDashboardLayout($requestContent->data);
+        $roomItem->save();
+        
+        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->trans('dashboard changed');
+        
+        return new JsonResponse(array('message' => $message,
+                                      'timeout' => '5550',
+                                      'layout' => 'cs-notify-message',
+                                      'data' => array(),
+                                    ));
+    }
 }
