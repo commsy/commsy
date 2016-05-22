@@ -54,8 +54,6 @@ class DashboardController extends Controller
 
         $readerService = $this->get('commsy.reader_service');
 
-        xdebug_break();
-
         $readerList = array();
         $tempFeedList = array();
         foreach ($feedList as $item) {
