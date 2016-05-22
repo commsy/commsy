@@ -54,19 +54,25 @@ class DashboardController extends Controller
 
         $readerService = $this->get('commsy.reader_service');
 
+        xdebug_break();
+
         $readerList = array();
+        $tempFeedList = array();
         foreach ($feedList as $item) {
-            $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
-            $reader = $readerService->getLatestReaderForUserByID($item->getItemId(), $relatedUser->getItemId());
-            if ( empty($reader) ) {
-               $readerList[$item->getItemId()] = 'new';
-            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-               $readerList[$item->getItemId()] = 'changed';
+            if ($item != NULL) {
+                $tempFeedList[] = $item;
+                $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
+                $reader = $readerService->getLatestReaderForUserByID($item->getItemId(), $relatedUser->getItemId());
+                if ( empty($reader) ) {
+                   $readerList[$item->getItemId()] = 'new';
+                } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
+                   $readerList[$item->getItemId()] = 'changed';
+                }
             }
         }
 
         return array(
-            'feedList' => $feedList,
+            'feedList' => $tempFeedList,
             'readerList' => $readerList
         );
     }    

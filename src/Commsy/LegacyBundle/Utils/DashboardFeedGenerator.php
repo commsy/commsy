@@ -4,24 +4,26 @@ namespace Commsy\LegacyBundle\Utils;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use Commsy\LegacyBundle\Utils\RoomService;
+use Commsy\LegacyBundle\Utils\UserService;
 
 class DashboardFeedGenerator
 {
     private $legacyEnvironment;
     private $roomService;
+    private $userService;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService)
+    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, UserService $userService)
     {
         $this->legacyEnvironment = $legacyEnvironment;
         $this->roomService = $roomService;
+        $this->userService = $userService;
     }
 
-    public function getFeedList($itemId, $max, $start)
+    public function getFeedList($userId, $max, $start)
     {
         $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
 
-        $userManager = $legacyEnvironment->getUserManager();
-        $user = $userManager->getItem($itemId);
+        $user = $this->userService->getPortalUserFromSessionId();
         $authSourceManager = $legacyEnvironment->getAuthSourceManager();
         $authSource = $authSourceManager->getItem($user->getAuthSource());
         $legacyEnvironment->setCurrentPortalID($authSource->getContextId());
@@ -91,9 +93,9 @@ class DashboardFeedGenerator
             $item = $itemList->getNext();
         }
         
-        usort($feedList, function ($firstItem, $secondItem) {
+        /* usort($feedList, function ($firstItem, $secondItem) {
             return ($firstItem->getModificationDate() < $secondItem->getModificationDate());
-        });
+        }); */
         
         return $feedList;
     }
