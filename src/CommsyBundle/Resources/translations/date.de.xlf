@@ -18,6 +18,10 @@
                 <source>date changed</source>
                 <target>Termin geändert</target>
             </trans-unit>
+            <trans-unit id="calendar">
+                <source>calendar</source>
+                <target>Kalender</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

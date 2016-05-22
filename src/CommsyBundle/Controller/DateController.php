@@ -242,6 +242,26 @@ class DateController extends Controller
     }
     
     /**
+     * @Route("/room/{roomId}/date/calendardashboard")
+     * @Template()
+     */
+    public function calendardashboardAction($roomId, Request $request)
+    {
+        // setup filter form
+        $defaultFilterValues = array(
+            'activated' => true
+        );
+
+        // get the material manager service
+        $dateService = $this->get('commsy_legacy.date_service');
+
+        return array(
+            'roomId' => $roomId,
+            'module' => 'date'
+        );
+    }
+    
+    /**
      * @Route("/room/{roomId}/date/{itemId}", requirements={
      *     "itemId": "\d+"
      * }))

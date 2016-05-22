@@ -36,11 +36,14 @@
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle">
                         <i class="uk-sortable-handle uk-icon uk-icon-bars uk-margin-small-right"></i>
-                        <div class="uk-text-large">{{ '...'|trans({}, "room") }}</div>
+                        <div class="uk-text-large">{{ 'calendar'|trans({}, "date") }}</div>
                      </div>
                 </div>
                 <div>
-                    ...
+                    {{ render(controller(
+                        'CommsyBundle:Date:calendardashboard',
+                        { 'roomId': roomItem.itemId }
+                    ))}}
                 </div>
             </div>
         </li>
