@@ -373,7 +373,7 @@ class DateController extends Controller
      */
     public function eventsdashboardAction($roomId, Request $request)
     {
-        $roomService = $this->get('commsy_legacy.room_service');
+        $roomService = $this->get('commsy.room_service');
         $dateService = $this->get('commsy_legacy.date_service');
         $userService = $this->get("commsy.user_service");
         $user = $userService->getPortalUserFromSessionId();
@@ -410,7 +410,7 @@ class DateController extends Controller
                 implode(',', $participantsNameArray);
             }
             
-            $context = $roomService->getItem($date->getContextId());
+            $context = $roomService->getRoomItem($date->getContextId());
 
             $events[] = array('itemId' => $date->getItemId(),
                               'title' => $date->getTitle(),

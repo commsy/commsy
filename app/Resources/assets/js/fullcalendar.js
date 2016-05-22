@@ -80,10 +80,15 @@
     }
 
     function renderEvent(calEvent) {
+        let titleDisplay = '';
+        if (calEvent.contextTitle != '') {
+            titleDisplay = ' ('+calEvent.contextTitle+')';
+        }
+        
         return '<div>'
                 +'<table>'
                 +'<tr>'
-                +'<td colspan="2"><b>'+calEvent.title+'</b></td>'
+                +'<td colspan="2"><b>'+calEvent.title+'</b>'+titleDisplay+'</td>'
                 +'</tr>'
                 +'<tr>'
                 +'<td>Datum:</td>'
