@@ -2,12 +2,13 @@
 
 
 {% block content %}
-    <div class="uk-grid">
+    <ul class="uk-sortable uk-grid uk-grid-small uk-grid-width-1-2" data-uk-sortable="{handleClass:'uk-sortable-handle'}">
 
-        <div class="uk-width-medium-2-3">
+        <li class="uk-grid-margin">
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                    <div class="uk-flex uk-flex-middle">
+                        <i class="uk-sortable-handle uk-icon uk-icon-bars uk-margin-small-right"></i>
                         <div class="uk-text-large">{{ 'latest entries'|trans({}, "room") }}</div>
                      </div>
                 </div>
@@ -25,7 +26,49 @@
                 </div>
                 
             </div>
-        </div>
+        </li>
         
-    </div>
+        <li class="uk-grid-margin">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle">
+                        <i class="uk-sortable-handle uk-icon uk-icon-bars uk-margin-small-right"></i>
+                        <div class="uk-text-large">{{ '...'|trans({}, "room") }}</div>
+                     </div>
+                </div>
+                <div>
+                    ...
+                </div>
+            </div>
+        </li>
+        
+        <li class="uk-grid-margin">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle">
+                        <i class="uk-sortable-handle uk-icon uk-icon-bars uk-margin-small-right"></i>
+                        <div class="uk-text-large">{{ '...'|trans({}, "room") }}</div>
+                     </div>
+                </div>
+                <div>
+                    ...
+                </div>
+            </div>
+        </li>
+        
+        <li class="uk-grid-margin">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle">
+                        <i class="uk-sortable-handle uk-icon uk-icon-bars uk-margin-small-right"></i>
+                        <div class="uk-text-large">{{ '...'|trans({}, "room") }}</div>
+                     </div>
+                </div>
+                <div>
+                    ...
+                </div>
+            </div>
+        </li>
+        
+    </ul>
 {% endblock %}
