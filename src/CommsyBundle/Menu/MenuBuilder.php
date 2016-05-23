@@ -252,7 +252,7 @@ class MenuBuilder
                 }
             }
         }
-        dump($menu);
+        
         return $menu;
     }
 
