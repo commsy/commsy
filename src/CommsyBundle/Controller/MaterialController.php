@@ -871,7 +871,10 @@ class MaterialController extends Controller
         $this->get('knp_snappy.pdf')->setOption('header-center', "Commsy");
         $this->get('knp_snappy.pdf')->setOption('images',true);
 
-
+        // set cookie for authentication - needed to request images
+        $this->get('knp_snappy.pdf')->setOption('cookie', [
+            'SID' => $legacyEnvironment->getSessionID(),
+        ]);
 
         //return new Response($html);
         return new Response(
