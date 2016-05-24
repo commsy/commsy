@@ -87,11 +87,19 @@
 				}
 			}
 			// get selected seltags
+			
+			$tag_2_tag_manager = $this->_environment->getTag2TagManager();
+			
 			$seltag_array = array();
 			foreach($this->_params['seltag'] as $key => $value) {
 				if(substr($key, 0, 7) == 'seltag_'){
 					// set seltag array
 					$this->_params[$key] = $value;
+					$keyArray = explode('_', $key);
+					$tempTagList = $tag_2_tag_manager->getRecursiveChildrenItemIDArray($keyArray[1]);
+					foreach ($tempTagList as $tempTagId) {
+    				    $this->_params['seltag_'.$tempTagId] = "true";
+					}
 				} elseif(substr($key, 0, 6) == 'seltag'){
 					$this->_params[$key.'_'.$value] = "true";
 				}
@@ -165,6 +173,13 @@ if ( isset($_GET['interval']) ) {
 
 			}
 
+            $emptyTagsParam = true;
+            foreach ($this->_params as $key => $value) {
+                if (stristr($key, 'seltag_')) {
+                    $emptyTagsParam = false;
+                }
+            }
+
 			$rubric_array = array();
 
 			foreach($rubrics as $rubric) {
@@ -172,7 +187,7 @@ if ( isset($_GET['interval']) ) {
 
 				if($view !== 'none') {
 					if(!($this->_environment->inPrivateRoom() && $name === 'user') && (empty($selfiles) || in_array($name, $file_rubric_array))) {
-						if((empty($this->_params['selbuzzword']) && empty($this->_params['selfiles']) && empty($this->_params['seltag'])) || (!in_array($name, array(CS_USER_TYPE, CS_GROUP_TYPE, CS_TOPIC_TYPE, CS_INSTITUTION_TYPE, CS_PROJECT_TYPE)))) {
+						if((empty($this->_params['selbuzzword']) && empty($this->_params['selfiles']) && $emptyTagsParam) || (!in_array($name, array(CS_USER_TYPE, CS_GROUP_TYPE, CS_TOPIC_TYPE, CS_INSTITUTION_TYPE, CS_PROJECT_TYPE)))) {
 							$rubric_array[] = $name;
 						}
 					}
