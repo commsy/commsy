@@ -344,6 +344,27 @@ if ( $environment->inPrivateRoom()
 					$campus_search_ids = array();
 					$result_list = new cs_list();
 
+                    $tempSeltags = array();
+                    foreach ($this->_params as $key => $value) {
+                        if (stristr($key, 'seltag_')) {
+                            $tempSeltagArray = explode('_', $key);
+                            $tempSeltags[] = $tempSeltagArray[1];
+                        }
+                    }
+                    
+					if(!empty($tempSeltags)) {
+						if (in_array('user', $rubric_array)) {
+    						unset($rubric_array['user']);
+						}
+						$temp_rubric_array = array();
+						foreach ($rubric_array as $temp_rubric) {
+    						if ($temp_rubric != 'user') {
+        						$temp_rubric_array[] = $temp_rubric;
+    						}
+						}
+						$rubric_array = $temp_rubric_array;
+					}
+
 					global $c_plugin_array;
 					foreach($rubric_array as $rubric) {
 						if(!isset($c_plugin_array) || !in_array(strtolower($rubric), $c_plugin_array)) {
@@ -423,13 +444,6 @@ if ( $environment->inPrivateRoom()
 // 								$rubric_manager->setTagLimit($this->_params['seltag']);
 // 							}
 
-                            $tempSeltags = array();
-                            foreach ($this->_params as $key => $value) {
-                                if (stristr($key, 'seltag_')) {
-                                    $tempSeltagArray = explode('_', $key);
-                                    $tempSeltags[] = $tempSeltagArray[1];
-                                }
-                            }
 							if(!empty($tempSeltags)) {
 								$rubric_manager->setTagArrayLimit($tempSeltags);
 							}
