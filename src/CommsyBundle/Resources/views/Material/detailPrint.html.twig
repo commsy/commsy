@@ -20,14 +20,14 @@
     <body>
 
         {% block content %}
-                <div class="uk-grid">
+        <div >
 
-        <div class="uk-width-medium-4-5">
+        <div>
 
             {# material content panel #}
-            <div class="uk-panel uk-panel-box-primary">
+            <div class="uk-panel-box-primary">
                 {# content #}
-                <article class="uk-article uk-position-relative" data-uk-observe>
+                <article>
                     {# title, etc. #}
                     <div>
                         {{ macros.title(material, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, ratingArray) }}
@@ -95,7 +95,7 @@
             {% if item.itemType != 'discussion' %}
                 <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
                     <div class="uk-grid">
-                        <div class="uk-width-3-5 uk-text-large">
+                        <div class="uk-text-large">
                             {{ 'annotations'|trans({})|capitalize }}
                         </div>
                     </div>
