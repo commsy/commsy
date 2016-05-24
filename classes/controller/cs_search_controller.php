@@ -423,8 +423,15 @@ if ( $environment->inPrivateRoom()
 // 								$rubric_manager->setTagLimit($this->_params['seltag']);
 // 							}
 
-							if(!empty($this->_params['seltag'])) {
-								$rubric_manager->setTagArrayLimit($this->_params['seltag']);
+                            $tempSeltags = array();
+                            foreach ($this->_params as $key => $value) {
+                                if (stristr($key, 'seltag_')) {
+                                    $tempSeltagArray = explode('_', $key);
+                                    $tempSeltags[] = $tempSeltagArray[1];
+                                }
+                            }
+							if(!empty($tempSeltags)) {
+								$rubric_manager->setTagArrayLimit($tempSeltags);
 							}
 
 							/*
