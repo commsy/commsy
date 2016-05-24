@@ -5,136 +5,136 @@ services:
     # Legacy kernel
     commsy_legacy.legacy_kernel:
         class: Commsy\LegacyBundle\Kernel\LegacyKernel
-        arguments: [%legacy.site_index%, @service_container]
+        arguments: ['%legacy.site_index%', '@service_container']
 
     # Legacy authentication
     commsy_legacy.legacy_authentication:
         class: Commsy\LegacyBundle\Authentication\LegacyAuthentication
-        arguments: [@commsy_legacy.environment]
+        arguments: ['@commsy_legacy.environment']
 
     # Event listeners
     commsy_legacy.listener.legacy_kernel_listener:
         class: Commsy\LegacyBundle\EventListener\LegacyKernelListener
-        arguments: [@commsy_legacy.legacy_kernel, "@commsy_legacy.environment"]
+        arguments: ['@commsy_legacy.legacy_kernel', '@commsy_legacy.environment']
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 100 }
 
     commsy_legacy.listener.legacy_authentication_listener:
         class: Commsy\LegacyBundle\EventListener\LegacyAuthenticationListener
-        arguments: [@commsy_legacy.legacy_authentication, @commsy_legacy.environment]
+        arguments: ['@commsy_legacy.legacy_authentication', '@commsy_legacy.environment']
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 100 }
 
     # Legacy Environment
     commsy_legacy.environment:
         class: Commsy\LegacyBundle\Services\LegacyEnvironment
-        arguments: [%legacy.site_index%, "@service_container"]
+        arguments: ['%legacy.site_index%', '@service_container']
 
     commsy.room_feed_generator:
         class: Commsy\LegacyBundle\Utils\RoomFeedGenerator
-        arguments: ["@commsy_legacy.environment", @commsy.room_service]
+        arguments: ['@commsy_legacy.environment', '@commsy.room_service']
 
     commsy.category_service:
         class: Commsy\LegacyBundle\Utils\CategoryService
-        arguments: ["@commsy_legacy.environment"]
+        arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.material_service:
         class: Commsy\LegacyBundle\Utils\MaterialService
-        arguments: ["@commsy_legacy.environment"]
+        arguments: ['@commsy_legacy.environment']
 
     commsy.room_service:
         class: Commsy\LegacyBundle\Utils\RoomService
-        arguments: ["@commsy_legacy.environment"]
+        arguments: ['@commsy_legacy.environment']
 
     commsy.file_service:
         class: Commsy\LegacyBundle\Utils\FileService
-        arguments: ["@commsy_legacy.environment"]
+        arguments: ['@commsy_legacy.environment']
 
     commsy.user_service:
         class: Commsy\LegacyBundle\Utils\UserService
-        arguments: ["@commsy_legacy.environment"]
+        arguments: ['@commsy_legacy.environment']
 
     commsy.item_service:
         class: Commsy\LegacyBundle\Utils\ItemService
-        arguments: ["@commsy_legacy.environment"]
+        arguments: ['@commsy_legacy.environment']
 
     commsy.label_service:
         class: Commsy\LegacyBundle\Utils\LabelService
-        arguments: ["@commsy_legacy.environment"]
+        arguments: ['@commsy_legacy.environment']
 
     commsy.group_service:
         class: Commsy\LegacyBundle\Utils\GroupService
-        arguments: ["@commsy_legacy.environment"]
+        arguments: ['@commsy_legacy.environment']
 
     commsy.topic_service:
         class: Commsy\LegacyBundle\Utils\TopicService
-        arguments: ["@commsy_legacy.environment"]
+        arguments: ['@commsy_legacy.environment']
 
     commsy.dashboard_feed_generator:
         class: Commsy\LegacyBundle\Utils\DashboardFeedGenerator
-        arguments: ["@commsy_legacy.environment", @commsy.room_service]
+        arguments: ['@commsy_legacy.environment', '@commsy.room_service', '@commsy.user_service']
 
     commsy.noticed_service:
         class: Commsy\LegacyBundle\Utils\NoticedService
-        arguments: ["@commsy_legacy.environment"]
+        arguments: ['@commsy_legacy.environment']
 
     commsy.reader_service:
         class: Commsy\LegacyBundle\Utils\ReaderService
-        arguments: ["@commsy_legacy.environment"]
+        arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.date_service:
         class: Commsy\LegacyBundle\Utils\DateService
-        arguments: ["@commsy_legacy.environment"]
+        arguments: ['@commsy_legacy.environment']
     
     commsy_legacy.annotation_service:
         class: Commsy\LegacyBundle\Utils\AnnotationService
-        arguments: ["@commsy_legacy.environment"]
+        arguments: ['@commsy_legacy.environment']
         
     commsy_legacy.announcement_service:
         class: Commsy\LegacyBundle\Utils\AnnouncementService
-        arguments: ["@commsy_legacy.environment"]
+        arguments: ['@commsy_legacy.environment']
         
     commsy_legacy.discussion_service:
         class: Commsy\LegacyBundle\Utils\DiscussionService
-        arguments: ["@commsy_legacy.environment"]
+        arguments: ['@commsy_legacy.environment']
         
     commsy_legacy.disc_service:
         class: Commsy\LegacyBundle\Utils\DiscService
-        arguments: ["@commsy_legacy.environment"]
+        arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.assessment_service:
         class: Commsy\LegacyBundle\Utils\AssessmentService
-        arguments: ["@commsy_legacy.environment"]
+        arguments: ['@commsy_legacy.environment']
         
     commsy_legacy.download_service:
         class: Commsy\LegacyBundle\Utils\DownloadService
-        arguments: ["@commsy_legacy.environment", "@service_container"]
+        arguments: ['@commsy_legacy.environment', '@service_container']
 
     # Transformer
     commsy_legacy.transformer.room:
         class: Commsy\LegacyBundle\Form\DataTransformer\RoomTransformer
-        arguments: [@commsy_legacy.environment]
+        arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.transformer.material:
         class: Commsy\LegacyBundle\Form\DataTransformer\MaterialTransformer
-        arguments: [@commsy_legacy.environment]
+        arguments: ['@commsy_legacy.environment']
         
     commsy_legacy.transformer.user:
         class: Commsy\LegacyBundle\Form\DataTransformer\UserTransformer
-        arguments: [@commsy_legacy.environment]
+        arguments: ['@commsy_legacy.environment']
         
     commsy_legacy.transformer.privateroom:
         class: Commsy\LegacyBundle\Form\DataTransformer\PrivateRoomTransformer
-        arguments: [@commsy_legacy.environment]
+        arguments: ['@commsy_legacy.environment']
         
     commsy_legacy.transformer.item:
         class: Commsy\LegacyBundle\Form\DataTransformer\ItemTransformer
-        arguments: [@commsy_legacy.environment]
+        arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.transformer.annotation:
         class: Commsy\LegacyBundle\Form\DataTransformer\AnnotationTransformer
-        arguments: [@commsy_legacy.environment]
+        arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.transformer.announcement:
         class: Commsy\LegacyBundle\Form\DataTransformer\AnnouncementTransformer
-        arguments: [@commsy_legacy.environment]
+        arguments: ['@commsy_legacy.environment']

@@ -13,6 +13,7 @@ use Symfony\Component\Translation\Loader\ArrayLoader;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Filter\GroupFilterType;
+use CommsyBundle\Form\Type\AnnotationType;
 
 use \ZipArchive;
 
@@ -43,7 +44,7 @@ class GroupController extends Controller
         $defaultFilterValues = array(
             'activated' => false,
         );
-        $filterForm = $this->createForm(new GroupFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(GroupFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_group_list', array(
                 'roomId' => $roomId,
             )),
@@ -68,7 +69,7 @@ class GroupController extends Controller
         $defaultFilterValues = array(
             'activated' => false,
         );
-        $filterForm = $this->createForm(new GroupFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(GroupFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_group_list', array(
                 'roomId' => $roomId,
             )),
@@ -119,7 +120,7 @@ class GroupController extends Controller
         $defaultFilterValues = array(
             'activated' => false,
         );
-        $filterForm = $this->createForm(new GroupFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(GroupFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_group_list', array(
                 'roomId' => $roomId,
             )),
@@ -242,7 +243,7 @@ class GroupController extends Controller
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         // annotation form
-        $form = $this->createForm('annotation');
+        $form = $this->createForm(AnnotationType::class);
         
         return array(
             'roomId' => $roomId,

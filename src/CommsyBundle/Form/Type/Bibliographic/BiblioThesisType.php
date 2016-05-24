@@ -3,25 +3,33 @@ namespace CommsyBundle\Form\Type\Bibliographic;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class BiblioThesisType extends AbstractType
 {
-
+    /**
+     * Builds the form.
+     * This method is called for each type in the hierarchy starting from the top most type.
+     * Type extensions can further modify the form.
+     * 
+     * @param  FormBuilderInterface $builder The form builder
+     * @param  array                $options The options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         $translationDomain = 'form';
 
         $builder
-            ->add('editor', 'text', array(
+            ->add('editor', TextType, array(
                 'label' => 'editor',
                 'translation_domain' => $translationDomain,
-                ))
-            ->add('publishing_date', 'text', array(
+            ))
+            ->add('publishing_date', TextType, array(
                 'label' => 'publishing date',
                 'translation_domain' => $translationDomain,
-                ))
-            ->add('thesis_select', 'choice', array(
+            ))
+            ->add('thesis_select', ChoiceType::class, array(
                 'label' => 'thesis kind',
                 'translation_domain' => $translationDomain,
                 'choices'  => array(
@@ -34,37 +42,44 @@ class BiblioThesisType extends AbstractType
                     'postdoc' => 'postdoc',
                 ),
                 'choice_translation_domain' => true,
-                ))
-            ->add('address', 'text', array(
+            ))
+            ->add('address', TextType, array(
                 'label' => 'address',
                 'translation_domain' => $translationDomain,
-                ))
-            ->add('university', 'text', array(
+            ))
+            ->add('university', TextType, array(
                 'label' => 'university',
                 'translation_domain' => $translationDomain,
-                ))
-            ->add('faculty', 'text', array(
+            ))
+            ->add('faculty', TextType, array(
                 'label' => 'faculty',
                 'translation_domain' => $translationDomain,
                 'required' => false,
-                ))
-            ->add('url', 'text', array(
+            ))
+            ->add('url', TextType, array(
                 'label' => 'url',
                 'translation_domain' => $translationDomain,
                 'required' => false,
-                ))
-            ->add('url_date', 'text', array(
+            ))
+            ->add('url_date', TextType, array(
                 'label' => 'url date',
                 'translation_domain' => $translationDomain,
                 'required' => false,
                 'attr' => array(
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}'
                 )
-                ))
+            ))
         ;
     }
 
-    public function getName()
+    /**
+     * Returns the prefix of the template block name for this type.
+     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
+     * (e.g. "UserProfileType" => "user_profile").
+     * 
+     * @return string The prefix of the template block name
+     */
+    public function getBlockPrefix()
     {
         return 'biblio_thesis';
     }

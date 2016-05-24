@@ -3,27 +3,27 @@ namespace CommsyBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Doctrine\ORM\EntityManager;
-
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
-use CommsyBundle\Entity\Materials;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 
 class ItemWorkflowType extends AbstractType
 {
-    private $em;
-    private $legacyEnvironment;
-
-    private $roomItem;
-
+    /**
+     * Builds the form.
+     * This method is called for each type in the hierarchy starting from the top most type.
+     * Type extensions can further modify the form.
+     * 
+     * @param  FormBuilderInterface $builder The form builder
+     * @param  array                $options The options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('workflowTrafficLight', 'choice', array(
+            ->add('workflowTrafficLight', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => array(
                     '3_none' => 'none',
@@ -37,7 +37,7 @@ class ItemWorkflowType extends AbstractType
                 'expanded' => true,
                 'multiple' => false
             ))
-            ->add('workflowResubmission', 'checkbox', array(
+            ->add('workflowResubmission', CheckboxType::class, array(
                 'label'    => 'workflowResubmission',
                 'translation_domain' => 'item',
                 'required' => false,
@@ -45,7 +45,7 @@ class ItemWorkflowType extends AbstractType
                     'data-uk-toggle' => '{target:\'#workflowResubmission\'}'
                 )
             ))
-            ->add('workflowResubmissionDate', 'datetime', array(
+            ->add('workflowResubmissionDate', DateTimeType::class, array(
                 'label' => 'workflowResubmissionDate',
                 'translation_domain' => 'item',
                 'input'  => 'datetime',
@@ -56,7 +56,7 @@ class ItemWorkflowType extends AbstractType
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}'
                 )
             ))
-            ->add('workflowResubmissionWho', 'choice', array(
+            ->add('workflowResubmissionWho', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => array(
                     'creator' => 'creator',
@@ -68,12 +68,12 @@ class ItemWorkflowType extends AbstractType
                 'expanded' => true,
                 'multiple' => false
             ))
-            ->add('workflowResubmissionWhoAdditional', 'text', array(
+            ->add('workflowResubmissionWhoAdditional', TextType::class, array(
                 'label' => 'workflowWhoAdditional',
                 'translation_domain' => 'item',
                 'required' => false,
             ))
-            ->add('workflowResubmissionTrafficLight', 'choice', array(
+            ->add('workflowResubmissionTrafficLight', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => array(
                     '3_none' => 'none',
@@ -87,7 +87,7 @@ class ItemWorkflowType extends AbstractType
                 'expanded' => true,
                 'multiple' => false
             ))
-            ->add('workflowValidity', 'checkbox', array(
+            ->add('workflowValidity', CheckboxType::class, array(
                 'label'    => 'workflowValidity',
                 'translation_domain' => 'item',
                 'required' => false,
@@ -95,7 +95,7 @@ class ItemWorkflowType extends AbstractType
                     'data-uk-toggle' => '{target:\'#workflowValidity\'}'
                 )
             ))
-            ->add('workflowValidityDate', 'datetime', array(
+            ->add('workflowValidityDate', DateTimeType::class, array(
                 'label' => 'workflowValidityDate',
                 'translation_domain' => 'item',
                 'input'  => 'datetime',
@@ -106,7 +106,7 @@ class ItemWorkflowType extends AbstractType
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}'
                 )
             ))
-            ->add('workflowValidityWho', 'choice', array(
+            ->add('workflowValidityWho', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => array(
                     'creator' => 'creator',
@@ -118,12 +118,12 @@ class ItemWorkflowType extends AbstractType
                 'expanded' => true,
                 'multiple' => false
             ))
-            ->add('workflowValidityWhoAdditional', 'text', array(
+            ->add('workflowValidityWhoAdditional', TextType::class, array(
                 'label' => 'workflowWhoAdditional',
                 'translation_domain' => 'item',
                 'required' => false,
             ))
-            ->add('workflowValidityTrafficLight', 'choice', array(
+            ->add('workflowValidityTrafficLight', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => array(
                     '3_none' => 'none',
@@ -137,14 +137,14 @@ class ItemWorkflowType extends AbstractType
                 'expanded' => true,
                 'multiple' => false
             ))
-            ->add('save', 'submit', array(
+            ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 ),
                 'label' => 'save',
                 'translation_domain' => 'form',
             ))
-            ->add('cancel', 'submit', array(
+            ->add('cancel', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
                     'formnovalidate' => '',
@@ -155,14 +155,26 @@ class ItemWorkflowType extends AbstractType
         ;
     }
 
+    /**
+     * Configures the options for this type.
+     * 
+     * @param  OptionsResolver $resolver The resolver for the options
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(array())
+            ->setRequired([])
         ;
     }
 
-    public function getName()
+    /**
+     * Returns the prefix of the template block name for this type.
+     * The block prefix defaults to the underscored short class name with the "Type" suffix removed
+     * (e.g. "UserProfileType" => "user_profile").
+     * 
+     * @return string The prefix of the template block name
+     */
+    public function getBlockPrefix()
     {
         return 'itemWorkflow';
     }

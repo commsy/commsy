@@ -8,6 +8,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
+use CommsyBundle\Form\Type\AnnotationType;
+
 class AnnotationController extends Controller
 {
     /**
@@ -93,7 +95,7 @@ class AnnotationController extends Controller
         $formData = array();
         $formData = $transformer->transform($item);
 
-        $form = $this->createForm('annotation', $formData);
+        $form = $this->createForm(AnnotationType::class, $formData);
         $form->handleRequest($request);
         if ($form->isValid()) {
             if ($form->get('save')->isClicked()) {
@@ -145,7 +147,7 @@ class AnnotationController extends Controller
 
         $itemType = $item->getItemType();
 
-        $form = $this->createForm('annotation');
+        $form = $this->createForm(AnnotationType::class);
         $form->handleRequest($request);
         if ($form->isValid()) {
             if ($form->get('save')->isClicked()) {
@@ -174,7 +176,7 @@ class AnnotationController extends Controller
     //     $linkedItem = $item->getLinkedItem();
     //     $itemType = $linkedItem->getItemType();
 
-    //     $form = $this->createForm('annotation');
+    //     $form = $this->createForm(AnnotationType::class);
     //     $form->handleRequest($request);
     //     if ($form->isValid()) {
     //         if ($form->get('save')->isClicked()) {

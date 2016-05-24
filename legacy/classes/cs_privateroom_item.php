@@ -2081,5 +2081,17 @@ class cs_privateroom_item extends cs_room_item {
       return $retour;
    }
 
+
+   function setDashboardLayout ($data) {
+      $this->_addExtra('DASHBOARD_LAYOUT',$data);
+   }
+
+   function getDashboardLayout () {
+      $retour = false;
+      if ($this->_issetExtra('DASHBOARD_LAYOUT')) {
+         return $this->_getExtra('DASHBOARD_LAYOUT');
+      }
+      return $retour;
+   }
 }
 ?>

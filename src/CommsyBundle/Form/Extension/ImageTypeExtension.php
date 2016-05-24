@@ -2,6 +2,7 @@
 namespace CommsyBundle\Form\Extension;
 
 use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -16,7 +17,7 @@ class ImageTypeExtension extends AbstractTypeExtension
      */
     public function getExtendedType()
     {
-        return 'file';
+        return FileType::class;
     }
 
     /**

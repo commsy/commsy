@@ -54,15 +54,19 @@
                 <source>no linked items</source>
                 <target>Keine Zuordnungen vorhanden</target>
             </trans-unit>
-              <trans-unit id="15">
+            <trans-unit id="15">
                 <source>latest entries</source>
                 <target>Die neuesten Einträge in diesem Raum</target>
             </trans-unit>
             <trans-unit id="16">
+                <source>latest entries from all rooms</source>
+                <target>Die neuesten Einträge aus allen Räumen</target>
+            </trans-unit>
+            <trans-unit id="17">
                 <source>no hashtags</source>
                 <target>Keine Schlagworte vorhanden</target>
             </trans-unit>
-            <trans-unit id="17">
+            <trans-unit id="18">
                 <source>project</source>
                 <target>Projektraum</target>
             </trans-unit>

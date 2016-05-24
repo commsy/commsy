@@ -25,7 +25,7 @@ class CategoryController extends Controller
         $defaultData = array(
             'roomId' => $roomId,
         );
-        $form = $this->createForm(new TagType(), $defaultData, array(
+        $form = $this->createForm(TagType::class, $defaultData, array(
             'action' => $this->generateUrl('commsy_category_new', array('roomId' => $roomId)),
         ));
 
@@ -48,7 +48,7 @@ class CategoryController extends Controller
         $defaultData = array(
             'roomId' => $roomId,
         );
-        $form = $this->createForm(new TagType(), $defaultData, array(
+        $form = $this->createForm(TagType::class, $defaultData, array(
             'action' => $this->generateUrl('commsy_category_new', array('roomId' => $roomId)),
         ));
 
@@ -66,7 +66,7 @@ class CategoryController extends Controller
      */
     public function newAction($roomId, Request $request)
     {
-        $form = $this->createForm(new TagType());
+        $form = $this->createForm(TagType::class);
 
         $form->handleRequest($request);
 

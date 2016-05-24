@@ -59,10 +59,14 @@
                 <target>Latest entries in this room</target>
             </trans-unit>
             <trans-unit id="16">
+                <source>latest entries from all rooms</source>
+                <target>Latest entries from all rooms</target>
+            </trans-unit>
+            <trans-unit id="17">
                 <source>no hashtags</source>
                 <target>No hashtags available</target>
             </trans-unit>
-            <trans-unit id="17">
+            <trans-unit id="18">
                 <source>project</source>
                 <target>Project room</target>
             </trans-unit>

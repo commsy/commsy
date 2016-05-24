@@ -13,6 +13,9 @@ use Symfony\Component\Translation\Loader\ArrayLoader;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Filter\MaterialFilterType;
+use CommsyBundle\Form\Type\AnnotationType;
+use CommsyBundle\Form\Type\MaterialType;
+use CommsyBundle\Form\Type\SectionType;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -42,7 +45,7 @@ class MaterialController extends Controller
         $defaultFilterValues = array(
             'activated' => true,
         );
-        $filterForm = $this->createForm(new MaterialFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(MaterialFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_material_list', array(
                 'roomId' => $roomId,
             )),
@@ -115,7 +118,7 @@ class MaterialController extends Controller
         $defaultFilterValues = array(
             'activated' => true,
         );
-        $filterForm = $this->createForm(new MaterialFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(MaterialFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_material_list', array(
                 'roomId' => $roomId,
             )),
@@ -140,7 +143,7 @@ class MaterialController extends Controller
         $defaultFilterValues = array(
             'activated' => true,
         );
-        $filterForm = $this->createForm(new MaterialFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(MaterialFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_material_list', array(
                 'roomId' => $roomId,
             )),
@@ -211,7 +214,7 @@ class MaterialController extends Controller
         }
 
         // annotation form
-        $form = $this->createForm('annotation');
+        $form = $this->createForm(AnnotationType::class);
         
         return array(
             'roomId' => $roomId,
@@ -720,7 +723,7 @@ class MaterialController extends Controller
                 throw $this->createNotFoundException('No material found for id ' . $roomId);
             }
             $formData = $transformer->transform($materialItem);
-            $form = $this->createForm('material', $formData, array(
+            $form = $this->createForm(MaterialType::class, $formData, array(
                 'action' => $this->generateUrl('commsy_material_edit', array(
                     'roomId' => $roomId,
                     'itemId' => $itemId,
@@ -733,7 +736,7 @@ class MaterialController extends Controller
                 throw $this->createNotFoundException('No section found for id ' . $roomId);
             }
             $formData = $transformer->transform($materialItem);
-            $form = $this->createForm('section', $formData, array());
+            $form = $this->createForm(SectionType::class, $formData, array());
         }
         
         $form->handleRequest($request);
@@ -965,23 +968,20 @@ class MaterialController extends Controller
         $section->save();
 
         $formData = $transformer->transform($section);
-        $form = $this->createForm('section', $formData, array(
+        $form = $this->createForm(SectionType::class, $formData, array(
             'action' => $this->generateUrl('commsy_material_savesection', array('roomId' => $roomId, 'itemId' => $section->getItemID()))
         ));
 
-
-
         return array(
-                'form' => $form->createView(),
-                'sectionList' => $sectionList,
-                'material' => $material,
-                'section' => $section,
-                'modifierList' => array(),
-                'userCount' => 0,
-                'readCount' => 0,
-                'readSinceModificationCount' => 0
-            );
-
+            'form' => $form->createView(),
+            'sectionList' => $sectionList,
+            'material' => $material,
+            'section' => $section,
+            'modifierList' => array(),
+            'userCount' => 0,
+            'readCount' => 0,
+            'readSinceModificationCount' => 0
+        );
     }
 
     /**
@@ -1000,7 +1000,7 @@ class MaterialController extends Controller
         // get section
         $section = $materialService->getSection($itemId);
 
-        $form = $this->createForm('section');
+        $form = $this->createForm(SectionType::class);
 
         $form->handleRequest($request);
         if ($form->isValid()) {
