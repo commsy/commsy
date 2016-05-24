@@ -283,7 +283,7 @@
 
     {% set fileArray = item.fileList.to_array %}
 
-    <hr class="uk-width-9-10"/>
+    <hr />
 
     <article class="uk-article uk-margin-left uk-margin-right">
         <a name="description"></a>
@@ -334,7 +334,7 @@
 {% endmacro %}
 
 {% macro itemDescription(title, item, edit, content) %}
-    <hr class="uk-width-9-10"/>
+    <hr/>
 
     <article class="uk-article uk-margin-left uk-margin-right">
         <a name="description"></a>
@@ -372,8 +372,8 @@
 {% macro sections(item, sectionList) %}
     {% import _self as macros %}
 
-    <hr class="uk-width-9-10"/>
-
+     
+<hr/>
     <article class="uk-article uk-margin-left uk-margin-right">
         <a name="description"></a>
         {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
@@ -603,7 +603,7 @@
 {% endmacro %}
 
 {% macro editContent(title, item, edit, content, preview, shortPreview, displayCount, count) %}
-    <hr class="uk-width-9-10"/>
+    <hr />
 
     <article class="uk-article uk-margin-left uk-margin-right">
         <a name="description"></a>
