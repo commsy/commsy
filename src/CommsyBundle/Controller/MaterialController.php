@@ -862,8 +862,10 @@ class MaterialController extends Controller
         $roomItem = $roomManager->getItem($roomId);
 
         $this->get('knp_snappy.pdf')->setOption('footer-line',true);
+        $this->get('knp_snappy.pdf')->setOption('footer-spacing', 5);
         $this->get('knp_snappy.pdf')->setOption('footer-center',"[page] / [toPage]");
         $this->get('knp_snappy.pdf')->setOption('header-line', true);
+        $this->get('knp_snappy.pdf')->setOption('header-spacing', 5);
         $this->get('knp_snappy.pdf')->setOption('header-right', date("d.m.y"));
         $this->get('knp_snappy.pdf')->setOption('header-left', $roomItem->getTitle());
         $this->get('knp_snappy.pdf')->setOption('header-center', "Commsy");
