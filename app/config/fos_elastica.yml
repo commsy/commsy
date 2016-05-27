@@ -97,7 +97,6 @@ fos_elastica:
                         listener: ~
 
                 # discussions:
-                # labels:
                 discussions:
                     indexable_callback: isIndexable
                     mappings:
@@ -118,6 +117,30 @@ fos_elastica:
                             type: date
                             format: date_optional_time
                         title: ~
+
+
+                # labels: (groups, topics, institutions)
+                labels:
+                    indexable_callback: isIndexable
+                    mappings:
+                        contextId: ~
+                        creator:
+                            type: object
+                            properties:
+                                userId: ~
+                                firstName: ~
+                                lastName: ~
+                        modifier:
+                            type: object
+                            properties:
+                                userId: ~
+                                firstName: ~
+                                lastName: ~
+                        creationDate:
+                            type: date
+                            format: date_optional_time
+                        name: ~
+                        type: ~
 
 
                 # materials:
