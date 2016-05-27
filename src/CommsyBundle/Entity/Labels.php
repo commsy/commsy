@@ -125,7 +125,7 @@ class Labels
 
     public function isIndexable()
     {
-        return ($this->deleterId == null && $this->deletionDate == null &&
+        return ($this->deleter == null && $this->deletionDate == null &&
                 $this->name != 'ALL' && $this->description != 'GROUP_ALL_DESC');
     }
 
