@@ -5,6 +5,7 @@ use FOS\ElasticaBundle\Finder\TransformedFinder;
 
 use Elastica\Query as Queries;
 use Elastica\Filter as Filters;
+use Elastica\Aggregation as Aggregations;
 
 class SearchManager
 {
@@ -36,17 +37,25 @@ class SearchManager
 
     public function getResults()
     {
-        $contextFilter = new Filters\Term();
-        $contextFilter->setTerm('contextId', $this->context);
-
         $fieldQuery = new Queries\MatchPhrase();
         $fieldQuery->setFieldQuery('_all', $this->query);
 
-        $filteredQuery = new Queries\Filtered();
-        $filteredQuery->setQuery($fieldQuery);
-        $filteredQuery->setFilter($contextFilter);
+        $contextFilter = new Filters\Term();
+        $contextFilter->setTerm('contextId', $this->context);
 
-        return $this->checkResults($this->commsyFinder->find($filteredQuery));
+        $filterAggregation = new Aggregations\Filter('filterContext');
+        $filterAggregation->setFilter($contextFilter);
+
+        $termsAggregation = new Aggregations\Terms('contexts');
+        $termsAggregation->setField('contextId');
+        $filterAggregation->addAggregation($termsAggregation);
+
+        $query = new \Elastica\Query();
+        $query->setQuery($fieldQuery);
+        $query->addAggregation($filterAggregation);
+        $query->setFilter($contextFilter);
+
+        return $this->commsyFinder->createPaginatorAdapter($query);
     }
 
     public function getInstantResults()
@@ -61,16 +70,6 @@ class SearchManager
         $filteredQuery->setQuery($fieldQuery);
         $filteredQuery->setFilter($contextFilter);
 
-        return $this->checkResults($this->commsyFinder->find($filteredQuery));
-    }
-
-    private function checkResults(array $results) {
-        foreach ($results as $result) {
-            if (!$result instanceof Searchable) {
-                throw new \Exception('Result must implement Searchable');
-            }
-        }
-
-        return $results;
+        return $this->commsyFinder->find($filteredQuery);
     }
 }

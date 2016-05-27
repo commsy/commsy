@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Form\Type\SearchType;
+use CommsyBundle\Model\GlobalSearch;
 
 use Elastica\Query\Filtered;
 use Elastica\Query\MatchPhrasePrefix;
@@ -46,7 +47,9 @@ class SearchController extends Controller
      */
     public function resultsAction($roomId, Request $request)
     {
-        $form = $this->createForm(SearchType::class, [], [
+        $globalSearch = new GlobalSearch();
+
+        $form = $this->createForm(SearchType::class, $globalSearch, [
             'action' => $this->generateUrl('commsy_search_results', [
                 'roomId' => $roomId
             ])
@@ -55,15 +58,17 @@ class SearchController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $query = $form->get('query')->getData();
+            $globalSearch = $form->getData();
 
             $searchManager = $this->get('commsy.search.manager');
-            $searchManager->setQuery($query);
+            $searchManager->setQuery($globalSearch->getPhrase());
             $searchManager->setContext($roomId);
 
             $searchResults = $searchManager->getResults();
 
-            dump($searchResults);
+            dump($searchResults->getResults(0, 10)->toArray());
+            dump($searchResults->getAggregations());
+            exit;
         }
 
         return [

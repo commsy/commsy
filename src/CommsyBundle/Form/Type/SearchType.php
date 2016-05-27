@@ -19,7 +19,7 @@ class SearchType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('query', Types\SearchType::class, [
+            ->add('phrase', Types\SearchType::class, [
                 'attr' => [
                     'placeholder' => 'Search...',
                     'class' => 'uk-search-field',
