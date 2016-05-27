@@ -60,7 +60,43 @@ fos_elastica:
                         provider: ~
                         listener: ~
 
-                # dates:
+                # dates
+                dates:
+                    indexable_callback: isIndexable
+                    mappings:
+                        contextId: ~
+                        creator:
+                            type: object
+                            properties:
+                                userId: ~
+                                firstName: ~
+                                lastName: ~
+                        modifier:
+                            type: object
+                            properties:
+                                userId: ~
+                                firstName: ~
+                                lastName: ~
+                        creationDate:
+                            type: date
+                            format: date_optional_time
+                        title: ~
+                        description: ~
+                        datetimeStart:
+                            type: date
+                            format: date_optional_time
+                        datetimeEnd:
+                            type: date
+                            format: date_optional_time
+                    persistence:
+                        driver: orm
+                        model: CommsyBundle\Entity\Dates
+                        identifier: itemId
+                        finder: ~
+                        provider: ~
+                        listener: ~
+
+
                 # discussions:
                 # labels:
                 # materials:
