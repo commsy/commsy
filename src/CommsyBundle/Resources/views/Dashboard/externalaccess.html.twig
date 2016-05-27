@@ -6,18 +6,18 @@
 <!-- This is the container of the content items -->
 <ul id="external-access-contet" class="uk-switcher uk-margin">
     <li>
-        {% if not releasedIds is empty %}
-            {% for releasedId in releasedIds %}
-                {{ releasedId }}<br/>
+        {% if not releaseItems is empty %}
+            {% for releaseItem in releaseItems %}
+                {{ releaseItem.title }}<br/>
             {% endfor %}
         {% else %}
             {{ 'no items'|trans({}, "dashboard") }}
         {% endif %}
     </li>
     <li>
-        {% if not viewableIds is empty %}
-            {% for viewableId in viewableIds %}
-                {{ viewableId }}<br/>
+        {% if not viewableItems is empty %}
+            {% for viewableItem in viewableItems %}
+                {{ viewableItem.title }}<br/>
             {% endfor %}
         {% else %}
             {{ 'no items'|trans({}, "dashboard") }}

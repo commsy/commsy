@@ -130,9 +130,23 @@ class DashboardController extends Controller
         $releasedIds = $itemManager->getExternalViewerEntriesForRoom($roomId);
         $viewableIds = $itemManager->getExternalViewerEntriesForUser($user->getUserID());
         
+        $releasedItems = array();
+        foreach ($releasedIds as $releasedId) {
+            $tempItem = $itemManager->getItem($releasedId);
+            $tempManager = $legacyEnvironment->getManager($tempItem->getItemType());
+            $releasedItems[] = $tempManager->getItem($releasedId);
+        }
+        
+        $viewableItems = array();
+        foreach ($viewableIds as $viewableId) {
+            $tempItem = $itemManager->getItem($viewableId);
+            $tempManager = $legacyEnvironment->getManager($tempItem->getItemType());
+            $viewableItems[] = $tempManager->getItem($viewableId);
+        }
+        
         return array(
-            'releasedIds' => $releasedIds,
-            'viewableIds' => $viewableIds
+            'releaseItems' => $releasedItems,
+            'viewableItems' => $viewableItems
         );
     }
 }
