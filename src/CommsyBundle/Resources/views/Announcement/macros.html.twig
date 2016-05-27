@@ -54,7 +54,8 @@
                                             </div>
                                             <div class="uk-margin-right">
                                                 {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
-                                                {{ 'changed by'|trans({})|capitalize }}: {{item.modificatorItem.Fullname}}
+                                                {{ 'changed by'|trans({})|capitalize }}: {{item.modificatorItem.Fullname}}<br/>
+                                                {{ 'valid until'|trans({}) }}: {{item.secondDateTime|date("d.m.Y H:i")}}
                                             </div>
                                         </div>
                                     </div>
@@ -76,6 +77,7 @@
                                             <div class="uk-margin-right">
                                                 {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
                                                 {{ 'changed by'|trans({})|capitalize }}: {{item.modificatorItem.Fullname}}<br/>
+                                                {{ 'valid until'|trans({}) }}: {{item.secondDateTime|date("d.m.Y H:i")}}<br/>
                                                 {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}
                                             </div>
                                         </div>
