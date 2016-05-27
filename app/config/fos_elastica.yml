@@ -117,6 +117,13 @@ fos_elastica:
                             type: date
                             format: date_optional_time
                         title: ~
+                    persistence:
+                        driver: orm
+                        model: CommsyBundle\Entity\Discussions
+                        identifier: itemId
+                        finder: ~
+                        provider: ~
+                        listener: ~
 
 
                 # labels: (groups, topics, institutions)
@@ -141,10 +148,17 @@ fos_elastica:
                             format: date_optional_time
                         name: ~
                         type: ~
+                    persistence:
+                        driver: orm
+                        model: CommsyBundle\Entity\Labels
+                        identifier: itemId
+                        finder: ~
+                        provider: ~
+                        listener: ~
 
-
-                # materials:
                 # room:
+
+
                 # todos:
                 
                 # User
