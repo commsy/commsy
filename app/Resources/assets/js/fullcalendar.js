@@ -7,6 +7,7 @@
             // put your options and callbacks here
             firstDay: 1,
             lang: 'de',
+            height: $('#calendar').data('height'),
             businesHours: {
                 start: '8:00',
                 end: '16:00',
