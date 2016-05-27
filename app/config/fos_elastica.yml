@@ -157,9 +157,66 @@ fos_elastica:
                         listener: ~
 
                 # room:
+                room:
+                    indexable_callback: isIndexable
+                    mappings:
+                        contextId: ~
+                        creator:
+                            type: object
+                            properties:
+                                userId: ~
+                                firstName: ~
+                                lastName: ~
+                        modifier:
+                            type: object
+                            properties:
+                                userId: ~
+                                firstName: ~
+                                lastName: ~
+                        title: ~
+                        contactPersons: ~
+                        roomDescription: ~
+                        type: ~
+                    persistence:
+                        driver: orm
+                        model: CommsyBundle\Entity\Room
+                        identifier: itemId
+                        finder: ~
+                        provider: ~
+                        listener: ~
 
 
                 # todos:
+                todos:
+                    indexable_callback: isIndexable
+                    mappings:
+                        contextId: ~
+                        creator:
+                            type: object
+                            properties:
+                                userId: ~
+                                firstName: ~
+                                lastName: ~
+                        modifier:
+                            type: object
+                            properties:
+                                userId: ~
+                                firstName: ~
+                                lastName: ~
+                        title: ~
+                        date:
+                            type: date
+                            format: date_optional_time
+                        description: ~
+                    persistence:
+                        driver: orm
+                        model: CommsyBundle\Entity\Todos
+                        identifier: itemId
+                        finder: ~
+                        provider: ~
+                        listener: ~
+
+
                 
                 # User
                 user:
@@ -177,8 +234,8 @@ fos_elastica:
                         provider: ~
                         listener: ~
 
-
-                # material:
+                # materials:
+                # materials:
                 #     indexable_callback: 'isIndexable'
                 #     mappings:
                 #         versionId: ~
@@ -209,10 +266,10 @@ fos_elastica:
                 #                 firstname: ~
                 #                 lastname: ~
                 #                 city: ~
-                    # persistence:
-                    #     driver: orm
-                    #     model: CommsyBundle\Entity\Materials
-                    #     identifier: itemId
-                    #     finder: ~
-                    #     provider: ~
-                    #     listener: ~
+                #     persistence:
+                #         driver: orm
+                #         model: CommsyBundle\Entity\Materials
+                #         identifier: itemId
+                #         finder: ~
+                #         provider: ~
+                #         listener: ~
