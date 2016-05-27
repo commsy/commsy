@@ -121,7 +121,18 @@ class DashboardController extends Controller
      */
     public function externalaccessAction($roomId, Request $request)
     {
+        $userService = $this->get("commsy.user_service");
+        $user = $userService->getPortalUserFromSessionId();
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $itemManager = $legacyEnvironment->getItemManager();
+        $releasedIds = $itemManager->getExternalViewerEntriesForRoom($roomId);
+        $viewableIds = $itemManager->getExternalViewerEntriesForUser($user->getUserID());
+        
         return array(
+            'releasedIds' => $releasedIds,
+            'viewableIds' => $viewableIds
         );
     }
 }

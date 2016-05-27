@@ -1,1 +1,26 @@
-External access ...
+<ul class="uk-tab" data-uk-tab="{connect:'#external-access-contet'}">
+    <li><a href="">{{ 'external access to my entries'|trans({}, "dashboard") }}</a></li>
+    <li><a href="">{{ 'external access to other entries'|trans({}, "dashboard") }}</a></li>
+</ul>
+
+<!-- This is the container of the content items -->
+<ul id="external-access-contet" class="uk-switcher uk-margin">
+    <li>
+        {% if not releasedIds is empty %}
+            {% for releasedId in releasedIds %}
+                {{ releasedId }}<br/>
+            {% endfor %}
+        {% else %}
+            {{ 'no items'|trans({}, "dashboard") }}
+        {% endif %}
+    </li>
+    <li>
+        {% if not viewableIds is empty %}
+            {% for viewableId in viewableIds %}
+                {{ viewableId }}<br/>
+            {% endfor %}
+        {% else %}
+            {{ 'no items'|trans({}, "dashboard") }}
+        {% endif %}
+    </li>
+</ul>
