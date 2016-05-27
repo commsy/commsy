@@ -40,6 +40,7 @@ class RoomTransformer implements DataTransformerInterface
             $roomData['description'] = $roomItem->getDescription();
             
             $roomData['wikiEnabled'] = $roomItem->isWikiEnabled();
+	// TODO: weitere Felder (Rubriken etc.) in roomData schreiben (aus cs_popup_configuration_controller.php lesen, wie man die Daten bekommt!)
         }
 
         return $roomData;
@@ -55,6 +56,7 @@ class RoomTransformer implements DataTransformerInterface
      */
     public function applyTransformation($roomObject, $roomData)
     {
+	// TODO: Daten in roomObject schreiben (an cs_popup_configuration_controller und cs_room_item (bzw. dessen Eltern-Klassen) orientieren!)	
         return $roomObject;
     }
 }

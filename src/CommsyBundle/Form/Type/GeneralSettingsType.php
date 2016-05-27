@@ -23,12 +23,24 @@ class GeneralSettingsType extends AbstractType
     private $em;
     private $legacyEnvironment;
 
+    private $rubrics;
+
     private $roomItem;
 
     public function __construct(EntityManager $em, LegacyEnvironment $legacyEnvironment)
     {
         $this->em = $em;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+	$this->rubrics = array(
+		'Announcements' => 'announcement',
+		'Events' => 'date',
+		'Materials' => 'material',
+		'Discussions' => 'discussion',
+		'Members' => 'user',
+		'Groups' => 'group',
+		'Tasks' => 'todo',
+		'Topics' => 'topic',
+	);
     }
 
     /**
@@ -82,15 +94,20 @@ class GeneralSettingsType extends AbstractType
                 'required' => false,
             ))
             ->add('save', SubmitType::class, array(
-                'position' => 'last'
-            ));
+                'position' => 'last',
+	    ))
+	    ->add('rubrics', ChoiceType::class, array(
+		'choices' => $this->rubrics,
+		'expanded' => true,
+		'multiple' => true,
+	    ));
         ;
 
         // TODO: feed settings, theme configuration, filter room description input (cleanCKEditor)
 
         // some form fields depend on the underlying data, so we delegate
         // the creation to an event listener
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event){
             $form = $event->getForm();
 
             // check if the room is a community room and

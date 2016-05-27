@@ -25,7 +25,7 @@ class SettingsController extends Controller
         // get room from RoomService
         $roomService = $this->get('commsy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
-
+	
         // $room = $this->getDoctrine()
         //     ->getRepository('CommsyBundle:Room')
         //     ->find($roomId);
@@ -47,7 +47,7 @@ class SettingsController extends Controller
         $form->handleRequest($request);
         if ($form->isValid()) {
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
-
+	    
             $roomItem->save();
 
             // persist
