@@ -31,23 +31,26 @@ class Announcement
     /**
      * @var integer
      *
-     * @ORM\Column(name="creator_id", type="integer", nullable=false)
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="creator_id", referencedColumnName="item_id")
      */
-    private $creatorId = '0';
+    private $creator;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="modifier_id", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="modifier_id", referencedColumnName="item_id")
      */
-    private $modifierId;
+    private $modifier;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="deleter_id", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="deleter_id", referencedColumnName="item_id")
      */
-    private $deleterId;
+    private $deleter;
 
     /**
      * @var \DateTime
@@ -120,5 +123,354 @@ class Announcement
     private $lockingUserId;
 
 
-}
+    public function isIndexable()
+    {
+        return ($this->deleter == null && $this->deletionDate == null);
+    }
 
+    /**
+     * Get itemId
+     *
+     * @return integer
+     */
+    public function getItemId()
+    {
+        return $this->itemId;
+    }
+
+    /**
+     * Set contextId
+     *
+     * @param integer $contextId
+     *
+     * @return Announcement
+     */
+    public function setContextId($contextId)
+    {
+        $this->contextId = $contextId;
+
+        return $this;
+    }
+
+    /**
+     * Get contextId
+     *
+     * @return integer
+     */
+    public function getContextId()
+    {
+        return $this->contextId;
+    }
+
+    /**
+     * Set creationDate
+     *
+     * @param \DateTime $creationDate
+     *
+     * @return Announcement
+     */
+    public function setCreationDate($creationDate)
+    {
+        $this->creationDate = $creationDate;
+
+        return $this;
+    }
+
+    /**
+     * Get creationDate
+     *
+     * @return \DateTime
+     */
+    public function getCreationDate()
+    {
+        return $this->creationDate;
+    }
+
+    /**
+     * Set modificationDate
+     *
+     * @param \DateTime $modificationDate
+     *
+     * @return Announcement
+     */
+    public function setModificationDate($modificationDate)
+    {
+        $this->modificationDate = $modificationDate;
+
+        return $this;
+    }
+
+    /**
+     * Get modificationDate
+     *
+     * @return \DateTime
+     */
+    public function getModificationDate()
+    {
+        return $this->modificationDate;
+    }
+
+    /**
+     * Set deletionDate
+     *
+     * @param \DateTime $deletionDate
+     *
+     * @return Announcement
+     */
+    public function setDeletionDate($deletionDate)
+    {
+        $this->deletionDate = $deletionDate;
+
+        return $this;
+    }
+
+    /**
+     * Get deletionDate
+     *
+     * @return \DateTime
+     */
+    public function getDeletionDate()
+    {
+        return $this->deletionDate;
+    }
+
+    /**
+     * Set title
+     *
+     * @param string $title
+     *
+     * @return Announcement
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Announcement
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set enddate
+     *
+     * @param \DateTime $enddate
+     *
+     * @return Announcement
+     */
+    public function setEnddate($enddate)
+    {
+        $this->enddate = $enddate;
+
+        return $this;
+    }
+
+    /**
+     * Get enddate
+     *
+     * @return \DateTime
+     */
+    public function getEnddate()
+    {
+        return $this->enddate;
+    }
+
+    /**
+     * Set public
+     *
+     * @param boolean $public
+     *
+     * @return Announcement
+     */
+    public function setPublic($public)
+    {
+        $this->public = $public;
+
+        return $this;
+    }
+
+    /**
+     * Get public
+     *
+     * @return boolean
+     */
+    public function getPublic()
+    {
+        return $this->public;
+    }
+
+    /**
+     * Set extras
+     *
+     * @param string $extras
+     *
+     * @return Announcement
+     */
+    public function setExtras($extras)
+    {
+        $this->extras = $extras;
+
+        return $this;
+    }
+
+    /**
+     * Get extras
+     *
+     * @return string
+     */
+    public function getExtras()
+    {
+        return $this->extras;
+    }
+
+    /**
+     * Set lockingDate
+     *
+     * @param \DateTime $lockingDate
+     *
+     * @return Announcement
+     */
+    public function setLockingDate($lockingDate)
+    {
+        $this->lockingDate = $lockingDate;
+
+        return $this;
+    }
+
+    /**
+     * Get lockingDate
+     *
+     * @return \DateTime
+     */
+    public function getLockingDate()
+    {
+        return $this->lockingDate;
+    }
+
+    /**
+     * Set lockingUserId
+     *
+     * @param integer $lockingUserId
+     *
+     * @return Announcement
+     */
+    public function setLockingUserId($lockingUserId)
+    {
+        $this->lockingUserId = $lockingUserId;
+
+        return $this;
+    }
+
+    /**
+     * Get lockingUserId
+     *
+     * @return integer
+     */
+    public function getLockingUserId()
+    {
+        return $this->lockingUserId;
+    }
+
+    /**
+     * Set creator
+     *
+     * @param \CommsyBundle\Entity\User $creator
+     *
+     * @return Announcement
+     */
+    public function setCreator(\CommsyBundle\Entity\User $creator = null)
+    {
+        $this->creator = $creator;
+
+        return $this;
+    }
+
+    /**
+     * Get creator
+     *
+     * @return \CommsyBundle\Entity\User
+     */
+    public function getCreator()
+    {
+        return $this->creator;
+    }
+
+    /**
+     * Set modifier
+     *
+     * @param \CommsyBundle\Entity\User $modifier
+     *
+     * @return Announcement
+     */
+    public function setModifier(\CommsyBundle\Entity\User $modifier = null)
+    {
+        $this->modifier = $modifier;
+
+        return $this;
+    }
+
+    /**
+     * Get modifier
+     *
+     * @return \CommsyBundle\Entity\User
+     */
+    public function getModifier()
+    {
+        return $this->modifier;
+    }
+
+    /**
+     * Set deleter
+     *
+     * @param \CommsyBundle\Entity\User $deleter
+     *
+     * @return Announcement
+     */
+    public function setDeleter(\CommsyBundle\Entity\User $deleter = null)
+    {
+        $this->deleter = $deleter;
+
+        return $this;
+    }
+
+    /**
+     * Get deleter
+     *
+     * @return \CommsyBundle\Entity\User
+     */
+    public function getDeleter()
+    {
+        return $this->deleter;
+    }
+}
