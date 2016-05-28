@@ -427,8 +427,12 @@ elastic_search:
         java_install: true
         manage_repo: true
         repo_version: '2.x'
+        config:
+            network.host: 0.0.0.0
         plugins:
             elasticsearch/elasticsearch-mapper-attachments/3.1.2:
+                instances: es-01
+            lmenezes/elasticsearch-kopf/2.0:
                 instances: es-01
     instances:
         esi_djov7thc3gar:
