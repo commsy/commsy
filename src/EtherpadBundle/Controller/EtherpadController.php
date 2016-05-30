@@ -27,13 +27,24 @@ class EtherpadController extends Controller
 
         $group = $client->createGroupIfNotExistsFor($roomId);
 
-        # If pad does not exist, create one
-        if (!$material->getEtherpadEditorID()) {
+        // id lookup
+        $pads = $client->listPads($group->groupID);
 
+        # If a pad for the current material does not exist, create one
+        if (!$material->getEtherpadEditorID() || !in_array($material->getEtherpadEditorID(), $pads->padIDs)) {
+
+            // plain material id vs. material id + random string?
             $pad = $client->createGroupPad($group->groupID, $materialId);
 
             $material->setEtherpadEditorID($pad->padID);
             $material->save();
+
+            // if etherpadid is already set, but pad doesnt exist
+            if ($material->getEtherpadEditorID()) {
+                // set material description
+                $client->setText($pad->padID, $material->getDescription());
+                
+            }
         }
         
         # create etherpad session with author and group
