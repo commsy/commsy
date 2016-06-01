@@ -537,8 +537,8 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
 
      if ( isset($this->_tag_limit) ) {
         $tag_id_array = $this->_getTagIDArrayByTagIDArray($this->_tag_limit);
-        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'"))) ';
-        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.first_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'") ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.second_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'") ';
      }
 
       // restrict materials by buzzword (la4)
@@ -680,6 +680,9 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
       }
 
       if ( isset($this->_tag_limit) ) {
+        $query .= ' AND l41.deletion_date IS NULL ';
+        $query .= ' AND l42.deletion_date IS NULL ';
+
          $tag_id_array = $this->_getTagIDArrayByTagIDArray($this->_tag_limit);
          $id_string = implode(', ',$tag_id_array);
          if( isset($tag_id_array[0]) and $tag_id_array[0] == -1 ){
