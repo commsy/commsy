@@ -3217,6 +3217,48 @@ class cs_connection_soap {
       $xml = $this->_encode_output($xml);
       return $xml;
    }
+
+   public function getAnnouncementsinRange($sessionId, $contextId, $validTimestamp) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($sessionId)) {
+         $validDate = date("Y-m-d H:i:s", $validTimestamp);
+
+         $announcementManager = $this->_environment->getAnnouncementManager();
+         $announcementManager->setContextLimit($contextId);
+         $announcementManager->showNoNotActivatedEntries();
+         $announcementManager->setDateLimit($validDate);
+
+         $announcementManager->select();
+         $announcementList = $announcementManager->get();
+         $xml = "<announcements_list>\n";
+         $announcementItem = $announcementList->getFirst();
+
+         while ($announcementItem) {
+            $xml .= "<announcement_item>\n";
+
+            $xml .= "<announcement_id><![CDATA[".$announcementItem->getItemID()."]]></announcement_id>\n";
+
+            $tempTitle = $announcementItem->getTitle();
+            $tempTitle = $this->prepareText($tempTitle);
+            $xml .= "<announcement_title><![CDATA[".$tempTitle."]]></announcement_title>\n";
+
+            $tempDescription = $announcementItem->getDescription();
+            $tempDescription = $this->prepareText($tempDescription);
+            $xml .= "<announcement_description><![CDATA[".$tempDescription."]]></announcement_description>\n";
+
+            $xml .= "<announcement_ending_date><![CDATA[".$announcementItem->getSecondDateTime()."]]></announcement_ending_date>\n";
+
+            $xml .= "</announcement_item>\n";
+
+            $announcementItem = $announcementList->getNext();
+         }
+
+         $xml .= "</announcements_list>";
+         $xml = $this->_encode_output($xml);
+
+         return $xml;
+      }
+   }
    
    // Dates
    
@@ -3267,6 +3309,53 @@ class cs_connection_soap {
          $xml .= "</dates_list>";
          #debugToFile($xml);
          $xml = $this->_encode_output($xml);
+         return $xml;
+      }
+   }
+
+   public function getDatesInRange($sessionId, $contextId, $startTimestamp, $endTimestamp) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($sessionId)) {
+         $startDate = date("Y-m-d H:i:s", $startTimestamp);
+         $endDate = date("Y-m-d H:i:s", $endTimestamp);
+
+         $datesManager = $this->_environment->getDatesManager();
+         $datesManager->setContextLimit($contextId);
+         $datesManager->showNoNotActivatedEntries();
+         $datesManager->setDateModeLimit(2);
+         $datesManager->setBetweenLimit($startDate, $endDate);
+
+         $datesManager->select();
+         $datesList = $datesManager->get();
+         $xml = "<dates_list>\n";
+         $dateItem = $datesList->getFirst();
+
+         while ($dateItem) {
+            $xml .= "<date_item>\n";
+
+            $xml .= "<date_id><![CDATA[".$dateItem->getItemID()."]]></date_id>\n";
+
+            $tempTitle = $dateItem->getTitle();
+            $tempTitle = $this->prepareText($tempTitle);
+            $xml .= "<date_title><![CDATA[".$tempTitle."]]></date_title>\n";
+
+            $tempDescription = $dateItem->getDescription();
+            $tempDescription = $this->prepareText($tempDescription);
+            $xml .= "<date_description><![CDATA[".$tempDescription."]]></date_description>\n";
+
+            $xml .= "<date_place><![CDATA[".$dateItem->getPlace()."]]></date_place>\n";
+
+            $xml .= "<date_starting_date><![CDATA[".$dateItem->getDateTime_start()."]]></date_starting_date>\n";
+            $xml .= "<date_ending_date><![CDATA[".$dateItem->getDateTime_end()."]]></date_ending_date>\n";
+
+            $xml .= "</date_item>\n";
+
+            $dateItem = $datesList->getNext();
+         }
+
+         $xml .= "</dates_list>";
+         $xml = $this->_encode_output($xml);
+
          return $xml;
       }
    }

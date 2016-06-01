@@ -535,11 +535,28 @@
 <message name='getPortalListOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
+<message name='getAnnouncementsInRangeIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:integer'/>
+  <part name='valid_timestamp' type='xsd:string'/>
+</message>
+<message name='getAnnouncementsInRangeOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
 <message name='getDatesListIN'>
   <part name='session_id' type='xsd:string'/>
   <part name='context_id' type='xsd:integer'/>
 </message>
 <message name='getDatesListOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='getDatesInRangeIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:integer'/>
+  <part name='start_timestamp' type='xsd:string'/>
+  <part name='end_timestamp' type='xsd:string'/>
+</message>
+<message name='getDatesInRangeOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
 <message name='getDateDetailsIN'>
@@ -1021,9 +1038,17 @@ echo("\n");
     <input message='tns:getPortalListIN'/>
     <output message='tns:getPortalListOUT'/>
   </operation>
+  <operation name='getAnnouncementsInRange'>
+    <input message='tns:getAnnouncementsInRangeIN'/>
+    <output message='tns:getAnnouncementsInRangeOUT'/>
+  </operation>
   <operation name='getDatesList'>
     <input message='tns:getDatesListIN'/>
     <output message='tns:getDatesListOUT'/>
+  </operation>
+  <operation name='getDatesInRange'>
+    <input message='tns:getDatesInRangeIN'/>
+    <output message='tns:getDatesInRangeOUT'/>
   </operation>
   <operation name='getDateDetails'>
     <input message='tns:getDateDetailsIN'/>
@@ -1813,8 +1838,30 @@ echo("\n");
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
       </output>
   </operation>
+  <operation name='getAnnouncementsInRange'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getAnnouncementsInRange'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
   <operation name='getDatesList'>
     <soap:operation soapAction='urn:xmethodsCommSy#getDatesList'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='getDatesInRange'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getDatesInRange'/>
       <input>
         <soap:body use='encoded' namespace='urn:xmethodsCommSy'
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
