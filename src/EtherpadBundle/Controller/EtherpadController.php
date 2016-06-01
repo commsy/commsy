@@ -23,7 +23,7 @@ class EtherpadController extends Controller
 
         # Init etherpad
         $client = $etherpadService->getClient();
-        $author = $client->createAuthorIfNotExistsFor($currentUser->getItemId());
+        $author = $client->createAuthorIfNotExistsFor($currentUser->getItemId(), $currentUser->getFullname());
 
         $group = $client->createGroupIfNotExistsFor($roomId);
 
