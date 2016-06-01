@@ -90,8 +90,10 @@ class MaterialTransformer implements DataTransformerInterface
         $materialObject->setTitle($materialData['title']);
         $materialObject->setDescription($materialData['description']);
 
-        if ($materialData['editor_switch']) {
-            $materialObject->setEtherpadEditor('1');
+        if (array_key_exists('editor_switch', $materialData)) {
+            if ($materialData['editor_switch']) {
+                $materialObject->setEtherpadEditor('1');
+            }
         }
         
         if ($materialData['permission']) {

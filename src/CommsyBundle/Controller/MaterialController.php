@@ -765,9 +765,10 @@ class MaterialController extends Controller
             // $em->persist($room);
             // $em->flush();
         }
-        
+
         return array(
-            'isDraft' => false,
+            // 'isDraft' => $item->isDraft(),
+            'isDraft' => true,
             'isMaterial' => $isMaterial,
             'form' => $form->createView(),
             'showHashtags' => $current_context->withBuzzwords(),

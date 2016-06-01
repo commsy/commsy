@@ -33,6 +33,7 @@ class ItemController extends Controller
         $formData = array();
         $tempItem = NULL;
         $isMaterial = false;
+        $itemType = $item->getItemType();
         
         if ($item->getItemType() == 'material') {
             $isMaterial = true;
@@ -70,6 +71,7 @@ class ItemController extends Controller
         }
 
         return array(
+            // 'itemType' => $itemType,
             'isMaterial' => $isMaterial,
             'itemId' => $itemId,
             'roomId' => $roomId,
@@ -90,8 +92,10 @@ class ItemController extends Controller
         $materialService = $this->get('commsy_legacy.material_service');
         
         $tempItem = NULL;
-        
+        $isMaterial = false;
+
         if ($item->getItemType() == 'material') {
+            $isMaterial = true;
             $tempItem = $materialService->getMaterial($itemId);
         } else if ($item->getItemType() == 'section') {
             $tempItem = $materialService->getSection($itemId);
@@ -105,6 +109,7 @@ class ItemController extends Controller
         }
         
         return array(
+            'isMaterialSave' => $isMaterial,
             'roomId' => $roomId,
             'item' => $tempItem,
             'modifierList' => $modifierList
