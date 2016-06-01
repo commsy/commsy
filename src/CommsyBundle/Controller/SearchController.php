@@ -62,17 +62,15 @@ class SearchController extends Controller
 
             $searchManager = $this->get('commsy.search.manager');
             $searchManager->setQuery($globalSearch->getPhrase());
-            $searchManager->setContext($roomId);
 
             $searchResults = $searchManager->getResults();
 
-            dump($searchResults->getResults(0, 10)->toArray());
+            dump($searchResults->getResults(0, 100)->toArray());
             dump($searchResults->getAggregations());
-            exit;
         }
 
         return [
-            'searchResults' => $searchResults
+            'searchResults' => $searchResults->getResults(0, 100)->toArray()
         ];
     }
 
@@ -92,13 +90,24 @@ class SearchController extends Controller
 
             $searchManager = $this->get('commsy.search.manager');
             $searchManager->setQuery($query);
-            $searchManager->setContext($roomId);
 
             $instantResults = $searchManager->getInstantResults();
 
+            dump($instantResults);
+
             foreach ($instantResults as $instantResult) {
+                $title = '';
+
+                if (method_exists($instantResult, 'getTitle')) {
+                    $title = $instantResult->getTitle();
+                } else if (method_exists($instantResult, 'getName')) {
+                    $title = $instantResult->getName();
+                } else if (method_exists($instantResult, 'getFirstname')) {
+                    $title = $instantResult->getFirstname() . ' ' . $instantResult->getLastname();
+                }
+
                 $results[] = array(
-                    'title' => $instantResult->getSearchTitle(),
+                    'title' => $title,
                     'text' => '',
                     'url' => '#',
                 );
