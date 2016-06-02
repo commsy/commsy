@@ -16,9 +16,10 @@ class RoomService
     /**
      * returns the rubrics for the room with the $roomId
      * @param  Integer $roomId  room id
+     * @param  Boolean $includeModifier include or remove "_show" and "_hide" modifier
      * @return array            Array with rubric strings
      */
-    public function getRubricInformation($roomId)
+    public function getRubricInformation($roomId, $includeModifier = false)
     {
         // get the rooms rubric configuration
         $roomManager = $this->legacyEnvironment->getRoomManager();
@@ -34,8 +35,12 @@ class RoomService
                 $rubrics[] = $rubricName;
             }
         }
-        return $rubrics;
-
+        if($includeModifier){
+            return $rubricConfigurations;
+        }
+        else{
+            return $rubrics;    
+        }
     }
 
     /**

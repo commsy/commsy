@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
@@ -31,16 +32,6 @@ class GeneralSettingsType extends AbstractType
     {
         $this->em = $em;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-	$this->rubrics = array(
-		'Announcements' => 'announcement',
-		'Events' => 'date',
-		'Materials' => 'material',
-		'Discussions' => 'discussion',
-		'Members' => 'user',
-		'Groups' => 'group',
-		'Tasks' => 'todo',
-		'Topics' => 'topic',
-	);
     }
 
     /**
@@ -95,12 +86,26 @@ class GeneralSettingsType extends AbstractType
             ))
             ->add('save', SubmitType::class, array(
                 'position' => 'last',
-	    ))
-	    ->add('rubrics', ChoiceType::class, array(
-		'choices' => $this->rubrics,
-		'expanded' => true,
-		'multiple' => true,
-	    ));
+    	    ))
+            ->add('rubrics', CollectionType::class, array(
+                'entry_type' => ChoiceType::class,
+                'entry_options' => array(
+                    'choices' => array(
+                        'Hide' => 'hide',
+                        'Show' => 'show',
+                        'Feed' => 'feed',
+                    ),
+                    //'expanded' => true,
+                    //'multiple' => false,
+                    'attr' => array(
+                        'class' => 'uk-panel-box',
+                    )
+                ),
+                'attr' => array(
+                    'class' => 'uk-sortable',
+                    'data-uk-sortable' => '',
+                )
+            ))
         ;
 
         // TODO: feed settings, theme configuration, filter room description input (cleanCKEditor)

@@ -113,7 +113,7 @@ services:
     # Transformer
     commsy_legacy.transformer.room:
         class: Commsy\LegacyBundle\Form\DataTransformer\RoomTransformer
-        arguments: ['@commsy_legacy.environment']
+        arguments: ['@commsy_legacy.environment', '@commsy.room_service']
 
     commsy_legacy.transformer.material:
         class: Commsy\LegacyBundle\Form\DataTransformer\MaterialTransformer

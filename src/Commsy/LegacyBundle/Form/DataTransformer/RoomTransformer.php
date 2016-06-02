@@ -1,6 +1,7 @@
 <?php
 namespace Commsy\LegacyBundle\Form\DataTransformer;
 
+use Commsy\LegacyBundle\Utils\RoomService;
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use Commsy\LegacyBundle\Form\DataTransformer\DataTransformerInterface;
 
@@ -8,9 +9,21 @@ class RoomTransformer implements DataTransformerInterface
 {
     private $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
+    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService = null)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->roomService = $roomService;
+
+        $this->rubrics = array(
+            'Announcements' => 'announcement',
+            'Events' => 'date',
+            'Materials' => 'material',
+            'Discussions' => 'discussion',
+            'Members' => 'user',
+            'Groups' => 'group',
+            'Tasks' => 'todo',
+            'Topics' => 'topic',
+        );
     }
 
     /**
@@ -40,7 +53,14 @@ class RoomTransformer implements DataTransformerInterface
             $roomData['description'] = $roomItem->getDescription();
             
             $roomData['wikiEnabled'] = $roomItem->isWikiEnabled();
-	// TODO: weitere Felder (Rubriken etc.) in roomData schreiben (aus cs_popup_configuration_controller.php lesen, wie man die Daten bekommt!)
+
+            $rubricsArray = array_combine(array_values($this->rubrics), array_values(array_fill(0, count($this->rubrics), 'hide')));
+            $rubrics = $this->roomService->getRubricInformation($roomItem->getItemID(), true);
+            foreach ($rubrics as $rubric) {
+                list($rubricName, $modifier) = explode('_', $rubric);
+                $rubricsArray[$rubricName] = $modifier;
+            }
+            $roomData['rubrics'] = $rubricsArray;
         }
 
         return $roomData;
@@ -57,6 +77,7 @@ class RoomTransformer implements DataTransformerInterface
     public function applyTransformation($roomObject, $roomData)
     {
 	// TODO: Daten in roomObject schreiben (an cs_popup_configuration_controller und cs_room_item (bzw. dessen Eltern-Klassen) orientieren!)	
+
         return $roomObject;
     }
 }
