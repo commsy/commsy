@@ -87,29 +87,46 @@ class SearchController extends Controller
         $query = $request->get('search', null);
 
         if ($query) {
+            $translator = $this->get('translator');
 
             $searchManager = $this->get('commsy.search.manager');
             $searchManager->setQuery($query);
 
             $instantResults = $searchManager->getInstantResults();
 
-            dump($instantResults);
+            foreach ($instantResults as $hybridResult) {
+                $transformed = $hybridResult->getTransformed();
 
-            foreach ($instantResults as $instantResult) {
                 $title = '';
 
-                if (method_exists($instantResult, 'getTitle')) {
-                    $title = $instantResult->getTitle();
-                } else if (method_exists($instantResult, 'getName')) {
-                    $title = $instantResult->getName();
-                } else if (method_exists($instantResult, 'getFirstname')) {
-                    $title = $instantResult->getFirstname() . ' ' . $instantResult->getLastname();
+                if (method_exists($transformed, 'getTitle')) {
+                    $title = $transformed->getTitle();
+                } else if (method_exists($transformed, 'getName')) {
+                    $title = $transformed->getName();
+                } else if (method_exists($transformed, 'getFirstname')) {
+                    $title = $transformed->getFirstname() . ' ' . $transformed->getLastname();
+                }
+
+                // get type from hybrid results and trim trailing 's'
+                $type = $hybridResult->getResult()->getType();
+                $type = rtrim($type, 's');
+
+                // construct target url
+                $url = '#';
+
+                $router = $this->container->get('router');
+                $routeName = 'commsy_' . $type . '_detail';
+                if ($router->getRouteCollection()->get($routeName)) {
+                    $url = $this->generateUrl(
+                        $routeName,
+                        ['roomId' => $roomId, 'itemId' => $transformed->getItemId()]
+                    );
                 }
 
                 $results[] = array(
                     'title' => $title,
-                    'text' => '',
-                    'url' => '#',
+                    'text' => $translator->transChoice($type, 0, [], 'rubric'),
+                    'url' => $url,
                 );
             }
         }

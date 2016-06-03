@@ -79,7 +79,7 @@ class SearchManager
 
         $filteredQuery->setFilter($contextFilter);
 
-        return $this->commsyFinder->find($filteredQuery);
+        return $this->commsyFinder->findHybrid($filteredQuery, 10);
     }
 
     /**
