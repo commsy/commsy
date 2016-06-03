@@ -165,6 +165,11 @@
                         {{ macrosDate.title(date, modifierList, userCount, readCount, readSinceModificationCount, draft) }}
                     </div>
             
+                    {# date #}
+                    <div id="details{{ date.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_date_editdetails', {'roomId': date.contextId, 'itemId': date.itemId}) }}' }">
+                        {{ macrosDate.details(date) }}
+                    </div>
+            
                     {# description #}
                     <div id="description{{ date.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': date.contextId, 'itemId': date.itemId}) }}' }">
                         {{ macrosItem.itemDescription('description', date, true, date.description) }}
@@ -216,6 +221,24 @@
 
             {% endif %}
         </div>
+        
+        <div class="uk-width-medium-1-5 cs-addon-navigation">
+            {# quick navigation #}
+            <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" data-uk-sticky>
+                <div class="uk-panel-teaser uk-text-large cs-panel-teaser-primary uk-margin-remove">
+                    {{ 'quick navigation'|trans({})|capitalize }}
+                </div>
+                <div id="cs-nav-quick" class="cs-nav-quick">
+                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ date.itemId }}\']'}" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
+                        <li><a href="#description{{ date.itemId }}">{{ 'entry description'|trans({})}}</a></li>
+                        <li><a href="#files{{ date.itemId }}">{{ 'files'|trans({})}}</a></li>
+                        <li><a href="#links{{ date.itemId }}">{{ 'links'|trans({})}}</a></li>
+                        <li><a href="#annotations{{ date.itemId }}">{{ 'annotations'|trans({})|capitalize }}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
     </div>
 {% endblock %}
 

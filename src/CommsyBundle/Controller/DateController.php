@@ -724,4 +724,14 @@ class DateController extends Controller
         }
         return $result;
     }
+    
+        /**
+     * @Route("/room/{roomId}/date/{itemId}/editdetails")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function editdetailsAction($roomId, $itemId, Request $request)
+    {
+        
+    }
 }
