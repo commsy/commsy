@@ -663,4 +663,83 @@ class ItemController extends Controller
         ];
     }
 
+
+    /**
+     * @Route("/room/{roomId}/item/{itemId}/stepper")
+     * @Template()
+     **/
+    public function stepperAction($roomId, $itemId, Request $request)
+    {
+        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+        
+        $itemService = $this->get('commsy.item_service');
+        $baseItem = $itemService->getItem($itemId);
+        
+        $rubricManager = $environment->getManager($baseItem->getItemType());
+        
+        $item = $rubricManager->getItem($itemId);
+        
+        $rubricManager->setContextLimit($roomId);
+        $rubricManager->select();
+        $itemList = $rubricManager->get();
+        $items = $itemList->to_array();
+        
+        $itemList = array();
+        $counterBefore = 0;
+        $counterAfter = 0;
+        $counterPosition = 0;
+        $foundItem = false;
+        $firstItemId = false;
+        $prevItemId = false;
+        $nextItemId = false;
+        $lastItemId = false;
+        foreach ($items as $tempItem) {
+            if (!$foundItem) {
+                if ($counterBefore > 5) {
+                    array_shift($itemList);
+                } else {
+                    $counterBefore++;
+                }
+                $itemList[] = $tempItem;
+                if ($tempItem->getItemID() == $item->getItemID()) {
+                    $foundItem = true;
+                }
+                if (!$foundItem) {
+                    $prevItemId = $tempItem->getItemId();
+                }
+                $counterPosition++;
+            } else {
+                if ($counterAfter < 5) {
+                    $itemList[] = $tempItem;
+                    $counterAfter++;
+                    if (!$nextItemId) {
+                        $nextItemId = $tempItem->getItemId();
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
+        if (!empty($items)) {
+            if ($prevItemId) {
+                $firstItemId = $items[0]->getItemId();
+            }
+            if ($nextItemId) {
+                $lastItemId = $items[sizeof($items)-1]->getItemId();
+            }
+        }
+        
+        return array(
+            'rubric' => $item->getItemType(),
+            'roomId' => $roomId,
+            'itemList' => $itemList,
+            'item' => $item,
+            'counterPosition' => $counterPosition,
+            'count' => sizeof($items),
+            'firstItemId' => $firstItemId,
+            'prevItemId' => $prevItemId,
+            'nextItemId' => $nextItemId,
+            'lastItemId' => $lastItemId,
+        );
+    }
 }
