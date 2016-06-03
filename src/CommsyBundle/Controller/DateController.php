@@ -569,7 +569,7 @@ class DateController extends Controller
      */
     public function printAction($roomId, $itemId)
     {
-        $html = $this->renderView('CommsyBundle:Material:detailPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:Date:detailPrint.html.twig', [
         ]);
 
         return new Response(
