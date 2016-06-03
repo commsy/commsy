@@ -453,7 +453,11 @@ class DateController extends Controller
         $dateItem->setDraftStatus(1);
         $dateItem->setPrivateEditing('1');
 
-        $dateDescriptionArray = date_parse(urldecode($dateDescription));
+        if ($dateDescription != 'now') {
+            $dateDescriptionArray = date_parse(urldecode($dateDescription));
+        } else {
+            $dateDescriptionArray = date_parse(date('Y-m-d H:i:s'));
+        }
         
         $year = $dateDescriptionArray['year'];
         $month = $dateDescriptionArray['month'];
