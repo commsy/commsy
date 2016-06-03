@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 {% import 'CommsyBundle:Base:printmacro.html.twig' as macros %}
 
-{% set item = material %}
+{% set item = announcement %}
 
 <html lang="de">
     <head>
@@ -24,36 +24,31 @@
 
         <div>
 
-            {# material content panel #}
+            {# announcement content panel #}
             <div class="uk-panel-box-primary">
                 {# content #}
                 <article>
                     {# title, etc. #}
                     <div>
-                        {{ macros.title(material, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, ratingArray) }}
+                        {{ macros.title(announcement, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) }}
                     </div>
             
                     {# description #}
                     <div>
-                        {{ macros.itemDescription('description', material, true, material.description) }}
+                        {{ macros.itemDescription('description', announcement, true, announcement.description) }}
                     </div>
             
                     {# files #}
                     <div>
-                        {{ macros.files(material) }}
+                        {{ macros.files(announcement) }}
                     </div>
         
                     {# links #}
                     <div>
-                        {{ macros.links(material,showHashtags,showCategories,roomCategories) }}
+                        {{ macros.links(announcement,showHashtags,showCategories) }}
                     </div>
         
-                    {# workflow #}
-                    {% if showWorkflow %}
-                        <div>
-                            {{ macros.workflow(material, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate) }}
-                        </div>
-                    {% endif %}
+                    
                 </article>
             
             
@@ -64,8 +59,8 @@
                         </div>
                     </div>
                 </div>       
-                {# material sections #}
-                {% for section in sectionList %}
+                {# announcement sections #}
+                {% for section in readerList %}
                     {% set count = loop.index0 %}
                     
                         

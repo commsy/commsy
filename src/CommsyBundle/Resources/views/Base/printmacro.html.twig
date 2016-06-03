@@ -148,7 +148,7 @@
                 <div>{{workflowText}}</div>
              </div>         
         </div>
-        <div class="uk-width-1-3">
+        <div>
             {% if workflowValidityDate != '0000-00-00 00:00:00' %}
                 <div class="uk-margin-bottom">
                     <strong>{{ 'workflow validity date'|trans({}, "material") }}</strong>: <br/>
@@ -156,7 +156,7 @@
                 </div>
             {% endif %}
         </div>
-        <div class="uk-width-1-3">
+        <div >
             {% if workflowResubmissionDate != '0000-00-00 00:00:00' %}
                 <div class="uk-margin-bottom">
                     <strong>{{ 'workflow resubmission date'|trans({}, "material") }}</strong>:<br/> 
@@ -165,7 +165,7 @@
            {% endif %}
        </div>
        {% if not workflowGroupArray is empty %}
-            <div class="uk-width-1-2">
+            <div>
                 <strong>{{ 'workflow marked as read by groups'|trans({}, "material") }}:</strong><br/>
                 {% set counter = 1 %}
                 {% for workflowGroup in workflowGroupArray %}
@@ -197,71 +197,25 @@
     
     {%set countEntries = item.tagsArray|length + item.buzzwordArray|length + item.AllLinkeditemIDArray|length %}
 
-    {% set preview %}
-    <div class="uk-grid">
-        <div class="uk-width-1-3">
-            <strong>{{ 'linked entries'|trans({}, "room") }}:</strong> <br/>
-            {{ render(controller(
-                'CommsyBundle:Link:showDetailShort',
-                { 'roomId': item.contextId, 'itemId': item.itemId }
-            ))}}            
-        </div>
-        {% if withCategories %}
-            <div class="uk-width-1-3">
-                <strong>{{ 'categories'|trans({}, "room") }}:</strong> <br/>
-                {% set count = 1 %}
-                {% if (item.tagsArray|length) < 4 %}
-                    {% if (item.tagsArray|length) == 0 %}
-                        {{ 'no linked items'|trans({}, "room")}}    
-                    {%else%}
-                        {% for tag in item.tagsArray %}
-                            {{tag.title}}{% if count < item.tagsArray|length %}, {% endif %}
-                            {% set count = count +1 %}
-                        {% endfor %}
-                    {% endif %}
-                {% else %}
-                        {{item.tagsArray|length}} {{ 'categories'|trans({}, "room") }}
-                {% endif %}
-            </div>
-        {% endif %}
-        {%if withTags %}
-            <div class="uk-width-1-3">
-                <strong>{{ 'hashtags'|trans({}, "room") }}:</strong> <br/>
-                {% set count = 1 %}
-                {% if (item.buzzwordArray|length) < 4 %}
-                    {% if (item.buzzwordArray|length) == 0 %}
-                        {{ 'no linked items'|trans({}, "room")}}    
-                    {%else%}
-                        {% for tag in item.buzzwordArray %}
-                            {{tag}}{% if count < item.buzzwordArray|length %}, {% endif %}
-                            {% set count = count +1 %}
-                        {% endfor %}
-                    {% endif %}
-                {% else %}
-                        {{item.buzzwordArray|length}} {{ 'hashtags'|trans({}, "room") }}
-                {% endif %}
-            </div>
-        {% endif %}
-    </div>
-    {% endset %}
+    
 
     {% set content %}
 
-    <div class="uk-grid">
-        <div class="uk-width-1-3">
+    <div>
+        <div >
             <strong>{{ 'linked entries'|trans({}, "room") }}:</strong> <br/>
             {{ render(controller(
                 'CommsyBundle:Link:showDetailPrint',
                 { 'roomId': item.contextId, 'itemId': item.itemId }
             ))}}            
         </div>
-        <div class="uk-width-1-3">
+        <div >
             <strong>{{ 'categories'|trans({}, "room") }}:</strong>
             <div class="cs-tree-plain">
                 {{ _self.nestedTagList(item.tagsArray, roomCategories, 1) }}
             </div>
         </div>
-        <div class="uk-width-1-3">
+        <div>
             <strong>{{ 'hashtags'|trans({}, "room") }}:</strong> <br/>
             {% set tagArray = item.buzzwordList.to_array() %} 
             {% if (tagArray|length) > 0 %}
@@ -275,7 +229,7 @@
     </div>
     {% endset %}
     
-    {{ macros.editContent('links', item, true, content, preview, true, true, countEntries) }}
+    {{ macros.editContent('links', item, true, content, true, true, countEntries) }}
 {% endmacro %}
 
 {% macro files(item) %}
@@ -285,7 +239,7 @@
 
     <hr />
 
-    <article class="uk-article uk-margin-left uk-margin-right">
+    <article >
         <a name="description"></a>
         {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
 
@@ -306,16 +260,14 @@
                 
                 {# full content #}
                 <div>
-                    <div class="uk-margin-top uk-margin-bottom" data-uk-grid="{gutter: 20}">
+                    <div >
+                        {% set prefix='' %}
                         {% for file in fileArray %}
-                            <div class="uk-width-medium-1-2 uk-width-large-1-4">
-                                <div class="uk-panel uk-vertical-align">
-                                   <div class="uk-vertical-align-middle">
+                                        {{prefix}}
                                         {{ file.filename}}
                                         ({{ file.fileSize }} kb)
-                                    </div>
-                                </div>
-                            </div>
+                                         {% set prefix=', ' %}
+                                    
                         {% endfor %}
                     </div>
                 </div>
@@ -330,13 +282,14 @@
 
             </div>
         {% endif %}
+        
     </article>
 {% endmacro %}
 
 {% macro itemDescription(title, item, edit, content) %}
     <hr/>
 
-    <article class="uk-article uk-margin-left uk-margin-right">
+    <article>
         <a name="description"></a>
         {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
 
@@ -369,58 +322,6 @@
     
 {% endmacro %}
 
-{% macro sections(item, sectionList) %}
-    {% import _self as macros %}
-
-     
-<hr/>
-    <article class="uk-article uk-margin-left uk-margin-right">
-        <a name="description"></a>
-        {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
-
-        {# title row #}
-        <div class="uk-grid uk-margin-small-bottom">
-            <div class="uk-width-9-10">
-                <h4 class="cs-detail-section-header">
-                    {{- "sections"|trans({}) }}
-                    ({{ sectionList|length }})
-                </h4>
-            </div>
-
-            
-        </div>
-
-        {# content #}
-        {% if not sectionList is empty %}
-            <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
-
-                {# preview #}
-                <div>
-                    <ul class="uk-list uk-list-striped uk-width-2-3">          
-                        {% for section in sectionList %}
-                            <li>
-                                
-                                    {{ loop.index }}. {{ section.title|raw }}
-                                
-
-                                {{ macros.fileListShort(section) }}
-                            </li>                      
-                        {% endfor %}
-                    </ul>
-                </div>
-
-            </div>
-        {% else %}
-            <div class="uk-width-9-10 uk-margin-top-remove">
-                
-                <div>
-                    <span class="uk-text-muted">{{ 'no content'|trans({}, "room") }}</span>
-                </div>
-
-            </div>
-        {% endif %}
-    </article>
-{% endmacro %}
 
 {% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, ratingArray) %}
     {% import _self as macros %}
@@ -436,30 +337,33 @@
     {% endif %}
     
     <div>
-        <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
-            <div class="uk-grid uk-margin-small-bottom">
-                <div class="uk-width-9-10 uk-margin-small-bottom" >        
-                    <div class="uk-grid">
+        <div >
+            <div >
+                <div  >        
+                    <div>
                     {% if item.itemType != 'section' %}
-                        <div class="uk-width-8-10">
+                        <div>
                             <h1 class="uk-article-title">{{ item.title|raw }}</h1>
                             {% if item.itemType == 'material' %}
                                 {% set material = item %}
-                                {% include 'CommsyBundle:Material:biblio.html.twig' %}
-                            {% endif %}
-                        </div>
-                       {%if showRating or showWorkflow%}
-                            <div class="uk-width-2-10  uk-text-right uk-padding-remove">
-                             {%if showRating%}
-                                {{  macros.ratingStatusDetail(material, ratingArray) }}
-                            {% endif %}
-                            {%if showWorkflow%}
-                                {{  macros.workflowTrafficLight(material) }}
-                            {% endif %}
+                                <div top-padding=0>
+                                {% if showRating or showWorkflow%}
+                                
+                                    {% if showRating%}
+                                        {{  macros.ratingStatusDetail(material, ratingArray) }}
+                                    {% endif %}
+                                    {% if showWorkflow%}
+                                        {{  macros.workflowTrafficLight(material) }}
+                                    {% endif %}
+                                {% endif %}
                             </div>
-                        {% endif %}
+                            {% include 'CommsyBundle:Material:biblio.html.twig' %}
+                            {% endif %}
+
+                        </div>
+                       
                     {% else %}
-                        <div class="uk-width-1-1">
+                        <div>
                             <h1 class="uk-article-title">{{ item.title|raw }}</h1>
                         </div>
                 {% endif %}
@@ -467,15 +371,20 @@
                 </div>        
                
             </div>
+            {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}
         </div>
-        <div class="uk-margin-left uk-margin-right uk-position-relative">
-            <div class="uk-width-1-1 uk-padding-remove uk-margin-small-bottom">    
-                <div class="uk-grid uk-margin-small-left uk-margin-top-remove">
-                    <div class="uk-width-9-10 uk-padding-remove">
+
+        <div >
+            <div >    
+                <div >
+                    <div>
                         
-                            <div class="uk-panel">
+                            <div >
+
                                 <div class="uk-grid">
-                                    <div class="uk-width-2-5">
+
+                                    <div class="uk-width-1-3">
+
                                         <div class="uk-flex">
                                             {{ 'last changed'|trans({})|capitalize }}
                                             <div>
@@ -485,14 +394,14 @@
                                                     {{  macros.userIcon(item.modificatorItem) }}
                                                 {% endif %}
                                             </div>
-                                            <div class="uk-margin-right">
-                                                {{item.modificationDate|date("d.m.Y H:i")}}<br/>
-                                                {{ 'changed by'|trans({})|capitalize }}: <br>{{item.modificatorItem.Fullname}}<br/>
-                                                {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}
+                                            <div>
+                                                &nbsp{{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                &nbsp{{item.modificatorItem.Fullname}}<br/>
+                                                
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="uk-width-1-5">
+                                    <div class="uk-width-1-3">
                                         <div class="uk-clearfix">
                                             {{ 'creator'|trans({})}}
                                             <div class="uk-margin-remove">
@@ -502,12 +411,13 @@
                                                     {{  macros.userIcon(item.creator) }}
                                                 {% endif %}
                                             </div>
+                                        
+                                        <div>
+                                              &nbsp{{item.creator.Fullname}} 
                                         </div>
-                                        <div class="uk-clearfix">
-                                            {{item.creator.Fullname}} 
                                         </div>
                                     </div>
-                                    <div class="uk-width-2-5">                           
+                                    <div class="uk-width-1-3">                           
                                         <div class="uk-clearfix">
                                             <div class="uk-margin-remove">
                                                 {% if modifierList[item.itemId] is defined %}
@@ -523,7 +433,7 @@
                                                                     {% endif %}
                                                                 </div>
                                                                 <div class="uk-clearfix">
-                                                                    {{modifier.fullname}}
+                                                                    &nbsp{{modifier.fullname}}
                                                                 </div>
                                                             {% endfor %}
                                                         </div>
@@ -536,7 +446,7 @@
                             </div>
                             <div class="uk-panel uk-margin-top">
                                 <div class="uk-grid">
-                                    <div class="uk-width-2-5">                           
+                                    <div class="uk-width-2-4">                           
                                         <div class="uk-clearfix">
                                             <div class="uk-align-left uk-width-1-1">
                                             {{ 'clicked since last editing'|trans({})}}: <br/>
@@ -547,9 +457,7 @@
                                            </div>
                                         </div>                           
                                     </div>                            
-                                    <div class="uk-width-1-5">                            
-                                    </div>                            
-                                    <div class="uk-width-2-5">                           
+                                    <div class="uk-width-2-4">                           
                                         <div class="uk-clearfix">
                                             <div class="uk-align-left uk-width-1-1">
                                             {{ 'clicked since creating'|trans({}) }}: <br/>
@@ -602,7 +510,7 @@
 {% macro editContent(title, item, edit, content, preview, shortPreview, displayCount, count) %}
     <hr />
 
-    <article class="uk-article uk-margin-left uk-margin-right">
+    <article>
         <a name="description"></a>
         {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
 

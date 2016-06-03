@@ -1,7 +1,8 @@
 {% import 'CommsyBundle:Base:printmacro.html.twig' as utilMacros %}
 
 {% for annotation in annotations %}
-    <article class="uk-comment">
+    <article >
+        <br>
         {{ utilMacros.statusColor(readerList, annotation.itemId) }}
 
         <header>
@@ -22,6 +23,7 @@
                 </div>
             </div>
         </header>
+        <hr>
     </article>
 {% endfor %}
 
