@@ -350,6 +350,13 @@ class DateController extends Controller
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
+        $categories = array();
+        if ($current_context->withTags()) {
+            $roomCategories = $this->get('commsy.category_service')->getTags($roomId);
+            $dateCategories = $date->getTagsArray();
+            $categories = $this->getTagDetailArray($roomCategories, $dateCategories);
+        }
+
         return array(
             'roomId' => $roomId,
             'date' => $dateService->getDate($itemId),
@@ -361,6 +368,9 @@ class DateController extends Controller
             'readCount' => $read_count,
             'readSinceModificationCount' => $read_since_modification_count,
             'draft' => $itemService->getItem($itemId)->isDraft(),
+            'showCategories' => $current_context->withTags(),
+            'showHashtags' => $current_context->withBuzzwords(),
+            'roomCategories' => $categories,
         );
     }
     
@@ -681,4 +691,37 @@ class DateController extends Controller
         );
     }
     
+    private function getTagDetailArray ($baseCategories, $itemCategories) {
+        $result = array();
+        $tempResult = array();
+        $addCategory = false;
+        foreach ($baseCategories as $baseCategory) {
+            if (!empty($baseCategory['children'])) {
+                $tempResult = $this->getTagDetailArray($baseCategory['children'], $itemCategories);
+            }
+            if (!empty($tempResult)) {
+                $addCategory = true;
+            }
+            $tempArray = array();
+            $foundCategory = false;
+            foreach ($itemCategories as $itemCategory) {
+                if ($baseCategory['item_id'] == $itemCategory['id']) {
+                    if ($addCategory) {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                    } else {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
+                    }
+                    $foundCategory = true;
+                }
+            }
+            if (!$foundCategory) {
+                if ($addCategory) {
+                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                }
+            }
+            $tempResult = array();
+            $addCategory = false;
+        }
+        return $result;
+    }
 }

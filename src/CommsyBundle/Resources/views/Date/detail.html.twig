@@ -167,17 +167,17 @@
             
                     {# description #}
                     <div id="description{{ date.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': date.contextId, 'itemId': date.itemId}) }}' }">
-                        {#{ macrosItem.itemDescription('description', material, true, material.description) }#}
+                        {{ macrosItem.itemDescription('description', date, true, date.description) }}
                     </div>
             
                     {# files #}
                     <div id="files{{ date.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': date.contextId, 'itemId': date.itemId}) }}' }">
-                        {#{ macrosItem.files(material) }#}
+                        {{ macrosItem.files(date) }}
                     </div>
         
                     {# links #}
                     <div id="links{{ date.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': date.contextId, 'itemId': date.itemId}) }}' }">
-                        {#{ macrosItem.links(material,showHashtags,showCategories,roomCategories) }#}
+                        {{ macrosItem.links(date,showHashtags,showCategories,roomCategories) }}
                     </div>
                 </article>
             </div>
