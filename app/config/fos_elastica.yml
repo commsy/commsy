@@ -126,6 +126,11 @@ fos_elastica:
                             type: string
                             analyzer: autocomplete
                             search_analyzer: standard
+                        discussionarticles:
+                            type: 'nested'
+                            properties:
+                                subject: ~
+                                description: ~
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Discussions
