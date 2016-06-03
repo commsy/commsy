@@ -813,6 +813,15 @@ class ItemController extends Controller
         
         $item->delete();
 
-        return $this->redirectToRoute('commsy_'.$baseItem->getItemType().'_list', array('roomId' => $roomId));        
+        $route = 'commsy_'.$baseItem->getItemType().'_list';
+        if ($baseItem->getItemType() == 'date') {
+            $roomService = $this->get('commsy.room_service');
+            $room = $roomService->getRoomItem($roomId);
+            if ($room->getDatesPresentationStatus() != 'normal') {
+                $route = 'commsy_date_calendar';
+            }
+        }
+
+        return $this->redirectToRoute($route, array('roomId' => $roomId));        
     }
 }
