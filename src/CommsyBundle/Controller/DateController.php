@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -316,8 +317,6 @@ class DateController extends Controller
             'date' => $dateService->getDate($itemId),
             'readerList' => $readerList,
             'modifierList' => $modifierList,
-            'canExportToWordpress' => false,
-            'canExportToWiki' => false,
             'user' => $legacyEnvironment->getCurrentUserItem(),
             'annotationForm' => $form->createView(),
         );
@@ -559,5 +558,66 @@ class DateController extends Controller
                                           'participants' => $participantsDisplay
                                       ),
                                     ));
+    }
+    
+    /**
+     * @Route("/room/{roomId}/date/{itemId}/print")
+     */
+    public function printAction($roomId, $itemId)
+    {
+        $html = $this->renderView('CommsyBundle:Material:detailPrint.html.twig', [
+        ]);
+
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="print.pdf"'
+            ]
+        );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/date/{itemId}/download")
+     */
+    public function downloadAction($roomId, $itemId)
+    {
+        $downloadService = $this->get('commsy_legacy.download_service');
+        
+        $zipFile = $downloadService->zipFile($roomId, $itemId);
+
+        $response = new BinaryFileResponse($zipFile);
+        $response->deleteFileAfterSend(true);
+
+        $filename = 'CommSy_Material.zip';
+        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$filename);   
+        $response->headers->set('Content-Disposition', $contentDisposition);
+
+        return $response;
+    }
+    
+    /**
+     * @Route("/room/{roomId}/date/{itemId}/delete")
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     **/
+    public function deleteAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy.item_service');
+        $item = $itemService->getItem($itemId);
+        
+        $materialService = $this->get('commsy_legacy.material_service');
+        
+        $tempItem = null;
+        
+        if ($item->getItemType() == 'material') {
+            $tempItem = $materialService->getMaterial($itemId);
+        } else if ($item->getItemType() == 'section') {
+            $tempItem = $materialService->getSection($itemId); 
+        }
+
+        $tempItem->delete();
+
+        return $this->redirectToRoute('commsy_material_list', array('roomId' => $roomId));        
     }
 }

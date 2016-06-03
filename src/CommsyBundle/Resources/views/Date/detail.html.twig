@@ -99,21 +99,21 @@
 
                                         {# new entry #}
                                         <li>
-                                            <a href="{{ path('commsy_material_create', {'roomId': roomId}) }}" id="newEntry">
+                                            <a href="{{ path('commsy_date_create', {'roomId': roomId, 'dateDescription' : "now"|date("U") }) }}" id="newEntry">
                                                 <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
                                             </a>
                                         </li>
 
                                         {# print #}
                                         <li>
-                                            <a href="{{ path('commsy_material_print', {'roomId': roomId, 'itemId': date.itemId}) }}" target="_blank" id="print">
+                                            <a href="{{ path('commsy_date_print', {'roomId': roomId, 'itemId': date.itemId}) }}" target="_blank" id="print">
                                                 <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
                                         {# save #}
                                         <li>
-                                            <a href="{{ path('commsy_material_download', {'roomId': roomId, 'itemId': date.itemId}) }}" target="_blank">
+                                            <a href="{{ path('commsy_date_download', {'roomId': roomId, 'itemId': date.itemId}) }}" target="_blank">
                                                 <i class="uk-icon-small uk-icon-save uk-icon-justify uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
                                             </a>
                                         </li>
@@ -144,38 +144,13 @@
                                         {# delete #}
                                         <li>
                                             {% if is_granted('ITEM_EDIT', item.itemId) %}
-                                                <a class="commsy-action-delete" id="" href="#" data-delete-url="{{ path('commsy_material_delete', {'roomId': roomId, 'itemId': date.itemId}) }}" data-item-type="{{date.itemType}}" data-title="{{ 'list choice'|trans({},'rubric')|capitalize }}" data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}" data-return-url="{{ path('commsy_material_list', {'roomId': roomId}) }}">
+                                                <a class="commsy-action-delete" id="" href="#" data-delete-url="{{ path('commsy_date_delete', {'roomId': roomId, 'itemId': date.itemId}) }}" data-item-type="{{date.itemType}}" data-title="{{ 'list choice'|trans({},'rubric')|capitalize }}" data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}" data-return-url="{{ path('commsy_date_list', {'roomId': roomId}) }}">
                                                     <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                 </a>
                                             {% else %}
                                                 <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                             {% endif %}
                                         </li>
-
-                                        {% if canExportToWordpress or canExportToWiki %}
-                                            {# separator #}
-                                            <li>&nbsp;</li>
-                                        {% endif %}
-
-                                        {% if canExportToWordpress %}
-                                            <li>
-                                                <a href="#">
-                                                    <i class="uk-icon-small uk-icon-wordpress uk-icon-justify uk-visible-large"></i> {{ 'Export to Wordpress'|trans({}, 'item') }}
-                                                </a>
-                                            </li>
-                                        {% endif %}
-
-                                        {% if canExportToWiki %}
-                                            <li>
-                                                <a href="#">
-                                                    <i class="uk-icon-small uk-icon-wikipedia-w uk-icon-justify uk-visible-large"></i> {{ 'Export to Wiki'|trans({}, 'item') }}
-                                                </a>
-                                            </li>
-                                        {% endif %}
-
-                                        {# separator #}
-                                        <li>&nbsp;</li>
-                                        
                                     </ul>
                                 </div>
                             </div>
