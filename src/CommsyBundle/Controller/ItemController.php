@@ -9,6 +9,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
 use CommsyBundle\Form\Type\SendType;
 use CommsyBundle\Form\Type\SendListType;
 use CommsyBundle\Form\Type\ItemDescriptionType;
@@ -746,5 +750,69 @@ class ItemController extends Controller
             'nextItemId' => $nextItemId,
             'lastItemId' => $lastItemId,
         );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/item/{itemId}/print")
+     */
+    public function printAction($roomId, $itemId)
+    {
+        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $itemService = $this->get('commsy.item_service');
+        $baseItem = $itemService->getItem($itemId);
+        
+        $html = $this->renderView('CommsyBundle:'.ucfirst($baseItem->getItemType()).':detailPrint.html.twig', [
+        ]);
+
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="print.pdf"'
+            ]
+        );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/item/{itemId}/download")
+     */
+    public function downloadAction($roomId, $itemId)
+    {
+        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $itemService = $this->get('commsy.item_service');
+        $baseItem = $itemService->getItem($itemId);
+        
+        $downloadService = $this->get('commsy_legacy.download_service');
+        
+        $zipFile = $downloadService->zipFile($roomId, $itemId);
+
+        $response = new BinaryFileResponse($zipFile);
+        $response->deleteFileAfterSend(true);
+
+        $filename = 'CommSy_'.ucfirst($baseItem->getItemType()).'.zip';
+        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$filename);   
+        $response->headers->set('Content-Disposition', $contentDisposition);
+
+        return $response;
+    }
+    
+    /**
+     * @Route("/room/{roomId}/item/{itemId}/delete")
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     **/
+    public function deleteAction($roomId, $itemId, Request $request)
+    {
+        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $itemService = $this->get('commsy.item_service');
+        $baseItem = $itemService->getItem($itemId);
+        
+        $rubricManager = $environment->getManager($baseItem->getItemType());
+        
+        $item = $rubricManager->getItem($itemId);
+        
+        $item->delete();
+
+        return $this->redirectToRoute('commsy_'.$baseItem->getItemType().'_list', array('roomId' => $roomId));        
     }
 }

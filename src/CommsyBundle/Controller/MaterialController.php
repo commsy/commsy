@@ -811,43 +811,6 @@ class MaterialController extends Controller
             'showWorkflow' => $infoArray['showWorkflow']
         );
     }
-
-    /**
-     * @Route("/room/{roomId}/material/{itemId}/print")
-     */
-    public function printAction($roomId, $itemId)
-    {
-        $html = $this->renderView('CommsyBundle:Material:detailPrint.html.twig', [
-        ]);
-
-        return new Response(
-            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
-            200,
-            [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="print.pdf"'
-            ]
-        );
-    }
-
-    /**
-     * @Route("/room/{roomId}/material/{itemId}/download")
-     */
-    public function downloadAction($roomId, $itemId)
-    {
-        $downloadService = $this->get('commsy_legacy.download_service');
-        
-        $zipFile = $downloadService->zipFile($roomId, $itemId);
-
-        $response = new BinaryFileResponse($zipFile);
-        $response->deleteFileAfterSend(true);
-
-        $filename = 'CommSy_Material.zip';
-        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$filename);   
-        $response->headers->set('Content-Disposition', $contentDisposition);
-
-        return $response;
-    }
         
     /**
      * @Route("/room/{roomId}/material/create")
@@ -1148,29 +1111,5 @@ class MaterialController extends Controller
             'layout' => 'cs-notify-message',
             'data' => $result,
         ]);
-    }
-
-    /**
-     * @Route("/room/{roomId}/material/{itemId}/delete")
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     **/
-    public function deleteAction($roomId, $itemId, Request $request)
-    {
-        $itemService = $this->get('commsy.item_service');
-        $item = $itemService->getItem($itemId);
-        
-        $materialService = $this->get('commsy_legacy.material_service');
-        
-        $tempItem = null;
-        
-        if ($item->getItemType() == 'material') {
-            $tempItem = $materialService->getMaterial($itemId);
-        } else if ($item->getItemType() == 'section') {
-            $tempItem = $materialService->getSection($itemId); 
-        }
-
-        $tempItem->delete();
-
-        return $this->redirectToRoute('commsy_material_list', array('roomId' => $roomId));        
     }
 }
