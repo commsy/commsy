@@ -594,7 +594,7 @@ class DateController extends Controller
         $response = new BinaryFileResponse($zipFile);
         $response->deleteFileAfterSend(true);
 
-        $filename = 'CommSy_Material.zip';
+        $filename = 'CommSy_Date.zip';
         $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$filename);   
         $response->headers->set('Content-Disposition', $contentDisposition);
 
@@ -610,18 +610,12 @@ class DateController extends Controller
         $itemService = $this->get('commsy.item_service');
         $item = $itemService->getItem($itemId);
         
-        $materialService = $this->get('commsy_legacy.material_service');
+        $dateService = $this->get('commsy_legacy.date_service');
         
-        $tempItem = null;
-        
-        if ($item->getItemType() == 'material') {
-            $tempItem = $materialService->getMaterial($itemId);
-        } else if ($item->getItemType() == 'section') {
-            $tempItem = $materialService->getSection($itemId); 
-        }
+        $tempItem = $dateService->getDate($itemId);
 
         $tempItem->delete();
 
-        return $this->redirectToRoute('commsy_material_list', array('roomId' => $roomId));        
+        return $this->redirectToRoute('commsy_date_list', array('roomId' => $roomId));        
     }
 }
