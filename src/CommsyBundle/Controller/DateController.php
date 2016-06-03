@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+use CommsyBundle\Form\Type\AnnotationType;
+
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -306,11 +308,18 @@ class DateController extends Controller
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
 
+        // annotation form
+        $form = $this->createForm(AnnotationType::class);
+
         return array(
             'roomId' => $roomId,
             'date' => $dateService->getDate($itemId),
             'readerList' => $readerList,
-            'modifierList' => $modifierList
+            'modifierList' => $modifierList,
+            'canExportToWordpress' => false,
+            'canExportToWiki' => false,
+            'user' => $legacyEnvironment->getCurrentUserItem(),
+            'annotationForm' => $form->createView(),
         );
     }
     
