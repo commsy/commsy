@@ -46,7 +46,10 @@ fos_elastica:
                         creationDate:
                             type: date
                             format: date_optional_time
-                        title: ~
+                        title:
+                            type: string
+                            analyzer: autocomplete
+                            search_analyzer: standard
                         description: ~
                         endDate:
                             type: date
@@ -80,7 +83,10 @@ fos_elastica:
                         creationDate:
                             type: date
                             format: date_optional_time
-                        title: ~
+                        title:
+                            type: string
+                            analyzer: autocomplete
+                            search_analyzer: standard
                         description: ~
                         datetimeStart:
                             type: date
@@ -116,7 +122,15 @@ fos_elastica:
                         creationDate:
                             type: date
                             format: date_optional_time
-                        title: ~
+                        title:
+                            type: string
+                            analyzer: autocomplete
+                            search_analyzer: standard
+                        discussionarticles:
+                            type: 'nested'
+                            properties:
+                                subject: ~
+                                description: ~
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Discussions
@@ -173,7 +187,10 @@ fos_elastica:
                                 userId: ~
                                 firstName: ~
                                 lastName: ~
-                        title: ~
+                        title:
+                            type: string
+                            analyzer: autocomplete
+                            search_analyzer: standard
                         contactPersons: ~
                         roomDescription: ~
                         type: ~
@@ -203,7 +220,10 @@ fos_elastica:
                                 userId: ~
                                 firstName: ~
                                 lastName: ~
-                        title: ~
+                        title:
+                            type: string
+                            analyzer: autocomplete
+                            search_analyzer: standard
                         date:
                             type: date
                             format: date_optional_time
@@ -235,41 +255,41 @@ fos_elastica:
                         listener: ~
 
                 # materials:
-                # materials:
-                #     indexable_callback: 'isIndexable'
-                #     mappings:
-                #         versionId: ~
-                #         contextId: ~
-                #         title:
-                #             type: string
-                #             analyzer: autocomplete
-                #             search_analyzer: standard
-                #         description: ~
-                #         sections:
-                #             type: 'nested'
-                #             properties:
-                #                 title: ~
-                #                 description: ~
-                #         creator:
-                #             type: 'object'
-                #             properties:
-                #                 userId: ~
-                #                 status: ~
-                #                 firstname: ~
-                #                 lastname: ~
-                #                 city: ~
-                #         modifier:
-                #             type: 'object'
-                #             properties:
-                #                 userId: ~
-                #                 status: ~
-                #                 firstname: ~
-                #                 lastname: ~
-                #                 city: ~
-                #     persistence:
-                #         driver: orm
-                #         model: CommsyBundle\Entity\Materials
-                #         identifier: itemId
-                #         finder: ~
-                #         provider: ~
-                #         listener: ~
+                materials:
+                    indexable_callback: 'isIndexable'
+                    mappings:
+                        versionId: ~
+                        contextId: ~
+                        title:
+                            type: string
+                            analyzer: autocomplete
+                            search_analyzer: standard
+                        description: ~
+                        sections:
+                            type: 'nested'
+                            properties:
+                                title: ~
+                                description: ~
+                        creator:
+                            type: 'object'
+                            properties:
+                                userId: ~
+                                status: ~
+                                firstname: ~
+                                lastname: ~
+                                city: ~
+                        modifier:
+                            type: 'object'
+                            properties:
+                                userId: ~
+                                status: ~
+                                firstname: ~
+                                lastname: ~
+                                city: ~
+                    persistence:
+                        driver: orm
+                        model: CommsyBundle\Entity\Materials
+                        identifier: itemId
+                        finder: ~
+                        provider: ~
+                        listener: ~

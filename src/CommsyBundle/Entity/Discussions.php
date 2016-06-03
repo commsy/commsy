@@ -3,6 +3,7 @@
 namespace CommsyBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Discussions
@@ -134,6 +135,11 @@ class Discussions
      * @ORM\Column(name="locking_user_id", type="integer", nullable=true)
      */
     private $lockingUserId;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Discussionarticles", mappedBy="discussion")
+     */
+    private $discussionarticles;
 
 
     public function isIndexable()
@@ -534,5 +540,39 @@ class Discussions
     public function getModifier()
     {
         return $this->modifier;
+    }
+
+    /**
+     * Add discussionarticle
+     *
+     * @param \CommsyBundle\Entity\Discussionarticles $discussionarticle
+     *
+     * @return Materials
+     */
+    public function addDiscussionarticle(\CommsyBundle\Entity\Discussionarticles $discussionarticle)
+    {
+        $this->discussionarticles[] = $discussionarticle;
+
+        return $this;
+    }
+
+    /**
+     * Remove discussionarticle
+     *
+     * @param \CommsyBundle\Entity\Discussionarticles $discussionarticle
+     */
+    public function removeDiscussionarticle(\CommsyBundle\Entity\Discussionarticles $discussionarticle)
+    {
+        $this->discussionarticles->removeElement($discussionarticle);
+    }
+
+    /**
+     * Get discussionarticles
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDiscussionarticles()
+    {
+        return $this->discussionarticles;
     }
 }
