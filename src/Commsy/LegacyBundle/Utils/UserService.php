@@ -152,5 +152,38 @@ class UserService
         $roomList = $this->roomManager->getRelatedRoomListForUser($userId);
         return $roomList->to_array();
     }
-    
+
+    public function grantAccessToAllPendingApplications(){
+       //$requested_user_manager = $this->_environment->getUserManager();
+       //$requested_user_manager->setContextLimit($this->_environment->getCurrentContextID());
+       //$requested_user_manager->setRegisteredLimit();
+       //$requested_user_manager->select();
+       //$requested_user_list = $requested_user_manager->get();
+
+       $this->user_manager->setContextLimit($this->_environment->getCurrentContextID());
+       $this->user_manager->setRegisteredLimit();
+       $this->user_manager->select();
+       $requested_user_list = $this->user_manager->get();
+
+       if (!empty($requested_user_list)){
+          $requested_user = $requested_user_list->getFirst();
+          while($requested_user){
+             $requested_user->makeUser();
+             $requested_user->save();
+             $task_manager = $this->_environment->getTaskManager();
+             $task_list = $task_manager->getTaskListForItem($requested_user);
+             if (!empty($task_list)){
+                $task = $task_list->getFirst();
+                while($task){
+                   if ($task->getStatus() == 'REQUEST' and ($task->getTitle() == 'TASK_USER_REQUEST' or $task->getTitle() == 'TASK_PROJECT_MEMBER_REQUEST')) {
+                      $task->setStatus('CLOSED');
+                      $task->save();
+                   }
+                   $task = $task_list->getNext();
+                }
+             }
+             $requested_user = $requested_user_list->getNext();
+          }
+       }
+    }
 }

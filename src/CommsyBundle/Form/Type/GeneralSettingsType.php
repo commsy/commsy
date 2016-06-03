@@ -24,8 +24,6 @@ class GeneralSettingsType extends AbstractType
     private $em;
     private $legacyEnvironment;
 
-    private $rubrics;
-
     private $roomItem;
 
     public function __construct(EntityManager $em, LegacyEnvironment $legacyEnvironment)
@@ -91,9 +89,9 @@ class GeneralSettingsType extends AbstractType
                 'entry_type' => ChoiceType::class,
                 'entry_options' => array(
                     'choices' => array(
-                        'Hide' => 'hide',
                         'Show' => 'show',
-                        'Feed' => 'feed',
+                        'Hide' => 'hide',
+                        'Off' => 'off',
                     ),
                     //'expanded' => true,
                     //'multiple' => false,
