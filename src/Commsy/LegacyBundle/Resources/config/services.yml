@@ -98,6 +98,10 @@ services:
         class: Commsy\LegacyBundle\Utils\DiscussionService
         arguments: ['@commsy_legacy.environment']
         
+    commsy_legacy.todo_service:
+        class: Commsy\LegacyBundle\Utils\TodoService
+        arguments: ['@commsy_legacy.environment']
+        
     commsy_legacy.disc_service:
         class: Commsy\LegacyBundle\Utils\DiscService
         arguments: ['@commsy_legacy.environment']
