@@ -61,7 +61,7 @@
 {% extends 'CommsyBundle:Base:room.html.twig' %}
 
 {% import 'CommsyBundle:Item:macros.html.twig' as macrosItem %}
-{% import 'CommsyBundle:Material:macros.html.twig' as macrosMaterial %}
+{% import 'CommsyBundle:Date:macros.html.twig' as macrosDate %}
 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
 {% set item = date %}
@@ -155,9 +155,31 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
+                
+                {# content #}
+                <article class="uk-article uk-position-relative" data-uk-observe>
+                    {# title, etc. #}
+                    <div class="cs-toggle" data-uk-observe>
+                        {{ macrosDate.title(date, modifierList, userCount, readCount, readSinceModificationCount, draft) }}
+                    </div>
+            
+                    {# description #}
+                    <div id="description{{ date.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': date.contextId, 'itemId': date.itemId}) }}' }">
+                        {#{ macrosItem.itemDescription('description', material, true, material.description) }#}
+                    </div>
+            
+                    {# files #}
+                    <div id="files{{ date.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': date.contextId, 'itemId': date.itemId}) }}' }">
+                        {#{ macrosItem.files(material) }#}
+                    </div>
+        
+                    {# links #}
+                    <div id="links{{ date.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': date.contextId, 'itemId': date.itemId}) }}' }">
+                        {#{ macrosItem.links(material,showHashtags,showCategories,roomCategories) }#}
+                    </div>
+                </article>
             </div>
 
             {# annotations #}
