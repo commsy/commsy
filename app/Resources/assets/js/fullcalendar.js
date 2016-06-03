@@ -42,6 +42,9 @@
                 editEvent(event, revertFunc);
             },
         });
+        if ($('#calendar').data('height')) {
+            $('#calendar').fullCalendar('option', 'height', $('#calendar').data('height'));
+        }
     };
 
     function editEvent (event, revertFunc) {

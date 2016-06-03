@@ -41,10 +41,10 @@ class DashboardController extends Controller
 
     
     /**
-     * @Route("/dashboard/{itemId}/feed/{start}")
+     * @Route("/dashboard/{roomId}/feed/{start}")
      * @Template()
      */
-    public function feedAction($itemId, $max = 10, $start = 0)
+    public function feedAction($roomId, $max = 10, $start = 0)
     {
         // collect information for feed panel
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -103,5 +103,50 @@ class DashboardController extends Controller
                                       'layout' => 'cs-notify-message',
                                       'data' => array(),
                                     ));
+    }
+    
+    /**
+     * @Route("/dashboard/{roomId}/rss")
+     * @Template()
+     */
+    public function rssAction($roomId, Request $request)
+    {
+        return array(
+        );
+    }
+    
+    /**
+     * @Route("/dashboard/{roomId}/externalaccess")
+     * @Template()
+     */
+    public function externalaccessAction($roomId, Request $request)
+    {
+        $userService = $this->get("commsy.user_service");
+        $user = $userService->getPortalUserFromSessionId();
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $itemManager = $legacyEnvironment->getItemManager();
+        $releasedIds = $itemManager->getExternalViewerEntriesForRoom($roomId);
+        $viewableIds = $itemManager->getExternalViewerEntriesForUser($user->getUserID());
+        
+        $releasedItems = array();
+        foreach ($releasedIds as $releasedId) {
+            $tempItem = $itemManager->getItem($releasedId);
+            $tempManager = $legacyEnvironment->getManager($tempItem->getItemType());
+            $releasedItems[] = $tempManager->getItem($releasedId);
+        }
+        
+        $viewableItems = array();
+        foreach ($viewableIds as $viewableId) {
+            $tempItem = $itemManager->getItem($viewableId);
+            $tempManager = $legacyEnvironment->getManager($tempItem->getItemType());
+            $viewableItems[] = $tempManager->getItem($viewableId);
+        }
+        
+        return array(
+            'releaseItems' => $releasedItems,
+            'viewableItems' => $viewableItems
+        );
     }
 }

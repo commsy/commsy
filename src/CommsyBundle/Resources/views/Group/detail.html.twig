@@ -89,32 +89,40 @@
                                                 <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
                                             </a>
                                         </li>
+                                        
                                         {# print #}
- 
                                         <li>
-                                            <a class="" href="#" id="print">
+                                            <a href="{{ path('commsy_item_print', {'roomId': roomId, 'itemId': group.itemId}) }}" target="_blank" id="print">
                                                 <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
-
                                         {# save #}
                                         <li>
-                                            <a class="" href="#">
+                                            <a href="{{ path('commsy_item_download', {'roomId': roomId, 'itemId': group.itemId}) }}" target="_blank">
                                                 <i class="uk-icon-small uk-icon-save uk-icon-justify uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
                                         {# copy #}
                                         <li>
-                                            <a class="" href="#">
+                                            <a href="#" data-cs-action-copy="{
+                                                'url': '{{ path('commsy_item_copy', {'roomId': roomId}) }}',
+                                                'successMessage': '<i class=\'uk-icon-medium uk-icon-copy\'></i> {{ 'Entry stored in clipboard|%count% entries stored in clipboard'|transchoice(1, {}, 'item') }}',
+                                                'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}',
+                                                'itemIds': [ {{ group.itemId}} ]
+                                            }">
                                                 <i class="uk-icon-small uk-icon-copy uk-icon-justify uk-visible-large"></i> {{ 'copy'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
                                         {# send #}
                                         <li>
-                                            <a class="" href="#">
+                                            <a href="#" data-cs-action-send="{
+                                                'url': '{{ path('commsy_item_send', {'roomId': roomId}) }}',
+                                                'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}',
+                                                'itemId': {{ group.itemId }}
+                                            }">
                                                 <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send'|trans({})|capitalize }}
                                             </a>
                                         </li>

@@ -19,55 +19,10 @@
                     <div class="uk-grid">
 
                         {# quick item navigation #}
-                        <div class="uk-flex-inline uk-width-2-5 ">
-
-                            {# back navigation #}
-                            <div class="uk-margin-right">
-                                {% if firstItemId %}
-                                    <a class="uk-button-primary" href="{{ path('commsy_discussion_detail', {'roomId': roomId, 'itemId': firstItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-left"></i></a>
-                                {% else %}
-                                    <i class="uk-icon-small uk-icon-angle-double-left uk-button-primary"></i>
-                                {% endif %}
-                                {% if prevItemId %}
-                                    <a class="uk-button-primary" href="{{ path('commsy_discussion_detail', {'roomId': roomId, 'itemId': prevItemId}) }}"><i class="uk-icon-small uk-icon-angle-left"></i></a>
-                                {% else %}
-                                    <i class="uk-icon-small uk-icon-angle-left uk-button-primary"></i>
-                                {% endif %}
-                            </div>
-
-                            {# item dropdown #}
-                            <div class="uk-button-dropdown uk-margin-right" data-uk-dropdown>
-                                <button class="uk-button uk-button-mini">
-                                    {{ 'discussion'|transchoice(0, {}, "rubric")}} {{ counterPosition }} / {{ count }}
-                                    <i class="uk-icon-caret-down"></i>
-                                </button>
-                                <div id="cs-entry-navigation" class="uk-dropdown uk-padding-remove">
-                                   <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
-                                       {% for tempDiscussion in discussionList %}
-                                            {% if tempDiscussion.itemId != discussion.itemId %}
-                                                <li><a href="{{ path('commsy_discussion_detail', {'roomId': roomId, 'itemId': tempDiscussion.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempDiscussion.title|raw }}">{{ tempDiscussion.title|raw|truncate(25) }}</a></li>
-                                            {% else %}
-                                                <li><a href="#" data-uk-tooltip="{delay:'250'}" title="{{ tempDiscussion.title|raw }}" class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempDiscussion.title|raw|truncate(20)  }}</a></li>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            </div>
-
-                            {# forward navigation #}
-                            <div>
-                                {% if nextItemId %}
-                                    <a class="uk-button-primary" href="{{ path('commsy_discussion_detail', {'roomId': roomId, 'itemId': nextItemId}) }}"><i class="uk-icon-small uk-icon-angle-right"></i></a>
-                                {% else %}
-                                    <i class="uk-icon-small uk-icon-angle-right uk-button-primary"></i>
-                                {% endif %}
-                                {% if lastItemId %}
-                                    <a class="uk-button-primary" href="{{ path('commsy_discussion_detail', {'roomId': roomId, 'itemId': lastItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-right"></i></a>
-                                {% else %}
-                                    <i class="uk-icon-small uk-icon-angle-double-right uk-button-primary"></i>
-                                {% endif %}
-                            </div>
-                        </div>
+                        {{ render(controller(
+                            'CommsyBundle:Item:stepper',
+                            { 'roomId': roomId, 'itemId': item.itemId }
+                        ))}}
 
                         {# actions #}
                         <div class="uk-width-3-5 uk-text-right">
@@ -91,14 +46,14 @@
 
                                         {# print #}
                                         <li>
-                                            <a href="{{ path('commsy_discussion_print', {'roomId': roomId, 'itemId': discussion.itemId}) }}" target="_blank" id="print">
+                                            <a href="{{ path('commsy_item_print', {'roomId': roomId, 'itemId': discussion.itemId}) }}" target="_blank" id="print">
                                                 <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
                                         {# save #}
                                         <li>
-                                            <a href="{{ path('commsy_discussion_download', {'roomId': roomId, 'itemId': discussion.itemId}) }}" target="_blank">
+                                            <a href="{{ path('commsy_item_download', {'roomId': roomId, 'itemId': discussion.itemId}) }}" target="_blank">
                                                 <i class="uk-icon-small uk-icon-save uk-icon-justify uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
                                             </a>
                                         </li>
@@ -129,7 +84,7 @@
                                         {# delete #}
                                         <li>
                                             {% if is_granted('ITEM_EDIT', item.itemId) %}
-                                                <a class="commsy-action-delete" id="" href="#" data-delete-url="{{ path('commsy_discussion_delete', {'roomId': roomId, 'itemId': discussion.itemId}) }}" data-item-type="{{discussion.itemType}}" data-title="{{ 'list choice'|trans({},'rubric')|capitalize }}" data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}" data-return-url="{{ path('commsy_discussion_list', {'roomId': roomId}) }}">
+                                                <a class="commsy-action-delete" id="" href="#" data-delete-url="{{ path('commsy_item_delete', {'roomId': roomId, 'itemId': discussion.itemId}) }}" data-item-type="{{discussion.itemType}}" data-title="{{ 'list choice'|trans({},'rubric')|capitalize }}" data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}" data-return-url="{{ path('commsy_discussion_list', {'roomId': roomId}) }}">
                                                     <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                 </a>
                                             {% else %}

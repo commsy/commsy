@@ -22,6 +22,22 @@
                 <source>calendar</source>
                 <target>Kalender</target>
             </trans-unit>
+            <trans-unit id="date">
+                <source>date</source>
+                <target>Termin</target>
+            </trans-unit>
+            <trans-unit id="place">
+                <source>place</source>
+                <target>Ort</target>
+            </trans-unit>
+            <trans-unit id="particpants">
+                <source>participants</source>
+                <target>Teilnehmer</target>
+            </trans-unit>
+            <trans-unit id="info">
+                <source>info</source>
+                <target>Info</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

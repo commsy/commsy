@@ -6,8 +6,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
+
+use CommsyBundle\Form\Type\AnnotationType;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -291,6 +294,44 @@ class DateController extends Controller
         
         $itemArray = array($date);
 
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+ 
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $readerManager = $legacyEnvironment->getReaderManager();
+        $roomItem = $roomManager->getItem($date->getContextId());        
+        $numTotalMember = $roomItem->getAllUsers();
+
+        $userManager = $legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager->setUserLimit();
+        $userManager->select();
+        $user_list = $userManager->get();
+        $all_user_count = $user_list->getCount();
+        $read_count = 0;
+        $read_since_modification_count = 0;
+
+        $current_user = $user_list->getFirst();
+        $id_array = array();
+        while ( $current_user ) {
+		   $id_array[] = $current_user->getItemID();
+		   $current_user = $user_list->getNext();
+		}
+		$readerManager->getLatestReaderByUserIDArray($id_array,$date->getItemID());
+		$current_user = $user_list->getFirst();
+		while ( $current_user ) {
+	   	    $current_reader = $readerManager->getLatestReaderForUserByID($date->getItemID(), $current_user->getItemID());
+            if ( !empty($current_reader) ) {
+                if ( $current_reader['read_date'] >= $date->getModificationDate() ) {
+                    $read_count++;
+                    $read_since_modification_count++;
+                } else {
+                    $read_count++;
+                }
+            }
+		    $current_user = $user_list->getNext();
+		}
+        $read_percentage = round(($read_count/$all_user_count) * 100);
+        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
         $readerService = $this->get('commsy.reader_service');
         
         $readerList = array();
@@ -306,11 +347,30 @@ class DateController extends Controller
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
 
+        // annotation form
+        $form = $this->createForm(AnnotationType::class);
+
+        $categories = array();
+        if ($current_context->withTags()) {
+            $roomCategories = $this->get('commsy.category_service')->getTags($roomId);
+            $dateCategories = $date->getTagsArray();
+            $categories = $this->getTagDetailArray($roomCategories, $dateCategories);
+        }
+
         return array(
             'roomId' => $roomId,
             'date' => $dateService->getDate($itemId),
             'readerList' => $readerList,
-            'modifierList' => $modifierList
+            'modifierList' => $modifierList,
+            'user' => $legacyEnvironment->getCurrentUserItem(),
+            'annotationForm' => $form->createView(),
+            'userCount' => $all_user_count,
+            'readCount' => $read_count,
+            'readSinceModificationCount' => $read_since_modification_count,
+            'draft' => $itemService->getItem($itemId)->isDraft(),
+            'showCategories' => $current_context->withTags(),
+            'showHashtags' => $current_context->withBuzzwords(),
+            'roomCategories' => $categories,
         );
     }
     
@@ -445,7 +505,11 @@ class DateController extends Controller
         $dateItem->setDraftStatus(1);
         $dateItem->setPrivateEditing('1');
 
-        $dateDescriptionArray = date_parse(urldecode($dateDescription));
+        if ($dateDescription != 'now') {
+            $dateDescriptionArray = date_parse(urldecode($dateDescription));
+        } else {
+            $dateDescriptionArray = date_parse(date('Y-m-d H:i:s'));
+        }
         
         $year = $dateDescriptionArray['year'];
         $month = $dateDescriptionArray['month'];
@@ -550,5 +614,124 @@ class DateController extends Controller
                                           'participants' => $participantsDisplay
                                       ),
                                     ));
+    }
+    
+    /**
+     * @Route("/room/{roomId}/date/{itemId}/edit")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function editAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy.item_service');
+        $item = $itemService->getItem($itemId);
+        
+        $materialService = $this->get('commsy_legacy.material_service');
+        $transformer = $this->get('commsy_legacy.transformer.material');
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+        
+        $formData = array();
+        $materialItem = NULL;
+        
+        if ($item->getItemType() == 'material') {
+            // get material from MaterialService
+            $materialItem = $materialService->getMaterial($itemId);
+            if (!$materialItem) {
+                throw $this->createNotFoundException('No material found for id ' . $roomId);
+            }
+            $formData = $transformer->transform($materialItem);
+            $form = $this->createForm(MaterialType::class, $formData, array(
+                'action' => $this->generateUrl('commsy_material_edit', array(
+                    'roomId' => $roomId,
+                    'itemId' => $itemId,
+                ))
+            ));
+        } else if ($item->getItemType() == 'section') {
+            // get section from MaterialService
+            $materialItem = $materialService->getSection($itemId);
+            if (!$materialItem) {
+                throw $this->createNotFoundException('No section found for id ' . $roomId);
+            }
+            $formData = $transformer->transform($materialItem);
+            $form = $this->createForm(SectionType::class, $formData, array());
+        }
+        
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            if ($form->get('save')->isClicked()) {
+                $materialItem = $transformer->applyTransformation($materialItem, $form->getData());
+
+                // update modifier
+                $materialItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                $materialItem->save();
+                
+                if ($item->isDraft()) {
+                    $item->setDraftStatus(0);
+                    $item->saveAsItem();
+                }
+            } else if ($form->get('cancel')->isClicked()) {
+                // ToDo ...
+            }
+            return $this->redirectToRoute('commsy_material_save', array('roomId' => $roomId, 'itemId' => $itemId));
+            
+            // persist
+            // $em = $this->getDoctrine()->getManager();
+            // $em->persist($room);
+            // $em->flush();
+        }
+        
+        return array(
+            'form' => $form->createView(),
+            'showHashtags' => $current_context->withBuzzwords(),
+            'showCategories' => $current_context->withTags(),
+            'currentUser' => $legacyEnvironment->getCurrentUserItem(),
+        );
+    }
+    
+    private function getTagDetailArray ($baseCategories, $itemCategories) {
+        $result = array();
+        $tempResult = array();
+        $addCategory = false;
+        foreach ($baseCategories as $baseCategory) {
+            if (!empty($baseCategory['children'])) {
+                $tempResult = $this->getTagDetailArray($baseCategory['children'], $itemCategories);
+            }
+            if (!empty($tempResult)) {
+                $addCategory = true;
+            }
+            $tempArray = array();
+            $foundCategory = false;
+            foreach ($itemCategories as $itemCategory) {
+                if ($baseCategory['item_id'] == $itemCategory['id']) {
+                    if ($addCategory) {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                    } else {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
+                    }
+                    $foundCategory = true;
+                }
+            }
+            if (!$foundCategory) {
+                if ($addCategory) {
+                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                }
+            }
+            $tempResult = array();
+            $addCategory = false;
+        }
+        return $result;
+    }
+    
+        /**
+     * @Route("/room/{roomId}/date/{itemId}/editdetails")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function editdetailsAction($roomId, $itemId, Request $request)
+    {
+        
     }
 }

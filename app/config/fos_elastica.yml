@@ -79,3 +79,35 @@ fos_elastica:
                         finder: ~
                         provider: ~
                         listener: ~
+                announcement:
+                    indexable_callback: 'isIndexable'
+                    mappings:
+                        contextId: ~
+                        title:
+                            type: string
+                            analyzer: autocomplete
+                            search_analyzer: standard
+                        description: ~
+                        creator:
+                            type: 'object'
+                            properties:
+                                userId: ~
+                                status: ~
+                                firstname: ~
+                                lastname: ~
+                                city: ~
+                        modifier:
+                            type: 'object'
+                            properties:
+                                userId: ~
+                                status: ~
+                                firstname: ~
+                                lastname: ~
+                                city: ~
+                    persistence:
+                        driver: orm
+                        model: CommsyBundle\Entity\Announcement
+                        identifier: itemId
+                        finder: ~
+                        provider: ~
+                        listener: ~
