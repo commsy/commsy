@@ -680,6 +680,11 @@ class ItemController extends Controller
         $item = $rubricManager->getItem($itemId);
         
         $rubricManager->setContextLimit($roomId);
+        
+        if ($item->getItemType() == 'date') {
+            $rubricManager->setWithoutDateModeLimit();
+        }
+        
         $rubricManager->select();
         $itemList = $rubricManager->get();
         $items = $itemList->to_array();
