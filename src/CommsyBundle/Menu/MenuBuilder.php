@@ -87,7 +87,7 @@ class MenuBuilder
         $roomId = $currentStack->attributes->get('roomId');
 
         if ($roomId) {
-               // room navigation
+                // room navigation
                 $menu->addChild('room_navigation', array(
                     'label' => 'Raum-Navigation',
                     'route' => 'commsy_room_home',
@@ -177,16 +177,7 @@ class MenuBuilder
             $this->legacyEnvironment->setCurrentPortalID($authSource->getContextId());
             $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
             $privateRoom = $privateRoomManager->getRelatedOwnRoomForUser($user, $this->legacyEnvironment->getCurrentPortalID());
-            // $current_user = $this->userService->getUser($user->getUserID());
             $current_user = $this->legacyEnvironment->getCurrentUserItem();
-
-            
-/*            $menu->addChild('dashboard', array(
-                'label' => 'DASHBOARD',
-                'route' => 'commsy_dashboard_index',
-                'routeParameters' => array('roomId' => $privateRoom->getItemId()),
-                'extras' => array('icon' => 'uk-icon-dashboard uk-icon-small')
-            ));*/
 
             if ($roomId != $privateRoom->getItemId()) {
                 // rubric room information
