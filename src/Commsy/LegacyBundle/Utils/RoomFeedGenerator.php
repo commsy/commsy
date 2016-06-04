@@ -88,6 +88,14 @@ class RoomFeedGenerator
                             $feedList[] = $discussionItem;    
                         }
                         break;
+                        
+                    case 'todo':
+                        $todoManager = $this->legacyEnvironment->getTodoManager();
+                        $todoItem = $todoManager->getItem($item->getItemId());
+                        if ($todoItem) {
+                            $feedList[] = $todoItem;    
+                        }
+                        break;
                 }
             }
             $itemIndex++;
