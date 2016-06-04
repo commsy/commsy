@@ -1,15 +1,6 @@
 {% if not roomList is empty %}
 <div class="uk-grid">
     <div class="uk-width">
-        <a href="{{ path('commsy_dashboard_overview', {'roomId': privateRoom.ItemID}) }}">
-            <div class="cs-room-block cs-room-dashboard">
-                <i class="uk-icon-dashboard uk-icon-medium cs-menue-padding"></i>{{ 'dashboard'|trans({}, "rubric")}}
-                <p class="uk-text-small uk-text-muted uk-text-truncate">{{ 'dashboard description text'|trans({}, "rubric")}}</p>
-            </div>
-        </a>
-    </div>
-
-    <div class="uk-width">
         <div class="cs-room-block cs-room-search">
             {{ 'own rooms'|trans({}, "rubric")}}
             <form class="uk-search" data-uk-search="">

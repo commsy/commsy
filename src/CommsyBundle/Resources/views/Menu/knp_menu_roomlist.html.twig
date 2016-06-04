@@ -37,6 +37,7 @@
         'CommsyBundle:User:rooms',
         { 'roomId': item.extras.roomId, 'itemId': item.extras.user.itemId }
     ))}}
+    
     <div class="room-load-more" data-uk-scrollspy="{cls:'uk-animation-fade', repeat: true}" data-rooms='{"url": "{{ app.request.baseURL }}/room/{{item.extras.roomId}}/user/{{item.extras.user.itemId}}/rooms/", "target": "#roomList"}'>
         <i class="uk-icon-refresh uk-icon-spin uk-icon-medium cs-menue-padding"></i>
     </div>

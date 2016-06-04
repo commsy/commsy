@@ -577,12 +577,32 @@ class UserController extends Controller
 
         // Room list feed
         $rooms = $userService->getRoomList($user);
-        $privateRoom= $user->getOwnRoom();
 
-        return array(
+        return [
             'roomList' => $rooms,
-            'privateRoom'=> $privateRoom);
+        ];
 
 
+    }
+
+    /**
+     * Displays the global user actions in top navbar.
+     * This is an embedded controller action.
+     *
+     * @Template()
+     * 
+     * @param  int $roomId The current room id
+     * @return Response The HTML response
+     */
+    public function globalNavbarAction($roomId)
+    {
+        $userService = $this->get('commsy.user_service');
+        $currentUserItem = $userService->getCurrentUserItem();
+
+        $privateRoomItem = $currentUserItem->getOwnRoom();
+
+        return [
+            'privateRoomItem' => $privateRoomItem,
+        ];
     }
 }
