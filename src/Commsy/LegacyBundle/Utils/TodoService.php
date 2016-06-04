@@ -100,9 +100,9 @@ class TodoService
         }
     }
     
-    public function getMaterial($itemId)
+    public function getTodo($itemId)
     {
-        return $this->materialManager->getItem($itemId);
+        return $this->todoManager->getItem($itemId);
     }
     
     public function getSection($itemId)

@@ -8,18 +8,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 
 use CommsyBundle\Filter\TodoFilterType;
+use CommsyBundle\Form\Type\AnnotationType;
 
 class TodoController extends Controller
 {
-    /**
-     * @Route("/room/{roomId}/todo/{itemId}")
-     * @Template()
-     */
-    public function indexAction($roomId, $itemId, Request $request)
-    {
-        return array();
-    }
-
     /**
      * @Route("/room/{roomId}/todo")
      * @Template()
@@ -376,7 +368,7 @@ class TodoController extends Controller
 		while ( $current_user ) {
 	   	    $current_reader = $readerManager->getLatestReaderForUserByID($todo->getItemID(), $current_user->getItemID());
             if ( !empty($current_reader) ) {
-                if ( $current_reader['read_date'] >= $date->getModificationDate() ) {
+                if ( $current_reader['read_date'] >= $todo->getModificationDate() ) {
                     $read_count++;
                     $read_since_modification_count++;
                 } else {
@@ -427,6 +419,40 @@ class TodoController extends Controller
             'showHashtags' => $current_context->withBuzzwords(),
             'roomCategories' => $categories,
         );
+    }
+    
+    private function getTagDetailArray ($baseCategories, $itemCategories) {
+        $result = array();
+        $tempResult = array();
+        $addCategory = false;
+        foreach ($baseCategories as $baseCategory) {
+            if (!empty($baseCategory['children'])) {
+                $tempResult = $this->getTagDetailArray($baseCategory['children'], $itemCategories);
+            }
+            if (!empty($tempResult)) {
+                $addCategory = true;
+            }
+            $tempArray = array();
+            $foundCategory = false;
+            foreach ($itemCategories as $itemCategory) {
+                if ($baseCategory['item_id'] == $itemCategory['id']) {
+                    if ($addCategory) {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                    } else {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
+                    }
+                    $foundCategory = true;
+                }
+            }
+            if (!$foundCategory) {
+                if ($addCategory) {
+                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                }
+            }
+            $tempResult = array();
+            $addCategory = false;
+        }
+        return $result;
     }
     
 }
