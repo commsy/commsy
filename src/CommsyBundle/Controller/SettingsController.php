@@ -10,8 +10,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 use CommsyBundle\Entity\Room;
 use CommsyBundle\Form\Type\GeneralSettingsType;
+use CommsyBundle\Form\Type\ModerationSettingsType;
 use CommsyBundle\Form\Type\AppearanceSettingsType;
 use CommsyBundle\Form\Type\ExtensionSettingsType;
+
+use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 
 class SettingsController extends Controller
 {
@@ -59,6 +62,47 @@ class SettingsController extends Controller
         return array(
             'form' => $form->createView()
         );
+    }
+
+    /**
+     * @Route("/room/{roomId}/settings/moderation")
+     * @Template
+     * @Security("is_granted('MODERATOR')")
+     */
+    public function moderationAction($roomId, Request $request)
+    {
+        dump($roomId);
+        dump($request);
+        $roomService = $this->get('commsy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
+
+        if (!$roomItem) {
+            throw $this->createNotFoundException('No room found for id ' . $roomId);
+        }
+
+        $transformer = $this->get('commsy_legacy.transformer.room');
+        $roomData = $transformer->transform($roomItem);
+
+        $form = $this->createForm(ModerationSettingsType::class, $roomData, array(
+            'roomId' => $roomId,
+        ));
+        
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
+      
+            $roomItem->save();
+
+            // persist
+            // $em = $this->getDoctrine()->getManager();
+            // $em->persist($room);
+            // $em->flush();
+        }
+
+        return array(
+            'form' => $form->createView()
+        );
+
     }
 
     /**

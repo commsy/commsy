@@ -14,18 +14,6 @@ class RoomTransformer implements DataTransformerInterface
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->roomService = $roomService;
-
-        $this->rubricsMapping = array(
-            'Announcements' => 'announcement',
-            'Events' => 'date',
-            'Materials' => 'material',
-            'Discussions' => 'discussion',
-            'Members' => 'user',
-            'Groups' => 'group',
-            'Tasks' => 'todo',
-            'Topics' => 'topic',
-        );
-        $this->rubricsMappingFlipped = array_flip($this->rubricsMapping);
     }
 
     /**
@@ -37,6 +25,8 @@ class RoomTransformer implements DataTransformerInterface
     public function transform($roomItem)
     {
         $roomData = array();
+
+        $defaultRubrics = $roomItem->getAvailableDefaultRubricArray();
 
         if ($roomItem) {
             $roomData['title'] = $roomItem->getTitle();
@@ -54,18 +44,12 @@ class RoomTransformer implements DataTransformerInterface
             
             $roomData['wikiEnabled'] = $roomItem->isWikiEnabled();
 
-            // TODO clean this messs up! 
-            $rubricsArray = array_combine(array_values($this->rubricsMapping), array_values(array_fill(0, count($this->rubricsMapping), 'off')));
-            $rubrics = $this->roomService->getRubricInformation($roomItem->getItemID(), true);
-            foreach ($rubrics as $rubric) {
+            $rubrics = array_combine($defaultRubrics, array_fill(0, count($defaultRubrics), 'off'));
+            foreach ($this->roomService->getRubricInformation($roomItem->getItemID(), true) as $rubric) {
                 list($rubricName, $modifier) = explode('_', $rubric);
-                $rubricsArray[$rubricName] = $modifier;
+                $rubrics[$rubricName] = $modifier;
             }
-            $rubricsArrayTransformed = array();
-            foreach ($rubricsArray as $rubricName => $rubricModifier) {
-                $rubricsArrayTransformed[$this->rubricsMappingFlipped[$rubricName]] = $rubricModifier;
-            }
-            $roomData['rubrics'] = $rubricsArrayTransformed;
+            $roomData['rubrics'] = $rubrics;
         }
         return $roomData;
     }

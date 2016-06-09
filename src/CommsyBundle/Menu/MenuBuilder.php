@@ -124,6 +124,14 @@ class MenuBuilder
                 'extras' => array('icon' => 'uk-icon-server uk-icon-small'),
             ));
 
+            // moderation
+            $menu->addChild('moderation', array(
+                'label' => 'Moderation',
+                'route' => 'commsy_settings_moderation',
+                'routeParameters' => array('roomId' => $roomId),
+                'extras' => array('icon' => 'uk-icon-sitemap uk-icon-small'),
+            ));            
+
             // appearance
             $menu->addChild('appearance', array(
                 'label' => 'appearance',
@@ -142,8 +150,6 @@ class MenuBuilder
         }
         
         // identifier
-        
-        // moderation
         
         // additional
         

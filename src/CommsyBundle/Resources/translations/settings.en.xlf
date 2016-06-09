@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>off</source>
+                <target>Off</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>show</source>
+                <target>Show</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>hide</source>
+                <target>Hide</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>never</source>
+                <target>Never</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>always</source>
+                <target>Always</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>code</source>
+                <target>Code</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>user</source>
+                <target>User</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>german</source>
+                <target>German</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>english</source>
+                <target>English</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

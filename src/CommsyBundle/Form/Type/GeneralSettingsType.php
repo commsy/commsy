@@ -50,13 +50,14 @@ class GeneralSettingsType extends AbstractType
                 'constraints' => array(
                     new NotBlank(),
                 ),
+                // FIXME: option "translation_domain" invalid for TextType!
                 'translation_domain' => 'settings',
             ))
             ->add('language', ChoiceType::class, array(
                 'choices' => array(
-                    'User' => 'user',
-                    'German' => 'de',
-                    'English' => 'en',
+                    'user' => 'user',
+                    'german' => 'de',
+                    'english' => 'en',
                 ),
             ))
             ->add('room_image', FileType::class, array(
@@ -65,13 +66,17 @@ class GeneralSettingsType extends AbstractType
                 ),
                 'required' => false,
                 //'image_path' => 'webPath',
+                // ist jetzt in resolver->setDefaults (s.u.
+                //'translation_domain' => 'settings',
             ))
             ->add('access_check', ChoiceType::class, array(
                 'choices' => array(
-                    'Never' => 'never',
-                    'Always' => 'always',
-                    'Code' => 'code',
+                    'never' => 'never',
+                    'always' => 'always',
+                    'code' => 'code',
                 ),
+                // ist jetzt in resolver->setDefaults (s.u.)
+                //'translation_domain' => 'settings',
             ))
             ->add('room_description', TextareaType::class, array(
                 'attr' => array(
@@ -89,20 +94,24 @@ class GeneralSettingsType extends AbstractType
                 'entry_type' => ChoiceType::class,
                 'entry_options' => array(
                     'choices' => array(
-                        'Show' => 'show',
-                        'Hide' => 'hide',
-                        'Off' => 'off',
+                        'show' => 'show',
+                        'hide' => 'hide',
+                        'off' => 'off',
                     ),
+                    // nicht durch "resolver->setDefaults" abgedeckt, daher hier explizit gesetzt!
+                    'translation_domain' => 'settings',
                     //'expanded' => true,
                     //'multiple' => false,
                     'attr' => array(
                         'class' => 'uk-panel-box',
                     )
                 ),
+                // FIXME: option "translation_domain" invalid for CollectionType!
+                'translation_domain' => 'rubric',
                 'attr' => array(
                     'class' => 'uk-sortable',
                     'data-uk-sortable' => '',
-                )
+                ),
             ))
         ;
 
@@ -176,6 +185,7 @@ class GeneralSettingsType extends AbstractType
     {
         $resolver
             ->setRequired(['roomId', 'uploadUrl'])
+            ->setDefaults(array('translation_domain' => 'settings'))
         ;
     }
 

@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>off</source>
+                <target>Deaktiviert</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>show</source>
+                <target>Anzeigen</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>hide</source>
+                <target>Verbergen</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>never</source>
+                <target>Nie</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>always</source>
+                <target>Immer</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>code</source>
+                <target>Code</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>user</source>
+                <target>Benutzer</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>german</source>
+                <target>Deutsch</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>english</source>
+                <target>Englisch</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>title</source>
+                <target>Titel</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>language</source>
+                <target>Sprache</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>room_image</source>
+                <target>Logo</target>
+            </trans-unit>
+            <trans-unit id="13">
+                <source>access_check</source>
+                <target>Teilnahme</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>room_description</source>
+                <target>Raumbeschreibung</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>save</source>
+                <target>Speichern</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>rubrics</source>
+                <target>Rubriken</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
