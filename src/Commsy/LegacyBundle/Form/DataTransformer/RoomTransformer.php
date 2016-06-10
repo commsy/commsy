@@ -10,10 +10,11 @@ class RoomTransformer implements DataTransformerInterface
 {
     private $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService = null)
+    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, UserService $userService)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->roomService = $roomService;
+        $this->userService = $userService;
 
         $this->rubricsMapping = array(
             'Announcements' => 'announcement',
@@ -54,7 +55,7 @@ class RoomTransformer implements DataTransformerInterface
             
             $roomData['wikiEnabled'] = $roomItem->isWikiEnabled();
 
-            // TODO clean this messs up! 
+            // TODO clean this mess up! 
             $rubricsArray = array_combine(array_values($this->rubricsMapping), array_values(array_fill(0, count($this->rubricsMapping), 'off')));
             $rubrics = $this->roomService->getRubricInformation($roomItem->getItemID(), true);
             foreach ($rubrics as $rubric) {
@@ -108,7 +109,6 @@ class RoomTransformer implements DataTransformerInterface
         if ( isset($roomData['member_check']) ) {
             switch($roomData['member_check']) {
                 case "never":
-                    $userService = $this->get('commsy.user_service');
                     $userService->grantAccessToAllPendingApplications();
                     $roomObject->setCheckNewMemberNever();
                     break;

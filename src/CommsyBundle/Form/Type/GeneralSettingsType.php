@@ -50,6 +50,7 @@ class GeneralSettingsType extends AbstractType
                 'constraints' => array(
                     new NotBlank(),
                 ),
+                // TODO: "settings.de.xlf" und "settings.de.xlf" anlegen und Elemente aus dieser Klasse dort eintragen (rubrics in eigener "rubrics.de.xlf"?)
                 'translation_domain' => 'settings',
             ))
             ->add('language', ChoiceType::class, array(
@@ -73,6 +74,7 @@ class GeneralSettingsType extends AbstractType
                     'Code' => 'code',
                 ),
             ))
+            ->add('code', TextType::class,
             ->add('room_description', TextareaType::class, array(
                 'attr' => array(
                     'class' => 'uk-form-width-large',
