@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 use CommsyBundle\Filter\TodoFilterType;
 use CommsyBundle\Form\Type\AnnotationType;
@@ -324,6 +325,8 @@ class TodoController extends Controller
         
         $todo = $todoService->getTodo($itemId);
 
+        $stepList = $todo->getStepItemList()->to_array();
+
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $item = $todo;
         $reader_manager = $legacyEnvironment->getReaderManager();
@@ -407,6 +410,7 @@ class TodoController extends Controller
         return array(
             'roomId' => $roomId,
             'todo' => $todoService->getTodo($itemId),
+            'stepList' => $stepList,
             'readerList' => $readerList,
             'modifierList' => $modifierList,
             'user' => $legacyEnvironment->getCurrentUserItem(),
@@ -453,6 +457,66 @@ class TodoController extends Controller
             $addCategory = false;
         }
         return $result;
+    }
+    
+    /**
+     * @Route("/room/{roomId}/todo/{itemId}/editsteps")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function editStepsAction($roomId, $itemId, Request $request)
+    {
+        $todoService = $this->get('commsy_legacy.todo_service');
+
+        $todo = $todoService->getTodo($itemId);
+
+        $stepList = $todo->getStepItemList()->to_array();
+
+        return array(
+            'stepList' => $stepList,
+            'todo' => $todo
+        );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/todo/{itemId}/createstep")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function createStepAction($roomId, $itemId, Request $request)
+    {
+        $translator = $this->get('translator');
+
+        $todoService = $this->get('commsy_legacy.todo_service');
+        $transformer = $this->get('commsy_legacy.transformer.todo');
+
+        $todo = $todoService->getTodo($itemId);
+
+        $stepList = $material->getStepItemList();
+        $steps = $stepList->to_array();
+        $countSteps = $stepList->getCount();
+
+        $step = $todoService->getNewStep();
+        $step->setTitle('['.$translator->trans('insert title').']');
+        $step->setLinkedItemId($itemId);
+        $step->setNumber($countSteps+1);
+        $step->save();
+
+        $formData = $transformer->transform($step);
+        $form = $this->createForm(SectionType::class, $formData, array(
+            'action' => $this->generateUrl('commsy_material_savesection', array('roomId' => $roomId, 'itemId' => $step->getItemID()))
+        ));
+
+        return array(
+            'form' => $form->createView(),
+            'stepList' => $stepList,
+            'todo' => $todo,
+            'step' => $step,
+            'modifierList' => array(),
+            'userCount' => 0,
+            'readCount' => 0,
+            'readSinceModificationCount' => 0
+        );
     }
     
 }

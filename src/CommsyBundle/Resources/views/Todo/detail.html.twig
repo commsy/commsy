@@ -119,7 +119,103 @@
                     <div id="links{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }">
                         {{ macrosItem.links(todo,showHashtags,showCategories,roomCategories) }}
                     </div>
+                    
+                    {# steps #}
+                    <div id="steps{{ todo.itemId }}" class="cs-edit-section cs-toggle"
+                    {% if stepList|length > 0 %}
+                        data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_todo_editsteps', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }"
+                    {% endif %}
+                    >
+                        {{ macrosTodo.steps(todo, stepList) }}
+                    </div>
                 </article>
+            </div>
+
+            <div data-uk-observe id="step-content">
+                {# todo steps #}
+                {% for step in stepList %}
+                    {% set count = loop.index0 %}
+                    <div id="step_{{count}}" class="uk-panel uk-panel-box uk-margin-top todo-step">
+                        <div class="uk-panel-teaser cs-panel-teaser-primary cs-remove-overflow cs-remove-section cs-toggle" data-cs-edit="{removeUrl: '/app_dev.php/room/201/material/1419/remove', draft: ''}">
+                            <div class="uk-grid">
+                                <div class="uk-flex-inline uk-width-2-5 ">
+                                    {# step navigation #}
+                                    {% if loop.last and loop.length > 1 %}
+                                        <div class="uk-margin-right">
+                                            <a class="uk-button-primary" href="#step_{{count-1}}"><i class="uk-icon-small uk-icon-angle-up"></i></a>
+                                            <i class="uk-icon-small uk-icon-angle-down uk-text-muted"></i>
+                                        </div>
+                                    {% elseif loop.first and loop.length > 1 %}
+                                        <div>
+                                            <i class="uk-icon-small uk-icon-angle-up uk-text-muted"></i>
+                                            <a class="uk-button-primary" href="#step_{{count+1}}"><i class="uk-icon-small uk-icon-angle-down"></i></a>
+                                        </div>
+                                    {% elseif loop.length == 1 %}
+                                        <div>
+                                            <i class="uk-icon-small uk-icon-angle-up uk-text-muted"></i>
+                                            <i class="uk-icon-small uk-icon-angle-down uk-text-muted"></i>
+                                        </div>
+                                    {% else %}
+                                        <div class="uk-margin-right">
+                                            <a class="uk-button-primary" href="#step_{{count-1}}"><i class="uk-icon-small uk-icon-angle-up"></i></a>
+                                            <a class="uk-button-primary" href="#step_{{count+1}}"><i class="uk-icon-small uk-icon-angle-down"></i></a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="uk-width-3-5 uk-text-right">
+
+                                    {# step actions #}
+                                    <div class="uk-margin-left uk-button-dropdown" data-uk-dropdown>
+                                        <button class="uk-button uk-button-mini">
+                                            {{ 'selected entries'|trans({}, 'rubric') }}
+                                            <i class="uk-icon-caret-down"></i>
+                                        </button>
+
+                                        <div id="cs-additional-actions" class="uk-dropdown  uk-padding-remove">
+                                            <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+
+                                                {# new step #}
+                                                <li>
+                                                    <a class="newStep" href="#" id="newStep" data-step-url="{{ path('commsy_todo_createstep', {'roomId': roomId, 'itemId': todo.itemId}) }}">
+                                                        <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new step'|trans({}) }}
+                                                    </a>
+                                                </li>
+
+                                                {# delete #}
+                                                <li>
+                                                    {% if is_granted('ITEM_EDIT', item.itemId) %}
+                                                        <a class="commsy-action-delete" id="" href="#" data-delete-url="{{ path('commsy_item_delete', {'roomId': roomId, 'itemId': step.itemId}) }}" data-item-type="{{step.itemType}}" data-title="{{ 'list choice'|trans({},'rubric')|capitalize }}" data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}">
+                                                            <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                        </a>
+                                                    {% else %}
+                                                        <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                    {% endif %}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <article class="uk-article uk-position-relative">
+                            {# title #}
+                            <div class="cs-toggle" data-uk-observe>
+                                {{ macrosTodo.title(step, modifierList, userCount, readCount, readSinceModificationCount) }}
+                            </div>
+                            
+                            {# description #}
+                            <div id="description{{ step.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': step.contextId, 'itemId': step.itemId}) }}' }">
+                                {{ macrosItem.itemDescription('description', step, true, step.description) }}
+                            </div>
+
+                            {# files #}
+                            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': step.contextId, 'itemId': step.itemId}) }}' }">
+                                {{ macrosItem.files(step) }}
+                            </div>
+                        </article>
+                    </div>
+                {% endfor %}
             </div>
 
             {# annotations #}
@@ -164,10 +260,22 @@
                     {{ 'quick navigation'|trans({})|capitalize }}
                 </div>
                 <div id="cs-nav-quick" class="cs-nav-quick">
-                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ todo.itemId }}\']'}" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
+                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#steps{{ todo.itemId }}\']'}" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
                         <li><a href="#description{{ todo.itemId }}">{{ 'entry description'|trans({})}}</a></li>
                         <li><a href="#files{{ todo.itemId }}">{{ 'files'|trans({})}}</a></li>
                         <li><a href="#links{{ todo.itemId }}">{{ 'links'|trans({})}}</a></li>
+                        {% if not stepList is empty %}
+                            <li class="uk-parent">
+                                <a href="#steps{{ todo.itemId }}">{{ 'steps'|trans({})|capitalize }}</a>
+                                <ul class="uk-nav-sub">                      
+                                    {% for step in stepList %}
+                                        <li>
+                                            <a href="#step{{ step.itemId }}">{{ loop.index }}. {{ step.title|raw|truncate(20) }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endif %}
                         <li><a href="#annotations{{ todo.itemId }}">{{ 'annotations'|trans({})|capitalize }}</a></li>
                     </ul>
                 </div>

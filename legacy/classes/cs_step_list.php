@@ -155,5 +155,9 @@ class cs_step_list {
    function isNotEmpty () {
       return !$this->isEmpty();
    }
+   
+   function to_array () {
+      return $this->_data;
+   }
 }
 ?>
