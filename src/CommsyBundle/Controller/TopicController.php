@@ -41,7 +41,7 @@ class TopicController extends Controller
 
 
        // get the topic manager service
-        $topicService = $this->get('commsy.topic_service');
+        $topicService = $this->get('commsy_legacy.topic_service');
         $defaultFilterValues = array(
             'activated' => false,
         );
@@ -82,7 +82,7 @@ class TopicController extends Controller
 
 
         // get the topic manager service
-        $topicService = $this->get('commsy.topic_service');
+        $topicService = $this->get('commsy_legacy.topic_service');
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -130,7 +130,7 @@ class TopicController extends Controller
         ));
 
         // get the topic manager service
-        $topicService = $this->get('commsy.topic_service');
+        $topicService = $this->get('commsy_legacy.topic_service');
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -141,7 +141,7 @@ class TopicController extends Controller
 
         // get topic list from manager service 
         $topics = $topicService->getListTopics($roomId, $max, $start);
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
@@ -209,7 +209,7 @@ class TopicController extends Controller
             
             return $response;
         } else if ($action == 'delete') {
-            $topicService = $this->get('commsy.topic_service');
+            $topicService = $this->get('commsy_legacy.topic_service');
             foreach ($selectedIds as $id) {
                 $item = $topicService->getTopic($id);
                 $item->delete();
@@ -277,8 +277,8 @@ class TopicController extends Controller
     private function getDetailInfo ($roomId, $itemId) {
         $infoArray = array();
         
-        $topicService = $this->get('commsy.topic_service');
-        $itemService = $this->get('commsy.item_service');
+        $topicService = $this->get('commsy_legacy.topic_service');
+        $itemService = $this->get('commsy_legacy.item_service');
 
         $annotationService = $this->get('commsy_legacy.annotation_service');
         
@@ -339,7 +339,7 @@ class TopicController extends Controller
         }
         $read_percentage = round(($read_count/$all_user_count) * 100);
         $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
         $modifierList = array();
@@ -436,7 +436,7 @@ class TopicController extends Controller
         $translator = $this->get('translator');
         
         $topicData = array();
-        $topicService = $this->get('commsy.topic_service');
+        $topicService = $this->get('commsy_legacy.topic_service');
         $transformer = $this->get('commsy_legacy.transformer.topic');
         
         // create new topic item
@@ -469,10 +469,10 @@ class TopicController extends Controller
      */
     public function editAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
-        $topicService = $this->get('commsy.topic_service');
+        $topicService = $this->get('commsy_legacy.topic_service');
         $transformer = $this->get('commsy_legacy.transformer.topic');
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -534,10 +534,10 @@ class TopicController extends Controller
      */
     public function saveAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
-        $topicService = $this->get('commsy.topic_service');
+        $topicService = $this->get('commsy_legacy.topic_service');
         $transformer = $this->get('commsy_legacy.transformer.date');
         
         $topic = $topicService->getTopic($itemId);
@@ -582,7 +582,7 @@ class TopicController extends Controller
 		}
         $read_percentage = round(($read_count/$all_user_count) * 100);
         $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
         $modifierList = array();

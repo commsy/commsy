@@ -56,7 +56,7 @@ class DiscussionController extends Controller
         // get material list from manager service 
         $discussions = $discussionService->getListDiscussions($roomId, $max, $start);
 
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
@@ -205,7 +205,7 @@ class DiscussionController extends Controller
         $infoArray = array();
         
         $discussionService = $this->get('commsy_legacy.discussion_service');
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
 
         $discussion = $discussionService->getDiscussion($itemId);
         
@@ -253,7 +253,7 @@ class DiscussionController extends Controller
 		}
         $read_percentage = round(($read_count/$all_user_count) * 100);
         $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
         $modifierList = array();
@@ -339,7 +339,7 @@ class DiscussionController extends Controller
 
         $categories = array();
         if ($current_context->withTags()) {
-            $roomCategories = $this->get('commsy.category_service')->getTags($roomId);
+            $roomCategories = $this->get('commsy_legacy.category_service')->getTags($roomId);
             $discussionCategories = $discussion->getTagsArray();
             $categories = $this->getTagDetailArray($roomCategories, $discussionCategories);
         }
@@ -603,7 +603,7 @@ class DiscussionController extends Controller
      **/
     public function deleteAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
         $discussionService = $this->get('commsy_legacy.discussion_service');
@@ -656,7 +656,7 @@ class DiscussionController extends Controller
      */
     public function editAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
         $discussionService = $this->get('commsy_legacy.discussion_service');
@@ -731,7 +731,7 @@ class DiscussionController extends Controller
      */
     public function saveAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
         $discussionService = $this->get('commsy_legacy.discussion_service');
@@ -779,7 +779,7 @@ class DiscussionController extends Controller
 		}
         $read_percentage = round(($read_count/$all_user_count) * 100);
         $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
         $modifierList = array();

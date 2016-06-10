@@ -66,7 +66,7 @@ class MaterialController extends Controller
         // get material list from manager service 
         $materials = $materialService->getListMaterials($roomId, $max, $start, $sort);
 
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
@@ -319,7 +319,7 @@ class MaterialController extends Controller
         $infoArray = array();
         
         $materialService = $this->get('commsy_legacy.material_service');
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
 
         $annotationService = $this->get('commsy_legacy.annotation_service');
         
@@ -374,7 +374,7 @@ class MaterialController extends Controller
 		}
         $read_percentage = round(($read_count/$all_user_count) * 100);
         $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
         $modifierList = array();
@@ -573,7 +573,7 @@ class MaterialController extends Controller
 
         $categories = array();
         if ($current_context->withTags()) {
-            $roomCategories = $this->get('commsy.category_service')->getTags($roomId);
+            $roomCategories = $this->get('commsy_legacy.category_service')->getTags($roomId);
             $materialCategories = $material->getTagsArray();
             $categories = $this->getTagDetailArray($roomCategories, $materialCategories);
         }
@@ -656,7 +656,7 @@ class MaterialController extends Controller
      */
     public function saveWorkflowAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
         $materialService = $this->get('commsy_legacy.material_service');
@@ -704,7 +704,7 @@ class MaterialController extends Controller
      */
     public function editAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
         $materialService = $this->get('commsy_legacy.material_service');
@@ -779,7 +779,7 @@ class MaterialController extends Controller
      */
     public function saveAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
         $materialService = $this->get('commsy_legacy.material_service');

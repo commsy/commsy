@@ -19,9 +19,9 @@ class UploadController extends Controller
     {
         $response = new JsonResponse();
 
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
-        $fileService = $this->get('commsy.file_service');
+        $fileService = $this->get('commsy_legacy.file_service');
         
         $files = $request->files->all();
 
@@ -99,7 +99,7 @@ class UploadController extends Controller
     
     				// determ new file name
     				$environment = $this->get("commsy_legacy.environment")->getEnvironment();
-    				$userService = $this->get("commsy.user_service");
+    				$userService = $this->get("commsy_legacy.user_service");
     				$userItem = $userService->getUser($itemId);
     				$filename = 'cid' . $environment->getCurrentContextID() . '_' . $userItem->getUserID() . '.png';
     				
@@ -173,7 +173,7 @@ class UploadController extends Controller
     public function uploadFormAction($roomId, $itemId, Request $request)
     {
         // get material from MaterialService
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
 
         if (!$item) {
@@ -182,7 +182,7 @@ class UploadController extends Controller
 
         $uploadData = array();
 
-        $fileService = $this->get('commsy.file_service');
+        $fileService = $this->get('commsy_legacy.file_service');
         $oldFileIds = $item->getFileIDArray();
         $optionsData = array();
         $uploadData['oldFiles'] = array();
@@ -246,7 +246,7 @@ class UploadController extends Controller
      */
     public function uploadSaveAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();

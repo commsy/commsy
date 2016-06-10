@@ -31,7 +31,7 @@ class DashboardController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
         
-        $roomFeedGenerator = $this->get('commsy.dashboard_feed_generator');
+        $roomFeedGenerator = $this->get('commsy_legacy.dashboard_feed_generator');
 
         return array(
             'roomItem' => $roomItem,
@@ -49,13 +49,13 @@ class DashboardController extends Controller
         // collect information for feed panel
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $userid=$legacyEnvironment->getCurrentUser()->getUserID();
-        $dashboardFeedGenerator = $this->get('commsy.dashboard_feed_generator');
+        $dashboardFeedGenerator = $this->get('commsy_legacy.dashboard_feed_generator');
         $feedList = $dashboardFeedGenerator->getFeedList($userid, $max, $start);
 
-        $userService = $this->get("commsy.user_service");
+        $userService = $this->get("commsy_legacy.user_service");
         $user = $userService->getPortalUserFromSessionId();
 
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();
         $tempFeedList = array();
@@ -121,7 +121,7 @@ class DashboardController extends Controller
      */
     public function externalaccessAction($roomId, Request $request)
     {
-        $userService = $this->get("commsy.user_service");
+        $userService = $this->get("commsy_legacy.user_service");
         $user = $userService->getPortalUserFromSessionId();
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();

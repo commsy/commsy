@@ -15,7 +15,7 @@ class FileController extends Controller
      */
     public function getFileAction($fileId, $disposition = 'attachment')
     {
-        $fileService = $this->get('commsy.file_service');
+        $fileService = $this->get('commsy_legacy.file_service');
         $file = $fileService->getFile($fileId);
         $rootDir = $this->get('kernel')->getRootDir().'/';
 

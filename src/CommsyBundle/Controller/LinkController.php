@@ -19,16 +19,16 @@ class LinkController extends Controller
      */
     public function showAction($roomId, $itemId)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
-        $labelService = $this->get('commsy.label_service');
+        $labelService = $this->get('commsy_legacy.label_service');
         
         $linkedItems = array();
         if ($item->getItemType() == 'label') {
             $tempLabel = $labelService->getLabel($item->getItemId());
             if ($tempLabel->getLabelType() == 'group') {
-                $groupService = $this->get('commsy.group_service');
+                $groupService = $this->get('commsy_legacy.group_service');
                 $group = $groupService->getGroup($tempLabel->getItemID());
                 $membersList = $group->getMemberItemList();
                 $linkedItems = $membersList->to_array();
@@ -59,7 +59,7 @@ class LinkController extends Controller
             $linkedFullItemsSortedByRubric[$linkedFullItem->getItemType()][] = $linkedFullItem;
         }
 
-        $roomService = $this->get('commsy.room_service');
+        $roomService = $this->get('commsy_legacy.room_service');
         $rubrics = $roomService->getRubricInformation($roomId);
 
         $returnArray = array();
@@ -81,16 +81,16 @@ class LinkController extends Controller
      */
     public function showDetailAction($roomId, $itemId)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
-        $labelService = $this->get('commsy.label_service');
+        $labelService = $this->get('commsy_legacy.label_service');
         
         $linkedItems = array();
         if ($item->getItemType() == 'label') {
             $tempLabel = $labelService->getLabel($item->getItemId());
             if ($tempLabel->getLabelType() == 'group') {
-                $groupService = $this->get('commsy.group_service');
+                $groupService = $this->get('commsy_legacy.group_service');
                 $group = $groupService->getGroup($tempLabel->getItemID());
                 $membersList = $group->getMemberItemList();
                 $linkedItems = $membersList->to_array();
@@ -121,7 +121,7 @@ class LinkController extends Controller
             $linkedFullItemsSortedByRubric[$linkedFullItem->getItemType()][] = $linkedFullItem;
         }
 
-        $roomService = $this->get('commsy.room_service');
+        $roomService = $this->get('commsy_legacy.room_service');
         $rubrics = $roomService->getRubricInformation($roomId);
 
         $returnArray = array();
@@ -143,16 +143,16 @@ class LinkController extends Controller
      */
     public function showDetailShortAction($roomId, $itemId)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
-        $labelService = $this->get('commsy.label_service');
+        $labelService = $this->get('commsy_legacy.label_service');
         
         $linkedItems = array();
         if ($item->getItemType() == 'label') {
             $tempLabel = $labelService->getLabel($item->getItemId());
             if ($tempLabel->getLabelType() == 'group') {
-                $groupService = $this->get('commsy.group_service');
+                $groupService = $this->get('commsy_legacy.group_service');
                 $group = $groupService->getGroup($tempLabel->getItemID());
                 $membersList = $group->getMemberItemList();
                 $linkedItems = $membersList->to_array();
@@ -183,7 +183,7 @@ class LinkController extends Controller
             $linkedFullItemsSortedByRubric[$linkedFullItem->getItemType()][] = $linkedFullItem;
         }
 
-        $roomService = $this->get('commsy.room_service');
+        $roomService = $this->get('commsy_legacy.room_service');
         $rubrics = $roomService->getRubricInformation($roomId);
 
         $returnArray = array();
@@ -206,16 +206,16 @@ class LinkController extends Controller
      */
     public function showDetailLongAction($roomId, $itemId)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
-        $labelService = $this->get('commsy.label_service');
+        $labelService = $this->get('commsy_legacy.label_service');
         
         $linkedItems = array();
         if ($item->getItemType() == 'label') {
             $tempLabel = $labelService->getLabel($item->getItemId());
             if ($tempLabel->getLabelType() == 'group') {
-                $groupService = $this->get('commsy.group_service');
+                $groupService = $this->get('commsy_legacy.group_service');
                 $group = $groupService->getGroup($tempLabel->getItemID());
                 $membersList = $group->getMemberItemList();
                 $linkedItems = $membersList->to_array();
@@ -246,7 +246,7 @@ class LinkController extends Controller
             $linkedFullItemsSortedByRubric[$linkedFullItem->getItemType()][] = $linkedFullItem;
         }
 
-        $roomService = $this->get('commsy.room_service');
+        $roomService = $this->get('commsy_legacy.room_service');
         $rubrics = $roomService->getRubricInformation($roomId);
 
         $returnArray = array();

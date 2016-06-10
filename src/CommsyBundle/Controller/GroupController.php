@@ -41,7 +41,7 @@ class GroupController extends Controller
 
 
        // get the group manager service
-        $groupService = $this->get('commsy.group_service');
+        $groupService = $this->get('commsy_legacy.group_service');
         $defaultFilterValues = array(
             'activated' => false,
         );
@@ -82,7 +82,7 @@ class GroupController extends Controller
 
 
         // get the group manager service
-        $groupService = $this->get('commsy.group_service');
+        $groupService = $this->get('commsy_legacy.group_service');
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -130,7 +130,7 @@ class GroupController extends Controller
         ));
 
         // get the group manager service
-        $groupService = $this->get('commsy.group_service');
+        $groupService = $this->get('commsy_legacy.group_service');
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -141,7 +141,7 @@ class GroupController extends Controller
 
         // get group list from manager service 
         $groups = $groupService->getListGroups($roomId, $max, $start);
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
@@ -178,7 +178,7 @@ class GroupController extends Controller
         $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
         
         if ($action == 'markread') {
-            $groupService = $this->get('commsy.group_service');
+            $groupService = $this->get('commsy_legacy.group_service');
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             $noticedManager = $legacyEnvironment->getNoticedManager();
             $readerManager = $legacyEnvironment->getReaderManager();
@@ -209,7 +209,7 @@ class GroupController extends Controller
             
             return $response;
         } else if ($action == 'delete') {
-            $groupService = $this->get('commsy.group_service');
+            $groupService = $this->get('commsy_legacy.group_service');
             foreach ($selectedIds as $id) {
                 $item = $groupService->getGroup($id);
                 $item->delete();
@@ -278,8 +278,8 @@ class GroupController extends Controller
     private function getDetailInfo ($roomId, $itemId) {
         $infoArray = array();
         
-        $groupService = $this->get('commsy.group_service');
-        $itemService = $this->get('commsy.item_service');
+        $groupService = $this->get('commsy_legacy.group_service');
+        $itemService = $this->get('commsy_legacy.item_service');
 
         $annotationService = $this->get('commsy_legacy.annotation_service');
         
@@ -340,7 +340,7 @@ class GroupController extends Controller
         }
         $read_percentage = round(($read_count/$all_user_count) * 100);
         $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
         $modifierList = array();
@@ -442,7 +442,7 @@ class GroupController extends Controller
         $translator = $this->get('translator');
         
         $groupData = array();
-        $groupService = $this->get('commsy.group_service');
+        $groupService = $this->get('commsy_legacy.group_service');
         $transformer = $this->get('commsy_legacy.transformer.group');
         
         // create new group item
@@ -475,10 +475,10 @@ class GroupController extends Controller
      */
     public function editAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
-        $groupService = $this->get('commsy.group_service');
+        $groupService = $this->get('commsy_legacy.group_service');
         $transformer = $this->get('commsy_legacy.transformer.group');
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -540,10 +540,10 @@ class GroupController extends Controller
      */
     public function saveAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
-        $groupService = $this->get('commsy.group_service');
+        $groupService = $this->get('commsy_legacy.group_service');
         $transformer = $this->get('commsy_legacy.transformer.group');
         
         $group = $groupService->getGroup($itemId);
@@ -588,7 +588,7 @@ class GroupController extends Controller
 		}
         $read_percentage = round(($read_count/$all_user_count) * 100);
         $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
         $modifierList = array();

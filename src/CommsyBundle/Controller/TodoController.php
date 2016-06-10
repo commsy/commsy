@@ -170,7 +170,7 @@ class TodoController extends Controller
         // get todo list from manager service 
         $todos = $todoService->getListTodos($roomId, $max, $start, $sort);
 
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
@@ -322,7 +322,7 @@ class TodoController extends Controller
     public function detailAction($roomId, $itemId, Request $request)
     {
         $todoService = $this->get('commsy_legacy.todo_service');
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         
         $todo = $todoService->getTodo($itemId);
 
@@ -383,7 +383,7 @@ class TodoController extends Controller
 		}
         $read_percentage = round(($read_count/$all_user_count) * 100);
         $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
         $modifierList = array();
@@ -403,7 +403,7 @@ class TodoController extends Controller
 
         $categories = array();
         if ($current_context->withTags()) {
-            $roomCategories = $this->get('commsy.category_service')->getTags($roomId);
+            $roomCategories = $this->get('commsy_legacy.category_service')->getTags($roomId);
             $todoCategories = $todo->getTagsArray();
             $categories = $this->getTagDetailArray($roomCategories, $todoCategories);
         }
@@ -527,7 +527,7 @@ class TodoController extends Controller
      */
     public function editAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
         $todoService = $this->get('commsy_legacy.todo_service');
@@ -592,7 +592,7 @@ class TodoController extends Controller
      */
     public function saveAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
         $todoService = $this->get('commsy_legacy.todo_service');
@@ -640,7 +640,7 @@ class TodoController extends Controller
 		}
         $read_percentage = round(($read_count/$all_user_count) * 100);
         $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
         $modifierList = array();

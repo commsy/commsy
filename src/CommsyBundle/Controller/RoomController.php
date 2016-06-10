@@ -40,7 +40,7 @@ class RoomController extends Controller
         $filterForm->handleRequest($request);
         if ($filterForm->isValid()) {
             // set filter conditions in feed generator
-            $roomFeedGenerator = $this->get('commsy.room_feed_generator');
+            $roomFeedGenerator = $this->get('commsy_legacy.room_feed_generator');
             $roomFeedGenerator->setFilterConditions($filterForm);
         }
 
@@ -112,7 +112,7 @@ class RoomController extends Controller
         ));
 
         // collect information for feed panel
-        $roomFeedGenerator = $this->get('commsy.room_feed_generator');
+        $roomFeedGenerator = $this->get('commsy_legacy.room_feed_generator');
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -125,7 +125,7 @@ class RoomController extends Controller
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
 
  
         $readerList = array();

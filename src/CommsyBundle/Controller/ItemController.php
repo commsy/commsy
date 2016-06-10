@@ -28,8 +28,11 @@ class ItemController extends Controller
      */
     public function editDescriptionAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
+        
+        //$environment = $this->get('commsy_legacy.environment')->getEnvironment();
+        //$rubricManager = $environment->getManager($item->getItemType());
         
         $materialService = $this->get('commsy_legacy.material_service');
         $transformer = $this->get('commsy_legacy.transformer.material');
@@ -84,7 +87,7 @@ class ItemController extends Controller
      */
     public function saveDescriptionAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
         $materialService = $this->get('commsy_legacy.material_service');
@@ -118,10 +121,10 @@ class ItemController extends Controller
      */
     public function editWorkflowAction($roomId, $itemId, Request $request)
     {
-        $roomService = $this->get('commsy.room_service');
+        $roomService = $this->get('commsy_legacy.room_service');
         $room = $roomService->getRoomItem($roomId);
 
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
         $materialService = $this->get('commsy_legacy.material_service');
@@ -176,9 +179,9 @@ class ItemController extends Controller
     public function editLinksAction($roomId, $itemId, $feedAmount, Request $request)
     {
         $environment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomService = $this->get('commsy.room_service');
+        $roomService = $this->get('commsy_legacy.room_service');
         
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
         $roomItem = $roomService->getRoomItem($roomId);
@@ -263,7 +266,7 @@ class ItemController extends Controller
         }
         
         // get all categories -> tree
-        $categoryService = $this->get('commsy.category_service');
+        $categoryService = $this->get('commsy_legacy.category_service');
         $categories = $categoryService->getTags($roomId);
         $optionsData['categories'] = $this->getChoicesAsTree($categories);
         
@@ -365,7 +368,7 @@ class ItemController extends Controller
      */
     public function saveLinksAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
         $materialService = $this->get('commsy_legacy.material_service');
@@ -454,7 +457,7 @@ class ItemController extends Controller
         $itemId = $jsonArray['itemId'];
 
         // get item
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
         if (!$item) {
@@ -511,9 +514,9 @@ class ItemController extends Controller
     public function autocompleteAction($roomId, $itemId, $feedAmount, Request $request)
     {
         $environment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomService = $this->get('commsy.room_service');
+        $roomService = $this->get('commsy_legacy.room_service');
         
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
         $roomItem = $roomService->getRoomItem($roomId);
@@ -600,7 +603,7 @@ class ItemController extends Controller
             throw new \Exception('no request content given');
         }
         
-        $roomService = $this->get('commsy.room_service');
+        $roomService = $this->get('commsy_legacy.room_service');
         $room = $roomService->getRoomItem($roomId);
 
         $environment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -622,7 +625,7 @@ class ItemController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $userService = $this->get('commsy.user_service');
+            $userService = $this->get('commsy_legacy.user_service');
             
             $data = $form->getData();
 
@@ -676,7 +679,7 @@ class ItemController extends Controller
     {
         $environment = $this->get('commsy_legacy.environment')->getEnvironment();
         
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $baseItem = $itemService->getItem($itemId);
         
         $rubricManager = $environment->getManager($baseItem->getItemType());
@@ -758,7 +761,7 @@ class ItemController extends Controller
     public function printAction($roomId, $itemId)
     {
         $environment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $baseItem = $itemService->getItem($itemId);
         
         $html = $this->renderView('CommsyBundle:'.ucfirst($baseItem->getItemType()).':detailPrint.html.twig', [
@@ -780,7 +783,7 @@ class ItemController extends Controller
     public function downloadAction($roomId, $itemId)
     {
         $environment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $baseItem = $itemService->getItem($itemId);
         
         $downloadService = $this->get('commsy_legacy.download_service');
@@ -804,7 +807,7 @@ class ItemController extends Controller
     public function deleteAction($roomId, $itemId, Request $request)
     {
         $environment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $baseItem = $itemService->getItem($itemId);
         
         $rubricManager = $environment->getManager($baseItem->getItemType());
@@ -815,7 +818,7 @@ class ItemController extends Controller
 
         $route = 'commsy_'.$baseItem->getItemType().'_list';
         if ($baseItem->getItemType() == 'date') {
-            $roomService = $this->get('commsy.room_service');
+            $roomService = $this->get('commsy_legacy.room_service');
             $room = $roomService->getRoomItem($roomId);
             if ($room->getDatesPresentationStatus() != 'normal') {
                 $route = 'commsy_date_calendar';

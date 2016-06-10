@@ -67,7 +67,7 @@ class AnnouncementController extends Controller
         // get announcement list from manager service 
         $announcements = $announcementService->getListAnnouncements($roomId, $max, $start, $sort);
 
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
@@ -140,7 +140,7 @@ class AnnouncementController extends Controller
         // get announcement list from manager service 
         $announcements = $announcementService->getListAnnouncements($roomId, $max, $start, $sort);
 
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
@@ -271,7 +271,7 @@ class AnnouncementController extends Controller
         $infoArray = array();
         
         $announcementService = $this->get('commsy_legacy.announcement_service');
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
 
         $annotationService = $this->get('commsy_legacy.annotation_service');
         
@@ -332,7 +332,7 @@ class AnnouncementController extends Controller
         }
         $read_percentage = round(($read_count/$all_user_count) * 100);
         $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
         $modifierList = array();
@@ -459,7 +459,7 @@ class AnnouncementController extends Controller
      */
     public function editAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
         $announcementService = $this->get('commsy_legacy.announcement_service');
@@ -524,7 +524,7 @@ class AnnouncementController extends Controller
      */
     public function saveAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
         $announcementService = $this->get('commsy_legacy.announcement_service');

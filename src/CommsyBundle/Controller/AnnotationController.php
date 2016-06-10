@@ -24,7 +24,7 @@ class AnnotationController extends Controller
         // get annotation list from manager service 
         $annotations = $annotationService->getListAnnotations($roomId, $linkedItemId, $max, $start);
 
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();
         foreach ($annotations as $item) {
@@ -52,7 +52,7 @@ class AnnotationController extends Controller
     public function editAction($roomId, $itemId, Request $request)
     {
 
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
         $linkedItem = $item->getLinkedItem();
@@ -95,7 +95,7 @@ class AnnotationController extends Controller
      */
     public function successAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
         return array('annotation' => $item);
@@ -108,7 +108,7 @@ class AnnotationController extends Controller
      */
     public function createAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
         $annotationService = $this->get('commsy_legacy.annotation_service');
@@ -136,7 +136,7 @@ class AnnotationController extends Controller
     //  */
     // public function saveAction($roomId, $itemId, Request $request)
     // {
-    //     $itemService = $this->get('commsy.item_service');
+    //     $itemService = $this->get('commsy_legacy.item_service');
     //     $item = $itemService->getTypedItem($itemId);
 
     //     $annotationService = $this->get('commsy_legacy.annotation_service');

@@ -4,7 +4,7 @@ services:
     # Filter types
     commsy.filter.rubric:
         class: CommsyBundle\Filter\RubricFilterType
-        arguments: ['@commsy.room_service', '@request_stack']
+        arguments: ['@commsy_legacy.room_service', '@request_stack']
         tags:
             - { name: form.type }
 
@@ -16,7 +16,7 @@ services:
 
     commsy.filter.category:
         class: CommsyBundle\Filter\CategoryFilterType
-        arguments: ['@request_stack', '@commsy.category_service']
+        arguments: ['@request_stack', '@commsy_legacy.category_service']
         tags:
             - { name: form.type }
 
@@ -32,7 +32,7 @@ services:
     # Menu
     commsy.menu.builder:
         class: CommsyBundle\Menu\MenuBuilder
-        arguments: ['@knp_menu.factory', '@commsy.room_service', '@commsy_legacy.environment', '@commsy.user_service', '@security.authorization_checker']
+        arguments: ['@knp_menu.factory', '@commsy_legacy.room_service', '@commsy_legacy.environment', '@commsy_legacy.user_service', '@security.authorization_checker']
         # tags:
         #     - { name: knp_menu.menu_builder, method: createProfileMenu, alias: profile }
         #     - { name: knp_menu.menu_builder, method: createRoomlistMenu, alias: roomlist }
@@ -85,7 +85,7 @@ services:
 
     commsy.security.item_voter:
         class: CommsyBundle\Security\Authorization\Voter\ItemVoter
-        arguments: ['@commsy_legacy.environment', '@commsy.item_service']
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.item_service']
         public: false
         tags:
             - { name: security.voter }
@@ -109,7 +109,7 @@ services:
     # EventListener
     kernel.listener.comsy_request:
         class: CommsyBundle\EventListener\CommsyRequestListener
-        arguments: ['@commsy.room_service', '@liip_theme.active_theme', '%liip_theme.themes%']
+        arguments: ['@commsy_legacy.room_service', '@liip_theme.active_theme', '%liip_theme.themes%']
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
@@ -121,7 +121,7 @@ services:
 
     kernel.listener.commsy_logging:
         class: CommsyBundle\EventListener\CommsyLoggingListener
-        arguments: ['@commsy.room_service', '@liip_theme.active_theme', '%liip_theme.themes%', '@commsy_legacy.environment']
+        arguments: ['@commsy_legacy.room_service', '@liip_theme.active_theme', '%liip_theme.themes%', '@commsy_legacy.environment']
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
@@ -171,7 +171,7 @@ services:
 
     commsy.form.type.itemLinks:
         class: CommsyBundle\Form\Type\ItemLinksType
-        arguments: ['@commsy_legacy.environment', '@commsy.room_service', '@commsy.item_service']
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.item_service']
         tags:
             - { name: form.type }
 
