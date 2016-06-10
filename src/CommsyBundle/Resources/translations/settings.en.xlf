@@ -38,6 +38,35 @@
                 <source>english</source>
                 <target>English</target>
             </trans-unit>
+            <trans-unit id="10">
+                <source>Title</source>
+                <target>Title_foobar</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>language</source>
+                <target>Tongue</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>room_image</source>
+                <target>Logo</target>
+            </trans-unit>
+            <trans-unit id="13">
+                <source>access_check</source>
+                <target>Access check</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>room_description</source>
+                <target>Room description</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>save</source>
+                <target>Save</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>rubrics</source>
+                <target>Rubriken</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

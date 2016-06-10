@@ -78,7 +78,7 @@ class GeneralSettingsType extends AbstractType
                 // ist jetzt in resolver->setDefaults (s.u.)
                 //'translation_domain' => 'settings',
             ))
-            ->add('code', TextType::class,
+            //->add('code', TextType::class,
             ->add('room_description', TextareaType::class, array(
                 'attr' => array(
                     'class' => 'uk-form-width-large',
