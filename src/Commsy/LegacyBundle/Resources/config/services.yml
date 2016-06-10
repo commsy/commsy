@@ -142,3 +142,7 @@ services:
     commsy_legacy.transformer.announcement:
         class: Commsy\LegacyBundle\Form\DataTransformer\AnnouncementTransformer
         arguments: ['@commsy_legacy.environment']
+        
+    commsy_legacy.transformer.date:
+        class: Commsy\LegacyBundle\Form\DataTransformer\DateTransformer
+        arguments: ['@commsy_legacy.environment']
