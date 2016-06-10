@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 use CommsyBundle\Filter\TodoFilterType;
 use CommsyBundle\Form\Type\TodoType;
+use CommsyBundle\Form\Type\StepType;
 use CommsyBundle\Form\Type\AnnotationType;
 
 class TodoController extends Controller
@@ -539,18 +540,31 @@ class TodoController extends Controller
         $formData = array();
         $todoItem = NULL;
         
-        // get date from DateService
-        $todoItem = $todoService->getTodo($itemId);
-        if (!$todoItem) {
-            throw $this->createNotFoundException('No todo found for id ' . $itemId);
+        if ($item->getItemType() == 'todo') {
+            $todoItem = $todoService->getTodo($itemId);
+            if (!$todoItem) {
+                throw $this->createNotFoundException('No todo found for id ' . $itemId);
+            }
+            $formData = $transformer->transform($todoItem);
+            $form = $this->createForm(TodoType::class, $formData, array(
+                'action' => $this->generateUrl('commsy_todo_edit', array(
+                    'roomId' => $roomId,
+                    'itemId' => $itemId,
+                ))
+            ));
+        } else if ($item->getItemType() == 'step') {
+            $todoItem = $todoService->getStep($itemId);
+            if (!$todoItem) {
+                throw $this->createNotFoundException('No step found for id ' . $itemId);
+            }
+            $formData = $transformer->transform($todoItem);
+            $form = $this->createForm(StepType::class, $formData, array(
+                'action' => $this->generateUrl('commsy_todo_edit', array(
+                    'roomId' => $roomId,
+                    'itemId' => $itemId,
+                ))
+            ));
         }
-        $formData = $transformer->transform($todoItem);
-        $form = $this->createForm(TodoType::class, $formData, array(
-            'action' => $this->generateUrl('commsy_todo_edit', array(
-                'roomId' => $roomId,
-                'itemId' => $itemId,
-            ))
-        ));
         
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -598,9 +612,13 @@ class TodoController extends Controller
         $todoService = $this->get('commsy_legacy.todo_service');
         $transformer = $this->get('commsy_legacy.transformer.todo');
         
-        $todo = $todoService->getTodo($itemId);
+        if ($item->getItemType() == 'todo') {
+            $typedItem = $todoService->getTodo($itemId);
+        } else if ($item->getItemType() == 'step') {
+            $typedItem = $todoService->getStep($itemId);
+        }
         
-        $itemArray = array($todo);
+        $itemArray = array($typedItem);
         $modifierList = array();
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
@@ -624,12 +642,12 @@ class TodoController extends Controller
 		   $id_array[] = $current_user->getItemID();
 		   $current_user = $user_list->getNext();
 		}
-		$readerManager->getLatestReaderByUserIDArray($id_array,$todo->getItemID());
+		$readerManager->getLatestReaderByUserIDArray($id_array,$typedItem->getItemID());
 		$current_user = $user_list->getFirst();
 		while ( $current_user ) {
-	   	    $current_reader = $readerManager->getLatestReaderForUserByID($todo->getItemID(), $current_user->getItemID());
+	   	    $current_reader = $readerManager->getLatestReaderForUserByID($typedItem->getItemID(), $current_user->getItemID());
             if ( !empty($current_reader) ) {
-                if ( $current_reader['read_date'] >= $todo->getModificationDate() ) {
+                if ( $current_reader['read_date'] >= $typedItem->getModificationDate() ) {
                     $read_count++;
                     $read_since_modification_count++;
                 } else {
@@ -657,7 +675,7 @@ class TodoController extends Controller
         
         return array(
             'roomId' => $roomId,
-            'item' => $todo,
+            'item' => $typedItem,
             'modifierList' => $modifierList,
             'userCount' => $all_user_count,
             'readCount' => $read_count,

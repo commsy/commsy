@@ -253,6 +253,16 @@ services:
         class: CommsyBundle\Form\Type\DiscussionArticleType
         tags:
             - { name: form.type }
+            
+    commsy.form.type.todo:
+        class: CommsyBundle\Form\Type\TodoType
+        tags:
+            - { name: form.type }
+            
+    commsy.form.type.step:
+        class: CommsyBundle\Form\Type\StepType
+        tags:
+            - { name: form.type }
 
     # Form type extension
     commsy.form.extension.image_type:

@@ -10,6 +10,8 @@ class TodoService
     private $legacyEnvironment;
 
     private $todoManager;
+    
+    private $stepManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -17,6 +19,9 @@ class TodoService
 
         $this->todoManager = $this->legacyEnvironment->getTodoManager();
         $this->todoManager->reset();
+        
+        $this->stepManager = $this->legacyEnvironment->getStepManager();
+        $this->stepManager->reset();
     }
 
     public function getListTodos($roomId, $max = NULL, $start = NULL, $sort = NULL)
@@ -103,6 +108,11 @@ class TodoService
     public function getTodo($itemId)
     {
         return $this->todoManager->getItem($itemId);
+    }
+    
+    public function getStep($itemId)
+    {
+        return $this->stepManager->getItem($itemId);
     }
     
     public function getSection($itemId)
