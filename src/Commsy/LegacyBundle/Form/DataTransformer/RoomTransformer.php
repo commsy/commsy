@@ -64,32 +64,59 @@ class RoomTransformer implements DataTransformerInterface
      */
     public function applyTransformation($roomObject, $roomData)
     {
-
-        $rubricData = $roomData['rubrics'];
-        $roomRubrics = array_combine(array_map(function($val){return $this->rubricsMapping[$val];}, array_keys($rubricData)), array_values($rubricData));
-        $tempArray = array();
-        foreach ($roomRubrics as $rubricName => $rubricValue) {
+        $rubricArray = array();
+        foreach ($roomData['rubrics'] as $rubricName => $rubricValue) { 
             if (strcmp($rubricValue, 'off') == 0) {
                 continue;
             }
-            $tempArray[] = $rubricName . "_" . $rubricValue;
+            $rubricArray[] = $rubricName . "_" . $rubricValue;
         }
-        $roomObject->setHomeConf(implode($tempArray, ','));
+        
+        $roomObject->setHomeConf(implode($rubricArray, ','));
 
-        if (isset($roomData['title']) ){
-            $roomObject->setTitle($roomData['title']);
-        }
+        $roomObject->setTitle($roomData['title']);
 
-        if (isset($roomData['language']) ){
+        if (isset($roomData['language'])) {
             $roomObject->setLanguage($roomData['language']);
         }
 
-        if ( isset($roomData['wikiEnabled']) ){
+        if (isset($roomData['wikiEnabled'])) {
             $roomObject->setWikiEnabled($roomData['wikiEnabled']);
         }
 
+		if(isset($roomData['room_description'])) 
+            $roomObject->setDescription($roomData['room_description']);
+            //$roomObject->setDescription($this->_popup_controller->getUtils()->cleanCKEditor($roomData['room_description']));
+		else 
+            $roomObject->setDescription('');
+
+        // assignment
+        if($roomObject->isProjectRoom()) {
+            $community_room_array = array();
+
+            // get community room ids
+            foreach($form_data as $key => $value) {
+                if(mb_substr($key, 0, 18) === 'communityroomlist_') $community_room_array[] = $value;
+            }
+            
+            /*
+             * if assignment is mandatory, the array must not be empty
+             */
+            if (	$this->_environment->getCurrentPortalItem()->getProjectRoomLinkStatus() !== "mandatory" ||
+                    sizeof($community_room_array) > 0 )
+            {
+                $roomObject->setCommunityListByID($community_room_array);
+            }
+        } elseif($roomObject->isCommunityRoom()) {
+            if(isset($roomData['room_assignment'])) {
+                if($roomData['room_assignment'] === 'open') $roomObject->setAssignmentOpenForAnybody();
+                elseif($roomData['room_assignment'] === 'closed') $roomObject->setAssignmentOnlyOpenForRoomMembers();
+            }
+        }
+
+
         // check member
-        if ( isset($roomData['member_check']) ) {
+        if (isset($roomData['member_check'])) {
             switch($roomData['member_check']) {
                 case "never":
                     $userService->grantAccessToAllPendingApplications();
