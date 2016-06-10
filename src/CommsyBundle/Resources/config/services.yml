@@ -137,6 +137,12 @@ services:
         tags:
             - { name: form.type }
 
+    commsy.form.type.settings.moderation:
+        class: CommsyBundle\Form\Type\ModerationSettingsType
+        arguments: ['@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
     commsy.form.type.settings.appearance:
         class: CommsyBundle\Form\Type\AppearanceSettingsType
         arguments: ['@commsy_legacy.environment']
