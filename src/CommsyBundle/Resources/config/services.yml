@@ -233,6 +233,11 @@ services:
         class: CommsyBundle\Form\Type\DateType
         tags:
             - { name: form.type }
+            
+    commsy.form.type.group:
+        class: CommsyBundle\Form\Type\GroupType
+        tags:
+            - { name: form.type }
 
     # Form type extension
     commsy.form.extension.image_type:

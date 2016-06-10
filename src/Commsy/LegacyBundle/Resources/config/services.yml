@@ -154,3 +154,7 @@ services:
     commsy_legacy.transformer.discussion:
         class: Commsy\LegacyBundle\Form\DataTransformer\DiscussionTransformer
         arguments: ['@commsy_legacy.environment']
+        
+    commsy_legacy.transformer.group:
+        class: Commsy\LegacyBundle\Form\DataTransformer\GroupTransformer
+        arguments: ['@commsy_legacy.environment']

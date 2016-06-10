@@ -258,10 +258,6 @@ class cs_group_item extends cs_label_item {
       }
 
       unset($current_user_item);
-
-      if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() == "1"){
-         $this->updateWikiNotification();
-      }
    }
 
    /** save news item
