@@ -142,6 +142,94 @@ class Todos
      */
     private $lockingUserId;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Step", mappedBy="step")
+     */
+    private $steps;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Files")
+     * @ORM\JoinTable(name="item_link_file",
+     *      joinColumns={@ORM\JoinColumn(name="item_iid", referencedColumnName="item_id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="file_id", referencedColumnName="files_id", unique=true)}
+     *  )
+     */
+    private $files;
+
+    /**
+     * Add file
+     *
+     * @param \CommsyBundle\Entity\File $file
+     *
+     * @return Materials
+     */
+    public function addFile(\CommsyBundle\Entity\Files $file)
+    {
+        $this->files[] = $file;
+
+        return $this;
+    }
+
+    /**
+     * Remove file
+     *
+     * @param \CommsyBundle\Entity\File $file
+     */
+    public function removeFile(\CommsyBundle\Entity\Files $file)
+    {
+        $this->files->removeElement($file);
+    }
+
+    /**
+     * Get files
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFiles()
+    {
+        return $this->files;
+    }
+
+    public function __construct()
+    {
+        $this->steps = new ArrayCollection();
+        $this->files = new ArrayCollection();
+    }
+
+    /**
+     * Add steps
+     *
+     * @param \CommsyBundle\Entity\Step $step
+     *
+     * @return Materials
+     */
+    public function addSteps(\CommsyBundle\Entity\Step $step)
+    {
+        $this->steps[] = $step;
+
+        return $this;
+    }
+
+    /**
+     * Remove steps
+     *
+     * @param \CommsyBundle\Entity\Step $step
+     */
+    public function removeSteps(\CommsyBundle\Entity\Step $step)
+    {
+        $this->stepss->removeElement($step);
+    }
+
+    /**
+     * Get stepss
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSteps()
+    {
+        return $this->steps;
+    }
+
 
     public function isIndexable()
     {

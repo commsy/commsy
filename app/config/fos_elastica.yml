@@ -138,6 +138,10 @@ fos_elastica:
                             properties:
                                 subject: ~
                                 description: ~
+                                files:
+                                    type: 'nested'
+                                    properties:
+                                        filename: ~
                         files:
                             type: 'nested'
                             properties:
@@ -239,6 +243,15 @@ fos_elastica:
                             type: date
                             format: date_optional_time
                         description: ~
+                        steps:
+                            type: 'nested'
+                            properties:
+                                title: ~
+                                description: ~
+                                files:
+                                    type: 'nested'
+                                    properties:
+                                        filename: ~
                         files:
                             type: 'nested'
                             properties:
@@ -285,6 +298,10 @@ fos_elastica:
                             properties:
                                 title: ~
                                 description: ~
+                                files:
+                                    type: 'nested'
+                                    properties:
+                                        filename: ~
                         creator:
                             type: 'object'
                             properties:
