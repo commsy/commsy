@@ -72,7 +72,7 @@ services:
 
     commsy.dashboard_feed_generator:
         class: Commsy\LegacyBundle\Utils\DashboardFeedGenerator
-        arguments: ['@commsy_legacy.environment', '@commsy.room_service']
+        arguments: ['@commsy_legacy.environment', '@commsy.room_service', '@commsy.user_service']
 
     commsy.noticed_service:
         class: Commsy\LegacyBundle\Utils\NoticedService

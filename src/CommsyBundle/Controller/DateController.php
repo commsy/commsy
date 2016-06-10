@@ -242,6 +242,26 @@ class DateController extends Controller
     }
     
     /**
+     * @Route("/room/{roomId}/date/calendardashboard")
+     * @Template()
+     */
+    public function calendardashboardAction($roomId, Request $request)
+    {
+        // setup filter form
+        $defaultFilterValues = array(
+            'activated' => true
+        );
+
+        // get the material manager service
+        $dateService = $this->get('commsy_legacy.date_service');
+
+        return array(
+            'roomId' => $roomId,
+            'module' => 'date'
+        );
+    }
+    
+    /**
      * @Route("/room/{roomId}/date/{itemId}", requirements={
      *     "itemId": "\d+"
      * }))
@@ -339,7 +359,70 @@ class DateController extends Controller
                               'editable' => $date->isPublic(),
                               'description' => $date->getDateDescription(),
                               'place' => $date->getPlace(),
-                              'participants' => $participantsDisplay
+                              'participants' => $participantsDisplay,
+                              'contextId' => '',
+                              'contextTitle' => '',
+                             );
+        }
+
+        return new JsonResponse($events);
+    }
+    
+    /**
+     * @Route("/room/{roomId}/date/eventsdashboard")
+     */
+    public function eventsdashboardAction($roomId, Request $request)
+    {
+        $roomService = $this->get('commsy.room_service');
+        $dateService = $this->get('commsy_legacy.date_service');
+        $userService = $this->get("commsy.user_service");
+        $user = $userService->getPortalUserFromSessionId();
+        $userList = $user->getRelatedUserList()->to_array();
+
+        $listDates = array();
+        foreach ($userList as $tempUser) {
+            $listDates = array_merge($listDates, $dateService->getCalendarEvents($tempUser->getContextId(), $_GET['start'], $_GET['end']));
+        }
+
+        $events = array();
+        foreach ($listDates as $date) {
+            $start = $date->getStartingDay();
+            if ($date->getStartingTime() != '') {
+                $start .= 'T'.$date->getStartingTime().'Z';
+            }
+            $end = $date->getEndingDay();
+            if ($end == '') {
+                $end = $date->getStartingDay();
+            }
+            if ($date->getEndingTime() != '') {
+                $end .= 'T'.$date->getEndingTime().'Z';
+            } 
+            
+            $participantsList = $date->getParticipantsItemList();
+            $participantItem = $participantsList->getFirst();
+            $participantsNameArray = array();
+            while ($participantItem) {
+                $participantsNameArray[] = $participantItem->getFullname();
+                $participantItem = $participantsList->getNext();    
+            }
+            $participantsDisplay = 'keine Zuordnung';
+            if (!empty($participantsNameArray)) {
+                implode(',', $participantsNameArray);
+            }
+            
+            $context = $roomService->getRoomItem($date->getContextId());
+
+            $events[] = array('itemId' => $date->getItemId(),
+                              'title' => $date->getTitle(),
+                              'start' => $start,
+                              'end' => $end,
+                              'color' => $date->getColor(),
+                              'editable' => $date->isPublic(),
+                              'description' => $date->getDateDescription(),
+                              'place' => $date->getPlace(),
+                              'participants' => $participantsDisplay,
+                              'contextId' => $context->getItemId(),
+                              'contextTitle' => $context->getTitle(),
                              );
         }
 
