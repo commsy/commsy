@@ -146,3 +146,7 @@ services:
     commsy_legacy.transformer.date:
         class: Commsy\LegacyBundle\Form\DataTransformer\DateTransformer
         arguments: ['@commsy_legacy.environment']
+        
+    commsy_legacy.transformer.todo:
+        class: Commsy\LegacyBundle\Form\DataTransformer\TodoTransformer
+        arguments: ['@commsy_legacy.environment']
