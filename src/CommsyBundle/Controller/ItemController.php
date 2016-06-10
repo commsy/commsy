@@ -31,30 +31,17 @@ class ItemController extends Controller
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
-        //$environment = $this->get('commsy_legacy.environment')->getEnvironment();
-        //$rubricManager = $environment->getManager($item->getItemType());
-        
-        $materialService = $this->get('commsy_legacy.material_service');
-        $transformer = $this->get('commsy_legacy.transformer.material');
+        $itemService = $this->get('commsy_legacy.item_service');
+        $transformer = $this->get('commsy_legacy.transformer.'.$item->getItemType());
         
         $formData = array();
         $tempItem = NULL;
         
-        if ($item->getItemType() == 'material') {
-            // get material from MaterialService
-            $tempItem = $materialService->getMaterial($itemId);
-            if (!$tempItem) {
-                throw $this->createNotFoundException('No material found for id ' . $roomId);
-            }
-            $formData = $transformer->transform($tempItem);
-        } else if ($item->getItemType() == 'section') {
-            // get section from MaterialService
-            $tempItem = $materialService->getSection($itemId);
-            if (!$tempItem) {
-                throw $this->createNotFoundException('No section found for id ' . $roomId);
-            }
-            $formData = $transformer->transform($tempItem);
+        $tempItem = $itemService->getTypedItem($itemId);
+        if (!$tempItem) {
+            throw $this->createNotFoundException('No '.$item->getItemType().' found for id ' . $roomId);
         }
+        $formData = $transformer->transform($tempItem);
         
         $form = $this->createForm(ItemDescriptionType::class, $formData, array('itemId' => $itemId));
         $form->handleRequest($request);
@@ -90,15 +77,7 @@ class ItemController extends Controller
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
-        $materialService = $this->get('commsy_legacy.material_service');
-        
-        $tempItem = NULL;
-        
-        if ($item->getItemType() == 'material') {
-            $tempItem = $materialService->getMaterial($itemId);
-        } else if ($item->getItemType() == 'section') {
-            $tempItem = $materialService->getSection($itemId);
-        }
+        $tempItem = $itemService->getTypedItem($itemId);
 
         $itemArray = array($tempItem);
     
