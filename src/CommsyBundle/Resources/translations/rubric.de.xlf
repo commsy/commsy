@@ -1,41 +1,41 @@
 <?xml version="1.0"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-    <file source-language="en" datatype="plaintext" original="file.ext">
+    <file source-language="de" datatype="plaintext" original="file.ext">
         <body>
             <trans-unit id="1">
-                <source>announcement</source>
+                <source>Announcement</source>
                 <target>{0}Ankündigung|{1}Ankündigungen</target>
             </trans-unit>
             <trans-unit id="2">
-                <source>date</source>
+                <source>Date</source>
                 <target>{0}Termin|{1}Termine</target>
             </trans-unit>
             <trans-unit id="3">
-                <source>material</source>
+                <source>Material</source>
                 <target>{0}Material|{1}Materialien</target>
             </trans-unit>
             <trans-unit id="4">
-                <source>discussion</source>
+                <source>Discussion</source>
                 <target>{0}Diskussion|{1}Diskussionen</target>
             </trans-unit>
             <trans-unit id="5">
-                <source>user</source>
+                <source>User</source>
                 <target>{0}Person|{1}Personen</target>
             </trans-unit>
             <trans-unit id="6">
-                <source>group</source>
+                <source>Group</source>
                 <target>{0}Gruppe|{1}Gruppen</target>
             </trans-unit>
             <trans-unit id="7">
-                <source>todo</source>
+                <source>Todo</source>
                 <target>{0}Aufgabe|{1}Aufgaben</target>
             </trans-unit>
             <trans-unit id="8">
-                <source>task</source>
+                <source>Task</source>
                 <target>{0}Thema|{1}Themen</target>
             </trans-unit>
             <trans-unit id="9">
-                <source>topic</source>
+                <source>Topic</source>
                 <target>{0}Thema|{1}Themen</target>
             </trans-unit>
             <trans-unit id="rubric_institution">
@@ -67,7 +67,7 @@
                 <target>Einträge bearbeiten</target>
             </trans-unit>
              <trans-unit id="16">
-                <source>roomlist</source>
+                <source>Roomlist</source>
                 <target>Raum wechseln</target>
             </trans-unit>            
              <trans-unit id="17">
@@ -95,7 +95,7 @@
                 <target>Eingrenzen nach z.B. Name, Beschreibung, ModeratorIn, ... </target>
             </trans-unit>           
              <trans-unit id="23">
-                <source>dashboard</source>
+                <source>Dashboard</source>
                 <target>Dashboard </target>
             </trans-unit>           
              <trans-unit id="24">
@@ -185,6 +185,10 @@
             <trans-unit id="execute">
                 <source>execute</source>
                 <target>Aktion ausführen</target>
+            </trans-unit>
+            <trans-unit id="rubrics">
+                <source>Rubrics</source>
+                <target>Rubriken</target>
             </trans-unit>
         </body>
     </file>

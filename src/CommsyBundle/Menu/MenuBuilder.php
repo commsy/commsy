@@ -117,36 +117,40 @@ class MenuBuilder
 
         if ($roomId) {
             // general settings
-            $menu->addChild('general', array(
+            $menu->addChild('General', array(
                 'label' => 'General',
                 'route' => 'commsy_settings_general',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-server uk-icon-small'),
-            ));
+            ))
+            ->setExtra('translation_domain', 'menu');
 
             // moderation
-            $menu->addChild('moderation', array(
+            $menu->addChild('Moderation', array(
                 'label' => 'Moderation',
                 'route' => 'commsy_settings_moderation',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-sitemap uk-icon-small'),
-            ));            
+            ))
+            ->setExtra('translation_domain', 'menu');            
 
             // appearance
-            $menu->addChild('appearance', array(
+            $menu->addChild('Appearance', array(
                 'label' => 'appearance',
                 'route' => 'commsy_settings_appearance',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-eyedropper uk-icon-small'),
-            ));
+            ))
+            ->setExtra('translation_domain', 'menu');
             
             // extensions
-            $menu->addChild('extensions', array(
+            $menu->addChild('Extensions', array(
                 'label' => 'extensions',
                 'route' => 'commsy_settings_extensions',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-gears uk-icon-small'),
-            ));
+            ))
+            ->setExtra('translation_domain', 'menu');
         }
         
         // identifier

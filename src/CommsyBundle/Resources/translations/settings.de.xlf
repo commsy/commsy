@@ -3,68 +3,108 @@
     <file source-language="de" datatype="plaintext" original="file.ext">
         <body>
             <trans-unit id="1">
-                <source>off</source>
+                <source>Off</source>
                 <target>Deaktiviert</target>
             </trans-unit>
             <trans-unit id="2">
-                <source>show</source>
+                <source>Show</source>
                 <target>Anzeigen</target>
             </trans-unit>
             <trans-unit id="3">
-                <source>hide</source>
+                <source>Hide</source>
                 <target>Verbergen</target>
             </trans-unit>
             <trans-unit id="4">
-                <source>never</source>
+                <source>Never</source>
                 <target>Nie</target>
             </trans-unit>
             <trans-unit id="5">
-                <source>always</source>
+                <source>Always</source>
                 <target>Immer</target>
             </trans-unit>
             <trans-unit id="6">
-                <source>code</source>
+                <source>Code</source>
                 <target>Code</target>
             </trans-unit>
             <trans-unit id="7">
-                <source>user</source>
+                <source>User</source>
                 <target>Benutzer</target>
             </trans-unit>
             <trans-unit id="8">
-                <source>german</source>
+                <source>German</source>
                 <target>Deutsch</target>
             </trans-unit>
             <trans-unit id="9">
-                <source>english</source>
+                <source>English</source>
                 <target>Englisch</target>
             </trans-unit>
             <trans-unit id="10">
-                <source>title</source>
+                <source>Title</source>
                 <target>Titel</target>
             </trans-unit>
             <trans-unit id="11">
-                <source>language</source>
+                <source>Language</source>
                 <target>Sprache</target>
             </trans-unit>
             <trans-unit id="12">
-                <source>room_image</source>
+                <source>Room image</source>
                 <target>Logo</target>
             </trans-unit>
             <trans-unit id="13">
-                <source>access_check</source>
+                <source>Access check</source>
                 <target>Teilnahme</target>
             </trans-unit>
             <trans-unit id="14">
-                <source>room_description</source>
+                <source>Room description</source>
                 <target>Raumbeschreibung</target>
             </trans-unit>
             <trans-unit id="15">
-                <source>save</source>
+                <source>Save</source>
                 <target>Speichern</target>
             </trans-unit>
             <trans-unit id="16">
-                <source>rubrics</source>
+                <source>Rubrics</source>
                 <target>Rubriken</target>
+            </trans-unit>
+            <trans-unit id="community_rooms">
+                <source>Community rooms</source>
+                <target>Gemeinschaftsräume</target>
+            </trans-unit>
+            <trans-unit id="announcement">
+                <source>Announcement</source>
+                <target>Ankündigungen</target>
+            </trans-unit>
+            <trans-unit id="date">
+                <source>Date</source>
+                <target>Termine</target>
+            </trans-unit>
+            <trans-unit id="material">
+                <source>Material</source>
+                <target>Materialien</target>
+            </trans-unit>
+            <trans-unit id="discussion">
+                <source>Discussion</source>
+                <target>Diskussionen</target>
+            </trans-unit>
+            <trans-unit id="user">
+                <source>User</source>
+                <target>Personen</target>
+            </trans-unit>
+            <trans-unit id="group">
+                <source>Group</source>
+                <target>Gruppen</target>
+            </trans-unit>
+            <trans-unit id="todo">
+                <source>Todo</source>
+                <target>Aufgaben</target>
+            </trans-unit>
+            <trans-unit id="task">
+                <source>Task</source>
+                <target>Themen</target>
+            </trans-unit>
+            <trans-unit id="topic">
+                <source>Topic</source>
+                <target>Themen</target>
             </trans-unit>
         </body>
     </file>
