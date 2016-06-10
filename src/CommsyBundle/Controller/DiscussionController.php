@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Filter\DiscussionFilterType;
 use CommsyBundle\Form\Type\DiscussionType;
+use CommsyBundle\Form\Type\DiscussionArticleType;
 use CommsyBundle\Form\Type\SectionType;
 
 class DiscussionController extends Controller
@@ -681,7 +682,7 @@ class DiscussionController extends Controller
                     'itemId' => $itemId,
                 ))
             ));
-        } else if ($item->getItemType() == 'discussion_article') {
+        } else if ($item->getItemType() == 'discarticle') {
             // get section from MaterialService
             $discussionArticleItem = $discussionService->getArticle($itemId);
             if (!$discussionArticleItem) {
@@ -694,12 +695,17 @@ class DiscussionController extends Controller
         $form->handleRequest($request);
         if ($form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                $discussionItem = $transformer->applyTransformation($discussionItem, $form->getData());
-
-                // update modifier
-                $discussionItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
-
-                $discussionItem->save();
+                if ($item->getItemType() == 'discussion') {
+                    $discussionItem = $transformer->applyTransformation($discussionItem, $form->getData());
+                    // update modifier
+                    $discussionItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                    $discussionItem->save();                
+                } else if ($item->getItemType() == 'discarticle') {
+                    $discussionArticleItem = $transformer->applyTransformation($discussionArticleItem, $form->getData());
+                    // update modifier
+                    $discussionArticleItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                    $discussionArticleItem->save();
+                }
                 
                 if ($item->isDraft()) {
                     $item->setDraftStatus(0);
@@ -737,9 +743,13 @@ class DiscussionController extends Controller
         $discussionService = $this->get('commsy_legacy.discussion_service');
         $transformer = $this->get('commsy_legacy.transformer.discussion');
         
-        $discussion = $discussionService->getDiscussion($itemId);
+        if ($item->getItemType() == 'discussion') {
+            $typedItem = $discussionService->getDiscussion($itemId);
+        } else if ($item->getItemType() == 'discarticle') {
+            $typedItem = $discussionService->getArticle($itemId);
+        }
         
-        $itemArray = array($discussion);
+        $itemArray = array($typedItem);
         $modifierList = array();
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
@@ -763,12 +773,12 @@ class DiscussionController extends Controller
 		   $id_array[] = $current_user->getItemID();
 		   $current_user = $user_list->getNext();
 		}
-		$readerManager->getLatestReaderByUserIDArray($id_array,$discussion->getItemID());
+		$readerManager->getLatestReaderByUserIDArray($id_array,$typedItem->getItemID());
 		$current_user = $user_list->getFirst();
 		while ( $current_user ) {
-	   	    $current_reader = $readerManager->getLatestReaderForUserByID($discussion->getItemID(), $current_user->getItemID());
+	   	    $current_reader = $readerManager->getLatestReaderForUserByID($typedItem->getItemID(), $current_user->getItemID());
             if ( !empty($current_reader) ) {
-                if ( $current_reader['read_date'] >= $discussion->getModificationDate() ) {
+                if ( $current_reader['read_date'] >= $typedItem->getModificationDate() ) {
                     $read_count++;
                     $read_since_modification_count++;
                 } else {
@@ -796,7 +806,7 @@ class DiscussionController extends Controller
         
         return array(
             'roomId' => $roomId,
-            'item' => $discussion,
+            'item' => $typedItem,
             'modifierList' => $modifierList,
             'userCount' => $all_user_count,
             'readCount' => $read_count,

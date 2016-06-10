@@ -10,6 +10,8 @@ class DiscussionService
     private $legacyEnvironment;
 
     private $discussionManager;
+    
+    private $discussionArticleManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -17,6 +19,9 @@ class DiscussionService
 
         $this->discussionManager = $this->legacyEnvironment->getDiscussionManager();
         $this->discussionManager->reset();
+        
+        $this->discussionArticleManager = $this->legacyEnvironment->getDiscussionArticlesManager();
+        $this->discussionArticleManager->reset();
     }
 
     public function getListDiscussions($roomId, $max = NULL, $start = NULL, $sort = NULL)
@@ -85,5 +90,10 @@ class DiscussionService
     public function getDiscussion($itemId)
     {
         return $this->discussionManager->getItem($itemId);
+    }
+    
+    public function getArticle($itemId)
+    {
+        return $this->discussionArticleManager->getItem($itemId);
     }
 }

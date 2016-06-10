@@ -243,6 +243,16 @@ services:
         class: CommsyBundle\Form\Type\TopicType
         tags:
             - { name: form.type }
+            
+    commsy.form.type.discussion:
+        class: CommsyBundle\Form\Type\DiscussionType
+        tags:
+            - { name: form.type }
+            
+    commsy.form.type.discussionarticle:
+        class: CommsyBundle\Form\Type\DiscussionArticleType
+        tags:
+            - { name: form.type }
 
     # Form type extension
     commsy.form.extension.image_type:
