@@ -22,101 +22,89 @@
         {% block content %}
         <div >
 
-        <div>
+            <div>
 
-            {# material content panel #}
-            <div class="uk-panel-box-primary">
-                {# content #}
-                <article>
-                    {# title, etc. #}
-                    <div>
-                        {{ macros.title(material, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, ratingArray) }}
-                    </div>
-            
-                    {# description #}
-                    <div>
-                        {{ macros.itemDescription('description', material, true, material.description) }}
-                    </div>
-            
-                    {# files #}
-                    <div>
-                        {{ macros.files(material) }}
-                    </div>
-        
-                    {# links #}
-                    <div>
-                        {{ macros.links(material,showHashtags,showCategories,roomCategories) }}
-                    </div>
-        
-                    {# workflow #}
-                    {% if showWorkflow %}
+                {# material content panel #}
+                <div class="uk-panel-box-primary">
+                    {# content #}
+                    <article>
+                        {# title, etc. #}
                         <div>
-                            {{ macros.workflow(material, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate) }}
+                            {{ macros.title(material, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, ratingArray) }}
                         </div>
-                    {% endif %}
-                </article>
-            
-            
-            <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
-                    <div class="uk-grid">
-                        <div class="uk-text-large">
-                            {{ 'Abschnitte'|trans({})|capitalize }}
-                        </div>
-                    </div>
-                </div>       
-                {# material sections #}
-                {% for section in sectionList %}
-                    {% set count = loop.index0 %}
-                    
-                        
-                            
-                        
-
-                        <article class="uk-article uk-position-relative">
-                            {# title #}
-                            <div>
-                                {{ macros.title(section, modifierList, userCount, readCount, readSinceModificationCount) }}
-                            </div>
-                            
-                            {# description #}
-                            <div>
-                                {{ macros.itemDescription('description', section, true, section.description) }}
-                            </div>
-
-                            {# files #}
-                            <div>
-                                {{ macros.files(section) }}
-                                <hr>
-                            </div>
-                        </article>
-                    
-                {% endfor %}
-            
-
-            {# annotations #}
-            {% if item.itemType != 'discussion' %}
-                <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
-                    <div class="uk-grid">
-                        <div class="uk-text-large">
-                            {{ 'annotations'|trans({})|capitalize }}
-                        </div>
-                    </div>
-                </div>              
                 
-                    {{ render(controller(
-                        'CommsyBundle:Annotation:feedPrint',
-                        { 'roomId': roomId, 'linkedItemId': item.itemId }
-                    ))}}
+                        {# description #}
+                        <div>
+                            {{ macros.itemDescription('description', material, true, material.description) }}
+                        </div>
+                
+                        {# files #}
+                        <div>
+                            {{ macros.files(material) }}
+                        </div>
+            
+                        {# links #}
+                        <div>
+                            {{ macros.links(material,showHashtags,showCategories,roomCategories) }}
+                        </div>
+            
+                        {# workflow #}
+                        {% if showWorkflow %}
+                            <div>
+                                {{ macros.workflow(material, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate) }}
+                            </div>
+                        {% endif %}
+                    </article>
+                
+                {% if sectionList is not empty %}
+                    <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top page-break-before">
+                        <div class="uk-grid">
+                            <div class="uk-text-large">
+                                {{ 'Abschnitte'|trans({})|capitalize }}
+                            </div>
+                        </div>
+                    </div>       
+                    {# material sections #}
+                    {% for section in sectionList %}                               
+
+                            <article class="uk-article uk-position-relative page-break-inside">
+                                {# title #}
+                                <div>
+                                    {{ macros.title(section, modifierList, userCount, readCount, readSinceModificationCount) }}
+                                </div>
+                                
+                                {# description #}
+                                <div>
+                                    {{ macros.itemDescription('description', section, true, section.description) }}
+                                </div>
+
+                                {# files #}
+                                <div>
+                                    {{ macros.files(section) }}
+                                    <hr>
+                                </div>
+                            </article>
+                        
+                    {% endfor %}
+                {% endif %}
+                
+
+                {# annotations #}
+                             
+                    
+                        {{ render(controller(
+                            'CommsyBundle:Annotation:feedPrint',
+                            { 'roomId': roomId, 'linkedItemId': item.itemId }
+                        ))}}
 
 
-            {% endif %}
-        </div>
+            </div>
         </div>
             
 
 
 			        
-				{% endblock %}
+		{% endblock %}
           
         
     </body>

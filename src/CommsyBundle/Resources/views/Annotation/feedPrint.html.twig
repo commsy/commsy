@@ -1,14 +1,26 @@
 {% import 'CommsyBundle:Base:printmacro.html.twig' as utilMacros %}
 
-{% for annotation in annotations %}
-    <article >
-        <br>
-        {{ utilMacros.statusColor(readerList, annotation.itemId) }}
+{% if annotations is not empty %}
+    <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top page-break-before">
+        <div class="uk-grid">
+            <div class="uk-text-large">
+                {{ 'annotations'|trans({})|capitalize }}
+            </div>
+        </div>
+    </div> 
+{% endif %}
 
+<br>
+
+{% for annotation in annotations %}
+
+                    
+
+    <article class="page-break-inside">
         <header>
 
             {# user icon #}
-            <div>
+            <div >
                 {% if annotation.creator.isUser %}
                     {{  utilMacros.userIconLink(annotation.creator) }}
                 {% else %}
@@ -17,14 +29,16 @@
             </div>
 
             {# content #}
-            <div>
-                <div>
+            <div >
+                <div >
                     {{ utilMacros.editAnnotationContent('description', annotation, annotation.description) }}
+
                 </div>
             </div>
         </header>
-        <hr>
     </article>
+    <hr>
+
 {% endfor %}
 
 

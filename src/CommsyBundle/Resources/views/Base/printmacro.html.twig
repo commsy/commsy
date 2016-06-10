@@ -627,49 +627,6 @@
     {% endif %}
 {% endmacro %}
 
-{% macro statusColor(readerList, itemId, type='comment') %}
-    {% if type == 'grid' %}
-        {% if readerList[itemId] is defined %}
-           {% if readerList[itemId] == 'new' %}
-                <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newEntry'|trans({})}}">
-                    <i class="uk-icon-medium uk-text-danger uk-icon-exclamation"></i>
-                </div>
-            {% elseif readerList[itemId] == 'changed' %}
-                <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedEntry'|trans({})}}">
-                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
-                </div>
-            {% elseif readerList[itemId] == 'new_annotation' %}
-                <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newAnnotation'|trans({})}}">
-                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
-                </div>
-            {% elseif readerList[itemId] == 'changed_annotation' %}
-                <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedAnnotation'|trans({})}}">
-                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
-                </div>
-            {% endif %}
-        {% endif %}
-    {% else %}
-        {% if readerList[itemId] is defined %}
-           {% if readerList[itemId] == 'new' %}
-                <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newEntry'|trans({})}}">
-                    <i class="uk-icon-medium uk-text-danger uk-icon-exclamation"></i>
-                </div>
-            {% elseif readerList[itemId] == 'changed' %}
-                <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedEntry'|trans({})}}">
-                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
-                </div>
-            {% elseif readerList[itemId] == 'new_annotation' %}
-                <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newAnnotation'|trans({})}}">
-                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
-                </div>
-            {% elseif readerList[itemId] == 'changed_annotation' %}
-                <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedAnnotation'|trans({})}}">
-                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
-                </div>
-            {% endif %}
-        {% endif %}
-    {% endif %}
-{% endmacro %}
 
 {% macro editAnnotationContent(title, item, content) %}
     <div class="uk-grid uk-margin-top-remove">
@@ -696,10 +653,79 @@
             </div>
         {% endif %}
 
+    </div>    
+{% endmacro %}
+
+{% macro details(date) %}
+    {% import _self as macros %}
+    
+    <hr class="uk-width-9-10"/>
+
+    <article class="uk-article uk-margin-left uk-margin-right">
+        <a name="details"></a>
         {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
 
-       
+        {# title row #}
+        <div class="uk-grid uk-margin-small-bottom">
+            <div class="uk-width-9-10">
+                <h4 class="cs-detail-section-header">
+                    {{ "info"|trans({},'date') }}
+                </h4>
+            </div>
 
-       </div>
-    </div>    
+            <div class="uk-width-1-10 uk-flex uk-text-right">
+                {# edit action #}
+                {% if is_granted('ITEM_EDIT', date.itemId) %}
+                    <div class="cs-edit uk-hidden">
+                        <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+                    </div>
+                {% endif %}
+
+           </div>
+        </div>
+
+        {# content #}
+        <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
+            <table class="ui-table">
+                <tr>
+                    <td class="uk-text-top">
+                        <strong>{{ "date"|trans({},'date') }}</strong>
+                    </td>
+                    <td class="uk-text-top">
+                        {{ date.dateDescription }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="uk-text-top">
+                        <strong>{{ "place"|trans({},'date') }}</strong>
+                    </td>
+                    <td class="uk-text-top">
+                        {{ date.place }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="uk-text-top">
+                        <strong>{{ "participants"|trans({},'date') }}</strong>
+                    </td>
+                    <td class="uk-text-top">
+                        {{ macros.participants(date, date.participantsItemList.to_array) }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </article>
+    
+{% endmacro %}
+
+{% macro participants(item,participants) %}
+    {% import _self as macros %}
+    {% if not participants is empty %}
+        {% for participant in participants %}
+                    {% if participant.isUser %}
+                        {{  macros.userIconLink(participant) }}
+                    {% else %}
+                        {{  macros.userIcon(participant) }}
+                    {% endif %}
+        {% endfor %}
+    {% endif %}
 {% endmacro %}

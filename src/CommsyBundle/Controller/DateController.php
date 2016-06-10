@@ -734,4 +734,145 @@ class DateController extends Controller
     {
         
     }
+
+    /**
+     * @Route("/room/{roomId}/date/{itemId}/print")
+     */
+    public function printAction($roomId, $itemId)
+    {
+        $dateService = $this->get('commsy_legacy.date_service');
+        $itemService = $this->get('commsy.item_service');
+        
+        $date = $dateService->getDate($itemId);
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $item = $date;
+        $reader_manager = $legacyEnvironment->getReaderManager();
+        $reader = $reader_manager->getLatestReader($item->getItemID());
+        if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
+            $reader_manager->markRead($item->getItemID(), $item->getVersionID());
+        }
+
+        $noticed_manager = $legacyEnvironment->getNoticedManager();
+        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
+        if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
+            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
+        }
+
+        
+        $itemArray = array($date);
+
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+ 
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $readerManager = $legacyEnvironment->getReaderManager();
+        $roomItem = $roomManager->getItem($date->getContextId());        
+        $numTotalMember = $roomItem->getAllUsers();
+
+        $userManager = $legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager->setUserLimit();
+        $userManager->select();
+        $user_list = $userManager->get();
+        $all_user_count = $user_list->getCount();
+        $read_count = 0;
+        $read_since_modification_count = 0;
+
+        $current_user = $user_list->getFirst();
+        $id_array = array();
+        while ( $current_user ) {
+           $id_array[] = $current_user->getItemID();
+           $current_user = $user_list->getNext();
+        }
+        $readerManager->getLatestReaderByUserIDArray($id_array,$date->getItemID());
+        $current_user = $user_list->getFirst();
+        while ( $current_user ) {
+            $current_reader = $readerManager->getLatestReaderForUserByID($date->getItemID(), $current_user->getItemID());
+            if ( !empty($current_reader) ) {
+                if ( $current_reader['read_date'] >= $date->getModificationDate() ) {
+                    $read_count++;
+                    $read_since_modification_count++;
+                } else {
+                    $read_count++;
+                }
+            }
+            $current_user = $user_list->getNext();
+        }
+        $read_percentage = round(($read_count/$all_user_count) * 100);
+        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
+        $readerService = $this->get('commsy.reader_service');
+        
+        $readerList = array();
+        $modifierList = array();
+        foreach ($itemArray as $item) {
+            $reader = $readerService->getLatestReader($item->getItemId());
+            if ( empty($reader) ) {
+               $readerList[$item->getItemId()] = 'new';
+            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
+               $readerList[$item->getItemId()] = 'changed';
+            }
+            
+            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+        }
+
+        // annotation form
+        $form = $this->createForm(AnnotationType::class);
+
+        $categories = array();
+        if ($current_context->withTags()) {
+            $roomCategories = $this->get('commsy.category_service')->getTags($roomId);
+            $dateCategories = $date->getTagsArray();
+            $categories = $this->getTagDetailArray($roomCategories, $dateCategories);
+        }
+
+        $html = $this->renderView('CommsyBundle:Date:detailPrint.html.twig', [
+            'roomId' => $roomId,
+            'date' => $dateService->getDate($itemId),
+            'readerList' => $readerList,
+            'modifierList' => $modifierList,
+            'user' => $legacyEnvironment->getCurrentUserItem(),
+            'annotationForm' => $form->createView(),
+            'userCount' => $all_user_count,
+            'readCount' => $read_count,
+            'readSinceModificationCount' => $read_since_modification_count,
+            'draft' => $itemService->getItem($itemId)->isDraft(),
+            'showCategories' => $current_context->withTags(),
+            'showHashtags' => $current_context->withBuzzwords(),
+            'roomCategories' => $categories,
+        ]);
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        // get room item for information panel
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        $this->get('knp_snappy.pdf')->setOption('footer-line',true);
+        $this->get('knp_snappy.pdf')->setOption('footer-spacing', 1);
+        $this->get('knp_snappy.pdf')->setOption('footer-center',"[page] / [toPage]");
+        $this->get('knp_snappy.pdf')->setOption('header-line', true);
+        $this->get('knp_snappy.pdf')->setOption('header-spacing', 1 );
+        $this->get('knp_snappy.pdf')->setOption('header-right', date("d.m.y"));
+        $this->get('knp_snappy.pdf')->setOption('header-left', $roomItem->getTitle());
+        $this->get('knp_snappy.pdf')->setOption('header-center', "Commsy");
+        $this->get('knp_snappy.pdf')->setOption('images',true);
+        $this->get('knp_snappy.pdf')->setOption('load-media-error-handling','ignore');
+        $this->get('knp_snappy.pdf')->setOption('load-error-handling','ignore');
+
+        // set cookie for authentication - needed to request images
+        $this->get('knp_snappy.pdf')->setOption('cookie', [
+            'SID' => $legacyEnvironment->getSessionID(),
+        ]);
+
+
+       // return new Response($html);
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="print.pdf"'
+            ]
+        );
+    }
 }

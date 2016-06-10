@@ -22,96 +22,74 @@
         {% block content %}
         <div >
 
-        <div>
+            <div>
 
-            {# discussion content panel #}
-            <div class="uk-panel-box-primary">
-                {# content #}
-                <article>
-                    {# title, etc. #}
-                    <div>
-                        {{ macros.title(discussion, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, ratingArray) }}
-                    </div>
-            
-                    {# description #}
-                    <div>
-                        {{ macros.itemDescription('description', discussion, true, discussion.description) }}
-                    </div>
-            
-                    {# files #}
-                    <div>
-                        {{ macros.files(discussion) }}
-                    </div>
-        
-                    {# links #}
-                    <div>
-                        {{ macros.links(discussion,showHashtags,showCategories,roomCategories) }}
-                    </div>
-        
-                    
-                </article>
-            
-            
-            <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
-                    <div class="uk-grid">
-                        <div class="uk-text-large">
-                            {{ 'Abschnitte'|trans({})|capitalize }}
+                {# discussion content panel #}
+                <div class="uk-panel-box-primary">
+                    {# content #}
+                    <article>
+                        {# title, etc. #}
+                        <div>
+                            {{ macros.title(discussion, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, ratingArray) }}
                         </div>
-                    </div>
-                </div>       
-                {# discussion sections #}
-                {% for section in articleList %}
-                    {% set count = loop.index0 %}
-                    
-                        
-                            
-                        
-
-                        <article class="uk-article uk-position-relative">
-                            {# title #}
-                            <div>
-                                {{ macros.title(section, modifierList, userCount, readCount, readSinceModificationCount) }}
-                            </div>
-                            
-                            {# description #}
-                            <div>
-                                {{ macros.itemDescription('description', section, true, section.description) }}
-                            </div>
-
-                            {# files #}
-                            <div>
-                                {{ macros.files(section) }}
-                                <hr>
-                            </div>
-                        </article>
-                    
-                {% endfor %}
-            
-
-            {# annotations #}
-            {% if item.itemType != 'discussion' %}
-                <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
-                    <div class="uk-grid">
-                        <div class="uk-text-large">
-                            {{ 'annotations'|trans({})|capitalize }}
-                        </div>
-                    </div>
-                </div>              
                 
-                    {{ render(controller(
-                        'CommsyBundle:Annotation:feedPrint',
-                        { 'roomId': roomId, 'linkedItemId': item.itemId }
-                    ))}}
+                        {# description #}
+                        <div>
+                            {{ macros.itemDescription('description', discussion, true, discussion.description) }}
+                        </div>
+                
+                        {# files #}
+                        <div>
+                            {{ macros.files(discussion) }}
+                        </div>
+            
+                        {# links #}
+                        <div>
+                            {{ macros.links(discussion,showHashtags,showCategories,roomCategories) }}
+                        </div>
+            
+                        
+                    </article>
+                
+                {% if articleList is not empty %}
+                    <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top page-break-before">
+                        <div class="uk-grid">
+                            <div class="uk-text-large">
+                                {{ 'Abschnitte'|trans({})|capitalize }}
+                            </div>
+                        </div>
+                    </div>       
+                    {# discussion sections #}
+                    {% for section in articleList %}
 
+                            <article class="uk-article uk-position-relative">
+                                {# title #}
+                                <div>
+                                    {{ macros.title(section, modifierList, userCount, readCount, readSinceModificationCount) }}
+                                </div>
+                                
+                                {# description #}
+                                <div>
+                                    {{ macros.itemDescription('description', section, true, section.description) }}
+                                </div>
 
-            {% endif %}
-        </div>
+                                {# files #}
+                                <div>
+                                    {{ macros.files(section) }}
+                                </div>
+                                <hr>
+                            </article>
+                        
+                    {% endfor %}
+                {% endif %}
+                
+            </div>
         </div>
             
 
 
 			        
-				{% endblock %}
+		{% endblock %}
           
         
     </body>

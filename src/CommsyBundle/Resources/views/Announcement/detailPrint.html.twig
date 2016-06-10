@@ -22,96 +22,83 @@
         {% block content %}
         <div >
 
-        <div>
+            <div>
 
-            {# announcement content panel #}
-            <div class="uk-panel-box-primary">
-                {# content #}
-                <article>
-                    {# title, etc. #}
-                    <div>
-                        {{ macros.title(announcement, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) }}
-                    </div>
-            
-                    {# description #}
-                    <div>
-                        {{ macros.itemDescription('description', announcement, true, announcement.description) }}
-                    </div>
-            
-                    {# files #}
-                    <div>
-                        {{ macros.files(announcement) }}
-                    </div>
-        
-                    {# links #}
-                    <div>
-                        {{ macros.links(announcement,showHashtags,showCategories) }}
-                    </div>
-        
-                    
-                </article>
-            
-            
-            <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
-                    <div class="uk-grid">
-                        <div class="uk-text-large">
-                            {{ 'Abschnitte'|trans({})|capitalize }}
+                {# announcement content panel #}
+                <div class="uk-panel-box-primary">
+                    {# content #}
+                    <article>
+                        {# title, etc. #}
+                        <div>
+                            {{ macros.title(announcement, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) }}
                         </div>
-                    </div>
-                </div>       
-                {# announcement sections #}
-                {% for section in readerList %}
-                    {% set count = loop.index0 %}
-                    
-                        
-                            
-                        
-
-                        <article class="uk-article uk-position-relative">
-                            {# title #}
-                            <div>
-                                {{ macros.title(section, modifierList, userCount, readCount, readSinceModificationCount) }}
-                            </div>
-                            
-                            {# description #}
-                            <div>
-                                {{ macros.itemDescription('description', section, true, section.description) }}
-                            </div>
-
-                            {# files #}
-                            <div>
-                                {{ macros.files(section) }}
-                                <hr>
-                            </div>
-                        </article>
-                    
-                {% endfor %}
-            
-
-            {# annotations #}
-            {% if item.itemType != 'discussion' %}
-                <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
-                    <div class="uk-grid">
-                        <div class="uk-text-large">
-                            {{ 'annotations'|trans({})|capitalize }}
-                        </div>
-                    </div>
-                </div>              
                 
-                    {{ render(controller(
-                        'CommsyBundle:Annotation:feedPrint',
-                        { 'roomId': roomId, 'linkedItemId': item.itemId }
-                    ))}}
+                        {# description #}
+                        <div>
+                            {{ macros.itemDescription('description', announcement, true, announcement.description) }}
+                        </div>
+                
+                        {# files #}
+                        <div>
+                            {{ macros.files(announcement) }}
+                        </div>
+            
+                        {# links #}
+                        <div>
+                            {{ macros.links(announcement,showHashtags,showCategories) }}
+                        </div>
+            
+                        
+                    </article>
+                
+                {% if readerList is not empty %}
+                    <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top page-break-before">
+                        <div class="uk-grid">
+                            <div class="uk-text-large">
+                                {{ 'Abschnitte'|trans({})|capitalize }}
+                            </div>
+                        </div>
+                    </div>       
+                    {# announcement sections #}
+                    {% for section in readerList %}
+
+                            <article class="uk-article uk-position-relative page-break-inside">
+                                {# title #}
+                                <div>
+                                    {{ macros.title(section, modifierList, userCount, readCount, readSinceModificationCount) }}
+                                </div>
+                                
+                                {# description #}
+                                <div>
+                                    {{ macros.itemDescription('description', section, true, section.description) }}
+                                </div>
+
+                                {# files #}
+                                <div>
+                                    {{ macros.files(section) }}
+                                    <hr>
+                                </div>
+                            </article>
+                        
+                    {% endfor %}
+                {% endif %}
+                
+
+                {# annotations #}             
+                    
+                        {{ render(controller(
+                            'CommsyBundle:Annotation:feedPrint',
+                            { 'roomId': roomId, 'linkedItemId': item.itemId }
+                        ))}}
 
 
-            {% endif %}
-        </div>
+            </div>
         </div>
             
 
 
 			        
-				{% endblock %}
+		{% endblock %}
           
         
     </body>
