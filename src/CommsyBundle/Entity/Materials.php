@@ -3,6 +3,7 @@
 namespace CommsyBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -186,10 +187,92 @@ class Materials
      */
     private $sections;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="Files")
+     * @ORM\JoinTable(name="item_link_file",
+     *      joinColumns={@ORM\JoinColumn(name="item_iid", referencedColumnName="item_id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="file_id", referencedColumnName="files_id", unique=true)}
+     *  )
+     */
+    private $files;
+
+
+
     public function __construct()
     {
         $this->sections = new ArrayCollection();
+        $this->files = new ArrayCollection();
     }
+
+    /**
+     * Add section
+     *
+     * @param \CommsyBundle\Entity\Section $section
+     *
+     * @return Materials
+     */
+    public function addSection(\CommsyBundle\Entity\Section $section)
+    {
+        $this->sections[] = $section;
+
+        return $this;
+    }
+
+    /**
+     * Remove section
+     *
+     * @param \CommsyBundle\Entity\Section $section
+     */
+    public function removeSection(\CommsyBundle\Entity\Section $section)
+    {
+        $this->sections->removeElement($section);
+    }
+
+    /**
+     * Get sections
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSections()
+    {
+        return $this->sections;
+    }
+
+    /**
+     * Add file
+     *
+     * @param \CommsyBundle\Entity\File $file
+     *
+     * @return Materials
+     */
+    public function addFile(\CommsyBundle\Entity\Files $file)
+    {
+        $this->files[] = $file;
+
+        return $this;
+    }
+
+    /**
+     * Remove file
+     *
+     * @param \CommsyBundle\Entity\File $file
+     */
+    public function removeFile(\CommsyBundle\Entity\Files $file)
+    {
+        $this->files->removeElement($file);
+    }
+
+    /**
+     * Get files
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFiles()
+    {
+        return $this->files;
+    }
+
+
 
     /**
      * Set itemId
@@ -746,39 +829,5 @@ class Materials
     public function getModifier()
     {
         return $this->modifier;
-    }
-
-    /**
-     * Add section
-     *
-     * @param \CommsyBundle\Entity\Section $section
-     *
-     * @return Materials
-     */
-    public function addSection(\CommsyBundle\Entity\Section $section)
-    {
-        $this->sections[] = $section;
-
-        return $this;
-    }
-
-    /**
-     * Remove section
-     *
-     * @param \CommsyBundle\Entity\Section $section
-     */
-    public function removeSection(\CommsyBundle\Entity\Section $section)
-    {
-        $this->sections->removeElement($section);
-    }
-
-    /**
-     * Get sections
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getSections()
-    {
-        return $this->sections;
     }
 }

@@ -54,7 +54,10 @@ fos_elastica:
                         endDate:
                             type: date
                             format: date_optional_time
-
+                        files:
+                            type: 'nested'
+                            properties:
+                                filename: ~
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Announcement
@@ -94,6 +97,10 @@ fos_elastica:
                         datetimeEnd:
                             type: date
                             format: date_optional_time
+                        files:
+                            type: 'nested'
+                            properties:
+                                filename: ~
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Dates
@@ -131,6 +138,10 @@ fos_elastica:
                             properties:
                                 subject: ~
                                 description: ~
+                        files:
+                            type: 'nested'
+                            properties:
+                                filename: ~
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Discussions
@@ -228,6 +239,10 @@ fos_elastica:
                             type: date
                             format: date_optional_time
                         description: ~
+                        files:
+                            type: 'nested'
+                            properties:
+                                filename: ~
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Todos
@@ -286,6 +301,11 @@ fos_elastica:
                                 firstname: ~
                                 lastname: ~
                                 city: ~
+                        files:
+                            type: 'nested'
+                            properties:
+                                filename: ~
+
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Materials

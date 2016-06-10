@@ -106,5 +106,302 @@ class Files
     private $tempUploadSessionId;
 
 
-}
 
+    /**
+     * Get filesId
+     *
+     * @return integer
+     */
+    public function getFilesId()
+    {
+        return $this->filesId;
+    }
+
+    /**
+     * Set contextId
+     *
+     * @param integer $contextId
+     *
+     * @return Files
+     */
+    public function setContextId($contextId)
+    {
+        $this->contextId = $contextId;
+
+        return $this;
+    }
+
+    /**
+     * Get contextId
+     *
+     * @return integer
+     */
+    public function getContextId()
+    {
+        return $this->contextId;
+    }
+
+    /**
+     * Set creatorId
+     *
+     * @param integer $creatorId
+     *
+     * @return Files
+     */
+    public function setCreatorId($creatorId)
+    {
+        $this->creatorId = $creatorId;
+
+        return $this;
+    }
+
+    /**
+     * Get creatorId
+     *
+     * @return integer
+     */
+    public function getCreatorId()
+    {
+        return $this->creatorId;
+    }
+
+    /**
+     * Set deleterId
+     *
+     * @param integer $deleterId
+     *
+     * @return Files
+     */
+    public function setDeleterId($deleterId)
+    {
+        $this->deleterId = $deleterId;
+
+        return $this;
+    }
+
+    /**
+     * Get deleterId
+     *
+     * @return integer
+     */
+    public function getDeleterId()
+    {
+        return $this->deleterId;
+    }
+
+    /**
+     * Set creationDate
+     *
+     * @param \DateTime $creationDate
+     *
+     * @return Files
+     */
+    public function setCreationDate($creationDate)
+    {
+        $this->creationDate = $creationDate;
+
+        return $this;
+    }
+
+    /**
+     * Get creationDate
+     *
+     * @return \DateTime
+     */
+    public function getCreationDate()
+    {
+        return $this->creationDate;
+    }
+
+    /**
+     * Set modificationDate
+     *
+     * @param \DateTime $modificationDate
+     *
+     * @return Files
+     */
+    public function setModificationDate($modificationDate)
+    {
+        $this->modificationDate = $modificationDate;
+
+        return $this;
+    }
+
+    /**
+     * Get modificationDate
+     *
+     * @return \DateTime
+     */
+    public function getModificationDate()
+    {
+        return $this->modificationDate;
+    }
+
+    /**
+     * Set deletionDate
+     *
+     * @param \DateTime $deletionDate
+     *
+     * @return Files
+     */
+    public function setDeletionDate($deletionDate)
+    {
+        $this->deletionDate = $deletionDate;
+
+        return $this;
+    }
+
+    /**
+     * Get deletionDate
+     *
+     * @return \DateTime
+     */
+    public function getDeletionDate()
+    {
+        return $this->deletionDate;
+    }
+
+    /**
+     * Set filename
+     *
+     * @param string $filename
+     *
+     * @return Files
+     */
+    public function setFilename($filename)
+    {
+        $this->filename = $filename;
+
+        return $this;
+    }
+
+    /**
+     * Get filename
+     *
+     * @return string
+     */
+    public function getFilename()
+    {
+        return $this->filename;
+    }
+
+    /**
+     * Set size
+     *
+     * @param integer $size
+     *
+     * @return Files
+     */
+    public function setSize($size)
+    {
+        $this->size = $size;
+
+        return $this;
+    }
+
+    /**
+     * Get size
+     *
+     * @return integer
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
+
+    /**
+     * Set hasHtml
+     *
+     * @param string $hasHtml
+     *
+     * @return Files
+     */
+    public function setHasHtml($hasHtml)
+    {
+        $this->hasHtml = $hasHtml;
+
+        return $this;
+    }
+
+    /**
+     * Get hasHtml
+     *
+     * @return string
+     */
+    public function getHasHtml()
+    {
+        return $this->hasHtml;
+    }
+
+    /**
+     * Set scan
+     *
+     * @param boolean $scan
+     *
+     * @return Files
+     */
+    public function setScan($scan)
+    {
+        $this->scan = $scan;
+
+        return $this;
+    }
+
+    /**
+     * Get scan
+     *
+     * @return boolean
+     */
+    public function getScan()
+    {
+        return $this->scan;
+    }
+
+    /**
+     * Set extras
+     *
+     * @param string $extras
+     *
+     * @return Files
+     */
+    public function setExtras($extras)
+    {
+        $this->extras = $extras;
+
+        return $this;
+    }
+
+    /**
+     * Get extras
+     *
+     * @return string
+     */
+    public function getExtras()
+    {
+        return $this->extras;
+    }
+
+    /**
+     * Set tempUploadSessionId
+     *
+     * @param string $tempUploadSessionId
+     *
+     * @return Files
+     */
+    public function setTempUploadSessionId($tempUploadSessionId)
+    {
+        $this->tempUploadSessionId = $tempUploadSessionId;
+
+        return $this;
+    }
+
+    /**
+     * Get tempUploadSessionId
+     *
+     * @return string
+     */
+    public function getTempUploadSessionId()
+    {
+        return $this->tempUploadSessionId;
+    }
+}
