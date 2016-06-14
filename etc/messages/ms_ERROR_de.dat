@@ -15,6 +15,7 @@ $message["ERROR_MAIL_SERVER"]["de"] = "Es trat ein Fehler beim Versenden der E-M
 $message["ERROR_MAIL_SUBJECT"]["de"] = "Betreff:";
 $message["ERROR_MAIL_TO"]["de"] = "An:";
 $message["ERROR_ROOMS_WITHOUT_MODERATORS"]["de"] = "Folgende Räume wären ohne Moderatoren:";
+$message["ERROR_ROOMS_WITHOUT_MODERATORS_PROCEED"]["de"] = "Sie können den Löschprozess ohne die oben aufgeführten Kennungen ausführen, indem Sie die Aktion erneut auswählen";
 $message["ERROR_SEND_EMAIL_TO"]["de"] = "Beim Versenden der E-Mail ist ein Fehler aufgetreten. Die E-Mail wurde nicht an folgende Personen verschickt:";
 $message["ERROR_SEND_MAIL"]["de"] = "Beim Verschicken der folgenden Nachricht ist ein Fehler aufgetreten:";
 $message["ERROR_UPLOADIFY_FILE_SIZE"]["de"] = "Die zulässige Dateigröße wurde überschritten!";
