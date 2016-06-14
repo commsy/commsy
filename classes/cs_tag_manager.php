@@ -776,31 +776,49 @@ class cs_tag_manager extends cs_manager implements cs_export_import_interface {
       return $retour;
    }
 
-   public function deleteTagsOfUser ($uid) {
-        // create backup of item
-        $this->backupItem($uid, array(	'title'				=>	'title',
-                                   'modification_date'	=>	'modification_date'));
+    public function deleteTagsOfUser ($uid) {
+        $disableOverwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
+       
+        if ($disableOverwrite !== null && $disableOverwrite !== true) {
+            // create backup of item
+            $this->backupItem($uid, array(
+                'title' => 'title',
+                'modification_date'	=> 'modification_date')
+            );
 
-      $current_datetime = getCurrentDateTimeInMySQL();
-      $query  = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.* FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.creator_id = "'.encode(AS_DB,$uid).'"';
-      $query  .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.title != "CS_TAG_ROOT"';
-      $result = $this->_db_connector->performQuery($query);
-      if ( !empty($result) ) {
-         foreach ( $result as $rs ) {
-            $insert_query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET';
-            $insert_query .= ' modification_date = "'.$current_datetime.'",';
-            $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'"';
-            $insert_query .= ' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
-            $result2 = $this->_db_connector->performQuery($insert_query);
-            if ( !isset($result2) or !$result2 ) {
-               include_once('functions/error_functions.php');
-               trigger_error('Problems automatic deleting '.$this->_db_table.'.',E_USER_WARNING);
+            $current_datetime = getCurrentDateTimeInMySQL();
+            $query  = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.* FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.creator_id = "'.encode(AS_DB,$uid).'"';
+            $query  .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.title != "CS_TAG_ROOT"';
+            $result = $this->_db_connector->performQuery($query);
+            if ( !empty($result) ) {
+                foreach ( $result as $rs ) {
+                    $insert_query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET';
+
+                    /* flag */
+                    if ($disableOverwrite === 'flag') {
+                        $updateQuery .= ' public = "-1",';
+                        $updateQuery .= ' modification_date = "' . $current_datetime . '"';
+                    }
+
+                    /* disabled */
+                    if ($disableOverwrite === false) {
+                        $insert_query .= ' modification_date = "'.$current_datetime.'",';
+                        $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'"';
+                        $updateQuery .= ' public = "1"';
+                    }
+                    
+                    $insert_query .= ' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
+                    $result2 = $this->_db_connector->performQuery($insert_query);
+                    if ( !isset($result2) or !$result2 ) {
+                       include_once('functions/error_functions.php');
+                       trigger_error('Problems automatic deleting '.$this->_db_table.'.',E_USER_WARNING);
+                    }
+                    unset($result2);
+                }
+                unset($result);
             }
-            unset($result2);
-         }
-         unset($result);
-      }
-   }
+        }
+    }
 
 	public function updateIndexedSearch($item) {
 		$indexer = $this->_environment->getSearchIndexer();
