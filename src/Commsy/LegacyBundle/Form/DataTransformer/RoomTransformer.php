@@ -95,18 +95,18 @@ class RoomTransformer implements DataTransformerInterface
             $community_room_array = array();
 
             // get community room ids
-            foreach($form_data as $key => $value) {
+            foreach($roomData as $key => $value) {
                 if(mb_substr($key, 0, 18) === 'communityroomlist_') $community_room_array[] = $value;
             }
             
             /*
              * if assignment is mandatory, the array must not be empty
              */
-            if (	$this->_environment->getCurrentPortalItem()->getProjectRoomLinkStatus() !== "mandatory" ||
-                    sizeof($community_room_array) > 0 )
+            if ($this->legacyEnvironment->getCurrentPortalItem()->getProjectRoomLinkStatus() !== "mandatory" || sizeof($community_room_array) > 0 )
             {
                 $roomObject->setCommunityListByID($community_room_array);
             }
+
         } elseif($roomObject->isCommunityRoom()) {
             if(isset($roomData['room_assignment'])) {
                 if($roomData['room_assignment'] === 'open') $roomObject->setAssignmentOpenForAnybody();
@@ -132,6 +132,9 @@ class RoomTransformer implements DataTransformerInterface
                     break;
             }
         }
+
+        $roomObject->portalId = $this->legacyEnvironment->getCurrentPortalItem()->getItemID();
+
         return $roomObject;
     }
 }

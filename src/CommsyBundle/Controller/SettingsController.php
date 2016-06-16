@@ -50,8 +50,29 @@ class SettingsController extends Controller
         $form->handleRequest($request);
         if ($form->isValid()) {
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
-	  
-            //$roomItem->save();
+
+            // TODO: should this be used for normal file uploads (materials etc.) while bg images are saved into specific theme subfolders?
+            $file = $form['room_image']->getData();
+            $filesDir = $this->getParameter('files_directory');  
+
+            $roomDir = implode( "/", array_filter(explode("\r\n", chunk_split(strval($roomId), "4")), 'strlen') );
+            $saveDir = $filesDir . "/" . $roomItem->portalId . "/" . $roomDir . "_";
+
+            if(!is_dir($saveDir)){
+                mkdir($saveDir, 0777, true);
+            } 
+
+            $extension = $file->guessExtension();
+            if(!$extension) {
+                $extension = "bin";
+            }
+
+            $fileName = md5(uniqid()).'_bgimage.'.$extension;
+
+            $file->move($saveDir, $fileName);
+            //$file->move($saveDir, $file->getClientOriginalName());
+
+            $roomItem->save();
 
             // persist
             // $em = $this->getDoctrine()->getManager();

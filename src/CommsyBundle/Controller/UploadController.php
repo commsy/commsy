@@ -17,6 +17,9 @@ class UploadController extends Controller
      */
     public function uploadAction($roomId, $itemId = NULL, Request $request)
     {
+
+        dump("Upload action reached!");
+
         $response = new JsonResponse();
 
         $itemService = $this->get('commsy.item_service');
