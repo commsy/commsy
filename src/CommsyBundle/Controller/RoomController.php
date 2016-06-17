@@ -72,6 +72,8 @@ class RoomController extends Controller
         $announcementManager->setDateLimit(getCurrentDateTimeInMySQL());
         $countAnnouncements = $announcementManager->getCountAll();
 
+        $backgroundImage= $this->generateUrl("getBackground", array('roomId' => $roomId));
+
         return array(
             'form' => $filterForm->createView(),
             'roomItem' => $roomItem,
@@ -83,6 +85,7 @@ class RoomController extends Controller
             'roomModerators' => $moderators,
             'showCategories' => $roomItem->withTags(),
             'countAnnouncements' => $countAnnouncements,
+            'bgImageFilepath' => $backgroundImage,
         );
     }
 

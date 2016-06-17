@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use CommsyBundle\Entity\Room;
 use CommsyBundle\Form\Type\GeneralSettingsType;
 use CommsyBundle\Form\Type\ModerationSettingsType;
+use CommsyBundle\Form\Type\AdditionalSettingsType;
 use CommsyBundle\Form\Type\AppearanceSettingsType;
 use CommsyBundle\Form\Type\ExtensionSettingsType;
 
@@ -53,10 +54,8 @@ class SettingsController extends Controller
 
             // TODO: should this be used for normal file uploads (materials etc.) while bg images are saved into specific theme subfolders?
             $file = $form['room_image']->getData();
-            $filesDir = $this->getParameter('files_directory');  
 
-            $roomDir = implode( "/", array_filter(explode("\r\n", chunk_split(strval($roomId), "4")), 'strlen') );
-            $saveDir = $filesDir . "/" . $roomItem->portalId . "/" . $roomDir . "_";
+            $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
 
             if(!is_dir($saveDir)){
                 mkdir($saveDir, 0777, true);
@@ -71,6 +70,8 @@ class SettingsController extends Controller
 
             $file->move($saveDir, $fileName);
             //$file->move($saveDir, $file->getClientOriginalName());
+
+			$roomItem->setBGImageFilename($fileName);
 
             $roomItem->save();
 
@@ -92,8 +93,6 @@ class SettingsController extends Controller
      */
     public function moderationAction($roomId, Request $request)
     {
-        dump($roomId);
-        dump($request);
         $roomService = $this->get('commsy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
@@ -107,7 +106,7 @@ class SettingsController extends Controller
         $form = $this->createForm(ModerationSettingsType::class, $roomData, array(
             'roomId' => $roomId,
         ));
-        
+
         $form->handleRequest($request);
         if ($form->isValid()) {
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
@@ -124,6 +123,44 @@ class SettingsController extends Controller
             'form' => $form->createView()
         );
 
+    }
+
+    /**
+     * @Route("/room/{roomId}/settings/additional")
+     * @Template
+     * @Security("is_granted('MODERATOR')")
+     */
+    public function additionalAction($roomId, Request $request)
+    {
+        $roomService = $this->get('commsy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
+
+        if (!$roomItem) {
+            throw $this->createNotFoundException('No room found for id ' . $roomId);
+        }
+
+        $transformer = $this->get('commsy_legacy.transformer.room');
+        $roomData = $transformer->transform($roomItem);
+
+        $form = $this->createForm(ModerationSettingsType::class, $roomData, array(
+            'roomId' => $roomId,
+        ));
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
+
+            $roomItem->save();
+
+            // persist
+            // $em = $this->getDoctrine()->getManager();
+            // $em->persist($room);
+            // $em->flush();
+        }
+
+        return array(
+            'form' => $form->createView()
+        );
     }
 
     /**

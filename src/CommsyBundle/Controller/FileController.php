@@ -35,4 +35,28 @@ class FileController extends Controller
         
         return $response;
     }
+
+    /**
+    * @Route("/room/{roomId}/background/", name="getBackground")
+    */
+    public function getBackgroundImageAction($roomId)
+    {
+        $roomService = $this->get('commsy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
+        $filepath = $this->getParameter('files_directory') . "/" .  $roomService->getRoomFileDirectory($roomId);
+        $filename = $roomItem->getBGImageFilename();
+
+        $completePath = $filepath . "/" . $filename;
+
+        $content = file_get_contents($completePath);
+
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $completePath);
+
+        $response = new Response($content, Response::HTTP_OK, array('content-type' => $mimeType));
+        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$filename);
+        $response->headers->set('Content-Disposition', $contentDisposition);
+
+        return $response;
+    }
 }

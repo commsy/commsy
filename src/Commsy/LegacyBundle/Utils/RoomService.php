@@ -96,4 +96,10 @@ class RoomService
 
         return $roomItem->getTitle();
     }
+
+    public function getRoomFileDirectory($roomId)
+    {
+        $roomDir = implode( "/", array_filter(explode("\r\n", chunk_split(strval($roomId), "4")), 'strlen') );
+        return $this->legacyEnvironment->getCurrentPortalItem()->getItemID() . "/" . $roomDir . "_";
+    }
 }
