@@ -86,10 +86,10 @@ class RoomController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/feed/{start}")
+     * @Route("/room/{roomId}/feed/{start}/{sort}")
      * @Template("CommsyBundle:Room:list.html.twig")
      */
-    public function feedAction($roomId, $max = 10, $start = 0, Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
