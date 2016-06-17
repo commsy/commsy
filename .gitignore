@@ -112,6 +112,7 @@ htdocs/css/external_portal_styles/[0-9]*
 web/css/external_portal_styles/[0-9]*
 
 !.bowerrc
+!.gitlab-ci.yml
 
 wikis/*
 web/commsy
