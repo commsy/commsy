@@ -62,8 +62,7 @@ class RoomController extends Controller
         $moderatorList = $roomItem->getModeratorList();
         $moderatorUserItem = $moderatorList->getFirst();
         while ($moderatorUserItem) {
-            $moderators[] = $moderatorUserItem->getFirstname() . ' ' . $moderatorUserItem->getLastname();
-
+            $moderators[] = $moderatorUserItem;
             $moderatorUserItem = $moderatorList->getNext();
         }
 
