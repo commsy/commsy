@@ -29,7 +29,8 @@ fos_elastica:
                 announcement:
                     indexable_callback: isIndexable
                     mappings:
-                        contextId: ~
+                        contextId:
+                            type: integer
                         creator:
                             type: object
                             properties:
@@ -67,7 +68,8 @@ fos_elastica:
                 dates:
                     indexable_callback: isIndexable
                     mappings:
-                        contextId: ~
+                        contextId:
+                            type: integer
                         creator:
                             type: object
                             properties:
@@ -106,7 +108,8 @@ fos_elastica:
                 discussions:
                     indexable_callback: isIndexable
                     mappings:
-                        contextId: ~
+                        contextId:
+                            type: integer
                         creator:
                             type: object
                             properties:
@@ -144,7 +147,8 @@ fos_elastica:
                 labels:
                     indexable_callback: isIndexable
                     mappings:
-                        contextId: ~
+                        contextId:
+                            type: integer
                         creator:
                             type: object
                             properties:
@@ -174,7 +178,8 @@ fos_elastica:
                 room:
                     indexable_callback: isIndexable
                     mappings:
-                        contextId: ~
+                        contextId:
+                            type: integer
                         creator:
                             type: object
                             properties:
@@ -207,7 +212,8 @@ fos_elastica:
                 todos:
                     indexable_callback: isIndexable
                     mappings:
-                        contextId: ~
+                        contextId:
+                            type: integer
                         creator:
                             type: object
                             properties:
@@ -243,7 +249,8 @@ fos_elastica:
                     indexable_callback: isIndexable
                     mappings:
                         userId: ~
-                        contextId: ~
+                        contextId:
+                            type: integer
                         firstName: ~
                         lastName: ~
                     persistence:
@@ -258,8 +265,10 @@ fos_elastica:
                 materials:
                     indexable_callback: 'isIndexable'
                     mappings:
-                        versionId: ~
-                        contextId: ~
+                        versionId:
+                            type: integer
+                        contextId:
+                            type: integer
                         title:
                             type: string
                             analyzer: autocomplete
