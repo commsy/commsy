@@ -173,6 +173,7 @@ class MaterialController extends Controller
             'showWorkflow' => $roomItem->withWorkflow(),
             'showHashTags' => $roomItem->withBuzzwords(),
             'showCategories' => $roomItem->withTags(),
+            'material_filter' => $filterForm,
         );
     }
 
@@ -247,6 +248,7 @@ class MaterialController extends Controller
             'showRating' => $current_context->isAssessmentActive(),
             'showWorkflow' => $current_context->withWorkflow(),
             'ratingList' => $ratingList,
+            'material_filter' => 'action',
         ]);
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -270,15 +272,15 @@ class MaterialController extends Controller
             'SID' => $legacyEnvironment->getSessionID(),
         ]);
 
-        return new Response($html);
-        // return new Response(
-        //     $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
-        //     200,
-        //     [
-        //         'Content-Type' => 'application/pdf',
-        //         'Content-Disposition' => 'inline; filename="print.pdf"',
-        //     ]
-        // );
+        //return new Response($html);
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="print.pdf"',
+            ]
+        );
     }
 
     /**

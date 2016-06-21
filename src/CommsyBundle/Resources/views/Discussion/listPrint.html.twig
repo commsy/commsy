@@ -36,26 +36,26 @@
 
         <div>
             {% block feed %}
-                {% for material in materials %}
+                {% for discussion in discussions %}
                     <article class="uk-comment page-break-inside">
                     
                         {# item change information #}
-                        {{ macros.statusColor(readerList, material.itemId) }}
+                        {{ macros.statusColor(readerList, discussion.itemId) }}
                  
                         <header class="uk-grid uk-comment-header">
                             
                             {# user icon and modification time #}
                             <div class="uk-width-1-10">
-                                {% if material.modificatorItem.isUser %}
-                                    {{  macros.userIconLink(material.modificatorItem) }}
+                                {% if discussion.modificatorItem.isUser %}
+                                    {{  macros.userIconLink(discussion.modificatorItem) }}
                                 {% else %}
-                                    {{  macros.userIcon(material.modificatorItem) }}
+                                    {{  macros.userIcon(discussion.modificatorItem) }}
                                 {% endif %}
                                 <div class="uk-comment-meta">
-                                    {% if material.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                                        {{ 'today'|trans({})|capitalize }}, {{material.getModificationDate|date("H:i")}}
+                                    {% if discussion.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                        {{ 'today'|trans({})|capitalize }}, {{discussion.getModificationDate|date("H:i")}}
                                     {% else %}
-                                        {{material.getModificationDate|date("d.m.Y")}}
+                                        {{discussion.getModificationDate|date("d.m.Y")}}
                                     {% endif %}
                                 </div>
                             </div>
@@ -63,28 +63,26 @@
                             {# title and meta #}
                             <div class="uk-width-7-10">
                                 <h4 class="uk-comment-title">
-                                    <a>{{ material.title }}</a>
+                                    <a>{{ discussion.title }}</a>
                                 </h4>
 
                                 <div class="uk-comment-meta">
-                                    {% if material.author != '' %}
-                                        {{ 'by'|trans({})|capitalize }}: {{material.author}} ({{material.publishingdate}})
-                                    {% else %}
-                                        {{ 'by'|trans({})|capitalize }}: {{material.modificatorItem.fullname}} ({{material.getCreationDate|date("d.m.Y")}})
-                                    {% endif %}
+
+                                        {{ 'by'|trans({})|capitalize }}: {{discussion.modificatorItem.fullname}} ({{discussion.getCreationDate|date("d.m.Y")}})
+
                                 </div>
                                
                                 <div class="uk-comment-meta">
-                                    {{  macros.fileListShort(material) }}
+                                    {{  macros.fileListShort(discussion) }}
                                 </div>
                             </div>
                             {% if showRating or showWorkflow %}
                                 <div class="uk-width-2-10 uk-text-right">
                                 {%if showRating%}
-                                    {{  macros.ratingStatus(material, ratingList) }}
+                                    {{  macros.ratingStatus(discussion, ratingList) }}
                                 {% endif %}
                                 {%if showWorkflow%}
-                                    {{  macros.workflowTrafficLight(material) }}
+                                    {{  macros.workflowTrafficLight(discussion) }}
                                 {% endif %}
                             </div>
                             {% endif %}

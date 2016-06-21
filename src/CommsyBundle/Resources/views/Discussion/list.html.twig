@@ -44,8 +44,9 @@
                         <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
                     </a>
                 </li>
+                {# print #}
                 <li>
-                    <a class="" href="#" id="print" data-section-url="">
+                    <a href="{{ path('commsy_discussion_printlist', {'roomId': roomId}) }}" target="_blank" id="print">
                         <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                     </a>
                 </li>
