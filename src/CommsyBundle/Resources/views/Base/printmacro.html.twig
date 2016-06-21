@@ -677,7 +677,7 @@
                 {# edit action #}
                 {% if is_granted('ITEM_EDIT', date.itemId) %}
                     <div class="cs-edit uk-hidden">
-                        <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+                        <a class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                     </div>
                 {% endif %}
 
@@ -721,11 +721,290 @@
     {% import _self as macros %}
     {% if not participants is empty %}
         {% for participant in participants %}
+                <div>
                     {% if participant.isUser %}
                         {{  macros.userIconLink(participant) }}
                     {% else %}
                         {{  macros.userIcon(participant) }}
                     {% endif %}
+                    {{participant.Fullname}}
+                    <br><br>
+                    <br>
+                </div>
+                
         {% endfor %}
     {% endif %}
+{% endmacro %}
+
+{% macro titleUser(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) %}
+    {% import _self as macros %}
+    {% set pathName = '' %}
+    {% if item.itemType == 'user' %}
+        {% set pathName = 'commsy_user_edit' %}
+    {% elseif item.itemType == 'section' %}
+        <a name="section{{item.ItemID}}"></a>
+        {% set pathName = 'commsy_user_edit' %}
+    {% endif %}
+    {% if userCount == 0 %}
+        {% set userCount = 1 %}
+    {% endif %}
+    
+    <div>
+        <div>
+            <div >
+                <div >        
+                    <div class="uk-grid">
+                        <div class="uk-width-1-1">
+                            <h1 class="uk-article-title">{{ item.title|raw }} {{ item.fullname|raw }}</h1>
+                        </div>
+                    </div>
+                </div>        
+                <div class="uk-width-1-10  uk-text-right">
+                    <!-- <i class="uk-icon-small uk-icon-hover uk-icon-edit"></i> -->
+                    {# edit #}
+                    {% if is_granted('ITEM_EDIT', item.itemId) %}
+                        {{ macros.actionIcons('title', item, true) }}
+                        {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
+                    {% endif %}
+                </div>
+            </div>
+
+
+
+            {# title, etc. #}
+            <div class="uk-flex">
+                <div>
+                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle cs-avatar-user-detail" src="{{ absolute_url(app.request.baseURL) }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ item.itemID }}/image" alt="">
+                </div>
+                <div>
+                    <table class="uk-table-condensed" style="margin-bottom:30px;">
+                        <tbody>
+                            {% if not item.birthday is empty %}
+                            <tr>
+                                <td class="uk-text-bold">{{ 'date of birth'|trans({})}}:</td>
+                                <td>{{ item.birthday }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if not item.email is empty %}
+                            <tr>
+                                <td class="uk-text-bold">{{ 'email'|trans({})}}:</td>
+                                <td><a>{{item.email }}</a></td>
+                            </tr>
+                            {% endif %}
+                            {% if not item.telephone is empty %}
+                            <tr>
+                                <td class="uk-text-bold">{{ 'telephone'|trans({})}}:</td>
+                                <td><a>{{ item.telephone }}</a></td>
+                            </tr>
+                            {% endif %}
+                            {% if not item.cellularphone is empty %}
+                            <tr>
+                                <td class="uk-text-bold">{{ 'handy'|trans({})}}:</td>
+                                <td><a>{{ item.cellularphone }}</a></td>
+                            </tr>
+                            {% endif %}
+                            {% if not item.street is empty %}
+                            <tr>
+                                <td class="uk-text-bold">{{ 'street'|trans({})}}:</td>
+                                <td>{{ item.street }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if not item.city is empty %}
+                            <tr>
+                                <td class="uk-text-bold">{{ 'city'|trans({})}}:</td>
+                                <td>{{ item.city }}</td>
+                            </tr>
+                            {% endif %}
+
+                            <tr>
+                                <td class="uk-text-bold">ToDo:</td>
+                                <td>further user fields</td>
+                            </tr>
+                            {% if not item.status is empty %}
+                            <tr>
+                                <td class="uk-text-bold">{{ 'user status'|trans({})}}:</td>
+                                <td>{{ macros.userStatus(item) }}</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div >
+            <div >    
+                <div >
+                    <div >
+                        <div>
+                            <div class="uk-panel">
+                                <div class="uk-grid">
+                                    <div class="uk-width-1-1">
+                                        <div class="uk-flex">
+                                            <div >
+                                                {% if item.modificatorItem.isUser %}
+                                                    {{  macros.userIconLink(item.modificatorItem) }}
+                                                {% else %}
+                                                    {{  macros.userIcon(item.modificatorItem) }}
+                                                {% endif %}
+                                            </div>
+                                            <div >
+                                                  &nbsp&nbsp{{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                  &nbsp&nbsp{{ 'changed by'|trans({})|capitalize }}: {{item.modificatorItem.Fullname}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+   </div>
+{% endmacro %}
+
+{% macro userStatus(user) %}
+    {% if user.status == 0 %}
+        {{ 'quit'|trans({})|capitalize }}
+    {% elseif user.status == 1 %}
+        {{ 'request'|trans({})|capitalize }}
+    {% elseif user.status == 2 %}
+        {{ 'user'|trans({})|capitalize }}
+    {% elseif user.status == 3 %}
+        {{ 'moderator'|trans({})|capitalize }}
+    {% endif %}
+{% endmacro %}
+
+{% macro members(item,members) %}
+    {% import _self as macros %}
+
+    {% set preview = '' %}
+    {% set content = '' %}
+ 
+
+    {% if not members is empty %}
+
+    
+        {% set content %}
+        <div class="uk-margin-top uk-margin-bottom" data-uk-grid="{gutter: 20}">
+            {% for member in members %}
+        <div class="uk-width-medium-1-2">
+
+            <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
+ 
+                <div class="uk-panel-teaser cs-panel-teaser-user">
+                   <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ absolute_url(path('commsy_user_image', {'roomId': member.contextId, 'itemId': member.itemId})) }}" data-uk-tooltip title="{{ member.fullname }}">
+                    <span class="uk-text-large uk-text-middle">
+                        <a>{{ member.title }} {{member.fullname}}</a>
+                    </span>
+                </div>
+                <span>
+                    {% if member.email %}
+                        <a>{{ member.email }}</a>
+                    {% else %}
+                        {'no email'|trans({}) }
+                    {% endif %}
+                </span><br/>
+                <div class="uk-flex uk-flex-space-between">
+                    <div>
+                        {% if member.telephone %}
+                            <a>{{ member.telephone}}</a><br/>
+                        {% else %}
+                            <span class="uk-text-muted" data-uk-tooltip title="{{'no telephone'|trans({}) }}">---</span><br/>
+                        {% endif %}
+                        {% if member.cellularphone %}
+                            <a >{{ member.cellularphone}}</a>
+                        {% else %}
+                            <span class="uk-text-muted" data-uk-tooltip title="{{'no handy'|trans({}) }}">---</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        {% if member.street %}
+                            <span data-uk-tooltip title="{{member.street}}">{{ member.street}}</span><br/>
+                        {% else %}
+                            <span class="uk-text-muted" data-uk-tooltip title="{{'no street'|trans({}) }}">---</span><br/>
+                        {% endif %}
+                        
+                        {% if member.city %}
+                            <span >{{ member.zipcode }} {{ member.city }}</span>
+                        {% else %}
+                            <span class="uk-text-muted" data-uk-tooltip title="{{'no city'|trans({}) }}">---</span>
+                        {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+            {% endfor %}
+
+        </div>
+        {% endset %}
+    {% endif %}
+    {{ macros.editContent('members', item, false, content, preview, true, true, members|length) }}
+{% endmacro %}
+
+
+{% macro statusColor(readerList, itemId, type='comment') %}
+    {% if type == 'grid' %}
+        {% if readerList[itemId] is defined %}
+           {% if readerList[itemId] == 'new' %}
+                <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newEntry'|trans({})}}">
+                    <i class="uk-icon-medium uk-text-danger uk-icon-exclamation"></i>
+                </div>
+            {% elseif readerList[itemId] == 'changed' %}
+                <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedEntry'|trans({})}}">
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                </div>
+            {% elseif readerList[itemId] == 'new_annotation' %}
+                <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newAnnotation'|trans({})}}">
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                </div>
+            {% elseif readerList[itemId] == 'changed_annotation' %}
+                <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedAnnotation'|trans({})}}">
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% else %}
+        {% if readerList[itemId] is defined %}
+           {% if readerList[itemId] == 'new' %}
+                <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newEntry'|trans({})}}">
+                    <i class="uk-icon-medium uk-text-danger uk-icon-exclamation"></i>
+                </div>
+            {% elseif readerList[itemId] == 'changed' %}
+                <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedEntry'|trans({})}}">
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                </div>
+            {% elseif readerList[itemId] == 'new_annotation' %}
+                <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newAnnotation'|trans({})}}">
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                </div>
+            {% elseif readerList[itemId] == 'changed_annotation' %}
+                <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedAnnotation'|trans({})}}">
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endmacro %}
+
+{% macro ratingStatus(item, ratingList) %}
+    {% set rating = 0 %}
+    {% for ratingItemId, ratingValues in ratingList %}
+        {% if item.itemId == ratingItemId %}
+            {% set rating = ratingValues.average_assessment|round %}
+        {% endif %}
+    {% endfor %}
+    <div class="uk-text-nowrap" data-uk-dropdown="{pos:'bottom-right', remaintime:200}">
+        {% for i in 1..5 %}
+            {% if rating >= i %}
+                <i class="cs-icon-star-small uk-icon-star uk-text-warning"></i>
+            {% endif %}
+        {% endfor %}
+        {% for i in 1..5 %}
+            {% if rating < i %}
+                <i class="cs-icon-star-small uk-icon-star-o"></i>
+            {% endif %}
+        {% endfor %}
+    </div>
 {% endmacro %}

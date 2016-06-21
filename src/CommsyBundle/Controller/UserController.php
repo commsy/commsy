@@ -255,6 +255,8 @@ class UserController extends Controller
        );
     }
 
+     
+
 
     private function getDetailInfo ($roomId, $itemId) {
         $infoArray = array();
@@ -584,5 +586,69 @@ class UserController extends Controller
             'privateRoom'=> $privateRoom);
 
 
+    }
+    /**
+     * @Route("/room/{roomId}/user/{itemId}/print")
+     */
+    public function printAction($roomId, $itemId)
+    {
+
+        $infoArray = $this->getDetailInfo($roomId, $itemId);
+
+        $html = $this->renderView('CommsyBundle:User:detailPrint.html.twig', [
+            'roomId' => $roomId,
+            'user' => $infoArray['user'],
+            'readerList' => $infoArray['readerList'],
+            'modifierList' => $infoArray['modifierList'],
+            'userList' => $infoArray['userList'],
+            'counterPosition' => $infoArray['counterPosition'],
+            'count' => $infoArray['count'],
+            'firstItemId' => $infoArray['firstItemId'],
+            'prevItemId' => $infoArray['prevItemId'],
+            'nextItemId' => $infoArray['nextItemId'],
+            'lastItemId' => $infoArray['lastItemId'],
+            'readCount' => $infoArray['readCount'],
+            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
+            'userCount' => $infoArray['userCount'],
+            'draft' => $infoArray['draft'],
+            'showRating' => false,
+            'showHashtags' => $infoArray['showHashtags'],
+            'showCategories' => $infoArray['showCategories'],
+            'currentUser' => $infoArray['currentUser'],
+            'linkedGroups' => $infoArray['linkedGroups'],
+        ]);
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        // get room item for information panel
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        $this->get('knp_snappy.pdf')->setOption('footer-line',true);
+        $this->get('knp_snappy.pdf')->setOption('footer-spacing', 1);
+        $this->get('knp_snappy.pdf')->setOption('footer-center',"[page] / [toPage]");
+        $this->get('knp_snappy.pdf')->setOption('header-line', true);
+        $this->get('knp_snappy.pdf')->setOption('header-spacing', 1 );
+        $this->get('knp_snappy.pdf')->setOption('header-right', date("d.m.y"));
+        $this->get('knp_snappy.pdf')->setOption('header-left', $roomItem->getTitle());
+        $this->get('knp_snappy.pdf')->setOption('header-center', "Commsy");
+        $this->get('knp_snappy.pdf')->setOption('images',true);
+        $this->get('knp_snappy.pdf')->setOption('load-media-error-handling','ignore');
+        $this->get('knp_snappy.pdf')->setOption('load-error-handling','ignore');
+
+        // set cookie for authentication - needed to request images
+        $this->get('knp_snappy.pdf')->setOption('cookie', [
+            'SID' => $legacyEnvironment->getSessionID(),
+        ]);
+
+       // return new Response($html);
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="print.pdf"'
+            ]
+        );
     }
 }

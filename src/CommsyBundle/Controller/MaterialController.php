@@ -177,6 +177,111 @@ class MaterialController extends Controller
     }
 
     /**
+     * @Route("/room/{roomId}/material/print")
+     */
+    public function printlistAction($roomId, Request $request)
+    {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        if (!$roomItem) {
+            throw $this->createNotFoundException('The requested room does not exist');
+        }
+
+        // setup filter form
+        $defaultFilterValues = array(
+            'activated' => true,
+        );
+        $filterForm = $this->createForm(MaterialFilterType::class, $defaultFilterValues, array(
+            'action' => $this->generateUrl('commsy_material_list', array(
+                'roomId' => $roomId,
+            )),
+            'hasHashtags' => $roomItem->withBuzzwords(),
+            'hasCategories' => $roomItem->withTags(),
+        ));
+
+        // get the material manager service
+        $materialService = $this->get('commsy_legacy.material_service');
+
+        // apply filter
+        $filterForm->handleRequest($request);
+        if ($filterForm->isValid()) {
+            // set filter conditions in material manager
+            $materialService->setFilterConditions($filterForm);
+        }
+
+        // get material list from manager service 
+        $materials = $materialService->getListMaterials($roomId);
+
+        $readerService = $this->get('commsy.reader_service');
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+
+
+        $readerList = array();
+        foreach ($materials as $item) {
+            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+        }
+
+        $ratingList = array();
+        if ($current_context->isAssessmentActive()) {
+            $assessmentService = $this->get('commsy_legacy.assessment_service');
+            $itemIds = array();
+            foreach ($materials as $material) {
+                $itemIds[] = $material->getItemId();
+            }
+            $ratingList = $assessmentService->getListAverageRatings($itemIds);
+        }
+
+        // get material list from manager service 
+        $itemsCountArray = $materialService->getCountArray($roomId);
+
+        $html = $this->renderView('CommsyBundle:Material:listPrint.html.twig', [
+            'roomId' => $roomId,
+            'module' => 'material',
+            'materials' => $materials,
+            'itemsCountArray' => $itemsCountArray,
+            'readerList' => $readerList,
+            'showRating' => $current_context->isAssessmentActive(),
+            'showWorkflow' => $current_context->withWorkflow(),
+            'ratingList' => $ratingList,
+        ]);
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        // get room item for information panel
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        $this->get('knp_snappy.pdf')->setOption('footer-line',true);
+        $this->get('knp_snappy.pdf')->setOption('footer-spacing', 1);
+        $this->get('knp_snappy.pdf')->setOption('footer-center',"[page] / [toPage]");
+        $this->get('knp_snappy.pdf')->setOption('header-line', true);
+        $this->get('knp_snappy.pdf')->setOption('header-spacing', 1 );
+        $this->get('knp_snappy.pdf')->setOption('header-right', date("d.m.y"));
+        $this->get('knp_snappy.pdf')->setOption('header-left', $roomItem->getTitle());
+        $this->get('knp_snappy.pdf')->setOption('header-center', "Commsy");
+        $this->get('knp_snappy.pdf')->setOption('images',true);
+
+        // set cookie for authentication - needed to request images
+        $this->get('knp_snappy.pdf')->setOption('cookie', [
+            'SID' => $legacyEnvironment->getSessionID(),
+        ]);
+
+        return new Response($html);
+        // return new Response(
+        //     $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+        //     200,
+        //     [
+        //         'Content-Type' => 'application/pdf',
+        //         'Content-Disposition' => 'inline; filename="print.pdf"',
+        //     ]
+        // );
+    }
+
+    /**
      * @Route("/room/{roomId}/material/{itemId}", requirements={
      *     "itemId": "\d+"
      * }))
