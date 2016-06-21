@@ -1,0 +1,3 @@
+etherpad_homepage:
+    path:     /
+    defaults: { _controller: EtherpadBundle:Default:index }

@@ -33,6 +33,11 @@ class MaterialType extends AbstractType
                 'required' => false,
                 'translation_domain' => 'form',
             ))
+            ->add('editor_switch', CheckboxType::class, array(
+                'label' => 'editor_switch',
+                'required' => false,
+                'translation_domain' => 'form',
+            ))
             ->add('biblio_select', ChoiceType::class, array(
                 'choices'  => array(
                     'BiblioPlainType' => 'plain',

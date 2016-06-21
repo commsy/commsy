@@ -36,10 +36,24 @@ class ItemController extends Controller
         
         $formData = array();
         $tempItem = NULL;
+        $isMaterial = false;
+        $itemType = $item->getItemType();
         
-        $tempItem = $itemService->getTypedItem($itemId);
-        if (!$tempItem) {
-            throw $this->createNotFoundException('No '.$item->getItemType().' found for id ' . $roomId);
+        if ($item->getItemType() == 'material') {
+            $isMaterial = true;
+            // get material from MaterialService
+            $tempItem = $materialService->getMaterial($itemId);
+            if (!$tempItem) {
+                throw $this->createNotFoundException('No material found for id ' . $roomId);
+            }
+            $formData = $transformer->transform($tempItem);
+        } else if ($item->getItemType() == 'section') {
+            // get section from MaterialService
+            $tempItem = $materialService->getSection($itemId);
+            if (!$tempItem) {
+                throw $this->createNotFoundException('No section found for id ' . $roomId);
+            }
+            $formData = $transformer->transform($tempItem);
         }
         $formData = $transformer->transform($tempItem);
         
@@ -62,7 +76,10 @@ class ItemController extends Controller
         }
 
         return array(
+            // 'itemType' => $itemType,
+            'isMaterial' => $isMaterial,
             'itemId' => $itemId,
+            'roomId' => $roomId,
             'form' => $form->createView()
         );
     }
@@ -77,7 +94,17 @@ class ItemController extends Controller
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
-        $tempItem = $itemService->getTypedItem($itemId);
+        $materialService = $this->get('commsy_legacy.material_service');
+        
+        $tempItem = NULL;
+        $isMaterial = false;
+
+        if ($item->getItemType() == 'material') {
+            $isMaterial = true;
+            $tempItem = $materialService->getMaterial($itemId);
+        } else if ($item->getItemType() == 'section') {
+            $tempItem = $materialService->getSection($itemId);
+        }
 
         $itemArray = array($tempItem);
     
@@ -87,6 +114,7 @@ class ItemController extends Controller
         }
         
         return array(
+            'isMaterialSave' => $isMaterial,
             'roomId' => $roomId,
             'item' => $tempItem,
             'modifierList' => $modifierList

@@ -132,6 +132,12 @@ commsy:
     limesurvey:
         # set the following variable to activate limesurvey extension
         enabled: false
+
+    # Etherpad
+    etherpad:
+        enabled: '%extensions.etherpad.enabled%'
+        api_key: '%extensions.etherpad.api_key%'
+        api_url: '%extensions.etherpad.api_url%'
         
         # Limesurvey
     mediawiki:
