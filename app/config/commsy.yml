@@ -135,9 +135,9 @@ commsy:
 
     # Etherpad
     etherpad:
-        enabled: true
-        api_key: 'f574804921362b15992a9ddb079e6226b33c734ab14392c67c927c19c49ac936'
-        api_url: 'http://192.168.56.101:9001/api'
+        enabled: '%extensions.etherpad.enabled%'
+        api_key: '%extensions.etherpad.api_key%'
+        api_url: '%extensions.etherpad.api_url%'
         
         # Limesurvey
     mediawiki:
