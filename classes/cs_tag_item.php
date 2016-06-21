@@ -153,7 +153,7 @@ class cs_tag_item extends cs_item {
     *
     * @return string title of the tag
     */
-   function getTitle () {
+   public function getTitle () {
    	  if ($this->getPublic()=='-1'){
 		 $translator = $this->_environment->getTranslationObject();
    	  	 return $translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE');
