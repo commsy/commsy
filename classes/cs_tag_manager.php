@@ -792,7 +792,7 @@ class cs_tag_manager extends cs_manager implements cs_export_import_interface {
             $result = $this->_db_connector->performQuery($query);
             if ( !empty($result) ) {
                 foreach ( $result as $rs ) {
-                    $insert_query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET';
+                    $updateQuery = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET';
 
                     /* flag */
                     if ($disableOverwrite === 'flag') {
@@ -802,13 +802,13 @@ class cs_tag_manager extends cs_manager implements cs_export_import_interface {
 
                     /* disabled */
                     if ($disableOverwrite === false) {
-                        $insert_query .= ' modification_date = "'.$current_datetime.'",';
-                        $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'"';
+                        $updateQuery .= ' modification_date = "'.$current_datetime.'",';
+                        $updateQuery .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'"';
                         $updateQuery .= ' public = "1"';
                     }
                     
-                    $insert_query .= ' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
-                    $result2 = $this->_db_connector->performQuery($insert_query);
+                    $updateQuery .= ' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
+                    $result2 = $this->_db_connector->performQuery($updateQuery);
                     if ( !isset($result2) or !$result2 ) {
                        include_once('functions/error_functions.php');
                        trigger_error('Problems automatic deleting '.$this->_db_table.'.',E_USER_WARNING);
