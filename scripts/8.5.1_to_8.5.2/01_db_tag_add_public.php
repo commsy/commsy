@@ -27,14 +27,15 @@ $this->_flushHeadline('db: add column public to tag table');
 
 $success = true;
 
-$sql = "
-    ALTER TABLE
-        `tag`
-    ADD
-        `public`
-    tinyint(11) DEFAULT '0' NOT NULL
-";
-
-$success = $success and $this->_select($sql);
+if (!$this->_existsField("tag", "public")) {
+	$sql = "
+        ALTER TABLE
+            `tag`
+        ADD
+            `public`
+        tinyint(11) DEFAULT '0' NOT NULL
+    ";
+	$success = $success && $this->_select($sql);
+}
 
 $this->_flushHTML(BRLF);
