@@ -66,6 +66,10 @@
                 <source>Rubrics</source>
                 <target>Rubriken</target>
             </trans-unit>
+            <trans-unit id="17">
+                <source>Room image choice</source>
+                <target>Raumbildtyp</target>
+            </trans-unit>
             <trans-unit id="community_rooms">
                 <source>Community rooms</source>
                 <target>Gemeinschaftsräume</target>
@@ -106,6 +110,14 @@
                 <source>Topic</source>
                 <target>Themen</target>
             </trans-unit>
-        </body>
+            <trans-unit id="defaultimage">
+                <source>Theme image</source>
+                <target>Theme-Bild</target>
+            </trans-unit>
+            <trans-unit id="customimage">
+                <source>Custom image</source>
+                <target>Eigenes Bild</target>
+            </trans-unit>
+       </body>
     </file>
 </xliff>

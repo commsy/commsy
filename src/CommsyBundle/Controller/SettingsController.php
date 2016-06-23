@@ -142,7 +142,7 @@ class SettingsController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.room');
         $roomData = $transformer->transform($roomItem);
 
-        $form = $this->createForm(ModerationSettingsType::class, $roomData, array(
+        $form = $this->createForm(AdditionalSettingsType::class, $roomData, array(
             'roomId' => $roomId,
         ));
 

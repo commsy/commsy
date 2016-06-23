@@ -58,6 +58,14 @@ class GeneralSettingsType extends AbstractType
                     'English' => 'en',
                 ),
             ))
+            ->add('room_image_choice', ChoiceType::class, array(
+                'expanded' => true,
+                'multiple' => false,
+                'choices' => array(
+                    'Theme image' => 'default_image',
+                    'Custom image' => 'custom_image',
+                ),
+            ))
             ->add('room_image', FileType::class, array(
                 'attr' => array(
                     'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',

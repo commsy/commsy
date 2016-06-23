@@ -134,6 +134,15 @@ class MenuBuilder
             ))
             ->setExtra('translation_domain', 'menu');            
 
+            // additional settings 
+            $menu->addChild('Additional', array(
+                'label' => 'Additional',
+                'route' => 'commsy_settings_additional',
+                'routeParameters' => array('roomId' => $roomId),
+                'extras' => array('icon' => 'uk-icon-plus uk-icon-small'),
+            ))
+            ->setExtra('translation_domain', 'menu');            
+
             // appearance
             $menu->addChild('Appearance', array(
                 'label' => 'appearance',

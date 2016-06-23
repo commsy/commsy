@@ -51,59 +51,6 @@ class AdditionalSettingsType extends AbstractType
                     new NotBlank(),
                 ),
             ))
-            ->add('language', ChoiceType::class, array(
-                'choices' => array(
-                    'User' => 'user',
-                    'German' => 'de',
-                    'English' => 'en',
-                ),
-            ))
-            ->add('room_image', FileType::class, array(
-                'attr' => array(
-                    'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
-                ),
-                'required' => false,
-                //'image_path' => 'webPath',
-            ))
-            ->add('access_check', ChoiceType::class, array(
-                'choices' => array(
-                    'Never' => 'never',
-                    'Always' => 'always',
-                    'Code' => 'code',
-                ),
-            ))
-            //->add('code', TextType::class,
-            ->add('room_description', TextareaType::class, array(
-                'attr' => array(
-                    'class' => 'uk-form-width-large',
-                ),
-                'position' => array(
-                    'before' => 'save',
-                ),
-                'required' => false,
-            ))
-            ->add('save', SubmitType::class, array(
-                'position' => 'last',
-    	    ))
-            ->add('rubrics', CollectionType::class, array(
-                'entry_type' => ChoiceType::class,
-                'entry_options' => array(
-                    'choices' => array(
-                        'Show' => 'show',
-                        'Hide' => 'hide',
-                        'Off' => 'off',
-                    ),
-                    //'expanded' => true,
-                    //'multiple' => false,
-                    'attr' => array(
-                        'class' => 'uk-panel-box',
-                    ),
-                ),
-                'attr' => array(
-                    'class' => 'uk-sortable',
-                    'data-uk-sortable' => '',
-                ),
-            ))
         ;
 
         // TODO: feed settings, theme configuration, filter room description input (cleanCKEditor)
