@@ -133,8 +133,6 @@ class RoomTransformer implements DataTransformerInterface
             }
         }
 
-        $roomObject->portalId = $this->legacyEnvironment->getCurrentPortalItem()->getItemID();
-
         return $roomObject;
     }
 }
