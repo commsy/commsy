@@ -93,6 +93,7 @@ class GeneralSettingsType extends AbstractType
                         'Hide' => 'hide',
                         'Off' => 'off',
                     ),
+                    // for radio buttons:
                     //'expanded' => true,
                     //'multiple' => false,
                     'attr' => array(

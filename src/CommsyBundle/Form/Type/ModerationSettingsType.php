@@ -48,6 +48,9 @@ class ModerationSettingsType extends AbstractType
                 'label' => false,
                 'translation_domain' => 'form',
                 'required' => true,
+                 'attr' => array(
+                    'class' => 'uk-form-width-large',
+                ),
             ])
         ;
     }
