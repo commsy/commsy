@@ -286,6 +286,10 @@
                 <source>searchLinkedEntries</source>
                 <target>Suche</target>
             </trans-unit>
+            <trans-unit id="message was send">
+                <source>message was send</source>
+                <target>Die Nachricht wurde verschickt</target>
+            </trans-unit>
        </body>
     </file>
 </xliff>

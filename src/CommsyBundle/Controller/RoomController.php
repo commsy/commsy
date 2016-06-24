@@ -7,7 +7,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 use CommsyBundle\Filter\HomeFilterType;
+use CommsyBundle\Form\Type\ModerationSupportType;
 
 class RoomController extends Controller
 {
@@ -151,5 +154,63 @@ class RoomController extends Controller
             'readerList' => $readerList,
             'showRating' => $current_context->isAssessmentActive()
          );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/moderationsupport")
+     * @Template()
+     */
+    public function moderationsupportAction($roomId, Request $request)
+    {
+        $moderationsupportData = array();
+        $form = $this->createForm(ModerationSupportType::class, $moderationsupportData, array(
+            'action' => $this->generateUrl('commsy_room_moderationsupport', array(
+                'roomId' => $roomId,
+            ))
+        ));
+        
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $data = $form->getData();
+            
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+            $currentUser = $legacyEnvironment->getCurrentUser();
+
+            $roomManager = $legacyEnvironment->getRoomManager();
+            $roomItem = $roomManager->getItem($roomId);
+            
+            $moderatorEmailAdresses = array();
+            $moderatorList = $roomItem->getModeratorList();
+            $moderatorUserItem = $moderatorList->getFirst();
+            while ($moderatorUserItem) {
+                $moderatorEmailAdresses[$moderatorUserItem->getEmail()] = $moderatorUserItem->getFullname();
+                $moderatorUserItem = $moderatorList->getNext();
+            }
+            
+            $message = \Swift_Message::newInstance()
+                ->setSubject($data['subject'])
+                ->setFrom(array($currentUser->getEmail() => $currentUser->getFullname()))
+                ->setTo($moderatorEmailAdresses)
+                ->setBody($data['message'])
+            ;
+            
+            $message->setCc(array($currentUser->getEmail() => $currentUser->getFullname()));
+            
+            $this->get('mailer')->send($message);
+            
+            $translator = $this->get('translator');
+            
+            return new JsonResponse([
+                'message' => $translator->trans('message was send'),
+                'timeout' => '5550',
+                'layout' => 'cs-notify-message',
+                'data' => array(),
+            ]);
+        }
+        
+        return array(
+            'form' => $form->createView(),
+        );
     }
 }

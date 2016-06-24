@@ -70,6 +70,10 @@
                 <source>project</source>
                 <target>Project room</target>
             </trans-unit>
+            <trans-unit id="19">
+                <source>moderation support</source>
+                <target>E-mail to moderator/s</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

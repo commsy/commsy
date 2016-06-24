@@ -24,11 +24,13 @@
 {% endblock %}
 
 {% block additionalNavbarContent %}
-    <div class="uk-navbar-content">
-        <ul class="uk-navbar-nav">
-            <li>
-                <a href="{{ serviceLinkExternal }}"><i class="uk-icon-question-circle"></i></a>
-            </li>
-        </ul>
-    </div>
+    {% if serviceLinkExternal is defined %}
+        <div class="uk-navbar-content">
+            <ul class="uk-navbar-nav">
+                <li>
+                    <a href="{{ serviceLinkExternal }}"><i class="uk-icon-question-circle"></i></a>
+                </li>
+            </ul>
+        </div>
+    {% endif %}
 {% endblock %}
