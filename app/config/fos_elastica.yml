@@ -322,6 +322,8 @@ fos_elastica:
                             type: 'nested'
                             properties:
                                 filename: ~
+                                content:
+                                    type: attachment
 
                     persistence:
                         driver: orm

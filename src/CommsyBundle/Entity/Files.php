@@ -105,6 +105,33 @@ class Files
      */
     private $tempUploadSessionId;
 
+    /**
+     * @var integer
+     *
+     * @ORM\ManyToOne(targetEntity="Room")
+     * @ORM\JoinColumns({
+     *     @ORM\JoinColumn(name="context_id", referencedColumnName="item_id")
+     * })
+     */
+    private $room;
+
+    /**
+     * Get file content base64 encoded
+     *
+     * @return string (base64)
+     */
+    public function getContent()
+    {
+        $fileExt = substr(strrchr($this->filename,'.'),1);
+        $filePath = 'files/' . $this->room->getContextId() . '/' . $this->contextId . '_/' . $this->filesId. '.' . $fileExt;
+        
+        return base64_encode(
+                file_get_contents(
+                    $filePath, 
+                    'r'
+                )
+            );
+    }
 
 
     /**
