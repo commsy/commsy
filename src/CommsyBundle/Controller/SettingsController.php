@@ -48,30 +48,43 @@ class SettingsController extends Controller
             )),
         ));
         
+        $themeArray = $this->container->getParameter('liip_theme.themes');
+        dump("Themes:");
+        dump($themeArray);
+        dump("Current working directory:");
+        dump(getcwd());
+
         $form->handleRequest($request);
         if ($form->isValid()) {
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
 
             // TODO: should this be used for normal file uploads (materials etc.) while bg images are saved into specific theme subfolders?
-            $file = $form['room_image']->getData();
+            // TODO: add constraintGroup so that 'room_image' is mandatory when 'custom_image' is selected (or load previous custom image, if present)
+            if($form['room_image_choice']->getData() == 'custom_image' && !is_null($form['room_image']->getData())){
+                $file = $form['room_image']->getData();
 
-            $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
+                $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
 
-            if(!is_dir($saveDir)){
-                mkdir($saveDir, 0777, true);
-            } 
+                if(!is_dir($saveDir)){
+                    mkdir($saveDir, 0777, true);
+                } 
 
-            $extension = $file->guessExtension();
-            if(!$extension) {
-                $extension = "bin";
+                $extension = $file->guessExtension();
+                if(!$extension) {
+                    $extension = "bin";
+                }
+
+                $fileName = 'custom_bg_image.'.$extension;
+                //$fileName = md5(uniqid()).'_bgimage.'.$extension;
+
+                $file->move($saveDir, $fileName);
+                //$file->move($saveDir, $file->getClientOriginalName());
+
+                $roomItem->setBGImageFilename($fileName);
             }
-
-            $fileName = md5(uniqid()).'_bgimage.'.$extension;
-
-            $file->move($saveDir, $fileName);
-            //$file->move($saveDir, $file->getClientOriginalName());
-
-			$roomItem->setBGImageFilename($fileName);
+            else{
+                $roomItem->setBGImageFilename('');
+            }
 
             $roomItem->save();
 

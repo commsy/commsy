@@ -41,13 +41,23 @@ class FileController extends Controller
     */
     public function getBackgroundImageAction($roomId)
     {
-        // TODO: distinguish between default bg of selected theme and uploaded custom bg image!
         $roomService = $this->get('commsy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
-        $filepath = $this->getParameter('files_directory') . "/" .  $roomService->getRoomFileDirectory($roomId);
+        
         $filename = $roomItem->getBGImageFilename();
 
-        $completePath = $filepath . "/" . $filename;
+        if($filename == ''){
+            // TODO: determine selected theme instead of always loading default theme bg image here!
+            $themesDir = $this->getParameter("themes_directory");
+            $completePath = $themesDir . "/" . "default/bg.jpg";
+        }
+        else{
+            $filepath = $this->getParameter('files_directory') . "/" .  $roomService->getRoomFileDirectory($roomId);
+            $completePath = $filepath . "/" . $filename;
+        }
+
+        if(file_exists($completePath)){
+        }
 
         $content = file_get_contents($completePath);
 

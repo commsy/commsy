@@ -40,6 +40,26 @@ class RoomTransformer implements DataTransformerInterface
                 $roomData['access_check'] = 'withcode';
             }
 
+            // TODO: check, if room uses standard theme or custom background image and pre-select corresponding radio button
+            $backgroundImageFilename = $roomItem->getBGImageFilename();
+            /*
+            dump("Background image: " . $backgroundImageFilename);
+            dump("Position of substring 'theme': " . strpos($backgroundImageFilename, "themes"));
+            if(strpos($backgroundImageFilename, "themes") >= 0) {
+                dump(" => preselct default image");
+                $roomData['room_image_choice'] = 'default_image';
+            }
+            else{
+                dump(" => preselct custom image");
+                $roomData['room_image_choice'] = 'custom_image';
+            }*/
+            if($backgroundImageFilename){
+                $roomData['room_image_choice'] = 'custom_image';
+            }
+            else{
+                $roomData['room_image_choice'] = 'default_image';
+            }
+
             $roomData['description'] = $roomItem->getDescription();
             
             $roomData['wikiEnabled'] = $roomItem->isWikiEnabled();
