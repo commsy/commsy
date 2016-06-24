@@ -71,6 +71,19 @@ class RoomController extends Controller
         $announcementManager->setDateLimit(getCurrentDateTimeInMySQL());
         $countAnnouncements = $announcementManager->getCountAll();
 
+        $serviceLinkExternal = $roomItem->getServiceLinkExternal();
+        if ($serviceLinkExternal == '') {
+           $portalItem = $legacyEnvironment->getCurrentPortalItem();
+           if (isset($portalItem) and !empty($portalItem)) {
+              $serviceLinkExternal = $portalItem->getServiceLinkExternal();
+           }
+           unset($portal_item);
+        }
+        if ($serviceLinkExternal == '') {
+           $serverItem = $legacyEnvironment->getServerItem();
+           $serviceLinkExternal = $serverItem->getServiceLinkExternal();
+        }
+
         return array(
             'form' => $filterForm->createView(),
             'roomItem' => $roomItem,
@@ -82,6 +95,7 @@ class RoomController extends Controller
             'roomModerators' => $moderators,
             'showCategories' => $roomItem->withTags(),
             'countAnnouncements' => $countAnnouncements,
+            'serviceLinkExternal' => $serviceLinkExternal,
         );
     }
 
