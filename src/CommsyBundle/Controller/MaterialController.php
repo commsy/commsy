@@ -589,7 +589,7 @@ class MaterialController extends Controller
             $tempDateTime->setDate($tempParsedDate['year'], $tempParsedDate['month'], $tempParsedDate['day']);
             $tempDateTime->setTime($tempParsedDate['hour'], $tempParsedDate['minute'], $tempParsedDate['second']);
             $tempTimeStamp = $tempDateTime->getTimeStamp();
-            $versions[$tempTimeStamp] = array('item' => $versionItem, 'date' => $tempParsedDate['day'].'.'.$tempParsedDate['month'].'.'.$tempParsedDate['year']);
+            $versions[$tempTimeStamp] = array('item' => $versionItem, 'date' => date('d.m.Y H:s', $tempTimeStamp));
             if ($tempTimeStamp > $maxTimestamp) {
                 $maxTimestamp = $tempTimeStamp;
             }
@@ -600,9 +600,23 @@ class MaterialController extends Controller
         asort($versions);
         
         $timeDiff = $maxTimestamp - $minTimestamp;
+        $minPercentDiff = ($timeDiff / 100) * sizeof($versions);
+        $lastPercent = 0;
+        $first = true;
         foreach ($versions as $timestamp => $versionId) {
             $tempTimeDiff = $timestamp - $minTimestamp;
-            $versions[$timestamp]['percent'] = $tempTimeDiff / ($timeDiff / 100);
+            $tempPercent = $tempTimeDiff / ($timeDiff / 100);
+            if (!$first) {
+                if (($tempPercent - $lastPercent) < 2) {
+                    while (($tempPercent - $lastPercent) < 2 && ($tempPercent - $lastPercent) < $minPercentDiff) {
+                        $tempPercent += 1;
+                    }
+                }
+            } else {
+                $first = false;
+            }
+            $versions[$timestamp]['percent'] = $tempPercent;
+            $lastPercent = $tempPercent;
         }
 
         $infoArray['material'] = $material;
