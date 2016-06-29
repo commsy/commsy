@@ -164,7 +164,7 @@
                     <div class="">
                         <div style="padding:20px 20px 40px 20px;">
                             <div style="width:100%;">
-                                <div style="width:90%; margin:auto; height:2px; color:#6593B3; background-color:#6593B3; position:relative;">
+                                <div style="width:95%; margin:auto; height:2px; color:#6593B3; background-color:#6593B3; position:relative;">
                                     {% if versions|length > 1 %}
                                         {% for version in versions %}
                                             {% if loop.first %}
@@ -180,7 +180,11 @@
                                             {% endif %}
                                         
                                             <div style="position:absolute; top:4px; left:{{ version.percent }}%;">
-                                                <a href="#" data-uk-tooltip title="{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file-o"></i></a>
+                                                {% if version.current %}
+                                                    <a href="#" data-uk-tooltip title="{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file"></i></a>
+                                                {% else %}
+                                                    <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': material.itemId, 'versionId': version.item.versionId}) }}" data-uk-tooltip title="{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file-o"></i></a>
+                                                {% endif %}
                                             </div>
                                         {% endfor %}
                                     {% endif %}

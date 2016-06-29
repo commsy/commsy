@@ -177,17 +177,22 @@ class MaterialController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/material/{itemId}", requirements={
-     *     "itemId": "\d+"
+     * @Route("/room/{roomId}/material/{itemId}/{versionId}", requirements={
+     *     "itemId": "\d+",
+     *     "versionId": "\d+"
      * }))
      * @Template()
      */
-    public function detailAction($roomId, $itemId, Request $request)
+    public function detailAction($roomId, $itemId, $versionId = null, Request $request)
     {
         $materialService = $this->get('commsy_legacy.material_service');
-        $material = $materialService->getMaterial($itemId);
+        if (!$versionId) {
+            $material = $materialService->getMaterial($itemId);
+        } else {
+            $material = $materialService->getMaterialByVersion($itemId, $versionId);
+        }
 
-        $infoArray = $this->getDetailInfo($roomId, $itemId);
+        $infoArray = $this->getDetailInfo($roomId, $itemId, $versionId);
 
         $wordpressExporter = $this->get('commsy.export.wordpress');
         $canExportToWordpress = false;
@@ -316,7 +321,7 @@ class MaterialController extends Controller
         );
     }
 
-    private function getDetailInfo ($roomId, $itemId) {
+    private function getDetailInfo ($roomId, $itemId, $versionId = null) {
         $infoArray = array();
         
         $materialService = $this->get('commsy_legacy.material_service');
@@ -583,13 +588,26 @@ class MaterialController extends Controller
         $versionList = $materialService->getVersionList($material->getItemId())->to_array();
         $minTimestamp = time();
         $maxTimestamp = -1;
+        $foundCurrent = false;
+        $first = true;
         foreach ($versionList as $versionItem) {
             $tempParsedDate = date_parse($versionItem->getModificationDate());
             $tempDateTime = new \DateTime();
             $tempDateTime->setDate($tempParsedDate['year'], $tempParsedDate['month'], $tempParsedDate['day']);
             $tempDateTime->setTime($tempParsedDate['hour'], $tempParsedDate['minute'], $tempParsedDate['second']);
             $tempTimeStamp = $tempDateTime->getTimeStamp();
-            $versions[$tempTimeStamp] = array('item' => $versionItem, 'date' => date('d.m.Y H:s', $tempTimeStamp));
+            $current = false;
+            if ($versionId) {
+                if ($versionId == $versionItem->getVersionId()) {
+                    $current = true;
+                }
+            } else {
+                if ($first) {
+                    $current = true;
+                    $first = false;
+                }
+            }
+            $versions[$tempTimeStamp] = array('item' => $versionItem, 'date' => date('d.m.Y H:s', $tempTimeStamp), 'current' => $current);
             if ($tempTimeStamp > $maxTimestamp) {
                 $maxTimestamp = $tempTimeStamp;
             }
