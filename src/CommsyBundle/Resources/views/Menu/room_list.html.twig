@@ -1,27 +1,17 @@
-{% if not roomList is empty %}
-<div class="uk-grid">
-    <div class="uk-width">
-        <div class="cs-room-block cs-room-search">
-            {{ 'own rooms'|trans({}, "rubric")}}
-            <form class="uk-search" data-uk-search="">
-                <input class="cs-roomsearch-field" type="search" placeholder="{{ 'room search text'|trans({}, "rubric")}}">
-                <div class="uk-dropdown uk-dropdown-search">
-                    <ul class="uk-nav uk-nav-search">...</ul>
-                </div>
-            </form>
-         </div>
-    </div>
 
-    {% for room in roomList %}       
-        <div class="uk-width-1-2">
-            <a href="{{ path('commsy_room_home', {'roomId': room.ItemID}) }}">
-                <div class="cs-room-block">
-                    {{room.getTitle}}<br/>
-                    <p class="uk-text-small uk-text-muted uk-text-truncate">{{room.getContactModeratorListString}}<br/>
-                    {{ 'new Entries'|trans({}, "rubric")}}:{{room.getNewEntries}} ({{room.getTimeSpread}} {{ 'days'|trans({}, "rubric")}})</p>
-                </div>
-            </a>
-        </div>
-    {% endfor %}
-</div>
-{% endif %}
+{# 
+{% if not roomList is empty %}
+        {% for room in roomList %}
+            <div class="uk-width-1-2">
+                <a href="{{ path('commsy_room_home', {'roomId': room.itemId}) }}">
+                    <div class="cs-room-block">
+                        {{ room.title }}<br/>
+                        <p class="uk-text-small uk-text-muted uk-text-truncate">
+                            {{ room.contactModeratorListString }}<br/>
+                            {{ 'new Entries'|trans({}, "rubric")}}:{{ room.newEntries }} ({{ room.timeSpread }} {{ 'days'|trans({}, "rubric")}})
+                        </p>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+{% endif %} #}

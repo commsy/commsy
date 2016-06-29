@@ -6,7 +6,6 @@ use FOS\ElasticaBundle\Finder\TransformedFinder;
 use Commsy\LegacyBundle\Utils\UserService;
 
 use Elastica\Query as Queries;
-use Elastica\Filter as Filters;
 use Elastica\Aggregation as Aggregations;
 
 class SearchManager
@@ -39,16 +38,20 @@ class SearchManager
         // create our basic query
         $query = new \Elastica\Query();
 
-        // query
-        $fieldQuery = new Queries\MatchPhrase();
-        $fieldQuery->setFieldQuery('_all', $this->query);
+        $boolQuery = new Queries\BoolQuery();
 
-        $query->setQuery($fieldQuery);
+        // query context
+        $matchQuery = new Queries\Match();
+        $matchQuery->setFieldQuery('_all', $this->query);
 
-        // filter
+        $boolQuery->addMust($matchQuery);
+        
+        // filter context
         $contextFilter = $this->createContextFilter();
 
-        $query->setFilter($contextFilter);
+        $boolQuery->addFilter($contextFilter);
+
+        $query->setQuery($boolQuery);
 
         // aggregations
         $filterAggregation = new Aggregations\Filter('filterContext');
@@ -58,35 +61,82 @@ class SearchManager
         $termsAggregation->setField('contextId');
         $filterAggregation->addAggregation($termsAggregation);
 
-        //$query->addAggregation($filterAggregation);
+        $query->addAggregation($filterAggregation);
 
         return $this->commsyFinder->createPaginatorAdapter($query);
     }
 
     public function getInstantResults()
     {
-        // Filtered query. Needs a query and a filter.
-        $filteredQuery = new Queries\Filtered();
+        $boolQuery = new Queries\BoolQuery();
 
-        // query
-        $fieldQuery = new Queries\MatchPhrasePrefix();
-        $fieldQuery->setFieldQuery('_all', $this->query);
+        // query context
+        $matchQuery = new Queries\Match();
+        $matchQuery->setFieldQuery('title', $this->query);
 
-        $filteredQuery->setQuery($fieldQuery);
+        $boolQuery->addMust($matchQuery);
 
-        // filter
+        // filter context
         $contextFilter = $this->createContextFilter();
 
-        $filteredQuery->setFilter($contextFilter);
+        $boolQuery->addFilter($contextFilter);
 
-        return $this->commsyFinder->findHybrid($filteredQuery, 10);
+        return $this->commsyFinder->findHybrid($boolQuery, 10);
+    }
+
+    public function getRoomResults()
+    {
+        $searchableRooms = $this->userService->getSearchableRooms($this->userService->getCurrentUserItem());
+
+        $contextIds = [];
+
+        foreach ($searchableRooms as $searchableRoom) {
+            $contextIds[] = $searchableRoom->getItemId();
+        }
+
+        $boolQuery = new Queries\BoolQuery();
+
+        // query context
+        if (!empty($this->query)) {
+            $fieldQuery = new Queries\BoolQuery();
+
+            // title
+            $titleQuery = new Queries\Match();
+            $titleQuery->setFieldQuery('title', $this->query);
+
+            $fieldQuery->addShould($titleQuery);
+
+            // description
+            $descriptionQuery = new Queries\Match();
+            $descriptionQuery->setFieldQuery('roomDescription', $this->query);
+
+            $fieldQuery->addShould($descriptionQuery);
+
+            // contact persons
+            $contactPersonsQuery = new Queries\Match();
+            $contactPersonsQuery->setFieldQuery('contactPersons', $this->query);
+
+            $fieldQuery->addShould($contactPersonsQuery);
+        } else {
+            // empty query should return all matches
+            $fieldQuery = new Queries\MatchAll();
+        }
+
+        $boolQuery->addMust($fieldQuery);
+
+        // filter context
+        $idsQuery = new Queries\Ids('room', $contextIds);
+
+        $boolQuery->addFilter($idsQuery);
+
+        return $this->commsyFinder->find($boolQuery);
     }
 
     /**
      * Creats a Terms Filter to restrict the search to contexts, the
      * user is allowed to access
      * 
-     * @return Filters\Terms The terms filter
+     * @return Elastica\Query\Terms The terms filter
      */
     private function createContextFilter()
     {
@@ -98,7 +148,7 @@ class SearchManager
             $contextIds[] = $searchableRoom->getItemId();
         }
 
-        $contextFilter = new Filters\Terms();
+        $contextFilter = new Queries\Terms();
         $contextFilter->setTerms('contextId', $contextIds);
 
         return $contextFilter;

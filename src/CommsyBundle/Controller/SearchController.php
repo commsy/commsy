@@ -11,11 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use CommsyBundle\Form\Type\SearchType;
 use CommsyBundle\Model\GlobalSearch;
 
-use Elastica\Query\Filtered;
-use Elastica\Query\MatchPhrasePrefix;
-use Elastica\Filter\Term;
-use Elastica\Filter\Range;
-use Elastica\Filter\Bool;
+use CommsyBundle\Filter\SearchFilterType;
 
 class SearchController extends Controller
 {
@@ -54,8 +50,10 @@ class SearchController extends Controller
                 'roomId' => $roomId
             ])
         ]);
-
         $form->handleRequest($request);
+
+        $filterForm = $this->createForm(SearchFilterType::class);
+        //$filterForm->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $globalSearch = $form->getData();
@@ -63,14 +61,25 @@ class SearchController extends Controller
             $searchManager = $this->get('commsy.search.manager');
             $searchManager->setQuery($globalSearch->getPhrase());
 
+            // if ($request->query->has($filterForm->getName())) {
+
+            // }
+
             $searchResults = $searchManager->getResults();
 
-            dump($searchResults->getResults(0, 100)->toArray());
-            dump($searchResults->getAggregations());
+            $totalHits = $searchResults->getTotalHits();
+            $aggregations = $searchResults->getAggregations()['filterContext'];
+
+            $contextBuckets = $aggregations['contexts']['buckets'];
+
         }
 
         return [
-            'searchResults' => $searchResults->getResults(0, 100)->toArray()
+            'filterForm' => $filterForm->createView(),
+            'roomId' => $roomId,
+            'totalHits' => $totalHits,
+            'searchResults' => $searchResults->getResults(0, 10)->toArray(),
+            'aggregations' => $aggregations,
         ];
     }
 
@@ -78,7 +87,6 @@ class SearchController extends Controller
      * Serves JSON results for instant search aka search-as-you-type
      * 
      * @Route("/room/{roomId}/search/instant")
-     * @Template
      */
     public function instantAction($roomId, Request $request)
     {
@@ -88,6 +96,7 @@ class SearchController extends Controller
 
         if ($query) {
             $translator = $this->get('translator');
+            $router = $this->container->get('router');
 
             $searchManager = $this->get('commsy.search.manager');
             $searchManager->setQuery($query);
@@ -114,7 +123,6 @@ class SearchController extends Controller
                 // construct target url
                 $url = '#';
 
-                $router = $this->container->get('router');
                 $routeName = 'commsy_' . $type . '_detail';
                 if ($router->getRouteCollection()->get($routeName)) {
                     $url = $this->generateUrl(
@@ -123,12 +131,61 @@ class SearchController extends Controller
                     );
                 }
 
-                $results[] = array(
+                $results[] = [
                     'title' => $title,
                     'text' => $translator->transChoice($type, 0, [], 'rubric'),
                     'url' => $url,
+                ];
+            }
+        }
+
+        $response = new JsonResponse();
+        $response->setData([
+            'results' => $results,
+        ]);
+
+        return $response;
+    }
+
+    /**
+     * Generates JSON results for the room navigation search-as-you-type form
+     *
+     * @Route("/room/{roomId}/search/rooms")
+     * 
+     * @param  int $roomId The current room id
+     * @return JsonResponse The JSON result
+     */
+    public function roomNavigationAction($roomId, Request $request)
+    {
+        $results = [];
+
+        $query = $request->get('search', '');
+
+        $translator = $this->get('translator');
+        $router = $this->container->get('router');
+
+        $searchManager = $this->get('commsy.search.manager');
+        $searchManager->setQuery($query);
+
+        $roomResults = $searchManager->getRoomResults();
+
+        foreach ($roomResults as $room) {
+            // construct target url
+            $url = '#';
+
+            $routeName = 'commsy_room_home';
+            if ($router->getRouteCollection()->get($routeName)) {
+                $url = $this->generateUrl(
+                    $routeName,
+                    ['roomId' => $roomId]
                 );
             }
+
+            $results[] = [
+                'title' => $room->getTitle(),
+                'text' => $translator->trans($room->getType(), [], 'room'),
+                'url' => $url,
+            ];
         }
 
         $response = new JsonResponse();

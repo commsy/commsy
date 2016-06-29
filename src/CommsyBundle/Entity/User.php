@@ -655,4 +655,9 @@ class User
     {
         return ($this->deleterId == null && $this->deletionDate == null);
     }
+
+    public function getFullname()
+    {
+        return trim($this->getFirstname() . ' ' . $this->getLastname());
+    }
 }

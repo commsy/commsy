@@ -6,6 +6,26 @@
                 <source>Search...</source>
                 <target>Suche...</target>
             </trans-unit>
+            <trans-unit id="search-no-results-room">
+                <source>no rooms found</source>
+                <target>Keine Räume gefunden</target>
+            </trans-unit>
+            <trans-unit id="search-instant-header">
+                <source>title search</source>
+                <target>Beste Titeltreffer</target>
+            </trans-unit>
+            <trans-unit id="search-more-results">
+                <source>more results</source>
+                <target>Mehr Ergebnisse</target>
+            </trans-unit>
+            <trans-unit id="search-results-title">
+                <source>Search Results (%totalHits% Hits)</source>
+                <target>Suchergebnisse (%totalHits% Treffer)</target>
+            </trans-unit>
+            <trans-unit id="search-results-restrict">
+                <source>Restrict Results</source>
+                <target>Ergebnisse einschränken</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
