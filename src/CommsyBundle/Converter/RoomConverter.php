@@ -20,7 +20,7 @@ class RoomConverter
         foreach ($rooms as $room) {
             $extras = $room->getExtras();
 
-            if (isset($extras['HOMECONF'])) {
+            if (isset($extras['HOMECONF']) && !empty($extras['HOMECONF'])) {
                 $homeConf = $this->migrateHomeConf($extras['HOMECONF']);
                 $extras['HOMECONF'] = $homeConf;
 
