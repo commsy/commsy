@@ -125,4 +125,9 @@ class MaterialService
     {
         return $this->sectionManager->getNewItem();
     }
+    
+    public function getVersionList($itemId)
+    {
+        return $this->materialManager->getVersionList($itemId);
+    }
 }

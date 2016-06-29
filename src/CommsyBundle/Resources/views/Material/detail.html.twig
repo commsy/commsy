@@ -159,6 +159,34 @@
                 
                 {# content #}
                 <article class="uk-article uk-position-relative" data-uk-observe>
+                    {# versions #}
+                
+                    <div class="">
+                        <div style="padding:20px 20px 40px 20px;">
+                            <div style="width:100%; height:2px; color:#6593B3; background-color:#6593B3; position:relative;">
+                                {% if versions|length > 1 %}
+                                    {% for version in versions %}
+                                        {% if loop.first %}
+                                            <div style="position:absolute; top:-20px; left:0px;">
+                                                {{ version.date }}
+                                            </div>
+                                        {% endif %}
+                                        
+                                        {% if loop.last %}
+                                            <div style="position:absolute; top:-20px; right:0px;">
+                                                {{ version.date }}
+                                            </div>
+                                        {% endif %}
+                                    
+                                        <div style="position:absolute; top:2px; left:{{ version.percent }}%;">
+                                            <a href="#" data-uk-tooltip title="{{ version.item.title }} (Version: {{ version.item.versionID }} / {{ version.date }})" style="margin-left:-5px;"><i class="uk-icon-file-o"></i></a>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                
                     {# title, etc. #}
                     <div class="cs-toggle" data-uk-observe>
                         {{ macrosMaterial.title(material, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, ratingArray) }}

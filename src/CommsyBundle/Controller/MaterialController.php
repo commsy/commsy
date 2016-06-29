@@ -250,6 +250,7 @@ class MaterialController extends Controller
             'canExportToWordpress' => $canExportToWordpress,
             'canExportToWiki' => $canExportToWiki,
             'roomCategories' => $infoArray['roomCategories'],
+            'versions' => $infoArray['versions'],
        );
     }
 
@@ -578,6 +579,32 @@ class MaterialController extends Controller
             $categories = $this->getTagDetailArray($roomCategories, $materialCategories);
         }
 
+        $versions = array();
+        $versionList = $materialService->getVersionList($material->getItemId())->to_array();
+        $minTimestamp = time();
+        $maxTimestamp = -1;
+        foreach ($versionList as $versionItem) {
+            $tempParsedDate = date_parse($versionItem->getModificationDate());
+            $tempDateTime = new \DateTime();
+            $tempDateTime->setDate($tempParsedDate['year'], $tempParsedDate['month'], $tempParsedDate['day']);
+            $tempDateTime->setTime($tempParsedDate['hour'], $tempParsedDate['minute'], $tempParsedDate['second']);
+            $tempTimeStamp = $tempDateTime->getTimeStamp();
+            $versions[$tempTimeStamp] = array('item' => $versionItem, 'date' => $tempParsedDate['day'].'.'.$tempParsedDate['month'].'.'.$tempParsedDate['year']);
+            if ($tempTimeStamp > $maxTimestamp) {
+                $maxTimestamp = $tempTimeStamp;
+            }
+            if ($tempTimeStamp < $minTimestamp) {
+                $minTimestamp = $tempTimeStamp;
+            }
+        }
+        asort($versions);
+        
+        $timeDiff = $maxTimestamp - $minTimestamp;
+        foreach ($versions as $timestamp => $versionId) {
+            $tempTimeDiff = $timestamp - $minTimestamp;
+            $versions[$timestamp]['percent'] = $tempTimeDiff / ($timeDiff / 100);
+        }
+
         $infoArray['material'] = $material;
         $infoArray['sectionList'] = $sectionList;
         $infoArray['readerList'] = $readerList;
@@ -611,6 +638,7 @@ class MaterialController extends Controller
             'ratingOwnDetail' => $ratingOwnDetail,
         ] : [];
         $infoArray['roomCategories'] = $categories;
+        $infoArray['versions'] = $versions;
         
         return $infoArray;
     }
