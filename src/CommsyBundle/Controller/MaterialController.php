@@ -586,55 +586,61 @@ class MaterialController extends Controller
 
         $versions = array();
         $versionList = $materialService->getVersionList($material->getItemId())->to_array();
-        $minTimestamp = time();
-        $maxTimestamp = -1;
-        $foundCurrent = false;
-        $first = true;
-        foreach ($versionList as $versionItem) {
-            $tempParsedDate = date_parse($versionItem->getModificationDate());
-            $tempDateTime = new \DateTime();
-            $tempDateTime->setDate($tempParsedDate['year'], $tempParsedDate['month'], $tempParsedDate['day']);
-            $tempDateTime->setTime($tempParsedDate['hour'], $tempParsedDate['minute'], $tempParsedDate['second']);
-            $tempTimeStamp = $tempDateTime->getTimeStamp();
-            $current = false;
-            if ($versionId) {
-                if ($versionId == $versionItem->getVersionId()) {
-                    $current = true;
-                }
-            } else {
-                if ($first) {
-                    $current = true;
-                    $first = false;
-                }
-            }
-            $versions[$tempTimeStamp] = array('item' => $versionItem, 'date' => date('d.m.Y H:s', $tempTimeStamp), 'current' => $current);
-            if ($tempTimeStamp > $maxTimestamp) {
-                $maxTimestamp = $tempTimeStamp;
-            }
-            if ($tempTimeStamp < $minTimestamp) {
-                $minTimestamp = $tempTimeStamp;
-            }
-        }
-        asort($versions);
         
-        $timeDiff = $maxTimestamp - $minTimestamp;
-        $minPercentDiff = ($timeDiff / 100) * sizeof($versions);
-        $lastPercent = 0;
-        $first = true;
-        foreach ($versions as $timestamp => $versionId) {
-            $tempTimeDiff = $timestamp - $minTimestamp;
-            $tempPercent = $tempTimeDiff / ($timeDiff / 100);
-            if (!$first) {
-                if (($tempPercent - $lastPercent) < 2) {
-                    while (($tempPercent - $lastPercent) < 2 && ($tempPercent - $lastPercent) < $minPercentDiff) {
-                        $tempPercent += 1;
+        if (sizeof($versionList > 1)) {
+            $minTimestamp = time();
+            $maxTimestamp = -1;
+            $foundCurrent = false;
+            $first = true;
+            foreach ($versionList as $versionItem) {
+                $tempParsedDate = date_parse($versionItem->getModificationDate());
+                $tempDateTime = new \DateTime();
+                $tempDateTime->setDate($tempParsedDate['year'], $tempParsedDate['month'], $tempParsedDate['day']);
+                $tempDateTime->setTime($tempParsedDate['hour'], $tempParsedDate['minute'], $tempParsedDate['second']);
+                $tempTimeStamp = $tempDateTime->getTimeStamp();
+                $current = false;
+                if ($versionId) {
+                    if ($versionId == $versionItem->getVersionId()) {
+                        $current = true;
+                    }
+                } else {
+                    if ($first) {
+                        $current = true;
+                        $first = false;
                     }
                 }
-            } else {
-                $first = false;
+                $versions[$tempTimeStamp] = array('item' => $versionItem, 'date' => date('d.m.Y H:s', $tempTimeStamp), 'current' => $current);
+                if ($tempTimeStamp > $maxTimestamp) {
+                    $maxTimestamp = $tempTimeStamp;
+                }
+                if ($tempTimeStamp < $minTimestamp) {
+                    $minTimestamp = $tempTimeStamp;
+                }
             }
-            $versions[$timestamp]['percent'] = $tempPercent;
-            $lastPercent = $tempPercent;
+            asort($versions);
+            
+            $timeDiff = $maxTimestamp - $minTimestamp;
+            $minPercentDiff = ($timeDiff / 100) * sizeof($versions);
+            $lastPercent = 0;
+            $first = true;
+            foreach ($versions as $timestamp => $versionId) {
+                $tempTimeDiff = $timestamp - $minTimestamp;
+                $tempPercent = 0;
+                if ($timeDiff > 0) {
+                    $tempPercent = $tempTimeDiff / ($timeDiff / 100);
+                }
+                if (!$first) {
+                    if (($tempPercent - $lastPercent) < 2) {
+                        while (($tempPercent - $lastPercent) < 2 && ($tempPercent - $lastPercent) < $minPercentDiff) {
+                            $tempPercent += 1;
+                        }
+                    }
+                } else {
+                    $first = false;
+                }
+                $versions[$timestamp]['percent'] = $tempPercent;
+                $lastPercent = $tempPercent;
+            }
         }
 
         $infoArray['material'] = $material;

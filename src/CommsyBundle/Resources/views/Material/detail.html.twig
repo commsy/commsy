@@ -161,37 +161,37 @@
                 <article class="uk-article uk-position-relative" data-uk-observe>
                     {# versions #}
                 
+                    {% if versions|length > 1 %}
                     <div class="">
                         <div style="padding:20px 20px 40px 20px;">
                             <div style="width:100%;">
                                 <div style="width:95%; margin:auto; height:2px; color:#6593B3; background-color:#6593B3; position:relative;">
-                                    {% if versions|length > 1 %}
-                                        {% for version in versions %}
-                                            {% if loop.first %}
-                                                <div style="position:absolute; top:-20px; left:0px;">
-                                                    {{ version.date }}
-                                                </div>
-                                            {% endif %}
-                                            
-                                            {% if loop.last %}
-                                                <div style="position:absolute; top:-20px; right:0px;">
-                                                    {{ version.date }}
-                                                </div>
-                                            {% endif %}
-                                        
-                                            <div style="position:absolute; top:4px; left:{{ version.percent }}%;">
-                                                {% if version.current %}
-                                                    <a href="#" data-uk-tooltip title="{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file"></i></a>
-                                                {% else %}
-                                                    <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': material.itemId, 'versionId': version.item.versionId}) }}" data-uk-tooltip title="{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file-o"></i></a>
-                                                {% endif %}
+                                    {% for version in versions %}
+                                        {% if loop.first %}
+                                            <div style="position:absolute; top:-20px; left:0px;">
+                                                {{ version.date }}
                                             </div>
-                                        {% endfor %}
-                                    {% endif %}
+                                        {% endif %}
+                                        
+                                        {% if loop.last %}
+                                            <div style="position:absolute; top:-20px; right:0px;">
+                                                {{ version.date }}
+                                            </div>
+                                        {% endif %}
+                                    
+                                        <div style="position:absolute; top:4px; left:{{ version.percent }}%;">
+                                            {% if version.current %}
+                                                <a href="#" data-uk-tooltip title="{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file"></i></a>
+                                            {% else %}
+                                                <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': material.itemId, 'versionId': version.item.versionId}) }}" data-uk-tooltip title="{{ version.date }}" style="margin-left:-5px;"><i class="uk-icon-file-o"></i></a>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
                     </div>
+                    {% endif %}
                 
                     {# title, etc. #}
                     <div class="cs-toggle" data-uk-observe>
