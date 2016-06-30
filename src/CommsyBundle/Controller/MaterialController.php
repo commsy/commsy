@@ -329,11 +329,15 @@ class MaterialController extends Controller
 
         $annotationService = $this->get('commsy_legacy.annotation_service');
         
-        $material = $materialService->getMaterial($itemId);
+        if (!$versionId) {
+            $material = $materialService->getMaterial($itemId);
+        } else {
+            $material = $materialService->getMaterialByVersion($itemId, $versionId);
+        }
+        
         if($material == null) {
             $section = $materialService->getSection($itemId);
             $material = $materialService->getMaterial($section->getLinkedItemID());
-
         }
         
         $sectionList = $material->getSectionList()->to_array();
@@ -623,6 +627,7 @@ class MaterialController extends Controller
             $minPercentDiff = ($timeDiff / 100) * sizeof($versions);
             $lastPercent = 0;
             $first = true;
+            $toFollow = sizeof($versions)-1;
             foreach ($versions as $timestamp => $versionId) {
                 $tempTimeDiff = $timestamp - $minTimestamp;
                 $tempPercent = 0;
@@ -638,8 +643,16 @@ class MaterialController extends Controller
                 } else {
                     $first = false;
                 }
+                
+                if ($tempPercent >= 95) {
+                    if ($toFollow != 0) {
+                        $tempPercent = $tempPercent - ($toFollow * 2);
+                    }
+                }
+
                 $versions[$timestamp]['percent'] = $tempPercent;
                 $lastPercent = $tempPercent;
+                $toFollow--;
             }
         }
 
@@ -1182,5 +1195,33 @@ class MaterialController extends Controller
             'layout' => 'cs-notify-message',
             'data' => $result,
         ]);
+    }
+    
+    /**
+     * @Route("/room/{roomId}/material/{itemId}/{versionId}/createversion/")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function createVersionAction($roomId, $itemId, $versionId, Request $request)
+    {           
+        $materialService = $this->get('commsy_legacy.material_service');
+        $itemService = $this->get('commsy_legacy.item_service');
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+
+        $annotationService = $this->get('commsy_legacy.annotation_service');
+        
+        $material = $materialService->getMaterialByVersion($itemId, $versionId);
+
+        $newVersionId = $material->getVersionID()+1;
+        $newMaterial = $material->cloneCopy(true);
+        $newMaterial->setVersionID($newVersionId);
+        
+        $newMaterial->setModificatorItem($currentUserItem);
+        
+        $newMaterial->save();
+
+        return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $itemId, 'versionId' => $newVersionId));
     }
 }

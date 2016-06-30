@@ -150,6 +150,13 @@
                                                 <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
                                             </a>
                                         </li>
+                                        
+                                        {# new version #}
+                                         <li>
+                                            <a class="newVersion" href="{{ path('commsy_material_createversion', {'roomId': roomId, 'itemId': material.itemId, 'versionId': material.versionId}) }}" id="newVersion">
+                                                <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new version'|trans({}) }}
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -165,7 +172,7 @@
                     <div class="">
                         <div style="padding:20px 20px 40px 20px;">
                             <div style="width:100%;">
-                                <div style="width:95%; margin:auto; height:2px; color:#6593B3; background-color:#6593B3; position:relative;">
+                                <div style="width:100%; margin:auto; height:2px; color:#6593B3; background-color:#6593B3; position:relative;">
                                     {% for version in versions %}
                                         {% if loop.first %}
                                             <div style="position:absolute; top:-20px; left:0px;">

@@ -290,6 +290,10 @@
                 <source>message was send</source>
                 <target>The message was send</target>
             </trans-unit>
+            <trans-unit id="new version">
+                <source>new version</source>
+                <target>New Version</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
