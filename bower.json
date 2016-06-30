@@ -10,8 +10,8 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "latest",
-    "uikit": "latest",
+    "jquery": "~2.2",
+    "uikit": "~2.26",
     "jstree": "latest",
     "nprogress": "latest",
     "fullcalendar": "latest",
