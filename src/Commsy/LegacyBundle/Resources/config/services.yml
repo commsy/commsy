@@ -123,6 +123,10 @@ services:
         class: Commsy\LegacyBundle\Form\DataTransformer\MaterialTransformer
         arguments: ['@commsy_legacy.environment']
         
+    commsy_legacy.transformer.section:
+        class: Commsy\LegacyBundle\Form\DataTransformer\SectionTransformer
+        arguments: ['@commsy_legacy.environment']
+        
     commsy_legacy.transformer.user:
         class: Commsy\LegacyBundle\Form\DataTransformer\UserTransformer
         arguments: ['@commsy_legacy.environment']
@@ -153,6 +157,10 @@ services:
         
     commsy_legacy.transformer.discussion:
         class: Commsy\LegacyBundle\Form\DataTransformer\DiscussionTransformer
+        arguments: ['@commsy_legacy.environment']
+        
+    commsy_legacy.transformer.discarticle:
+        class: Commsy\LegacyBundle\Form\DataTransformer\DiscussionarticleTransformer
         arguments: ['@commsy_legacy.environment']
         
     commsy_legacy.transformer.group:
