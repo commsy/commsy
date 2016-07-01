@@ -143,7 +143,7 @@ class Todos
     private $lockingUserId;
 
     /**
-     * @ORM\OneToMany(targetEntity="Step", mappedBy="step")
+     * @ORM\OneToMany(targetEntity="Step", mappedBy="todo")
      */
     private $steps;
 
