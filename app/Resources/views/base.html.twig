@@ -47,19 +47,11 @@
                         ))}}
                     </div>
 
-                    <div class="uk-navbar-content">
-                        <ul class="uk-navbar-nav">
-                            <li>
-                                <a href="#"><i class="uk-icon-bell-o"></i></a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <i class="uk-icon-copy"></i>
-                                    <small id="cs-nav-copy-indicator"></small>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                    {# global actions #}
+                    {{ render(controller(
+                        'CommsyBundle:User:globalNavbar',
+                        { 'roomId': app.request.attributes.get('roomId') }
+                    ))}}
 
                     <div class="uk-navbar-content">
                         <ul class="uk-navbar-nav">

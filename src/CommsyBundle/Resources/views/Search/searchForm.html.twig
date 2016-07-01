@@ -1,6 +1,8 @@
 <form name="{{ form.vars.full_name }}" action="{{ form.vars.action }}" method="{{ form.vars.method }}" class="uk-search" data-uk-search="{
     source:'{{ path('commsy_search_instant', {'roomId': roomId }) }}',
-    delay: 300
+    delay: 300,
+    msgResultsHeader: '{{ 'title search'|trans({}, 'search') }}',
+    msgMoreResults: '{{ 'more results'|trans({}, 'search') }}'
 }">
     
     {{ form_widget(form.phrase) }}

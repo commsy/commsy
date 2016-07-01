@@ -2,6 +2,29 @@
 
 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
+{% set resultTemplate %}
+    <ul class=\'uk-nav uk-nav-search uk-autocomplete-results\'>
+        {%- verbatim -%}{{#items && items.length}}{%- endverbatim -%}
+            {%- verbatim -%}{{~items}}{%- endverbatim -%}
+            <li data-url=\'{%- verbatim -%}{{!$item.url}}{%- endverbatim -%}\'>
+                <a href=\'{%- verbatim -%}{{!$item.url}}{%- endverbatim -%}\'>
+                    {%- verbatim -%}{{{$item.title}}}{%- endverbatim -%}
+                    {%- verbatim -%}{{#$item.text}}{%- endverbatim -%}
+                        <div>{%- verbatim -%}{{{$item.text}}}{%- endverbatim -%}</div>
+                    {%- verbatim -%}{{/$item.text}}{%- endverbatim -%}
+                </a>
+            </li>
+            {%- verbatim -%}{{/items}}{%- endverbatim -%}
+        {%- verbatim -%}{{/end}}{%- endverbatim -%}
+
+        {%- verbatim -%}{{^items.length}}{%- endverbatim -%}
+            {%- verbatim -%}{{#msgNoResults}}{%- endverbatim -%}
+                <li class=\'uk-skip\'><a>{%- verbatim -%}{{msgNoResults}}{%- endverbatim -%}</a></li>
+            {%- verbatim -%}{{/msgNoResults}}{%- endverbatim -%}
+        {%- verbatim -%}{{/end}}{%- endverbatim -%}
+    </ul>
+{% endset %}
+
 {% macro attributes(attributes) %}
 {% for name, value in attributes %}
     {%- if value is not none and value is not sameas(false) -%}
@@ -13,32 +36,41 @@
 {% block list %}
 {% if item.hasChildren and options.depth is not sameas(0) and item.displayChildren %}
     {% import _self as knp_menu %}
+
     <ul id="switch_room" class="uk-nav uk-nav-parent-icon"{{ knp_menu.attributes(listAttributes) }}>
-        <li>
-            <span>
-                <i class="uk-icon-list uk-icon-small cs-menue-padding"></i>
-                {{ 'roomlist'|transchoice(1, {}, "rubric")|upper }}
-                <ul class="cs-roomlist">
-                     {{ block('children') }}
-                </ul>
-            </span>
-        </li>
+        {{ block('children') }}
     </ul>
 {% endif %}
 {% endblock %}
 
 
 {% block linkElement %}
-       {{ block('label') }}
+   {{ block('label') }}
 {% endblock %}
 
 {% block label %}
-    {{ render(controller(
-        'CommsyBundle:User:rooms',
-        { 'roomId': item.extras.roomId, 'itemId': item.extras.user.itemId }
-    ))}}
-    <div class="room-load-more" data-uk-scrollspy="{cls:'uk-animation-fade', repeat: true}" data-rooms='{"url": "{{ app.request.baseURL }}/room/{{item.extras.roomId}}/user/{{item.extras.user.itemId}}/rooms/", "target": "#roomList"}'>
-        <i class="uk-icon-refresh uk-icon-spin uk-icon-medium cs-menue-padding"></i>
-    </div>
+    <li>
+        <a href="{{ path('commsy_user_rooms', {'roomId': item.extras.roomId, 'itemId': item.extras.user.itemId}) }}">
+            <i class="uk-icon-list uk-icon-small cs-menue-padding"></i>
+            {{ 'roomlist'|transchoice(1, {}, "rubric")|upper }}
+        </a>
         
+        <ul class="cs-roomlist">
+            <div class="cs-room-search">
+                {{ 'own rooms'|trans({}, "rubric")}}
+                <form class="uk-search" data-uk-search="{
+                    source:'{{ path('commsy_search_roomnavigation', {'roomId': item.extras.roomId }) }}',
+                    delay: 300,
+                    minLength: 0,
+                    template: '{% spaceless %}{{ resultTemplate }}{% endspaceless %}',
+                    msgNoResults: '{{ 'no rooms found'|trans({}, 'search') }}'
+                }">
+                    <input class="cs-roomsearch-field uk-search-field" type="search" placeholder="{{ 'room search text'|trans({}, "rubric")}}">
+                    <div id="cs-room-dropdown" class="uk-dropdown uk-dropdown-search">
+                        <ul class="uk-nav uk-nav-search"></ul>
+                    </div>
+                </form>
+            </div>
+        </ul>
+    </li>
 {% endblock %}
