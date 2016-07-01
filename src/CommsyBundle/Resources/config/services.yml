@@ -234,6 +234,11 @@ services:
         tags:
             - { name: form.type }
             
+    commsy.form.type.datedetail:
+        class: CommsyBundle\Form\Type\DateDetailType
+        tags:
+            - { name: form.type }
+            
     commsy.form.type.group:
         class: CommsyBundle\Form\Type\GroupType
         tags:

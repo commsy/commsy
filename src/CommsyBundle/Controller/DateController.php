@@ -11,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Form\Type\DateType;
+use CommsyBundle\Form\Type\DateDetailType;
 use CommsyBundle\Form\Type\AnnotationType;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -723,7 +724,62 @@ class DateController extends Controller
      */
     public function editdetailsAction($roomId, $itemId, Request $request)
     {
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($itemId);
         
+        $dateService = $this->get('commsy_legacy.date_service');
+        $transformer = $this->get('commsy_legacy.transformer.date');
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+        
+        $formData = array();
+        $materialItem = NULL;
+        
+        // get date from DateService
+        $dateItem = $dateService->getDate($itemId);
+        if (!$dateItem) {
+            throw $this->createNotFoundException('No date found for id ' . $itemId);
+        }
+        $formData = $transformer->transform($dateItem);
+        $form = $this->createForm(DateDetailType::class, $formData, array(
+            'action' => $this->generateUrl('commsy_date_edit', array(
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ))
+        ));
+        
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            if ($form->get('save')->isClicked()) {
+                $dateItem = $transformer->applyTransformation($dateItem, $form->getData());
+
+                // update modifier
+                $dateItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                $dateItem->save();
+                
+                if ($item->isDraft()) {
+                    $item->setDraftStatus(0);
+                    $item->saveAsItem();
+                }
+            } else if ($form->get('cancel')->isClicked()) {
+                // ToDo ...
+            }
+            return $this->redirectToRoute('commsy_date_savedetails', array('roomId' => $roomId, 'itemId' => $itemId));
+            
+            // persist
+            // $em = $this->getDoctrine()->getManager();
+            // $em->persist($room);
+            // $em->flush();
+        }
+        
+        return array(
+            'form' => $form->createView(),
+            'showHashtags' => $current_context->withBuzzwords(),
+            'showCategories' => $current_context->withTags(),
+            'currentUser' => $legacyEnvironment->getCurrentUserItem(),
+        );
     }
     
     /**
@@ -732,6 +788,88 @@ class DateController extends Controller
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
     public function saveAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($itemId);
+        
+        $dateService = $this->get('commsy_legacy.date_service');
+        $transformer = $this->get('commsy_legacy.transformer.date');
+        
+        $date = $dateService->getDate($itemId);
+        
+        $itemArray = array($date);
+        $modifierList = array();
+        foreach ($itemArray as $item) {
+            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+        }
+        
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $readerManager = $legacyEnvironment->getReaderManager();
+        //$roomItem = $roomManager->getItem($material->getContextId());        
+        //$numTotalMember = $roomItem->getAllUsers();
+        
+        $userManager = $legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager->setUserLimit();
+        $userManager->select();
+        $user_list = $userManager->get();
+        $all_user_count = $user_list->getCount();
+        $read_count = 0;
+        $read_since_modification_count = 0;
+
+        $current_user = $user_list->getFirst();
+        $id_array = array();
+        while ( $current_user ) {
+		   $id_array[] = $current_user->getItemID();
+		   $current_user = $user_list->getNext();
+		}
+		$readerManager->getLatestReaderByUserIDArray($id_array,$date->getItemID());
+		$current_user = $user_list->getFirst();
+		while ( $current_user ) {
+	   	    $current_reader = $readerManager->getLatestReaderForUserByID($date->getItemID(), $current_user->getItemID());
+            if ( !empty($current_reader) ) {
+                if ( $current_reader['read_date'] >= $date->getModificationDate() ) {
+                    $read_count++;
+                    $read_since_modification_count++;
+                } else {
+                    $read_count++;
+                }
+            }
+		    $current_user = $user_list->getNext();
+		}
+        $read_percentage = round(($read_count/$all_user_count) * 100);
+        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
+        $readerService = $this->get('commsy_legacy.reader_service');
+        
+        $readerList = array();
+        $modifierList = array();
+        foreach ($itemArray as $item) {
+            $reader = $readerService->getLatestReader($item->getItemId());
+            if ( empty($reader) ) {
+               $readerList[$item->getItemId()] = 'new';
+            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
+               $readerList[$item->getItemId()] = 'changed';
+            }
+            
+            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+        }
+        
+        return array(
+            'roomId' => $roomId,
+            'item' => $date,
+            'modifierList' => $modifierList,
+            'userCount' => $all_user_count,
+            'readCount' => $read_count,
+            'readSinceModificationCount' => $read_since_modification_count,
+        );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/date/{itemId}/savedetails")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function savedetailsAction($roomId, $itemId, Request $request)
     {
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);

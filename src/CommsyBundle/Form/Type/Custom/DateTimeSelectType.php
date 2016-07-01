@@ -20,7 +20,7 @@ class DateTimeSelectType extends AbstractType
                 'format' => 'dd.MM.yyyy',
                 'required' => false,
                 'attr' => array(
-                    'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}'
+                    'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
                 )
             ))
             ->add('time', DateTimeType::class, array(
