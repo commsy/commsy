@@ -14,7 +14,7 @@ use CommsyBundle\Form\Type\Custom\DateTimeSelectType;
 
 use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
 
-class DateDetailType extends AbstractType
+class DateDetailsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -27,7 +27,7 @@ class DateDetailType extends AbstractType
                     'placeholder' => 'startdate',
                     'class' => 'uk-form-width-medium',
                 ),
-                'translation_domain' => 'material',
+                'translation_domain' => 'material'
             ))
             ->add('end', DateTimeSelectType::class, array(
                 'constraints' => array(
