@@ -302,3 +302,8 @@ services:
         arguments: ['%kernel.root_dir%', '@commsy_legacy.environment']
         tags:
             - { name: console.command }
+
+    # API
+    commsy.api.soap:
+        class: CommsyBundle\Services\SoapService
+        arguments: ['@commsy_legacy.environment']
