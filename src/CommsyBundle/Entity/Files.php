@@ -125,12 +125,16 @@ class Files
         $fileExt = substr(strrchr($this->filename,'.'),1);
         $filePath = 'files/' . $this->room->getContextId() . '/' . $this->contextId . '_/' . $this->filesId. '.' . $fileExt;
         
-        return base64_encode(
-                file_get_contents(
-                    $filePath, 
-                    'r'
-                )
-            );
+        if (file_exists($filePath)) {
+            return base64_encode(
+                    file_get_contents(
+                        $filePath, 
+                        'r'
+                    )
+                );
+        } else {
+            return null;
+        }
     }
 
 
