@@ -29,40 +29,21 @@ class ItemController extends Controller
     public function editDescriptionAction($roomId, $itemId, Request $request)
     {
         $itemService = $this->get('commsy_legacy.item_service');
-        $item = $itemService->getItem($itemId);
+        $item = $itemService->getTypedItem($itemId);
         
-        $itemService = $this->get('commsy_legacy.item_service');
         $transformer = $this->get('commsy_legacy.transformer.'.$item->getItemType());
         
         $formData = array();
-        $tempItem = NULL;
-        $isMaterial = false;
         $itemType = $item->getItemType();
         
-        if ($item->getItemType() == 'material') {
-            $isMaterial = true;
-            // get material from MaterialService
-            $tempItem = $materialService->getMaterial($itemId);
-            if (!$tempItem) {
-                throw $this->createNotFoundException('No material found for id ' . $roomId);
-            }
-            $formData = $transformer->transform($tempItem);
-        } else if ($item->getItemType() == 'section') {
-            // get section from MaterialService
-            $tempItem = $materialService->getSection($itemId);
-            if (!$tempItem) {
-                throw $this->createNotFoundException('No section found for id ' . $roomId);
-            }
-            $formData = $transformer->transform($tempItem);
-        }
-        $formData = $transformer->transform($tempItem);
+        $formData = $transformer->transform($item);
         
         $form = $this->createForm(ItemDescriptionType::class, $formData, array('itemId' => $itemId));
         $form->handleRequest($request);
         if ($form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                $tempItem = $transformer->applyTransformation($tempItem, $form->getData());
-                $tempItem->save();
+                $item = $transformer->applyTransformation($item, $form->getData());
+                $item->save();
             } else if ($form->get('cancel')->isClicked()) {
                 // ToDo ...
             }
@@ -76,8 +57,6 @@ class ItemController extends Controller
         }
 
         return array(
-            // 'itemType' => $itemType,
-            'isMaterial' => $isMaterial,
             'itemId' => $itemId,
             'roomId' => $roomId,
             'form' => $form->createView()
@@ -92,31 +71,17 @@ class ItemController extends Controller
     public function saveDescriptionAction($roomId, $itemId, Request $request)
     {
         $itemService = $this->get('commsy_legacy.item_service');
-        $item = $itemService->getItem($itemId);
-        
-        $materialService = $this->get('commsy_legacy.material_service');
-        
-        $tempItem = NULL;
-        $isMaterial = false;
-
-        if ($item->getItemType() == 'material') {
-            $isMaterial = true;
-            $tempItem = $materialService->getMaterial($itemId);
-        } else if ($item->getItemType() == 'section') {
-            $tempItem = $materialService->getSection($itemId);
-        }
-
-        $itemArray = array($tempItem);
+        $item = $itemService->getTypedItem($itemId);
+        $itemArray = array($item);
     
         $modifierList = array();
-        foreach ($itemArray as $item) {
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+        foreach ($itemArray as $tempItem) {
+            $modifierList[$tempItem->getItemId()] = $itemService->getAdditionalEditorsForItem($tempItem);
         }
         
         return array(
-            'isMaterialSave' => $isMaterial,
             'roomId' => $roomId,
-            'item' => $tempItem,
+            'item' => $item,
             'modifierList' => $modifierList
         );
     }
