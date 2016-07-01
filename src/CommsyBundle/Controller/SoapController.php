@@ -6,6 +6,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use Zend\Soap;
 
@@ -27,11 +28,57 @@ class SoapController extends Controller
 
     private function handleWSDL()
     {
-        $uri = $this->generateUrl('commsy_soap_soap', [], true);
+// $plugin_config_file = 'etc/commsy/plugin.php';
+// $soap_functions_array = array();
+// if ( file_exists($plugin_config_file) ) {
+//   include_once($plugin_config_file);
+//   include_once('etc/cs_constants.php');
+//   include_once('etc/cs_config.php');
+//   include_once('functions/misc_functions.php');
+//   include_once('classes/cs_environment.php');
+//   $environment = new cs_environment();
+  
+//   if ( !empty($_GET['plugin']) ) {
+//     // full wsdl only for plugin
+//     $plugin_name = $_GET['plugin'];
+//     $plugin_class = $environment->getPluginClass($plugin_name);
+//     if ( !empty($plugin_class)
+//           and method_exists($plugin_class, 'getFullWSDL') 
+//        ) {
+//         $wsdl = $plugin_class->getFullWSDL();
+//         unset($plugin_class);
+//         if ( !empty($wsdl) ) {
+//            echo($wsdl);
+//            exit();
+//         }
+//     }
+//   } else {
+//     // merge plugin soap functions into CommSy soap functions
+//      $soap_functions_array = plugin_hook_output_all('getSOAPAPIArray',array(),'ARRAY');
+//   }
+// }
+
+// // soap_functions from classes
+// if ( !isset($environment) ) {
+// include_once('etc/cs_constants.php');
+// include_once('etc/cs_config.php');
+// include_once('functions/misc_functions.php');
+// include_once('classes/cs_environment.php');
+// $environment = new cs_environment();
+// }
+
+// $connection_obj = $environment->getCommSyConnectionObject();
+// if ( !empty($connection_obj) ) {
+// $soap_functions_array_from_class = $connection_obj->getSoapFunctionArray();
+// if ( !empty($soap_functions_array_from_class) ) {
+//    $soap_functions_array = array_merge($soap_functions_array,$soap_functions_array_from_class);
+// }
+// }
+        $uri = $this->generateUrl('commsy_soap_soap', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
         // auto discover
         $autoDiscover = new Soap\AutoDiscover();
-        $autoDiscover->setClass($);
+        $autoDiscover->setClass($this->get('commsy.api.soap'));
         $autoDiscover->setUri($uri);
 
         $wsdl = $autoDiscover->generate();
@@ -41,7 +88,7 @@ class SoapController extends Controller
 
         $response->headers->set('Content-Type', 'text/xml');
         $response->setStatusCode(Response::HTTP_OK);
-        $response->setCharset('UTF-8'); //ISO-8859-1
+        $response->setCharset('UTF-8');
 
         $response->setContent($wsdl->toXml());
 
@@ -50,17 +97,34 @@ class SoapController extends Controller
 
     private function handleSOAP()
     {
-        $uri = $this->generateUrl('commsy_soap_soap', [], true);
+// if ( !empty($_GET['plugin']) ) {
+//    $plugin_config_file = 'etc/commsy/plugin.php';
+//    if ( file_exists($plugin_config_file) ) {
+//       include_once($plugin_config_file);
+//       $plugin_name = $_GET['plugin'];
+//       $plugin_class = $environment->getPluginClass($plugin_name);
+//       if ( !empty($plugin_class)
+//           and method_exists($plugin_class, 'getURIforSoapServer') 
+//         ) {
+//          $uri_server = $plugin_class->getURIforSoapServer();
+//          unset($plugin_class);
+//          if ( !empty($uri_server) ) {
+//             $uri = $uri_server;
+//          }
+//       }
+//    }
+// }
+
+        $uri = $this->generateUrl('commsy_soap_soap', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $soapServer = new Soap\Server(null, [
             'location' => $uri,
             'uri' => $uri,
         ]);
-        $soapServer->setClass($);
+        $soapServer->setClass($this->get('commsy.api.soap'));
 
         // response
         $response = new Response();
-
 
         $response->headers->set('Content-Type', 'text/xml');
         $response->setStatusCode(Response::HTTP_OK);
