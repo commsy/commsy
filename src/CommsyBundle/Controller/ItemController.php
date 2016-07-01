@@ -56,7 +56,14 @@ class ItemController extends Controller
             // $em->flush();
         }
 
+        // etherpad
+        $isMaterial = false;
+        if ($itemType == "material") {
+            $isMaterial = true;
+        }
+
         return array(
+            'isMaterial' => $isMaterial,
             'itemId' => $itemId,
             'roomId' => $roomId,
             'form' => $form->createView()
