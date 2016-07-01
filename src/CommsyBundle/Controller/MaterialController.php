@@ -248,7 +248,7 @@ class MaterialController extends Controller
             'showRating' => $current_context->isAssessmentActive(),
             'showWorkflow' => $current_context->withWorkflow(),
             'ratingList' => $ratingList,
-            'material_filter' => 'action',
+            
         ]);
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();

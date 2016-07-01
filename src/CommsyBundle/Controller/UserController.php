@@ -161,6 +161,102 @@ class UserController extends Controller
     }
 
     /**
+     * @Route("/room/{roomId}/user/print")
+     */
+    public function printlistAction($roomId, Request $request)
+    {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        if (!$roomItem) {
+            throw $this->createNotFoundException('The requested room does not exist');
+        }
+
+        // setup filter form
+        $defaultFilterValues = array(
+            'activated' => true,
+        );
+        $filterForm = $this->createForm(UserFilterType::class, $defaultFilterValues, array(
+            'action' => $this->generateUrl('commsy_user_list', array(
+                'roomId' => $roomId,
+            )),
+            'hasHashtags' => false,
+            'hasCategories' => false,
+        ));
+
+        // get the user manager service
+        $userService = $this->get('commsy.user_service');
+
+        $userService->resetLimits();
+        // apply filter
+        $filterForm->handleRequest($request);
+        if ($filterForm->isValid()) {
+            // set filter conditions in user manager
+            $userService->setFilterConditions($filterForm);
+        }
+
+        // get user list from manager service 
+        $users = $userService->getListUsers($roomId);
+        $readerService = $this->get('commsy.reader_service');
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+
+
+        $readerList = array();
+        foreach ($users as $item) {
+            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+        }
+
+        // get user list from manager service 
+        $itemsCountArray = $userService->getCountArray($roomId);
+
+        
+        $html = $this->renderView('CommsyBundle:User:listPrint.html.twig', [
+            'roomId' => $roomId,
+            'users' => $users,
+            'readerList' => $readerList,
+            'showRating' => false,
+            'module' => 'user',
+            'itemsCountArray' => $itemsCountArray,
+            'showHashTags' => false,
+            'showCategories' => false,
+        ]);
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        // get room item for information panel
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        $this->get('knp_snappy.pdf')->setOption('footer-line',true);
+        $this->get('knp_snappy.pdf')->setOption('footer-spacing', 1);
+        $this->get('knp_snappy.pdf')->setOption('footer-center',"[page] / [toPage]");
+        $this->get('knp_snappy.pdf')->setOption('header-line', true);
+        $this->get('knp_snappy.pdf')->setOption('header-spacing', 1 );
+        $this->get('knp_snappy.pdf')->setOption('header-right', date("d.m.y"));
+        $this->get('knp_snappy.pdf')->setOption('header-left', $roomItem->getTitle());
+        $this->get('knp_snappy.pdf')->setOption('header-center', "Commsy");
+        $this->get('knp_snappy.pdf')->setOption('images',true);
+
+        // set cookie for authentication - needed to request images
+        $this->get('knp_snappy.pdf')->setOption('cookie', [
+            'SID' => $legacyEnvironment->getSessionID(),
+        ]);
+
+        //return new Response($html);
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="print.pdf"',
+            ]
+        );
+    }
+
+    /**
      * @Route("/room/{roomId}/user/feedaction")
      */
     public function feedActionAction($roomId, Request $request)

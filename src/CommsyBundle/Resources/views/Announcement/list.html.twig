@@ -47,7 +47,7 @@
                 </li>
                 {# print #}
                 <li>
-                    <a href="{{ path('commsy_announcement_printlist', {'roomId': roomId}) }}" target="_blank" id="print">
+                    <a href="{{ path('commsy_announcement_printlist', {'roomId': roomId,'announcement_filter':app.request.query.get('announcement_filter')}) }}" target="_blank" id="print">
                         <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                     </a>
                 </li>

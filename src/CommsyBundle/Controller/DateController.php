@@ -212,6 +212,88 @@ class DateController extends Controller
             'itemsCountArray' => $itemsCountArray
         );
     }
+
+       /**
+     * @Route("/room/{roomId}/date/print")
+     */
+    public function printlistAction($roomId, Request $request)
+    {
+        // setup filter form
+        $defaultFilterValues = array(
+            'activated' => true
+        );
+        $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
+            'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
+        ));
+
+        // get the material manager service
+        $dateService = $this->get('commsy_legacy.date_service');
+
+        // apply filter
+        $filterForm->handleRequest($request);
+        if ($filterForm->isValid()) {
+            // set filter conditions in material manager
+            $dateService->setFilterConditions($filterForm);
+        }
+
+        // get material list from manager service 
+        $dates = $dateService->getListDates($roomId,$max = 1000, $start = 0, $sort = 'date');
+
+        $readerService = $this->get('commsy.reader_service');
+
+        $readerList = array();
+        foreach ($dates as $item) {
+            $reader = $readerService->getLatestReader($item->getItemId());
+            if ( empty($reader) ) {
+               $readerList[$item->getItemId()] = 'new';
+            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
+               $readerList[$item->getItemId()] = 'changed';
+            }
+        }
+
+
+        $itemsCountArray = $dateService->getCountArray($roomId);
+
+
+        $html = $this->renderView('CommsyBundle:Date:listPrint.html.twig', [
+            'roomId' => $roomId,
+            'module' => 'date',
+            'itemsCountArray' => $itemsCountArray,
+            'dates' => $dates,
+            'readerList' => $readerList,
+        ]);
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        // get room item for information panel
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        $this->get('knp_snappy.pdf')->setOption('footer-line',true);
+        $this->get('knp_snappy.pdf')->setOption('footer-spacing', 1);
+        $this->get('knp_snappy.pdf')->setOption('footer-center',"[page] / [toPage]");
+        $this->get('knp_snappy.pdf')->setOption('header-line', true);
+        $this->get('knp_snappy.pdf')->setOption('header-spacing', 1 );
+        $this->get('knp_snappy.pdf')->setOption('header-right', date("d.m.y"));
+        $this->get('knp_snappy.pdf')->setOption('header-left', $roomItem->getTitle());
+        $this->get('knp_snappy.pdf')->setOption('header-center', "Commsy");
+        $this->get('knp_snappy.pdf')->setOption('images',true);
+
+        // set cookie for authentication - needed to request images
+        $this->get('knp_snappy.pdf')->setOption('cookie', [
+            'SID' => $legacyEnvironment->getSessionID(),
+        ]);
+
+        //return new Response($html);
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="print.pdf"',
+            ]
+        );
+    }
     
     /**
      * @Route("/room/{roomId}/date/calendar")
