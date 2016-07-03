@@ -234,8 +234,8 @@ services:
         tags:
             - { name: form.type }
             
-    commsy.form.type.datedetail:
-        class: CommsyBundle\Form\Type\DateDetailType
+    commsy.form.type.datedetails:
+        class: CommsyBundle\Form\Type\DateDetailsType
         tags:
             - { name: form.type }
             

@@ -11,7 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Form\Type\DateType;
-use CommsyBundle\Form\Type\DateDetailType;
+use CommsyBundle\Form\Type\DateDetailsType;
 use CommsyBundle\Form\Type\AnnotationType;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +19,9 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 use CommsyBundle\Filter\DateFilterType;
+
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Form\FormError;
 
 class DateController extends Controller
 {    
@@ -742,15 +745,27 @@ class DateController extends Controller
             throw $this->createNotFoundException('No date found for id ' . $itemId);
         }
         $formData = $transformer->transform($dateItem);
-        $form = $this->createForm(DateDetailType::class, $formData, array(
-            'action' => $this->generateUrl('commsy_date_edit', array(
+        $form = $this->createForm(DateDetailsType::class, $formData, array(
+            'action' => $this->generateUrl('commsy_date_editdetails', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             ))
         ));
         
+        
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        
+        $submittedFormData = $form->getData();
+        
+        $startDateConstraint = new NotBlank();
+        
+        // use the validator to validate the value
+        $errorList = $this->get('validator')->validate(
+            $submittedFormData['start']['date'],
+            $startDateConstraint
+        );
+        
+        if ($form->isValid() && (count($errorList) === 0)) {
             if ($form->get('save')->isClicked()) {
                 $dateItem = $transformer->applyTransformation($dateItem, $form->getData());
 
@@ -767,11 +782,11 @@ class DateController extends Controller
                 // ToDo ...
             }
             return $this->redirectToRoute('commsy_date_savedetails', array('roomId' => $roomId, 'itemId' => $itemId));
+        } else {
+            if (count($errorList) > 0) {
+                $form->get('start')->addError(new FormError('Start date must not be empty'));
+            }
             
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
         }
         
         return array(
