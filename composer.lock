@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b63be41000b1e3dbfe803700eb4b939d",
-    "content-hash": "4e1fa4e672f91fe032525626ac7e080d",
+    "hash": "05e2c15428cb2c34c47a5f6d14de2f78",
+    "content-hash": "67d85835eec5a0ad05a86859e5001aa9",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -91,6 +91,61 @@
                 "twig"
             ],
             "time": "2015-12-29 22:47:03"
+        },
+        {
+            "name": "debril/rss-atom-bundle",
+            "version": "v2.4.1",
+            "target-dir": "Debril/RssAtomBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alexdebril/rss-atom-bundle.git",
+                "reference": "ffbef7aa4e0b6e2ce69ff90363ffb109cd6a8322"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alexdebril/rss-atom-bundle/zipball/ffbef7aa4e0b6e2ce69ff90363ffb109cd6a8322",
+                "reference": "ffbef7aa4e0b6e2ce69ff90363ffb109cd6a8322",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "symfony/config": "~2.6|~3.0"
+            },
+            "require-dev": {
+                "doctrine/common": "~2.3",
+                "doctrine/doctrine-bundle": "~1.2",
+                "phpunit/phpunit": "~4.7",
+                "symfony/browser-kit": "~2.6|~3.0",
+                "symfony/finder": "~2.6|~3.0",
+                "symfony/form": "~2.6|~3.0",
+                "symfony/framework-bundle": "~2.6|~3.0",
+                "symfony/validator": "~2.6|~3.0"
+            },
+            "suggest": {
+                "guzzlehttp/guzzle": "We can use Guzzle >= 6.0 to fetch feed - set 'driver' to 'guzzle' then"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Debril\\RssAtomBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0"
+            ],
+            "description": "RSS and Atom support for Symfony",
+            "homepage": "http://debril.org/category/rss-atom-bundle/",
+            "keywords": [
+                "atom",
+                "rss"
+            ],
+            "time": "2016-04-06 16:04:12"
         },
         {
             "name": "doctrine/annotations",

@@ -307,3 +307,65 @@ services:
     commsy.api.soap:
         class: CommsyBundle\Services\SoapService
         arguments: ['@commsy_legacy.environment']
+
+    # Feed
+    debril.provider.default:
+        class: CommsyBundle\Feed\CommsyFeedContentProvider
+        arguments: ['@commsy_legacy.environment', '@request_stack', '@translator', '@commsy.feed.creator_factory']
+
+    commsy.feed.creator_factory:
+        class: CommsyBundle\Feed\FeedCreatorFactory
+        arguments: ['@commsy_legacy.item_service', '@commsy_legacy.environment', '@translator', '@router']
+        calls:
+            - [addCreator, ['@commsy.feed.creator.material']]
+            - [addCreator, ['@commsy.feed.creator.section']]
+            - [addCreator, ['@commsy.feed.creator.annotation']]
+            - [addCreator, ['@commsy.feed.creator.group']]
+            - [addCreator, ['@commsy.feed.creator.institution']]
+            - [addCreator, ['@commsy.feed.creator.topic']]
+            - [addCreator, ['@commsy.feed.creator.date']]
+            - [addCreator, ['@commsy.feed.creator.user']]
+            - [addCreator, ['@commsy.feed.creator.announcement']]
+            - [addCreator, ['@commsy.feed.creator.todo']]
+            - [addCreator, ['@commsy.feed.creator.step']]
+            - [addCreator, ['@commsy.feed.creator.discussion']]
+            - [addCreator, ['@commsy.feed.creator.discussion_article']]
+
+    commsy.feed.creator.material:
+        class: CommsyBundle\Feed\Creators\MaterialCreator
+
+    commsy.feed.creator.section:
+        class: CommsyBundle\Feed\Creators\SectionCreator
+
+    commsy.feed.creator.annotation:
+        class: CommsyBundle\Feed\Creators\AnnotationCreator
+
+    commsy.feed.creator.group:
+        class: CommsyBundle\Feed\Creators\GroupCreator
+
+    commsy.feed.creator.institution:
+        class: CommsyBundle\Feed\Creators\InstitutionCreator
+
+    commsy.feed.creator.topic:
+        class: CommsyBundle\Feed\Creators\TopicCreator
+
+    commsy.feed.creator.date:
+        class: CommsyBundle\Feed\Creators\DateCreator
+
+    commsy.feed.creator.user:
+        class: CommsyBundle\Feed\Creators\UserCreator
+
+    commsy.feed.creator.announcement:
+        class: CommsyBundle\Feed\Creators\AnnouncementCreator
+
+    commsy.feed.creator.todo:
+        class: CommsyBundle\Feed\Creators\TodoCreator
+
+    commsy.feed.creator.step:
+        class: CommsyBundle\Feed\Creators\StepCreator
+
+    commsy.feed.creator.discussion:
+        class: CommsyBundle\Feed\Creators\DiscussionCreator
+
+    commsy.feed.creator.discussion_article:
+        class: CommsyBundle\Feed\Creators\DiscussionArticleCreator

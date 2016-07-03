@@ -124,3 +124,7 @@ knp_snappy:
         enabled:    false
         binary:     /usr/local/bin/wkhtmltoimage #"\"C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltoimage.exe\"" for Windows users
         options:    []
+
+# RssAtomBundle
+debril_rss_atom:
+    private: true
