@@ -77,7 +77,7 @@ class RoomController extends Controller
         $backgroundImage = $this->generateUrl("getBackground", array('roomId' => $roomId));
 
         // TODO: calculate parallax-scrolling range for home.html.twig depending on image dimensions!
-        $roomService = $this->get('commsy.room_service');
+        $roomService = $this->get('commsy_legacy.room_service');
         $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
         $filename = $saveDir . "/" . $roomItem->getBGImageFilename();
         $cover_height = 280;
