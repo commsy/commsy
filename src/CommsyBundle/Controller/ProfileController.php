@@ -21,7 +21,7 @@ class ProfileController extends Controller
     public function roomAction($roomId, $itemId, Request $request)
     {
         // get room from RoomService
-        $userService = $this->get('commsy.user_service');
+        $userService = $this->get('commsy_legacy.user_service');
         $userItem = $userService->getUser($itemId);
 
         // $user = $this->getDoctrine()

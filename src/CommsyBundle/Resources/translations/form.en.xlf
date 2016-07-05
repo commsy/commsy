@@ -302,6 +302,18 @@
                 <source>No</source>
                 <target>No</target>
             </trans-unit>
+            <trans-unit id="subject">
+                <source>subject</source>
+                <target>Subject</target>
+            </trans-unit>
+            <trans-unit id="message">
+                <source>message</source>
+                <target>Message</target>
+            </trans-unit>
+            <trans-unit id="send">
+                <source>send</source>
+                <target>Send</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -7,7 +7,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 use CommsyBundle\Filter\HomeFilterType;
+use CommsyBundle\Form\Type\ModerationSupportType;
 
 class RoomController extends Controller
 {
@@ -40,7 +43,7 @@ class RoomController extends Controller
         $filterForm->handleRequest($request);
         if ($filterForm->isValid()) {
             // set filter conditions in feed generator
-            $roomFeedGenerator = $this->get('commsy.room_feed_generator');
+            $roomFeedGenerator = $this->get('commsy_legacy.room_feed_generator');
             $roomFeedGenerator->setFilterConditions($filterForm);
         }
 
@@ -62,8 +65,7 @@ class RoomController extends Controller
         $moderatorList = $roomItem->getModeratorList();
         $moderatorUserItem = $moderatorList->getFirst();
         while ($moderatorUserItem) {
-            $moderators[] = $moderatorUserItem->getFirstname() . ' ' . $moderatorUserItem->getLastname();
-
+            $moderators[] = $moderatorUserItem;
             $moderatorUserItem = $moderatorList->getNext();
         }
 
@@ -79,7 +81,19 @@ class RoomController extends Controller
         $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
         $filename = $saveDir . "/" . $roomItem->getBGImageFilename();
         $cover_height = 280;
-        dump(getimagesize($filename));
+
+        $serviceLinkExternal = $roomItem->getServiceLinkExternal();
+        if ($serviceLinkExternal == '') {
+           $portalItem = $legacyEnvironment->getCurrentPortalItem();
+           if (isset($portalItem) and !empty($portalItem)) {
+              $serviceLinkExternal = $portalItem->getServiceLinkExternal();
+           }
+           unset($portal_item);
+        }
+        if ($serviceLinkExternal == '') {
+           $serverItem = $legacyEnvironment->getServerItem();
+           $serviceLinkExternal = $serverItem->getServiceLinkExternal();
+        }
 
         return array(
             'form' => $filterForm->createView(),
@@ -93,14 +107,15 @@ class RoomController extends Controller
             'showCategories' => $roomItem->withTags(),
             'countAnnouncements' => $countAnnouncements,
             'bgImageFilepath' => $backgroundImage,
+            'serviceLinkExternal' => $serviceLinkExternal,
         );
     }
 
     /**
-     * @Route("/room/{roomId}/feed/{start}")
+     * @Route("/room/{roomId}/feed/{start}/{sort}")
      * @Template("CommsyBundle:Room:list.html.twig")
      */
-    public function feedAction($roomId, $max = 10, $start = 0, Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -122,7 +137,7 @@ class RoomController extends Controller
         ));
 
         // collect information for feed panel
-        $roomFeedGenerator = $this->get('commsy.room_feed_generator');
+        $roomFeedGenerator = $this->get('commsy_legacy.room_feed_generator');
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -135,7 +150,7 @@ class RoomController extends Controller
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
 
  
         $readerList = array();
@@ -148,5 +163,63 @@ class RoomController extends Controller
             'readerList' => $readerList,
             'showRating' => $current_context->isAssessmentActive()
          );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/moderationsupport")
+     * @Template()
+     */
+    public function moderationsupportAction($roomId, Request $request)
+    {
+        $moderationsupportData = array();
+        $form = $this->createForm(ModerationSupportType::class, $moderationsupportData, array(
+            'action' => $this->generateUrl('commsy_room_moderationsupport', array(
+                'roomId' => $roomId,
+            ))
+        ));
+        
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $data = $form->getData();
+            
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+            $currentUser = $legacyEnvironment->getCurrentUser();
+
+            $roomManager = $legacyEnvironment->getRoomManager();
+            $roomItem = $roomManager->getItem($roomId);
+            
+            $moderatorEmailAdresses = array();
+            $moderatorList = $roomItem->getModeratorList();
+            $moderatorUserItem = $moderatorList->getFirst();
+            while ($moderatorUserItem) {
+                $moderatorEmailAdresses[$moderatorUserItem->getEmail()] = $moderatorUserItem->getFullname();
+                $moderatorUserItem = $moderatorList->getNext();
+            }
+            
+            $message = \Swift_Message::newInstance()
+                ->setSubject($data['subject'])
+                ->setFrom(array($currentUser->getEmail() => $currentUser->getFullname()))
+                ->setTo($moderatorEmailAdresses)
+                ->setBody($data['message'])
+            ;
+            
+            $message->setCc(array($currentUser->getEmail() => $currentUser->getFullname()));
+            
+            $this->get('mailer')->send($message);
+            
+            $translator = $this->get('translator');
+            
+            return new JsonResponse([
+                'message' => $translator->trans('message was send'),
+                'timeout' => '5550',
+                'layout' => 'cs-notify-message',
+                'data' => array(),
+            ]);
+        }
+        
+        return array(
+            'form' => $form->createView(),
+        );
     }
 }

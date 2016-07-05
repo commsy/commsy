@@ -1,0 +1,81 @@
+image: php:5.6
+
+# Composer stores all downloaded packages in the vendor/ directory.
+# Do not use the following if the vendor/ directory is commited to
+# your git repository.
+cache:
+  paths:
+    - vendor/
+
+before_script:
+  # Install git, the php image doesn't have installed
+  - apt-get update -yqq
+  - apt-get install git -yqq
+  - apt-get install zip -yqq
+
+  # Install phpunit, the tool that we will use for testing
+  - curl -o /usr/local/bin/phpunit -L https://phar.phpunit.de/phpunit.phar
+  - chmod +x /usr/local/bin/phpunit
+
+  # Install mysql driver
+  - docker-php-ext-install pdo_mysql
+
+  # Custom php configuration
+  - 'echo "date.timezone = Europe/Berlin" > /usr/local/etc/php/conf.d/custom.ini'
+
+  # Install Node.js
+  - curl -sL https://deb.nodesource.com/setup_6.x | bash -
+  - apt-get install nodejs -yqq
+
+  # Install global Node.js packages
+  - npm -g install bower gulp
+
+  # Install Node.js dependencies
+  - npm install
+
+services:
+  - mariadb:latest
+
+variables:
+  # Configure myariadb service (https://hub.docker.com/_/mariadb/)
+  MYSQL_DATABASE: commsy
+  MYSQL_ROOT_PASSWORD: root
+  MYSQL_USER: commsy
+  MYSQL_PASSWORD: changeme
+
+stages:
+  - test
+  - release
+
+build:
+  stage: test
+  script:
+    - cp legacy/etc/cs_config.php-dist legacy/etc/cs_config.php
+    - cp app/config/parameters.yml.dist app/config/parameters.yml
+    - 'sed -i "s/database_host:     127.0.0.1/database_host:     mariadb/" app/config/parameters.yml'
+    - php composer.phar install --no-interaction
+    - bower --allow-root --config.analytics=false install
+    - gulp
+    - phpunit
+
+release:
+  stage: release
+  script:
+    - bower --allow-root --config.analytics=false install
+    - gulp --prod
+  artifacts:
+    name: "commsy_${CI_BUILD_TAG}"
+    paths:
+      - app/
+      - bin/
+      - files/
+      - legacy/
+      - src/
+      - var/
+      - web/
+      - composer.json
+      - composer.lock
+      - composer.phar
+      - README.md
+  only:
+    - tags

@@ -10,6 +10,16 @@
         </div>
         {% if not form.biblio_sub is defined %}
             {% if form.vars.name != "section"  %}
+                {% if isDraft %}
+                    <div>
+                        <label class="">
+                            Use etherpad for description
+                        </label>
+                        <div class="uk-margin-left">
+                            {{ form_widget(form.editor_switch) }}  
+                        </div>
+                    </div>
+                {% endif %}
                 <div class="uk-flex uk-margin-bottom uk-margin-small-top">
                     <div>
                         <label class="">
@@ -38,6 +48,16 @@
                 </div>
             </div>
         {% else %}
+            {% if isDraft %}
+                <div>
+                    <label class="">
+                        Use etherpad for description
+                    </label>
+                    <div class="uk-margin-left">
+                        {{ form_widget(form.editor_switch) }}  
+                    </div>
+                </div>
+            {% endif %}
             <div class="uk-flex">
                 <label class="uk-form-label">
                     {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}

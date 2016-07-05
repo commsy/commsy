@@ -27,6 +27,9 @@ class RoomFeedGenerator
     public function getFeedList($roomId, $max, $start)
     {
         $rubrics = $this->roomService->getRubricInformation($roomId);
+        if (in_array('group', $rubrics) || in_array('topic', $rubrics)) {
+            $rubrics[] = 'label';
+        }
 
         // get the lastest items matching the configured rubrics
         $this->itemManager->setContextLimit($roomId);
@@ -54,7 +57,7 @@ class RoomFeedGenerator
         while ($item) {
             if ($itemIndex >= $start) {
                 $type = $item->getItemType();
-    
+                
                 switch ($type) {
                     case 'user':
                         $userManager = $this->legacyEnvironment->getUserManager();
@@ -86,6 +89,40 @@ class RoomFeedGenerator
                         $discussionItem = $discussionManager->getItem($item->getItemId());
                         if ($discussionItem) {
                             $feedList[] = $discussionItem;    
+                        }
+                        break;
+                        
+                    case 'todo':
+                        $todoManager = $this->legacyEnvironment->getTodoManager();
+                        $todoItem = $todoManager->getItem($item->getItemId());
+                        if ($todoItem) {
+                            $feedList[] = $todoItem;    
+                        }
+                        break;
+                        
+                    case 'announcement':
+                        $announcementManager = $this->legacyEnvironment->getAnnouncementManager();
+                        $announcementItem = $announcementManager->getItem($item->getItemId());
+                        if ($announcementItem) {
+                            $feedList[] = $announcementItem;    
+                        }
+                        break;
+                        
+                    case 'label':
+                        $labelManager = $this->legacyEnvironment->getLabelManager();
+                        $labelItem = $labelManager->getItem($item->getItemId());
+                        if ($labelItem->getItemType() == 'group') {
+                            $groupManager = $this->legacyEnvironment->getLabelManager();
+                            $groupItem = $groupManager->getItem($item->getItemId());
+                            if ($groupItem) {
+                                $feedList[] = $groupItem;    
+                            }
+                        } else if ($labelItem->getItemType() == 'topic') {
+                            $topicManager = $this->legacyEnvironment->getTopicManager();
+                            $topicItem = $topicManager->getItem($item->getItemId());
+                            if ($topicItem) {
+                                $feedList[] = $topicItem;    
+                            }
                         }
                         break;
                 }

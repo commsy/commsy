@@ -303,10 +303,10 @@ class MenuBuilder
                 $class = "uk-icon-justify uk-icon-group uk-icon-small";
                 break;
             case 'todo':
-                $class = "uk-icon-justify uk-icon-home uk-icon-small";
+                $class = "uk-icon-justify uk-icon-check-square-o uk-icon-small";
                 break;
             case 'topic':
-                $class = "uk-icon-justify uk-icon-check uk-icon-small";
+                $class = "uk-icon-justify uk-icon-book uk-icon-small";
                 break;
             
             default:

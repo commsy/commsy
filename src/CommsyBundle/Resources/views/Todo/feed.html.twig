@@ -1,0 +1,54 @@
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+
+{% for todo in todos %}
+    <article class="uk-comment">
+    
+        {# item change information #}
+            {{ macros.statusColor(readerList, todo.itemId) }}
+ 
+        <header class="uk-comment-header uk-flex">
+            <div class="items-checkbox uk-margin-right uk-margin-top uk-hidden">
+                {% if is_granted('ITEM_EDIT', todo.itemId) %}
+                    <form class="uk-form">
+                        <input type="checkbox" value="{{ todo.itemId }}">
+                    </form>
+                {% else %}
+                    <i class="uk-icon-ban uk-icon-small red" data-itemid="{{ todo.itemId }}"></i>
+                {% endif %}
+            </div>
+
+            {# user icon and modification time #}
+            <div class="uk-margin-right uk-flex-item-none">
+                {% if todo.modificatorItem.isUser %}
+                    {{  macros.userIconLink(todo.modificatorItem) }}
+                {% else %}
+                    {{  macros.userIcon(todo.modificatorItem) }}
+                {% endif %}
+                <div class="uk-comment-meta">
+                    {% if todo.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                        {{ 'today'|trans({})|capitalize }}, {{todo.getModificationDate|date("H:i")}}
+                    {% else %}
+                        {{todo.getModificationDate|date("d.m.Y")}}
+                    {% endif %}
+                </div>
+            </div>
+
+            {# title and meta #}
+            <div class="uk-width-8-10">
+                <h4 class="uk-comment-title">
+                    <a href="{{ path('commsy_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}) }}">{{ todo.title }}</a>
+                </h4>
+
+                <div class="uk-comment-meta">
+                    {{ 'by'|trans({})|capitalize }}: {{todo.modificatorItem.fullname}} ({{todo.getCreationDate|date("d.m.Y")}})
+                </div>
+               
+                <div class="uk-comment-meta">
+                    {{  macros.fileListShort(todo) }}
+                </div>
+            </div>
+        </header>
+    </article>
+{% else %}
+    {{ 'No more results found'|trans}}
+{% endfor %}

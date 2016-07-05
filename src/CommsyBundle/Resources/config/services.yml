@@ -4,7 +4,7 @@ services:
     # Filter types
     commsy.filter.rubric:
         class: CommsyBundle\Filter\RubricFilterType
-        arguments: ['@commsy.room_service', '@request_stack']
+        arguments: ['@commsy_legacy.room_service', '@request_stack']
         tags:
             - { name: form.type }
 
@@ -16,7 +16,7 @@ services:
 
     commsy.filter.category:
         class: CommsyBundle\Filter\CategoryFilterType
-        arguments: ['@request_stack', '@commsy.category_service']
+        arguments: ['@request_stack', '@commsy_legacy.category_service']
         tags:
             - { name: form.type }
 
@@ -32,7 +32,7 @@ services:
     # Menu
     commsy.menu.builder:
         class: CommsyBundle\Menu\MenuBuilder
-        arguments: ['@knp_menu.factory', '@commsy.room_service', '@commsy_legacy.environment', '@commsy.user_service', '@security.authorization_checker']
+        arguments: ['@knp_menu.factory', '@commsy_legacy.room_service', '@commsy_legacy.environment', '@commsy_legacy.user_service', '@security.authorization_checker']
         # tags:
         #     - { name: knp_menu.menu_builder, method: createProfileMenu, alias: profile }
         #     - { name: knp_menu.menu_builder, method: createRoomlistMenu, alias: roomlist }
@@ -85,7 +85,7 @@ services:
 
     commsy.security.item_voter:
         class: CommsyBundle\Security\Authorization\Voter\ItemVoter
-        arguments: ['@commsy_legacy.environment', '@commsy.item_service']
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.item_service']
         public: false
         tags:
             - { name: security.voter }
@@ -109,7 +109,7 @@ services:
     # EventListener
     kernel.listener.comsy_request:
         class: CommsyBundle\EventListener\CommsyRequestListener
-        arguments: ['@commsy.room_service', '@liip_theme.active_theme', '%liip_theme.themes%']
+        arguments: ['@commsy_legacy.room_service', '@liip_theme.active_theme', '%liip_theme.themes%']
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
@@ -121,7 +121,7 @@ services:
 
     kernel.listener.commsy_logging:
         class: CommsyBundle\EventListener\CommsyLoggingListener
-        arguments: ['@commsy.room_service', '@liip_theme.active_theme', '%liip_theme.themes%', '@commsy_legacy.environment']
+        arguments: ['@commsy_legacy.room_service', '@liip_theme.active_theme', '%liip_theme.themes%', '@commsy_legacy.environment']
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
@@ -183,7 +183,7 @@ services:
 
     commsy.form.type.itemLinks:
         class: CommsyBundle\Form\Type\ItemLinksType
-        arguments: ['@commsy_legacy.environment', '@commsy.room_service', '@commsy.item_service']
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.item_service']
         tags:
             - { name: form.type }
 
@@ -241,6 +241,51 @@ services:
         tags:
             - { name: form.type }
 
+    commsy.form.type.date:
+        class: CommsyBundle\Form\Type\DateType
+        tags:
+            - { name: form.type }
+            
+    commsy.form.type.datedetails:
+        class: CommsyBundle\Form\Type\DateDetailsType
+        tags:
+            - { name: form.type }
+            
+    commsy.form.type.group:
+        class: CommsyBundle\Form\Type\GroupType
+        tags:
+            - { name: form.type }
+            
+    commsy.form.type.topic:
+        class: CommsyBundle\Form\Type\TopicType
+        tags:
+            - { name: form.type }
+            
+    commsy.form.type.discussion:
+        class: CommsyBundle\Form\Type\DiscussionType
+        tags:
+            - { name: form.type }
+            
+    commsy.form.type.discussionarticle:
+        class: CommsyBundle\Form\Type\DiscussionArticleType
+        tags:
+            - { name: form.type }
+            
+    commsy.form.type.todo:
+        class: CommsyBundle\Form\Type\TodoType
+        tags:
+            - { name: form.type }
+            
+    commsy.form.type.step:
+        class: CommsyBundle\Form\Type\StepType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.moderationsupport:
+        class: CommsyBundle\Form\Type\ModerationSupportType
+        tags:
+            - { name: form.type }
+
     # Form type extension
     commsy.form.extension.image_type:
         class: CommsyBundle\Form\Extension\ImageTypeExtension
@@ -269,3 +314,70 @@ services:
         arguments: ['%kernel.root_dir%', '@commsy_legacy.environment']
         tags:
             - { name: console.command }
+
+    # API
+    commsy.api.soap:
+        class: CommsyBundle\Services\SoapService
+        arguments: ['@commsy_legacy.environment']
+
+    # Feed
+    debril.provider.default:
+        class: CommsyBundle\Feed\CommsyFeedContentProvider
+        arguments: ['@commsy_legacy.environment', '@request_stack', '@translator', '@commsy.feed.creator_factory']
+
+    commsy.feed.creator_factory:
+        class: CommsyBundle\Feed\FeedCreatorFactory
+        arguments: ['@commsy_legacy.item_service', '@commsy_legacy.environment', '@translator', '@router']
+        calls:
+            - [addCreator, ['@commsy.feed.creator.material']]
+            - [addCreator, ['@commsy.feed.creator.section']]
+            - [addCreator, ['@commsy.feed.creator.annotation']]
+            - [addCreator, ['@commsy.feed.creator.group']]
+            - [addCreator, ['@commsy.feed.creator.institution']]
+            - [addCreator, ['@commsy.feed.creator.topic']]
+            - [addCreator, ['@commsy.feed.creator.date']]
+            - [addCreator, ['@commsy.feed.creator.user']]
+            - [addCreator, ['@commsy.feed.creator.announcement']]
+            - [addCreator, ['@commsy.feed.creator.todo']]
+            - [addCreator, ['@commsy.feed.creator.step']]
+            - [addCreator, ['@commsy.feed.creator.discussion']]
+            - [addCreator, ['@commsy.feed.creator.discussion_article']]
+
+    commsy.feed.creator.material:
+        class: CommsyBundle\Feed\Creators\MaterialCreator
+
+    commsy.feed.creator.section:
+        class: CommsyBundle\Feed\Creators\SectionCreator
+
+    commsy.feed.creator.annotation:
+        class: CommsyBundle\Feed\Creators\AnnotationCreator
+
+    commsy.feed.creator.group:
+        class: CommsyBundle\Feed\Creators\GroupCreator
+
+    commsy.feed.creator.institution:
+        class: CommsyBundle\Feed\Creators\InstitutionCreator
+
+    commsy.feed.creator.topic:
+        class: CommsyBundle\Feed\Creators\TopicCreator
+
+    commsy.feed.creator.date:
+        class: CommsyBundle\Feed\Creators\DateCreator
+
+    commsy.feed.creator.user:
+        class: CommsyBundle\Feed\Creators\UserCreator
+
+    commsy.feed.creator.announcement:
+        class: CommsyBundle\Feed\Creators\AnnouncementCreator
+
+    commsy.feed.creator.todo:
+        class: CommsyBundle\Feed\Creators\TodoCreator
+
+    commsy.feed.creator.step:
+        class: CommsyBundle\Feed\Creators\StepCreator
+
+    commsy.feed.creator.discussion:
+        class: CommsyBundle\Feed\Creators\DiscussionCreator
+
+    commsy.feed.creator.discussion_article:
+        class: CommsyBundle\Feed\Creators\DiscussionArticleCreator

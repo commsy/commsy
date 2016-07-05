@@ -1,0 +1,17 @@
+<div class="uk-margin-small-top uk-margin-right uk-margin-bottom uk-margin-left">
+    {{ form_start(form) }}
+    <fieldset data-uk-margin>
+        <div class="uk-form-row">
+            <span class="uk-text-bold">{{ form_label(form.subject) }}</span><br/>
+            {{ form_widget(form.subject) }}
+        </div>
+        <div class="uk-form-row">
+            <span class="uk-text-bold">{{ form_label(form.message) }}</span><br/>
+            {{ form_widget(form.message) }}
+        </div>
+        <div class="uk-form-row">
+            {{ form_widget(form.send) }} {{ form_widget(form.cancel) }}
+        </div>
+    </fieldset>
+    {{ form_end(form) }}
+</div>

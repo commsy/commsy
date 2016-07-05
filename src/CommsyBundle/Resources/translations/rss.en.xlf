@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="rssDescription">
+                <source>The RSS-feed keeps you up to date with everything that's new in workspace %room_title%.</source>
+                <target>The RSS-feed keeps you up to date with everything that's new in workspace %room_title%.</target>
+            </trans-unit>
+            <trans-unit id="rssNotVisible">
+                <source>Not visible</source>
+                <target>Not visible</target>
+            </trans-unit>
+            <trans-unit id="rssNewMember">
+                <source>A new person has become a member.</source>
+                <target>A new person has become a member.</target>
+            </trans-unit>
+            <trans-unit id="rssProfileUpdated">
+                <source>The profile has been updated.</source>
+                <target>The profile has been updated.</target>
+            </trans-unit>
+            <trans-unit id="rssTitleDate">
+                <source>Event: %title%</source>
+                <target>Event: %title%</target>
+            </trans-unit>
+            <trans-unit id="rssTitleMaterial">
+                <source>Material: %title%</source>
+                <target>Material: %title%</target>
+            </trans-unit>
+            <trans-unit id="rssTitleSection">
+                <source>Section %title% of: %linked_title%</source>
+                <target>Section %title% of: %linked_title%</target>
+            </trans-unit>
+            <trans-unit id="rssTitleAnnotation">
+                <source>Comment %title% on: %linked_title%</source>
+                <target>Comment %title% on: %linked_title%</target>
+            </trans-unit>
+            <trans-unit id="rssTitleGroup">
+                <source>Group: %title%</source>
+                <target>Group: %title%</target>
+            </trans-unit>
+            <trans-unit id="rssTitleInstitution">
+                <source>Institution: %title%</source>
+                <target>Institution: %title%</target>
+            </trans-unit>
+            <trans-unit id="rssTitleTopic">
+                <source>Topic: %title%</source>
+                <target>Topic: %title%</target>
+            </trans-unit>
+            <trans-unit id="rssTitleAnnouncement">
+                <source>Announcement: %title%</source>
+                <target>Announcement: %title%</target>
+            </trans-unit>
+            <trans-unit id="rssTitleTodo">
+                <source>Task: %title% (due date %due_date%)</source>
+                <target>Task: %title% (due date %due_date%)</target>
+            </trans-unit>
+            <trans-unit id="rssTitleStep">
+                <source>Step %title% of: %linked_title%</source>
+                <target>step %title% of: %linked_title%</target>
+            </trans-unit>
+            <trans-unit id="rssTitleDiscussion">
+                <source>Discussion: %title%</source>
+                <target>Discussion: %title%</target>
+            </trans-unit>
+            <trans-unit id="rssTitleDiscussionArticle">
+                <source>Post %title% in: %linked_title%</source>
+                <target>Post %title% in: %linked_title%</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

@@ -17,11 +17,23 @@
     {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
     {{ form_start(form) }}
     {{ form_errors(form) }}
-    <div class="uk-flex">
-        <div class="uk-width-9-10">
-            {{ form_widget(form.description, {'id': 'descriptionedit' ~ itemId}) }}
+
+    {# Render etherpad if configured #}
+    {% if useEtherpad is defined %}
+        {% if useEtherpad %}
+            {{ render(controller(
+                'EtherpadBundle:Etherpad:index',
+                { 'materialId': itemId, 'roomId': roomId } 
+            )) }}
+            <!-- {{ form_widget(form.description, {'id': 'descriptionedit' ~ itemId}) }} -->
+        {% endif %}
+    {% else %}
+        <div class="uk-flex">
+            <div class="uk-width-9-10">
+                {{ form_widget(form.description, {'id': 'descriptionedit' ~ itemId}) }}
+            </div>
         </div>
-    </div>
+    {% endif %}
     <div class="uk-flex uk-margin-small-top">
         <div>
             {{ form_row(form.save) }}
@@ -33,3 +45,4 @@
     {{ form_rest(form) }}
     {{ form_end(form) }}
 </div>
+

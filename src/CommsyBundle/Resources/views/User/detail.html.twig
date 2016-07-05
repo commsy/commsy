@@ -84,18 +84,20 @@
                                     <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
 
                                         {# print #}
- 
                                         <li>
-                                            <a class="" href="#" id="print">
+                                            <a href="{{ path('commsy_item_print', {'roomId': roomId, 'itemId': user.itemId}) }}" target="_blank" id="print">
                                                 <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
-
                                         {# send #}
                                         <li>
-                                            <a class="" href="#">
-                                                <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send mail'|trans({})|capitalize }}
+                                            <a href="#" data-cs-action-send="{
+                                                'url': '{{ path('commsy_item_send', {'roomId': roomId}) }}',
+                                                'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}',
+                                                'itemId': {{ user.itemId }}
+                                            }">
+                                                <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send'|trans({})|capitalize }}
                                             </a>
                                         </li>
 

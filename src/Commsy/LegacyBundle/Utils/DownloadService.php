@@ -146,7 +146,7 @@ class DownloadService
     private function getDetailInfo ($roomId, $itemId) {
         $infoArray = array();
         
-        $itemService = $this->serviceContainer->get('commsy.item_service');
+        $itemService = $this->serviceContainer->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
         
         $itemArray = array($item);
@@ -195,7 +195,7 @@ class DownloadService
 		}
         $read_percentage = round(($read_count/$all_user_count) * 100);
         $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
-        $readerService = $this->serviceContainer->get('commsy.reader_service');
+        $readerService = $this->serviceContainer->get('commsy_legacy.reader_service');
         
         $readerList = array();
         $modifierList = array();

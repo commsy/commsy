@@ -5,6 +5,7 @@ imports:
     - { resource: commsy.yml }
     - { resource: fos_elastica.yml }
     - { resource: ckeditor.yml }
+    - { resource: "@EtherpadBundle/Resources/config/services.yml" }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
@@ -124,3 +125,7 @@ knp_snappy:
         enabled:    false
         binary:     /usr/local/bin/wkhtmltoimage #"\"C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltoimage.exe\"" for Windows users
         options:    []
+
+# RssAtomBundle
+debril_rss_atom:
+    private: true

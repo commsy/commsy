@@ -5,9 +5,9 @@ parameters:
     database_driver:   pdo_mysql
     database_host:     127.0.0.1
     database_port:     3306
-    database_name:     symfony
-    database_user:     root
-    database_password: ~
+    database_name:     commsy
+    database_user:     commsy
+    database_password: changeme
     # You should uncomment this if you want use pdo_sqlite
     # database_path: "%kernel.root_dir%/data.db3"
 
@@ -24,3 +24,9 @@ parameters:
     # elasticsearch
     elastic_host: localhost
     elastic_port: 9200
+
+    # extensions
+    extensions.etherpad.enabled: false
+    extensions.etherpad.api_key: ~
+    extensions.etherpad.api_url: ~
+    extensions.etherpad.base_url: ~

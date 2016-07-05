@@ -50,7 +50,7 @@ class UserController extends Controller
         ));
 
         // get the user manager service
-        $userService = $this->get('commsy.user_service');
+        $userService = $this->get('commsy_legacy.user_service');
 
         $userService->resetLimits();
         // apply filter
@@ -62,7 +62,7 @@ class UserController extends Controller
 
         // get user list from manager service 
         $users = $userService->getListUsers($roomId, $max, $start);
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
@@ -99,7 +99,7 @@ class UserController extends Controller
 
 
        // get the user manager service
-        $userService = $this->get('commsy.user_service');
+        $userService = $this->get('commsy_legacy.user_service');
         $defaultFilterValues = array(
             'activated' => true,
         );
@@ -140,7 +140,7 @@ class UserController extends Controller
 
 
         // get the user manager service
-        $userService = $this->get('commsy.user_service');
+        $userService = $this->get('commsy_legacy.user_service');
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -189,7 +189,7 @@ class UserController extends Controller
         $result = [];
         
         if ($action == 'markread') {
-            $userService = $this->get('commsy.user_service');
+            $userService = $this->get('commsy_legacy.user_service');
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             $noticedManager = $legacyEnvironment->getNoticedManager();
             $readerManager = $legacyEnvironment->getReaderManager();
@@ -259,8 +259,8 @@ class UserController extends Controller
     private function getDetailInfo ($roomId, $itemId) {
         $infoArray = array();
         
-        $userService = $this->get('commsy.user_service');
-        $itemService = $this->get('commsy.item_service');
+        $userService = $this->get('commsy_legacy.user_service');
+        $itemService = $this->get('commsy_legacy.item_service');
 
         
         $user = $userService->getUser($itemId);
@@ -320,7 +320,7 @@ class UserController extends Controller
         }
         $read_percentage = round(($read_count/$all_user_count) * 100);
         $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
         $modifierList = array();
@@ -431,7 +431,7 @@ class UserController extends Controller
         $translator = $this->get('translator');
         
         $userData = array();
-        $userService = $this->get('commsy.user_service');
+        $userService = $this->get('commsy_legacy.user_service');
         $transformer = $this->get('commsy_legacy.transformer.user');
         
         // create new user item
@@ -454,7 +454,7 @@ class UserController extends Controller
      */
     public function editAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
         $userService = $this->get('commsy_legacy.user_service');
@@ -518,7 +518,7 @@ class UserController extends Controller
      */
     public function imageAction($roomId, $itemId)
     {
-        $userService = $this->get('commsy.user_service');
+        $userService = $this->get('commsy_legacy.user_service');
         $user = $userService->getUser($itemId);
         
         $file = $user->getPicture();
@@ -572,7 +572,7 @@ class UserController extends Controller
      */
     public function roomsAction($roomId, $itemId, Request $request, $max = 10, $start = 0)
     {
-        $userService = $this->get('commsy.user_service');
+        $userService = $this->get('commsy_legacy.user_service');
         $user = $userService->getUser($itemId);
 
         // Room list feed

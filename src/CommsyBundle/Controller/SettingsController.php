@@ -27,7 +27,7 @@ class SettingsController extends Controller
     public function generalAction($roomId, Request $request)
     {
         // get room from RoomService
-        $roomService = $this->get('commsy.room_service');
+        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 	
         // $room = $this->getDoctrine()
@@ -192,7 +192,7 @@ class SettingsController extends Controller
     public function appearanceAction($roomId, Request $request)
     {
         // get room from RoomService
-        $roomService = $this->get('commsy.room_service');
+        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
@@ -238,7 +238,7 @@ class SettingsController extends Controller
     public function extensionsAction($roomId, Request $request)
     {
         // get room from RoomService
-        $roomService = $this->get('commsy.room_service');
+        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {

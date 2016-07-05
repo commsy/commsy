@@ -155,7 +155,7 @@
    </div>
 {% endmacro %}
 
-{% macro titleSave(item, modifierList, userCount, readCount, readSinceModificationCount, showRating) %}
+{% macro titleSave(item, modifierList, userCount, readCount, readSinceModificationCount) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
     <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
             <div class="uk-grid uk-margin-small-bottom">
@@ -163,17 +163,8 @@
                     <div class="uk-grid">
                         <div class="uk-width-8-10">
                             <h1 class="uk-article-title">{{ item.title|raw }}</h1>
-                            {% if item.itemType == 'group' %}
-                                {% set group = item %}
-                                {% include 'CommsyBundle:Group:biblio.html.twig' %}
-                            {% endif %}
                         </div>
-                        {%if showRating %}
-                            <div class="uk-width-2-10  uk-text-right uk-padding-remove">
-                                {{  macros.ratingStatus(group) }}
-                            </div>
-                        {% endif %}
-                </div>
+                    </div>
                 </div>        
                 <div class="uk-width-1-10  uk-text-right">
                     <!-- <i class="uk-icon-small uk-icon-hover uk-icon-edit"></i> -->

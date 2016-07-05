@@ -13,6 +13,7 @@ use Symfony\Component\Translation\Loader\ArrayLoader;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Filter\TopicFilterType;
+use CommsyBundle\Form\Type\TopicType;
 use CommsyBundle\Form\Type\AnnotationType;
 
 use \ZipArchive;
@@ -40,7 +41,7 @@ class TopicController extends Controller
 
 
        // get the topic manager service
-        $topicService = $this->get('commsy.topic_service');
+        $topicService = $this->get('commsy_legacy.topic_service');
         $defaultFilterValues = array(
             'activated' => false,
         );
@@ -81,7 +82,7 @@ class TopicController extends Controller
 
 
         // get the topic manager service
-        $topicService = $this->get('commsy.topic_service');
+        $topicService = $this->get('commsy_legacy.topic_service');
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -129,7 +130,7 @@ class TopicController extends Controller
         ));
 
         // get the topic manager service
-        $topicService = $this->get('commsy.topic_service');
+        $topicService = $this->get('commsy_legacy.topic_service');
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -140,7 +141,7 @@ class TopicController extends Controller
 
         // get topic list from manager service 
         $topics = $topicService->getListTopics($roomId, $max, $start);
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
@@ -208,7 +209,7 @@ class TopicController extends Controller
             
             return $response;
         } else if ($action == 'delete') {
-            $topicService = $this->get('commsy.topic_service');
+            $topicService = $this->get('commsy_legacy.topic_service');
             foreach ($selectedIds as $id) {
                 $item = $topicService->getTopic($id);
                 $item->delete();
@@ -276,8 +277,8 @@ class TopicController extends Controller
     private function getDetailInfo ($roomId, $itemId) {
         $infoArray = array();
         
-        $topicService = $this->get('commsy.topic_service');
-        $itemService = $this->get('commsy.item_service');
+        $topicService = $this->get('commsy_legacy.topic_service');
+        $itemService = $this->get('commsy_legacy.item_service');
 
         $annotationService = $this->get('commsy_legacy.annotation_service');
         
@@ -338,7 +339,7 @@ class TopicController extends Controller
         }
         $read_percentage = round(($read_count/$all_user_count) * 100);
         $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
         $modifierList = array();
@@ -435,7 +436,7 @@ class TopicController extends Controller
         $translator = $this->get('translator');
         
         $topicData = array();
-        $topicService = $this->get('commsy.topic_service');
+        $topicService = $this->get('commsy_legacy.topic_service');
         $transformer = $this->get('commsy_legacy.transformer.topic');
         
         // create new topic item
@@ -468,10 +469,10 @@ class TopicController extends Controller
      */
     public function editAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
-        $topicService = $this->get('commsy.topic_service');
+        $topicService = $this->get('commsy_legacy.topic_service');
         $transformer = $this->get('commsy_legacy.transformer.topic');
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -480,20 +481,18 @@ class TopicController extends Controller
         $formData = array();
         $topicItem = NULL;
         
-        if ($item->getItemType() == 'topic') {
-            // get topic from topicService
-            $topicItem = $topicService->gettopic($itemId);
-            if (!$topicItem) {
-                throw $this->createNotFoundException('No topic found for id ' . $roomId);
-            }
-            $formData = $transformer->transform($topicItem);
-            $form = $this->createForm('topic', $formData, array(
-                'action' => $this->generateUrl('commsy_topic_edit', array(
-                    'roomId' => $roomId,
-                    'itemId' => $itemId,
-                ))
-            ));
-        } 
+        // get date from DateService
+        $topicItem = $topicService->getTopic($itemId);
+        if (!$topicItem) {
+            throw $this->createNotFoundException('No topic found for id ' . $itemId);
+        }
+        $formData = $transformer->transform($topicItem);
+        $form = $this->createForm(TopicType::class, $formData, array(
+            'action' => $this->generateUrl('commsy_date_edit', array(
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ))
+        ));
         
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -513,17 +512,99 @@ class TopicController extends Controller
                 // ToDo ...
             }
             return $this->redirectToRoute('commsy_topic_save', array('roomId' => $roomId, 'itemId' => $itemId));
+            
+            // persist
+            // $em = $this->getDoctrine()->getManager();
+            // $em->persist($room);
+            // $em->flush();
         }
         
         return array(
             'form' => $form->createView(),
             'showHashtags' => $current_context->withBuzzwords(),
             'showCategories' => $current_context->withTags(),
-
+            'currentUser' => $legacyEnvironment->getCurrentUserItem(),
         );
     }
 
+    /**
+     * @Route("/room/{roomId}/topic/{itemId}/save")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function saveAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($itemId);
+        
+        $topicService = $this->get('commsy_legacy.topic_service');
+        $transformer = $this->get('commsy_legacy.transformer.date');
+        
+        $topic = $topicService->getTopic($itemId);
+        
+        $itemArray = array($topic);
+        $modifierList = array();
+        foreach ($itemArray as $item) {
+            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+        }
+        
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $readerManager = $legacyEnvironment->getReaderManager();
+        
+        $userManager = $legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager->setUserLimit();
+        $userManager->select();
+        $user_list = $userManager->get();
+        $all_user_count = $user_list->getCount();
+        $read_count = 0;
+        $read_since_modification_count = 0;
 
-
+        $current_user = $user_list->getFirst();
+        $id_array = array();
+        while ( $current_user ) {
+		   $id_array[] = $current_user->getItemID();
+		   $current_user = $user_list->getNext();
+		}
+		$readerManager->getLatestReaderByUserIDArray($id_array,$topic->getItemID());
+		$current_user = $user_list->getFirst();
+		while ( $current_user ) {
+	   	    $current_reader = $readerManager->getLatestReaderForUserByID($topic->getItemID(), $current_user->getItemID());
+            if ( !empty($current_reader) ) {
+                if ( $current_reader['read_date'] >= $topic->getModificationDate() ) {
+                    $read_count++;
+                    $read_since_modification_count++;
+                } else {
+                    $read_count++;
+                }
+            }
+		    $current_user = $user_list->getNext();
+		}
+        $read_percentage = round(($read_count/$all_user_count) * 100);
+        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
+        $readerService = $this->get('commsy_legacy.reader_service');
+        
+        $readerList = array();
+        $modifierList = array();
+        foreach ($itemArray as $item) {
+            $reader = $readerService->getLatestReader($item->getItemId());
+            if ( empty($reader) ) {
+               $readerList[$item->getItemId()] = 'new';
+            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
+               $readerList[$item->getItemId()] = 'changed';
+            }
+            
+            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+        }
+        
+        return array(
+            'roomId' => $roomId,
+            'item' => $topic,
+            'modifierList' => $modifierList,
+            'userCount' => $all_user_count,
+            'readCount' => $read_count,
+            'readSinceModificationCount' => $read_since_modification_count,
+        );
+    }
 
 }

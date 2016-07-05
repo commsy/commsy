@@ -30,11 +30,11 @@ services:
         class: Commsy\LegacyBundle\Services\LegacyEnvironment
         arguments: ['%legacy.site_index%', '@service_container']
 
-    commsy.room_feed_generator:
+    commsy_legacy.room_feed_generator:
         class: Commsy\LegacyBundle\Utils\RoomFeedGenerator
-        arguments: ['@commsy_legacy.environment', '@commsy.room_service']
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service']
 
-    commsy.category_service:
+    commsy_legacy.category_service:
         class: Commsy\LegacyBundle\Utils\CategoryService
         arguments: ['@commsy_legacy.environment']
 
@@ -42,43 +42,43 @@ services:
         class: Commsy\LegacyBundle\Utils\MaterialService
         arguments: ['@commsy_legacy.environment']
 
-    commsy.room_service:
+    commsy_legacy.room_service:
         class: Commsy\LegacyBundle\Utils\RoomService
         arguments: ['@commsy_legacy.environment']
 
-    commsy.file_service:
+    commsy_legacy.file_service:
         class: Commsy\LegacyBundle\Utils\FileService
         arguments: ['@commsy_legacy.environment']
 
-    commsy.user_service:
+    commsy_legacy.user_service:
         class: Commsy\LegacyBundle\Utils\UserService
         arguments: ['@commsy_legacy.environment']
 
-    commsy.item_service:
+    commsy_legacy.item_service:
         class: Commsy\LegacyBundle\Utils\ItemService
         arguments: ['@commsy_legacy.environment']
 
-    commsy.label_service:
+    commsy_legacy.label_service:
         class: Commsy\LegacyBundle\Utils\LabelService
         arguments: ['@commsy_legacy.environment']
 
-    commsy.group_service:
+    commsy_legacy.group_service:
         class: Commsy\LegacyBundle\Utils\GroupService
         arguments: ['@commsy_legacy.environment']
 
-    commsy.topic_service:
+    commsy_legacy.topic_service:
         class: Commsy\LegacyBundle\Utils\TopicService
         arguments: ['@commsy_legacy.environment']
 
-    commsy.dashboard_feed_generator:
+    commsy_legacy.dashboard_feed_generator:
         class: Commsy\LegacyBundle\Utils\DashboardFeedGenerator
-        arguments: ['@commsy_legacy.environment', '@commsy.room_service', '@commsy.user_service']
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
 
-    commsy.noticed_service:
+    commsy_legacy.noticed_service:
         class: Commsy\LegacyBundle\Utils\NoticedService
         arguments: ['@commsy_legacy.environment']
 
-    commsy.reader_service:
+    commsy_legacy.reader_service:
         class: Commsy\LegacyBundle\Utils\ReaderService
         arguments: ['@commsy_legacy.environment']
 
@@ -96,6 +96,10 @@ services:
         
     commsy_legacy.discussion_service:
         class: Commsy\LegacyBundle\Utils\DiscussionService
+        arguments: ['@commsy_legacy.environment']
+        
+    commsy_legacy.todo_service:
+        class: Commsy\LegacyBundle\Utils\TodoService
         arguments: ['@commsy_legacy.environment']
         
     commsy_legacy.disc_service:
@@ -119,6 +123,10 @@ services:
         class: Commsy\LegacyBundle\Form\DataTransformer\MaterialTransformer
         arguments: ['@commsy_legacy.environment']
         
+    commsy_legacy.transformer.section:
+        class: Commsy\LegacyBundle\Form\DataTransformer\SectionTransformer
+        arguments: ['@commsy_legacy.environment']
+        
     commsy_legacy.transformer.user:
         class: Commsy\LegacyBundle\Form\DataTransformer\UserTransformer
         arguments: ['@commsy_legacy.environment']
@@ -137,4 +145,28 @@ services:
 
     commsy_legacy.transformer.announcement:
         class: Commsy\LegacyBundle\Form\DataTransformer\AnnouncementTransformer
+        arguments: ['@commsy_legacy.environment']
+       
+    commsy_legacy.transformer.date:
+        class: Commsy\LegacyBundle\Form\DataTransformer\DateTransformer
+        arguments: ['@commsy_legacy.environment']
+        
+    commsy_legacy.transformer.todo:
+        class: Commsy\LegacyBundle\Form\DataTransformer\TodoTransformer
+        arguments: ['@commsy_legacy.environment']
+        
+    commsy_legacy.transformer.discussion:
+        class: Commsy\LegacyBundle\Form\DataTransformer\DiscussionTransformer
+        arguments: ['@commsy_legacy.environment']
+        
+    commsy_legacy.transformer.discarticle:
+        class: Commsy\LegacyBundle\Form\DataTransformer\DiscussionarticleTransformer
+        arguments: ['@commsy_legacy.environment']
+        
+    commsy_legacy.transformer.group:
+        class: Commsy\LegacyBundle\Form\DataTransformer\GroupTransformer
+        arguments: ['@commsy_legacy.environment']
+        
+    commsy_legacy.transformer.topic:
+        class: Commsy\LegacyBundle\Form\DataTransformer\TopicTransformer
         arguments: ['@commsy_legacy.environment']

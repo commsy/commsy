@@ -66,7 +66,7 @@ class MaterialController extends Controller
         // get material list from manager service 
         $materials = $materialService->getListMaterials($roomId, $max, $start, $sort);
 
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
@@ -177,17 +177,22 @@ class MaterialController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/material/{itemId}", requirements={
-     *     "itemId": "\d+"
+     * @Route("/room/{roomId}/material/{itemId}/{versionId}", requirements={
+     *     "itemId": "\d+",
+     *     "versionId": "\d+"
      * }))
      * @Template()
      */
-    public function detailAction($roomId, $itemId, Request $request)
+    public function detailAction($roomId, $itemId, $versionId = null, Request $request)
     {
         $materialService = $this->get('commsy_legacy.material_service');
-        $material = $materialService->getMaterial($itemId);
+        if (!$versionId) {
+            $material = $materialService->getMaterial($itemId);
+        } else {
+            $material = $materialService->getMaterialByVersion($itemId, $versionId);
+        }
 
-        $infoArray = $this->getDetailInfo($roomId, $itemId);
+        $infoArray = $this->getDetailInfo($roomId, $itemId, $versionId);
 
         $wordpressExporter = $this->get('commsy.export.wordpress');
         $canExportToWordpress = false;
@@ -250,6 +255,7 @@ class MaterialController extends Controller
             'canExportToWordpress' => $canExportToWordpress,
             'canExportToWiki' => $canExportToWiki,
             'roomCategories' => $infoArray['roomCategories'],
+            'versions' => $infoArray['versions'],
        );
     }
 
@@ -315,19 +321,23 @@ class MaterialController extends Controller
         );
     }
 
-    private function getDetailInfo ($roomId, $itemId) {
+    private function getDetailInfo ($roomId, $itemId, $versionId = null) {
         $infoArray = array();
         
         $materialService = $this->get('commsy_legacy.material_service');
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
 
         $annotationService = $this->get('commsy_legacy.annotation_service');
         
-        $material = $materialService->getMaterial($itemId);
+        if (!$versionId) {
+            $material = $materialService->getMaterial($itemId);
+        } else {
+            $material = $materialService->getMaterialByVersion($itemId, $versionId);
+        }
+        
         if($material == null) {
             $section = $materialService->getSection($itemId);
             $material = $materialService->getMaterial($section->getLinkedItemID());
-
         }
         
         $sectionList = $material->getSectionList()->to_array();
@@ -374,7 +384,7 @@ class MaterialController extends Controller
 		}
         $read_percentage = round(($read_count/$all_user_count) * 100);
         $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
         $modifierList = array();
@@ -573,9 +583,77 @@ class MaterialController extends Controller
 
         $categories = array();
         if ($current_context->withTags()) {
-            $roomCategories = $this->get('commsy.category_service')->getTags($roomId);
+            $roomCategories = $this->get('commsy_legacy.category_service')->getTags($roomId);
             $materialCategories = $material->getTagsArray();
             $categories = $this->getTagDetailArray($roomCategories, $materialCategories);
+        }
+
+        $versions = array();
+        $versionList = $materialService->getVersionList($material->getItemId())->to_array();
+        
+        if (sizeof($versionList > 1)) {
+            $minTimestamp = time();
+            $maxTimestamp = -1;
+            $foundCurrent = false;
+            $first = true;
+            foreach ($versionList as $versionItem) {
+                $tempParsedDate = date_parse($versionItem->getModificationDate());
+                $tempDateTime = new \DateTime();
+                $tempDateTime->setDate($tempParsedDate['year'], $tempParsedDate['month'], $tempParsedDate['day']);
+                $tempDateTime->setTime($tempParsedDate['hour'], $tempParsedDate['minute'], $tempParsedDate['second']);
+                $tempTimeStamp = $tempDateTime->getTimeStamp();
+                $current = false;
+                if ($versionId) {
+                    if ($versionId == $versionItem->getVersionId()) {
+                        $current = true;
+                    }
+                } else {
+                    if ($first) {
+                        $current = true;
+                        $first = false;
+                    }
+                }
+                $versions[$tempTimeStamp] = array('item' => $versionItem, 'date' => date('d.m.Y H:s', $tempTimeStamp), 'current' => $current);
+                if ($tempTimeStamp > $maxTimestamp) {
+                    $maxTimestamp = $tempTimeStamp;
+                }
+                if ($tempTimeStamp < $minTimestamp) {
+                    $minTimestamp = $tempTimeStamp;
+                }
+            }
+            asort($versions);
+            
+            $timeDiff = $maxTimestamp - $minTimestamp;
+            $minPercentDiff = ($timeDiff / 100) * sizeof($versions);
+            $lastPercent = 0;
+            $first = true;
+            $toFollow = sizeof($versions)-1;
+            foreach ($versions as $timestamp => $versionId) {
+                $tempTimeDiff = $timestamp - $minTimestamp;
+                $tempPercent = 0;
+                if ($timeDiff > 0) {
+                    $tempPercent = $tempTimeDiff / ($timeDiff / 100);
+                }
+                if (!$first) {
+                    if (($tempPercent - $lastPercent) < 2) {
+                        while (($tempPercent - $lastPercent) < 2 && ($tempPercent - $lastPercent) < $minPercentDiff) {
+                            $tempPercent += 1;
+                        }
+                    }
+                } else {
+                    $first = false;
+                }
+                
+                if ($tempPercent >= 95) {
+                    if ($toFollow != 0) {
+                        $tempPercent = $tempPercent - ($toFollow * 2);
+                    }
+                }
+
+                $versions[$timestamp]['percent'] = $tempPercent;
+                $lastPercent = $tempPercent;
+                $toFollow--;
+            }
         }
 
         $infoArray['material'] = $material;
@@ -611,6 +689,7 @@ class MaterialController extends Controller
             'ratingOwnDetail' => $ratingOwnDetail,
         ] : [];
         $infoArray['roomCategories'] = $categories;
+        $infoArray['versions'] = $versions;
         
         return $infoArray;
     }
@@ -656,7 +735,7 @@ class MaterialController extends Controller
      */
     public function saveWorkflowAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
         $materialService = $this->get('commsy_legacy.material_service');
@@ -704,7 +783,7 @@ class MaterialController extends Controller
      */
     public function editAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
         $materialService = $this->get('commsy_legacy.material_service');
@@ -715,8 +794,10 @@ class MaterialController extends Controller
         
         $formData = array();
         $materialItem = NULL;
+        $isMaterial = false;
         
         if ($item->getItemType() == 'material') {
+            $isMaterial = true;
             // get material from MaterialService
             $materialItem = $materialService->getMaterial($itemId);
             if (!$materialItem) {
@@ -763,8 +844,11 @@ class MaterialController extends Controller
             // $em->persist($room);
             // $em->flush();
         }
-        
+
         return array(
+            // 'isDraft' => $item->isDraft(),
+            'isDraft' => true,
+            'isMaterial' => $isMaterial,
             'form' => $form->createView(),
             'showHashtags' => $current_context->withBuzzwords(),
             'showCategories' => $current_context->withTags(),
@@ -779,7 +863,7 @@ class MaterialController extends Controller
      */
     public function saveAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
         $materialService = $this->get('commsy_legacy.material_service');
@@ -810,43 +894,6 @@ class MaterialController extends Controller
             'showRating' => $infoArray['showRating'],
             'showWorkflow' => $infoArray['showWorkflow']
         );
-    }
-
-    /**
-     * @Route("/room/{roomId}/material/{itemId}/print")
-     */
-    public function printAction($roomId, $itemId)
-    {
-        $html = $this->renderView('CommsyBundle:Material:detailPrint.html.twig', [
-        ]);
-
-        return new Response(
-            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
-            200,
-            [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="print.pdf"'
-            ]
-        );
-    }
-
-    /**
-     * @Route("/room/{roomId}/material/{itemId}/download")
-     */
-    public function downloadAction($roomId, $itemId)
-    {
-        $downloadService = $this->get('commsy_legacy.download_service');
-        
-        $zipFile = $downloadService->zipFile($roomId, $itemId);
-
-        $response = new BinaryFileResponse($zipFile);
-        $response->deleteFileAfterSend(true);
-
-        $filename = 'CommSy_Material.zip';
-        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$filename);   
-        $response->headers->set('Content-Disposition', $contentDisposition);
-
-        return $response;
     }
         
     /**
@@ -1149,28 +1196,32 @@ class MaterialController extends Controller
             'data' => $result,
         ]);
     }
-
+    
     /**
-     * @Route("/room/{roomId}/material/{itemId}/delete")
+     * @Route("/room/{roomId}/material/{itemId}/{versionId}/createversion/")
+     * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
-     **/
-    public function deleteAction($roomId, $itemId, Request $request)
-    {
-        $itemService = $this->get('commsy.item_service');
-        $item = $itemService->getItem($itemId);
-        
+     */
+    public function createVersionAction($roomId, $itemId, $versionId, Request $request)
+    {           
         $materialService = $this->get('commsy_legacy.material_service');
-        
-        $tempItem = null;
-        
-        if ($item->getItemType() == 'material') {
-            $tempItem = $materialService->getMaterial($itemId);
-        } else if ($item->getItemType() == 'section') {
-            $tempItem = $materialService->getSection($itemId); 
-        }
+        $itemService = $this->get('commsy_legacy.item_service');
 
-        $tempItem->delete();
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUserItem = $legacyEnvironment->getCurrentUserItem();
 
-        return $this->redirectToRoute('commsy_material_list', array('roomId' => $roomId));        
+        $annotationService = $this->get('commsy_legacy.annotation_service');
+        
+        $material = $materialService->getMaterialByVersion($itemId, $versionId);
+
+        $newVersionId = $material->getVersionID()+1;
+        $newMaterial = $material->cloneCopy(true);
+        $newMaterial->setVersionID($newVersionId);
+        
+        $newMaterial->setModificatorItem($currentUserItem);
+        
+        $newMaterial->save();
+
+        return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $itemId, 'versionId' => $newVersionId));
     }
 }

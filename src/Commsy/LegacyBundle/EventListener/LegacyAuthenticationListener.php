@@ -40,7 +40,15 @@ class LegacyAuthenticationListener implements EventSubscriberInterface
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
-        $isAuthenticated = $this->legacyAuthentication->authenticate();
+        // some services will handle authentication themselves or can bypass, like soap, rss, ...
+        $currentRequest = $event->getRequest();
+        $requestUri = $currentRequest->getRequestUri();
+
+        if (preg_match('/(soap|rss|_profiler|_wdt)/', $requestUri, $matches)) {
+            $isAuthenticated = true;
+        } else {
+            $isAuthenticated = $this->legacyAuthentication->authenticate();
+        }
 
         // if not authenticated by the legacy code, redirect back to portal
         if (!$isAuthenticated) {

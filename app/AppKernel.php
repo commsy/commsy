@@ -25,9 +25,11 @@ class AppKernel extends Kernel
             new Ivory\CKEditorBundle\IvoryCKEditorBundle(),
             new Craue\TwigExtensionsBundle\CraueTwigExtensionsBundle(),
             new Knp\Bundle\SnappyBundle\KnpSnappyBundle(),
+            new Debril\RssAtomBundle\DebrilRssAtomBundle(),
            
             new CommsyBundle\CommsyBundle(),
             new Commsy\LegacyBundle\CommsyLegacyBundle(),
+            new EtherpadBundle\EtherpadBundle(),
             new CommsyMediawikiBundle\CommsyMediawikiBundle(),
         ];
 

@@ -9,6 +9,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
 use CommsyBundle\Form\Type\SendType;
 use CommsyBundle\Form\Type\SendListType;
 use CommsyBundle\Form\Type\ItemDescriptionType;
@@ -24,37 +28,22 @@ class ItemController extends Controller
      */
     public function editDescriptionAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
-        $item = $itemService->getItem($itemId);
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getTypedItem($itemId);
         
-        $materialService = $this->get('commsy_legacy.material_service');
-        $transformer = $this->get('commsy_legacy.transformer.material');
+        $transformer = $this->get('commsy_legacy.transformer.'.$item->getItemType());
         
         $formData = array();
-        $tempItem = NULL;
+        $itemType = $item->getItemType();
         
-        if ($item->getItemType() == 'material') {
-            // get material from MaterialService
-            $tempItem = $materialService->getMaterial($itemId);
-            if (!$tempItem) {
-                throw $this->createNotFoundException('No material found for id ' . $roomId);
-            }
-            $formData = $transformer->transform($tempItem);
-        } else if ($item->getItemType() == 'section') {
-            // get section from MaterialService
-            $tempItem = $materialService->getSection($itemId);
-            if (!$tempItem) {
-                throw $this->createNotFoundException('No section found for id ' . $roomId);
-            }
-            $formData = $transformer->transform($tempItem);
-        }
+        $formData = $transformer->transform($item);
         
         $form = $this->createForm(ItemDescriptionType::class, $formData, array('itemId' => $itemId));
         $form->handleRequest($request);
         if ($form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                $tempItem = $transformer->applyTransformation($tempItem, $form->getData());
-                $tempItem->save();
+                $item = $transformer->applyTransformation($item, $form->getData());
+                $item->save();
             } else if ($form->get('cancel')->isClicked()) {
                 // ToDo ...
             }
@@ -67,8 +56,16 @@ class ItemController extends Controller
             // $em->flush();
         }
 
+        // etherpad
+        $isMaterial = false;
+        if ($itemType == "material") {
+            $isMaterial = true;
+        }
+
         return array(
+            'isMaterial' => $isMaterial,
             'itemId' => $itemId,
+            'roomId' => $roomId,
             'form' => $form->createView()
         );
     }
@@ -80,29 +77,18 @@ class ItemController extends Controller
      */
     public function saveDescriptionAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
-        $item = $itemService->getItem($itemId);
-        
-        $materialService = $this->get('commsy_legacy.material_service');
-        
-        $tempItem = NULL;
-        
-        if ($item->getItemType() == 'material') {
-            $tempItem = $materialService->getMaterial($itemId);
-        } else if ($item->getItemType() == 'section') {
-            $tempItem = $materialService->getSection($itemId);
-        }
-
-        $itemArray = array($tempItem);
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getTypedItem($itemId);
+        $itemArray = array($item);
     
         $modifierList = array();
-        foreach ($itemArray as $item) {
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+        foreach ($itemArray as $tempItem) {
+            $modifierList[$tempItem->getItemId()] = $itemService->getAdditionalEditorsForItem($tempItem);
         }
         
         return array(
             'roomId' => $roomId,
-            'item' => $tempItem,
+            'item' => $item,
             'modifierList' => $modifierList
         );
     }
@@ -114,10 +100,10 @@ class ItemController extends Controller
      */
     public function editWorkflowAction($roomId, $itemId, Request $request)
     {
-        $roomService = $this->get('commsy.room_service');
+        $roomService = $this->get('commsy_legacy.room_service');
         $room = $roomService->getRoomItem($roomId);
 
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
         $materialService = $this->get('commsy_legacy.material_service');
@@ -172,9 +158,9 @@ class ItemController extends Controller
     public function editLinksAction($roomId, $itemId, $feedAmount, Request $request)
     {
         $environment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomService = $this->get('commsy.room_service');
+        $roomService = $this->get('commsy_legacy.room_service');
         
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
         $roomItem = $roomService->getRoomItem($roomId);
@@ -259,7 +245,7 @@ class ItemController extends Controller
         }
         
         // get all categories -> tree
-        $categoryService = $this->get('commsy.category_service');
+        $categoryService = $this->get('commsy_legacy.category_service');
         $categories = $categoryService->getTags($roomId);
         $optionsData['categories'] = $this->getChoicesAsTree($categories);
         
@@ -361,7 +347,7 @@ class ItemController extends Controller
      */
     public function saveLinksAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
         $materialService = $this->get('commsy_legacy.material_service');
@@ -450,7 +436,7 @@ class ItemController extends Controller
         $itemId = $jsonArray['itemId'];
 
         // get item
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
         if (!$item) {
@@ -507,9 +493,9 @@ class ItemController extends Controller
     public function autocompleteAction($roomId, $itemId, $feedAmount, Request $request)
     {
         $environment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomService = $this->get('commsy.room_service');
+        $roomService = $this->get('commsy_legacy.room_service');
         
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
         $roomItem = $roomService->getRoomItem($roomId);
@@ -596,7 +582,7 @@ class ItemController extends Controller
             throw new \Exception('no request content given');
         }
         
-        $roomService = $this->get('commsy.room_service');
+        $roomService = $this->get('commsy_legacy.room_service');
         $room = $roomService->getRoomItem($roomId);
 
         $environment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -618,7 +604,7 @@ class ItemController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $userService = $this->get('commsy.user_service');
+            $userService = $this->get('commsy_legacy.user_service');
             
             $data = $form->getData();
 
@@ -663,4 +649,161 @@ class ItemController extends Controller
         ];
     }
 
+
+    /**
+     * @Route("/room/{roomId}/item/{itemId}/stepper")
+     * @Template()
+     **/
+    public function stepperAction($roomId, $itemId, Request $request)
+    {
+        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+        
+        $itemService = $this->get('commsy_legacy.item_service');
+        $baseItem = $itemService->getItem($itemId);
+        
+        $rubricManager = $environment->getManager($baseItem->getItemType());
+        
+        $item = $rubricManager->getItem($itemId);
+        
+        $rubricManager->setContextLimit($roomId);
+        
+        if ($item->getItemType() == 'date') {
+            $rubricManager->setWithoutDateModeLimit();
+        }
+        
+        $rubricManager->select();
+        $itemList = $rubricManager->get();
+        $items = $itemList->to_array();
+        
+        $itemList = array();
+        $counterBefore = 0;
+        $counterAfter = 0;
+        $counterPosition = 0;
+        $foundItem = false;
+        $firstItemId = false;
+        $prevItemId = false;
+        $nextItemId = false;
+        $lastItemId = false;
+        foreach ($items as $tempItem) {
+            if (!$foundItem) {
+                if ($counterBefore > 5) {
+                    array_shift($itemList);
+                } else {
+                    $counterBefore++;
+                }
+                $itemList[] = $tempItem;
+                if ($tempItem->getItemID() == $item->getItemID()) {
+                    $foundItem = true;
+                }
+                if (!$foundItem) {
+                    $prevItemId = $tempItem->getItemId();
+                }
+                $counterPosition++;
+            } else {
+                if ($counterAfter < 5) {
+                    $itemList[] = $tempItem;
+                    $counterAfter++;
+                    if (!$nextItemId) {
+                        $nextItemId = $tempItem->getItemId();
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
+        if (!empty($items)) {
+            if ($prevItemId) {
+                $firstItemId = $items[0]->getItemId();
+            }
+            if ($nextItemId) {
+                $lastItemId = $items[sizeof($items)-1]->getItemId();
+            }
+        }
+        
+        return array(
+            'rubric' => $item->getItemType(),
+            'roomId' => $roomId,
+            'itemList' => $itemList,
+            'item' => $item,
+            'counterPosition' => $counterPosition,
+            'count' => sizeof($items),
+            'firstItemId' => $firstItemId,
+            'prevItemId' => $prevItemId,
+            'nextItemId' => $nextItemId,
+            'lastItemId' => $lastItemId,
+        );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/item/{itemId}/print")
+     */
+    public function printAction($roomId, $itemId)
+    {
+        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $itemService = $this->get('commsy_legacy.item_service');
+        $baseItem = $itemService->getItem($itemId);
+        
+        $html = $this->renderView('CommsyBundle:'.ucfirst($baseItem->getItemType()).':detailPrint.html.twig', [
+        ]);
+
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="print.pdf"'
+            ]
+        );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/item/{itemId}/download")
+     */
+    public function downloadAction($roomId, $itemId)
+    {
+        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $itemService = $this->get('commsy_legacy.item_service');
+        $baseItem = $itemService->getItem($itemId);
+        
+        $downloadService = $this->get('commsy_legacy.download_service');
+        
+        $zipFile = $downloadService->zipFile($roomId, $itemId);
+
+        $response = new BinaryFileResponse($zipFile);
+        $response->deleteFileAfterSend(true);
+
+        $filename = 'CommSy_'.ucfirst($baseItem->getItemType()).'.zip';
+        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$filename);   
+        $response->headers->set('Content-Disposition', $contentDisposition);
+
+        return $response;
+    }
+    
+    /**
+     * @Route("/room/{roomId}/item/{itemId}/delete")
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     **/
+    public function deleteAction($roomId, $itemId, Request $request)
+    {
+        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $itemService = $this->get('commsy_legacy.item_service');
+        $baseItem = $itemService->getItem($itemId);
+        
+        $rubricManager = $environment->getManager($baseItem->getItemType());
+        
+        $item = $rubricManager->getItem($itemId);
+        
+        $item->delete();
+
+        $route = 'commsy_'.$baseItem->getItemType().'_list';
+        if ($baseItem->getItemType() == 'date') {
+            $roomService = $this->get('commsy_legacy.room_service');
+            $room = $roomService->getRoomItem($roomId);
+            if ($room->getDatesPresentationStatus() != 'normal') {
+                $route = 'commsy_date_calendar';
+            }
+        }
+
+        return $this->redirectToRoute($route, array('roomId' => $roomId));        
+    }
 }
