@@ -19,6 +19,8 @@
                 </a>
             </div>
         {% endif %}
+        {% block dashboardEdit %}
+        {% endblock %}
         <div> 
             <ul id="breadcrumb-nav" class="uk-breadcrumb"{{ knp_menu.attributes(listAttributes) }}>
                 {{ block('children') }}

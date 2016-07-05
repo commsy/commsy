@@ -6,6 +6,13 @@
     {{ 'Dashboard'|trans({}, "room") }}
 {% endblock %}
 
+{% block breadcrumb %}
+    {{ knp_menu_render('breadcrumb', 
+        {'template': 'CommsyBundle:Menu:knp_menu_breadcrumb_dashboard.html.twig', 
+        'currentAsLink':false}) 
+    }}
+{% endblock %}
+
 {% block content %}
     <ul id="dashboard-ul" class="uk-sortable uk-grid uk-grid-small uk-grid-width-1-2" data-uk-sortable="{handleClass:'uk-sortable-handle'}" data-dashboard='{"url": "{{ app.request.baseURL }}/dashboard/{{ roomItem.itemId }}/edit"}'>
     {% if not dashboardLayout is empty %}
@@ -14,17 +21,17 @@
                 {{ macros.dashboardFeed(roomItem) }}
             {% elseif layoutItem == 'dashboard-calendar' %}
                 {{ macros.dashboardCalendar(roomItem) }}
-            {% elseif layoutItem == 'dashboard-todo1' %}
-                {{ macros.dashboardTodo1(roomItem) }}
-            {% elseif layoutItem == 'dashboard-todo2' %}
-                {{ macros.dashboardTodo2(roomItem) }}
+            {% elseif layoutItem == 'dashboard-rss' %}
+                {{ macros.dashboardRss(roomItem) }}
+            {% elseif layoutItem == 'dashboard-external-access' %}
+                {{ macros.dashboardExternalAccess(roomItem) }}
             {% endif %}
         {% endfor %}
     {% else %}
         {{ macros.dashboardFeed(roomItem) }}
         {{ macros.dashboardCalendar(roomItem) }}
-        {{ macros.dashboardTodo1(roomItem) }}
-        {{ macros.dashboardTodo2(roomItem) }}
+        {{ macros.dashboardRss(roomItem) }}
+        {{ macros.dashboardExternalAccess(roomItem) }}
     {% endif %}
     </ul>
 {% endblock %}

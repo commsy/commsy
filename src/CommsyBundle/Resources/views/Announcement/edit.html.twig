@@ -9,13 +9,18 @@
             </div>
         </div>
         <div class="uk-flex">
+            <label class="uk-form-label">{{ 'valid until'|trans }}</label>
+            <div class="uk-flex uk-margin-small-top">
+                {{ form_widget(form.validdate) }}
+            </div>
+        </div>
+        <div class="uk-flex">
             <label class="uk-form-label">
                 {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
             </label>
-            <div>
+            <div class="uk-flex uk-margin-small-top">
                 {{ form_widget(form.permission) }}  
             </div>
-            
         </div>
         <div class="uk-flex uk-margin-small-top">
             <div>
