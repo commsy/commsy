@@ -40,11 +40,11 @@ class EtherpadController extends Controller
             $material->save();
 
             // if etherpadid is already set, but pad doesnt exist
-            if ($material->getEtherpadEditorID()) {
-                // set material description
-                $client->setText($pad->padID, $material->getDescription());
+            // if ($material->getEtherpadEditorID()) {
+            //     // set material description
+            //     $client->setText($pad->padID, $material->getDescription());
                 
-            }
+            // }
         }
         
         # create etherpad session with author and group
@@ -52,6 +52,10 @@ class EtherpadController extends Controller
         $session = $client->createSession($group->groupID, $author->authorID, $timestamp);
         setcookie('sessionID', $session->sessionID, $timestamp, '/');
 
-        return array('materialId' => $materialId, 'etherpadId' => $material->getEtherpadEditorID());
+        return array(
+            'materialId' => $materialId, 
+            'etherpadId' => $material->getEtherpadEditorID(),
+            'baseUrl' => $etherpadService->getBaseUrl()
+            );
     }
 }
