@@ -29,3 +29,4 @@ parameters:
     extensions.etherpad.enabled: false
     extensions.etherpad.api_key: ~
     extensions.etherpad.api_url: ~
+    extensions.etherpad.base_url: ~

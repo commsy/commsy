@@ -81,6 +81,7 @@ class CommsyExtension extends Extension
         $container->setParameter('commsy.etherpad.enabled', $config['etherpad']['enabled']);
         $container->setParameter('commsy.etherpad.api_key', $config['etherpad']['api_key']);
         $container->setParameter('commsy.etherpad.api_url', $config['etherpad']['api_url']);
+        $container->setParameter('commsy.etherpad.base_url', $config['etherpad']['base_url']);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');

@@ -11,9 +11,12 @@ class EtherpadService
 
     private $container;
 
+    private $baseUrl;
+
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+        $this->baseUrl = $this->container->getParameter('commsy.etherpad.base_url');
 
         // get configuration params
         $apiKey = $this->container->getParameter('commsy.etherpad.api_key');
@@ -26,6 +29,11 @@ class EtherpadService
     public function getClient()
     {
         return $this->client;
+    }
+
+    public function getBaseUrl()
+    {
+        return $this->baseUrl;
     }
 
     
