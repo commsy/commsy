@@ -140,9 +140,9 @@ commsy:
         api_url: '%extensions.etherpad.api_url%'
         base_url: '%extensions.etherpad.base_url%'
         
-        # Limesurvey
+    # mediawiki
     mediawiki:
-        # set the following variable to activate limesurvey extension
+        # set the following variable to activate mediawiki extension
         enabled: true
         url: http://127.0.0.1:8080
         apiPath: /w/api.php
