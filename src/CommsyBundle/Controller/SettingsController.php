@@ -114,7 +114,7 @@ class SettingsController extends Controller
      */
     public function moderationAction($roomId, Request $request)
     {
-        $roomService = $this->get('commsy.room_service');
+        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
@@ -153,7 +153,7 @@ class SettingsController extends Controller
      */
     public function additionalAction($roomId, Request $request)
     {
-        $roomService = $this->get('commsy.room_service');
+        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {

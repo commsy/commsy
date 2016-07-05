@@ -41,7 +41,7 @@ class FileController extends Controller
     */
     public function getBackgroundImageAction($roomId)
     {
-        $roomService = $this->get('commsy.room_service');
+        $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
         $filename = $roomItem->getBGImageFilename();
