@@ -18,7 +18,7 @@
     <div class="uk-form-horizontal">
         {{ form_start(form) }}
         {{ form_errors(form) }}
-        <div class="uk-flex uk-flex-column">
+        <div class="">
             <div class="">
                 {{ form_label(form.start) }}
                 {{ form_widget(form.start) }}
@@ -30,6 +30,18 @@
             <div class="">
                 {{ form_label(form.place) }}
                 {{ form_widget(form.place) }}
+            </div>
+            <div class="uk-margin-top uk-margin-bottom">
+                {{ form_label(form.color) }}
+                {% for tempColor in form.color.iterator %}
+                    <span class="{{ tempColor.vars['value'] }}">
+                    {% if tempColor.vars['value'] == 'cs-date-color-no-color' %}
+                        <i class="uk-icon-medium uk-icon-circle-thin"></i>
+                    {% else %}
+                        <i class="uk-icon-medium uk-icon-circle"></i>
+                    {% endif %}
+                    </span><span class="uk-margin-small-left uk-margin-right">{{ form_widget(tempColor) }}</span>
+                {% endfor %}
             </div>
         </div>
         <div class="uk-flex uk-margin-small-top">
@@ -43,4 +55,3 @@
         {{ form_end(form) }}
     </div>
 </div>
-

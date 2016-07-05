@@ -49,6 +49,27 @@ class DateDetailsType extends AbstractType
                 ),
                 'translation_domain' => 'material',
             ))
+            ->add('color', ChoiceType::class, array(
+                'placeholder' => false,
+                'choices' => array(
+                    'cs-date-color-no-color' => 'cs-date-color-no-color',
+                    'cs-date-color-01' => 'cs-date-color-01',
+                    'cs-date-color-02' => 'cs-date-color-02',
+                    'cs-date-color-03' => 'cs-date-color-03',
+                    'cs-date-color-04' => 'cs-date-color-04',
+                    'cs-date-color-05' => 'cs-date-color-05',
+                    'cs-date-color-06' => 'cs-date-color-06',
+                    'cs-date-color-07' => 'cs-date-color-07',
+                    'cs-date-color-08' => 'cs-date-color-08',
+                    'cs-date-color-09' => 'cs-date-color-09',
+                    'cs-date-color-10' => 'cs-date-color-10',
+                ),
+                'label' => 'color',
+                'translation_domain' => 'item',
+                'required' => false,
+                'expanded' => true,
+                'multiple' => false
+            ))
             ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',

@@ -415,12 +415,11 @@ class DateController extends Controller
                 implode(',', $participantsNameArray);
             }
             
-            
             $events[] = array('itemId' => $date->getItemId(),
                               'title' => $date->getTitle(),
                               'start' => $start,
                               'end' => $end,
-                              'color' => $date->getColor(),
+                              'color' => $this->container->getParameter('commsy.themes.'.str_ireplace('-', '_', $date->getColor())),
                               'editable' => $date->isPublic(),
                               'description' => $date->getDateDescription(),
                               'place' => $date->getPlace(),
