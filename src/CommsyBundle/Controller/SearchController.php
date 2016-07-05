@@ -177,7 +177,7 @@ class SearchController extends Controller
             if ($router->getRouteCollection()->get($routeName)) {
                 $url = $this->generateUrl(
                     $routeName,
-                    ['roomId' => $roomId]
+                    ['roomId' => $room->getItemId()]
                 );
             }
 

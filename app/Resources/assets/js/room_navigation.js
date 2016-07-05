@@ -1,21 +1,63 @@
 ;(function(UI) {
 
-    "use strict";
+    'use strict';
 
-    // Attach a handler to the "mouseover" event on "#switch_room",
-    // but execute it at most once
-    $('#switch_room').one('mouseover', function() {
-        // This must be the first time the user openes the room navigation
-        let $switchRoom = $(this);
+    UI.component('roomNavigation', {
 
-        let $input = $switchRoom.find('input.cs-roomsearch-field');
-        let $form = $switchRoom.find('form');
-        console.log($input);
-        console.log(UI.$($form));
+        defaults: {
+            msgNoResults       : 'No results found',
 
-        $input.val('');
+            renderer: function(data) {
 
-        //$form.submit();
+                var opts = this.options;
+
+                this.dropdown.append(this.template({"items":data.results || [],  "msgNoResults": opts.msgNoResults}));
+                this.show();
+            }
+        },
+
+        autocomplete: null,
+
+        boot: function() {
+            // init code
+            UI.ready(function(context) {
+                UI.$('[data-commsy-room-navigation]', context).each(function() {
+                    let element = UI.$(this);
+
+                    if (!element.data('roomNavigation')) {
+                        UI.roomNavigation(element, UI.Utils.options(element.attr('data-commsy-room-navigation')));
+                    }
+                });
+            });
+        },
+
+        init: function() {
+            let $this = this;
+
+            let $div = $this.element.find('div.uk-form');
+
+            $this.element.on('click', function(event) {
+                event.preventDefault();
+            });
+
+            $this.element.on('show.uk.dropdown', function() {
+                // lazy autocomplete setup prevents some positioning issues
+                // since we are dealing with two nested dropdowns
+                if (!$this.autocomplete) {
+                    $this.autocomplete = UI.autocomplete($div, $this.options);
+                    $this.autocomplete.dropdown.css('width', '100%');
+                }
+
+                $this.autocomplete.request();
+            });
+
+            // change browser location on select
+            $this.on('selectitem.uk.autocomplete', function(e, data) {
+                if (data.url) {
+                    location.href = data.url;
+                }
+            });
+        }
     });
 
 })(UIkit);

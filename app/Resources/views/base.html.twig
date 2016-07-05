@@ -64,14 +64,53 @@
                 
                 <!-- toggle -->
                 <a href="" class="uk-navbar-toggle uk-visible-small"></a>
-
-                <div class="uk-navbar-brand cs-padding-5">
-                    {% block roomTitle %}
-                        <a href="{{ path('commsy_room_home', {'roomId': app.request.attributes.get('roomId') }) }}">
-                            {{ app.request.attributes.get('roomId')|roomTitle }}
+                
+                <ul class="uk-navbar-nav">
+                    <li data-uk-dropdown="{mode:'click'}" data-commsy-room-navigation="{
+                        source:'{{ path('commsy_search_roomnavigation', {'roomId': app.request.attributes.get('roomId') }) }}',
+                        minLength: 0
+                    }">
+                        <a id="cs-room-title" href>
+                            {% block roomTitle %}
+                                {{ app.request.attributes.get('roomId')|roomTitle }}
+                            {% endblock %}
+                            <i class="uk-icon-chevron-down"></i>
                         </a>
-                    {% endblock %}
-                </div>
+
+                        <!-- This is the dropdown -->
+                        <div class="uk-dropdown uk-dropdown-scrollable uk-dropdown-width-2" style="height: 200px;">
+                            
+                            <div class="uk-form">
+                                <input class="uk-width-1-1" type="text" placeholder="{{ 'room search text'|trans({}, "rubric")}}">
+                                <script type="text/autocomplete">
+                                    {%- verbatim -%}
+                                    <ul class="uk-nav uk-nav-autocomplete uk-autocomplete-results">
+                                        {{#items && items.length}}
+                                            {{~items}}
+                                            <li data-url="{{!$item.url}}">
+                                                <a>
+                                                    {{ $item.title }}
+                                                    <div>{{{ $item.text }}}</div>
+                                                </a>
+                                            </li>
+                                            {{/items}}
+                                        {{/end}}
+                                        {{^items.length}}
+                                            {{#msgNoResults}}<li class="uk-skip"><a>{{msgNoResults}}</a></li>{{/msgNoResults}}
+                                        {{/end}}
+                                    </ul>
+                                    {%- endverbatim -%}
+                                </script>
+                            </div>
+
+                            <div class="loading uk-text-center uk-margin-small-top uk-container-center">
+                                <i class="uk-icon-spinner uk-icon-small uk-icon-spin"></i>
+                            </div>
+
+                        </div>
+                    </li>
+                </ul>
+                
             </nav>
 
             <!-- breadcrumb -->
