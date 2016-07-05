@@ -76,7 +76,7 @@ class cs_server_item extends cs_guide_item
     */
     public function getDefaultSenderAddress()
     {
-        $retour = '';
+        $retour = '@';
         if ($this->_issetExtra('DEFAULT_SENDER_ADDRESS')) {
             $retour = $this->_getExtra('DEFAULT_SENDER_ADDRESS');
         }
@@ -490,8 +490,10 @@ class cs_server_item extends cs_guide_item
         }
         $mod_contact_list = $portal_item->getContactModeratorList();
         $mod_user_first = $mod_contact_list->getFirst();
-        $mail->set_from_email($mod_user_first->getEmail());
-        $mail->set_from_name($mod_user_first->getFullname());
+        //$mail->set_from_email($mod_user_first->getEmail());
+        //$mail->set_from_name($mod_user_first->getFullname());
+        $mail->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
+        $mail->set_from_name($this->_environment->getCurrentPortalItem()->getTitle());
 
         // link
         $url_to_portal = '';
@@ -652,8 +654,10 @@ class cs_server_item extends cs_guide_item
                               }
                               $mod_contact_list = $portal_item->getContactModeratorList();
                               $mod_user_first = $mod_contact_list->getFirst();
-                              $mail->set_from_email($mod_user_first->getEmail());
-                              $mail->set_from_name($mod_user_first->getFullname());
+                              //$mail->set_from_email($mod_user_first->getEmail());
+                              //$mail->set_from_name($mod_user_first->getFullname());
+                              $mail->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
+                              $mail->set_from_name($this->_environment->getCurrentPortalItem()->getTitle());
 
                                 // link
           $url_to_portal = '';
@@ -761,8 +765,10 @@ class cs_server_item extends cs_guide_item
 
                           $mod_contact_list = $portal_item->getContactModeratorList();
                           $mod_user_first = $mod_contact_list->getFirst();
-                          $mail->set_from_email($mod_user_first->getEmail());
-                          $mail->set_from_name($mod_user_first->getFullname());
+                          //$mail->set_from_email($mod_user_first->getEmail());
+                          //$mail->set_from_name($mod_user_first->getFullname());
+                          $mail->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
+                          $mail->set_from_name($this->_environment->getCurrentPortalItem()->getTitle());
 
                           if ($user->getPasswordExpireDate() > getCurrentDateTimeInMySQL()) {
                               $start_date = new DateTime(getCurrentDateTimeInMySQL());

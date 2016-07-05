@@ -1036,8 +1036,10 @@ class cs_portal_item extends cs_guide_item {
    				}
    				$mod_contact_list = $this->getContactModeratorList();
    				$mod_user_first = $mod_contact_list->getFirst();
-   				$mail->set_from_email($mod_user_first->getEmail());
-   				$mail->set_from_name($mod_user_first->getFullname());
+   				//$mail->set_from_email($mod_user_first->getEmail());
+   				//$mail->set_from_name($mod_user_first->getFullname());
+   				$mail->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
+                $mail->set_from_name($this->_environment->getCurrentPortalItem()->getTitle());
    				
    				// $mail->set_cc_to($mod_user_first->getEmail());
    				$mail->set_cc_to($this->_environment->getRootUserItem()->getEmail());
