@@ -20,11 +20,23 @@
     </div>
 {%- endblock choice_widget_collapsed -%}
 
+{%- block button_widget -%}
+    <div class="uk-form-controls">
+        {{- parent() -}}
+    </div>
+{%- endblock button_widget -%}
+
+{%- block checkbox_widget -%}
+    <div class="uk-form-controls">
+        {{- parent() -}}
+    </div>
+{%- endblock checkbox_widget -%}
+
 {% block form_widget_simple %}
     {% if label is not empty -%}
         <div class="uk-form-controls">
     {%- endif -%}
-    
+
         {% set type = type|default('text') %}
         <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
 
@@ -54,6 +66,7 @@
         {%- endif -%}
         {% if required -%}
             {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+
         {%- endif -%}
         {% if label is empty -%}
             {%- if label_format is not empty -%}

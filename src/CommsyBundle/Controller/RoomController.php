@@ -72,7 +72,14 @@ class RoomController extends Controller
         $announcementManager->setDateLimit(getCurrentDateTimeInMySQL());
         $countAnnouncements = $announcementManager->getCountAll();
 
-        $backgroundImage = $this->generateUrl("getBackground", array('roomId' => $roomId));    
+        $backgroundImage = $this->generateUrl("getBackground", array('roomId' => $roomId));
+
+        // TODO: calculate parallax-scrolling range for home.html.twig depending on image dimensions!
+        $roomService = $this->get('commsy.room_service');
+        $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
+        $filename = $saveDir . "/" . $roomItem->getBGImageFilename();
+        $cover_height = 280;
+        dump(getimagesize($filename));
 
         return array(
             'form' => $filterForm->createView(),

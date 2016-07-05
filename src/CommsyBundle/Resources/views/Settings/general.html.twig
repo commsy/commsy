@@ -15,10 +15,32 @@
 
                 <div>
                     {{ form_start(form) }}
-                    {{ form_widget(form) }}
+                        {{ form_errors(form) }}
+
+                        {{ form_row(form.title) }}
+                        {{ form_row(form.language) }}
+
+                        {{ form_label(form.room_image) }}
+                        {{ form_widget(form.room_image.room_image_choice) }}
+
+                        <div class="uk-form-controls uk-cover-background uk-position-relative" aria-hidden="false" style="height: 242px; overflow: hidden;"> 
+                            {% if bgImageFilepath is not empty %}
+                                <!-- TODO: should use upload image instead of room image -->
+                                <img src="{{bgImageFilepath}}" />
+                            {% endif %}
+                            <div class="uk-position-cover" style="opacity: 0.7">
+                                {{ form_widget(form.room_image.room_image_upload, {'attr': {'style': 'margin-left: 0;'}}) }}
+                            </div>
+                        </div>
+
+                        {% if form.room_image.delete_custom_image is defined %}
+                            {{ form_row(form.room_image.delete_custom_image) }}
+                        {% endif %}
+
+                        {{ form_row(form.room_image.room_image_repeat_x) }}
+
                     {{ form_end(form) }}
                 </div>
-                
             </div>
         </div>
         

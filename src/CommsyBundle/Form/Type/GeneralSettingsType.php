@@ -9,7 +9,9 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityManager;
 
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -58,21 +60,32 @@ class GeneralSettingsType extends AbstractType
                     'English' => 'en',
                 ),
             ))
-            ->add('room_image_choice', ChoiceType::class, array(
-                'expanded' => true,
-                'multiple' => false,
-                'choices' => array(
-                    'Theme image' => 'default_image',
-                    'Custom image' => 'custom_image',
-                ),
-            ))
-            ->add('room_image', FileType::class, array(
-                'attr' => array(
-                    'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
-                ),
-                'required' => false,
-                //'image_path' => 'webPath',
-            ))
+            ->add(
+                $builder->create('room_image', FormType::class, array('inherit_data' => true, 'compound' => true, 'required' => false))
+                ->add('room_image_choice', ChoiceType::class, array(
+                    'expanded' => true,
+                    'multiple' => false,
+                    'choices' => array(
+                        'Theme image' => 'default_image',
+                        'Custom image' => 'custom_image',
+                    ),
+                ))
+                ->add('room_image_upload', FileType::class, array(
+                    'attr' => array(
+                        'required' => false,
+                        'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
+                    ),
+                    //'image_path' => 'webPath',
+                ))
+                ->add('room_image_repeat_x', CheckboxType::class, array(
+                    'label_attr' => array('class' => 'uk-form-label'),
+                    'value' => 'repeat_x',
+                ))
+                ->add('delete_custom_image', CheckboxType::class, array(
+                    'label_attr' => array('class' => 'uk-form-label'),
+                    'value' => 'delete_bg_image',
+                ))
+            )
             ->add('access_check', ChoiceType::class, array(
                 'choices' => array(
                     'Never' => 'never',
@@ -114,6 +127,11 @@ class GeneralSettingsType extends AbstractType
                 ),
             ))
         ;
+
+        // TODO: load bgimage of selected theme instead of always loading default theme bgimage
+        // TODO: remove label space for virtual field subgroupd "room_image" (so that no labels _and_ no space for labels is displayed for elements within group! 
+
+
 
         // TODO: feed settings, theme configuration, filter room description input (cleanCKEditor)
 

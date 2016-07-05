@@ -49,10 +49,12 @@ class SettingsController extends Controller
         ));
         
         $themeArray = $this->container->getParameter('liip_theme.themes');
+        /*
         dump("Themes:");
         dump($themeArray);
         dump("Current working directory:");
         dump(getcwd());
+        */
 
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -60,14 +62,17 @@ class SettingsController extends Controller
 
             // TODO: should this be used for normal file uploads (materials etc.) while bg images are saved into specific theme subfolders?
             // TODO: add constraintGroup so that 'room_image' is mandatory when 'custom_image' is selected (or load previous custom image, if present)
-            if($form['room_image_choice']->getData() == 'custom_image' && !is_null($form['room_image']->getData())){
-                $file = $form['room_image']->getData();
+
+            $room_image_data = $form['room_image']->getData();
+
+            if($room_image_data['room_image_choice'] == 'custom_image' && !is_null($room_image_data['room_image_upload'])){
+                $file = $room_image_data['room_image_upload'];
 
                 $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
 
                 if(!is_dir($saveDir)){
                     mkdir($saveDir, 0777, true);
-                } 
+                }
 
                 $extension = $file->guessExtension();
                 if(!$extension) {
@@ -94,8 +99,11 @@ class SettingsController extends Controller
             // $em->flush();
         }
 
+        $backgroundImage = $this->generateUrl("getBackground", array('roomId' => $roomId));
+
         return array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'bgImageFilepath' => $backgroundImage,
         );
     }
 

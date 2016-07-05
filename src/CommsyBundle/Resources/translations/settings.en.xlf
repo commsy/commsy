@@ -118,6 +118,18 @@
                 <source>Custom image</source>
                 <target>Custom image</target>
             </trans-unit>
+            <trans-unit id="customimageupload">
+                <source>Room image upload</source>
+                <target>Upload image</target>
+            </trans-unit>
+            <trans-unit id="deletecustomimage">
+                <source>Delete custom image</source>
+                <target>Delete custom image</target>
+            </trans-unit>
+            <trans-unit id="repeatbgimagex">
+                <source>Room image repeat x</source>
+                <target>Repeat image horizontically</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

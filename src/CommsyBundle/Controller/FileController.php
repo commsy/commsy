@@ -43,7 +43,7 @@ class FileController extends Controller
     {
         $roomService = $this->get('commsy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
-        
+
         $filename = $roomItem->getBGImageFilename();
 
         if($filename == ''){

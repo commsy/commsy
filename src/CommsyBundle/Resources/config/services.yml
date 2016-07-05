@@ -145,7 +145,7 @@ services:
 
     commsy.form.type.settings.additional:
         class: CommsyBundle\Form\Type\AdditionalSettingsType
-        arguments: ['@commsy_legacy.environment']
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
         tags:
             - { name: form.type }
 
