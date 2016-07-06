@@ -414,6 +414,18 @@
                 </tr>
                 <tr>
                     <td class="uk-text-top">
+                        <strong>{{ "color"|trans({},'date') }}</strong>
+                    </td>
+                    <td class="uk-text-top {{ date.color }}">
+                        {% if date.color == 'cs-date-color-no-color' or date.color == '' %}
+                            <i class="uk-icon uk-icon-circle-thin"></i>
+                        {% else %}
+                            <i class="uk-icon uk-icon-circle"></i>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="uk-text-top">
                         <strong>{{ "participants"|trans({},'date') }}</strong>
                     </td>
                     <td class="uk-text-top">

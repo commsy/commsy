@@ -415,11 +415,16 @@ class DateController extends Controller
                 implode(',', $participantsNameArray);
             }
             
+            $color = '';
+            if ($date->getColor() != '') {
+                $color = $this->container->getParameter('commsy.themes.'.str_ireplace('-', '_', $date->getColor()));
+            }
+            
             $events[] = array('itemId' => $date->getItemId(),
                               'title' => $date->getTitle(),
                               'start' => $start,
                               'end' => $end,
-                              'color' => $this->container->getParameter('commsy.themes.'.str_ireplace('-', '_', $date->getColor())),
+                              'color' => $color,
                               'editable' => $date->isPublic(),
                               'description' => $date->getDateDescription(),
                               'place' => $date->getPlace(),
