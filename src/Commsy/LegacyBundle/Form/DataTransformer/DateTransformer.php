@@ -62,6 +62,8 @@ class DateTransformer implements DataTransformerInterface
             if ($dateData['color'] == '') {
                 $dateData['color'] = 'cs-date-color-no-color';
             }
+            
+            $dateData['recurring_sub']['type'] = 'day';
         }
 
         return $dateData;

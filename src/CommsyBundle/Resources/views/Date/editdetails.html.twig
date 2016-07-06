@@ -43,6 +43,26 @@
                     </span><span class="uk-margin-small-left uk-margin-right">{{ form_widget(tempColor) }}</span>
                 {% endfor %}
             </div>
+            
+            <div class="uk-flex uk-margin-small-top">
+                <div>
+                    {{ form_label(form.recurring_select) }}
+                    {{ form_widget(form.recurring_select) }}
+                </div>
+            </div>
+            <div class="uk-flex uk-margin-small-top">
+                <div id="date_recurring_sub">
+                    {% for subField in form.recurring_sub %}
+                        <div class="uk-flex uk-margin-small-top">
+                            <div>
+                                {# {{ form_errors(subField) }} #}
+                                {{ form_row(subField) }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
         </div>
         <div class="uk-flex uk-margin-small-top">
             <div class="uk-margin-small-left">
@@ -55,3 +75,41 @@
         {{ form_end(form) }}
     </div>
 </div>
+
+<script>
+var $recurring = $('#date_recurring_select');
+// When sport gets selected ...
+$recurring.change(function() {
+    // ... retrieve the corresponding form.
+    var $form = $(this).closest('form');
+    // Simulate form data, but only include the selected sport value.
+    var data = {};
+
+    data[$(this).attr('name')] = $(this).val();
+    // Submit data via AJAX to the form's action path.
+    $.ajax({
+        url : $form.attr('action'),
+        type: $form.attr('method'),
+        data : data,
+        success: function(html) {
+            // Replace current position field ...
+            // add field
+            if (!$('#date_recurring_sub').length) {
+                $('#date_recurring_select').after(
+                // ... with the returned one from the AJAX response.
+                $(html).find('#material_biblio_sub')
+                // html
+                );
+            } else {
+                $('#date_recurring_sub').replaceWith(
+                // ... with the returned one from the AJAX response.
+                $(html).find('#material_biblio_sub')
+                // html
+                );
+            }
+            // console.log(html);
+            // Position field now displays the appropriate positions.
+        }
+    });
+});
+</script>

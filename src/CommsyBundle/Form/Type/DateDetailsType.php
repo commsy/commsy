@@ -69,6 +69,27 @@ class DateDetailsType extends AbstractType
                 'expanded' => true,
                 'multiple' => false
             ))
+            ->add('recurring_select', ChoiceType::class, array(
+                'choices'  => array(
+                    'BiblioPlainType' => 'plain',
+                    'BiblioBookType' => 'book',
+                    'BiblioCollectionType' => 'collection',
+                    'BiblioArticleType' => 'article',
+                    'BiblioJournalType' => 'journal',
+                    'BiblioChapterType' => 'chapter',
+                    'BiblioNewspaperType' => 'newspaper',
+                    'BiblioThesisType' => 'thesis',
+                    'BiblioManuscriptType' => 'manuscript',
+                    'BiblioWebsiteType' => 'website',
+                    'BiblioDocManagementType' => 'document management',
+                    'BiblioPictureType' => 'picture',
+                ),
+                'label' => 'recurring date',
+                'choice_translation_domain' => true,
+                'required' => false,
+                'translation_domain' => 'date'
+            ))
+            ->addEventSubscriber(new AddBibliographicFieldListener())
             ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
