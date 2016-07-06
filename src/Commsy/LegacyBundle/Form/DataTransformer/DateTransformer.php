@@ -77,8 +77,6 @@ class DateTransformer implements DataTransformerInterface
      */
     public function applyTransformation($dateObject, $dateData)
     {
-        error_log(print_r($dateData, true));
-        
         $dateObject->setTitle($dateData['title']);
         $dateObject->setDescription($dateData['description']);
         

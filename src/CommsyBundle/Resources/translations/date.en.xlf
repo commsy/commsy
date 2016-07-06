@@ -38,6 +38,22 @@
                 <source>info</source>
                 <target>Info</target>
             </trans-unit>
+            <trans-unit id="edit info">
+                <source>edit info</source>
+                <target>Edit info</target>
+            </trans-unit>
+            <trans-unit id="color">
+                <source>color</source>
+                <target>Color</target>
+            </trans-unit>
+            <trans-unit id="startdate">
+                <source>startdate</source>
+                <target>Start</target>
+            </trans-unit>
+            <trans-unit id="enddate">
+                <source>enddate</source>
+                <target>End</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

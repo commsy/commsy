@@ -27,7 +27,7 @@ class DateDetailsType extends AbstractType
                     'placeholder' => 'startdate',
                     'class' => 'uk-form-width-medium',
                 ),
-                'translation_domain' => 'material'
+                'translation_domain' => 'date'
             ))
             ->add('end', DateTimeSelectType::class, array(
                 'constraints' => array(
@@ -37,17 +37,16 @@ class DateDetailsType extends AbstractType
                     'placeholder' => 'enddate',
                     'class' => 'uk-form-width-medium',
                 ),
-                'translation_domain' => 'material',
+                'translation_domain' => 'date',
             ))
             ->add('place', TextType::class, array(
-                'constraints' => array(
-                ),
                 'label' => 'place',
                 'attr' => array(
                     'placeholder' => 'place',
                     'class' => 'uk-form-width-medium',
                 ),
-                'translation_domain' => 'material',
+                'translation_domain' => 'date',
+                'required' => false,
             ))
             ->add('color', ChoiceType::class, array(
                 'placeholder' => false,
@@ -65,7 +64,7 @@ class DateDetailsType extends AbstractType
                     'cs-date-color-10' => 'cs-date-color-10',
                 ),
                 'label' => 'color',
-                'translation_domain' => 'item',
+                'translation_domain' => 'date',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => false
