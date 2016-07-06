@@ -340,10 +340,26 @@ class MenuBuilder
         
                 if ($route[1] && $route[1] != "room" && $route[1] != "dashboard" && $route[2] != "search") {
                     // rubric
-                    $menu->addChild($route[1], array(
-                        'route' => 'commsy_'.$route[1].'_'.'list',
-                        'routeParameters' => array('roomId' => $roomId)
-                    ));
+                    $tempRoute = 'commsy_'.$route[1].'_'.'list';
+                    $changeRubrikcLinkForDate = false;
+                    if ($route[1] == 'date') {
+                        $room = $this->roomService->getRoomItem($roomId);
+                        if ($room->getDatesPresentationStatus() != 'normal') {
+                            $tempRoute = 'commsy_date_calendar';
+                            if (!$itemId) {
+                                $changeRubrikcLinkForDate = true;
+                            }
+                        }
+                    }
+                    
+                    if (!$changeRubrikcLinkForDate) {
+                        $menu->addChild($route[1], array(
+                            'route' => $tempRoute,
+                            'routeParameters' => array('roomId' => $roomId)
+                        ));
+                    } else {
+                        $menu->addChild($route[1]);
+                    }
         
                     if ($route[2] != "list") {
                         // item
