@@ -50,6 +50,7 @@
                     {{ form_widget(form.recurring_select) }}
                 </div>
             </div>
+            {% if form.recurring_sub is defined %}
             <div class="uk-flex uk-margin-small-top">
                 <div id="date_recurring_sub">
                     {% for subField in form.recurring_sub %}
@@ -62,6 +63,7 @@
                     {% endfor %}
                 </div>
             </div>
+            {% endif %}
             
         </div>
         <div class="uk-flex uk-margin-small-top">
@@ -72,6 +74,8 @@
                 {{ form_row(form.cancel) }}
             </div>
         </div>
+        {{ form_row(form._token) }}
+        {{ form_rest(form) }}
         {{ form_end(form) }}
     </div>
 </div>
@@ -97,13 +101,13 @@ $recurring.change(function() {
             if (!$('#date_recurring_sub').length) {
                 $('#date_recurring_select').after(
                 // ... with the returned one from the AJAX response.
-                $(html).find('#material_biblio_sub')
+                $(html).find('#date_recurring_sub')
                 // html
                 );
             } else {
                 $('#date_recurring_sub').replaceWith(
                 // ... with the returned one from the AJAX response.
-                $(html).find('#material_biblio_sub')
+                $(html).find('#date_recurring_sub')
                 // html
                 );
             }

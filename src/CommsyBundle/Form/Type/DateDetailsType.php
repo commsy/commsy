@@ -12,7 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use CommsyBundle\Form\Type\Custom\DateTimeSelectType;
 
-use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
+use CommsyBundle\Form\Type\Event\AddRecurringFieldListener;
 
 class DateDetailsType extends AbstractType
 {
@@ -71,25 +71,16 @@ class DateDetailsType extends AbstractType
             ))
             ->add('recurring_select', ChoiceType::class, array(
                 'choices'  => array(
-                    'BiblioPlainType' => 'plain',
-                    'BiblioBookType' => 'book',
-                    'BiblioCollectionType' => 'collection',
-                    'BiblioArticleType' => 'article',
-                    'BiblioJournalType' => 'journal',
-                    'BiblioChapterType' => 'chapter',
-                    'BiblioNewspaperType' => 'newspaper',
-                    'BiblioThesisType' => 'thesis',
-                    'BiblioManuscriptType' => 'manuscript',
-                    'BiblioWebsiteType' => 'website',
-                    'BiblioDocManagementType' => 'document management',
-                    'BiblioPictureType' => 'picture',
+                    'RecurringNoneType' => 'RecurringNoneType',
+                    'RecurringDailyType' => 'RecurringDailyType',
+                    'RecurringWeeklyType' => 'RecurringWeeklyType',
                 ),
                 'label' => 'recurring date',
                 'choice_translation_domain' => true,
                 'required' => false,
                 'translation_domain' => 'date'
             ))
-            ->addEventSubscriber(new AddBibliographicFieldListener())
+            ->addEventSubscriber(new AddRecurringFieldListener())
             ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',

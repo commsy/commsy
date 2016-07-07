@@ -63,7 +63,7 @@ class DateTransformer implements DataTransformerInterface
                 $dateData['color'] = 'cs-date-color-no-color';
             }
             
-            $dateData['recurring_sub']['type'] = 'day';
+            $dateData['recurring_sub']['type'] = 'BiblioNoneType';
         }
 
         return $dateData;
