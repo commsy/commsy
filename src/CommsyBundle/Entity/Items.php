@@ -7,10 +7,43 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Items
  *
- * @ORM\Table(name="items", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="type", columns={"type"})})
  * @ORM\Entity
+ * @ORM\InheritanceType("JOINED")
+ * @ORM\DiscriminatorColumn(name="type", type="string")
+ * @ORM\DiscriminatorMap({
+ *     "annotation" = "Annotations",
+ *     "announcement" = "Announcement",
+ *     "assessments" = "Assessments",
+ *     "auth_source" = "AuthSource",
+ *     "community" = "Room",
+ *     "date" = "Dates",
+ *     "discarticle" = "Discussionarticles",
+ *     "discussion" = "Discussions",
+ *     "grouproom" = "Room",
+ *     "homepage_page" = "HomepagePage",
+ *     "label" = "Labels",
+ *     "link_item" = "LinkItems",
+ *     "material" = "Materials",
+ *     "portal" = "Portal",
+ *     "portfolio" = "Portfolio",
+ *     "privateroom" = "RoomPrivat",
+ *     "project" = "Room",
+ *     "section" = "Section",
+ *     "server" = "Server",
+ *     "step" = "Step",
+ *     "tag" = "Tag",
+ *     "task" = "Tasks",
+ *     "todo" = "Todos",
+ *     "user" = "User"
+ * })
+ *
+ * @ORM\Table(name="items", indexes={
+ *     @ORM\Index(name="context_id", columns={"context_id"}),
+ *     @ORM\Index(name="type", columns={"type"})
+ * })
+ * 
  */
-class Items
+abstract class Items
 {
     /**
      * @var integer
@@ -27,13 +60,6 @@ class Items
      * @ORM\Column(name="context_id", type="integer", nullable=true)
      */
     private $contextId;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="type", type="string", length=15, nullable=false)
-     */
-    private $type;
 
     /**
      * @var integer

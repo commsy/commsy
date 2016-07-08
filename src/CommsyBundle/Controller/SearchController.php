@@ -8,70 +8,190 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-use Elastica\Query\Filtered;
-use Elastica\Query\MatchPhrasePrefix;
-use Elastica\Filter\Term;
-use Elastica\Filter\Range;
-use Elastica\Filter\Bool;
+use CommsyBundle\Form\Type\SearchType;
+use CommsyBundle\Model\GlobalSearch;
+
+use CommsyBundle\Filter\SearchFilterType;
 
 class SearchController extends Controller
 {
     /**
-    * @Route("/room/{roomId}/search/")
-    * @Template
-    */
-    public function searchAction($roomId, Request $request)
+     * Generates the search form and search field for embedding them into
+     * a template.
+     *
+     * @Template
+     */
+    public function searchFormAction($roomId)
     {
-        $finder = $this->get('fos_elastica.finder.commsy.user');
-        $searchTerm = $request->query->get('search');
-        $searchTerm = "chris";
-        $user = $finder->find($searchTerm);
-        dump($user);
-        return array('user' => $user);
+        $form = $this->createForm(SearchType::class, [], [
+            'action' => $this->generateUrl('commsy_search_results', [
+                'roomId' => $roomId
+            ])
+        ]);
+
+        return [
+            'form' => $form->createView(),
+            'roomId' => $roomId,
+        ];
     }
 
     /**
-    * @Route("/room/{roomId}/search/quick")
-    * @Template
-    */
-    public function quickAction($roomId, Request $request)
+     * Displays search results
+     * 
+     * @Route("/room/{roomId}/search/results")
+     * @Template
+     */
+    public function resultsAction($roomId, Request $request)
     {
-        $results = array(
-        );
+        $globalSearch = new GlobalSearch();
+
+        $form = $this->createForm(SearchType::class, $globalSearch, [
+            'action' => $this->generateUrl('commsy_search_results', [
+                'roomId' => $roomId
+            ])
+        ]);
+        $form->handleRequest($request);
+
+        $filterForm = $this->createForm(SearchFilterType::class);
+        //$filterForm->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $globalSearch = $form->getData();
+
+            $searchManager = $this->get('commsy.search.manager');
+            $searchManager->setQuery($globalSearch->getPhrase());
+
+            // if ($request->query->has($filterForm->getName())) {
+
+            // }
+
+            $searchResults = $searchManager->getResults();
+
+            $totalHits = $searchResults->getTotalHits();
+            $aggregations = $searchResults->getAggregations()['filterContext'];
+
+            $contextBuckets = $aggregations['contexts']['buckets'];
+
+        }
+
+        return [
+            'filterForm' => $filterForm->createView(),
+            'roomId' => $roomId,
+            'totalHits' => $totalHits,
+            'searchResults' => $searchResults->getResults(0, 10)->toArray(),
+            'aggregations' => $aggregations,
+        ];
+    }
+
+    /**
+     * Serves JSON results for instant search aka search-as-you-type
+     * 
+     * @Route("/room/{roomId}/search/instant")
+     */
+    public function instantAction($roomId, Request $request)
+    {
+        $results = [];
 
         $query = $request->get('search', null);
 
         if ($query) {
+            $translator = $this->get('translator');
+            $router = $this->container->get('router');
 
-            $searchBuilder = $this->get('commsy.search_builder');
-            $searchBuilder->setQuery($query);
-            $searchBuilder->setContext($roomId);
+            $searchManager = $this->get('commsy.search.manager');
+            $searchManager->setQuery($query);
 
-            //
-            $searchBuilder->setRubric('material');
-            //
-            
-            $materials = $searchBuilder->getResults();
+            $instantResults = $searchManager->getInstantResults();
 
-            $dataset = array();
+            foreach ($instantResults as $hybridResult) {
+                $transformed = $hybridResult->getTransformed();
 
-            foreach ($materials as $material) {
-                // $username = $user->getFirstname() . ' ' . $user->getLastname();
+                $title = '';
 
-                $dataset = array(
-                    'title' => $material->getTitle(),
-                    'text' => '',
-                    'url' => '#',
-                );
+                if (method_exists($transformed, 'getTitle')) {
+                    $title = $transformed->getTitle();
+                } else if (method_exists($transformed, 'getName')) {
+                    $title = $transformed->getName();
+                } else if (method_exists($transformed, 'getFirstname')) {
+                    $title = $transformed->getFirstname() . ' ' . $transformed->getLastname();
+                }
 
-                $results[] = $dataset;
+                // get type from hybrid results and trim trailing 's'
+                $type = $hybridResult->getResult()->getType();
+                $type = rtrim($type, 's');
+
+                // construct target url
+                $url = '#';
+
+                $routeName = 'commsy_' . $type . '_detail';
+                if ($router->getRouteCollection()->get($routeName)) {
+                    $url = $this->generateUrl(
+                        $routeName,
+                        ['roomId' => $roomId, 'itemId' => $transformed->getItemId()]
+                    );
+                }
+
+                $results[] = [
+                    'title' => $title,
+                    'text' => $translator->transChoice($type, 0, [], 'rubric'),
+                    'url' => $url,
+                ];
             }
         }
 
         $response = new JsonResponse();
-        $response->setData(array(
+        $response->setData([
             'results' => $results,
-        ));
+        ]);
+
+        return $response;
+    }
+
+    /**
+     * Generates JSON results for the room navigation search-as-you-type form
+     *
+     * @Route("/room/{roomId}/search/rooms")
+     * 
+     * @param  int $roomId The current room id
+     * @return JsonResponse The JSON result
+     */
+    public function roomNavigationAction($roomId, Request $request)
+    {
+        $results = [];
+
+        $query = $request->get('search', '');
+
+        $translator = $this->get('translator');
+        $router = $this->container->get('router');
+
+        $searchManager = $this->get('commsy.search.manager');
+        $searchManager->setQuery($query);
+
+        $roomResults = $searchManager->getRoomResults();
+
+        foreach ($roomResults as $room) {
+            // construct target url
+            $url = '#';
+
+            $routeName = 'commsy_room_home';
+            if ($router->getRouteCollection()->get($routeName)) {
+                $url = $this->generateUrl(
+                    $routeName,
+                    ['roomId' => $room->getItemId()]
+                );
+            }
+
+            $results[] = [
+                'title' => $room->getTitle(),
+                'text' => $translator->trans($room->getType(), [], 'room'),
+                'url' => $url,
+            ];
+        }
+
+        $response = new JsonResponse();
+        $response->setData([
+            'results' => $results,
+        ]);
 
         return $response;
     }

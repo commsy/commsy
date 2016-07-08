@@ -87,7 +87,7 @@ class MenuBuilder
         $roomId = $currentStack->attributes->get('roomId');
 
         if ($roomId) {
-               // room navigation
+                // room navigation
                 $menu->addChild('room_navigation', array(
                     'label' => 'Raum-Navigation',
                     'route' => 'commsy_room_home',
@@ -177,16 +177,7 @@ class MenuBuilder
             $this->legacyEnvironment->setCurrentPortalID($authSource->getContextId());
             $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
             $privateRoom = $privateRoomManager->getRelatedOwnRoomForUser($user, $this->legacyEnvironment->getCurrentPortalID());
-            // $current_user = $this->userService->getUser($user->getUserID());
             $current_user = $this->legacyEnvironment->getCurrentUserItem();
-
-            
-/*            $menu->addChild('dashboard', array(
-                'label' => 'DASHBOARD',
-                'route' => 'commsy_dashboard_index',
-                'routeParameters' => array('roomId' => $privateRoom->getItemId()),
-                'extras' => array('icon' => 'uk-icon-dashboard uk-icon-small')
-            ));*/
 
             if ($roomId != $privateRoom->getItemId()) {
                 // rubric room information
@@ -332,13 +323,14 @@ class MenuBuilder
                 // get route information
                 $route = explode('_', $currentStack->attributes->get('_route'));
                 
-                // room
+                // home
                 $menu->addChild($roomItem->getTitle(), array(
                     'route' => 'commsy_room_home',
                     'routeParameters' => array('roomId' => $roomId)
                 ));
         
-                if ($route[1] && $route[1] != "room" && $route[1] != "dashboard" && $route[2] != "search") {
+                if ($route[1] && $route[1] != "room" && $route[1] != "dashboard" && $route[1] != "search") {
+
                     // rubric
                     $tempRoute = 'commsy_'.$route[1].'_'.'list';
                     $changeRubrikcLinkForDate = false;

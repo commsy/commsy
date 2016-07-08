@@ -123,6 +123,11 @@ class Labels
     private $lockingUserId;
 
 
+    public function isIndexable()
+    {
+        return ($this->deleter == null && $this->deletionDate == null &&
+                $this->name != 'ALL' && $this->description != 'GROUP_ALL_DESC');
+    }
 
     /**
      * Get itemId
@@ -305,7 +310,7 @@ class Labels
     /**
      * Set extras
      *
-     * @param string $extras
+     * @param mbarray $extras
      *
      * @return Labels
      */
@@ -319,7 +324,7 @@ class Labels
     /**
      * Get extras
      *
-     * @return string
+     * @return mbarray
      */
     public function getExtras()
     {

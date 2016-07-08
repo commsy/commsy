@@ -1,0 +1,18 @@
+<div class="uk-navbar-content">
+    <ul class="uk-navbar-nav">
+        <li>
+            <a href="#"><i class="uk-icon-bell-o"></i></a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="uk-icon-copy"></i>
+                <small id="cs-nav-copy-indicator"></small>
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('commsy_dashboard_overview', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'dashboard description text'|trans({}, "rubric")}}">
+                <i class="uk-icon-dashboard"></i>
+            </a>
+        </li>
+    </ul>
+</div>
