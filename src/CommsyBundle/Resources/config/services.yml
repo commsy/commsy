@@ -128,7 +128,7 @@ services:
     # Search
     commsy.search.manager:
         class: CommsyBundle\Search\SearchManager
-        arguments: ['@fos_elastica.finder.commsy', '@commsy.user_service']
+        arguments: ['@fos_elastica.finder.commsy', '@commsy_legacy.user_service']
 
     # Form types
     commsy.form.type.general_settings:

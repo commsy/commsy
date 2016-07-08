@@ -597,7 +597,7 @@ class UserController extends Controller
      */
     public function globalNavbarAction($roomId)
     {
-        $userService = $this->get('commsy.user_service');
+        $userService = $this->get('commsy_legacy.user_service');
         $currentUserItem = $userService->getCurrentUserItem();
 
         $privateRoomItem = $currentUserItem->getOwnRoom();
