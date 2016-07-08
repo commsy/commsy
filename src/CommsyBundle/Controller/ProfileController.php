@@ -24,10 +24,6 @@ class ProfileController extends Controller
         $userService = $this->get('commsy_legacy.user_service');
         $userItem = $userService->getUser($itemId);
 
-        // $user = $this->getDoctrine()
-        //     ->getRepository('CommsyBundle:User')
-        //     ->find($itemId);
-
         if (!$userItem) {
             throw $this->createNotFoundException('No user found for id ' . $itemId);
         }
@@ -140,10 +136,6 @@ class ProfileController extends Controller
                 
                 $privateRoomItem->save();
                 
-                // persist
-                // $em = $this->getDoctrine()->getManager();
-                // $em->persist($user);
-                // $em->flush();
                 return $this->redirectToRoute('commsy_profile_room', array('roomId' => $roomId, 'itemId' => $itemId));
             }
         } else if ($request->request->has('combine_profile')) {

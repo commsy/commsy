@@ -52,21 +52,18 @@ class MenuBuilder
 
         if ($currentUser->getItemId() != '') {
 
-            $menu->addChild('profileImage', array(
+            $menu->addChild('profileImage', [
                 'label' => $currentUser->getFullname(),
-                // 'route' => 'commsy_user_detail',
                 'route' => 'commsy_profile_room',
-                'routeParameters' => array('roomId' => $currentStack->attributes->get('roomId'), 'itemId' => $currentUser->getItemId()),
-                'extras' => array(
-                    'user' => $currentUser
-                )
-            ));
+                'routeParameters' => [
+                    'roomId' => $currentStack->attributes->get('roomId'),
+                    'itemId' => $currentUser->getItemId(),
+                ],
+                'extras' => [
+                    'user' => $currentUser,
+                ]
+            ]);
         }
-
-        // profile configuration
-        // if ($currentUser->getItemId() != '') {
-        //     $menu->addChild('profileConfig', array(
-        //         'label' => ' ',
 
         return $menu;
     }
