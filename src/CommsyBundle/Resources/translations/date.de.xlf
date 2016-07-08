@@ -206,6 +206,24 @@
                 <source>december</source>
                 <target>Dezember</target>
             </trans-unit>
+            
+            
+            <trans-unit id="dailyDescription">
+                <source>dailyDescription</source>
+                <target>Jeden %day%. Tag, bis: %date%</target>
+            </trans-unit>
+            <trans-unit id="weeklyDescription">
+                <source>weeklyDescription</source>
+                <target>Jede %week%. Woche, jeden %daysOfWeek%, bis: %date%</target>
+            </trans-unit>
+            <trans-unit id="monthlyDescription">
+                <source>monthlyDescription</source>
+                <target>Jeden %month%. Monat am %day%. %dayOfWeek%, bis: %date%</target>
+            </trans-unit>
+            <trans-unit id="yearlyDescription">
+                <source>yearlyDescription</source>
+                <target>Jeden %day%. Tag, bis: %date%</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
