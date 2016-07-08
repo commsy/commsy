@@ -125,10 +125,10 @@ class SearchController extends Controller
 
                 $routeName = 'commsy_' . $type . '_detail';
                 if ($router->getRouteCollection()->get($routeName)) {
-                    $url = $this->generateUrl(
-                        $routeName,
-                        ['roomId' => $roomId, 'itemId' => $transformed->getItemId()]
-                    );
+                    $url = $this->generateUrl($routeName, [
+                        'roomId' => $transformed->getContextId(),
+                        'itemId' => $transformed->getItemId(),
+                    ]);
                 }
 
                 $results[] = [
