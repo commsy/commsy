@@ -18,32 +18,38 @@ class RecurringMonthlyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('month', TextType::class, array(
+            ->add('recurrenceMonth', TextType::class, array(
                 'constraints' => array(
                     new NotBlank(),
                 ),
-                'label' => 'month',
+                'label' => 'recurrenceMonth',
                 'attr' => array(
                 ),
                 'translation_domain' => 'date',
             ))
-            ->add('recurrenceInterval', ChoiceType::class, array(
+            ->add('recurrenceDayOfMonthInterval', ChoiceType::class, array(
+                'constraints' => array(
+                    new NotBlank(),
+                ),
                 'placeholder' => false,
                 'choices' => array(
-                    'first' => 'first',
-                    'second' => 'second',
-                    'third' => 'third',
-                    'fourth' => 'fourth',
-                    'fifth' => 'fifth',
+                    'first' => '1',
+                    'second' => '2',
+                    'third' => '3',
+                    'fourth' => '4',
+                    'fifth' => '5',
                     'last' => 'last',
                 ),
-                'label' => 'recurrenceInterval',
+                'label' => 'recurrenceDayOfMonthInterval',
                 'translation_domain' => 'date',
                 'required' => false,
-                'expanded' => true,
-                'multiple' => true
+                'expanded' => false,
+                'multiple' => false
             ))
-            ->add('recurrenceDay', ChoiceType::class, array(
+            ->add('recurrenceDayOfMonth', ChoiceType::class, array(
+                'constraints' => array(
+                    new NotBlank(),
+                ),
                 'placeholder' => false,
                 'choices' => array(
                     'monday' => 'monday',
@@ -54,11 +60,11 @@ class RecurringMonthlyType extends AbstractType
                     'saturday' => 'saturday',
                     'sunday' => 'sunday',
                 ),
-                'label' => 'recurrenceDay',
+                'label' => 'recurrenceDayOfMonth',
                 'translation_domain' => 'date',
                 'required' => false,
-                'expanded' => true,
-                'multiple' => true
+                'expanded' => false,
+                'multiple' => false
             ))
             ->add('untilDate', DateType::class, array(
                 'constraints' => array(

@@ -18,16 +18,19 @@ class RecurringWeeklyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('week', TextType::class, array(
+            ->add('recurrenceWeek', TextType::class, array(
                 'constraints' => array(
                     new NotBlank(),
                 ),
-                'label' => 'week',
+                'label' => 'recurrenceWeek',
                 'attr' => array(
                 ),
                 'translation_domain' => 'date',
             ))
-            ->add('recurrenceDay', ChoiceType::class, array(
+            ->add('recurrenceDaysOfWeek', ChoiceType::class, array(
+                'constraints' => array(
+                    new NotBlank(),
+                ),
                 'placeholder' => false,
                 'choices' => array(
                     'monday' => 'monday',
@@ -38,7 +41,7 @@ class RecurringWeeklyType extends AbstractType
                     'saturday' => 'saturday',
                     'sunday' => 'sunday',
                 ),
-                'label' => 'recurrenceDay',
+                'label' => 'recurrenceDaysOfWeek',
                 'translation_domain' => 'date',
                 'required' => false,
                 'expanded' => true,

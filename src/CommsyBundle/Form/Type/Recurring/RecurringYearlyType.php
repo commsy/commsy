@@ -18,16 +18,19 @@ class RecurringYearlyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('month', TextType::class, array(
+            ->add('recurrenceMonth', TextType::class, array(
                 'constraints' => array(
                     new NotBlank(),
                 ),
-                'label' => 'month',
+                'label' => 'recurrenceMonth',
                 'attr' => array(
                 ),
                 'translation_domain' => 'date',
             ))
-            ->add('recurrenceMonth', ChoiceType::class, array(
+            ->add('recurrenceMonthOfYear', ChoiceType::class, array(
+                'constraints' => array(
+                    new NotBlank(),
+                ),
                 'placeholder' => false,
                 'choices' => array(
                     'january' => 'january',
@@ -43,11 +46,11 @@ class RecurringYearlyType extends AbstractType
                     'november' => 'november',
                     'december' => 'december',
                 ),
-                'label' => 'recurrenceMonth',
+                'label' => 'recurrenceMonthOfYear',
                 'translation_domain' => 'date',
                 'required' => false,
-                'expanded' => true,
-                'multiple' => true
+                'expanded' => false,
+                'multiple' => false
             ))
             ->add('untilDate', DateType::class, array(
                 'constraints' => array(

@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
 
@@ -18,7 +19,7 @@ class RecurringDailyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('recurrenceDay', TextType::class, array(
+            ->add('recurrenceDay', NumberType::class, array(
                 'constraints' => array(
                     new NotBlank(),
                 ),
