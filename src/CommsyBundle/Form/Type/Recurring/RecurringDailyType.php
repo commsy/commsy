@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
 
@@ -23,19 +24,18 @@ class RecurringDailyType extends AbstractType
                 ),
                 'label' => 'recurrenceDay',
                 'attr' => array(
-                    'placeholder' => 'title',
-                    'class' => '',
                 ),
                 'translation_domain' => 'date',
             ))
-            ->add('untilDate', TextType::class, array(
+            ->add('untilDate', DateType::class, array(
                 'constraints' => array(
                     new NotBlank(),
                 ),
                 'label' => 'untilDate',
+                'widget' => 'single_text',
+                'format' => 'dd.MM.yyyy',
                 'attr' => array(
-                    'placeholder' => 'title',
-                    'class' => '',
+                    'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
                 ),
                 'translation_domain' => 'date',
             ))
