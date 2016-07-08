@@ -12,7 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
 
-class RecurringWeeklyType extends AbstractType
+class RecurringMonthlyType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -53,6 +53,6 @@ class RecurringWeeklyType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'recurring_weekly';
+        return 'recurring_daily';
     }
 }

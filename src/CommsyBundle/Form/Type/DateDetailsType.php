@@ -71,9 +71,10 @@ class DateDetailsType extends AbstractType
             ))
             ->add('recurring_select', ChoiceType::class, array(
                 'choices'  => array(
-                    'RecurringNoneType' => 'RecurringNoneType',
                     'RecurringDailyType' => 'RecurringDailyType',
                     'RecurringWeeklyType' => 'RecurringWeeklyType',
+                    'RecurringMonthlyType' => 'RecurringMonthlyType',
+                    'RecurringYearlyType' => 'RecurringYearlyType',
                 ),
                 'label' => 'recurring date',
                 'choice_translation_domain' => true,
