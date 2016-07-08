@@ -58,25 +58,41 @@ class LegacyEnvironment
             }
 
             // try to find the current room id from the request and set context in legacy environment
-            $requestStack = $this->serviceContainer->get('request_stack');
-            $currentRequest = $requestStack->getCurrentRequest();
-            if ($currentRequest) {
-                // check attributes
-                $attributes = $currentRequest->attributes;
-                if ($attributes->has('roomId')) {
-                    $this->environment->setCurrentContextID($attributes->get('roomId'));
-                } else {
-                    // check server bag
-                    $requestUri = $currentRequest->getRequestUri();
-                    
-                    if (preg_match('/(room|dashboard)\/(\d+)/', $requestUri, $matches)) {
-                        $roomId = $matches[2];
-                        $this->environment->setCurrentContextID($roomId);
-                    }
-                }
-            }
+            $contextId = $this->guessContextId();
+            $this->environment->setCurrentContextID($contextId);
         }
 
         return $this->environment;
+    }
+
+    /**
+     * This method tries to guess the current context id by analysing the client request.
+     * If no context id could be found, we will fall back to 99 (the "server context")
+     *
+     * @return int context id
+     */
+    private function guessContextId()
+    {
+        $requestStack = $this->serviceContainer->get('request_stack');
+        $currentRequest = $requestStack->getCurrentRequest();
+
+        // current request could be empty
+        if ($currentRequest) {
+            // check attributes
+            $attributes = $currentRequest->attributes;
+            if ($attributes->has('roomId')) {
+                return $attributes->get('roomId');
+            }
+
+            // check request uri
+            $requestUri = $currentRequest->getRequestUri();
+                
+            if (preg_match('/(room|dashboard)\/(\d+)/', $requestUri, $matches)) {
+                $roomId = $matches[2];
+                return $roomId;
+            }
+        }
+
+        return 99;
     }
 }
