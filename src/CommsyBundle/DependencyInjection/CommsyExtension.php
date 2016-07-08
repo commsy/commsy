@@ -65,6 +65,7 @@ class CommsyExtension extends Extension
 
         // themes
         $container->setParameter('commsy.themes.default', $config['themes']['default']);
+        $container->setParameter('commsy.themes.cs_date_color_no_color', $config['themes']['cs_date_color_no_color']);
         $container->setParameter('commsy.themes.cs_date_color_01', $config['themes']['cs_date_color_01']);
         $container->setParameter('commsy.themes.cs_date_color_02', $config['themes']['cs_date_color_02']);
         $container->setParameter('commsy.themes.cs_date_color_03', $config['themes']['cs_date_color_03']);

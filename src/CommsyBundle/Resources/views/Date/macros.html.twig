@@ -404,6 +404,16 @@
                         {{ date.dateDescription }}
                     </td>
                 </tr>
+                {% if date.getRecurrencePattern is defined and not date.getRecurrencePattern is empty %}
+                    <tr>
+                        <td class="uk-text-top">
+                            <strong>{{ "recurring date"|trans({},'date') }}</strong>
+                        </td>
+                        <td class="uk-text-top">
+                            {{ _self.recurringDateDescription(date) }}
+                        </td>
+                    </tr>
+                {% endif %}
                 <tr>
                     <td class="uk-text-top">
                         <strong>{{ "place"|trans({},'date') }}</strong>
@@ -450,4 +460,22 @@
                     {% endif %}
         {% endfor %}
     {% endif %}
+{% endmacro %}
+
+
+{% macro recurringDateDescription(date) %}
+    {{ date.getRecurrencePattern.recurring_select|trans({},'date') }}
+    
+    {% if date.getRecurrencePattern.recurring_select == 'RecurringDailyType' %}    
+        {{ date.getRecurrencePattern.recurring_sub.recurrenceDay }}
+    {% elseif date.getRecurrencePattern.recurring_select == 'RecurringWeeklyType' %}    
+            
+    {% elseif date.getRecurrencePattern.recurring_select == 'RecurringMonthlyType' %}    
+        
+    {% elseif date.getRecurrencePattern.recurring_select == 'RecurringYearlyType' %}    
+        
+    {% endif %}
+    
+    {{ date(date.getRecurrencePattern.recurringEndDate)|date('d.m.Y') }}
+    
 {% endmacro %}

@@ -1167,8 +1167,8 @@ class DateController extends Controller
             unset($startDate);
             unset($endDate);
 
-            $recurringPatternArray['recurring_start_date'] = $dateItem->getStartingDay();
-            $recurringPatternArray['recurring_end_date'] = $formData['recurring_sub']['untilDate']->format('Y-m-d');
+            $recurringPatternArray['recurringStartDate'] = $dateItem->getStartingDay();
+            $recurringPatternArray['recurringEndDate'] = $formData['recurring_sub']['untilDate']->format('Y-m-d');
 
             foreach($recurringDateArray as $date) {
                 $tempDate = clone $dateItem;
