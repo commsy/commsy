@@ -1170,8 +1170,6 @@ class DateController extends Controller
             $recurringPatternArray['recurring_start_date'] = $dateItem->getStartingDay();
             $recurringPatternArray['recurring_end_date'] = $formData['recurring_sub']['untilDate']->format('Y-m-d');
 
-            error_log(print_r($recurringPatternArray, true));
-
             foreach($recurringDateArray as $date) {
                 $tempDate = clone $dateItem;
                 $tempDate->setItemID('');
@@ -1206,11 +1204,11 @@ class DateController extends Controller
                 }
                 $tempDate->setRecurrenceId($dateItem->getItemID());
                 $tempDate->setRecurrencePattern($recurringPatternArray);
-                //$tempDate->save();
+                $tempDate->save();
             }
             $dateItem->setRecurrenceId($dateItem->getItemID());
             $dateItem->setRecurrencePattern($recurringPatternArray);
-            //$dateItem->save();
+            $dateItem->save();
         } else {
             $datesManager = $legacyEnvironment->getDatesManager();
             $datesManager->resetLimits();
