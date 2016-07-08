@@ -54,6 +54,158 @@
                 <source>enddate</source>
                 <target>End</target>
             </trans-unit>
+            <trans-unit id="recurring date">
+                <source>recurring date</source>
+                <target>Recurring date</target>
+            </trans-unit>
+            <trans-unit id="RecurringDailyType">
+                <source>RecurringDailyType</source>
+                <target>Daily</target>
+            </trans-unit>
+            <trans-unit id="RecurringWeeklyType">
+                <source>RecurringWeeklyType</source>
+                <target>Weekly</target>
+            </trans-unit>
+            <trans-unit id="RecurringMonthlyType">
+                <source>RecurringMonthlyType</source>
+                <target>Monthly</target>
+            </trans-unit>
+            <trans-unit id="RecurringYearlyType">
+                <source>RecurringYearlyType</source>
+                <target>Yearly</target>
+            </trans-unit>
+            <trans-unit id="recurrenceDay">
+                <source>recurrenceDay</source>
+                <target>Das</target>
+            </trans-unit>
+            <trans-unit id="untilDate">
+                <source>untilDate</source>
+                <target>End date</target>
+            </trans-unit>
+            <trans-unit id="recurrenceWeek">
+                <source>recurrenceWeek</source>
+                <target>Week</target>
+            </trans-unit>
+            <trans-unit id="recurrenceDaysOfWeek">
+                <source>recurrenceDaysOfWeek</source>
+                <target>Day of week</target>
+            </trans-unit>
+            <trans-unit id="recurrenceMonth">
+                <source>recurrenceMonth</source>
+                <target>Month</target>
+            </trans-unit>
+            <trans-unit id="recurrenceDayOfMonthInterval">
+                <source>recurrenceDayOfMonthInterval</source>
+                <target>of month</target>
+            </trans-unit>
+            <trans-unit id="recurrenceDayOfMonth">
+                <source>recurrenceDayOfMonth</source>
+                <target>Day of month</target>
+            </trans-unit>
+            <trans-unit id="recurrenceMonthOfYear">
+                <source>recurrenceMonthOfYear</source>
+                <target>of the year</target>
+            </trans-unit>
+            <trans-unit id="first">
+                <source>first</source>
+                <target>first</target>
+            </trans-unit>
+            <trans-unit id="second">
+                <source>second</source>
+                <target>second</target>
+            </trans-unit>
+            <trans-unit id="third">
+                <source>third</source>
+                <target>third</target>
+            </trans-unit>
+            <trans-unit id="fourth">
+                <source>fourth</source>
+                <target>fourth</target>
+            </trans-unit>
+            <trans-unit id="fifth">
+                <source>fifth</source>
+                <target>fifth</target>
+            </trans-unit>
+            <trans-unit id="last">
+                <source>last</source>
+                <target>last</target>
+            </trans-unit>
+            <trans-unit id="monday">
+                <source>monday</source>
+                <target>Monday</target>
+            </trans-unit>
+            <trans-unit id="tuesday">
+                <source>tuesday</source>
+                <target>Tuesday</target>
+            </trans-unit>
+            <trans-unit id="wednesday">
+                <source>wednesday</source>
+                <target>Wednesday</target>
+            </trans-unit>
+            <trans-unit id="thursday">
+                <source>thursday</source>
+                <target>Thursday</target>
+            </trans-unit>
+            <trans-unit id="friday">
+                <source>friday</source>
+                <target>Friday</target>
+            </trans-unit>
+            <trans-unit id="saturday">
+                <source>saturday</source>
+                <target>Saturday</target>
+            </trans-unit>
+            <trans-unit id="sunday">
+                <source>sunday</source>
+                <target>Sunday</target>
+            </trans-unit>
+            <trans-unit id="january">
+                <source>january</source>
+                <target>January</target>
+            </trans-unit>
+            <trans-unit id="february">
+                <source>february</source>
+                <target>February</target>
+            </trans-unit>
+            <trans-unit id="march">
+                <source>march</source>
+                <target>March</target>
+            </trans-unit>
+            <trans-unit id="april">
+                <source>april</source>
+                <target>April</target>
+            </trans-unit>
+            <trans-unit id="may">
+                <source>may</source>
+                <target>May</target>
+            </trans-unit>
+            <trans-unit id="june">
+                <source>june</source>
+                <target>June</target>
+            </trans-unit>
+            <trans-unit id="july">
+                <source>july</source>
+                <target>July</target>
+            </trans-unit>
+            <trans-unit id="august">
+                <source>august</source>
+                <target>August</target>
+            </trans-unit>
+            <trans-unit id="september">
+                <source>september</source>
+                <target>September</target>
+            </trans-unit>
+            <trans-unit id="october">
+                <source>october</source>
+                <target>October</target>
+            </trans-unit>
+            <trans-unit id="november">
+                <source>november</source>
+                <target>November</target>
+            </trans-unit>
+            <trans-unit id="december">
+                <source>december</source>
+                <target>December</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
