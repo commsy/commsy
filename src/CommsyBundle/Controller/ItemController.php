@@ -87,6 +87,7 @@ class ItemController extends Controller
         }
         
         return array(
+            'save' => true,
             'roomId' => $roomId,
             'item' => $item,
             'modifierList' => $modifierList

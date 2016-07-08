@@ -50,7 +50,7 @@ class EtherpadEditSubscriber implements EventSubscriberInterface
         if ($enabled) {
             $result = $event->getControllerResult();
 
-            if (array_key_exists('isMaterialSave', $result)) {
+            if (array_key_exists('save', $result)) {
                 // get description text from etherpad
                 $etherpadService = $this->container->get('commsy.etherpad_service');
                 $client = $etherpadService->getClient();
