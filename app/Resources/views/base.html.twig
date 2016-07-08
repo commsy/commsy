@@ -37,11 +37,17 @@
                 <div class="uk-navbar-flip">
                     <div class="uk-navbar-content">
                         {# global search #}
-                        {{ render(controller('CommsyBundle:Search:searchForm')) }}
+                        {{ render(controller(
+                            'CommsyBundle:Search:searchForm',
+                            { 'roomId': app.request.attributes.get('roomId') }
+                        ))}}
                     </div>
                     
                     {# global actions #}
-                    {{ render(controller('CommsyBundle:User:globalNavbar')) }}
+                    {{ render(controller(
+                        'CommsyBundle:User:globalNavbar',
+                        { 'roomId': app.request.attributes.get('roomId') }
+                    ))}}
 
                     {% block additionalNavbarContent %}
                     {% endblock %}
@@ -104,7 +110,7 @@
                     </li>
 
                     <li>
-                        <a href="{{ path('commsy_room_listall', {}) }}">
+                        <a href="{{ path('commsy_room_listall', {'roomId': app.request.attributes.get('roomId') }) }}">
 
                             <i class="uk-icon-bars"></i>
                             Räume
