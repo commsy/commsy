@@ -17,15 +17,12 @@ class UploadController extends Controller
      */
     public function uploadAction($roomId, $itemId = NULL, Request $request)
     {
-
-        dump("Upload action reached!");
-
         $response = new JsonResponse();
 
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         $fileService = $this->get('commsy_legacy.file_service');
-        
+
         $files = $request->files->all();
 
         $saveFileIds = false;
@@ -140,7 +137,7 @@ class UploadController extends Controller
                 }
             }
         }
-        
+
         if ($saveFileIds) {
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             $tempManager = $legacyEnvironment->getManager($item->getItemType());
