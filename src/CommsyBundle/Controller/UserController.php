@@ -567,22 +567,43 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/user/{itemId}/rooms/{start}")
+     * @Route("/room/{roomId}/user/rooms/{start}")
      * @Template("CommsyBundle:Menu:room_list.html.twig")
      */
-    public function roomsAction($roomId, $itemId, Request $request, $max = 10, $start = 0)
+    public function roomsAction($roomId, $max = 10, $start = 0)
     {
         $userService = $this->get('commsy_legacy.user_service');
-        $user = $userService->getUser($itemId);
+        $user = $userService->getCurrentUserItem();
 
         // Room list feed
         $rooms = $userService->getRoomList($user);
-        $privateRoom= $user->getOwnRoom();
 
-        return array(
+        return [
+            'roomId' => $roomId,
             'roomList' => $rooms,
-            'privateRoom'=> $privateRoom);
+        ];
 
 
+    }
+
+    /**
+     * Displays the global user actions in top navbar.
+     * This is an embedded controller action.
+     *
+     * @Template()
+     * 
+     * @param  int $roomId The current room id
+     * @return Response The HTML response
+     */
+    public function globalNavbarAction($roomId)
+    {
+        $userService = $this->get('commsy.user_service');
+        $currentUserItem = $userService->getCurrentUserItem();
+
+        $privateRoomItem = $currentUserItem->getOwnRoom();
+
+        return [
+            'privateRoomItem' => $privateRoomItem,
+        ];
     }
 }

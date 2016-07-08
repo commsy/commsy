@@ -32,16 +32,18 @@ class Room
     /**
      * @var integer
      *
-     * @ORM\Column(name="creator_id", type="integer", nullable=false)
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="creator_id", referencedColumnName="item_id")
      */
-    private $creatorId = '0';
+    private $creator;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="modifier_id", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="modifier_id", referencedColumnName="item_id")
      */
-    private $modifierId;
+    private $modifier;
 
     /**
      * @var integer
@@ -172,6 +174,133 @@ class Room
         $this->communityRooms = new ArrayCollection();
     }
 
+    public function isIndexable()
+    {
+        return ($this->deleterId == null && $this->deletionDate == null);
+    }
+
+    public function getLanguage()
+    {
+        $extras = $this->getExtras();
+
+        if (isset($extras['LANGUAGE'])) {
+            return $extras['LANGUAGE'];
+        }
+
+        return 'user';
+    }
+
+    public function setLanguage($language)
+    {
+        $extras = $this->getExtras();
+        $extras['LANGUAGE'] = $language;
+        $this->setExtras($extras);
+
+        return $this;
+    }
+
+    public function getLogo()
+    {
+        return '';
+    }
+
+    public function getAccessCheck()
+    {
+        $extras = $this->getExtras();
+
+        if (isset($extras['CHECKNEWMEMBERS'])) {
+            $checkNewMembers = $extras['CHECKNEWMEMBERS'];
+
+            $mapping = array(
+                -1 => 'never',
+                2 => 'sometimes',
+                3 => 'code',
+            );
+
+            if (isset($mapping[$checkNewMembers])) {
+                return $mapping[$checkNewMembers];
+            }
+        }
+
+        return 'always';
+    }
+
+    public function setAccessCheck($access)
+    {
+        $mapping = array(
+            'never' => -1,
+            'sometimes' => 2,
+            'code' => 3,
+        );
+
+        $extras = $this->getExtras();
+        $extras['CHECKNEWMEMBERS'] = $mapping[$access];
+        $this->setExtras($extras);
+
+        return $this;
+    }
+
+    public function isProjectRoom()
+    {
+        return $this->type === 'project';
+    }
+
+    public function isCommunityRoom()
+    {
+        return $this->type === 'community';
+    }
+
+    public function isMaterialOpenForGuests()
+    {
+        $extras = $this->getExtras();
+        if (isset($extras['MATERIAL_GUESTS'])) {
+            $materialOpenForGuests = $extras['MATERIAL_GUESTS'];
+
+            return $materialOpenForGuests === 1;
+        }
+
+        return false;
+    }
+
+    public function setIsMaterialOpenForGuests($open)
+    {
+        $extras = $this->getExtras();
+        $extras['MATERIAL_GUESTS'] = $open;
+        $this->setExtras($extras);
+
+        return $this;
+    }
+
+    public function getCommunityRooms()
+    {
+        return $this->communityRooms;
+    }
+
+    public function isAssignmentRestricted()
+    {
+        $extras = $this->getExtras();
+        if (isset($extras['ROOMASSOCIATION'])) {
+            $roomAssociation = $extras['ROOMASSOCIATION'];
+
+            return $roomAssociation === 'onlymembers';
+        }
+
+        return false;
+    }
+
+    public function setAssignmentRestricted($isRestricted)
+    {
+        $roomAssociation = 'forall';
+
+        if ($isRestricted) {
+            $roomAssociation = 'onlymembers';
+        }
+
+        $extras = $this->getExtras();
+        $extras['ROOMASSOCIATION'] = $roomAssociation;
+        $this->setExtras($extras);
+    }
+
     /**
      * Get itemId
      *
@@ -204,54 +333,6 @@ class Room
     public function getContextId()
     {
         return $this->contextId;
-    }
-
-    /**
-     * Set creatorId
-     *
-     * @param integer $creatorId
-     *
-     * @return Room
-     */
-    public function setCreatorId($creatorId)
-    {
-        $this->creatorId = $creatorId;
-
-        return $this;
-    }
-
-    /**
-     * Get creatorId
-     *
-     * @return integer
-     */
-    public function getCreatorId()
-    {
-        return $this->creatorId;
-    }
-
-    /**
-     * Set modifierId
-     *
-     * @param integer $modifierId
-     *
-     * @return Room
-     */
-    public function setModifierId($modifierId)
-    {
-        $this->modifierId = $modifierId;
-
-        return $this;
-    }
-
-    /**
-     * Get modifierId
-     *
-     * @return integer
-     */
-    public function getModifierId()
-    {
-        return $this->modifierId;
     }
 
     /**
@@ -377,7 +458,7 @@ class Room
     /**
      * Set extras
      *
-     * @param string $extras
+     * @param mbarray $extras
      *
      * @return Room
      */
@@ -391,7 +472,7 @@ class Room
     /**
      * Get extras
      *
-     * @return string
+     * @return mbarray
      */
     public function getExtras()
     {
@@ -495,27 +576,27 @@ class Room
     }
 
     /**
-     * Set isOpenForGuests
+     * Set openForGuests
      *
-     * @param boolean $isOpenForGuests
+     * @param boolean $openForGuests
      *
      * @return Room
      */
-    public function setOpenForGuests($isOpenForGuests)
+    public function setOpenForGuests($openForGuests)
     {
-        $this->openForGuests = $isOpenForGuests;
+        $this->openForGuests = $openForGuests;
 
         return $this;
     }
 
     /**
-     * Get isOpenForGuests
+     * Get openForGuests
      *
      * @return boolean
      */
-    public function isOpenForGuests()
+    public function getOpenForGuests()
     {
-        return $this->openForGuests === 1;
+        return $this->openForGuests;
     }
 
     /**
@@ -638,125 +719,75 @@ class Room
         return $this->lastlogin;
     }
 
-    public function getLanguage()
+    /**
+     * Set creator
+     *
+     * @param \CommsyBundle\Entity\User $creator
+     *
+     * @return Room
+     */
+    public function setCreator(\CommsyBundle\Entity\User $creator = null)
     {
-        $extras = $this->getExtras();
-
-        if (isset($extras['LANGUAGE'])) {
-            return $extras['LANGUAGE'];
-        }
-
-        return 'user';
-    }
-
-    public function setLanguage($language)
-    {
-        $extras = $this->getExtras();
-        $extras['LANGUAGE'] = $language;
-        $this->setExtras($extras);
+        $this->creator = $creator;
 
         return $this;
     }
 
-    public function getLogo()
+    /**
+     * Get creator
+     *
+     * @return \CommsyBundle\Entity\User
+     */
+    public function getCreator()
     {
-        return '';
+        return $this->creator;
     }
 
-    public function getAccessCheck()
+    /**
+     * Set modifier
+     *
+     * @param \CommsyBundle\Entity\User $modifier
+     *
+     * @return Room
+     */
+    public function setModifier(\CommsyBundle\Entity\User $modifier = null)
     {
-        $extras = $this->getExtras();
-
-        if (isset($extras['CHECKNEWMEMBERS'])) {
-            $checkNewMembers = $extras['CHECKNEWMEMBERS'];
-
-            $mapping = array(
-                -1 => 'never',
-                2 => 'sometimes',
-                3 => 'code',
-            );
-
-            if (isset($mapping[$checkNewMembers])) {
-                return $mapping[$checkNewMembers];
-            }
-        }
-
-        return 'always';
-    }
-
-    public function setAccessCheck($access)
-    {
-        $mapping = array(
-            'never' => -1,
-            'sometimes' => 2,
-            'code' => 3,
-        );
-
-        $extras = $this->getExtras();
-        $extras['CHECKNEWMEMBERS'] = $mapping[$access];
-        $this->setExtras($extras);
+        $this->modifier = $modifier;
 
         return $this;
     }
 
-    public function isProjectRoom()
+    /**
+     * Get modifier
+     *
+     * @return \CommsyBundle\Entity\User
+     */
+    public function getModifier()
     {
-        return $this->type === 'project';
+        return $this->modifier;
     }
 
-    public function isCommunityRoom()
+    /**
+     * Add communityRoom
+     *
+     * @param \CommsyBundle\Entity\Room $communityRoom
+     *
+     * @return Room
+     */
+    public function addCommunityRoom(\CommsyBundle\Entity\Room $communityRoom)
     {
-        return $this->type === 'community';
-    }
-
-    public function isMaterialOpenForGuests()
-    {
-        $extras = $this->getExtras();
-        if (isset($extras['MATERIAL_GUESTS'])) {
-            $materialOpenForGuests = $extras['MATERIAL_GUESTS'];
-
-            return $materialOpenForGuests === 1;
-        }
-
-        return false;
-    }
-
-    public function setIsMaterialOpenForGuests($open)
-    {
-        $extras = $this->getExtras();
-        $extras['MATERIAL_GUESTS'] = $open;
-        $this->setExtras($extras);
+        $this->communityRooms[] = $communityRoom;
 
         return $this;
     }
 
-    public function getCommunityRooms()
+    /**
+     * Remove communityRoom
+     *
+     * @param \CommsyBundle\Entity\Room $communityRoom
+     */
+    public function removeCommunityRoom(\CommsyBundle\Entity\Room $communityRoom)
     {
-        return $this->communityRooms;
-    }
-
-    public function isAssignmentRestricted()
-    {
-        $extras = $this->getExtras();
-        if (isset($extras['ROOMASSOCIATION'])) {
-            $roomAssociation = $extras['ROOMASSOCIATION'];
-
-            return $roomAssociation === 'onlymembers';
-        }
-
-        return false;
-    }
-
-    public function setAssignmentRestricted($isRestricted)
-    {
-        $roomAssociation = 'forall';
-
-        if ($isRestricted) {
-            $roomAssociation = 'onlymembers';
-        }
-
-        $extras = $this->getExtras();
-        $extras['ROOMASSOCIATION'] = $roomAssociation;
-        $this->setExtras($extras);
+        $this->communityRooms->removeElement($communityRoom);
     }
 }
