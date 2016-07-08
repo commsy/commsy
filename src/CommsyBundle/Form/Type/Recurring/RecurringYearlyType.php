@@ -17,16 +17,49 @@ class RecurringYearlyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class, array(
+            ->add('month', TextType::class, array(
                 'constraints' => array(
                     new NotBlank(),
                 ),
-                'label' => 'title',
+                'label' => 'month',
                 'attr' => array(
                     'placeholder' => 'title',
-                    'class' => 'uk-form-width-medium cs-form-title',
+                    'class' => '',
                 ),
-                'translation_domain' => 'material',
+                'translation_domain' => 'date',
+            ))
+            ->add('recurrenceMonth', ChoiceType::class, array(
+                'placeholder' => false,
+                'choices' => array(
+                    'january' => 'january',
+                    'february' => 'february',
+                    'march' => 'march',
+                    'april' => 'april',
+                    'may' => 'may',
+                    'june' => 'june',
+                    'july' => 'july',
+                    'august' => 'august',
+                    'september' => 'september',
+                    'october' => 'october',
+                    'november' => 'november',
+                    'december' => 'december',
+                ),
+                'label' => 'recurrenceMonth',
+                'translation_domain' => 'date',
+                'required' => false,
+                'expanded' => true,
+                'multiple' => true
+            ))
+            ->add('untilDate', TextType::class, array(
+                'constraints' => array(
+                    new NotBlank(),
+                ),
+                'label' => 'untilDate',
+                'attr' => array(
+                    'placeholder' => 'title',
+                    'class' => '',
+                ),
+                'translation_domain' => 'date',
             ))
         ;
         

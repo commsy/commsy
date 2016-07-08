@@ -17,16 +17,27 @@ class RecurringDailyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class, array(
+            ->add('recurrenceDay', TextType::class, array(
                 'constraints' => array(
                     new NotBlank(),
                 ),
-                'label' => 'title',
+                'label' => 'recurrenceDay',
                 'attr' => array(
                     'placeholder' => 'title',
-                    'class' => 'uk-form-width-medium cs-form-title',
+                    'class' => '',
                 ),
-                'translation_domain' => 'material',
+                'translation_domain' => 'date',
+            ))
+            ->add('untilDate', TextType::class, array(
+                'constraints' => array(
+                    new NotBlank(),
+                ),
+                'label' => 'untilDate',
+                'attr' => array(
+                    'placeholder' => 'title',
+                    'class' => '',
+                ),
+                'translation_domain' => 'date',
             ))
         ;
         

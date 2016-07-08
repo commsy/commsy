@@ -17,16 +17,60 @@ class RecurringMonthlyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class, array(
+            ->add('month', TextType::class, array(
                 'constraints' => array(
                     new NotBlank(),
                 ),
-                'label' => 'title',
+                'label' => 'month',
                 'attr' => array(
                     'placeholder' => 'title',
-                    'class' => 'uk-form-width-medium cs-form-title',
+                    'class' => '',
                 ),
-                'translation_domain' => 'material',
+                'translation_domain' => 'date',
+            ))
+            ->add('recurrenceInterval', ChoiceType::class, array(
+                'placeholder' => false,
+                'choices' => array(
+                    'first' => 'first',
+                    'second' => 'second',
+                    'third' => 'third',
+                    'fourth' => 'fourth',
+                    'fifth' => 'fifth',
+                    'last' => 'last',
+                ),
+                'label' => 'recurrenceInterval',
+                'translation_domain' => 'date',
+                'required' => false,
+                'expanded' => true,
+                'multiple' => true
+            ))
+            ->add('recurrenceDay', ChoiceType::class, array(
+                'placeholder' => false,
+                'choices' => array(
+                    'monday' => 'monday',
+                    'tuesday' => 'tuesday',
+                    'wednesday' => 'wednesday',
+                    'thursday' => 'thursday',
+                    'friday' => 'friday',
+                    'saturday' => 'saturday',
+                    'sunday' => 'sunday',
+                ),
+                'label' => 'recurrenceDay',
+                'translation_domain' => 'date',
+                'required' => false,
+                'expanded' => true,
+                'multiple' => true
+            ))
+            ->add('untilDate', TextType::class, array(
+                'constraints' => array(
+                    new NotBlank(),
+                ),
+                'label' => 'untilDate',
+                'attr' => array(
+                    'placeholder' => 'title',
+                    'class' => '',
+                ),
+                'translation_domain' => 'date',
             ))
         ;
         
