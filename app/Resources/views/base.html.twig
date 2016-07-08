@@ -25,10 +25,6 @@
                 {% endblock %}
             </div>
 
-            {% block roomlist %}
-            {% endblock %}
-
-
             {% block side_navigation %}
             {% endblock %}
 
@@ -41,17 +37,11 @@
                 <div class="uk-navbar-flip">
                     <div class="uk-navbar-content">
                         {# global search #}
-                        {{ render(controller(
-                            'CommsyBundle:Search:searchForm',
-                            { 'roomId': app.request.attributes.get('roomId') }
-                        ))}}
+                        {{ render(controller('CommsyBundle:Search:searchForm')) }}
                     </div>
                     
                     {# global actions #}
-                    {{ render(controller(
-                        'CommsyBundle:User:globalNavbar',
-                        { 'roomId': app.request.attributes.get('roomId') }
-                    ))}}
+                    {{ render(controller('CommsyBundle:User:globalNavbar')) }}
 
                     {% block additionalNavbarContent %}
                     {% endblock %}
@@ -93,7 +83,7 @@
                                             <li data-url="{{!$item.url}}">
                                                 <a>
                                                     {{ $item.title }}
-                                                    <div>{{{ $item.text }}}</div>
+                                                    <div>{{ $item.text }}</div>
                                                 </a>
                                             </li>
                                             {{/items}}
@@ -111,6 +101,14 @@
                             </div>
 
                         </div>
+                    </li>
+
+                    <li>
+                        <a href="{{ path('commsy_room_listall', {}) }}">
+
+                            <i class="uk-icon-bars"></i>
+                            Räume
+                        </a>
                     </li>
                 </ul>
                 

@@ -17,12 +17,6 @@
     }}
 {% endblock %}
 
-{% block roomlist %}
-    {{ knp_menu_render('roomlist', 
-        {'template': 'CommsyBundle:Menu:knp_menu_roomlist.html.twig'})
-    }}
-{% endblock %}
-
 {% block additionalNavbarContent %}
     {% if serviceLinkExternal is defined %}
         <div class="uk-navbar-content">
