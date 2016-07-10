@@ -18,8 +18,6 @@ class DateDetailsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        error_log(print_r($options, true));
-        
         $builder
             ->add('start', DateTimeSelectType::class, array(
                 'constraints' => array(
@@ -73,7 +71,7 @@ class DateDetailsType extends AbstractType
             ))
         ;
             
-        if (!isset($options['constraints']['unsetRecurrence'])) {
+        if (!isset($options['attr']['unsetRecurrence'])) {
             $builder
                 ->add('recurring_select', ChoiceType::class, array(
                     'choices'  => array(

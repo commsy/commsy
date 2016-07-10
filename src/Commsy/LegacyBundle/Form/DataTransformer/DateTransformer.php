@@ -65,6 +65,7 @@ class DateTransformer implements DataTransformerInterface
 
             if ($dateItem->getRecurrencePattern() != '') {
                 $dateData = array_merge($dateData, $dateItem->getRecurrencePattern());
+                $dateData['recurring_sub']['untilDate'] = new \DateTime($dateData['recurringEndDate']);
             }
         }
 

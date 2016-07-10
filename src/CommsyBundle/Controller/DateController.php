@@ -754,18 +754,15 @@ class DateController extends Controller
             throw $this->createNotFoundException('No date found for id ' . $itemId);
         }
         $formData = $transformer->transform($dateItem);
-        
         $formOptions = array(
             'action' => $this->generateUrl('commsy_date_editdetails', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             )),
         );
-        
         if ($dateItem->getRecurrencePattern() != '') {
-            $formOptions['constraints']['unsetRecurrence'] = true;
+            $formOptions['attr']['unsetRecurrence'] = true;
         }
-        
         $form = $this->createForm(DateDetailsType::class, $formData, $formOptions);
         
         $form->handleRequest($request);
@@ -773,8 +770,6 @@ class DateController extends Controller
         $submittedFormData = $form->getData();
         
         $startDateConstraint = new NotBlank();
-        
-        // use the validator to validate the value
         $errorList = $this->get('validator')->validate(
             $submittedFormData['start']['date'],
             $startDateConstraint
