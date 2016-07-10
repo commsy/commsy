@@ -104,7 +104,7 @@
             </trans-unit>
             <trans-unit id="recurrenceMonthOfYear">
                 <source>recurrenceMonthOfYear</source>
-                <target>des Jahres</target>
+                <target>Monat des Jahres</target>
             </trans-unit>
             <trans-unit id="first">
                 <source>first</source>
@@ -222,7 +222,7 @@
             </trans-unit>
             <trans-unit id="yearlyDescription">
                 <source>yearlyDescription</source>
-                <target>Jeden %day%. Tag, bis: %date%</target>
+                <target>Jeden %day%. %month%, bis: %date%</target>
             </trans-unit>
         </body>
     </file>

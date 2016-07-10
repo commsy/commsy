@@ -477,7 +477,7 @@
     {% elseif date.getRecurrencePattern.recurring_select == 'RecurringMonthlyType' %}    
         {{ 'monthlyDescription'|trans({'%month%' : date.getRecurrencePattern.recurring_sub.recurrenceMonth, '%day%' : date.getRecurrencePattern.recurring_sub.recurrenceDayOfMonthInterval, '%dayOfWeek%' : date.getRecurrencePattern.recurring_sub.recurrenceDayOfMonth|trans({}, 'date'), '%date%': endDate}, 'date') }}
     {% elseif date.getRecurrencePattern.recurring_select == 'RecurringYearlyType' %}    
-        
+        {{ 'yearlyDescription'|trans({'%day%' : date.getRecurrencePattern.recurring_sub.recurrenceDayOfMonth, '%month%' : date.getRecurrencePattern.recurring_sub.recurrenceMonthOfYear|trans({}, 'date'), '%date%' : endDate}, 'date') }}
     {% endif %}
 
 {% endmacro %}

@@ -1149,7 +1149,7 @@ class DateController extends Controller
                 $yearCount = $startDate->format('Y');
                 $year = new \DateTime($yearCount . '-01-01');
                 while($year <= $endDate) {
-                    $date = new \DateTime($formData['recurring_sub']['recurrenceMonth'] . '-' . $formData['recurring_sub']['recurrenceMonthOfYear'] . '-' . $yearCount);
+                    $date = new \DateTime($formData['recurring_sub']['recurrenceDayOfMonth'] . '-' . $formData['recurring_sub']['recurrenceMonthOfYear'] . '-' . $yearCount);
                     if($date > $startDate && $date <= $endDate) {
                         $recurringDateArray[] = $date;
                     }
@@ -1160,7 +1160,7 @@ class DateController extends Controller
                     $year = new \DateTime($yearCount . '-01-01');
                 }
 
-                $recurringPatternArray['recurring_sub']['recurrenceMonth'] = $formData['recurring_sub']['recurrenceMonth'];
+                $recurringPatternArray['recurring_sub']['recurrenceDayOfMonth'] = $formData['recurring_sub']['recurrenceDayOfMonth'];
                 $recurringPatternArray['recurring_sub']['recurrenceMonthOfYear'] = $formData['recurring_sub']['recurrenceMonthOfYear'];
             }
 

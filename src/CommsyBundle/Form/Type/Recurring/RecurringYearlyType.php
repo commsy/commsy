@@ -18,11 +18,11 @@ class RecurringYearlyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('recurrenceMonth', TextType::class, array(
+            ->add('recurrenceDayOfMonth', TextType::class, array(
                 'constraints' => array(
                     new NotBlank(),
                 ),
-                'label' => 'recurrenceMonth',
+                'label' => 'recurrenceDayOfMonth',
                 'attr' => array(
                 ),
                 'translation_domain' => 'date',
