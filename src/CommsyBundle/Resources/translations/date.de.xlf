@@ -108,27 +108,27 @@
             </trans-unit>
             <trans-unit id="first">
                 <source>first</source>
-                <target>erster</target>
+                <target>ersten</target>
             </trans-unit>
             <trans-unit id="second">
                 <source>second</source>
-                <target>zweiter</target>
+                <target>zweiten</target>
             </trans-unit>
             <trans-unit id="third">
                 <source>third</source>
-                <target>dritter</target>
+                <target>dritten</target>
             </trans-unit>
             <trans-unit id="fourth">
                 <source>fourth</source>
-                <target>vierter</target>
+                <target>vierten</target>
             </trans-unit>
             <trans-unit id="fifth">
                 <source>fifth</source>
-                <target>fünfter</target>
+                <target>fünften</target>
             </trans-unit>
             <trans-unit id="last">
                 <source>last</source>
-                <target>letzter</target>
+                <target>letzten</target>
             </trans-unit>
             <trans-unit id="monday">
                 <source>monday</source>
@@ -206,8 +206,6 @@
                 <source>december</source>
                 <target>Dezember</target>
             </trans-unit>
-            
-            
             <trans-unit id="dailyDescription">
                 <source>dailyDescription</source>
                 <target>Jeden %day%. Tag, bis: %date%</target>
@@ -218,7 +216,7 @@
             </trans-unit>
             <trans-unit id="monthlyDescription">
                 <source>monthlyDescription</source>
-                <target>Jeden %month%. Monat am %day%. %dayOfWeek%, bis: %date%</target>
+                <target>Jeden %month%. Monat am %day% %dayOfWeek%, bis: %date%</target>
             </trans-unit>
             <trans-unit id="yearlyDescription">
                 <source>yearlyDescription</source>
