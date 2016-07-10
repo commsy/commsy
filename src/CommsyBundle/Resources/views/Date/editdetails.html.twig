@@ -1,4 +1,5 @@
 {% form_theme form 'CommsyBundle:Form:uikit_stacked_layout.html.twig' %}
+{% import 'CommsyBundle:Date:macros.html.twig' as macrosDate %}
 
 <hr class="uk-width-9-10  cs-detail-divider"/>
 <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
@@ -44,12 +45,22 @@
                 {% endfor %}
             </div>
             
+            {% if form.recurring_select is defined %}
             <div class="uk-flex uk-margin-small-top">
                 <div>
                     {{ form_label(form.recurring_select) }}
                     {{ form_widget(form.recurring_select) }}
                 </div>
             </div>
+            {% else %}
+            <div class="uk-margin-top uk-margin-bottom">
+                <label class="uk-form-label">{{ 'recurring date'|trans({}, 'date') }}</label>
+                <div class="uk-form-controls">
+                    {{ macrosDate.recurringDateDescription(date) }} <i>({{ 'recurring date no chance hint'|trans({}, 'date') }})</i>
+                </div>
+            </div>
+            {% endif %}
+            
             {% if form.recurring_sub is defined %}
             <div class="uk-flex uk-margin-small-top">
                 <div id="date_recurring_sub">

@@ -34,12 +34,12 @@ class AddRecurringFieldListener implements EventSubscriberInterface
         $form = $event->getForm();
 
         if (isset($data['recurring_select']) && $data['recurring_select'] != 'none') {
-            $bibNamespace = 'CommsyBundle\Form\Type\Recurring';
+            $recurringNamespace = 'CommsyBundle\Form\Type\Recurring';
             if (!empty($data['recurring_select'])) {
-                $class = $bibNamespace.'\\'.$data['recurring_select'];
+                $class = $recurringNamespace.'\\'.$data['recurring_select'];
                 $form->add('recurring_sub', $class);
             } else {
-                $class = $bibNamespace.'\\'.'RecurringNoneType';
+                $class = $recurringNamespace.'\\'.'RecurringNoneType';
                 $form->add('recurring_sub', $class);
             }
         }
@@ -51,12 +51,12 @@ class AddRecurringFieldListener implements EventSubscriberInterface
         $form = $event->getForm();
 
         if (isset($data['recurring_select']) && $data['recurring_select'] != 'none') {
-            $bibNamespace = 'CommsyBundle\Form\Type\Recurring';
-            if (!empty($data['recurring_select']) && $data['recurring_select'] != 'BiblioType') {
-                $class = $bibNamespace.'\\'.$data['recurring_select'];
+            $recurringNamespace = 'CommsyBundle\Form\Type\Recurring';
+            if (!empty($data['recurring_select']) && $data['recurring_select'] != 'RecurringNoneType') {
+                $class = $recurringNamespace.'\\'.$data['recurring_select'];
                 $form->add('recurring_sub', $class);
             } else {
-                $class = $bibNamespace.'\\'.'RecurringNoneType';
+                $class = $recurringNamespace.'\\'.'RecurringNoneType';
                 $form->add('recurring_sub', $class);
             }
         }

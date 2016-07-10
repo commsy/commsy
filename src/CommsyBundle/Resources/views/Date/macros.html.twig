@@ -465,7 +465,6 @@
 
 {% macro recurringDateDescription(date) %}
     {% set endDate = date(date.getRecurrencePattern.recurringEndDate)|date('d.m.Y') %}
-
     {% if date.getRecurrencePattern.recurring_select == 'RecurringDailyType' %}    
         {{ 'dailyDescription'|trans({'%day%' : date.getRecurrencePattern.recurring_sub.recurrenceDay, '%date%' : endDate}, 'date') }}
     {% elseif date.getRecurrencePattern.recurring_select == 'RecurringWeeklyType' %}
@@ -491,5 +490,4 @@
     {% elseif date.getRecurrencePattern.recurring_select == 'RecurringYearlyType' %}    
         {{ 'yearlyDescription'|trans({'%day%' : date.getRecurrencePattern.recurring_sub.recurrenceDayOfMonth, '%month%' : date.getRecurrencePattern.recurring_sub.recurrenceMonthOfYear|trans({}, 'date'), '%date%' : endDate}, 'date') }}
     {% endif %}
-
 {% endmacro %}

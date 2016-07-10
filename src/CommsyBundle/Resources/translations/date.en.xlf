@@ -222,6 +222,10 @@
                 <source>yearlyDescription</source>
                 <target>Every %day%. %month%, until: %date%</target>
             </trans-unit>
+            <trans-unit id="recurring date no chance hint">
+                <source>recurring date no chance hint</source>
+                <target>This settings cannot be changed</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -18,6 +18,8 @@ class DateDetailsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        error_log(print_r($options, true));
+        
         $builder
             ->add('start', DateTimeSelectType::class, array(
                 'constraints' => array(
@@ -69,19 +71,27 @@ class DateDetailsType extends AbstractType
                 'expanded' => true,
                 'multiple' => false
             ))
-            ->add('recurring_select', ChoiceType::class, array(
-                'choices'  => array(
-                    'RecurringDailyType' => 'RecurringDailyType',
-                    'RecurringWeeklyType' => 'RecurringWeeklyType',
-                    'RecurringMonthlyType' => 'RecurringMonthlyType',
-                    'RecurringYearlyType' => 'RecurringYearlyType',
-                ),
-                'label' => 'recurring date',
-                'choice_translation_domain' => true,
-                'required' => false,
-                'translation_domain' => 'date'
-            ))
-            ->addEventSubscriber(new AddRecurringFieldListener())
+        ;
+            
+        if (!isset($options['constraints']['unsetRecurrence'])) {
+            $builder
+                ->add('recurring_select', ChoiceType::class, array(
+                    'choices'  => array(
+                        'RecurringDailyType' => 'RecurringDailyType',
+                        'RecurringWeeklyType' => 'RecurringWeeklyType',
+                        'RecurringMonthlyType' => 'RecurringMonthlyType',
+                        'RecurringYearlyType' => 'RecurringYearlyType',
+                    ),
+                    'label' => 'recurring date',
+                    'choice_translation_domain' => true,
+                    'required' => false,
+                    'translation_domain' => 'date'
+                ))
+                ->addEventSubscriber(new AddRecurringFieldListener())
+            ;
+        }
+            
+        $builder
             ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',

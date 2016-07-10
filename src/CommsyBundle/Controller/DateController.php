@@ -754,13 +754,19 @@ class DateController extends Controller
             throw $this->createNotFoundException('No date found for id ' . $itemId);
         }
         $formData = $transformer->transform($dateItem);
-        $form = $this->createForm(DateDetailsType::class, $formData, array(
+        
+        $formOptions = array(
             'action' => $this->generateUrl('commsy_date_editdetails', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId,
-            ))
-        ));
+            )),
+        );
         
+        if ($dateItem->getRecurrencePattern() != '') {
+            $formOptions['constraints']['unsetRecurrence'] = true;
+        }
+        
+        $form = $this->createForm(DateDetailsType::class, $formData, $formOptions);
         
         $form->handleRequest($request);
         
@@ -842,6 +848,7 @@ class DateController extends Controller
             'showHashtags' => $current_context->withBuzzwords(),
             'showCategories' => $current_context->withTags(),
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
+            'date' => $dateItem
         );
     }
     

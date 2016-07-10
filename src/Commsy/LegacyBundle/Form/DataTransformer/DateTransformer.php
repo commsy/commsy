@@ -63,7 +63,9 @@ class DateTransformer implements DataTransformerInterface
                 $dateData['color'] = 'cs-date-color-no-color';
             }
 
-            $dateData = array_merge($dateData, $dateItem->getRecurrencePattern());
+            if ($dateItem->getRecurrencePattern() != '') {
+                $dateData = array_merge($dateData, $dateItem->getRecurrencePattern());
+            }
         }
 
         return $dateData;
