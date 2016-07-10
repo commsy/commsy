@@ -404,6 +404,16 @@
                         {{ date.dateDescription }}
                     </td>
                 </tr>
+                {% if date.getRecurrencePattern is defined and not date.getRecurrencePattern is empty %}
+                    <tr>
+                        <td class="uk-text-top">
+                            <strong>{{ "recurring date"|trans({},'date') }}</strong>
+                        </td>
+                        <td class="uk-text-top">
+                            {{ _self.recurringDateDescription(date) }}
+                        </td>
+                    </tr>
+                {% endif %}
                 <tr>
                     <td class="uk-text-top">
                         <strong>{{ "place"|trans({},'date') }}</strong>
@@ -449,5 +459,35 @@
                         {{  macros.userIcon(participant) }}
                     {% endif %}
         {% endfor %}
+    {% endif %}
+{% endmacro %}
+
+
+{% macro recurringDateDescription(date) %}
+    {% set endDate = date(date.getRecurrencePattern.recurringEndDate)|date('d.m.Y') %}
+    {% if date.getRecurrencePattern.recurring_select == 'RecurringDailyType' %}    
+        {{ 'dailyDescription'|trans({'%day%' : date.getRecurrencePattern.recurring_sub.recurrenceDay, '%date%' : endDate}, 'date') }}
+    {% elseif date.getRecurrencePattern.recurring_select == 'RecurringWeeklyType' %}
+        {% set daysOfWeek = [] %}
+        {% for weekday in date.getRecurrencePattern.recurring_sub.recurrenceDaysOfWeek %}
+            {% set daysOfWeek = daysOfWeek|merge([weekday|trans({}, 'date')]) %}
+        {% endfor %}
+        {{ 'weeklyDescription'|trans({'%week%' : date.getRecurrencePattern.recurring_sub.recurrenceWeek, '%daysOfWeek%' : daysOfWeek|join(', '), '%date%' : endDate}, 'date') }}
+    {% elseif date.getRecurrencePattern.recurring_select == 'RecurringMonthlyType' %}
+        {% set tempDayOfMonthInterval = 'first'|trans({}, 'date') %}
+        {% if date.getRecurrencePattern.recurring_sub.recurrenceDayOfMonthInterval == '2' %}
+            {% set tempDayOfMonthInterval = 'second'|trans({}, 'date') %}
+        {% elseif date.getRecurrencePattern.recurring_sub.recurrenceDayOfMonthInterval == '3' %}
+            {% set tempDayOfMonthInterval = 'third'|trans({}, 'date') %}
+        {% elseif date.getRecurrencePattern.recurring_sub.recurrenceDayOfMonthInterval == '4' %}
+            {% set tempDayOfMonthInterval = 'fourth'|trans({}, 'date') %}
+        {% elseif date.getRecurrencePattern.recurring_sub.recurrenceDayOfMonthInterval == '5' %}
+            {% set tempDayOfMonthInterval = 'fifth'|trans({}, 'date') %}
+        {% elseif date.getRecurrencePattern.recurring_sub.recurrenceDayOfMonthInterval == 'last' %}
+            {% set tempDayOfMonthInterval = 'last'|trans({}, 'date') %}
+        {% endif %}
+        {{ 'monthlyDescription'|trans({'%month%' : date.getRecurrencePattern.recurring_sub.recurrenceMonth, '%day%' : tempDayOfMonthInterval, '%dayOfWeek%' : date.getRecurrencePattern.recurring_sub.recurrenceDayOfMonth|trans({}, 'date'), '%date%': endDate}, 'date') }}
+    {% elseif date.getRecurrencePattern.recurring_select == 'RecurringYearlyType' %}    
+        {{ 'yearlyDescription'|trans({'%day%' : date.getRecurrencePattern.recurring_sub.recurrenceDayOfMonth, '%month%' : date.getRecurrencePattern.recurring_sub.recurrenceMonthOfYear|trans({}, 'date'), '%date%' : endDate}, 'date') }}
     {% endif %}
 {% endmacro %}

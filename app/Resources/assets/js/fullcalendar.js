@@ -29,7 +29,9 @@
             },
             eventMouseover: function(calEvent, jsEvent, view) {
                 $(jsEvent.currentTarget).tooltipster({
-                    content: $(renderEvent(calEvent))
+                    content: $(renderEvent(calEvent)),
+                    delay: 0,
+                    animationDuration: 0,
                 }).tooltipster('show');
             },
             eventMouseout: function(calEvent, jsEvent, view) {
@@ -88,6 +90,14 @@
             titleDisplay = ' ('+calEvent.contextTitle+')';
         }
         
+        let recurringDescription = '';
+        if (calEvent.recurringDescription != '') {
+            recurringDescription = '<tr>'
+                                  +'<td>Serientermin:</td>'
+                                  +'<td>'+calEvent.recurringDescription+'</td>'
+                                  +'</tr>';
+        }
+        
         return '<div>'
                 +'<table>'
                 +'<tr>'
@@ -97,12 +107,15 @@
                 +'<td>Datum:</td>'
                 +'<td>'+calEvent.description+'</td>'
                 +'</tr>'
+                +recurringDescription
                 +'<tr>'
                 +'<td>Ort:</td>'
                 +'<td>'+calEvent.place+'</td>'
                 +'</tr>'
+                +'<tr>'
                 +'<td>Teilnehmer:</td>'
                 +'<td>'+calEvent.participants+'</td>'
+                +'</tr>'
                 +'</tr>'
                 +'</table>'
                 +'</div>';
