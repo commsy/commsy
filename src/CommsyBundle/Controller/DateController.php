@@ -812,7 +812,8 @@ class DateController extends Controller
         );
         
         if ($form->isValid() && (count($errorList) === 0)) {
-            if ($form->get('save')->isClicked()) {
+            $saveType = $form->getClickedButton()->getName();
+            if ($saveType == 'save') {
                 $formData = $form->getData();
                 
                 $valuesBeforeChange = array();
@@ -863,15 +864,34 @@ class DateController extends Controller
                     $item->setDraftStatus(0);
                     $item->saveAsItem();
                 }
+            } else if ($saveType == 'saveThisDate') {
+                $formData = $form->getData();
+                $dateItem = $transformer->applyTransformation($dateItem, $formData);
+                $dateItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                $dateItem->save();
+            } else if ($saveType == 'saveAllDates') {
+                $dateService = $this->get('commsy_legacy.date_service');
+                $datesArray = $dateService->getRecurringDates($dateItem->getContextId(), $dateItem->getRecurrenceId());
+                $formData = $form->getData();
+                $dateItem = $transformer->applyTransformation($dateItem, $formData);
+                $dateItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                $dateItem->save();
+                foreach ($datesArray as $tempDate) {
+                    $tempDate->setStartingTime($dateItem->getStartingTime());
+                    $tempDate->setEndingTime($dateItem->getEndingTime());
+                    $tempDate->setPlace($dateItem->getPlace());
+                    $tempDate->setColor($dateItem->getColor());
+                    $tempDate->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                    $tempDate->save();
+                }
             } else if ($form->get('cancel')->isClicked()) {
                 // ToDo ...
-            }
+            } 
             return $this->redirectToRoute('commsy_date_savedetails', array('roomId' => $roomId, 'itemId' => $itemId));
-        } else {
+        }else {
             if (count($errorList) > 0) {
                 $form->get('start')->addError(new FormError('Start date must not be empty'));
             }
-            
         }
         
         return array(
@@ -1049,9 +1069,6 @@ class DateController extends Controller
     
     
     function saveRecurringDates($dateItem, $isNewRecurring, $valuesToChange, $formData){
-        error_log(print_r($formData, true));
-        
-        
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
        
         if($isNewRecurring){

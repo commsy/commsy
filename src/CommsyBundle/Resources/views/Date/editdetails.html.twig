@@ -78,9 +78,18 @@
             
         </div>
         <div class="uk-flex uk-margin-small-top">
+            {% if form.recurring_select is defined %}
             <div class="uk-margin-small-left">
                 {{ form_row(form.save) }}
             </div>
+            {% else %}
+            <div class="uk-margin-small-left">
+                {{ form_row(form.saveThisDate) }}
+            </div>
+            <div class="uk-margin-small-left">
+                {{ form_row(form.saveAllDates) }}
+            </div>
+            {% endif %}
             <div class="uk-margin-small-left">
                 {{ form_row(form.cancel) }}
             </div>

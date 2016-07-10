@@ -87,25 +87,51 @@ class DateDetailsType extends AbstractType
                 ))
                 ->addEventSubscriber(new AddRecurringFieldListener())
             ;
+            $builder
+                ->add('save', SubmitType::class, array(
+                    'attr' => array(
+                        'class' => 'uk-button-primary',
+                    ),
+                    'label' => 'save',
+                    'translation_domain' => 'form',
+                ))
+                ->add('cancel', SubmitType::class, array(
+                    'attr' => array(
+                        'class' => 'uk-button-primary',
+                        'formnovalidate' => '',
+                    ),
+                    'label' => 'cancel',
+                    'translation_domain' => 'form',
+                ))
+            ;
+        } else {
+            $builder
+                ->add('saveThisDate', SubmitType::class, array(
+                    'attr' => array(
+                        'class' => 'uk-button-primary',
+                    ),
+                    'label' => 'saveThisDate',
+                    'translation_domain' => 'form',
+                ))
+                ->add('saveAllDates', SubmitType::class, array(
+                    'attr' => array(
+                        'class' => 'uk-button-primary',
+                    ),
+                    'label' => 'saveAllDates',
+                    'translation_domain' => 'form',
+                ))
+                ->add('cancel', SubmitType::class, array(
+                    'attr' => array(
+                        'class' => 'uk-button-primary',
+                        'formnovalidate' => '',
+                    ),
+                    'label' => 'cancel',
+                    'translation_domain' => 'form',
+                ))
+            ;
         }
             
-        $builder
-            ->add('save', SubmitType::class, array(
-                'attr' => array(
-                    'class' => 'uk-button-primary',
-                ),
-                'label' => 'save',
-                'translation_domain' => 'form',
-            ))
-            ->add('cancel', SubmitType::class, array(
-                'attr' => array(
-                    'class' => 'uk-button-primary',
-                    'formnovalidate' => '',
-                ),
-                'label' => 'cancel',
-                'translation_domain' => 'form',
-            ))
-        ;
+        
         
     }
 

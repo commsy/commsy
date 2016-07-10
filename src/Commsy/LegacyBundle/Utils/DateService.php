@@ -96,8 +96,9 @@ class DateService
         return $this->dateManager->getNewItem();
     }
     
-        public function getCountArray($roomId)
+    public function getCountArray($roomId)
     {
+        $this->dateManager->reset();
         $this->dateManager->setContextLimit($roomId);
         $this->dateManager->setWithoutDateModeLimit();
         $this->dateManager->select();
@@ -109,5 +110,16 @@ class DateService
         $countDatelArray['countAll'] = $this->dateManager->getCountAll();
 
         return $countDatelArray;
+    }
+    
+    public function getRecurringDates($roomId, $recurringId)
+    {
+        $this->dateManager->reset();
+        $this->dateManager->setContextLimit($roomId);
+        $this->dateManager->setRecurrenceLimit($recurringId);
+        $this->dateManager->setWithoutDateModeLimit();
+        $this->dateManager->select();
+        $dateList = $this->dateManager->get();
+        return $dateList->to_array();
     }
 }
