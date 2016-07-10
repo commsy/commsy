@@ -1,0 +1,25 @@
+{% extends 'CommsyBundle:Base:list.html.twig' %}
+
+{% block listTitle %}
+    {{ 'Rooms'|trans([], 'room') }}
+{% endblock %}
+
+{% block feed %}
+    <ul id="room-feed" class="uk-comment-list" data-uk-observe>
+        {{ render(controller(
+            'CommsyBundle:Room:feedAll', {
+                'roomId': roomId,
+                'roomFilter': app.request.query.get('room_filter')
+            }
+        ))}}
+    </ul>
+
+    <div class="feed-load-more" data-uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{
+        "url": "{{ app.request.baseURL }}/room/{{ roomId }}/all/feed/",
+        "target": "#room-feed",
+        "data": "{\"roomFilter\": \"123\"}"
+    }'>
+        <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
+        <div class="cs-toggle-class"></div>
+    </div> 
+{% endblock %}

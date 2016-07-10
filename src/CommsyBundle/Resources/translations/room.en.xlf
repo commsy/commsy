@@ -74,6 +74,30 @@
                 <source>moderation support</source>
                 <target>E-mail to moderator/s</target>
             </trans-unit>
+            <trans-unit id="room-nav-title">
+                <source>Rooms</source>
+                <target>Rooms</target>
+            </trans-unit>
+            <trans-unit id="room-filter-label-membership">
+                <source>Membership</source>
+                <target>Membership</target>
+            </trans-unit>
+            <trans-unit id="room-filter-label-type">
+                <source>Type</source>
+                <target>Type</target>
+            </trans-unit>
+            <trans-unit id="room-filter-choice-all">
+                <source>All</source>
+                <target>All</target>
+            </trans-unit>
+            <trans-unit id="room-filter-choice-project">
+                <source>Project Rooms</source>
+                <target>Project Rooms</target>
+            </trans-unit>
+            <trans-unit id="room-filter-choice-community">
+                <source>Community Rooms</source>
+                <target>Community Rooms</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

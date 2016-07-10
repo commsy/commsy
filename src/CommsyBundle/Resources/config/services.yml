@@ -125,6 +125,12 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
+    commsy.listener.get_room_membership_filter:
+        class: CommsyBundle\EventListener\RoomMembershipFilterConditionListener
+        arguments: ['@commsy_legacy.user_service']
+        tags:
+            - { name: kernel.event_listener, event: lexik_form_filter.apply.orm.room_filter.membership , method: onGetFilterCondition }
+
     # Search
     commsy.search.manager:
         class: CommsyBundle\Search\SearchManager
@@ -284,6 +290,12 @@ services:
     twig.extension.room:
         class: CommsyBundle\Twig\Extension\RoomExtension
         arguments: ['@commsy_legacy.environment']
+        tags:
+            - { name: twig.extension }
+
+    twig.extension.log:
+        class: CommsyBundle\Twig\Extension\LogarithmExtension
+        public: false
         tags:
             - { name: twig.extension }
 

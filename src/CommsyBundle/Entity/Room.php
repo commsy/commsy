@@ -48,9 +48,10 @@ class Room
     /**
      * @var integer
      *
-     * @ORM\Column(name="deleter_id", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="deleter_id", referencedColumnName="item_id", nullable=true)
      */
-    private $deleterId;
+    private $deleter;
 
     /**
      * @var \DateTime
@@ -333,30 +334,6 @@ class Room
     public function getContextId()
     {
         return $this->contextId;
-    }
-
-    /**
-     * Set deleterId
-     *
-     * @param integer $deleterId
-     *
-     * @return Room
-     */
-    public function setDeleterId($deleterId)
-    {
-        $this->deleterId = $deleterId;
-
-        return $this;
-    }
-
-    /**
-     * Get deleterId
-     *
-     * @return integer
-     */
-    public function getDeleterId()
-    {
-        return $this->deleterId;
     }
 
     /**
@@ -765,6 +742,30 @@ class Room
     public function getModifier()
     {
         return $this->modifier;
+    }
+
+    /**
+     * Set deleter
+     *
+     * @param \CommsyBundle\Entity\User $deleter
+     *
+     * @return Room
+     */
+    public function setDeleter(\CommsyBundle\Entity\User $deleter = null)
+    {
+        $this->deleter = $deleter;
+
+        return $this;
+    }
+
+    /**
+     * Get deleter
+     *
+     * @return \CommsyBundle\Entity\User
+     */
+    public function getDeleter()
+    {
+        return $this->deleter;
     }
 
     /**

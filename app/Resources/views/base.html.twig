@@ -65,11 +65,19 @@
                 <a href="" class="uk-navbar-toggle uk-visible-small"></a>
                 
                 <ul class="uk-navbar-nav">
+                    <li>
+                        <a class="cs-link-highlight" href="{{ path('commsy_room_listall', {'roomId': app.request.attributes.get('roomId') }) }}">
+
+                            <i class="uk-icon-bars"></i>
+                            {{ 'Rooms'|trans([], 'room') }}
+                        </a>
+                    </li>
+
                     <li data-uk-dropdown="{mode:'click'}" data-commsy-room-navigation="{
                         source:'{{ path('commsy_search_roomnavigation', {'roomId': app.request.attributes.get('roomId') }) }}',
                         minLength: 0
                     }">
-                        <a id="cs-room-title" href>
+                        <a class="cs-link-highlight" href>
                             {% block roomTitle %}
                                 {{ app.request.attributes.get('roomId')|roomTitle }}
                             {% endblock %}
@@ -107,14 +115,6 @@
                             </div>
 
                         </div>
-                    </li>
-
-                    <li>
-                        <a href="{{ path('commsy_room_listall', {'roomId': app.request.attributes.get('roomId') }) }}">
-
-                            <i class="uk-icon-bars"></i>
-                            Räume
-                        </a>
                     </li>
                 </ul>
                 

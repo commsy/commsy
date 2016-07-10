@@ -11,11 +11,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Filter\HomeFilterType;
 use CommsyBundle\Form\Type\ModerationSupportType;
+use CommsyBundle\Filter\RoomFilterType;
 
 class RoomController extends Controller
 {
     /**
-     * @Route("/room/{roomId}")
+     * @Route("/room/{roomId}", requirements={
+     *     "roomId": "\d+"
+     * })
      * @Template()
      */
     public function homeAction($roomId, Request $request)
@@ -103,7 +106,9 @@ class RoomController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/feed/{start}/{sort}")
+     * @Route("/room/{roomId}/feed/{start}/{sort}", requirements={
+     *     "roomId": "\d+"
+     * })
      * @Template("CommsyBundle:Room:list.html.twig")
      */
     public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
@@ -157,7 +162,9 @@ class RoomController extends Controller
     }
     
     /**
-     * @Route("/room/{roomId}/moderationsupport")
+     * @Route("/room/{roomId}/moderationsupport", requirements={
+     *     "roomId": "\d+"
+     * })
      * @Template()
      */
     public function moderationsupportAction($roomId, Request $request)
@@ -212,5 +219,89 @@ class RoomController extends Controller
         return array(
             'form' => $form->createView(),
         );
+    }
+
+    /**
+     *
+     * @Route("/room/{roomId}/all", requirements={
+     *     "roomId": "\d+"
+     * })
+     * @Template()
+     * 
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function listAllAction($roomId, Request $request)
+    {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+
+        $repository = $this->getDoctrine()->getRepository('CommsyBundle:Room');
+
+        $roomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
+        $roomQueryBuilder->select($roomQueryBuilder->expr()->count('r.itemId'));
+
+        $countAll = $roomQueryBuilder->getQuery()->getSingleScalarResult();
+        $count = $countAll;
+
+        $filterForm = $this->createForm(RoomFilterType::class);
+        $filterForm->handleRequest($request);
+
+        if ($filterForm->isValid()) {
+            $this->get('lexik_form_filter.query_builder_updater')
+                ->addFilterConditions($filterForm, $roomQueryBuilder);
+
+            $count = $roomQueryBuilder->getQuery()->getSingleScalarResult();
+        }
+
+        return [
+            'roomId' => $roomId,
+            'form' => $filterForm->createView(),
+            'itemsCountArray' => [
+                'count' => $count,
+                'countAll' => $countAll,
+            ],
+        ];
+    }
+
+    /**
+     * @Route("/room/{roomId}/all/feed/{start}/{sort}")
+     * @Template()
+     */
+    public function feedAllAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
+    {
+        // extract current filter from parameter bag (embedded controller call)
+        // or from query paramters (AJAX)
+        $roomFilter = $request->get('roomFilter');
+        if (!$roomFilter) {
+            $roomFilter = $request->query->get('room_filter');
+        }
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+
+        $repository = $this->getDoctrine()
+            ->getRepository('CommsyBundle:Room');
+
+        $roomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
+        $roomQueryBuilder->setMaxResults($max);
+        $roomQueryBuilder->setFirstResult($start);
+
+        if ($roomFilter) {
+            $filterForm = $this->createForm(RoomFilterType::class, $roomFilter);
+
+            // manually bind values from the request
+            $filterForm->submit($roomFilter);
+
+            $this->get('lexik_form_filter.query_builder_updater')
+                    ->addFilterConditions($filterForm, $roomQueryBuilder);
+        }
+
+        $rooms = $roomQueryBuilder->getQuery()->getResult();
+
+        return [
+            'portal' => $portalItem,
+            'rooms' => $rooms,
+        ];
     }
 }
