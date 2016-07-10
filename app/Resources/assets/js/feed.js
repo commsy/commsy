@@ -2,19 +2,19 @@
 
     'use strict';
 
-    var feedStart = 10;
-    var sort = 'date';
-    var sortOrder = '';
+    let feedStart = 10;
+    let sort = 'date';
+    let sortOrder = '';
 
     // listen to "inview.uk.scrollspy" event on "feed-load-more" classes
     $('.feed-load-more').on('inview.uk.scrollspy', function() {
-        var el = $(this);
+        let el = $(this);
 
         // get current query string
-        var queryString = document.location.search;
+        let queryString = document.location.search;
 
         // build up the url
-        var url = el.data('feed').url  + feedStart + '/' + sort + sortOrder + queryString;
+        let url = el.data('feed').url  + feedStart + '/' + sort + sortOrder + queryString;
 
         // send ajax request to get more items
         $.ajax({
