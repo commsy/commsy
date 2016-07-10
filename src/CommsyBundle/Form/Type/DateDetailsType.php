@@ -111,14 +111,14 @@ class DateDetailsType extends AbstractType
                         'class' => 'uk-button-primary',
                     ),
                     'label' => 'saveThisDate',
-                    'translation_domain' => 'form',
+                    'translation_domain' => 'date',
                 ))
                 ->add('saveAllDates', SubmitType::class, array(
                     'attr' => array(
                         'class' => 'uk-button-primary',
                     ),
                     'label' => 'saveAllDates',
-                    'translation_domain' => 'form',
+                    'translation_domain' => 'date',
                 ))
                 ->add('cancel', SubmitType::class, array(
                     'attr' => array(

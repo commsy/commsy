@@ -226,6 +226,14 @@
                 <source>recurring date no chance hint</source>
                 <target>Diese Einstellungen können nicht verändert werden</target>
             </trans-unit>
+            <trans-unit id="saveThisDate">
+                <source>saveThisDate</source>
+                <target>Für diesen Termin speichern</target>
+            </trans-unit>
+            <trans-unit id="saveAllDates">
+                <source>saveAllDates</source>
+                <target>Für alle Termine der Serie speichern</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

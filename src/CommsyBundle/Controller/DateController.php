@@ -705,9 +705,7 @@ class DateController extends Controller
         $form->handleRequest($request);
         if ($form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
-            
-            error_log(print_r($saveType, true));
-            
+
             if ($saveType == 'save' || $saveType == 'saveThisDate') {
                 $dateItem = $transformer->applyTransformation($dateItem, $form->getData());
 

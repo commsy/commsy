@@ -226,6 +226,14 @@
                 <source>recurring date no chance hint</source>
                 <target>This settings cannot be changed</target>
             </trans-unit>
+            <trans-unit id="saveThisDate">
+                <source>saveThisDate</source>
+                <target>Save for this date</target>
+            </trans-unit>
+            <trans-unit id="saveAllDates">
+                <source>saveAllDates</source>
+                <target>Save for all dates of the series</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

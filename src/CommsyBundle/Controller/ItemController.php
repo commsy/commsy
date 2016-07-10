@@ -37,14 +37,39 @@ class ItemController extends Controller
         $itemType = $item->getItemType();
         
         $formData = $transformer->transform($item);
+        $formOptions = array(
+            'itemId' => $itemId
+        );
         
-        $form = $this->createForm(ItemDescriptionType::class, $formData, array('itemId' => $itemId));
+        $withRecurrence = false;
+        if ($itemType == 'date') {
+            if ($item->getRecurrencePattern() != '') {
+                $formOptions['attr']['unsetRecurrence'] = true;
+                $withRecurrence = true;
+            }
+        }
+        
+        $form = $this->createForm(ItemDescriptionType::class, $formData, $formOptions);
         $form->handleRequest($request);
         if ($form->isValid()) {
-            if ($form->get('save')->isClicked()) {
+            $saveType = $form->getClickedButton()->getName();
+            
+            if ($saveType == 'save' || $saveType == 'saveThisDate') {
                 $item = $transformer->applyTransformation($item, $form->getData());
                 $item->save();
-            } else if ($form->get('cancel')->isClicked()) {
+            } else if ($saveType == 'saveAllDates') {
+                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                $dateService = $this->get('commsy_legacy.date_service');
+                $datesArray = $dateService->getRecurringDates($item->getContextId(), $item->getRecurrenceId());
+                $formData = $form->getData();
+                $item = $transformer->applyTransformation($item, $formData);
+                $item->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                $item->save();
+                foreach ($datesArray as $tempDate) {
+                    $tempDate->setDescription($item->getDescription());
+                    $tempDate->save();
+                }
+            } else {
                 // ToDo ...
             }
             
@@ -66,7 +91,8 @@ class ItemController extends Controller
             'isMaterial' => $isMaterial,
             'itemId' => $itemId,
             'roomId' => $roomId,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'withRecurrence' => $withRecurrence,
         );
     }
     
