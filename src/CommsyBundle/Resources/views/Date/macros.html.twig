@@ -477,13 +477,13 @@
         {% set tempDayOfMonthInterval = 'first'|trans({}, 'date') %}
         {% if date.getRecurrencePattern.recurring_sub.recurrenceDayOfMonthInterval == '2' %}
             {% set tempDayOfMonthInterval = 'second'|trans({}, 'date') %}
-        {% elseif date.getRecurrencePattern.recurring_sub.recurrenceDayOfMonthInterval == '2' %}
+        {% elseif date.getRecurrencePattern.recurring_sub.recurrenceDayOfMonthInterval == '3' %}
             {% set tempDayOfMonthInterval = 'third'|trans({}, 'date') %}
-        {% elseif date.getRecurrencePattern.recurring_sub.recurrenceDayOfMonthInterval == '2' %}
+        {% elseif date.getRecurrencePattern.recurring_sub.recurrenceDayOfMonthInterval == '4' %}
             {% set tempDayOfMonthInterval = 'fourth'|trans({}, 'date') %}
-        {% elseif date.getRecurrencePattern.recurring_sub.recurrenceDayOfMonthInterval == '2' %}
+        {% elseif date.getRecurrencePattern.recurring_sub.recurrenceDayOfMonthInterval == '5' %}
             {% set tempDayOfMonthInterval = 'fifth'|trans({}, 'date') %}
-        {% elseif date.getRecurrencePattern.recurring_sub.recurrenceDayOfMonthInterval == '2' %}
+        {% elseif date.getRecurrencePattern.recurring_sub.recurrenceDayOfMonthInterval == 'last' %}
             {% set tempDayOfMonthInterval = 'last'|trans({}, 'date') %}
         {% endif %}
         {{ 'monthlyDescription'|trans({'%month%' : date.getRecurrencePattern.recurring_sub.recurrenceMonth, '%day%' : tempDayOfMonthInterval, '%dayOfWeek%' : date.getRecurrencePattern.recurring_sub.recurrenceDayOfMonth|trans({}, 'date'), '%date%': endDate}, 'date') }}

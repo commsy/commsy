@@ -104,6 +104,10 @@
                 +'<td>Teilnehmer:</td>'
                 +'<td>'+calEvent.participants+'</td>'
                 +'</tr>'
+                +'</tr>'
+                +'<td>Serientermin:</td>'
+                +'<td>'+calEvent.recurringDescription+'</td>'
+                +'</tr>'
                 +'</table>'
                 +'</div>';
         

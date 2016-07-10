@@ -420,6 +420,41 @@ class DateController extends Controller
                 $color = $this->container->getParameter('commsy.themes.'.str_ireplace('-', '_', $date->getColor()));
             }
             
+            $recurringDescription = '';
+            if ($date->getRecurrencePattern() != '') {
+                $translator = $this->get('translator');
+                
+                $recurrencePattern = $date->getRecurrencePattern();
+                
+                $endDate = new \DateTime($recurrencePattern['recurringEndDate']);
+                
+                if ($recurrencePattern['recurring_select'] == 'RecurringDailyType') {
+                    $recurringDescription = $translator->trans('dailyDescription', array('%day%' => $recurrencePattern['recurring_sub']['recurrenceDay'], '%date%' => $endDate->format('d.m.Y')), 'date');
+                } else if ($recurrencePattern['recurring_select'] == 'RecurringWeeklyType') {
+                    $daysOfWeek = array();
+                    foreach ($recurrencePattern['recurring_sub']['recurrenceDaysOfWeek'] as $day) {
+                        $daysOfWeek[] = $translator->trans($day, array(), 'date');
+                    }
+                    $recurringDescription = $translator->trans('weeklyDescription', array('%week%' => $recurrencePattern['recurring_sub']['recurrenceWeek'], '%daysOfWeek%' => implode(', ', $daysOfWeek), '%date%' => $endDate->format('d.m.Y')), 'date');
+                } else if ($recurrencePattern['recurring_select'] == 'RecurringMonthlyType') {
+                    $tempDayOfMonthInterval = $translator->trans('first', array(), 'date');
+                    if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 2) {
+                        $tempDayOfMonthInterval = $translator->trans('second', array(), 'date');
+                    } else if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 3) {
+                        $tempDayOfMonthInterval = $translator->trans('third', array(), 'date');
+                    } else if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 4) {
+                        $tempDayOfMonthInterval = $translator->trans('fourth', array(), 'date');
+                    } else if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 5) {
+                        $tempDayOfMonthInterval = $translator->trans('fifth', array(), 'date');
+                    } else if ($recurrencePattern['recurring_sub']['recurrenceDayOfMonthInterval'] == 'last') {
+                        $tempDayOfMonthInterval = $translator->trans('last', array(), 'date');
+                    }
+                    $recurringDescription = $translator->trans('monthlyDescription', array('%month%' => $recurrencePattern['recurring_sub']['recurrenceMonth'], '%day%' => $tempDayOfMonthInterval, '%dayOfWeek%' => $translator->trans($recurrencePattern['recurring_sub']['recurrenceDayOfMonth'], array(), 'date'), '%date%' => $endDate->format('d.m.Y')), 'date');
+                } else if ($recurrencePattern['recurring_select'] == 'RecurringYearlyType') {
+                    $recurringDescription = $translator->trans('yearlyDescription', array('%day%' => $recurrencePattern['recurring_sub']['recurrenceDayOfMonth'], '%month%' => $translator->trans($recurrencePattern['recurring_sub']['recurrenceMonthOfYear'], array(), 'date'), '%date%' => $endDate->format('d.m.Y')), 'date');
+                }
+            }
+            
             $events[] = array('itemId' => $date->getItemId(),
                               'title' => $date->getTitle(),
                               'start' => $start,
@@ -431,6 +466,7 @@ class DateController extends Controller
                               'participants' => $participantsDisplay,
                               'contextId' => '',
                               'contextTitle' => '',
+                              'recurringDescription' => $recurringDescription,
                              );
         }
 
