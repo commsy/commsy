@@ -29,7 +29,9 @@
             },
             eventMouseover: function(calEvent, jsEvent, view) {
                 $(jsEvent.currentTarget).tooltipster({
-                    content: $(renderEvent(calEvent))
+                    content: $(renderEvent(calEvent)),
+                    delay: 0,
+                    animationDuration: 0,
                 }).tooltipster('show');
             },
             eventMouseout: function(calEvent, jsEvent, view) {
