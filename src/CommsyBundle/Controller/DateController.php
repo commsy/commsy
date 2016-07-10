@@ -691,16 +691,24 @@ class DateController extends Controller
             throw $this->createNotFoundException('No date found for id ' . $itemId);
         }
         $formData = $transformer->transform($dateItem);
-        $form = $this->createForm(DateType::class, $formData, array(
+        $formOptions = array(
             'action' => $this->generateUrl('commsy_date_edit', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId,
-            ))
-        ));
+            )),
+        );
+        if ($dateItem->getRecurrencePattern() != '') {
+            $formOptions['attr']['unsetRecurrence'] = true;
+        }
+        $form = $this->createForm(DateType::class, $formData, $formOptions);
         
         $form->handleRequest($request);
         if ($form->isValid()) {
-            if ($form->get('save')->isClicked()) {
+            $saveType = $form->getClickedButton()->getName();
+            
+            error_log(print_r($saveType, true));
+            
+            if ($saveType == 'save' || $saveType == 'saveThisDate') {
                 $dateItem = $transformer->applyTransformation($dateItem, $form->getData());
 
                 // update modifier
@@ -712,7 +720,20 @@ class DateController extends Controller
                     $item->setDraftStatus(0);
                     $item->saveAsItem();
                 }
-            } else if ($form->get('cancel')->isClicked()) {
+            } else if ($saveType == 'saveAllDates') {
+                $dateService = $this->get('commsy_legacy.date_service');
+                $datesArray = $dateService->getRecurringDates($dateItem->getContextId(), $dateItem->getRecurrenceId());
+                $formData = $form->getData();
+                $dateItem = $transformer->applyTransformation($dateItem, $formData);
+                $dateItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                $dateItem->save();
+                foreach ($datesArray as $tempDate) {
+                    $tempDate->setTitle($dateItem->getTitle());
+                    $tempDate->setPrivateEditing($dateItem->isPrivateEditing());
+                    $tempDate->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                    $tempDate->save();
+                }
+            } else {
                 // ToDo ...
             }
             return $this->redirectToRoute('commsy_date_save', array('roomId' => $roomId, 'itemId' => $itemId));
@@ -728,6 +749,7 @@ class DateController extends Controller
             'showHashtags' => $current_context->withBuzzwords(),
             'showCategories' => $current_context->withTags(),
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
+            'withRecurrence' => $dateItem->getRecurrencePattern() != '',
         );
     }
     
