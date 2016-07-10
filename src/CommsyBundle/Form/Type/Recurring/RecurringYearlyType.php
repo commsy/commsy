@@ -89,6 +89,6 @@ class RecurringYearlyType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'recurring_daily';
+        return 'recurring_yearly';
     }
 }

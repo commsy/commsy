@@ -64,14 +64,39 @@
             {% if form.recurring_sub is defined %}
             <div class="uk-flex uk-margin-small-top">
                 <div id="date_recurring_sub">
-                    {% for subField in form.recurring_sub %}
+                    {% if form.recurring_sub.recurrenceDay is defined %}
                         <div class="uk-flex uk-margin-small-top">
                             <div>
-                                {# {{ form_errors(subField) }} #}
-                                {{ form_row(subField) }}
+                                {{ form_row(form.recurring_sub.recurrenceDay) }}
+                                {{ form_row(form.recurring_sub.untilDate) }}
                             </div>
                         </div>
-                    {% endfor %}
+                    {% elseif form.recurring_sub.recurrenceWeek is defined and form.recurring_sub.recurrenceDaysOfWeek is defined %}
+                        <div class="uk-flex uk-margin-small-top">
+                            <div>
+                                {{ form_row(form.recurring_sub.recurrenceWeek) }}
+                                {{ form_row(form.recurring_sub.recurrenceDaysOfWeek) }}
+                                {{ form_row(form.recurring_sub.untilDate) }}
+                            </div>
+                        </div>
+                    {% elseif form.recurring_sub.recurrenceMonth is defined and form.recurring_sub.recurrenceDayOfMonthInterval is defined  and form.recurring_sub.recurrenceDayOfMonth is defined %}
+                        <div class="uk-flex uk-margin-small-top">
+                            <div>
+                                {{ form_row(form.recurring_sub.recurrenceMonth) }}
+                                {{ form_row(form.recurring_sub.recurrenceDayOfMonthInterval) }}
+                                {{ form_row(form.recurring_sub.recurrenceDayOfMonth) }}
+                                {{ form_row(form.recurring_sub.untilDate) }}
+                            </div>
+                        </div>
+                    {% elseif form.recurring_sub.recurrenceDayOfMonth is defined and form.recurring_sub.recurrenceMonthOfYear is defined  %}
+                        <div class="uk-flex uk-margin-small-top">
+                            <div>
+                                {{ form_row(form.recurring_sub.recurrenceDayOfMonth) }}
+                                {{ form_row(form.recurring_sub.recurrenceMonthOfYear) }}
+                                {{ form_row(form.recurring_sub.untilDate) }}
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
             {% endif %}

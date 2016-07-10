@@ -103,6 +103,6 @@ class RecurringMonthlyType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'recurring_daily';
+        return 'recurring_monthly';
     }
 }
