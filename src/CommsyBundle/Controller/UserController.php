@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Filter\UserFilterType;
 
+use CommsyBundle\Form\Type\UserType;
+
 use \ZipArchive;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -464,26 +466,24 @@ class UserController extends Controller
         $current_context = $legacyEnvironment->getCurrentContextItem();
         
         $formData = array();
-        $userItem = NULL;
         
-        if ($item->getItemType() == 'user') {
-            // get user from userService
-            $userItem = $userService->getuser($itemId);
-            if (!$userItem) {
-                throw $this->createNotFoundException('No user found for id ' . $roomId);
-            }
-            $formData = $transformer->transform($userItem);
-            $form = $this->createForm('user', $formData, array(
-                'action' => $this->generateUrl('commsy_user_edit', array(
-                    'roomId' => $roomId,
-                    'itemId' => $itemId,
-                ))
-            ));
-        } 
+        $userItem = $userService->getuser($itemId);
+        if (!$userItem) {
+            throw $this->createNotFoundException('No user found for id ' . $itemId);
+        }
+        $formData = $transformer->transform($userItem);
+        $formOptions = array(
+            'action' => $this->generateUrl('commsy_user_edit', array(
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ))
+        );
+        $form = $this->createForm(UserType::class, $formData, $formOptions);
         
         $form->handleRequest($request);
         if ($form->isValid()) {
-            if ($form->get('save')->isClicked()) {
+            $saveType = $form->getClickedButton()->getName();
+            if ($saveType == 'save') {
                 $userItem = $transformer->applyTransformation($userItem, $form->getData());
 
                 // update modifier
@@ -495,7 +495,7 @@ class UserController extends Controller
                     $item->setDraftStatus(0);
                     $item->saveAsItem();
                 }
-            } else if ($form->get('cancel')->isClicked()) {
+            } else {
                 // ToDo ...
             }
             return $this->redirectToRoute('commsy_user_save', array('roomId' => $roomId, 'itemId' => $itemId));
@@ -505,12 +505,91 @@ class UserController extends Controller
             'form' => $form->createView(),
             'showHashtags' => $current_context->withBuzzwords(),
             'showCategories' => $current_context->withTags(),
-
         );
     }
 
 
+    /**
+     * @Route("/room/{roomId}/user/{itemId}/save")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function saveAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($itemId);
+        
+        $userService = $this->get('commsy_legacy.user_service');
+        $transformer = $this->get('commsy_legacy.transformer.user');
+        
+        $user = $userService->getUser($itemId);
+        
+        $itemArray = array($user);
+        $modifierList = array();
+        foreach ($itemArray as $item) {
+            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+        }
+        
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $readerManager = $legacyEnvironment->getReaderManager();
+        //$roomItem = $roomManager->getItem($material->getContextId());        
+        //$numTotalMember = $roomItem->getAllUsers();
+        
+        $userManager = $legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager->setUserLimit();
+        $userManager->select();
+        $user_list = $userManager->get();
+        $all_user_count = $user_list->getCount();
+        $read_count = 0;
+        $read_since_modification_count = 0;
 
+        $current_user = $user_list->getFirst();
+        $id_array = array();
+        while ( $current_user ) {
+		   $id_array[] = $current_user->getItemID();
+		   $current_user = $user_list->getNext();
+		}
+		$readerManager->getLatestReaderByUserIDArray($id_array,$user->getItemID());
+		$current_user = $user_list->getFirst();
+		while ( $current_user ) {
+	   	    $current_reader = $readerManager->getLatestReaderForUserByID($user->getItemID(), $current_user->getItemID());
+            if ( !empty($current_reader) ) {
+                if ( $current_reader['read_date'] >= $user->getModificationDate() ) {
+                    $read_count++;
+                    $read_since_modification_count++;
+                } else {
+                    $read_count++;
+                }
+            }
+		    $current_user = $user_list->getNext();
+		}
+        $read_percentage = round(($read_count/$all_user_count) * 100);
+        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
+        $readerService = $this->get('commsy_legacy.reader_service');
+        
+        $readerList = array();
+        $modifierList = array();
+        foreach ($itemArray as $item) {
+            $reader = $readerService->getLatestReader($item->getItemId());
+            if ( empty($reader) ) {
+               $readerList[$item->getItemId()] = 'new';
+            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
+               $readerList[$item->getItemId()] = 'changed';
+            }
+            
+            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+        }
+        
+        return array(
+            'roomId' => $roomId,
+            'item' => $user,
+            'modifierList' => $modifierList,
+            'userCount' => $all_user_count,
+            'readCount' => $read_count,
+            'readSinceModificationCount' => $read_since_modification_count,
+        );
+    }
 
     
     /**

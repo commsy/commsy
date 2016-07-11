@@ -33,7 +33,7 @@ class UserTransformer implements DataTransformerInterface
                 $userData['autoSaveStatus'] = true;
             }
             $userData['title'] = $userItem->getTitle();
-            $userData['dateOfBirth'] = $userItem->getBirthday();
+            $userData['dateOfBirth'] = new \DateTime($userItem->getBirthday());
             $userData['email'] = $userItem->getEmail();
             $userData['isEmailVisible'] = $userItem->isEmailVisible();
             $userData['phone'] = $userItem->getTelephone();
@@ -76,7 +76,7 @@ class UserTransformer implements DataTransformerInterface
                 $userObject->turnAutoSaveOff();
             }
             $userObject->setTitle($userData['title']);
-            $userObject->setBirthday($userData['dateOfBirth']);
+            $userObject->setBirthday($userData['dateOfBirth']->format('Y-m-d'));
             $userObject->setEmail($userData['email']);
             if ($userData['isEmailVisible']) {
                 $userObject->setEmailVisible();
