@@ -82,6 +82,10 @@
                 <source>Membership</source>
                 <target>Membership</target>
             </trans-unit>
+            <trans-unit id="room-filter-label-archived">
+                <source>Archived</source>
+                <target>Archived</target>
+            </trans-unit>
             <trans-unit id="room-filter-label-type">
                 <source>Type</source>
                 <target>Type</target>

@@ -27,6 +27,14 @@ class RoomFilterType extends AbstractType
                 'mapped' => false,
                 'translation_domain' => 'room',
             ])
+            ->add('archived', Filters\CheckboxFilterType::class, [
+                'apply_filter' => false, // disable filter
+                'attr' => [
+                    'onchange' => 'this.form.submit()',
+                ],
+                'mapped' => false,
+                'translation_domain' => 'room',
+            ])
             ->add('type', Filters\ChoiceFilterType::class, [
                 'attr' => [
                     'onchange' => 'this.form.submit()',

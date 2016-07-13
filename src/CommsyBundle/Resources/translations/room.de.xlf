@@ -78,6 +78,10 @@
                 <source>Membership</source>
                 <target>Mitgliedschaft</target>
             </trans-unit>
+             <trans-unit id="room-filter-label-archived">
+                <source>Archived</source>
+                <target>Archiviert</target>
+            </trans-unit>
             <trans-unit id="room-nav-title">
                 <source>Rooms</source>
                 <target>Räume</target>

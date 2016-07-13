@@ -238,6 +238,20 @@ class RoomController extends Controller
 
         $repository = $this->getDoctrine()->getRepository('CommsyBundle:Room');
 
+        // TODO: Refactoring needed
+        // We need to change the repository when querying archived rooms.
+        // This is not the best solution, but works for now. It would be better
+        // to use the form validation below, instead of manually checking for a
+        // specific value
+        if ($request->query->has('room_filter')) {
+            $roomFilter = $request->query->get('room_filter');
+
+            if (isset($roomFilter['archived']) && $roomFilter['archived'] === "1") {
+                $repository = $this->getDoctrine()->getRepository('CommsyBundle:ZzzRoom');
+                $legacyEnvironment->activateArchiveMode();
+            }
+        }
+
         $roomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
         $roomQueryBuilder->select($roomQueryBuilder->expr()->count('r.itemId'));
 
@@ -252,6 +266,10 @@ class RoomController extends Controller
                 ->addFilterConditions($filterForm, $roomQueryBuilder);
 
             $count = $roomQueryBuilder->getQuery()->getSingleScalarResult();
+        }
+
+        if ($legacyEnvironment->isArchiveMode()) {
+            $legacyEnvironment->deactivateArchiveMode();
         }
 
         return [
@@ -280,8 +298,16 @@ class RoomController extends Controller
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
-        $repository = $this->getDoctrine()
-            ->getRepository('CommsyBundle:Room');
+        $repository = $this->getDoctrine()->getRepository('CommsyBundle:Room');
+
+        // TODO: Refactoring needed
+        // see "listAllAction"-Method
+        if ($roomFilter) {
+            if (isset($roomFilter['archived']) && $roomFilter['archived'] === "1") {
+                $repository = $this->getDoctrine()->getRepository('CommsyBundle:ZzzRoom');
+                $legacyEnvironment->activateArchiveMode();
+            }
+        }
 
         $roomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
         $roomQueryBuilder->setMaxResults($max);
@@ -298,6 +324,10 @@ class RoomController extends Controller
         }
 
         $rooms = $roomQueryBuilder->getQuery()->getResult();
+
+        if ($legacyEnvironment->isArchiveMode()) {
+            $legacyEnvironment->deactivateArchiveMode();
+        }
 
         return [
             'portal' => $portalItem,

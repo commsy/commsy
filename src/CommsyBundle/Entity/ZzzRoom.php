@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * ZzzRoom
  *
  * @ORM\Table(name="zzz_room", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="creator_id", columns={"creator_id"}), @ORM\Index(name="type", columns={"type"}), @ORM\Index(name="activity", columns={"activity"}), @ORM\Index(name="room_description", columns={"room_description"}), @ORM\Index(name="contact_persons", columns={"contact_persons"}), @ORM\Index(name="title", columns={"title"}), @ORM\Index(name="modifier_id", columns={"modifier_id"}), @ORM\Index(name="status", columns={"status"}), @ORM\Index(name="lastlogin", columns={"lastlogin"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="CommsyBundle\Repository\RoomRepository")
  */
 class ZzzRoom
 {
@@ -31,23 +31,26 @@ class ZzzRoom
     /**
      * @var integer
      *
-     * @ORM\Column(name="creator_id", type="integer", nullable=false)
+     * @ORM\ManyToOne(targetEntity="ZzzUser")
+     * @ORM\JoinColumn(name="creator_id", referencedColumnName="item_id")
      */
-    private $creatorId = '0';
+    private $creator;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="modifier_id", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="ZzzUser")
+     * @ORM\JoinColumn(name="modifier_id", referencedColumnName="item_id")
      */
-    private $modifierId;
+    private $modifier;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="deleter_id", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="ZzzUser")
+     * @ORM\JoinColumn(name="deleter_id", referencedColumnName="item_id", nullable=true)
      */
-    private $deleterId;
+    private $deleter;
 
     /**
      * @var \DateTime
@@ -143,13 +146,6 @@ class ZzzRoom
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="text", length=65535, nullable=true)
-     */
-    private $description;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="room_description", type="string", length=10000, nullable=true)
      */
     private $roomDescription;
@@ -161,6 +157,85 @@ class ZzzRoom
      */
     private $lastlogin;
 
+    /**
+     * Get itemId
+     *
+     * @return integer
+     */
+    public function getItemId()
+    {
+        return $this->itemId;
+    }
 
+    /**
+     * Set title
+     *
+     * @param string $title
+     *
+     * @return Room
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set activity
+     *
+     * @param integer $activity
+     *
+     * @return Room
+     */
+    public function setActivity($activity)
+    {
+        $this->activity = $activity;
+
+        return $this;
+    }
+
+    /**
+     * Get activity
+     *
+     * @return integer
+     */
+    public function getActivity()
+    {
+        return $this->activity;
+    }
+
+    /**
+     * Set contactPersons
+     *
+     * @param string $contactPersons
+     *
+     * @return Room
+     */
+    public function setContactPersons($contactPersons)
+    {
+        $this->contactPersons = $contactPersons;
+
+        return $this;
+    }
+
+    /**
+     * Get contactPersons
+     *
+     * @return string
+     */
+    public function getContactPersons()
+    {
+        return $this->contactPersons;
+    }
 }
-
