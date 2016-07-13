@@ -6,17 +6,12 @@
         {{ form_errors(form) }}
             <div class="uk-flex">
                 <div class="uk-width-9-10">
-                    {{ form_row(form.title) }}
-                </div>
-            </div>
-            <div class="uk-flex">
-                <div class="uk-width-9-10">
-                    {{ form_row(form.dateOfBirth) }}
-                </div>
-            </div>
-            <div class="uk-flex">
-                <div class="uk-width-9-10">
                     {{ form_row(form.userImage) }}
+                </div>
+            </div>
+            <div class="uk-flex uk-margin-bottom">
+                <div class="uk-width-9-10">
+                    {{ form_row(form.deleteUserImage) }}
                 </div>
             </div>
             <div class="uk-flex">
@@ -26,7 +21,7 @@
             </div>
             <div class="uk-flex">
                 <div class="uk-width-9-10">
-                    {{ form_row(form.hideEmail) }}
+                    {{ form_row(form.hideEmailInThisRoom) }}
                 </div>
             </div>
             <div class="uk-flex">
@@ -34,9 +29,19 @@
                     {{ form_row(form.phone) }}
                 </div>
             </div>
-            <div class="uk-flex">
+            <div class="uk-flex uk-margin-bottom">
                 <div class="uk-width-9-10">
                     {{ form_row(form.mobile) }}
+                </div>
+            </div>
+            <div class="uk-flex">
+                <div class="uk-width-9-10">
+                    {{ form_row(form.title) }}
+                </div>
+            </div>
+            <div class="uk-flex uk-margin-bottom">
+                <div class="uk-width-9-10">
+                    {{ form_row(form.dateOfBirth) }}
                 </div>
             </div>
             <div class="uk-flex">
@@ -46,12 +51,12 @@
             </div>
             <div class="uk-flex">
                 <div class="uk-width-9-10">
-                    {{ form_row(form.areaCode) }}
+                    {{ form_row(form.zipCode) }}
                 </div>
             </div>
-            <div class="uk-flex">
+            <div class="uk-flex uk-margin-bottom">
                 <div class="uk-width-9-10">
-                    {{ form_row(form.town) }}
+                    {{ form_row(form.city) }}
                 </div>
             </div>
             <div class="uk-flex">
@@ -64,7 +69,7 @@
                     {{ form_row(form.organisation) }}
                 </div>
             </div>
-            <div class="uk-flex">
+            <div class="uk-flex uk-margin-bottom">
                 <div class="uk-width-9-10">
                     {{ form_row(form.position) }}
                 </div>
@@ -94,12 +99,12 @@
                     {{ form_row(form.yahoo) }}
                 </div>
             </div>
-            <div class="uk-flex">
+            <div class="uk-flex uk-margin-bottom">
                 <div class="uk-width-9-10">
                     {{ form_row(form.language) }}
                 </div>
             </div>
-            <div class="uk-flex uk-margin-small-top">
+            <div class="uk-flex">
                 <div class="uk-margin-small-left">
                     {{ form_row(form.save) }}
                 </div>

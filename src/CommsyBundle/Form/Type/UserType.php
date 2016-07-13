@@ -46,6 +46,11 @@ class UserType extends AbstractType
                 'translation_domain' => 'user',
                 'required' => false,
             ))
+            ->add('deleteUserImage', CheckboxType::class, array(
+                'label' => 'deleteUserImage',
+                'required' => false,
+                'translation_domain' => 'user',
+            ))
             ->add('email', TextType::class, array(
                 'constraints' => array(
                     new NotBlank(),
@@ -58,14 +63,10 @@ class UserType extends AbstractType
                 'translation_domain' => 'material',
                 'required' => true,
             )) 
-            ->add('hideEmail', TextType::class, array( // Checkbox
-                'label' => 'hideEmail',
-                'attr' => array(
-                    'placeholder' => 'hideEmail',
-                    'class' => '',
-                ),
-                'translation_domain' => 'user',
+            ->add('hideEmailInThisRoom', CheckboxType::class, array(
+                'label' => 'hideEmailInThisRoom',
                 'required' => false,
+                'translation_domain' => 'user',
             ))
             ->add('phone', TextType::class, array(
                 'label' => 'phone',
@@ -94,19 +95,19 @@ class UserType extends AbstractType
                 'translation_domain' => 'user',
                 'required' => false,
             ))
-            ->add('areaCode', TextType::class, array(
-                'label' => 'areaCode',
+            ->add('zipCode', TextType::class, array(
+                'label' => 'zipCode',
                 'attr' => array(
-                    'placeholder' => 'areaCode',
+                    'placeholder' => 'zipCode',
                     'class' => '',
                 ),
                 'translation_domain' => 'user',
                 'required' => false,
             ))
-            ->add('town', TextType::class, array(
-                'label' => 'town',
+            ->add('city', TextType::class, array(
+                'label' => 'city',
                 'attr' => array(
-                    'placeholder' => 'town',
+                    'placeholder' => 'city',
                     'class' => '',
                 ),
                 'translation_domain' => 'user',
@@ -185,13 +186,17 @@ class UserType extends AbstractType
                 'required' => false,
             ))
             ->add('language', ChoiceType::class, array(
-                'label' => 'language',
-                'attr' => array(
-                    'placeholder' => 'language',
-                    'class' => '',
+                'placeholder' => false,
+                'choices' => array(
+                    'browser' => 'browser',
+                    'german' => 'german',
+                    'english' => 'english',
                 ),
+                'label' => 'language',
                 'translation_domain' => 'user',
                 'required' => false,
+                'expanded' => false,
+                'multiple' => false
             ))
         ;
         

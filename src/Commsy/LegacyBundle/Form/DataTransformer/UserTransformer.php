@@ -39,7 +39,7 @@ class UserTransformer implements DataTransformerInterface
             $userData['phone'] = $userItem->getTelephone();
             $userData['mobile'] = $userItem->getCellularphone();
             $userData['street'] = $userItem->getStreet();
-            $userData['zipcode'] = $userItem->getZipcode();
+            $userData['zipCode'] = $userItem->getZipcode();
             $userData['city'] = $userItem->getCity();
             $userData['room'] = $userItem->getRoom();
             $userData['organisation'] = $userItem->getOrganisation();
@@ -51,6 +51,7 @@ class UserTransformer implements DataTransformerInterface
             $userData['jabber'] = $userItem->getJabber();
             $userData['homepage'] = $userItem->getHomepage();
             $userData['description'] = $userItem->getDescription();
+            $userData['language'] = $userItem->getLanguage();
         }
         return $userData;
     }
@@ -86,7 +87,7 @@ class UserTransformer implements DataTransformerInterface
             $userObject->setTelephone($userData['phone']);
             $userObject->setCellularphone($userData['mobile']);
             $userObject->setStreet($userData['street']);
-            $userObject->setZipcode($userData['zipcode']);
+            $userObject->setZipcode($userData['zipCode']);
             $userObject->setCity($userData['city']);
             $userObject->setRoom($userData['room']);
             $userObject->setOrganisation($userData['organisation']);
@@ -98,6 +99,7 @@ class UserTransformer implements DataTransformerInterface
             $userObject->setJabber($userData['jabber']);
             $userObject->setHomepage($userData['homepage']);
             $userObject->setDescription($userData['description']);
+            $userObject->setLanguage($userData['language']);
         }
         return $userObject;
     }
