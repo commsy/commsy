@@ -1221,13 +1221,13 @@ class cs_user_item extends cs_item {
         // wenn $this->getStatus() einen freigeschalteten Benutzer angibt
         // 2 = normaler Benutzer
         // 3 = Moderator
-          if($this->_environment->getCurrentContextItem()->WikiEnableDiscussion() == "1"){
-            $this->updateWikiProfile();
-          }
+          //if($this->_environment->getCurrentContextItem()->WikiEnableDiscussion() == "1"){
+          //  $this->updateWikiProfile();
+          //}
 
-          if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotification() == "1"){
-            $this->updateWikiNotification();
-          }
+          //if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotification() == "1"){
+          //  $this->updateWikiNotification();
+          //}
       } else {
         // Wenn der Benutzer gesperrt oder geloescht ist, müssen Profile und
         // Notification entsprechend angepasst werden
