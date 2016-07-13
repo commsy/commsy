@@ -39,9 +39,15 @@ class RoomMembershipFilterConditionListener
                 $roomIds[] = $room->getItemId();
             }
 
-            $event->setCondition(
-                $expr->in('r.itemId', $roomIds), []
-            );
+            if (!empty($roomIds)) {
+                $event->setCondition(
+                    $expr->in('r.itemId', $roomIds), []
+                );
+            } else {
+                $event->setCondition(
+                    $expr->isNull('r.itemId')
+                );
+            }
         }
     }
 }
