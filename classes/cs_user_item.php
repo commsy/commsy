@@ -1894,14 +1894,9 @@ class cs_user_item extends cs_item {
          $section_manager->deleteSectionsOfUser($this->getItemID());
          $annotation_manager->deleteAnnotationsOfUser($this->getItemID());
          $label_manager->deleteLabelsOfUser($this->getItemID());
-   		 if ( empty($disable_overwrite) or $disable_overwrite != 'flag'){
-         	$tag_manager->deleteTagsOfUser($this->getItemID());
-   		 }
+         $tag_manager->deleteTagsOfUser($this->getItemID());
          $step_manager->deleteStepsOfUser($this->getItemID());
-         
-         
    	}
-
    }
    
    function deleteAllEntriesOfUserByInactivity(){

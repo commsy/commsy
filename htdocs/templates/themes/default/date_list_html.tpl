@@ -14,7 +14,7 @@
 		<img src="{$basic.tpl_path}img/btn_export_todisk.gif" alt="___DATES_EXPORT___" />
 	</a>
 
-	<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&mode=print{params params=$environment.params_array}" title="___COMMON_LIST_PRINTVIEW___" target="_blank">
+	<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&mode=print{params params=$print.params_array}" title="___COMMON_LIST_PRINTVIEW___" target="_blank">
 		<img src="{$basic.tpl_path}img/btn_print.gif" alt="___COMMON_LIST_PRINTVIEW___" />
 	</a>
 

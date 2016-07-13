@@ -318,11 +318,12 @@ class misc_text_converter {
    #private function _decode_backslashes ($text) {
    public function _decode_backslashes ($text) {
       $retour = $text;
-      $retour = str_replace("\*","*",$retour);
-      $retour = str_replace("\_","_",$retour);
-      $retour = str_replace("\!","!",$retour);
-      $retour = str_replace("\-","-",$retour);
-      $retour = str_replace("\#","#",$retour);
+      $retour = str_replace("\*","&ast;",$retour);
+      $retour = str_replace("\_","&lowbar;",$retour);
+      $retour = str_replace("\!","&excl;",$retour);
+      $retour = str_replace("\-","&macr;",$retour);
+      $retour = str_replace("\#","&num;",$retour);
+      $retour = str_replace("\\\\","&bsol;",$retour);
       return $retour;
    }
 

@@ -87,11 +87,19 @@
 				}
 			}
 			// get selected seltags
+			
+			$tag_2_tag_manager = $this->_environment->getTag2TagManager();
+			
 			$seltag_array = array();
 			foreach($this->_params['seltag'] as $key => $value) {
 				if(substr($key, 0, 7) == 'seltag_'){
 					// set seltag array
 					$this->_params[$key] = $value;
+					$keyArray = explode('_', $key);
+					$tempTagList = $tag_2_tag_manager->getRecursiveChildrenItemIDArray($keyArray[1]);
+					foreach ($tempTagList as $tempTagId) {
+    				    $this->_params['seltag_'.$tempTagId] = "true";
+					}
 				} elseif(substr($key, 0, 6) == 'seltag'){
 					$this->_params[$key.'_'.$value] = "true";
 				}
@@ -165,6 +173,13 @@ if ( isset($_GET['interval']) ) {
 
 			}
 
+            $emptyTagsParam = true;
+            foreach ($this->_params as $key => $value) {
+                if (stristr($key, 'seltag_')) {
+                    $emptyTagsParam = false;
+                }
+            }
+
 			$rubric_array = array();
 
 			foreach($rubrics as $rubric) {
@@ -172,7 +187,7 @@ if ( isset($_GET['interval']) ) {
 
 				if($view !== 'none') {
 					if(!($this->_environment->inPrivateRoom() && $name === 'user') && (empty($selfiles) || in_array($name, $file_rubric_array))) {
-						if((empty($this->_params['selbuzzword']) && empty($this->_params['selfiles']) && empty($this->_params['seltag'])) || (!in_array($name, array(CS_USER_TYPE, CS_GROUP_TYPE, CS_TOPIC_TYPE, CS_INSTITUTION_TYPE, CS_PROJECT_TYPE)))) {
+						if((empty($this->_params['selbuzzword']) && empty($this->_params['selfiles']) && $emptyTagsParam) || (!in_array($name, array(CS_USER_TYPE, CS_GROUP_TYPE, CS_TOPIC_TYPE, CS_INSTITUTION_TYPE, CS_PROJECT_TYPE)))) {
 							$rubric_array[] = $name;
 						}
 					}
@@ -344,6 +359,27 @@ if ( $environment->inPrivateRoom()
 					$campus_search_ids = array();
 					$result_list = new cs_list();
 
+                    $tempSeltags = array();
+                    foreach ($this->_params as $key => $value) {
+                        if (stristr($key, 'seltag_')) {
+                            $tempSeltagArray = explode('_', $key);
+                            $tempSeltags[] = $tempSeltagArray[1];
+                        }
+                    }
+                    
+					if(!empty($tempSeltags)) {
+						if (in_array('user', $rubric_array)) {
+    						unset($rubric_array['user']);
+						}
+						$temp_rubric_array = array();
+						foreach ($rubric_array as $temp_rubric) {
+    						if ($temp_rubric != 'user') {
+        						$temp_rubric_array[] = $temp_rubric;
+    						}
+						}
+						$rubric_array = $temp_rubric_array;
+					}
+
 					global $c_plugin_array;
 					foreach($rubric_array as $rubric) {
 						if(!isset($c_plugin_array) || !in_array(strtolower($rubric), $c_plugin_array)) {
@@ -423,8 +459,8 @@ if ( $environment->inPrivateRoom()
 // 								$rubric_manager->setTagLimit($this->_params['seltag']);
 // 							}
 
-							if(!empty($this->_params['seltag'])) {
-								$rubric_manager->setTagArrayLimit($this->_params['seltag']);
+							if(!empty($tempSeltags)) {
+								$rubric_manager->setTagArrayLimit($tempSeltags);
 							}
 
 							/*

@@ -262,8 +262,10 @@ if ( empty($command)) {
    							$mail->set_from_email('@');
    						}
    						$current_context = $environment->getCurrentContextItem();
-   						$mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_context->getTitle()));
-   						$mail->set_from_name($room_item->getTitle());
+   						//$mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_context->getTitle()));
+   						//$mail->set_from_name($room_item->getTitle());
+   						$mail->set_from_email($environment->getServerItem()->getDefaultSenderAddress());
+                        $mail->set_from_name($environment->getCurrentPortalItem()->getTitle());
    						$mail->set_reply_to_name($user_item->getFullname());
    						$mail->set_reply_to_email($user_item->getEmail());
    						$mail->set_subject($subject);

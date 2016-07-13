@@ -684,6 +684,13 @@ class cs_user_detail_view extends cs_detail_view {
 
           $archived_room_list = $zzz_project_manager->get();
 
+          $zzzCommunityManager = $this->_environment->getZzzCommunityManager();
+          $archivedCommunityList = $zzzCommunityManager->getRelatedCommunityListForUser($item);
+
+          if ($archivedCommunityList->isNotEmpty()) {
+            $archived_room_list->addList($archivedCommunityList);
+          }
+
           $zzzGroupRoomManager = $this->_environment->getZzzGroupRoomManager();
           $zzzGroupRoomManager->setUserIDLimit($item->getUserID());
           $zzzGroupRoomManager->select();

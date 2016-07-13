@@ -5654,8 +5654,10 @@ class cs_connection_soap {
             include_once('classes/cs_mail.php');
             $mail = new cs_mail();
             $mail->set_to(implode(',', $emailAddresses));
-            $mail->set_from_email($userItem->getEmail());
-            $mail->set_from_name($userItem->getFullname());
+            //$mail->set_from_email($userItem->getEmail());
+            //$mail->set_from_name($userItem->getFullname());
+            $mail->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
+            $mail->set_from_name($this->_environment->getCurrentPortalItem()->getTitle());
             $mail->set_reply_to_name($userItem->getFullname());
             $mail->set_reply_to_email($userItem->getEmail());
             $mail->set_subject($subject);

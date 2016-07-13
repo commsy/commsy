@@ -244,8 +244,10 @@ if ($command == 'automatic') {
          // send mail to user
          $mail = new cs_mail();
          $mail->set_to($user->getEmail());
-         $mail->set_from_email($current_user->getEmail());
-         $mail->set_from_name($current_user->getFullname());
+         //$mail->set_from_email($current_user->getEmail());
+         //$mail->set_from_name($current_user->getFullname());
+         $mail->set_from_email($environment->getServerItem()->getDefaultSenderAddress());
+         $mail->set_from_name($environment->getCurrentPortalItem()->getTitle());
          $mail->set_subject($subject);
          $mail->set_message($body);
          $mail->send();

@@ -481,6 +481,14 @@
             $this->assign('environment','count_new_accounts', $count_new_accounts);
             $this->assign('environment', 'post', $_POST);
             $this->assign('environment', 'get', $_GET);
+            
+            $print_params = array();
+            foreach ($this->_environment->getCurrentParameterArray() as $key => $value) {
+                if ($key != 'mode') {
+                    $print_params[$key] = $value;
+                }
+            }
+            $this->assign('print', 'params_array', $print_params);
 
             include_once('functions/misc_functions.php');
             $this->assign('environment','commsy_version',getCommSyVersion());

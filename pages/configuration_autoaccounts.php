@@ -628,8 +628,10 @@ function add_user_to_rooms($user, $room_array, $password_generated = false, $tem
       $mail = new cs_mail();
       $mail->set_to($user->getEmail());
       $admin = $environment->getCurrentUserItem();
-      $mail->set_from_name($admin->getFullName);
-      $mail->set_from_email($admin->getEmail);
+      //$mail->set_from_name($admin->getFullName);
+      //$mail->set_from_email($admin->getEmail);
+      $mail->set_from_email($environment->getServerItem()->getDefaultSenderAddress());
+      $mail->set_from_name($environment->getCurrentPortalItem()->getTitle());
       $mail->set_subject($_POST['autoaccount_email_subject']);
       $mail->set_message($_POST['autoaccount_email_text']);
       $mail->send();
