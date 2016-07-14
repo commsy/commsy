@@ -5,16 +5,16 @@
 {% endblock %}
 
 {% block breadcrumb %}
-    {{ knp_menu_render('breadcrumb', 
-        {'template': 'CommsyBundle:Menu:knp_menu_breadcrumb.html.twig', 
-        'currentAsLink':false}) 
-    }}
+    {{ knp_menu_render('breadcrumb', {
+        'template': 'CommsyBundle:Menu:knp_menu_breadcrumb.html.twig', 
+        'currentAsLink':false
+    }) }}
 {% endblock %}
 
 {% block profile %}
-    {{ knp_menu_render('profile', 
-        {'template': 'CommsyBundle:Menu:knp_menu_profile.html.twig'})
-    }}
+    {{ knp_menu_render('profile', {
+        'template': 'CommsyBundle:Menu:knp_menu_profile.html.twig'
+    }) }}
 {% endblock %}
 
 {% block additionalNavbarContent %}

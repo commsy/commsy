@@ -9,7 +9,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Materials
  *
- * @ORM\Table(name="materials", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="creator_id", columns={"creator_id"}), @ORM\Index(name="modifier_id", columns={"modifier_id"})})
+ * @ORM\Table(name="materials", indexes={
+ *     @ORM\Index(name="context_id", columns={"context_id"}),
+ *     @ORM\Index(name="creator_id", columns={"creator_id"}),
+ *     @ORM\Index(name="modifier_id", columns={"modifier_id"})
+ * })
  * @ORM\Entity
  */
 class Materials
