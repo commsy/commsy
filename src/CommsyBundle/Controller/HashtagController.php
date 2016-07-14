@@ -62,6 +62,15 @@ class HashtagController extends Controller
      */
     public function editAction($roomId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        if (!$roomItem->withBuzzwords()) {
+            throw $this->createAccessDeniedException('The requested room does not have hashtags enabled.');
+        }
+
         $em = $this->getDoctrine()->getManager();
 
         $hashtag = new Labels();
@@ -73,8 +82,6 @@ class HashtagController extends Controller
         $form->handleRequest($request);
         if ($form->isValid()) {
             // persist new hashtag
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
             $labelManager = $legacyEnvironment->getLabelManager();
 
             $buzzwordItem = $labelManager->getNewItem();
