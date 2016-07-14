@@ -4,11 +4,18 @@ namespace CommsyBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use CommsyBundle\Validator\Constraints as CommsyAssert;
+
 /**
  * Labels
  *
- * @ORM\Table(name="labels", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="creator_id", columns={"creator_id"}), @ORM\Index(name="type", columns={"type"})})
+ * @ORM\Table(name="labels", indexes={
+ *     @ORM\Index(name="context_id", columns={"context_id"}),
+ *     @ORM\Index(name="creator_id", columns={"creator_id"}),
+ *     @ORM\Index(name="type", columns={"type"})
+ * })
  * @ORM\Entity(repositoryClass="CommsyBundle\Repository\LabelRepository")
+ * @CommsyAssert\UniqueLabelName
  */
 class Labels
 {
@@ -24,7 +31,7 @@ class Labels
     /**
      * @var integer
      *
-     * @ORM\Column(name="context_id", type="integer", nullable=true)
+     * @ORM\Column(name="context_id", type="integer", nullable=false)
      */
     private $contextId;
 

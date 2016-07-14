@@ -317,16 +317,16 @@ class MenuBuilder
             $roomItem = $this->roomService->getRoomItem($roomId);
     
             if ($roomItem) {
-                // get route information
-                $route = explode('_', $currentStack->attributes->get('_route'));
-                
                 // home
                 $menu->addChild($roomItem->getTitle(), array(
                     'route' => 'commsy_room_home',
                     'routeParameters' => array('roomId' => $roomId)
                 ));
-        
-                if ($route[1] && $route[1] != "room" && $route[1] != "dashboard" && $route[1] != "search") {
+
+                // get route information
+                $route = explode('_', $currentStack->attributes->get('_route'));
+
+                if (isset($route[1]) && !in_array($route[1], ['room', 'dashboard', 'search', 'hashtag'])) {
 
                     // rubric
                     $tempRoute = 'commsy_'.$route[1].'_'.'list';
@@ -350,7 +350,7 @@ class MenuBuilder
                         $menu->addChild($route[1]);
                     }
         
-                    if ($route[2] != "list") {
+                    if (isset($route[2]) && $route[2] != "list") {
                         // item
                         if ($itemId) {
                             $itemService = $this->legacyEnvironment->getItemManager();

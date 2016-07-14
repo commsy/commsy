@@ -9,6 +9,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
+use CommsyBundle\Form\Type\HashtagEditType;
+use CommsyBundle\Entity\Labels;
+
 class HashtagController extends Controller
 {
     /**
@@ -53,4 +56,41 @@ class HashtagController extends Controller
         );
     }
 
+    /**
+     * @Route("/room/{roomId}/hashtag/edit")
+     * @Template()
+     */
+    public function editAction($roomId, Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $hashtag = new Labels();
+        $hashtag->setContextId($roomId);
+        $hashtag->setType('buzzword');
+
+        $form = $this->createForm(HashtagEditType::class, $hashtag);
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            // persist new hashtag
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+            $labelManager = $legacyEnvironment->getLabelManager();
+
+            $buzzwordItem = $labelManager->getNewItem();
+            $buzzwordItem->setLabelType('buzzword');
+            $buzzwordItem->setName($hashtag->getName());
+            $buzzwordItem->setContextID($hashtag->getContextId());
+            $buzzwordItem->setCreatorItem($legacyEnvironment->getCurrentUserItem());
+
+            $buzzwordItem->save();
+        }
+
+        $hashtags = $em->getRepository('CommsyBundle:Labels')->findRoomHashtags($roomId);
+
+        return [
+            'form' => $form->createView(),
+            'hashtags' => $hashtags,
+        ];
+    }
 }
