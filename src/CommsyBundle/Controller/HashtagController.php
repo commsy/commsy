@@ -57,10 +57,10 @@ class HashtagController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/hashtag/edit")
+     * @Route("/room/{roomId}/hashtag/edit/{labelId}")
      * @Template()
      */
-    public function editAction($roomId, Request $request)
+    public function editAction($roomId, $labelId = null, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -72,10 +72,15 @@ class HashtagController extends Controller
         }
 
         $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('CommsyBundle:Labels');
 
-        $hashtag = new Labels();
-        $hashtag->setContextId($roomId);
-        $hashtag->setType('buzzword');
+        if ($labelId) {
+            $hashtag = $repository->findOneByItemId($labelId);
+        } else {
+            $hashtag = new Labels();
+            $hashtag->setContextId($roomId);
+            $hashtag->setType('buzzword');
+        }
 
         $form = $this->createForm(HashtagEditType::class, $hashtag);
 
@@ -84,20 +89,32 @@ class HashtagController extends Controller
             // persist new hashtag
             $labelManager = $legacyEnvironment->getLabelManager();
 
-            $buzzwordItem = $labelManager->getNewItem();
-            $buzzwordItem->setLabelType('buzzword');
+            if ($hashtag->getItemId()) {
+                $buzzwordItem = $labelManager->getItem($hashtag->getItemId());
+            } else {
+                $buzzwordItem = $labelManager->getNewItem();
+
+                $buzzwordItem->setLabelType('buzzword');
+                $buzzwordItem->setContextID($hashtag->getContextId());
+                $buzzwordItem->setCreatorItem($legacyEnvironment->getCurrentUserItem());
+            }
+            
             $buzzwordItem->setName($hashtag->getName());
-            $buzzwordItem->setContextID($hashtag->getContextId());
-            $buzzwordItem->setCreatorItem($legacyEnvironment->getCurrentUserItem());
 
             $buzzwordItem->save();
+
+            return $this->redirectToRoute('commsy_hashtag_edit', [
+                'roomId' => $roomId,
+            ]);
         }
 
-        $hashtags = $em->getRepository('CommsyBundle:Labels')->findRoomHashtags($roomId);
+        $hashtags = $repository->findRoomHashtags($roomId);
 
         return [
             'form' => $form->createView(),
+            'roomId' => $roomId,
             'hashtags' => $hashtags,
+            'labelId' => $labelId,
         ];
     }
 }

@@ -6,6 +6,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type as Types;
 use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class HashtagEditType extends AbstractType
 {
@@ -28,13 +30,26 @@ class HashtagEditType extends AbstractType
                 'translation_domain' => 'hashtag',
                 'required' => true,
             ])
-            ->add('save', Types\SubmitType::class, [
-                'attr' => array(
-                    'class' => 'uk-button-primary',
-                ),
-                'label' => 'Create Hashtag',
-                'translation_domain' => 'hashtag',
-            ])
+
+            ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+                $hashtag = $event->getData();
+                $form = $event->getForm();
+
+                // check if this is a "new" object
+                if (!$hashtag->getItemId()) {
+                    $label = 'Create new hashtag';
+                } else {
+                    $label = 'Update hashtag';
+                }
+
+                $form->add('save', Types\SubmitType::class, [
+                    'attr' => array(
+                        'class' => 'uk-button-primary',
+                    ),
+                    'label' => $label,
+                    'translation_domain' => 'hashtag',
+                ]);
+            });
         ;
     }
 
