@@ -574,6 +574,21 @@ function deletePortfolioTags($portfolioId) {
   	 
   	return $portfolioArray;
   }
+
+    function removeExternalViewer($portfolioId, $userId) {
+        $query = "
+            DELETE FROM
+                " . $this->addDatabasePrefix("user_portfolio") . "
+            WHERE
+                u_id = '" . encode(AS_DB, $userId) . "' AND
+                p_id = '" . encode(AS_DB, $portfolioId) . "';
+        ";
+
+        $result = $this->_db_connector->performQuery($query);
+        if ( !isset($result) ) {
+            include_once('functions/error_functions.php');trigger_error('Problems getting user ids.',E_USER_WARNING);
+        }
+    }
   
   function getPortfolioUserForExternalViewer($creatorId)
   {

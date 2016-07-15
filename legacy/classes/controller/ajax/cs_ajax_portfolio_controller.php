@@ -469,6 +469,32 @@
 			echo $this->_return;
 			exit;
 		}
+
+		public function actionUnsubscribePortfolio()
+		{
+			// get data
+			$portfolioId = $this->_data["portfolioId"];
+			
+			$portfolioManager = $this->_environment->getPortfolioManager();
+			
+			$item = $portfolioManager->getItem($portfolioId);
+			
+			if ( $item === null )
+			{
+				$this->setErrorReturn("010", "item not found ", array());
+				echo $this->_return;
+				exit;
+			}
+
+			$currentUser = $this->_environment->getCurrentUser();
+			$privateRoomUser = $currentUser->getRelatedPrivateRoomUserItem();
+
+			$portfolioManager->removeExternalViewer($portfolioId, $currentUser->getUserID());
+
+			$this->setSuccessfullDataReturn(array());
+			echo $this->_return;
+			exit;
+		}
 		
 		public function actionDeletePortfolio()
 		{

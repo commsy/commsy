@@ -67,7 +67,7 @@ if ( isset($_GET['cid']) ) {
          }
       }
       include_once('classes/external_classes/ical/iCal.php');
-      $iCal = new iCal('', 0); // (ProgrammID, Method [1 = Publish | 0 = Request])
+      $iCal = new iCal('', 1); // (ProgrammID, Method [1 = Publish | 0 = Request])
       if ( isset($_GET['mod'])){
          $current_module = $_GET['mod'];
       }else{

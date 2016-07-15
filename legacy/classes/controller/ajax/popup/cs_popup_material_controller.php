@@ -633,8 +633,10 @@ class cs_popup_material_controller extends cs_rubric_popup_main_controller imple
                         include_once('classes/cs_mail.php');
                         $mail = new cs_mail();
                         $sender = $item->getModificatorItem();
-                        $mail->set_from_name($sender->getFullName());
-                        $mail->set_from_email($sender->getEMail());
+                        //$mail->set_from_name($sender->getFullName());
+                        //$mail->set_from_email($sender->getEMail());
+                        $mail->set_from_email($environment->getServerItem()->getDefaultSenderAddress());
+                        $mail->set_from_name($environment->getCurrentPortalItem()->getTitle());
                         $mail->set_reply_to_name($sender->getFullName());
                         $mail->set_reply_to_email($sender->getEMail());
                         $mail->set_to($moderator->getEMail());
@@ -937,6 +939,9 @@ class cs_popup_material_controller extends cs_rubric_popup_main_controller imple
 					array(	'name'		=> 'isbn',
 							'type'		=> 'text',
 							'mandatory'	=> false),
+					array(	'name'		=> 'pages',
+							'type'		=> 'text',
+							'mandatory'	=> false),
 					array(	'name'		=> 'url',
 							'type'		=> 'url',
 							'mandatory'	=> false),
@@ -966,10 +971,10 @@ class cs_popup_material_controller extends cs_rubric_popup_main_controller imple
 							'mandatory'	=> true),
 					array(	'name'		=> 'address',
 							'type'		=> 'text',
-							'mandatory'	=> true),
+							'mandatory'	=> false),
 					array(	'name'		=> 'publisher',
 							'type'		=> 'text',
-							'mandatory'	=> true),
+							'mandatory'	=> false),
 					array(	'name'		=> 'issn',
 							'type'		=> 'text',
 							'mandatory'	=> false),

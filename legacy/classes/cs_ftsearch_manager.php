@@ -99,49 +99,39 @@ class cs_ftsearch_manager extends cs_manager {
       return $this->_search_status;
    }
 
-   /** get material link by file id
-   * this method returns material id
-   *
-   * @return array material item_iid
-   */
-   function getMaterialLinkByFileID($f_iid) {
-      if ( !empty($f_iid)
-           and is_numeric($f_iid)
-         ) {
-         $data = NULL;
-         $query = "SELECT item_iid FROM ".$this->addDatabasePrefix("item_link_file");
-         $query .= " WHERE file_id=" . encode(AS_DB,$f_iid);
-         $query .= " AND deletion_date IS NULL";
-
-         $result = $this->_db_connector->performQuery($query);
-         if (!isset($result)) {
-            include_once('functions/error_functions.php');
-            trigger_error("FT-Search: Problems loading material file links: " . $query, E_USER_WARNING);
-         } else {
-            return $result;
-         }
-      }
-   }
-
    /** get list of ft results
    * this method returns a item list of ft results
    *
    * @return object cs_list
    */
-   function getFTResultList($ft_fids) {
-      $ft_cids = NULL;
-      foreach ($ft_fids as $xe) {
-         $query = $this->getMaterialLinkByFileID($xe);
-         if ( !empty($query) ) {
-            while (list ($key, $val) = each($query)) {
-               while (list ($key1, $val1) = each($val)) {
-                  $ft_cids[] = $val1;
-               }
+   function getFTResultList($fileIdArray) {
+      if (!empty($fileIdArray)) {
+         $query = "SELECT item_iid FROM " . $this->addDatabasePrefix("item_link_file") . " WHERE deletion_date IS NULL AND (";
+
+         foreach($fileIdArray as $fileId) {
+            $query .= "file_id = " . encode(AS_DB, $fileId);
+
+            if ($fileId != end($fileIdArray)) {
+               $query .= " OR ";
             }
+         }
+         $query .= ")";
+
+         $results = $this->_db_connector->performQuery($query);
+         if (!isset($results)) {
+            include_once('functions/error_functions.php');
+            trigger_error("FT-Search: Problems loading material file links: " . $query, E_USER_WARNING);
+         } else {
+            $itemIds = array();
+            foreach ($results as $result) {
+               $itemIds[] = $result['item_iid'];
+            }
+
+            return $itemIds;
          }
       }
 
-      return $ft_cids;
+      return null;
    }
 
    /** get fulltext search result

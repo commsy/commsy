@@ -54,6 +54,7 @@ $copy_array['wiki'] = true;
 $copy_array['informationbox'] = true;
 $copy_array['myentrydisplayconf'] = false;
 $copy_array['grouproomfct'] = false;
+$copy_array['rss'] = true;
 
 // now adaption for special rooms
 if ( $old_room->isProjectRoom() ) {
@@ -323,6 +324,15 @@ if ( $copy_array['grouproomfct'] ) {
    } else {
       $new_room->setGrouproomInactive();
    }
+}
+
+// rss
+if ($copy_array['rss']) {
+    if ($old_room->isRSSOn()) {
+        $new_room->turnRSSOn();
+    } else {
+        $new_room->turnRSSOff();
+    }
 }
 
 unset($copy_array);

@@ -34,6 +34,7 @@ class cs_tag_item extends cs_item {
    private $_position_array = array();
    private $_position_old_array = array();
    private $_children_list = NULL;
+   private $_save_position_without_change = false;
 
    /** constructor
     * the only available constructor, initial values for internal variables
@@ -153,7 +154,12 @@ class cs_tag_item extends cs_item {
     * @return string title of the tag
     */
    public function getTitle () {
-      return $this->_getValue('title');
+   	  if ($this->getPublic()=='-1'){
+		 $translator = $this->_environment->getTranslationObject();
+   	  	 return $translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE');
+   	  }else{
+         return (string) $this->_getValue('title');
+   	  }
    }
 
    /** set title
@@ -228,7 +234,11 @@ class cs_tag_item extends cs_item {
             $tag2tag_manager->insert($this->getItemID(),$father,$position_array[0]['place']);
          } elseif ( !empty($place) ) {
             // change position
-            $tag2tag_manager->change($this->getItemID(),$position_old_array[0]['father'],$place);
+            if (!$this->_save_position_without_change) {
+                $tag2tag_manager->change($this->getItemID(),$position_old_array[0]['father'],$place);
+            } else {
+                $tag2tag_manager->changeUpdate($this->getItemID(),$place);
+            }
          }
          unset($tag2tag_manager);
       }
@@ -241,6 +251,10 @@ class cs_tag_item extends cs_item {
    public function saveRubricLinkItemsByIDArray ($array,$rubric) {
       $link_manager = $this->_environment->getLinkItemManager();
       $link_manager->saveLinkItemsRubricToItem($array,$this,$rubric);
+   }
+   
+   public function setSavePositionWithoutChange ($value) {
+       $this->_save_position_without_change = $value;
    }
 }
 ?>

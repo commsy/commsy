@@ -23,6 +23,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 					
 					var SelectBoxItems = new Array(
 							new Array( '<Bitte Medientyp auswählen>', 'null'),
+							new Array( 'MDO', 'mdo'),
 					        new Array( 'Slideshare', 'slideshare' ),
 					        new Array( 'Onyx', 'onyx' )
 					);
@@ -125,10 +126,22 @@ CKEDITOR.plugins.add( "CommSyDocument",
 														fileSelect.add(fileSelect.items[j][0],fileSelect.items[j][1]);
 													}
 												}
+											} else if (this.getValue() == 'mdo') {
+												startAt.enable();
+												textInput.enable();
+												fileSelect.disable();
+												uploadButton.disable();
+												upload.disable();
+												
+												naviParam.disable();
+												saveParam.disable();
+												saveaimParam.disable();
+												saveperiodParam.disable();
 											} else {
 												startAt.enable();
 												textInput.disable();
 												fileSelect.disable();
+												startAt.disable();
 												uploadButton.disable();
 												upload.disable();
 												
@@ -200,10 +213,10 @@ CKEDITOR.plugins.add( "CommSyDocument",
 													    id: 'uploadButton',
 													    filebrowser: 'documentTab:documentUrl',
 													    label: 'Hochladen',
-													    'for': [ 'documentTab', 'upload' ],
+													    'for': [ 'documentTab', 'upload' ]
 													}
 												]
-											},	
+											}
 										]
 									},
 									{
@@ -302,22 +315,22 @@ CKEDITOR.plugins.add( "CommSyDocument",
 												id : 'border',
 												width : '60px',
 												label : 'Rahmen',
-												'default' : '',
+												'default' : ''
 											},
 											{
 												type : 'text',
 												id : 'marginH',
 												width : '60px',
 												label : 'H-Abstand',
-												'default' : '',
+												'default' : ''
 											},
 											{
 												type : 'text',
 												id : 'marginV',
 												width : '60px',
 												label : 'V-Abstand',
-												'default' : '',
-											},
+												'default' : ''
+											}
 										]
 									},
 									{
@@ -392,22 +405,12 @@ CKEDITOR.plugins.add( "CommSyDocument",
 										]
 									}
 								]
-							},
-//							{
-//								id:	'tab2',
-//								label: 'internal Video',
-//								title: 'blaaaa',
-//								elements: [{
-//									type: 'text',
-//									label: 'testststst',
-//									'default': 'helloworld!'
-//								}]
-//							}
+							}
 						],
 						onOk: function()
 						{
 							var content = '';
-							var float = this.getValueOf( 'documentTab', 'float');
+							var tabFloat = this.getValueOf( 'documentTab', 'float');
 							
 							var style = '',
 							tempStyle = '',
@@ -431,14 +434,15 @@ CKEDITOR.plugins.add( "CommSyDocument",
 								tempStyle += 'margin-right:' + verticalMargin + 'px;';
 							}
 							
-							if(float != 'null' && float == 'right'){
+							if(tabFloat != 'null' && tabFloat == 'right'){
 								tempStyle += 'float:right;';
-							} else if (float != 'null' && float == 'left') {
+							} else if (tabFloat != 'null' && tabFloat == 'left') {
 								tempStyle += 'float:left;';
 							}
 							style += tempStyle;
 							style += '"';
 							
+							// document type
 							if(this.getValueOf('documentTab', 'selectbox') == 'slideshare'){
 								
 //								content = 'http://lecture2go.uni-hamburg.de/';
@@ -451,28 +455,78 @@ CKEDITOR.plugins.add( "CommSyDocument",
 								var param = '';
 								
 								if (startAt !== "") {
-									param += '&startSlide='+startAt;
+									param += '?startSlide='+startAt;
 								}
-								
-								// wordpress shortcode regex
-								var wp_regex = /\[slideshare id=\d*&doc=(.*)]/,
+
+								var regex = /iframe.src="([^"]*)"/,
 									match,
 									docId;
 								
-								if(documentUrl.match(wp_regex)){
-									match = documentUrl.match(wp_regex);
+								// wordpress shortcode regex
+								// var wp_regex = /\[slideshare id=\d*&doc=(.*)]/,
+								// 	match,
+								// 	docId;
+								
+								if(documentUrl.match(regex)){
+									match = documentUrl.match(regex);
 									docId = match[1];
 								}
+
+								content += '<iframe src="'+docId+param+'" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe>';
+
+
+								// flash
+								// content += '<object width="' + width + '" height="' + height + '>';
+								// content += '<param value="http://static.slideshare.net/swf/ssplayer2.swf?doc=' + docId + '" name="movie">';
+								// content += '<param value="true" name="allowFullScreen">';
+								// content += '<param value="always" name="allowScriptAccess">';
+								// content += '<embed ' + style + ' width="' + width + '" height="' + height + '" wmode="opaque" allowfullscreen="true" allowscriptaccess="always" type="application/x-shockwave-flash" src="http://static.slideshare.net/swf/ssplayer2.swf?doc=' + docId + '&amp;rel=0' + param +'">';
+								// content += '</object>';
 								
-//								content += '<object width="' + width + '" height="' + height + '>';
-//								content += '<param value="http://static.slideshare.net/swf/ssplayer2.swf?doc=' + docId + '" name="movie">';
-//								content += '<param value="true" name="allowFullScreen">';
-//								content += '<param value="always" name="allowScriptAccess">';
-								content += '<embed ' + style + ' width="' + width + '" height="' + height + '" wmode="opaque" allowfullscreen="true" allowscriptaccess="always" type="application/x-shockwave-flash" src="http://static.slideshare.net/swf/ssplayer2.swf?doc=' + docId + '&amp;rel=0' + param +'">';
-//								content += '</object>';
+							} else if(this.getValueOf('documentTab', 'selectbox') == 'mdo') {
+
+								var documentUrl = this.getValueOf( 'documentTab', 'documentUrl');
+								var linkText = this.getValueOf('documentTab','linkText');
+								// perform ajax request
+                                var json_data = new Object();
+                                // json_data.mdo_search      = jQuery('input[name="ckeditor_mdo_search"]').val();
+                                // json_data.mdo_andor       = jQuery('select[name="ckeditor_mdo_andor"]').val();
+                                // json_data.mdo_wordbegin   = jQuery('select[name="ckeditor_mdo_wordbegin"]').val();
+                                // json_data.mdo_titletext   = jQuery('select[name="ckeditor_mdo_titletext"]').val();
+                                
+                                // id
+                                var regex = /id=(.*)&/;
+
+                                if(documentUrl.match(regex)) {
+                                	match = documentUrl.match(regex);
+                                	id = match[1];
+                                	json_data.identifier = id;
+
+	                                var cid = unescape((RegExp('cid=(.+?)(&|$)').exec(window.location.href)||[,null])[1]);
+                                    var ckInstance = this.getParentEditor();
+                                    
+                                    mdoAjax(cid, linkText, json_data, function(retVal) {
+                                        ckInstance.insertHtml(retVal);
+                                    });
+
+	           //                      jQuery.ajax({
+	           //                          url:      'commsy.php?cid=' + cid + '&mod=ajax&fct=mdo_perform_search&action=search',
+	           //                          data:     json_data,
+	           //                          success:  function(message) {
+	           //                              var result = eval('(' + message + ')');
+	           //                              if(result.status === 'success' && result.data.length > 0) {
+	           //                              	// get content by ajax
+												// // link in die Mediathek
+												// content = '<a href="'+result.data.url+'">'+linkText+'</a>';
+	           //                              }
+
+	           //                          }
+	           //                      });
+                                }
+
 								
 								
-							} else if(this.getValueOf('documentTab', 'selectbox') == 'onyx') {
+							} else if (this.getValueOf('documentTab', 'selectbox') == 'onyx') {
 								
 								var naviParam = this.getValueOf('documentTab','naviParam');
 								var saveParam = this.getValueOf('documentTab','saveParam');
@@ -626,6 +680,25 @@ CKEDITOR.plugins.add( "CommSyDocument",
 		
 	}
 } );
+
+
+function mdoAjax (cid, linkText, json_data, callback) {
+	var identifier = json_data.identifier;
+    jQuery.ajax({
+        url:      'commsy.php?cid=' + cid + '&mod=ajax&fct=mdo_perform_search&action=search',
+        data:     json_data,
+        success:  function(message) {
+            var result = eval('(' + message + ')');
+            if(result.status === 'success') {
+                // get content by ajax
+                // link in die Mediathek
+                content = '<a href="'+result.data.url+'" class="mdoLink" id="'+identifier+'" target="_new">'+linkText+'</a>';
+                callback(content);
+            }
+
+        }
+    });
+}
 
 function getUrlParam( param )
 {

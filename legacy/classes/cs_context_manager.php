@@ -906,6 +906,8 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          include_once('classes/controller/cs_utils_controller.php');
          $utils_controller = new cs_utils_controller($this->_environment);
          $room_id = $top_item->getItemID();
+         $tag2tag_manager = $this->_environment->getTag2TagManager();
+         $tag2tag_manager->resetCachedChildrenIdArray();
          $tag_array = $utils_controller->getTags($room_id);
          $this->_environment->setCurrentContextID($current_context_id);
          $xml_tags = $this->getTagsAsXML($tags_xml, $tag_array);
@@ -1041,6 +1043,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          
          $context_item->save();
 
+         $new_private_room_user_item = NULL;
          if (((string)$xml->type[0]) == 'privateroom') {
             $privateroom_manager = $this->_environment->getPrivateRoomManager();
             $temp_user_item = $this->_environment->getCurrentUser();
@@ -1054,29 +1057,33 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
                   $temp_private_room_user_item = $temp_user;
                }
             }
+
             $temp_private_room_item->delete();
             $temp_private_room_user_item->delete();
             
-            $new_private_room_user_item = NULL;
             $user_array = $user_manager->getAllUserItemArray($temp_user_item->getUserID());
             foreach ($user_array as $temp_user) {
                if ($temp_user->getContextID() == $context_item->getItemID()) {
                   $new_private_room_user_item = $temp_user;
                }
             }
-            $this->_environment->setCurrentUser($new_private_room_user_item);
+            $this->_environment->setCurrentUserItem($new_private_room_user_item);
             $linkModifierItemManager = $this->_environment->getLinkModifierItemManager();
             $linkModifierItemManager->_current_user_id = $new_private_room_user_item->getItemID();
             
             $displayConfig = array($context_item->getItemID().'_dates');
             $context_item->setMyCalendarDisplayConfig($displayConfig);
+            $privateroom_manager->reset();
             $context_item->save();
          }
 
          $options[(string)$xml->item_id[0]] = $context_item->getItemId();
          
          if (((string)$xml->type[0]) == 'privateroom') {
-            $this->_environment->changeContextToPrivateRoom($context_item->getItemID());
+           	$this->_environment->setCurrentContextID($context_item->getItemId());
+           	$this->_environment->setCurrentContextItem($context_item);
+           	$this->_environment->setCurrentUserItem($new_private_room_user_item);
+           	$this->_environment->unsetAllInstancesExceptTranslator();
          }
          $this->import_sub_items($xml, $context_item, $options);
          if (((string)$xml->type[0]) == 'privateroom') {
@@ -1084,6 +1091,17 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          }
          
          $this->checkOptions($xml, $context_item, $options);
+         
+         $room_logo_filename = $context_item->getLogoFilename();
+         $logo_matches = array();
+         preg_match('/(?<=cid)(\d+)(?=_logo)/', $room_logo_filename, $logo_matches);
+         if (!empty($logo_matches)) {
+             if (isset($options[$logo_matches[0]])) {
+                 $room_logo_filename = str_ireplace($logo_matches[0], $options[$logo_matches[0]], $room_logo_filename);
+                 $context_item->setLogoFilename($room_logo_filename);
+                 $context_item->save();
+             }
+         }
          
          return $context_item;
       }
@@ -1123,6 +1141,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
                $type_manager = $this->_environment->getManager($rubric->getName());
                if ($type_manager instanceof cs_export_import_interface) {
                   foreach ($rubric->children() as $item_xml) {
+                     $type_manager->reset();
                      $temp_item = $type_manager->import_item($item_xml, $top_item, $options);
                   }
                }

@@ -7,7 +7,7 @@ define([	"dojo/_base/declare",
         	"dojo/dom-attr",
         	"dojo/on",
         	"dojo/topic",
-        	"commsy/request",], function(declare, ClickPopupHandler, query, dom_class, lang, domConstruct, domAttr, On, Topic, request) {
+        	"commsy/request"], function(declare, ClickPopupHandler, query, dom_class, lang, domConstruct, domAttr, On, Topic, request) {
 	return declare(ClickPopupHandler, {
 		constructor: function() {
 

@@ -310,11 +310,12 @@ class misc_text_converter {
    #private function _decode_backslashes ($text) {
    public function _decode_backslashes ($text) {
       $retour = $text;
-      $retour = str_replace("\*","*",$retour);
-      $retour = str_replace("\_","_",$retour);
-      $retour = str_replace("\!","!",$retour);
-      $retour = str_replace("\-","-",$retour);
-      $retour = str_replace("\#","#",$retour);
+      $retour = str_replace("\*","&ast;",$retour);
+      $retour = str_replace("\_","&lowbar;",$retour);
+      $retour = str_replace("\!","&excl;",$retour);
+      $retour = str_replace("\-","&macr;",$retour);
+      $retour = str_replace("\#","&num;",$retour);
+      $retour = str_replace("\\\\","&bsol;",$retour);
       return $retour;
    }
 
@@ -3695,7 +3696,12 @@ class misc_text_converter {
       $config->set('Output.FlashCompat', true);
       
       // allow to embed youtube videos
-      $config->set('Filter.YouTube', true);
+      //$config->set('Filter.YouTube', true);
+
+      $config->set('HTML.SafeIframe', true);
+      $config->set('URI.SafeIframeRegexp', '%^(https?:)?//(www\.youtube(?:-nocookie)?\.com/embed/|player\.vimeo\.com/video/|de\.slideshare\.net/slideshow/embed_code/key/)%');
+
+      // //de.slideshare.net/slideshow/embed_code/key/
       
       // allow target=
       $config->set('Attr.AllowedFrameTargets', '_blank,_self,_top,_parent');

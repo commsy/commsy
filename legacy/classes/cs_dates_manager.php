@@ -910,39 +910,54 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       return $retour;
    }
 
-   function deleteDatesOfUser($uid) {
-        // create backup of item
-   	   global $symfonyContainer;
-       $disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
-       $this->backupItem($uid, array(   'title'            =>   'title',
-                                        'description'      =>   'description',
-                                        'modification_date'   =>   'modification_date',
-                                        'public'         =>   'public'), array('place'));
+    function deleteDatesOfUser($uid) {
+        global $symfonyContainer;
+        $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
 
-      $current_datetime = getCurrentDateTimeInMySQL();
-      $query  = 'SELECT '.$this->addDatabasePrefix('dates').'.* FROM '.$this->addDatabasePrefix('dates').' WHERE '.$this->addDatabasePrefix('dates').'.creator_id = "'.encode(AS_DB,$uid).'"';
-      $result = $this->_db_connector->performQuery($query);
-      if ( !empty($result) ) {
-         foreach ( $result as $rs ) {
-            $insert_query = 'UPDATE '.$this->addDatabasePrefix('dates').' SET';
-			if (!empty($disable_overwrite) and $disable_overwrite == 'flag'){
-               $insert_query .= ' public = "-1",';
-	           $insert_query .= ' modification_date = "'.$current_datetime.'"';
-			}else{
-	            $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-	            $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
-	            $insert_query .= ' place = " ",';
-	            $insert_query .= ' modification_date = "'.$current_datetime.'",';
-	            $insert_query .= ' public = "1"';
-			}
-			$insert_query .='WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
-            $result2 = $this->_db_connector->performQuery($insert_query);
-            if ( !isset($result2) or !$result2 ) {
-               include_once('functions/error_functions.php');trigger_error('Problems automatic deleting dates.',E_USER_WARNING);
+        if ($disableOverwrite !== null && $disableOverwrite !== true) {
+            // create backup of item
+            $this->backupItem($uid, array(
+                'title' => 'title',
+                'description' => 'description',
+                'modification_date' => 'modification_date',
+                'public' => 'public'
+            ), array(
+                'place'
+            ));
+
+            $currentDatetime = getCurrentDateTimeInMySQL();
+            $query  = 'SELECT ' . $this->addDatabasePrefix('dates').'.* FROM ' . $this->addDatabasePrefix('dates').' WHERE ' . $this->addDatabasePrefix('dates') . '.creator_id = "' . encode(AS_DB,$uid) . '"';
+            $result = $this->_db_connector->performQuery($query);
+
+            if (!empty($result)) {
+                foreach ($result as $rs) {
+                    $updateQuery = 'UPDATE ' . $this->addDatabasePrefix('dates') . ' SET';
+
+                    /* flag */
+                    if ($disableOverwrite === 'flag') {
+                        $updateQuery .= ' public = "-1",';
+                        $updateQuery .= ' modification_date = "' . $currentDatetime . '"';
+                    }
+
+                    /* disabled */
+                    if ($disableOverwrite === false) {
+                        $updateQuery .= ' title = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')) . '",';
+                        $updateQuery .= ' description = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')) . '",';
+                        $updateQuery .= ' place = " ",';
+                        $updateQuery .= ' modification_date = "' . $currentDatetime . '",';
+                        $updateQuery .= ' public = "1"';
+                    }
+
+                    $updateQuery .= ' WHERE item_id = "' . encode(AS_DB,$rs['item_id']) . '"';
+                    $result2 = $this->_db_connector->performQuery($updateQuery);
+                    if (!$result2) {
+                        include_once('functions/error_functions.php');
+                        trigger_error('Problems automatic deleting dates.', E_USER_WARNING);
+                    }
+                }
             }
-         }
-      }
-   }
+        }
+    }
 
 	public function updateIndexedSearch($item) {
 		$indexer = $this->_environment->getSearchIndexer();

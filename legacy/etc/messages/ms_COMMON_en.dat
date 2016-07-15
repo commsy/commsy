@@ -872,6 +872,7 @@ $message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["en"] = "<ol style=&quot;font-weigh
 $message["COMMON_TEXT_INCLUDING_MEDIA_TEXT_JS"]["en"] = "<table>
    <tr>
       <td>
+      <span style=&quot;font-weight:bold;&quot;>Escaping:</span> <span style=&quot;font-weight:normal;&quot;>&bsol; (&bsol;*text&bsol;* becomes *text*)</span><br/>
 <span style=&quot;font-weight:bold;&quot;>Lists:</span> <span style=&quot;font-weight:normal;&quot;>- for bulleted, # for numbered lists</span><br/>
 <span style=&quot;font-weight:bold;&quot;>Emphasis:</span> <span style=&quot;font-weight:normal;&quot;>*text* becomes </span> <span style=&quot;font-weight:bold;&quot;>text</span>, <span style=&quot;font-weight:normal;&quot;>_text_ becomes </span><span style=&quot;font-weight:normal;font-style:italic;&quot;>text</span><br/>
 <span style=&quot;font-weight:bold;&quot;>Headings: </span><span style=&quot;font-weight:normal;&quot;>!Text,!!Text or !!!Text for headings</span><br/>

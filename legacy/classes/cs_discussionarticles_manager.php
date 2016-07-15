@@ -482,35 +482,49 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
       return $retour;
    }
 
-   function deleteDiscarticlesOfUser($uid) {
-        // create backup of item
-   	  global $symfonyContainer;
-      $disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
-      $this->backupItem($uid, array(   'subject'         =>   'title',
-                                   'description'      =>   'description',
-                                   'modification_date'   =>   'modification_date'));
-      $current_datetime = getCurrentDateTimeInMySQL();
-      $query  = 'SELECT '.$this->addDatabasePrefix('discussionarticles').'.* FROM '.$this->addDatabasePrefix('discussionarticles').' WHERE '.$this->addDatabasePrefix('discussionarticles').'.creator_id = "'.encode(AS_DB,$uid).'"';
-      $result = $this->_db_connector->performQuery($query);
-      if ( !empty($result) ) {
-         foreach ( $result as $rs ) {
-            $insert_query = 'UPDATE '.$this->addDatabasePrefix('discussionarticles').' SET';
-			if (!empty($disable_overwrite) and $disable_overwrite == 'flag'){
-            	$insert_query .= ' modification_date = "'.$current_datetime.'",';
-                $insert_query .= ' public = "-1"';
-			}else{
-	            $insert_query .= ' subject = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-	            $insert_query .= ' modification_date = "'.$current_datetime.'",';
-	            $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'"';
-			}
-	        $insert_query .=' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
-			$result2 = $this->_db_connector->performQuery($insert_query);
-            if ( !isset($result2) or !$result2 ) {
-               include_once('functions/error_functions.php');trigger_error('Problems automatic deleting discussionarticles.',E_USER_WARNING);
+    function deleteDiscarticlesOfUser($uid) {
+        global $symfonyContainer;
+        $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
+
+        if ($disableOverwrite !== null && $disableOverwrite !== true) {
+            // create backup of item
+            $this->backupItem($uid, array(
+                'subject'=> 'title',
+                'description' => 'description',
+                'modification_date' => 'modification_date',
+            ));
+
+            $currentDatetime = getCurrentDateTimeInMySQL();
+            $query  = 'SELECT ' . $this->addDatabasePrefix('discussionarticles').'.* FROM ' . $this->addDatabasePrefix('discussionarticles').' WHERE ' . $this->addDatabasePrefix('discussionarticles') . '.creator_id = "' . encode(AS_DB,$uid) . '"';
+            $result = $this->_db_connector->performQuery($query);
+
+            if (!empty($result)) {
+                foreach ($result as $rs) {
+                    $updateQuery = 'UPDATE ' . $this->addDatabasePrefix('discussionarticles') . ' SET';
+
+                    /* flag */
+                    if ($disableOverwrite === 'flag') {
+                        $updateQuery .= ' public = "-1",';
+                        $updateQuery .= ' modification_date = "' . $currentDatetime . '"';
+                    }
+
+                    /* disabled */
+                    if ($disableOverwrite === false) {
+                        $updateQuery .= ' subject = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')) . '",';
+                        $updateQuery .= ' description = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')) . '",';
+                        $updateQuery .= ' modification_date = "' . $currentDatetime . '"';
+                    }
+
+                    $updateQuery .= ' WHERE item_id = "' . encode(AS_DB,$rs['item_id']) . '"';
+                    $result2 = $this->_db_connector->performQuery($updateQuery);
+                    if (!$result2) {
+                        include_once('functions/error_functions.php');
+                        trigger_error('Problems automatic deleting discussionarticles.', E_USER_WARNING);
+                    }
+                }
             }
-         }
-      }
-   }
+        }
+    }
 
 	public function updateIndexedSearch($item) {
 		$indexer = $this->_environment->getSearchIndexer();

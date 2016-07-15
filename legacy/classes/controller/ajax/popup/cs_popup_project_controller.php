@@ -71,6 +71,10 @@ class cs_popup_project_controller implements cs_rubric_popup_controller {
         				$item->setContextID($environment->getCurrentPortalID());
         				$item->open();
         				$item->setRoomContext($current_context->getRoomContext());
+
+                        // disable RRS-Feed for new project and community rooms
+                        $item->turnRSSOff();
+
         				$item_is_new = true;
         			}
         			

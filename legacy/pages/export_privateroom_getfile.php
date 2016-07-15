@@ -30,3 +30,4 @@ header('Content-type: application/zip');
 
 $zipfile = 'var/temp/commsy_export_import_'.$privateroom_item->getItemID().'.zip';
 readfile($zipfile);
+exit;

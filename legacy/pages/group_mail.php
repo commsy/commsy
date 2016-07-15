@@ -98,8 +98,10 @@ if ( isOption($command,$translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
          $mail['message'] = $_POST['mailcontent'];
 
          $email = new cs_mail();
-         $email->set_from_name($mail['from_name']);
-         $email->set_from_email($mail['from_email']);
+         //$email->set_from_name($mail['from_name']);
+         //$email->set_from_email($mail['from_email']);
+         $email->set_from_email($environment->getServerItem()->getDefaultSenderAddress());
+         $email->set_from_name($environment->getCurrentPortalItem()->getTitle());
          $email->set_reply_to_name($mail['reply_to_name']);
          $email->set_reply_to_email($mail['reply_to_email']);
          $email->set_to($mail['to']);

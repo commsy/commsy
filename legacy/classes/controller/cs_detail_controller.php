@@ -337,7 +337,8 @@
 		protected function getEditActions($item, $user, $module = '') {
 			$return = array(
 				'edit'		=> false,
-				'delete'	=> false
+				'delete'	=> false,
+				'locked'	=> false
 			);
 
 			if($item->mayEdit($user) && $this->_with_modifying_actions) {
@@ -345,6 +346,24 @@
 				$return['delete'] = true;
 				if(empty($module)) $module = $this->_environment->getCurrentModule();
 				$return['edit_module'] = $module;
+			}
+
+			$checkLocking = $this->_environment->getConfiguration('c_item_locking');
+      		$checkLocking = ($checkLocking) ? $checkLocking : false;
+			if ($checkLocking && method_exists($item, "getLockingDate")) {
+				$lockingDate = $item->getLockingDate();
+				if ($lockingDate) {
+					$editDate = new DateTime($lockingDate);
+					$compareDate = new DateTime();
+					$compareDate->modify("-20 minutes");
+
+					$return['locked'] = ($compareDate < $editDate);
+
+					$userManager = $this->_environment->getUserManager();
+					$lockingUser = $userManager->getItem($item->getLockingUserId());
+					$return['locked_user_name'] = $lockingUser->getFullName();
+					$return['locked_date'] = $this->_environment->getTranslationObject()->getDateTimeinLang($lockingDate);
+				}
 			}
 
 			return $return;
@@ -1256,6 +1275,7 @@
 		            $return['last_modificator_status'] = self::USER_DISABLED;
 
 		        } elseif ( $item->isA(CS_USER_TYPE)
+		        and isset($modificator)
 		        and $item->getUserID() == $modificator->getUserID()
 		        and $item->getAuthSource() == $modificator->getAuthSource()
 		        ) {
