@@ -86,22 +86,32 @@ class HashtagController extends Controller
 
         $form->handleRequest($request);
         if ($form->isValid()) {
-            // persist new hashtag
+            // persist changes / delete hashtag
             $labelManager = $legacyEnvironment->getLabelManager();
 
-            if ($hashtag->getItemId()) {
+            if ($form->has('delete') && $form->get('delete')->isClicked()) {
                 $buzzwordItem = $labelManager->getItem($hashtag->getItemId());
-            } else {
+                $buzzwordItem->delete();
+            }
+
+            if ($form->has('new') && $form->get('new')->isClicked()) {
                 $buzzwordItem = $labelManager->getNewItem();
 
                 $buzzwordItem->setLabelType('buzzword');
                 $buzzwordItem->setContextID($hashtag->getContextId());
                 $buzzwordItem->setCreatorItem($legacyEnvironment->getCurrentUserItem());
-            }
-            
-            $buzzwordItem->setName($hashtag->getName());
+                $buzzwordItem->setName($hashtag->getName());
 
-            $buzzwordItem->save();
+                $buzzwordItem->save();
+            }
+
+            if ($form->has('update') && $form->get('update')->isClicked()) {
+                $buzzwordItem = $labelManager->getItem($hashtag->getItemId());
+
+                $buzzwordItem->setName($hashtag->getName());
+
+                $buzzwordItem->save();
+            }
 
             return $this->redirectToRoute('commsy_hashtag_edit', [
                 'roomId' => $roomId,

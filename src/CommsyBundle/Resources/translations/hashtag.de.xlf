@@ -14,9 +14,13 @@
                 <source>Create new hashtag</source>
                 <target>Neues Schlagwort anlegen</target>
             </trans-unit>
-            <trans-unit id="hashtag-button-edit">
+            <trans-unit id="hashtag-button-update">
                 <source>Update hashtag</source>
                 <target>Schlagwort aktualisieren</target>
+            </trans-unit>
+            <trans-unit id="hashtag-button-delete">
+                <source>Delete hashtag</source>
+                <target>Schlagwort löschen</target>
             </trans-unit>
             <trans-unit id="hashtag-empty">
                 <source>No hashtag has been created yet.</source>

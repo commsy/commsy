@@ -37,18 +37,32 @@ class HashtagEditType extends AbstractType
 
                 // check if this is a "new" object
                 if (!$hashtag->getItemId()) {
-                    $label = 'Create new hashtag';
+                    $form->add('new', Types\SubmitType::class, [
+                        'attr' => array(
+                            'class' => 'uk-button-primary',
+                        ),
+                        'label' => 'Create new hashtag',
+                        'translation_domain' => 'hashtag',
+                    ]);
                 } else {
-                    $label = 'Update hashtag';
+                    $form
+                        ->add('update', Types\SubmitType::class, [
+                            'attr' => array(
+                                'class' => 'uk-button-primary',
+                            ),
+                            'label' => 'Update hashtag',
+                            'translation_domain' => 'hashtag',
+                        ])
+                        ->add('delete', Types\SubmitType::class, [
+                            'attr' => array(
+                                'class' => 'uk-button-danger',
+                            ),
+                            'label' => 'Delete hashtag',
+                            'translation_domain' => 'hashtag',
+                            'validation_groups' => false,   // disable validation
+                        ])
+                    ;
                 }
-
-                $form->add('save', Types\SubmitType::class, [
-                    'attr' => array(
-                        'class' => 'uk-button-primary',
-                    ),
-                    'label' => $label,
-                    'translation_domain' => 'hashtag',
-                ]);
             });
         ;
     }
