@@ -476,7 +476,10 @@ class UserController extends Controller
             'action' => $this->generateUrl('commsy_user_edit', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId,
-            ))
+            )),
+            'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
+                'roomId' => $roomId,
+            )),
         );
         $form = $this->createForm(UserType::class, $formData, $formOptions);
         

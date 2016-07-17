@@ -41,7 +41,8 @@ class UserType extends AbstractType
                 'label' => 'userImage',
                 'attr' => array(
                     'placeholder' => 'userImage',
-                    'class' => '',
+                    'class' => 'upload',
+                    'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
                 ),
                 'translation_domain' => 'user',
                 'required' => false,
@@ -229,7 +230,7 @@ class UserType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired([])
+            ->setRequired(['uploadUrl'])
         ;
     }
 
