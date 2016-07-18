@@ -29,6 +29,10 @@ services:
         class: CommsyBundle\Migrations\MaterialsMigration
         arguments: ['@doctrine.orm.entity_manager']
 
+    commsy.migrations.files:
+        class: CommsyBundle\Migrations\FilesMigration
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+
     # Menu
     commsy.menu.builder:
         class: CommsyBundle\Menu\MenuBuilder

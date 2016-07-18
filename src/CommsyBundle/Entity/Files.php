@@ -7,7 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Files
  *
- * @ORM\Table(name="files", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="creator_id", columns={"creator_id"})})
+ * @ORM\Table(name="files", indexes={
+ *     @ORM\Index(name="context_id", columns={"context_id"}),
+ *     @ORM\Index(name="creator_id", columns={"creator_id"})
+ * })
  * @ORM\Entity
  */
 class Files
@@ -71,6 +74,13 @@ class Files
     private $filename;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="filepath", type="string", length=255, nullable=false)
+     */
+    private $filepath;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="size", type="integer", nullable=true)
@@ -106,30 +116,19 @@ class Files
     private $tempUploadSessionId;
 
     /**
-     * @var integer
-     *
-     * @ORM\ManyToOne(targetEntity="Room")
-     * @ORM\JoinColumns({
-     *     @ORM\JoinColumn(name="context_id", referencedColumnName="item_id")
-     * })
-     */
-    private $room;
-
-    /**
      * Get file content base64 encoded
      *
      * @return string (base64)
      */
     public function getContent()
     {
-        $fileExt = substr(strrchr($this->filename,'.'),1);
-        $filePath = 'files/' . $this->room->getContextId() . '/' . $this->contextId . '_/' . $this->filesId. '.' . $fileExt;
+        $filePath = $this->getFilepath();
 
         if (file_exists($filePath)) {
             return file_get_contents(
-                        $filePath, 
-                        'r'
-                    );
+                $filePath, 
+                'r'
+            );
         } else {
             return null;
         }
@@ -312,6 +311,30 @@ class Files
     public function getFilename()
     {
         return $this->filename;
+    }
+
+    /**
+     * Set filepath
+     *
+     * @param string $filepath
+     *
+     * @return Files
+     */
+    public function setFilepath($filepath)
+    {
+        $this->filepath = $filepath;
+
+        return $this;
+    }
+
+    /**
+     * Get filepath
+     *
+     * @return string
+     */
+    public function getFilepath()
+    {
+        return $this->filepath;
     }
 
     /**
