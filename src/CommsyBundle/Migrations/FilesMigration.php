@@ -3,7 +3,7 @@ namespace CommsyBundle\Migrations;
 
 use Doctrine\ORM\EntityManager;
 
-class FilesMigration
+class FilesMigration extends AbstractMigration
 {
     const BATCH_SIZE = 20;
 
@@ -34,6 +34,8 @@ class FilesMigration
 
         foreach ($iterableResult as $row) {
             $file = $row[0];
+
+            $this->removeEvents($this->em, $file);
 
             $fileContextId = $file->getContextId();
 

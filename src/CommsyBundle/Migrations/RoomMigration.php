@@ -3,7 +3,7 @@ namespace CommsyBundle\Migrations;
 
 use Doctrine\ORM\EntityManager;
 
-class RoomMigration
+class RoomMigration extends AbstractMigration
 {
     private $em;
 
@@ -18,6 +18,8 @@ class RoomMigration
         $rooms = $repository->findAll();
 
         foreach ($rooms as $room) {
+            $this->removeEvents($this->em, $room);
+
             $extras = $room->getExtras();
 
             if (isset($extras['HOMECONF']) && !empty($extras['HOMECONF'])) {

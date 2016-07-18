@@ -4,7 +4,7 @@ namespace CommsyBundle\Migrations;
 use Doctrine\ORM\EntityManager;
 use Commsy\LegacyBundle\Utils\MaterialService;
 
-class MaterialsMigration
+class MaterialsMigration extends AbstractMigration
 {
     private $em;
 
@@ -19,6 +19,8 @@ class MaterialsMigration
         $materials = $repository->findAll();
 
         foreach ($materials as $material) {
+            $this->removeEvents($this->em, $material);
+
             $extras = $material->getExtras();
             
             if (isset($extras['WORKFLOWVALIDITY'])) {
