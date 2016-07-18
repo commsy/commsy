@@ -344,7 +344,8 @@ fos_elastica:
                 announcement:
                     indexable_callback: 'isIndexable'
                     mappings:
-                        contextId: ~
+                        contextId:
+                            type: integer
                         title:
                             type: string
                             analyzer: autocomplete
