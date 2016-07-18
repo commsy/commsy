@@ -20,13 +20,13 @@ services:
         tags:
             - { name: form.type }
 
-    # Converter
-    commsy.converter.room:
-        class: CommsyBundle\Converter\RoomConverter
+    # Migrations
+    commsy.migrations.room:
+        class: CommsyBundle\Migrations\RoomMigration
         arguments: ['@doctrine.orm.entity_manager']
 
-    commsy.converter.materials:
-        class: CommsyBundle\Converter\MaterialsConverter
+    commsy.migrations.materials:
+        class: CommsyBundle\Migrations\MaterialsMigration
         arguments: ['@doctrine.orm.entity_manager']
 
     # Menu

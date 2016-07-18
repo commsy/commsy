@@ -1,10 +1,10 @@
 <?php
-namespace CommsyBundle\Converter;
+namespace CommsyBundle\Migrations;
 
 use Doctrine\ORM\EntityManager;
 use Commsy\LegacyBundle\Utils\MaterialService;
 
-class MaterialsConverter
+class MaterialsMigration
 {
     private $em;
 

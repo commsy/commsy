@@ -31,8 +31,8 @@ class Version20160209193758 extends AbstractMigration implements ContainerAwareI
 
     public function postUp(Schema $schema)
     {
-        $converter = $this->container->get('commsy.converter.materials');
-        $converter->migrateMaterialWorkflowConfiguration();
+        $migration = $this->container->get('commsy.migrations.materials');
+        $migration->migrateMaterialWorkflowConfiguration();
     }
 
     /**

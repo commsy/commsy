@@ -1,9 +1,9 @@
 <?php
-namespace CommsyBundle\Converter;
+namespace CommsyBundle\Migrations;
 
 use Doctrine\ORM\EntityManager;
 
-class RoomConverter
+class RoomMigration
 {
     private $em;
 

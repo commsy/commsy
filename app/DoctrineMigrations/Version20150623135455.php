@@ -34,8 +34,8 @@ class Version20150623135455 extends AbstractMigration implements ContainerAwareI
 
     public function postUp(Schema $schema)
     {
-        $converter = $this->container->get('commsy.converter.room');
-        $converter->migrateRoomConfiguration();
+        $migration = $this->container->get('commsy.migrations.room');
+        $migration->migrateRoomConfiguration();
     }
 
     /**
