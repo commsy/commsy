@@ -304,6 +304,16 @@ class cs_file_item extends cs_item {
       return $this->_getValue('filename');
    }
 
+   public function setFilePath($value)
+   {
+      $this->_setValue('filepath', $value);
+   }
+
+   public function getFilePath()
+   {
+      return $this->_getValue('filepath');
+   }
+
    function getDisplayName() {
       $temp_display_name = rawurldecode($this->_getValue('filename'));
       include_once('functions/text_functions.php');
