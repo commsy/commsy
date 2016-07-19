@@ -59,7 +59,10 @@
         <h4 class="cs-list-section-header">
             <span class="cs-detail-section-header-background">
                 {{ 'categories'|trans({}, "room") }} 
-                <a href><i class="uk-icon-edit"></i></a>
+
+                {% if is_granted('CATEGORY_EDIT') %}
+                    <a href><i class="uk-icon-edit"></i></a>
+                {% endif %}
             </span>
         </h4>
 
