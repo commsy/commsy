@@ -68,7 +68,7 @@ fos_elastica:
                         listener: ~
 
                 # dates
-                dates:
+                date:
                     indexable_callback: isIndexable
                     mappings:
                         contextId:
@@ -112,7 +112,7 @@ fos_elastica:
                         listener: ~
 
                 # discussions:
-                discussions:
+                discussion:
                     indexable_callback: isIndexable
                     mappings:
                         contextId:
@@ -224,7 +224,7 @@ fos_elastica:
 
 
                 # todos:
-                todos:
+                todo:
                     indexable_callback: isIndexable
                     mappings:
                         contextId:
@@ -290,7 +290,7 @@ fos_elastica:
                         listener: ~
 
                 # materials:
-                materials:
+                material:
                     indexable_callback: 'isIndexable'
                     mappings:
                         versionId:
