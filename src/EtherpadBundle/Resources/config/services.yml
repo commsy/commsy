@@ -1,8 +1,4 @@
 services:
-#    etherpad.example:
-#        class: EtherpadBundle\Example
-#        arguments: ["@service_id", "plain_value", %parameter%]
-
     commsy.etherpad_service:
         class: EtherpadBundle\Services\EtherpadService
         arguments: ["@service_container"]
