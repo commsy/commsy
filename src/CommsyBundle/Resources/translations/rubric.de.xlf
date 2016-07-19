@@ -186,6 +186,14 @@
                 <source>execute</source>
                 <target>Aktion ausführen</target>
             </trans-unit>
+            <trans-unit id="project">
+                <source>project</source>
+                <target>Projekträume</target>
+            </trans-unit>
+            <trans-unit id="institution">
+                <source>institution</source>
+                <target>Institutionen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
