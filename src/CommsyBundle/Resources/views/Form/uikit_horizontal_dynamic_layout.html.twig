@@ -61,7 +61,7 @@
                 {{ 'categories'|trans({}, "room") }} 
 
                 {% if is_granted('CATEGORY_EDIT') %}
-                    <a href><i class="uk-icon-edit"></i></a>
+                    <a href="{{ path('commsy_category_edit', {'roomId': app.request.attributes.get('roomId') }) }}"><i class="uk-icon-edit"></i></a>
                 {% endif %}
             </span>
         </h4>

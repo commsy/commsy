@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
 use CommsyBundle\Form\Type\TagType;
+use CommsyBundle\Form\Type\CategoryEditType;
 
 class CategoryController extends Controller
 {
@@ -79,5 +80,27 @@ class CategoryController extends Controller
 
             return $this->redirectToRoute('commsy_room_home', array('roomId' => $roomId));
         }
+    }
+
+    /**
+     * @Route("/room/{roomId}/category/edit/{categoryId}")
+     * @Template()
+     * @Security("is_granted('CATEGORY_EDIT')")
+     */
+    public function editAction($roomId, $categoryId = null, Request $request)
+    {
+        $roomService = $this->get('commsy_legacy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
+
+        if (!$roomItem->withBuzzwords()) {
+            throw $this->createAccessDeniedException('The requested room does not have categories enabled.');
+        }
+
+        $form = $this->createForm(CategoryEditType::class, null);
+
+        return [
+            'form' => $form->createView(),
+            'roomId' => $roomId,
+        ];
     }
 }
