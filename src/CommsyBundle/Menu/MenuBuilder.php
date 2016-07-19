@@ -277,6 +277,12 @@ class MenuBuilder
             case 'topic':
                 $class = "uk-icon-justify uk-icon-book uk-icon-small";
                 break;
+            case 'project':
+                $class = "uk-icon-justify uk-icon-sitemap uk-icon-small";
+                break;
+            case 'institution':
+                $class = "uk-icon-justify uk-icon-institution uk-icon-small";
+                break;
             
             default:
                 $class = "uk-icon-justify uk-icon-home uk-icon-small";
