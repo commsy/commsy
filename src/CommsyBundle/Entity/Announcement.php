@@ -241,13 +241,23 @@ class Announcement
      *
      * @param \DateTime $modificationDate
      *
-     * @return Announcement
+     * @return Materials
      */
     public function setModificationDate($modificationDate)
     {
         $this->modificationDate = $modificationDate;
 
         return $this;
+    }
+
+    /**
+     * Get modificationDate
+     *
+     * @return \DateTime
+     */
+    public function getModificationDate()
+    {
+        return $this->modificationDate;
     }
 
     /**
