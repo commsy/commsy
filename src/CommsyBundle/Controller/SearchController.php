@@ -45,41 +45,59 @@ class SearchController extends Controller
     {
         $globalSearch = new GlobalSearch();
 
-        $form = $this->createForm(SearchType::class, $globalSearch, [
+        $query = '';
+        $filterData = [];
+
+        $topForm = $this->createForm(SearchType::class, $globalSearch, [
             'action' => $this->generateUrl('commsy_search_results', [
                 'roomId' => $roomId
             ])
         ]);
-        $form->handleRequest($request);
 
-        $filterForm = $this->createForm(SearchFilterType::class);
-        //$filterForm->handleRequest($request);
+        $topForm->handleRequest($request);
+        if ($topForm->isSubmitted() && $topForm->isValid()) {
+            $globalSearch = $topForm->getData();
+            $query = $globalSearch->getPhrase();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $globalSearch = $form->getData();
+            $filterData['query'] = $query;
+        }
 
-            $searchManager = $this->get('commsy.search.manager');
-            $searchManager->setQuery($globalSearch->getPhrase());
+        // $filterForm = $this->createForm(SearchFilterType::class, $filterData, [
+        // ]);
 
-            // if ($request->query->has($filterForm->getName())) {
+        // $filterForm->handleRequest($request);
+        // if ($filterForm->isSubmitted() && $filterForm->isValid()) {
+        //     $filterFormData = $filterForm->getData();
+        //     $query = $filterFormData['query'];
+        // }
 
-            // }
+        $searchManager = $this->get('commsy.search.manager');
+        $searchManager->setQuery($query);
 
-            $searchResults = $searchManager->getResults();
+        $searchResults = $searchManager->getResults();
 
-            $totalHits = $searchResults->getTotalHits();
-            $aggregations = $searchResults->getAggregations()['filterContext'];
+        $totalHits = $searchResults->getTotalHits();
+        $aggregations = $searchResults->getAggregations()['filterContext'];
 
-            $contextBuckets = $aggregations['contexts']['buckets'];
+        $contextBuckets = $aggregations['contexts']['buckets'];
 
+        $results = [];
+        foreach ($searchResults->getResults(0, 10)->toArray() as $searchResult) {
+            $reflection = new \ReflectionClass($searchResult);
+            $type = strtolower(rtrim($reflection->getShortName(), 's'));
+
+            $results[] = [
+                'entity' => $searchResult,
+                'routeName' => 'commsy_' . $type . '_detail',
+            ];
         }
 
         return [
-            'filterForm' => $filterForm->createView(),
+//            'filterForm' => $filterForm->createView(),
             'roomId' => $roomId,
             'totalHits' => $totalHits,
-            'searchResults' => $searchResults->getResults(0, 10)->toArray(),
-            'aggregations' => $aggregations,
+            'results' => $results,
+//            'aggregations' => $aggregations,
         ];
     }
 

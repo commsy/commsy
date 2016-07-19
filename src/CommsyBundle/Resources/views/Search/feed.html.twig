@@ -1,22 +1,22 @@
 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
-{% for result in searchResults %}
+{% for result in results %}
     <article class="uk-comment">
 
         <header class="uk-comment-header uk-flex">
 
             {# user icon and modification time #}
             <div class="uk-margin-right uk-flex-item-none">
-                {% if result.modifier.status >= 2 %}
-                    {{ macros.userIconLink(result.modifier) }}
+                {% if result.entity.modifier.status >= 2 %}
+                    {{ macros.userIconLink(result.entity.modifier) }}
                 {% else %}
-                    {{ macros.userIcon(result.modifier) }}
+                    {{ macros.userIcon(result.entity.modifier) }}
                 {% endif %}
                 <div class="uk-comment-meta">
-                    {% if result.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                        {{ 'today'|trans({})|capitalize }}, {{ result.modificationDate|date("H:i") }}
+                    {% if result.entity.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                        {{ 'today'|trans({})|capitalize }}, {{ result.entity.modificationDate|date("H:i") }}
                     {% else %}
-                        {{ result.modificationDate|date("d.m.Y") }}
+                        {{ result.entity.modificationDate|date("d.m.Y") }}
                     {% endif %}
                 </div>
             </div>
@@ -24,32 +24,25 @@
             {# title and meta #}
             <div class="uk-width-8-10">
                 <h4 class="uk-comment-title">
-                    <a href="{{ path('commsy_material_detail', {'roomId': result.contextId, 'itemId': result.itemId}) }}">{{ result.title }}</a>
+                    <a href="{{ path(result.routeName, {'roomId': result.entity.contextId, 'itemId': result.entity.itemId}) }}">
+                        {% if result.entity.title is defined %}
+                            {{ result.entity.title }}
+                        {% endif %}
+
+                        {% if result.entity.firstname is defined and result.entity.lastname is defined %}
+                            {{ result.entity.firstname }} {{ result.entity.lastname }}
+                        {% endif %}
+                    </a>
                 </h4>
 
                 <div class="uk-comment-meta">
-                    {% if result.author is defined and result.author is not empty %}
-                        {{ 'by'|trans({})|capitalize }}: {{ result.author }} ({{ result.publishingDate }})
+                    {% if result.entity.author is defined and result.entity.author is not empty %}
+                        {{ 'by'|trans({})|capitalize }}: {{ result.entity.author }} ({{ result.entity.publishingDate }})
                     {% else %}
-                        {{ 'by'|trans({})|capitalize }}: {{ result.modifier.fullname }} ({{ result.getCreationDate|date("d.m.Y") }})
+                        {{ 'by'|trans({})|capitalize }}: {{ result.entity.modifier.fullname }} ({{ result.entity.getCreationDate|date("d.m.Y") }})
                     {% endif %}
                 </div>
-               
-                {# <div class="uk-comment-meta">
-                    {{  macros.fileListShort(result) }}
-                </div> #}
             </div>
-            {# 
-            {%if showRating or showWorkflow%}
-                <div class="uk-width-2-10 uk-text-right">
-                {%if showRating%}
-                    {{  macros.ratingStatus(material, ratingList) }}
-                {% endif %}
-                {%if showWorkflow%}
-                    {{  macros.workflowTrafficLight(material) }}
-                {% endif %}
-            </div>
-            {% endif %} #}
         </header>
     </article>
 {% else %}

@@ -4,6 +4,7 @@ namespace CommsyBundle\Filter;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type as Types;
 
 use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
 
@@ -20,6 +21,8 @@ class SearchFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('query', Types\HiddenType::class, [
+            ])
             ->add('rooms', Filters\ChoiceFilterType::class, [
                 'choices' => [
                     'Raum A' => 1,
@@ -27,6 +30,8 @@ class SearchFilterType extends AbstractType
                 ],
                 'expanded' => true,
                 'multiple' => true,
+            ])
+            ->add('submit', Types\SubmitType::class, [
             ])
         ;
     }
