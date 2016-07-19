@@ -326,6 +326,12 @@ services:
         tags:
             - { name: console.command }
 
+    commsy.command.db_check:
+        class: CommsyBundle\Command\DBCheckCommand
+        arguments: ['@doctrine.orm.entity_manager']
+        tags:
+            - { name: console.command }
+
     # API
     commsy.api.soap:
         class: CommsyBundle\Services\SoapService
