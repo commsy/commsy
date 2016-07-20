@@ -51,7 +51,7 @@ class RoomTransformer implements DataTransformerInterface
 
 		    $roomData['room_image_repeat_x'] = $roomItem->issetBGImageRepeat();
 
-            $roomData['description'] = $roomItem->getDescription();
+            $roomData['room_description'] = $roomItem->getDescription();
             
             $roomData['wikiEnabled'] = $roomItem->isWikiEnabled();
 
@@ -82,7 +82,7 @@ class RoomTransformer implements DataTransformerInterface
             }
             $rubricArray[] = $rubricName . "_" . $rubricValue;
         }
-        
+
         $roomObject->setHomeConf(implode($rubricArray, ','));
 
         $roomObject->setTitle($roomData['title']);
@@ -115,9 +115,9 @@ class RoomTransformer implements DataTransformerInterface
             $roomObject->unsetBGImageRepeat();
         */
 
-		if(isset($roomData['room_description'])) 
-            $roomObject->setDescription($roomData['room_description']);
-            //$roomObject->setDescription($this->_popup_controller->getUtils()->cleanCKEditor($roomData['room_description']));
+		if(isset($roomData['room_description'])) {
+            $roomObject->setDescription(strip_tags($roomData['room_description']));
+        }
 		else 
             $roomObject->setDescription('');
 

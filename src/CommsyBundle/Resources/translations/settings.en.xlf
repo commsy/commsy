@@ -130,6 +130,93 @@
                 <source>Room image repeat x</source>
                 <target>Repeat image horizontically</target>
             </trans-unit>
+
+            <!-- Additional settings -->
+            <trans-unit id="tags">
+                <source>Tags</source>
+                <target>Tags</target>
+            </trans-unit>
+            <trans-unit id="categories">
+                <source>Categories</source>
+                <target>Categories</target>
+            </trans-unit>
+            <trans-unit id="tasks">
+                <source>Tasks</source>
+                <target>Tasks</target>
+            </trans-unit>
+            <trans-unit id="template">
+                <source>Template</source>
+                <target>Template</target>
+            </trans-unit>
+            <trans-unit id="targetgroup">
+                <source>Target group</source>
+                <target>Target group</target>
+            </trans-unit>
+            <trans-unit id="newstatus">
+                <source>New status</source>
+                <target>New status</target>
+            </trans-unit>
+            <trans-unit id="addstatus">
+                <source>Add status</source>
+                <target>Add new progress status</target>
+            </trans-unit>
+            <trans-unit id="allcommsyusers">
+                <source>All commsy users</source>
+                <target>All commsy users</target>
+            </trans-unit>
+            <trans-unit id="allworkspaceusers">
+                <source>All workspace users</source>
+                <target>All workspace users</target>
+            </trans-unit>
+            <trans-unit id="workspacemodsonly">
+                <source>Workspace mods only</source>
+                <target>Workspace moderators only</target>
+            </trans-unit>
+            <trans-unit id="activate">
+                <source>Activate</source>
+                <target>activate</target>
+            </trans-unit>
+            <trans-unit id="mandatoryassignment">
+                <source>Mandatory assignment</source>
+                <target>mandatory assignment</target>
+            </trans-unit>
+            <trans-unit id="access">
+                <source>Access</source>
+                <target>Access to categories management for moderator/s only</target>
+            </trans-unit>
+            <trans-unit id="structuralauxilaries">
+                <source>Structural auxilaries</source>
+                <target>Structural auxilaries</target>
+            </trans-unit>
+            <trans-unit id="archiveroom">
+                <source>Archive room</source>
+                <target>Archive room</target>
+            </trans-unit>
+            <trans-unit id="terms">
+                <source>Terms</source>
+                <target>Terms and Conditions</target>
+            </trans-unit>
+            <trans-unit id="status">
+                <source>Status</source>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="yes">
+                <source>Yes</source>
+                <target>Yes</target>
+            </trans-unit>
+            <trans-unit id="no">
+                <source>No</source>
+                <target>No</target>
+            </trans-unit>
+            <trans-unit id="switchon">
+                <source>Switch on</source>
+                <target>switch on</target>
+            </trans-unit>
+            <trans-unit id="switchoff">
+                <source>Switch off</source>
+                <target>switch off</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

@@ -23,45 +23,29 @@
                         {{ form_label(form.room_image) }}
                         {{ form_widget(form.room_image.room_image_choice) }}
 
-                        <div id="holder" style="width: 250px; height: 100px; border: 2px dashed black; margin-left: 150px; margin-bottom: 20px; background-color: lightgrey;"></div>
-
-                        <div id="bgPreview" class="uk-form-controls uk-cover-background uk-position-relative" aria-hidden="false" style="height: 242px; overflow: hidden;"> 
+                        <div id="bgPreview" class="uk-form-controls uk-cover-background uk-position-relative" style="height: 240px">
                             {% if bgImageFilepath is not empty %}
-                                <!-- TODO: should use upload image instead of room image -->
-                                <!-- <img i src="{{bgImageFilepath}}" /> -->
+                                <img src="{{bgImageFilepath}}" />
+                            {% else %}
+                                <img src="" />
                             {% endif %}
-                            <div class="uk-position-cover" style="opacity: 0.7">
+                            <div class="uk-position-cover" style="opacity: 0.7;">
                                 {{ form_widget(form.room_image.room_image_upload) }}
                             </div>
+
+                            <ul id="imageInfo"></ul>
                         </div>
 
                         <script>
-                            var holder = document.getElementById('bgPreview');
-
-                            holder.ondragover = function() {this.className = 'hover'; return false; };
-                            holder.ondragend = function() {this.className = ''; return false; };
-                            holder.ondrop = function(e) {
-                                this.className = '';
-                                e.preventDefault();
-
-                                var file = e.dataTransfer.files[0],
-                                    reader = new FileReader();
-                                reader.onload = function(event) {
-                                    console.log(event.target);
-                                    holder.style.background = 'url(' + event.target.result + ') no-repeat center';
-                                };
-                                console.log(file);
-                                reader.readAsDataURL(file);
-
-                                return false;
+                            var uploads = document.getElementsByClassName('upload');
+                            if(uploads.length){
+                                uploads[0].className = uploads[0].className.replace(/\bupload\b/,'');
                             }
                         </script>
 
-                        {% if form.room_image.delete_custom_image is defined %}
-                            {{ form_row(form.room_image.delete_custom_image) }}
-                        {% endif %}
-
                         {{ form_row(form.room_image.room_image_repeat_x) }}
+                        {{ form_row(form.room_image.delete_custom_image) }}
+                        {{ form_row(form.room_image.room_image_data) }}
 
                     {{ form_end(form) }}
                 </div>

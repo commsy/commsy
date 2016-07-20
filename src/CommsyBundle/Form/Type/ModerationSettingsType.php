@@ -45,9 +45,8 @@ class ModerationSettingsType extends AbstractType
             ->add('contentId', TextType::class, array())
             
             ->add('message', CKEditorType::class, [
-                'label' => false,
                 'translation_domain' => 'form',
-                'required' => true,
+                'inline' => false,
                  'attr' => array(
                     'class' => 'uk-form-width-large',
                 ),

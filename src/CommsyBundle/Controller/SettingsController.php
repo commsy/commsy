@@ -65,8 +65,8 @@ class SettingsController extends Controller
 
             $room_image_data = $form['room_image']->getData();
 
-            if($room_image_data['room_image_choice'] == 'custom_image' && !is_null($room_image_data['room_image_upload'])){
-                $file = $room_image_data['room_image_upload'];
+            //if($room_image_data['room_image_choice'] == 'custom_image' && !is_null($room_image_data['room_image_upload'])){
+            if($room_image_data['room_image_choice'] == 'custom_image' && !is_null($room_image_data['room_image_data'])){
 
                 $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
 
@@ -74,16 +74,42 @@ class SettingsController extends Controller
                     mkdir($saveDir, 0777, true);
                 }
 
-                $extension = $file->guessExtension();
-                if(!$extension) {
-                    $extension = "bin";
+                $file = $room_image_data['room_image_upload'];
+
+                $fileName = "";
+
+                // case 1: file was send as "input file" via "room_image_upload" field
+                if(!is_null($file)){
+                    dump("BG image given as file.");
+                    $extension = $file->guessExtension();
+                    if(!$extension) {
+                        $extension = "bin";
+                    }
+
+                    $fileName = 'custom_bg_image.'.$extension;
+
+                    $file->move($saveDir, $fileName);
+                    //$file->move($saveDir, $file->getClientOriginalName());
                 }
 
-                $fileName = 'custom_bg_image.'.$extension;
-                //$fileName = md5(uniqid()).'_bgimage.'.$extension;
+                // case 2: file was send as base64 string via hidden "room_image_data" text field
+                else{
+                    dump("BG image given as base64 string.");
+                    $data = $room_image_data['room_image_data'];
+                    list($type, $data) = explode(";", $data);
+                    list(, $data) = explode(",", $data);
+                    list(, $extension) = explode("/", $type);
 
-                $file->move($saveDir, $fileName);
-                //$file->move($saveDir, $file->getClientOriginalName());
+                    $data = base64_decode($data);
+
+                    $fileName = 'custom_bg_image.'.$extension;
+
+                    $absoluteFilepath = $saveDir . "/" . $fileName;
+
+                    dump("save bg image under " . $absoluteFilepath);
+
+                    file_put_contents($absoluteFilepath, $data);
+                }
 
                 $roomItem->setBGImageFilename($fileName);
             }

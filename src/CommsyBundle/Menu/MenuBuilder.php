@@ -148,7 +148,7 @@ class MenuBuilder
                 'label' => 'appearance',
                 'route' => 'commsy_settings_appearance',
                 'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-eyedropper uk-icon-small'),
+                'extras' => array('icon' => 'uk-icon-pencil-square uk-icon-small'),
             ))
             ->setExtra('translation_domain', 'menu');
             

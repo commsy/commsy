@@ -18,6 +18,9 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+
+use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
@@ -77,6 +80,8 @@ class GeneralSettingsType extends AbstractType
                     ),
                     //'image_path' => 'webPath',
                 ))
+                ->add('room_image_data', HiddenType::class, array(
+                ))
                 ->add('room_image_repeat_x', CheckboxType::class, array(
                     'label_attr' => array('class' => 'uk-form-label'),
                     'value' => 'repeat_x',
@@ -93,10 +98,10 @@ class GeneralSettingsType extends AbstractType
                     'Code' => 'code',
                 ),
             ))
-            //->add('code', TextType::class,
             ->add('room_description', TextareaType::class, array(
                 'attr' => array(
                     'class' => 'uk-form-width-large',
+                    'style' => 'width: 90%',
                 ),
                 'position' => array(
                     'before' => 'save',
@@ -176,6 +181,9 @@ class GeneralSettingsType extends AbstractType
                             'choices' => $choices,
                             'multiple' => true,
                             'required' => false,
+                            'attr' => array(
+                                'style' => 'width: 90%',
+                            ),
                         ))
                     ;
                 }
