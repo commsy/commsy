@@ -70,7 +70,7 @@
                         source:'{{ path('commsy_search_roomnavigation', {'roomId': app.request.attributes.get('roomId') }) }}',
                         minLength: 0
                     }">
-                        <a class="cs-link-highlight" href>
+                        <a class="cs-link-highlight">
                             {% block roomTitle %}
                                 {{ app.request.attributes.get('roomId')|roomTitle }}
                             {% endblock %}
