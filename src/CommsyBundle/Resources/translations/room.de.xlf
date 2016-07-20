@@ -83,8 +83,8 @@
                 <target>Archiviert</target>
             </trans-unit>
             <trans-unit id="room-nav-title">
-                <source>Rooms</source>
-                <target>Räume</target>
+                <source>All rooms</source>
+                <target>Alle Räume</target>
             </trans-unit>
             <trans-unit id="room-filter-label-type">
                 <source>Type</source>

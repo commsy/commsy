@@ -36,10 +36,6 @@
 
             let $div = $this.element.find('div.uk-form');
 
-            $this.element.on('click', function(event) {
-                event.preventDefault();
-            });
-
             $this.element.on('show.uk.dropdown', function() {
                 // lazy autocomplete setup prevents some positioning issues
                 // since we are dealing with two nested dropdowns

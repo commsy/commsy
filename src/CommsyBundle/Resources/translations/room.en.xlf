@@ -75,8 +75,8 @@
                 <target>E-mail to moderator/s</target>
             </trans-unit>
             <trans-unit id="room-nav-title">
-                <source>Rooms</source>
-                <target>Rooms</target>
+                <source>All rooms</source>
+                <target>All rooms</target>
             </trans-unit>
             <trans-unit id="room-filter-label-membership">
                 <source>Membership</source>
