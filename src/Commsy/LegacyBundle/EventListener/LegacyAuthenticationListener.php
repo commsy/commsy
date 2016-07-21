@@ -58,10 +58,14 @@ class LegacyAuthenticationListener implements EventSubscriberInterface
 
         // if not authenticated by the legacy code, redirect back to portal
         if (!$isAuthenticated) {
-            $portalId = $this->legacyEnvironment->getCurrentPortalItem()->getItemID();
-            $url = $event->getRequest()->getBaseUrl() . '?cid=' . $portalId;
-            $response = new RedirectResponse($url);
-            $event->setResponse($response);
+            // check if we currently have a portal item (not in server context)
+            $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+
+            if ($portalItem) {
+                $url = $event->getRequest()->getBaseUrl() . '?cid=' . $portalItem->getItemID();
+                $response = new RedirectResponse($url);
+                $event->setResponse($response);
+            }
         }
     }
 }
