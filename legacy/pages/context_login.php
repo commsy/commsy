@@ -263,7 +263,9 @@ if (!$shib_direct_login){
 	      	unset($auth_manager);
 	      }
 	            
-      	if($portal_item->isTemporaryLockActivated()){
+
+	    $portal_item = $environment->getCurrentPortalItem();
+      	if($portal_item && $portal_item->isTemporaryLockActivated()){
 	      	// Erster Fehlversuch // Timestamp in session speichern und
 		      // Password tempLock
 		      $userExists = false;
