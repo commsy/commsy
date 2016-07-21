@@ -288,7 +288,7 @@ if (!$shib_direct_login){
 	         //Password tempLock
 	         $session->setValue('countWrongPassword', 1);
 	      } else {
-      		if($portal_item->isTemporaryLockActivated()){
+      		if($portal_item && $portal_item->isTemporaryLockActivated()){
 		       	$count = $session->getValue('countWrongPassword');
 		       	if(!isset($count) AND empty($count)){
 		       		$session->setValue('countWrongPassword', 1);
