@@ -5,6 +5,6 @@ services:
 
     etherpad.etherpad_edit_subscriber:
         class: EtherpadBundle\EventSubscriber\EtherpadEditSubscriber
-        arguments: ["@service_container"]
+        arguments: ["@service_container", "@commsy_legacy.material_service"]
         tags:
             - { name: kernel.event_subscriber }

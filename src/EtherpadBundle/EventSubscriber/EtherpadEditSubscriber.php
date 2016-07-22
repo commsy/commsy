@@ -6,13 +6,18 @@ use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+use Commsy\LegacyBundle\Utils\MaterialService;
+
 class EtherpadEditSubscriber implements EventSubscriberInterface
 {
     private $container;
 
-    public function __construct(ContainerInterface $container)
+    private $materialService;
+
+    public function __construct(ContainerInterface $container, MaterialService $materialService)
     {
         $this->container = $container;
+        $this->materialService = $materialService;
     }
 
     public static function getSubscribedEvents()
@@ -35,8 +40,13 @@ class EtherpadEditSubscriber implements EventSubscriberInterface
             $result = $event->getControllerResult();
             if (array_key_exists('isMaterial', $result)) {
                 if ($result['isMaterial']) {
-                    $result['useEtherpad'] = true;
-                    $event->setControllerResult($result);
+                    if (array_key_exists('itemId', $result)) {
+                        $materialItem = $this->materialService->getMaterial($result['itemId']);
+                        if ($materialItem->getEtherpadEditor()) {
+                            $result['useEtherpad'] = true;
+                            $event->setControllerResult($result);    
+                        }
+                    }
                 }
             }
         }
