@@ -44,74 +44,80 @@ class AdditionalSettingsType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $roomManager = $this->legacyEnvironment->getRoomManager();
-        $this->roomItem = $roomManager->getItem($options['roomId']);
-
         $builder
             ->add(
-                $builder->create('structural_auxilaries', FormType::class, array('compound' => true))
-                ->add('tags', ChoiceType::class, array(
-                    'label_attr' => array('class' => 'uk-form-label'),
-                    'expanded' => true,
-                    'multiple' => true,
-                    'choices' => array(
-                        'Activate' => 'activate',
-                        'Mandatory assignment' => 'mandatory_assignment',
-                    ),
+                $builder->create('structural_auxilaries', FormType::class, array())
+                ->add(
+                    $builder->create('buzzwords', FormType::class, array())
+                    ->add('activate', CheckboxType::class, array(
+                        'required' => false,
+                        'label_attr' => array('class' => 'uk-form-label'),
+                        'value' => 'yes',
+                    ))
+                    ->add('mandatory', CheckboxType::class, array(
+                        'required' => false,
+                        'label_attr' => array('class' => 'uk-form-label'),
+                        'value' => 'yes',
+                    ))
+                )
+                ->add(
+                    $builder->create('categories', FormType::class, array())
+                    ->add('activate', CheckboxType::class, array(
+                            'required' => false,
+                            'label_attr' => array('class' => 'uk-form-label'),
+                            'value' => 'yes',
+                    ))
+                    ->add('mandatory', CheckboxType::class, array(
+                            'required' => false,
+                            'label_attr' => array('class' => 'uk-form-label'),
+                            'value' => 'yes',
+                    ))
+                    ->add('edit', CheckboxType::class, array(
+                            'required' => false,
+                            'label_attr' => array('class' => 'uk-form-label'),
+                            'value' => 'yes',
+                    ))
+                )
+            )
+            ->add(
+                $builder->create('tasks', FormType::class, array('required' => false, 'compound' => true))
+                ->add('status', TextType::class, array(
+                    'required' => false,
                 ))
-                ->add('categories', ChoiceType::class, array(
-                    'expanded' => true,
-                    'multiple' => true,
-                    'choices' => array(
-                        'Activate' => 'activate',
-                        'Mandatory assignment' => 'mandatory_assignment',
-                        'Access' => 'access_management',
-                    ),
-                    'choice_attr' => array(
-                        'label_attr' => array('class' => 'uk-foobar'),
-                    ),
+                ->add('status_option', ButtonType::class, array(
                 ))
             )
             ->add(
-                $builder->create('tasks', FormType::class, array('compound' => true))
-                ->add('new_status', TextType::class, array(
-                ))
-                ->add('add_status', ButtonType::class, array(
-                ))
-            )
-            ->add('rss_feed', ChoiceType::class, array(
-                'expanded' => true,
-                'multiple' => false,
-                'choices' => array(
-                    'Switch on' => 'on',
-                    'Switch off' => 'off',
-                ),
-            ))
-            ->add(
-                $builder->create('template', FormType::class, array('compound' => true))
+                $builder->create('template', FormType::class, array())
                 ->add('status', CheckboxType::class, array(
+                    'required' => false,
                     'label_attr' => array('class' => 'uk-form-label'),
                 ))
-                ->add('target_group', ChoiceType::class, array(
+                ->add('template_availability', ChoiceType::class, array(
+                    'required' => false,
                     'expanded' => false,
                     'multiple' => false,
                     'choices' => array(
-                        'All commsy users' => 'all_commsy',
-                        'All workspace users' => 'all_workspace',
-                        'Workspace mods only' => 'mods_only',
+                        'All commsy users' => 0,
+                        'All workspace users' => 1,
+                        'Workspace mods only' => 2,
                     ),
                 ))
-                ->add('text', TextareaType::class, array(
+                ->add('template_description', TextareaType::class, array(
+                    'required' => false,
                     'attr' => array(
                         'style' => 'width: 90%',
                     ),
                 ))
             )
-            ->add('archive_room', CheckboxType::class, array(
+            /*
+            ->add('room_status', CheckboxType::class, array(
+                'required' => false,
                 'label_attr' => array('class' => 'uk-form-label'),
             ))
+            */
             ->add(
-                $builder->create('terms', FormType::class, array('compound' => true))
+                $builder->create('terms', FormType::class, array('required' => false))
                 ->add('status', ChoiceType::class, array(
                     'expanded' => true,
                     'multiple' => false,
@@ -121,6 +127,7 @@ class AdditionalSettingsType extends AbstractType
                     ),
                 ))
                 ->add('language', ChoiceType::class, array(
+                    'required' => true,
                     'expanded' => false,
                     'multiple' => false,
                     'choices' => array(
@@ -128,7 +135,12 @@ class AdditionalSettingsType extends AbstractType
                         'English' => 'english',
                     ),
                 ))
-                ->add('text', CKEditorType::class, array(
+                ->add('agb_text_de', CKEditorType::class, array(
+                    'required' => false,
+                    'inline' => false,
+                ))
+                ->add('agb_text_en', CKEditorType::class, array(
+                    'required' => false,
                     'inline' => false,
                 ))
             )
@@ -160,6 +172,6 @@ class AdditionalSettingsType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'general_settings';
+        return 'additional_settings';
     }
 }

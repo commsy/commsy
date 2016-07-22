@@ -6,28 +6,6 @@
         allow: '*.*'
     };
 
-    function setBackgroundImage(f, previewImage){
-        console.debug("SetBackgroundImage to "+f.name);
-        if(f.size > 500000){
-            alert("File size too large ("+(f.size / 1000) +" KB)! \n This service accepts image files up to 500 KB only!");
-            return false;
-        }
-        var reader = new FileReader();
-        reader.onload = function(event){
-            var result = event.target.result;
-            previewImage.attr("src", result);
-            $('#general_settings_room_image_room_image_data').val(result);
-            /*
-            $("#imageInfo").empty().append('<li>Name: '
-                +f.name+'</li><li>Type: '
-                +f.type+'</li><li>Size: '
-                +f.size+' bytes</li><li>Data: '
-                +result.substring(0,50)+'...</li>');
-            */
-        }
-        reader.readAsDataURL(f);
-    }
-
     $(document).ready(function() {
         $(".uk-position-cover div.uk-form-controls").css("margin-left", "0px");
 
@@ -45,6 +23,29 @@
             repeatDefaultImageX.prop("disabled", (imageType === 'default_image'));
         });
     });
+
+    function setBackgroundImage(f, previewImage){
+        console.debug("SetBackgroundImage to "+f.name);
+        if(f.size > 2000000){
+            alert("File size too large ("+(f.size / 1000) +" KB)! \n This service accepts image files up to 500 KB only!");
+            return false;
+        }
+        var reader = new FileReader();
+        reader.onload = function(event){
+            var result = event.target.result;
+            previewImage.attr("src", result);
+            $('#general_settings_room_image_room_image_data').val(result);
+            alert('image loading complete; size: ' + (result.length/1000) + ' KB');
+            /*
+            $("#imageInfo").empty().append('<li>Name: '
+                +f.name+'</li><li>Type: '
+                +f.type+'</li><li>Size: '
+                +f.size+' bytes</li><li>Data: '
+                +result.substring(0,50)+'...</li>');
+            */
+        }
+        reader.readAsDataURL(f);
+    }
 
     var setupUpload = function() {
 
@@ -74,7 +75,7 @@
             // get data from input element
             var data = $(this).find('input').data('upload');
 
-            // skip already initialized uploa fields, may be optimized
+            // skip already initialized upload fields, may be optimized
             if (data.initialized) {
                 return true;
             }
@@ -109,7 +110,6 @@
                         $('#profile_form_user_image').attr('src', responseData['userImage'] + '?' + Math.random());
                     }
                     else if (responseData['fileIds']) {
-                        console.log(responseData['fileIds']);
                         for (var key in responseData['fileIds']) {
                             $('#upload_oldFiles').append('<div class="uk-form-controls"><input type="checkbox" id="upload_oldFiles_' + key +'" name="upload[oldFiles][]" value="' + key +'" checked="checked"></div><label class="uk-form-label" for="upload_oldFiles_' + key +'">' + responseData['fileIds'][key] + '</label>');
                         }

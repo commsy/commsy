@@ -6,7 +6,7 @@ use Commsy\LegacyBundle\Utils\UserService;
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use Commsy\LegacyBundle\Form\DataTransformer\DataTransformerInterface;
 
-class RoomTransformer implements DataTransformerInterface
+class ModerationSettingsTransformer implements DataTransformerInterface
 {
     private $legacyEnvironment;
 
@@ -29,44 +29,14 @@ class RoomTransformer implements DataTransformerInterface
         $defaultRubrics = $roomItem->getAvailableDefaultRubricArray();
 
         if ($roomItem) {
-            $roomData['title'] = $roomItem->getTitle();
-            $roomData['language'] = $roomItem->getLanguage();
 
-            if ($roomItem->checkNewMembersAlways()) {
-                $roomData['access_check'] = 'always';
-            } else if ($roomItem->checkNewMembersNever()) {
-                $roomData['access_check'] = 'never';
-            } else if ($roomItem->checkNewMembersWithCode()) {
-                $roomData['access_check'] = 'withcode';
-            }
 
-            $backgroundImageFilename = $roomItem->getBGImageFilename();
-
-            if($backgroundImageFilename){
-                $roomData['room_image_choice'] = 'custom_image';
-            }
-            else{
-                $roomData['room_image_choice'] = 'default_image';
-            }
-
-		    $roomData['room_image_repeat_x'] = $roomItem->issetBGImageRepeat();
-
-            $roomData['room_description'] = $roomItem->getDescription();
-            
-            $roomData['wikiEnabled'] = $roomItem->isWikiEnabled();
-
-            $rubrics = array_combine($defaultRubrics, array_fill(0, count($defaultRubrics), 'off'));
-            foreach ($this->roomService->getRubricInformation($roomItem->getItemID(), true) as $rubric) {
-                list($rubricName, $modifier) = explode('_', $rubric);
-                $rubrics[$rubricName] = $modifier;
-            }
-            $roomData['rubrics'] = $rubrics;
         }
         return $roomData;
     }
 
     /**
-     * Applies an array of data to an existing object
+     * Save moderation settings
      *
      * @param object $roomObject
      * @param array $roomData
@@ -94,26 +64,6 @@ class RoomTransformer implements DataTransformerInterface
         if (isset($roomData['wikiEnabled'])) {
             $roomObject->setWikiEnabled($roomData['wikiEnabled']);
         }
-
-        // delete bg image
-        /*
-        if (isset($roomData['delete_custom_image']) && $roomData['delete_custom_image'] == '1') {
-            $disc_manager = $this->legacyEnvironment->getDiscManager();
-
-            if($disc_manager->existsFile($roomObject->getBGImageFilename())) {
-                $disc_manager->unlinkFile($roomObject->getBGImageFilename());
-            }
-
-            $roomObject->setBGImageFilename('');
-
-        }
-
-        // bg image repeat
-        if (isset($form['room_image_repeat_x']) && $form['room_image_repeat_x'] == '1')
-            $roomObject->setBGImageRepeat();
-        else
-            $roomObject->unsetBGImageRepeat();
-        */
 
 		if(isset($roomData['room_description'])) {
             $roomObject->setDescription(strip_tags($roomData['room_description']));

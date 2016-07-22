@@ -115,8 +115,24 @@ services:
         arguments: ['@commsy_legacy.environment', '@service_container']
 
     # Transformer
-    commsy_legacy.transformer.room:
-        class: Commsy\LegacyBundle\Form\DataTransformer\RoomTransformer
+    commsy_legacy.transformer.general_settings:
+        class: Commsy\LegacyBundle\Form\DataTransformer\GeneralSettingsTransformer
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
+
+    fcommsy_legacy.transformer.moderation_settings:
+        class: Commsy\LegacyBundle\Form\DataTransformer\ModerationSettingsTransformer
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
+
+    commsy_legacy.transformer.additional_settings:
+        class: Commsy\LegacyBundle\Form\DataTransformer\AdditionalSettingsTransformer
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
+
+    commsy_legacy.transformer.appearance_settings:
+        class: Commsy\LegacyBundle\Form\DataTransformer\AppearanceSettingsTransformer
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
+
+    commsy_legacy.transformer.extension_settings:
+        class: Commsy\LegacyBundle\Form\DataTransformer\ExtensionSettingsTransformer
         arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
 
     commsy_legacy.transformer.material:

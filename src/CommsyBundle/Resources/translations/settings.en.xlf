@@ -133,7 +133,7 @@
 
             <!-- Additional settings -->
             <trans-unit id="tags">
-                <source>Tags</source>
+                <source>Buzzwords</source>
                 <target>Tags</target>
             </trans-unit>
             <trans-unit id="categories">
@@ -148,16 +148,20 @@
                 <source>Template</source>
                 <target>Template</target>
             </trans-unit>
-            <trans-unit id="targetgroup">
-                <source>Target group</source>
+            <trans-unit id="templateavailability">
+                <source>Template availability</source>
                 <target>Target group</target>
             </trans-unit>
+            <trans-unit id="templatedescription">
+                <source>Template description</source>
+                <target>Description</target>
+            </trans-unit>            
             <trans-unit id="newstatus">
-                <source>New status</source>
+                <source>Status</source>
                 <target>New status</target>
             </trans-unit>
             <trans-unit id="addstatus">
-                <source>Add status</source>
+                <source>Status option</source>
                 <target>Add new progress status</target>
             </trans-unit>
             <trans-unit id="allcommsyusers">
@@ -171,17 +175,16 @@
             <trans-unit id="workspacemodsonly">
                 <source>Workspace mods only</source>
                 <target>Workspace moderators only</target>
-            </trans-unit>
             <trans-unit id="activate">
                 <source>Activate</source>
                 <target>activate</target>
             </trans-unit>
             <trans-unit id="mandatoryassignment">
-                <source>Mandatory assignment</source>
+                <source>Mandatory</source>
                 <target>mandatory assignment</target>
             </trans-unit>
             <trans-unit id="access">
-                <source>Access</source>
+                <source>Edit</source>
                 <target>Access to categories management for moderator/s only</target>
             </trans-unit>
             <trans-unit id="structuralauxilaries">
@@ -189,7 +192,7 @@
                 <target>Structural auxilaries</target>
             </trans-unit>
             <trans-unit id="archiveroom">
-                <source>Archive room</source>
+                <source>Room status</source>
                 <target>Archive room</target>
             </trans-unit>
             <trans-unit id="terms">
@@ -216,7 +219,32 @@
                 <source>Switch off</source>
                 <target>switch off</target>
             </trans-unit>
+            <trans-unit id="rss">
+                <source>Rss</source>
+                <target>RSS Feed</target>
+            </trans-unit>
 
+            <!-- Appearance settings -->
+            <trans-unit id="listview">
+                <source>listview</source>
+                <target>List view</target>
+            </trans-unit>
+           <trans-unit id="weekview">
+                <source>weekview</source>
+                <target>Week view</target>
+            </trans-unit>
+           <trans-unit id="monthview">
+                <source>monthview</source>
+                <target>Month view</target>
+            </trans-unit>
+           <trans-unit id="Dates status">
+                <source>Dates status</source>
+                <target>Select</target>
+            </trans-unit>
+           <trans-unit id="Theme">
+                <source>theme</source>
+                <target>Theme</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

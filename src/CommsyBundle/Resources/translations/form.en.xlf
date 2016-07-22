@@ -34,6 +34,10 @@
                 <source>selecting one</source>
                 <target>Or select one</target>
             </trans-unit>
+            <trans-unit id="form-ideal-aspect-ratio">
+                <source>ideal aspect ratio</source>
+                <target>The ideal aspect ratio for room images is 4&#58;1 (Width&#58;Height).</target>
+            </trans-unit>
             <trans-unit id="form-edit-files">
                 <source>edit files</source>
                 <target>edit files</target>

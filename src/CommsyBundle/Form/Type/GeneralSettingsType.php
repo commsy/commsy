@@ -136,8 +136,6 @@ class GeneralSettingsType extends AbstractType
         // TODO: load bgimage of selected theme instead of always loading default theme bgimage
         // TODO: remove label space for virtual field subgroupd "room_image" (so that no labels _and_ no space for labels is displayed for elements within group! 
 
-
-
         // TODO: feed settings, theme configuration, filter room description input (cleanCKEditor)
 
         // some form fields depend on the underlying data, so we delegate

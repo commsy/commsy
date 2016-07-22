@@ -133,7 +133,7 @@
 
             <!-- Additional settings -->
             <trans-unit id="tags">
-                <source>Tags</source>
+                <source>Buzzwords</source>
                 <target>Schlagwörter</target>
             </trans-unit>
             <trans-unit id="categories">
@@ -148,16 +148,20 @@
                 <source>Template</source>
                 <target>Vorlage</target>
             </trans-unit>
-            <trans-unit id="targetgroup">
-                <source>Target group</source>
+            <trans-unit id="templateavailability">
+                <source>Template availability</source>
                 <target>Zielgruppe</target>
             </trans-unit>
+            <trans-unit id="templatedescription">
+                <source>Template description</source>
+                <target>Beschreibung</target>
+            </trans-unit>
             <trans-unit id="newstatus">
-                <source>New status</source>
+                <source>Status</source>
                 <target>Neuer Status</target>
             </trans-unit>
             <trans-unit id="addstatus">
-                <source>Add status</source>
+                <source>Status option</source>
                 <target>Bearbeitungsstatus hinzufügen</target>
             </trans-unit>
             <trans-unit id="allcommsyusers">
@@ -177,11 +181,11 @@
                 <target>aktivieren</target>
             </trans-unit>
             <trans-unit id="mandatoryassignment">
-                <source>Mandatory assignment</source>
+                <source>Mandatory</source>
                 <target>zwingende Zuordnung</target>
             </trans-unit>
             <trans-unit id="access">
-                <source>Access</source>
+                <source>Edit</source>
                 <target>Nur durch ModeratorInnen bearbeitbar</target>
             </trans-unit>
             <trans-unit id="structuralauxilaries">
@@ -189,7 +193,7 @@
                 <target>Strukturierungshilfen</target>
             </trans-unit>
             <trans-unit id="archiveroom">
-                <source>Archive room</source>
+                <source>Room status</source>
                 <target>Raum archivieren</target>
             </trans-unit>
             <trans-unit id="terms">
@@ -216,7 +220,32 @@
                 <source>Switch off</source>
                 <target>ausschalten (kein RSS-Abo für diesen Raum)</target>
             </trans-unit>
+            <trans-unit id="rss">
+                <source>Rss</source>
+                <target>RSS-Feed</target>
+            </trans-unit>
 
+            <!-- Appearance settings -->
+            <trans-unit id="listview">
+                <source>listview</source>
+                <target>Listenansicht</target>
+            </trans-unit>
+           <trans-unit id="weekview">
+                <source>weekview</source>
+                <target>Wochenansicht</target>
+            </trans-unit>
+           <trans-unit id="monthview">
+                <source>monthview</source>
+                <target>Monatsansicht</target>
+            </trans-unit>
+           <trans-unit id="Dates status">
+                <source>Dates status</source>
+                <target>Auswahl</target>
+            </trans-unit>
+           <trans-unit id="Theme">
+                <source>theme</source>
+                <target>Theme</target>
+            </trans-unit>
        </body>
     </file>
 </xliff>

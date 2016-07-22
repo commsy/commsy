@@ -36,18 +36,27 @@ class AppearanceSettingsType extends AbstractType
 
         $builder
             ->add('theme', ChoiceType::class, array(
+                'required' => false,
                 'label' => 'theme',
                 'choices' => $themeChoices,
                 'constraints' => array(
                     new NotBlank(),
                 ),
-                'translation_domain' => 'form'
+            ))
+            ->add('dates_status', ChoiceType::class, array(
+                'expanded' => true,
+                'multiple' => false,
+                'choices' => array(
+                    'listview' => 'normal',
+                    'weekview' => 'calendar',
+                    'monthview' => 'calendar_month'
+                ),
+                'data' => 'normal',
             ))
             ->add('save', SubmitType::class, array(
                 'position' => 'last',
                 'label' => 'save',
-                'translation_domain' => 'form'
-            ));
+            ))
         ;
     }
 
@@ -60,6 +69,7 @@ class AppearanceSettingsType extends AbstractType
     {
         $resolver
             ->setRequired(['roomId', 'themes'])
+            ->setDefaults(array('translation_domain' => 'settings'))
         ;
     }
 

@@ -38,7 +38,7 @@ class SettingsController extends Controller
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
 
-        $transformer = $this->get('commsy_legacy.transformer.room');
+        $transformer = $this->get('commsy_legacy.transformer.general_settings');
         $roomData = $transformer->transform($roomItem);
 
         $form = $this->createForm(GeneralSettingsType::class, $roomData, array(
@@ -147,7 +147,7 @@ class SettingsController extends Controller
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
 
-        $transformer = $this->get('commsy_legacy.transformer.room');
+        $transformer = $this->get('commsy_legacy.transformer.moderation_settings');
         $roomData = $transformer->transform($roomItem);
 
         $form = $this->createForm(ModerationSettingsType::class, $roomData, array(
@@ -186,7 +186,7 @@ class SettingsController extends Controller
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
 
-        $transformer = $this->get('commsy_legacy.transformer.room');
+        $transformer = $this->get('commsy_legacy.transformer.additional_settings');
         $roomData = $transformer->transform($roomItem);
 
         $form = $this->createForm(AdditionalSettingsType::class, $roomData, array(
@@ -197,7 +197,7 @@ class SettingsController extends Controller
         if ($form->isValid()) {
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
 
-            $roomItem->save();
+            //$roomItem->save();
 
             // persist
             // $em = $this->getDoctrine()->getManager();
@@ -225,7 +225,7 @@ class SettingsController extends Controller
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
 
-        $transformer = $this->get('commsy_legacy.transformer.room');
+        $transformer = $this->get('commsy_legacy.transformer.appearance_settings');
         $roomData = $transformer->transform($roomItem);
 
         // get the configured LiipThemeBundle themes
@@ -234,21 +234,19 @@ class SettingsController extends Controller
         $form = $this->createForm(AppearanceSettingsType::class, $roomData, array(
             'roomId' => $roomId,
             'themes' => $themeArray,
-            // 'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
-            //     'roomId' => $roomId,
-            // )),
         ));
         
         $form->handleRequest($request);
         if ($form->isValid()) {
-            //$roomItem = $transformer->applyTransformation($roomItem, $form->getData());
+            $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
 
-            //$roomItem->save();
+            $roomItem->save();
 
             // persist
             // $em = $this->getDoctrine()->getManager();
             // $em->persist($room);
             // $em->flush();
+            return $this->redirectToRoute('commsy_settings_appearance', ["roomId" => $roomId]);
         }
 
         return array(
@@ -271,7 +269,7 @@ class SettingsController extends Controller
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
 
-        $transformer = $this->get('commsy_legacy.transformer.room');
+        $transformer = $this->get('commsy_legacy.transformer.extension_settings');
         $roomData = $transformer->transform($roomItem);
 
         // get the configured LiipThemeBundle themes
