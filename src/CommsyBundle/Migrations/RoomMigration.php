@@ -44,6 +44,8 @@ class RoomMigration extends AbstractMigration
             'tiny' => 'show',
             'none' => 'hide',
             'nodisplay' => 'hide',
+            'show' => 'show',
+            'hide' => 'hide',
         );
 
         $convertedConfiguration = array();
