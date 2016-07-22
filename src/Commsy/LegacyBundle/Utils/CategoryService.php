@@ -13,6 +13,20 @@ class CategoryService
         $this->legacyEnvironment = $legacyEnvironment;
     }
 
+    public function getTag($tagId)
+    {
+        $tagManager = $this->legacyEnvironment->getEnvironment()->getTagManager();
+
+        return $tagManager->getItem($tagId);
+    }
+
+    public function updateTag($tagId, $newTitle)
+    {
+        $tagItem = $this->getTag($tagId);
+        $tagItem->setTitle($newTitle);
+        $tagItem->save();
+    }
+
     public function getTags($roomId)
     {
         $tagManager = $this->legacyEnvironment->getEnvironment()->getTagManager();
@@ -47,6 +61,40 @@ class CategoryService
         $tagItem->setPosition($parentTagId, $parentTagItem->getChildrenList()->getCount() + 1);
 
         $tagItem->save();
+    }
+
+    public function removeTag($tagId, $roomId)
+    {
+        $environment = $this->legacyEnvironment->getEnvironment();
+        $environment->setCurrentContextID($roomId);
+
+        $tagManager = $environment->getTagManager();
+        $tagManager->delete($tagId);
+    }
+
+    public function updateStructure($structure, $roomId)
+    {
+        $environment = $this->legacyEnvironment->getEnvironment();
+        $environment->setCurrentContextID($roomId);
+
+        $tagManager = $environment->getTagManager();
+        $rootTagItem = $tagManager->getRootTagItemFor($roomId);
+
+        $this->updateTree($structure, $rootTagItem, $tagManager);
+    }
+
+    private function updateTree($structure, $rootItem, $tagManager)
+    {
+        foreach ($structure as $position => $tagInformation) {
+            // persist new position
+            $tagItem = $tagManager->getItem($tagInformation['itemId']);
+            $tagItem->setPosition($rootItem->getItemId(), $position+1);
+            $tagItem->save();
+
+            if (!empty($tagInformation['children'])) {
+                $this->updateTree($tagInformation['children'], $tagItem, $tagManager);
+            }
+        }
     }
 
     private function buildTagArray($item, $level = 0)
