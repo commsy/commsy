@@ -795,9 +795,14 @@ class MaterialController extends Controller
         $formData = array();
         $materialItem = NULL;
         $isMaterial = false;
+        $isDraft = false;
+        $isSaved = false;
         
         if ($item->getItemType() == 'material') {
             $isMaterial = true;
+            if ($item->isDraft()) {
+                $isDraft = true;
+            }
             // get material from MaterialService
             $materialItem = $materialService->getMaterial($itemId);
             if (!$materialItem) {
@@ -824,6 +829,7 @@ class MaterialController extends Controller
         if ($form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $materialItem = $transformer->applyTransformation($materialItem, $form->getData());
+                $isSaved = true;
 
                 // update modifier
                 $materialItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
@@ -846,8 +852,8 @@ class MaterialController extends Controller
         }
 
         return array(
-            // 'isDraft' => $item->isDraft(),
-            'isDraft' => true,
+            'isSaved' => $isSaved,
+            'isDraft' => $isDraft,
             'isMaterial' => $isMaterial,
             'form' => $form->createView(),
             'showHashtags' => $current_context->withBuzzwords(),
