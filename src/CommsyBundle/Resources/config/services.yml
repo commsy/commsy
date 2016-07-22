@@ -310,6 +310,11 @@ services:
         tags:
             - { name: twig.extension }
 
+    twig.extension.commsy_markup:
+        class: CommsyBundle\Twig\Extension\MarkupExtension
+        tags:
+            - { name: twig.extension }
+
     # Controller
     commsy.item_controller:
         class: CommsyBundle\Controller\ItemController
