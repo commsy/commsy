@@ -9,8 +9,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
-use CommsyBundle\Form\Type\TagType;
-use CommsyBundle\Form\Type\CategoryEditType;
+use CommsyBundle\Form\Type as Types;
+
+use CommsyBundle\Entity\Tag;
 
 class CategoryController extends Controller
 {
@@ -26,7 +27,7 @@ class CategoryController extends Controller
         $defaultData = array(
             'roomId' => $roomId,
         );
-        $form = $this->createForm(TagType::class, $defaultData, array(
+        $form = $this->createForm(Types\TagType::class, $defaultData, array(
             'action' => $this->generateUrl('commsy_category_new', array('roomId' => $roomId)),
         ));
 
@@ -49,7 +50,7 @@ class CategoryController extends Controller
         $defaultData = array(
             'roomId' => $roomId,
         );
-        $form = $this->createForm(TagType::class, $defaultData, array(
+        $form = $this->createForm(Types\TagType::class, $defaultData, array(
             'action' => $this->generateUrl('commsy_category_new', array('roomId' => $roomId)),
         ));
 
@@ -61,13 +62,13 @@ class CategoryController extends Controller
 
 
     /**
-     * @Route("/room/{roomId}/categoy/new")
+     * @Route("/room/{roomId}/category/new")
      * @Method("POST")
      * @Security("is_granted('CATEGORY_EDIT')")
      */
     public function newAction($roomId, Request $request)
     {
-        $form = $this->createForm(TagType::class);
+        $form = $this->createForm(Types\TagType::class);
 
         $form->handleRequest($request);
 
@@ -92,14 +93,72 @@ class CategoryController extends Controller
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
-        if (!$roomItem->withBuzzwords()) {
+        if (!$roomItem->withTags()) {
             throw $this->createAccessDeniedException('The requested room does not have categories enabled.');
         }
 
-        $form = $this->createForm(CategoryEditType::class, null);
+        $categoryService = $this->get('commsy_legacy.category_service');
+
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('CommsyBundle:Tag');
+
+        // create new form
+        $category = new Tag();
+        if ($categoryId) {
+            $category = $repository->findOneByItemId($categoryId);
+        }
+
+        $createNewForm = $this->createForm(Types\CategoryNewType::class, $category);
+        
+        $createNewForm->handleRequest($request);
+        if ($createNewForm->isValid()) {
+            if ($createNewForm->has('new') && $createNewForm->get('new')->isClicked()) {
+                $categoryService->addTag($category->getTitle(), $roomId);
+            }
+
+            if ($createNewForm->has('update') && $createNewForm->get('update')->isClicked()) {
+                $categoryService->updateTag($category->getItemId(), $category->getTitle());
+            }
+            
+            return $this->redirectToRoute('commsy_category_edit', [
+                'roomId' => $roomId,
+            ]);
+        }
+
+        // edit form
+        $roomTags = $categoryService->getTags($roomId);
+
+        $editForm = $this->createForm(Types\CategoryEditType::class, null, [
+            'categories' => $roomTags,
+        ]);
+
+        $editForm->handleRequest($request);
+        if ($editForm->isValid()) {
+            $data = $editForm->getData();
+
+            $delete = $data['category'];
+            if ($delete) {
+                $id = $delete[0];
+
+                $categoryService->removeTag($id, $roomId);
+            }
+
+            $structure = $data['structure'];
+            if ($structure) {
+                // decode into array
+                $structure = json_decode($structure, true);
+
+                $categoryService->updateStructure($structure, $roomId);
+            }
+
+            return $this->redirectToRoute('commsy_category_edit', [
+                'roomId' => $roomId,
+            ]);
+        }
 
         return [
-            'form' => $form->createView(),
+            'newForm' => $createNewForm->createView(),
+            'editForm' => $editForm->createView(),
             'roomId' => $roomId,
         ];
     }

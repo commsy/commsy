@@ -14,6 +14,26 @@
                 <source>No Categories</source>
                 <target>Bisher wurden keine Kategorien angelegt</target>
             </trans-unit>
+            <trans-unit id="category-title-edit">
+                <source>Edit categories</source>
+                <target>Kategorien bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="category-label-title">
+                <source>Title</source>
+                <target>Titel</target>
+            </trans-unit>
+            <trans-unit id="category-button-add">
+                <source>Create new category</source>
+                <target>Neue Kategorie anlegen</target>
+            </trans-unit>
+            <trans-unit id="category-button-update">
+                <source>Update category</source>
+                <target>Kategorie aktualisieren</target>
+            </trans-unit>
+            <trans-unit id="category-empty">
+                <source>No categories has been created yet.</source>
+                <target>Bisher wurden keine Kategorien angelegt.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

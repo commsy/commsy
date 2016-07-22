@@ -9,6 +9,8 @@ use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 
+use CommsyBundle\Form\Type\CategoryType;
+
 class CategoryEditType extends AbstractType
 {
     /**
@@ -21,14 +23,25 @@ class CategoryEditType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $choices = $this->buildChoices($options['categories']);
+
         $builder
-            ->add('name', Types\TextType::class, [
-                'constraints' => [
-                    new Constraints\NotBlank(),
+            ->add('category', CategoryType::class, array(
+                'choices' => $choices,
+                'multiple' => true,
+                'expanded' => true,
+                'label' => false,
+            ))
+
+            ->add('structure', Types\HiddenType::class, [
+            ])
+
+            ->add('update', Types\SubmitType::class, [
+                'attr' => [
+                    'class' => 'uk-button-primary',
                 ],
-                'label' => 'Name',
-                'translation_domain' => 'hashtag',
-                'required' => true,
+                'label' => 'save',
+                'translation_domain' => 'form',
             ])
 
             ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
@@ -75,7 +88,7 @@ class CategoryEditType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired([])
+            ->setRequired(['categories'])
         ;
     }
 
@@ -88,6 +101,20 @@ class CategoryEditType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'hashtag_edit';
+        return 'category_edit';
+    }
+
+    private function buildChoices($categories) {
+        $choices = [];
+
+        foreach ($categories as $category) {
+            $choices[$category['title']] = $category['item_id'];
+
+            if (!empty($category['children'])) {
+                $choices[$category['title'] . 'sub'] = $this->buildChoices($category['children']);
+            }
+        }
+
+        return $choices;
     }
 }
