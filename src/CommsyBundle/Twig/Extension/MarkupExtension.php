@@ -13,6 +13,8 @@ class MarkupExtension extends \Twig_Extension
 
     public function commsyMarkup($text)
     {
+        $text = $this->_decode_backslashes($text);
+
         // bold
         $text = preg_replace('~\*([^*]+)\*~uU', '<span style="font-weight:bold;">$1</span>', $text);
 
@@ -25,10 +27,6 @@ class MarkupExtension extends \Twig_Extension
         foreach ($values as $key => $value) {
             $text = str_replace('COMMSY_DNC'.$key.' ',$value,$text);
         }
-
-        // search
-        // maybe with yellow or orange background ???
-        $text = preg_replace('~\(:search:\)(.+)\(:search_end:\)~uU', '<span style="font-style:italic;">$1</span>', $text);
 
         $text = $this->commsyMarkupLists($text);
 
@@ -102,6 +100,17 @@ class MarkupExtension extends \Twig_Extension
             $list_open = false;
         }
         return $html;
+    }
+
+    private function _decode_backslashes ($text) {
+        $retour = $text;
+        $retour = str_replace("\*","&ast;",$retour);
+        $retour = str_replace("\_","&lowbar;",$retour);
+        $retour = str_replace("\!","&excl;",$retour);
+        $retour = str_replace("\-","&macr;",$retour);
+        $retour = str_replace("\#","&num;",$retour);
+        $retour = str_replace("\\\\","&bsol;",$retour);
+      return $retour;
     }
 
     /**
