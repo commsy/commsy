@@ -426,7 +426,9 @@ class DateController extends Controller
                 
                 $recurrencePattern = $date->getRecurrencePattern();
                 
-                $endDate = new \DateTime($recurrencePattern['recurringEndDate']);
+                if (isset($recurrencePattern['recurringEndDate'])) {
+                    $endDate = new \DateTime($recurrencePattern['recurringEndDate']);
+                }
                 
                 if ($recurrencePattern['recurring_select'] == 'RecurringDailyType') {
                     $recurringDescription = $translator->trans('dailyDescription', array('%day%' => $recurrencePattern['recurring_sub']['recurrenceDay'], '%date%' => $endDate->format('d.m.Y')), 'date');
