@@ -138,8 +138,6 @@ class ProjectController extends Controller
             $saveType = $form->getClickedButton()->getName();
 
             if ($saveType == 'save') {
-                
-                // -----------------------------------------------
                 $formData = $form->getData();
                 
                 $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -282,127 +280,9 @@ class ProjectController extends Controller
     		                }
     		            }
     		      
-    		            /* if (count($emailAddresses) > 0) {
-        		            $translator = $legacyEnvironment->getTranslationObject();
-    		                $saveLanguage = $translator->getSelectedLanguage();
-                            $translator->setSelectedLanguage($language);
-                            $subject = $translator->getMessage('USER_JOIN_CONTEXT_MAIL_SUBJECT',$userItem->getFullname(),$roomItem->getTitle());
-                            $body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-                            $body .= LF.LF;
-                            // Datenschutz
-                            if($legacyEnvironment->getCurrentPortalItem()->getHideAccountname()){
-                                $userid = 'XXX '.$translator->getMessage('COMMON_DATASECURITY');
-    		                } else {
-                                $userid = $userItem->getUserID();
-    		                }
-                            $body .= $translator->getMessage('USER_JOIN_CONTEXT_MAIL_BODY',$userItem->getFullname(),$userid,$userItem->getEmail(),$roomItem->getTitle());
-                            $body .= LF.LF;
-    		      
-                            $tempMessage = "";
-                            switch ( cs_strtoupper($checkMessage) ) {
-    		                    case 'YES':
-    		                        $body .= $translator->getMessage('USER_GET_MAIL_STATUS_YES');
-                                    break;
-                                case 'NO':
-    		                        $body .= $translator->getMessage('USER_GET_MAIL_STATUS_NO');
-                                    break;
-                                default:
-    		                        $body .= $translator->getMessage('COMMON_MESSAGETAG_ERROR')." context_detail(244) ";
-                                    break;
-    		                }
-    		      
-                            $body .= LF.LF;
-                            if (!empty($form_data['description_user'])) {
-    		                    $body .= $translator->getMessage('MAIL_COMMENT_BY',$userItem->getFullname(),$form_data['description_user']);
-                                $body .= LF.LF;
-    		                }
-                            $body .= $translator->getMessage('MAIL_SEND_TO',$recipients);
-                            $body .= LF;
-                            if ( cs_strtoupper($checkMessage) == 'YES') {
-    		                    $body .= $translator->getMessage('MAIL_USER_FREE_LINK').LF;
-                                $body .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$currentItemId.'&mod=account&fct=index'.'&selstatus=1';
-    		                } else {
-    		                    $body .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$currentItemId;
-    		                }
-                            $mail = new cs_mail();
-                            $mail->set_to(implode(',',$emailAddresses));
-                            $server_item = $legacyEnvironment->getServerItem();
-                            $default_sender_address = $server_item->getDefaultSenderAddress();
-                            if (!empty($default_sender_address)) {
-    		                    $mail->set_from_email($default_sender_address);
-    		                } else {
-    		                    $mail->set_from_email('@');
-    		                }
-                            $current_context = $legacyEnvironment->getCurrentContextItem();
-                            $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_context->getTitle()));
-                            $mail->set_reply_to_name($userItem->getFullname());
-                            $mail->set_reply_to_email($userItem->getEmail());
-                            $mail->set_subject($subject);
-                            $mail->set_message($body);
-                            $mail->send();
-                            $translator->setSelectedLanguage($saveLanguage);
-    		            } */
-    		      
-    		            // send email to user when account is free automatically (PROJECT ROOM)
-    		            /* if ($userItem->isUser()) {
-                            $translator = $legacyEnvironment->getTranslationObject();
-    		      
-    		                // get contact moderator (TBD) now first moderator
-                            $userList = $roomItem->getModeratorList();
-                            $contact_moderator = $userList->getFirst();
-    		      
-                            // change context to project room
-                            $translator->setEmailTextArray($roomItem->getEmailTextArray());
-                            $translator->setContext('project');
-                            $saveLanguage = $translator->getSelectedLanguage();
-    		      
-                            // language
-                            $language = $roomItem->getLanguage();
-                            if ($language == 'user') {
-    		                    $language = $userItem->getLanguage();
-                                if ($language == 'browser') {
-    		                        $language = $legacyEnvironment->getSelectedLanguage();
-    		                    }
-    		                }
-    		               
-                            // Datenschutz
-                            if($legacyEnvironment->getCurrentPortalItem()->getHideAccountname()){
-                                $userid = 'XXX '.$translator->getMessage('COMMON_DATASECURITY');
-    		                } else {
-                                $userid = $userItem->getUserID();
-    		                }
-    		      
-                            $translator->setSelectedLanguage($language);
-    		      
-                            // email texts
-                            $subject = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_USER',$roomItem->getTitle());
-                            $body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-                            $body .= LF.LF;
-                            $body .= $translator->getEmailMessage('MAIL_BODY_HELLO',$userItem->getFullname());
-                            $body .= LF.LF;
-                            $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$userid,$roomItem->getTitle());
-                            $body .= LF.LF;
-                            $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$contact_moderator->getFullname(),$roomItem->getTitle());
-                            $body .= LF.LF;
-                            $body .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$legacyEnvironment->getCurrentContextID();
-    		      
-                            // send mail to user
-                            $mail = new cs_mail();
-                            $mail->set_to($userItem->getEmail());
-                            $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$roomItem->getTitle()));
-                            $server_item = $legacyEnvironment->getServerItem();
-                            $default_sender_address = $server_item->getDefaultSenderAddress();
-                            if (!empty($default_sender_address)) {
-    		                    $mail->set_from_email($default_sender_address);
-    		                } else {
-    		                    $mail->set_from_email('@');
-    		                }
-                            $mail->set_reply_to_email($contact_moderator->getEmail());
-                            $mail->set_reply_to_name($contact_moderator->getFullname());
-                            $mail->set_subject($subject);
-                            $mail->set_message($body);
-                            $mail->send();
-    		            } */
+    		            /*
+        		         *  ToDo: Send emails to new user and moderators. See cs_popup_userContextJoin_controller -> save() -> case 'context_join' for details.
+        		         */
     		        }
 		        } elseif ($roomItem->checkNewMembersWithCode() and $roomItem->getCheckNewMemberCode() != $formData['code']) {
 		            $accountMode = 'member';
@@ -433,9 +313,7 @@ class ProjectController extends Controller
 		            }
                     //$this->_popup_controller->setSuccessfullDataReturn($data);
 		        }
-                
-                // -----------------------------------------------
-                
+		        
             } else {
                 // ToDo ...
             }
