@@ -1,0 +1,52 @@
+{% extends 'CommsyBundle:Base:room.html.twig' %}
+
+{% block content %}
+    <div class="uk-grid">
+
+        <div class="uk-width-medium-4-5">
+
+            {# material content panel #}
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+
+                <div class="uk-panel-teaser cs-panel-teaser-primary cs-remove-overflow">
+                    <div class="uk-grid">
+
+                        {# actions #}
+                        <div class="uk-width-3-5 uk-text-right">
+
+                        </div>
+                    </div>
+                </div>
+
+                {# content #}
+                <article class="uk-article uk-position-relative" data-uk-observe>
+                    {{ form_start(form) }}
+                    {{ form_errors(form) }}
+                    
+                    {{ form_row(form.description) }}
+                    <br>
+                    {{ form_row(form.code) }}
+                    <br>
+                    {{ form_row(form.agb) }}
+                    <br>
+                    {{ form_row(form.save) }}{{ form_row(form.cancel) }}
+                    
+                    {{ form_end(form) }}
+                </article>
+            </div>
+        </div>
+        
+        <div class="uk-width-medium-1-5 cs-addon-navigation">
+            {# quick navigation #}
+            <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" data-uk-sticky>
+                <div class="uk-panel-teaser uk-text-large cs-panel-teaser-primary uk-margin-remove">
+                    
+                </div>
+                <div>
+                    
+                </div>
+            </div>
+        </div>
+        
+    </div>
+{% endblock %}

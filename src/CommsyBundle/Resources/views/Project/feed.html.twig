@@ -42,10 +42,10 @@
                 </div>
                 
                 <div class="uk-comment-meta">
-                    {% if project.maySee(currentUser) %}
+                    {% if project.mayEnter(currentUser) %}
                         <a href="{{ path('commsy_room_home', {'roomId': project.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>
                     {% else %}
-                        Mitglied werden
+                        <a href="{{ path('commsy_project_request', {'roomId': roomId, 'itemId': project.itemId}) }}">{{ 'become member'|trans({}, 'room') }}</a>
                     {% endif %}
                 </div>
             </div>

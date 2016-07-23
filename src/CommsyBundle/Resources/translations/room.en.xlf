@@ -106,6 +106,10 @@
                 <source>enter room</source>
                 <target>Enter rooom</target>
             </trans-unit>
+            <trans-unit id="become member">
+                <source>become member</source>
+                <target>Become member</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
