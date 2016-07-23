@@ -110,6 +110,10 @@
                 <source>become member</source>
                 <target>Become member</target>
             </trans-unit>
+            <trans-unit id="description">
+                <source>description</source>
+                <target>Description</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

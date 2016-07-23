@@ -13,7 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
 
-class ProjectType extends AbstractType
+class ContextRequestType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -25,26 +25,36 @@ class ProjectType extends AbstractType
                 'translation_domain' => 'room',
                 'required' => false,
             ))
-            ->add('code', TextType::class, array(
-                'label' => 'code',
-                'attr' => array(
-                ),
-                'translation_domain' => 'room',
-                'required' => false,
-            ))
-            ->add('agb', CheckboxType::class, array(
-                'label' => 'agb',
-                'attr' => array(
-                ),
-                'translation_domain' => 'room',
-                'required' => false,
-            ))
+        ;
+        if (isset($options['checkNewMembersWithCode'])) {
+            $builder
+                ->add('code', TextType::class, array(
+                    'label' => 'code',
+                    'attr' => array(
+                    ),
+                    'translation_domain' => 'room',
+                    'required' => false,
+                ))
+            ;
+        }
+        if (isset($options['withAGB'])) {
+            $builder
+                ->add('agb', CheckboxType::class, array(
+                    'label' => 'agb',
+                    'attr' => array(
+                    ),
+                    'translation_domain' => 'room',
+                    'required' => false,
+                ))
+            ;
+        }
+        $builder
             ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 ),
-                'label' => 'register',
-                'translation_domain' => 'form',
+                'label' => 'become member',
+                'translation_domain' => 'room',
             ))
             ->add('cancel', SubmitType::class, array(
                 'attr' => array(

@@ -1,5 +1,7 @@
 {% extends 'CommsyBundle:Base:room.html.twig' %}
 
+{% set project = item %}
+
 {% block content %}
     <div class="uk-grid">
 
@@ -11,6 +13,12 @@
                 <div class="uk-panel-teaser cs-panel-teaser-primary cs-remove-overflow">
                     <div class="uk-grid">
 
+                        {# quick item navigation #}
+                        {{ render(controller(
+                            'CommsyBundle:Item:stepper',
+                            { 'roomId': roomId, 'itemId': item.itemId }
+                        ))}}
+
                         {# actions #}
                         <div class="uk-width-3-5 uk-text-right">
 
@@ -20,18 +28,17 @@
 
                 {# content #}
                 <article class="uk-article uk-position-relative" data-uk-observe>
-                    {{ form_start(form) }}
-                    {{ form_errors(form) }}
+                    {{ project.title }}
                     
-                    {{ form_row(form.description) }}
-                    <br>
-                    {{ form_row(form.code) }}
-                    <br>
-                    {{ form_row(form.agb) }}
-                    <br>
-                    {{ form_row(form.save) }}{{ form_row(form.cancel) }}
+                    {{ project.contactModeratorListString }}
                     
-                    {{ form_end(form) }}
+                    {{ project.description }}
+                    
+                    {% if project.mayEnter(currentUser) %}
+                        <a href="{{ path('commsy_room_home', {'roomId': project.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>
+                    {% else %}
+                        <a href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': project.itemId}) }}">{{ 'become member'|trans({}, 'room') }}</a>
+                    {% endif %}
                 </article>
             </div>
         </div>
