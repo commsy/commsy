@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-use CommsyBundle\Filter\DateFilterType;
+use CommsyBundle\Filter\ProjectFilterType;
 
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Form\FormError;
@@ -35,12 +35,12 @@ class ProjectController extends Controller
         $defaultFilterValues = array(
             'activated' => true
         );
-        $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
+        $filterForm = $this->createForm(ProjectFilterType::class, $defaultFilterValues, array(
+            'action' => $this->generateUrl('commsy_project_list', array('roomId' => $roomId)),
         ));
 
         // get the material manager service
-        $dateService = $this->get('commsy_legacy.date_service');
+        $projectService = $this->get('commsy_legacy.project_service');
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -50,12 +50,12 @@ class ProjectController extends Controller
         }
 
         // get material list from manager service 
-        $dates = $dateService->getListDates($roomId, $max, $start, $sort);
+        $projects = $projectService->getListProjects($roomId, $max, $start, $sort);
 
         $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();
-        foreach ($dates as $item) {
+        foreach ($projects as $item) {
             $reader = $readerService->getLatestReader($item->getItemId());
             if ( empty($reader) ) {
                $readerList[$item->getItemId()] = 'new';
@@ -66,7 +66,7 @@ class ProjectController extends Controller
 
         return array(
             'roomId' => $roomId,
-            'dates' => $dates,
+            'projects' => $projects,
             'readerList' => $readerList
         );
     }
@@ -81,27 +81,40 @@ class ProjectController extends Controller
         $defaultFilterValues = array(
             'activated' => true
         );
-        $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
+        $filterForm = $this->createForm(ProjectFilterType::class, $defaultFilterValues, array(
+            'action' => $this->generateUrl('commsy_project_list', array('roomId' => $roomId)),
         ));
 
         // get the material manager service
-        $dateService = $this->get('commsy_legacy.date_service');
+        $projectService = $this->get('commsy_legacy.project_service');
 
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isValid()) {
             // set filter conditions in material manager
-            $dateService->setFilterConditions($filterForm);
+            $projectService->setFilterConditions($filterForm);
         }
 
-        $itemsCountArray = $dateService->getCountArray($roomId);
+        $itemsCountArray = $projectService->getCountArray($roomId);
 
         return array(
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
             'module' => 'project',
             'itemsCountArray' => $itemsCountArray
+        );
+    }
+    
+    
+     /**
+     * @Route("/room/{roomId}/project/{itemId}", requirements={
+     *     "itemId": "\d+"
+     * }))
+     * @Template()
+     */
+    public function detailAction($roomId, $itemId, Request $request)
+    {
+        return array(
         );
     }
     

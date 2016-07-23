@@ -1,45 +1,39 @@
 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
-{% for date in dates %}
+{% for project in projects %}
     <article class="uk-comment">
            
-            {{ macros.statusColor(readerList, date.itemId) }}
+        {{ macros.statusColor(readerList, project.itemId) }}
         <header class="uk-comment-header uk-flex">
             <div class="items-checkbox uk-margin-right uk-margin-top uk-hidden">
 
-                {% if is_granted('ITEM_EDIT', date.itemId) %}
+                {% if is_granted('ITEM_EDIT', project.itemId) %}
                     <form class="uk-form">
-                        <input type="checkbox" value="{{ date.itemId }}">
+                        <input type="checkbox" value="{{ project.itemId }}">
                     </form>
                 {% else %}
-                    <i class="uk-icon-ban uk-icon-small red" data-itemid="{{ date.itemId }}"></i>
+                    <i class="uk-icon-ban uk-icon-small red" data-itemid="{{ project.itemId }}"></i>
                 {% endif %}
                 
             </div>
             <div class="uk-margin-right uk-flex-item-none">
-                    {% if date.creator.isUser %}
-                        {{  macros.userIconLink(date.creator) }}
+                    {% if project.creator.isUser %}
+                        {{  macros.userIconLink(project.creator) }}
                     {% else %}
-                        {{  macros.userIcon(date.creator) }}
+                        {{  macros.userIcon(project.creator) }}
                     {% endif %}
                     <div class="uk-comment-meta">
-                        {% if date.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                            {{ 'today'|trans({})|capitalize }}, {{date.getModificationDate|date("H:i")}}
+                        {% if project.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                            {{ 'today'|trans({})|capitalize }}, {{project.getModificationDate|date("H:i")}}
                         {% else %}
-                            {{date.getModificationDate|date("d.m.Y")}}
+                            {{project.getModificationDate|date("d.m.Y")}}
                         {% endif %}
                     </div>
             </div>
             <div>
                 <h4 class="uk-comment-title">
-                    <a href="{{ path('commsy_date_detail', {'roomId': roomId, 'itemId': date.itemId}) }}">{{ date.title }}</a>
+                    <a href="{{ path('commsy_project_detail', {'roomId': roomId, 'itemId': project.itemId}) }}">{{ project.title }}</a>
                 </h4>
-
-                <div class="uk-comment-meta">{{date.getDateListDescription}}{% if date.getPlace != '' %}, {{date.getPlace}}{% endif %}</div>
-                
-                <div class="uk-comment-meta">
-                    {{  macros.fileListShort(date) }}
-                </div>
             </div>
         </header>
     </article>
