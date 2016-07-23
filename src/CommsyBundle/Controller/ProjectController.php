@@ -64,10 +64,14 @@ class ProjectController extends Controller
             }
         }
 
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUser = $legacyEnvironment->getCurrentUser();
+
         return array(
             'roomId' => $roomId,
             'projects' => $projects,
-            'readerList' => $readerList
+            'readerList' => $readerList,
+            'currentUser' => $currentUser
         );
     }
     

@@ -34,6 +34,20 @@
                 <h4 class="uk-comment-title">
                     <a href="{{ path('commsy_project_detail', {'roomId': roomId, 'itemId': project.itemId}) }}">{{ project.title }}</a>
                 </h4>
+                
+                <div class="uk-comment-meta">
+                    {% for roomModerator in project.moderatorList.to_array %}
+                        {{ roomModerator.fullName }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </div>
+                
+                <div class="uk-comment-meta">
+                    {% if project.maySee(currentUser) %}
+                        <a href="{{ path('commsy_room_home', {'roomId': project.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>
+                    {% else %}
+                        Mitglied werden
+                    {% endif %}
+                </div>
             </div>
         </header>
     </article>

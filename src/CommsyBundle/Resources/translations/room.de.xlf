@@ -102,6 +102,10 @@
                 <source>Community Rooms</source>
                 <target>Gemeinschaftsräume</target>
             </trans-unit>
+            <trans-unit id="enter room">
+                <source>enter room</source>
+                <target>Raum betreten</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
