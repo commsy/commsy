@@ -1,4 +1,5 @@
 {% extends 'CommsyBundle:Base:room.html.twig' %}
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
 {% set project = item %}
 
@@ -34,11 +35,7 @@
                     
                     {{ project.description }}
                     
-                    {% if project.mayEnter(currentUser) %}
-                        <a href="{{ path('commsy_room_home', {'roomId': project.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>
-                    {% else %}
-                        <a href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': project.itemId}) }}">{{ 'become member'|trans({}, 'room') }}</a>
-                    {% endif %}
+                    {{ macros.contextLink(roomId, project, currentUser) }}
                 </article>
             </div>
         </div>
