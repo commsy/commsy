@@ -78,9 +78,9 @@ class SettingsController extends Controller
 
                 $fileName = "";
 
-                // case 1: file was send as "input file" via "room_image_upload" field
+                // case 1: file was send as "input file" via "room_image_upload" field (legacy case; does not occur with current client configuration)
                 if(!is_null($file)){
-                    dump("BG image given as file.");
+                    //dump("BG image given as file.");
                     $extension = $file->guessExtension();
                     if(!$extension) {
                         $extension = "bin";
@@ -94,7 +94,7 @@ class SettingsController extends Controller
 
                 // case 2: file was send as base64 string via hidden "room_image_data" text field
                 else{
-                    dump("BG image given as base64 string.");
+                    //dump("BG image given as base64 string.");
                     $data = $room_image_data['room_image_data'];
                     list($type, $data) = explode(";", $data);
                     list(, $data) = explode(",", $data);
@@ -105,8 +105,6 @@ class SettingsController extends Controller
                     $fileName = 'custom_bg_image.'.$extension;
 
                     $absoluteFilepath = $saveDir . "/" . $fileName;
-
-                    dump("save bg image under " . $absoluteFilepath);
 
                     file_put_contents($absoluteFilepath, $data);
                 }

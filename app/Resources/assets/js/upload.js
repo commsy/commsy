@@ -9,34 +9,50 @@
     $(document).ready(function() {
         $(".uk-position-cover div.uk-form-controls").css("margin-left", "0px");
 
-        var deleteCustomImage = $("#general_settings_room_image_delete_custom_image");
-        var repeatDefaultImageX = $("#general_settings_room_image_room_image_repeat_x");
+        // TODO: why is this neccessary? shouldn't the input field always be active when the page is loaded?
+        $("#bgPreview input[type='file']").removeAttr('disabled');
 
-        deleteCustomImage.closest(".uk-form-row").addClass("uk-form-controls");
-        repeatDefaultImageX.closest(".uk-form-row").addClass("uk-form-controls");
+        var deleteRow = $("#general_settings_room_image_delete_custom_image").closest(".uk-form-row");
+        var repeatRow = $("#general_settings_room_image_room_image_repeat_x").closest(".uk-form-row");
+
+        deleteRow.closest(".uk-form-row").addClass("uk-form-controls");
+        repeatRow.closest(".uk-form-row").addClass("uk-form-controls");
 
         $('#general_settings_room_image_room_image_choice').on('change', function(){
             var imageType = $("input:checked", this).val();
-            console.log("Room image choice changed to " + imageType);
 
-            deleteCustomImage.prop("disabled", (imageType === 'default_image'));
-            repeatDefaultImageX.prop("disabled", (imageType === 'default_image'));
+            // TODO: dynamically load bg preview depending on choice (custom image / default theme image)
+            if(imageType === 'default_image'){
+                $(".cs-upload-form").hide();
+                repeatRow.closest(".uk-form-row").show();
+                deleteRow.closest(".uk-form-row").hide();
+            }
+            else if(imageType === 'custom_image'){
+                $(".cs-upload-form").show();
+                repeatRow.closest(".uk-form-row").hide();
+                deleteRow.closest(".uk-form-row").show();
+            }
+
+            toggleUploadListener(imageType === 'custom_image');
         });
     });
 
     function setBackgroundImage(f, previewImage){
         console.debug("SetBackgroundImage to "+f.name);
+        // TODO: set threshold to sensible value!
         if(f.size > 2000000){
             alert("File size too large ("+(f.size / 1000) +" KB)! \n This service accepts image files up to 500 KB only!");
             return false;
         }
         var reader = new FileReader();
         reader.onload = function(event){
+            // FIXME: vertical position of elements below bgPreview ("repeat x", "delete image" etc.) should adapt dynamically!
+            //        (otherwise they are hidden under large images!)
             var result = event.target.result;
             previewImage.attr("src", result);
             $('#general_settings_room_image_room_image_data').val(result);
+            /* 
             alert('image loading complete; size: ' + (result.length/1000) + ' KB');
-            /*
             $("#imageInfo").empty().append('<li>Name: '
                 +f.name+'</li><li>Type: '
                 +f.type+'</li><li>Size: '
@@ -47,29 +63,52 @@
         reader.readAsDataURL(f);
     }
 
+    function toggleUploadListener(activationStatus){
+        var bgPreview = $("#bgPreview");
+       
+        bgPreview.closest("form").on({
+            'submit': function(){
+                // Disable the input[type='file'] field to prevent it from being send to the server; 
+                // the actual image data is already transmitted via the hidden 'image_data' field, so it doesn't need to be 
+                // be send again via the input[type='file'] field (which is only used as an option for file selection!)!
+                $("input[type='file']", bgPreview).attr('disabled', 'disabled');
+            }
+        });
+
+        if(activationStatus === false){
+            bgPreview.off();
+            $("input[type='file']", bgPreview).off();
+        }
+        else{
+            bgPreview.on({
+                'dragover dragleave drop': function(e){
+                    e.preventDefault();
+                },
+                'dragover': function(){
+                    $(".uk-position-cover", this).css("opacity", "0.9");
+                    return false;
+                },
+                'dragleave dragend drop': function(){
+                    $(".uk-position-cover", this).css("opacity", "0.7");
+                },
+                'drop': function(e){
+                    setBackgroundImage(e.dataTransfer.files[0], $('img', this));
+                },
+            });
+
+            $("input[type='file']", bgPreview).on({
+                'change': function(e){
+                    setBackgroundImage(e.target.files[0], $('#bgPreview img'));
+                },
+            });
+        }
+
+    }
+
     var setupUpload = function() {
 
-        $('#bgPreview').on({
-            'dragover, dragleave, drop': function(e){
-                e.preventDefault();
-            },
-            'dragover': function(){
-                $(".uk-position-cover", this).css("opacity", "0.9");
-                return false;
-            },
-            'dragleave, dragend, drop': function(){
-                $(".uk-position-cover", this).css("opacity", "0.7");
-            },
-            'drop': function(e){
-                setBackgroundImage(e.dataTransfer.files[0], $('img', this));
-            }
-        });
-
-        $("#bgPreview input[type='file']").on({
-            'change': function(e){
-                setBackgroundImage(e.target.files[0], $('#bgPreview img'));
-            }
-        });
+        // TODO: replace "true" with loaded value (whether custom_image or default_image has been loaded as setting for room!)
+        toggleUploadListener(true);
 
         $('.upload').each(function() {
             // get data from input element

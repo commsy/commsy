@@ -119,7 +119,7 @@ services:
         class: Commsy\LegacyBundle\Form\DataTransformer\GeneralSettingsTransformer
         arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
 
-    fcommsy_legacy.transformer.moderation_settings:
+    commsy_legacy.transformer.moderation_settings:
         class: Commsy\LegacyBundle\Form\DataTransformer\ModerationSettingsTransformer
         arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
 

@@ -51,6 +51,9 @@ class ModerationSettingsType extends AbstractType
                     'class' => 'uk-form-width-large',
                 ),
             ])
+            ->add(
+                $builder->create('usernotice', FormType::class, array())
+            )
         ;
     }
 
