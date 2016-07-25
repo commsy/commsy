@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="title">
+                <source>title</source>
+                <target>Title</target>
+            </trans-unit>
+            <trans-unit id="dateOfBirth">
+                <source>dateOfBirth</source>
+                <target>Date of birth</target>
+            </trans-unit>
+            <trans-unit id="userImage">
+                <source>userImage</source>
+                <target>Image</target>
+            </trans-unit>
+            <trans-unit id="deleteUserImage">
+                <source>deleteUserImage</source>
+                <target>Delete image</target>
+            </trans-unit>
+            <trans-unit id="email">
+                <source>email</source>
+                <target>Email</target>
+            </trans-unit>
+            <trans-unit id="hideEmailInThisRoom">
+                <source>hideEmailInThisRoom</source>
+                <target>Hide mail in this room</target>
+            </trans-unit>
+            <trans-unit id="phone">
+                <source>phone</source>
+                <target>Phone</target>
+            </trans-unit>
+            <trans-unit id="mobile">
+                <source>mobile</source>
+                <target>Mobile</target>
+            </trans-unit>
+            <trans-unit id="street">
+                <source>street</source>
+                <target>Street</target>
+            </trans-unit>
+            <trans-unit id="zipCode">
+                <source>zipCode</source>
+                <target>Area code</target>
+            </trans-unit>
+            <trans-unit id="city">
+                <source>city</source>
+                <target>Town</target>
+            </trans-unit>
+            <trans-unit id="room">
+                <source>room</source>
+                <target>Room</target>
+            </trans-unit>
+            <trans-unit id="organisation">
+                <source>organisation</source>
+                <target>Organisation</target>
+            </trans-unit>
+            <trans-unit id="position">
+                <source>position</source>
+                <target>Position</target>
+            </trans-unit>
+            <trans-unit id="homepage">
+                <source>homepage</source>
+                <target>Homepage</target>
+            </trans-unit>
+            <trans-unit id="msn">
+                <source>msn</source>
+                <target>MSN</target>
+            </trans-unit>
+            <trans-unit id="skype">
+                <source>skype</source>
+                <target>Skype</target>
+            </trans-unit>
+            <trans-unit id="icq">
+                <source>icq</source>
+                <target>ICQ</target>
+            </trans-unit>
+            <trans-unit id="yahoo">
+                <source>yahoo</source>
+                <target>Yahoo</target>
+            </trans-unit>
+            <trans-unit id="language">
+                <source>language</source>
+                <target>Language</target>
+            </trans-unit>
+            <trans-unit id="browser">
+                <source>browser</source>
+                <target>Browser setting</target>
+            </trans-unit>
+            <trans-unit id="german">
+                <source>german</source>
+                <target>German</target>
+            </trans-unit>
+            <trans-unit id="english">
+                <source>english</source>
+                <target>English</target>
+            </trans-unit>
+            <trans-unit id="user status">
+                <source>user status</source>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="quit">
+                <source>quit</source>
+                <target>Deleted Account</target>
+            </trans-unit>
+            <trans-unit id="request">
+                <source>request</source>
+                <target>Requesting</target>
+            </trans-unit>
+            <trans-unit id="user">
+                <source>user</source>
+                <target>User</target>
+            </trans-unit>
+            <trans-unit id="moderator">
+                <source>moderator</source>
+                <target>Moderator</target>
+            </trans-unit>
+            <trans-unit id="emailHidden">
+                <source>emailHidden</source>
+                <target>hidden</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

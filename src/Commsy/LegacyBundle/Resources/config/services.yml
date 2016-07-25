@@ -113,6 +113,10 @@ services:
     commsy_legacy.download_service:
         class: Commsy\LegacyBundle\Utils\DownloadService
         arguments: ['@commsy_legacy.environment', '@service_container']
+        
+    commsy_legacy.project_service:
+        class: Commsy\LegacyBundle\Utils\ProjectService
+        arguments: ['@commsy_legacy.environment']
 
     # Transformer
     commsy_legacy.transformer.general_settings:

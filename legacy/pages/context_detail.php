@@ -104,8 +104,10 @@ if (isOption($option, $translator->getMessage('CONTACT_MAIL_SEND_BUTTON'))){
       $body .= LF;
       $mail = new cs_mail();
       $mail->set_to(implode(',',$email_addresses));
-      $mail->set_from_email($user_item->getEmail());
-      $mail->set_from_name($user_item->getFullname());
+      //$mail->set_from_email($user_item->getEmail());
+      //$mail->set_from_name($user_item->getFullname());
+      $mail->set_from_email($environment->getServerItem()->getDefaultSenderAddress());
+      $mail->set_from_name($environment->getCurrentPortalItem()->getTitle());
       $mail->set_reply_to_name($user_item->getFullname());
       $mail->set_reply_to_email($user_item->getEmail());
       $mail->set_subject($subject);

@@ -3,7 +3,8 @@ togglePopups = [];
 
 require([	"dojo/_base/declare",
          	"commsy/base",
-         	"dojo/_base/lang"], function(declare, BaseClass, Lang) {
+         	"dojo/_base/lang",
+         	"dojo/_base/xhr"], function(declare, BaseClass, Lang, xhr) {
 	var Controller = declare(BaseClass, {
 		constructor: function(args) {
 			
@@ -27,6 +28,38 @@ require([	"dojo/_base/declare",
 						alert("Bitte schließen Sie zuerst das Popup-Fenster, bevor Sie sonstige Seitenoperationen ausführen");
 					}
 				}));
+
+				if (this.from_php.c_media_integration) {
+					// MDO on click
+					On(query(".mdoLink"), "click", Lang.hitch(this, function(event) {
+						// var cid = this.from_php.environment.portal_id;
+						var cid = dojo.queryToObject(dojo.doc.location.search.substr((dojo.doc.location.search[0] === "?" ? 1 : 0))).cid;
+						var link = domAttr.get(event.target, "href");
+						var json_data;
+						var regEx = /xplay\.datenbank-bildungsmedien.net\/(\d|\w)*\/(.*)\//;
+						var match = link.match(regEx);
+						var identifier = match[2];
+						if (!identifier) {
+							identifier = '';
+						}
+						
+						xhr.post({
+							// The URL to request
+							url: 'commsy.php?cid=' + cid + '&mod=ajax&fct=mdo_perform_search&action=search&identifier='+identifier,
+							// The method that handles the request's successful result
+							// Handle the response any way you'd like!
+							load: function(message) {
+								var result = eval('(' + message + ')');
+	            				if(result.status === 'success') {
+									window.open(result.data.url);
+								} else {
+									window.open(link);
+								}
+							}
+						});
+						event.preventDefault();
+					}));
+				}
 				
 				// setup rubric forms
 				query(".open_popup").forEach(Lang.hitch(this, function(node, index, arr) {

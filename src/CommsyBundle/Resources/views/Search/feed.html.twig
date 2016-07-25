@@ -1,0 +1,50 @@
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+
+{% for result in results %}
+    <article class="uk-comment">
+
+        <header class="uk-comment-header uk-flex">
+
+            {# user icon and modification time #}
+            <div class="uk-margin-right uk-flex-item-none">
+                {% if result.entity.modifier.status >= 2 %}
+                    {{ macros.userIconLink(result.entity.modifier) }}
+                {% else %}
+                    {{ macros.userIcon(result.entity.modifier) }}
+                {% endif %}
+                <div class="uk-comment-meta">
+                    {% if result.entity.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                        {{ 'today'|trans({})|capitalize }}, {{ result.entity.modificationDate|date("H:i") }}
+                    {% else %}
+                        {{ result.entity.modificationDate|date("d.m.Y") }}
+                    {% endif %}
+                </div>
+            </div>
+
+            {# title and meta #}
+            <div class="uk-width-8-10">
+                <h4 class="uk-comment-title">
+                    <a href="{{ path(result.routeName, {'roomId': result.entity.contextId, 'itemId': result.entity.itemId}) }}">
+                        {% if result.entity.title is defined %}
+                            {{ result.entity.title }}
+                        {% endif %}
+
+                        {% if result.entity.firstname is defined and result.entity.lastname is defined %}
+                            {{ result.entity.firstname }} {{ result.entity.lastname }}
+                        {% endif %}
+                    </a>
+                </h4>
+
+                <div class="uk-comment-meta">
+                    {% if result.entity.author is defined and result.entity.author is not empty %}
+                        {{ 'by'|trans({})|capitalize }}: {{ result.entity.author }} ({{ result.entity.publishingDate }})
+                    {% else %}
+                        {{ 'by'|trans({})|capitalize }}: {{ result.entity.modifier.fullname }} ({{ result.entity.getCreationDate|date("d.m.Y") }})
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+    </article>
+{% else %}
+    {{ 'No more results found'|trans}}
+{% endfor %}

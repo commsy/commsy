@@ -177,6 +177,12 @@ if (isOption($option, $translator->getMessage('CONTACT_MAIL_SEND_BUTTON'))){
    $user_item = $environment->getCurrentUserItem();
    $room_manager = $environment->getRoomManager();
    $room_item = $room_manager->getItem($current_item_id);
+   if ($room_item == null) {
+    $environment->activateArchiveMode();
+    $room_manager = $environment->getRoomManager();
+    $room_item = $room_manager->getItem($current_item_id);
+    $environment->deactivateArchiveMode();
+   }
    $user_list = $room_item->getContactModeratorList();
    $email_addresses = array();
    $moderator_item = $user_list->getFirst();
@@ -211,8 +217,10 @@ if (isOption($option, $translator->getMessage('CONTACT_MAIL_SEND_BUTTON'))){
       $body .= LF;
       $mail = new cs_mail();
       $mail->set_to(implode(',',$email_addresses));
-      $mail->set_from_email($user_item->getEmail());
-      $mail->set_from_name($user_item->getFullname());
+      //$mail->set_from_email($user_item->getEmail());
+      //$mail->set_from_name($user_item->getFullname());
+      $mail->set_from_email($environment->getServerItem()->getDefaultSenderAddress());
+      $mail->set_from_name($environment->getCurrentPortalItem()->getTitle());
       $mail->set_reply_to_name($user_item->getFullname());
       $mail->set_reply_to_email($user_item->getEmail());
       $mail->set_subject($subject);

@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="hashtag-title-edit">
+                <source>Edit hashtags</source>
+                <target>Edit hashtags</target>
+            </trans-unit>
+            <trans-unit id="hashtag-label-name">
+                <source>Name</source>
+                <target>Name</target>
+            </trans-unit>
+            <trans-unit id="hashtag-button-add">
+                <source>Create new hashtag</source>
+                <target>Create new hashtag</target>
+            </trans-unit>
+            <trans-unit id="hashtag-button-update">
+                <source>Update hashtag</source>
+                <target>Update hashtag</target>
+            </trans-unit>
+            <trans-unit id="hashtag-button-delete">
+                <source>Delete hashtag</source>
+                <target>Delete hashtag</target>
+            </trans-unit>
+            <trans-unit id="hashtag-empty">
+                <source>No hashtag has been created yet.</source>
+                <target>No hashtag has been created yet.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

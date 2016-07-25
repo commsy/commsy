@@ -687,102 +687,103 @@ class cs_page_view extends cs_view {
       $retour .= $this->_getIncludedCSSAsHTML();
       $retour .= $this->_includedJavascriptAsHTML();
 
-      #$retour .= '   <script type="text/javascript" src="javascript/passwordcheck.js"></script>'.LF;
+        $auth_source_manager = $this->_environment->getAuthSourceManager();
+        $auth_source = $auth_source_manager->_performQuery();
 
-      	$auth_source_manager = $this->_environment->getAuthSourceManager();
-      	$auth_source = $auth_source_manager->_performQuery();
-	      $auth_source_item = $auth_source_manager->getItem($auth_source[0]['item_id']);
+        if (!empty($auth_source)) {
+            $auth_source_item = $auth_source_manager->getItem($auth_source[0]['item_id']);
 
-	      if(!empty($auth_source_item) AND $auth_source_item->isPasswordSecureActivated()){
-	      	$retour .= '<script type="text/javascript">
-							$.fn.passwordStrength = function( options ){
-								return this.each(function(){
-									var that = this;that.opts = {};
-									that.opts = $.extend({}, $.fn.passwordStrength.defaults, options);
+            if(!empty($auth_source_item) AND $auth_source_item->isPasswordSecureActivated()){
+                $retour .= '<script type="text/javascript">
+                            $.fn.passwordStrength = function( options ){
+                                return this.each(function(){
+                                    var that = this;that.opts = {};
+                                    that.opts = $.extend({}, $.fn.passwordStrength.defaults, options);
 
-									that.div = $(that.opts.targetDiv);
-									that.defaultClass = that.div.attr(\'class\');
+                                    that.div = $(that.opts.targetDiv);
+                                    that.defaultClass = that.div.attr(\'class\');
 
-									that.percents = (that.opts.classes.length) ? 100 / that.opts.classes.length : 100;
+                                    that.percents = (that.opts.classes.length) ? 100 / that.opts.classes.length : 100;
 
-									 v = $(this)
-									.keyup(function(){
-										if( typeof el == "undefined" )
-											this.el = $(this);
-										var s = getPasswordStrength (this.value);
-										var p = this.percents;
-										var t = Math.floor( s / p );
-										if( 100 <= s )
-											t = this.opts.classes.length - 1;
+                                     v = $(this)
+                                    .keyup(function(){
+                                        if( typeof el == "undefined" )
+                                            this.el = $(this);
+                                        var s = getPasswordStrength (this.value);
+                                        var p = this.percents;
+                                        var t = Math.floor( s / p );
+                                        if( 100 <= s )
+                                            t = this.opts.classes.length - 1;
 
-										this.div
-											.removeAttr(\'class\')
-											.addClass( this.defaultClass )
-											.addClass( this.opts.classes[ t ] );
+                                        this.div
+                                            .removeAttr(\'class\')
+                                            .addClass( this.defaultClass )
+                                            .addClass( this.opts.classes[ t ] );
 
-									})
-								});
+                                    })
+                                });
 
-								function getPasswordStrength(H){
-									var L=(H.length);
-									var D=(H.length);
-									if (D<4) { D=0 }
-									if(D>6){
-										D=5
-									}';
-									// Zahlen
-									$retour .= '
-									var F=H.replace(/[0-9]/g,"");
-									var G=(H.length-F.length);
-									if(G>3){G=3}
-									var A=H.replace(/\W/g,"");
-									var C=(H.length-A.length);
-									if(C>3){C=3}
-									var B=H.replace(/[A-Z]/g,"");
-									var I=(H.length-B.length);
-									if(I>3){I=3}
-									var Z=H.replace(/[a-z]/g,"");
-									var S=(H.length-Z.length);
-									var E=((D*10)-20)+(G*10)+(C*15)+(I*10);';
+                                function getPasswordStrength(H){
+                                    var L=(H.length);
+                                    var D=(H.length);
+                                    if (D<4) { D=0 }
+                                    if(D>6){
+                                        D=5
+                                    }';
+                                    // Zahlen
+                                    $retour .= '
+                                    var F=H.replace(/[0-9]/g,"");
+                                    var G=(H.length-F.length);
+                                    if(G>3){G=3}
+                                    var A=H.replace(/\W/g,"");
+                                    var C=(H.length-A.length);
+                                    if(C>3){C=3}
+                                    var B=H.replace(/[A-Z]/g,"");
+                                    var I=(H.length-B.length);
+                                    if(I>3){I=3}
+                                    var Z=H.replace(/[a-z]/g,"");
+                                    var S=(H.length-Z.length);
+                                    var E=((D*10)-20)+(G*10)+(C*15)+(I*10);';
 
-									if($auth_source_item->isPasswordSecureActivated()){
-										$retour .= 'if(1 ';
-										if($auth_source_item->getPasswordSecureSpecialchar() == 1){
-											$retour .= '&& (C >= 1) ';
-										}
-										if($auth_source_item->getPasswordSecureBigchar() == 1){
-											$retour .= '&& (I >= 1) ';
-										}
-										if($auth_source_item->getPasswordSecureSmallchar() == 1){
-											$retour .= '&& (S >= 1) ';
-										}
-										if($auth_source_item->getPasswordSecureNumber() == 1){
-											$retour .= '&& (G >= 1) ';
-										}
-										if($auth_source_item->getPasswordLength() > 0){
-											$retour .= '&& (L >= '.$auth_source_item->getPasswordLength().')';
-										}
-										$retour .= '){;if(E >= 100){E = 100}else{E=50}}else{E=0}';
-									}
-									$retour .= '
-									if(E<0){E=0}
-									if(E>100){E=100}
-									return E
-								}
+                                    if($auth_source_item->isPasswordSecureActivated()){
+                                        $retour .= 'if(1 ';
+                                        if($auth_source_item->getPasswordSecureSpecialchar() == 1){
+                                            $retour .= '&& (C >= 1) ';
+                                        }
+                                        if($auth_source_item->getPasswordSecureBigchar() == 1){
+                                            $retour .= '&& (I >= 1) ';
+                                        }
+                                        if($auth_source_item->getPasswordSecureSmallchar() == 1){
+                                            $retour .= '&& (S >= 1) ';
+                                        }
+                                        if($auth_source_item->getPasswordSecureNumber() == 1){
+                                            $retour .= '&& (G >= 1) ';
+                                        }
+                                        if($auth_source_item->getPasswordLength() > 0){
+                                            $retour .= '&& (L >= '.$auth_source_item->getPasswordLength().')';
+                                        }
+                                        $retour .= '){;if(E >= 100){E = 100}else{E=50}}else{E=0}';
+                                    }
+                                    $retour .= '
+                                    if(E<0){E=0}
+                                    if(E>100){E=100}
+                                    return E
+                                }
 
-							};
+                            };
 
-							$(document)
-							.ready(function(){
-								$(\'input[name="password"]\').passwordStrength({targetDiv: \'#iSM\',classes : Array(\'weak\',\'medium\',\'strong\')});
+                            $(document)
+                            .ready(function(){
+                                $(\'input[name="password"]\').passwordStrength({targetDiv: \'#iSM\',classes : Array(\'weak\',\'medium\',\'strong\')});
 
-							});
-							</script>
-							';
+                            });
+                            </script>
+                            ';
 
-	      }
-	      unset($auth_source_manager);
-	      unset($auth_source_item);
+            }
+            unset($auth_source_manager);
+            unset($auth_source_item);
+        }
 
 
       $current_context_item = $this->_environment->getCurrentContextItem();

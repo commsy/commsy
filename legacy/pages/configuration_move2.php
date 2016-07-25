@@ -152,6 +152,14 @@ else {
       if ($item->moveWithLinkedRooms()) {
          $room_list->addList($item->getProjectRoomList());
          $copy_links_between_rooms = true;
+
+         // add group rooms from project room
+         $projectRoomList = $item->getProjectRoomList();
+         $projectRoom = $projectRoomList->getFirst();
+         while($projectRoom) {
+            $room_list->addList($projectRoom->getGroupRoomList());
+            $projectRoom = $projectRoomList->getNext();
+         }
       }
 
       ############################################
@@ -175,6 +183,7 @@ else {
             }
          }
       }
+      
       ############################################
       # FLAG: group rooms
       ############################################
@@ -383,6 +392,9 @@ else {
          unset($user_id_auth_new);
 
          $user_item_new = $user_item->cloneData();
+         if ($user_item_new->isModerator()) {
+            $user_item_new->makeUser();
+         }
          $user_item_new->setContextID($environment->getCurrentPortalID());
          $temp_user = $environment->getCurrentUserItem();
          $user_item_new->setCreatorItem($temp_user);

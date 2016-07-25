@@ -910,24 +910,21 @@ class cs_authentication {
          $user_item = $user_list->getFirst();
       } elseif ($user_list->getCount() > 1) {
          $user_item = NULL;
-         // display error text for multible user ids in this commsy
-         $context = $this->_environment->getCurrentContextItem();
-         $translator = $this->_environment->getTranslationObject();
-         if (!empty($context)) {
-            $moderator_list = $context->getModeratorList();
-            $text = $translator->getMessage('AUTH_ERROR_ACCOUNT_TO_MANY',$uid,$context->getTitle());
-            if (!$moderator_list->isEmpty()) {
-               $moderator_item = $moderator_list->getFirst();
-               $text .= '<br />';
-               while ($moderator_item) {
-                  $text .= '<br />'.$moderator_item->getFullname().' ['.$moderator_item->getEmail().']';
-                  $moderator_item = $moderator_list->getNext();
-               }
-            }
-            $this->_error_array[] = $text.LF;
-         } else {
-            $this->_error_array[] = $translator->getMessage('COMMON_DATABASE_ERROR');
-         }
+         $user_item = $user_list->getFirst();
+         $error_log_manager = $this->_environment->getLogErrorManager();
+
+         $error_array = array();
+         $error_array['number'] = "1024";
+         $error_array['type'] = "Error";
+         $error_array['message'] = "multiple userids existing for itemid: ".$user_item->getItemID();
+         $error_array['file'] = "";
+         $error_array['line'] = "";
+         $error_array['context'] = "";
+         $error_array['module'] = "";
+         $error_array['function'] = "";
+         $error_array['user'] = $user_item->getFullname();
+
+         $error_log_manager->saveArray($error_array);
       }
       return $user_item;
    }

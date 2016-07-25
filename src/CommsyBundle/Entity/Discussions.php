@@ -3,6 +3,7 @@
 namespace CommsyBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Discussions
@@ -31,16 +32,18 @@ class Discussions
     /**
      * @var integer
      *
-     * @ORM\Column(name="creator_id", type="integer", nullable=false)
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="creator_id", referencedColumnName="item_id")
      */
-    private $creatorId = '0';
+    private $creator;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="modifier_id", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="modifier_id", referencedColumnName="item_id")
      */
-    private $modifierId;
+    private $modifier;
 
     /**
      * @var integer
@@ -133,6 +136,492 @@ class Discussions
      */
     private $lockingUserId;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Discussionarticles", mappedBy="discussion")
+     */
+    private $discussionarticles;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="Files")
+     * @ORM\JoinTable(name="item_link_file",
+     *      joinColumns={@ORM\JoinColumn(name="item_iid", referencedColumnName="item_id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="file_id", referencedColumnName="files_id", unique=true)}
+     *  )
+     */
+    private $files;
+
+
+    public function __construct()
+    {
+        $this->files = new ArrayCollection();
+    }
+
+    /**
+     * Add file
+     *
+     * @param \CommsyBundle\Entity\File $file
+     *
+     * @return Materials
+     */
+    public function addFile(\CommsyBundle\Entity\Files $file)
+    {
+        $this->files[] = $file;
+
+        return $this;
+    }
+
+    /**
+     * Remove file
+     *
+     * @param \CommsyBundle\Entity\File $file
+     */
+    public function removeFile(\CommsyBundle\Entity\Files $file)
+    {
+        $this->files->removeElement($file);
+    }
+
+    /**
+     * Get files
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFiles()
+    {
+        return $this->files;
+    }
+
+
+    public function isIndexable()
+    {
+        return ($this->deleterId == null && $this->deletionDate == null);
+    }
+
+
+    /**
+     * Get itemId
+     *
+     * @return integer
+     */
+    public function getItemId()
+    {
+        return $this->itemId;
+    }
+
+    /**
+     * Set contextId
+     *
+     * @param integer $contextId
+     *
+     * @return Discussions
+     */
+    public function setContextId($contextId)
+    {
+        $this->contextId = $contextId;
+
+        return $this;
+    }
+
+    /**
+     * Get contextId
+     *
+     * @return integer
+     */
+    public function getContextId()
+    {
+        return $this->contextId;
+    }
+
+    /**
+     * Set deleterId
+     *
+     * @param integer $deleterId
+     *
+     * @return Discussions
+     */
+    public function setDeleterId($deleterId)
+    {
+        $this->deleterId = $deleterId;
+
+        return $this;
+    }
+
+    /**
+     * Get deleterId
+     *
+     * @return integer
+     */
+    public function getDeleterId()
+    {
+        return $this->deleterId;
+    }
+
+    /**
+     * Set creationDate
+     *
+     * @param \DateTime $creationDate
+     *
+     * @return Discussions
+     */
+    public function setCreationDate($creationDate)
+    {
+        $this->creationDate = $creationDate;
+
+        return $this;
+    }
+
+    /**
+     * Get creationDate
+     *
+     * @return \DateTime
+     */
+    public function getCreationDate()
+    {
+        return $this->creationDate;
+    }
+
+    /**
+     * Set modificationDate
+     *
+     * @param \DateTime $modificationDate
+     *
+     * @return Discussions
+     */
+    public function setModificationDate($modificationDate)
+    {
+        $this->modificationDate = $modificationDate;
+
+        return $this;
+    }
+
+    /**
+     * Get modificationDate
+     *
+     * @return \DateTime
+     */
+    public function getModificationDate()
+    {
+        return $this->modificationDate;
+    }
+
+    /**
+     * Set deletionDate
+     *
+     * @param \DateTime $deletionDate
+     *
+     * @return Discussions
+     */
+    public function setDeletionDate($deletionDate)
+    {
+        $this->deletionDate = $deletionDate;
+
+        return $this;
+    }
+
+    /**
+     * Get deletionDate
+     *
+     * @return \DateTime
+     */
+    public function getDeletionDate()
+    {
+        return $this->deletionDate;
+    }
+
+    /**
+     * Set title
+     *
+     * @param string $title
+     *
+     * @return Discussions
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set latestArticleItemId
+     *
+     * @param integer $latestArticleItemId
+     *
+     * @return Discussions
+     */
+    public function setLatestArticleItemId($latestArticleItemId)
+    {
+        $this->latestArticleItemId = $latestArticleItemId;
+
+        return $this;
+    }
+
+    /**
+     * Get latestArticleItemId
+     *
+     * @return integer
+     */
+    public function getLatestArticleItemId()
+    {
+        return $this->latestArticleItemId;
+    }
+
+    /**
+     * Set latestArticleModificationDate
+     *
+     * @param \DateTime $latestArticleModificationDate
+     *
+     * @return Discussions
+     */
+    public function setLatestArticleModificationDate($latestArticleModificationDate)
+    {
+        $this->latestArticleModificationDate = $latestArticleModificationDate;
+
+        return $this;
+    }
+
+    /**
+     * Get latestArticleModificationDate
+     *
+     * @return \DateTime
+     */
+    public function getLatestArticleModificationDate()
+    {
+        return $this->latestArticleModificationDate;
+    }
+
+    /**
+     * Set status
+     *
+     * @param integer $status
+     *
+     * @return Discussions
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return integer
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * Set discussionType
+     *
+     * @param string $discussionType
+     *
+     * @return Discussions
+     */
+    public function setDiscussionType($discussionType)
+    {
+        $this->discussionType = $discussionType;
+
+        return $this;
+    }
+
+    /**
+     * Get discussionType
+     *
+     * @return string
+     */
+    public function getDiscussionType()
+    {
+        return $this->discussionType;
+    }
+
+    /**
+     * Set public
+     *
+     * @param boolean $public
+     *
+     * @return Discussions
+     */
+    public function setPublic($public)
+    {
+        $this->public = $public;
+
+        return $this;
+    }
+
+    /**
+     * Get public
+     *
+     * @return boolean
+     */
+    public function getPublic()
+    {
+        return $this->public;
+    }
+
+    /**
+     * Set extras
+     *
+     * @param string $extras
+     *
+     * @return Discussions
+     */
+    public function setExtras($extras)
+    {
+        $this->extras = $extras;
+
+        return $this;
+    }
+
+    /**
+     * Get extras
+     *
+     * @return string
+     */
+    public function getExtras()
+    {
+        return $this->extras;
+    }
+
+    /**
+     * Set lockingDate
+     *
+     * @param \DateTime $lockingDate
+     *
+     * @return Discussions
+     */
+    public function setLockingDate($lockingDate)
+    {
+        $this->lockingDate = $lockingDate;
+
+        return $this;
+    }
+
+    /**
+     * Get lockingDate
+     *
+     * @return \DateTime
+     */
+    public function getLockingDate()
+    {
+        return $this->lockingDate;
+    }
+
+    /**
+     * Set lockingUserId
+     *
+     * @param integer $lockingUserId
+     *
+     * @return Discussions
+     */
+    public function setLockingUserId($lockingUserId)
+    {
+        $this->lockingUserId = $lockingUserId;
+
+        return $this;
+    }
+
+    /**
+     * Get lockingUserId
+     *
+     * @return integer
+     */
+    public function getLockingUserId()
+    {
+        return $this->lockingUserId;
+    }
+
+    /**
+     * Set creator
+     *
+     * @param \CommsyBundle\Entity\User $creator
+     *
+     * @return Discussions
+     */
+    public function setCreator(\CommsyBundle\Entity\User $creator = null)
+    {
+        $this->creator = $creator;
+
+        return $this;
+    }
+
+    /**
+     * Get creator
+     *
+     * @return \CommsyBundle\Entity\User
+     */
+    public function getCreator()
+    {
+        return $this->creator;
+    }
+
+    /**
+     * Set modifier
+     *
+     * @param \CommsyBundle\Entity\User $modifier
+     *
+     * @return Discussions
+     */
+    public function setModifier(\CommsyBundle\Entity\User $modifier = null)
+    {
+        $this->modifier = $modifier;
+
+        return $this;
+    }
+
+    /**
+     * Get modifier
+     *
+     * @return \CommsyBundle\Entity\User
+     */
+    public function getModifier()
+    {
+        return $this->modifier;
+    }
+
+    /**
+     * Add discussionarticle
+     *
+     * @param \CommsyBundle\Entity\Discussionarticles $discussionarticle
+     *
+     * @return Materials
+     */
+    public function addDiscussionarticle(\CommsyBundle\Entity\Discussionarticles $discussionarticle)
+    {
+        $this->discussionarticles[] = $discussionarticle;
+
+        return $this;
+    }
+
+    /**
+     * Remove discussionarticle
+     *
+     * @param \CommsyBundle\Entity\Discussionarticles $discussionarticle
+     */
+    public function removeDiscussionarticle(\CommsyBundle\Entity\Discussionarticles $discussionarticle)
+    {
+        $this->discussionarticles->removeElement($discussionarticle);
+    }
+
+    /**
+     * Get discussionarticles
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDiscussionarticles()
+    {
+        return $this->discussionarticles;
+    }
 }
-

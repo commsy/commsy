@@ -48,13 +48,15 @@ define([	"dojo/_base/declare",
 				declare.safeMixin(this.data, this.initData);
 
 				if (this.from_php.environment.item_locking) {
-					if (typeof(this.contextId) == 'undefined' || this.contextId != this.from_php.ownRoom.id) {
+					if (typeof(this.contextId) == 'undefined' || typeof(this.from_php.ownRoom) != "undefined" && this.contextId != this.from_php.ownRoom.id) {
 						// if we are editing an item, setup the locking mechanism
 						if (this.item_id !== "NEW") {
 							this.getLocking();
 						} else {
 							this.openPopup();
 						}
+					} else {
+						this.openPopup();
 					}
 				} else {
 					this.openPopup();
@@ -89,7 +91,7 @@ define([	"dojo/_base/declare",
 					this.onCreate();
 
 					if (this.from_php.environment.item_locking) {
-						if (typeof(this.contextId) == 'undefined' || this.contextId != this.from_php.ownRoom.id) {
+						if (typeof(this.contextId) == 'undefined' || typeof(this.from_php.ownRoom) != "undefined" && this.contextId != this.from_php.ownRoom.id) {
 							// if we are editing an item, setup the locking mechanism
 							if (this.item_id !== "NEW") {
 								this.setupLocking();

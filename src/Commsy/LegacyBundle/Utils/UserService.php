@@ -186,4 +186,40 @@ class UserService
           }
        }
     }
+
+    /**
+     * Get the current user item
+     * 
+     * @return cs_user_item The current user object
+     */
+    public function getCurrentUserItem()
+    {
+        $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
+        
+        return $legacyEnvironment->getCurrentUserItem();
+    }
+    
+    /**
+     * Returns a list of searchable rooms
+     * 
+     * @return array of searchable room items
+     */
+    public function getSearchableRooms($userItem)
+    {
+        // project rooms
+        $projectRoomList = $userItem->getUserRelatedProjectList();
+
+        // community rooms
+        $communityRoomList = $userItem->getUserRelatedCommunityList();
+
+        // group rooms
+        $groupRoomList = $userItem->getUserRelatedGroupList();
+
+        // merge all lists
+        $searchableRoomList = $projectRoomList;
+        $searchableRoomList->addList($communityRoomList);
+        $searchableRoomList->addList($groupRoomList);
+
+        return $searchableRoomList->to_array();
+    }
 }

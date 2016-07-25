@@ -50,6 +50,7 @@ class cs_tag2tag_manager extends cs_manager {
      $retour->setDeletionDate($data_array['deletion_date']);
      $retour->setFatherItemID($data_array['from_item_id']);
      $retour->setChildItemID($data_array['to_item_id']);
+     $retour->setSortingPlace($data_array['sorting_place']);
      return $retour;
   }
 
@@ -316,6 +317,11 @@ class cs_tag2tag_manager extends cs_manager {
       return $retour;
    }
 
+   public function resetCachedFatherIdArray(){
+   	  $this->_cached_father_id_array = array();
+   	  $this->_cached_rows = array();
+   }
+
    public function getFatherItemIDArray ($item_id) {
       $retour = array();
       $father_id = $this->getFatherItemID($item_id);
@@ -406,6 +412,7 @@ class cs_tag2tag_manager extends cs_manager {
             // change sort order and save
             if(isset($item)){
 	            $item->setPosition($root_id, $new_sort_order);
+	            $item->setSavePositionWithoutChange(true);
 	            $item->save();
 	            unset($item);
              // 4. call recursive
@@ -531,6 +538,11 @@ class cs_tag2tag_manager extends cs_manager {
             $result = $this->_db_connector->performQuery($update);
          }
       }
+   }
+   
+   public function changeUpdate ($item_id,$place) {
+        $update = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET sorting_place='.encode(AS_DB,$place).' WHERE to_item_id='.encode(AS_DB,$item_id).';';
+        $result = $this->_db_connector->performQuery($update); 
    }
 
    /**

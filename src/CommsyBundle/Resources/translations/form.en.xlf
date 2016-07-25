@@ -318,6 +318,14 @@
                 <source>send</source>
                 <target>Send</target>
             </trans-unit>
+            <trans-unit id="form-button-delete">
+                <source>Delete</source>
+                <target>Delete</target>
+            </trans-unit>
+            <trans-unit id="form-button-edit">
+                <source>Edit</source>
+                <target>Edit</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

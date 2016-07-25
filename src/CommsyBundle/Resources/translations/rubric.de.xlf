@@ -189,6 +189,13 @@
             <trans-unit id="rubrics">
                 <source>Rubrics</source>
                 <target>Rubriken</target>
+            <trans-unit id="project">
+                <source>project</source>
+                <target>Projekträume</target>
+            </trans-unit>
+            <trans-unit id="institution">
+                <source>institution</source>
+                <target>Institutionen</target>
             </trans-unit>
         </body>
     </file>

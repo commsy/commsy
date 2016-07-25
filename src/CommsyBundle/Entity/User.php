@@ -3,13 +3,11 @@
 namespace CommsyBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use FOS\ElasticaBundle\Configuration\Search;
 
 /**
  * User
  *
  * @ORM\Table(name="user", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="creator_id", columns={"creator_id"}), @ORM\Index(name="user_id", columns={"user_id"}), @ORM\Index(name="deletion_date", columns={"deletion_date"}), @ORM\Index(name="deleter_id", columns={"deleter_id"}), @ORM\Index(name="status", columns={"status"}), @ORM\Index(name="is_contact", columns={"is_contact"})})
- * @Search
  * @ORM\Entity
  */
 class User
@@ -38,11 +36,12 @@ class User
     private $creatorId = '0';
 
     /**
-     * @var integer
+     * @var User
      *
-     * @ORM\Column(name="modifier_id", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="modifier_id", referencedColumnName="item_id")
      */
-    private $modifierId;
+    private $modifier;
 
     /**
      * @var integer
@@ -212,27 +211,27 @@ class User
     }
 
     /**
-     * Set modifierId
+     * Set modifier
      *
-     * @param integer $modifierId
+     * @param \CommsyBundle\Entity\User $modifier
      *
-     * @return User
+     * @return Materials
      */
-    public function setModifierId($modifierId)
+    public function setModifier(\CommsyBundle\Entity\User $modifier = null)
     {
-        $this->modifierId = $modifierId;
+        $this->modifier = $modifier;
 
         return $this;
     }
 
     /**
-     * Get modifierId
+     * Get modifier
      *
-     * @return integer
+     * @return \CommsyBundle\Entity\User
      */
-    public function getModifierId()
+    public function getModifier()
     {
-        return $this->modifierId;
+        return $this->modifier;
     }
 
     /**
@@ -643,11 +642,6 @@ class User
         return $this->expireDate;
     }
 
-    public function isIndexable()
-    {
-        return ($this->deleterId == null && $this->deletionDate == null);
-    }
-
     /**
      * Get itemId
      *
@@ -656,5 +650,15 @@ class User
     public function getItemId()
     {
         return $this->itemId;
+    }
+
+    public function isIndexable()
+    {
+        return ($this->deleterId == null && $this->deletionDate == null);
+    }
+
+    public function getFullname()
+    {
+        return trim($this->getFirstname() . ' ' . $this->getLastname());
     }
 }

@@ -20,14 +20,18 @@ services:
         tags:
             - { name: form.type }
 
-    # Converter
-    commsy.converter.room:
-        class: CommsyBundle\Converter\RoomConverter
+    # Migrations
+    commsy.migrations.room:
+        class: CommsyBundle\Migrations\RoomMigration
         arguments: ['@doctrine.orm.entity_manager']
 
-    commsy.converter.materials:
-        class: CommsyBundle\Converter\MaterialsConverter
+    commsy.migrations.materials:
+        class: CommsyBundle\Migrations\MaterialsMigration
         arguments: ['@doctrine.orm.entity_manager']
+
+    commsy.migrations.files:
+        class: CommsyBundle\Migrations\FilesMigration
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
 
     # Menu
     commsy.menu.builder:
@@ -125,10 +129,23 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
+    commsy.listener.get_room_membership_filter:
+        class: CommsyBundle\EventListener\RoomMembershipFilterConditionListener
+        arguments: ['@commsy_legacy.user_service']
+        tags:
+            - { name: kernel.event_listener, event: lexik_form_filter.apply.orm.room_filter.membership , method: onGetFilterCondition }
+
     # Search
-    commsy.search_builder:
-        class: CommsyBundle\Search\SearchBuilder
-        arguments: ['@fos_elastica.finder.commsy.material']
+    commsy.search.manager:
+        class: CommsyBundle\Search\SearchManager
+        arguments: ['@fos_elastica.finder.commsy', '@commsy_legacy.user_service']
+
+    # Validator
+    commsy.validator.unique_label_name:
+        class: CommsyBundle\Validator\Constraints\UniqueLabelNameValidator
+        arguments: [ '@doctrine.orm.entity_manager' ]
+        tags:
+            - { name: validator.constraint_validator, alias: alias_name }
 
     # Form types
     commsy.form.type.general_settings:
@@ -299,6 +316,17 @@ services:
         tags:
             - { name: twig.extension }
 
+    twig.extension.log:
+        class: CommsyBundle\Twig\Extension\LogarithmExtension
+        public: false
+        tags:
+            - { name: twig.extension }
+
+    twig.extension.commsy_markup:
+        class: CommsyBundle\Twig\Extension\MarkupExtension
+        tags:
+            - { name: twig.extension }
+
     # Controller
     commsy.item_controller:
         class: CommsyBundle\Controller\ItemController
@@ -312,6 +340,12 @@ services:
     commsy.command.cron_command:
         class: CommsyBundle\Command\CronCommand
         arguments: ['%kernel.root_dir%', '@commsy_legacy.environment']
+        tags:
+            - { name: console.command }
+
+    commsy.command.db_check:
+        class: CommsyBundle\Command\DBCheckCommand
+        arguments: ['@doctrine.orm.entity_manager']
         tags:
             - { name: console.command }
 

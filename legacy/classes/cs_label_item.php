@@ -275,6 +275,8 @@ class cs_label_item extends cs_item {
     * @param string value name of the item
     */
    function setName ($value) {
+      $converter = $this->_environment->getTextConverter();
+      $value = $converter->sanitizeHTML($value);
       $this->_setValue('name', $value);
    }
 
@@ -612,12 +614,14 @@ class cs_label_item extends cs_item {
                   $user_list = $user_item->getRelatedUserList();
                   $temp_user_item = $user_list->getFirst();
                   while ($temp_user_item) {
-                     if ($temp_user_item->getContextID() == $group_room_item->getContextID()) {
-                        if ($temp_user_item->getStatus() == '3') {
-                           $may_edit = true;
-                        }
-                     }
-                     $temp_user_item = $user_list->getNext();   
+                    if ($group_room_item) {
+                       if ($temp_user_item->getContextID() == $group_room_item->getContextID()) {
+                          if ($temp_user_item->getStatus() == '3') {
+                             $may_edit = true;
+                          }
+                       }
+                    }
+                    $temp_user_item = $user_list->getNext();   
                   }
                }
                return $may_edit;

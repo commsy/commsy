@@ -589,37 +589,49 @@ class cs_section_manager extends cs_manager implements cs_export_import_interfac
       }
    }
 
+    function deleteSectionsOfUser($uid) {
+        global $symfonyContainer;
+        $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
 
-   function deleteSectionsOfUser($uid) {
-      // create backup of item
-   	  global $symfonyContainer;
-      $disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
-      $this->backupItem($uid, array(   'title'            =>   'title',
-                                   'description'      =>   'description',
-                                   'modification_date'   =>   'modification_date'));
+        if ($disableOverwrite !== null && $disableOverwrite !== true) {
+            // create backup of item
+            $this->backupItem($uid, array(
+                'title' => 'title',
+                'description' => 'description',
+                'modification_date' => 'modification_date',
+            ));
 
-      $current_datetime = getCurrentDateTimeInMySQL();
-      $query  = 'SELECT '.$this->addDatabasePrefix('section').'.* FROM '.$this->addDatabasePrefix('section').' WHERE '.$this->addDatabasePrefix('section').'.creator_id = "'.encode(AS_DB,$uid).'"';
-      $result = $this->_db_connector->performQuery($query);
-      if ( !empty($result) ) {
-         foreach ( $result as $rs ) {
-            $insert_query = 'UPDATE '.$this->addDatabasePrefix('section').' SET';
-			if (!empty($disable_overwrite) and $disable_overwrite == 'flag'){
-               $insert_query .= ' public = "-1",';
-            	$insert_query .= ' modification_date = "'.$current_datetime.'"';
-			}else{
-	            $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-	            $insert_query .= ' modification_date = "'.$current_datetime.'",';
-	            $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'"';
-			}
-			$insert_query .=' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
-            $result2 = $this->_db_connector->performQuery($insert_query);
-            if ( !$result2 ) {
-               include_once('functions/error_functions.php');trigger_error('Problems automatic deleting sections from query: "'.$insert_query.'"',E_USER_WARNING);
+            $currentDatetime = getCurrentDateTimeInMySQL();
+            $query  = 'SELECT ' . $this->addDatabasePrefix('section').'.* FROM ' . $this->addDatabasePrefix('section').' WHERE ' . $this->addDatabasePrefix('section') . '.creator_id = "' . encode(AS_DB,$uid) . '"';
+            $result = $this->_db_connector->performQuery($query);
+
+            if (!empty($result)) {
+                foreach ($result as $rs) {
+                    $updateQuery = 'UPDATE ' . $this->addDatabasePrefix('section') . ' SET';
+
+                    /* flag */
+                    if ($disableOverwrite === 'flag') {
+                        $updateQuery .= ' public = "-1",';
+                        $updateQuery .= ' modification_date = "' . $currentDatetime . '"';
+                    }
+
+                    /* disabled */
+                    if ($disableOverwrite === false) {
+                        $updateQuery .= ' title = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')) . '",';
+                        $updateQuery .= ' description = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')) . '",';
+                        $updateQuery .= ' modification_date = "' . $currentDatetime . '"';
+                    }
+
+                    $updateQuery .= ' WHERE item_id = "' . encode(AS_DB,$rs['item_id']) . '"';
+                    $result2 = $this->_db_connector->performQuery($updateQuery);
+                    if (!$result2) {
+                        include_once('functions/error_functions.php');
+                        trigger_error('Problems automatic deleting sections from query: "' . $updateQuery . '"',E_USER_WARNING);
+                    }
+                }
             }
-         }
-      }
-   }
+        }
+    }
 
 	public function updateIndexedSearch($item) {
 		$indexer = $this->_environment->getSearchIndexer();

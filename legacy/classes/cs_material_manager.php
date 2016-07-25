@@ -538,8 +538,8 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
 
      if ( isset($this->_tag_limit) ) {
         $tag_id_array = $this->_getTagIDArrayByTagIDArray($this->_tag_limit);
-        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'"))) ';
-        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.first_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'") ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.second_item_id='.$this->addDatabasePrefix('materials').'.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'") ';
      }
 
       // restrict materials by buzzword (la4)
@@ -681,6 +681,9 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
       }
 
       if ( isset($this->_tag_limit) ) {
+        $query .= ' AND l41.deletion_date IS NULL ';
+        $query .= ' AND l42.deletion_date IS NULL ';
+
          $tag_id_array = $this->_getTagIDArrayByTagIDArray($this->_tag_limit);
          $id_string = implode(', ',$tag_id_array);
          if( isset($tag_id_array[0]) and $tag_id_array[0] == -1 ){
@@ -724,10 +727,32 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
       // restrict sql-statement by search limit, create wheres
       elseif (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND (';
-         $field_array = array('TRIM(CONCAT(modificator.firstname," ",modificator.lastname))','TRIM(CONCAT(creator.firstname," ",creator.lastname))',$this->addDatabasePrefix('section').'.description',$this->addDatabasePrefix('section').'.title',$this->addDatabasePrefix('materials').'.publishing_date',$this->addDatabasePrefix('materials').'.author',$this->addDatabasePrefix('materials').'.title',$this->addDatabasePrefix('materials').'.description','buzzwords.name',$this->addDatabasePrefix('files').'.filename');
-         $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
-         $query .= $search_limit_query_code;
-         $query .= ' )';
+
+        $fieldArray = array(
+            'TRIM(CONCAT(modificator.firstname," ",modificator.lastname))',
+            'TRIM(CONCAT(creator.firstname," ",creator.lastname))',
+            $this->addDatabasePrefix('materials') . '.publishing_date',
+            $this->addDatabasePrefix('materials') . '.author',
+            $this->addDatabasePrefix('materials') . '.title',
+            $this->addDatabasePrefix('materials') . '.description',
+            'buzzwords.name',
+            $this->addDatabasePrefix('files') . '.filename'
+        );
+
+        $checkedFieldArray = array(
+            'fields' => array(
+                $this->addDatabasePrefix('section') . '.description',
+                $this->addDatabasePrefix('section') . '.title'
+            ),
+            'checks' => array(
+                $this->addDatabasePrefix('section') . '.deleter_id IS NULL',
+                $this->addDatabasePrefix('section') . '.deletion_date IS NULL'
+            )
+        );
+
+        $search_limit_query_code = $this->_generateSearchLimitCode($fieldArray, $checkedFieldArray);
+        $query .= $search_limit_query_code;
+        $query .= ' )';
       }
 
       // init and perform ft search action
@@ -761,9 +786,7 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
          $query .= ' AND lf1.deleter_id IS NULL AND lf1.deletion_date IS NULL';
       }
 
-      if ( ( isset($this->_search_array) AND !empty($this->_search_array) )
-           or ( isset($this->_only_files_limit) and $this->_only_files_limit )
-         ) {
+      if (isset($this->_only_files_limit) && $this->_only_files_limit) {
          $query .= ' AND '.$this->addDatabasePrefix('section').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('section').'.deletion_date IS NULL';
       }
 
@@ -1210,42 +1233,56 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
       return $retour;
    }
 
-   function deleteMaterialsOfUser($uid) {
-   	  // create backup of item
-   	  global $symfonyContainer;
-      $disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
-   	  $this->backupItem($uid, array(	'title'				=>	'title',
-   	  									'description'		=>	'description',
-   	  									'modification_date'	=>	'modification_date',
-   	  									'public'			=>	'public'), array('author', 'publishing_date', 'extras'));
+    function deleteMaterialsOfUser($uid) {
+        global $symfonyContainer;
+        $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
 
-      $current_datetime = getCurrentDateTimeInMySQL();
-      $query  = 'SELECT '.$this->addDatabasePrefix('materials').'.* FROM '.$this->addDatabasePrefix('materials').' WHERE '.$this->addDatabasePrefix('materials').'.creator_id = "'.$uid.'"';
-      $result = $this->_db_connector->performQuery($query);
-      if ( isset($result) ) {
-         foreach ( $result as $rs ) {
-            $insert_query = 'UPDATE '.$this->addDatabasePrefix('materials').' SET';
-			if (!empty($disable_overwrite) and $disable_overwrite == 'flag'){
-                $insert_query .= ' public = "-1",';
-            	$insert_query .= ' modification_date = "'.$current_datetime.'"';
-			}else{
-	            $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-	            $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
-	            $insert_query .= ' author = "",';
-	            $insert_query .= ' publishing_date = "",';
-	            $insert_query .= ' extras = "",';
-	            $insert_query .= ' modification_date = "'.$current_datetime.'",';
-	            $insert_query .= ' public = "1"';
-			}
-			$insert_query .=' WHERE item_id = "'.$rs['item_id'].'"';
-            $result2 = $this->_db_connector->performQuery($insert_query);
-            if ( !isset($result2) or !$result2 ) {
-               include_once('functions/error_functions.php');
-               trigger_error('Problems automatic deleting materials from query: "'.$insert_query.'"',E_USER_WARNING);
+        if ($disableOverwrite !== null && $disableOverwrite !== true) {
+            // create backup of item
+            $this->backupItem($uid, array(
+                'title' => 'title',
+                'description' => 'description',
+                'modification_date' => 'modification_date',
+                'public' => 'public',
+            ), array(
+                'author', 'publishing_date', 'extras'
+            ));
+
+            $currentDatetime = getCurrentDateTimeInMySQL();
+            $query  = 'SELECT ' . $this->addDatabasePrefix('materials').'.* FROM ' . $this->addDatabasePrefix('materials').' WHERE ' . $this->addDatabasePrefix('materials') . '.creator_id = "' . encode(AS_DB,$uid) . '"';
+            $result = $this->_db_connector->performQuery($query);
+
+            if (!empty($result)) {
+                foreach ($result as $rs) {
+                    $updateQuery = 'UPDATE ' . $this->addDatabasePrefix('materials') . ' SET';
+
+                    /* flag */
+                    if ($disableOverwrite === 'flag') {
+                        $updateQuery .= ' public = "-1",';
+                        $updateQuery .= ' modification_date = "' . $currentDatetime . '"';
+                    }
+
+                    /* disabled */
+                    if ($disableOverwrite === false) {
+                        $updateQuery .= ' title = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')) . '",';
+                        $updateQuery .= ' description = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')) . '",';
+                        $updateQuery .= ' modification_date = "' . $currentDatetime . '",';
+                        $updateQuery .= ' author = "",';
+                        $updateQuery .= ' publishing_date = "",';
+                        $updateQuery .= ' extras = "",';
+                        $updateQuery .= ' public = "1"';
+                    }
+
+                    $updateQuery .= ' WHERE item_id = "' . encode(AS_DB,$rs['item_id']) . '"';
+                    $result2 = $this->_db_connector->performQuery($updateQuery);
+                    if (!$result2) {
+                        include_once('functions/error_functions.php');
+                        trigger_error('Problems automatic deleting materials from query: "' . $insert_query . '"', E_USER_WARNING);
+                    }
+                }
             }
-         }
-      }
-   }
+        }
+    }
 
 	public function updateIndexedSearch($item) {
 		$indexer = $this->_environment->getSearchIndexer();

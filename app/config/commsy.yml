@@ -122,6 +122,17 @@ commsy:
     themes:
         # Default theme
         default: 'default'
+        cs-date-color-no-color: ''
+        cs-date-color-01: '#999999;'
+        cs-date-color-02: '#CC0000;'
+        cs-date-color-03: '#FF6600;'
+        cs-date-color-04: '#FFCC00;'
+        cs-date-color-05: '#FFFF66;'
+        cs-date-color-06: '#33CC00;'
+        cs-date-color-07: '#00CCCC;'
+        cs-date-color-08: '#3366FF;'
+        cs-date-color-09: '#6633FF;'
+        cs-date-color-10: '#CC33CC;'
 
     # Wordpress
     wordpress:
@@ -140,9 +151,9 @@ commsy:
         api_url: '%extensions.etherpad.api_url%'
         base_url: '%extensions.etherpad.base_url%'
         
-        # Limesurvey
+    # mediawiki
     mediawiki:
-        # set the following variable to activate limesurvey extension
+        # set the following variable to activate mediawiki extension
         enabled: true
         url: http://127.0.0.1:8080
         apiPath: /w/api.php

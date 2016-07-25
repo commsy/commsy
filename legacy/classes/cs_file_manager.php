@@ -235,6 +235,7 @@ class cs_file_manager extends cs_manager implements cs_export_import_interface {
                 ' creation_date="'.getCurrentDateTimeInMySQL().'", '.
                 ' creator_id="'.encode(AS_DB,$current_user->getItemID()).'", '.
                 ' filename="'.encode(AS_DB,$file_item->getFileName()).'", ' .
+                ' filepath="'.encode(AS_DB,$file_item->getFilePath()).'", ' .
                 ' scan="'.encode(AS_DB,$file_item->getScanValue()).'", ';
       $has_html = $file_item->getHasHTML();
       if ( !empty($has_html) ) {
@@ -338,7 +339,7 @@ class cs_file_manager extends cs_manager implements cs_export_import_interface {
    }
 
    function _performQuery ($count = false) {
-      $query  = 'SELECT  '.$this->addDatabasePrefix('files').'.files_id, '.$this->addDatabasePrefix('files').'.creator_id, '.$this->addDatabasePrefix('files').'.deleter_id, '.$this->addDatabasePrefix('files').'.creation_date, '.$this->addDatabasePrefix('files').'.modification_date, '.$this->addDatabasePrefix('files').'.deletion_date, '.$this->addDatabasePrefix('files').'.filename, '.$this->addDatabasePrefix('files').'.context_id, '.$this->addDatabasePrefix('files').'.size, '.$this->addDatabasePrefix('files').'.has_html, '.$this->addDatabasePrefix('files').'.scan, '.$this->addDatabasePrefix('files').'.extras';
+      $query  = 'SELECT  '.$this->addDatabasePrefix('files').'.files_id, '.$this->addDatabasePrefix('files').'.creator_id, '.$this->addDatabasePrefix('files').'.deleter_id, '.$this->addDatabasePrefix('files').'.creation_date, '.$this->addDatabasePrefix('files').'.modification_date, '.$this->addDatabasePrefix('files').'.deletion_date, '.$this->addDatabasePrefix('files').'.filename, '.$this->addDatabasePrefix('files').'.filepath, '.$this->addDatabasePrefix('files').'.context_id, '.$this->addDatabasePrefix('files').'.size, '.$this->addDatabasePrefix('files').'.has_html, '.$this->addDatabasePrefix('files').'.scan, '.$this->addDatabasePrefix('files').'.extras';
       $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
       $query .= ' WHERE 1';
 
@@ -891,6 +892,7 @@ class cs_file_manager extends cs_manager implements cs_export_import_interface {
       $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
       $xml->addChildWithCDATA('deletion_date', $item->getDeletionDate());
       $xml->addChildWithCDATA('filename', $item->getFileName());
+      $xml->addChildWithCDATA('filepath', $item->getFilePath());
       $xml->addChildWithCDATA('size', $item->getFileSize());
       $xml->addChildWithCDATA('has_html', $item->getHasHTML());
       $xml->addChildWithCDATA('scan', $item->isScanned());
@@ -914,6 +916,7 @@ class cs_file_manager extends cs_manager implements cs_export_import_interface {
          $item = $this->getNewItem();
          $item->setContextId($top_item->getContextId());
          $item->setFileName((string)$xml->filename[0]);
+         $item->setFilePath((string)$xml->filepath[0]);
          $item->setHasHTML((string)$xml->has_html[0]);
          $item->setScanned((string)$xml->scan[0]);
          $extra_array = $this->getXMLAsArray($xml->extras);

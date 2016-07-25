@@ -33,13 +33,13 @@ class UserTransformer implements DataTransformerInterface
                 $userData['autoSaveStatus'] = true;
             }
             $userData['title'] = $userItem->getTitle();
-            $userData['dateOfBirth'] = $userItem->getBirthday();
+            $userData['dateOfBirth'] = new \DateTime($userItem->getBirthday());
             $userData['email'] = $userItem->getEmail();
-            $userData['isEmailVisible'] = $userItem->isEmailVisible();
+            $userData['hideEmailInThisRoom'] = $userItem->isEmailVisible();
             $userData['phone'] = $userItem->getTelephone();
             $userData['mobile'] = $userItem->getCellularphone();
             $userData['street'] = $userItem->getStreet();
-            $userData['zipcode'] = $userItem->getZipcode();
+            $userData['zipCode'] = $userItem->getZipcode();
             $userData['city'] = $userItem->getCity();
             $userData['room'] = $userItem->getRoom();
             $userData['organisation'] = $userItem->getOrganisation();
@@ -51,6 +51,7 @@ class UserTransformer implements DataTransformerInterface
             $userData['jabber'] = $userItem->getJabber();
             $userData['homepage'] = $userItem->getHomepage();
             $userData['description'] = $userItem->getDescription();
+            $userData['language'] = $userItem->getLanguage();
         }
         return $userData;
     }
@@ -76,9 +77,9 @@ class UserTransformer implements DataTransformerInterface
                 $userObject->turnAutoSaveOff();
             }
             $userObject->setTitle($userData['title']);
-            $userObject->setBirthday($userData['dateOfBirth']);
+            $userObject->setBirthday($userData['dateOfBirth']->format('Y-m-d'));
             $userObject->setEmail($userData['email']);
-            if ($userData['isEmailVisible']) {
+            if ($userData['hideEmailInThisRoom']) {
                 $userObject->setEmailVisible();
             } else {
                 $userObject->setEmailNotVisible();
@@ -86,7 +87,7 @@ class UserTransformer implements DataTransformerInterface
             $userObject->setTelephone($userData['phone']);
             $userObject->setCellularphone($userData['mobile']);
             $userObject->setStreet($userData['street']);
-            $userObject->setZipcode($userData['zipcode']);
+            $userObject->setZipcode($userData['zipCode']);
             $userObject->setCity($userData['city']);
             $userObject->setRoom($userData['room']);
             $userObject->setOrganisation($userData['organisation']);
@@ -98,6 +99,7 @@ class UserTransformer implements DataTransformerInterface
             $userObject->setJabber($userData['jabber']);
             $userObject->setHomepage($userData['homepage']);
             $userObject->setDescription($userData['description']);
+            $userObject->setLanguage($userData['language']);
         }
         return $userObject;
     }

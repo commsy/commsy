@@ -12,7 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use CommsyBundle\Form\Type\Custom\DateTimeSelectType;
 
-use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
+use CommsyBundle\Form\Type\Event\AddRecurringFieldListener;
 
 class DateDetailsType extends AbstractType
 {
@@ -27,7 +27,7 @@ class DateDetailsType extends AbstractType
                     'placeholder' => 'startdate',
                     'class' => 'uk-form-width-medium',
                 ),
-                'translation_domain' => 'material'
+                'translation_domain' => 'date'
             ))
             ->add('end', DateTimeSelectType::class, array(
                 'constraints' => array(
@@ -37,34 +37,101 @@ class DateDetailsType extends AbstractType
                     'placeholder' => 'enddate',
                     'class' => 'uk-form-width-medium',
                 ),
-                'translation_domain' => 'material',
+                'translation_domain' => 'date',
             ))
             ->add('place', TextType::class, array(
-                'constraints' => array(
-                ),
                 'label' => 'place',
                 'attr' => array(
                     'placeholder' => 'place',
                     'class' => 'uk-form-width-medium',
                 ),
-                'translation_domain' => 'material',
+                'translation_domain' => 'date',
+                'required' => false,
             ))
-            ->add('save', SubmitType::class, array(
-                'attr' => array(
-                    'class' => 'uk-button-primary',
+            ->add('color', ChoiceType::class, array(
+                'placeholder' => false,
+                'choices' => array(
+                    'cs-date-color-no-color' => 'cs-date-color-no-color',
+                    'cs-date-color-01' => 'cs-date-color-01',
+                    'cs-date-color-02' => 'cs-date-color-02',
+                    'cs-date-color-03' => 'cs-date-color-03',
+                    'cs-date-color-04' => 'cs-date-color-04',
+                    'cs-date-color-05' => 'cs-date-color-05',
+                    'cs-date-color-06' => 'cs-date-color-06',
+                    'cs-date-color-07' => 'cs-date-color-07',
+                    'cs-date-color-08' => 'cs-date-color-08',
+                    'cs-date-color-09' => 'cs-date-color-09',
+                    'cs-date-color-10' => 'cs-date-color-10',
                 ),
-                'label' => 'save',
-                'translation_domain' => 'form',
-            ))
-            ->add('cancel', SubmitType::class, array(
-                'attr' => array(
-                    'class' => 'uk-button-primary',
-                    'formnovalidate' => '',
-                ),
-                'label' => 'cancel',
-                'translation_domain' => 'form',
+                'label' => 'color',
+                'translation_domain' => 'date',
+                'required' => false,
+                'expanded' => true,
+                'multiple' => false
             ))
         ;
+            
+        if (!isset($options['attr']['unsetRecurrence'])) {
+            $builder
+                ->add('recurring_select', ChoiceType::class, array(
+                    'choices'  => array(
+                        'RecurringDailyType' => 'RecurringDailyType',
+                        'RecurringWeeklyType' => 'RecurringWeeklyType',
+                        'RecurringMonthlyType' => 'RecurringMonthlyType',
+                        'RecurringYearlyType' => 'RecurringYearlyType',
+                    ),
+                    'label' => 'recurring date',
+                    'choice_translation_domain' => true,
+                    'required' => false,
+                    'translation_domain' => 'date'
+                ))
+                ->addEventSubscriber(new AddRecurringFieldListener())
+            ;
+            $builder
+                ->add('save', SubmitType::class, array(
+                    'attr' => array(
+                        'class' => 'uk-button-primary',
+                    ),
+                    'label' => 'save',
+                    'translation_domain' => 'form',
+                ))
+                ->add('cancel', SubmitType::class, array(
+                    'attr' => array(
+                        'class' => 'uk-button-primary',
+                        'formnovalidate' => '',
+                    ),
+                    'label' => 'cancel',
+                    'translation_domain' => 'form',
+                ))
+            ;
+        } else {
+            $builder
+                ->add('saveThisDate', SubmitType::class, array(
+                    'attr' => array(
+                        'class' => 'uk-button-primary',
+                    ),
+                    'label' => 'saveThisDate',
+                    'translation_domain' => 'date',
+                ))
+                ->add('saveAllDates', SubmitType::class, array(
+                    'attr' => array(
+                        'class' => 'uk-button-primary',
+                    ),
+                    'label' => 'saveAllDates',
+                    'translation_domain' => 'date',
+                ))
+                ->add('cancel', SubmitType::class, array(
+                    'attr' => array(
+                        'class' => 'uk-button-primary',
+                        'formnovalidate' => '',
+                    ),
+                    'label' => 'cancel',
+                    'translation_domain' => 'form',
+                ))
+            ;
+        }
+            
+        
         
     }
 

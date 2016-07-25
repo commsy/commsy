@@ -1,6 +1,7 @@
 fos_elastica:
     clients:
         default: { host: %elastic_host%, port: %elastic_port% }
+
     indexes:
         commsy:
             client: default
@@ -24,15 +25,262 @@ fos_elastica:
                                 - autocomplete_filter
 
             types:
+                # Announcements
+                announcement:
+                    indexable_callback: isIndexable
+                    mappings:
+                        contextId:
+                            type: integer
+                        creator:
+                            type: object
+                            properties:
+                                userId: ~
+                                firstName: ~
+                                lastName: ~
+                        modifier:
+                            type: object
+                            properties:
+                                userId: ~
+                                firstName: ~
+                                lastName: ~
+
+                        creationDate:
+                            type: date
+                            format: date_optional_time
+                        title:
+                            type: string
+                            analyzer: autocomplete
+                            search_analyzer: standard
+                        description: ~
+                        endDate:
+                            type: date
+                            format: date_optional_time
+                        files:
+                            type: 'nested'
+                            properties:
+                                filename: ~
+                    persistence:
+                        driver: orm
+                        model: CommsyBundle\Entity\Announcement
+                        identifier: itemId
+                        finder: ~
+                        provider: ~
+                        listener: ~
+
+                # dates
+                date:
+                    indexable_callback: isIndexable
+                    mappings:
+                        contextId:
+                            type: integer
+                        creator:
+                            type: object
+                            properties:
+                                userId: ~
+                                firstName: ~
+                                lastName: ~
+                        modifier:
+                            type: object
+                            properties:
+                                userId: ~
+                                firstName: ~
+                                lastName: ~
+                        creationDate:
+                            type: date
+                            format: date_optional_time
+                        title:
+                            type: string
+                            analyzer: autocomplete
+                            search_analyzer: standard
+                        description: ~
+                        datetimeStart:
+                            type: date
+                            format: date_optional_time
+                        datetimeEnd:
+                            type: date
+                            format: date_optional_time
+                        files:
+                            type: 'nested'
+                            properties:
+                                filename: ~
+                    persistence:
+                        driver: orm
+                        model: CommsyBundle\Entity\Dates
+                        identifier: itemId
+                        finder: ~
+                        provider: ~
+                        listener: ~
+
+                # discussions:
+                discussion:
+                    indexable_callback: isIndexable
+                    mappings:
+                        contextId:
+                            type: integer
+                        creator:
+                            type: object
+                            properties:
+                                userId: ~
+                                firstName: ~
+                                lastName: ~
+                        modifier:
+                            type: object
+                            properties:
+                                userId: ~
+                                firstName: ~
+                                lastName: ~
+                        creationDate:
+                            type: date
+                            format: date_optional_time
+                        title:
+                            type: string
+                            analyzer: autocomplete
+                            search_analyzer: standard
+                        discussionarticles:
+                            type: 'nested'
+                            properties:
+                                subject: ~
+                                description: ~
+                                files:
+                                    type: 'nested'
+                                    properties:
+                                        filename: ~
+                        files:
+                            type: 'nested'
+                            properties:
+                                filename: ~
+                    persistence:
+                        driver: orm
+                        model: CommsyBundle\Entity\Discussions
+                        identifier: itemId
+                        finder: ~
+                        provider: ~
+                        listener: ~
+
+
+                # labels: (groups, topics, institutions)
+                labels:
+                    indexable_callback: isIndexable
+                    mappings:
+                        contextId:
+                            type: integer
+                        creator:
+                            type: object
+                            properties:
+                                userId: ~
+                                firstName: ~
+                                lastName: ~
+                        modifier:
+                            type: object
+                            properties:
+                                userId: ~
+                                firstName: ~
+                                lastName: ~
+                        creationDate:
+                            type: date
+                            format: date_optional_time
+                        name: ~
+                        type: ~
+                    persistence:
+                        driver: orm
+                        model: CommsyBundle\Entity\Labels
+                        identifier: itemId
+                        finder: ~
+                        provider: ~
+                        listener: ~
+
+                # room:
+                room:
+                    indexable_callback: isIndexable
+                    mappings:
+                        contextId:
+                            type: integer
+                        creator:
+                            type: object
+                            properties:
+                                userId: ~
+                                firstName: ~
+                                lastName: ~
+                        modifier:
+                            type: object
+                            properties:
+                                userId: ~
+                                firstName: ~
+                                lastName: ~
+                        title:
+                            type: string
+                            analyzer: autocomplete
+                            search_analyzer: standard
+                        contactPersons: ~
+                        roomDescription: ~
+                        type: ~
+                    persistence:
+                        driver: orm
+                        model: CommsyBundle\Entity\Room
+                        identifier: itemId
+                        finder: ~
+                        provider: ~
+                        listener: ~
+
+
+                # todos:
+                todo:
+                    indexable_callback: isIndexable
+                    mappings:
+                        contextId:
+                            type: integer
+                        creator:
+                            type: object
+                            properties:
+                                userId: ~
+                                firstName: ~
+                                lastName: ~
+                        modifier:
+                            type: object
+                            properties:
+                                userId: ~
+                                firstName: ~
+                                lastName: ~
+                        title:
+                            type: string
+                            analyzer: autocomplete
+                            search_analyzer: standard
+                        date:
+                            type: date
+                            format: date_optional_time
+                        description: ~
+                        steps:
+                            type: 'nested'
+                            properties:
+                                title: ~
+                                description: ~
+                                files:
+                                    type: 'nested'
+                                    properties:
+                                        filename: ~
+                        files:
+                            type: 'nested'
+                            properties:
+                                filename: ~
+                    persistence:
+                        driver: orm
+                        model: CommsyBundle\Entity\Todos
+                        identifier: itemId
+                        finder: ~
+                        provider: ~
+                        listener: ~
+
+
+                
+                # User
                 user:
-                    indexable_callback: 'isIndexable'
+                    indexable_callback: isIndexable
                     mappings:
                         userId: ~
-                        contextId: ~
-                        status: ~
-                        firstname: ~
-                        lastname: ~
-                        city: ~
+                        contextId:
+                            type: integer
+                        firstName: ~
+                        lastName: ~
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\User
@@ -41,11 +289,14 @@ fos_elastica:
                         provider: ~
                         listener: ~
 
+                # materials:
                 material:
                     indexable_callback: 'isIndexable'
                     mappings:
-                        versionId: ~
-                        contextId: ~
+                        versionId:
+                            type: integer
+                        contextId:
+                            type: integer
                         title:
                             type: string
                             analyzer: autocomplete
@@ -56,6 +307,10 @@ fos_elastica:
                             properties:
                                 title: ~
                                 description: ~
+                                files:
+                                    type: 'nested'
+                                    properties:
+                                        filename: ~
                         creator:
                             type: 'object'
                             properties:
@@ -72,41 +327,16 @@ fos_elastica:
                                 firstname: ~
                                 lastname: ~
                                 city: ~
+                        files:
+                            type: 'nested'
+                            properties:
+                                filename: ~
+                                content:
+                                    type: attachment
+
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Materials
-                        identifier: itemId
-                        finder: ~
-                        provider: ~
-                        listener: ~
-                announcement:
-                    indexable_callback: 'isIndexable'
-                    mappings:
-                        contextId: ~
-                        title:
-                            type: string
-                            analyzer: autocomplete
-                            search_analyzer: standard
-                        description: ~
-                        creator:
-                            type: 'object'
-                            properties:
-                                userId: ~
-                                status: ~
-                                firstname: ~
-                                lastname: ~
-                                city: ~
-                        modifier:
-                            type: 'object'
-                            properties:
-                                userId: ~
-                                status: ~
-                                firstname: ~
-                                lastname: ~
-                                city: ~
-                    persistence:
-                        driver: orm
-                        model: CommsyBundle\Entity\Announcement
                         identifier: itemId
                         finder: ~
                         provider: ~

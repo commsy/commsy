@@ -71,7 +71,6 @@
 }
 
 ul#commsy_fields {
-    margin-top: 30px;
     border-top: 1px solid #34394A;
     list-style-type: none;
     overflow: hidden;
@@ -129,27 +128,8 @@ ul#switch_room li.sub_menue:hover {
     box-shadow: inset -10px 0px 5px 0px rgba(0,0,0,0.3);    
 }
 
-ul#switch_room li ul {
-    visibility: hidden;
-    position: absolute;
-    z-index: 598;
-    width: 100%;
-    background-color: #FF404B;
-    list-style-type: none;
-}
-
 ul#switch_room li:hover ul {
-    left: 200px;
-    top: -40px;
-    display: block;
     visibility: visible;
-    background-color: #2B2F3E;
-    min-width: 250%;
-    max-width: 400%;
-    border-top: 1px solid #34394A;
-    height:400px;
-    overflow-y:auto;
-    overflow-x:hidden;
 }
 
 ul#switch_room li:hover > ul {
@@ -173,38 +153,46 @@ ul#switch_room li ul li a:hover {
     box-shadow: inset -10px 0px 5px 0px rgba(0,0,0,0.3);    
 }
 
-.cs-menue-padding{
+.cs-menue-padding {
     padding: 0px 10px 0px 0px;
 }
 
 .cs-roomlist {
-    height: 100%; 
     overflow:auto;
     padding-left:0px !important;
+
+    left: 200px;
+    top: -40px;
+    display: block;
+    min-width: 250%;
+    max-width: 400%;
+    border-top: 1px solid #34394A;
+    height:400px;
+    overflow-y:auto;
+    overflow-x:hidden;
+
+    visibility: hidden;
+    position: absolute;
+    z-index: 598;
+    width: 100%;
+    background-color: #2B2F3E;
+    list-style-type: none;
 }
 
-.cs-room-block{
-    white-space:normal;
-    height: 60px;
-    overflow:hidden;
-}
-
-.cs-room-dashboard{
+.cs-room-dashboard {
     white-space:normal;
     height: 40px;
     overflow:hidden;
 }
 
-.cs-room-search{
+.cs-room-search {
     white-space:normal;
     padding: 5px 20px;
     display: block;
     color: #FFF;
     text-decoration: none;
     border-bottom: 1px solid #34394A;
-    overflow:hidden;
 }
-
 
 .cs-roomsearch-field {
     background: rgba(255, 255, 255, 1) none repeat scroll 0 0;
@@ -218,17 +206,15 @@ ul#switch_room li ul li a:hover {
     padding: 0 0 0 30px;
     transition: all 0.2s linear 0s;
     vertical-align: middle;   
-    width: 440px;
+    width: 450px !important;
 }
 
-.cs-roomsearch-field:fokus {
-    width: 440px;
-}
-
-.cs-room-block p{
-    font-weight:normal;   
-    text-transform: none;
-    margin: 0px;
+#cs-room-dropdown {
+    margin-top: 10px;
+    background: transparent;
+    width: 435px;
+    padding: 0;
+    display: block;
 }
 
 // Profile

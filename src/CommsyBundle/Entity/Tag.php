@@ -78,5 +78,206 @@ class Tag
     private $title;
 
 
-}
 
+    /**
+     * Get itemId
+     *
+     * @return integer
+     */
+    public function getItemId()
+    {
+        return $this->itemId;
+    }
+
+    /**
+     * Set contextId
+     *
+     * @param integer $contextId
+     *
+     * @return Tag
+     */
+    public function setContextId($contextId)
+    {
+        $this->contextId = $contextId;
+
+        return $this;
+    }
+
+    /**
+     * Get contextId
+     *
+     * @return integer
+     */
+    public function getContextId()
+    {
+        return $this->contextId;
+    }
+
+    /**
+     * Set creatorId
+     *
+     * @param integer $creatorId
+     *
+     * @return Tag
+     */
+    public function setCreatorId($creatorId)
+    {
+        $this->creatorId = $creatorId;
+
+        return $this;
+    }
+
+    /**
+     * Get creatorId
+     *
+     * @return integer
+     */
+    public function getCreatorId()
+    {
+        return $this->creatorId;
+    }
+
+    /**
+     * Set modifierId
+     *
+     * @param integer $modifierId
+     *
+     * @return Tag
+     */
+    public function setModifierId($modifierId)
+    {
+        $this->modifierId = $modifierId;
+
+        return $this;
+    }
+
+    /**
+     * Get modifierId
+     *
+     * @return integer
+     */
+    public function getModifierId()
+    {
+        return $this->modifierId;
+    }
+
+    /**
+     * Set deleterId
+     *
+     * @param integer $deleterId
+     *
+     * @return Tag
+     */
+    public function setDeleterId($deleterId)
+    {
+        $this->deleterId = $deleterId;
+
+        return $this;
+    }
+
+    /**
+     * Get deleterId
+     *
+     * @return integer
+     */
+    public function getDeleterId()
+    {
+        return $this->deleterId;
+    }
+
+    /**
+     * Set creationDate
+     *
+     * @param \DateTime $creationDate
+     *
+     * @return Tag
+     */
+    public function setCreationDate($creationDate)
+    {
+        $this->creationDate = $creationDate;
+
+        return $this;
+    }
+
+    /**
+     * Get creationDate
+     *
+     * @return \DateTime
+     */
+    public function getCreationDate()
+    {
+        return $this->creationDate;
+    }
+
+    /**
+     * Set modificationDate
+     *
+     * @param \DateTime $modificationDate
+     *
+     * @return Tag
+     */
+    public function setModificationDate($modificationDate)
+    {
+        $this->modificationDate = $modificationDate;
+
+        return $this;
+    }
+
+    /**
+     * Get modificationDate
+     *
+     * @return \DateTime
+     */
+    public function getModificationDate()
+    {
+        return $this->modificationDate;
+    }
+
+    /**
+     * Set deletionDate
+     *
+     * @param \DateTime $deletionDate
+     *
+     * @return Tag
+     */
+    public function setDeletionDate($deletionDate)
+    {
+        $this->deletionDate = $deletionDate;
+
+        return $this;
+    }
+
+    /**
+     * Get deletionDate
+     *
+     * @return \DateTime
+     */
+    public function getDeletionDate()
+    {
+        return $this->deletionDate;
+    }
+
+    /**
+     * Set title
+     *
+     * @param string $title
+     *
+     * @return Tag
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+}

@@ -1,11 +1,3 @@
-etherpad:
-    resource: "@EtherpadBundle/Resources/config/routing.yml"
-
-commsy_mediawiki:
-    resource: "@CommsyMediawikiBundle/Controller/"
-    type:     annotation
-    prefix:   /
-
 commsy_legacy:
     resource: "@CommsyLegacyBundle/Controller/"
     type:     annotation

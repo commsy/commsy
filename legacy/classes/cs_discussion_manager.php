@@ -662,36 +662,49 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
       return $retour;
    }
 
-   function deleteDiscussionsOfUser($uid) {
-        // create backup of item
-   	  global $symfonyContainer;
-      $disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
-      $this->backupItem($uid, array(	'title'				=>	'title',
-                                   'modification_date'	=>	'modification_date',
-                                   'public'			=>	'public'));
+    function deleteDiscussionsOfUser($uid) {
+        global $symfonyContainer;
+        $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
 
-      $current_datetime = getCurrentDateTimeInMySQL();
-      $query  = 'SELECT '.$this->addDatabasePrefix('discussions').'.* FROM '.$this->addDatabasePrefix('discussions').' WHERE '.$this->addDatabasePrefix('discussions').'.creator_id = "'.encode(AS_DB,$uid).'"';
-      $result = $this->_db_connector->performQuery($query);
-      if ( !empty($result) ) {
-         foreach ($result as $rs) {
-            $insert_query = 'UPDATE '.$this->addDatabasePrefix('discussions').' SET';
-			if (!empty($disable_overwrite) and $disable_overwrite == 'flag'){
-            	$insert_query .= ' modification_date = "'.$current_datetime.'",';
-                $insert_query .= ' public = "-1"';
-			}else{
-	            $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-	            $insert_query .= ' modification_date = "'.$current_datetime.'",';
-	            $insert_query .= ' public = "1"';
-			}
-            $insert_query .=' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
-            $result2 = $this->_db_connector->performQuery($insert_query);
-            if ( !isset($result2) or !$result2 ) {
-               include_once('functions/error_functions.php');trigger_error('Problems automatic deleting discussions.',E_USER_WARNING);
+        if ($disableOverwrite !== null && $disableOverwrite !== true) {
+            // create backup of item
+            $this->backupItem($uid, array(
+                'title' => 'title',
+                'public' => 'public',
+                'modification_date' => 'modification_date',
+            ));
+
+            $currentDatetime = getCurrentDateTimeInMySQL();
+            $query  = 'SELECT ' . $this->addDatabasePrefix('discussions').'.* FROM ' . $this->addDatabasePrefix('discussions').' WHERE ' . $this->addDatabasePrefix('discussions') . '.creator_id = "' . encode(AS_DB,$uid) . '"';
+            $result = $this->_db_connector->performQuery($query);
+
+            if (!empty($result)) {
+                foreach ($result as $rs) {
+                    $updateQuery = 'UPDATE ' . $this->addDatabasePrefix('discussions') . ' SET';
+
+                    /* flag */
+                    if ($disableOverwrite === 'flag') {
+                        $updateQuery .= ' public = "-1",';
+                        $updateQuery .= ' modification_date = "' . $currentDatetime . '"';
+                    }
+
+                    /* disabled */
+                    if ($disableOverwrite === false) {
+                        $updateQuery .= ' title = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')) . '",';
+                        $updateQuery .= ' modification_date = "' . $currentDatetime . '",';
+                        $updateQuery .= ' public = "1"';
+                    }
+
+                    $updateQuery .= ' WHERE item_id = "' . encode(AS_DB,$rs['item_id']) . '"';
+                    $result2 = $this->_db_connector->performQuery($updateQuery);
+                    if (!$result2) {
+                        include_once('functions/error_functions.php');
+                        trigger_error('Problems automatic deleting discussions.', E_USER_WARNING);
+                    }
+                }
             }
-         }
-      }
-   }
+        }
+    }
 
 	public function updateIndexedSearch($item) {
 		$indexer = $this->_environment->getSearchIndexer();

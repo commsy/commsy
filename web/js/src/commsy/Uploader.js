@@ -1,7 +1,6 @@
 define([	"dojo/_base/declare",
         	"commsy/base",
         	"dojo/_base/lang",
-        	"dojo/i18n!commsy/nls/tooltipErrors",
         	"dojo/_base/array",
         	"dojox/embed/Flash",
         	"dojox/form/Uploader",
@@ -19,7 +18,7 @@ define([	"dojo/_base/declare",
         	"dojo/_base/connect",
         	"dojo/has",
         	"dojo/sniff",
-        	"commsy/sniff"], function(declare, BaseClass, Lang, ErrorTranslations, arrayUtil, Flash, Uploader, ProgressBar, Dialog, FileList, DomConstruct, Timing, DomAttr, Tooltip, ErrorTranslations, On, Button, Query, connect, has) {
+        	"commsy/sniff"], function(declare, BaseClass, Lang, arrayUtil, Flash, Uploader, ProgressBar, Dialog, FileList, DomConstruct, Timing, DomAttr, Tooltip, ErrorTranslations, On, Button, Query, connect, has) {
 	return declare(BaseClass, {
 		uploader:		null,
 		loadingImgNode:	null,

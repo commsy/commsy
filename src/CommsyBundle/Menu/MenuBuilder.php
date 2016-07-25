@@ -52,21 +52,18 @@ class MenuBuilder
 
         if ($currentUser->getItemId() != '') {
 
-            $menu->addChild('profileImage', array(
+            $menu->addChild('profileImage', [
                 'label' => $currentUser->getFullname(),
-                // 'route' => 'commsy_user_detail',
                 'route' => 'commsy_profile_room',
-                'routeParameters' => array('roomId' => $currentStack->attributes->get('roomId'), 'itemId' => $currentUser->getItemId()),
-                'extras' => array(
-                    'user' => $currentUser
-                )
-            ));
+                'routeParameters' => [
+                    'roomId' => $currentStack->attributes->get('roomId'),
+                    'itemId' => $currentUser->getItemId(),
+                ],
+                'extras' => [
+                    'user' => $currentUser,
+                ]
+            ]);
         }
-
-        // profile configuration
-        // if ($currentUser->getItemId() != '') {
-        //     $menu->addChild('profileConfig', array(
-        //         'label' => ' ',
 
         return $menu;
     }
@@ -87,7 +84,7 @@ class MenuBuilder
         $roomId = $currentStack->attributes->get('roomId');
 
         if ($roomId) {
-               // room navigation
+                // room navigation
                 $menu->addChild('room_navigation', array(
                     'label' => 'Raum-Navigation',
                     'route' => 'commsy_room_home',
@@ -196,16 +193,7 @@ class MenuBuilder
             $this->legacyEnvironment->setCurrentPortalID($authSource->getContextId());
             $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
             $privateRoom = $privateRoomManager->getRelatedOwnRoomForUser($user, $this->legacyEnvironment->getCurrentPortalID());
-            // $current_user = $this->userService->getUser($user->getUserID());
             $current_user = $this->legacyEnvironment->getCurrentUserItem();
-
-            
-/*            $menu->addChild('dashboard', array(
-                'label' => 'DASHBOARD',
-                'route' => 'commsy_dashboard_index',
-                'routeParameters' => array('roomId' => $privateRoom->getItemId()),
-                'extras' => array('icon' => 'uk-icon-dashboard uk-icon-small')
-            ));*/
 
             if ($roomId != $privateRoom->getItemId()) {
                 // rubric room information
@@ -308,6 +296,12 @@ class MenuBuilder
             case 'topic':
                 $class = "uk-icon-justify uk-icon-book uk-icon-small";
                 break;
+            case 'project':
+                $class = "uk-icon-justify uk-icon-sitemap uk-icon-small";
+                break;
+            case 'institution':
+                $class = "uk-icon-justify uk-icon-institution uk-icon-small";
+                break;
             
             default:
                 $class = "uk-icon-justify uk-icon-home uk-icon-small";
@@ -348,23 +342,40 @@ class MenuBuilder
             $roomItem = $this->roomService->getRoomItem($roomId);
     
             if ($roomItem) {
-                // get route information
-                $route = explode('_', $currentStack->attributes->get('_route'));
-                
-                // room
+                // home
                 $menu->addChild($roomItem->getTitle(), array(
                     'route' => 'commsy_room_home',
                     'routeParameters' => array('roomId' => $roomId)
                 ));
-        
-                if ($route[1] && $route[1] != "room" && $route[1] != "dashboard" && $route[2] != "search") {
+
+                // get route information
+                $route = explode('_', $currentStack->attributes->get('_route'));
+
+                if (isset($route[1]) && !in_array($route[1], ['room', 'dashboard', 'search', 'hashtag', 'category'])) {
+
                     // rubric
-                    $menu->addChild($route[1], array(
-                        'route' => 'commsy_'.$route[1].'_'.'list',
-                        'routeParameters' => array('roomId' => $roomId)
-                    ));
+                    $tempRoute = 'commsy_'.$route[1].'_'.'list';
+                    $changeRubrikcLinkForDate = false;
+                    if ($route[1] == 'date') {
+                        $room = $this->roomService->getRoomItem($roomId);
+                        if ($room->getDatesPresentationStatus() != 'normal') {
+                            $tempRoute = 'commsy_date_calendar';
+                            if (!$itemId) {
+                                $changeRubrikcLinkForDate = true;
+                            }
+                        }
+                    }
+                    
+                    if (!$changeRubrikcLinkForDate) {
+                        $menu->addChild($route[1], array(
+                            'route' => $tempRoute,
+                            'routeParameters' => array('roomId' => $roomId)
+                        ));
+                    } else {
+                        $menu->addChild($route[1]);
+                    }
         
-                    if ($route[2] != "list") {
+                    if (isset($route[2]) && $route[2] != "list") {
                         // item
                         if ($itemId) {
                             $itemService = $this->legacyEnvironment->getItemManager();

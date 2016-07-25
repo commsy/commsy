@@ -122,10 +122,53 @@ class Announcement
      */
     private $lockingUserId;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="Files")
+     * @ORM\JoinTable(name="item_link_file",
+     *      joinColumns={@ORM\JoinColumn(name="item_iid", referencedColumnName="item_id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="file_id", referencedColumnName="files_id", unique=true)}
+     *  )
+     */
+    private $files;
 
-    public function isIndexable()
+
+    public function __construct()
     {
-        return ($this->deleter == null && $this->deletionDate == null);
+        $this->files = new ArrayCollection();
+    }
+
+    /**
+     * Add file
+     *
+     * @param \CommsyBundle\Entity\File $file
+     *
+     * @return Materials
+     */
+    public function addFile(\CommsyBundle\Entity\Files $file)
+    {
+        $this->files[] = $file;
+
+        return $this;
+    }
+
+    /**
+     * Remove file
+     *
+     * @param \CommsyBundle\Entity\File $file
+     */
+    public function removeFile(\CommsyBundle\Entity\Files $file)
+    {
+        $this->files->removeElement($file);
+    }
+
+    /**
+     * Get files
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFiles()
+    {
+        return $this->files;
     }
 
     /**
@@ -163,20 +206,6 @@ class Announcement
     }
 
     /**
-     * Set creationDate
-     *
-     * @param \DateTime $creationDate
-     *
-     * @return Announcement
-     */
-    public function setCreationDate($creationDate)
-    {
-        $this->creationDate = $creationDate;
-
-        return $this;
-    }
-
-    /**
      * Get creationDate
      *
      * @return \DateTime
@@ -186,12 +215,33 @@ class Announcement
         return $this->creationDate;
     }
 
+
+    /**
+     * Set deletionDate
+     *
+     * @param \DateTime $deletionDate
+     *
+     * @return Announcement
+     */
+    public function setDeletionDate($deletionDate)
+    {
+        $this->deletionDate = $deletionDate;
+
+        return $this;
+    }
+
+    public function isIndexable()
+    {
+        return ($this->deleter == null && $this->deletionDate == null);
+    }
+
+
     /**
      * Set modificationDate
      *
      * @param \DateTime $modificationDate
      *
-     * @return Announcement
+     * @return Materials
      */
     public function setModificationDate($modificationDate)
     {
@@ -208,20 +258,6 @@ class Announcement
     public function getModificationDate()
     {
         return $this->modificationDate;
-    }
-
-    /**
-     * Set deletionDate
-     *
-     * @param \DateTime $deletionDate
-     *
-     * @return Announcement
-     */
-    public function setDeletionDate($deletionDate)
-    {
-        $this->deletionDate = $deletionDate;
-
-        return $this;
     }
 
     /**

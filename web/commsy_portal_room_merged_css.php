@@ -38,14 +38,15 @@ $color = $cs_color['DEFAULT'];
 if (!empty($_GET['cid'])) {
     $cid = $_GET['cid'];
 
-    $loader = require_once __DIR__.'/../app/bootstrap.php.cache';
+    $loader = require __DIR__.'/../app/autoload.php';
+    include_once __DIR__.'/../var/bootstrap.php.cache';
 
-    require_once __DIR__.'/../app/AppKernel.php';
-
-    $kernel = new AppKernel('prod', true);
+    $kernel = new AppKernel('prod', false);
     $kernel->loadClassCache();
+
     $request = Request::createFromGlobals();
     $response = $kernel->handle($request);
+    //$response->send();
 
     $container = $kernel->getContainer();
     $environment = $container->get('commsy_legacy.environment')->getEnvironment();
@@ -53,7 +54,7 @@ if (!empty($_GET['cid'])) {
     $room = $environment->getCurrentContextItem();
     $color = $room->getColorArray();
 
-    $kernel->terminate($request, $response);
+    //$kernel->terminate($request, $response);
 
     header('Content-type: text/css', true);
 }

@@ -25,10 +25,6 @@
                 {% endblock %}
             </div>
 
-            {% block roomlist %}
-            {% endblock %}
-
-
             {% block side_navigation %}
             {% endblock %}
 
@@ -40,30 +36,19 @@
                 <!-- right -->
                 <div class="uk-navbar-flip">
                     <div class="uk-navbar-content">
-                        <form class="uk-search" data-uk-search="{source:'{{ path('commsy_search_quick', {'roomId': app.request.attributes.get('roomId') }) }}'}">
-                            <input class="uk-search-field" type="search" placeholder="Suche...">
-
-                            <!-- This is the dropdown, which is injected through JavaScript -->
-                            <div class="uk-dropdown uk-dropdown-search">
-                                <ul class="uk-nav uk-nav-search">...</ul>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="uk-navbar-content">
-                        <ul class="uk-navbar-nav">
-                            <li>
-                                <a href="#"><i class="uk-icon-bell-o"></i></a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    <i class="uk-icon-copy"></i>
-                                    <small id="cs-nav-copy-indicator"></small>
-                                </a>
-                            </li>
-                        </ul>
+                        {# global search #}
+                        {{ render(controller(
+                            'CommsyBundle:Search:searchForm',
+                            { 'roomId': app.request.attributes.get('roomId') }
+                        ))}}
                     </div>
                     
+                    {# global actions #}
+                    {{ render(controller(
+                        'CommsyBundle:User:globalNavbar',
+                        { 'roomId': app.request.attributes.get('roomId') }
+                    ))}}
+
                     {% block additionalNavbarContent %}
                     {% endblock %}
 
@@ -78,14 +63,58 @@
                 
                 <!-- toggle -->
                 <a href="" class="uk-navbar-toggle uk-visible-small"></a>
+                
+                <ul class="uk-navbar-nav">
 
-                <div class="uk-navbar-brand cs-padding-5">
-                    {% block roomTitle %}
-                        <a href="{{ path('commsy_room_home', {'roomId': app.request.attributes.get('roomId') }) }}">
-                            {{ app.request.attributes.get('roomId')|roomTitle }}
+                    <li data-uk-dropdown="{mode:'click'}" data-commsy-room-navigation="{
+                        source:'{{ path('commsy_search_roomnavigation', {'roomId': app.request.attributes.get('roomId') }) }}',
+                        minLength: 0
+                    }">
+                        <a class="cs-link-highlight">
+                            {% block roomTitle %}
+                                {{ app.request.attributes.get('roomId')|roomTitle }}
+                            {% endblock %}
+                            <i class="uk-icon-chevron-down"></i>
                         </a>
-                    {% endblock %}
-                </div>
+
+                        <!-- This is the dropdown -->
+                        <div class="uk-dropdown uk-dropdown-scrollable uk-dropdown-width-2" style="height: 200px;">
+                            
+                            <a class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom" href="{{ path('commsy_room_listall', {'roomId': app.request.attributes.get('roomId') }) }}">
+                                {{ 'All rooms'|trans([], 'room') }}
+                            </a>
+
+                            <div class="uk-form">
+                                <input class="uk-width-1-1" type="text" placeholder="{{ 'room search text'|trans({}, "rubric")}}">
+                                <script type="text/autocomplete">
+                                    {%- verbatim -%}
+                                    <ul class="uk-nav uk-nav-autocomplete uk-autocomplete-results">
+                                        {{#items && items.length}}
+                                            {{~items}}
+                                            <li data-url="{{!$item.url}}">
+                                                <a>
+                                                    {{ $item.title }}
+                                                    <div>{{ $item.text }}</div>
+                                                </a>
+                                            </li>
+                                            {{/items}}
+                                        {{/end}}
+                                        {{^items.length}}
+                                            {{#msgNoResults}}<li class="uk-skip"><a>{{msgNoResults}}</a></li>{{/msgNoResults}}
+                                        {{/end}}
+                                    </ul>
+                                    {%- endverbatim -%}
+                                </script>
+                            </div>
+
+                            <div class="loading uk-text-center uk-margin-small-top uk-container-center">
+                                <i class="uk-icon-spinner uk-icon-small uk-icon-spin"></i>
+                            </div>
+
+                        </div>
+                    </li>
+                </ul>
+                
             </nav>
 
             <!-- breadcrumb -->

@@ -2927,6 +2927,48 @@
 //       $xml = $this->_encode_output($xml);
 //       return $xml;
 //    }
+
+//    public function getAnnouncementsinRange($sessionId, $contextId, $validTimestamp) {
+//       include_once('functions/development_functions.php');
+//       if($this->_isSessionValid($sessionId)) {
+//          $validDate = date("Y-m-d H:i:s", $validTimestamp);
+
+//          $announcementManager = $this->_environment->getAnnouncementManager();
+//          $announcementManager->setContextLimit($contextId);
+//          $announcementManager->showNoNotActivatedEntries();
+//          $announcementManager->setDateLimit($validDate);
+
+//          $announcementManager->select();
+//          $announcementList = $announcementManager->get();
+//          $xml = "<announcements_list>\n";
+//          $announcementItem = $announcementList->getFirst();
+
+//          while ($announcementItem) {
+//             $xml .= "<announcement_item>\n";
+
+//             $xml .= "<announcement_id><![CDATA[".$announcementItem->getItemID()."]]></announcement_id>\n";
+
+//             $tempTitle = $announcementItem->getTitle();
+//             $tempTitle = $this->prepareText($tempTitle);
+//             $xml .= "<announcement_title><![CDATA[".$tempTitle."]]></announcement_title>\n";
+
+//             $tempDescription = $announcementItem->getDescription();
+//             $tempDescription = $this->prepareText($tempDescription);
+//             $xml .= "<announcement_description><![CDATA[".$tempDescription."]]></announcement_description>\n";
+
+//             $xml .= "<announcement_ending_date><![CDATA[".$announcementItem->getSecondDateTime()."]]></announcement_ending_date>\n";
+
+//             $xml .= "</announcement_item>\n";
+
+//             $announcementItem = $announcementList->getNext();
+//          }
+
+//          $xml .= "</announcements_list>";
+//          $xml = $this->_encode_output($xml);
+
+//          return $xml;
+//       }
+//    }
    
 //    // Dates
    
@@ -2977,6 +3019,53 @@
 //          $xml .= "</dates_list>";
 //          #debugToFile($xml);
 //          $xml = $this->_encode_output($xml);
+//          return $xml;
+//       }
+//    }
+
+//    public function getDatesInRange($sessionId, $contextId, $startTimestamp, $endTimestamp) {
+//       include_once('functions/development_functions.php');
+//       if($this->_isSessionValid($sessionId)) {
+//          $startDate = date("Y-m-d H:i:s", $startTimestamp);
+//          $endDate = date("Y-m-d H:i:s", $endTimestamp);
+
+//          $datesManager = $this->_environment->getDatesManager();
+//          $datesManager->setContextLimit($contextId);
+//          $datesManager->showNoNotActivatedEntries();
+//          $datesManager->setDateModeLimit(2);
+//          $datesManager->setBetweenLimit($startDate, $endDate);
+
+//          $datesManager->select();
+//          $datesList = $datesManager->get();
+//          $xml = "<dates_list>\n";
+//          $dateItem = $datesList->getFirst();
+
+//          while ($dateItem) {
+//             $xml .= "<date_item>\n";
+
+//             $xml .= "<date_id><![CDATA[".$dateItem->getItemID()."]]></date_id>\n";
+
+//             $tempTitle = $dateItem->getTitle();
+//             $tempTitle = $this->prepareText($tempTitle);
+//             $xml .= "<date_title><![CDATA[".$tempTitle."]]></date_title>\n";
+
+//             $tempDescription = $dateItem->getDescription();
+//             $tempDescription = $this->prepareText($tempDescription);
+//             $xml .= "<date_description><![CDATA[".$tempDescription."]]></date_description>\n";
+
+//             $xml .= "<date_place><![CDATA[".$dateItem->getPlace()."]]></date_place>\n";
+
+//             $xml .= "<date_starting_date><![CDATA[".$dateItem->getDateTime_start()."]]></date_starting_date>\n";
+//             $xml .= "<date_ending_date><![CDATA[".$dateItem->getDateTime_end()."]]></date_ending_date>\n";
+
+//             $xml .= "</date_item>\n";
+
+//             $dateItem = $datesList->getNext();
+//          }
+
+//          $xml .= "</dates_list>";
+//          $xml = $this->_encode_output($xml);
+
 //          return $xml;
 //       }
 //    }
@@ -4945,6 +5034,12 @@
 //                      $specialSessionItem->setValue('commsy_id', $this->_environment->getCurrentPortalID());
 //                   }
 
+//                   // if ( isset($_SERVER["SERVER_ADDR"]) and !empty($_SERVER["SERVER_ADDR"])) {
+//                   //    $new_special_session_item->setValue('password_forget_ip',$_SERVER["SERVER_ADDR"]);
+//                   // } else {
+//                   //    $new_special_session_item->setValue('password_forget_ip',$_SERVER["HTTP_HOST"]);
+//                   // }
+
 //                   include_once('functions/date_functions.php');
 //                   $specialSessionItem->setValue('passwort_forget_time', getCurrentDateTimeInMySQL());
 //                   $specialSessionItem->setValue('javascript', -1);
@@ -5269,8 +5364,10 @@
 //             include_once('classes/cs_mail.php');
 //             $mail = new cs_mail();
 //             $mail->set_to(implode(',', $emailAddresses));
-//             $mail->set_from_email($userItem->getEmail());
-//             $mail->set_from_name($userItem->getFullname());
+//             //$mail->set_from_email($userItem->getEmail());
+//             //$mail->set_from_name($userItem->getFullname());
+//             $mail->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
+//             $mail->set_from_name($this->_environment->getCurrentPortalItem()->getTitle());
 //             $mail->set_reply_to_name($userItem->getFullname());
 //             $mail->set_reply_to_email($userItem->getEmail());
 //             $mail->set_subject($subject);
@@ -5378,6 +5475,7 @@
 //                      ($templateAvailability == "1" && $roomItem->mayEnter($userItem)) ||
 //                      ($templateAvailability == "2" && $roomItem->mayEnter($userItem) && ($roomItem->isModeratorByUserID($userItem->getUserID(), $userItem->getAuthSource())))) {
 //                   if ($roomItem->getItemID() != $defaultTemplateId || $roomItem->getTemplateAvailability() != "0") {
+//                      //$this->_with_template_form_element2 = true;
 //                      $templateArray[] = array(
 //                         "text"      => $roomItem->getTitle(),
 //                         "value"     => $roomItem->getItemID()
@@ -5391,6 +5489,7 @@
 //                      ($templateAvailability == "1" && $roomItem->mayEnter($userItem)) ||
 //                      ($templateAvailability == "2" && $roomItem->mayEnter($userItem) && ($roomItem->isModeratorByUserID($userItem->getUserID(), $userItem->getAuthSource())))) {
 //                   if ($roomItem->getItemID() != $defaultTemplateId || $roomItem->getTemplateAvailability() != "0") {
+//                      //$this->_with_template_form_element3 = true;
 //                      $templateArray[] = array(
 //                         "text"      => $roomItem->getTitle(),
 //                         "value"     => $roomItem->getItemID()
@@ -5476,7 +5575,22 @@
 //             $xml .= "<title><![CDATA[" . $translator->getMessage('COMMON_TIME_NAME') . "]]></title>\n";
 
 //             $currentTimeTitle = $portalItem->getTitleOfCurrentTime();
+
+//             // if (isset($this->_item)) {
+//             //     $time_list = $this->_item->getTimeList();
+//             //     if ($time_list->isNotEmpty()) {
+//             //        $time_item = $time_list->getFirst();
+//             //        $linked_time_title = $time_item->getTitle();
+//             //     }
+//             // }
+//             // if ( !empty($linked_time_title)
+//             //      and $linked_time_title < $current_time_title
+//             //        ) {
+//             //         $start_time_title = $linked_time_title;
+//             // } else {
+//             //         $start_time_title = $current_time_title;
 //             $startTimeTitle = $currentTimeTitle;
+//             // }
             
 //             $timeList = $portalItem->getTimeList();
 //             if ($timeList->isNotEmpty()) {
@@ -5538,6 +5652,37 @@
 //          }
 
 //          $xml .= "</community_rooms>\n";
+
+
+
+
+// /*if ( isset($this->_item)
+//            and $this->_item->isProjectRoom()
+//          ) {
+   
+//    $community_room_list = $this->_item->getCommunityList();
+//    if ($community_room_list->getCount() > 0) {
+//       $community_room_item = $community_room_list->getFirst();
+//       while ($community_room_item) {
+//          $temp_array['text'] = $community_room_item->getTitle();
+//          $temp_array['value'] = $community_room_item->getItemID();
+//          $community_room_array[] = $temp_array;
+//          $community_room_item = $community_room_list->getNext();
+//       }
+//    }
+// }
+// $this->_shown_community_room_array = $community_room_array;
+
+
+
+// */
+
+
+
+
+
+
+
 //          $xml .= "</config>";
 //          $xml = $this->_encode_output($xml);
 //       } else {
@@ -5739,6 +5884,7 @@
 //          }
          
 //          $xml .= "<room>\n";
+//          $xml .= "<id><![CDATA[" . $item->getItemId() . "]]></id>\n";
 //          $xml .= "</room>";
 
 //          $xml = $this->_encode_output($xml);
@@ -5823,4 +5969,3 @@
 //       return $xml;
 //    }
 // }
-// ?>

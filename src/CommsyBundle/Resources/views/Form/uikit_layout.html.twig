@@ -75,3 +75,12 @@
 {% block treechoice_widget %}
     {{ _self.nestedChoiceTree(form, form.vars.choices) }}
 {% endblock treechoice_widget %}
+
+{% block date_time_widget %}
+   {% for child in form %}
+        <div style="float:left;">
+            {{ form_widget(child) }}
+        </div>
+    {% endfor %}
+    <div style="clear:both"></div>
+{% endblock %}

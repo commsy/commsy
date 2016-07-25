@@ -346,7 +346,7 @@
 
                 {# preview #}
                 <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-preview">
-                    {{ content|raw }}
+                    {{ content|commsyMarkup|raw }}
                 </div>
 
                 <a class="uk-invisible" href="#" data-cs-unhide-collapsed="{src: '.toggle-{{ title }}-{{ item.itemId }}'}" data-cs-readmore>

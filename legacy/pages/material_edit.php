@@ -676,8 +676,10 @@ else {
                         include_once('classes/cs_mail.php');
                         $mail = new cs_mail();
                         $sender = $material_item->getModificatorItem();
-                        $mail->set_from_name($sender->getFullName());
-                        $mail->set_from_email($sender->getEMail());
+                        //$mail->set_from_name($sender->getFullName());
+                        //$mail->set_from_email($sender->getEMail());
+                        $mail->set_from_email($environment->getServerItem()->getDefaultSenderAddress());
+                        $mail->set_from_name($environment->getCurrentPortalItem()->getTitle());
                         $mail->set_reply_to_name($sender->getFullName());
                         $mail->set_reply_to_email($sender->getEMail());
                         $mail->set_to($moderator->getEMail());

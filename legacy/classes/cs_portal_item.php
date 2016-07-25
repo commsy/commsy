@@ -1067,8 +1067,10 @@ class cs_portal_item extends cs_guide_item {
    				}
    				$mod_contact_list = $this->getContactModeratorList();
    				$mod_user_first = $mod_contact_list->getFirst();
-   				$mail->set_from_email($mod_user_first->getEmail());
-   				$mail->set_from_name($mod_user_first->getFullname());
+   				//$mail->set_from_email($mod_user_first->getEmail());
+   				//$mail->set_from_name($mod_user_first->getFullname());
+   				$mail->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
+                $mail->set_from_name($this->_environment->getCurrentPortalItem()->getTitle());
    				
    				// $mail->set_cc_to($mod_user_first->getEmail());
    				$mail->set_cc_to($this->_environment->getRootUserItem()->getEmail());
@@ -3431,6 +3433,22 @@ class cs_portal_item extends cs_guide_item {
    		}
    	}
    	return $retour;
+   }
+
+   public function setInactivityConfigDate()
+   {
+        // set inactivity configuration date
+        $this->_addExtra('INACTIVITY_CONFIGURATION_DATE', getCurrentDateTimeInMySQL());
+   }
+
+   public function getInactivityConfigDate()
+   {
+        // get inactivity configuration date
+        $retour = 0;
+        if ($this->_issetExtra('INACTIVITY_CONFIGURATION_DATE')) {
+            $retour = $this->_getExtra('INACTIVITY_CONFIGURATION_DATE');
+        }
+        return $retour;
    }
    
    public function unsetInactivityOverwriteContent(){

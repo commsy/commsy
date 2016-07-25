@@ -18,4 +18,25 @@ class LabelRepository extends EntityRepository
 
         return $query->getResult();
     }
+
+    public function findLabelsByContextIdAndNameAndType($contextId, $name, $type)
+    {
+        $qb = $this->createQueryBuilder('l');
+
+        return $qb
+            ->where($qb->expr()->andX(
+                $qb->expr()->eq('l.contextId', ':contextId'),
+                $qb->expr()->eq('l.name', ':name'),
+                $qb->expr()->eq('l.type', ':type'),
+                $qb->expr()->isNull('l.deletionDate'),
+                $qb->expr()->isNull('l.deleter')
+            ))
+            ->setParameters([
+                'contextId' => $contextId,
+                'name' => $name,
+                'type' => $type,
+            ])
+            ->getQuery()
+            ->getResult();
+    }
 }

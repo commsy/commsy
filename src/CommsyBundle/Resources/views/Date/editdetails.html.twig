@@ -1,4 +1,5 @@
-{% form_theme form 'CommsyBundle:Form:uikit_stacked_layout.html.twig' %}
+{% form_theme form 'CommsyBundle:Form:uikit_stacked_layout_date.html.twig' %}
+{% import 'CommsyBundle:Date:macros.html.twig' as macrosDate %}
 
 <hr class="uk-width-9-10  cs-detail-divider"/>
 <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
@@ -6,7 +7,7 @@
     <div class="uk-grid uk-margin-small-bottom">
         <div class="uk-width-9-10">
             <h4 class="cs-detail-section-header">
-                <span class="cs-detail-section-header-background">{{ 'edit info'|trans({},'form')}}
+                <span class="cs-detail-section-header-background">{{ 'edit info'|trans({},'date')}}
                  </span>
             </h4>
         </div>
@@ -18,7 +19,7 @@
     <div class="uk-form-horizontal">
         {{ form_start(form) }}
         {{ form_errors(form) }}
-        <div class="uk-flex uk-flex-column">
+        <div class="">
             <div class="">
                 {{ form_label(form.start) }}
                 {{ form_widget(form.start) }}
@@ -31,16 +32,143 @@
                 {{ form_label(form.place) }}
                 {{ form_widget(form.place) }}
             </div>
+            <div class="uk-margin-top uk-margin-bottom">
+                {{ form_label(form.color) }}
+                {% for tempColor in form.color.iterator %}
+                    <span class="{{ tempColor.vars['value'] }}">
+                    {% if tempColor.vars['value'] == 'cs-date-color-no-color' %}
+                        <i class="uk-icon-medium uk-icon-circle-thin"></i>
+                    {% else %}
+                        <i class="uk-icon-medium uk-icon-circle"></i>
+                    {% endif %}
+                    </span><span class="uk-margin-small-left uk-margin-right">{{ form_widget(tempColor) }}</span>
+                {% endfor %}
+            </div>
+            
+            {% if form.recurring_select is defined %}
+            <div class="uk-flex uk-margin-small-top">
+                <div>
+                    {{ form_label(form.recurring_select) }}
+                    {{ form_widget(form.recurring_select) }}
+                </div>
+            </div>
+            {% else %}
+            <div class="uk-margin-top uk-margin-bottom">
+                <label class="uk-form-label">{{ 'recurring date'|trans({}, 'date') }}</label>
+                <div class="uk-form-controls">
+                    {{ macrosDate.recurringDateDescription(date) }} <i>({{ 'recurring date no chance hint'|trans({}, 'date') }})</i>
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if form.recurring_sub is defined %}
+            <div class="uk-flex uk-margin-small-top">
+                <div id="date_recurring_sub">
+                    {% if form.recurring_sub.recurrenceDay is defined %}
+                        <div class="uk-flex uk-margin-small-top">
+                            <div>
+                                {{ 'every'|trans({}, 'date') }}{{ form_widget(form.recurring_sub.recurrenceDay) }}.{{ 'day'|trans({}, 'date') }}
+                            </div>
+                            <div class="uk-margin-left">
+                                {{ 'repeat until'|trans({}, 'date') }}{{ form_widget(form.recurring_sub.untilDate) }}
+                            </div>
+                        </div>
+                    {% elseif form.recurring_sub.recurrenceWeek is defined and form.recurring_sub.recurrenceDaysOfWeek is defined %}
+                        <div class="uk-flex uk-margin-small-top">
+                            <div>
+                                {{ 'every'|trans({}, 'date') }}{{ form_widget(form.recurring_sub.recurrenceWeek) }}.{{ 'week'|trans({}, 'date') }}
+                            </div>
+                            <div class="uk-margin-left">
+                                {{ 'every'|trans({}, 'week') }}{{ form_widget(form.recurring_sub.recurrenceDaysOfWeek) }}
+                            </div>
+                            <div class="uk-margin-left">
+                                {{ 'repeat until'|trans({}, 'date') }}{{ form_widget(form.recurring_sub.untilDate) }}
+                            </div>
+                        </div>
+                    {% elseif form.recurring_sub.recurrenceMonth is defined and form.recurring_sub.recurrenceDayOfMonthInterval is defined  and form.recurring_sub.recurrenceDayOfMonth is defined %}
+                        <div class="uk-flex uk-margin-small-top">
+                            <div>
+                                {{ 'every'|trans({}, 'date') }}{{ form_widget(form.recurring_sub.recurrenceMonth) }}.{{ 'month'|trans({}, 'date') }}
+                            </div>
+                            <div class="uk-margin-left">
+                                {{ 'every'|trans({}, 'week') }}{{ form_widget(form.recurring_sub.recurrenceDayOfMonthInterval) }}{{ form_widget(form.recurring_sub.recurrenceDayOfMonth) }}
+                            </div>
+                            <div class="uk-margin-left">
+                                {{ 'repeat until'|trans({}, 'date') }}{{ form_widget(form.recurring_sub.untilDate) }}
+                            </div>
+                        </div>
+                    {% elseif form.recurring_sub.recurrenceDayOfMonth is defined and form.recurring_sub.recurrenceMonthOfYear is defined  %}
+                        <div class="uk-flex uk-margin-small-top">
+                            <div>
+                                {{ 'every'|trans({}, 'date') }}{{ form_widget(form.recurring_sub.recurrenceDayOfMonth) }}{{ form_widget(form.recurring_sub.recurrenceMonthOfYear) }}
+                            </div>
+                            <div class="uk-margin-left">
+                                {{ 'repeat until'|trans({}, 'date') }}{{ form_widget(form.recurring_sub.untilDate) }}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            
         </div>
         <div class="uk-flex uk-margin-small-top">
+            {% if form.recurring_select is defined %}
             <div class="uk-margin-small-left">
                 {{ form_row(form.save) }}
             </div>
+            {% else %}
+            <div class="uk-margin-small-left">
+                {{ form_row(form.saveThisDate) }}
+            </div>
+            <div class="uk-margin-small-left">
+                {{ form_row(form.saveAllDates) }}
+            </div>
+            {% endif %}
             <div class="uk-margin-small-left">
                 {{ form_row(form.cancel) }}
             </div>
         </div>
+        {{ form_row(form._token) }}
+        {{ form_rest(form) }}
         {{ form_end(form) }}
     </div>
 </div>
 
+<script>
+var $recurring = $('#date_recurring_select');
+// When sport gets selected ...
+$recurring.change(function() {
+    // ... retrieve the corresponding form.
+    var $form = $(this).closest('form');
+    // Simulate form data, but only include the selected sport value.
+    var data = {};
+
+    data[$(this).attr('name')] = $(this).val();
+    // Submit data via AJAX to the form's action path.
+    $.ajax({
+        url : $form.attr('action'),
+        type: $form.attr('method'),
+        data : data,
+        success: function(html) {
+            // Replace current position field ...
+            // add field
+            if (!$('#date_recurring_sub').length) {
+                $('#date_recurring_select').after(
+                // ... with the returned one from the AJAX response.
+                $(html).find('#date_recurring_sub')
+                // html
+                );
+            } else {
+                $('#date_recurring_sub').replaceWith(
+                // ... with the returned one from the AJAX response.
+                $(html).find('#date_recurring_sub')
+                // html
+                );
+            }
+            // console.log(html);
+            // Position field now displays the appropriate positions.
+        }
+    });
+});
+</script>

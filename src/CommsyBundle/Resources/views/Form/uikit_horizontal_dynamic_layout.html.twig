@@ -31,7 +31,9 @@
 
         <hr class="cs-list-divider"/>
         <h4 class="cs-list-section-header">
-            <span class="cs-detail-section-header-background">{{ 'hashtags'|trans({}, "room") }} 
+            <span class="cs-detail-section-header-background">
+                {{ 'hashtags'|trans({}, "room") }}
+                <a href="{{ path('commsy_hashtag_edit', {'roomId': app.request.attributes.get('roomId') }) }}"><i class="uk-icon-edit"></i></a>
             </span>
         </h4>
 
@@ -55,7 +57,12 @@
     <div id="room-category">
         <hr class="cs-list-divider"/>
         <h4 class="cs-list-section-header">
-            <span class="cs-detail-section-header-background">{{ 'categories'|trans({}, "room") }} 
+            <span class="cs-detail-section-header-background">
+                {{ 'categories'|trans({}, "room") }} 
+
+                {% if is_granted('CATEGORY_EDIT') %}
+                    <a href="{{ path('commsy_category_edit', {'roomId': app.request.attributes.get('roomId') }) }}"><i class="uk-icon-edit"></i></a>
+                {% endif %}
             </span>
         </h4>
 

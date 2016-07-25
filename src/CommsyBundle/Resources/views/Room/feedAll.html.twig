@@ -1,0 +1,51 @@
+{% import _self as macros %}
+    
+{% macro activityBar(activity, maxActivity) %}
+    {% set percentage = 0 %}
+
+    {% if maxActivity > 0 %}
+        {% set divisor = maxActivity / 20 %}
+
+        {% set percentage = (activity / divisor + 1)|log %}
+
+        {% if percentage < 0 %}
+           {% set percentage = 0 %}
+        {% endif %}
+
+        {% set max = (maxActivity / divisor + 1)|log %}
+
+        {% set percentage = (percentage / max) * 100 %}
+    {% endif %}
+
+    <div class="uk-progress uk-progress-small">
+        <div class="uk-progress-bar" style="width: {{ percentage|round(2) }}%;"></div>
+    </div>
+{% endmacro %}
+
+{% for room in rooms %}
+    <article class="uk-comment">
+ 
+        <header class="uk-comment-header uk-flex">
+            {# title and meta #}
+            <div class="uk-width-6-10">
+                <h4 class="uk-comment-title">
+                    <a href="{{ path('commsy_room_home', {'roomId': room.itemId}) }}">{{ room.title }}</a>
+                </h4>
+
+                <div class="uk-comment-meta">
+                    {% if room.contactPersons is not empty %}
+                        {{ room.contactPersons }}
+                    {% else %}
+                        {{ room.getContactModeratorListString }}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="uk-width-4-10">
+                {{ macros.activityBar(room.activity, portal.maxRoomActivityPoints) }}
+            </div>
+        </header>
+    </article>
+{% else %}
+    {{ 'No more results found'|trans}}
+{% endfor %}
