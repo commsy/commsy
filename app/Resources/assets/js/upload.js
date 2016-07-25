@@ -52,7 +52,6 @@
             previewImage.attr("src", result);
             $('#general_settings_room_image_room_image_data').val(result);
             /* 
-            alert('image loading complete; size: ' + (result.length/1000) + ' KB');
             $("#imageInfo").empty().append('<li>Name: '
                 +f.name+'</li><li>Type: '
                 +f.type+'</li><li>Size: '
