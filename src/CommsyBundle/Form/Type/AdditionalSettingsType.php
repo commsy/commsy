@@ -46,7 +46,7 @@ class AdditionalSettingsType extends AbstractType
     {
         $builder
             ->add(
-                $builder->create('structural_auxilaries', FormType::class, array())
+                $builder->create('structural_auxilaries', FormType::class, array('required' => false))
                 ->add(
                     $builder->create('buzzwords', FormType::class, array())
                     ->add('activate', CheckboxType::class, array(
@@ -125,6 +125,7 @@ class AdditionalSettingsType extends AbstractType
                         'Yes' => 'yes',
                         'No' => 'no',
                     ),
+                    'data' => 'no',
                 ))
                 ->add('language', ChoiceType::class, array(
                     'required' => true,

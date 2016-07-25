@@ -33,7 +33,7 @@ class AppearanceSettingsTransformer implements DataTransformerInterface
     }
 
     /**
-     * Save appearance settings
+     * Augment given object "roomObject" with given array "roomData" and return the room object.
      *
      * @param object $roomObject
      * @param array $roomData

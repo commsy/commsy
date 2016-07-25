@@ -175,6 +175,7 @@
             <trans-unit id="workspacemodsonly">
                 <source>Workspace mods only</source>
                 <target>Workspace moderators only</target>
+            </trans-unit>
             <trans-unit id="activate">
                 <source>Activate</source>
                 <target>activate</target>
@@ -244,6 +245,32 @@
            <trans-unit id="Theme">
                 <source>theme</source>
                 <target>Theme</target>
+            </trans-unit>
+
+            <!-- Moderation settings -->
+            <trans-unit id="contentid">
+                <source>Content ID</source>
+                <target>content ID:</target>
+            </trans-unit>
+            <trans-unit id="arrayrubric">
+                <source>Array info text rubric</source>
+                <target>Rubric:</target>
+            </trans-unit>
+            <trans-unit id="arrayrubricmail">
+                <source>Array mail text rubric</source>
+                <target>Edit e-mail texts:</target>
+            </trans-unit> 
+            <trans-unit id="donotshow">
+                <source>Do not show</source>
+                <target>Do not show</target>
+            </trans-unit>
+            <trans-unit id="mailbodyde">
+                <source>body_de</source>
+                <target>Body (German):</target>
+            </trans-unit>
+            <trans-unit id="mailbodyen">
+                <source>body_en</source>
+                <target>Body (English):</target>
             </trans-unit>
         </body>
     </file>

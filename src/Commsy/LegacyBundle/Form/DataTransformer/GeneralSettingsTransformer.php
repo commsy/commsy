@@ -52,8 +52,6 @@ class GeneralSettingsTransformer implements DataTransformerInterface
 		    $roomData['room_image_repeat_x'] = $roomItem->issetBGImageRepeat();
 
             $roomData['room_description'] = $roomItem->getDescription();
-            
-            $roomData['wikiEnabled'] = $roomItem->isWikiEnabled();
 
             $rubrics = array_combine($defaultRubrics, array_fill(0, count($defaultRubrics), 'off'));
             foreach ($this->roomService->getRubricInformation($roomItem->getItemID(), true) as $rubric) {

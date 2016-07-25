@@ -55,7 +55,6 @@ class AppearanceSettingsType extends AbstractType
             ))
             ->add('save', SubmitType::class, array(
                 'position' => 'last',
-                'label' => 'save',
             ))
         ;
     }

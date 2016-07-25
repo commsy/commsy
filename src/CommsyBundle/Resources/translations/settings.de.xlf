@@ -246,6 +246,32 @@
                 <source>theme</source>
                 <target>Theme</target>
             </trans-unit>
-       </body>
+
+            <!-- Moderation settings -->
+            <trans-unit id="contentid">
+                <source>Content ID</source>
+                <target>Referenznummer:</target>
+            </trans-unit>
+            <trans-unit id="arrayrubric">
+                <source>Array info text rubric</source>
+                <target>Rubrik:</target>
+            </trans-unit>
+            <trans-unit id="arrayrubricmail">
+                <source>Array mail text rubric</source>
+                <target>E-Mail-Texte:</target>
+            </trans-unit>            
+            <trans-unit id="donotshow">
+                <source>Do not show</source>
+                <target>ausblenden</target>
+            </trans-unit>
+            <trans-unit id="mailbodyde">
+                <source>body_de</source>
+                <target>Inhalt (Deutsch):</target>
+            </trans-unit>
+            <trans-unit id="mailbodyen">
+                <source>body_en</source>
+                <target>Inhalt (Englisch):</target>
+            </trans-unit>
+        </body>
     </file>
 </xliff>

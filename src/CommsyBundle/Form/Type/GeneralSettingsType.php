@@ -92,6 +92,7 @@ class GeneralSettingsType extends AbstractType
                 ))
             )
             ->add('access_check', ChoiceType::class, array(
+                'required' => false,
                 'choices' => array(
                     'Never' => 'never',
                     'Always' => 'always',
@@ -108,10 +109,8 @@ class GeneralSettingsType extends AbstractType
                 ),
                 'required' => false,
             ))
-            ->add('save', SubmitType::class, array(
-                'position' => 'last',
-    	    ))
             ->add('rubrics', CollectionType::class, array(
+                'required' => false,
                 'entry_type' => ChoiceType::class,
                 'entry_options' => array(
                     'choices' => array(
@@ -119,9 +118,6 @@ class GeneralSettingsType extends AbstractType
                         'Hide' => 'hide',
                         'Off' => 'off',
                     ),
-                    // for radio buttons:
-                    //'expanded' => true,
-                    //'multiple' => false,
                     'attr' => array(
                         'class' => 'uk-panel-box',
                     ),
@@ -130,6 +126,9 @@ class GeneralSettingsType extends AbstractType
                     'class' => 'uk-sortable',
                     'data-uk-sortable' => '',
                 ),
+            ))
+            ->add('save', SubmitType::class, array(
+                'position' => 'last',
             ))
         ;
 

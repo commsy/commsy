@@ -37,4 +37,67 @@
 
         </div>
     </div>
+    <script>
+    // hello = 2
+    // ciao = 3
+    var settings_page = 'moderation_settings';
+    var subForm = 'email_configuration';
+    var subFormName = settings_page + "_" + subForm;
+    var emailConfiguration = document.getElementById(subFormName);
+    var emailTemplateSelection = document.getElementById(subFormName + '_array_mail_text_rubric');
+
+    // FIXME: not safe! Should use key instead of index! (cant guarantee that this specific form will always have index 1!)
+    var form = document.forms[1];
+
+    //var editors = emailConfiguration.getElementsByClassName('cke');
+
+    //var germanEditor = editors[0];
+    //var englishEditor = editors[1];
+
+    var germanEditor = document.getElementById('moderation_settings_email_configuration_moderation_mail_body_de');
+    var englishEditor = document.getElementById('moderation_settings_email_configuration_moderation_mail_body_en');
+
+    var editors = [germanEditor, englishEditor];
+
+   // HTML5 alternative to "keyup" event: "input" event
+    germanEditor.onkeyup = function(e){  
+        var fieldName = settings_page + "[" + subForm + "][" + emailTemplateSelection.value.toLowerCase() + "_de]";
+        form.elements[fieldName].value = germanEditor.value;
+    }
+
+    englishEditor.onkeyup = function(e){     
+        var fieldName = settings_page + "[" + subForm + "][" + emailTemplateSelection.value.toLowerCase() + "_en]";
+        form.elements[fieldName].value = englishEditor.value;
+    }
+
+    emailTemplateSelection.onchange=function(e){
+
+        var templateOption = emailTemplateSelection.value;
+        console.debug("email template selected:" + emailTemplateSelection.value);
+
+        if(templateOption.substring(0, 4) === 'MAIL'){
+            var fieldName = (settings_page + "[" + subForm + "][" + templateOption).toLowerCase();
+            
+            germanEditor.value = form.elements[fieldName + "_de]"].value;
+            englishEditor.value = form.elements[fieldName + "_en]"].value;
+
+            germanEditor.parentNode.parentNode.style.display = '';
+            englishEditor.parentNode.parentNode.style.display = '';
+        }
+        else{
+            germanEditor.parentNode.parentNode.style.display = 'none';
+            englishEditor.parentNode.parentNode.style.display = 'none';
+        }
+        //var isChecked = checkbox.checked;
+        //var showHide = isChecked ?"":"none";
+    };
+    document.onready=function(){
+        var ckeEditors = document.getElementsByClassName('cke');
+        console.debug("ckeEditors: ");
+        console.debug(ckeEditors);
+        for(i = 0; i < ckeEditors.length; i++){
+            ckeEditors[i].className += " uk-form-controls";
+        }
+    }
+    </script>
 {% endblock content %}
