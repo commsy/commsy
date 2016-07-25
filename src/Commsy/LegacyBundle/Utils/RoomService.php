@@ -100,6 +100,6 @@ class RoomService
     public function getRoomFileDirectory($roomId)
     {
         $roomDir = implode( "/", array_filter(explode("\r\n", chunk_split(strval($roomId), "4")), 'strlen') );
-        return $this->legacyEnvironment->getCurrentPortalItem()->getItemID() . "/" . $roomDir . "_";
+        return $this->legacyEnvironment->getCurrentPortalID() . "/" . $roomDir . "_";
     }
 }

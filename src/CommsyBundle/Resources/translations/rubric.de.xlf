@@ -189,6 +189,7 @@
             <trans-unit id="rubrics">
                 <source>Rubrics</source>
                 <target>Rubriken</target>
+            </trans-unit>
             <trans-unit id="project">
                 <source>project</source>
                 <target>Projekträume</target>
