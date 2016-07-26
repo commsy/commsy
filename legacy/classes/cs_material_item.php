@@ -718,6 +718,13 @@ class cs_material_item extends cs_item {
       $this->_filelist_changed = false;
       $this->_version_id_changed = false;
       $this->_changed = array();
+
+      global $symfonyContainer;
+      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.material');
+      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+      $repository = $em->getRepository('CommsyBundle:Materials');
+
+      $this->replaceElasticItem($objectPersister, $repository);
    }
 
    function _saveBuzzwords() {
@@ -899,6 +906,13 @@ class cs_material_item extends cs_item {
       $this->deleteAssociatedAnnotations();
 
       $this->SendDeleteEntryMailToModerators();
+
+      global $symfonyContainer;
+      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.material');
+      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+      $repository = $em->getRepository('CommsyBundle:Materials');
+
+      $this->deleteElasticItem($objectPersister, $repository);
    }
 
    /** delete a version of a material

@@ -283,6 +283,13 @@ function getDescription(){
    function save() {
       $discussion_manager = $this->_environment->getDiscussionManager();
       $this->_save($discussion_manager);
+
+      global $symfonyContainer;
+      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.discussion');
+      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+      $repository = $em->getRepository('CommsyBundle:Discussions');
+
+      $this->replaceElasticItem($objectPersister, $repository);
    }
 
    // TBD
@@ -290,6 +297,13 @@ function getDescription(){
       $discussion_manager = $this->_environment->getDiscussionManager();
       $this->_delete($discussion_manager);
       $this->SendDeleteEntryMailToModerators();
+
+      global $symfonyContainer;
+      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.discussion');
+      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+      $repository = $em->getRepository('CommsyBundle:Discussions');
+
+      $this->deleteElasticItem($objectPersister, $repository);
    }
 
    /** Checks and sets the data of the discussion_item.

@@ -460,6 +460,13 @@ class cs_dates_item extends cs_item {
       $this->_save($dates_mananger);
       $this->_saveFiles();     // this must be done before saveFileLinks
       $this->_saveFileLinks(); // this must be done after saving so we can be sure to have an item id
+
+      global $symfonyContainer;
+      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.dates');
+      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+      $repository = $em->getRepository('CommsyBundle:Dates');
+
+      $this->replaceElasticItem($objectPersister, $repository);
    }
 
    function delete() {
@@ -469,6 +476,13 @@ class cs_dates_item extends cs_item {
       // delete associated annotations
       $this->deleteAssociatedAnnotations();
       $this->SendDeleteEntryMailToModerators();
+
+      global $symfonyContainer;
+      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.dates');
+      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+      $repository = $em->getRepository('CommsyBundle:Dates');
+
+      $this->deleteElasticItem($objectPersister, $repository);
    }
 
    /** asks if item is editable by everybody or just creator

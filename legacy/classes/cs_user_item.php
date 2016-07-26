@@ -1195,7 +1195,7 @@ class cs_user_item extends cs_item {
       	$grouproom_array = $context_item->_getItemData();
       	$grouproom_id = $grouproom_array['extras']['GROUP_ROOM_ID'];
       	$room_manager = $this->_environment->getRoomManager();
-		$context_item = $room_manager->getItem($grouproom_id);
+		    $context_item = $room_manager->getItem($grouproom_id);
       }
       
       if ( isset($context_item)
@@ -1236,6 +1236,13 @@ class cs_user_item extends cs_item {
         // Entscheidung 30.09.2008 - Eintraege bleiben unveraendert im Forum
         //$this->updateWikiRemoveUser();
       }
+
+      global $symfonyContainer;
+      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.user');
+      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+      $repository = $em->getRepository('CommsyBundle:User');
+
+      $this->replaceElasticItem($objectPersister, $repository);
    }
 
    /**
@@ -1307,6 +1314,13 @@ class cs_user_item extends cs_item {
          $id_manager->deleteByCommSyID($this->getItemID());
          unset($id_manager);
       }
+
+      global $symfonyContainer;
+      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.user');
+      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+      $repository = $em->getRepository('CommsyBundle:User');
+
+      $this->deleteElasticItem($objectPersister, $repository);
    }
    
    /**
