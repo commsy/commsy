@@ -286,6 +286,7 @@ function getDescription(){
 
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.discussion');
+      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
       $repository = $em->getRepository('CommsyBundle:Discussions');
 
       $this->replaceElasticItem($objectPersister, $repository);
@@ -299,6 +300,7 @@ function getDescription(){
 
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.discussion');
+      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
       $repository = $em->getRepository('CommsyBundle:Discussions');
 
       $this->deleteElasticItem($objectPersister, $repository);

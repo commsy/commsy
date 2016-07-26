@@ -486,6 +486,7 @@ class cs_label_item extends cs_item {
 
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.label');
+      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
       $repository = $em->getRepository('CommsyBundle:Labels');
 
       $this->replaceElasticItem($objectPersister, $repository);
@@ -502,6 +503,7 @@ class cs_label_item extends cs_item {
 
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.label');
+      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
       $repository = $em->getRepository('CommsyBundle:Labels');
 
       $this->deleteElasticItem($objectPersister, $repository);

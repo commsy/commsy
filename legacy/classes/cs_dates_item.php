@@ -463,6 +463,7 @@ class cs_dates_item extends cs_item {
 
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.dates');
+      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
       $repository = $em->getRepository('CommsyBundle:Dates');
 
       $this->replaceElasticItem($objectPersister, $repository);
@@ -478,6 +479,7 @@ class cs_dates_item extends cs_item {
 
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.dates');
+      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
       $repository = $em->getRepository('CommsyBundle:Dates');
 
       $this->deleteElasticItem($objectPersister, $repository);
