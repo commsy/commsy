@@ -2,6 +2,11 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="de" datatype="plaintext" original="file.ext">
         <body>
+            <!-- General settings -->
+            <trans-unit id="general_configuration">
+                <source>General Configuration</source>
+                <target>Grundeinstellungen</target>
+            </trans-unit>
             <trans-unit id="1">
                 <source>Off</source>
                 <target>Deaktiviert</target>
@@ -132,6 +137,10 @@
             </trans-unit>
 
             <!-- Additional settings -->
+            <trans-unit id="additional_configuration">
+                <source>Additional Configuration</source>
+                <target>Zusätzliche Einstellungen</target>
+            </trans-unit>
             <trans-unit id="tags">
                 <source>Buzzwords</source>
                 <target>Schlagwörter</target>
@@ -226,6 +235,10 @@
             </trans-unit>
 
             <!-- Appearance settings -->
+            <trans-unit id="appearance_configuration">
+                <source>Appearance Configuration</source>
+                <target>Darstellung</target>
+            </trans-unit>            
             <trans-unit id="listview">
                 <source>listview</source>
                 <target>Listenansicht</target>
@@ -248,6 +261,10 @@
             </trans-unit>
 
             <!-- Moderation settings -->
+            <trans-unit id="moderation_configuration">
+                <source>Moderation support Configuration</source>
+                <target>Moderationsunterstützung</target>
+            </trans-unit>            
             <trans-unit id="contentid">
                 <source>Content ID</source>
                 <target>Referenznummer:</target>
@@ -279,6 +296,12 @@
             <trans-unit id="usernotice">
                 <source>Usernotice</source>
                 <target>Nutzungshinweise:</target>
+            </trans-unit>
+
+            <!-- Extension settings -->
+            <trans-unit id="extensions_configuration">
+                <source>Extensions Configuration</source>
+                <target>Erweiterungen</target>
             </trans-unit>
         </body>
     </file>

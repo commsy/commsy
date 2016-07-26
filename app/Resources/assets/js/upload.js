@@ -9,7 +9,7 @@
     $(document).ready(function() {
         $(".uk-position-cover div.uk-form-controls").css("margin-left", "0px");
 
-        // TODO: why is this neccessary? shouldn't the input field always be active when the page is loaded?
+        // TODO: why is this neccessary? shouldn't the input field always be active by default when the page is loaded?
         $("#bgPreview input[type='file']").removeAttr('disabled');
 
         var deleteRow = $("#general_settings_room_image_delete_custom_image").closest(".uk-form-row");
@@ -39,7 +39,7 @@
 
     function setBackgroundImage(f, previewImage){
         console.debug("SetBackgroundImage to "+f.name);
-        // TODO: set threshold to sensible value!
+        // TODO: set threshold to sensible value (e.g. the real upload size limit of the server)!
         if(f.size > 2000000){
             alert("File size too large ("+(f.size / 1000) +" KB)! \n This service accepts image files up to 500 KB only!");
             return false;
