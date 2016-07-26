@@ -164,6 +164,7 @@ class cs_announcement_item extends cs_item {
 
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.announcement');
+      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
       $repository = $em->getRepository('CommsyBundle:Announcement');
 
       $this->replaceElasticItem($objectPersister, $repository);
@@ -182,6 +183,7 @@ class cs_announcement_item extends cs_item {
 
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.announcement');
+      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
       $repository = $em->getRepository('CommsyBundle:Announcement');
 
       $this->deleteElasticItem($objectPersister, $repository);

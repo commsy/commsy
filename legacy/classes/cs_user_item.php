@@ -1239,6 +1239,7 @@ class cs_user_item extends cs_item {
 
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.user');
+      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
       $repository = $em->getRepository('CommsyBundle:User');
 
       $this->replaceElasticItem($objectPersister, $repository);
@@ -1316,6 +1317,7 @@ class cs_user_item extends cs_item {
 
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.user');
+      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
       $repository = $em->getRepository('CommsyBundle:User');
 
       $this->deleteElasticItem($objectPersister, $repository);
