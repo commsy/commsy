@@ -77,15 +77,34 @@ class ModerationSettingsType extends AbstractType
                     ),
                 ))
                 // TODO: instead of a single "moderation_title" input field, we need an individual title input fields for each rubric!
-                ->add('moderation_title', TextType::class, array(
-                    'label' => 'Title',
-                ))
+                ->add('moderation_title', TextType::class, array('label' => 'Title'))
+
+                
                 ->add('message', CKEditorType::class, [
                     'inline' => false,
                      'attr' => array(
                         'class' => 'uk-form-width-large',
                     ),
                 ])
+
+                // ->add('message', TextareaType::class, [
+                //      'attr' => array(
+                //         'class' => 'uk-form-width-large',
+                //     ),
+                // ])
+
+                ->add('description_home', HiddenType::class, array())
+                ->add('description_announcement', HiddenType::class, array())
+                ->add('description_date', HiddenType::class, array())
+                ->add('description_discussion', HiddenType::class, array())
+                ->add('description_institution', HiddenType::class, array())
+                ->add('description_group', HiddenType::class, array())
+                ->add('description_material', HiddenType::class, array())
+                ->add('description_project', HiddenType::class, array())
+                ->add('description_todo', HiddenType::class, array())
+                ->add('description_topic', HiddenType::class, array())
+                ->add('description_user', HiddenType::class, array())
+
             )
             ->add(
                 $builder->create('email_configuration', FormType::class, array(
@@ -105,26 +124,27 @@ class ModerationSettingsType extends AbstractType
                         'Change status: moderator' => 'MAIL_BODY_USER_STATUS_MODERATOR',              // 8
                         'Change status: contact person' => 'MAIL_BODY_USER_MAKE_CONTACT_PERSON',      // 9
                         'Change status: no contact person' => 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON', // 10
-                        'Change status: read only user' => 'MAIL_BODY_USER_STATUS_READ_ONLY_USER',    // 11
+                        'Change status: read only user' => 'MAIL_BODY_USER_STATUS_USER_READ_ONLY',    // 11
                     ),
+                    'data' => '-1',
                 ))
-                // TODO: instead of a single CKEditorType field for german and english email body texts, we need multiple fields, one for each option in the "array_mail_text_rubric" select box!
-                /*
-                ->add('moderation_mail_body_de', CKEditorType::class, array(
-                    'label' => 'body_de',
-                    'inline' => false,
-                    'attr' => array(
-                        'class' => 'uk-form-width-large',
-                    ),
-                ))
-                ->add('moderation_mail_body_en', CKEditorType::class, array(
-                    'label' => 'body_en',
-                    'inline' => false,
-                    'attr' => array(
-                        'class' => 'uk-form-width-large',
-                    ),
-                ))
-                */
+
+                
+                // ->add('moderation_mail_body_de', CKEditorType::class, array(
+                //     'label' => 'body_de',
+                //     'inline' => false,
+                //     'attr' => array(
+                //         'class' => 'uk-form-width-large',
+                //     ),
+                // ))
+                // ->add('moderation_mail_body_en', CKEditorType::class, array(
+                //     'label' => 'body_en',
+                //     'inline' => false,
+                //     'attr' => array(
+                //         'class' => 'uk-form-width-large',
+                //     ),
+                // ))
+                
 
                 ->add('moderation_mail_body_de', TextareaType::class, array(
                     'label' => 'body_de',
@@ -135,7 +155,7 @@ class ModerationSettingsType extends AbstractType
                 ->add('moderation_mail_body_en', TextareaType::class, array(
                     'label' => 'body_en',
                     'attr' => array(
-                        'class' => 'uk-form-width-large',
+                        'class' => 'uk-form-width-large',                        
                     ),
                 ))
 
@@ -163,8 +183,8 @@ class ModerationSettingsType extends AbstractType
                 ->add('mail_body_user_unmake_contact_person_de', HiddenType::class, array())
                 ->add('mail_body_user_unmake_contact_person_en', HiddenType::class, array())
 
-                ->add('mail_body_user_status_read_only_user_de', HiddenType::class, array())
-                ->add('mail_body_user_status_read_only_user_en', HiddenType::class, array())
+                ->add('mail_body_user_status_user_read_only_de', HiddenType::class, array())
+                ->add('mail_body_user_status_user_read_only_en', HiddenType::class, array())
 
                 ->add('mail_body_user_account_password_de', HiddenType::class, array())
                 ->add('mail_body_user_account_password_en', HiddenType::class, array())
@@ -176,29 +196,6 @@ class ModerationSettingsType extends AbstractType
                 'position' => 'last',
             ))
         ;
-
-
-        $formModifier = function(FormInterface $form, $mailChoice = null){
-            dump($mailChoice);
-        };
-
-        $builder->addEventListener(
-            FormEvents::PRE_SET_DATA,
-            function(FormEvent $event) use ($formModifier) {
-                dump($event->getData());
-                //$formModifier($event->getForm(), $event->getData()['email_configuration']['array_mail_text_rubric']);
-            }
-        );
-
-
-        $builder->get('email_configuration')->get('array_mail_text_rubric')->addEventListener(
-            FormEvents::POST_SUBMIT,
-            function (FormEvent $event) use ($formModifier) {
-                dump($event);
-                //$formModifier($event->getForm(), $event->getData()->get('array_mail_text_rubric'));
-            }
-        );
-
     }
 
     /**

@@ -38,8 +38,7 @@
         </div>
     </div>
     <script>
-    // hello = 2
-    // ciao = 3
+
     var settings_page = 'moderation_settings';
     var subForm = 'email_configuration';
     var subFormName = settings_page + "_" + subForm;
@@ -57,16 +56,14 @@
     var germanEditor = document.getElementById('moderation_settings_email_configuration_moderation_mail_body_de');
     var englishEditor = document.getElementById('moderation_settings_email_configuration_moderation_mail_body_en');
 
-    var editors = [germanEditor, englishEditor];
-
-   // HTML5 alternative to "keyup" event: "input" event
+   // HTML5 alternative to "onkeyup": "oninput"
     germanEditor.onkeyup = function(e){  
         var fieldName = settings_page + "[" + subForm + "][" + emailTemplateSelection.value.toLowerCase() + "_de]";
         form.elements[fieldName].value = germanEditor.value;
     }
 
     englishEditor.onkeyup = function(e){     
-        var fieldName = settings_page + "[" + subForm + "][" + emailTemplateSelection.value.toLowerCase() + "_en]";
+        var fieldName = settings_page + "[" + subForm + "][" + emailTemplateSelection.value.toLowerCase() + "_en]";     
         form.elements[fieldName].value = englishEditor.value;
     }
 
@@ -88,8 +85,6 @@
             germanEditor.parentNode.parentNode.style.display = 'none';
             englishEditor.parentNode.parentNode.style.display = 'none';
         }
-        //var isChecked = checkbox.checked;
-        //var showHide = isChecked ?"":"none";
     };
     document.onready=function(){
         var ckeEditors = document.getElementsByClassName('cke');

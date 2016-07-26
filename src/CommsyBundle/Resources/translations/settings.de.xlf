@@ -272,6 +272,14 @@
                 <source>body_en</source>
                 <target>Inhalt (Englisch):</target>
             </trans-unit>
+            <trans-unit id="homenotice">
+                <source>Homenotice</source>
+                <target>Hinweistext auf der Home:</target>
+            </trans-unit>
+            <trans-unit id="usernotice">
+                <source>Usernotice</source>
+                <target>Nutzungshinweise:</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

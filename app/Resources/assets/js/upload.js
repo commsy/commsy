@@ -46,11 +46,8 @@
         }
         var reader = new FileReader();
         reader.onload = function(event){
-            // FIXME: vertical position of elements below bgPreview ("repeat x", "delete image" etc.) should adapt dynamically!
-            //        (otherwise they are hidden under large images!)
-            var result = event.target.result;
-            previewImage.attr("src", result);
-            $('#general_settings_room_image_room_image_data').val(result);
+            previewImage.attr("src", event.target.result);
+            $('#general_settings_room_image_room_image_data').val(event.target.result);
             /* 
             $("#imageInfo").empty().append('<li>Name: '
                 +f.name+'</li><li>Type: '
@@ -67,8 +64,8 @@
        
         bgPreview.closest("form").on({
             'submit': function(){
-                // Disable the input[type='file'] field to prevent it from being send to the server; 
-                // the actual image data is already transmitted via the hidden 'image_data' field, so it doesn't need to be 
+                // Disable the input[type='file'] field on submit to prevent it from being send to the server; 
+                // the actual image data is already transmitted via the hidden 'image_data' field, so it doesn't need to
                 // be send again via the input[type='file'] field (which is only used as an option for file selection!)!
                 $("input[type='file']", bgPreview).attr('disabled', 'disabled');
             }

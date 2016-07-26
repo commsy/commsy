@@ -161,7 +161,7 @@ class SettingsController extends Controller
       
             dump($roomItem);
 
-            //$roomItem->save();
+            $roomItem->save();
 
             // persist
             // $em = $this->getDoctrine()->getManager();

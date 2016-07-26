@@ -272,6 +272,14 @@
                 <source>body_en</source>
                 <target>Body (English):</target>
             </trans-unit>
+            <trans-unit id="homenotice">
+                <source>Homenotice</source>
+                <target>Notice on home / notice board:</target>
+            </trans-unit>
+            <trans-unit id="usernotice">
+                <source>Usernotice</source>
+                <target>User notice:</target>
+            </trans-unit>            
         </body>
     </file>
 </xliff>
