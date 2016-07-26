@@ -10,15 +10,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-use CommsyBundle\Form\Type\DateType;
-use CommsyBundle\Form\Type\DateDetailsType;
-use CommsyBundle\Form\Type\AnnotationType;
+use CommsyBundle\Form\Type\ProjectType;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-use CommsyBundle\Filter\DateFilterType;
+use CommsyBundle\Filter\ProjectFilterType;
 
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Form\FormError;
@@ -35,12 +33,12 @@ class ProjectController extends Controller
         $defaultFilterValues = array(
             'activated' => true
         );
-        $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
+        $filterForm = $this->createForm(ProjectFilterType::class, $defaultFilterValues, array(
+            'action' => $this->generateUrl('commsy_project_list', array('roomId' => $roomId)),
         ));
 
         // get the material manager service
-        $dateService = $this->get('commsy_legacy.date_service');
+        $projectService = $this->get('commsy_legacy.project_service');
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -50,12 +48,12 @@ class ProjectController extends Controller
         }
 
         // get material list from manager service 
-        $dates = $dateService->getListDates($roomId, $max, $start, $sort);
+        $projects = $projectService->getListProjects($roomId, $max, $start, $sort);
 
         $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();
-        foreach ($dates as $item) {
+        foreach ($projects as $item) {
             $reader = $readerService->getLatestReader($item->getItemId());
             if ( empty($reader) ) {
                $readerList[$item->getItemId()] = 'new';
@@ -64,10 +62,14 @@ class ProjectController extends Controller
             }
         }
 
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUser = $legacyEnvironment->getCurrentUser();
+
         return array(
             'roomId' => $roomId,
-            'dates' => $dates,
-            'readerList' => $readerList
+            'projects' => $projects,
+            'readerList' => $readerList,
+            'currentUser' => $currentUser
         );
     }
     
@@ -81,21 +83,21 @@ class ProjectController extends Controller
         $defaultFilterValues = array(
             'activated' => true
         );
-        $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
+        $filterForm = $this->createForm(ProjectFilterType::class, $defaultFilterValues, array(
+            'action' => $this->generateUrl('commsy_project_list', array('roomId' => $roomId)),
         ));
 
         // get the material manager service
-        $dateService = $this->get('commsy_legacy.date_service');
+        $projectService = $this->get('commsy_legacy.project_service');
 
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isValid()) {
             // set filter conditions in material manager
-            $dateService->setFilterConditions($filterForm);
+            $projectService->setFilterConditions($filterForm);
         }
 
-        $itemsCountArray = $dateService->getCountArray($roomId);
+        $itemsCountArray = $projectService->getCountArray($roomId);
 
         return array(
             'roomId' => $roomId,
@@ -105,4 +107,120 @@ class ProjectController extends Controller
         );
     }
     
+    
+    /**
+     * @Route("/room/{roomId}/project/{itemId}", requirements={
+     *     "itemId": "\d+"
+     * }))
+     * @Template()
+     */
+    public function detailAction($roomId, $itemId, Request $request)
+    {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($itemId);
+        
+        $currentUser = $legacyEnvironment->getCurrentUser();
+        
+        return array(
+            'roomId' => $roomId,
+            'item' => $roomItem,
+            'currentUser' => $currentUser
+        );
+    }
+    
+    function memberStatus ($item) {
+        $status = 'closed';
+        
+        $current_user = $this->_environment->getCurrentUserItem();
+         if ($current_user->isRoot()) {
+            $may_enter = true;
+         } elseif ( !empty($room_user) ) {
+            $may_enter = $item->mayEnter($room_user);
+         } else {
+            $may_enter = false;
+         }
+         //$html .= '<div style="float:right; width:15em; padding:5px; vertical-align: middle; text-align: center;">'.LF;
+
+         // Eintritt erlaubt
+         if ($may_enter) {
+            //$actionCurl = curl( $item->getItemID(),
+            //                 'home',
+            //                 'index',
+            //                 '');
+            //if (!$this->isPrintableView()) {
+            //   $html .= '<a class="room_window" href="'.$actionCurl.'"><img alt="door" src="images/door_open_large.gif"/></a>'.BRLF;
+            //} else {
+               $html .= '<img alt="door" src="images/door_open_large.gif" style="vertical-align: large;"/>'.BRLF;
+            //}
+            if ($item->isOpen()) {
+               //$actionCurl = curl( $item->getItemID(),
+               //                 'home',
+               //                 'index',
+               //                 '');
+               //$html .= '<div style="margin-top: 5px; padding:3px; text-align:left;">';
+               //if (!$this->isPrintableView()) {
+               //  $html .= '<div style="padding-top:5px; text-align: center;">'.'<a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_ENTER').'</a></div>'.LF;
+               //} else {
+                  $html .= '<div style="padding-top:5px; text-align: center;">'.$this->_translator->getMessage('CONTEXT_ENTER').'</div>'.LF;
+               //}
+            } else {
+               $html .= '<div style="padding-top:3px; text-align: center;"><span class="disabled">'.$this->_translator->getMessage('CONTEXT_JOIN').'</span></div>'.LF;
+            }
+            //$html .= '</div>';
+
+         } elseif ( $item->isLocked() ) {
+            $html .= '<img alt="door" src="images/door_closed_large.gif" style="vertical-align: middle; "/>'.LF;
+         //Um Erlaubnis gefragt
+         } elseif(!empty($room_user) and $room_user->isRequested()) {
+            $html .= '<img alt="door" src="images/door_closed_large.gif" style="vertical-align: large; "/>'.LF;
+            //$html .= '<div style="xborder: 2px solid '.$color_array['tabs_background'].'; margin-top: 5px; padding:3px; text-align:left;">';
+            //$html .= '<div style="padding-top:0px; text-align: center;"><p style=" margin-top:0px; margin-bottom:0px;text-align:left;" class="disabled">'.$this->_translator->getMessage('ACCOUNT_NOT_ACCEPTED_YET').'</p></div>'.LF;
+           //$html.= '</div>';
+
+         //Erlaubnis verweigert
+         } elseif(!empty($room_user) and $room_user->isRejected()) {
+            $html .= '<img alt="door" src="images/door_closed_large.gif" style="vertical-align: large; "/>'.LF;
+            //$html .= '<div style="xborder: 2px solid '.$color_array['tabs_background'].'; margin-top: 5px; padding:3px; text-align:left;">';
+            //$html .= '<div style="padding-top:0px; text-align: center;"><p style=" margin-top:0px; margin-bottom:0px;text-align:left;" class="disabled">'.$this->_translator->getMessage('ACCOUNT_NOT_ACCEPTED').'</p></div>'.LF;
+           //$html.= '</div>';
+
+         // noch nicht angemeldet als Mitglied im Raum
+         } else {
+            $html .= '<img alt="door" src="images/door_closed_large.gif" style="vertical-align: middle text-align:left;"/>'.BRLF;
+            //$html .= '<div style="xborder: 2px solid '.$color_array['tabs_background'].'; margin-top: 5px; padding:3px; text-align:center;">';
+            $current_user_item_read = $this->_environment->getCurrentUserItem();
+            if ( $item->isOpen()
+                 and !$current_user_item_read->isOnlyReadUser()
+               ) {
+               if ( $this->_environment->inPortal() ) {
+                  $params['account'] = 'member';
+                  $params['room_id'] = $this->_item->getItemID();
+                  $actionCurl = curl( $this->_environment->getCurrentPortalID(),
+                                      'home',
+                                      'index',
+                                      $params,
+                                      '');
+               } else {
+                  $params['account'] = 'member';
+                  $params['iid'] = $this->_item->getItemID();
+                  $actionCurl = curl( $this->_environment->getCurrentContextID(),
+                                      $this->_environment->getCurrentModule(),
+                                      $this->_environment->getCurrentFunction(),
+                                      $params,
+                                      '');
+               }
+               if (!$this->isPrintableView()) {
+                  $html .= '<div style="padding-top:5px; text-align: center;">'.'<a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_JOIN').'</a></div>'.LF;
+               } else {
+                  $html .= '<div style="padding-top:5px; text-align: center;">'.$this->_translator->getMessage('CONTEXT_JOIN').'</div>'.LF;
+               }
+               unset($params);
+            } else {
+               $html .= '<div style="padding-top:3px; text-align: center;"><span class="disabled">'.$this->_translator->getMessage('CONTEXT_JOIN').'</span></div>'.LF;
+            }
+            $html.= '</div>';
+         }
+    }
 }

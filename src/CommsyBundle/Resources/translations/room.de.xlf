@@ -102,6 +102,18 @@
                 <source>Community Rooms</source>
                 <target>Gemeinschaftsräume</target>
             </trans-unit>
+            <trans-unit id="enter room">
+                <source>enter room</source>
+                <target>Raum betreten</target>
+            </trans-unit>
+            <trans-unit id="become member">
+                <source>become member</source>
+                <target>Mitgliedschaft beantragen</target>
+            </trans-unit>
+            <trans-unit id="description">
+                <source>description</source>
+                <target>Teilnahmegrund</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

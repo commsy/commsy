@@ -102,6 +102,18 @@
                 <source>Community Rooms</source>
                 <target>Community Rooms</target>
             </trans-unit>
+            <trans-unit id="enter room">
+                <source>enter room</source>
+                <target>Enter rooom</target>
+            </trans-unit>
+            <trans-unit id="become member">
+                <source>become member</source>
+                <target>Become member</target>
+            </trans-unit>
+            <trans-unit id="description">
+                <source>description</source>
+                <target>Description</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
