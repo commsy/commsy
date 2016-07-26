@@ -15,7 +15,23 @@
 
                 <div>
                     {{ form_start(form) }}
-                    {{ form_widget(form) }}
+                        <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                            <b>Hinweistext auf der Home:</b> 
+                            <div class="uk-form-horizontal uk-form-controls">Sie können ein Material, eine Aufgabe, einen Termin oder eine Ankündigung als prominenten Hinweistext auf der Home anzeigen. Bitte geben Sie die Referenznummer des gewünschten Eintrags ein. Die Referenznummer finden Sie unterhalb eines Eintrags bei den Informationen zum Bearbeitungsstatus (auf das +-Zeichen klicken). </div>
+                            {{ form_widget(form.homenotice) }}
+                        </div>
+
+                        <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                            <b>Nutzungshinweise:</b> 
+                            <div class="uk-form-horizontal uk-form-controls">Wählen Sie die Rubriken, in denen Sie Hinweise platzieren möchten. </div>
+                            {{ form_widget(form.usernotice) }}
+                        </div>
+
+                        <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                            <b>E-Mail Konfiguration:</b> 
+                            <div class="uk-form-horizontal uk-form-controls">Konfiguration der E-Mail-Texte, die über das System verschickt werden. </div>
+                            {{ form_widget(form.email_configuration) }}
+                        </div>
                     {{ form_end(form) }}
                 </div>
                 

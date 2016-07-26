@@ -5,7 +5,7 @@
             <!-- General settings -->
             <trans-unit id="general_configuration">
                 <source>General Configuration</source>
-                <target>Grundeinstellungen</target>
+                <target>Allgemeine Einstellungen</target>
             </trans-unit>
             <trans-unit id="1">
                 <source>Off</source>
