@@ -161,6 +161,12 @@ class cs_announcement_item extends cs_item {
       $this->_save($announcement_manager);
       $this->_saveFiles();     // this must be done before saveFileLinks
       $this->_saveFileLinks(); // this must be done after saving item so we can be sure to have an item id
+
+      global $symfonyContainer;
+      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.announcement');
+      $repository = $em->getRepository('CommsyBundle:Announcement');
+
+      $this->replaceElasticItem($objectPersister, $repository);
    }
 
    /** delete announcement
@@ -173,6 +179,12 @@ class cs_announcement_item extends cs_item {
       // delete associated annotations
       $this->deleteAssociatedAnnotations();
       $this->SendDeleteEntryMailToModerators();
+
+      global $symfonyContainer;
+      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.announcement');
+      $repository = $em->getRepository('CommsyBundle:Announcement');
+
+      $this->deleteElasticItem($objectPersister, $repository);
    }
 
 

@@ -159,7 +159,7 @@ fos_elastica:
 
 
                 # labels: (groups, topics, institutions)
-                labels:
+                label:
                     indexable_callback: isIndexable
                     mappings:
                         contextId:
