@@ -483,6 +483,12 @@ class cs_label_item extends cs_item {
    function save() {
       $label_manager = $this->_environment->getLabelManager();
       $this->_save($label_manager);
+
+      global $symfonyContainer;
+      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.label');
+      $repository = $em->getRepository('CommsyBundle:Labels');
+
+      $this->replaceElasticItem($objectPersister, $repository);
    }
 
    /** delete label item
@@ -493,6 +499,12 @@ class cs_label_item extends cs_item {
    function delete() {
       $manager = $this->_environment->getLabelManager();
       $this->_delete($manager);
+
+      global $symfonyContainer;
+      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.label');
+      $repository = $em->getRepository('CommsyBundle:Labels');
+
+      $this->deleteElasticItem($objectPersister, $repository);
    }
 
     /** set picture filename of the label (used for groups)

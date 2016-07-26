@@ -1147,18 +1147,6 @@ class cs_item {
          }
       }
 
-      // invoke indices update
-      try {
-      	/*
-      	$reflector = new ReflectionClass($manager);
-      	global $c_indexed_search;
-      	if($c_indexed_search === true && $reflector->getMethod('updateSearchIndices')->getDeclaringClass()->getName() == $reflector->getName()) {
-      		$manager->updateSearchIndices();
-      	}*/
-      } catch(Exception $e) {
-      	// actual object does not implement Method updateSearchIndices() - so dont call
-      }
-
       return $saved;
    }
 
@@ -2874,6 +2862,18 @@ function getExternalViewerArray(){
           CS_DISCARTICLE_TYPE,
           // CS_SECTION_TYPE
       ));
+   }
+
+   protected function replaceElasticItem($objectPersister, $repository) {
+        $object = $repository->findOneByItemId($this->getItemID());
+
+        $objectPersister->replaceOne($object);
+   }
+
+   protected function deleteElasticItem($objectPersister, $repository) {
+        $object = $repository->findOneByItemId($this->getItemID());
+
+        $objectPersister->deleteOne($object);
    }
 }
 ?>

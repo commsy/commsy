@@ -240,6 +240,12 @@ class cs_community_item extends cs_room_item {
       if ( empty($item_id) ) {
          $this->initTagRootItem();
       }
+
+      global $symfonyContainer;
+      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.room');
+      $repository = $em->getRepository('CommsyBundle:Room');
+
+      $this->replaceElasticItem($objectPersister, $repository);
    }
 
    /** delete community
@@ -260,6 +266,12 @@ class cs_community_item extends cs_room_item {
          $current_portal_item->syncCountCommunityRoomRedundancy(true);
       }
       unset($current_portal_item);
+
+      global $symfonyContainer;
+      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.room');
+      $repository = $em->getRepository('CommsyBundle:Room');
+
+      $this->deleteElasticItem($objectPersister, $repository);
    }
 
    function undelete () {

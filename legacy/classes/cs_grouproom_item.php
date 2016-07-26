@@ -183,6 +183,12 @@ class cs_grouproom_item extends cs_room_item {
       if ( empty($item_id) ) {
          $this->initTagRootItem();
       }
+
+      global $symfonyContainer;
+      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.room');
+      $repository = $em->getRepository('CommsyBundle:Room');
+
+      $this->replaceElasticItem($objectPersister, $repository);
    }
 
    /** save news item
@@ -218,6 +224,12 @@ class cs_grouproom_item extends cs_room_item {
          $current_portal_item->syncCountGroupRoomRedundancy(true);
       }
       unset($current_portal_item);
+
+      global $symfonyContainer;
+      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.room');
+      $repository = $em->getRepository('CommsyBundle:Room');
+
+      $this->deleteElasticItem($objectPersister, $repository);
    }
 
    public function undelete () {
