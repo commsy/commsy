@@ -1094,8 +1094,6 @@ class cs_authentication {
                   $this->_error_array[] = $translator->getMessage('ROOM_IS_CLOSED',$context->getTitle()).' '.$this->_translator->getMessage('ROOM_IS_CLOSED_APPLY_FOR_MEMBERSHIP');
                }
             }
-         } elseif ($this->_environment->getCurrentModule() == 'homepage' and $this->_environment->getCurrentFunction() == 'detail') {
-            $value = true;
          } else {
 
             $value = $this->_isUserAllowedHere($portal_user);
@@ -1221,7 +1219,6 @@ class cs_authentication {
    	$data_type_array[] = CS_TAG_TYPE;
    	#$data_type_array[] = CS_ANNOUNCEMENT_TYPE;
    	#$data_type_array[] = CS_TODO_TYPE;
-   	#$data_type_array[] = CS_HOMEPAGE_TYPE;
    	
    	foreach ($data_type_array as $type) {
    		$manager = $this->_environment->getManager($type);
@@ -1249,8 +1246,6 @@ class cs_authentication {
    	$data_type_array[] = CS_LINKITEM_TYPE;
    	$data_type_array[] = CS_LINKITEMFILE_TYPE;
    	$data_type_array[] = CS_TAG2TAG_TYPE;
-   	#$data_type_array[] = CS_LINKHOMEPAGEFILE_TYPE;
-   	#$data_type_array[] = CS_LINKHOMEPAGEHOMEPAGE_TYPE;
    	
    	foreach ($data_type_array as $type) {
    		$manager = $this->_environment->getManager($type);
@@ -1278,7 +1273,6 @@ class cs_authentication {
    	$data_type_array[] = CS_ANNOTATION_TYPE;
    	#$data_type_array[] = CS_DISCARTICLE_TYPE;
    	$data_type_array[] = CS_SECTION_TYPE;
-   	#$data_type_array[] = CS_HOMEPAGE_TYPE;
    	foreach ($data_type_array as $type) {
    		$manager = $this->_environment->getManager($type);
    		$manager->refreshInDescLinks($new_room_id,$new_id_array);

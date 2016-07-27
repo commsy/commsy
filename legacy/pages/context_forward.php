@@ -29,77 +29,7 @@ if ( !isset($_GET['tool']) and !empty($_GET['tool']) ) {
    $external_tool = $_GET['tool'];
 }
 
-if ( $external_tool == 'homepage' ) {
-
-   // session
-   $session_item = $environment->getSessionItem();
-   include_once('classes/cs_session_item.php');
-   $new_session = new cs_session_item();
-   $current_user = $environment->getCurrentUserItem();
-   $user_id = $current_user->getUserID();
-   if ( mb_strtoupper($user_id, 'UTF-8') == 'GUEST'
-        or mb_strtoupper($user_id, 'UTF-8') == 'ROOT'
-      ) {
-      $new_session->createSessionID($user_id);
-   } elseif ( isset($session_item) ) {
-      if ( $session_item->issetValue('auth_source') ) {
-         $current_context = $environment->getCurrentContextItem();
-         if ( $current_context->mayEnterByUserID($user_id,$session_item->getValue('auth_source')) ) {
-            $new_session->createSessionID($user_id);
-         } else {
-            $new_session->createSessionID('GUEST');
-         }
-      } else {
-         trigger_error('lost auth source',E_USER_ERROR);
-      }
-   } else {
-      $new_session->createSessionID('GUEST');
-   }
-   $new_session->setValue('commsy_id',$environment->getCurrentPortalID());
-   $new_session->setToolName($external_tool);
-   $new_session->setValue('commsy_session_id',$session_item->getSessionID());
-   if ( isset($session_item) ) {
-      if ( $session_item->issetValue('javascript') ) {
-         $new_session->setValue('javascript',$session_item->getValue('javascript'));
-      }
-      if ( $session_item->issetValue('https') ) {
-         $new_session->setValue('https',$session_item->getValue('https'));
-      }
-      if ( $session_item->issetValue('flash') ) {
-         $new_session->setValue('flash',$session_item->getValue('flash'));
-      }
-      if ( $session_item->issetValue('auth_source') ) {
-         $new_session->setValue('auth_source',$session_item->getValue('auth_source'));
-      }
-      if ( $session_item->issetValue('cookie') ) {
-         $cookie = $session_item->getValue('cookie');
-         if ( $cookie == '0' ) {
-            $new_session->setValue('cookie','0');
-         } elseif ( !empty($cookie) ) {
-            $new_session->setValue('cookie','2');
-         }
-      }
-   }
-   $session_manager = $environment->getSessionManager();
-   $session_manager->save($new_session);
-
-   // redirect
-   $url = 'http://';
-   $url .= $_SERVER['HTTP_HOST'];
-   $pos = mb_strpos($_SERVER['PHP_SELF'],'?');
-   if (!$pos) {
-      $url .= str_replace($c_single_entry_point,'homepage.php',$_SERVER['PHP_SELF']);
-   } else {
-      $url .= mb_substr($_SERVER['PHP_SELF'],0,$pos-1);
-   }
-   $url .= '?cid='.$environment->getCurrentContextID().'&fct=detail';
-   if ( !isset($cookie) or $cookie != '1') {
-      $url .= '&SID='.$new_session->getSessionID();
-   }
-   include_once('functions/misc_functions.php');
-   redirect_with_url($url);
-
-} elseif ( $external_tool == 'commsy' ) {
+if ( $external_tool == 'commsy' ) {
 
    // session
    $session_item = $environment->getSessionItem();
@@ -194,33 +124,6 @@ if ( $external_tool == 'homepage' ) {
          }
       }
    } else {
-      // da neues Fenster, geht das nicht
-      /*
-      $session_item = $environment->getSessionItem();
-      $cid = $environment->getCurrentContextID();
-      $mod = 'home';
-      $fct = 'index';
-      $params = array();
-      if ( !empty($session_item)
-           and $session_item->issetValue('history')
-         ) {
-         $history = $session_item->getValue('history');
-         if ( !empty($history[0]['context']) ) {
-            $cid = $history[0]['context'];
-         }
-         if ( !empty($history[0]['module']) ) {
-            $mod = $history[0]['module'];
-         }
-         if ( !empty($history[0]['function']) ) {
-            $fct = $history[0]['function'];
-         }
-         if ( !empty($history[0]['parameter']) ) {
-            $params = $history[0]['parameter'];
-         }
-      }
-      redirect($cid,$mod,$fct,$params);
-      */
-
       // also Fehlermeldung
       include_once('functions/error_functions.php');
       trigger_error($external_tool.': user ('.$current_user->getUserID().') can not login as guest',E_USER_ERROR);

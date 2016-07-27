@@ -28,8 +28,8 @@ include_once('functions/text_functions.php');
  */
 include_once('functions/date_functions.php');
 
-/** class for database connection to the database table "homepage_link_page_page"
- * this class implements a database manager for the table "homepage_link_page_page"
+/** class for database connection to the database table "assessments"
+ * this class implements a database manager for the table "assessments"
  */
 class cs_assessments_manager extends cs_manager {
 
@@ -67,7 +67,7 @@ class cs_assessments_manager extends cs_manager {
      $query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".item_id = '".encode(AS_DB,$item_id)."'";
      $result = $this->_db_connector->performQuery($query);
      if (!isset($result) or empty($result[0])) {
-        include_once('functions/error_functions.php');trigger_error('Problems selecting one homepage link item from query: "'.$query.'"',E_USER_WARNING);
+        include_once('functions/error_functions.php');trigger_error('Problems selecting one assessment item from query: "'.$query.'"',E_USER_WARNING);
      } else {
         $retour = $this->_buildItem($result[0]);
      }
@@ -88,7 +88,7 @@ class cs_assessments_manager extends cs_manager {
   /** update an assessment - internal, do not use -> use method save
     * this method updates an assessment
     *
-    * @param object cs_homepagelink_item homepagelink_item the link homepage - homepage
+    * @param object cs_assessments_item assessments_item the assessment item
     */
   function _update ($assessments_item) {
      $current_datetime = getCurrentDateTimeInMySQL();

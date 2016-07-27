@@ -1464,18 +1464,9 @@ class cs_environment {
       return $this->_getInstance('cs_zzz_hash_manager');
    }
 
-  /** get instance of cs_homepage_manager
+  /** get instance of cs_etchat_manager
    *
-   * @return cs_homepage_manager
-   * @access public
-   */
-   function getHomepageManager() {
-      return $this->_getInstance('cs_homepage_manager');
-   }
-
-  /** get instance of cs_homepage_manager
-   *
-   * @return cs_homepage_manager
+   * @return cs_etchat_manager
    * @access public
    */
    function getETChatManager () {
@@ -1498,15 +1489,6 @@ class cs_environment {
    */
    function getWordpressManager() {
       return $this->_getInstance('cs_wordpress_manager');
-   }
-
-  /** get instance of cs_homepagelink_manager
-   *
-   * @return cs_homepagelink_manager
-   * @access public
-   */
-   function getHomepageLinkManager() {
-      return $this->_getInstance('cs_homepagelink_manager');
    }
 
    function getExternalIdManager() {
@@ -1742,12 +1724,8 @@ class cs_environment {
             return $this->getNoticedManager();
          } elseif ($type == CS_TIME_TYPE) {
             return $this->getTimeManager();
-         } elseif ($type == CS_HOMEPAGE_TYPE) {
-            return $this->getHomepageManager();
          } elseif ($type == CS_WIKI_TYPE) {
             return $this->getWikiManager();
-         } elseif ($type == CS_LINKHOMEPAGEHOMEPAGE_TYPE) {
-            return $this->getHomepageLinkManager();
          } elseif ($type == CS_AUTH_SOURCE_TYPE) {
             return $this->getAuthSourceManager();
          } elseif ($type == 'chat') {

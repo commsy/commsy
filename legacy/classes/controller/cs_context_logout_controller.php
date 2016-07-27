@@ -60,9 +60,6 @@
 			   $back_file = '';
 			}
 
-			if ( mb_stristr($_SERVER['PHP_SELF'],'homepage.php') ) {
-			   $session->setToolName('homepage');
-			}
 			$environment->setSessionItem($session);
 
 			// redirect

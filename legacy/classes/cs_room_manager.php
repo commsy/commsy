@@ -790,14 +790,6 @@ class cs_room_manager extends cs_context_manager {
          $file_manager->deleteFromDb($iid, $from_backup);
          unset($file_manager);
 
-         $homepage_link_manager = $this->_environment->getHomepageLinkManager();
-         $homepage_link_manager->deleteFromDb($iid, $from_backup);
-         unset($homepage_link_manager);
-
-         $homepage_manager = $this->_environment->getHomepageManager();
-         $homepage_manager->deleteFromDb($iid, $from_backup);
-         unset($homepage_manager);
-
          $item_manager = $this->_environment->getItemManager();
          $item_manager->deleteFromDb($iid, $from_backup);
          unset($item_manager);

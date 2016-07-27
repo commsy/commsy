@@ -837,7 +837,6 @@ function isURLValid () {
          $funct != 'showzip_file' and
 
          // external tools
-         $funct != 'homepage' and
          $funct != 'chat' and
          $funct != 'forward' and
 
@@ -984,8 +983,6 @@ function DBTable2Type ($table) {
       $type = CS_LINKITEM_TYPE;
    } elseif ($table == 'item_link_file') {
       $type = CS_LINKITEMFILE_TYPE;
-   } elseif ($table == 'homepage_link_page_page') {
-      $type = CS_LINKHOMEPAGEHOMEPAGE_TYPE;
    } else {
       $type = $table;
    }

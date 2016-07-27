@@ -297,8 +297,7 @@ class cs_page_room_view extends cs_page_view {
         $current_context = $this->_environment->getCurrentContextItem();
         if (
             ( $current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink() )
-            or ( $current_context->showChatLink() )
-            or ( $current_context->showHomepageLink() )
+            or ( $current_context->showChatLink() ))
             ){
 
          $current_context = $this->_environment->getCurrentContextItem();
@@ -358,8 +357,7 @@ class cs_page_room_view extends cs_page_view {
       $current_context = $this->_environment->getCurrentContextItem();
         if (
             ( $current_context->showWordpressLink() and $current_context->existWordpress() and $current_context->issetWordpressHomeLink() )
-            or ( $current_context->showChatLink() )
-            or ( $current_context->showHomepageLink() )
+            or ( $current_context->showChatLink() ))
             ){
 
          $current_context = $this->_environment->getCurrentContextItem();

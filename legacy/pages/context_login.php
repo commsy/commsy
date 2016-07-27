@@ -147,11 +147,6 @@ if (!$shib_direct_login){
 	 				$session->setValue('commsy_id',$environment->getCurrentPortalID());
 	            }
 	
-	            // external tool
-	            if ( mb_stristr($_SERVER['PHP_SELF'],'homepage.php') ) {
-	                $session->setToolName('homepage');
-	            }
-	
 	            // auth_source
 	            if ( empty($auth_source) ) {
 	                $auth_source = $authentication->getAuthSourceItemID();
@@ -229,11 +224,6 @@ if (!$shib_direct_login){
 	         $session->setValue('commsy_id',$environment->getServerID());
 	      } else {
 	         $session->setValue('commsy_id',$environment->getCurrentPortalID());
-	      }
-	
-	      // external tool
-	      if ( mb_stristr($_SERVER['PHP_SELF'],'homepage.php') ) {
-	         $session->setToolName('homepage');
 	      }
 	
 	      // auth_source

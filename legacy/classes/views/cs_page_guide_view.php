@@ -963,49 +963,7 @@ class cs_page_guide_view extends cs_page_view {
             $html .= '</ul>'.LF;
                }
       }
-
-
-      // add-ons
-      if ( $item->showHomepageDescLink() //or
-            //( $item->showWikiLink()
-            //  and $item->existWiki()
-            //  and $item->issetWikiPortalLink()
-            //)
-         ) {
-         $html .= '<span style="font-weight:bold;">'.$this->_translator->getMessage('COMMON_PORTAL_LINKS').':</span>'.LF;
-         $html .= '<ul style="margin-left:0px;margin-top:0em; margin-bottom:0.5em; padding-top:0px;padding-left:1em;">'.LF;
-
-         /* if (
-               ( $item->showWikiLink()
-                 and $item->existWiki()
-                 and $item->issetWikiPortalLink()
-               )
-            ) {
-            $html .= '<li style="font-weight:normal; font-size:8pt;">'.LF;
-            global $c_pmwiki_path_url;
-            $url_session_id = '';
-            if ( $item->withWikiUseCommSyLogin() ) {
-               $session_item = $this->_environment->getSessionItem();
-               $url_session_id = '?commsy_session_id='.$session_item->getSessionID();
-               unset($session_item);
-            }
-            $html .= '<span style="white-space:nowrap;"> <a href="'.$c_pmwiki_path_url.'/wikis/'.$item->getContextID().'/'.$item->getItemID().'/'.$url_session_id.'" target="_blank">'.$item->getWikiTitle().'</a> ('.$this->_translator->getMessage('COMMON_WIKI_LINK').')</span>';
-            $html .= '</li>'.LF;
-         } */
-
-         if ( $item->showHomepageDescLink() ) {
-            $html .= '<li style="font-weight:normal; font-size:8pt;">'.LF;
-            $link = ahref_curl( $item->getitemID(),
-                                'context',
-                                'forward',
-                                array('tool' => 'homepage'),
-                                $this->_translator->getMessage('HOMEPAGE_HOMEPAGE'),'','_blank');
-            $html .= '<span style="white-space:nowrap;"> '.$link.'</span>';
-            $html .= '</li>'.LF;
-         }
-
-         $html .= '</ul>'.LF;
-      }
+      
       return $html;
    }
 

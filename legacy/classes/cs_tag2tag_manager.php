@@ -27,7 +27,7 @@
  */
 class cs_tag2tag_manager extends cs_manager {
 
-  /** constructor: cs_homepage_manager
+  /** constructor: cs_tag2tag_manager
     * the only available constructor, initial values for internal variables
     */
   function __construct ($environment) {

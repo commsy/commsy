@@ -353,56 +353,6 @@ CREATE TABLE `hash` (
 
 
 
-# Export von Tabelle homepage_link_page_page
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `homepage_link_page_page`;
-
-CREATE TABLE `homepage_link_page_page` (
-  `link_id` int(11) NOT NULL AUTO_INCREMENT,
-  `from_item_id` int(11) NOT NULL DEFAULT '0',
-  `to_item_id` int(11) NOT NULL DEFAULT '0',
-  `context_id` int(11) NOT NULL DEFAULT '0',
-  `creator_id` int(11) NOT NULL DEFAULT '0',
-  `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modifier_id` int(11) NOT NULL DEFAULT '0',
-  `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `deleter_id` int(11) DEFAULT NULL,
-  `deletion_date` datetime DEFAULT NULL,
-  `sorting_place` tinyint(4) DEFAULT NULL,
-  PRIMARY KEY (`link_id`),
-  KEY `from_item_id` (`from_item_id`),
-  KEY `context_id` (`context_id`),
-  KEY `to_item_id` (`to_item_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
-# Export von Tabelle homepage_page
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `homepage_page`;
-
-CREATE TABLE `homepage_page` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
-  `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
-  `modifier_id` int(11) DEFAULT NULL,
-  `deleter_id` int(11) DEFAULT NULL,
-  `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modification_date` datetime DEFAULT NULL,
-  `deletion_date` datetime DEFAULT NULL,
-  `title` varchar(255) NOT NULL,
-  `description` mediumtext,
-  `public` tinyint(11) NOT NULL DEFAULT '0',
-  `page_type` varchar(10) NOT NULL,
-  PRIMARY KEY (`item_id`),
-  KEY `context_id` (`context_id`),
-  KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
 # Export von Tabelle item_backup
 # ------------------------------------------------------------
 
@@ -1405,56 +1355,6 @@ CREATE TABLE `zzz_hash` (
   PRIMARY KEY (`user_item_id`),
   KEY `rss` (`rss`),
   KEY `ical` (`ical`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
-# Export von Tabelle zzz_homepage_link_page_page
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `zzz_homepage_link_page_page`;
-
-CREATE TABLE `zzz_homepage_link_page_page` (
-  `link_id` int(11) NOT NULL AUTO_INCREMENT,
-  `from_item_id` int(11) NOT NULL DEFAULT '0',
-  `to_item_id` int(11) NOT NULL DEFAULT '0',
-  `context_id` int(11) NOT NULL DEFAULT '0',
-  `creator_id` int(11) NOT NULL DEFAULT '0',
-  `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modifier_id` int(11) NOT NULL DEFAULT '0',
-  `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `deleter_id` int(11) DEFAULT NULL,
-  `deletion_date` datetime DEFAULT NULL,
-  `sorting_place` tinyint(4) DEFAULT NULL,
-  PRIMARY KEY (`link_id`),
-  KEY `from_item_id` (`from_item_id`),
-  KEY `context_id` (`context_id`),
-  KEY `to_item_id` (`to_item_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
-# Export von Tabelle zzz_homepage_page
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `zzz_homepage_page`;
-
-CREATE TABLE `zzz_homepage_page` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
-  `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
-  `modifier_id` int(11) DEFAULT NULL,
-  `deleter_id` int(11) DEFAULT NULL,
-  `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modification_date` datetime DEFAULT NULL,
-  `deletion_date` datetime DEFAULT NULL,
-  `title` varchar(255) NOT NULL,
-  `description` mediumtext,
-  `public` tinyint(11) NOT NULL DEFAULT '0',
-  `page_type` varchar(10) NOT NULL,
-  PRIMARY KEY (`item_id`),
-  KEY `context_id` (`context_id`),
-  KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
