@@ -132,6 +132,10 @@ class SearchController extends Controller
             $reflection = new \ReflectionClass($searchResult);
             $type = strtolower(rtrim($reflection->getShortName(), 's'));
 
+            if ($type === 'label') {
+                $type = strtolower(rtrim($searchResult->getType(), 's'));
+            }
+
             $results[] = [
                 'entity' => $searchResult,
                 'routeName' => 'commsy_' . $type . '_detail',
