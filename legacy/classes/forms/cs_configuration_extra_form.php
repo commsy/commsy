@@ -107,11 +107,6 @@ class cs_configuration_extra_form extends cs_rubric_form {
          $this->_array_extra[21]['text']  = $this->_translator->getMessage('CHAT_CONFIGURATION_EXTRA_CHAT');
          $this->_array_extra[21]['value'] = 'CHAT_CONFIGURATION_EXTRA_CHAT';
       }
-
-      $this->_array_extra[22]['text']  = $this->_translator->getMessage('HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE');
-      $this->_array_extra[22]['value'] = 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE';
-      #$this->_array_extra[23]['text']  = $this->_translator->getMessage('CONFIGURATION_EXTRA_PDA');
-      #$this->_array_extra[23]['value'] = 'CONFIGURATION_EXTRA_PDA';
       
       global $c_pmwiki;
       if ( isset($c_pmwiki) and  $c_pmwiki ) {

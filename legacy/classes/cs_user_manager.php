@@ -1802,24 +1802,6 @@ class cs_user_manager extends cs_manager {
    function resetCacheSQL(){
       $this->_cache_sql = array();
    }
-
-	public function updateIndexedSearch($item) {
-		$indexer = $this->_environment->getSearchIndexer();
-		$query = '
-			SELECT
-				user.item_id AS item_id,
-				user.item_id AS index_id,
-				NULL AS version_id,
-				user.modification_date,
-				CONCAT(user.user_id, " ", user.firstname, " ", user.lastname) AS search_data
-			FROM
-				user
-			WHERE
-				user.deletion_date IS NULL AND
-				user.item_id = ' . $item->getItemID() . '
-		';
-		$indexer->add(CS_USER_TYPE, $query);
-	}
 	
 	####################################################
 	# archive method

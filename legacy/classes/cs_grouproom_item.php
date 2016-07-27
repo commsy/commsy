@@ -1218,14 +1218,6 @@ class cs_grouproom_item extends cs_room_item {
       }
    }
 
-   public function withHomepageLink() {
-      // point to linked project item
-      $linked_project_item = $this->getLinkedProjectItem();
-      if( isset($linked_project_item) ) {
-         return $linked_project_item->withHomepageLink();
-      }
-   }
-
    public function withWikiFunctions() {
       // point to linked project item
       $linked_project_item = $this->getLinkedProjectItem();

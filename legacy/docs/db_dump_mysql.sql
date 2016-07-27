@@ -296,21 +296,6 @@ CREATE TABLE `external2commsy_id` (
 
 
 
-# Export von Tabelle file_multi_upload
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `file_multi_upload`;
-
-CREATE TABLE `file_multi_upload` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `session_id` varchar(150) NOT NULL,
-  `file_array` text NOT NULL,
-  `cid` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
 # Export von Tabelle files
 # ------------------------------------------------------------
 
@@ -349,56 +334,6 @@ CREATE TABLE `hash` (
   PRIMARY KEY (`user_item_id`),
   KEY `rss` (`rss`),
   KEY `ical` (`ical`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
-# Export von Tabelle homepage_link_page_page
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `homepage_link_page_page`;
-
-CREATE TABLE `homepage_link_page_page` (
-  `link_id` int(11) NOT NULL AUTO_INCREMENT,
-  `from_item_id` int(11) NOT NULL DEFAULT '0',
-  `to_item_id` int(11) NOT NULL DEFAULT '0',
-  `context_id` int(11) NOT NULL DEFAULT '0',
-  `creator_id` int(11) NOT NULL DEFAULT '0',
-  `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modifier_id` int(11) NOT NULL DEFAULT '0',
-  `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `deleter_id` int(11) DEFAULT NULL,
-  `deletion_date` datetime DEFAULT NULL,
-  `sorting_place` tinyint(4) DEFAULT NULL,
-  PRIMARY KEY (`link_id`),
-  KEY `from_item_id` (`from_item_id`),
-  KEY `context_id` (`context_id`),
-  KEY `to_item_id` (`to_item_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
-# Export von Tabelle homepage_page
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `homepage_page`;
-
-CREATE TABLE `homepage_page` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
-  `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
-  `modifier_id` int(11) DEFAULT NULL,
-  `deleter_id` int(11) DEFAULT NULL,
-  `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modification_date` datetime DEFAULT NULL,
-  `deletion_date` datetime DEFAULT NULL,
-  `title` varchar(255) NOT NULL,
-  `description` mediumtext,
-  `public` tinyint(11) NOT NULL DEFAULT '0',
-  `page_type` varchar(10) NOT NULL,
-  PRIMARY KEY (`item_id`),
-  KEY `context_id` (`context_id`),
-  KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
@@ -611,23 +546,6 @@ CREATE TABLE `log` (
 
 
 
-# Export von Tabelle log_ads
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `log_ads`;
-
-CREATE TABLE `log_ads` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `cid` int(11) DEFAULT NULL,
-  `aim` varchar(255) NOT NULL,
-  `timestamp` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `cid` (`cid`),
-  KEY `timestamp` (`timestamp`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
 # Export von Tabelle log_archive
 # ------------------------------------------------------------
 
@@ -676,22 +594,6 @@ CREATE TABLE `log_error` (
   `module` varchar(255) NOT NULL,
   `function` varchar(255) NOT NULL,
   `user` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
-# Export von Tabelle log_message_tag
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `log_message_tag`;
-
-CREATE TABLE `log_message_tag` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tag` varchar(255) NOT NULL,
-  `version` varchar(50) NOT NULL,
-  `datetime` datetime NOT NULL,
-  `language` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -891,52 +793,6 @@ CREATE TABLE `room_privat` (
   KEY `creator_id` (`creator_id`),
   KEY `lastlogin` (`lastlogin`),
   KEY `status_2` (`status`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
-# Export von Tabelle search_index
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `search_index`;
-
-CREATE TABLE `search_index` (
-  `si_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `si_sw_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `si_item_id` int(11) NOT NULL DEFAULT '0',
-  `si_item_type` varchar(15) NOT NULL,
-  `si_count` smallint(5) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`si_id`),
-  UNIQUE KEY `un_si_sw_id` (`si_item_id`,`si_sw_id`,`si_item_type`),
-  KEY `si_sw_id` (`si_sw_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
-# Export von Tabelle search_time
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `search_time`;
-
-CREATE TABLE `search_time` (
-  `st_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `st_item_id` int(11) NOT NULL DEFAULT '0',
-  `st_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`st_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
-# Export von Tabelle search_word
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `search_word`;
-
-CREATE TABLE `search_word` (
-  `sw_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `sw_word` varchar(32) NOT NULL DEFAULT '',
-  `sw_lang` varchar(5) NOT NULL,
-  PRIMARY KEY (`sw_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
@@ -1484,56 +1340,6 @@ CREATE TABLE `zzz_hash` (
   PRIMARY KEY (`user_item_id`),
   KEY `rss` (`rss`),
   KEY `ical` (`ical`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
-# Export von Tabelle zzz_homepage_link_page_page
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `zzz_homepage_link_page_page`;
-
-CREATE TABLE `zzz_homepage_link_page_page` (
-  `link_id` int(11) NOT NULL AUTO_INCREMENT,
-  `from_item_id` int(11) NOT NULL DEFAULT '0',
-  `to_item_id` int(11) NOT NULL DEFAULT '0',
-  `context_id` int(11) NOT NULL DEFAULT '0',
-  `creator_id` int(11) NOT NULL DEFAULT '0',
-  `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modifier_id` int(11) NOT NULL DEFAULT '0',
-  `modification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `deleter_id` int(11) DEFAULT NULL,
-  `deletion_date` datetime DEFAULT NULL,
-  `sorting_place` tinyint(4) DEFAULT NULL,
-  PRIMARY KEY (`link_id`),
-  KEY `from_item_id` (`from_item_id`),
-  KEY `context_id` (`context_id`),
-  KEY `to_item_id` (`to_item_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
-# Export von Tabelle zzz_homepage_page
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `zzz_homepage_page`;
-
-CREATE TABLE `zzz_homepage_page` (
-  `item_id` int(11) NOT NULL DEFAULT '0',
-  `context_id` int(11) DEFAULT NULL,
-  `creator_id` int(11) NOT NULL DEFAULT '0',
-  `modifier_id` int(11) DEFAULT NULL,
-  `deleter_id` int(11) DEFAULT NULL,
-  `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modification_date` datetime DEFAULT NULL,
-  `deletion_date` datetime DEFAULT NULL,
-  `title` varchar(255) NOT NULL,
-  `description` mediumtext,
-  `public` tinyint(11) NOT NULL DEFAULT '0',
-  `page_type` varchar(10) NOT NULL,
-  PRIMARY KEY (`item_id`),
-  KEY `context_id` (`context_id`),
-  KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 

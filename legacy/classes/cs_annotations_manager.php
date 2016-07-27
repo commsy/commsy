@@ -491,28 +491,6 @@ class cs_annotations_manager extends cs_manager implements cs_export_import_inte
             }
         }
     }
-
-	public function updateIndexedSearch($item) {
-		$indexer = $this->_environment->getSearchIndexer();
-		$query = '
-			SELECT
-				annotations.item_id AS item_id,
-				annotations.linked_item_id AS index_id,
-				NULL AS version_id,
-				annotations.modification_date,
-				CONCAT(annotations.title, " ", annotations.description, " ", user.firstname, " ", user.lastname) AS search_data
-			FROM
-				annotations
-			LEFT JOIN
-				user
-			ON
-				user.item_id = annotations.creator_id
-			WHERE
-				annotations.deletion_date IS NULL AND
-				annotations.item_id = ' . $item->getItemID() . '
-		';
-		$indexer->add(CS_ANNOTATION_TYPE, $query);
-	}
 	
 	function export_item($id) {
 	   $item = $this->getItem($id);

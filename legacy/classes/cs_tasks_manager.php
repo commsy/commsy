@@ -370,27 +370,5 @@ class cs_tasks_manager extends cs_manager {
         parent::delete($item_id);
      }
   }
-  
-	public function updateIndexedSearch($item) {
-		$indexer = $this->_environment->getSearchIndexer();
-		$query = '
-			SELECT
-				tasks.item_id AS item_id,
-				tasks.item_id AS index_id,
-				NULL AS version_id,
-				tasks.modification_date,
-				CONCAT(tasks.title, " ", user.firstname, " ", user.lastname) AS search_data
-			FROM
-				tasks
-			LEFT JOIN
-				user
-			ON
-				user.item_id = tasks.creator_id
-			WHERE
-				tasks.deletion_date IS NULL AND
-				taslks.item_id = ' . $item->getItemID() . '
-		';
-		$indexer->add(CS_TASK_TYPE, $query);
-	}
 }
 ?>

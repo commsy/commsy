@@ -165,59 +165,6 @@ class cs_view {
       $html = '';
       return $html;
    }
-   
-   protected function addJavaScriptForSearch() {
-   	  if(isset($this->_javascript_search_output) && $this->_javascript_search_output == true) return '';
-   	  
-   	  $html = '';
-   	  global $c_indexed_search;
-      if(isset($c_indexed_search) && $c_indexed_search === true) {
-     	$current_room_modules = $this->_environment->getCurrentContextItem()->getHomeConf();
-		$room_modules = array();
-		if(!empty($current_room_modules)) {
-			$room_modules = explode(',', $current_room_modules);
-		}
-		foreach($room_modules as $module) {
-			$link_name = explode('_', $module);
-			if($link_name[1] !== 'none') {
-				$search_rubric[] = $link_name[0];
-			}
-		}
-		
-      	$html = "
-          <script type='text/javascript'>
-          <!--
-              var indexed_search = true;
-              var search_rubrics = ['" . implode('\', \'', $search_rubric) . "'];
-              var search_lang_results = '" . $this->_translator->getMessage("COMMON_SEARCH_RESULTS") . "';
-              var search_lang_rubrics = [";
-      	foreach($search_rubric as $rubric) {
-      		$html .= "'" . $this->_translator->getMessage('COMMON_' . strtoupper($rubric) . 'S') . "'";
-      		
-      		if($rubric != $search_rubric[sizeof($search_rubric) - 1]) {
-      			$html .= ', ';
-      		}
-      	}
-      	$html .= "
-      		  ];
-      		  var search_lang_result_message = '" . $this->_translator->getMessage("COMMON_SEARCH_RESULT_MESSAGE") . "';
-      		  var search_lang_view_options = '" . $this->_translator->getMessage("COMMON_SEARCH_OVERLAY_VIEW_OPTIONS") . "';
-      		  var search_lang_view_options_rubric = '" . $this->_translator->getMessage("COMMON_SEARCH_OVERLAY_VIEW_OPTIONS_RUBRICS") . "';
-      		  var search_lang_uncategorized = '" . $this->_translator->getMessage("COMMON_SEARCH_UNCATEGORIZED") . "';
-      		  var search_lang_view_options_per_rubric = '" . $this->_translator->getMessage("COMMON_SEARCH_OVERLAY_VIEW_OPTIONS_PER_RUBRIC") . "';
-      		  var search_lang_view_options_per_page = '" . $this->_translator->getMessage("COMMON_SEARCH_OVERLAY_VIEW_OPTIONS_PER_PAGE") . "';
-      		  var search_lang_restriction_options = '" . $this->_translator->getMessage("COMMON_SEARCH_OVERLAY_RESTRICTION_OPTIONS") . "';
-      		  var search_lang_restriction_categories = '" . $this->_translator->getMessage("COMMON_SEARCH_OVERLAY_RESTRICTION_CATEGORIES") . "';
-      		  var search_lang_fast_show_all = '" . $this->_translator->getMessage("COMMON_SEARCH_OVERLAY_FAST_SHOW_ALL") . "';
-          -->
-          </script>
-      	";
-      	
-      	$this->_javascript_search_output = true;
-      }
-      
-      return $html;
-   }
 
    function getStylesForHeaderAsHTML () {
       $html = '';

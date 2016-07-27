@@ -107,9 +107,6 @@ define('CS_LOG_ERROR_TYPE','log_error');
 
 define('CS_WIKI_TYPE','wiki');
 
-define('CS_HOMEPAGE_TYPE','homepage_page');
-define('CS_LINKHOMEPAGEHOMEPAGE_TYPE','homepage_link_page_page');
-
 define('CS_ASSESSMENT_TYPE', 'assessments');
 
 define('CS_PLUGIN_TYPE','plugin');

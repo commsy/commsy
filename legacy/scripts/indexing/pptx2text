@@ -1,2 +1,0 @@
-#! /bin/bash
-unzip -p $1 ppt/slides/slide*.xml ppt/notesSlides/notesSlide*.xml | sed -e 's/<[^>]*>/ /g'

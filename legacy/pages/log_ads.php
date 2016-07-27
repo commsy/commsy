@@ -32,8 +32,8 @@ if (!empty($_GET['aim'])) {
 }
 
 // save data
-$log_manager = $environment->getLogAdsManager();
-$log_manager->save($save);
+//$log_manager = $environment->getLogAdsManager();
+//$log_manager->save($save);
 
 // redirect
 redirect_with_url($save['aim']);

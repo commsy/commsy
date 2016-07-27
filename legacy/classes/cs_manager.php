@@ -1611,9 +1611,7 @@ class cs_manager {
 
       if ( DBTable2Type($this->_db_table) == CS_FILE_TYPE ) {
          $query .= ' WHERE files_id="'.encode(AS_DB,$data_array['files_id']).'"';
-      } elseif ( DBTable2Type($this->_db_table) == CS_LINKHOMEPAGEHOMEPAGE_TYPE
-                 or DBTable2Type($this->_db_table) == CS_TAG2TAG_TYPE
-               ) {
+      } elseif ( DBTable2Type($this->_db_table) == CS_TAG2TAG_TYPE ) {
          $query .= ' WHERE link_id="'.encode(AS_DB,$data_array['link_id']).'"';
       } else {
          $query .= ' WHERE item_id="'.encode(AS_DB,$data_array['item_id']).'"';

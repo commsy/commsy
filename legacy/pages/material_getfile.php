@@ -107,24 +107,6 @@ if ( !empty($_GET['iid']) ) {
          $link_item = $link_list->getNext();
       }
       unset($link_list);
-   } elseif ( $current_context_item->isHomepageLinkActive() ) {
-      $link_item_file_manager = $environment->getLinkItemFileManager();
-      $link_item_file_manager->resetLimits();
-      $link_item_file_manager->setFileIdLimit($_GET['iid']);
-      $link_item_file_manager->select();
-      $link_list = $link_item_file_manager->get();
-      $link_item = $link_list->getFirst();
-      while ( $link_item ) {
-         $linked_item = $link_item->getLinkedItem();
-         if ( isset($linked_item) and $linked_item->isA(CS_HOMEPAGE_TYPE)) {
-            $send_file = true;
-            break;
-         }
-         unset($linked_item);
-         unset($link_item);
-         $link_item = $link_list->getNext();
-      }
-      unset($link_list);
    }elseif ( $item->mayExternalSee($current_user_item) ) {
       $send_file = true;
    }

@@ -86,9 +86,6 @@ else {
 //       } elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_LOG_IP') {
 //          $extra = $_POST['extra'];
 //          $values['description'] = $translator->getMessage('CONFIGURATION_EXTRA_LOG_IP_DESC');
-      } elseif ($_POST['extra'] == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE') {
-         $extra = $_POST['extra'];
-         $values['description'] = $translator->getMessage('HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE_DESC');
       } elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_WIKI') {
          $extra = $_POST['extra'];
          $values['description'] = $translator->getMessage('CONFIGURATION_EXTRA_WIKI_DESC');
@@ -129,7 +126,6 @@ else {
 //          	  ( $extra == 'CONFIGURATION_EXTRA_LOG_IP'   and $portal->withLogIPCover() ) or
               ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE'   and $portal->withLogArchive() ) or
               ( $extra == 'CONFIGURATION_EXTRA_PDA'          and $portal->withPDAView() ) or
-              ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and $portal->withHomepageLink() ) or
               ( $extra == 'CONFIGURATION_EXTRA_WIKI' and $portal->withWikiFunctions() ) or
               ( $extra == 'CONFIGURATION_EXTRA_WORDPRESS' and $portal->withWordpressFunctions() ) or
               ( $extra == 'CHAT_CONFIGURATION_EXTRA_CHAT'    and $portal->withChatLink() ) or
@@ -154,7 +150,6 @@ else {
 //                		( $extra == 'CONFIGURATION_EXTRA_LOG_IP'   and $room->withLogIPCover() ) or
                     ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE'    and $room->withLogArchive() ) or
                     ( $extra == 'CONFIGURATION_EXTRA_PDA'          and $room->withPDAView() ) or
-                    ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and $room->withHomepageLink() ) or
                     ( $extra == 'CONFIGURATION_EXTRA_WIKI' and $room->withWikiFunctions() ) or
                     ( $extra == 'CONFIGURATION_EXTRA_WORDPRESS' and $room->withWordpressFunctions() ) or
                     ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' and $room->withMaterialImportLink() ) or
@@ -201,7 +196,6 @@ else {
 //         	  $_POST['extra'] == 'CONFIGURATION_EXTRA_LOG_IP' or
               $_POST['extra'] == 'CONFIGURATION_EXTRA_LOGARCHIVE' or
               $_POST['extra'] == 'CONFIGURATION_EXTRA_PDA' or
-              $_POST['extra'] == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' or
               $_POST['extra'] == 'CONFIGURATION_EXTRA_WIKI' or
               $_POST['extra'] == 'CONFIGURATION_EXTRA_WORDPRESS' or
               $_POST['extra'] == 'CONFIGURATION_EXTRA_MATERIALIMPORT' or
@@ -233,8 +227,6 @@ else {
                   $portal->setWithLogArchive();
 //                } elseif ( $extra == 'CONFIGURATION_EXTRA_LOG_IP' ) {
 //                   	$portal->setWithLogIPCover();
-               } elseif ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' ) {
-                  $portal->setWithHomepageLink();
                } elseif ( $extra == 'CONFIGURATION_EXTRA_WIKI' ) {
                   $portal->setWithWikiFunctions();
                } elseif ( $extra == 'CONFIGURATION_EXTRA_WORDPRESS' ) {
@@ -263,8 +255,6 @@ else {
                   $portal->setWithoutLogArchive();
 //                } elseif ( $extra == 'CONFIGURATION_EXTRA_LOG_IP' ) {
 //                   $portal->setWithoutLogIPCover();
-               } elseif ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' ) {
-                  $portal->setWithoutHomepageLink();
                } elseif ( $extra == 'CONFIGURATION_EXTRA_WIKI' ) {
                   $portal->setWithoutWikiFunctions();
                } elseif ( $extra == 'CONFIGURATION_EXTRA_WORDPRESS' ) {
@@ -306,9 +296,6 @@ else {
 //                      } elseif ( $extra == 'CONFIGURATION_EXTRA_LOG_IP' and !$room->withLogIPCover()) {
 //                         $room->setWithLogIPCover();
 //                         $save_flag = true;
-                     } elseif ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and !$room->WithHomepageLink() ) {
-                        $room->setWithHomepageLink();
-                        $save_flag = true;
                      } elseif ( $extra == 'CONFIGURATION_EXTRA_WIKI' and !$room->WithWikiFunctions() ) {
                         $room->setWithWikiFunctions();
                         $save_flag = true;
@@ -348,9 +335,6 @@ else {
 //                      } elseif ( $extra == 'CONFIGURATION_EXTRA_LOG_IP' and $room->withLogIPCover()) {
 //                         $room->setWithoutLogIPCover();
 //                         $save_flag = true;
-                     } elseif ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and $room->WithHomepageLink() ) {
-                        $room->setWithoutHomepageLink();
-                        $save_flag = true;
                      } elseif ( $extra == 'CONFIGURATION_EXTRA_WIKI' and $room->WithWikiFunctions() ) {
                         $room->setWithoutWikiFunctions();
                         $save_flag = true;

@@ -2408,18 +2408,6 @@ class cs_popup_configuration_controller implements cs_popup_controller {
                } else {
                   $array_plugins[$plugin_class->getIdentifier()]['on'] = 'no';
                }
-	            
-	            /*
-	            if ( $this->_environment->inPortal()
-	                 and method_exists($plugin_class,'configurationAtPortal')
-	               ) {
-	               $array_plugins[$plugin_class->getIdentifier()]['change_form'] = $plugin_class->configurationAtPortal('change_form');
-	            } elseif ( !$this->_environment->inServer()
-	                       and method_exists($plugin_class,'configurationAtRoom')
-	               ) {
-	               $array_plugins[$plugin_class->getIdentifier()]['change_form'] = $plugin_class->configurationAtRoom('change_form');
-	            }
-	            */
 	         }
 	      }
 	   }

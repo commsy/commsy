@@ -29,8 +29,6 @@ $c_error_log_db = true;
 // Support for debugging message-tags
 // if set, message-tags will not be resolved
 // $dont_resolve_messagetags = true;
-// if set, used messagetag without translation will be logged to the db
-$c_messagetag_log_db = true;
 
 // message tags in configuration (default == false) --- only for developers !!!!
 $c_message_management = true;
@@ -92,9 +90,6 @@ $c_enable_htmltextarea_security = false;
 //$c_email_upload_email_account  = 'email@example.com';
 //$c_email_upload_email_password = 'secret';
 //$c_email_upload_email_address  = 'email2commsy@example.com'; # default is empty, than account will be displayed
-
-// enable new indexed search
-//$c_indexed_search = true;
 
 // enable workflow support
 //$c_workflow = false;

@@ -35,8 +35,8 @@ define('CS_STATUS_WP_EDITOR', 'editor');
 define('CS_STATUS_WP_AUTHOR', 'author');
 define('CS_STATUS_WP_CONTRI', 'contributor');
 
-/** class for database connection to the database table "homepage"
- * this class implements a database manager for the table "homepage_page"
+/**
+ * Wordpress Manager
  */
 class cs_wordpress_manager extends cs_manager
 {

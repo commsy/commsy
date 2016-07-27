@@ -145,10 +145,6 @@ else {
             #$data_type_array[] = CS_NOTICED_TYPE;
             #$data_type_array[] = CS_HASH_TYPE;
 
-            # extensions
-            $data_type_array[] = CS_HOMEPAGE_TYPE;
-            $data_type_array[] = CS_LINKHOMEPAGEHOMEPAGE_TYPE;
-
             foreach ($data_type_array as $type) {
                $manager = $environment->getManager($type);
                $manager->setContextLimit($_POST['iid']);

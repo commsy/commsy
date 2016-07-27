@@ -27,8 +27,8 @@ include_once('functions/text_functions.php');
  */
 include_once('functions/date_functions.php');
 
-/** class for database connection to the database table "homepage"
- * this class implements a database manager for the table "homepage_page"
+/**
+ * Wiki Manager
  */
 
 class cs_wiki_manager extends cs_manager {

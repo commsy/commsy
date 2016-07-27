@@ -562,15 +562,6 @@ class cs_environment {
 	   $this->_current_parameter_array = $temp_array;
    }
 
-  /** get instance of cs_ads_log_manager
-   *
-   * @return cs_ads_log_manager
-   * @access public
-   */
-   function getLogAdsManager() {
-      return $this->_getInstance('cs_log_ads_manager');
-   }
-
   /** get instance of cs_announcement_manager
    *
    * @return cs_announcement_manager
@@ -1358,10 +1349,6 @@ class cs_environment {
       }
    }
 
-   function getSearchIndexer() {
-   	return $this->_getInstance('cs_search_indexer');
-   }
-
  /** get instance of cs_zzz_task_manager
    *
    * @return cs_zzz_task_manager
@@ -1477,18 +1464,9 @@ class cs_environment {
       return $this->_getInstance('cs_zzz_hash_manager');
    }
 
-  /** get instance of cs_homepage_manager
+  /** get instance of cs_etchat_manager
    *
-   * @return cs_homepage_manager
-   * @access public
-   */
-   function getHomepageManager() {
-      return $this->_getInstance('cs_homepage_manager');
-   }
-
-  /** get instance of cs_homepage_manager
-   *
-   * @return cs_homepage_manager
+   * @return cs_etchat_manager
    * @access public
    */
    function getETChatManager () {
@@ -1513,30 +1491,12 @@ class cs_environment {
       return $this->_getInstance('cs_wordpress_manager');
    }
 
-  /** get instance of cs_homepagelink_manager
-   *
-   * @return cs_homepagelink_manager
-   * @access public
-   */
-   function getHomepageLinkManager() {
-      return $this->_getInstance('cs_homepagelink_manager');
-   }
-
    function getExternalIdManager() {
       return $this->_getInstance('cs_external_id_manager');
    }
 
    function getEntryManager() {
       return $this->_getInstance('cs_entry_manager');
-   }
-
-   /** get instance of cs_file_multi_upload_manager
-   *
-   * @return cs_file_multi_upload_manager
-   * @access public
-   */
-   function getFileMultiUploadManager() {
-      return $this->_getInstance('cs_file_multi_upload_manager');
    }
 
   /** get instance of cs_session_manager
@@ -1755,12 +1715,8 @@ class cs_environment {
             return $this->getNoticedManager();
          } elseif ($type == CS_TIME_TYPE) {
             return $this->getTimeManager();
-         } elseif ($type == CS_HOMEPAGE_TYPE) {
-            return $this->getHomepageManager();
          } elseif ($type == CS_WIKI_TYPE) {
             return $this->getWikiManager();
-         } elseif ($type == CS_LINKHOMEPAGEHOMEPAGE_TYPE) {
-            return $this->getHomepageLinkManager();
          } elseif ($type == CS_AUTH_SOURCE_TYPE) {
             return $this->getAuthSourceManager();
          } elseif ($type == 'chat') {
@@ -1866,7 +1822,6 @@ class cs_environment {
     * @return cs_object translation object for commsy
     */
    function getTranslationObject () {
-      global $c_messagetag_log_db;
       global $dont_resolve_messagetags;
 
       if ( !isset($this->instance['translation_object']) ) {
@@ -1874,11 +1829,6 @@ class cs_environment {
          $this->instance['translation_object'] = new cs_translator;
          if ($dont_resolve_messagetags) {
             $this->instance['translation_object']->dontResolveMessageTags();
-         }
-         if ($c_messagetag_log_db) {
-            $this->instance['translation_object']->logMessageTags();
-            $this->instance['translation_object']->setDBConnector($this->getDBConnector());
-            $this->instance['translation_object']->setCommSyVersion($this->getCurrentCommSyVersion());
          }
          $this->instance['translation_object']->setSelectedLanguage($this->getSelectedLanguage());
          $context_item = $this->getCurrentContextItem();

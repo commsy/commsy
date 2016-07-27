@@ -632,27 +632,6 @@ class cs_section_manager extends cs_manager implements cs_export_import_interfac
             }
         }
     }
-
-	public function updateIndexedSearch($item) {
-		$indexer = $this->_environment->getSearchIndexer();
-		$query = '
-			SELECT
-				section.item_id AS item_id,
-				section.material_item_id AS index_id,
-				section.version_id AS version_id,
-				section.modification_date,
-				CONCAT(section.title, " ", section.description, " ", user.firstname, " ", user.lastname) AS search_data
-			FROM
-				section
-			LEFT JOIN
-				user
-			ON
-				user.item_id = section.creator_id
-			WHERE
-				section.deletion_date IS NULL
-		';
-		$indexer->add(CS_SECTION_TYPE, $query);
-	}
 	
 	function export_item($id) {
 	   $item = $this->getItem($id);

@@ -819,28 +819,6 @@ class cs_tag_manager extends cs_manager implements cs_export_import_interface {
             }
         }
     }
-
-	public function updateIndexedSearch($item) {
-		$indexer = $this->_environment->getSearchIndexer();
-		$query = '
-			SELECT
-				tag.item_id AS item_id,
-				tag.item_id AS index_id,
-				NULL AS version_id,
-				tag.modification_date,
-				CONCAT(tag.title, " ", user.firstname, " ", user.lastname) AS search_data
-			FROM
-				tag
-			LEFT JOIN
-				user
-			ON
-				user.item_id = tag.creator_id
-			WHERE
-				tag.deletion_date IS NULL AND
-				tag.item_id = ' . $item->getItemID() . '
-		';
-		$indexer->add(CS_TAG_TYPE, $query);
-	}
 	
 	function export_item($id) {
 	   $item = $this->getItem($id);

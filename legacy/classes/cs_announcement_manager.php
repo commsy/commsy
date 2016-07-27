@@ -642,28 +642,6 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
             }
         }
     }
-
-   public function updateIndexedSearch($item) {
-	   	$indexer = $this->_environment->getSearchIndexer();
-	   	$query = '
-		   	SELECT
-			   	announcement.item_id AS item_id,
-			   	announcement.item_id AS index_id,
-			   	NULL AS version_id,
-			   	announcement.modification_date,
-			   	CONCAT(announcement.title, " ", announcement.description, " ", user.firstname, " ", user.lastname) AS search_data
-		   	FROM
-		   		announcement
-		   	LEFT JOIN
-		   		user
-		   	ON
-		   		user.item_id = announcement.creator_id
-		   	WHERE
-		   		announcement.deletion_date IS NULL AND
-		   		announcement.item_id = ' . $item->getItemID() . '
-	   	';
-	   	$indexer->add(CS_ANNOUNCEMENT_TYPE, $query);
-   }
    
    function export_item($id) {
 	   $item = $this->getItem($id);

@@ -561,28 +561,6 @@ class cs_step_manager extends cs_manager implements cs_export_import_interface {
             }
         }
     }
-
-	public function updateIndexedSearch($item) {
-		$indexer = $this->_environment->getSearchIndexer();
-		$query = '
-			SELECT
-				step.item_id AS item_id,
-				step.todo_item_id AS index_id,
-				NULL AS version_id,
-				step.modification_date,
-				CONCAT(step.title, " ", step.description, " ", user.firstname, " ", user.lastname) AS search_data
-			FROM
-				step
-			LEFT JOIN
-				user
-			ON
-				user.item_id = step.creator_id
-			WHERE
-				step.deletion_date IS NULL AND
-				step.item_id = ' . $item->getItemID() . '
-		';
-		$indexer->add(CS_STEP_TYPE, $query);
-	}
 	
 	function export_item($id) {
 	   $item = $this->getItem($id);

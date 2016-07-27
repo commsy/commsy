@@ -1315,14 +1315,6 @@ class cs_room_item extends cs_context_item {
       $file_manager->moveFromDbToBackup($this->getItemID());
       unset($file_manager);
 
-      $homepage_link_manager = $environment->getHomepageLinkManager();
-      $homepage_link_manager->moveFromDbToBackup($this->getItemID());
-      unset($homepage_link_manager);
-
-      $homepage_manager = $environment->getHomepageManager();
-      $homepage_manager->moveFromDbToBackup($this->getItemID());
-      unset($homepage_manager);
-
       $item_manager = $environment->getItemManager();
       $item_manager->moveFromDbToBackup($this->getItemID());
       unset($item_manager);
@@ -1445,14 +1437,6 @@ class cs_room_item extends cs_context_item {
       $file_manager = $environment->getFileManager();
       $file_manager->moveFromBackupToDb($this->getItemID());
       unset($file_manager);
-
-      $homepage_link_manager = $environment->getHomepageLinkManager();
-      $homepage_link_manager->moveFromBackupToDb($this->getItemID());
-      unset($homepage_link_manager);
-
-      $homepage_manager = $environment->getHomepageManager();
-      $homepage_manager->moveFromBackupToDb($this->getItemID());
-      unset($homepage_manager);
 
       $item_manager = $environment->getItemManager();
       $item_manager->moveFromBackupToDb($this->getItemID());
