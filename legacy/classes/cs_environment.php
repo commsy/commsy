@@ -562,15 +562,6 @@ class cs_environment {
 	   $this->_current_parameter_array = $temp_array;
    }
 
-  /** get instance of cs_ads_log_manager
-   *
-   * @return cs_ads_log_manager
-   * @access public
-   */
-   function getLogAdsManager() {
-      return $this->_getInstance('cs_log_ads_manager');
-   }
-
   /** get instance of cs_announcement_manager
    *
    * @return cs_announcement_manager

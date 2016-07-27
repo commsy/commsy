@@ -611,23 +611,6 @@ CREATE TABLE `log` (
 
 
 
-# Export von Tabelle log_ads
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `log_ads`;
-
-CREATE TABLE `log_ads` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `cid` int(11) DEFAULT NULL,
-  `aim` varchar(255) NOT NULL,
-  `timestamp` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `cid` (`cid`),
-  KEY `timestamp` (`timestamp`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
 # Export von Tabelle log_archive
 # ------------------------------------------------------------
 
