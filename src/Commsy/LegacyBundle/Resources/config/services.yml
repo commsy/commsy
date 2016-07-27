@@ -137,7 +137,7 @@ services:
 
     commsy_legacy.transformer.extension_settings:
         class: Commsy\LegacyBundle\Form\DataTransformer\ExtensionSettingsTransformer
-        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_mediawiki.mediawiki']
 
     commsy_legacy.transformer.material:
         class: Commsy\LegacyBundle\Form\DataTransformer\MaterialTransformer

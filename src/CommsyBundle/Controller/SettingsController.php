@@ -285,22 +285,14 @@ class SettingsController extends Controller
         $form->handleRequest($request);
         if ($form->isValid()) {
 
-            if ($form->get('save')->isClicked()) {
-                $formData = $form->getData();
-                
-                if ($formData['wikiEnabled']) {
-                    if (!$roomItem->isWikiEnabled()) {
-                        $roomItem->setWikiEnabled(true);
-                        
-                        $mediawikiService = $this->get('commsy_mediawiki.mediawiki');
-                        $mediawikiService->createWiki($roomId);
-                    }
-                } else {
-                    $roomItem->setWikiEnabled(false);
-                }
-                
-                $roomItem->save();
-            }
+            $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
+            //$roomItem->save();
+
+            // persist
+            // $em = $this->getDoctrine()->getManager();
+            // $em->persist($room);
+            // $em->flush();
+            //return $this->redirectToRoute('commsy_settings_extensions', ["roomId" => $roomId]);            
         }
 
         return array(

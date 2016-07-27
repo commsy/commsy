@@ -5,8 +5,11 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
@@ -33,18 +36,76 @@ class ExtensionSettingsType extends AbstractType
         $roomItem = $roomManager->getItem($options['roomId']);
 
         $builder
+            ->add('assessment', CheckboxType::class, array(
+                'required' => false,
+            ))
+            ->add(
+                $builder->create('workflow', FormType::class, array())
+                ->add('resubmission', CheckboxType::class, array(
+                    'required' => false,
+                    'label_attr' => array('class' => 'uk-form-label'),
+                ))
+                ->add('validity', CheckboxType::class, array(
+                    'required' => false,
+                    'label_attr' => array('class' => 'uk-form-label'),
+                ))
+                ->add(
+                    $builder->create('traffic_light', FormType::class, array())
+                    ->add('activate', CheckboxType::class, array(
+                        'required' => false,
+                        'label' => "use",
+                    ))
+                    ->add('default_status', ChoiceType::class, array(
+                        'label_attr' => array('class' => 'uk-form-label'),
+                        'expanded' => true,
+                        'multiple' => false,
+                        'choices' => array(
+                            'GreenIcon' => '0_green',
+                            'YellowIcon'=> '1_yellow',
+                            'RedIcon'   => '2_red',
+                            'NoDefault' => '3_none',
+                        ),
+                    ))
+                    ->add('green_text', TextType::class, array(
+                        'required' => true,
+                    ))
+                    ->add('yellow_text', TextType::class, array(
+                        'required' => true,
+                    ))
+                    ->add('red_text', TextType::class, array(
+                        'required' => true,
+                    ))
+                )
+
+                ->add('reader', CheckboxType::class, array(
+                    'required' => false,
+                ))
+                ->add('reader_group', CheckboxType::class, array(
+                    'required' => false,
+                ))
+                ->add('reader_person', CheckboxType::class, array(
+                    'required' => false,
+                ))
+                ->add('resubmission_show_to', ChoiceType::class, array(
+                    'expanded' => true,
+                    'multiple' => false,
+                    'choices' => array(
+                        'Moderators' => 'moderator',
+                        'Users' => 'all',
+                    ),
+                ))
+            )
             ->add('wikiEnabled', CheckboxType::class, array(
                 'label' => 'wikiEnabled',
                 'required' => false,
-                'translation_domain' => 'form',
             ))
             ->add('save', SubmitType::class, array(
                 'position' => 'last',
-                'label' => 'save',
-                'translation_domain' => 'form'
+                'label' => 'Save',
             ));
         ;
     }
+
 
     /**
      * Configures the options for this type.
@@ -55,6 +116,7 @@ class ExtensionSettingsType extends AbstractType
     {
         $resolver
             ->setRequired(['roomId'])
+            ->setDefaults(array('translation_domain' => 'settings'))            
         ;
     }
 

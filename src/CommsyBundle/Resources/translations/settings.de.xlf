@@ -297,11 +297,51 @@
                 <source>Usernotice</source>
                 <target>Nutzungshinweise:</target>
             </trans-unit>
+            <trans-unit id="email_configuration">
+                <source>Email configuration</source>
+                <target>E-Mail-Konfiguration:</target>
+            </trans-unit>
 
             <!-- Extension settings -->
             <trans-unit id="extensions_configuration">
                 <source>Extensions Configuration</source>
                 <target>Erweiterungen</target>
+            </trans-unit>
+            <trans-unit id="assessment">
+                <source>Assessment</source>
+                <target>Bewertungen:</target>
+            </trans-unit>                        
+            <trans-unit id="workflow">
+                <source>Workflow</source>
+                <target>Workflow Einstellungen:</target>
+            </trans-unit>            
+            <trans-unit id="workflow_resubmission">
+                <source>Resubmission</source>
+                <target>Wiedervorlage</target>
+            </trans-unit>
+            <trans-unit id="workflow_validity">
+                <source>Validity</source>
+                <target>Gültigkeitsdatum</target>
+            </trans-unit>
+            <trans-unit id="workflow_trafic_light">
+                <source>Traffic light</source>
+                <target>Status-Anzeige</target>
+            </trans-unit>
+            <trans-unit id="workflow_green_text">
+                <source>Traffic light green text</source>
+                <target>Grün</target>
+            </trans-unit>  
+            <trans-unit id="workflow_yellow_text">
+                <source>Traffic light yellow text</source>
+                <target>Gelb</target>
+            </trans-unit>
+            <trans-unit id="workflow_red_text">
+                <source>Traffic light red text</source>
+                <target>Rot</target>
+            </trans-unit>
+            <trans-unit id="wiki_enabled">
+                <source>wikiEnabled</source>
+                <target>Wiki:</target>
             </trans-unit>
         </body>
     </file>

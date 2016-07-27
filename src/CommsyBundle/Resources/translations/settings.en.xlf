@@ -296,13 +296,53 @@
             <trans-unit id="usernotice">
                 <source>Usernotice</source>
                 <target>User notice:</target>
-            </trans-unit>    
+            </trans-unit>
+            <trans-unit id="email_configuration">
+                <source>Email configuration</source>
+                <target>E-Mail-Konfiguration::</target>
+            </trans-unit>            
 
             <!-- Extension settings -->
             <trans-unit id="extensions_configuration">
                 <source>Extensions Configuration</source>
                 <target>Extensions Configuration</target>
-            </trans-unit>        
+            </trans-unit>
+            <trans-unit id="assessment">
+                <source>Assessment</source>
+                <target>Assessments:</target>
+            </trans-unit>                        
+            <trans-unit id="workflow">
+                <source>Workflow</source>
+                <target>Workflow settings:</target>
+            </trans-unit>            
+            <trans-unit id="workflow_resubmission">
+                <source>Resubmission</source>
+                <target>Resubmission</target>
+            </trans-unit>
+            <trans-unit id="workflow_validity">
+                <source>Validity</source>
+                <target>Validity date</target>
+            </trans-unit>
+            <trans-unit id="workflow_trafic_light">
+                <source>Traffic light</source>
+                <target>Status view</target>
+            </trans-unit>
+            <trans-unit id="workflow_green_text">
+                <source>Traffic light green text</source>
+                <target>Green</target>
+            </trans-unit>  
+            <trans-unit id="workflow_yellow_text">
+                <source>Traffic light yellow text</source>
+                <target>Yellow</target>
+            </trans-unit>
+            <trans-unit id="workflow_red_text">
+                <source>Traffic light red text</source>
+                <target>Red</target>
+            </trans-unit>
+            <trans-unit id="wiki_enabled">
+                <source>wikiEnabled</source>
+                <target>Wiki:</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
