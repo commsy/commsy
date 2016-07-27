@@ -1,2 +1,0 @@
-#!/bin/bash
-unzip -p $1 xl/sharedStrings.xml | sed -e 's/<[^>]*>/ /g'

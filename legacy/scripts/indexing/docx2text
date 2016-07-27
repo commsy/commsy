@@ -1,2 +1,0 @@
-#!/bin/bash
-unzip -p $1 word/document.xml | sed -e 's/<[^>]*>/ /g'
