@@ -49,6 +49,12 @@ class ProjectController extends Controller
 
         // get material list from manager service 
         $projects = $projectService->getListProjects($roomId, $max, $start, $sort);
+        $projectsMemberStatus = array();
+        foreach ($projects as $project) {
+            $projectsMemberStatus[$project->getItemId()] = $this->memberStatus($project);
+        }
+
+        error_log(print_r($projectsMemberStatus, true));
 
         $readerService = $this->get('commsy_legacy.reader_service');
 
@@ -68,6 +74,7 @@ class ProjectController extends Controller
         return array(
             'roomId' => $roomId,
             'projects' => $projects,
+            'projectsMemberStatus' => $projectsMemberStatus,
             'readerList' => $readerList,
             'currentUser' => $currentUser
         );
@@ -132,95 +139,29 @@ class ProjectController extends Controller
     
     function memberStatus ($item) {
         $status = 'closed';
-        
-        $current_user = $this->_environment->getCurrentUserItem();
-         if ($current_user->isRoot()) {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_user = $legacyEnvironment->getCurrentUserItem();
+        if ($current_user->isRoot()) {
             $may_enter = true;
-         } elseif ( !empty($room_user) ) {
+        } elseif ( !empty($room_user) ) {
             $may_enter = $item->mayEnter($room_user);
-         } else {
+        } else {
             $may_enter = false;
-         }
-         //$html .= '<div style="float:right; width:15em; padding:5px; vertical-align: middle; text-align: center;">'.LF;
-
-         // Eintritt erlaubt
-         if ($may_enter) {
-            //$actionCurl = curl( $item->getItemID(),
-            //                 'home',
-            //                 'index',
-            //                 '');
-            //if (!$this->isPrintableView()) {
-            //   $html .= '<a class="room_window" href="'.$actionCurl.'"><img alt="door" src="images/door_open_large.gif"/></a>'.BRLF;
-            //} else {
-               $html .= '<img alt="door" src="images/door_open_large.gif" style="vertical-align: large;"/>'.BRLF;
-            //}
+        }
+        
+        if ($may_enter) {
             if ($item->isOpen()) {
-               //$actionCurl = curl( $item->getItemID(),
-               //                 'home',
-               //                 'index',
-               //                 '');
-               //$html .= '<div style="margin-top: 5px; padding:3px; text-align:left;">';
-               //if (!$this->isPrintableView()) {
-               //  $html .= '<div style="padding-top:5px; text-align: center;">'.'<a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_ENTER').'</a></div>'.LF;
-               //} else {
-                  $html .= '<div style="padding-top:5px; text-align: center;">'.$this->_translator->getMessage('CONTEXT_ENTER').'</div>'.LF;
-               //}
+                $status = 'enter';
             } else {
-               $html .= '<div style="padding-top:3px; text-align: center;"><span class="disabled">'.$this->_translator->getMessage('CONTEXT_JOIN').'</span></div>'.LF;
+                $status = 'join';
             }
-            //$html .= '</div>';
-
-         } elseif ( $item->isLocked() ) {
-            $html .= '<img alt="door" src="images/door_closed_large.gif" style="vertical-align: middle; "/>'.LF;
-         //Um Erlaubnis gefragt
-         } elseif(!empty($room_user) and $room_user->isRequested()) {
-            $html .= '<img alt="door" src="images/door_closed_large.gif" style="vertical-align: large; "/>'.LF;
-            //$html .= '<div style="xborder: 2px solid '.$color_array['tabs_background'].'; margin-top: 5px; padding:3px; text-align:left;">';
-            //$html .= '<div style="padding-top:0px; text-align: center;"><p style=" margin-top:0px; margin-bottom:0px;text-align:left;" class="disabled">'.$this->_translator->getMessage('ACCOUNT_NOT_ACCEPTED_YET').'</p></div>'.LF;
-           //$html.= '</div>';
-
-         //Erlaubnis verweigert
-         } elseif(!empty($room_user) and $room_user->isRejected()) {
-            $html .= '<img alt="door" src="images/door_closed_large.gif" style="vertical-align: large; "/>'.LF;
-            //$html .= '<div style="xborder: 2px solid '.$color_array['tabs_background'].'; margin-top: 5px; padding:3px; text-align:left;">';
-            //$html .= '<div style="padding-top:0px; text-align: center;"><p style=" margin-top:0px; margin-bottom:0px;text-align:left;" class="disabled">'.$this->_translator->getMessage('ACCOUNT_NOT_ACCEPTED').'</p></div>'.LF;
-           //$html.= '</div>';
-
-         // noch nicht angemeldet als Mitglied im Raum
-         } else {
-            $html .= '<img alt="door" src="images/door_closed_large.gif" style="vertical-align: middle text-align:left;"/>'.BRLF;
-            //$html .= '<div style="xborder: 2px solid '.$color_array['tabs_background'].'; margin-top: 5px; padding:3px; text-align:center;">';
-            $current_user_item_read = $this->_environment->getCurrentUserItem();
-            if ( $item->isOpen()
-                 and !$current_user_item_read->isOnlyReadUser()
-               ) {
-               if ( $this->_environment->inPortal() ) {
-                  $params['account'] = 'member';
-                  $params['room_id'] = $this->_item->getItemID();
-                  $actionCurl = curl( $this->_environment->getCurrentPortalID(),
-                                      'home',
-                                      'index',
-                                      $params,
-                                      '');
-               } else {
-                  $params['account'] = 'member';
-                  $params['iid'] = $this->_item->getItemID();
-                  $actionCurl = curl( $this->_environment->getCurrentContextID(),
-                                      $this->_environment->getCurrentModule(),
-                                      $this->_environment->getCurrentFunction(),
-                                      $params,
-                                      '');
-               }
-               if (!$this->isPrintableView()) {
-                  $html .= '<div style="padding-top:5px; text-align: center;">'.'<a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_JOIN').'</a></div>'.LF;
-               } else {
-                  $html .= '<div style="padding-top:5px; text-align: center;">'.$this->_translator->getMessage('CONTEXT_JOIN').'</div>'.LF;
-               }
-               unset($params);
-            } else {
-               $html .= '<div style="padding-top:3px; text-align: center;"><span class="disabled">'.$this->_translator->getMessage('CONTEXT_JOIN').'</span></div>'.LF;
-            }
-            $html.= '</div>';
-         }
+        } elseif ( $item->isLocked() ) {
+            $status = 'locked';
+        } elseif(!empty($room_user) and $room_user->isRequested()) {
+            $status = 'requested';
+        } elseif(!empty($room_user) and $room_user->isRejected()) {
+            $status = 'rejected';
+        }
+        return $status;
     }
 }

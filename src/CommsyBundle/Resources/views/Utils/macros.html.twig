@@ -436,12 +436,18 @@
     {% endfor %}
 {% endmacro %}
 
-{% macro contextLink(roomId, context, user) %}
-    {% if context.mayEnter(user) %}
+{% macro contextLink(roomId, context, contextMemberStatus) %}
+    {% if contextMemberStatus == 'enter' %}
         <a href="{{ path('commsy_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>
     {% else %}
-        {% if context.isUser(user) %}
+        {% if contextMemberStatus == 'join' %}
             User ...
+        {% elseif contextMemberStatus == 'locked' %}
+            Locked ...
+        {% elseif contextMemberStatus == 'requested' %}
+            Requested ...
+        {% elseif contextMemberStatus == 'rejected' %}
+            Rejected ...
         {% else %}
             <a href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}">{{ 'become member'|trans({}, 'room') }}</a>
         {% endif %}
