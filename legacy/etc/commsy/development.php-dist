@@ -29,8 +29,6 @@ $c_error_log_db = true;
 // Support for debugging message-tags
 // if set, message-tags will not be resolved
 // $dont_resolve_messagetags = true;
-// if set, used messagetag without translation will be logged to the db
-$c_messagetag_log_db = true;
 
 // message tags in configuration (default == false) --- only for developers !!!!
 $c_message_management = true;

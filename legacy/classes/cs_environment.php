@@ -1853,7 +1853,6 @@ class cs_environment {
     * @return cs_object translation object for commsy
     */
    function getTranslationObject () {
-      global $c_messagetag_log_db;
       global $dont_resolve_messagetags;
 
       if ( !isset($this->instance['translation_object']) ) {
@@ -1861,11 +1860,6 @@ class cs_environment {
          $this->instance['translation_object'] = new cs_translator;
          if ($dont_resolve_messagetags) {
             $this->instance['translation_object']->dontResolveMessageTags();
-         }
-         if ($c_messagetag_log_db) {
-            $this->instance['translation_object']->logMessageTags();
-            $this->instance['translation_object']->setDBConnector($this->getDBConnector());
-            $this->instance['translation_object']->setCommSyVersion($this->getCurrentCommSyVersion());
          }
          $this->instance['translation_object']->setSelectedLanguage($this->getSelectedLanguage());
          $context_item = $this->getCurrentContextItem();

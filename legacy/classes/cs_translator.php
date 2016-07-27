@@ -51,11 +51,6 @@ class cs_translator {
    var $_dont_resolve_messagetags = false;
 
    /**
-   * boolean - flag wether to log messagetags in database or not, set in config.php
-   */
-   var $_log_messagetags = false;
-
-   /**
    * reference - to the database, get from environment
    */
    var $_db_conntector;
@@ -427,38 +422,10 @@ class cs_translator {
          }
 
          if ( isset($this->_message_array[$MsgID][$language]) ) {
-            $tag_exists = true;
             $text = $this->_message_array[$MsgID][$language];
             $text = $this->text_replace($text,$param1,$param2,$param3,$param4,$param5);
          } else {
-            $tag_exists = false;
             $text = $MsgID;
-
-            if ( $this->_log_messagetags ) {
-               $query = 'SELECT * FROM `log_message_tag` WHERE `tag`="'.encode(AS_DB,$MsgID).'"';
-               $result = $this->_db_connector->performQuery($query);
-               if ( !isset($result) or empty($result) or count($result) == 0 ) {
-                  $version = 'no version number';
-                  if ( !empty($this->_version) ) {
-                     $version = $this->_version;
-                  }
-
-                  // mysql - replication
-                  $delayed = ' DELAYED ';
-                  global $db_replication;
-                  if ( !empty($db_replication)
-                       and $db_replication
-                     ) {
-                     $delayed = ' ';
-                  }
-                  $query = 'INSERT'.$delayed.'INTO `log_message_tag` SET '.
-                           '`tag`="'.encode(AS_DB,$MsgID).'", '.
-                           '`version`="'.encode(AS_DB,$version).'", '.
-                           '`datetime`=NOW(), '.
-                           '`language`="'.encode(AS_DB,$language).'"';
-                  $result = $this->_db_connector->performQuery($query);
-               }
-            }
          }
       }
       return $text;
@@ -740,13 +707,6 @@ class cs_translator {
     */
    function dontResolveMessageTags () {
       $this->_dont_resolve_messagetags = true;
-   }
-
-   /** logMessageTags
-    * this methode set the flag to: LOG MESSAGETAGS
-    */
-   function logMessageTags () {
-      $this->_log_messagetags = true;
    }
 
    /** setDBConnector
