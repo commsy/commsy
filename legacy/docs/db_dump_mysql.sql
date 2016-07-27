@@ -296,21 +296,6 @@ CREATE TABLE `external2commsy_id` (
 
 
 
-# Export von Tabelle file_multi_upload
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `file_multi_upload`;
-
-CREATE TABLE `file_multi_upload` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `session_id` varchar(150) NOT NULL,
-  `file_array` text NOT NULL,
-  `cid` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
 # Export von Tabelle files
 # ------------------------------------------------------------
 

@@ -1499,15 +1499,6 @@ class cs_environment {
       return $this->_getInstance('cs_entry_manager');
    }
 
-   /** get instance of cs_file_multi_upload_manager
-   *
-   * @return cs_file_multi_upload_manager
-   * @access public
-   */
-   function getFileMultiUploadManager() {
-      return $this->_getInstance('cs_file_multi_upload_manager');
-   }
-
   /** get instance of cs_session_manager
    *
    * @return cs_session_manager

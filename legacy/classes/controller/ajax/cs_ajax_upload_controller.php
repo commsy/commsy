@@ -34,38 +34,7 @@
 				$postdata[$key] = $val;
 			}
 			
-			/*
-			 * Files can reach this script on four different ways, depending on the upload method
-			 * 
-			 * - from flash (uploadedfilesFlash)
-			 * - from html (uploadedfiles0)
-			 * - multiple files from HTML (uploadedfiles0, uploadedfiles1, etc)
-			 * - a file array from html5 ( uploadedfiles[])
-			 */
-			
-			if(isset($_FILES["uploadedfilesFlash"])) {
-				/*
-				 * If uploadedfilesFlash is found in the post data and Flash is being used on the client side,
-				 * all that is needed for return data is a key-value string, and it can simply be returned,
-				 * as at the end of a function. Flash will parse these key-value pairs into an object and
-				 * pass it to javaScript. You may also want to insert exit or whatever necessary to cease execution
-				 * of the remainder of the code.
-				 */
-				
-				$info = $this->doUpload($_FILES["uploadedfilesFlash"], $postdata["file_upload_rubric"]);
-				
-				//$data .='file='.$file.',name='.$name.',width='.$width.',height='.$height.',type='.$type;
-				$data .= "file=" . $info["file"] . ",name=" . $info["name"] . ",type=" . $info["type"] . ",file_id=" . $info["file_id"];
-				
-				echo $data;
-				
-				fputs($file, ob_get_clean());
-				fclose($file);
-				
-				exit;
-			}
-			
-			elseif(isset($_FILES["uploadedfile0"])) { // maybe also uploadedfile???
+			if(isset($_FILES["uploadedfile0"])) { // maybe also uploadedfile???
 				// from html(single or multi) - but one after another
 				
 				$count = 0;
