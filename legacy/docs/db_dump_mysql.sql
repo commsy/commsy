@@ -878,52 +878,6 @@ CREATE TABLE `room_privat` (
 
 
 
-# Export von Tabelle search_index
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `search_index`;
-
-CREATE TABLE `search_index` (
-  `si_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `si_sw_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `si_item_id` int(11) NOT NULL DEFAULT '0',
-  `si_item_type` varchar(15) NOT NULL,
-  `si_count` smallint(5) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`si_id`),
-  UNIQUE KEY `un_si_sw_id` (`si_item_id`,`si_sw_id`,`si_item_type`),
-  KEY `si_sw_id` (`si_sw_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
-# Export von Tabelle search_time
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `search_time`;
-
-CREATE TABLE `search_time` (
-  `st_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `st_item_id` int(11) NOT NULL DEFAULT '0',
-  `st_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`st_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
-# Export von Tabelle search_word
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `search_word`;
-
-CREATE TABLE `search_word` (
-  `sw_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `sw_word` varchar(32) NOT NULL DEFAULT '',
-  `sw_lang` varchar(5) NOT NULL,
-  PRIMARY KEY (`sw_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
 # Export von Tabelle section
 # ------------------------------------------------------------
 

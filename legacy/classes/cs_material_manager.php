@@ -1284,28 +1284,6 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
         }
     }
 
-	public function updateIndexedSearch($item) {
-		$indexer = $this->_environment->getSearchIndexer();
-		$query = '
-			SELECT
-				materials.item_id AS item_id,
-				materials.item_id AS index_id,
-				materials.version_id AS version_id,
-				materials.modification_date,
-				CONCAT(materials.title, " ", materials.description, " ", user.firstname, " ", user.lastname) AS search_data
-			FROM
-				materials
-			LEFT JOIN
-				user
-			ON
-				user.item_id = materials.creator_id
-			WHERE
-				materials.deletion_date IS NULL AND
-				materials.item_id = ' . $item->getItemID() . '
-		';
-		$indexer->add(CS_MATERIAL_TYPE, $query);
-	}
-
 	function getResubmissionItemIDsByDate($year, $month, $day){
 	   $query = 'SELECT item_id, version_id FROM '.$this->addDatabasePrefix('materials').' WHERE workflow_resubmission_date = "'.$year.'-'.$month.'-'.$day.'" AND deletion_date IS NULL';
 	   return $this->_db_connector->performQuery($query);

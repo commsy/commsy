@@ -646,28 +646,6 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
             }
         }
     }
-
-	public function updateIndexedSearch($item) {
-		$indexer = $this->_environment->getSearchIndexer();
-		$query = '
-			SELECT
-				todos.item_id AS item_id,
-				todos.item_id AS index_id,
-				NULL AS version_id,
-				todos.modification_date,
-				CONCAT(todos.title, " ", todos.description, " ", user.firstname, " ", user.lastname) AS search_data
-			FROM
-				todos
-			LEFT JOIN
-				user
-			ON
-				user.item_id = todos.creator_id
-			WHERE
-				todos.deletion_date IS NULL AND
-				todos.item_id = ' . $item->getItemID() . '
-		';
-		$indexer->add(CS_TODO_TYPE, $query);
-	}
 	
 	function export_item($id) {
 	   $item = $this->getItem($id);

@@ -29,7 +29,8 @@ class Version20160727100551 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('CREATE TABLE log_ads (
+        $this->addSql('
+            CREATE TABLE log_ads (
                 id int(11) NOT NULL AUTO_INCREMENT,
                 cid int(11) DEFAULT NULL,
                 aim varchar(255) NOT NULL,

@@ -59,28 +59,5 @@ class cs_topic_manager extends cs_labels_manager {
 		$item = new cs_topic_item($this->_environment);
 		return $item;
 	}
-	
-	public function updateIndexedSearch($item) {
-		$indexer = $this->_environment->getSearchIndexer();
-		$query = '
-			SELECT
-				labels.item_id AS item_id,
-				labels.item_id AS index_id,
-				labels.modification_date,
-				NULL AS version_id,
-				CONCAT(labels.name, " ", labels.description, " ", user.firstname, " ", user.lastname) AS search_data
-			FROM
-				labels
-			LEFT JOIN
-				user
-			ON
-				user.item_id = labels.creator_id
-			WHERE
-				labels.type = "topic" AND
-				labels.deletion_date IS NULL AND
-				abels.item_id = ' . $item->getItemID() . '
-		';
-		$indexer->add(CS_TOPIC_TYPE, $query);
-	}
 }
 ?>

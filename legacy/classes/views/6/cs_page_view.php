@@ -573,9 +573,8 @@ class cs_page_view extends cs_view {
    	}
    	
    	// dev
-   	global $c_indexed_search;
    	global $c_xhr_error_reporting;
-   	$to_javascript['dev']['indexed_search'] = (isset($c_indexed_search) && $c_indexed_search === true) ? true : false;
+   	$to_javascript['dev']['indexed_search'] = false;
    	$to_javascript['dev']['xhr_error_reporting'] = (isset($c_xhr_error_reporting) && !empty($c_xhr_error_reporting)) ? true : false;
    	
    	if(isset($portal_user) && $portal_user->isAutoSaveOn()) {

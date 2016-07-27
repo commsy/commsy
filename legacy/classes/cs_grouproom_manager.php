@@ -423,28 +423,5 @@ class cs_grouproom_manager extends cs_room2_manager {
       $portal->saveMaxRoomActivityPoints($item->getActivityPoints());
       unset($portal);
    }
-   
-	public function updateIndexedSearch($item) {
-		$indexer = $this->_environment->getSearchIndexer();
-		$query = '
-			SELECT
-				room.item_id AS item_id,
-				room.item_id AS index_id,
-				NULL AS version_id,
-				room.modification_date,
-				CONCAT(room.title, " ", room.room_description, " ", user.firstname, " ", user.lastname) AS search_data
-			FROM
-				room
-			LEFT JOIN
-				user
-			ON
-				user.item_id = room.creator_id
-			WHERE
-				room.type = "grouproom" AND
-				room.deletion_date IS NULL AND
-				room.item_id = ' . $item->getItemID() . '
-		';
-		$indexer->add(CS_GROUPROOM_TYPE, $query);
-	}
 }
 ?>

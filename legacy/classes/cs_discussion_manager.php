@@ -705,28 +705,6 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
             }
         }
     }
-
-	public function updateIndexedSearch($item) {
-		$indexer = $this->_environment->getSearchIndexer();
-		$query = '
-			SELECT
-				discussions.item_id AS item_id,
-				discussions.item_id AS index_id,
-				NULL AS version_id,
-				discussions.modification_date,
-				CONCAT(discussions.title, " ", user.firstname, " ", user.lastname) AS search_data
-			FROM
-				discussions
-			LEFT JOIN
-				user
-			ON
-				user.item_id = discussions.creator_id
-			WHERE
-				discussions.deletion_date IS NULL AND
-				discussions.item_id = ' . $item->getItemID() . '
-		';
-		$indexer->add(CS_DISCUSSION_TYPE, $query);
-	}
 	
 	function export_item($id) {
 	   $item = $this->getItem($id);

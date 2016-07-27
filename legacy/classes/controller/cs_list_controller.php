@@ -142,8 +142,7 @@
       		}elseif($module == CS_PROJECT_TYPE){
       			$sort_parameter = 'activity_rev';
       		}elseif($module == 'search'){
-      			global $c_indexed_search;
-				$sort_parameter = (isset($c_indexed_search) && $c_indexed_search === true) ? "relevanz_rev" : "modified";
+            $sort_parameter = 'modified';
       		}else{
       			$sort_parameter = '';
       		}
@@ -1492,8 +1491,7 @@
 				}elseif($this->_environment->getCurrentModule() === CS_PROJECT_TYPE) {
 					$this->_list_parameter_arrray['sort'] = 'activity_rev';
 				} elseif($this->_environment->getCurrentModule() === "search") {
-					global $c_indexed_search;
-					$this->_list_parameter_arrray['sort'] = (isset($c_indexed_search) && $c_indexed_search === true) ? "relevanz_rev" : "modified";
+          $this->_list_parameter_arrray['sort'] = 'modified';
 				} else {
 					$this->_list_parameter_arrray['sort'] = 'modified';
 				}

@@ -889,7 +889,6 @@ function isURLValid () {
          $funct != 'mdo_perform_search' and
          $funct != 'assessment' and
          $funct != 'search' and
-         $funct != 'search_index' and
     	 $funct != 'rubric_popup' and
     	 $funct != 'popup' and
     	 $funct != 'path' and

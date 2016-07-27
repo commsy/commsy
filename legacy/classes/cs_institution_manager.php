@@ -48,28 +48,5 @@ class cs_institution_manager extends cs_labels_manager {
 		$this->_type_limit = CS_INSTITUTION_TYPE;
 		$this->_context_limit = $this->_environment->getCurrentContextID();
 	}
-	
-	public function updateIndexedSearch($item) {
-		$indexer = $this->_environment->getSearchIndexer();
-		$query = '
-			SELECT
-				labels.item_id AS item_id,
-				labels.item_id AS index_id,
-				NULL AS version_id,
-				labels.modification_date,
-				CONCAT(labels.name, " ", labels.description, " ", user.firstname, " ", user.lastname) AS search_data
-			FROM
-				labels
-			LEFT JOIN
-				user
-			ON
-				user.item_id = labels.creator_id
-			WHERE
-				labels.type = "institution" AND
-				labels.deletion_date IS NULL AND
-				labels.item_id = ' . $item->getItemID() . '
-		';
-		$indexer->add(CS_INSTITUTION_TYPE, $query);
-	}
 }
 ?>

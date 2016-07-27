@@ -958,28 +958,6 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
             }
         }
     }
-
-	public function updateIndexedSearch($item) {
-		$indexer = $this->_environment->getSearchIndexer();
-		$query = '
-			SELECT
-				dates.item_id AS item_id,
-				dates.item_id AS index_id,
-				NULL AS version_id,
-				dates.modification_date,
-				CONCAT(dates.title, " ", dates.description, " ", user.firstname, " ", user.lastname) AS search_data
-			FROM
-				dates
-			LEFT JOIN
-				user
-			ON
-				user.item_id = dates.creator_id
-			WHERE
-				dates.deletion_date IS NULL AND
-				dates.item_id = ' . $item->getItemID() . '
-		';
-		$indexer->add(CS_DATE_TYPE, $query);
-	}
 	
 	function export_item($id) {
 	   $item = $this->getItem($id);
