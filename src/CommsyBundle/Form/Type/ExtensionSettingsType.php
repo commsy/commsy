@@ -38,6 +38,7 @@ class ExtensionSettingsType extends AbstractType
         $builder
             ->add('assessment', CheckboxType::class, array(
                 'required' => false,
+                'label_attr' => array('class' => 'uk-form-label'),
             ))
             ->add(
                 $builder->create('workflow', FormType::class, array())
@@ -53,7 +54,7 @@ class ExtensionSettingsType extends AbstractType
                     $builder->create('traffic_light', FormType::class, array())
                     ->add('activate', CheckboxType::class, array(
                         'required' => false,
-                        'label' => "use",
+                        'label_attr' => array('class' => 'uk-form-label'),
                     ))
                     ->add('default_status', ChoiceType::class, array(
                         'label_attr' => array('class' => 'uk-form-label'),
@@ -79,12 +80,15 @@ class ExtensionSettingsType extends AbstractType
 
                 ->add('reader', CheckboxType::class, array(
                     'required' => false,
+                    'label_attr' => array('class' => 'uk-form-label'),
                 ))
                 ->add('reader_group', CheckboxType::class, array(
                     'required' => false,
+                    'label_attr' => array('class' => 'uk-form-label'),
                 ))
                 ->add('reader_person', CheckboxType::class, array(
                     'required' => false,
+                    'label_attr' => array('class' => 'uk-form-label'),
                 ))
                 ->add('resubmission_show_to', ChoiceType::class, array(
                     'expanded' => true,
@@ -96,8 +100,8 @@ class ExtensionSettingsType extends AbstractType
                 ))
             )
             ->add('wikiEnabled', CheckboxType::class, array(
-                'label' => 'wikiEnabled',
                 'required' => false,
+                'label_attr' => array('class' => 'uk-form-label'),
             ))
             ->add('save', SubmitType::class, array(
                 'position' => 'last',

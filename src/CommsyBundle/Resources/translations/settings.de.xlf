@@ -12,6 +12,14 @@
                 <source>General Configuration</source>
                 <target>Allgemeine Einstellungen</target>
             </trans-unit>
+            <trans-unit id="basic_settings">
+                <source>Basic settings</source>
+                <target>Grundeinstellungen</target>
+            </trans-unit>
+            <trans-unit id="rubric_selection">
+                <source>Rubric selection</source>
+                <target>Rubrikauswahl</target>
+            </trans-unit> 
             <trans-unit id="1">
                 <source>Off</source>
                 <target>Deaktiviert</target>
@@ -246,11 +254,11 @@
             </trans-unit>            
             <trans-unit id="configure_events">
                 <source>Configure events</source>
-                <target>Termindarstellung:</target>
+                <target>Termindarstellung</target>
             </trans-unit>
             <trans-unit id="configure_color_theme">
                 <source>Configure color theme</source>
-                <target>Farbkonfiguration:</target>
+                <target>Farbkonfiguration</target>
             </trans-unit>
             <trans-unit id="listview">
                 <source>listview</source>
@@ -304,15 +312,15 @@
             </trans-unit>
             <trans-unit id="homenotice">
                 <source>Homenotice</source>
-                <target>Hinweistext auf der Home:</target>
+                <target>Hinweistext auf der Home</target>
             </trans-unit>
             <trans-unit id="usernotice">
                 <source>Usernotice</source>
-                <target>Nutzungshinweise:</target>
+                <target>Nutzungshinweise</target>
             </trans-unit>
             <trans-unit id="email_configuration">
                 <source>Email configuration</source>
-                <target>E-Mail-Konfiguration:</target>
+                <target>E-Mail-Konfiguration</target>
             </trans-unit>
 
             <!-- Extension settings -->
@@ -322,11 +330,11 @@
             </trans-unit>
             <trans-unit id="assessment">
                 <source>Assessment</source>
-                <target>Bewertungen:</target>
+                <target>Bewertungen</target>
             </trans-unit>                        
             <trans-unit id="workflow">
                 <source>Workflow</source>
-                <target>Workflow Einstellungen:</target>
+                <target>Workflow Einstellungen</target>
             </trans-unit>            
             <trans-unit id="workflow_resubmission">
                 <source>Resubmission</source>
@@ -352,9 +360,37 @@
                 <source>Traffic light red text</source>
                 <target>Rot</target>
             </trans-unit>
+            <trans-unit id="reader">
+                <source>Reader</source>
+                <target>in diesem Raum verwenden</target>
+            </trans-unit>
+            <trans-unit id="reader_group">
+                <source>Reader group</source>
+                <target>Gruppenbezogen</target>
+            </trans-unit>
+            <trans-unit id="reader_person">
+                <source>Reader person</source>
+                <target>Personenbezogen</target>
+            </trans-unit>
+            <trans-unit id="reader_view">
+                <source>Resubmission show to</source>
+                <target>Leseranzeige</target>
+            </trans-unit>
+            <trans-unit id="mods_only">
+                <source>Moderators</source>
+                <target>nur für Moderatoren</target>
+            </trans-unit>            
+            <trans-unit id="all_users">
+                <source>Users</source>
+                <target>für alle Benutzer</target>
+            </trans-unit>
+            <trans-unit id="wiki">
+                <source>wiki</source>
+                <target>Wiki</target>
+            </trans-unit>            
             <trans-unit id="wiki_enabled">
-                <source>wikiEnabled</source>
-                <target>Wiki:</target>
+                <source>Wiki enabled</source>
+                <target>Wiki aktivieren</target>
             </trans-unit>
         </body>
     </file>

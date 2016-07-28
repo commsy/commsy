@@ -12,6 +12,14 @@
                 <source>General Configuration</source>
                 <target>General Configuration</target>
             </trans-unit>
+            <trans-unit id="basic_settings">
+                <source>Basic settings</source>
+                <target>Basic settings</target>
+            </trans-unit>
+            <trans-unit id="rubric_selection">
+                <source>Rubric selection</source>
+                <target>Rubric selection</target>
+            </trans-unit>            
             <trans-unit id="1">
                 <source>Off</source>
                 <target>Off</target>
@@ -246,11 +254,11 @@
             </trans-unit>
             <trans-unit id="configure_events">
                 <source>Configure events</source>
-                <target>Configure events:</target>
+                <target>Configure events</target>
             </trans-unit>
             <trans-unit id="configure_color_theme">
                 <source>Configure color theme</source>
-                <target>Configure color theme:</target>
+                <target>Configure color theme</target>
             </trans-unit>
             <trans-unit id="listview">
                 <source>listview</source>
@@ -304,15 +312,15 @@
             </trans-unit>
             <trans-unit id="homenotice">
                 <source>Homenotice</source>
-                <target>Notice on home / notice board:</target>
+                <target>Notice on home / notice board</target>
             </trans-unit>
             <trans-unit id="usernotice">
                 <source>Usernotice</source>
-                <target>User notice:</target>
+                <target>User notice</target>
             </trans-unit>
             <trans-unit id="email_configuration">
                 <source>Email configuration</source>
-                <target>E-Mail-Konfiguration::</target>
+                <target>E-Mail-Konfiguration</target>
             </trans-unit>            
 
             <!-- Extension settings -->
@@ -352,9 +360,37 @@
                 <source>Traffic light red text</source>
                 <target>Red</target>
             </trans-unit>
+            <trans-unit id="reader">
+                <source>Reader</source>
+                <target>use in this workroom</target>
+            </trans-unit>
+            <trans-unit id="reader_group">
+                <source>Reader group</source>
+                <target>Groups</target>
+            </trans-unit>
+            <trans-unit id="reader_person">
+                <source>Reader person</source>
+                <target>Users</target>
+            </trans-unit>
+            <trans-unit id="reader_view">
+                <source>Resubmission show to</source>
+                <target>Reader view</target>
+            </trans-unit>
+            <trans-unit id="mods_only">
+                <source>Moderators</source>
+                <target>only for Moderators</target>
+            </trans-unit>            
+            <trans-unit id="all_users">
+                <source>Users</source>
+                <target>for all users</target>
+            </trans-unit>
+            <trans-unit id="wiki">
+                <source>wiki</source>
+                <target>Wiki</target>
+            </trans-unit> 
             <trans-unit id="wiki_enabled">
-                <source>wikiEnabled</source>
-                <target>Wiki:</target>
+                <source>Wiki enabled</source>
+                <target>enable Wiki</target>
             </trans-unit>
         </body>
     </file>

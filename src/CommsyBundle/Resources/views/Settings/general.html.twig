@@ -18,10 +18,8 @@
                         {{ form_errors(form) }}
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <b>Grundeinstellungen:</b>
-                            <div class="uk-form-horizontal uk-form-controls">
-                                Legen Sie z.B. den Raumnamen fest und ob er dargestellt werden soll, wählen Sie die Sprache des Raumes aus und geben Sie dem Raum ein Logo. Außerdem können Sie die zentralen Zuordnungen für den Raum treffen. 
-                            </div>
+                            <h1 class='uk-panel-title'>{{ 'Basic settings'|trans({}, 'settings') }}</h1>
+                            <div style="margin-bottom: 25px;">Legen Sie z.B. den Raumnamen fest und ob er dargestellt werden soll, wählen Sie die Sprache des Raumes aus und geben Sie dem Raum ein Logo. Außerdem können Sie die zentralen Zuordnungen für den Raum treffen. </div>
                             {{ form_row(form.title) }}
                             {{ form_row(form.language) }}
 
@@ -56,18 +54,14 @@
                         </div>
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <b>Rubrikauswahl:</b>
-                            <div class="uk-form-horizontal uk-form-controls">
-                                 Wählen Sie die Rubriken und ihre Reihenfolge aus. Die Option "ausgeklappt" bedeutet, dass diese Rubrik als Kurzansicht auf der Home erscheint. Die Option "zugeklappt" bedeutet, dass diese Rubrik als Balken auf der Home erscheint. Die Option "nicht verfügbar" bedeutet, dass diese Rubrik in dem Projektraum nicht zur Verfügung steht. 
-                            </div>
+                            <h1 class='uk-panel-title'>{{ 'Rubric selection'|trans({}, 'settings') }}</h1>
+                            <div style="margin-bottom: 25px;">Wählen Sie die Rubriken und ihre Reihenfolge aus. Die Option "ausgeklappt" bedeutet, dass diese Rubrik als Kurzansicht auf der Home erscheint. Die Option "zugeklappt" bedeutet, dass diese Rubrik als Balken auf der Home erscheint. Die Option "nicht verfügbar" bedeutet, dass diese Rubrik in dem Projektraum nicht zur Verfügung steht. </div>
                             {{ form_row(form.rubrics) }}
                         </div>
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <b>Raumbeschreibung:</b>
-                            <div class="uk-form-horizontal uk-form-controls">
-                                 Geben Sie noch eine zusätzliche Beschreibung an. Es sind max. 1000 Zeichen erlaubt. 
-                            </div>
+                            <h1 class='uk-panel-title'>{{ 'Room description'|trans({}, 'settings') }}</h1>
+                            <div style="margin-bottom: 25px;">Geben Sie noch eine zusätzliche Beschreibung an. Es sind max. 1000 Zeichen erlaubt.</div>
                             {{ form_row(form.room_description) }}
                         </div>
 
