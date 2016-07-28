@@ -22,11 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-
-$new_private_room = $environment->inConfigArray('c_use_new_private_room',$environment->getCurrentContextID());
-if ($new_private_room){
-
-
 $room_id_array = array();
 $grouproom_list = $current_user_item->getUserRelatedGroupList();
 if ( isset($grouproom_list) and $grouproom_list->isNotEmpty()) {
@@ -148,19 +143,6 @@ if ($current_context->getPortletShowWeatherBox()){
    $portlet_array[] = $weather_view;
 }
 /* WEATHER END */
-
-
-/* DOKUVERSER*/
-#if ($current_context->getPortletShowDokuverserBox()){
-#	$params = array();
-#	$params['environment'] = $environment;
-#	$params['with_modifying_actions'] = $current_context->isOpen();
-#	$dokuverser_view = $class_factory->getClass(PRIVATEROOM_HOME_DOKUVERSER_VIEW,$params);
-#	unset($params);
-#	$portlet_array[] = $dokuverser_view;
-#}
-/* END DOKUVERSER */
-
 
 /* CLOCK */
 if ($current_context->getPortletShowClockBox()){
@@ -319,144 +301,3 @@ include_once('classes/cs_list.php');
 
 $portlet_view->setColumnCount($current_context->getPortletColumnCount());
 $page->add($portlet_view);
-
-
-
-
-
-
-/**************/
-/* Alter Code */
-/**************/
-}else{
-$used_rubrics_for_room_array = array();
-$shown_room_id_array = array();
-
-if ( isset($_GET['delete_room_id']) and !empty($_GET['delete_room_id']) ){
-   $manager = $environment->getPrivateRoomManager();
-   $room_item =  $manager->getItem($_GET['delete_room_id']);
-   if ( !empty($room_item) ){
-      $user = $environment->getCurrentUserItem();
-      $room_item->setNotShownInPrivateRoomHome($user->getUserID());
-      $room_item->save();
-   }
-   redirect($environment->getCurrentContextID(),'home','index');
-}
-
-$user = $environment->getCurrentUserItem();
-$manager = $environment->getPrivateRoomManager();
-$current_context_item = $environment->getCurrentContextItem();
-$list2 = $current_context_item->getCustomizedRoomList();
-if ( !isset($list2) ) {
-   // old style (CommSy6)
-   $list2 = $manager->getRelatedContextListForUserOnPrivateRoomHome($user);
-} else {
-   // remove separators
-   $list_temp = new cs_list();
-   $list_item = $list2->getFirst();
-   while($list_item){
-      if ( $list_item->getItemID() > 0 ) {
-         $list_temp->add($list_item);
-      }
-      $list_item = $list2->getNext();
-   }
-   $list2 = $list_temp;
-}
-if ( isset($_GET['from']) ) {
-   $from = $_GET['from'];
-}  else {
-   $from = 1;
-}
-
-$i=1;
-$end = $from+5;
-
-$list3 = new cs_list();
-$list_item = $list2->getFirst();
-while($list_item){
-   if ( ($i >= $from) and ($i < $end) ){
-      $list3->add($list_item);
-      $shown_room_id_array[] = $list_item->getItemID();
-   }
-   $i++;
-   $list_item = $list2->getNext();
-}
-$countShown = $list2->getCount();
-
-
-$user = $environment->getCurrentUserItem();
-$my_room_manager = $environment->getMyRoomManager();
-$list_all = $my_room_manager->getRelatedContextListForUser($user->getUserID(),$user->getAuthSource(),$environment->getCurrentPortalID());
-$countAll = $list_all->getCount();
-
-
-if ( isset($_GET['from']) ) {
-   $from = $_GET['from'];
-}  else {
-   $from = 1;
-}
-
-$i=1;
-$status = $current_context->getHomeStatus();
-$end = $from+5;
-
-$list3 = new cs_list();
-$list_item = $list2->getFirst();
-while($list_item){
-   if ( ($i >= $from) and ($i < $end) ) {
-      $list3->add($list_item);
-   }
-   $i++;
-   $list_item = $list2->getNext();
-}
-$countShown = $list2->getCount();
-
-if (!empty($shown_room_id_array)){
-   $current_context = $environment->getCurrentContextItem();
-   $item_manager = $environment->getItemManager();
-   $item_manager->setAgeLimit($current_context->getTimeSpread());
-   $shown_item_rubrics_array = $item_manager->getAllUsedRubricsOfRoomList($shown_room_id_array);
-
-   $used_rubrics_for_room_array = array();
-   foreach($shown_room_id_array as $room_id){
-      foreach($shown_item_rubrics_array as $entry){
-         if ($entry['context_id'] == $room_id){
-            if ($entry['type'] == 'label'){
-               $type = $entry['subtype'];
-            } else {
-               $type = $entry['type'];
-            }
-            $used_rubrics_for_room_array[$room_id][] = $type;
-         }
-      }
-   }
-}
-
-$params = array();
-$params['environment'] = $environment;
-$params['with_modifying_actions'] = $context_item->isOpen();
-$title_view = $class_factory->getClass(HOME_TITLE_VIEW,$params);
-unset($params);
-$page->add($title_view);
-
-$params = array();
-$params['environment'] = $environment;
-$params['with_modifying_actions'] = $current_context->isOpen();
-$short_view = $class_factory->getClass(PRIVATEROOM_DETAILED_SHORT_VIEW,$params);
-unset($params);
-$short_view->setUsedRubricsForRoomsArray($used_rubrics_for_room_array);
-$user_manager = $environment->getUserManager();
-$short_view->setUserForRoomsArray($user_manager->getAllUsersByUserAndRoomIDLimit($user->getUserID(), $shown_room_id_array,$user->getAuthSource()));
-
-include_once('classes/cs_list.php');
-
-$short_view->setFrom($from);
-$short_view->setInterval(5);
-$short_view->setCountAll($countAll);
-$short_view->setCountAllShown($countShown);
-$short_view->setList($list3);
-$page->addLeft($short_view);
-
-}
-/* Ende alter Code*/
-?>

@@ -45,33 +45,12 @@ class cs_privateroom_item extends cs_room_item {
       $this->_type = CS_PRIVATEROOM_TYPE;
 
       // new private room
-      $new_private_room = $environment->inConfigArray('c_use_new_private_room',$environment->getCurrentContextID());
-      if ( !isset($new_private_room) ) {
-         $new_private_room = false;
-      }
-
       $this->_default_rubrics_array[0] = CS_MYROOM_TYPE;
       $this->_default_home_conf_array[CS_MYROOM_TYPE] = 'tiny';
-      if (!$new_private_room) {
-         $this->_default_rubrics_array[1] = CS_MATERIAL_TYPE;
-         $this->_default_home_conf_array[CS_MATERIAL_TYPE] = 'tiny';
-      }
       $this->_default_rubrics_array[2] = CS_DATE_TYPE;
       $this->_default_home_conf_array[CS_DATE_TYPE] = 'tiny';
-      if (!$new_private_room) {
-         $this->_default_rubrics_array[3] = CS_TOPIC_TYPE;
-         $this->_default_rubrics_array[4] = CS_USER_TYPE;
-         $this->_default_rubrics_array[5] = CS_DISCUSSION_TYPE;
-         $this->_default_rubrics_array[6] = CS_TODO_TYPE;
-         $this->_default_home_conf_array[CS_TOPIC_TYPE] = 'tiny';
-         $this->_default_home_conf_array[CS_USER_TYPE] = 'tiny';
-         $this->_default_home_conf_array[CS_DISCUSSION_TYPE] = 'none';
-         $this->_default_home_conf_array[CS_TODO_TYPE] = 'none';
-      }
-      if ($new_private_room) {
-         $this->_default_rubrics_array[7] = CS_ENTRY_TYPE;
-         $this->_default_home_conf_array[CS_ENTRY_TYPE] = 'tiny';
-      }
+      $this->_default_rubrics_array[7] = CS_ENTRY_TYPE;
+      $this->_default_home_conf_array[CS_ENTRY_TYPE] = 'tiny';
    }
 
    private function _addPluginInRubricArray () {
@@ -100,23 +79,14 @@ class cs_privateroom_item extends cs_room_item {
    }
 
    function getHomeConf () {
-      $new_private_room = $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID());
       $this->_addPluginInRubricArray();
       $rubrics = parent::getHomeConf();
       $retour = array();
       foreach (explode(',',$rubrics) as $rubric){
          if (!mb_stristr($rubric,CS_USER_TYPE) ) {
-            if ( ( !isset($new_private_room)
-                   and !mb_stristr($rubric,CS_ENTRY_TYPE)
-                 )
-                 or ( !$new_private_room
-                      and !mb_stristr($rubric,CS_ENTRY_TYPE)
-                    )
-                 or ( $new_private_room
-                      and !mb_stristr($rubric,CS_MATERIAL_TYPE)
-                      and !mb_stristr($rubric,CS_TOPIC_TYPE)
-                      and !mb_stristr($rubric,CS_TODO_TYPE)
-                    )
+            if (  !mb_stristr($rubric,CS_MATERIAL_TYPE)
+                  and !mb_stristr($rubric,CS_TOPIC_TYPE)
+                  and !mb_stristr($rubric,CS_TODO_TYPE)
                ) {
                $retour[] = $rubric;
             }

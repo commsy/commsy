@@ -1989,7 +1989,6 @@ function checkColorArray($color_array){
 
 function getCurrentCommSyFunctions(){
    global $environment;
-   global $c_minimized_js;
    
    $path_norm = '../web/javascript/jQuery/commsy/';
    $path_min = '../web/javascript/jQuery/commsy_min/';
@@ -2047,16 +2046,7 @@ function getCurrentCommSyFunctions(){
       fclose($file_handle);
    }
    
-   // check for using min js version
-   if(isset($c_minimized_js) && $c_minimized_js === false) {
-      // use normal js
-      return $files_found[0]['inc_path'];
-   } else {
-      // use minimized js
-      return 'commsy_min/commsy_functions_' . $files_found[0]['version'] . '.min.js';
-   }
-   
-   return $functions_file;
+   return $files_found[0]['inc_path'];
 }
 
 function isPHP5 () {

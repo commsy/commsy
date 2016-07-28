@@ -85,10 +85,7 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
         // new private room -> no date list view
         $show_list_option = true;
         if ( $this->_environment->inPrivateRoom() ) {
-           $new_private_room = $this->_environment->getConfiguration('c_use_new_private_room');
-           if ( isset($new_private_room) and $new_private_room ) {
-              $show_list_option = false;
-           }
+           $show_list_option = false;
         }
 
         if ( $show_list_option ) {

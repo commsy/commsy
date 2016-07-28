@@ -119,38 +119,6 @@ function commSyErrorHandler ($errno, $errmsg, $filename, $linenum, $vars) {
          }
       }
 
-      global $c_error_log_db;
-      if ( isset($c_error_log_db)
-           and $c_error_log_db
-           and isset($environment)
-         ) {
-         $db_connector = $environment->getDBConnector();
-
-         // mysql - replication
-         $delayed = ' DELAYED ';
-         $db_replication = $environment->getConfiguration('db_replication');
-         if ( !empty($db_replication)
-              and $db_replication
-            ) {
-            $delayed = ' ';
-         }
-         
-         $query = 'INSERT'.$delayed.'INTO log_error SET '.
-            'datetime="'.mysql_real_escape_string($dt).'", '.
-            'number="'.mysql_real_escape_string($errno).'", '.
-            'type="'.mysql_real_escape_string($errortype[$errno]).'", '.
-            'message="'.mysql_real_escape_string($errmsg).'", '.
-            'url="'.mysql_real_escape_string($url).'", '.
-            'referer="'.mysql_real_escape_string($referer).'", '.
-            'file="'.mysql_real_escape_string($filename).'", '.
-            'line="'.mysql_real_escape_string($linenum).'", '.
-            'context="'.mysql_real_escape_string($context).'", '.
-            'module="'.mysql_real_escape_string($module).'", '.
-            'function="'.mysql_real_escape_string($function).'", '.
-            'user="'.mysql_real_escape_string($user).'"';
-         $result = $db_connector->performQuery($query);
-      }
-
       if ( ini_get('log_errors') ) {
          $err  = 'PHP '.$errortype[$errno].':  '.$errmsg.' in '.$filename.' on line '.$linenum;
          $err .= ' (context='.$context.', module='.$module.', function='.$function.', user='.$user.')';

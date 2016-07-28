@@ -63,22 +63,15 @@ class cs_myroom_index_view extends cs_context_index_view {
    }
 
    function _getIndexPageHeaderAsHTML(){
-     $new_private_room = $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID());
      $current_context_id = $this->_environment->getCurrentContextID();
      $current_portal_id = $this->_environment->getCurrentPortalID();
-     if ($new_private_room){
+
       $html = '';
       $html .='<div style="width:100%;">'.LF;
       $html .='<div style="height:30px;">'.LF;
- #     $html .= '<div style="float:right; width:28%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
- #     $html .= $this->_getSearchAsHTML();
- #     $html .= '</div>'.LF;
- #     $html .='<div style="width:70%;">'.LF;
       $html .='<div style="width:100%;">'.LF;
       $html .='<div style="vertical-align:bottom;">'.LF;
-      if ( $this->_environment->inPrivateRoom()
-           and $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID())
-         ) {
+      if ( $this->_environment->inPrivateRoom() ) {
          $image = '';
       } else {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
@@ -109,34 +102,6 @@ class cs_myroom_index_view extends cs_context_index_view {
       $html .='</div>'.LF;
       $html .='</div>'.LF;
       return $html;
-    /**************/
-    /* Alter Code */
-    /**************/
-
-    }else{
-      $html = '';
-      $html .='<div style="width:100%;">'.LF;
-      $html .='<div style="height:30px;">'.LF;
-      $html .= '<div style="float:right; width:28%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
-      $html .= $this->_getSearchAsHTML();
-      $html .= '</div>'.LF;
-      $html .='<div style="width:70%;">'.LF;
-      $html .='<div style="vertical-align:bottom;">'.LF;
-      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $image = '<img src="images/commsyicons_msie6/32x32/room.gif" style="vertical-align:bottom;"/>';
-      } else {
-         $image = '<img src="images/commsyicons/32x32/room.png" style="vertical-align:bottom;"/>';
-      }
-      $html .= '<h2 class="pagetitle">'.$image.$this->_translator->getMessage('MYROOM_INDEX');
-      $html .= '</h2>'.LF;
-      $html .='</div>'.LF;
-      $html .='</div>'.LF;
-      $html .='</div>'.LF;
-      $html .='<div style="width:100%; clear:both;">'.LF;
-      $html .='</div>'.LF;
-      $html .='</div>'.LF;
-      return $html;
-    }
    }
 
 
@@ -246,8 +211,6 @@ class cs_myroom_index_view extends cs_context_index_view {
 
 
    function asHTML () {
-     $new_private_room = $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID());
-     if ($new_private_room){
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
       $html .= $this->_getIndexPageHeaderAsHTML();
       #$html .= '<div style="width:100%; float:right;"><div style="float:right;"><a href="#"><img id="new_icon" src="images/commsyicons/22x22/new.png"></a></div></div>';
@@ -321,112 +284,6 @@ class cs_myroom_index_view extends cs_context_index_view {
       $html .= '-->'.LF;
       $html .= '</script>'.LF;
       return $html;
-
-
-    /**************/
-    /* Alter Code */
-    /**************/
-
-    }else{
-      $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
-
-      $html .= $this->_getIndexPageHeaderAsHTML();
-      /*****************************/
-      /*******BEGIN RIGHT BOXES*****/
-      /*****************************/
-      if(!$this->_clipboard_mode and !(isset($_GET['mode']) and $_GET['mode']=='print')){
-         $html .='<div id="right_boxes_area" style="float:right; width:28%; padding-top:5px; vertical-align:top; text-align:left;">'.LF;
-         $html .='<div style="width:250px;">'.LF;
-         $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,'').'" method="get" name="indexform">'.LF;
-         $current_context = $this->_environment->getCurrentContextItem();
-         $list_box_conf = $current_context->getListBoxConf();
-         $first_box = true;
-         $title_string ='';
-         $desc_string ='';
-         $config_text ='';
-         $size_string = '';
-         $html .= $this->_getHiddenFieldsAsHTML();
-         $html .='<div id="commsy_panels">'.LF;
-         $html .= '<div class="commsy_no_panel" style="margin-bottom:1px;">'.LF;
-         $tempMessage = $this->_translator->getMessage('MYROOM_INDEX');
-         $html .= $this->_getListInfosAsHTML($tempMessage);
-         $html .='</div>'.LF;
-         if ( $current_context->isPrivateRoom() ) {
-            $html .= '<div class="commsy_no_panel" style="margin-bottom:1px;">'.LF;
-            $html .= $this->_getExpertSearchAsHTML();
-            $html .='</div>'.LF;
-         }
-         $html .= '</form>'.LF;
-
-         $html .='</div>'.LF;
-      }
-      elseif(!(isset($_GET['mode']) and $_GET['mode']=='print')){
-         $html .='<div style="float:right; width:27%; padding-top:5px; padding-left:5px; vertical-align:top; text-align:left;">'.LF;
-         $html .='<div style="width:250px;">'.LF;
-         $html .='<div style="margin-bottom:1px;">'.LF;
-         $html .= $this->_getRubricClipboardInfoAsHTML($this->_environment->getCurrentModule());
-         $html .='</div>'.LF;
-         $html .='</div>'.LF;
-      }
-
-      $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
-      $current_browser_version = $this->_environment->getCurrentBrowserVersion();
-      if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
-         $width= ' width:100%; padding-right:10px;';
-      }else{
-         $width= '';
-      }
-
-      if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
-         $html .='</div>'.LF;
-         $html .='<div class="index_content_display_width" style="'.$width.'padding-top:5px; vertical-align:bottom;">'.LF;
-      }else{
-         $html .='</div>'.LF;
-         $html .='<div style="width:100%; padding-top:5px; vertical-align:bottom;">'.LF;
-      }
-      $params = $this->_environment->getCurrentParameterArray();
-      $html .= '<form style="padding:0px; margin:0px;" action="';
-      $html .= curl($this->_environment->getCurrentContextID(),
-                    $this->_environment->getCurrentModule(),
-                    $this->_environment->getCurrentFunction(),
-                    $params
-                   ).'" method="post">'.LF;
-      if ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions' ) {
-         $html .= '   <input type="hidden" name="ref_iid" value="'.$this->_text_as_form($this->getRefIID()).'"/>'.LF;
-      }
-
-      $html .= '<table style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
-      $context = $this->_environment->getCurrentContextItem();
-      $html .= '<tr>';
-         $list = $this->_list;
-         $user = $this->_environment->getCurrentUserItem();
-         if ( isset($list)) {
-            $current_item = $list->getFirst();
-         $count = 0;
-            while ( $current_item ) {
-         if ( $count == 2 ){
-       $count = 0;
-       $html .= '</tr><tr>'.LF;
-         }
-               $item_text = $this->_getRoomWindowAsHTML($current_item);
-               $html .= $item_text;
-         $count++;
-               $current_item = $list->getNext();
-            }
-      while ( $count < 2 ){
-               $html .= '<td width="50%" style="vertical-align: baseline;"></td>';
-               $count++;
-      }
-         }
-      $html .= '</tr></table>'.LF;
-
-      $html .= '</form>'.LF;
-      $html .='</div>'.LF;
-      $html .='<div style="clear:both;">'.LF;
-      $html .='</div>'.LF;
-      $html .= '<!-- END OF PLAIN LIST VIEW -->'.LF.LF;
-      return $html;
-    }
    }
 
   function _getExpertSearchAsHTML(){
@@ -577,8 +434,6 @@ class cs_myroom_index_view extends cs_context_index_view {
     */
    function _getRoomWindowAsHTML ($item) {
      global $c_single_entry_point;
-     $new_private_room = $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID());
-     if ($new_private_room){
       $current_user = $this->_environment->getCurrentUserItem();
       $may_enter = $item->mayEnter($current_user);
       $title = $item->getTitle();
@@ -698,150 +553,6 @@ class cs_myroom_index_view extends cs_context_index_view {
       $html .= '</table>'.LF.LF;
 #      $html .='</td>';
       return $html;
-
-    /**************/
-    /* Alter Code */
-    /**************/
-
-    }else{
-      $current_user = $this->_environment->getCurrentUserItem();
-      $may_enter = $item->mayEnter($current_user);
-      $title = $item->getTitle();
-      $color_array = $item->getColorArray();
-     if ( count($color_array) > 0 ) {
-         $cs_color['room_title'] = $color_array['tabs_title'];
-         $cs_color['room_background']  = $color_array['content_background'];
-         $cs_color['tableheader']  = $color_array['tabs_background'];
-     } else {
-         $cs_color['room_title'] = '';
-         $cs_color['room_background']  = '';
-         $cs_color['tableheader']  = '';
-     }
-      $html  = '';
-      $html = '<td style="width:50%; padding:3px; vertical-align: middle;">'.LF;
-      $html .= '<table class="room_window'.$item->getItemID().'" summary="Layout" style="width:100%; border-collapse:collapse;">'.LF;
-      $html .= '<tr>'.LF;
-      $logo = $item->getLogoFilename();
-      // Titelzeile
-      if (!empty($logo) ) {
-         $html .= '<td class="detail_view_title_room_window'.$item->getItemID().'" style="padding:3px;">';
-         $params = array();
-         $params['picture'] = $item->getLogoFilename();
-         $curl = curl($item->getItemID(), 'picture', 'getfile', $params,'');
-         unset($params);
-         $params['iid']=$item->getItemID();
-         $html .='<div style="float:left; padding-right:3px;">'.LF;
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),'myroom','detail',$params,'<img style="height:20px;" src="'.$curl.'" alt="'.$this->_translator->getMessage('LOGO').'" border="0"/>');
-         $html .='</div>'.LF;
-         $html .='<div style="font-weight: bold; padding-top: 3px; padding-bottom: 3px; ">'.LF;
-         $title = $this->_text_as_html_short($title);
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),'myroom','detail',$params,$title);
-         unset($params);
-         if ($item->isLocked()) {
-            $html .= ' ('.$this->_translator->getMessage('PROJECTROOM_LOCKED').')'.LF;
-         }elseif ($item->isProjectroom() and $item->isTemplate()) {
-            $html .= ' ('.$this->_translator->getMessage('PROJECTROOM_TEMPLATE').')'.LF;
-         }elseif ($item->isClosed()) {
-            $html .= ' ('.$this->_translator->getMessage('PROJECTROOM_CLOSED').')';
-         }
-         $html .='</div>'.LF;
-         $html .= '</td>'.LF;
-      } else {
-         $html .= '<td class="detail_view_title_room_window'.$item->getItemID().'" colspan="2" style="font-weight: bold; padding-top: 3px; padding-bottom: 3px; padding-left:3px;">';
-         $params['iid']=$item->getItemID();
-         $title = $this->_text_as_html_short($title)."\n";
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),'myroom','detail',$params,$title);
-         if ($item->isLocked()) {
-            $html .= ' ('.$this->_translator->getMessage('PROJECTROOM_LOCKED').')';
-         } elseif ($item->isClosed()) {
-            $html .= ' ('.$this->_translator->getMessage('PROJECTROOM_CLOSED').')';
-         }
-         $html .= '</td>';
-      }
-      $html .= '<td class="detail_view_title_room_window'.$item->getItemID().'" style="vertical-align:top; text-align:right;">'.LF;
-      $html .= '</td>'.LF;
-
-      $html .= '</tr>'.LF;
-      $html .= '<tr><td colspan="3" class="detail_view_content_room_window'.$item->getItemID().'">'.LF;
-      $html .='<table style="width: 100%;" summary="Layout">';
-
-
-      $html .= '<tr><td class="detail_view_content_room_window'.$item->getItemID().'">'.LF;
-         if ($item->isClosed() ) {
-            $curl = curl($item->getItemID(), 'home', 'index','','');
-            $html .= '<a href="'.$curl.'">';
-            $html .= '<img alt="door" src="images/door_open_small.gif" style="vertical-align: middle; "/>'.LF;
-            $html .= '</a>';
-            $html .= ' '.$this->_translator->getMessage('COMMON_CLOSED_SINCE').' '.$this->_translator->getDateInLang($item->getModificationDate()).LF;
-         }elseif ($item->isLocked()) {
-            $html .= ' ('.$this->_translator->getMessage('PROJECTROOM_LOCKED').')'.LF;
-            $html .= '<img alt="door" src="images/door_closed_small.gif" style="vertical-align: middle; "/>'.LF;
-            $html .= ' '.$this->_translator->getMessage('COMMON_LOCKED_SINCE').' '.$this->_translator->getDateInLang($item->getModificationDate()).LF;
-         }else{
-            $curl = curl($item->getItemID(), 'home', 'index','','');
-            $html .= '<a href="'.$curl.'">';
-            $html .= '<img alt="door" src="images/door_open_small.gif" style="vertical-align: middle; "/>'.LF;
-            $html .= '</a>';
-            $html .= ' '.$this->_translator->getMessage('COMMON_OPENED_SINCE').' '.$this->_translator->getDateInLang($item->getCreationDate()).LF;
-         }
-      $html .= '</td></tr>'.LF;
-
-
-      $html .= '<tr><td class="detail_view_content_room_window'.$item->getItemID().'">'.LF;
-      $context = $this->_environment->getCurrentContextItem();
-      $count_total = $item->getPageImpressions($context->getTimeSpread());
-      if ( $count_total == 1 ) {
-         $html .= $count_total.'&nbsp;'.$this->_translator->getMessage('ACTIVITY_PAGE_IMPRESSIONS_SINGULAR').'';
-         $html .= BRLF;
-      } else {
-         $html .= $count_total.'&nbsp;'.$this->_translator->getMessage('ACTIVITY_PAGE_IMPRESSIONS').'';
-         $html .= BRLF;
-      }
-      $html .= '</td></tr>'.LF;
-
-
-      $html .= '<tr><td class="detail_view_content_room_window'.$item->getItemID().'">'.LF;
-      // Get number of new entries
-
-      $count_total = $item->getNewEntries($context->getTimeSpread());
-      if ( $count_total == 1 ) {
-         $html .= $count_total.'&nbsp;'.$this->_translator->getMessage('ACTIVITY_NEW_ENTRIES_SINGULAR');
-         $html .= BRLF;
-      } else {
-            $html .= $count_total.'&nbsp;'.$this->_translator->getMessage('ACTIVITY_NEW_ENTRIES');
-         $html .= BRLF;
-      }
-
-      $html .= '</td></tr>'.LF;
-
-      $html .= '<tr><td class="detail_view_content_room_window'.$item->getItemID().'">'.LF;
-      // Get percentage of active members
-      $active = $item->getActiveMembers($context->getTimeSpread());
-      $all_users = $item->getAllUsers();
-      if ( !empty($active) and $active > 0 ) {
-         $percentage = round($active / $all_users * 100);
-      } else {
-         $percentage = 0;
-      }
-      $html .= $this->_translator->getMessage('ACTIVITY_ACTIVE_MEMBERS').':'.BRLF;
-      $html .= '         <div class="gauge'.$item->getItemID().'">'.LF;
-      if ( $percentage >= 5 ) {
-         $html .= '            <div class="gauge-bar'.$item->getItemID().'" style="width:'.$percentage.'%; color: white;">'.$active.'</div>'.LF;
-      } else {
-         $html .= '            <div class="gauge-bar'.$item->getItemID().'" style="float:left; width:'.$percentage.'%;">&nbsp;</div>'.LF;
-         $html .= '            <div style="font-size: 8pt; padding-left:3px; font-color: white;">'.$active.'</div>'.LF;
-      }
-      $html .= '         </div>'.LF;
-      $html .= '</td></tr>'.LF;
-      $html .= '</table>'.LF.LF;
-      $html .= '</td></tr>'.LF;
-      $html .= '</table>'.LF.LF;
-      $html .='</td>';
-
-
-      return $html;
-    }
-
    }
 
    function getInfoForHeaderAsHTML () {

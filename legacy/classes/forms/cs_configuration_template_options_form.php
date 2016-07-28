@@ -318,11 +318,7 @@ class cs_configuration_template_options_form extends cs_rubric_form {
                                  '',0,'','','','','','','','','','');
 
       }
-      if ( $this->_environment->inPrivateRoom()
-           and $this->_environment->getConfiguration('c_use_new_private_room')
-         ) {
-         $this->_form->addTextfield('template_title','',$this->_translator->getMessage('CONFIGURATION_TEMPLATE_NAME'),'',100,50,false);
-      }
+      $this->_form->addTextfield('template_title','',$this->_translator->getMessage('CONFIGURATION_TEMPLATE_NAME'),'',100,50,false);
       $this->_form->addTextArea('description','',$this->_translator->getMessage('COMMON_TEMPLATE_DESCRIPTION'),'','','10','virtual',false,'');
       $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
@@ -351,9 +347,7 @@ class cs_configuration_template_options_form extends cs_rubric_form {
          // templates in private rooms
          if ( $current_context->isPrivateRoom() ) {
             $this->_values['template_select'] = $current_context->getTemplateID();
-            if ( $this->_environment->getConfiguration('c_use_new_private_room') ) {
-               $this->_values['template_title'] = $current_context->getTemplateTitle();
-            }
+            $this->_values['template_title'] = $current_context->getTemplateTitle();
          }
       }
    }

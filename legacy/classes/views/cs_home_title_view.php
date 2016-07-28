@@ -118,11 +118,10 @@ class cs_home_title_view extends cs_view {
 
 
    function asHTML () {
-     $new_private_room = $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID());
      $current_context_id = $this->_environment->getCurrentContextID();
      $current_portal_id = $this->_environment->getCurrentPortalID();
-     if ($new_private_room){
-    $html ='<div style="width:100%; height:30px;">'.LF;
+
+      $html ='<div style="width:100%; height:30px;">'.LF;
       if ( $this->_environment->inProjectRoom() ) {
          $home_title  = $this->_translator->getMessage('HOME_ROOM_INDEX');
          $home_title .= ' ('.$this->_translator->getMessage('COMMON_PROJECT').')';
@@ -170,45 +169,6 @@ class cs_home_title_view extends cs_view {
       $html .= '</div>';
       $html .= '</div>';
       return $html;
-
-
-    /**************/
-    /* Alter Code */
-    /**************/
-    }else{
-      $html ='<div style="width:100%; height:30px;">'.LF;
-      if ( $this->_environment->inProjectRoom() ) {
-         $home_title  = $this->_translator->getMessage('HOME_ROOM_INDEX');
-         $home_title .= ' ('.$this->_translator->getMessage('COMMON_PROJECT').')';
-      } elseif ( $this->_environment->inGroupRoom() ) {
-         $home_title  = $this->_translator->getMessage('HOME_ROOM_INDEX');
-         $home_title .= ' ('.$this->_translator->getMessage('COMMON_GROUPROOM').')';
-      } elseif ( $this->_environment->inPrivateRoom() ) {
-         $home_title  = $this->_translator->getMessage('HOME_ROOM_INDEX');
-         $home_title .= ' ('.$this->_translator->getMessage('COMMON_PRIVATEROOM_DESC').')';
-      } else {
-         $home_title  = $this->_translator->getMessage('HOME_CAMPUS_INDEX');
-         $home_title .= ' ('.$this->_translator->getMessage('COMMON_COMMUNITY').')';
-      }
-      $html .= '<div style="float:right; text-align:left; padding-top: 5px; width:28%; white-space:nowrap;">'.LF;
-      $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'campus_search', 'index','').'" method="post" name="form">'.LF;
-      $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
-      $html .= '   <input type="hidden" name="mod" value="campus_search"/>'.LF;
-      $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
-      $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:220px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>';
-      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $html .= '<input type="image" src="images/commsyicons_msie6/22x22/search.gif" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
-      } else {
-         $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
-      }
-      $html .='</form>'.LF;
-      $html .= '</div>'.LF;
-      $html .= '<div>'.LF;
-      $html .= '<h2 class="pagetitle">'.$home_title.'</h2>'.LF;
-      $html .= '</div>';
-      $html .= '</div>';
-      return $html;
-    }
 
    }
 }

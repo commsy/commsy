@@ -46,23 +46,7 @@ class cs_popup_annotation_controller implements cs_rubric_popup_controller {
 			// TODO: check rights
 			$this->_popup_controller->assign('item', 'title', $item->getTitle());
 				
-			// old formating
-			$c_old_text_formating_array = $this->_environment->getConfiguration('c_old_text_formating_array');
-			if ( !empty($c_old_text_formating_array)
-		        and is_array($c_old_text_formating_array)
-				  and in_array($this->_environment->getCurrentContextID(),$c_old_text_formating_array)
-			   ) {
-				$this->_with_old_text_formating = true;
-			}
-			if ( $this->_with_old_text_formating ) {
-			   $desc_string = $item->getDescription();
-				$desc_string = preg_replace('/(?:[ \t]*(?:\n|\r\n?)){2,}/', "\n", $desc_string);
-				$desc_string = nl2br($desc_string);
-				$desc_string = str_replace('<br /><br />','<br />',$desc_string);
-				$this->_popup_controller->assign('item', 'description', $desc_string);
-			} else {
-			   $this->_popup_controller->assign('item', 'description', $item->getDescription());
-			}
+			$this->_popup_controller->assign('item', 'description', $item->getDescription());
         }
         
         $this->_popup_controller->assign('item', 'is_new', ($item === null));

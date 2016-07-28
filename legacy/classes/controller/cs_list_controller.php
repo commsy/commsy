@@ -1350,39 +1350,6 @@
 
 			if($current_user->isUser() && $this->_with_modifying_actions && $current_module != CS_USER_TYPE) {
 				$return['new'] = true;
-				/*
-				 * $params = array();
-         $params['iid'] = 'NEW';
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/new.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/new.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon"/>';
-         }
-         if ( $current_context->isOpen()
-              and $current_context->isPrivateRoom()
-              and $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID())
-            ) {
-            // do nothing
-         } else {
-            $html .= '&nbsp;';
-         }
-         $html .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),
-                           $this->_environment->getCurrentModule(),
-                            'edit',
-                            $params,
-                            $image,
-                            $this->_translator->getMessage('COMMON_NEW_ITEM')).LF;
-         unset($params);
-				 */
-			} else {
-				/*
-				 * if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/new_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon_disabled"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/new_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon_disabled"/>';
-         }
-         $html .= '&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_NEW_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
-				 */
 			}
 			if($current_module == CS_USER_TYPE and $current_user->isUser()){
 				$return['user'] = true;

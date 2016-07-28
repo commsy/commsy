@@ -20,12 +20,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-// error reporting and debugging
-// Log errors to this database.
-// Only errors that are reported through the CommSy
-// error handler go to this log database.
-$c_error_log_db = true;
-
 // Support for debugging message-tags
 // if set, message-tags will not be resolved
 // $dont_resolve_messagetags = true;
@@ -62,12 +56,6 @@ $c_enable_htmltextarea_security = false;
 // room list on portal
 // $c_room_count_redundancy = true;
 
-// use minimized javascript - CommSy 7
-// $c_minimized_js = false;
-
-// use new private room
-//$c_use_new_private_room = true;
-
 // media integration
 // use true for all or an array of community room id's for restricted access
 //$c_media_integration = true;
@@ -78,9 +66,6 @@ $c_enable_htmltextarea_security = false;
 // use scorm in following room id's
 //$c_scorm = array();
 
-// use flash file upload with ssl
-//$c_enable_flash_upload_with_ssl = true;
-
 // enable upload via e-mail
 // needed: php5-imap
 //$c_email_upload                = false;
@@ -90,26 +75,4 @@ $c_enable_htmltextarea_security = false;
 //$c_email_upload_email_account  = 'email@example.com';
 //$c_email_upload_email_password = 'secret';
 //$c_email_upload_email_address  = 'email2commsy@example.com'; # default is empty, than account will be displayed
-
-// enable workflow support
-//$c_workflow = false;
-
-// send xhr error reports to developers
-//$c_xhr_error_reporting = array("dev1@commsy.dev", "dev2@commsy.dev");
-
-// setup javascript mode
-$c_js_mode = "source";
-
-// debug mode
-$c_debug = false;
-
-// show rooms on portal for guests
-// default: true
-// at performance problems you should try false
-// $c_portal_show_rooms_for_guests = false;
-
-// old text formating
-// activate old text formating for rooms
-#$c_old_text_formating_array = array();
-#$c_old_text_formating_array[] = 12345;
 ?>

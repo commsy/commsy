@@ -73,20 +73,10 @@ class misc_text_converter {
       $search[]  = '~(\?)>~u';
       $replace[] = '$1&gt;';
 
-      // old formating
-      $c_old_text_formating_array = $this->_environment->getConfiguration('c_old_text_formating_array');
-      if ( !empty($c_old_text_formating_array)
-           and is_array($c_old_text_formating_array)
-           and in_array($this->_environment->getCurrentContextID(),$c_old_text_formating_array)
-         ) {
-         $this->_with_old_text_formating = true;
-      }
-      if ( !$this->_with_old_text_formating ) {
-         $search[]  = '~<([/]{0,1}[e|E][m|M][b|B][e|E][d|D])~u';
-         $replace[] = '&lt;$1';
-         $search[]  = '~<([/]{0,1}[o|O][b|B][j|J][e|E][c|C][t|T])~u';
-         $replace[] = '&lt;$1';
-      }
+      $search[]  = '~<([/]{0,1}[e|E][m|M][b|B][e|E][d|D])~u';
+      $replace[] = '&lt;$1';
+      $search[]  = '~<([/]{0,1}[o|O][b|B][j|J][e|E][c|C][t|T])~u';
+      $replace[] = '&lt;$1';
       
       $search[]  = '~<([/]{0,1}[i|I][f|F][r|R][a|A][m|M][e|E])~u';
       $replace[] = '&lt;$1';

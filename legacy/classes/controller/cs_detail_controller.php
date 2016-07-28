@@ -24,24 +24,7 @@
 			// call parent
 			parent::__construct($environment);
 
-
-			// init variables
-			/*
-			$this->getViewMode() = 'browse';
-			$this->_filter = array();
-			$this->_paging = array(
-				'offset'	=> 0,
-				'limit'		=> 20
-			);
-			*/
-			$c_old_text_formating_array = $this->_environment->getConfiguration('c_old_text_formating_array');
-			if ( !empty($c_old_text_formating_array)
-					and is_array($c_old_text_formating_array)
-					and in_array($this->_environment->getCurrentContextID(),$c_old_text_formating_array)
-			   ) {
-				$this->_with_old_text_formating = true;
-			}
-					
+			$this->_with_old_text_formating = false;
 		}
 
 		/*

@@ -152,10 +152,7 @@ $translator = $environment->getTranslationObject();
 
    $show_option = true;
    if ( $environment->inPrivateRoom() ) {
-      $new_private_room = $environment->inConfigArray('c_use_new_private_room',$environment->getCurrentContextID());
-      if ( isset($new_private_room) and $new_private_room ) {
-         $show_option = false;
-      }
+      $show_option = false;
    }
    if ($show_option) {
       $link_item = new cs_link();
@@ -179,10 +176,7 @@ $translator = $environment->getTranslationObject();
 
    $show_option = true;
    if ( $environment->inPrivateRoom() ) {
-      $new_private_room = $environment->getConfiguration('c_use_new_private_room');
-      if ( isset($new_private_room) and $new_private_room ) {
-         $show_option = false;
-      }
+      $show_option = false;
    }
    if ($show_option) {
       $context_item = $environment->getCurrentContextItem();

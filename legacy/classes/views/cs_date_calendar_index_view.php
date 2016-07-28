@@ -808,7 +808,6 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    }
 
    function _getListInfosAsHTML ($title) {
-      $new_private_room = $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID());
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
       $html  = '';
@@ -820,10 +819,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }
       $current_context_id = $this->_environment->getCurrentContextID();
       $current_portal_id = $this->_environment->getCurrentPortalID();
-      if ($current_context->isPrivateRoom() and
-         $new_private_room
-        ){
-         #$html .= '<div class="right_box">'.LF;
+      if ($current_context->isPrivateRoom() ){
          $mycalendar_array = $current_context->getMyCalendarDisplayConfig();
          $number_of_portlets = 0;
          if(in_array("mycalendar_dates_portlet", $mycalendar_array)){
@@ -867,116 +863,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
             $html .= $this->_initDropDownConfiguration();
          }
-      }else{
-         $html .= '<div class="right_box">'.LF;
-         $html .= '<div class="right_box_title">'.LF;
-         $date = date("Y-m-d");
-         $date_array = explode('-',$date);
-         $month = mb_substr($this->_month,4,2);
-         $first_char = mb_substr($month,0,1);
-         if ($first_char == '0'){
-            $month = mb_substr($month,1,2);
-         }
-         $month_array = array($this->_translator->getMessage('DATES_JANUARY_LONG'),
-         $this->_translator->getMessage('DATES_FEBRUARY_LONG'),
-         $this->_translator->getMessage('DATES_MARCH_LONG'),
-         $this->_translator->getMessage('DATES_APRIL_LONG'),
-         $this->_translator->getMessage('DATES_MAY_LONG'),
-         $this->_translator->getMessage('DATES_JUNE_LONG'),
-         $this->_translator->getMessage('DATES_JULY_LONG'),
-         $this->_translator->getMessage('DATES_AUGUST_LONG'),
-         $this->_translator->getMessage('DATES_SEPTEMBER_LONG'),
-         $this->_translator->getMessage('DATES_OCTOBER_LONG'),
-         $this->_translator->getMessage('DATES_NOVEMBER_LONG'),
-         $this->_translator->getMessage('DATES_DECEMBER_LONG'));
-         $tempMessage = $month_array[$month-1].' '.$this->_year;
-         $html .= '<div style="white-space:nowrap;">'.$tempMessage.'</div>'.LF;
-         $html .='</div>'.LF;
-
-         $html .= '<div class="right_box_main" style="'.$width.'">'.LF;
-
-         if($this->calendar_with_javascript()){
-            $html .= $this->_getAdditionalCalendarAsHTML().LF;
-         }
-         $html .= $this->_getAdditionalFormFieldsAsHTML().LF;
-         $html .= '<div class="listinfoborder"></div>'.LF;
-         $params = $this->_environment->getCurrentParameterArray();
-         unset($params['week']);
-         unset($params['year']);
-         unset($params['month']);
-         unset($params['presentation_mode']);
-         $params['seldisplay_mode'] = 'normal';
-         $html .= '<table style="width:100%; padding:0px; margin:0px; border-collapse:collapse;">';
-         $html .='<tr>'.LF;
-         $html .='<td>'.LF;
-         $html .= '<span class="infocolor">'.$this->_translator->getMessage('DATE_ALTERNATIVE_DISPLAY').': </span>';
-         $html .='</td>'.LF;
-         $html .='<td style="text-align:right;">'.LF;
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$params,$this->_translator->getMessage('DATES_COMMON_DISPLAY')).LF;
-         $html .='</td>'.LF;
-         $html .='</tr>'.LF;
-         #$html .='<tr>'.LF;
-         #$html .='<td colspan="2">'.LF;
-         #$html .= '<select style="width: 10em; font-size:10pt;" name="presentation_mode" size="1" id="submit_form">'.LF;
-         #$html .= '<option value="2"';
-         #if ($this->_presentation_mode == '2'){
-         #   $html .= ' selected="selected"';
-         #}
-         #$html .= '>'.$this->_translator->getMessage('DATE_MONTH_PRESENTATION').'</option>'.LF;
-         #$html .= '      <option value="1"';
-         #if ($this->_presentation_mode != '2'){
-         #   $html .= ' selected="selected"';
-         #}
-         #$html .= '>'.$this->_translator->getMessage('DATE_WEEK_PRESENTATION').'</option>'.LF;
-         #$html .= '   </select>'.LF;
-         #$html .='</td>'.LF;
-         #$html .='</tr>'.LF;
-         $html .='</table>'.LF;
-         $html .= '</div>'.LF;
-
-
-         /*****************Usage Information*************/
-         $user = $this->_environment->getCurrentUserItem();
-         $room = $this->_environment->getCurrentContextItem();
-         $act_rubric = $this->_environment->getCurrentModule();
-         $info_text = $room->getUsageInfoTextForRubric($act_rubric);
-         if (!strstr($info_text, $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'))
-             and !strstr($info_text, $this->_translator->getMessage('USAGE_INFO_COMING_SOON'))
-             and !empty($info_text)
-            ){
-             $rubric_info_array = $room->getUsageInfoArray();
-             if (!is_array($rubric_info_array)) {
-                $rubric_info_array = array();
-             }
-             // kann man dies noch über die oberfläche schalten ??? (2009.07.24 ij)
-             #if ( !strstr($list_box_conf,'usage_nodisplay') ){
-                $first_box = true;
-                if ( $first_box ){
-                   $first_box = false;
-                   $additional_text ='';
-                }else{
-                   $additional_text =',';
-                }
-                $html .= '<div style="margin-bottom:1px;">'.LF;
-                $html .= '<div style="position:relative; top:12px;">'.LF;
-                if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                   $html .= '<img src="images/commsyicons_msie6/usage_info_3.gif"/>';
-                } else {
-                   $html .= '<img src="images/commsyicons/usage_info_3.png"/>';
-                }
-                $html .= '</div>'.LF;
-                $html .= '<div class="right_box_title" style="font-weight:bold;">'.$this->_text_as_html_short($room->getUsageInfoHeaderForRubric($act_rubric)).'</div>';
-                $html .= '<div class="usage_info">'.LF;
-                $info_text = $room->getUsageInfoTextForRubric($act_rubric);
-                $html .= $this->_text_as_html_long($this->_cleanDataFromTextArea($info_text)).BRLF;
-                $html .= '</div>'.LF;
-                $html .= '</div>'.LF;
-             #} // end if
-         }
-
-
-         $html .= '</div>'.LF;
-     }
+      }
      return $html;
    }
 
@@ -997,87 +884,13 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $ical_url .= str_replace($c_single_entry_point,'ical.php',$_SERVER['PHP_SELF']);
       $ical_url .= '?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>';
       $html .= $ical_url;
-      if ( $current_context->isOpen()
-           and $current_context->isPrivateRoom()
-           and $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID())
-         ) {
-         // do nothing
-      } else {
-         $html .= LF;
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/export.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATES_EXPORT').'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/export.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATES_EXPORT').'"/>';
-         }
-         $html .= '<a title="'.$this->_translator->getMessage('DATES_EXPORT').'"  href="ical.php?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
-      }
       unset($params);
-      if ( $current_context->isOpen()
-           and $current_context->isPrivateRoom()
-           and $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID())
-         ) {
-         // do nothing
-      } else {
-         if ( $this->_environment->inPrivateRoom() ) {
-            if ( $this->_with_modifying_actions ) {
-               $params['import'] = 'yes';
-               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/22x22/import.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_IMS_IMPORT').'"/>';
-               } else {
-                  $image = '<img src="images/commsyicons/22x22/import.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_IMS_IMPORT').'"/>';
-               }
-               $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                   CS_DATE_TYPE,
-                                   'import',
-                                   $params,
-                                   $image,
-                                   $this->_translator->getMessage('COMMON_IMPORT_DATES')).LF;
-               unset($params);
-            } else {
-               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/22x22/import_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_IMPORT_DATES').'"/>';
-               } else {
-                  $image = '<img src="images/commsyicons/22x22/import_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_IMPORT_DATES').'"/>';
-               }
-               $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_IMPORT_DATES')).' "class="disabled">'.$image.'</a>'.LF;
-            }
-         }
-      }
+      
       return $html;
    }
 
    function _getToDoActionsAsHTML(){
-      $html  = '';
-      /*
-      $current_context = $this->_environment->getCurrentContextItem();
-      $current_user = $this->_environment->getCurrentUserItem();
-      $hash_manager = $this->_environment->getHashManager();
-      $params = $this->_environment->getCurrentParameterArray();
-      if ($current_user->isUser() and $this->_with_modifying_actions ) {
-         $params = array();
-         $params['iid'] = 'NEW';
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/new.gif" style="height:20px; vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/new.png" style="height:20px; vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon"/>';
-         }
-         $html .= '&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),
-                           CS_TODO_TYPE,
-                            'edit',
-                            $params,
-                            $image,
-                            $this->_translator->getMessage('COMMON_NEW_ITEM')).LF;
-         unset($params);
-      } else {
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/new_grey.gif" style="height:20px; vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon_disabled"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/new_grey.png" style="height:20px; vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon_disabled"/>';
-         }
-         $html .= '&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_NEW_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
-      }
-      */
-      return $html;
+      return '';
    }
 
    function _initDropDownConfiguration(){
@@ -5387,7 +5200,6 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       // new private room
       if ( $current_context->isOpen()
            and $current_context->isPrivateRoom()
-           and $this->_environment->inConfigArray('c_use_new_private_room',$this->_environment->getCurrentContextID())
          ) {
 
          // dates import

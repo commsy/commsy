@@ -14,14 +14,7 @@
 
 			$this->_tpl_file = 'room_home';
 
-		   // old_text_formating
-			$c_old_text_formating_array = $this->_environment->getConfiguration('c_old_text_formating_array');
-			if ( !empty($c_old_text_formating_array)
-					and is_array($c_old_text_formating_array)
-					and in_array($this->_environment->getCurrentContextID(),$c_old_text_formating_array)
-			   ) {
-				$this->_with_old_text_formating = true;
-			}
+			$this->_with_old_text_formating = false;
 		}
 
 		protected function getAdditionalRestrictions(){}

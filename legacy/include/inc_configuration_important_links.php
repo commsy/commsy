@@ -49,25 +49,22 @@ if ( !isset($environment) and isset($this->_environment) ) {
    $configuration_important_link_list->add($link_item);
 
    if ( $environment->inPrivateRoom() ) {
-     $new_private_room = $environment->inConfigArray('c_use_new_private_room',$environment->getCurrentContextID());
      $current_context_id = $environment->getCurrentContextID();
      $current_portal_id = $environment->getCurrentPortalID();
-     if ($new_private_room){
-        $link_item = new cs_link();
-        $link_item->setTitle($translator->getMessage('CONFIGURATION_PRIVATEROOM_HOME_OPTIONS_TITLE'));
-        $current_context = $environment->getCurrentContextItem();
-        if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
-           $link_item->setIconPath('images/commsyicons_msie6/48x48/config/privateroom_home_options.gif');
-        } else {
-           $link_item->setIconPath('images/commsyicons/48x48/config/privateroom_home_options.png');
-        }
-        $link_item->setDescription($translator->getMessage('CONFIGURATION_PRIVATEROOM_HOME_OPTIONS_DESC'));
-        $link_item->setContextID($environment->getCurrentContextID());
-        $link_item->setModule('configuration');
-        $link_item->setFunction('privateroom_home_options');
-        $link_item->setParameter(array());
-        $configuration_important_link_list->add($link_item);
-     }
+     $link_item = new cs_link();
+      $link_item->setTitle($translator->getMessage('CONFIGURATION_PRIVATEROOM_HOME_OPTIONS_TITLE'));
+      $current_context = $environment->getCurrentContextItem();
+      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/privateroom_home_options.gif');
+      } else {
+         $link_item->setIconPath('images/commsyicons/48x48/config/privateroom_home_options.png');
+      }
+      $link_item->setDescription($translator->getMessage('CONFIGURATION_PRIVATEROOM_HOME_OPTIONS_DESC'));
+      $link_item->setContextID($environment->getCurrentContextID());
+      $link_item->setModule('configuration');
+      $link_item->setFunction('privateroom_home_options');
+      $link_item->setParameter(array());
+      $configuration_important_link_list->add($link_item);
    }
 
    $link_item = new cs_link();

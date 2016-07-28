@@ -1083,10 +1083,7 @@ class cs_context_item extends cs_item {
     if ( $this->isPrivateRoom()
             and $retour == 'normal'
     ) {
-      $new_private_room = $this->_environment->getConfiguration('c_use_new_private_room');
-      if ( isset($new_private_room) and $new_private_room ) {
-        $retour = 'calendar_month';
-      }
+      $retour = 'calendar_month';
     }
 
     return $retour;
@@ -6033,10 +6030,6 @@ class cs_context_item extends cs_item {
   ##################################
 
   function withWorkflowFunctions () {
-    global $c_workflow;
-    if ( !isset($c_workflow) or !$c_workflow ) {
-      return false;
-    }
     $retour = false;
     $value = $this->_getExtraConfig('WORKFLOW');
     if ($value == 1) {
