@@ -36,6 +36,6 @@ if (!empty($_POST['room_id'])) {
    $context_id = $environment->getServerID();
 }
 
-include_once('functions/misc_functions.php');
-redirect($context_id,'home','index');
-?>
+header('Location: room/'.$context_id);
+header('HTTP/1.0 302 Found');
+exit();
