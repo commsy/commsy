@@ -1192,9 +1192,6 @@ class misc_text_converter {
                      } elseif ( $key == '(:office' and mb_stristr($value_new,'(:office') ) {
                         $value_new = $this->_formatOffice($value_new,$args_array,$file_array);
                         break;
-                     } elseif ( $key == '(:pdf' and mb_stristr($value_new,'(:pdf') ) {
-                        $value_new = $this->_formatPDF($value_new,$args_array,$file_array);
-                        break;
                      } elseif ( $key == '(:slideshare' and mb_stristr($value_new,'(:slideshare') ) {
                         $value_new = $this->_formatSlideshare($value_new,$args_array);
                         break;
@@ -2032,54 +2029,6 @@ class misc_text_converter {
       }
 
       $retour = $office_text;
-      return $retour;
-   }
-
-   private function _formatPDF ($text, $array, $file_name_array){
-      $retour = '';
-
-      if ( !empty($array[1]) ) {
-         $source = $array[1];
-      }
-      if ( !empty($array[2]) ) {
-         $args = $this->_parseArgs($array[2]);
-      } else {
-         $args = array();
-      }
-
-      if ( !empty($source) ) {
-         global $c_commsy_path_file, $c_commsy_domain, $c_commsy_url_path;
-         if ( !empty($file_name_array[$source]) ) {
-            $file = $file_name_array[$source];
-         }
-
-         if ( isset($file) ) {
-
-            if(($file->getFdViewerFile() == '')){
-                $oldDir = getcwd();
-                $disc_manager = $this->_environment->getDiscManager();
-                $disc_manager->setPortalID($this->_environment->getCurrentPortalID());
-                $disc_manager->setContextID($this->_environment->getCurrentContextID());
-                $path_to_file = $disc_manager->getFilePath();
-                unset($disc_manager);
-                chdir($c_commsy_path_file . '/' . $path_to_file);
-                $ausgabe = exec('pdf2swf ' . $file->getDiskFileNameWithoutFolder());
-                $ausgabe = exec('swfcombine ' . $c_commsy_path_file . '/etc/fdviewer/fdviewer.swf \'#1\'=' . $c_commsy_path_file . "/" . mb_substr($file->getDiskFileNameWithoutFolder(), 0, -3) . 'swf -o ' . mb_substr($file->getDiskFileNameWithoutFolder(), 0, -3) . 'fdviewer.swf');
-                chdir($oldDir);
-
-                $file->setFdViewerFile(mb_substr($file->getDiskFileNameWithoutFolder(), 0, -3) . 'fdviewer.swf');
-                $file->saveExtras();
-            }
-
-            global $c_single_entry_point;
-            $embed = $c_single_entry_point.'?cid=' . $this->_environment->getCurrentContextID() . '&mod=fdviewer&fct=getfile&file=' . $file->getFdViewerFile();
-            $retour .= '<object width="600" height="500">';
-            $retour .= '<param name="movie" value="' . $embed . '">';
-            $retour .= '<embed src="' . $embed . '" width="600" height="500">';
-            $retour .= '</embed>';
-            $retour .= '</object>';
-         }
-      }
       return $retour;
    }
 

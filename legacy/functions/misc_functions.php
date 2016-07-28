@@ -660,7 +660,6 @@ function isURLValid () {
         $module != 'clipboard' and
         $module != 'link' and
         $module != 'copies' and
-        $module != 'fdviewer' and
 
         // server admin
         $module != 'server' and

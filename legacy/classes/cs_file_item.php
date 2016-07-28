@@ -656,13 +656,6 @@ class cs_file_item extends cs_item {
       return (string) $this->_getExtra('SCRIBD_ACCESS_KEY');
    }
 
-   function setFdViewerFile($value) {
-      $this->_setExtra('FD_VIEWER_FILE', (string)$value);
-   }
-   function getFdViewerFile() {
-      return (string) $this->_getExtra('FD_VIEWER_FILE');
-   }
-
    public function mayEdit ($user_item) {
       $access = false;
       if ( !$user_item->isOnlyReadUser() ) {

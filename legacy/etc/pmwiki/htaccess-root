@@ -1,9 +1,0 @@
-# This file is .htaccess -- the default distribution contains this
-# file to enable "Clean URLs" for a PmWiki installation.
-RewriteEngine On
-# The rewrite base will be the document root.
-RewriteBase /
-# Send requests without parameters to pmwiki.php.
-RewriteRule ^$           index.php  [L]
-# Send requests to pmwiki.php, appending the query string part.
-RewriteRule ^([A-Z0-9\xa0-\xff].*)$ index.php?n=$1  [QSA,L]
