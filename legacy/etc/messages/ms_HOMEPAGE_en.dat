@@ -1,0 +1,3 @@
+<?php
+$message["HOMEPAGE_PAGE_ROOT_TITLE"]["en"] = "Welcome";
+?>
