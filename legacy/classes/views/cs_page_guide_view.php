@@ -533,7 +533,6 @@ class cs_page_guide_view extends cs_page_view {
       $html ='';
       $html .= '<div style="font-size:8pt; padding-left:10px; padding-top:0px; margin-top:3px;">'.LF;
       $html .= '<div class="footer" style="text-align:left; padding-left:0px; padding-right:0px; padding-top:0px; padding-bottom:10px;">'.LF;
-      $html .= '<a href="http://tidy.sourceforge.net/" target="_top" title="HTML Tidy">'.'<img src="images/checked_by_tidy.gif" style="height:14px; vertical-align: bottom;" alt="Tidy"/></a>';
       $html .= '&nbsp;&nbsp;<a href="http://www.commsy.net" target="_top" title="'.$this->_translator->getMessage('COMMON_COMMSY_LINK_TITLE').'">CommSy '.getCommSyVersion().'</a>';
       $version_addon = $this->_environment->getConfiguration('c_version_addon');
       if ( !empty($version_addon) ) {
