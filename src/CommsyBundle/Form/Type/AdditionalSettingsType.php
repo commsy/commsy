@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 
@@ -122,28 +123,26 @@ class AdditionalSettingsType extends AbstractType
                     'expanded' => true,
                     'multiple' => false,
                     'choices' => array(
-                        'Yes' => 'yes',
-                        'No' => 'no',
+                        'Yes' => '1',
+                        'No' => '2',
                     ),
-                    'data' => 'no',
                 ))
                 ->add('language', ChoiceType::class, array(
                     'required' => true,
                     'expanded' => false,
                     'multiple' => false,
                     'choices' => array(
-                        'German' => 'german',
-                        'English' => 'english',
+                        'German' => 'de',
+                        'English' => 'en',
                     ),
                 ))
-                ->add('agb_text_de', CKEditorType::class, array(
+                ->add('agb_text_editor', CKEditorType::class, array(
                     'required' => false,
                     'inline' => false,
+                    'label' => 'Text',
                 ))
-                ->add('agb_text_en', CKEditorType::class, array(
-                    'required' => false,
-                    'inline' => false,
-                ))
+                ->add('agb_text_de', HiddenType::class, array())
+                ->add('agb_text_en', HiddenType::class, array())
             )
             ->add('save', SubmitType::class, array(
                 'position' => 'last',

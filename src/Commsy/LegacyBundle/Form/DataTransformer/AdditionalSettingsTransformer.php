@@ -17,7 +17,7 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
     }
 
     /**
-     * Transforms a cs_room_item object to an array
+     * Transforms a cs_room_item object into an array
      *
      * @param cs_room_item $roomItem
      * @return array
@@ -25,8 +25,6 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
     public function transform($roomItem)
     {
         $roomData = array();
-
-        $defaultRubrics = $roomItem->getAvailableDefaultRubricArray();
 
         if ($roomItem) {
             $roomData['structural_auxilaries']['buzzwords']['activate'] = $roomItem->withBuzzwords();
@@ -37,16 +35,30 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
             $roomData['structural_auxilaries']['categories']['edit'] = $roomItem->isTagEditedByAll();
 
             $roomData['template']['status'] = $roomItem->isTemplate();
+            $roomData['template']['template_description'] = $roomItem->getTemplateDescription();
             if($roomItem->isCommunityRoom()){
                 $roomData['template']['template_availability'] = $roomItem->getCommunityTemplateAvailability();
             }
             else{
                 $roomData['template']['template_availability'] = $roomItem->getTemplateAvailability();
             }
-            //$roomData['room_status'] = !$roomItem->isOpen();
 
-            dump($roomData);
+            $roomData['terms']['status'] = $roomItem->getAGBStatus();
+            if ($roomData['terms']['status'] != '1'){
+                $roomData['terms']['status'] = '2';
+            }
+
+            $agb_text_array = $roomItem->getAGBTextArray();
+            $languages = $this->legacyEnvironment->getAvailableLanguageArray();
+            foreach ($languages as $language) {
+                if (!empty($agb_text_array[cs_strtoupper($language)])) {
+                   $roomData['terms']['agb_text_'.$language] = $agb_text_array[cs_strtoupper($language)];
+                } else {
+                   $roomData['terms']['agb_text_'.$language] = '';
+                }
+            }
         }
+
         return $roomData;
     }
 
@@ -117,7 +129,7 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
             }
          }
          if ( isset($template['template_description'])){
-            $roomObject->setTemplateDescription($text_converter->sanitizeHTML($template['template_description']));
+            $roomObject->setTemplateDescription($template['template_description']);
          }
 
         /***************** save room status *************/
@@ -171,20 +183,20 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
         
 
         /***************** save AGB *************/
-        /*
         $languages = $this->legacyEnvironment->getAvailableLanguageArray();
         $current_user = $this->legacyEnvironment->getCurrentUserItem();
         $text_converter = $this->legacyEnvironment->getTextConverter();
         foreach ($languages as $language) {
-            if (!empty($roomData['agb_text_'.mb_strtolower($language, 'UTF-8')])) {
-               $agbtext_array[mb_strtoupper($language, 'UTF-8')] = $roomData['agb_text_'.mb_strtolower($language, 'UTF-8')];
+            if (!empty($roomData['terms']['agb_text_'.mb_strtolower($language, 'UTF-8')])) {
+                dump($roomData['terms']['agb_text_'.mb_strtolower($language, 'UTF-8')]);
+                $agbtext_array[mb_strtoupper($language, 'UTF-8')] = $roomData['terms']['agb_text_'.mb_strtolower($language, 'UTF-8')];
             } else {
                $agbtext_array[mb_strtoupper($language, 'UTF-8')] = '';
             }
          }
          
-        if(($agbtext_array != $roomObject->getAGBTextArray()) or ($roomData['agb_status'] != $roomObject->getAGBStatus())) {
-            $roomObject->setAGBStatus($roomData['agb_status']);
+        if(($agbtext_array != $roomObject->getAGBTextArray()) or ($roomData['terms']['status'] != $roomObject->getAGBStatus())) {
+            $roomObject->setAGBStatus($roomData['terms']['status']);
             $roomObject->setAGBTextArray($agbtext_array);
             $roomObject->setAGBChangeDate();
             $current_user->setAGBAcceptance();
@@ -193,6 +205,7 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
          
         $text_converter = $this->legacyEnvironment->getTextConverter();
 
+        /*
         // extra todo status
         $status_array = array();
         foreach($roomData as $key => $value) {

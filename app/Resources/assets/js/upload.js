@@ -164,12 +164,10 @@
     };
 
     UIkit.on('beforeready.uk.dom', function() {
-        console.debug("beforeready.uk.dom event registered");
         setupUpload();
     });
 
     UIkit.on('changed.uk.dom', function(event) {
-        console.debug("changed.uk.dom event registered");
         setupUpload();
     });
 
