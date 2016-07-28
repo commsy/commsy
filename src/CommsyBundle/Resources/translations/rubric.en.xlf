@@ -225,6 +225,7 @@
             <trans-unit id="topic">
                 <source>Topic</source>
                 <target>{0}Thema|{1}Themen</target>
+            </trans-unit>
             <trans-unit id="project">
                 <source>project</source>
                 <target>Project rooms</target>
