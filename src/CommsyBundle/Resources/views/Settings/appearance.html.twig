@@ -15,7 +15,16 @@
 
                 <div>
                     {{ form_start(form) }}
-                    {{ form_widget(form) }}
+                        <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                            <b>{{ 'Configure events'|trans({}, 'settings') }}</b>
+                            <div class="uk-form-horizontal uk-form-controls">Wählen Sie zwischen der Listendarstellung, dem Terminkalender in der Wochenansicht oder dem Terminkalender in der Monatsansicht als voreingestellte Darstellung der Termine in diesem Raum.</div>
+                            {{ form_row(form.dates_status) }}
+                        </div>
+                        <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                            <b>{{ 'Configure color theme'|trans({}, 'settings') }}</b>
+                            <div class="uk-form-horizontal uk-form-controls">Hier können Sie zwischen verschiedenen Farbschemata für diesen Raum auswählen.</div>
+                            {{ form_row(form.theme) }}
+                        </div>                        
                     {{ form_end(form) }}
                 </div>
                 

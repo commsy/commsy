@@ -37,7 +37,6 @@ class AppearanceSettingsType extends AbstractType
         $builder
             ->add('theme', ChoiceType::class, array(
                 'required' => false,
-                'label' => 'theme',
                 'choices' => $themeChoices,
                 'constraints' => array(
                     new NotBlank(),
@@ -51,7 +50,6 @@ class AppearanceSettingsType extends AbstractType
                     'weekview' => 'calendar',
                     'monthview' => 'calendar_month'
                 ),
-                'data' => 'normal',
             ))
             ->add('save', SubmitType::class, array(
                 'position' => 'last',

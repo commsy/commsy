@@ -28,7 +28,9 @@ class AppearanceSettingsTransformer implements DataTransformerInterface
 
         if ($roomItem) {
             $roomData['dates_status'] = $roomItem->getDatesPresentationStatus();
+            $roomData['theme'] = $roomItem->getColorArray()['schema'];
         }
+        
         return $roomData;
     }
 

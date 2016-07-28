@@ -2,6 +2,11 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="de" datatype="plaintext" original="file.ext">
         <body>
+            <trans-unit id="information">
+                <source>Information</source>
+                <target>Information</target>
+            </trans-unit>
+
             <!-- General settings -->
             <trans-unit id="general_configuration">
                 <source>General Configuration</source>
@@ -239,25 +244,33 @@
                 <source>Appearance Configuration</source>
                 <target>Darstellung</target>
             </trans-unit>            
+            <trans-unit id="configure_events">
+                <source>Configure events</source>
+                <target>Termindarstellung:</target>
+            </trans-unit>
+            <trans-unit id="configure_color_theme">
+                <source>Configure color theme</source>
+                <target>Farbkonfiguration:</target>
+            </trans-unit>
             <trans-unit id="listview">
                 <source>listview</source>
                 <target>Listenansicht</target>
-            </trans-unit>
-           <trans-unit id="weekview">
+            </trans-unit>            
+            <trans-unit id="weekview">
                 <source>weekview</source>
                 <target>Wochenansicht</target>
             </trans-unit>
-           <trans-unit id="monthview">
+            <trans-unit id="monthview">
                 <source>monthview</source>
                 <target>Monatsansicht</target>
             </trans-unit>
-           <trans-unit id="Dates status">
+            <trans-unit id="Dates status">
                 <source>Dates status</source>
                 <target>Auswahl</target>
             </trans-unit>
-           <trans-unit id="Theme">
-                <source>theme</source>
-                <target>Theme</target>
+            <trans-unit id="Theme">
+                <source>Theme</source>
+                <target>Farbschema</target>
             </trans-unit>
 
             <!-- Moderation settings -->
