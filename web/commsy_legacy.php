@@ -81,11 +81,6 @@ function cleanupSession($session, $environment){
 global $cs_color;
 include_once('etc/cs_constants.php');
 @include('etc/cs_config.php');
-if ( !isset($db) ) {
-   header('Location: install');
-   header('HTTP/1.0 302 Found');
-   exit();
-}
 include_once('functions/misc_functions.php');
 
 // start of execution time
@@ -855,42 +850,8 @@ if ( $environment->getCurrentModule() == 'context'
 
 /*********** SMARTY *****************/
 global $c_smarty;
-$c_smarty = true;
-if(isset($c_smarty) && $c_smarty === true) {
-    require_once('classes/cs_smarty.php');
-    
-    global $theme_array;
+$c_smarty = false;
 
-    $c_theme = $symfonyContainer->getParameter('commsy.themes.default');
-    if(!isset($c_theme) || empty($c_theme)) $c_theme = 'default';
-    $shown_sheme = $c_theme;
-
-    // room theme
-    $color = $environment->getCurrentContextItem()->getColorArray();
-    $theme = $color['schema'];
-
-    if($theme !== 'default') {
-        $correct_theme = false;
-        if (is_array($theme_array)){
-            foreach($theme_array as $key => $value){
-              if ($theme == $key or $key == 'individual'){
-                 $shown_sheme = $key;
-              }
-            }
-        }
-        if($theme == 'individual'){
-             $shown_sheme = $theme;
-        }
-    }
-
-    $smarty = new cs_smarty($environment, $shown_sheme);
-
-    // set smarty in environment
-    $environment->setTemplateEngine($smarty);
-
-    // set output mode
-    if(isset($_GET['mode'])) $environment->setOutputMode($_GET['mode']);
-}
 
 /*********** PAGE ***********/
 

@@ -471,14 +471,8 @@ class cs_page_view extends cs_view {
    	$ownRoomItem = $current_user->getOwnRoom();
    	$templateEngine = $this->_environment->getTemplateEngine();
    	$translator = $this->_environment->getTranslationObject();
-   	
-   	if($templateEngine->getTheme() !== 'default') {
-   		$tpl_path = substr($templateEngine->getTemplateDir(1), 7);
-   	} else {
-   		$tpl_path = substr($templateEngine->getTemplateDir(0), 7);
-   	}
-   	
-   	
+    
+    $tpl_path = 'templates/';
    	
    	global $c_js_mode;
    	$mode = (isset($c_js_mode) && ($c_js_mode === "build" || $c_js_mode === "layer")) ? $c_js_mode : "source";
@@ -599,27 +593,6 @@ class cs_page_view extends cs_view {
    	$html .= '<script src="js/3rdParty/ckeditor_4.4.3/ckeditor.js"></script>';
    	
    	switch ($mode) {
-   		case "layer":
-   			$html .= '<script src="js/src/layerConfig.js"></script>';
-   			
-   			$html .= "
-   				<script>
-   					var from_php  = '" . json_encode($to_javascript) . "';
-   					dojoConfig.locale = '" . $this->_environment->getSelectedLanguage() . "';
-   				</script>
-   			";
-   			
-   			$html .= '<script src="js/src/dojo/dojo.js"></script>';
-   			$html .= '
-   				<script>
-   					require(["layer/commsy"], function() {
-				   		require(["commsy/main"], function() {
-				   	
-				   		});
-				   	});
-   				</script>
-   			';
-   			break;
    		
    		default:
    			$html .= '<script src="js/src/sourceConfig.js"></script>';
