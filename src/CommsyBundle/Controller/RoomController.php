@@ -58,12 +58,6 @@ class RoomController extends Controller
         $numActiveMember = $roomItem->getActiveMembers($timeSpread);
         $numTotalMember = $roomItem->getAllUsers();
 
-/*        $numNewEntries = 0;
-        $numActiveMember = 10;
-        $numTotalMember = 1000;
-        $pageImpressions = 1001;
-*/
-
         $moderators = array();
         $moderatorList = $roomItem->getModeratorList();
         $moderatorUserItem = $moderatorList->getFirst();
@@ -98,7 +92,33 @@ class RoomController extends Controller
            $serviceLinkExternal = $serverItem->getServiceLinkExternal();
         }
 
-        return array(
+        // RSS-Feed
+        $rss = [
+            'show' => false,
+            'url' => $this->generateUrl('commsy_rss', [
+                'contextId' => $roomId,
+            ]),
+        ];
+
+        if (!$roomItem->isLocked() && !$roomItem->isClosed()) {
+            $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+
+            if ($roomItem->isOpenForGuests()) {
+                $rss['show'] = true;
+            } else {
+                if ($currentUserItem->isUser()) {
+                    $hashManager = $legacyEnvironment->getHashManager();
+
+                    $rss['show'] = true;
+                    $rss['url'] = $this->generateUrl('commsy_rss', [
+                        'contextId' => $roomId,
+                        'hid' => $hashManager->getRSSHashForUser($currentUserItem->getItemID()),
+                    ]);
+                }
+            }
+        }
+
+        return [
             'form' => $filterForm->createView(),
             'roomItem' => $roomItem,
             'timeSpread' => $timeSpread,
@@ -111,7 +131,8 @@ class RoomController extends Controller
             'countAnnouncements' => $countAnnouncements,
             'bgImageFilepath' => $backgroundImage,
             'serviceLinkExternal' => $serviceLinkExternal,
-        );
+            'rss' => $rss,
+        ];
     }
 
     /**

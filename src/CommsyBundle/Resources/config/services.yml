@@ -415,3 +415,8 @@ services:
 
     commsy.feed.creator.discussion_article:
         class: CommsyBundle\Feed\Creators\DiscussionArticleCreator
+
+    # Monolog
+    commsy.monolog.handler.doctrine_orm:
+        class: CommsyBundle\Monolog\Handler\DoctrineORMHandler
+        arguments: ['@doctrine.orm.entity_manager']

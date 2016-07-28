@@ -12,6 +12,7 @@ imports:
 parameters:
     files_directory: '%kernel.root_dir%/../files'
     themes_directory: '%kernel.root_dir%/../web/css/themes'
+    
 framework:
     #esi:             ~
     translator:      { fallback: "%locale%" }
@@ -70,6 +71,13 @@ doctrine:
         auto_generate_proxy_classes: "%kernel.debug%"
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
+
+monolog:
+    # handlers:
+    #     commsy_request:
+    #         type: service
+    #         id: commsy.monolog.handler.doctrine_orm
+    #         channels: [request]
 
 # Swiftmailer Configuration
 swiftmailer:

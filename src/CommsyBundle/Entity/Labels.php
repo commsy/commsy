@@ -133,7 +133,12 @@ class Labels
     public function isIndexable()
     {
         return ($this->deleter == null && $this->deletionDate == null &&
-                $this->name != 'ALL' && $this->description != 'GROUP_ALL_DESC');
+                $this->name != 'ALL' && $this->description != 'GROUP_ALL_DESC' && in_array($this->type, [
+                    'groups',
+                    'topics',
+                    'institutions'
+                ])
+        );
     }
 
     /**

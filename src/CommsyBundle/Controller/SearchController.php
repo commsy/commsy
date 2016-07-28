@@ -83,8 +83,13 @@ class SearchController extends Controller
 
         $results = [];
         foreach ($searchResults->getResults(0, 10)->toArray() as $searchResult) {
+
             $reflection = new \ReflectionClass($searchResult);
             $type = strtolower(rtrim($reflection->getShortName(), 's'));
+
+            if ($type === 'label') {
+                $type = strtolower(rtrim($searchResult->getType(), 's'));
+            }
 
             $results[] = [
                 'entity' => $searchResult,
@@ -98,6 +103,48 @@ class SearchController extends Controller
             'totalHits' => $totalHits,
             'results' => $results,
 //            'aggregations' => $aggregations,
+            'query' => $query,
+        ];
+    }
+
+    /**
+     * Returns more search results
+     * 
+     * @Route("/room/{roomId}/search/results/more/{query}/{start}/{sort}")
+     * @Template
+     */
+    public function moreResultsAction($roomId, $query, $start = 0, $sort = 'date', Request $request)
+    {
+        $globalSearch = new GlobalSearch();
+
+        $searchManager = $this->get('commsy.search.manager');
+        $searchManager->setQuery($query);
+
+        $searchResults = $searchManager->getResults();
+
+        $totalHits = $searchResults->getTotalHits();
+        $aggregations = $searchResults->getAggregations()['filterContext'];
+
+        $contextBuckets = $aggregations['contexts']['buckets'];
+
+        $results = [];
+        foreach ($searchResults->getResults($start, 10)->toArray() as $searchResult) {
+            $reflection = new \ReflectionClass($searchResult);
+            $type = strtolower(rtrim($reflection->getShortName(), 's'));
+
+            if ($type === 'label') {
+                $type = strtolower(rtrim($searchResult->getType(), 's'));
+            }
+
+            $results[] = [
+                'entity' => $searchResult,
+                'routeName' => 'commsy_' . $type . '_detail',
+            ];
+        }
+
+        return [
+            'roomId' => $roomId,
+            'results' => $results,
         ];
     }
 
