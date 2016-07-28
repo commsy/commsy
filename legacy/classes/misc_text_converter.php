@@ -1038,7 +1038,6 @@ class misc_text_converter {
       $reg_exp_array['(:scorm']       = '~\\(:scorm\\s(.*?):\\)~eu';
       $reg_exp_array['(:mdo']         = '~\\(:mdo\\s(.*?):\\)~eu';
       $reg_exp_array['(:geogebra']    = '~\\(:geogebra\\s(.*?):\\)~eu';
-      $reg_exp_array['(:scratch']     = '~\\(:scratch\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
       
       
       // Test auf erforderliche Software; Windows-Server?
@@ -1216,8 +1215,6 @@ class misc_text_converter {
                      } elseif ( $key == '(:geogebra' and mb_stristr($value_new,'(:geogebra') ) {
                         $value_new = $this->_formatGeogebra($value_new,$args_array,$file_array);
                         break;
-                     } elseif ( $key == '(:scratch' and mb_stristr($value_new,'(:scratch') ) {
-                        $value_new = $this->_formatScratch($value_new,$args_array,$file_array);
                      }
 
                      // plugins
@@ -2936,46 +2933,6 @@ class misc_text_converter {
                 $retour .= '   Sorry, the GeoGebra Applet could not be started. Please make sure that Java 1.4.2 (or later) is installed and active in your browser (<a href="http://java.sun.com/getjava">Click here to install Java now</a>)';
                 $retour .= '</applet>';
 
-             }
-          }
-      }
-      return $retour;
-   }
-
-   private function _formatScratch ($text, $array, $file_name_array){
-      global $c_commsy_url_path;
-      $retour = '';
-
-      $height = '480';
-      $width = '640';
-
-      if ( !empty($array[3]) ) {
-         $args = $this->_parseArgs($array[3]);
-      } else {
-         $args = array();
-      }
-      if ( !empty($args['height']) and is_numeric($args['height'])) {
-         $height = $args['height'];
-      }
-      if ( !empty($args['width']) and is_numeric($args['width']) ) {
-         $width = $args['width'];
-      }
-
-      if ( !empty($array[2]) ) {
-         if ( !empty($file_name_array[$array[2]]) ) {
-             if (stristr($array[2], '.sb')) {
-                $temp_file = $file_name_array[$array[2]];
-                $file_manager = $this->_environment->getFileManager();
-                $file = $file_manager->getItem($temp_file->getFileID());
-                $url = $file->getUrl();
-
-                $params = array();
-                $params['iid'] = $file->getFileID();
-                global $c_single_entry_point;
-                $file_link = curl($this->_environment->getCurrentContextID(),'material', 'getfile', $params,'',$file->getFileName(),$c_single_entry_point);
-                $retour .= '<object width="'.$width.'" height="'.$height.'" archive="'.$c_commsy_url_path.'/scratch/ScratchApplet.jar" codebase="'.$file_link.'" code="ScratchApplet" id="ProjectApplet" type="application/x-java-applet">';
-                $retour .= '<param value="'.$file->getFileName().'" name="project" />';
-                $retour .= '</object>';
              }
           }
       }

@@ -285,23 +285,11 @@ class cs_page_view extends cs_view {
             }
          }
       }
-      
-      // print page
-      if ($this->_is_print_page) {
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_print_css.php?cid='.$this->_environment->getCurrentContextID().'"/>'.LF;
-      
-      // portal / server
-      } elseif ( $this->_environment->inPortal() or $this->_environment->inServer() ) {
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_portal_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      }
-      
-      // portal / server / room
-      if( !$this->_is_print_page) {
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_portal_room_merged_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      }
+
+      $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_portal_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
+      $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_portal_room_merged_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
 
       if ($this->_environment->getCurrentFunction() == 'detail' or $this->_environment->getCurrentModule() == 'help' and !$this->_is_print_page){
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_detail_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
          // for tex in commsy
          // see http://www.math.union.edu/~dpvc/jsMath/
          global $c_jsmath_enable;
@@ -315,10 +303,6 @@ class cs_page_view extends cs_view {
          $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_index_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
       }
       
-      $pid = $this->_environment->getCurrentPortalID();
-      if (file_exists('htdocs/'.$pid.'/commsy.css') ){
-         $retour .= '   <link rel="stylesheet" type="text/css" href="'.$pid.'/commsy.css"/>'.LF;
-      }
       return $retour;
    }
 
@@ -471,7 +455,7 @@ class cs_page_view extends cs_view {
    	$ownRoomItem = $current_user->getOwnRoom();
    	$templateEngine = $this->_environment->getTemplateEngine();
    	$translator = $this->_environment->getTranslationObject();
-    
+
     $tpl_path = 'templates/';
    	
    	global $c_js_mode;
@@ -589,8 +573,6 @@ class cs_page_view extends cs_view {
    	   $to_javascript['autoOpenPopup']['tab'] = 'user';
    	   $to_javascript['autoOpenPopup']['parameters'] = array();
    	}
-   	
-   	$html .= '<script src="js/3rdParty/ckeditor_4.4.3/ckeditor.js"></script>';
    	
    	switch ($mode) {
    		
