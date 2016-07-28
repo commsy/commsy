@@ -117,15 +117,9 @@ class cs_privateroom_home_room_view extends cs_view {
       $may_enter = $item->mayEnter($current_user);
       $title = $item->getTitle();
       $color_array = $item->getColorArray();
-      if ( count($color_array) > 0 ) {
-          $cs_color['room_title'] = $color_array['tabs_title'];
-          $cs_color['room_background']  = $color_array['content_background'];
-          $cs_color['tableheader']  = $color_array['tabs_background'];
-      } else {
-          $cs_color['room_title'] = '';
-          $cs_color['room_background']  = '';
-          $cs_color['tableheader']  = '';
-      }
+      $cs_color['room_title'] = '';
+      $cs_color['room_background']  = '';
+      $cs_color['tableheader']  = '';
       $html  = '';
       $html = '<td style="width:25%; padding:3px; vertical-align: top;">'.LF;
       $html .= '<table class="room_window'.$item->getItemID().'" summary="Layout" style="width:100%; border-collapse:collapse;">'.LF;
@@ -236,15 +230,9 @@ class cs_privateroom_home_room_view extends cs_view {
          $item = $this->_list->getFirst();
          while(!empty($item)){
             $color_array = $item->getColorArray();
-         if ( count($color_array) > 0 ) {
-               $cs_color['room_title'] = $color_array['tabs_title'];
-               $cs_color['room_background']  = $color_array['content_background'];
-               $cs_color['tableheader']  = $color_array['tabs_background'];
-         } else {
-               $cs_color['room_title'] = '';
-               $cs_color['room_background']  = '';
-               $cs_color['tableheader']  = '';
-         }
+            $cs_color['room_title'] = '';
+            $cs_color['room_background']  = '';
+            $cs_color['tableheader']  = '';
             $retour .= '    table.room_window'.$item->getItemID().' {width: 17em; border:1px solid  '.$cs_color['tableheader'].'; margin:0px; padding:5px 10px 5px 10px; ';
             if ($color_array['schema']=='SCHEMA_OWN'){
                if ($item->getBGImageFilename()){

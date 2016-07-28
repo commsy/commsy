@@ -437,26 +437,19 @@ class cs_myroom_index_view extends cs_context_index_view {
       $current_user = $this->_environment->getCurrentUserItem();
       $may_enter = $item->mayEnter($current_user);
       $title = $item->getTitle();
-      $color_array = $item->getColorArray();
-     if ( count($color_array) > 0 ) {
-         $cs_color['room_title'] = $color_array['tabs_title'];
-         $cs_color['room_background']  = $color_array['content_background'];
-         $cs_color['tableheader']  = $color_array['tabs_background'];
-     } else {
-         $cs_color['room_title'] = '';
-         $cs_color['room_background']  = '';
-         $cs_color['tableheader']  = '';
-     }
+      $cs_color['room_title'] = '';
+      $cs_color['room_background']  = '';
+      $cs_color['tableheader']  = '';
 
-            $style = '    style="border:1px solid  '.$cs_color['tableheader'].'; margin:0px; padding:5px 10px 5px 10px; ';
-            $style .= 'background: url(../'.$c_single_entry_point.'?cid='.$item->getItemID().'&mod=picture&fct=getfile&picture=' . $color_array['schema'] . '_cs_gradient_24.png) repeat-x;';
-            $style .= 'background-color: '.$cs_color['tableheader'].';';
+      $style = '    style="border:1px solid  '.$cs_color['tableheader'].'; margin:0px; padding:5px 10px 5px 10px; ';
+      $style .= 'background: url(../'.$c_single_entry_point.'?cid='.$item->getItemID().'&mod=picture&fct=getfile&picture=' . $color_array['schema'] . '_cs_gradient_24.png) repeat-x;';
+      $style .= 'background-color: '.$cs_color['tableheader'].';';
 
-            if (isset($cs_color['room_title'])){
-               $style .= ' color:'.$cs_color['room_title'].' "';
-            }else{
-               $style .= ' color:#000000; "';
-            }
+      if (isset($cs_color['room_title'])){
+         $style .= ' color:'.$cs_color['room_title'].' "';
+      }else{
+         $style .= ' color:#000000; "';
+      }
 
 
       $html  = '';
@@ -569,15 +562,9 @@ class cs_myroom_index_view extends cs_context_index_view {
          $item = $this->_list->getFirst();
          while(!empty($item)){
             $color_array = $item->getColorArray();
-         if ( count($color_array) > 0 ) {
-               $cs_color['room_title'] = $color_array['tabs_title'];
-               $cs_color['room_background']  = $color_array['content_background'];
-               $cs_color['tableheader']  = $color_array['tabs_background'];
-         } else {
-               $cs_color['room_title'] = '';
-               $cs_color['room_background']  = '';
-               $cs_color['tableheader']  = '';
-         }
+            $cs_color['room_title'] = '';
+            $cs_color['room_background']  = '';
+            $cs_color['tableheader']  = '';
             $retour .= '    table.room_window'.$item->getItemID().' {width: 17em; border:1px solid  '.$cs_color['tableheader'].'; margin:0px; padding:5px 10px 5px 10px; ';
             if ($color_array['schema']=='SCHEMA_OWN'){
                if ($item->getBGImageFilename()){

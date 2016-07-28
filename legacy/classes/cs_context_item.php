@@ -100,22 +100,36 @@ class cs_context_item extends cs_item {
     $this->_default_detailbox_conf_array['detailtags'] = 'tiny';
     $this->_default_detailbox_conf_array['detailnetnavigation'] = 'short';
 
-    global $cs_color;
-    $this->_default_colors = $cs_color['DEFAULT'];
+    $colors = [];
+    $colors['schema']                     = 'DEFAULT';
+    $colors['tabs_background']            = '#3B658E';
+    $colors['tabs_focus']                 = '#EC930D';
+    $colors['table_background']           = '#EFEFEF';
+    $colors['tabs_title']                 = 'white';
+    $colors['tabs_separators']            = 'white';
+    $colors['tabs_dash']                  = 'white';
+    $colors['headline_text']              = 'white';
+    $colors['hyperlink']                  = '#01458A';
+    $colors['help_background']            = '#2079D3';
+    $colors['boxes_background']           = 'white';
+    $colors['content_background']         = '#EFECE2';
+    $colors['list_entry_odd']             = '#EFECE2';
+    $colors['list_entry_even']            = '#F7F7F7';
+    $colors['portal_tabs_background']     = '#666666';
+    $colors['portal_tabs_title']          = 'white';
+    $colors['portal_tabs_focus']          = '#EC930D';
+    $colors['portal_td_head_background']  = '#F7F7F7';
+    $colors['index_td_head_title']        = 'white';
+    $colors['date_title']                 = '#EC930D';
+    $colors['info_color']                 = '#827F76';
+    $colors['disabled']                   = '#B0B0B0';
+    $colors['warning']                    = '#FC1D12';
+    $colors['welcome_text']               = '#3B658E';
+    $colors['head_background']            = '#2A4E72';
+    $colors['page_title']                 = '#000000';
 
-    global $symfonyContainer;
-    $c_theme = $symfonyContainer->getParameter('commsy.themes.default');
-    if(isset($c_theme) && !empty($c_theme)) {
-    	$this->_default_colors['schema'] = $c_theme;
-    }
-
+    $this->_default_colors = $colors;
   }
-
-  /* zum debuggen
-   function __destruct() {
-       echo ("Zerstoere ".$this->getTitle().BRLF);
-   }
-  */
 
   function isOpenForGuests () {
     if ($this->_getValue('is_open_for_guests') == 1) {
@@ -1216,7 +1230,6 @@ class cs_context_item extends cs_item {
   }
 
   function getColorArray() {
-    global $cs_color;
     $retour = $this->_default_colors;
     if ($this->_issetExtra('COLOR')) {
       $retour = $this->_getExtra('COLOR');
@@ -1229,9 +1242,6 @@ class cs_context_item extends cs_item {
       $retour = $retour_temp;
     }
 
-    if ( !strstr($retour['schema'],'OWN') ) {
-    	if(isset($cs_color[$retour['schema']])) $retour = $cs_color[$retour['schema']];
-    }
     return $retour;
   }
 

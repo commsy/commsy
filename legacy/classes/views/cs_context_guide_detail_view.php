@@ -694,24 +694,7 @@ class cs_context_guide_detail_view extends cs_view {
    }
 
    function getStylesForHeaderAsHTML () {
-      global $cs_color;
-      $retour ='';
-      if ( !empty($this->_item) ) {
-         $retour .= '   <!-- BEGIN Styles -->'.LF;
-         $retour .= '   <style type="text/css">'.LF;
-         $color = $this->_item->getTableHeaderColor();
-         if (!empty($color)){
-            $cs_color['room_title'] = $color;
-            $cs_color['room_background']  = $this->_item->getBGColor();
-         }
-         $session = $this->_environment->getSession();
-         $session_id = $session->getSessionID();
-         $retour .= '    table.room_window { background-color: '.$cs_color['room_title'].'; width: 31em;}'.LF;
-         $retour .= '    td.detail_view_content_room_window {background-color:'.$cs_color['room_background'].';padding: 3px;text-align: left;}'.LF;
-         $retour .= '   </style>'."\n";
-         $retour .= '   <!-- END Styles -->'."\n";
-      }
-      return $retour;
+      return '';
    }
 
 

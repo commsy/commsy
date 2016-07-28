@@ -20,32 +20,12 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-// Support for debugging message-tags
-// if set, message-tags will not be resolved
-// $dont_resolve_messagetags = true;
-
-// message tags in configuration (default == false) --- only for developers !!!!
-$c_message_management = true;
-
 // send emails (default == true) --- only for developers !!!!
 // true = send emails
 // false = don't send emails
 // print = don't send emails but echo them in the htmlpage (usefull for debugging)
 // error_log = don't send emails but echo them in the error_log (usefull for debugging)
 $c_send_email = 'print';
-
-// support for debugging
-$c_show_debug_infos = false;
-
-// enable and configure logging to file
-$c_enable_logging_to_file = false;
-$c_logging_file = '';
-
-// enable security for HTML textarea
-// this feature is old and not stable
-// please don't turn this on
-// IJ, 16.08.2010
-$c_enable_htmltextarea_security = false;
 
 // use project ids stored in community room items
 // default = false -> use LEFT JOIN room -> link_items -> room

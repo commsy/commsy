@@ -1631,9 +1631,6 @@ $email_text_array = $portal_item->getEmailTextArray();
     case 'CONFIGURATION_BACKUP':
     $tempMessage      = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_BACKUP_FORM');
     break;
-    case 'CONFIGURATION_COLOR':
-    $tempMessage      = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_COLOR_FORM');
-    break;
     case 'CONFIGURATION_EXTRA':
     $tempMessage      = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_EXTRA_FORM');
     break;

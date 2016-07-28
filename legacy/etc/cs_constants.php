@@ -113,55 +113,14 @@ define('CS_PLUGIN_TYPE','plugin');
 
 define('CS_ITEMBACKUP_TYPE','item_backup');
 
-$xml_string = '<RUBRIC_CONNECTIONS>
-               <MATERIAL>
-                  <TOPIC>false</TOPIC>
-                  <INSTITUTION>false</INSTITUTION>
-               </MATERIAL>
-               <TOPIC>
-                  <MATERIAL>false</MATERIAL>
-                  <INSTITUTION>false</INSTITUTION>
-               </TOPIC>
-               <INSTITUTION>
-                  <MATERIAL>false</MATERIAL>
-                  <TOPIC>false</TOPIC>
-               </INSTITUTION>
-               <ANNOUNCEMENT>
-                  <MATERIAL>false</MATERIAL>
-                  <TOPIC>false</TOPIC>
-                  <INSTITUTION>false</INSTITUTION>
-               </ANNOUNCEMENT>
-               <GROUP>
-               </GROUP>
-               <NEWS>
-                  <MATERIAL>false</MATERIAL>
-                  <GROUP>false</GROUP>
-               </NEWS>
-               <DATE>
-                  <MATERIAL>false</MATERIAL>
-                  <GROUP>false</GROUP>
-               </DATE>
-               <DISCUSSION>
-                  <GROUP>false</GROUP>
-               </DISCUSSION>
-               <DISCARTICLE>
-                  <MATERIAL>false</MATERIAL>
-               </DISCARTICLE>
-               </RUBRIC_CONNECTIONS>';
-define('CS_RUBIC_CONNECTIONS',$xml_string);
 define('CS_GRADIENT_24','cs_gradient_24.png');
 define('CS_GRADIENT_24_FOCUS','cs_gradient_24_focus.png');
 define('CS_GRADIENT_32','cs_gradient_32.png');
-
-@include_once('etc/color_constants.php');
 
 define('LF'  , "\n");       // line feed
 define('BR'  , "<br />");   // line feed
 define('BRLF', "<br />\n"); // line feed
 define('TAB' , "\t");       // tab
-
-//define ("UC_CHARS", "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞ"); // If you need more, add
-//define ("LC_CHARS", "àáâãäåæçèéêëìíîïðñòóôõöøùúûüýþ"); // If you need more, add
 
 define ("UC_CHARS", "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞ"); // If you need more, add
 define ("LC_CHARS", "àáâãäåæçèéêëìíîïðñòóôõöøùúûüýþ"); // If you need more, add
@@ -227,33 +186,6 @@ if ( empty( $_SERVER['REQUEST_URI'] ) ) {
         }
     }
 }
-
-/*
-if ( !isset($_SERVER['HTTP_REFERER']) ) {
-   if ( isset($_SERVER['SERVER_PORT'])
-        and !empty($_SERVER['SERVER_PORT'])
-        and $_SERVER['SERVER_PORT'] == 443
-      ) {
-      $retour = 'https://';
-   } else {
-      $retour = 'http://';
-   }
-   if ( isset($_SERVER['HTTP_HOST'])
-        and !empty($_SERVER['HTTP_HOST'])
-      ) {
-      $retour .= $_SERVER['HTTP_HOST'];
-   }
-   if ( isset($_SERVER['PHP_SELF'])
-        and !empty($_SERVER['PHP_SELF'])
-      ) {
-      $pos = strrpos($_SERVER['PHP_SELF'],'/');
-      $path = substr($_SERVER['PHP_SELF'],0,$pos);
-      $retour .= $path;
-   }
-   $_SERVER['HTTP_REFERER'] = $retour;
-}
-*/
-
 
 // new constants for CommSy8
 define('CS_OPTION_SAVE', 'save');

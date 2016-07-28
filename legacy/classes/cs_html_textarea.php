@@ -50,18 +50,6 @@ class cs_html_textarea {
       if ( !empty($values[1]) ) {
          $hash = $values[1];
          $temp_text = str_replace('<!-- KFC TEXT '.$hash.' -->','',$value);
-         global $c_enable_htmltextarea_security;
-         if ( isset($c_enable_htmltextarea_security)
-              and !empty($c_enable_htmltextarea_security)
-              and $c_enable_htmltextarea_security
-            ) {
-            include_once('functions/security_functions.php');
-            if ( getSecurityHash($temp_text) != $hash ) {
-               global $environment;
-               $value = $environment->getTextConverter()->text_as_html_long($temp_text);
-               $value = '<!-- KFC TEXT '.getSecurityHash($value).' -->'.$value.'<!-- KFC TEXT '.getSecurityHash($value).' -->';
-            }
-         }
       } elseif ( !strstr($value,'<!-- KFC TEXT') ) {
          include_once('functions/security_functions.php');
          $value = '<!-- KFC TEXT '.getSecurityHash($value).' -->'.$value.'<!-- KFC TEXT '.getSecurityHash($value).' -->';

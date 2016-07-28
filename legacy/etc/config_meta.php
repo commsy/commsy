@@ -2,9 +2,6 @@
 // include first default commsy settings
 @include_once('etc/commsy/default.php');
 
-// include second special commsy settings
-@include_once('etc/commsy/settings.php');
-
 // include then special config files
 $config_path = realpath(dirname(__FILE__)) . '/commsy/';
 $config_folder = opendir($config_path);
@@ -15,7 +12,6 @@ if ( $config_folder ) {
            and is_file($config_path.'/'.$config_entry)
            and !strstr($config_entry,'-dist')
            and $config_entry != 'default.php'
-           and $config_entry != 'settings.php'
            and substr($config_entry,(int)(strlen($config_entry)-4)) == '.php'
          ) {
          $config_array[] = $config_entry;

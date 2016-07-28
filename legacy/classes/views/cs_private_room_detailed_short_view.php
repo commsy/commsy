@@ -590,15 +590,9 @@ class cs_private_room_detailed_short_view extends cs_view{
       $may_enter = $item->mayEnter($current_user);
       $title = $item->getTitle();
       $color_array = $item->getColorArray();
-     if ( count($color_array) > 0 ) {
-         $cs_color['room_title'] = $color_array['tabs_title'];
-         $cs_color['room_background']  = $color_array['content_background'];
-         $cs_color['tableheader']  = $color_array['tabs_background'];
-     } else {
-         $cs_color['room_title'] = '';
-         $cs_color['room_background']  = '';
-         $cs_color['tableheader']  = '';
-     }
+      $cs_color['room_title'] = '';
+       $cs_color['room_background']  = '';
+       $cs_color['tableheader']  = '';
       $html  = '';
       $html .= '<table class="room_window'.$item->getItemID().'" summary="Layout" style="width:100%; border-collapse:collapse;">'.LF;
       $html .= '<tr>'.LF;
@@ -941,15 +935,9 @@ $html .= ahref_curl( $item->getItemID(),
          $item = $this->_list->getFirst();
          while(!empty($item)){
             $color_array = $item->getColorArray();
-         if ( count($color_array) > 0 ) {
-               $cs_color['room_title'] = $color_array['tabs_title'];
-               $cs_color['room_background']  = $color_array['content_background'];
-               $cs_color['tableheader']  = $color_array['tabs_background'];
-         } else {
-               $cs_color['room_title'] = '';
+            $cs_color['room_title'] = '';
                $cs_color['room_background']  = '';
                $cs_color['tableheader']  = '';
-         }
             $retour .= '    table.room_window_border'.$item->getItemID().' {background-color: '.$color_array['boxes_background'].'; width: 150px; margin:2px; border: 1px solid '.$cs_color['tableheader'].';}'.LF;
             $retour .= '    td.detail_view_content_room_window'.$item->getItemID().' { width: 17em; padding: 3px;text-align: left; border-bottom: 1px solid '.$cs_color['tableheader'].';}'.LF;
             $retour .= '    td.detail_view_title_room_window'.$item->getItemID().' {background-color: '.$cs_color['tableheader'].'; color: '.$cs_color['room_title'].'; padding: 0px;text-align: left;}'.LF;

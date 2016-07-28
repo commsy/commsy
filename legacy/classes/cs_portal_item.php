@@ -2163,9 +2163,6 @@ class cs_portal_item extends cs_guide_item {
                case 'CONFIGURATION_AUTHENTICATION':  // getestet
                   $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_AUTHENTICATION_FORM');
                   break;
-               case 'CONFIGURATION_COLOR':   // getestet
-                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_COLOR_FORM');
-                  break;
                case 'CONFIGURATION_COMMON':  // getestet: als root irgendeinen Raum anklicken, dann oben rechts "Raum bearbeiten"
                   $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_COMMON_FORM');
                   break;

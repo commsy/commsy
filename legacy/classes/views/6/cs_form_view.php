@@ -1793,9 +1793,6 @@ class cs_form_view extends cs_view {
                case 'CONFIGURATION_CHAT':    // Raum-Chat einstellen
                   $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_CHAT_FORM_TITLE');
                   break;
-               case 'CONFIGURATION_COLOR':   // Farbkonfiguration
-                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_COLOR_FORM_TITLE');
-                  break;
                case 'CONFIGURATION_DATES':   // Termindarstellung
                   $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_DATES_FORM_TITLE');
                   break;

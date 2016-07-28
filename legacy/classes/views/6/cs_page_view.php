@@ -2064,15 +2064,6 @@ class cs_page_view extends cs_view {
       
       $html .= $this->_getServerNewsAsHTML();
 
-      global $c_message_management;
-      $current_user = $this->_environment->getCurrentUserItem();
-      if ( isset($c_message_management)
-           and $c_message_management
-           and $current_user->isUser()
-         ) {
-         $html .= $this->_getLanguageConfigAsHTML();
-      }
-
       $html .= $this->_getPluginInfosAsHTML();
       unset($current_user);
       return $html;

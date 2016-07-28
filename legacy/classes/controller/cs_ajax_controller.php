@@ -12,10 +12,6 @@
 			// call parent
 			parent::__construct($environment);
 
-			// deativate debug information
-			global $c_show_debug_infos;
-			$c_show_debug_infos = false;
-
 			// set output mode
 			$this->_environment->setOutputMode('JSON');
 		}

@@ -120,16 +120,6 @@ if ( !isset($environment) and isset($this->_environment) ) {
       }
    }
 
-   $link_item = new cs_link();
-   $link_item->setTitle($translator->getMessage('PREFERENCES_HEXACOLOR'));
-   $link_item->setDescription($translator->getMessage('PREFERENCES_HEXACOLOR_DESC'));
-   $link_item->setIconPath('images/cs_config/PREFERENCES_HEXACOLOR.gif');
-   $link_item->setContextID($environment->getCurrentContextID());
-   $link_item->setModule('configuration');
-   $link_item->setFunction('color');
-   $link_item->setParameter(array());
-   $room_link_list->add($link_item);
-
    if ( $environment->inPortal() ) {
       $link_item = new cs_link();
       $link_item->setTitle($translator->getMessage('PREFERENCES_DEFAULT_CONFIGURATIONS'));

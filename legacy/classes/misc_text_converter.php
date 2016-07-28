@@ -134,16 +134,6 @@ class misc_text_converter {
       if ( !empty($values[1]) ) {
          $hash = $values[1];
          $temp_text = str_replace('<!-- KFC TEXT '.$hash.' -->','',$text);
-         global $c_enable_htmltextarea_security;
-         if ( isset($c_enable_htmltextarea_security)
-              and !empty($c_enable_htmltextarea_security)
-              and $c_enable_htmltextarea_security
-            ) {
-            include_once('functions/security_functions.php');
-            if ( getSecurityHash($temp_text) != $hash ) {
-               $text = '<!-- KFC TEXT '.$hash.' -->'.$this->_cleanDataFromTextAreaNotFromFCK($temp_text).'<!-- KFC TEXT '.$hash.' -->';
-            }
-         }
       } else {
          $text = $this->_cleanDataFromTextAreaNotFromFCK($text);
       }
@@ -3245,22 +3235,8 @@ class misc_text_converter {
                      $hidden_value = str_replace('<!-- KFC TEXT '.$hidden_hash.' -->','',$hidden_value);
                   }
 
-                  include_once('functions/security_functions.php');
-                  global $c_enable_htmltextarea_security;
-                  if ( isset($c_enable_htmltextarea_security)
-                       and !empty($c_enable_htmltextarea_security)
-                       and $c_enable_htmltextarea_security
-                     ) {
-                     if ( getSecurityHash($hidden_value) == $hash ) {
-                        $new_hash = getSecurityHash($temp_text);
-                        $retour[$key] = '<!-- KFC TEXT '.$new_hash.' -->'.$temp_text.'<!-- KFC TEXT '.$new_hash.' -->';
-                     } else {
-                        $retour[$key] = $value;
-                     }
-                  } else {
-                     $new_hash = getSecurityHash($temp_text);
-                     $retour[$key] = '<!-- KFC TEXT '.$new_hash.' -->'.$temp_text.'<!-- KFC TEXT '.$new_hash.' -->';
-                  }
+                  $new_hash = getSecurityHash($temp_text);
+                  $retour[$key] = '<!-- KFC TEXT '.$new_hash.' -->'.$temp_text.'<!-- KFC TEXT '.$new_hash.' -->';
                } else {
                   $retour[$key] = $value;
                }
