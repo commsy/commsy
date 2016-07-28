@@ -23,6 +23,10 @@
 //    along with CommSy.
 mb_internal_encoding('UTF-8');
 
+if (php_sapi_name() != 'cli') {
+    exit('This script cannot be run from a browser. Run it from the CLI.');
+}
+
 global $environment;
 global $file;
 global $c_commsy_cron_split_scripts;
@@ -87,32 +91,7 @@ function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
       }
       fwrite($file, '<h4>'.$title.' - '.$type.' - '.$environment->getTextConverter()->text_as_html_short($portal_name).'</h4>'.LF);
       if ( $active ) {
-      	global $c_commsy_cron_split_scripts;
-      	if(isset($c_commsy_cron_split_scripts) and $c_commsy_cron_split_scripts){
-	         if($room->isPrivateRoom()){
-	      	   #passthru('php htdocs/cron_single_room.php '.$room->getItemID().' private');
-	         	$output = array();
-               exec('php htdocs/cron_single_room.php '.$room->getItemID().' private',$output);
-               if ( !empty($output)
-                    and !empty($output[0])
-                  ) {
-                  $cron_array = json_decode($output[0],true);
-                  displayCronResults($cron_array);
-               }
-	         } else {
-	         	#passthru('php htdocs/cron_single_room.php '.$room->getItemID());
-	            $output = array();
-               exec('php htdocs/cron_single_room.php '.$room->getItemID(),$output);
-               if ( !empty($output)
-                    and !empty($output[0])
-                  ) {
-                  $cron_array = json_decode($output[0],true);
-                  displayCronResults($cron_array);
-               }
-	         }
-      	} else {
-      		displayCronResults($room->runCron());
-      	}
+      	displayCronResults($room->runCron());
       } else {
          fwrite($file, 'not active'.BRLF);
       }

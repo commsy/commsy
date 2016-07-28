@@ -89,9 +89,4 @@ $c_security_key = "3a2a14dbbab21710e78f7091af0f70dd";
 // cron_new.php must be run as root to make changing user and group for commsy/var/temp possible!
 //$c_commsy_cron_var_temp_user = "www-data";
 //$c_commsy_cron_var_temp_group = "www-data";
-// set to true to use htdocs/cron_single_room.php
-//$c_commsy_cron_split_scripts = false;
-
-//use $c_commsy_cron_token as $_GET['cron_token']-Parameter when starting cron.php
-//$c_commsy_cron_token = 'TOKEN-ID';
 ?>

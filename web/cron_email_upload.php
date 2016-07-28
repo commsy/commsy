@@ -1,6 +1,8 @@
 <?php
 
-// http://www.linuxscope.net/articles/mailAttachmentsPHP.html
+if (php_sapi_name() != 'cli') {
+    exit('This script cannot be run from a browser. Run it from the CLI.');
+}
 
 function get_mime_type(&$structure) {
    $primary_mime_type = array("TEXT", "MULTIPART","MESSAGE", "APPLICATION", "AUDIO","IMAGE", "VIDEO", "OTHER");

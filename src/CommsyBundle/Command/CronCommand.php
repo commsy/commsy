@@ -24,7 +24,6 @@ class CronCommand extends Command
 
     protected function configure()
     {
-
         $this
             ->setName('commsy:cron:main')
             ->setDescription('main commsy cron')
@@ -33,15 +32,7 @@ class CronCommand extends Command
                 InputArgument::OPTIONAL,
                 'Which portal do you want to use?'
             )
-            // ->addOption(
-            //     'yell',
-            //     null,
-            //     InputOption::VALUE_NONE,
-            //     'If set, the task will yell in uppercase letters'
-            // )
         ;
-
-
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -56,7 +47,5 @@ class CronCommand extends Command
         } else {
             $output->writeln('Please set context id');
         }
-
-        
     }
 }
