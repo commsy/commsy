@@ -681,9 +681,6 @@ function isURLValid () {
 
         // ajax
         $module != 'ajax' and
-        
-        // Scorm
-        $module != 'scorm' and
    		
          // download
          $module != 'download' and

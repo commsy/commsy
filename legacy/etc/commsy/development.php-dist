@@ -43,9 +43,6 @@ $c_send_email = 'print';
 //$c_media_integration_pw = '';
 //$c_media_integration_pw_api = '';
 
-// use scorm in following room id's
-//$c_scorm = array();
-
 // enable upload via e-mail
 // needed: php5-imap
 //$c_email_upload                = false;
