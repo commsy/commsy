@@ -73,28 +73,14 @@ function Debug_GetBacktrace()
 
 
 /**
- * Generates a version string depending on release or development status.
- * Release version is generated based on the cvs tag.
- * Development version is taken from the file VERSION in the source root.
+ * Reads the version string from VERSION file
  *
  * @return  returns a string
  *
  */
-function getCommSyVersion() {
-   $releasestring     = '$Name$';   // this is replaced on a "cvs release"
-   if (mb_strlen($releasestring) > 9 ) {
-      $temp1 = mb_stristr($releasestring, 'Rel');
-      $temp2 = mb_substr($temp1, 4);
-      $temp3 = mb_substr($temp2, 0, mb_strlen($temp2)-1);
-      $temp4 = strtr($temp3, '-', '.');
-      $commsyversion = trim($temp4);
-   }
-   if ( empty($commsyversion) ) {
-      $fp = fopen('version','r','1');      // file system access is quite expensive, but the best we can do
-      $version = fgets($fp,'50');
-      $commsyversion = trim($version);
-   }
-   return $commsyversion;
+function getCommSyVersion()
+{
+    return file_get_contents('../VERSION');
 }
 
 /**
