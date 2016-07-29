@@ -163,7 +163,7 @@ class MenuBuilder
                 'extras' => array('icon' => 'uk-icon-small')
             ));
             $menu->addChild('room', array(
-                'label' => 'Zurück zum Raum',
+                'label' => 'Back to room',
                 'route' => 'commsy_room_home',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-reply uk-icon-small uk-icon-justify')
