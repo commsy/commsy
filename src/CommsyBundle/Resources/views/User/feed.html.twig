@@ -4,9 +4,9 @@
 
         <div class="uk-width-medium-1-2">
 
-            <article class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
+            <article class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom {% if not user.isUser %}cs-moderation-warning{% endif %}">
  
-                <div class="uk-panel-teaser cs-panel-teaser-user">
+                <div class="uk-panel-teaser cs-panel-teaser-user {% if not user.isUser %}cs-moderation-warning-title{% endif %}">
                     {{ macros.statusColor(readerList, user.itemId, 'grid') }}
  
                     <div class="items-checkbox uk-float-left uk-margin-right uk-hidden">
@@ -21,6 +21,13 @@
                    <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
                     <span class="uk-text-large uk-text-middle uk-text-truncate">
                         <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">{{ user.title }} {{user.fullname}}</a>
+                        {% if not user.isUser %}
+                            {% if user.status == 0 %}
+                                ({{ 'status deleted'|trans({},'user')|capitalize }})
+                            {% elseif user.status == 1 %}
+                                ({{ 'status applying'|trans({},'user')|capitalize }})
+                            {% endif %}
+                        {% endif %}
                     </span>
                 </div>
                 <span>
