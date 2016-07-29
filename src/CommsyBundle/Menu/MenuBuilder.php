@@ -215,7 +215,7 @@ class MenuBuilder
                     }
                     
                     $menu->addChild($value, array(
-                        'label' => $value,
+                        'label' => ucfirst($value),
                         'route' => $route,
                         'routeParameters' => array('roomId' => $roomId),
                         'extras' => array('icon' => $this->getRubricIcon($value))
