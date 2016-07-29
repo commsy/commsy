@@ -26,15 +26,19 @@ class UserService
         $this->roomManager->reset();
     }
 
-    public function getCountArray($roomId)
+    public function getCountArray($roomId, $moderation = false)
     {
         $this->userManager->setContextLimit($roomId);
-        $this->userManager->setUserLimit();
+        if (!$moderation) {
+            $this->userManager->setUserLimit();
+        }
         $this->userManager->select();
         $countUser = array();
         $countUserArray['count'] = sizeof($this->userManager->get()->to_array());
         $this->userManager->resetLimits();
-        $this->userManager->setUserLimit();
+        if (!$moderation) {
+            $this->userManager->setUserLimit();
+        }
         $this->userManager->select();
         $countUserArray['countAll'] = $this->userManager->getCountAll();
 
@@ -46,13 +50,15 @@ class UserService
         $this->userManager->resetLimits();
     }
 
-    public function getListUsers($roomId, $max = NULL, $start = NULL)
+    public function getListUsers($roomId, $max = NULL, $start = NULL, $moderation = false)
     {
        $this->userManager->setContextLimit($roomId);
         if ($max !== NULL && $start !== NULL) {
             $this->userManager->setIntervalLimit($start, $max);
         }
-        $this->userManager->setUserLimit();
+        if (!$moderation) {
+            $this->userManager->setUserLimit();
+        }
         $this->userManager->setOrder('name');
         $this->userManager->select();
         $userList = $this->userManager->get();

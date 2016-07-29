@@ -62,18 +62,18 @@ class UserController extends Controller
             $userService->setFilterConditions($filterForm);
         }
 
-        // get user list from manager service 
-        $users = $userService->getListUsers($roomId, $max, $start);
-        $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
+        $current_user = $legacyEnvironment->getCurrentUserItem();
 
+        // get user list from manager service 
+        $users = $userService->getListUsers($roomId, $max, $start, $current_user->isModerator());
+        $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();
         foreach ($users as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
         }
-
 
         return array(
             'roomId' => $roomId,
@@ -90,6 +90,7 @@ class UserController extends Controller
     public function listAction($roomId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_user = $legacyEnvironment->getCurrentUserItem();
 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
@@ -121,7 +122,7 @@ class UserController extends Controller
         }
 
         // get user list from manager service 
-        $itemsCountArray = $userService->getCountArray($roomId);
+        $itemsCountArray = $userService->getCountArray($roomId, $current_user->isModerator());
 
 
 
@@ -306,18 +307,8 @@ class UserController extends Controller
                 }
             }
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
-        } else if ($action == 'user-status-user') {
-            error_log(print_r('user-status-user', true));
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('changed status of %count% users to user',count($selectedIds), array('%count%' => count($selectedIds)));
-        } else if ($action == 'user-status-moderator') {
-            error_log(print_r('user-status-moderator', true));
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('changed status of %count% users to moderator',count($selectedIds), array('%count%' => count($selectedIds)));
-        } else if ($action == 'user-status-blocked') {
-            error_log(print_r('user-status-blocked', true));
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('changed status of %count% users to blocked',count($selectedIds), array('%count%' => count($selectedIds)));
-        } else if ($action == 'user-status-deleted') {
-            error_log(print_r('user-status-deleted', true));
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('changed status of %count% users to deleted',count($selectedIds), array('%count%' => count($selectedIds)));
+        } else {
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ToDo: '.$action;
         }
         
         return new JsonResponse([
