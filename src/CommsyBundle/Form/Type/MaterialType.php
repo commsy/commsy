@@ -37,19 +37,18 @@ class MaterialType extends AbstractType
             ->addEventSubscriber(new AddEtherpadFormListener())
             ->add('biblio_select', ChoiceType::class, array(
                 'choices'  => array(
-                    'BiblioPlainType' => 'plain',
-                    'BiblioBookType' => 'book',
-                    'BiblioCollectionType' => 'collection',
-                    'BiblioArticleType' => 'article',
-                    'BiblioJournalType' => 'journal',
-                    'BiblioChapterType' => 'chapter',
-                    'BiblioNewspaperType' => 'newspaper',
-                    'BiblioThesisType' => 'thesis',
-                    'BiblioManuscriptType' => 'manuscript',
-                    'BiblioWebsiteType' => 'website',
-                    'BiblioDocManagementType' => 'document management',
-                    'BiblioPictureType' => 'picture',
-
+                    'plain' => 'BiblioPlainType',
+                    'book' => 'BiblioBookType',
+                    'collection' => 'BiblioCollectionType',
+                    'article' => 'BiblioArticleType',
+                    'journal' => 'BiblioJournalType',
+                    'chapter' => 'BiblioChapterType',
+                    'newspaper' => 'BiblioNewspaperType',
+                    'thesis' => 'BiblioThesisType',
+                    'manuscript' => 'BiblioManuscriptType',
+                    'website' => 'BiblioWebsiteType',
+                    'document management' => 'BiblioDocManagementType',
+                    'picture' => 'BiblioPictureType'
                 ),
                 'label' => 'bib reference',
                 'choice_translation_domain' => true,
