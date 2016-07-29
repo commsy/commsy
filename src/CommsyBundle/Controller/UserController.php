@@ -210,6 +210,18 @@ class UserController extends Controller
                 }
             }
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
+        } else if ($action == 'user-status-user') {
+            error_log(print_r('user-status-user', true));
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('changed status of %count% users to user',count($selectedIds), array('%count%' => count($selectedIds)));
+        } else if ($action == 'user-status-moderator') {
+            error_log(print_r('user-status-moderator', true));
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('changed status of %count% users to moderator',count($selectedIds), array('%count%' => count($selectedIds)));
+        } else if ($action == 'user-status-blocked') {
+            error_log(print_r('user-status-blocked', true));
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('changed status of %count% users to blocked',count($selectedIds), array('%count%' => count($selectedIds)));
+        } else if ($action == 'user-status-deleted') {
+            error_log(print_r('user-status-deleted', true));
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('changed status of %count% users to deleted',count($selectedIds), array('%count%' => count($selectedIds)));
         }
         
         return new JsonResponse([

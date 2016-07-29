@@ -46,6 +46,18 @@
 @modal-dialog-background:                       #444 none repeat scroll 0 0;
 @modal-dialog-padding:                          15px;
 
+@list-moderation-padding-vertical:                 0px;
+@list-moderation-padding-horizontal:               0px;
+@list-moderation-background-odd:                   #FFADB1;
+@list-moderation-background-even:                  #FF858B;
 
+/* Modifier: `cs-list-moderation`
+ ========================================================================== */
 
+.cs-list-moderation > li {
+    padding: @list-moderation-padding-vertical @list-moderation-padding-horizontal;
+    background: @list-moderation-background-even;
+    .hook-list-striped;
+}
 
+.cs-list-moderation > li:nth-of-type(odd) { background: @list-moderation-background-odd; }
