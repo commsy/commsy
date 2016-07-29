@@ -120,7 +120,7 @@ class MenuBuilder
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-server uk-icon-small uk-icon-justify'),
             ))
-            ->setExtra('translation_domain', 'settings');
+            ->setExtra('translation_domain', 'menu');
 
             // moderation
             $menu->addChild('Moderation', array(
@@ -129,7 +129,7 @@ class MenuBuilder
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-sitemap uk-icon-small uk-icon-justify'),
             ))
-            ->setExtra('translation_domain', 'settings');            
+            ->setExtra('translation_domain', 'menu');            
 
             // additional settings
             $menu->addChild('Additional', array(
@@ -138,7 +138,7 @@ class MenuBuilder
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-plus uk-icon-small uk-icon-justify'),
             ))
-            ->setExtra('translation_domain', 'settings');
+            ->setExtra('translation_domain', 'menu');
 
             // appearance
             $menu->addChild('Appearance', array(
@@ -147,7 +147,7 @@ class MenuBuilder
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-pencil-square uk-icon-small uk-icon-justify'),
             ))
-            ->setExtra('translation_domain', 'settings');
+            ->setExtra('translation_domain', 'menu');
             
             // extensions
             $menu->addChild('Extensions', array(
@@ -156,7 +156,7 @@ class MenuBuilder
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-gears uk-icon-small uk-icon-justify'),
             ))
-            ->setExtra('translation_domain', 'settings');
+            ->setExtra('translation_domain', 'menu');
         }
         
         // identifier
