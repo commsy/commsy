@@ -1,8 +1,23 @@
 ivory_ck_editor:
     inline: true
     default_config: cs_item_config
+    plugins:
+        CommSyImage:
+            path:     "/js/src/commsy/ckeditor/plugins/image/"
+            filename: "plugin.js"
+        CommSyAudio:
+            path:     "/js/src/commsy/ckeditor/plugins/audio/"
+            filename: "CommSyAudio.js"
+        CommSyVideo:
+            path:     "/js/src/commsy/ckeditor/plugins/video/"
+            filename: "CommSyVideo.js"
+        CommSyDocument:
+            path:     "/js/src/commsy/ckeditor/plugins/document/"
+            filename: "CommSyDocument.js"
     configs:
         cs_item_config:
-            toolbar: [ [ "Cut", "Copy", "Paste", "PasteFromWord", "Undo", "Redo" ], ["Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript", "SpecialChar"] , ["NumberedList", "BulletedList", "Outdent", "Indent", "Blockquote"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"], "/", ["Format"], ["Font"], ["FontSize"], ["TextColor", "BGColor", "RemoveFormat", "Maximize", "Source"], ["Link", "Unlink", "Table", "HorizontalRule", "Smiley", "Flash"] ]
+            toolbar: [ [ "Cut", "Copy", "Paste", "PasteFromWord", "Undo", "Redo" ], ["Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript", "SpecialChar"] , ["NumberedList", "BulletedList", "Outdent", "Indent", "Blockquote"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"], "/", ["Format"], ["Font"], ["FontSize"], ["TextColor", "BGColor", "RemoveFormat", "Maximize", "Source"], ["Link", "Unlink", "Table", "HorizontalRule", "Smiley", "Flash"], ["CommSyImage", "CommSyDocument", "CommSyAudio", "CommSyVideo"] ]
+            extraPlugins: "CommSyImage,CommSyAudio,CommSyVideo,CommSyDocument"
         cs_annotation_config:
             toolbar: [ [ "Cut", "Copy", "Paste", "PasteFromWord", "Undo", "Redo" ], ["Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript", "SpecialChar"] ]
+    

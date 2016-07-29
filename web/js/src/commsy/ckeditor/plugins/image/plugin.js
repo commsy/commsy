@@ -22,7 +22,7 @@
 			var pluginName = 'CommSyImage';
 
 			// Register the dialog.
-			CKEDITOR.dialog.add( pluginName, '../../src/commsy/ckeditor/plugins/image/dialogs/image.js' );
+			CKEDITOR.dialog.add( pluginName, '/js/src/commsy/ckeditor/plugins/image/dialogs/image.js' );
 
 			var allowed = 'img[alt,!src]{border-style,border-width,float,height,margin,margin-bottom,margin-left,margin-right,margin-top,width}',
 				required = 'img[alt,src]';
@@ -43,7 +43,7 @@
 			// Register the toolbar button.
 			editor.ui.addButton && editor.ui.addButton( 'CommSyImage', {
 				label: editor.lang.common.image,
-				icon: '../../src/commsy/ckeditor/plugins/image/icons/image.png',
+				icon: '/js/src/commsy/ckeditor/plugins/image/icons/image.png',
 				command: pluginName,
 				toolbar: 'insert,10'
 			});
