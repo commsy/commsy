@@ -48,6 +48,34 @@
         action = 'send-list';
         startEdit($(this));
     });
+    
+    $('#commsy-select-action-user-status-user').on('click', function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        action = 'user-status-user';
+        startEdit($(this));
+    });
+    
+    $('#commsy-select-action-user-status-moderator').on('click', function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        action = 'user-status-moderator';
+        startEdit($(this));
+    });
+    
+    $('#commsy-select-action-user-status-blocked').on('click', function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        action = 'user-status-blocked';
+        startEdit($(this));
+    });
+    
+    $('#commsy-select-action-user-status-deleted').on('click', function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        action = 'user-status-deleted';
+        startEdit($(this));
+    });
 
     $('#commsy-select-actions-ok').on('click', function(event) {
         event.stopPropagation();
