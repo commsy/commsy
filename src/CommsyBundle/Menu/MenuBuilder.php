@@ -118,52 +118,48 @@ class MenuBuilder
                 'label' => 'General',
                 'route' => 'commsy_settings_general',
                 'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-server uk-icon-small'),
+                'extras' => array('icon' => 'uk-icon-server uk-icon-small uk-icon-justify'),
             ))
-            ->setExtra('translation_domain', 'menu');
+            ->setExtra('translation_domain', 'settings');
 
             // moderation
             $menu->addChild('Moderation', array(
                 'label' => 'Moderation',
                 'route' => 'commsy_settings_moderation',
                 'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-sitemap uk-icon-small'),
+                'extras' => array('icon' => 'uk-icon-sitemap uk-icon-small uk-icon-justify'),
             ))
-            ->setExtra('translation_domain', 'menu');            
+            ->setExtra('translation_domain', 'settings');            
 
             // additional settings
             $menu->addChild('Additional', array(
                 'label' => 'Additional',
                 'route' => 'commsy_settings_additional',
                 'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-plus uk-icon-small'),
+                'extras' => array('icon' => 'uk-icon-plus uk-icon-small uk-icon-justify'),
             ))
-            ->setExtra('translation_domain', 'menu');
+            ->setExtra('translation_domain', 'settings');
 
             // appearance
             $menu->addChild('Appearance', array(
                 'label' => 'appearance',
                 'route' => 'commsy_settings_appearance',
                 'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-pencil-square uk-icon-small'),
+                'extras' => array('icon' => 'uk-icon-pencil-square uk-icon-small uk-icon-justify'),
             ))
-            ->setExtra('translation_domain', 'menu');
+            ->setExtra('translation_domain', 'settings');
             
             // extensions
             $menu->addChild('Extensions', array(
                 'label' => 'extensions',
                 'route' => 'commsy_settings_extensions',
                 'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-gears uk-icon-small'),
+                'extras' => array('icon' => 'uk-icon-gears uk-icon-small uk-icon-justify'),
             ))
-            ->setExtra('translation_domain', 'menu');
+            ->setExtra('translation_domain', 'settings');
         }
         
         // identifier
-        
-        // additional
-        
-        // extensions
         
         // plugins
 
