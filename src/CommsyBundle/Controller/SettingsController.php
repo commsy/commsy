@@ -121,6 +121,7 @@ class SettingsController extends Controller
             // $em = $this->getDoctrine()->getManager();
             // $em->persist($room);
             // $em->flush();
+            return $this->redirectToRoute('commsy_settings_general', ["roomId" => $roomId]);
         }
 
         $backgroundImage = $this->generateUrl("getBackground", array('roomId' => $roomId));
