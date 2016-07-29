@@ -15,6 +15,13 @@ use CommsyBundle\Form\Type\Event\AddEtherpadFormListener;
 
 class MaterialType extends AbstractType
 {
+    private $etherpadFormListener;
+
+    public function __construct(AddEtherpadFormListener $etherpadListener)
+    {
+        $this->etherpadFormListener = $etherpadListener;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -34,7 +41,7 @@ class MaterialType extends AbstractType
                 'required' => false,
                 'translation_domain' => 'form',
             ))
-            ->addEventSubscriber(new AddEtherpadFormListener())
+            ->addEventSubscriber($this->etherpadFormListener)
             ->add('biblio_select', ChoiceType::class, array(
                 'choices'  => array(
                     'plain' => 'BiblioPlainType',
