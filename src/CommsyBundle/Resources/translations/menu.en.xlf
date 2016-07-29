@@ -57,6 +57,11 @@
                 <source>extensions</source>
                 <target>Extensions</target>
             </trans-unit>
+
+            <trans-unit id="menu_back_to_room">
+                <source>Back to room</source>
+                <target>Back to room</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
