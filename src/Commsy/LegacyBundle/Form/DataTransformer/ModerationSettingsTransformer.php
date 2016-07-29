@@ -37,18 +37,13 @@ class ModerationSettingsTransformer implements DataTransformerInterface
 
             // Usage Infos
             $translator = $this->legacyEnvironment->getTranslationObject();
-            $default_rubrics = $roomItem->getAvailableRubrics();
-
-            dump($default_rubrics);
-            //$roomData['usernotice']['array_info_text_rubric'] = $default_rubrics->values();
-
             $array_info_text = array();
             $temp_array['rubric'] = $translator->getMessage('HOME_INDEX');
             $temp_array['key'] = 'home';
             $temp_array['title'] = $roomItem->getUsageInfoHeaderForRubric('home');
             $temp_array['text'] = $roomItem->getUsageInfoTextForRubricInForm('home');
             $array_info_text[] = $temp_array;
-            foreach ($default_rubrics as $rubric) {
+            foreach ($roomItem->getAvailableRubrics() as $rubric) {
                  $temp_array = array();
                  switch ( mb_strtoupper($rubric, 'UTF-8') ){
                     case 'ANNOUNCEMENT':
@@ -88,11 +83,16 @@ class ModerationSettingsTransformer implements DataTransformerInterface
                   $temp_array['key'] = $rubric;
                   $temp_array['title'] = $roomItem->getUsageInfoHeaderForRubric($rubric);
                   $temp_array['text'] = $roomItem->getUsageInfoTextForRubricInForm($rubric);
+
+                  $roomData['usernotice']['title_' . $rubric] = $roomItem->getUsageInfoHeaderForRubric($rubric);
+                  $roomData['usernotice']['description_' . $rubric] = $roomItem->getUsageInfoTextForRubricInForm($rubric);
+
                   $array_info_text[] = $temp_array;
                   unset($temp_array);
             }
             $roomData['usernotice']['array_info_text'] = $array_info_text;
 
+            // Mail
             foreach ($roomItem->getEmailTextArray() as $name => $valueArray){
                 foreach ($valueArray as $language => $message) {
                     if(!empty($message)){
@@ -100,7 +100,7 @@ class ModerationSettingsTransformer implements DataTransformerInterface
                     }
                 }
             }
-        }
+        }   
 
         return $roomData;
     }
@@ -115,6 +115,7 @@ class ModerationSettingsTransformer implements DataTransformerInterface
      */
     public function applyTransformation($roomObject, $roomData)
     {
+
         if(!empty($roomData['homenotice']['item_id'])){
             $roomObject->setInformationBoxEntryID($roomData['homenotice']['item_id']);
         }
@@ -125,53 +126,11 @@ class ModerationSettingsTransformer implements DataTransformerInterface
             $roomObject->setwithInformationBox('no');
         }
 
-        $info_array = array();
-        if (is_array($roomObject->_getExtra('USAGE_INFO'))) {
-            $info_array = $roomObject->_getExtra('USAGE_INFO');
+        // Rubrics usage info
+        foreach($roomObject->getAvailableRubrics() as $rubric){
+            $roomObject->setUsageInfoHeaderForRubric($rubric, $roomData['usernotice']["title_" . $rubric]);
+            $roomObject->setUsageInfoTextForRubric($rubric, $roomData['usernotice']["description_" . $rubric]);
         }
-
-        
-        // // get selected rubric from form
-        // $info_rubric = $roomData['usernotice']['array_info_text_rubric'];
-
-        // if (!empty($info_rubric)) {
-        //     // if info array is empty, add rubric
-        //     if (empty($info_array)) {
-        //         $info_array[] = $info_rubric;
-        //         $roomObject->setUsageInfoArray($info_array);
-        //     }
-
-        //     /*
-        //      * Note: Why adding twice? Why differ between empty and !in_array?
-        //      */
-
-        //     // if rubric is not in array push it
-        //     elseif (!in_array($info_rubric . "_no", $info_array)) {
-        //         array_push($info_array, $info_rubric . "no");
-        //         $roomObject->setUsageInfoArray($info_array);
-        //     }
-
-        //     // if rubric is in array remove it
-        //     elseif (in_array($info_rubric . "_no", $info_array)) {
-        //         $temp = array($info_rubric . "_no");
-        //         $newArray = array_diff($info_array, $temp);
-        //         $roomObject->setUsageInfoArray($newArray);
-        //     }
-
-        //     // set title
-        //     if (!empty($roomData['usernotice']["moderation_title_" . $info_rubric])) {
-        //         $text_converter = $this->legacyEnvironment->getTextConverter();
-        //         $roomObject->setUsageInfoHeaderForRubric($info_rubric, $text_converter->sanitizeHTML($roomData['usernotice']["moderation_title_" . $info_rubric]));
-        //     }
-
-        //     // set text
-        //     if (!empty($roomData['usernotice']["moderation_description_" . $info_rubric])) {
-        //         $roomObject->setUsageInfoTextForRubric($info_rubric, $roomData['usernotice']["moderation_description_" . $info_rubric]);
-        //     } else {
-        //         $roomObject->setUsageInfoTextForRubric($info_rubric, "");
-        //     }
-        // }
-
 
         // Mail
         if(isset($roomData['email_configuration']))

@@ -154,12 +154,7 @@ class SettingsController extends Controller
 
         $form->handleRequest($request);
         if ($form->isValid()) {
-
-            dump($form->getData());
-
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
-      
-            dump($roomItem);
 
             $roomItem->save();
 

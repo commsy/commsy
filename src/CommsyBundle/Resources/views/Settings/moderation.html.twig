@@ -99,5 +99,39 @@
             englishEditor.parentNode.parentNode.style.display = 'none';
         }
     };
+
+    // load and save usage notices
+    var rubricSelection = document.getElementById('moderation_settings_usernotice_array_info_text_rubric');
+    var titleField = document.getElementById('moderation_settings_usernotice_moderation_title');
+    var ckeditor = CKEDITOR.instances['moderation_settings_usernotice_message'];
+    var hiddenTitleField = 'moderation_settings_usernotice_title_';
+    var hiddenTextField = 'moderation_settings_usernotice_description_';
+
+    // similar ckeditor events: 'loaded', 'instanceCreated'
+    ckeditor.on('instanceReady', function(e){
+
+        titleField.onblur = function(e){
+            document.getElementById(hiddenTitleField + rubricSelection.value).value = this.value; 
+        };
+ 
+        this.on('blur', function(e){
+            document.getElementById(hiddenTextField + rubricSelection.value).value = this.getData();
+        });
+
+        // This is just a workaround needed because the blur event above apparently does not fire when directly clicking the submit button after typing text into the CKEdtor
+        document.getElementsByClassName('uk-form-horizontal')[0].onsubmit=function(){
+            document.getElementById(hiddenTextField + rubricSelection.value).value = ckeditor.getData();
+        }
+
+        rubricSelection.onchange=function(e){
+            titleField.value = document.getElementById(hiddenTitleField + this.value).value;
+            ckeditor.setData(document.getElementById(hiddenTextField + this.value).value);
+        };
+
+        // initially display data from DB once the CKEditor is ready
+        titleField.value = document.getElementById(hiddenTitleField + rubricSelection.value).value;
+        ckeditor.setData(document.getElementById(hiddenTextField + rubricSelection.value).value);
+      
+    });
     </script>
 {% endblock content %}

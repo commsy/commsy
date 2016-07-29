@@ -60,6 +60,7 @@ class GeneralSettingsTransformer implements DataTransformerInterface
             }
             $roomData['rubrics'] = $rubrics;
         }
+
         return $roomData;
     }
 
