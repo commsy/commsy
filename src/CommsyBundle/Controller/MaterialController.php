@@ -910,8 +910,10 @@ class MaterialController extends Controller
             if ($item->isDraft()) {
                 $isDraft = true;
             }
+
             // get material from MaterialService
             $materialItem = $materialService->getMaterial($itemId);
+            $materialItem->setDraftStatus($item->isDraft());
             if (!$materialItem) {
                 throw $this->createNotFoundException('No material found for id ' . $roomId);
             }

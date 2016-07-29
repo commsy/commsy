@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
+use CommsyBundle\Form\Type\Event\AddEtherpadFormListener;
 
 class MaterialType extends AbstractType
 {
@@ -33,11 +34,7 @@ class MaterialType extends AbstractType
                 'required' => false,
                 'translation_domain' => 'form',
             ))
-            ->add('editor_switch', CheckboxType::class, array(
-                'label' => 'editor_switch',
-                'required' => false,
-                'translation_domain' => 'form',
-            ))
+            ->addEventSubscriber(new AddEtherpadFormListener())
             ->add('biblio_select', ChoiceType::class, array(
                 'choices'  => array(
                     'BiblioPlainType' => 'plain',

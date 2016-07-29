@@ -326,6 +326,10 @@
                 <source>Edit</source>
                 <target>Bearbeiten</target>
             </trans-unit>
+            <trans-unit id="editor_switch">
+                <source>use etherpad</source>
+                <target>Etherpad als Editor verwenden</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
