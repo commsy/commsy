@@ -17,19 +17,19 @@
                     {{ form_start(form) }}
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Homenotice'|trans({}, 'settings') }}</h1>
-                            <div style="margin-bottom: 25px;">Sie können ein Material, eine Aufgabe, einen Termin oder eine Ankündigung als prominenten Hinweistext auf der Home anzeigen. Bitte geben Sie die Referenznummer des gewünschten Eintrags ein. Die Referenznummer finden Sie unterhalb eines Eintrags bei den Informationen zum Bearbeitungsstatus (auf das +-Zeichen klicken).</div>
+                            <div style="margin-bottom: 25px;">{{ 'Homenotice text'|trans({}, 'settings') }}</div>
                             {{ form_widget(form.homenotice) }}
                         </div>
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Usernotice'|trans({}, 'settings') }}</h1> 
-                            <div style="margin-bottom: 25px;">Wählen Sie die Rubriken, in denen Sie Hinweise platzieren möchten.</div>
+                            <div style="margin-bottom: 25px;">{{ 'Usernotice text'|trans({}, 'settings') }}</div>
                             {{ form_widget(form.usernotice) }}
                         </div>
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Email configuration'|trans({}, 'settings') }}</h1> 
-                            <div style="margin-bottom: 25px;">Konfiguration der E-Mail-Texte, die über das System verschickt werden.</div>
+                            <div style="margin-bottom: 25px;">{{ 'Email configuration text'|trans({}, 'settings') }}</div>
                             {{ form_widget(form.email_configuration) }}
                         </div>
                     {{ form_end(form) }}
