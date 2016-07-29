@@ -17,19 +17,19 @@
                     {{ form_start(form) }}
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Homenotice'|trans({}, 'settings') }}</h1>
-                            <div style="margin-bottom: 25px;">Sie können ein Material, eine Aufgabe, einen Termin oder eine Ankündigung als prominenten Hinweistext auf der Home anzeigen. Bitte geben Sie die Referenznummer des gewünschten Eintrags ein. Die Referenznummer finden Sie unterhalb eines Eintrags bei den Informationen zum Bearbeitungsstatus (auf das +-Zeichen klicken).</div>
+                            <div style="margin-bottom: 25px;">{{ 'Homenotice text'|trans({}, 'settings') }}</div>
                             {{ form_widget(form.homenotice) }}
                         </div>
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Usernotice'|trans({}, 'settings') }}</h1> 
-                            <div style="margin-bottom: 25px;">Wählen Sie die Rubriken, in denen Sie Hinweise platzieren möchten.</div>
+                            <div style="margin-bottom: 25px;">{{ 'Usernotice text'|trans({}, 'settings') }}</div>
                             {{ form_widget(form.usernotice) }}
                         </div>
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Email configuration'|trans({}, 'settings') }}</h1> 
-                            <div style="margin-bottom: 25px;">Konfiguration der E-Mail-Texte, die über das System verschickt werden.</div>
+                            <div style="margin-bottom: 25px;">{{ 'Email configuration text'|trans({}, 'settings') }}</div>
                             {{ form_widget(form.email_configuration) }}
                         </div>
                     {{ form_end(form) }}
@@ -99,5 +99,39 @@
             englishEditor.parentNode.parentNode.style.display = 'none';
         }
     };
+
+    // load and save usage notices
+    var rubricSelection = document.getElementById('moderation_settings_usernotice_array_info_text_rubric');
+    var titleField = document.getElementById('moderation_settings_usernotice_moderation_title');
+    var ckeditor = CKEDITOR.instances['moderation_settings_usernotice_message'];
+    var hiddenTitleField = 'moderation_settings_usernotice_title_';
+    var hiddenTextField = 'moderation_settings_usernotice_description_';
+
+    // similar ckeditor events: 'loaded', 'instanceCreated'
+    ckeditor.on('instanceReady', function(e){
+
+        titleField.onblur = function(e){
+            document.getElementById(hiddenTitleField + rubricSelection.value).value = this.value; 
+        };
+ 
+        this.on('blur', function(e){
+            document.getElementById(hiddenTextField + rubricSelection.value).value = this.getData();
+        });
+
+        // This is just a workaround needed because the blur event above apparently does not fire when directly clicking the submit button after typing text into the CKEdtor
+        document.getElementsByClassName('uk-form-horizontal')[0].onsubmit=function(){
+            document.getElementById(hiddenTextField + rubricSelection.value).value = ckeditor.getData();
+        }
+
+        rubricSelection.onchange=function(e){
+            titleField.value = document.getElementById(hiddenTitleField + this.value).value;
+            ckeditor.setData(document.getElementById(hiddenTextField + this.value).value);
+        };
+
+        // initially display data from DB once the CKEditor is ready
+        titleField.value = document.getElementById(hiddenTitleField + rubricSelection.value).value;
+        ckeditor.setData(document.getElementById(hiddenTextField + rubricSelection.value).value);
+      
+    });
     </script>
 {% endblock content %}

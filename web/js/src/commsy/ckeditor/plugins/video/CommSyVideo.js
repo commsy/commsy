@@ -55,14 +55,14 @@ CKEDITOR.plugins.add( "CommSyVideo",
 		{
 			label:		"Video",
 			command:	"CommSyVideo",
-			icon:		"../../src/commsy/ckeditor/plugins/video/images/icon.png"
+			icon:		"/js/src/commsy/ckeditor/plugins/video/images/icon.png"
 		} );
 
 		if ( editor.contextMenu ) {
             editor.addMenuGroup( 'abbrGroup' );
             editor.addMenuItem( 'abbrItem', {
             label: 		'CommSy Video',
-            icon:		"../../src/commsy/ckeditor/plugins/video/images/icon.png",
+            icon:		"/js/src/commsy/ckeditor/plugins/video/images/icon.png",
             command: 	'CommSyVideo',
             group: 		'abbrGroup'
         });

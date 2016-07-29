@@ -148,7 +148,19 @@
                 <source>Room image repeat x</source>
                 <target>Bild horizontal wiederholen</target>
             </trans-unit>
-
+            <trans-unit id="basic_settings_text">
+                <source>Basic settings text</source>
+                <target>Legen Sie z.B. den Raumnamen fest und ob er dargestellt werden soll, wählen Sie die Sprache des Raumes aus und geben Sie dem Raum ein Logo. Außerdem können Sie die zentralen Zuordnungen für den Raum treffen.</target>
+            </trans-unit>
+            <trans-unit id="rubric_selection_text">
+                <source>Rubric selection text</source>
+                <target>Wählen Sie die Rubriken und ihre Reihenfolge aus. Die Option "ausgeklappt" bedeutet, dass diese Rubrik als Kurzansicht auf der Home erscheint. Die Option "zugeklappt" bedeutet, dass diese Rubrik als Balken auf der Home erscheint. Die Option "nicht verfügbar" bedeutet, dass diese Rubrik in dem Projektraum nicht zur Verfügung steht.</target>
+            </trans-unit>
+            <trans-unit id="room_description_text">
+                <source>Room description text</source>
+                <target>Geben Sie noch eine zusätzliche Beschreibung an. Es sind max. 1000 Zeichen erlaubt.</target>
+            </trans-unit>      
+            
             <!-- Additional settings -->
             <trans-unit id="additional_configuration">
                 <source>Additional Configuration</source>
@@ -246,6 +258,18 @@
                 <source>Rss</source>
                 <target>RSS-Feed</target>
             </trans-unit>
+            <trans-unit id="tasks_text">
+                <source>Tasks text</source>
+                <target>In der Aufgabenrubrik gibt es normalerweise drei Bearbeitungsstatus: "nicht bearbeitet", "in Berabeitung" und "erledigt". Hier können Sie bei Bedarf noch eigene zusätzliche Status definieren.</target>
+            </trans-unit>   
+            <trans-unit id="template_text">
+                <source>Template text</source>
+                <target>Machen Sie diesen Raum als Vorlage für neue Räume verfügbar. Bei Auswahl einer Vorlage beim Eröffnen eines Raumes werden sämtliche Voreinstellungen und Inhalte der Vorlage in den neuen Raum übernommen, mit Ausnahme der Informationen zu Personen.</target>
+            </trans-unit>
+            <trans-unit id="terms_text">
+                <source>Terms text</source>
+                <target>Hiermit werden Nutzungsvereinbarungen in den Prozess zur Anmeldung der Teilnahme an diesem Raum integriert. Potentielle TeilnehmerInnen müssen die AGBs bewußt ankreuzen, um Zutritt zu diesem Raum zu erhalten.</target>
+            </trans-unit>
 
             <!-- Appearance settings -->
             <trans-unit id="appearance_configuration">
@@ -279,6 +303,14 @@
             <trans-unit id="Theme">
                 <source>Theme</source>
                 <target>Farbschema</target>
+            </trans-unit>
+            <trans-unit id="configure_events_text">
+                <source>Configure events text</source>
+                <target>Wählen Sie zwischen der Listendarstellung, dem Terminkalender in der Wochenansicht oder dem Terminkalender in der Monatsansicht als voreingestellte Darstellung der Termine in diesem Raum.</target>
+            </trans-unit>
+            <trans-unit id="configure_color_theme_text">
+                <source>Configure color theme text</source>
+                <target>Hier können Sie zwischen verschiedenen Farbschemata für diesen Raum auswählen.</target>
             </trans-unit>
 
             <!-- Moderation settings -->
@@ -321,6 +353,18 @@
             <trans-unit id="email_configuration">
                 <source>Email configuration</source>
                 <target>E-Mail-Konfiguration</target>
+            </trans-unit>
+            <trans-unit id="homenotice_text">
+                <source>Homenotice text</source>
+                <target>Sie können ein Material, eine Aufgabe, einen Termin oder eine Ankündigung als prominenten Hinweistext auf der Home anzeigen. Bitte geben Sie die Referenznummer des gewünschten Eintrags ein. Die Referenznummer finden Sie unterhalb eines Eintrags bei den Informationen zum Bearbeitungsstatus (auf das +-Zeichen klicken).</target>
+            </trans-unit>
+            <trans-unit id="usernotice_text">
+                <source>Usernotice text</source>
+                <target>Wählen Sie die Rubriken, in denen Sie Hinweise platzieren möchten.</target>
+            </trans-unit>
+            <trans-unit id="email_configuration_text">
+                <source>Email configuration text</source>
+                <target>Konfiguration der E-Mail-Texte, die über das System verschickt werden.</target>
             </trans-unit>
 
             <!-- Extension settings -->
@@ -392,6 +436,18 @@
                 <source>Wiki enabled</source>
                 <target>Wiki aktivieren</target>
             </trans-unit>
+            <trans-unit id="assessment_text">
+                <source>Assessment text</source>
+                <target>Wenn diese Funktion aktiviert ist, können Einträge innerhalb von Räumen bewertet werden.</target>
+            </trans-unit>
+            <trans-unit id="workflow_text">
+                <source>Workflow text</source>
+                <target>Die Workflow Einstellungen sind Zusatzfunktionen für die Rubrik Materialien, um den Redaktionsprozess zu koordinieren.</target>
+            </trans-unit> 
+            <trans-unit id="wiki_Text">
+                <source>wiki text</source>
+                <target>Setzen Sie diese Checkbox, um das Wiki zu aktivieren.</target>
+            </trans-unit>   
         </body>
     </file>
 </xliff>

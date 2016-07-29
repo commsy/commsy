@@ -43,6 +43,9 @@ class ModerationSettingsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $roomManager = $this->legacyEnvironment->getRoomManager();
+        $this->roomItem = $roomManager->getItem($options['roomId']);
+        $availableRubrics = $this->roomItem->getAvailableRubrics();
+        $rubricOptions = array_combine(array_map("ucfirst", array_values($availableRubrics)), array_values($availableRubrics));
 
         $builder
             ->add(
@@ -69,16 +72,25 @@ class ModerationSettingsType extends AbstractType
                 ->add('array_info_text_rubric', ChoiceType::class, array(
                     'expanded' => false,
                     'multiple' => false,
-                    // TODO: load real rubrics here
-                    'choices' => array(
-                        "Rubric 1" => "rubric1",
-                        "Rubric 2" => "rubric2",
-                    ),
+                    'choices' => $rubricOptions,
                 ))
-                // TODO: instead of a single "moderation_title" input field, we need an individual title input fields for each rubric!
+
                 ->add('moderation_title', TextType::class, array('label' => 'Title'))
 
-                
+                // TODO: replace this manually added, static list of hidden fields with a CollectionType containing HiddenFields (dynamically build from available rubrics)
+                ->add('title_home', HiddenType::class, array())
+                ->add('title_announcement', HiddenType::class, array())
+                ->add('title_date', HiddenType::class, array())
+                ->add('title_discussion', HiddenType::class, array())
+                ->add('title_institution', HiddenType::class, array())
+                ->add('title_group', HiddenType::class, array())
+                ->add('title_material', HiddenType::class, array())
+                ->add('title_project', HiddenType::class, array())
+                ->add('title_todo', HiddenType::class, array())
+                ->add('title_topic', HiddenType::class, array())
+                ->add('title_user', HiddenType::class, array())
+
+
                 ->add('message', CKEditorType::class, [
                     'inline' => false,
                      'attr' => array(
@@ -86,12 +98,7 @@ class ModerationSettingsType extends AbstractType
                     ),
                 ])
 
-                // ->add('message', TextareaType::class, [
-                //      'attr' => array(
-                //         'class' => 'uk-form-width-large',
-                //     ),
-                // ])
-
+                // TODO: replace this manually added, static list of hidden fields with a CollectionType containing HiddenFields (dynamically build from available rubrics)
                 ->add('description_home', HiddenType::class, array())
                 ->add('description_announcement', HiddenType::class, array())
                 ->add('description_date', HiddenType::class, array())

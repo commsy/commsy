@@ -121,6 +121,7 @@ class SettingsController extends Controller
             // $em = $this->getDoctrine()->getManager();
             // $em->persist($room);
             // $em->flush();
+            return $this->redirectToRoute('commsy_settings_general', ["roomId" => $roomId]);
         }
 
         $backgroundImage = $this->generateUrl("getBackground", array('roomId' => $roomId));
@@ -154,12 +155,7 @@ class SettingsController extends Controller
 
         $form->handleRequest($request);
         if ($form->isValid()) {
-
-            dump($form->getData());
-
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
-      
-            dump($roomItem);
 
             $roomItem->save();
 

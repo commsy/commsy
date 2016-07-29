@@ -58,7 +58,6 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
                 }
             }
         }
-
         return $roomData;
     }
 

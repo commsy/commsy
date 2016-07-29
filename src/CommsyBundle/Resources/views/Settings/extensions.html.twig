@@ -17,19 +17,19 @@
                     {{ form_start(form) }}
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Assessment'|trans({}, 'settings') }}</h1>
-                            <div style="margin-bottom: 25px;">Wenn diese Funktion aktiviert ist, können Einträge innerhalb von Räumen bewertet werden.</div>
+                            <div style="margin-bottom: 25px;">{{ 'Assessment text'|trans({}, 'settings') }}</div>
                             {{ form_row(form.assessment) }}
                         </div>
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Workflow'|trans({}, 'settings') }}</h1> 
-                            <div style="margin-bottom: 25px;">Die Workflow Einstellungen sind Zusatzfunktionen für die Rubrik Materialien, um den Redaktionsprozess zu koordinieren.</div>
+                            <div style="margin-bottom: 25px;">{{ 'Workflow text'|trans({}, 'settings') }}</div>
                             {{ form_widget(form.workflow) }}
                         </div>
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'wiki'|trans({}, 'settings') }}</h1> 
-                            <div style="margin-bottom: 25px;">Setzen Sie diese Checkbox, um das Wiki zu aktivieren.</div>
+                            <div style="margin-bottom: 25px;">{{ 'wiki text'|trans({}, 'settings') }}</div>
                             {{ form_row(form.wikiEnabled) }}
                         </div>
                     {{ form_end(form) }}

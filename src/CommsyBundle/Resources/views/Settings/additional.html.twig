@@ -23,19 +23,19 @@
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Tasks'|trans({}, 'settings') }}</h1>
-                            <div style="margin-bottom: 25px;">In der Aufgabenrubrik gibt es normalerweise drei Bearbeitungsstatus: "nicht bearbeitet", "in Berabeitung" und "erledigt". Hier können Sie bei Bedarf noch eigene zusätzliche Status definieren.</div>
+                            <div style="margin-bottom: 25px;">{{ 'Tasks text'|trans({}, 'settings') }}</div>
                             {{ form_widget(form.tasks) }}
                         </div>
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Template'|trans({}, 'settings') }}</h1> 
-                            <div style="margin-bottom: 25px;">Machen Sie diesen Raum als Vorlage für neue Räume verfügbar. Bei Auswahl einer Vorlage beim Eröffnen eines Raumes werden sämtliche Voreinstellungen und Inhalte der Vorlage in den neuen Raum übernommen, mit Ausnahme der Informationen zu Personen.</div>
+                            <div style="margin-bottom: 25px;">{{ 'Template text'|trans({}, 'settings') }}</div>
                             {{ form_widget(form.template) }}
                         </div>
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Terms'|trans({}, 'settings') }}</h1> 
-                            <div style="margin-bottom: 25px;">Hiermit werden Nutzungsvereinbarungen in den Prozess zur Anmeldung der Teilnahme an diesem Raum integriert. Potentielle TeilnehmerInnen müssen die AGBs bewußt ankreuzen, um Zutritt zu diesem Raum zu erhalten. </div>
+                            <div style="margin-bottom: 25px;">{{ 'Terms text'|trans({}, 'settings') }}</div>
                             {{ form_widget(form.terms) }}
                         </div>
                     {{ form_end(form) }}

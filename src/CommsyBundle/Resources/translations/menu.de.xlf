@@ -31,6 +31,10 @@
                 <source>Group</source>
                 <target>Gruppen</target>
             </trans-unit>
+            <trans-unit id="topic">
+                <source>Topic</source>
+                <target>Themen</target>
+            </trans-unit>
             <trans-unit id="settings">
                 <source>settings</source>
                 <target>Einstellungen</target>
