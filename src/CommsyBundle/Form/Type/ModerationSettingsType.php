@@ -60,7 +60,6 @@ class ModerationSettingsType extends AbstractType
                         'Show' => '1',
                         'Do not show' => '0',
                     ),
-                    'data' => '0',
                 ))
             )
             ->add(
@@ -150,12 +149,14 @@ class ModerationSettingsType extends AbstractType
                     'label' => 'body_de',
                     'attr' => array(
                         'class' => 'uk-form-width-large',
+                        'style' => 'width: 100%;',
                     ),
                 ))
                 ->add('moderation_mail_body_en', TextareaType::class, array(
                     'label' => 'body_en',
                     'attr' => array(
-                        'class' => 'uk-form-width-large',                        
+                        'class' => 'uk-form-width-large',
+                        'style' => 'width: 100%;',
                     ),
                 ))
 
@@ -194,6 +195,9 @@ class ModerationSettingsType extends AbstractType
             )
             ->add('save', SubmitType::class, array(
                 'position' => 'last',
+                'attr' => array(
+                    'class' => 'uk-button-primary',
+                )                
             ))
         ;
     }

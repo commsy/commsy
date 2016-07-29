@@ -20,7 +20,7 @@
         <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
             <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
                 <li>
-                    <a class="" href="#" id="print" data-section-url="">
+                    <a href="{{ path('commsy_user_printlist', {'roomId': roomId,'user_filter':app.request.query.get('user_filter')}) }}" target="_blank" id="print">
                         <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                     </a>
                 </li>

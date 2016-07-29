@@ -54,8 +54,6 @@ class ProjectController extends Controller
             $projectsMemberStatus[$project->getItemId()] = $this->memberStatus($project);
         }
 
-        error_log(print_r($projectsMemberStatus, true));
-
         $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();

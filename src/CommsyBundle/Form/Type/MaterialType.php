@@ -11,9 +11,17 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
+use CommsyBundle\Form\Type\Event\AddEtherpadFormListener;
 
 class MaterialType extends AbstractType
 {
+    private $etherpadFormListener;
+
+    public function __construct(AddEtherpadFormListener $etherpadListener)
+    {
+        $this->etherpadFormListener = $etherpadListener;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -33,26 +41,21 @@ class MaterialType extends AbstractType
                 'required' => false,
                 'translation_domain' => 'form',
             ))
-            ->add('editor_switch', CheckboxType::class, array(
-                'label' => 'editor_switch',
-                'required' => false,
-                'translation_domain' => 'form',
-            ))
+            ->addEventSubscriber($this->etherpadFormListener)
             ->add('biblio_select', ChoiceType::class, array(
                 'choices'  => array(
-                    'BiblioPlainType' => 'plain',
-                    'BiblioBookType' => 'book',
-                    'BiblioCollectionType' => 'collection',
-                    'BiblioArticleType' => 'article',
-                    'BiblioJournalType' => 'journal',
-                    'BiblioChapterType' => 'chapter',
-                    'BiblioNewspaperType' => 'newspaper',
-                    'BiblioThesisType' => 'thesis',
-                    'BiblioManuscriptType' => 'manuscript',
-                    'BiblioWebsiteType' => 'website',
-                    'BiblioDocManagementType' => 'document management',
-                    'BiblioPictureType' => 'picture',
-
+                    'plain' => 'BiblioPlainType',
+                    'book' => 'BiblioBookType',
+                    'collection' => 'BiblioCollectionType',
+                    'article' => 'BiblioArticleType',
+                    'journal' => 'BiblioJournalType',
+                    'chapter' => 'BiblioChapterType',
+                    'newspaper' => 'BiblioNewspaperType',
+                    'thesis' => 'BiblioThesisType',
+                    'manuscript' => 'BiblioManuscriptType',
+                    'website' => 'BiblioWebsiteType',
+                    'document management' => 'BiblioDocManagementType',
+                    'picture' => 'BiblioPictureType'
                 ),
                 'label' => 'bib reference',
                 'choice_translation_domain' => true,

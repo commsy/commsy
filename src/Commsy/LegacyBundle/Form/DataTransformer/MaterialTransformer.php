@@ -37,6 +37,7 @@ class MaterialTransformer implements DataTransformerInterface
             //     $materialData['access_check'] = 'withcode';
             // }
 
+            $materialData['draft'] = $materialItem->isDraft();
             $materialData['description'] = $materialItem->getDescription();
             $materialData['permission'] = $materialItem->isPrivateEditing();
 

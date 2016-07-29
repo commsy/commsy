@@ -1,3 +1,81 @@
-<h1>Print</h1>
+<!DOCTYPE html>
+{% import 'CommsyBundle:Base:printmacro.html.twig' as macros %}
 
-...
+{% set item = date %}
+
+<html lang="de">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>{% block title %}CommSy{% endblock %}</title>
+
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ absolute_url(asset('css/build/commsy.css'|asset_version)) }}" />
+        {% endblock %}
+
+    </head>
+
+    <body>
+
+        {% block content %}
+        <div>
+
+	        <div>
+
+	            {# discussion content panel #}
+	            <div class="uk-panel-box-primary">
+	                {# content #}
+	                <article>
+	                    {# title, etc. #}
+	                    <div>
+	                        {{ macros.title(date, modifierList, userCount, readCount, readSinceModificationCount, draft) }}
+	                    </div>
+
+	                    {# date #}
+	                    <div>
+	                        {{ macros.details(date) }}
+	                    </div>
+	            
+	                    {# description #}
+	                    <div>
+	                        {{ macros.itemDescription('description', date, true, date.description) }}
+	                    </div>
+	            
+	                    {# files #}
+	                    <div>
+	                        {{ macros.files(date) }}
+	                    </div>
+	        
+	                    {# links #}
+	                    <div>
+	                        {{ macros.links(date,showHashtags,showCategories,roomCategories) }}
+	                    </div>
+	        
+	                    
+	                </article>
+	            
+	            
+	        
+	            
+
+	            {# annotations #}
+	                      
+	                
+	                    {{ render(controller(
+	                        'CommsyBundle:Annotation:feedPrint',
+	                        { 'roomId': roomId, 'linkedItemId': item.itemId }
+	                    ))}}
+
+	        </div>
+        </div>
+            
+
+
+			        
+		{% endblock %}
+          
+        
+    </body>
+</html>

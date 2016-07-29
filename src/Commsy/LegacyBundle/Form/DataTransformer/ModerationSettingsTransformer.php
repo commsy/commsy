@@ -38,6 +38,10 @@ class ModerationSettingsTransformer implements DataTransformerInterface
             // Usage Infos
             $translator = $this->legacyEnvironment->getTranslationObject();
             $default_rubrics = $roomItem->getAvailableRubrics();
+
+            dump($default_rubrics);
+            //$roomData['usernotice']['array_info_text_rubric'] = $default_rubrics->values();
+
             $array_info_text = array();
             $temp_array['rubric'] = $translator->getMessage('HOME_INDEX');
             $temp_array['key'] = 'home';

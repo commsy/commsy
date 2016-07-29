@@ -2,21 +2,65 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="de" datatype="plaintext" original="file.ext">
         <body>
-            <trans-unit id="1">
-                <source>General</source>
-                <target>Grundeinstellungen</target>
+            <!-- room sidebar menu entries -->
+            <trans-unit id="home">
+                <source>Home</source>
+                <target>Einstiegsseite</target>
             </trans-unit>
-            <trans-unit id="2">
+            <trans-unit id="announcement">
+                <source>Announcement</source>
+                <target>Ankündigungen</target>
+            </trans-unit>
+            <trans-unit id="todo">
+                <source>Todo</source>
+                <target>Aufgaben</target>
+            </trans-unit>
+            <trans-unit id="date">
+                <source>Date</source>
+                <target>Termine</target>
+            </trans-unit>
+            <trans-unit id="discussion">
+                <source>Discussion</source>
+                <target>Diskussionen</target>
+            </trans-unit>
+            <trans-unit id="user">
+                <source>User</source>
+                <target>Personen</target>
+            </trans-unit>
+            <trans-unit id="group">
+                <source>Group</source>
+                <target>Gruppen</target>
+            </trans-unit>
+            <trans-unit id="settings">
+                <source>settings</source>
+                <target>Einstellungen</target>
+            </trans-unit>
+
+            <!-- settings sidebar menu entries -->
+            <trans-unit id="general_settings">
+                <source>General</source>
+                <target>Allgemein</target>
+            </trans-unit>
+            <trans-unit id="moderation_settings">
                 <source>Moderation</source>
                 <target>Moderation</target>
             </trans-unit>
-            <trans-unit id="3">
-                <source>Appearance</source>
+            <trans-unit id="additional_settings">
+                <source>Additional</source>
+                <target>Weiteres</target>
+            </trans-unit>            
+            <trans-unit id="appearance_settings">
+                <source>appearance</source>
                 <target>Darstellung</target>
             </trans-unit>
-            <trans-unit id="4">
-                <source>Extensions</source>
+            <trans-unit id="extension_settings">
+                <source>extensions</source>
                 <target>Erweiterungen</target>
+            </trans-unit>
+
+            <trans-unit id="menu_back_to_room">
+                <source>Back to room</source>
+                <target>Zurück zum Raum</target>
             </trans-unit>
         </body>
     </file>
