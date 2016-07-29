@@ -21,13 +21,22 @@
                    <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
                     <span class="uk-text-large uk-text-middle uk-text-truncate">
                         <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">{{ user.title }} {{user.fullname}}</a>
-                        {% if not user.isUser %}
+                        <div class="uk-link uk-align-right">
                             {% if user.status == 0 %}
-                                ({{ 'status deleted'|trans({},'user')|capitalize }})
+                                <i class="uk-icon-minus"></i>
                             {% elseif user.status == 1 %}
-                                ({{ 'status applying'|trans({},'user')|capitalize }})
+                                <i class="uk-icon-plus"></i>
+                            {% elseif user.status == 2 %}
+                                <i class="uk-icon-user"></i>
+                            {% elseif user.status == 3 %}
+                                <i class="uk-icon-user-plus"></i>
+                            {% elseif user.status == 4 %}
+                                <i class="uk-icon-user-secret"></i>
                             {% endif %}
-                        {% endif %}
+                            {% if user.isContact %}
+                                <i class="uk-icon-edit"></i>
+                            {% endif %}
+                        </div>
                     </span>
                 </div>
                 <span>

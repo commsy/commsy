@@ -307,6 +307,93 @@ class UserController extends Controller
                 }
             }
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
+        } else if ($action == 'user-delete') {
+            $userService = $this->get('commsy_legacy.user_service');
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $noticedManager = $legacyEnvironment->getNoticedManager();
+            $readerManager = $legacyEnvironment->getReaderManager();
+            foreach ($selectedIds as $id) {
+                $item = $userService->getUser($id);
+                $item->delete();
+            }
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('deleted %count% users',count($selectedIds), array('%count%' => count($selectedIds)));
+        } else if ($action == 'user-block') {
+            $userService = $this->get('commsy_legacy.user_service');
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $noticedManager = $legacyEnvironment->getNoticedManager();
+            $readerManager = $legacyEnvironment->getReaderManager();
+            foreach ($selectedIds as $id) {
+                $item = $userService->getUser($id);
+                $item->setStatus(0);
+                $item->save();
+            }
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to blocked',count($selectedIds), array('%count%' => count($selectedIds)));
+        } else if ($action == 'user-confirm') {
+            $userService = $this->get('commsy_legacy.user_service');
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $noticedManager = $legacyEnvironment->getNoticedManager();
+            $readerManager = $legacyEnvironment->getReaderManager();
+            foreach ($selectedIds as $id) {
+                $item = $userService->getUser($id);
+                $item->setStatus(2);
+                $item->save();
+            }
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('confirmed %count% users',count($selectedIds), array('%count%' => count($selectedIds)));
+        } else if ($action == 'user-status-reading-user') {
+            $userService = $this->get('commsy_legacy.user_service');
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $noticedManager = $legacyEnvironment->getNoticedManager();
+            $readerManager = $legacyEnvironment->getReaderManager();
+            foreach ($selectedIds as $id) {
+                $item = $userService->getUser($id);
+                $item->setStatus(4);
+                $item->save();
+            }
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to reading user',count($selectedIds), array('%count%' => count($selectedIds)));
+        } else if ($action == 'user-status-user') {
+            $userService = $this->get('commsy_legacy.user_service');
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $noticedManager = $legacyEnvironment->getNoticedManager();
+            $readerManager = $legacyEnvironment->getReaderManager();
+            foreach ($selectedIds as $id) {
+                $item = $userService->getUser($id);
+                $item->setStatus(2);
+                $item->save();
+            }
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to user',count($selectedIds), array('%count%' => count($selectedIds)));
+        } else if ($action == 'user-status-moderator') {
+            $userService = $this->get('commsy_legacy.user_service');
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $noticedManager = $legacyEnvironment->getNoticedManager();
+            $readerManager = $legacyEnvironment->getReaderManager();
+            foreach ($selectedIds as $id) {
+                $item = $userService->getUser($id);
+                $item->setStatus(3);
+                $item->save();
+            }
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to moderator',count($selectedIds), array('%count%' => count($selectedIds)));
+        } else if ($action == 'user-contact') {
+            $userService = $this->get('commsy_legacy.user_service');
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $noticedManager = $legacyEnvironment->getNoticedManager();
+            $readerManager = $legacyEnvironment->getReaderManager();
+            foreach ($selectedIds as $id) {
+                $item = $userService->getUser($id);
+                $item->makeContactPerson();
+                $item->save();
+            }
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to contact',count($selectedIds), array('%count%' => count($selectedIds)));
+        } else if ($action == 'user-contact-remove') {
+            $userService = $this->get('commsy_legacy.user_service');
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $noticedManager = $legacyEnvironment->getNoticedManager();
+            $readerManager = $legacyEnvironment->getReaderManager();
+            foreach ($selectedIds as $id) {
+                $item = $userService->getUser($id);
+                $item->makeNoContactPerson();
+                $item->save();
+            }
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('removed contact status of %count% users',count($selectedIds), array('%count%' => count($selectedIds)));
         } else {
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ToDo: '.$action;
         }
