@@ -101,8 +101,6 @@ class MenuBuilder
         return $menu;
     }
 
-
-
     public function createSettingsMenu(RequestStack $requestStack)
     {
         // get room Id
@@ -202,7 +200,8 @@ class MenuBuilder
                     'route' => 'commsy_room_home',
                     'routeParameters' => array('roomId' => $roomId),
                     'extras' => array('icon' => 'uk-icon-home uk-icon-small')
-                ));
+                ))
+                ->setExtra('translation_domain', 'menu');
     
                 // loop through rubrics to build the menu
                 foreach ($rubrics as $value) {
@@ -219,7 +218,8 @@ class MenuBuilder
                         'route' => $route,
                         'routeParameters' => array('roomId' => $roomId),
                         'extras' => array('icon' => $this->getRubricIcon($value))
-                    ));
+                    ))
+                    ->setExtra('translation_domain', 'menu');
                 }
             } else {
                 $menu->addChild('')->setAttribute('class', 'uk-nav-divider');
@@ -251,7 +251,8 @@ class MenuBuilder
                         'route' => 'commsy_settings_general',
                         'routeParameters' => array('roomId' => $roomId),
                         'extras' => array('icon' => 'uk-icon-wrench uk-icon-small')
-                    ));
+                    ))
+                    ->setExtra('translation_domain', 'menu');
                 }
             }
         }

@@ -2,20 +2,59 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
-            <trans-unit id="1">
+            <!-- room sidebar menu entries -->
+            <trans-unit id="home">
+                <source>Home</source>
+                <target>Home</target>
+            </trans-unit>
+            <trans-unit id="announcement">
+                <source>Announcement</source>
+                <target>Announcements</target>
+            </trans-unit>
+            <trans-unit id="todo">
+                <source>Todo</source>
+                <target>Todo</target>
+            </trans-unit>
+            <trans-unit id="date">
+                <source>Date</source>
+                <target>Dates</target>
+            </trans-unit>
+            <trans-unit id="discussion">
+                <source>Discussion</source>
+                <target>Discussions</target>
+            </trans-unit>
+            <trans-unit id="user">
+                <source>User</source>
+                <target>User</target>
+            </trans-unit>
+            <trans-unit id="group">
+                <source>Group</source>
+                <target>Groups</target>
+            </trans-unit>
+            <trans-unit id="settings">
+                <source>settings</source>
+                <target>Settings</target>
+            </trans-unit>
+
+            <!-- settings sidebar menu entries -->
+            <trans-unit id="general_settings">
                 <source>General</source>
                 <target>General</target>
             </trans-unit>
-            <trans-unit id="2">
+            <trans-unit id="moderation_settings">
                 <source>Moderation</source>
                 <target>Moderation</target>
             </trans-unit>
-            <trans-unit id="3">
-                <source>Appearance</source>
+            <trans-unit id="additional_settings">
+                <source>Additional</source>
+                <target>Additional</target>
+            </trans-unit>            
+            <trans-unit id="appearance_settings">
+                <source>appearance</source>
                 <target>Appearance</target>
             </trans-unit>
-            <trans-unit id="4">
-                <source>Extensions</source>
+            <trans-unit id="extension_settings">
+                <source>extensions</source>
                 <target>Extensions</target>
             </trans-unit>
         </body>

@@ -3,7 +3,38 @@
     <file source-language="de" datatype="plaintext" original="file.ext">
         <body>
             <!-- room sidebar menu entries -->
-
+            <trans-unit id="home">
+                <source>Home</source>
+                <target>Einstiegsseite</target>
+            </trans-unit>
+            <trans-unit id="announcement">
+                <source>Announcement</source>
+                <target>Ankündigungen</target>
+            </trans-unit>
+            <trans-unit id="todo">
+                <source>Todo</source>
+                <target>Aufgaben</target>
+            </trans-unit>
+            <trans-unit id="date">
+                <source>Date</source>
+                <target>Termine</target>
+            </trans-unit>
+            <trans-unit id="discussion">
+                <source>Discussion</source>
+                <target>Diskussionen</target>
+            </trans-unit>
+            <trans-unit id="user">
+                <source>User</source>
+                <target>Personen</target>
+            </trans-unit>
+            <trans-unit id="group">
+                <source>Group</source>
+                <target>Gruppen</target>
+            </trans-unit>
+            <trans-unit id="settings">
+                <source>settings</source>
+                <target>Einstellungen</target>
+            </trans-unit>
 
             <!-- settings sidebar menu entries -->
             <trans-unit id="general_settings">
