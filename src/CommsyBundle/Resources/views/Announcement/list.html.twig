@@ -45,8 +45,9 @@
                     </a>
 
                 </li>
+                {# print #}
                 <li>
-                    <a class="" href="#" id="print" data-section-url="">
+                    <a href="{{ path('commsy_announcement_printlist', {'roomId': roomId,'announcement_filter':app.request.query.get('announcement_filter')}) }}" target="_blank" id="print">
                         <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                     </a>
                 </li>

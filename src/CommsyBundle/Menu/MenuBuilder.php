@@ -155,11 +155,21 @@ class MenuBuilder
                 'extras' => array('icon' => 'uk-icon-gears uk-icon-small uk-icon-justify'),
             ))
             ->setExtra('translation_domain', 'menu');
+
+            $menu->addChild('room_navigation_space_2', array(
+                'label' => ' ',
+                'route' => 'commsy_room_home',
+                'routeParameters' => array('roomId' => $roomId),
+                'extras' => array('icon' => 'uk-icon-small')
+            ));
+            $menu->addChild('room', array(
+                'label' => 'Zurück zum Raum',
+                'route' => 'commsy_room_home',
+                'routeParameters' => array('roomId' => $roomId),
+                'extras' => array('icon' => 'uk-icon-reply uk-icon-small uk-icon-justify')
+            ))
+            ->setExtra('translation_domain', 'menu');
         }
-        
-        // identifier
-        
-        // plugins
 
         return $menu;
     }

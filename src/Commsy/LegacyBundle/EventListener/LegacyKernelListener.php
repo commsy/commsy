@@ -60,7 +60,7 @@ class LegacyKernelListener implements EventSubscriberInterface
 
         // set user language
         $request = $event->getRequest();
-        $request->setLocale($this->legacyEnvironment->getEnvironment()->getUserLanguage());
+        $request->setLocale($this->legacyEnvironment->getEnvironment()->getSelectedLanguage());
 
         // Let the wrapped legacy kernel handle the legacy request.
         // Setting a response in the event will directly jump to the response event.

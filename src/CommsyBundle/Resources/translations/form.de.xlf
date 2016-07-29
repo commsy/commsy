@@ -210,6 +210,14 @@
                 <source>picture reason</source>
                 <target>Anlass</target>
             </trans-unit>
+            <trans-unit id="form-bib-field-picture-copyright">
+                <source>picture copyright</source>
+                <target>Copyright</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-picture-date">
+                <source>picture date</source>
+                <target>Datum</target>
+            </trans-unit>
             <trans-unit id="form-bib-field-url-date">
                 <source>url date</source>
                 <target>Besucht am</target>
@@ -325,6 +333,10 @@
             <trans-unit id="form-button-edit">
                 <source>Edit</source>
                 <target>Bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="editor_switch">
+                <source>use etherpad</source>
+                <target>Etherpad als Editor verwenden</target>
             </trans-unit>
         </body>
     </file>

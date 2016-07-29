@@ -135,6 +135,12 @@ services:
         tags:
             - { name: kernel.event_listener, event: lexik_form_filter.apply.orm.room_filter.membership , method: onGetFilterCondition }
 
+    commsy.etherpad_form_listener:
+        class: CommsyBundle\Form\Type\Event\AddEtherpadFormListener
+        arguments: ["@service_container"]
+        tags:
+            - { name: form.event_subscriber }
+
     # Search
     commsy.search.manager:
         class: CommsyBundle\Search\SearchManager
@@ -180,6 +186,7 @@ services:
 
     commsy.form.type.material:
         class: CommsyBundle\Form\Type\MaterialType
+        arguments: ['@commsy.etherpad_form_listener']
         tags:
             - { name: form.type }
 

@@ -15,6 +15,10 @@ use CommsyBundle\Form\Type\DiscussionType;
 use CommsyBundle\Form\Type\DiscussionArticleType;
 use CommsyBundle\Form\Type\SectionType;
 
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
 class DiscussionController extends Controller
 {
     /**
@@ -65,7 +69,6 @@ class DiscussionController extends Controller
         foreach ($discussions as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
         }
-        error_log(print_r($readerList, true));
 
         $ratingList = array();
         if ($current_context->isAssessmentActive()) {
@@ -164,6 +167,114 @@ class DiscussionController extends Controller
             'showCategories' => $roomItem->withTags(),
         );
         
+    }
+
+    /**
+     * @Route("/room/{roomId}/discussion/print")
+     * @Template()
+     */
+    public function printlistAction($roomId, Request $request)
+    {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        if (!$roomItem) {
+            throw $this->createNotFoundException('The requested room does not exist');
+        }
+        
+        // setup filter form
+        $defaultFilterValues = array(
+            'activated' => true
+        );
+        $filterForm = $this->createForm(DiscussionFilterType::class, $defaultFilterValues, array(
+            'action' => $this->generateUrl('commsy_discussion_list', array(
+                'roomId' => $roomId)
+            ),
+            'hasHashtags' => $roomItem->withBuzzwords(),
+            'hasCategories' => $roomItem->withTags(),
+        ));
+
+        // get the material manager service
+        $discussionService = $this->get('commsy_legacy.discussion_service');
+
+        // apply filter
+        $filterForm->handleRequest($request);
+        if ($filterForm->isValid()) {
+            // set filter conditions in material manager
+            $discussionService->setFilterConditions($filterForm);
+        }
+
+        // get material list from manager service 
+        $discussions = $discussionService->getListDiscussions($roomId);
+
+        $readerService = $this->get('commsy.reader_service');
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+
+        $readerList = array();
+        foreach ($discussions as $item) {
+            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+        }
+
+        $ratingList = array();
+        if ($current_context->isAssessmentActive()) {
+            $assessmentService = $this->get('commsy_legacy.assessment_service');
+            $itemIds = array();
+            foreach ($discussions as $discussion) {
+                $itemIds[] = $discussion->getItemId();
+            }
+            $ratingList = $assessmentService->getListAverageRatings($itemIds);
+        }
+
+        // get material list from manager service 
+        $itemsCountArray = $discussionService->getCountArray($roomId);
+
+
+        $html = $this->renderView('CommsyBundle:Discussion:listPrint.html.twig', [
+            'roomId' => $roomId,
+            'discussions' => $discussions,
+            'readerList' => $readerList,
+            'showRating' => $current_context->isAssessmentActive(),
+            'showWorkflow' => $current_context->withWorkflow(),
+            'ratingList' => $ratingList,
+            'module' => 'discussion',
+            'itemsCountArray' => $itemsCountArray,
+            'showHashTags' => $roomItem->withBuzzwords(),
+            'showCategories' => $roomItem->withTags(),
+        ]);
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        // get room item for information panel
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        $this->get('knp_snappy.pdf')->setOption('footer-line',true);
+        $this->get('knp_snappy.pdf')->setOption('footer-spacing', 1);
+        $this->get('knp_snappy.pdf')->setOption('footer-center',"[page] / [toPage]");
+        $this->get('knp_snappy.pdf')->setOption('header-line', true);
+        $this->get('knp_snappy.pdf')->setOption('header-spacing', 1 );
+        $this->get('knp_snappy.pdf')->setOption('header-right', date("d.m.y"));
+        $this->get('knp_snappy.pdf')->setOption('header-left', $roomItem->getTitle());
+        $this->get('knp_snappy.pdf')->setOption('header-center', "Commsy");
+        $this->get('knp_snappy.pdf')->setOption('images',true);
+
+        // set cookie for authentication - needed to request images
+        $this->get('knp_snappy.pdf')->setOption('cookie', [
+            'SID' => $legacyEnvironment->getSessionID(),
+        ]);
+
+        //return new Response($html);
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="print.pdf"',
+            ]
+        );
     }
     
     /**
@@ -566,9 +677,59 @@ class DiscussionController extends Controller
      */
     public function printAction($roomId, $itemId)
     {
+
+        $infoArray = $this->getDetailInfo($roomId, $itemId);
+
         $html = $this->renderView('CommsyBundle:Discussion:detailPrint.html.twig', [
+            'roomId' => $roomId,
+            'discussion' => $infoArray['discussion'],
+            'articleList' => $infoArray['articleList'],
+            'readerList' => $infoArray['readerList'],
+            'modifierList' => $infoArray['modifierList'],
+            'discussionList' => $infoArray['discussionList'],
+            'counterPosition' => $infoArray['counterPosition'],
+            'count' => $infoArray['count'],
+            'firstItemId' => $infoArray['firstItemId'],
+            'prevItemId' => $infoArray['prevItemId'],
+            'nextItemId' => $infoArray['nextItemId'],
+            'lastItemId' => $infoArray['lastItemId'],
+            'readCount' => $infoArray['readCount'],
+            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
+            'userCount' => $infoArray['userCount'],
+            'draft' => $infoArray['draft'],
+            'showRating' => $infoArray['showRating'],
+            'showHashtags' => $infoArray['showHashtags'],
+            'showCategories' => $infoArray['showCategories'],
+            'user' => $infoArray['user'],
+            'ratingArray' => $infoArray['ratingArray'],
+            'roomCategories' => $infoArray['roomCategories'],
+            'userCount' => $infoArray['userCount'],
         ]);
 
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        // get room item for information panel
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        $this->get('knp_snappy.pdf')->setOption('footer-line',true);
+        $this->get('knp_snappy.pdf')->setOption('footer-spacing', 1);
+        $this->get('knp_snappy.pdf')->setOption('footer-center',"[page] / [toPage]");
+        $this->get('knp_snappy.pdf')->setOption('header-line', true);
+        $this->get('knp_snappy.pdf')->setOption('header-spacing', 1 );
+        $this->get('knp_snappy.pdf')->setOption('header-right', date("d.m.y"));
+        $this->get('knp_snappy.pdf')->setOption('header-left', $roomItem->getTitle());
+        $this->get('knp_snappy.pdf')->setOption('header-center', "Commsy");
+        $this->get('knp_snappy.pdf')->setOption('images',true);
+        $this->get('knp_snappy.pdf')->setOption('load-media-error-handling','ignore');
+        $this->get('knp_snappy.pdf')->setOption('load-error-handling','ignore');
+
+        // set cookie for authentication - needed to request images
+        $this->get('knp_snappy.pdf')->setOption('cookie', [
+            'SID' => $legacyEnvironment->getSessionID(),
+        ]);
+
+       // return new Response($html);
         return new Response(
             $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
             200,

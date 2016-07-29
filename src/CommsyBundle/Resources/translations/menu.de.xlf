@@ -31,6 +31,10 @@
                 <source>Group</source>
                 <target>Gruppen</target>
             </trans-unit>
+            <trans-unit id="topic">
+                <source>Topic</source>
+                <target>Themen</target>
+            </trans-unit>
             <trans-unit id="settings">
                 <source>settings</source>
                 <target>Einstellungen</target>
@@ -56,6 +60,11 @@
             <trans-unit id="extension_settings">
                 <source>extensions</source>
                 <target>Erweiterungen</target>
+            </trans-unit>
+
+            <trans-unit id="menu_back_to_room">
+                <source>Back to room</source>
+                <target>Zurück zum Raum</target>
             </trans-unit>
         </body>
     </file>

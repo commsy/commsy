@@ -101,6 +101,103 @@ class GroupController extends Controller
             'showCategories' => false,
         );
     }
+
+    /**
+     * @Route("/room/{roomId}/group/print")
+     */
+    public function printlistAction($roomId, Request $request)
+    {
+         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        if (!$roomItem) {
+            throw $this->createNotFoundException('The requested room does not exist');
+        }
+
+        // setup filter form
+        $defaultFilterValues = array(
+            'activated' => false,
+        );
+        $filterForm = $this->createForm(GroupFilterType::class, $defaultFilterValues, array(
+            'action' => $this->generateUrl('commsy_group_list', array(
+                'roomId' => $roomId,
+            )),
+            'hasHashtags' => false,
+            'hasCategories' => false,
+        ));
+
+        // get the group manager service
+        $groupService = $this->get('commsy.group_service');
+
+        // apply filter
+        $filterForm->handleRequest($request);
+        if ($filterForm->isValid()) {
+            // set filter conditions in group manager
+            $groupService->setFilterConditions($filterForm);
+        }
+
+        // get group list from manager service 
+        $groups = $groupService->getListGroups($roomId);
+        $readerService = $this->get('commsy.reader_service');
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+
+
+        $readerList = array();
+        foreach ($groups as $item) {
+            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+        }
+
+        // get group list from manager service 
+        $itemsCountArray = $groupService->getCountArray($roomId);
+
+
+        $html = $this->renderView('CommsyBundle:Group:listPrint.html.twig', [
+            'roomId' => $roomId,
+            'groups' => $groups,
+            'readerList' => $readerList,
+            'showRating' => false,
+            'module' => 'group',
+            'itemsCountArray' => $itemsCountArray,
+            'showRating' => false,
+            'showHashTags' => false,
+            'showCategories' => false,
+        ]);
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        // get room item for information panel
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        $this->get('knp_snappy.pdf')->setOption('footer-line',true);
+        $this->get('knp_snappy.pdf')->setOption('footer-spacing', 1);
+        $this->get('knp_snappy.pdf')->setOption('footer-center',"[page] / [toPage]");
+        $this->get('knp_snappy.pdf')->setOption('header-line', true);
+        $this->get('knp_snappy.pdf')->setOption('header-spacing', 1 );
+        $this->get('knp_snappy.pdf')->setOption('header-right', date("d.m.y"));
+        $this->get('knp_snappy.pdf')->setOption('header-left', $roomItem->getTitle());
+        $this->get('knp_snappy.pdf')->setOption('header-center', "Commsy");
+        $this->get('knp_snappy.pdf')->setOption('images',true);
+
+        // set cookie for authentication - needed to request images
+        $this->get('knp_snappy.pdf')->setOption('cookie', [
+            'SID' => $legacyEnvironment->getSessionID(),
+        ]);
+
+        //return new Response($html);
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="print.pdf"',
+            ]
+        );
+
+    }
     
    /**
      * @Route("/room/{roomId}/group/feed/{start}/{sort}")
@@ -272,7 +369,75 @@ class GroupController extends Controller
        );
     }
 
+/**
+     * @Route("/room/{roomId}/group/{itemId}/print")
+     */
+    public function printAction($roomId, $itemId)
+    {
 
+        $infoArray = $this->getDetailInfo($roomId, $itemId);
+
+        // annotation form
+        $form = $this->createForm(AnnotationType::class);
+
+        $html = $this->renderView('CommsyBundle:Group:detailPrint.html.twig', [
+            'roomId' => $roomId,
+            'group' => $infoArray['group'],
+            'readerList' => $infoArray['readerList'],
+            'modifierList' => $infoArray['modifierList'],
+            'groupList' => $infoArray['groupList'],
+            'counterPosition' => $infoArray['counterPosition'],
+            'count' => $infoArray['count'],
+            'firstItemId' => $infoArray['firstItemId'],
+            'prevItemId' => $infoArray['prevItemId'],
+            'nextItemId' => $infoArray['nextItemId'],
+            'lastItemId' => $infoArray['lastItemId'],
+            'readCount' => $infoArray['readCount'],
+            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
+            'userCount' => $infoArray['userCount'],
+            'draft' => $infoArray['draft'],
+            'showRating' => $infoArray['showRating'],
+            'showWorkflow' => $infoArray['showWorkflow'],
+            'showHashtags' => $infoArray['showHashtags'],
+            'showCategories' => $infoArray['showCategories'],
+            'members' => $infoArray['members'],
+            'user' => $infoArray['user'],
+            'annotationForm' => $form->createView(),
+        ]);
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        // get room item for information panel
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        $this->get('knp_snappy.pdf')->setOption('footer-line',true);
+        $this->get('knp_snappy.pdf')->setOption('footer-spacing', 1);
+        $this->get('knp_snappy.pdf')->setOption('footer-center',"[page] / [toPage]");
+        $this->get('knp_snappy.pdf')->setOption('header-line', true);
+        $this->get('knp_snappy.pdf')->setOption('header-spacing', 1 );
+        $this->get('knp_snappy.pdf')->setOption('header-right', date("d.m.y"));
+        $this->get('knp_snappy.pdf')->setOption('header-left', $roomItem->getTitle());
+        $this->get('knp_snappy.pdf')->setOption('header-center', "Commsy");
+        $this->get('knp_snappy.pdf')->setOption('images',true);
+        $this->get('knp_snappy.pdf')->setOption('load-media-error-handling','ignore');
+        $this->get('knp_snappy.pdf')->setOption('load-error-handling','ignore');
+
+        // set cookie for authentication - needed to request images
+        $this->get('knp_snappy.pdf')->setOption('cookie', [
+            'SID' => $legacyEnvironment->getSessionID(),
+        ]);
+
+       // return new Response($html);
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="print.pdf"'
+            ]
+        );
+    }
  
 
     private function getDetailInfo ($roomId, $itemId) {

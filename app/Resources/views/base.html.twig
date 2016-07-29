@@ -8,10 +8,10 @@
         <title>{% block title %}CommSy{% endblock %}</title>
 
         {% block stylesheets %}
-            <link rel="stylesheet" href="{{ asset('css/build/commsy.css'|asset_version) }}" />
+            <link rel="stylesheet" href="{{ absolute_url(asset('css/build/commsy.css'|asset_version)) }}" />
         {% endblock %}
 
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <link rel="icon" type="image/x-icon" href="{{ absolute_url(asset('favicon.ico')) }}" />
     </head>
     <body id="commsy" class="nav-collapsed">
 
@@ -132,7 +132,7 @@
         </div>
         
         {% block javascripts %}
-            <script src="{{ asset('js/build/commsy.js'|asset_version) }}"></script>
+            <script src="{{ absolute_url(asset('js/build/commsy.js'|asset_version) )}}"></script>
         {% endblock %}
     </body>
 </html>
