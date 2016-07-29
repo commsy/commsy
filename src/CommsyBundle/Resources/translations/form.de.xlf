@@ -210,6 +210,14 @@
                 <source>picture reason</source>
                 <target>Anlass</target>
             </trans-unit>
+            <trans-unit id="form-bib-field-picture-copyright">
+                <source>picture copyright</source>
+                <target>Copyright</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-picture-date">
+                <source>picture date</source>
+                <target>Datum</target>
+            </trans-unit>
             <trans-unit id="form-bib-field-url-date">
                 <source>url date</source>
                 <target>Besucht am</target>
