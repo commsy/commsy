@@ -49,6 +49,34 @@
         startEdit($(this));
     });
     
+    $('#commsy-select-action-user-delete').on('click', function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        action = 'user-delete';
+        startEdit($(this));
+    });
+    
+    $('#commsy-select-action-user-block').on('click', function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        action = 'user-block';
+        startEdit($(this));
+    });
+    
+    $('#commsy-select-action-user-confirm').on('click', function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        action = 'user-confirm';
+        startEdit($(this));
+    });
+    
+    $('#commsy-select-action-user-status-reading-user').on('click', function(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        action = 'user-status-reading-user';
+        startEdit($(this));
+    });
+    
     $('#commsy-select-action-user-status-user').on('click', function(event) {
         event.stopPropagation();
         event.preventDefault();
@@ -63,17 +91,17 @@
         startEdit($(this));
     });
     
-    $('#commsy-select-action-user-status-blocked').on('click', function(event) {
+    $('#commsy-select-action-user-contact').on('click', function(event) {
         event.stopPropagation();
         event.preventDefault();
-        action = 'user-status-blocked';
+        action = 'user-contact';
         startEdit($(this));
     });
     
-    $('#commsy-select-action-user-status-deleted').on('click', function(event) {
+    $('#commsy-select-action-user-contact-remove').on('click', function(event) {
         event.stopPropagation();
         event.preventDefault();
-        action = 'user-status-deleted';
+        action = 'user-contact-remove';
         startEdit($(this));
     });
 
