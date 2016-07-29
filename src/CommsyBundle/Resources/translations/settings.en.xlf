@@ -6,6 +6,10 @@
                 <source>Information</source>
                 <target>Information</target>
             </trans-unit>
+            <trans-unit id="useful_info">
+                <source>Useful information</source>
+                <target>Some usefull text...</target>
+            </trans-unit>
 
             <!-- General settings -->
             <trans-unit id="general_configuration">

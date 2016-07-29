@@ -164,47 +164,53 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        console.debug("Cover dimensions:");
         var cover_width = $("#cover").width();
         var cover_height = $("#cover").height();
+
+        var img_width = $("#cover img").width();
+        var img_height = $("#cover img").height();
+
+        var height_diff = img_height - cover_height;
+
+        /*
+        console.debug("Cover dimensions:");
         console.debug(" - width: " + cover_width);
         console.debug(" - height: " + cover_height);
         console.debug(" => aspect ratio: " + (cover_width / cover_height) + " - 1");
 
-        console.debug("Cover image dimensions:");
-        var img_width = $("#cover img").width();
-        var img_height = $("#cover img").height();
+        console.debug("Cover image dimensions:");        
         console.debug(" - width: " + img_width);
         console.debug(" - height: " + img_height);
-        console.debug(" => aspect ratio: " + (img_width / img_height) + " - 1");
-
-        var height_diff = img_height - cover_height;
+        console.debug(" => aspect ratio: " + (img_width / img_height) + " - 1");        
         console.debug("---------------------");
         console.debug(" => height diff: " + height_diff);
+        */
 
         if(height_diff < 0){
-            console.debug("Image height < cover element height");
-            console.debug(" => image clipping needed!");
+
 
             var cover_ratio = cover_width / cover_height;       // 4.64
             height_diff = 100;
             var new_img_width = img_height * cover_ratio - height_diff;
+            var clip_rect = "rect(0px, 0px, "+img_height+"px, "+new_img_width+"px)";
+
+            /*
+            console.debug("Image height < cover element height");
+            console.debug(" => image clipping needed!");
 
             console.debug(" => using image clip with dimensions:");
             console.debug(" - new width " + new_img_width + " (original width: "+ img_width + ")");
             console.debug(" - height: " + img_height);
             console.debug(" => new aspect ratio: " + (new_img_width / img_height));
-
-            var clip_rect = "rect(0px, 0px, "+img_height+"px, "+new_img_width+"px)";
-
             console.debug(" => using clip: " + clip_rect);
+            */
 
             // FIXME: "clipping" image doesn't seem to have any effect!
             $("#cover img").css("clip", clip_rect).css("width", cover_width);
         }
 
         else{
-            console.debug(" => Adding uikit parallax attribute with vertical scrolling value = "+height_diff+" to cover image...");
+            //console.debug(" => Adding uikit parallax attribute with vertical scrolling value = "+height_diff+" to cover image...");
             $("#cover img").attr("data-uk-parallax", "{y: '-"+height_diff+"'}");
         }
     </script>
