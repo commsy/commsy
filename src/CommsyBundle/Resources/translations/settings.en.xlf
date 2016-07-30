@@ -264,7 +264,7 @@
             </trans-unit>
             <trans-unit id="tasks_text">
                 <source>Tasks text</source>
-                <target>For todos there exist three progress status: "not started", "in progress" an "done". Here you can add additional status.</target>
+                <target>For todos there exist three progress status: "not started", "in progress" an "done". Here you can add additional status. (Names should start with a letter, digit or underscore and only contain letters, digits, numbers, underscores ("_"), hyphens ("-") and colons (":"))</target>
             </trans-unit>   
             <trans-unit id="template_text">
                 <source>Template text</source>

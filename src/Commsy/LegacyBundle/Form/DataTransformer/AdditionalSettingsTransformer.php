@@ -27,6 +27,7 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
         $roomData = array();
 
         if ($roomItem) {
+            // structural auxilaries
             $roomData['structural_auxilaries']['buzzwords']['activate'] = $roomItem->withBuzzwords();
             $roomData['structural_auxilaries']['buzzwords']['mandatory'] = $roomItem->isBuzzwordMandatory();
 
@@ -34,6 +35,20 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
             $roomData['structural_auxilaries']['categories']['mandatory'] = $roomItem->isTagMandatory();
             $roomData['structural_auxilaries']['categories']['edit'] = $roomItem->isTagEditedByAll();
 
+            // TODO: check, if keys (numbers, indices) are important
+            // tasks
+            $status_array = array();
+            foreach ($roomItem->getExtraToDoStatusArray() as $key=>$value){
+                $status_array[$value] = true;
+                /*
+                $temp_array['text']  = $value;
+                $temp_array['value'] = $key;
+                $status_array[] = $temp_array;
+                */
+            }
+            $roomData['tasks']['additional_status']  = $status_array;
+
+            // templates
             $roomData['template']['status'] = $roomItem->isTemplate();
             $roomData['template']['template_description'] = $roomItem->getTemplateDescription();
             if($roomItem->isCommunityRoom()){
@@ -43,6 +58,7 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
                 $roomData['template']['template_availability'] = $roomItem->getTemplateAvailability();
             }
 
+            // terms and conditions
             $roomData['terms']['status'] = $roomItem->getAGBStatus();
             if ($roomData['terms']['status'] != '1'){
                 $roomData['terms']['status'] = '2';
@@ -184,10 +200,8 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
         /***************** save AGB *************/
         $languages = $this->legacyEnvironment->getAvailableLanguageArray();
         $current_user = $this->legacyEnvironment->getCurrentUserItem();
-        $text_converter = $this->legacyEnvironment->getTextConverter();
         foreach ($languages as $language) {
             if (!empty($roomData['terms']['agb_text_'.mb_strtolower($language, 'UTF-8')])) {
-                dump($roomData['terms']['agb_text_'.mb_strtolower($language, 'UTF-8')]);
                 $agbtext_array[mb_strtoupper($language, 'UTF-8')] = $roomData['terms']['agb_text_'.mb_strtolower($language, 'UTF-8')];
             } else {
                $agbtext_array[mb_strtoupper($language, 'UTF-8')] = '';
@@ -202,20 +216,28 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
             $current_user->save();
          }
          
-        $text_converter = $this->legacyEnvironment->getTextConverter();
-
-        /*
         // extra todo status
         $status_array = array();
+
+        /*
         foreach($roomData as $key => $value) {
             if(mb_substr($key, 0, 18) === 'additional_status_') {
-                $status_array[mb_substr($key, 18)] = $text_converter->sanitizeHTML($value);
+                $status_array[mb_substr($key, 18)] = $value;
             }
         }
-
-        $roomObject->setExtraToDoStatusArray($status_array);
         */
-        
+
+        $counter = 0;
+        foreach($roomData['tasks']['additional_status'] as $key => $value){
+            if($value){
+                $status_array[$counter] = $key;
+            }
+            $counter++;
+        }
+
+        // TODO: double check if the current way to gather and save additional status texts is correct before saving to DB
+        //$roomObject->setExtraToDoStatusArray($status_array);
+
         return $roomObject;
     }
 }

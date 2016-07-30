@@ -17,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 
@@ -86,6 +87,13 @@ class AdditionalSettingsType extends AbstractType
                     'required' => false,
                 ))
                 ->add('status_option', ButtonType::class, array(
+                ))
+                ->add('additional_status', CollectionType::class, array(
+                    'entry_type' => CheckboxType::class,
+                    'entry_options' => array(
+                        'label_attr' => array('class' => 'uk-form-label'),
+                    ),
+                    'allow_add' => true,
                 ))
             )
             ->add(

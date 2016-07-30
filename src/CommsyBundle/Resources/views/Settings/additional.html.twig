@@ -24,7 +24,13 @@
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Tasks'|trans({}, 'settings') }}</h1>
                             <div style="margin-bottom: 25px;">{{ 'Tasks text'|trans({}, 'settings') }}</div>
-                            {{ form_widget(form.tasks) }}
+                            {{ form_widget(form.tasks.status) }}
+                            {{ form_widget(form.tasks.status_option) }}
+                            <ul style="list-style-type:none" id='additional_status_list' data-prototype="{{ form_widget(form.tasks.additional_status.vars.prototype)|e('html_attr')}}">
+                                {% for status in form.tasks.additional_status %}
+                                    <li>{{ form_row(status) }}</li>
+                                {% endfor %}
+                            </ul>
                         </div>
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
@@ -60,6 +66,57 @@
         </div>
     </div>
     <script>
+
+    window.onload = function(){
+        var savedStatusTexts = [];
+        var statusList = document.getElementById('additional_status_list');
+        var statusCount = statusList.getElementsByTagName('input').length;
+        var newStatusTextField = document.getElementById('additional_settings_tasks_status');
+        var newStatusButton = document.getElementById('additional_settings_tasks_status_option');
+        newStatusButton.parentNode.className = "";
+        newStatusButton.parentNode.style.display = 'inline';
+        newStatusButton.onclick = function(){
+            if(savedStatusTexts.indexOf(newStatusTextField.value) < 0){
+                addStatus(statusList, statusCount, newStatusTextField.value);
+                savedStatusTexts.push(newStatusTextField.value);
+                statusCount++;
+            }
+            else{
+                alert("Der Status '"+newStatusTextField.value+"' existiert bereits. Bitte wählen Sie einen anderen Namen aus.");
+            }
+        }
+    };
+
+    function addStatus(listElement, currentCount, statusText){
+        var prototype = listElement.getAttribute('data-prototype');
+
+        // result: ['tasks']['additional_status']['0'] = true
+        //var newInput = prototype.replace(/__name__/g, currentCount);
+        //newInput = newInput.replace('value="1"', 'value="'+statusText+'" checked');
+
+        // TODO: in this version, the 'statusText' is not allowed to contain any characters Symfony considers "unsave" for form fields (whitespace etc.)
+        // result: ['tasks']['additional_status']['new status 1'] = true
+        var newInput = prototype.replace(/__name__/g, statusText);
+        newInput = newInput.replace('value="1"', 'value="1" checked');
+
+        var newListItem= document.createElement('li');
+
+        var newLabel = document.createElement('label');
+        newLabel.className="uk-form-label";
+        //newLabel.setAttribute("for", "additional_settings_tasks_additional_status_" + currentCount);
+        newLabel.setAttribute("for", "additional_settings_tasks_additional_status_" + statusText);
+        newLabel.appendChild(document.createTextNode(statusText));
+
+        var newContainer = document.createElement('div');
+        newContainer.className = 'uk-form-row';
+        newContainer.appendChild(newLabel);
+        newContainer.innerHTML += newInput;
+
+        newListItem.appendChild(newContainer);
+        listElement.appendChild(newListItem);
+    }
+
+
     var languageSelection = document.getElementById('additional_settings_terms_language');
     var ckeditor = CKEDITOR.instances['additional_settings_terms_agb_text_editor'];
 
