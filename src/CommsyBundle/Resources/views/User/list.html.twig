@@ -40,25 +40,48 @@
                     </div>
                 </li>
                 <li>
+                    <a href="#" id="commsy-select-action-user-delete" data-uk-button data-commsy-list-action='{"target":".feed", "actionUrl": "{{ path('commsy_user_feedaction', {'roomId': roomId}) }}"}'>
+                        <i class="uk-icon-justify uk-icon-small uk-icon-remove uk-visible-large"></i> {{ 'delete'|trans({},'user')|capitalize }}
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="commsy-select-action-user-block" data-uk-button data-commsy-list-action='{"target":".feed", "actionUrl": "{{ path('commsy_user_feedaction', {'roomId': roomId}) }}"}'>
+                        <i class="uk-icon-justify uk-icon-small uk-icon-minus uk-visible-large"></i> {{ 'block'|trans({},'user')|capitalize }}
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="commsy-select-action-user-confirm" data-uk-button data-commsy-list-action='{"target":".feed", "actionUrl": "{{ path('commsy_user_feedaction', {'roomId': roomId}) }}"}'>
+                        <i class="uk-icon-justify uk-icon-small uk-icon-plus uk-visible-large"></i> {{ 'confirm'|trans({},'user')|capitalize }}
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="#" id="commsy-select-action-user-status-reading-user" data-uk-button data-commsy-list-action='{"target":".feed", "actionUrl": "{{ path('commsy_user_feedaction', {'roomId': roomId}) }}"}'>
+                        <i class="uk-icon-justify uk-icon-small uk-icon-user-secret uk-visible-large"></i> {{ 'reading user'|trans({},'user')|capitalize }}
+                    </a>
+                </li>
+                <li>
                     <a href="#" id="commsy-select-action-user-status-user" data-uk-button data-commsy-list-action='{"target":".feed", "actionUrl": "{{ path('commsy_user_feedaction', {'roomId': roomId}) }}"}'>
-                        <i class="uk-icon-justify uk-icon-small uk-icon-user uk-visible-large"></i> {{ 'status user'|trans({},'user')|capitalize }}
+                        <i class="uk-icon-justify uk-icon-small uk-icon-user uk-visible-large"></i> {{ 'user'|trans({},'user')|capitalize }}
                     </a>
                 </li>
                 <li>
                     <a href="#" id="commsy-select-action-user-status-moderator" data-uk-button data-commsy-list-action='{"target":".feed", "actionUrl": "{{ path('commsy_user_feedaction', {'roomId': roomId}) }}"}'>
-                        <i class="uk-icon-justify uk-icon-small uk-icon-user-plus uk-visible-large"></i> {{ 'status moderator'|trans({},'user')|capitalize }}
+                        <i class="uk-icon-justify uk-icon-small uk-icon-user-plus uk-visible-large"></i> {{ 'moderator'|trans({},'user')|capitalize }}
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="#" id="commsy-select-action-user-contact" data-uk-button data-commsy-list-action='{"target":".feed", "actionUrl": "{{ path('commsy_user_feedaction', {'roomId': roomId}) }}"}'>
+                        <i class="uk-icon-justify uk-icon-small uk-icon-edit uk-visible-large"></i> {{ 'contact'|trans({},'user')|capitalize }}
                     </a>
                 </li>
                 <li>
-                    <a href="#" id="commsy-select-action-user-status-blocked" data-uk-button data-commsy-list-action='{"target":".feed", "actionUrl": "{{ path('commsy_user_feedaction', {'roomId': roomId}) }}"}'>
-                        <i class="uk-icon-justify uk-icon-small uk-icon-user-times uk-visible-large"></i> {{ 'status blocked'|trans({},'user')|capitalize }}
+                    <a href="#" id="commsy-select-action-user-contact-remove" data-uk-button data-commsy-list-action='{"target":".feed", "actionUrl": "{{ path('commsy_user_feedaction', {'roomId': roomId}) }}"}'>
+                        <i class="uk-icon-justify uk-icon-small uk-icon-square-o uk-visible-large"></i> {{ 'contact remove'|trans({},'user')|capitalize }}
                     </a>
                 </li>
-                <li>
-                    <a href="#" id="commsy-select-action-user-status-user-deleted" data-uk-button data-commsy-list-action='{"target":".feed", "actionUrl": "{{ path('commsy_user_feedaction', {'roomId': roomId}) }}"}'>
-                        <i class="uk-icon-justify uk-icon-small uk-icon-user uk-visible-large"></i> {{ 'status deleted'|trans({},'user')|capitalize }}
-                    </a>
-                </li>
+                
             </ul>
         </div>
     </div>
