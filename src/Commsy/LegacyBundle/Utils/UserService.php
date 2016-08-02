@@ -16,13 +16,13 @@ class UserService
     private $roomManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
-    {
-        $this->legacyEnvironment = $legacyEnvironment;
+    { 
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         
-        $this->userManager = $this->legacyEnvironment->getEnvironment()->getUserManager();
+        $this->userManager = $this->legacyEnvironment->getUserManager();
         $this->userManager->reset();
 
-        $this->roomManager = $this->legacyEnvironment->getEnvironment()->getRoomManager();
+        $this->roomManager = $this->legacyEnvironment->getRoomManager();
         $this->roomManager->reset();
     }
 
@@ -128,11 +128,11 @@ class UserService
         if (isset($_COOKIE['SID'])) {
             $sid = $_COOKIE['SID'];
             
-            $sessionManager = $this->legacyEnvironment->getEnvironment()->getSessionManager();
+            $sessionManager = $this->legacyEnvironment->getSessionManager();
             $sessionItem = $sessionManager->get($sid);
 
             if ($sessionItem) {
-                $userManager = $this->legacyEnvironment->getEnvironment()->getUserManager();
+                $userManager = $this->legacyEnvironment->getUserManager();
                 $userList = $userManager->getAllUserItemArray($sessionItem->getValue('user_id'));
                 $portalUser = NULL;
                 if (!empty($userList)) {
@@ -166,10 +166,10 @@ class UserService
        //$requested_user_manager->select();
        //$requested_user_list = $requested_user_manager->get();
 
-       $this->user_manager->setContextLimit($this->_environment->getCurrentContextID());
-       $this->user_manager->setRegisteredLimit();
-       $this->user_manager->select();
-       $requested_user_list = $this->user_manager->get();
+       $this->userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
+       $this->userManager->setRegisteredLimit();
+       $this->userManager->select();
+       $requested_user_list = $this->userManager->get();
 
        if (!empty($requested_user_list)){
           $requested_user = $requested_user_list->getFirst();
@@ -200,9 +200,7 @@ class UserService
      */
     public function getCurrentUserItem()
     {
-        $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
-        
-        return $legacyEnvironment->getCurrentUserItem();
+        return $this->legacyEnvironment->getCurrentUserItem();
     }
     
     /**

@@ -64,8 +64,8 @@ class GeneralSettingsType extends AbstractType
                 ),
             ))
             ->add(
-                $builder->create('room_image', FormType::class, array('inherit_data' => true, 'compound' => true, 'required' => false))
-                ->add('room_image_choice', ChoiceType::class, array(
+                $builder->create('room_image', FormType::class, array('required' => false))
+                ->add('choice', ChoiceType::class, array(
                     'expanded' => true,
                     'multiple' => false,
                     'choices' => array(
@@ -82,7 +82,7 @@ class GeneralSettingsType extends AbstractType
                 ))
                 ->add('room_image_data', HiddenType::class, array(
                 ))
-                ->add('room_image_repeat_x', CheckboxType::class, array(
+                ->add('repeat_x', CheckboxType::class, array(
                     'label_attr' => array('class' => 'uk-form-label'),
                     'value' => 'repeat_x',
                 ))
@@ -122,10 +122,13 @@ class GeneralSettingsType extends AbstractType
                         'class' => 'uk-panel-box',
                     ),
                 ),
+                // FIXME: sortable
+                /*
                 'attr' => array(
                     'class' => 'uk-sortable',
                     'data-uk-sortable' => '',
                 ),
+                */
             ))
             ->add('save', SubmitType::class, array(
                 'position' => 'last',

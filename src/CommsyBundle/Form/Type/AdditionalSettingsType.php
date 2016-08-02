@@ -89,9 +89,13 @@ class AdditionalSettingsType extends AbstractType
                 ->add('status_option', ButtonType::class, array(
                 ))
                 ->add('additional_status', CollectionType::class, array(
-                    'entry_type' => CheckboxType::class,
+                    //'label' => false,
+                    'entry_type' => TextType::class,
                     'entry_options' => array(
-                        'label_attr' => array('class' => 'uk-form-label'),
+                        //'disabled' => true,
+                        'label_attr' => array(
+                            'class' => 'uk-form-label',
+                        ),
                     ),
                     'allow_add' => true,
                 ))
@@ -169,7 +173,9 @@ class AdditionalSettingsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['roomId'])
+            // TODO: add new task status list as required parameter here!
+            ->setRequired(['roomId', 'newStatus'])
+            //->setRequired(['roomId'])
             ->setDefaults(array('translation_domain' => 'settings'))
         ;
     }

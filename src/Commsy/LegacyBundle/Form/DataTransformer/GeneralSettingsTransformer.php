@@ -14,6 +14,7 @@ class GeneralSettingsTransformer implements DataTransformerInterface
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->roomService = $roomService;
+        $this->userService = $userService;
     }
 
     /**
@@ -40,19 +41,17 @@ class GeneralSettingsTransformer implements DataTransformerInterface
                 $roomData['access_check'] = 'withcode';
             }
 
+            // room image
             $backgroundImageFilename = $roomItem->getBGImageFilename();
-
             if($backgroundImageFilename){
-                $roomData['room_image_choice'] = 'custom_image';
+                $roomData['room_image']['choice'] = 'custom_image';
             }
             else{
-                $roomData['room_image_choice'] = 'default_image';
+                $roomData['room_image']['choice'] = 'default_image';
             }
-
-		    $roomData['room_image_repeat_x'] = $roomItem->issetBGImageRepeat();
+		    $roomData['room_image']['repeat_x'] = $roomItem->issetBGImageRepeat();
 
             $roomData['room_description'] = $roomItem->getDescription();
-
             $rubrics = array_combine($defaultRubrics, array_fill(0, count($defaultRubrics), 'off'));
             foreach ($this->roomService->getRubricInformation($roomItem->getItemID(), true) as $rubric) {
                 list($rubricName, $modifier) = explode('_', $rubric);
@@ -60,7 +59,6 @@ class GeneralSettingsTransformer implements DataTransformerInterface
             }
             $roomData['rubrics'] = $rubrics;
         }
-
         return $roomData;
     }
 
@@ -90,10 +88,6 @@ class GeneralSettingsTransformer implements DataTransformerInterface
             $roomObject->setLanguage($roomData['language']);
         }
 
-        if (isset($roomData['wikiEnabled'])) {
-            $roomObject->setWikiEnabled($roomData['wikiEnabled']);
-        }
-
         // delete bg image
         /*
         if (isset($roomData['delete_custom_image']) && $roomData['delete_custom_image'] == '1') {
@@ -104,15 +98,14 @@ class GeneralSettingsTransformer implements DataTransformerInterface
             }
 
             $roomObject->setBGImageFilename('');
-
         }
+        */
 
         // bg image repeat
-        if (isset($form['room_image_repeat_x']) && $form['room_image_repeat_x'] == '1')
+        if (isset($roomData['room_image']['repeat_x']) && $roomData['room_image']['repeat_x'] == '1')
             $roomObject->setBGImageRepeat();
         else
             $roomObject->unsetBGImageRepeat();
-        */
 
         if(isset($roomData['room_description'])) {
             $roomObject->setDescription(strip_tags($roomData['room_description']));
@@ -145,10 +138,10 @@ class GeneralSettingsTransformer implements DataTransformerInterface
         }
 
         // check member
-        if (isset($roomData['member_check'])) {
-            switch($roomData['member_check']) {
+        if (isset($roomData['access_check'])) {
+            switch($roomData['access_check']) {
                 case "never":
-                    $userService->grantAccessToAllPendingApplications();
+                    $this->userService->grantAccessToAllPendingApplications();
                     $roomObject->setCheckNewMemberNever();
                     break;
                 case "always":

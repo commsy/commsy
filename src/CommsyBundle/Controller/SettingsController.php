@@ -47,13 +47,15 @@ class SettingsController extends Controller
                 'roomId' => $roomId,
             )),
         ));
-        
-        $themeArray = $this->container->getParameter('liip_theme.themes');
+       
         /*
+        $themeArray = $this->container->getParameter('liip_theme.themes');
         dump("Themes:");
         dump($themeArray);
         dump("Current working directory:");
         dump(getcwd());
+        dump("current items theme:");
+        dump($roomItem->getColorArray()['schema']);
         */
 
         $form->handleRequest($request);
@@ -65,51 +67,37 @@ class SettingsController extends Controller
 
             $room_image_data = $form['room_image']->getData();
 
-            //if($room_image_data['room_image_choice'] == 'custom_image' && !is_null($room_image_data['room_image_upload'])){
-            if($room_image_data['room_image_choice'] == 'custom_image' && !is_null($room_image_data['room_image_data'])){
-
-                $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
-
-                if(!is_dir($saveDir)){
-                    mkdir($saveDir, 0777, true);
-                }
-
-                $file = $room_image_data['room_image_upload'];
-
-                $fileName = "";
-
-                // case 1: file was send as "input file" via "room_image_upload" field (legacy case; does not occur with current client configuration)
-                if(!is_null($file)){
-                    //dump("BG image given as file.");
-                    $extension = $file->guessExtension();
-                    if(!$extension) {
-                        $extension = "bin";
+            if($room_image_data['choice'] == 'custom_image') {
+                if(!is_null($room_image_data['room_image_data'])){
+                    $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
+                    if(!is_dir($saveDir)){
+                        mkdir($saveDir, 0777, true);
                     }
-
-                    $fileName = 'custom_bg_image.'.$extension;
-
-                    $file->move($saveDir, $fileName);
-                    //$file->move($saveDir, $file->getClientOriginalName());
+                    $file = $room_image_data['room_image_upload'];
+                    $fileName = "";
+                    // case 1: file was send as "input file" via "room_image_upload" field (legacy case; does not occur with current client configuration)
+                    if(!is_null($file)){
+                        $extension = $file->guessExtension();
+                        if(!$extension) {
+                            $extension = "bin";
+                        }
+                        $fileName = 'custom_bg_image.'.$extension;
+                        $file->move($saveDir, $fileName);
+                        //$file->move($saveDir, $file->getClientOriginalName());
+                    }
+                    // case 2: file was send as base64 string via hidden "room_image_data" text field
+                    else{
+                        $data = $room_image_data['room_image_data'];
+                        list($type, $data) = explode(";", $data);
+                        list(, $data) = explode(",", $data);
+                        list(, $extension) = explode("/", $type);
+                        $data = base64_decode($data);
+                        $fileName = 'custom_bg_image.'.$extension;
+                        $absoluteFilepath = $saveDir . "/" . $fileName;
+                        file_put_contents($absoluteFilepath, $data);
+                    }
+                    $roomItem->setBGImageFilename($fileName);
                 }
-
-                // case 2: file was send as base64 string via hidden "room_image_data" text field
-                else{
-                    //dump("BG image given as base64 string.");
-                    $data = $room_image_data['room_image_data'];
-                    list($type, $data) = explode(";", $data);
-                    list(, $data) = explode(",", $data);
-                    list(, $extension) = explode("/", $type);
-
-                    $data = base64_decode($data);
-
-                    $fileName = 'custom_bg_image.'.$extension;
-
-                    $absoluteFilepath = $saveDir . "/" . $fileName;
-
-                    file_put_contents($absoluteFilepath, $data);
-                }
-
-                $roomItem->setBGImageFilename($fileName);
             }
             else{
                 $roomItem->setBGImageFilename('');
@@ -180,7 +168,6 @@ class SettingsController extends Controller
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
-
         if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
@@ -190,6 +177,8 @@ class SettingsController extends Controller
 
         $form = $this->createForm(AdditionalSettingsType::class, $roomData, array(
             'roomId' => $roomId,
+            // TODO: add new task status choices for this particular room as array parameter!
+            'newStatus' => $roomData['tasks']['additional_status'],
         ));
 
         $form->handleRequest($request);

@@ -28,7 +28,7 @@
                             {{ form_widget(form.tasks.status_option) }}
                             <ul style="list-style-type:none" id='additional_status_list' data-prototype="{{ form_widget(form.tasks.additional_status.vars.prototype)|e('html_attr')}}">
                                 {% for status in form.tasks.additional_status %}
-                                    <li>{{ form_row(status) }}</li>
+                                    <li class='uk-form-row'>{{ form_widget(status) }}</li>
                                 {% endfor %}
                             </ul>
                         </div>
@@ -70,52 +70,52 @@
     window.onload = function(){
         var savedStatusTexts = [];
         var statusList = document.getElementById('additional_status_list');
-        var statusCount = statusList.getElementsByTagName('input').length;
+        var statusCount = statusList.getElementsByTagName('input').length + 3;      // "+3" for three default status 
         var newStatusTextField = document.getElementById('additional_settings_tasks_status');
         var newStatusButton = document.getElementById('additional_settings_tasks_status_option');
         newStatusButton.parentNode.className = "";
         newStatusButton.parentNode.style.display = 'inline';
+        newStatusButton.disabled = newStatusTextField.value.length < 1;
         newStatusButton.onclick = function(){
             if(savedStatusTexts.indexOf(newStatusTextField.value) < 0){
                 addStatus(statusList, statusCount, newStatusTextField.value);
                 savedStatusTexts.push(newStatusTextField.value);
+                newStatusTextField.value = '';
                 statusCount++;
             }
             else{
                 alert("Der Status '"+newStatusTextField.value+"' existiert bereits. Bitte wählen Sie einen anderen Namen aus.");
             }
         }
+        newStatusTextField.oninput = function(){
+            newStatusButton.disabled = newStatusTextField.value.length < 1;
+        }
     };
 
     function addStatus(listElement, currentCount, statusText){
         var prototype = listElement.getAttribute('data-prototype');
-
-        // result: ['tasks']['additional_status']['0'] = true
-        //var newInput = prototype.replace(/__name__/g, currentCount);
-        //newInput = newInput.replace('value="1"', 'value="'+statusText+'" checked');
-
-        // TODO: in this version, the 'statusText' is not allowed to contain any characters Symfony considers "unsave" for form fields (whitespace etc.)
-        // result: ['tasks']['additional_status']['new status 1'] = true
-        var newInput = prototype.replace(/__name__/g, statusText);
-        newInput = newInput.replace('value="1"', 'value="1" checked');
-
+        var newInput = prototype.replace(/__name__/g, currentCount);
+        newInput = newInput.replace(/input/g, 'input value="'+statusText+'"');
         var newListItem= document.createElement('li');
+        newListItem.innerHTML = newInput;
+        var newLabel = newListItem.getElementsByTagName('label')[0];
+        var newInput = newListItem.getElementsByTagName('input')[0];
+        var newInputCopy = newInput.cloneNode(true);
+        var superfluousDiv = newInput.parentNode;
+        var containerDiv = superfluousDiv.parentNode; 
 
-        var newLabel = document.createElement('label');
-        newLabel.className="uk-form-label";
-        //newLabel.setAttribute("for", "additional_settings_tasks_additional_status_" + currentCount);
-        newLabel.setAttribute("for", "additional_settings_tasks_additional_status_" + statusText);
-        newLabel.appendChild(document.createTextNode(statusText));
+        containerDiv.removeChild(superfluousDiv); 
+        containerDiv.appendChild(newInputCopy);
 
-        var newContainer = document.createElement('div');
-        newContainer.className = 'uk-form-row';
-        newContainer.appendChild(newLabel);
-        newContainer.innerHTML += newInput;
+        if(newLabel){
+            newLabel.className = "uk-form-label";
+        }
+        containerDiv.className = 'uk-form-row';
 
-        newListItem.appendChild(newContainer);
+        newListItem.innerHTML = newListItem.innerHTML.replace('<br>', '');
+
         listElement.appendChild(newListItem);
     }
-
 
     var languageSelection = document.getElementById('additional_settings_terms_language');
     var ckeditor = CKEDITOR.instances['additional_settings_terms_agb_text_editor'];

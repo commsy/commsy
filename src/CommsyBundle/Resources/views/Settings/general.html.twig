@@ -24,7 +24,7 @@
                             {{ form_row(form.language) }}
 
                             {{ form_label(form.room_image) }}
-                            {{ form_widget(form.room_image.room_image_choice) }}
+                            {{ form_widget(form.room_image.choice) }}
 
                             <div id="bgPreview" class="uk-form-controls uk-cover-background uk-position-relative">
                                 {% if bgImageFilepath is not empty %}
@@ -46,7 +46,7 @@
                                     uploads[0].className = uploads[0].className.replace(/\bupload\b/,'');
                                 }
                             </script>
-                            {{ form_row(form.room_image.room_image_repeat_x) }}
+                            {{ form_row(form.room_image.repeat_x) }}
                             {{ form_row(form.room_image.delete_custom_image) }}
                             {{ form_row(form.room_image.room_image_data) }}
 

@@ -35,18 +35,8 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
             $roomData['structural_auxilaries']['categories']['mandatory'] = $roomItem->isTagMandatory();
             $roomData['structural_auxilaries']['categories']['edit'] = $roomItem->isTagEditedByAll();
 
-            // TODO: check, if keys (numbers, indices) are important
             // tasks
-            $status_array = array();
-            foreach ($roomItem->getExtraToDoStatusArray() as $key=>$value){
-                $status_array[$value] = true;
-                /*
-                $temp_array['text']  = $value;
-                $temp_array['value'] = $key;
-                $status_array[] = $temp_array;
-                */
-            }
-            $roomData['tasks']['additional_status']  = $status_array;
+            $roomData['tasks']['additional_status']  = $roomItem->getExtraToDoStatusArray();
 
             // templates
             $roomData['template']['status'] = $roomItem->isTemplate();
@@ -216,27 +206,8 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
             $current_user->save();
          }
          
-        // extra todo status
-        $status_array = array();
-
-        /*
-        foreach($roomData as $key => $value) {
-            if(mb_substr($key, 0, 18) === 'additional_status_') {
-                $status_array[mb_substr($key, 18)] = $value;
-            }
-        }
-        */
-
-        $counter = 0;
-        foreach($roomData['tasks']['additional_status'] as $key => $value){
-            if($value){
-                $status_array[$counter] = $key;
-            }
-            $counter++;
-        }
-
-        // TODO: double check if the current way to gather and save additional status texts is correct before saving to DB
-        //$roomObject->setExtraToDoStatusArray($status_array);
+        /***************** save extra task status ************/
+        $roomObject->setExtraToDoStatusArray($roomData['tasks']['additional_status']);
 
         return $roomObject;
     }
