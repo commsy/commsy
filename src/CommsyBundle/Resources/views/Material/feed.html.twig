@@ -1,7 +1,11 @@
 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
 {% for material in materials %}
-    <article class="uk-comment">
+    {% set entryAllowedActions = '' %}
+    {% if allowedActions[material.itemId] is defined %}
+        {% set entryAllowedActions = allowedActions[material.itemId] %}
+    {% endif %}
+    <article class="uk-comment" data-allowed-actions="{{ entryAllowedActions }}">
     
         {# item change information #}
             {{ macros.statusColor(readerList, material.itemId) }}

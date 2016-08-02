@@ -86,13 +86,16 @@ class MaterialController extends Controller
             $ratingList = $assessmentService->getListAverageRatings($itemIds);
         }
 
+        $allowedActions = array();
+
         return array(
             'roomId' => $roomId,
             'materials' => $materials,
             'readerList' => $readerList,
             'showRating' => $current_context->isAssessmentActive(),
             'showWorkflow' => $current_context->withWorkflow(),
-            'ratingList' => $ratingList
+            'ratingList' => $ratingList,
+            'allowedActions' => $allowedActions
         );
     }
 

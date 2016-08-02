@@ -458,6 +458,12 @@
     function addCheckboxes (articles) {
         if (action == 'markread' || action == 'copy' || action == 'save') {
             articles.each(function() {
+                /*
+                    ToDo
+                    - Get kind of action ("markread", "copy", "save", "delete", ...).
+                    - Check on each article if action is in data-allowed-actions.
+                    - Mark for editing if action is included. If not, keep unmarked.
+                */
                 if (!$(this).find('input').length) {
                     let itemId = $(this).find('i.uk-icon-ban').data('itemid');
                     $(this).find('i.uk-icon-ban').replaceWith('<form class="uk-form"><input type="checkbox" value="'+itemId+'"></form>');
