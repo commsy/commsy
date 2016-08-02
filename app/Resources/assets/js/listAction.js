@@ -1,4 +1,18 @@
 ;(function(UI) {
+
+    /*
+        Action in template:
+        
+        <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed", "actionUrl": "{{ path('commsy_user_feedaction', {'roomId': roomId}) }}", "action": "user-delete"}'>
+            <i class="uk-icon-justify uk-icon-small uk-icon-remove uk-visible-large"></i> {{ 'delete'|trans({},'user')|capitalize }}
+        </a>
+        
+        - "class" must be "commsy-select-action"
+        - "data-commsy-list-action" must contain the following values:
+            - "target"      -> usualy the div where feed-entries can be selected and the returned feed-entries from the ajax call are inserted
+            - "actionUrl"   -> path to controller
+            - "action"      -> key that is send to controller
+    */
     
     "use strict";
 
@@ -14,94 +28,10 @@
     let actionUrl;
     let errorMessage;
 
-    $('#commsy-select-actions-mark-read').on('click', function(event) {
+    $('.commsy-select-action').on('click', function(event) {
         event.stopPropagation();
         event.preventDefault();
-        action = 'markread';
-        startEdit($(this));
-    });
-    
-    $('#commsy-select-actions-copy').on('click', function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-        action = 'copy';
-        startEdit($(this));
-    });
-    
-    $('#commsy-select-actions-save').on('click', function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-        action = 'save';
-        startEdit($(this));
-    });
-    
-    $('#commsy-select-actions-delete').on('click', function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-        action = 'delete';
-        startEdit($(this));
-    });
-
-    $('#commsy-select-actions-send-list').on('click', function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-        action = 'send-list';
-        startEdit($(this));
-    });
-    
-    $('#commsy-select-action-user-delete').on('click', function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-        action = 'user-delete';
-        startEdit($(this));
-    });
-    
-    $('#commsy-select-action-user-block').on('click', function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-        action = 'user-block';
-        startEdit($(this));
-    });
-    
-    $('#commsy-select-action-user-confirm').on('click', function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-        action = 'user-confirm';
-        startEdit($(this));
-    });
-    
-    $('#commsy-select-action-user-status-reading-user').on('click', function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-        action = 'user-status-reading-user';
-        startEdit($(this));
-    });
-    
-    $('#commsy-select-action-user-status-user').on('click', function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-        action = 'user-status-user';
-        startEdit($(this));
-    });
-    
-    $('#commsy-select-action-user-status-moderator').on('click', function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-        action = 'user-status-moderator';
-        startEdit($(this));
-    });
-    
-    $('#commsy-select-action-user-contact').on('click', function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-        action = 'user-contact';
-        startEdit($(this));
-    });
-    
-    $('#commsy-select-action-user-contact-remove').on('click', function(event) {
-        event.stopPropagation();
-        event.preventDefault();
-        action = 'user-contact-remove';
+        action = $(this).data('commsy-list-action').action;
         startEdit($(this));
     });
 

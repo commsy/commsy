@@ -8,16 +8,6 @@
         },
 
         boot: function() {
-            // init code
-            /* UI.ready(function(context) {
-                UI.$('[data-commsy-select]', context).each(function() {
-                    let element = UI.$(this);
-
-                    if (!element.data('select')) {
-                        let obj = UI.select(element, UI.Utils.options(element.attr('data-commsy-select')));
-                    }
-                });
-            }); */
         },
 
         init: function() {
@@ -93,53 +83,6 @@
 
                 $this.selectAll = false;
             });
-            
-            /* $('#commsy-select-actions-mark-read').on('click', function(event) {
-                event.preventDefault();
-                $this.action('markread');
-            });
-            
-            $('#commsy-select-actions-copy').on('click', function(event) {
-                event.preventDefault();
-                $this.action('copy');
-            });
-            
-            $('#commsy-select-actions-save').on('click', function(event) {
-                event.preventDefault();
-                $this.action('save');
-            });
-            
-            $('#commsy-select-actions-delete').on('click', function(event) {
-                event.preventDefault();
-                
-                let target = $this.options.target ? UI.$($this.options.target) : [];
-                let entries =  target.find('input:checked').map(function() {
-                    return this.value;
-                }).get();
-                
-                if (entries.length > 0) {
-                    UIkit.modal.confirm($($this.element).data('confirm-delete'), function() {
-                        $this.action('delete');
-                    }, {
-                        labels: {
-                            Cancel: $($this.element[0]).data('confirm-delete-cancel'),
-                            Ok: $($this.element[0]).data('confirm-delete-confirm')
-                        }
-                    });
-                } else {
-                    UIkit.notify({
-                        message : $($this.element[0]).data('no-selection'),
-                        status  : 'warning',
-                        timeout : 5550,
-                        pos     : 'top-center'
-                    });
-                }
-            });
-
-            $('#commsy-select-actions-send-list').on('click', function(event) {
-                event.preventDefault();
-                $this.action('send-list');
-            }); */
 
             $('#commsy-select-actions-cancel').on('change.uk.button', function(event) {
                 $('#commsy-select-actions').toggleClass('uk-hidden');

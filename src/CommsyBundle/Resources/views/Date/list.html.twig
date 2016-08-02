@@ -47,28 +47,28 @@
                 </li>
                {#% block listaction %#}
                     <li>
-                        <a href="#" id="commsy-select-actions-mark-read" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_date_feedaction', {'roomId': roomId}) }}"}'>
+                        <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_date_feedaction', {'roomId': roomId}) }}", "action": "markread"}'>
                             <i class="uk-icon-justify uk-icon-small uk-icon-check-square-o uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
                         </a>
                     </li>
                     
                     
                     <li>
-                        <a href="#" id="commsy-select-actions-copy" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_date_feedaction', {'roomId': roomId}) }}"}'>
+                        <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_date_feedaction', {'roomId': roomId}) }}", "action": "copy"}'>
                             <i class="uk-icon-justify uk-icon-small uk-icon-copy uk-visible-large"></i> {{ 'copy'|trans({},'rubric')|capitalize }}
                         </a>
                     </li>
                     
                     
                     <li>
-                        <a href="#" id="commsy-select-actions-save" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_date_feedaction', {'roomId': roomId}) }}"}'>
+                        <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_date_feedaction', {'roomId': roomId}) }}", "action": "save"}'>
                             <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({},'rubric')|capitalize }}
                         </a>
                     </li>
                     
                     
                     <li>
-                        <a href="#" id="commsy-select-actions-delete" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_date_feedaction', {'roomId': roomId}) }}"}' data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}">
+                        <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_date_feedaction', {'roomId': roomId}) }}", "action": "delete"}' data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
                         </a>
                     </li>
