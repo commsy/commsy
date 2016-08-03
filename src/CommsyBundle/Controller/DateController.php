@@ -55,6 +55,7 @@ class DateController extends Controller
         $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();
+        $allowedActions = array();
         foreach ($dates as $item) {
             $reader = $readerService->getLatestReader($item->getItemId());
             if ( empty($reader) ) {
@@ -62,12 +63,18 @@ class DateController extends Controller
             } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
                $readerList[$item->getItemId()] = 'changed';
             }
+            if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
+                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete');
+            } else {
+                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save');
+            }
         }
 
         return array(
             'roomId' => $roomId,
             'dates' => $dates,
-            'readerList' => $readerList
+            'readerList' => $readerList,
+            'allowedActions' => $allowedActions,
         );
     }
 

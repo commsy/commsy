@@ -50,24 +50,31 @@ class InstitutionController extends Controller
         }
 
         // get material list from manager service 
-        $dates = $dateService->getListDates($roomId, $max, $start, $sort);
+        $institutions = $dateService->getListDates($roomId, $max, $start, $sort);
 
         $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();
-        foreach ($dates as $item) {
+        $allowedActions = array();
+        foreach ($institutions as $item) {
             $reader = $readerService->getLatestReader($item->getItemId());
             if ( empty($reader) ) {
                $readerList[$item->getItemId()] = 'new';
             } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
                $readerList[$item->getItemId()] = 'changed';
             }
+            if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
+                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete');
+            } else {
+                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save');
+            }
         }
 
         return array(
             'roomId' => $roomId,
-            'dates' => $dates,
-            'readerList' => $readerList
+            'institutions' => $institutions,
+            'readerList' => $readerList,
+            'allowedActions' => $allowedActions,
         );
     }
     

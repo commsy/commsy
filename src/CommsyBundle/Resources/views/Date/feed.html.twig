@@ -1,7 +1,11 @@
 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
 {% for date in dates %}
-    <article class="uk-comment">
+    {% set entryAllowedActions = '' %}
+    {% if allowedActions[date.itemId] is defined %}
+        {% set entryAllowedActions = allowedActions[date.itemId] %}
+    {% endif %}
+    <article class="uk-comment" data-allowed-actions="{{ entryAllowedActions|json_encode() }}">
            
             {{ macros.statusColor(readerList, date.itemId) }}
         <header class="uk-comment-header uk-flex">

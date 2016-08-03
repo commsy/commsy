@@ -70,10 +70,15 @@ class MaterialController extends Controller
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
-
         $readerList = array();
+        $allowedActions = array();
         foreach ($materials as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+            if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
+                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete');
+            } else {
+                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save');
+            }
         }
 
         $ratingList = array();
@@ -85,8 +90,6 @@ class MaterialController extends Controller
             }
             $ratingList = $assessmentService->getListAverageRatings($itemIds);
         }
-
-        $allowedActions = array();
 
         return array(
             'roomId' => $roomId,

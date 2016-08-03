@@ -1,44 +1,46 @@
 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
-{% for date in dates %}
-    <article class="uk-comment">
+{% for institution in institutions %}
+    {% set entryAllowedActions = '' %}
+    {% if allowedActions[institution.itemId] is defined %}
+        {% set entryAllowedActions = allowedActions[institution.itemId] %}
+    {% endif %}
+    <article class="uk-comment" data-allowed-actions="{{ entryAllowedActions|json_encode() }}">
            
-            {{ macros.statusColor(readerList, date.itemId) }}
+            {{ macros.statusColor(readerList, institution.itemId) }}
         <header class="uk-comment-header uk-flex">
             <div class="items-checkbox uk-margin-right uk-margin-top uk-hidden">
 
-                {% if is_granted('ITEM_EDIT', date.itemId) %}
+                {% if is_granted('ITEM_EDIT', institution.itemId) %}
                     <form class="uk-form">
-                        <input type="checkbox" value="{{ date.itemId }}">
+                        <input type="checkbox" value="{{ institution.itemId }}">
                     </form>
                 {% else %}
-                    <i class="uk-icon-ban uk-icon-small red" data-itemid="{{ date.itemId }}"></i>
+                    <i class="uk-icon-ban uk-icon-small red" data-itemid="{{ institution.itemId }}"></i>
                 {% endif %}
                 
             </div>
             <div class="uk-margin-right uk-flex-item-none">
-                    {% if date.creator.isUser %}
-                        {{  macros.userIconLink(date.creator) }}
+                    {% if institution.creator.isUser %}
+                        {{  macros.userIconLink(institution.creator) }}
                     {% else %}
-                        {{  macros.userIcon(date.creator) }}
+                        {{  macros.userIcon(institution.creator) }}
                     {% endif %}
                     <div class="uk-comment-meta">
-                        {% if date.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                            {{ 'today'|trans({})|capitalize }}, {{date.getModificationDate|date("H:i")}}
+                        {% if institution.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                            {{ 'today'|trans({})|capitalize }}, {{institution.getModificationDate|date("H:i")}}
                         {% else %}
-                            {{date.getModificationDate|date("d.m.Y")}}
+                            {{institution.getModificationDate|date("d.m.Y")}}
                         {% endif %}
                     </div>
             </div>
             <div>
                 <h4 class="uk-comment-title">
-                    <a href="{{ path('commsy_date_detail', {'roomId': roomId, 'itemId': date.itemId}) }}">{{ date.title }}</a>
+                    <a href="{{ path('commsy_institution_detail', {'roomId': roomId, 'itemId': institution.itemId}) }}">{{ institution.title }}</a>
                 </h4>
 
-                <div class="uk-comment-meta">{{date.getDateListDescription}}{% if date.getPlace != '' %}, {{date.getPlace}}{% endif %}</div>
-                
                 <div class="uk-comment-meta">
-                    {{  macros.fileListShort(date) }}
+                    {{  macros.fileListShort(institution) }}
                 </div>
             </div>
         </header>

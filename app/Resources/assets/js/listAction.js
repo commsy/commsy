@@ -122,6 +122,7 @@
         if (!target.length) return;
 
         articles = target.find('article');
+        
         addCheckboxes(articles);
         
         inputs = target.find('input');
@@ -138,7 +139,7 @@
 
         $('#commsy-list-count-selected').html('0');
 
-        articles.toggleClass('selectable');
+        //articles.toggleClass('selectable');
         
         $('#commsy-list-count-display').toggleClass('uk-hidden');
         $('#commsy-list-count-edit').toggleClass('uk-hidden');
@@ -160,12 +161,12 @@
             if (!target.length) return;
             
             articles = target.find('article');
-            addCheckboxes(articles);
             
             inputs = target.find('input');
     
             if (articles.first().hasClass('selectable')) {
-                articles.addClass('selectable');
+                //articles.addClass('selectable');
+                addCheckboxes(articles);
             }
     
             bind();
@@ -456,20 +457,11 @@
     }
     
     function addCheckboxes (articles) {
-        if (action == 'markread' || action == 'copy' || action == 'save') {
-            articles.each(function() {
-                /*
-                    ToDo
-                    - Get kind of action ("markread", "copy", "save", "delete", ...).
-                    - Check on each article if action is in data-allowed-actions.
-                    - Mark for editing if action is included. If not, keep unmarked.
-                */
-                if (!$(this).find('input').length) {
-                    let itemId = $(this).find('i.uk-icon-ban').data('itemid');
-                    $(this).find('i.uk-icon-ban').replaceWith('<form class="uk-form"><input type="checkbox" value="'+itemId+'"></form>');
-                }
-            });
-        }
+        articles.each(function() {
+            if ($.inArray(action, $(this).data('allowed-actions')) > -1) {
+                $(this).toggleClass('selectable');
+            }
+        });
     }
 
 })(UIkit);

@@ -242,18 +242,23 @@ class GroupController extends Controller
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
-
         $readerList = array();
+        $allowedActions = array();
         foreach ($groups as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+            if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
+                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete');
+            } else {
+                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save');
+            }
         }
-
 
         return array(
             'roomId' => $roomId,
             'groups' => $groups,
             'readerList' => $readerList,
             'showRating' => false,
+            'allowedActions' => $allowedActions,
        );
     }
 

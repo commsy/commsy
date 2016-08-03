@@ -175,10 +175,15 @@ class TodoController extends Controller
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
-
         $readerList = array();
+        $allowedActions = array();
         foreach ($todos as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+            if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
+                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete');
+            } else {
+                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save');
+            }
         }
 
         return array(
@@ -187,6 +192,7 @@ class TodoController extends Controller
             'readerList' => $readerList,
             'showRating' => $current_context->isAssessmentActive(),
             'showWorkflow' => $current_context->withWorkflow(),
+            'allowedActions' => $allowedActions,
         );
     }
     
