@@ -33,7 +33,7 @@ class UploadType extends AbstractType
             ->add('files', FileType::class, array(
                 'label' => 'upload',
                 'attr' => array(
-                     'data-cs-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
+                     'data-uk-csupload' => '{"path": "' . $options['uploadUrl'] . '"}',
                 ),
                 'required' => false,
                 'translation_domain' => 'material',
