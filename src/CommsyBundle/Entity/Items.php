@@ -20,7 +20,6 @@ use Doctrine\ORM\Mapping as ORM;
  *     "discarticle" = "Discussionarticles",
  *     "discussion" = "Discussions",
  *     "grouproom" = "Room",
- *     "homepage_page" = "HomepagePage",
  *     "label" = "Labels",
  *     "link_item" = "LinkItems",
  *     "material" = "Materials",
