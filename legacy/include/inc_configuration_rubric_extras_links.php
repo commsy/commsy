@@ -36,7 +36,7 @@ $translator = $environment->getTranslationObject();
    # Wiki - Raum-Wiki
    #########################################
    $context_item = $environment->getCurrentContextItem();
-   if ( $context_item->withWikiFunctions() and !$context_item->isServer() ) {
+   /* if ( $context_item->withWikiFunctions() and !$context_item->isServer() ) {
       $link_item = new cs_link();
       $link_item->setTitle($translator->getMessage('WIKI_CONFIGURATION_LINK'));
       if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
@@ -52,7 +52,7 @@ $translator = $environment->getTranslationObject();
       $link_item->setFunction('wiki');
       $link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
       $configuration_rubric_extras_link_list->add($link_item);
-   }
+   } */
 
    #########################################
    # Wordpress - Raum-Wordpress
