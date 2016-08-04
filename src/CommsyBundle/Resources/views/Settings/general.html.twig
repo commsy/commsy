@@ -85,6 +85,116 @@
 
         </div>
     </div>
+
+    <script>
+    window.onload = function(){
+
+        let positionCover = document.getElementsByClassName('uk-position-cover');
+        let coverFormControls = positionCover[0].getElementsByClassName('uk-form-controls')[0];
+
+        coverFormControls.style.marginLeft = "0px";
+
+        let deleteRow = document.getElementById('general_settings_room_image_delete_custom_image').parentElement.parentElement;
+        let repeatRow = document.getElementById('general_settings_room_image_repeat_x').parentElement.parentElement;
+
+        deleteRow.className += " uk-form-controls";
+        repeatRow.className += " uk-form-controls";
+
+        document.getElementById('general_settings_room_image_choice').onchange = function(event){
+            toggleUploadListener(this, deleteRow, repeatRow);
+        }
+
+        document.querySelector('form.uk-form-horizontal').onsubmit = function(event){
+            this.querySelector('input[type="file"]').disabled = true;
+        }
+
+        toggleUploadListener(document.getElementById('general_settings_room_image_choice'), deleteRow, repeatRow);
+    };
+
+    function setBackgroundImage(f, previewImage){
+        // TODO: set threshold to sensible value (e.g. the real upload size limit of the server)!
+        if(f.size > 2000000){
+            alert("File size too large ("+(f.size / 1000) +" KB)! \n This service accepts image files up to 500 KB only!");
+            return false;
+        }
+        let reader = new FileReader();
+        reader.onload = function(event){
+            previewImage.src = event.target.result;
+            document.getElementById('general_settings_room_image_room_image_data').value = event.target.result;
+            
+            // document.getElementById("imageInfo").innerHTML = '<li>Name: '
+            //     +f.name+'</li><li>Type: '
+            //     +f.type+'</li><li>Size: '
+            //     +f.size+' bytes</li><li>Data: '
+            //     +event.target.result.substring(0,50)+'...</li>';
+        }
+        reader.readAsDataURL(f);
+    }
+
+    function toggleUploadListener(containerElement, deleteRow, repeatRow){
+
+        let bgPreview = document.getElementById("bgPreview");
+
+        let imageType = containerElement.querySelector('input:checked').value;
+
+        // TODO: dynamically load bg preview depending on choice (custom image / default theme image)
+        if(imageType === 'default_image'){
+            document.getElementsByClassName("cs-upload-form")[0].style.display = 'none';
+            repeatRow.style.display = 'block';
+            deleteRow.style.display = 'none';
+
+            bgPreview.ondragover = function(e){
+                e.preventDefault();
+                return false;
+            };
+            bgPreview.ondragleave = function(e){
+                e.preventDefault();
+                return false;
+            };
+            bgPreview.ondragend = function(e){
+                e.preventDefault();
+                return false;
+            };
+            bgPreview.ondrop = function(e){
+                e.preventDefault();
+                return false;
+            };
+            bgPreview.querySelector('input[type="file"]').onchange = function(e){
+                e.preventDefault();
+                return false;
+            };
+        }
+        else if(imageType === 'custom_image'){
+            document.getElementsByClassName("cs-upload-form")[0].style.display = 'block';
+            repeatRow.style.display = 'none';
+            deleteRow.style.display = 'block';
+
+            bgPreview.ondragover = function(e){
+                e.preventDefault();
+                this.querySelector(".uk-position-cover").style.opacity = "0.9";
+                return false;
+            };
+            bgPreview.ondragleave = function(e){
+                e.preventDefault();
+                this.querySelector(".uk-position-cover").style.opacity = "0.7";
+                return false;
+            };
+            bgPreview.ondragend = function(e){
+                e.preventDefault();
+                return false;
+            };
+            bgPreview.ondrop = function(e){
+                e.preventDefault();
+                this.querySelector(".uk-position-cover").style.opacity = "0.7";
+                setBackgroundImage(e.dataTransfer.files[0], bgPreview.querySelector('img'));
+            };
+
+            bgPreview.querySelector('input[type="file"]').onchange = function(e){
+                setBackgroundImage(e.target.files[0], bgPreview.querySelector('img'));
+            };
+        }
+    }
+    </script>
 {% endblock content %}
 {# 
 <div class="tab" id="room_configuration">
