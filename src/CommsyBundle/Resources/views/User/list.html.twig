@@ -34,11 +34,6 @@
             </ul>
             
             <ul class="uk-nav uk-nav-dropdown cs-list-moderation uk-padding-remove uk-margin-remove uk-text-left">
-                <li class="uk-nav-devider">
-                    <div class="cs-moderation">
-                        {{ 'moderation'|trans({})|capitalize }}
-                    </div>
-                </li>
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed", "actionUrl": "{{ path('commsy_user_feedaction', {'roomId': roomId}) }}", "action": "user-delete"}'>
                         <i class="uk-icon-justify uk-icon-small uk-icon-times-circle uk-visible-large"></i> {{ 'delete'|trans({},'user') }}
