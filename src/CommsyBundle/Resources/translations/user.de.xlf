@@ -118,6 +118,34 @@
                 <source>emailHidden</source>
                 <target>verborgen</target>
             </trans-unit>
+            <trans-unit id="delete">
+                <source>delete</source>
+                <target>Kennung(en) löschen</target>
+            </trans-unit>
+            <trans-unit id="block">
+                <source>block</source>
+                <target>Kennung(en) sperren</target>
+            </trans-unit>
+            <trans-unit id="confirm">
+                <source>confirm</source>
+                <target>Kennung(en) freischalten</target>
+            </trans-unit>
+            <trans-unit id="status">
+                <source>status</source>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="reading user">
+                <source>reading user</source>
+                <target>LesendeR BenutzerIn</target>
+            </trans-unit>
+            <trans-unit id="contact">
+                <source>contact</source>
+                <target>Zu AnsprechpartnerIn machen</target>
+            </trans-unit>
+            <trans-unit id="contact remove">
+                <source>contact remove</source>
+                <target>Status AnsprechpartnerIn entfernen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -286,8 +286,7 @@ class cs_page_view extends cs_view {
          }
       }
 
-      $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_portal_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_portal_room_merged_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
+      $retour .= '   <link rel="stylesheet" type="text/css" href="css/portal.css"/>'.LF;
 
       if ($this->_environment->getCurrentFunction() == 'detail' or $this->_environment->getCurrentModule() == 'help' and !$this->_is_print_page){
          // for tex in commsy
@@ -299,8 +298,6 @@ class cs_page_view extends cs_view {
             $retour .= '   <style type="text/css"> #jsMath_Warning {display: none} </style>'.LF;
             $retour .= '   <style type="text/css"> #jsMath_button  {display: none} </style>'.LF;
          }
-      }elseif( ($this->_environment->getCurrentFunction() == 'index' and !$this->_is_print_page) or $this->_environment->getCurrentFunction() == 'clipboard_index'){
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_index_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
       }
       
       return $retour;
@@ -360,9 +357,7 @@ class cs_page_view extends cs_view {
          $retour .= '      -->'.LF;
          $retour .= '   </script>'.LF;
          $retour .= '   <script type="text/javascript" src="javascript/swfobject.js"></script>'.LF;
-         if ($this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE){
-            $retour .= '   <script type="text/javascript" src="javascript/CommSyTextFormatingInformation.js"></script>'.LF;
-         }
+        
          // for tex in commsy
          // see http://www.math.union.edu/~dpvc/jsMath/
          global $c_jsmath_enable;
@@ -426,7 +421,6 @@ class cs_page_view extends cs_view {
                or $this->_environment->getCurrentModule() == 'account'
                or $this->_environment->getCurrentModule() == 'material_admin'
       ){
-         $retour .= '   <script type="text/javascript" src="javascript/CommSyTextFormatingInformation.js"></script>'.LF;
          if (!$this->_environment->inServer()){
             $retour .= '   <script type="text/javascript">'.LF;
             $retour .= '      <!--'.LF;
