@@ -386,15 +386,15 @@
             </trans-unit>            
             <trans-unit id="workflow_resubmission">
                 <source>Resubmission</source>
-                <target>Wiedervorlage</target>
+                <target>Wiedervorlage:</target>
             </trans-unit>
             <trans-unit id="workflow_validity">
                 <source>Validity</source>
-                <target>Gültigkeitsdatum</target>
+                <target>Gültigkeitsdatum:</target>
             </trans-unit>
             <trans-unit id="workflow_trafic_light">
-                <source>Traffic light</source>
-                <target>Status-Anzeige</target>
+                <source>Status view</source>
+                <target>Status-Anzeige:</target>
             </trans-unit>
             <trans-unit id="workflow_green_text">
                 <source>Traffic light green text</source>
@@ -421,16 +421,16 @@
                 <target>Personenbezogen</target>
             </trans-unit>
             <trans-unit id="reader_view">
-                <source>Resubmission show to</source>
-                <target>Leseranzeige</target>
+                <source>Reader view</source>
+                <target>Leseranzeige:</target>
             </trans-unit>
             <trans-unit id="mods_only">
                 <source>Moderators</source>
-                <target>nur für Moderatoren</target>
+                <target>Leseranzeige nur für Moderatoren</target>
             </trans-unit>            
             <trans-unit id="all_users">
                 <source>Users</source>
-                <target>für alle Benutzer</target>
+                <target>Leseranzeige für alle Benutzer</target>
             </trans-unit>
             <trans-unit id="wiki">
                 <source>wiki</source>
@@ -447,11 +447,23 @@
             <trans-unit id="workflow_text">
                 <source>Workflow text</source>
                 <target>Die Workflow Einstellungen sind Zusatzfunktionen für die Rubrik Materialien, um den Redaktionsprozess zu koordinieren.</target>
-            </trans-unit> 
+            </trans-unit>
             <trans-unit id="wiki_Text">
                 <source>wiki text</source>
                 <target>Setzen Sie diese Checkbox, um das Wiki zu aktivieren.</target>
-            </trans-unit>   
+            </trans-unit>
+            <trans-unit id="default_state">
+                <source>Default status</source>
+                <target>Default-Status:</target>
+            </trans-unit>
+            <trans-unit id="no_default_state">
+                <source>No default status</source>
+                <target>Kein default-Status</target>
+            </trans-unit>
+            <trans-unit id="status_description">
+                <source>Status description</source>
+                <target>Status-Beschreibung:</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

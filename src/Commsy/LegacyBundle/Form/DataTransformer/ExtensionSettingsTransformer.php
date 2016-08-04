@@ -38,7 +38,7 @@ class ExtensionSettingsTransformer implements DataTransformerInterface
 
             // traffic light options
             $traffic_light = array();
-            $traffic_light['activate']= $roomItem->withWorkflowTrafficLight();
+            $traffic_light['status_view']= $roomItem->withWorkflowTrafficLight();
             $traffic_light['default_status'] = $roomItem->getWorkflowTrafficLightDefault();
             if($roomItem->getWorkflowTrafficLightTextGreen() != ''){
                $traffic_light['green_text'] = $roomItem->getWorkflowTrafficLightTextGreen();
@@ -96,7 +96,7 @@ class ExtensionSettingsTransformer implements DataTransformerInterface
 
         $traffic_light = $workflow['traffic_light'];
 
-        if ( $traffic_light['activate'] ) {
+        if ( $traffic_light['status_view'] ) {
            $roomObject->setWithWorkflowTrafficLight();
            $isset_workflow = true;
         } else {

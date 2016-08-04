@@ -386,15 +386,15 @@
             </trans-unit>            
             <trans-unit id="workflow_resubmission">
                 <source>Resubmission</source>
-                <target>Resubmission</target>
+                <target>Resubmission:</target>
             </trans-unit>
             <trans-unit id="workflow_validity">
                 <source>Validity</source>
-                <target>Validity date</target>
+                <target>Validity date:</target>
             </trans-unit>
             <trans-unit id="workflow_trafic_light">
-                <source>Traffic light</source>
-                <target>Status view</target>
+                <source>Status view</source>
+                <target>Status view:</target>
             </trans-unit>
             <trans-unit id="workflow_green_text">
                 <source>Traffic light green text</source>
@@ -421,16 +421,16 @@
                 <target>Users</target>
             </trans-unit>
             <trans-unit id="reader_view">
-                <source>Resubmission show to</source>
-                <target>Reader view</target>
+                <source>Reader view</source>
+                <target>Reader view:</target>
             </trans-unit>
             <trans-unit id="mods_only">
                 <source>Moderators</source>
-                <target>only for Moderators</target>
+                <target>Reader view only for Moderators</target>
             </trans-unit>            
             <trans-unit id="all_users">
                 <source>Users</source>
-                <target>for all users</target>
+                <target>Reader view for all users</target>
             </trans-unit>
             <trans-unit id="wiki">
                 <source>wiki</source>
@@ -451,6 +451,18 @@
             <trans-unit id="wiki_Text">
                 <source>wiki text</source>
                 <target>Checkt this checkbox to enable the Wiki.</target>
+            </trans-unit>
+            <trans-unit id="default_state">
+                <source>Default status</source>
+                <target>Default-Status:</target>
+            </trans-unit>
+            <trans-unit id="no_default_state">
+                <source>No default status</source>
+                <target>No default status</target>
+            </trans-unit>
+            <trans-unit id="status_description">
+                <source>Status description</source>
+                <target>Status description:</target>
             </trans-unit>
         </body>
     </file>
