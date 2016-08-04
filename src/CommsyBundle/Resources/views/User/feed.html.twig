@@ -25,18 +25,18 @@
                    <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
                     <span class="uk-text-large uk-text-middle uk-text-truncate">
                         <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">{{ user.title }} {{user.fullname}}</a>
-                        <div class="uk-link uk-align-right {% if not user.isUser %}cs-moderation-warning{% endif %}"">
+                        <div class="uk-align-right {% if not user.isUser %}cs-moderation-warning{% endif %} uk-text-muted">
                             {% if user.isContact %}
                                 <i class="uk-icon-edit"></i>
                             {% endif %}
                             {% if user.status == 0 %}
-                                <i class="uk-icon-ban"></i>
+                                <i class="uk-icon-ban uk-text-danger"></i>
                             {% elseif user.status == 1 %}
-                                <i class="uk-icon-sign-in"></i>
+                                <i class="uk-icon-sign-in uk-text-danger"></i>
                             {% elseif user.status == 2 %}
                                 <i class="uk-icon-user"></i>
                             {% elseif user.status == 3 %}
-                                <i class="uk-icon-user-plus"></i>
+                                <i class="uk-icon-wrench"></i> <i class="uk-icon-user"></i>
                             {% elseif user.status == 4 %}
                                 <i class="uk-icon-user-secret"></i>
                             {% endif %}
