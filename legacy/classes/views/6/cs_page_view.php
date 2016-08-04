@@ -286,8 +286,7 @@ class cs_page_view extends cs_view {
          }
       }
 
-      $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_portal_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_portal_room_merged_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
+      $retour .= '   <link rel="stylesheet" type="text/css" href="css/portal.css"/>'.LF;
 
       if ($this->_environment->getCurrentFunction() == 'detail' or $this->_environment->getCurrentModule() == 'help' and !$this->_is_print_page){
          // for tex in commsy
@@ -299,8 +298,6 @@ class cs_page_view extends cs_view {
             $retour .= '   <style type="text/css"> #jsMath_Warning {display: none} </style>'.LF;
             $retour .= '   <style type="text/css"> #jsMath_button  {display: none} </style>'.LF;
          }
-      }elseif( ($this->_environment->getCurrentFunction() == 'index' and !$this->_is_print_page) or $this->_environment->getCurrentFunction() == 'clipboard_index'){
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_index_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
       }
       
       return $retour;

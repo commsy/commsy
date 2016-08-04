@@ -115,6 +115,11 @@ class cs_context_item extends cs_item {
     $colors['content_background']         = '#EFECE2';
     $colors['list_entry_odd']             = '#EFECE2';
     $colors['list_entry_even']            = '#F7F7F7';
+    $colors['myarea_headline_background'] = '#CDCBC2';
+    $colors['myarea_headline_title']      = 'white';
+    $colors['myarea_title_background']    = '#F7F7F7';
+    $colors['myarea_content_background']  = '#EFECE2';
+    $colors['myarea_section_title']       = '#666666';
     $colors['portal_tabs_background']     = '#666666';
     $colors['portal_tabs_title']          = 'white';
     $colors['portal_tabs_focus']          = '#EC930D';
