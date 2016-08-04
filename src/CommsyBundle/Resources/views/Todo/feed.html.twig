@@ -1,7 +1,11 @@
 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
 {% for todo in todos %}
-    <article class="uk-comment">
+    {% set entryAllowedActions = '' %}
+    {% if allowedActions[todo.itemId] is defined %}
+        {% set entryAllowedActions = allowedActions[todo.itemId] %}
+    {% endif %}
+    <article class="uk-comment" data-allowed-actions="{{ entryAllowedActions|json_encode() }}">
     
         {# item change information #}
             {{ macros.statusColor(readerList, todo.itemId) }}

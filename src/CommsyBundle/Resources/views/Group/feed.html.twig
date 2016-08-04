@@ -4,7 +4,11 @@
 
         <div class="uk-width-medium-1-4">
 
-            <article class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
+            {% set entryAllowedActions = '' %}
+            {% if allowedActions[group.itemId] is defined %}
+                {% set entryAllowedActions = allowedActions[group.itemId] %}
+            {% endif %}
+            <article class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom" data-allowed-actions="{{ entryAllowedActions|json_encode() }}">
  
                 <div class="uk-panel-teaser cs-panel-teaser-user">
                     {{ macros.statusColor(readerList, group.itemId, 'grid') }}

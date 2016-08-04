@@ -1,7 +1,11 @@
 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
 {% for discussion in discussions %}
-    <article class="uk-comment">
+    {% set entryAllowedActions = '' %}
+    {% if allowedActions[discussion.itemId] is defined %}
+        {% set entryAllowedActions = allowedActions[discussion.itemId] %}
+    {% endif %}
+    <article class="uk-comment" data-allowed-actions="{{ entryAllowedActions|json_encode() }}">
            
         {# item change information #}
             {{ macros.statusColor(readerList, discussion.itemId) }}

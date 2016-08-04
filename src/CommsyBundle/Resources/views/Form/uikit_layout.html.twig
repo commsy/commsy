@@ -18,7 +18,7 @@
         <img src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/image"/>
     {% endif %}
 
-    <div class="upload uk-placeholder  cs-upload-form">
+    <div class="uk-placeholder cs-upload-form">
         <i class="uk-icon-cloud-upload uk-icon-medium uk-text-muted uk-margin-small-right"></i>
         {{ 'Attach files by dropping them here or'|trans({}, 'form') }}<br/>
         <a class="uk-form-file">{{ 'selecting one'|trans({}, 'form') }}{{ block('form_widget') }}</a>.

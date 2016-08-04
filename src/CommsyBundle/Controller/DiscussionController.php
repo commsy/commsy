@@ -66,8 +66,14 @@ class DiscussionController extends Controller
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
         $readerList = array();
+        $allowedActions = array();
         foreach ($discussions as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+            if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
+                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete');
+            } else {
+                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save');
+            }
         }
 
         $ratingList = array();
@@ -86,7 +92,8 @@ class DiscussionController extends Controller
             'readerList' => $readerList,
             'showRating' => $current_context->isAssessmentActive(),
             'showWorkflow' => $current_context->withWorkflow(),
-            'ratingList' => $ratingList
+            'ratingList' => $ratingList,
+            'allowedActions' => $allowedActions,
         );
     }
     

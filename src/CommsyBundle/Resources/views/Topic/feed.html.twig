@@ -2,8 +2,11 @@
 
 {% for topic in topics %}
 
-
-        <div class="uk-width-medium-1-4">
+        {% set entryAllowedActions = '' %}
+        {% if allowedActions[topic.itemId] is defined %}
+            {% set entryAllowedActions = allowedActions[topic.itemId] %}
+        {% endif %}
+        <div class="uk-width-medium-1-4" data-allowed-actions="{{ entryAllowedActions|json_encode() }}">
 
             <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
  
