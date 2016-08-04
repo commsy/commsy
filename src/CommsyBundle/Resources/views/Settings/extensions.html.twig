@@ -24,7 +24,72 @@
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Workflow'|trans({}, 'settings') }}</h1> 
                             <div style="margin-bottom: 25px;">{{ 'Workflow text'|trans({}, 'settings') }}</div>
-                            {{ form_widget(form.workflow) }}
+
+                            {{ form_row(form.workflow.resubmission) }}
+                            {{ form_row(form.workflow.validity) }}
+                            {{ form_row(form.workflow.traffic_light.status_view) }}
+
+                            <div class='uk-form-row'>
+                                <div class='uk-form-label'>{{ 'Default status' | trans({} , 'settings') }}</div>
+                                <div class='uk-form-controls'>
+                                    <span style='width: 205px; display: inline-block;'>
+                                        <label for='extension_settings_workflow_traffic_light_default_status_0'>
+                                            <img src="/templates/themes/default/img/workflow_traffic_light_green.png"/>
+                                        </label>
+                                        {{ form_widget(form.workflow.traffic_light.default_status.0) }}
+                                    </span>
+
+                                    <span style='width: 205px; display: inline-block;'>
+                                        <label for='extension_settings_workflow_traffic_light_default_status_1'>
+                                            <img src="/templates/themes/default/img/workflow_traffic_light_yellow.png"/>
+                                        </label>
+                                        {{ form_widget(form.workflow.traffic_light.default_status.1) }}
+                                    </span>
+
+                                    <span style='width: 205px; display: inline-block;'>
+                                        <label for='extension_settings_workflow_traffic_light_default_status_2'>
+                                            <img src="/templates/themes/default/img/workflow_traffic_light_red.png"/>
+                                        </label>
+                                        {{ form_widget(form.workflow.traffic_light.default_status.2) }}
+                                    </span>
+                                    <label for='extension_settings_workflow_traffic_light_default_status_3'>
+                                        {{ 'No default status' | trans({}, 'settings') }}
+                                    </label>
+                                    {{ form_widget(form.workflow.traffic_light.default_status.3) }}
+                                </div>
+                            </div>
+
+                            <div class='uk-form-row'>
+                                <div class='uk-form-label'>{{ 'Status description' | trans({} , 'settings') }}</div>
+                                <div class='uk-form-controls'>
+                                    <span style='width: 205px; display: inline-block;'>
+                                        <img src="/templates/themes/default/img/workflow_traffic_light_green.png"/>
+                                        {{ form_widget(form.workflow.traffic_light.green_text) }}
+                                    </span>
+
+                                    <span style='width: 205px; display: inline-block;'>
+                                        <img src="/templates/themes/default/img/workflow_traffic_light_yellow.png"/>
+                                        {{ form_widget(form.workflow.traffic_light.yellow_text) }}
+                                    </span>
+
+                                    <span style='width: 205px; display: inline-block;'>
+                                        <img src="/templates/themes/default/img/workflow_traffic_light_red.png"/>
+                                        {{ form_widget(form.workflow.traffic_light.red_text) }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class='uk-form-row'>
+                                <div class='uk-form-label'>{{ 'Reader view' | trans({} , 'settings') }}</div>
+                                <div class='uk-form-controls'>
+                                    {{ form_row(form.workflow.reader) }}
+                                    {{ form_row(form.workflow.reader_group) }}
+                                    {{ form_row(form.workflow.reader_person) }}
+
+                                    {{ form_widget(form.workflow.resubmission_show_to.0) }} {{ form_label(form.workflow.resubmission_show_to.0) }}
+                                    {{ form_widget(form.workflow.resubmission_show_to.1) }} {{ form_label(form.workflow.resubmission_show_to.1) }}
+                                </div>
+                            </div>
                         </div>
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">

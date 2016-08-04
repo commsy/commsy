@@ -71,8 +71,14 @@ class UserController extends Controller
         $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();
+        $allowedActions = array();
         foreach ($users as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+            if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
+                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete');
+            } else {
+                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save');
+            }
         }
 
         return array(
@@ -80,6 +86,7 @@ class UserController extends Controller
             'users' => $users,
             'readerList' => $readerList,
             'showRating' => false,
+            'allowedActions' => $allowedActions,
        );
     }
     

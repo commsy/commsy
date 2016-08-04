@@ -52,7 +52,7 @@ class ExtensionSettingsType extends AbstractType
                 ))
                 ->add(
                     $builder->create('traffic_light', FormType::class, array())
-                    ->add('activate', CheckboxType::class, array(
+                    ->add('status_view', CheckboxType::class, array(
                         'required' => false,
                         'label_attr' => array('class' => 'uk-form-label'),
                     ))
@@ -61,9 +61,9 @@ class ExtensionSettingsType extends AbstractType
                         'expanded' => true,
                         'multiple' => false,
                         'choices' => array(
-                            'GreenIcon' => '0_green',
-                            'YellowIcon'=> '1_yellow',
-                            'RedIcon'   => '2_red',
+                            'GreenSymbol' => '0_green',
+                            'YellowSymbol'=> '1_yellow',
+                            'RedSymbol'   => '2_red',
                             'NoDefault' => '3_none',
                         ),
                     ))
@@ -91,6 +91,7 @@ class ExtensionSettingsType extends AbstractType
                     'label_attr' => array('class' => 'uk-form-label'),
                 ))
                 ->add('resubmission_show_to', ChoiceType::class, array(
+                    'label' => false,
                     'expanded' => true,
                     'multiple' => false,
                     'choices' => array(

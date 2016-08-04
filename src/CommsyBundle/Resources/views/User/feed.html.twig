@@ -4,7 +4,11 @@
 
         <div class="uk-width-medium-1-2">
 
-            <article class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom {% if not user.isUser %}cs-moderation-warning{% endif %}">
+            {% set entryAllowedActions = '' %}
+            {% if allowedActions[user.itemId] is defined %}
+                {% set entryAllowedActions = allowedActions[user.itemId] %}
+            {% endif %}
+            <article class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom {% if not user.isUser %}cs-moderation-warning{% endif %}" data-allowed-actions="{{ entryAllowedActions|json_encode() }}">
  
                 <div class="uk-panel-teaser cs-panel-teaser-user {% if not user.isUser %}cs-moderation-warning-title{% endif %}">
                     {{ macros.statusColor(readerList, user.itemId, 'grid') }}

@@ -5,7 +5,7 @@
     {% if allowedActions[material.itemId] is defined %}
         {% set entryAllowedActions = allowedActions[material.itemId] %}
     {% endif %}
-    <article class="uk-comment" data-allowed-actions="{{ entryAllowedActions }}">
+    <article class="uk-comment" data-allowed-actions="{{ entryAllowedActions|json_encode() }}">
     
         {# item change information #}
             {{ macros.statusColor(readerList, material.itemId) }}
