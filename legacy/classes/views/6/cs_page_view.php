@@ -357,9 +357,7 @@ class cs_page_view extends cs_view {
          $retour .= '      -->'.LF;
          $retour .= '   </script>'.LF;
          $retour .= '   <script type="text/javascript" src="javascript/swfobject.js"></script>'.LF;
-         if ($this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE){
-            $retour .= '   <script type="text/javascript" src="javascript/CommSyTextFormatingInformation.js"></script>'.LF;
-         }
+        
          // for tex in commsy
          // see http://www.math.union.edu/~dpvc/jsMath/
          global $c_jsmath_enable;
@@ -423,7 +421,6 @@ class cs_page_view extends cs_view {
                or $this->_environment->getCurrentModule() == 'account'
                or $this->_environment->getCurrentModule() == 'material_admin'
       ){
-         $retour .= '   <script type="text/javascript" src="javascript/CommSyTextFormatingInformation.js"></script>'.LF;
          if (!$this->_environment->inServer()){
             $retour .= '   <script type="text/javascript">'.LF;
             $retour .= '      <!--'.LF;
