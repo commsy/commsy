@@ -146,6 +146,18 @@
                 <source>contact remove</source>
                 <target>Status AnsprechpartnerIn entfernen</target>
             </trans-unit>
+            <trans-unit id="is contact">
+                <source>is contact</source>
+                <target>AnsprechpartnerIn</target>
+            </trans-unit>
+            <trans-unit id="is applying">
+                <source>is applying</source>
+                <target>Die Kennung muss noch freigeschaltet werden</target>
+            </trans-unit>
+            <trans-unit id="is blocked">
+                <source>is blocked</source>
+                <target>Gesperrt</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

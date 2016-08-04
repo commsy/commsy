@@ -118,6 +118,46 @@
                 <source>emailHidden</source>
                 <target>hidden</target>
             </trans-unit>
+            <trans-unit id="delete">
+                <source>delete</source>
+                <target>Delete account/s</target>
+            </trans-unit>
+            <trans-unit id="block">
+                <source>block</source>
+                <target>Lock account/s</target>
+            </trans-unit>
+            <trans-unit id="confirm">
+                <source>confirm</source>
+                <target>Approve or unlock account/s</target>
+            </trans-unit>
+            <trans-unit id="status">
+                <source>status</source>
+                <target>Change status</target>
+            </trans-unit>
+            <trans-unit id="reading user">
+                <source>reading user</source>
+                <target>Read only user</target>
+            </trans-unit>
+            <trans-unit id="contact">
+                <source>contact</source>
+                <target>Change status: contact person</target>
+            </trans-unit>
+            <trans-unit id="contact remove">
+                <source>contact remove</source>
+                <target>Change status: contact person</target>
+            </trans-unit>
+            <trans-unit id="is contact">
+                <source>is contact</source>
+                <target>Contact person</target>
+            </trans-unit>
+            <trans-unit id="is applying">
+                <source>is applying</source>
+                <target>The account is queued for approval by the moderator/s</target>
+            </trans-unit>
+            <trans-unit id="is blocked">
+                <source>is blocked</source>
+                <target>Locked</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
