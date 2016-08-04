@@ -72,7 +72,7 @@ if ( !isset($translator) and isset($this->_translator) ) {
    # Wiki - Raum-Wiki
    #########################################
 
-   $context_item = $environment->getCurrentContextItem();
+   /* $context_item = $environment->getCurrentContextItem();
    if ( $context_item->withWikiFunctions() and !$context_item->isServer() ) {
       $link_item = new cs_link();
       $link_item->setTitle($translator->getMessage('WIKI_CONFIGURATION_LINK'));
@@ -83,7 +83,7 @@ if ( !isset($translator) and isset($this->_translator) ) {
       $link_item->setFunction('wiki');
       $link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
       $addon_link_list->add($link_item);
-   }
+   } */
 
    ############################################
    # Chat
