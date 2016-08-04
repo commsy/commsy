@@ -27,16 +27,16 @@
                         <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">{{ user.title }} {{user.fullname}}</a>
                         <div class="uk-align-right {% if not user.isUser %}cs-moderation-warning{% endif %} uk-text-muted">
                             {% if user.isContact %}
-                                <i class="uk-icon-edit"></i>
+                                <i class="uk-text-small uk-icon-edit"></i>
                             {% endif %}
                             {% if user.status == 0 %}
-                                <i class="uk-icon-ban uk-text-danger"></i>
+                                <i class="uk-text-small uk-icon-ban uk-text-danger"></i> <i class="uk-icon-user uk-text-danger"></i>
                             {% elseif user.status == 1 %}
-                                <i class="uk-icon-sign-in uk-text-danger"></i>
+                                <i class="uk-text-small uk-icon-sign-in uk-text-success"></i> <i class="uk-icon-user uk-text-success"></i>
                             {% elseif user.status == 2 %}
                                 <i class="uk-icon-user"></i>
                             {% elseif user.status == 3 %}
-                                <i class="uk-icon-wrench"></i> <i class="uk-icon-user"></i>
+                                <i class="uk-text-small uk-icon-wrench"></i> <i class="uk-icon-user"></i>
                             {% elseif user.status == 4 %}
                                 <i class="uk-icon-user-secret"></i>
                             {% endif %}
