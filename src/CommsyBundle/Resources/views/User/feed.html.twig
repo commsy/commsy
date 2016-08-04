@@ -8,9 +8,9 @@
             {% if allowedActions[user.itemId] is defined %}
                 {% set entryAllowedActions = allowedActions[user.itemId] %}
             {% endif %}
-            <article class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom {% if not user.isUser %}cs-moderation-warning{% endif %}" data-allowed-actions="{{ entryAllowedActions|json_encode() }}">
+            <article class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom" data-allowed-actions="{{ entryAllowedActions|json_encode() }}">
  
-                <div class="uk-panel-teaser cs-panel-teaser-user {% if not user.isUser %}cs-moderation-warning-title{% endif %}">
+                <div class="uk-panel-teaser cs-panel-teaser-user {% if not user.isUser %}cs-moderation-warning{% endif %}">
                     {{ macros.statusColor(readerList, user.itemId, 'grid') }}
  
                     <div class="items-checkbox uk-float-left uk-margin-right uk-hidden">
@@ -25,14 +25,14 @@
                    <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
                     <span class="uk-text-large uk-text-middle uk-text-truncate">
                         <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">{{ user.title }} {{user.fullname}}</a>
-                        <div class="uk-link uk-align-right">
+                        <div class="uk-link uk-align-right {% if not user.isUser %}cs-moderation-warning{% endif %}"">
                             {% if user.isContact %}
                                 <i class="uk-icon-edit"></i>
                             {% endif %}
                             {% if user.status == 0 %}
-                                <i class="uk-icon-minus"></i>
+                                <i class="uk-icon-ban"></i>
                             {% elseif user.status == 1 %}
-                                <i class="uk-icon-plus"></i>
+                                <i class="uk-icon-sign-in"></i>
                             {% elseif user.status == 2 %}
                                 <i class="uk-icon-user"></i>
                             {% elseif user.status == 3 %}
