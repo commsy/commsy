@@ -1566,40 +1566,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
    }
 
    function getInfoForHeaderAsHTML () {
-      $retour  = '';
-      $retour .= '         function disable_code() {'.LF;
-      $retour .= '            document.f.code.disabled = true;'.LF;
-      $retour .= '         }'.LF;
-      $retour .= '         function enable_code() {'.LF;
-      $retour .= '            document.f.code.disabled = false;'.LF;
-      $retour .= '         }'.LF;
-      if ( $this->_environment->inPortal() or ( $this->_environment->getCurrentModule() == CS_PROJECT_TYPE and isset($_GET['iid']) and $_GET['iid'] == 'NEW')){
-         $retour .= '      <!--'.LF;
-         $retour .= '   var template_array = new Array(); initToggleTemplate('.$this->_environment->getCurrentContextItem()->getItemID().');'.LF;
-         $retour .= '   template_array['.'-1'.'] = "'.$this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_SELECT_DESC').'"'.LF;
-         foreach($this->_javascript_array as $key => $value){
-            if ( empty($value) ) {
-               $retour .= '   template_array['.$key.'] = "<img id=\"toggle'.$this->_environment->getCurrentContextItem()->getItemID().'\" src=\"images\/more.gif\"\/>&nbsp;<span class=\"template_description\">'.$this->_translator->getMessage('COMMON_TEMPLATE_DESCRIPTION').'<\/span><div id=\"template_information_box\">'.$this->_translator->getMessage('COMMON_NO_DESCRIPTION').'<\/div>"'.LF;
-            } else {
-               if ( $key > 0 ) {
-                  $room_manager = $this->_environment->getRoomManager();
-                  $room_item = $room_manager->getItem($key);
-                  if ( !empty($room_item) ) {
-                     if ( $room_item->withHTMLTextArea() ) {
-                        $value = str_replace("\r\n",'',$value);
-                     } else {
-                        $value = str_replace("\r\n",BR,$value);
-                     }
-                  }
-               }
-               $value = str_replace('/','\/',$value);
-               $value = str_replace('"','\"',$value);
-               $retour .= '   template_array['.$key.'] = "<img id=\"toggle'.$this->_environment->getCurrentContextItem()->getItemID().'\" src=\"images\/more.gif\"\/>&nbsp;<span class=\"template_description\">'.$this->_translator->getMessage('COMMON_TEMPLATE_DESCRIPTION').'<\/span><div id=\"template_information_box\">'.$value.'<\/div>"'.LF;
-            }
-         }
-         $retour .= '      -->'.LF;
-      }
-      return $retour;
+        return '';
    }
 }
 ?>
