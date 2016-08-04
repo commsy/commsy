@@ -46,7 +46,8 @@ class UserService
     }
 
 
-    public function resetLimits(){
+    public function resetLimits()
+    {
         $this->userManager->resetLimits();
     }
 
@@ -71,7 +72,6 @@ class UserService
     public function setFilterConditions(Form $filterForm)
     {
         $formData = $filterForm->getData();
-
 
         // rubrics
         if ($formData['rubrics']) {
@@ -159,13 +159,8 @@ class UserService
         return $roomList->to_array();
     }
 
-    public function grantAccessToAllPendingApplications(){
-       //$requested_user_manager = $this->_environment->getUserManager();
-       //$requested_user_manager->setContextLimit($this->_environment->getCurrentContextID());
-       //$requested_user_manager->setRegisteredLimit();
-       //$requested_user_manager->select();
-       //$requested_user_list = $requested_user_manager->get();
-
+    public function grantAccessToAllPendingApplications()
+    {
        $this->userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
        $this->userManager->setRegisteredLimit();
        $this->userManager->select();

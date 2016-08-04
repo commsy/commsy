@@ -30,6 +30,13 @@ class UserController extends Controller
      */
     public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
+        // extract current filter from parameter bag (embedded controller call)
+        // or from query paramters (AJAX)
+        $userFilter = $request->get('userFilter');
+        if (!$userFilter) {
+            $userFilter = $request->query->get('user_filter');
+        }
+
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();
@@ -39,55 +46,54 @@ class UserController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true,
-        );
-        $filterForm = $this->createForm(UserFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_user_list', array(
-                'roomId' => $roomId,
-            )),
-            'hasHashtags' => false,
-            'hasCategories' => false,
-        ));
-
         // get the user manager service
         $userService = $this->get('commsy_legacy.user_service');
 
-        $userService->resetLimits();
-        // apply filter
-        $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($userFilter) {
+            // setup filter form
+            $defaultFilterValues = [
+                'activated' => true,
+            ];
+            $filterForm = $this->createForm(UserFilterType::class, $defaultFilterValues, [
+                'action' => $this->generateUrl('commsy_user_list', [
+                    'roomId' => $roomId,
+                ]),
+                'hasHashtags' => false,
+                'hasCategories' => false,
+            ]);
+
+            // manually bind values from the request
+            $filterForm->submit($userFilter);
+
             // set filter conditions in user manager
             $userService->setFilterConditions($filterForm);
         }
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
-        $current_user = $legacyEnvironment->getCurrentUserItem();
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
 
         // get user list from manager service 
-        $users = $userService->getListUsers($roomId, $max, $start, $current_user->isModerator());
+        $users = $userService->getListUsers($roomId, $max, $start, $currentUser->isModerator());
         $readerService = $this->get('commsy_legacy.reader_service');
 
-        $readerList = array();
-        $allowedActions = array();
+        $readerList = [];
+        $allowedActions = [];
         foreach ($users as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete');
+                $allowedActions[$item->getItemID()] = ['markread', 'copy', 'save', 'delete'];
             } else {
-                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save');
+                $allowedActions[$item->getItemID()] = ['markread', 'copy', 'save'];
             }
         }
 
-        return array(
+        return [
             'roomId' => $roomId,
             'users' => $users,
             'readerList' => $readerList,
             'showRating' => false,
             'allowedActions' => $allowedActions,
-       );
+        ];
     }
     
     /**
@@ -106,48 +112,17 @@ class UserController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-
-
-       // get the user manager service
-        $userService = $this->get('commsy_legacy.user_service');
-        $defaultFilterValues = array(
-            'activated' => true,
-        );
-        $filterForm = $this->createForm(UserFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_user_list', array(
-                'roomId' => $roomId,
-            )),
-            'hasHashtags' => false,
-            'hasCategories' => false,
-        ));
-
-        // apply filter
-        $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
-            // set filter conditions in user manager
-            $userService->setFilterConditions($filterForm);
-        }
-
-        // get user list from manager service 
-        $itemsCountArray = $userService->getCountArray($roomId, $current_user->isModerator());
-
-
-
-
         // setup filter form
-        $defaultFilterValues = array(
+        $defaultFilterValues = [
             'activated' => true,
-        );
-        $filterForm = $this->createForm(UserFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_user_list', array(
+        ];
+        $filterForm = $this->createForm(UserFilterType::class, $defaultFilterValues, [
+            'action' => $this->generateUrl('commsy_user_list', [
                 'roomId' => $roomId,
-            )),
+            ]),
             'hasHashtags' => false,
             'hasCategories' => false,
-        ));
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
+        ]);
 
         // get the user manager service
         $userService = $this->get('commsy_legacy.user_service');
@@ -159,7 +134,10 @@ class UserController extends Controller
             $userService->setFilterConditions($filterForm);
         }
 
-        return array(
+        // get filtered and total number of results
+        $itemsCountArray = $userService->getCountArray($roomId, $current_user->isModerator());
+
+        return [
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
             'module' => 'user',
@@ -167,7 +145,7 @@ class UserController extends Controller
             'showRating' => false,
             'showHashTags' => false,
             'showCategories' => false,
-        );
+        ];
     }
 
     /**
