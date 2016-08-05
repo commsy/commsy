@@ -32,6 +32,13 @@ class MaterialController extends Controller
      */
     public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
+        // extract current filter from parameter bag (embedded controller call)
+        // or from query paramters (AJAX)
+        $materialFilter = $request->get('materialFilter');
+        if (!$materialFilter) {
+            $materialFilter = $request->query->get('material_filter');
+        }
+        
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();
@@ -41,24 +48,25 @@ class MaterialController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true,
-        );
-        $filterForm = $this->createForm(MaterialFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_material_list', array(
-                'roomId' => $roomId,
-            )),
-            'hasHashtags' => $roomItem->withBuzzwords(),
-            'hasCategories' => $roomItem->withTags(),
-        ));
-
         // get the material manager service
         $materialService = $this->get('commsy_legacy.material_service');
 
-        // apply filter
-        $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($materialFilter) {
+            // setup filter form
+            $defaultFilterValues = array(
+                'activated' => true,
+            );
+            $filterForm = $this->createForm(MaterialFilterType::class, $defaultFilterValues, array(
+                'action' => $this->generateUrl('commsy_material_list', array(
+                    'roomId' => $roomId,
+                )),
+                'hasHashtags' => $roomItem->withBuzzwords(),
+                'hasCategories' => $roomItem->withTags(),
+            ));
+
+            // manually bind values from the request
+            $filterForm->submit($materialFilter);
+        
             // set filter conditions in material manager
             $materialService->setFilterConditions($filterForm);
         }
