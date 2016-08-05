@@ -56,7 +56,7 @@ class AnnotationController extends Controller
         // get annotation list from manager service 
         $annotations = $annotationService->getListAnnotations($roomId, $linkedItemId, $max, $start);
 
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();
         foreach ($annotations as $item) {

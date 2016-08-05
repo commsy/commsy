@@ -142,10 +142,10 @@ class LinkController extends Controller
      */
     public function showDetailPrintAction($roomId, $itemId)
     {
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
-        $labelService = $this->get('commsy.label_service');
+        $labelService = $this->get('commsy_legacy.label_service');
         
         $linkedItems = array();
         if ($item->getItemType() == 'label') {
@@ -182,7 +182,7 @@ class LinkController extends Controller
             $linkedFullItemsSortedByRubric[$linkedFullItem->getItemType()][] = $linkedFullItem;
         }
 
-        $roomService = $this->get('commsy.room_service');
+        $roomService = $this->get('commsy_legacy.room_service');
         $rubrics = $roomService->getRubricInformation($roomId);
 
         $returnArray = array();
