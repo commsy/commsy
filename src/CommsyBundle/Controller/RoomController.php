@@ -119,19 +119,15 @@ class RoomController extends Controller
         }
 
         // home information text
-        $homeInformationText = '';
+        $homeInformationEntry = null;
         if ($roomItem->withInformationBox()) {
             $entryId = $roomItem->getInformationBoxEntryID();
             $itemService = $this->get('commsy_legacy.item_service');
-            $entry = $itemService->getTypedItem($entryId);
-
-            if ($entry) {
-                $homeInformationText = $entry->getDescription();
-            }
+            $homeInformationEntry = $itemService->getTypedItem($entryId);
         }
 
         return [
-            'homeInformationText' => $homeInformationText,
+            'homeInformationEntry' => $homeInformationEntry,
             'form' => $filterForm->createView(),
             'roomItem' => $roomItem,
             'timeSpread' => $timeSpread,
