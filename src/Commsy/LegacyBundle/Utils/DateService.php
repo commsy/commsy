@@ -72,6 +72,26 @@ class DateService
                 $this->dateManager->setInstitutionLimit($relatedLabel->getItemId());
             }
         }
+        
+        // hashtag
+        if (isset($formData['hashtag'])) {
+            if (isset($formData['hashtag']['hashtag'])) {
+                $hashtag = $formData['hashtag']['hashtag'];
+                $itemId = $hashtag->getItemId();
+                $this->dateManager->setBuzzwordLimit($itemId);
+            }
+        }
+
+        // category
+        if (isset($formData['category'])) {
+            if (isset($formData['category']['category'])) {
+                $categories = $formData['category']['category'];
+
+                if (!empty($categories)) {
+                    $this->dateManager->setTagArrayLimit($categories);
+                }
+            }
+        }
     }
     
     public function getDate($itemId)

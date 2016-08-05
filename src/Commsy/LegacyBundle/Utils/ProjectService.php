@@ -74,6 +74,26 @@ class ProjectService
                 $this->projectManager->setInstitutionLimit($relatedLabel->getItemId());
             }
         }
+        
+        // hashtag
+        if (isset($formData['hashtag'])) {
+            if (isset($formData['hashtag']['hashtag'])) {
+                $hashtag = $formData['hashtag']['hashtag'];
+                $itemId = $hashtag->getItemId();
+                $this->projectManager->setBuzzwordLimit($itemId);
+            }
+        }
+
+        // category
+        if (isset($formData['category'])) {
+            if (isset($formData['category']['category'])) {
+                $categories = $formData['category']['category'];
+
+                if (!empty($categories)) {
+                    $this->projectManager->setTagArrayLimit($categories);
+                }
+            }
+        }
     }
     
     public function getProject($itemId)
