@@ -60,7 +60,7 @@ class TodoService
 
         // activated
         if (!$formData['activated']) {
-            $this->materialManager->showNotActivatedEntries();
+            $this->todoManager->showNotActivatedEntries();
         }
 
         // rubrics
@@ -68,19 +68,19 @@ class TodoService
             // group
             if (isset($formData['rubrics']['group'])) {
                 $relatedLabel = $formData['rubrics']['group'];
-                $this->materialManager->setGroupLimit($relatedLabel->getItemId());
+                $this->todoManager->setGroupLimit($relatedLabel->getItemId());
             }
             
             // topic
             if (isset($formData['rubrics']['topic'])) {
                 $relatedLabel = $formData['rubrics']['topic'];
-                $this->materialManager->setTopicLimit($relatedLabel->getItemId());
+                $this->todoManager->setTopicLimit($relatedLabel->getItemId());
             }
             
             // institution
             if (isset($formData['rubrics']['institution'])) {
                 $relatedLabel = $formData['rubrics']['institution'];
-                $this->materialManager->setInstitutionLimit($relatedLabel->getItemId());
+                $this->todoManager->setInstitutionLimit($relatedLabel->getItemId());
             }
         }
 
@@ -89,7 +89,7 @@ class TodoService
             if (isset($formData['hashtag']['hashtag'])) {
                 $hashtag = $formData['hashtag']['hashtag'];
                 $itemId = $hashtag->getItemId();
-                $this->materialManager->setBuzzwordLimit($itemId);
+                $this->todoManager->setBuzzwordLimit($itemId);
             }
         }
 
@@ -99,7 +99,7 @@ class TodoService
                 $categories = $formData['category']['category'];
 
                 if (!empty($categories)) {
-                    $this->materialManager->setTagArrayLimit($categories);
+                    $this->todoManager->setTagArrayLimit($categories);
                 }
             }
         }
