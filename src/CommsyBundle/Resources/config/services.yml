@@ -79,6 +79,12 @@ services:
         tags:
             - { name: knp_menu.menu, alias: roomlist }
 
+    commsy.menu.voter.request:
+        class: CommsyBundle\Menu\Voter\CommsyVoter
+        arguments: ['@request_stack']
+        tags:
+            - { name: knp_menu.voter }
+
     # Voter
     commsy.security.category_voter:
         class: CommsyBundle\Security\Authorization\Voter\CategoryVoter
