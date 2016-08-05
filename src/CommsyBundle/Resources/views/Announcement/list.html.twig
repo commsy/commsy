@@ -4,8 +4,10 @@
 {% block feed %}
     <ul id="announcements-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
-            'CommsyBundle:Announcement:feed',
-            { 'roomId': roomId }
+            'CommsyBundle:Announcement:feed', {
+                'roomId': roomId,
+                'announcementFilter': app.request.query.get('announcement_filter')
+            }
         ))}}
     </ul>
 

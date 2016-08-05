@@ -31,6 +31,13 @@ class AnnouncementController extends Controller
      */
     public function feedAction($roomId, $max = 10, $start = 0,  $sort = 'date', Request $request)
     {
+        // extract current filter from parameter bag (embedded controller call)
+        // or from query paramters (AJAX)
+        $announcementFilter = $request->get('announcementFilter');
+        if (!$announcementFilter) {
+            $announcementFilter = $request->query->get('announcement_filter');
+        }
+        
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();
@@ -40,29 +47,27 @@ class AnnouncementController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true,
-            'active' => true,
-        );
-        $filterForm = $this->createForm(AnnouncementFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_announcement_list', array(
-                'roomId' => $roomId,
-            )),
-            'hasHashtags' => $roomItem->withBuzzwords(),
-            'hasCategories' => $roomItem->withTags(),
-        ));
-
         // get the announcement manager service
         $announcementService = $this->get('commsy_legacy.announcement_service');
 
-        // apply filter
-        $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
-            // set filter conditions in announcement manager
+        if ($announcementFilter) {
+            // setup filter form
+            $defaultFilterValues = array(
+                'activated' => true,
+            );
+            $filterForm = $this->createForm(AnnouncementFilterType::class, $defaultFilterValues, array(
+                'action' => $this->generateUrl('commsy_announcement_list', array(
+                    'roomId' => $roomId,
+                )),
+                'hasHashtags' => $roomItem->withBuzzwords(),
+                'hasCategories' => $roomItem->withTags(),
+            ));
+    
+            // manually bind values from the request
+            $filterForm->submit($announcementFilter);
+    
+            // apply filter
             $announcementService->setFilterConditions($filterForm);
-        }else{
-            $announcementService->setDateLimit();
         }
 
         // get announcement list from manager service 
@@ -121,7 +126,6 @@ class AnnouncementController extends Controller
         // setup filter form
         $defaultFilterValues = array(
             'activated' => true,
-            'active' => true,
         );
         $filterForm = $this->createForm(AnnouncementFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_announcement_list', array(
@@ -191,13 +195,8 @@ class AnnouncementController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-
-
-       // get the announcement manager service
-        $announcementService = $this->get('commsy_legacy.announcement_service');
         $defaultFilterValues = array(
             'activated' => true,
-            'active' =>true,
         );
         $filterForm = $this->createForm(AnnouncementFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_announcement_list', array(
@@ -207,19 +206,18 @@ class AnnouncementController extends Controller
             'hasCategories' => $roomItem->withTags(),
         ));
 
+        // get the announcement manager service
+        $announcementService = $this->get('commsy_legacy.announcement_service');
+
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isValid()) {
             // set filter conditions in announcement manager
             $announcementService->setFilterConditions($filterForm);
-        }else{
-            $announcementService->setDateLimit();
         }
 
         // get announcement list from manager service 
         $itemsCountArray = $announcementService->getCountArray($roomId);
-
-
 
         return array(
             'roomId' => $roomId,
@@ -249,7 +247,6 @@ class AnnouncementController extends Controller
         // setup filter form
         $defaultFilterValues = array(
             'activated' => true,
-            'active' => true,
         );
         $filterForm = $this->createForm(AnnouncementFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_announcement_list', array(
