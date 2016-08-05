@@ -615,10 +615,14 @@ class AnnouncementController extends Controller
         // create new announcement item
         $announcementItem = $announcementService->getNewAnnouncement();
         $announcementItem->setTitle('['.$translator->trans('insert title').']');
+        $dateTime = new \DateTime('now');
+        $announcementItem->setFirstDateTime($dateTime->format('Y-m-d H:i:s'));
+        $dateTime->add(new \DateInterval('P1W'));
+        $announcementItem->setSecondDateTime($dateTime->format('Y-m-d H:i:s'));
         $announcementItem->setDraftStatus(1);
         $announcementItem->save();
 
- 
+
         return $this->redirectToRoute('commsy_announcement_detail', array('roomId' => $roomId, 'itemId' => $announcementItem->getItemId()));
 
     }
