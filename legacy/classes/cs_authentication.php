@@ -977,160 +977,185 @@ class cs_authentication {
    	 return $item_manager->getExternalViewerForItem($iid,$uid);
    }
 
-   function check ($uid, $auth_source) {
-      $value = false;
-      $context_user = NULL;
-      $portal_user = NULL;
-      $context = $this->_environment->getCurrentContextItem();
+    function check ($uid, $auth_source) {
+        $value = false;
+        $context_user = NULL;
+        $portal_user = NULL;
+        $context = $this->_environment->getCurrentContextItem();
 
-      if (!$this->_environment->inServer() and $uid != 'root') {
-         $portal_user = $this->_getPortalUserItem($uid,$auth_source);
-         if ( isset($portal_user) and $portal_user->isUser() ) {
-             $context_user = $this->_getContextUserItem($uid,$auth_source);
-            if (isset($context_user)) {
-               $this->_environment->setCurrentUserItem($context_user);
-               $value = $this->_isUserAllowedHere($context_user);
+        if (!$this->_environment->inServer() && $uid != 'root') {
+            $portal_user = $this->_getPortalUserItem($uid,$auth_source);
 
-               if (!$value) {
-                  $translator = $this->_environment->getTranslationObject();
-                  if ($context_user->isRejected()) {
-                     $this->_error_array[] = $translator->getMessage('ROOM_JOIN_ERROR_IS_DENIED',$context->getTitle(),$context->getTitle());
-                  } elseif ($context_user->isRequested()) {
-                     $this->_error_array[] = $translator->getMessage('ROOM_JOIN_ERROR_HAS_REQUESTED',$context->getTitle(),$context->getTitle());
-                  } else {
-                     $this->_error_array[] = $translator->getMessage('LOGIN_NOT_ALLOWED');
-                  }
-               }
-            } elseif(isset($_GET['iid']) and ($this->_environment->getCurrentFunction() == 'detail') and $this->_isExternalUserAllowedToSee($uid, $_GET['iid'])){
-               $value = true;
-            }elseif(($this->_environment->getCurrentModule() == 'material') and ($this->_environment->getCurrentFunction() == 'getfile') and isset($_GET['iid']))
-            {
-               $current_user_item = $this->_environment->getCurrentUserItem();
-               $manager = $this->_environment->getLinkItemFileManager();
-               $manager->setFileIDLimit($_GET['iid']);
-               $manager->select();
-               $list = $manager->get();
-               if ( isset($list) and  $list->isNotEmpty() ) {
-                  $item = $list->getFirst();
-                  $item_manager = $this->_environment->getItemManager();
-                  $item_item = $item_manager->getItem($item->getLinkedItemID());
-				  $item_type = $item_item->getItemType();
-				  if ($item_type == 'section'){
-				  	  $section_manager = $this->_environment->getSectionManager();
-				  	  $section_item = $section_manager->getItem($item_item->getItemID());
-				  	  $material_item = $section_item->getLinkedItem();
-                      $value = $this->_isExternalUserAllowedToSee($uid,$material_item->getItemID()) || $material_item->mayPortfolioSee($portal_user->getRelatedPrivateRoomUserItem());
-                      
-                      if (!$value) {
-                      	// check if this is a community room and materials are open for guests
-                      	$currentContextItem = $this->_environment->getCurrentContextItem();
-                      	$value = $currentContextItem->isOpenForGuests() && $currentContextItem->isMaterialOpenForGuests();
-                      }
-				  }
-				  elseif ($item_type == 'material')
-				  {
-                  	$value = $this->_isExternalUserAllowedToSee($uid,$item_item->getItemID()) || $item_item->mayPortfolioSee($portal_user->getRelatedPrivateRoomUserItem());
-                  	
-                  	if (!$value) {
-                  		// check if this is a community room and materials are open for guests
-                  		$currentContextItem = $this->_environment->getCurrentContextItem();
-                  		$value = $currentContextItem->isOpenForGuests() && $currentContextItem->isMaterialOpenForGuests();
-                  	}
-				  }
-				  elseif ($item_type == 'discarticle')
-				  {
-				  	  $discarticle_manager = $this->_environment->getDiscussionArticleManager();
-				  	  $discarticle_item = $discarticle_manager->getItem($item_item->getItemID());
-				  	  $discussion_item = $discarticle_item->getLinkedItem();
-                      $value = $this->_isExternalUserAllowedToSee($uid,$discussion_item->getItemID()) || $discussion_item->mayPortfolioSee($portal_user->getRelatedPrivateRoomUserItem());
-				  }
-				  elseif ($item_type == 'step')
-				  {
-				  	  $step_manager = $this->_environment->getStepManager();
-				  	  $step_item = $step_manager->getItem($item_item->getItemID());
-				  	  $step_item = $step_item->getLinkedItem();
-                      $value = $this->_isExternalUserAllowedToSee($uid,$step_item->getItemID()) || $step_item->mayPortfolioSee($portal_user->getRelatedPrivateRoomUserItem());
-				  }
-               }
-             }elseif($this->_environment->getCurrentModule() == 'annotation') {
-            	 $value = false;
-            	 if (($this->_environment->getCurrentFunction() == 'edit') and isset($_GET['ref_iid']) and $this->_isExternalUserAllowedToSee($uid, $_GET['ref_iid'])){
-            	    $value = true;
-            	 }elseif(($this->_environment->getCurrentModule() == 'annotation') and ($this->_environment->getCurrentFunction() == 'edit') and isset($_GET['iid'])){
-                    $annotation_manager = $this->_environment->getAnnotationManager();
-                    $annotation_item = $annotation_manager->getItem($_GET['iid']);
-                    $linked_item = $annotation_item->getLinkedItem();
-                    if ($this->_isExternalUserAllowedToSee($uid, $linked_item->getItemID())){
-                       $value = true;
+            if (isset($portal_user) && $portal_user->isUser()) {
+                $context_user = $this->_getContextUserItem($uid,$auth_source);
+
+                if (isset($context_user)) {
+                    $this->_environment->setCurrentUserItem($context_user);
+                    $value = $this->_isUserAllowedHere($context_user);
+
+                    if (!$value) {
+                        $translator = $this->_environment->getTranslationObject();
+
+                        if ($context_user->isRejected()) {
+                            $this->_error_array[] = $translator->getMessage('ROOM_JOIN_ERROR_IS_DENIED',$context->getTitle(),$context->getTitle());
+                        } elseif ($context_user->isRequested()) {
+                            $this->_error_array[] = $translator->getMessage('ROOM_JOIN_ERROR_HAS_REQUESTED',$context->getTitle(),$context->getTitle());
+                        } else {
+                            $this->_error_array[] = $translator->getMessage('LOGIN_NOT_ALLOWED');
+                        }
                     }
-            	 }elseif(($this->_environment->getCurrentModule() == 'annotation') and ($this->_environment->getCurrentFunction() == 'edit') and isset($_POST['iid'])){
-                    $annotation_manager = $this->_environment->getAnnotationManager();
-                    $annotation_item = $annotation_manager->getItem($_POST['iid']);
-                    $linked_item = $annotation_item->getLinkedItem();
-                    if ($this->_isExternalUserAllowedToSee($uid, $linked_item->getItemID())){
-                       $value = true;
+                } elseif (
+                    isset($_GET['iid']) &&
+                    ($this->_environment->getCurrentFunction() == 'detail') &&
+                    $this->_isExternalUserAllowedToSee($uid, $_GET['iid'])
+                ) {
+                    $value = true;
+                } elseif (
+                    ($this->_environment->getCurrentModule() == 'material') &&
+                    ($this->_environment->getCurrentFunction() == 'getfile') &&
+                    isset($_GET['iid'])
+                ) {
+                    $current_user_item = $this->_environment->getCurrentUserItem();
+                    $manager = $this->_environment->getLinkItemFileManager();
+                    $manager->setFileIDLimit($_GET['iid']);
+                    $manager->select();
+                    $list = $manager->get();
+
+                    if (isset($list) && $list->isNotEmpty()) {
+                        $item = $list->getFirst();
+                        $item_manager = $this->_environment->getItemManager();
+                        $item_item = $item_manager->getItem($item->getLinkedItemID());
+                        $item_type = $item_item->getItemType();
+
+                        if ($item_type == 'section') {
+                            $section_manager = $this->_environment->getSectionManager();
+                            $section_item = $section_manager->getItem($item_item->getItemID());
+                            $material_item = $section_item->getLinkedItem();
+                            $value = $this->_isExternalUserAllowedToSee($uid,$material_item->getItemID()) || $material_item->mayPortfolioSee($portal_user->getRelatedPrivateRoomUserItem());
+
+                            if (!$value) {
+                                // check if this is a community room and materials are open for guests
+                                $currentContextItem = $this->_environment->getCurrentContextItem();
+                                $value = $currentContextItem->isOpenForGuests() && $currentContextItem->isMaterialOpenForGuests();
+                            }
+                        } elseif ($item_type == 'material') {
+                            $value = $this->_isExternalUserAllowedToSee($uid,$item_item->getItemID()) || $item_item->mayPortfolioSee($portal_user->getRelatedPrivateRoomUserItem());
+
+                            if (!$value) {
+                                // check if this is a community room and materials are open for guests
+                                $currentContextItem = $this->_environment->getCurrentContextItem();
+                                $value = $currentContextItem->isOpenForGuests() && $currentContextItem->isMaterialOpenForGuests();
+                            }
+                        } elseif ($item_type == 'discarticle') {
+                            $discarticle_manager = $this->_environment->getDiscussionArticleManager();
+                            $discarticle_item = $discarticle_manager->getItem($item_item->getItemID());
+                            $discussion_item = $discarticle_item->getLinkedItem();
+                            $value = $this->_isExternalUserAllowedToSee($uid,$discussion_item->getItemID()) || $discussion_item->mayPortfolioSee($portal_user->getRelatedPrivateRoomUserItem());
+                        } elseif ($item_type == 'step') {
+                            $step_manager = $this->_environment->getStepManager();
+                            $step_item = $step_manager->getItem($item_item->getItemID());
+                            $step_item = $step_item->getLinkedItem();
+                            $value = $this->_isExternalUserAllowedToSee($uid,$step_item->getItemID()) || $step_item->mayPortfolioSee($portal_user->getRelatedPrivateRoomUserItem());
+                        }
                     }
-            	 }
-               $value = true;
-            }elseif ($context->isOpenForGuests() OR $this->_module_limit == 'agb') {
-               $value = true;
-            }else {
-               $context = $this->_environment->getCurrentContextItem();
-               $portal = $this->_environment->getCurrentPortalItem();
-               $translator = $this->_environment->getTranslationObject();
-               if ( !$context->isClosed() ) {
-                  $params = array();
-                  $params['cs_modus'] = 'become_member';
-                  $link_to_register = ahref_curl($this->_environment->getCurrentContextID(), 'home', 'index',$params,$this->_translator->getMessage('COMMON_REGISTER_HERE'));
-                  unset($params);
-                  if ( $context->isProjectRoom() ) {
-                     $this->_error_array[] = $translator->getMessage('ROOMS_ACCESS_NOT_GRANTED',$context->getTitle(),$link_to_register);
-                  } elseif ($context->isCommunityRoom()) {
-                     $this->_error_array[] = $translator->getMessage('COMMUNITY_ACCESS_NOT_GRANTED',$context->getTitle(),$link_to_register);
-                  } elseif ($context->isGroupRoom()) {
-                     $this->_error_array[] = $translator->getMessage('GROUPROOM_ACCESS_NOT_GRANTED',$context->getTitle());
-                  }
-               } else {
-                  $this->_error_array[] = $translator->getMessage('ROOM_IS_CLOSED',$context->getTitle()).' '.$this->_translator->getMessage('ROOM_IS_CLOSED_APPLY_FOR_MEMBERSHIP');
-               }
+                } elseif ($this->_environment->getCurrentModule() == 'annotation') {
+                    $value = false;
+
+                    if (
+                        ($this->_environment->getCurrentFunction() == 'edit') &&
+                        isset($_GET['ref_iid']) &&
+                        $this->_isExternalUserAllowedToSee($uid, $_GET['ref_iid'])
+                    ) {
+                        $value = true;
+                    } elseif (
+                        ($this->_environment->getCurrentModule() == 'annotation') &&
+                        ($this->_environment->getCurrentFunction() == 'edit')
+                        && isset($_GET['iid'])
+                    ) {
+                        $annotation_manager = $this->_environment->getAnnotationManager();
+                        $annotation_item = $annotation_manager->getItem($_GET['iid']);
+                        $linked_item = $annotation_item->getLinkedItem();
+
+                        if ($this->_isExternalUserAllowedToSee($uid, $linked_item->getItemID())) {
+                            $value = true;
+                        }
+                    } elseif (
+                        ($this->_environment->getCurrentModule() == 'annotation') &&
+                        ($this->_environment->getCurrentFunction() == 'edit') &&
+                        isset($_POST['iid'])
+                    ) {
+                        $annotation_manager = $this->_environment->getAnnotationManager();
+                        $annotation_item = $annotation_manager->getItem($_POST['iid']);
+                        $linked_item = $annotation_item->getLinkedItem();
+
+                        if ($this->_isExternalUserAllowedToSee($uid, $linked_item->getItemID())) {
+                            $value = true;
+                        }
+                    }
+
+                    $value = true;
+                } elseif ($context->isOpenForGuests() || $this->_module_limit == 'agb') {
+                    $value = true;
+                } else {
+                    $context = $this->_environment->getCurrentContextItem();
+                    $portal = $this->_environment->getCurrentPortalItem();
+                    $translator = $this->_environment->getTranslationObject();
+
+                    if ( !$context->isClosed() ) {
+                        $params = array();
+                        $params['cs_modus'] = 'become_member';
+                        $link_to_register = ahref_curl($this->_environment->getCurrentContextID(), 'home', 'index',$params,$this->_translator->getMessage('COMMON_REGISTER_HERE'));
+                        unset($params);
+
+                        if ($context->isProjectRoom()) {
+                            $this->_error_array[] = $translator->getMessage('ROOMS_ACCESS_NOT_GRANTED',$context->getTitle(),$link_to_register);
+                        } elseif ($context->isCommunityRoom()) {
+                            $this->_error_array[] = $translator->getMessage('COMMUNITY_ACCESS_NOT_GRANTED',$context->getTitle(),$link_to_register);
+                        } elseif ($context->isGroupRoom()) {
+                            $this->_error_array[] = $translator->getMessage('GROUPROOM_ACCESS_NOT_GRANTED',$context->getTitle());
+                        }
+                    } else {
+                        $this->_error_array[] = $translator->getMessage('ROOM_IS_CLOSED',$context->getTitle()).' '.$this->_translator->getMessage('ROOM_IS_CLOSED_APPLY_FOR_MEMBERSHIP');
+                    }
+                }
+            } else {
+                $value = $this->_isUserAllowedHere($portal_user);
+                $this->_environment->setCurrentUserItem($portal_user);
+
+                if (!$value) {
+                    $translator = $this->_environment->getTranslationObject();
+                    $this->_error_array[] = $translator->getMessage('LOGIN_NOT_ALLOWED');
+                }
             }
-         } else {
-
-            $value = $this->_isUserAllowedHere($portal_user);
-            $this->_environment->setCurrentUserItem($portal_user);
-            if (!$value) {
-               $translator = $this->_environment->getTranslationObject();
-               $this->_error_array[] = $translator->getMessage('LOGIN_NOT_ALLOWED');
+        } else { // server or uid == root
+            if ($uid == 'root') {
+                $userManager = $this->_environment->getUserManager();
+                $context_user = $userManager->getRootUser();
+                $this->_environment->setCurrentUserItem($context_user);
+            } else {
+                $portal_user = $this->_getPortalUserItem($uid,$auth_source); // for create guest user
             }
-         }
-      } else { // server or uid == root
-         if ($uid == 'root') {
-            $user_manager = $this->_environment->getUserManager();
-            $context_user = $user_manager->getRootUser();
-         } else {
-            $portal_user = $this->_getPortalUserItem($uid,$auth_source); // for create guest user
-         }
-         $value = true;
-      }
 
-      if (isset($context_user)) {
-         $this->_user_item = $context_user;
-      } elseif (isset($portal_user)) {
-         $this->_user_item = $portal_user;
-         $this->_user_item->setStatus(0);
-      } else {
-         $this->_user_item = NULL;
-      }
+            $value = true;
+        }
 
-      if ($this->_module_limit == 'help') { //help
-         $value = true;
-      } elseif ( $this->_module_limit == 'picture'
-                 and $this->_function_limit == 'getfile') { // get picture
-         $value = true;
-      }
-      
-      return $value;
-   }
+        if (isset($context_user)) {
+            $this->_user_item = $context_user;
+        } elseif (isset($portal_user)) {
+            $this->_user_item = $portal_user;
+            $this->_user_item->setStatus(0);
+        } else {
+            $this->_user_item = NULL;
+        }
+
+        if ($this->_module_limit == 'help') { //help
+            $value = true;
+        } elseif ( $this->_module_limit == 'picture' && $this->_function_limit == 'getfile') { // get picture
+            $value = true;
+        }
+
+        return $value;
+    }
    
    private function _mergeAccountSingleRoom ($account_new,$auth_source_new,$account_old,$auth_source_old,$room,$user_new) {
    	$room_user = $room->getUserByUserID($account_old,$auth_source_old);

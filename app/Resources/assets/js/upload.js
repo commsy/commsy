@@ -27,7 +27,7 @@
         init: function() {
             let $this = this;
 
-            let $progressbar = $($this.element).siblings('.uk-progress').first();
+            let $progressbar = $($this.element).parentsUntil('.uk-placeholder').parent().siblings('.uk-progress').first();
             let $bar = $progressbar.find('.uk-progress-bar');
 
             let elementSettings = {

@@ -3,8 +3,10 @@
 {% block feed %}
     <ul id="materials-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
-            'CommsyBundle:Material:feed',
-            { 'roomId': roomId }
+            'CommsyBundle:Material:feed', {
+                'roomId': roomId,
+                'materialFilter': app.request.query.get('material_filter')
+            }
         ))}}
     </ul>
 

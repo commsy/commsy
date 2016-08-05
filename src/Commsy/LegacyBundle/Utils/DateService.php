@@ -72,6 +72,26 @@ class DateService
                 $this->dateManager->setInstitutionLimit($relatedLabel->getItemId());
             }
         }
+        
+        // hashtag
+        if (isset($formData['hashtag'])) {
+            if (isset($formData['hashtag']['hashtag'])) {
+                $hashtag = $formData['hashtag']['hashtag'];
+                $itemId = $hashtag->getItemId();
+                $this->dateManager->setBuzzwordLimit($itemId);
+            }
+        }
+
+        // category
+        if (isset($formData['category'])) {
+            if (isset($formData['category']['category'])) {
+                $categories = $formData['category']['category'];
+
+                if (!empty($categories)) {
+                    $this->dateManager->setTagArrayLimit($categories);
+                }
+            }
+        }
     }
     
     public function getDate($itemId)
@@ -81,7 +101,6 @@ class DateService
     
     public function getCalendarEvents($roomId, $start, $end)
     {
-        $this->dateManager->reset();
         $this->dateManager->setContextLimit($roomId);
         $this->dateManager->setWithoutDateModeLimit();
         $this->dateManager->setBetweenLimit($start, $end);
@@ -98,7 +117,6 @@ class DateService
     
     public function getCountArray($roomId)
     {
-        $this->dateManager->reset();
         $this->dateManager->setContextLimit($roomId);
         $this->dateManager->setWithoutDateModeLimit();
         $this->dateManager->select();

@@ -46,7 +46,8 @@ class UserService
     }
 
 
-    public function resetLimits(){
+    public function resetLimits()
+    {
         $this->userManager->resetLimits();
     }
 
@@ -72,7 +73,6 @@ class UserService
     {
         $formData = $filterForm->getData();
 
-
         // rubrics
         if ($formData['rubrics']) {
             // group
@@ -93,6 +93,7 @@ class UserService
                 $this->userManager->setInstitutionLimit($relatedLabel->getItemId());
             }
         }
+        
         // hashtag
         if (isset($formData['hashtag'])) {
             if (isset($formData['hashtag']['hashtag'])) {
@@ -112,13 +113,21 @@ class UserService
                 }
             }
         }
+        
+        // status
+        if (isset($formData['user_status'])) {
+            if ($formData['user_status'] != 'is contact') {
+                $this->userManager->setStatusLimit($formData['user_status']);
+            } else {
+                $this->userManager->setContactModeratorLimit();
+            }
+        }
     }
 
 
 
     public function getUser($userId)
     {
-        
         $user = $this->userManager->getItem($userId);
         return $user;
     }
@@ -159,13 +168,8 @@ class UserService
         return $roomList->to_array();
     }
 
-    public function grantAccessToAllPendingApplications(){
-       //$requested_user_manager = $this->_environment->getUserManager();
-       //$requested_user_manager->setContextLimit($this->_environment->getCurrentContextID());
-       //$requested_user_manager->setRegisteredLimit();
-       //$requested_user_manager->select();
-       //$requested_user_list = $requested_user_manager->get();
-
+    public function grantAccessToAllPendingApplications()
+    {
        $this->userManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
        $this->userManager->setRegisteredLimit();
        $this->userManager->select();
@@ -225,5 +229,13 @@ class UserService
         $searchableRoomList->addList($groupRoomList);
 
         return $searchableRoomList->to_array();
+    }
+    
+    public function getModeratorsForContext ($contextId) {
+        $this->userManager->setContextLimit($contextId);
+        $this->userManager->setStatusLimit(3);
+        $this->userManager->select();
+        $moderatorList = $this->userManager->get();
+        return $moderatorList->to_array();
     }
 }

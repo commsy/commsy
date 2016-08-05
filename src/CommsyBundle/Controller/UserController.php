@@ -30,7 +30,15 @@ class UserController extends Controller
      */
     public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
+        // extract current filter from parameter bag (embedded controller call)
+        // or from query paramters (AJAX)
+        $userFilter = $request->get('userFilter');
+        if (!$userFilter) {
+            $userFilter = $request->query->get('user_filter');
+        }
+
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
@@ -39,55 +47,53 @@ class UserController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true,
-        );
-        $filterForm = $this->createForm(UserFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_user_list', array(
-                'roomId' => $roomId,
-            )),
-            'hasHashtags' => false,
-            'hasCategories' => false,
-        ));
-
         // get the user manager service
         $userService = $this->get('commsy_legacy.user_service');
 
-        $userService->resetLimits();
-        // apply filter
-        $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($userFilter) {
+            // setup filter form
+            $defaultFilterValues = [
+                'activated' => true,
+            ];
+            
+            $filterForm = $this->createForm(UserFilterType::class, $defaultFilterValues, [
+                'action' => $this->generateUrl('commsy_user_list', [
+                    'roomId' => $roomId,
+                ]),
+                'hasHashtags' => false,
+                'hasCategories' => false,
+                'isModerator' => $currentUser->isModerator(),
+            ]);
+
+            // manually bind values from the request
+            $filterForm->submit($userFilter);
+
             // set filter conditions in user manager
             $userService->setFilterConditions($filterForm);
         }
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
-        $current_user = $legacyEnvironment->getCurrentUserItem();
-
         // get user list from manager service 
-        $users = $userService->getListUsers($roomId, $max, $start, $current_user->isModerator());
+        $users = $userService->getListUsers($roomId, $max, $start, $currentUser->isModerator());
         $readerService = $this->get('commsy_legacy.reader_service');
 
-        $readerList = array();
-        $allowedActions = array();
+        $readerList = [];
+        $allowedActions = [];
         foreach ($users as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
-            if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete');
+            if ($currentUser->isModerator()) {
+                $allowedActions[$item->getItemID()] = ['markread', 'copy', 'save', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
             } else {
-                $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save');
+                $allowedActions[$item->getItemID()] = ['markread'];
             }
         }
 
-        return array(
+        return [
             'roomId' => $roomId,
             'users' => $users,
             'readerList' => $readerList,
             'showRating' => false,
             'allowedActions' => $allowedActions,
-       );
+        ];
     }
     
     /**
@@ -97,7 +103,7 @@ class UserController extends Controller
     public function listAction($roomId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $current_user = $legacyEnvironment->getCurrentUserItem();
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
@@ -106,48 +112,18 @@ class UserController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-
-
-       // get the user manager service
-        $userService = $this->get('commsy_legacy.user_service');
-        $defaultFilterValues = array(
-            'activated' => true,
-        );
-        $filterForm = $this->createForm(UserFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_user_list', array(
-                'roomId' => $roomId,
-            )),
-            'hasHashtags' => false,
-            'hasCategories' => false,
-        ));
-
-        // apply filter
-        $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
-            // set filter conditions in user manager
-            $userService->setFilterConditions($filterForm);
-        }
-
-        // get user list from manager service 
-        $itemsCountArray = $userService->getCountArray($roomId, $current_user->isModerator());
-
-
-
-
         // setup filter form
-        $defaultFilterValues = array(
+        $defaultFilterValues = [
             'activated' => true,
-        );
-        $filterForm = $this->createForm(UserFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_user_list', array(
+        ];
+        $filterForm = $this->createForm(UserFilterType::class, $defaultFilterValues, [
+            'action' => $this->generateUrl('commsy_user_list', [
                 'roomId' => $roomId,
-            )),
+            ]),
             'hasHashtags' => false,
             'hasCategories' => false,
-        ));
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
+            'isModerator' => $currentUser->isModerator(),
+        ]);
 
         // get the user manager service
         $userService = $this->get('commsy_legacy.user_service');
@@ -159,7 +135,10 @@ class UserController extends Controller
             $userService->setFilterConditions($filterForm);
         }
 
-        return array(
+        // get filtered and total number of results
+        $itemsCountArray = $userService->getCountArray($roomId, $currentUser->isModerator());
+
+        return [
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
             'module' => 'user',
@@ -167,7 +146,7 @@ class UserController extends Controller
             'showRating' => false,
             'showHashTags' => false,
             'showCategories' => false,
-        );
+        ];
     }
 
     /**
@@ -294,6 +273,8 @@ class UserController extends Controller
         
         $result = [];
         
+        $noModeratorsError = false;
+        
         if ($action == 'markread') {
             $userService = $this->get('commsy_legacy.user_service');
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -315,26 +296,34 @@ class UserController extends Controller
             }
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'user-delete') {
-            $userService = $this->get('commsy_legacy.user_service');
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $noticedManager = $legacyEnvironment->getNoticedManager();
-            $readerManager = $legacyEnvironment->getReaderManager();
-            foreach ($selectedIds as $id) {
-                $item = $userService->getUser($id);
-                $item->delete();
+            if ($this->contextHasModerators($roomId, $selectedIds)) {
+                $userService = $this->get('commsy_legacy.user_service');
+                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                $noticedManager = $legacyEnvironment->getNoticedManager();
+                $readerManager = $legacyEnvironment->getReaderManager();
+                foreach ($selectedIds as $id) {
+                    $item = $userService->getUser($id);
+                    $item->delete();
+                }
+                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('deleted %count% users',count($selectedIds), array('%count%' => count($selectedIds)));
+            } else {
+                $noModeratorsError = true;
             }
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('deleted %count% users',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'user-block') {
-            $userService = $this->get('commsy_legacy.user_service');
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $noticedManager = $legacyEnvironment->getNoticedManager();
-            $readerManager = $legacyEnvironment->getReaderManager();
-            foreach ($selectedIds as $id) {
-                $item = $userService->getUser($id);
-                $item->setStatus(0);
-                $item->save();
+            if ($this->contextHasModerators($roomId, $selectedIds)) {
+                $userService = $this->get('commsy_legacy.user_service');
+                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                $noticedManager = $legacyEnvironment->getNoticedManager();
+                $readerManager = $legacyEnvironment->getReaderManager();
+                foreach ($selectedIds as $id) {
+                    $item = $userService->getUser($id);
+                    $item->setStatus(0);
+                    $item->save();
+                }
+                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to blocked',count($selectedIds), array('%count%' => count($selectedIds)));
+            } else {
+                $noModeratorsError = true;
             }
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to blocked',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'user-confirm') {
             $userService = $this->get('commsy_legacy.user_service');
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -347,27 +336,35 @@ class UserController extends Controller
             }
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('confirmed %count% users',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'user-status-reading-user') {
-            $userService = $this->get('commsy_legacy.user_service');
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $noticedManager = $legacyEnvironment->getNoticedManager();
-            $readerManager = $legacyEnvironment->getReaderManager();
-            foreach ($selectedIds as $id) {
-                $item = $userService->getUser($id);
-                $item->setStatus(4);
-                $item->save();
+            if ($this->contextHasModerators($roomId, $selectedIds)) {
+                $userService = $this->get('commsy_legacy.user_service');
+                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                $noticedManager = $legacyEnvironment->getNoticedManager();
+                $readerManager = $legacyEnvironment->getReaderManager();
+                foreach ($selectedIds as $id) {
+                    $item = $userService->getUser($id);
+                    $item->setStatus(4);
+                    $item->save();
+                }
+                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to reading user',count($selectedIds), array('%count%' => count($selectedIds)));
+            } else {
+                $noModeratorsError = true;
             }
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to reading user',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'user-status-user') {
-            $userService = $this->get('commsy_legacy.user_service');
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $noticedManager = $legacyEnvironment->getNoticedManager();
-            $readerManager = $legacyEnvironment->getReaderManager();
-            foreach ($selectedIds as $id) {
-                $item = $userService->getUser($id);
-                $item->setStatus(2);
-                $item->save();
+            if ($this->contextHasModerators($roomId, $selectedIds)) {
+                $userService = $this->get('commsy_legacy.user_service');
+                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                $noticedManager = $legacyEnvironment->getNoticedManager();
+                $readerManager = $legacyEnvironment->getReaderManager();
+                foreach ($selectedIds as $id) {
+                    $item = $userService->getUser($id);
+                    $item->setStatus(2);
+                    $item->save();
+                }
+                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to user',count($selectedIds), array('%count%' => count($selectedIds)));
+            } else {
+                $noModeratorsError = true;
             }
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to user',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'user-status-moderator') {
             $userService = $this->get('commsy_legacy.user_service');
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -405,6 +402,10 @@ class UserController extends Controller
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ToDo: '.$action;
         }
         
+        if ($noModeratorsError) {
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('no moderators left', array(), 'user');
+        }
+        
         return new JsonResponse([
             'message' => $message,
             'timeout' => '5550',
@@ -413,6 +414,25 @@ class UserController extends Controller
         ]);
     }
 
+    function contextHasModerators($roomId, $selectedIds) {
+        $userService = $this->get('commsy_legacy.user_service');
+        $moderators = $userService->getModeratorsForContext($roomId);
+        
+        $moderatorIds = [];
+        foreach ($moderators as $moderator) {
+            $moderatorIds[] = $moderator->getItemId();
+        }
+        
+        foreach ($selectedIds as $selectedId) {
+            if (in_array($selectedId, $moderatorIds)) {
+                if(($key = array_search($selectedId, $moderatorIds)) !== false) {
+                    unset($moderatorIds[$key]);
+                }
+            }
+        }
+        
+        return !empty($moderatorIds);
+    }
     
     /**
      * @Route("/room/{roomId}/user/{itemId}", requirements={

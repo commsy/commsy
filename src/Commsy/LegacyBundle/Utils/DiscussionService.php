@@ -26,7 +26,6 @@ class DiscussionService
 
     public function getListDiscussions($roomId, $max = NULL, $start = NULL, $sort = NULL)
     {
-        $this->discussionManager->reset();
         $this->discussionManager->setContextLimit($roomId);
         if ($max !== NULL && $start !== NULL) {
             $this->discussionManager->setIntervalLimit($start, $max);
@@ -83,6 +82,26 @@ class DiscussionService
             if (isset($formData['rubrics']['institution'])) {
                 $relatedLabel = $formData['rubrics']['institution'];
                 $this->discussionManager->setInstitutionLimit($relatedLabel->getItemId());
+            }
+        }
+        
+        // hashtag
+        if (isset($formData['hashtag'])) {
+            if (isset($formData['hashtag']['hashtag'])) {
+                $hashtag = $formData['hashtag']['hashtag'];
+                $itemId = $hashtag->getItemId();
+                $this->discussionManager->setBuzzwordLimit($itemId);
+            }
+        }
+
+        // category
+        if (isset($formData['category'])) {
+            if (isset($formData['category']['category'])) {
+                $categories = $formData['category']['category'];
+
+                if (!empty($categories)) {
+                    $this->discussionManager->setTagArrayLimit($categories);
+                }
             }
         }
     }

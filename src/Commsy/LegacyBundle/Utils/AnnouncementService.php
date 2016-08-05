@@ -33,7 +33,6 @@ class AnnouncementService
         return $countAnnouncementArray;
     }
 
-
     public function getListAnnouncements($roomId, $max = NULL, $start = NULL,  $sort = NULL)
     {
         $this->announcementManager->setContextLimit($roomId);
@@ -59,10 +58,11 @@ class AnnouncementService
         $formData = $filterForm->getData();
 
         // activated
-        // activated
         if (!$formData['activated']) {
             $this->announcementManager->showNotActivatedEntries();
         }
+        
+        // active
         if ($formData['active']) {
             $this->announcementManager->setDateLimit(getCurrentDateTimeInMySQL());
         }

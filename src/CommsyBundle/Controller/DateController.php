@@ -31,21 +31,29 @@ class DateController extends Controller
      */
     public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true
-        );
-        $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
-        ));
-
-        // get the material manager service
+        // extract current filter from parameter bag (embedded controller call)
+        // or from query paramters (AJAX)
+        $dateFilter = $request->get('dateFilter');
+        if (!$dateFilter) {
+            $dateFilter = $request->query->get('date_filter');
+        }
+        
+        // get the date service
         $dateService = $this->get('commsy_legacy.date_service');
+        
+        if ($dateFilter) {
+            // setup filter form
+            $defaultFilterValues = array(
+                'activated' => true
+            );
+            $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
+                'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
+            ));
+    
+            // manually bind values from the request
+            $filterForm->submit($dateFilter);
 
-        // apply filter
-        $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
-            // set filter conditions in material manager
+            // set filter conditions on the date manager
             $dateService->setFilterConditions($filterForm);
         }
 
@@ -473,8 +481,31 @@ class DateController extends Controller
      */
     public function eventsAction($roomId, Request $request)
     {
-        // get the material manager service
+        // extract current filter from parameter bag (embedded controller call)
+        // or from query paramters (AJAX)
+        $dateFilter = $request->get('dateFilter');
+        if (!$dateFilter) {
+            $dateFilter = $request->query->get('date_filter');
+        }
+        
+        // get the date service
         $dateService = $this->get('commsy_legacy.date_service');
+        
+        if ($dateFilter) {
+            // setup filter form
+            $defaultFilterValues = array(
+                'activated' => true
+            );
+            $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
+                'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
+            ));
+    
+            // manually bind values from the request
+            $filterForm->submit($dateFilter);
+
+            // set filter conditions on the date manager
+            $dateService->setFilterConditions($filterForm);
+        }
 
         $listDates = $dateService->getCalendarEvents($roomId, $_GET['start'], $_GET['end']);
 

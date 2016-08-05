@@ -30,7 +30,6 @@ class TodoController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
         
-        
         // get the todo manager service
         $todoService = $this->get('commsy_legacy.todo_service');
         $defaultFilterValues = array(
@@ -137,6 +136,13 @@ class TodoController extends Controller
      */
     public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
+        // extract current filter from parameter bag (embedded controller call)
+        // or from query paramters (AJAX)
+        $todoFilter = $request->get('todoFilter');
+        if (!$todoFilter) {
+            $todoFilter = $request->query->get('todo_filter');
+        }
+        
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();
@@ -146,25 +152,26 @@ class TodoController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true,
-        );
-        $filterForm = $this->createForm(TodoFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_todo_list', array(
-                'roomId' => $roomId,
-            )),
-            'hasHashtags' => $roomItem->withBuzzwords(),
-            'hasCategories' => $roomItem->withTags(),
-        ));
-
         // get the todo manager service
         $todoService = $this->get('commsy_legacy.todo_service');
 
-        // apply filter
-        $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
-            // set filter conditions in todo manager
+        if ($todoFilter) {
+            // setup filter form
+            $defaultFilterValues = array(
+                'activated' => true,
+            );
+            $filterForm = $this->createForm(TodoFilterType::class, $defaultFilterValues, array(
+                'action' => $this->generateUrl('commsy_todo_list', array(
+                    'roomId' => $roomId,
+                )),
+                'hasHashtags' => $roomItem->withBuzzwords(),
+                'hasCategories' => $roomItem->withTags(),
+            ));
+    
+            // manually bind values from the request
+            $filterForm->submit($todoFilter);
+    
+            // apply filter
             $todoService->setFilterConditions($filterForm);
         }
 

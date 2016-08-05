@@ -146,6 +146,26 @@
                 <source>contact remove</source>
                 <target>Status AnsprechpartnerIn entfernen</target>
             </trans-unit>
+            <trans-unit id="is contact">
+                <source>is contact</source>
+                <target>AnsprechpartnerIn</target>
+            </trans-unit>
+            <trans-unit id="is applying">
+                <source>is applying</source>
+                <target>in Beantragung</target>
+            </trans-unit>
+            <trans-unit id="is blocked">
+                <source>is blocked</source>
+                <target>Gesperrt</target>
+            </trans-unit>
+            <trans-unit id="no restrictions">
+                <source>no restrictions</source>
+                <target>Keine Einschränkungen</target>
+            </trans-unit>
+            <trans-unit id="no moderators left">
+                <source>no moderators left</source>
+                <target>Durch diese Aktion gäbe es keine Moderatoren mehr im Raum. Bitte die Auswahl anpassen!</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

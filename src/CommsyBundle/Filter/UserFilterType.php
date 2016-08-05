@@ -4,6 +4,7 @@ namespace CommsyBundle\Filter;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class UserFilterType extends AbstractType
 {
@@ -22,11 +23,6 @@ class UserFilterType extends AbstractType
                 'label' => false,
             ))
         ;
-     /*   $builder
-            ->add('status', 'status_filter', array(
-                'label' => false,
-            ))
-        ;*/
 
         if ($options['hasHashtags']) {
             $builder->add('hashtag', HashTagFilterType::class, array(
@@ -39,6 +35,34 @@ class UserFilterType extends AbstractType
                 'label' => false,
             ));
         }
+        
+        if ($options['isModerator']) {
+            $statusChoices = [
+                'is blocked' => '0',
+                'is applying' => '1',
+                'user' => '2',
+                'moderator' => '3',
+                'is contact' => 'is contact',
+                'reading user' => '4',
+            ];
+        } else {
+            $statusChoices = [
+                'moderator' => '3',
+            ];
+        }
+        $builder->add('user_status', ChoiceType::class, array(
+            'placeholder' => false,
+            'choices' => $statusChoices,
+            'attr' => array(
+                'onchange' => 'this.form.submit()',
+            ),
+            'label' => 'status',
+            'translation_domain' => 'user',
+            'required' => false,
+            'expanded' => false,
+            'multiple' => false,
+            'placeholder' => 'no restrictions',
+        ));
     }
 
     /**
@@ -68,7 +92,8 @@ class UserFilterType extends AbstractType
             ))
             ->setRequired(array(
                 'hasHashtags',
-                'hasCategories'
+                'hasCategories',
+                'isModerator'
             ))
         ;
     }

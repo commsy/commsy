@@ -190,7 +190,7 @@ class UploadController extends Controller
         foreach ($oldFileIds as $oldFileId) {
             $tempFile = $fileService->getFile($oldFileId);
             $uploadData['oldFiles'][] = $oldFileId;
-            $optionsData['oldFiles'][$oldFileId] = $tempFile->getFilename().' ('.$tempFile->getCreationDate().')';
+            $optionsData['oldFiles'][$tempFile->getFilename().' ('.$tempFile->getCreationDate().')'] = $oldFileId;
         }
 
         $form = $this->createForm(UploadType::class, $uploadData, array(
