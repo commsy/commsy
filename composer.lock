@@ -94,17 +94,17 @@
         },
         {
             "name": "debril/rss-atom-bundle",
-            "version": "v2.4.1",
+            "version": "v2.4.2",
             "target-dir": "Debril/RssAtomBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alexdebril/rss-atom-bundle.git",
-                "reference": "ffbef7aa4e0b6e2ce69ff90363ffb109cd6a8322"
+                "reference": "68bdba99abe9f1bc94c79f35844b3c5473cb7c3e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alexdebril/rss-atom-bundle/zipball/ffbef7aa4e0b6e2ce69ff90363ffb109cd6a8322",
-                "reference": "ffbef7aa4e0b6e2ce69ff90363ffb109cd6a8322",
+                "url": "https://api.github.com/repos/alexdebril/rss-atom-bundle/zipball/68bdba99abe9f1bc94c79f35844b3c5473cb7c3e",
+                "reference": "68bdba99abe9f1bc94c79f35844b3c5473cb7c3e",
                 "shasum": ""
             },
             "require": {
@@ -145,7 +145,7 @@
                 "atom",
                 "rss"
             ],
-            "time": "2016-04-06 16:04:12"
+            "time": "2016-08-03 11:49:59"
         },
         {
             "name": "doctrine/annotations",
@@ -1047,30 +1047,30 @@
         },
         {
             "name": "egeloen/ckeditor-bundle",
-            "version": "4.0.3",
+            "version": "4.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/egeloen/IvoryCKEditorBundle.git",
-                "reference": "161f680774103468e24f8c5f56a8f22e7a2bfa21"
+                "reference": "2bfe162ab98236efc4d9ad13a5ecda8f877a54a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/egeloen/IvoryCKEditorBundle/zipball/161f680774103468e24f8c5f56a8f22e7a2bfa21",
-                "reference": "161f680774103468e24f8c5f56a8f22e7a2bfa21",
+                "url": "https://api.github.com/repos/egeloen/IvoryCKEditorBundle/zipball/2bfe162ab98236efc4d9ad13a5ecda8f877a54a3",
+                "reference": "2bfe162ab98236efc4d9ad13a5ecda8f877a54a3",
                 "shasum": ""
             },
             "require": {
-                "egeloen/json-builder": "~1.0|~2.0",
+                "egeloen/json-builder": "^1.0|^2.0",
                 "php": ">=5.3.3",
-                "symfony/dependency-injection": "~2.2|~3.0",
-                "symfony/form": "~2.2|~3.0",
-                "symfony/framework-bundle": "~2.2|~3.0"
+                "symfony/dependency-injection": "^2.2|^3.0",
+                "symfony/form": "^2.2|^3.0",
+                "symfony/framework-bundle": "^2.2|^3.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.0",
-                "symfony/phpunit-bridge": "~2.7|~3.0",
-                "symfony/yaml": "^2.0.5|~3.0",
-                "twig/twig": "~1.12"
+                "phpunit/phpunit": "^4.0|^5.0",
+                "symfony/phpunit-bridge": "^2.7|^3.0",
+                "symfony/yaml": "^2.0.5|^3.0",
+                "twig/twig": "^1.12"
             },
             "suggest": {
                 "egeloen/form-extra-bundle": "Allows to load CKEditor asynchronously",
@@ -1101,7 +1101,7 @@
             "keywords": [
                 "CKEditor"
             ],
-            "time": "2016-04-08 12:09:48"
+            "time": "2016-07-31 16:06:19"
         },
         {
             "name": "egeloen/json-builder",
@@ -1266,16 +1266,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSElasticaBundle.git",
-                "reference": "ff884828f51af243e7278fc1867fb47d98e981e5"
+                "reference": "770b91635bf4e3a3306c30be1e281b5c2ca990ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/ff884828f51af243e7278fc1867fb47d98e981e5",
-                "reference": "ff884828f51af243e7278fc1867fb47d98e981e5",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/770b91635bf4e3a3306c30be1e281b5c2ca990ce",
+                "reference": "770b91635bf4e3a3306c30be1e281b5c2ca990ce",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.2",
+                "php": ">=5.4.0",
                 "psr/log": "~1.0",
                 "ruflin/elastica": "~2.1",
                 "symfony/console": "~2.1|~3.0",
@@ -1296,12 +1296,13 @@
                 "propel/propel1": "1.6.*",
                 "symfony/browser-kit": "~2.3|~3.0",
                 "symfony/expression-language": "~2.4|~3.0",
+                "symfony/serializer": "~2.7|~3.0",
                 "symfony/twig-bundle": "~2.3|~3.0"
             },
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.2.x-dev"
+                    "dev-master": "4.0.x-dev"
                 }
             },
             "autoload": {
@@ -1341,7 +1342,7 @@
                 "propel",
                 "search"
             ],
-            "time": "2016-05-30 08:45:54"
+            "time": "2016-08-04 15:34:19"
         },
         {
             "name": "incenteev/composer-parameter-handler",
@@ -1810,16 +1811,16 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "1.20.0",
+            "version": "1.21.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "55841909e2bcde01b5318c35f2b74f8ecc86e037"
+                "reference": "f42fbdfd53e306bda545845e4dbfd3e72edb4952"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/55841909e2bcde01b5318c35f2b74f8ecc86e037",
-                "reference": "55841909e2bcde01b5318c35f2b74f8ecc86e037",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/f42fbdfd53e306bda545845e4dbfd3e72edb4952",
+                "reference": "f42fbdfd53e306bda545845e4dbfd3e72edb4952",
                 "shasum": ""
             },
             "require": {
@@ -1884,7 +1885,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2016-07-02 14:02:10"
+            "time": "2016-07-29 03:23:52"
         },
         {
             "name": "ocramius/proxy-manager",
@@ -2805,16 +2806,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v3.1.2",
+            "version": "v3.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "2e98c829524e505a9561ac9e54fa715e8b79905e"
+                "reference": "4478f047409028dc6e3ab320590f1247fec7a850"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/2e98c829524e505a9561ac9e54fa715e8b79905e",
-                "reference": "2e98c829524e505a9561ac9e54fa715e8b79905e",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/4478f047409028dc6e3ab320590f1247fec7a850",
+                "reference": "4478f047409028dc6e3ab320590f1247fec7a850",
                 "shasum": ""
             },
             "require": {
@@ -2830,7 +2831,8 @@
                 "twig/twig": "~1.23|~2.0"
             },
             "conflict": {
-                "phpdocumentor/reflection-docblock": "<3.0"
+                "phpdocumentor/reflection-docblock": "<3.0",
+                "phpdocumentor/type-resolver": "<0.2.0"
             },
             "replace": {
                 "symfony/asset": "self.version",
@@ -2936,7 +2938,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2016-06-30 17:16:26"
+            "time": "2016-07-30 09:31:00"
         },
         {
             "name": "tomnomnom/etherpad-lite-client",
@@ -3549,7 +3551,7 @@
         },
         {
             "name": "symfony/phpunit-bridge",
-            "version": "v3.1.2",
+            "version": "v3.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/phpunit-bridge.git",
