@@ -162,6 +162,10 @@
                 <source>no restrictions</source>
                 <target>Keine Einschränkungen</target>
             </trans-unit>
+            <trans-unit id="no moderators left">
+                <source>no moderators left</source>
+                <target>Durch diese Aktion gäbe es keine Moderatoren mehr im Raum. Bitte die Auswahl anpassen!</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

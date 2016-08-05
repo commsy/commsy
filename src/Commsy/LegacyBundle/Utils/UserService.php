@@ -127,7 +127,6 @@ class UserService
 
     public function getUser($userId)
     {
-        
         $user = $this->userManager->getItem($userId);
         return $user;
     }
@@ -229,5 +228,13 @@ class UserService
         $searchableRoomList->addList($groupRoomList);
 
         return $searchableRoomList->to_array();
+    }
+    
+    public function getModeratorsForContext ($contextId) {
+        $this->userManager->setContextLimit($contextId);
+        $this->userManager->setStatusLimit(3);
+        $this->userManager->select();
+        $moderatorList = $this->userManager->get();
+        return $moderatorList->to_array();
     }
 }

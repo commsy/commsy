@@ -273,6 +273,8 @@ class UserController extends Controller
         
         $result = [];
         
+        $noModeratorsError = false;
+        
         if ($action == 'markread') {
             $userService = $this->get('commsy_legacy.user_service');
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -294,26 +296,34 @@ class UserController extends Controller
             }
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'user-delete') {
-            $userService = $this->get('commsy_legacy.user_service');
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $noticedManager = $legacyEnvironment->getNoticedManager();
-            $readerManager = $legacyEnvironment->getReaderManager();
-            foreach ($selectedIds as $id) {
-                $item = $userService->getUser($id);
-                $item->delete();
+            if ($this->contextHasModerators($roomId, $selectedIds)) {
+                $userService = $this->get('commsy_legacy.user_service');
+                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                $noticedManager = $legacyEnvironment->getNoticedManager();
+                $readerManager = $legacyEnvironment->getReaderManager();
+                foreach ($selectedIds as $id) {
+                    $item = $userService->getUser($id);
+                    $item->delete();
+                }
+                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('deleted %count% users',count($selectedIds), array('%count%' => count($selectedIds)));
+            } else {
+                $noModeratorsError = true;
             }
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('deleted %count% users',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'user-block') {
-            $userService = $this->get('commsy_legacy.user_service');
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $noticedManager = $legacyEnvironment->getNoticedManager();
-            $readerManager = $legacyEnvironment->getReaderManager();
-            foreach ($selectedIds as $id) {
-                $item = $userService->getUser($id);
-                $item->setStatus(0);
-                $item->save();
+            if ($this->contextHasModerators($roomId, $selectedIds)) {
+                $userService = $this->get('commsy_legacy.user_service');
+                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                $noticedManager = $legacyEnvironment->getNoticedManager();
+                $readerManager = $legacyEnvironment->getReaderManager();
+                foreach ($selectedIds as $id) {
+                    $item = $userService->getUser($id);
+                    $item->setStatus(0);
+                    $item->save();
+                }
+                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to blocked',count($selectedIds), array('%count%' => count($selectedIds)));
+            } else {
+                $noModeratorsError = true;
             }
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to blocked',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'user-confirm') {
             $userService = $this->get('commsy_legacy.user_service');
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -326,27 +336,35 @@ class UserController extends Controller
             }
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('confirmed %count% users',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'user-status-reading-user') {
-            $userService = $this->get('commsy_legacy.user_service');
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $noticedManager = $legacyEnvironment->getNoticedManager();
-            $readerManager = $legacyEnvironment->getReaderManager();
-            foreach ($selectedIds as $id) {
-                $item = $userService->getUser($id);
-                $item->setStatus(4);
-                $item->save();
+            if ($this->contextHasModerators($roomId, $selectedIds)) {
+                $userService = $this->get('commsy_legacy.user_service');
+                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                $noticedManager = $legacyEnvironment->getNoticedManager();
+                $readerManager = $legacyEnvironment->getReaderManager();
+                foreach ($selectedIds as $id) {
+                    $item = $userService->getUser($id);
+                    $item->setStatus(4);
+                    $item->save();
+                }
+                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to reading user',count($selectedIds), array('%count%' => count($selectedIds)));
+            } else {
+                $noModeratorsError = true;
             }
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to reading user',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'user-status-user') {
-            $userService = $this->get('commsy_legacy.user_service');
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $noticedManager = $legacyEnvironment->getNoticedManager();
-            $readerManager = $legacyEnvironment->getReaderManager();
-            foreach ($selectedIds as $id) {
-                $item = $userService->getUser($id);
-                $item->setStatus(2);
-                $item->save();
+            if ($this->contextHasModerators($roomId, $selectedIds)) {
+                $userService = $this->get('commsy_legacy.user_service');
+                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                $noticedManager = $legacyEnvironment->getNoticedManager();
+                $readerManager = $legacyEnvironment->getReaderManager();
+                foreach ($selectedIds as $id) {
+                    $item = $userService->getUser($id);
+                    $item->setStatus(2);
+                    $item->save();
+                }
+                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to user',count($selectedIds), array('%count%' => count($selectedIds)));
+            } else {
+                $noModeratorsError = true;
             }
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to user',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'user-status-moderator') {
             $userService = $this->get('commsy_legacy.user_service');
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -384,6 +402,10 @@ class UserController extends Controller
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ToDo: '.$action;
         }
         
+        if ($noModeratorsError) {
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('no moderators left', array(), 'user');
+        }
+        
         return new JsonResponse([
             'message' => $message,
             'timeout' => '5550',
@@ -392,6 +414,25 @@ class UserController extends Controller
         ]);
     }
 
+    function contextHasModerators($roomId, $selectedIds) {
+        $userService = $this->get('commsy_legacy.user_service');
+        $moderators = $userService->getModeratorsForContext($roomId);
+        
+        $moderatorIds = [];
+        foreach ($moderators as $moderator) {
+            $moderatorIds[] = $moderator->getItemId();
+        }
+        
+        foreach ($selectedIds as $selectedId) {
+            if (in_array($selectedId, $moderatorIds)) {
+                if(($key = array_search($selectedId, $moderatorIds)) !== false) {
+                    unset($moderatorIds[$key]);
+                }
+            }
+        }
+        
+        return !empty($moderatorIds);
+    }
     
     /**
      * @Route("/room/{roomId}/user/{itemId}", requirements={
