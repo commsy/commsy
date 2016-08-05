@@ -81,7 +81,6 @@ class DateService
     
     public function getCalendarEvents($roomId, $start, $end)
     {
-        $this->dateManager->reset();
         $this->dateManager->setContextLimit($roomId);
         $this->dateManager->setWithoutDateModeLimit();
         $this->dateManager->setBetweenLimit($start, $end);
@@ -98,7 +97,6 @@ class DateService
     
     public function getCountArray($roomId)
     {
-        $this->dateManager->reset();
         $this->dateManager->setContextLimit($roomId);
         $this->dateManager->setWithoutDateModeLimit();
         $this->dateManager->select();
