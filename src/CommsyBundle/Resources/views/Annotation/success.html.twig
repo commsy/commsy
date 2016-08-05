@@ -1,3 +1,4 @@
 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+{% import 'CommsyBundle:Annotation:macros.html.twig' as annotationMacros %}
 
-{{ macros.editAnnotationContent('description', annotation, true, annotation.description, annotation.description, false, false, 0) }}
+{{ annotationMacros.editAnnotationContent('description', annotation, annotation.description) }}

@@ -38,7 +38,7 @@
                 {# edit action #}
                 {% if is_granted('ITEM_EDIT', item.itemId) %}
                     <div class="cs-edit uk-hidden">
-                        <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+                        <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit" data-uk-tooltip title="{{ 'edit'|trans({}) }}"></a>
                     </div>
                 {% endif %}
 
