@@ -164,54 +164,62 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        var cover_width = $("#cover").width();
-        var cover_height = $("#cover").height();
+        let cover_width = $("#cover").width();
+        let cover_height = $("#cover").height();
 
-        var img_width = $("#cover img").width();
-        var img_height = $("#cover img").height();
+        let img_width = $("#cover img").width();
+        let img_height = $("#cover img").height();
 
-        var height_diff = img_height - cover_height;
+        // determines image height as imgHeight = coverHeight * heightFactor;
+        let heightFactor = 1.2;
 
-        /*
-        console.debug("Cover dimensions:");
-        console.debug(" - width: " + cover_width);
-        console.debug(" - height: " + cover_height);
-        console.debug(" => aspect ratio: " + (cover_width / cover_height) + " - 1");
+        // 1 => set 'margin-bottom' => parallax * 1
+        // -1 => set 'margin-top' => parallax * -1, 
+        // default: 1 (nicely fakes stereoscopic effect on panorama images! ;)
+        // TODO: pass via parameter (perhaps let user choose direction?)
+        let transDir = 1;
+        let marginSelect = 'margin-top';
+        if(transDir < 0) marginSelect = 'margin-bottom';
 
-        console.debug("Cover image dimensions:");        
-        console.debug(" - width: " + img_width);
-        console.debug(" - height: " + img_height);
-        console.debug(" => aspect ratio: " + (img_width / img_height) + " - 1");        
-        console.debug("---------------------");
-        console.debug(" => height diff: " + height_diff);
-        */
-
-        if(height_diff < 0){
-
-
-            var cover_ratio = cover_width / cover_height;       // 4.64
-            height_diff = 100;
-            var new_img_width = img_height * cover_ratio - height_diff;
-            var clip_rect = "rect(0px, 0px, "+img_height+"px, "+new_img_width+"px)";
-
-            /*
-            console.debug("Image height < cover element height");
-            console.debug(" => image clipping needed!");
-
-            console.debug(" => using image clip with dimensions:");
-            console.debug(" - new width " + new_img_width + " (original width: "+ img_width + ")");
-            console.debug(" - height: " + img_height);
-            console.debug(" => new aspect ratio: " + (new_img_width / img_height));
-            console.debug(" => using clip: " + clip_rect);
-            */
-
-            // FIXME: "clipping" image doesn't seem to have any effect!
-            $("#cover img").css("clip", clip_rect).css("width", cover_width);
+        if(img_width < cover_width){
+            // scale image width to cover width
+            img_width  *= (cover_width / img_width);
+            img_height *= (cover_width / img_width);
+        }
+        if(img_height < cover_height*heightFactor){
+            // scale image height to heightFactor * cover height
+            img_width  *= ( (cover_height*heightFactor) / img_height );
+            img_height *= ( (cover_height*heightFactor) / img_height );
         }
 
-        else{
-            //console.debug(" => Adding uikit parallax attribute with vertical scrolling value = "+height_diff+" to cover image...");
-            $("#cover img").attr("data-uk-parallax", "{y: '-"+height_diff+"'}");
+        img_width = parseInt(img_width);
+        img_height = parseInt(img_height);
+
+        $("#cover img").css({'width' : img_width, 'height' : img_height, 'max-width' : 'none'});
+
+        let marginOffset = -1*(Math.abs(img_height - cover_height)/2);
+        $("#cover img").css(marginSelect, marginOffset);
+
+        // horizontically center image if its wider than the cover area
+        if(img_width > cover_width){
+            $("#cover img").css('margin-left', -1*(Math.abs(img_width - cover_width)/2));
+        }
+
+        // activate parallax scrolling
+        if(window.innerHeight > img_height){
+            $("#cover img").attr("data-uk-parallax", "{y: '"+(transDir * Math.abs(img_height - cover_height))+"'}");
+        }
+
+        window.onresize = function(e){
+            let activated = typeof($("#cover img").attr('data-uk-parallax'));
+            let heightDiff = this.innerHeight - img_height;
+            if(heightDiff < 0 && activated !== 'undefined'){
+                // FIXME: this does not seem to deactive the parallax scrolling effect!
+                $("#cover img").removeAttr("data-uk-parallax");
+            }
+            else if(heightDiff >= 0 && activated === 'undefined'){
+                $("#cover img").attr("data-uk-parallax", "{y: '"+(transDir * Math.abs(img_height - cover_height))+"'}");
+            }
         }
     </script>
 {% endblock %}

@@ -86,6 +86,12 @@ class GeneralSettingsType extends AbstractType
                     'label_attr' => array('class' => 'uk-form-label'),
                     'value' => 'repeat_x',
                 ))
+
+                // ->add('scroll_image', CheckboxType::class, array(
+                //     'label_attr' => array('class' => 'uk-form-label'),
+                //     'value' => 'scroll_image',
+                // ))
+
                 ->add('delete_custom_image', CheckboxType::class, array(
                     'label_attr' => array('class' => 'uk-form-label'),
                     'value' => 'delete_bg_image',
