@@ -23,11 +23,6 @@ class UserFilterType extends AbstractType
                 'label' => false,
             ))
         ;
-     /*   $builder
-            ->add('status', 'status_filter', array(
-                'label' => false,
-            ))
-        ;*/
 
         if ($options['hasHashtags']) {
             $builder->add('hashtag', HashTagFilterType::class, array(
@@ -52,7 +47,7 @@ class UserFilterType extends AbstractType
             ];
         } else {
             $statusChoices = [
-                'moderator' => 'moderator',
+                'moderator' => '3',
             ];
         }
         $builder->add('user_status', ChoiceType::class, array(
