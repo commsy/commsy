@@ -38,6 +38,7 @@ class UserController extends Controller
         }
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
@@ -54,12 +55,14 @@ class UserController extends Controller
             $defaultFilterValues = [
                 'activated' => true,
             ];
+            
             $filterForm = $this->createForm(UserFilterType::class, $defaultFilterValues, [
                 'action' => $this->generateUrl('commsy_user_list', [
                     'roomId' => $roomId,
                 ]),
                 'hasHashtags' => false,
                 'hasCategories' => false,
+                'isModerator' => $currentUser->isModerator(),
             ]);
 
             // manually bind values from the request
@@ -69,9 +72,6 @@ class UserController extends Controller
             $userService->setFilterConditions($filterForm);
         }
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $currentUser = $legacyEnvironment->getCurrentUserItem();
-
         // get user list from manager service 
         $users = $userService->getListUsers($roomId, $max, $start, $currentUser->isModerator());
         $readerService = $this->get('commsy_legacy.reader_service');
@@ -80,10 +80,10 @@ class UserController extends Controller
         $allowedActions = [];
         foreach ($users as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
-            if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = ['markread', 'copy', 'save', 'delete'];
+            if ($currentUser->isModerator()) {
+                $allowedActions[$item->getItemID()] = ['markread', 'copy', 'save', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
             } else {
-                $allowedActions[$item->getItemID()] = ['markread', 'copy', 'save'];
+                $allowedActions[$item->getItemID()] = ['markread'];
             }
         }
 
@@ -103,7 +103,7 @@ class UserController extends Controller
     public function listAction($roomId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $current_user = $legacyEnvironment->getCurrentUserItem();
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
@@ -122,6 +122,7 @@ class UserController extends Controller
             ]),
             'hasHashtags' => false,
             'hasCategories' => false,
+            'isModerator' => $currentUser->isModerator(),
         ]);
 
         // get the user manager service
@@ -135,7 +136,7 @@ class UserController extends Controller
         }
 
         // get filtered and total number of results
-        $itemsCountArray = $userService->getCountArray($roomId, $current_user->isModerator());
+        $itemsCountArray = $userService->getCountArray($roomId, $currentUser->isModerator());
 
         return [
             'roomId' => $roomId,

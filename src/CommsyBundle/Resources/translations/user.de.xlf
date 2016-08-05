@@ -152,11 +152,15 @@
             </trans-unit>
             <trans-unit id="is applying">
                 <source>is applying</source>
-                <target>Die Kennung muss noch freigeschaltet werden</target>
+                <target>in Beantragung</target>
             </trans-unit>
             <trans-unit id="is blocked">
                 <source>is blocked</source>
                 <target>Gesperrt</target>
+            </trans-unit>
+            <trans-unit id="no restrictions">
+                <source>no restrictions</source>
+                <target>Keine Einschränkungen</target>
             </trans-unit>
         </body>
     </file>

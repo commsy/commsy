@@ -152,11 +152,15 @@
             </trans-unit>
             <trans-unit id="is applying">
                 <source>is applying</source>
-                <target>The account is queued for approval by the moderator/s</target>
+                <target>is applying</target>
             </trans-unit>
             <trans-unit id="is blocked">
                 <source>is blocked</source>
                 <target>Locked</target>
+            </trans-unit>
+            <trans-unit id="no restrictions">
+                <source>no restrictions</source>
+                <target>No restrictions</target>
             </trans-unit>
         </body>
     </file>
