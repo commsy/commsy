@@ -27,6 +27,13 @@ class DiscussionController extends Controller
      */
     public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
+        // extract current filter from parameter bag (embedded controller call)
+        // or from query paramters (AJAX)
+        $discussionFilter = $request->get('discussionFilter');
+        if (!$discussionFilter) {
+            $discussionFilter = $request->query->get('discussion_filter');
+        }
+        
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         
         $roomManager = $legacyEnvironment->getRoomManager();
@@ -36,24 +43,25 @@ class DiscussionController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
         
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true
-        );
-        $filterForm = $this->createForm(DiscussionFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_discussion_list', array(
-                'roomId' => $roomId)
-            ),
-            'hasHashtags' => $roomItem->withBuzzwords(),
-            'hasCategories' => $roomItem->withTags(),
-        ));
-
         // get the material manager service
         $discussionService = $this->get('commsy_legacy.discussion_service');
-
-        // apply filter
-        $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        
+        if ($discussionFilter) {
+            // setup filter form
+            $defaultFilterValues = array(
+                'activated' => true
+            );
+            $filterForm = $this->createForm(DiscussionFilterType::class, $defaultFilterValues, array(
+                'action' => $this->generateUrl('commsy_discussion_list', array(
+                    'roomId' => $roomId)
+                ),
+                'hasHashtags' => $roomItem->withBuzzwords(),
+                'hasCategories' => $roomItem->withTags(),
+            ));
+            
+            // manually bind values from the request
+            $filterForm->submit($discussionFilter);
+            
             // set filter conditions in material manager
             $discussionService->setFilterConditions($filterForm);
         }
@@ -111,9 +119,7 @@ class DiscussionController extends Controller
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
-
-        // get the material manager service
-        $discussionService = $this->get('commsy_legacy.discussion_service');
+        
         $defaultFilterValues = array(
             'activated' => true,
         );
@@ -124,6 +130,9 @@ class DiscussionController extends Controller
             'hasHashtags' => $roomItem->withBuzzwords(),
             'hasCategories' => $roomItem->withTags(),
         ));
+
+        // get the discussion manager service
+        $discussionService = $this->get('commsy_legacy.discussion_service');
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -134,34 +143,6 @@ class DiscussionController extends Controller
 
         // get material list from manager service 
         $itemsCountArray = $discussionService->getCountArray($roomId);
-
-
-
-
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true,
-        );
-        $filterForm = $this->createForm(DiscussionFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_discussion_list', array(
-                'roomId' => $roomId,
-            )),
-            'hasHashtags' => $roomItem->withBuzzwords(),
-            'hasCategories' => $roomItem->withTags(),
-        ));
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-
-        // get the material manager service
-        $discussionService = $this->get('commsy_legacy.discussion_service');
-
-        // apply filter
-        $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
-            // set filter conditions in material manager
-            $discussionService->setFilterConditions($filterForm);
-        }
 
         return array(
             'roomId' => $roomId,

@@ -93,6 +93,7 @@ class UserService
                 $this->userManager->setInstitutionLimit($relatedLabel->getItemId());
             }
         }
+        
         // hashtag
         if (isset($formData['hashtag'])) {
             if (isset($formData['hashtag']['hashtag'])) {
