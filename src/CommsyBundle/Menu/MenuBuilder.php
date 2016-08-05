@@ -191,18 +191,25 @@ class MenuBuilder
 
         if ($roomId) {
             // dashboard
-            $user = $this->userService->getPortalUserFromSessionId();
-            $authSourceManager = $this->legacyEnvironment->getAuthSourceManager();
-            $authSource = $authSourceManager->getItem($user->getAuthSource());
-            $this->legacyEnvironment->setCurrentPortalID($authSource->getContextId());
-            $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
-            $privateRoom = $privateRoomManager->getRelatedOwnRoomForUser($user, $this->legacyEnvironment->getCurrentPortalID());
-            $current_user = $this->legacyEnvironment->getCurrentUserItem();
+            $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
-            if ($roomId != $privateRoom->getItemId()) {
+            $inPrivateRoom = false;
+            if (!$currentUser->isRoot()) {
+                $portalUser = $this->userService->getPortalUserFromSessionId();
+                $authSourceManager = $this->legacyEnvironment->getAuthSourceManager();
+                $authSource = $authSourceManager->getItem($portalUser->getAuthSource());
+                $this->legacyEnvironment->setCurrentPortalID($authSource->getContextId());
+                $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
+                $privateRoom = $privateRoomManager->getRelatedOwnRoomForUser($portalUser, $this->legacyEnvironment->getCurrentPortalID());
+
+                if ($roomId === $privateRoom->getItemId()) {
+                    $inPrivateRoom = true;
+                }
+            }
+
+            if (!$inPrivateRoom) {
                 // rubric room information
                 $rubrics = $this->roomService->getRubricInformation($roomId);
-                
 
                 // home navigation
                 $menu->addChild('room_home', array(
@@ -231,24 +238,9 @@ class MenuBuilder
                     ))
                     ->setExtra('translation_domain', 'menu');
                 }
-            } else {
-                $menu->addChild('')->setAttribute('class', 'uk-nav-divider');
-                
-                $projectArray = array();
-                $projectList = $user->getRelatedProjectList();
-                $project = $projectList->getFirst();
-                while ($project) {
-                    $menu->addChild($project->getTitle(), array(
-                        'label' => $project->getTitle(),
-                        'route' => 'commsy_room_home',
-                        'routeParameters' => array('roomId' => $project->getItemId()),
-                        'extras' => array('icon' => 'uk-icon-home uk-icon-small')
-                    ));
-                    $project = $projectList->getNext();
-                }
             }
 
-            if ($current_user) {
+            if ($currentUser) {
                 if ($this->authorizationChecker->isGranted('MODERATOR')) {
                     $menu->addChild('room_navigation_space_2', array(
                         'label' => ' ',
@@ -332,18 +324,20 @@ class MenuBuilder
 
         $roomId = $currentStack->attributes->get('roomId');
         if ($roomId) {
-            // this item will always be displayed
             $user = $this->userService->getPortalUserFromSessionId();
-            $authSourceManager = $this->legacyEnvironment->getAuthSourceManager();
-            $authSource = $authSourceManager->getItem($user->getAuthSource());
-            $this->legacyEnvironment->setCurrentPortalID($authSource->getContextId());
-            $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
-            $privateRoom = $privateRoomManager->getRelatedOwnRoomForUser($user,$this->legacyEnvironment->getCurrentPortalID());
-            
-            $menu->addChild('dashboard', array(
-                'route' => 'commsy_dashboard_overview',
-                'routeParameters' => array('roomId' => $privateRoom->getItemId()),
-            ));
+
+            if ($user) {
+                $authSourceManager = $this->legacyEnvironment->getAuthSourceManager();
+                $authSource = $authSourceManager->getItem($user->getAuthSource());
+                $this->legacyEnvironment->setCurrentPortalID($authSource->getContextId());
+                $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
+                $privateRoom = $privateRoomManager->getRelatedOwnRoomForUser($user,$this->legacyEnvironment->getCurrentPortalID());
+                
+                $menu->addChild('dashboard', array(
+                    'route' => 'commsy_dashboard_overview',
+                    'routeParameters' => array('roomId' => $privateRoom->getItemId()),
+                ));
+            }
 
             $itemId = $currentStack->attributes->get('itemId');
             $roomItem = $this->roomService->getRoomItem($roomId);
@@ -409,7 +403,6 @@ class MenuBuilder
                 }
             }
         }
-        
 
         return $menu;
     }
