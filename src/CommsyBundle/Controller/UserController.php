@@ -80,10 +80,10 @@ class UserController extends Controller
         $allowedActions = [];
         foreach ($users as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
-            if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = ['markread', 'copy', 'save', 'delete'];
+            if ($currentUser->isModerator()) {
+                $allowedActions[$item->getItemID()] = ['markread', 'copy', 'save', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
             } else {
-                $allowedActions[$item->getItemID()] = ['markread', 'copy', 'save'];
+                $allowedActions[$item->getItemID()] = ['markread'];
             }
         }
 
