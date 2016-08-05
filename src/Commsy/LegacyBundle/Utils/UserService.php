@@ -112,6 +112,15 @@ class UserService
                 }
             }
         }
+        
+        // status
+        if (isset($formData['user_status'])) {
+            if ($formData['user_status'] != 'is contact') {
+                $this->userManager->setStatusLimit($formData['user_status']);
+            } else {
+                $this->userManager->setContactModeratorLimit();
+            }
+        }
     }
 
 
