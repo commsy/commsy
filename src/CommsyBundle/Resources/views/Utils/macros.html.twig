@@ -302,6 +302,7 @@
 
 {% macro ratingStatusDetail(item, ratingArray) %}
     {% set rating = 0 %}
+    {% set ratingPath = 'commsy_' ~ item.itemType ~ '_rating' %}
     {% if ratingArray.ratingAverageDetail.0 is defined %}
         {% set rating = ratingArray.ratingAverageDetail.0 %}
     {% endif %}
@@ -316,7 +317,7 @@
                 {% if rating >= i %}
                     {% if not ratingArray.ratingOwnDetail %}
                         <a id="cs-rating-{{ i }}" class="cs-rating uk-text-muted" href="" data-cs-rating='{
-                            "rating": "{{ i }}", "url": "{{ path('commsy_material_rating', {'roomId': item.contextId, 'itemId': item.itemId, 'vote': i}) }}",
+                            "rating": "{{ i }}", "url": "{{ path(ratingPath, {'roomId': item.contextId, 'itemId': item.itemId, 'vote': i}) }}",
                             "successMessage": "<i class=\"uk-icon-star\"></i> {{ 'ratingStored'|trans({}, 'material') }}",
                             "errorMessage": "<i class=\"uk-icon-info\"></i> {{ 'action error'|trans }}"
                         }'><i class="cs-icon-star-small uk-icon-star uk-text-warning"></i></a>
@@ -329,7 +330,7 @@
                 {% if rating < i %}
                     {% if not ratingArray.ratingOwnDetail %}
                         <a id="cs-rating-{{ i }}" class="cs-rating uk-text-muted" href="" data-cs-rating='{
-                            "rating": "{{ i }}", "url": "{{ path('commsy_material_rating', {'roomId': item.contextId, 'itemId': item.itemId, 'vote': i}) }}",
+                            "rating": "{{ i }}", "url": "{{ path(ratingPath, {'roomId': item.contextId, 'itemId': item.itemId, 'vote': i}) }}",
                             "successMessage": "<i class=\"uk-icon-star\"></i> {{ 'ratingStored'|trans({}, 'material') }}",
                             "errorMessage": "<i class=\"uk-icon-info\"></i> {{ 'action error'|trans }}"
                         }'><i class="cs-icon-star-small uk-icon-star-o"></i></a>
@@ -380,7 +381,7 @@
                     {{ 'ratingNoOwn'|trans({}, 'material') }}
                 {% else %}
                     {{ 'ratingOwn'|trans({}, 'material') }} <span class="uk-text-bold">{{ ratingArray.ratingOwnDetail }}</span> (<a id="cs-rating-remove" href="" data-cs-rating-remove='{
-                        "url": "{{ path('commsy_material_rating', {'roomId': item.contextId, 'itemId': item.itemId, 'vote': 'remove'}) }}",
+                        "url": "{{ path(ratingPath, {'roomId': item.contextId, 'itemId': item.itemId, 'vote': 'remove'}) }}",
                         "successMessage": "<i class=\"uk-icon-star\"></i> {{ 'ratingDeleted'|trans({}, 'material') }}",
                         "errorMessage": "<i class=\"uk-icon-info\"></i> {{ 'action error'|trans }}"
                     }'>{{ 'ratingDelete'|trans({}, 'material') }}</a>)

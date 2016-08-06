@@ -376,6 +376,7 @@ class AnnouncementController extends Controller
             'showCategories' => $infoArray['showCategories'],
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
+            'ratingArray' => $infoArray['ratingArray'],
        );
     }
     /**
@@ -572,9 +573,17 @@ class AnnouncementController extends Controller
                 $lastItemId = $announcements[sizeof($announcements)-1]->getItemId();
             }
         }
-        // mark annotations as readed
+        // mark annotations as read
         $annotationList = $announcement->getAnnotationList();
         $annotationService->markAnnotationsReadedAndNoticed($annotationList);
+        
+        $ratingDetail = array();
+        if ($current_context->isAssessmentActive()) {
+            $assessmentService = $this->get('commsy_legacy.assessment_service');
+            $ratingDetail = $assessmentService->getRatingDetail($announcement);
+            $ratingAverageDetail = $assessmentService->getAverageRatingDetail($announcement);
+            $ratingOwnDetail = $assessmentService->getOwnRatingDetail($announcement);
+        }
         
         $infoArray['announcement'] = $announcement;
         $infoArray['readerList'] = $readerList;
@@ -595,7 +604,11 @@ class AnnouncementController extends Controller
         $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
-
+        $infoArray['ratingArray'] = $current_context->isAssessmentActive() ? [
+            'ratingDetail' => $ratingDetail,
+            'ratingAverageDetail' => $ratingAverageDetail,
+            'ratingOwnDetail' => $ratingOwnDetail,
+        ] : [];
         
         return $infoArray;
     }
@@ -852,6 +865,38 @@ class AnnouncementController extends Controller
         $response->headers->set('Content-Disposition', $contentDisposition);
 
         return $response;
+    }
+    
+    /**
+     * @Route("/room/{roomId}/announcement/{itemId}/rating/{vote}")
+     * @Template()
+     **/
+    public function ratingAction($roomId, $itemId, $vote, Request $request)
+    {
+        $announcementService = $this->get('commsy_legacy.announcement_service');
+        $announcement = $announcementService->getAnnouncement($itemId);
+        
+        $assessmentService = $this->get('commsy_legacy.assessment_service');
+        if ($vote != 'remove') {
+            $assessmentService->rateItem($announcement, $vote);
+        } else {
+            $assessmentService->removeRating($announcement);
+        }
+        
+        $assessmentService = $this->get('commsy_legacy.assessment_service');
+        $ratingDetail = $assessmentService->getRatingDetail($announcement);
+        $ratingAverageDetail = $assessmentService->getAverageRatingDetail($announcement);
+        $ratingOwnDetail = $assessmentService->getOwnRatingDetail($announcement);
+        
+        return array(
+            'roomId' => $roomId,
+            'announcement' => $announcement,
+            'ratingArray' =>  array(
+                'ratingDetail' => $ratingDetail,
+                'ratingAverageDetail' => $ratingAverageDetail,
+                'ratingOwnDetail' => $ratingOwnDetail,
+            ),
+        );
     }
 
 }
