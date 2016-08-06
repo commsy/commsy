@@ -30,6 +30,17 @@ class AnnouncementTransformer implements DataTransformerInterface
             $datetime = new \DateTime($announcementItem->getSecondDateTime());
             $announcementData['validdate']['date'] = $datetime;
             $announcementData['validdate']['time'] = $datetime;
+            
+            if ($announcementItem->isNotActivated()) {
+                $announcementData['hidden'] = true;
+                
+                $activating_date = $announcementItem->getActivatingDate();
+                if (!stristr($activating_date,'9999')){
+                    $datetime = new \DateTime($activating_date);
+                    $announcementData['hiddendate']['date'] = $datetime;
+                    $announcementData['hiddendate']['time'] = $datetime;
+                }
+            }
         }
 
         return $announcementData;
@@ -53,11 +64,26 @@ class AnnouncementTransformer implements DataTransformerInterface
             $datetime = $announcementData['validdate']['date'];
             $time = explode(":", $announcementData['validdate']['time']->format('H:i'));
             $datetime->setTime($time[0], $time[1]);
-
             $announcementObject->setSecondDateTime($datetime->format('Y-m-d H:i:s'));
 
+        }
+        
+        if ($announcementData['hidden']) {
+            if ($announcementData['hiddendate']['date']) {
+                // add validdate to validdate
+                $datetime = $announcementData['hiddendate']['date'];
+                if ($announcementData['hiddendate']['time']) {
+                    $time = explode(":", $announcementData['hiddendate']['time']->format('H:i'));
+                    $datetime->setTime($time[0], $time[1]);
+                }
+                $announcementObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
+            } else {
+                $announcementObject->setModificationDate('9999-00-00 00:00:00');
+            }
         } else {
-            $datetime = $announcementData['validdate']['date'];
+            if($announcementObject->isNotActivated()){
+	            $announcementObject->setModificationDate(getCurrentDateTimeInMySQL());
+	        }
         }
         
         return $announcementObject;

@@ -32,7 +32,17 @@ class DateType extends AbstractType
                 'label' => 'permission',
                 'required' => false,
                 'translation_domain' => 'form',
-            ));
+            ))
+            ->add('hidden', CheckboxType::class, array(
+                'label' => 'hidden',
+                'required' => false,
+                'translation_domain' => 'form',
+            ))
+            ->add('hiddendate', DateTimeSelectType::class, array(
+                'label' => 'hidden until',
+                'translation_domain' => 'announcement'
+            ))
+        ;
         
         if (!isset($options['attr']['unsetRecurrence'])) {
             $builder

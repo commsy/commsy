@@ -28,11 +28,6 @@ class StepType extends AbstractType
                 ),
                 'translation_domain' => 'material',
             ))
-            ->add('permission', CheckboxType::class, array(
-                'label' => 'permission',
-                'required' => false,
-                'translation_domain' => 'form',
-            ))
             ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',

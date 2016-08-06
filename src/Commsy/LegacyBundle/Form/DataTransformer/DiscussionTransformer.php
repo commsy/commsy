@@ -26,6 +26,17 @@ class DiscussionTransformer implements DataTransformerInterface
         if ($discussionItem) {
             $discussionData['title'] = $discussionItem->getTitle();
             $discussionData['permission'] = $discussionItem->isPrivateEditing();
+            
+            if ($discussionItem->isNotActivated()) {
+                $discussionData['hidden'] = true;
+                
+                $activating_date = $discussionItem->getActivatingDate();
+                if (!stristr($activating_date,'9999')){
+                    $datetime = new \DateTime($activating_date);
+                    $discussionData['hiddendate']['date'] = $datetime;
+                    $discussionData['hiddendate']['time'] = $datetime;
+                }
+            }
         }
 
         return $discussionData;
@@ -47,6 +58,24 @@ class DiscussionTransformer implements DataTransformerInterface
             $discussionObject->setPrivateEditing('0');
         } else {
             $discussionObject->setPrivateEditing('1');
+        }
+
+        if ($discussionData['hidden']) {
+            if ($discussionData['hiddendate']['date']) {
+                // add validdate to validdate
+                $datetime = $discussionData['hiddendate']['date'];
+                if ($discussionData['hiddendate']['time']) {
+                    $time = explode(":", $discussionData['hiddendate']['time']->format('H:i'));
+                    $datetime->setTime($time[0], $time[1]);
+                }
+                $discussionObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
+            } else {
+                $discussionObject->setModificationDate('9999-00-00 00:00:00');
+            }
+        } else {
+            if($discussionObject->isNotActivated()){
+	            $discussionObject->setModificationDate(getCurrentDateTimeInMySQL());
+	        }
         }
 
         return $discussionObject;

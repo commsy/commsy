@@ -27,6 +27,17 @@ class GroupTransformer implements DataTransformerInterface
             $groupData['title'] = $groupItem->getTitle();
             $groupData['description'] = $groupItem->getDescription();
             $groupData['permission'] = $groupItem->isPrivateEditing();
+            
+            if ($groupItem->isNotActivated()) {
+                $groupData['hidden'] = true;
+                
+                $activating_date = $groupItem->getActivatingDate();
+                if (!stristr($activating_date,'9999')){
+                    $datetime = new \DateTime($activating_date);
+                    $groupData['hiddendate']['date'] = $datetime;
+                    $groupData['hiddendate']['time'] = $datetime;
+                }
+            }
         }
 
         return $groupData;
@@ -49,6 +60,24 @@ class GroupTransformer implements DataTransformerInterface
             $groupObject->setPrivateEditing('0');
         } else {
             $groupObject->setPrivateEditing('1');
+        }
+
+        if ($groupData['hidden']) {
+            if ($groupData['hiddendate']['date']) {
+                // add validdate to validdate
+                $datetime = $groupData['hiddendate']['date'];
+                if ($groupData['hiddendate']['time']) {
+                    $time = explode(":", $groupData['hiddendate']['time']->format('H:i'));
+                    $datetime->setTime($time[0], $time[1]);
+                }
+                $groupObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
+            } else {
+                $groupObject->setModificationDate('9999-00-00 00:00:00');
+            }
+        } else {
+            if($groupObject->isNotActivated()){
+	            $groupObject->setModificationDate(getCurrentDateTimeInMySQL());
+	        }
         }
 
         return $groupObject;

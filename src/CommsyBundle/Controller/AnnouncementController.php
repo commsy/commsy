@@ -673,8 +673,12 @@ class AnnouncementController extends Controller
         } 
         
         $form->handleRequest($request);
+        
+        $submittedFormData = $form->getData();
+        
         if ($form->isValid()) {
-            if ($form->get('save')->isClicked()) {
+            $saveType = $form->getClickedButton()->getName();
+            if ($saveType == 'save') {
                 $announcementItem = $transformer->applyTransformation($announcementItem, $form->getData());
 
                 // update modifier

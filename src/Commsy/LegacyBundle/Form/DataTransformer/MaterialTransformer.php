@@ -72,6 +72,17 @@ class MaterialTransformer implements DataTransformerInterface
                 $materialData['biblio_sub']['foto_date'] = $materialItem->getFotoDate();
 
             }
+            
+            if ($materialItem->isNotActivated()) {
+                $materialData['hidden'] = true;
+                
+                $activating_date = $materialItem->getActivatingDate();
+                if (!stristr($activating_date,'9999')){
+                    $datetime = new \DateTime($activating_date);
+                    $materialData['hiddendate']['date'] = $datetime;
+                    $materialData['hiddendate']['time'] = $datetime;
+                }
+            }
 
         }
 
@@ -128,6 +139,23 @@ class MaterialTransformer implements DataTransformerInterface
             }
         }
         
+        if ($materialData['hidden']) {
+            if ($materialData['hiddendate']['date']) {
+                // add validdate to validdate
+                $datetime = $materialData['hiddendate']['date'];
+                if ($materialData['hiddendate']['time']) {
+                    $time = explode(":", $materialData['hiddendate']['time']->format('H:i'));
+                    $datetime->setTime($time[0], $time[1]);
+                }
+                $materialObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
+            } else {
+                $materialObject->setModificationDate('9999-00-00 00:00:00');
+            }
+        } else {
+            if($materialObject->isNotActivated()){
+	            $materialObject->setModificationDate(getCurrentDateTimeInMySQL());
+	        }
+        }
         
         return $materialObject;
     }

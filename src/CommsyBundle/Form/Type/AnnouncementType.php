@@ -46,6 +46,15 @@ class AnnouncementType extends AbstractType
                 'required' => false,
                 'translation_domain' => 'form',
             ))
+            ->add('hidden', CheckboxType::class, array(
+                'label' => 'hidden',
+                'required' => false,
+                'translation_domain' => 'form',
+            ))
+            ->add('hiddendate', DateTimeSelectType::class, array(
+                'label' => 'hidden until',
+                'translation_domain' => 'announcement'
+            ))
             ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',

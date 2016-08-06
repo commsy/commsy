@@ -27,6 +27,17 @@ class TodoTransformer implements DataTransformerInterface
             $todoData['title'] = $todoItem->getTitle();
             $todoData['description'] = $todoItem->getDescription();
             $todoData['permission'] = $todoItem->isPrivateEditing();
+            
+            if ($announcementItem->isNotActivated()) {
+                $todoData['hidden'] = true;
+                
+                $activating_date = $announcementItem->getActivatingDate();
+                if (!stristr($activating_date,'9999')){
+                    $datetime = new \DateTime($activating_date);
+                    $todoData['hiddendate']['date'] = $datetime;
+                    $todoData['hiddendate']['time'] = $datetime;
+                }
+            }
         }
 
         return $todoData;
@@ -49,6 +60,24 @@ class TodoTransformer implements DataTransformerInterface
             $todoObject->setPrivateEditing('0');
         } else {
             $todoObject->setPrivateEditing('1');
+        }
+
+        if ($todoData['hidden']) {
+            if ($todoData['hiddendate']['date']) {
+                // add validdate to validdate
+                $datetime = $todoData['hiddendate']['date'];
+                if ($todoData['hiddendate']['time']) {
+                    $time = explode(":", $todoData['hiddendate']['time']->format('H:i'));
+                    $datetime->setTime($time[0], $time[1]);
+                }
+                $todoObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
+            } else {
+                $todoObject->setModificationDate('9999-00-00 00:00:00');
+            }
+        } else {
+            if($todoObject->isNotActivated()){
+	            $todoObject->setModificationDate(getCurrentDateTimeInMySQL());
+	        }
         }
 
         return $todoObject;

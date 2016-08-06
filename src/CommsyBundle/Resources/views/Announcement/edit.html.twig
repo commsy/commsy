@@ -22,6 +22,18 @@
                 {{ form_widget(form.permission) }}  
             </div>
         </div>
+        <div class="uk-flex">
+            <label class="uk-form-label">{{ 'hidden'|trans }}</label>
+            <div class="uk-flex uk-margin-small-top">
+                {{ form_widget(form.hidden) }}
+            </div>
+        </div>
+        <div class="uk-flex">
+            <label class="uk-form-label">{{ 'hidden until'|trans }}</label>
+            <div class="uk-flex uk-margin-small-top">
+                {{ form_widget(form.hiddendate) }}
+            </div>
+        </div>
         <div class="uk-flex uk-margin-small-top">
             <div>
                 {{ form_row(form.save) }}

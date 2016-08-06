@@ -67,6 +67,17 @@ class DateTransformer implements DataTransformerInterface
                 $dateData = array_merge($dateData, $dateItem->getRecurrencePattern());
                 $dateData['recurring_sub']['untilDate'] = new \DateTime($dateData['recurringEndDate']);
             }
+            
+            if ($dateItem->isNotActivated()) {
+                $dateData['hidden'] = true;
+                
+                $activating_date = $dateItem->getActivatingDate();
+                if (!stristr($activating_date,'9999')){
+                    $datetime = new \DateTime($activating_date);
+                    $dateData['hiddendate']['date'] = $datetime;
+                    $dateData['hiddendate']['time'] = $datetime;
+                }
+            }
         }
 
         return $dateData;
@@ -100,6 +111,24 @@ class DateTransformer implements DataTransformerInterface
         $dateObject->setEndingTime($dateData['end']['time']->format('H:i'));
 
         $dateObject->setColor($dateData['color']);
+
+        if ($dateData['hidden']) {
+            if ($dateData['hiddendate']['date']) {
+                // add validdate to validdate
+                $datetime = $dateData['hiddendate']['date'];
+                if ($dateData['hiddendate']['time']) {
+                    $time = explode(":", $dateData['hiddendate']['time']->format('H:i'));
+                    $datetime->setTime($time[0], $time[1]);
+                }
+                $dateObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
+            } else {
+                $dateObject->setModificationDate('9999-00-00 00:00:00');
+            }
+        } else {
+            if($dateObject->isNotActivated()){
+	            $dateObject->setModificationDate(getCurrentDateTimeInMySQL());
+	        }
+        }
 
         return $dateObject;
     }
