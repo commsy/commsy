@@ -962,4 +962,36 @@ class DiscussionController extends Controller
             'readSinceModificationCount' => $read_since_modification_count,
         );
     }
+    
+    /**
+     * @Route("/room/{roomId}/discussion/{itemId}/rating/{vote}")
+     * @Template()
+     **/
+    public function ratingAction($roomId, $itemId, $vote, Request $request)
+    {
+        $discussionService = $this->get('commsy_legacy.discussion_service');
+        $discussion = $discussionService->getDiscussion($itemId);
+        
+        $assessmentService = $this->get('commsy_legacy.assessment_service');
+        if ($vote != 'remove') {
+            $assessmentService->rateItem($discussion, $vote);
+        } else {
+            $assessmentService->removeRating($discussion);
+        }
+        
+        $assessmentService = $this->get('commsy_legacy.assessment_service');
+        $ratingDetail = $assessmentService->getRatingDetail($discussion);
+        $ratingAverageDetail = $assessmentService->getAverageRatingDetail($discussion);
+        $ratingOwnDetail = $assessmentService->getOwnRatingDetail($discussion);
+        
+        return array(
+            'roomId' => $roomId,
+            'discussion' => $discussion,
+            'ratingArray' =>  array(
+                'ratingDetail' => $ratingDetail,
+                'ratingAverageDetail' => $ratingAverageDetail,
+                'ratingOwnDetail' => $ratingOwnDetail,
+            ),
+        );
+    }
 }

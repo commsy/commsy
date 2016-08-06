@@ -1,4 +1,4 @@
-{% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) %}
+{% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, ratingArray) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
     {% set pathName = '' %}
     {% if item.itemType == 'discussion' %}
@@ -23,6 +23,11 @@
                                 {% set discussion = item %}
                             {% endif %}
                         </div>
+                        {%if showRating %}
+                            <div class="uk-width-2-10  uk-text-right uk-padding-remove">
+                                {{  macros.ratingStatusDetail(item, ratingArray) }}
+                            </div>
+                        {% endif %}
                     {% else %}
                         <div class="uk-width-1-1">
                             <h1 class="uk-article-title">{{ item.title|raw }}</h1>
@@ -164,7 +169,7 @@
    </div>
 {% endmacro %}
 
-{% macro titleSave(item, modifierList, userCount, readCount, readSinceModificationCount) %}
+{% macro titleSave(item, modifierList, userCount, readCount, readSinceModificationCount, showRating, ratingArray) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
     <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
             <div class="uk-grid uk-margin-small-bottom">
@@ -173,6 +178,11 @@
                         <div class="uk-width-8-10">
                             <h1 class="uk-article-title">{{ item.title|raw }}</h1>
                         </div>
+                        {%if showRating %}
+                            <div class="uk-width-2-10  uk-text-right uk-padding-remove">
+                                {{  macros.ratingStatusDetail(item, ratingArray) }}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>        
                 <div class="uk-width-1-10  uk-text-right">
