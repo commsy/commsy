@@ -72,6 +72,24 @@
                             <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
                         </a>
                     </li>
+                    
+                    <li>
+                        <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_todo_feedaction', {'roomId': roomId}) }}, "action": "markpending""}' data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large"></i> {{ 'markpending'|trans({},'rubric') }}
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_todo_feedaction', {'roomId': roomId}) }}", "action": "markinprogress"}'>
+                            <i class="uk-icon-justify uk-icon-small uk-icon-spinner uk-visible-large"></i> {{ 'markinprogress'|trans({},'rubric') }}
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_todo_feedaction', {'roomId': roomId}) }}", "action": "markdone"}'>
+                            <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large"></i> {{ 'markdone'|trans({},'rubric') }}
+                        </a>
+                    </li>
                 {#% endblock %#}
             </ul>
         </div>

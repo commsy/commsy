@@ -198,6 +198,18 @@
                 <source>institution</source>
                 <target>Institutionen</target>
             </trans-unit>
+            <trans-unit id="markdone">
+                <source>markdone</source>
+                <target>Einträge als "erledigt" markieren</target>
+            </trans-unit>
+            <trans-unit id="markinprogress">
+                <source>markinprogress</source>
+                <target>Einträge als "in Bearbeitung" markieren</target>
+            </trans-unit>
+            <trans-unit id="markpending">
+                <source>markpending</source>
+                <target>Einträge als "nicht bearbeitet" markieren</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
