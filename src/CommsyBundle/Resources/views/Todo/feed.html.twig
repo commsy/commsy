@@ -52,7 +52,7 @@
                 </div>
             </div>
             
-             <div class="uk-width-2-10 uk-text-right uk-text-muted">
+            <div class="uk-width-2-10 uk-text-right uk-text-muted">
                 {% if todo.internalStatus == 0 %}
 
                 {% elseif todo.internalStatus == 1 %}
@@ -65,6 +65,14 @@
                     <i class="uk-icon-justify uk-icon-small uk-icon-circle uk-visible-large" data-uk-tooltip title="{{ todo.status }}"></i>
                 {% endif %}
             </div>
+            
+            {%if showRating %}
+                <div class="uk-width-2-10 uk-text-right">
+                    {%if showRating%}
+                        {{  macros.ratingStatus(todo, ratingList) }}
+                    {% endif %}
+                </div>
+            {% endif %}
         </header>
     </article>
 {% else %}

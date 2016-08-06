@@ -194,12 +194,23 @@ class TodoController extends Controller
             }
         }
 
+        $ratingList = array();
+        if ($current_context->isAssessmentActive()) {
+            $assessmentService = $this->get('commsy_legacy.assessment_service');
+            $itemIds = array();
+            foreach ($todos as $todo) {
+                $itemIds[] = $todo->getItemId();
+            }
+            $ratingList = $assessmentService->getListAverageRatings($itemIds);
+        }
+
         return array(
             'roomId' => $roomId,
             'todos' => $todos,
             'readerList' => $readerList,
             'showRating' => $current_context->isAssessmentActive(),
             'showWorkflow' => $current_context->withWorkflow(),
+            'ratingList' => $ratingList,
             'allowedActions' => $allowedActions,
         );
     }
@@ -423,6 +434,14 @@ class TodoController extends Controller
             $categories = $this->getTagDetailArray($roomCategories, $todoCategories);
         }
 
+        $ratingDetail = array();
+        if ($current_context->isAssessmentActive()) {
+            $assessmentService = $this->get('commsy_legacy.assessment_service');
+            $ratingDetail = $assessmentService->getRatingDetail($todo);
+            $ratingAverageDetail = $assessmentService->getAverageRatingDetail($todo);
+            $ratingOwnDetail = $assessmentService->getOwnRatingDetail($todo);
+        }
+
         return array(
             'roomId' => $roomId,
             'todo' => $todoService->getTodo($itemId),
@@ -438,6 +457,12 @@ class TodoController extends Controller
             'showCategories' => $current_context->withTags(),
             'showHashtags' => $current_context->withBuzzwords(),
             'roomCategories' => $categories,
+            'showRating' => $current_context->isAssessmentActive(),
+            'ratingArray' => $current_context->isAssessmentActive() ? [
+                'ratingDetail' => $ratingDetail,
+                'ratingAverageDetail' => $ratingAverageDetail,
+                'ratingOwnDetail' => $ratingOwnDetail,
+            ] : [],
         );
     }
     
@@ -694,6 +719,38 @@ class TodoController extends Controller
             'userCount' => $all_user_count,
             'readCount' => $read_count,
             'readSinceModificationCount' => $read_since_modification_count,
+        );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/todo/{itemId}/rating/{vote}")
+     * @Template()
+     **/
+    public function ratingAction($roomId, $itemId, $vote, Request $request)
+    {
+        $todoService = $this->get('commsy_legacy.todo_service');
+        $todo = $todoService->getTodo($itemId);
+        
+        $assessmentService = $this->get('commsy_legacy.assessment_service');
+        if ($vote != 'remove') {
+            $assessmentService->rateItem($todo, $vote);
+        } else {
+            $assessmentService->removeRating($material);
+        }
+        
+        $assessmentService = $this->get('commsy_legacy.assessment_service');
+        $ratingDetail = $assessmentService->getRatingDetail($todo);
+        $ratingAverageDetail = $assessmentService->getAverageRatingDetail($todo);
+        $ratingOwnDetail = $assessmentService->getOwnRatingDetail($todo);
+        
+        return array(
+            'roomId' => $roomId,
+            'todo' => $todo,
+            'ratingArray' =>  array(
+                'ratingDetail' => $ratingDetail,
+                'ratingAverageDetail' => $ratingAverageDetail,
+                'ratingOwnDetail' => $ratingOwnDetail,
+            ),
         );
     }
 }
