@@ -210,6 +210,10 @@
                 <source>markpending</source>
                 <target>Einträge als "nicht bearbeitet" markieren</target>
             </trans-unit>
+            <trans-unit id="marktodostatus">
+                <source>marktodostatus</source>
+                <target>Einträge als "%status%" markieren</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

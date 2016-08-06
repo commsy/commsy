@@ -86,6 +86,7 @@ class TodoController extends Controller
             'itemsCountArray' => $itemsCountArray,
             'showHashTags' => $roomItem->withBuzzwords(),
             'showCategories' => $roomItem->withTags(),
+            'statusList' => $roomItem->getExtraToDoStatusArray(),
         );
     }
     

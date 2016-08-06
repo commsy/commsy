@@ -246,6 +246,10 @@
                 <source>markpending</source>
                 <target>Mark entries as "pending"</target>
             </trans-unit>
+            <trans-unit id="marktodostatus">
+                <source>marktodostatus</source>
+                <target>Mark entries as "%status%"</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
