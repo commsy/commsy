@@ -62,17 +62,23 @@ class GroupTransformer implements DataTransformerInterface
             $groupObject->setPrivateEditing('1');
         }
 
-        if ($groupData['hidden']) {
-            if ($groupData['hiddendate']['date']) {
-                // add validdate to validdate
-                $datetime = $groupData['hiddendate']['date'];
-                if ($groupData['hiddendate']['time']) {
-                    $time = explode(":", $groupData['hiddendate']['time']->format('H:i'));
-                    $datetime->setTime($time[0], $time[1]);
+        if (isset($groupData['hidden'])) {
+            if ($groupData['hidden']) {
+                if ($groupData['hiddendate']['date']) {
+                    // add validdate to validdate
+                    $datetime = $groupData['hiddendate']['date'];
+                    if ($groupData['hiddendate']['time']) {
+                        $time = explode(":", $groupData['hiddendate']['time']->format('H:i'));
+                        $datetime->setTime($time[0], $time[1]);
+                    }
+                    $groupObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
+                } else {
+                    $groupObject->setModificationDate('9999-00-00 00:00:00');
                 }
-                $groupObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
             } else {
-                $groupObject->setModificationDate('9999-00-00 00:00:00');
+                if($groupObject->isNotActivated()){
+    	            $groupObject->setModificationDate(getCurrentDateTimeInMySQL());
+    	        }
             }
         } else {
             if($groupObject->isNotActivated()){

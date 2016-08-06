@@ -62,17 +62,23 @@ class TopicTransformer implements DataTransformerInterface
             $topicObject->setPrivateEditing('1');
         }
 
-        if ($topicData['hidden']) {
-            if ($topicData['hiddendate']['date']) {
-                // add validdate to validdate
-                $datetime = $topicData['hiddendate']['date'];
-                if ($topicData['hiddendate']['time']) {
-                    $time = explode(":", $topicData['hiddendate']['time']->format('H:i'));
-                    $datetime->setTime($time[0], $time[1]);
+        if (isset($topicData['hidden'])) {
+            if ($topicData['hidden']) {
+                if ($topicData['hiddendate']['date']) {
+                    // add validdate to validdate
+                    $datetime = $topicData['hiddendate']['date'];
+                    if ($topicData['hiddendate']['time']) {
+                        $time = explode(":", $topicData['hiddendate']['time']->format('H:i'));
+                        $datetime->setTime($time[0], $time[1]);
+                    }
+                    $topicObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
+                } else {
+                    $topicObject->setModificationDate('9999-00-00 00:00:00');
                 }
-                $topicObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
             } else {
-                $topicObject->setModificationDate('9999-00-00 00:00:00');
+                if($topicObject->isNotActivated()){
+    	            $topicObject->setModificationDate(getCurrentDateTimeInMySQL());
+    	        }
             }
         } else {
             if($topicObject->isNotActivated()){

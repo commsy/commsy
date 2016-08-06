@@ -68,17 +68,23 @@ class AnnouncementTransformer implements DataTransformerInterface
 
         }
         
-        if ($announcementData['hidden']) {
-            if ($announcementData['hiddendate']['date']) {
-                // add validdate to validdate
-                $datetime = $announcementData['hiddendate']['date'];
-                if ($announcementData['hiddendate']['time']) {
-                    $time = explode(":", $announcementData['hiddendate']['time']->format('H:i'));
-                    $datetime->setTime($time[0], $time[1]);
+        if (isset($announcementData['hidden'])) {
+            if ($announcementData['hidden']) {
+                if ($announcementData['hiddendate']['date']) {
+                    // add validdate to validdate
+                    $datetime = $announcementData['hiddendate']['date'];
+                    if ($announcementData['hiddendate']['time']) {
+                        $time = explode(":", $announcementData['hiddendate']['time']->format('H:i'));
+                        $datetime->setTime($time[0], $time[1]);
+                    }
+                    $announcementObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
+                } else {
+                    $announcementObject->setModificationDate('9999-00-00 00:00:00');
                 }
-                $announcementObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
             } else {
-                $announcementObject->setModificationDate('9999-00-00 00:00:00');
+                if($announcementObject->isNotActivated()){
+    	            $announcementObject->setModificationDate(getCurrentDateTimeInMySQL());
+    	        }
             }
         } else {
             if($announcementObject->isNotActivated()){

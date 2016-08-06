@@ -714,7 +714,6 @@ class AnnouncementController extends Controller
             'showHashtags' => $current_context->withBuzzwords(),
             'showCategories' => $current_context->withTags(),
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
-
         );
     }
 

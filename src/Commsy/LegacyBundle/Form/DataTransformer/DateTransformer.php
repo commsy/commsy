@@ -112,17 +112,23 @@ class DateTransformer implements DataTransformerInterface
 
         $dateObject->setColor($dateData['color']);
 
-        if ($dateData['hidden']) {
-            if ($dateData['hiddendate']['date']) {
-                // add validdate to validdate
-                $datetime = $dateData['hiddendate']['date'];
-                if ($dateData['hiddendate']['time']) {
-                    $time = explode(":", $dateData['hiddendate']['time']->format('H:i'));
-                    $datetime->setTime($time[0], $time[1]);
+        if (isset($dateData['hidden'])) {
+            if ($dateData['hidden']) {
+                if ($dateData['hiddendate']['date']) {
+                    // add validdate to validdate
+                    $datetime = $dateData['hiddendate']['date'];
+                    if ($dateData['hiddendate']['time']) {
+                        $time = explode(":", $dateData['hiddendate']['time']->format('H:i'));
+                        $datetime->setTime($time[0], $time[1]);
+                    }
+                    $dateObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
+                } else {
+                    $dateObject->setModificationDate('9999-00-00 00:00:00');
                 }
-                $dateObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
             } else {
-                $dateObject->setModificationDate('9999-00-00 00:00:00');
+                if($dateObject->isNotActivated()){
+    	            $dateObject->setModificationDate(getCurrentDateTimeInMySQL());
+    	        }
             }
         } else {
             if($dateObject->isNotActivated()){

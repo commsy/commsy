@@ -109,6 +109,12 @@
                                 article.html($(result));
 
                                 $this.registerArticleEvents(article);
+                                
+                                let title = $(result).find('.uk-article-title');
+                                
+                                if (title !== null) {
+                                    $('.uk-breadcrumb').find('.last').find('span').html(title.text());
+                                }
                             //});
                         });
                     });

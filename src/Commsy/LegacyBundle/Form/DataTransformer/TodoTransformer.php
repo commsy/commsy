@@ -62,17 +62,23 @@ class TodoTransformer implements DataTransformerInterface
             $todoObject->setPrivateEditing('1');
         }
 
-        if ($todoData['hidden']) {
-            if ($todoData['hiddendate']['date']) {
-                // add validdate to validdate
-                $datetime = $todoData['hiddendate']['date'];
-                if ($todoData['hiddendate']['time']) {
-                    $time = explode(":", $todoData['hiddendate']['time']->format('H:i'));
-                    $datetime->setTime($time[0], $time[1]);
+        if (isset($todoData['hidden'])) {
+            if ($todoData['hidden']) {
+                if ($todoData['hiddendate']['date']) {
+                    // add validdate to validdate
+                    $datetime = $todoData['hiddendate']['date'];
+                    if ($todoData['hiddendate']['time']) {
+                        $time = explode(":", $todoData['hiddendate']['time']->format('H:i'));
+                        $datetime->setTime($time[0], $time[1]);
+                    }
+                    $todoObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
+                } else {
+                    $todoObject->setModificationDate('9999-00-00 00:00:00');
                 }
-                $todoObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
             } else {
-                $todoObject->setModificationDate('9999-00-00 00:00:00');
+                if($todoObject->isNotActivated()){
+    	            $todoObject->setModificationDate(getCurrentDateTimeInMySQL());
+    	        }
             }
         } else {
             if($todoObject->isNotActivated()){
