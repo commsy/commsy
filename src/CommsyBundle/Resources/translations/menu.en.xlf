@@ -35,6 +35,10 @@
                 <source>Topic</source>
                 <target>Topics</target>
             </trans-unit>
+            <trans-unit id="material">
+                <source>Material</source>
+                <target>Materials</target>
+            </trans-unit>
             <trans-unit id="settings">
                 <source>settings</source>
                 <target>Settings</target>
