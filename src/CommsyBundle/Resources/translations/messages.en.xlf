@@ -294,6 +294,18 @@
                 <source>new version</source>
                 <target>New Version</target>
             </trans-unit>
+            <trans-unit id="edit">
+                <source>edit</source>
+                <target>edit</target>
+            </trans-unit>
+            <trans-unit id="hide">
+                <source>hide</source>
+                <target>less ...</target>
+            </trans-unit>
+            <trans-unit id="unhide">
+                <source>unhide</source>
+                <target>more ...</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

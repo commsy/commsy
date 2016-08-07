@@ -676,7 +676,7 @@
             <div class="uk-width-1-10 uk-flex uk-text-right">
                 {# edit action #}
                 {% if is_granted('ITEM_EDIT', date.itemId) %}
-                    <div class="cs-edit uk-hidden">
+                    <div class="cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
                         <a class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                     </div>
                 {% endif %}

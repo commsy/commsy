@@ -11,8 +11,12 @@
 
             this.element.first().find('i').each(function() {
                 if ($(this).hasClass('uk-icon-chevron-up')) {
+                    $(this).parent('a').attr('title', $(this).parent('a').data('unhide-title'));
+                    $('.uk-tooltip-inner').text($(this).parent('a').data('unhide-title'));
                     $(this).removeClass('uk-icon-chevron-up').addClass('uk-icon-chevron-down');
                 } else {
+                    $(this).parent('a').attr('title', $(this).parent('a').data('hide-title'));
+                    $('.uk-tooltip-inner').text($(this).parent('a').data('hide-title'));
                     $(this).removeClass('uk-icon-chevron-down').addClass('uk-icon-chevron-up');
                 }
             });

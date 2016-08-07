@@ -29,10 +29,10 @@
             // look for div.cs-edit and show on mouseover
             $(element)
                 .mouseover(function() {
-                    $(this).find('div.cs-edit').toggleClass('uk-hidden', false);
+                    $(this).find('div.cs-edit').toggleClass('uk-invisible', false);
                 })
                 .mouseout(function() {
-                    $(this).find('div.cs-edit').toggleClass('uk-hidden', true);
+                    $(this).find('div.cs-edit').toggleClass('uk-invisible', true);
                 });
 
             $this.registerArticleEvents(element);
@@ -44,6 +44,9 @@
 
         registerArticleEvents: function(element) {
             var $this = this;
+
+            $(element).find('div.cs-edit').find('a').attr('data-uk-tooltip', '');
+            $(element).find('div.cs-edit').find('a').attr('title', $(element).find('div.cs-edit').data('edit-title'));
 
             // show articles as selected, when mouseover the edit icon
             $(element).find('div.cs-edit')

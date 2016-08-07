@@ -213,13 +213,13 @@
     <div class="uk-width-1-10 uk-flex uk-text-right">
         {% if edit %}
             {% if is_granted('ITEM_EDIT', item.itemId) %}
-                <div class="cs-edit uk-hidden">
+                <div class="cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
                     <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                 </div>
             {% endif %}        
         {% endif %}
         <div class="cs-toggle-icon uk-margin-left uk-width-1-1">
-            <a class="cs-toggle" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+            <a class="cs-toggle" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
         </div>
    </div>
 {% endmacro %}

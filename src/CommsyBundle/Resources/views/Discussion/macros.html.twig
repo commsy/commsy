@@ -339,15 +339,15 @@
             <div class="uk-width-1-10 uk-flex uk-text-right">
                 {# edit action #}
                 {% if is_granted('ITEM_EDIT', item.itemId) %}
-                    <div class="cs-edit uk-hidden">
+                    <div class="cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
                         <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                     </div>
                 {% endif %}
 
                 {# toggle action #}
                 {% if not sectionList is empty %}
-                    <div class="cs-toggle-icon uk-margin-left uk-width-1-1 uk-hidden" data-cs-unhide-collapsed="{src: '.toggle-sections-{{ item.itemId }}'}">
-                        <a class="cs-toggle" data-uk-toggle="{target:'.toggle-sections-{{ item.itemId }}', cls: 'cs-toggle-full'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+                    <div class="cs-toggle-icon uk-margin-left uk-width-1-1 uk-invisible" data-cs-unhide-collapsed="{src: '.toggle-sections-{{ item.itemId }}'}">
+                        <a class="cs-toggle" data-uk-toggle="{target:'.toggle-sections-{{ item.itemId }}', cls: 'cs-toggle-full'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
                     </div>
                 {% endif %}
            </div>
