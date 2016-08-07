@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 {% import 'CommsyBundle:Base:printmacro.html.twig' as macros %}
 
-{% set item = group %}
+{% if group is defined %}
+    {% set item = group %}
+{% endif %}
 
 <html lang="de">
     <head>
@@ -30,20 +32,20 @@
 	                <article>
                     {# title, etc. #}
                     <div>
-                        {{ macros.title(group, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) }}
+                        {{ macros.title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) }}
                     </div>
             
                     {# description #}
                     <div>
-                        {{ macros.itemDescription('description', group, true, group.description) }}
+                        {{ macros.itemDescription('description', item, true, item.description) }}
                     </div>
             
                     {# members #}
                     <div>
-                        {{ macros.members(group,members) }}
+                        {{ macros.members(item,members) }}
                     </div>
  
-                    <div id="grouproom{{ group.itemId }}">
+                    <div id="grouproom{{ item.itemId }}">
                         <hr class="uk-width-9-10"/>
                         <article class="uk-article uk-margin-left uk-margin-right">
                             <a name="grouproom"></a>
@@ -58,15 +60,15 @@
                             <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
                                 <div class="uk-flex">
                                 <div class="uk-width-1-5 uk-text-left">
-                                {% if group.isGroupRoomActivated %}
+                                {% if item.isGroupRoomActivated %}
                                     <a class="uk-icon-large uk-icon-button uk-icon-sign-in" data-uk-tooltip title="{{'enter grouproom'|trans({}) }}"></a>
                                 {% else %}
                                     <span class="uk-icon-large uk-icon-button uk-icon-remove" data-uk-tooltip title="{{'no grouproom'|trans({},'group') }}"> </span>
                                 {% endif %}
                                 </div>
                                 <div class="uk-width-2-5 uk-text-left uk-margin-right">
-                                {% if group.isGroupRoomActivated %}
-                                    <span class="uk-text-bold">{{group.groupRoomItem.Title}}</span><br/>
+                                {% if item.isGroupRoomActivated %}
+                                    <span class="uk-text-bold">{{item.groupRoomItem.Title}}</span><br/>
                                     <p>
                                     {{'grouproom description text'|trans({},'group') }}    
                                     </p>
@@ -78,10 +80,10 @@
                                 {% endif %}
                                 </div>
                                 <div class="uk-width-2-5 uk-text-left">
-                                {% if group.isGroupRoomActivated %}
+                                {% if item.isGroupRoomActivated %}
                                     <span class="uk-text-bold">{{'grouproom information'|trans({},'group') }}</span><br/>
                                     <p>
-                                    {{'grouproom moderators'|trans({},'group') }}: {{group.groupRoomItem.ModeratorListString}}     
+                                    {{'grouproom moderators'|trans({},'group') }}: {{item.groupRoomItem.ModeratorListString}}     
                                     </p>
                                     <p>
                                       ToDo: Zuganglinks
@@ -96,7 +98,7 @@
 
 
                     {# links #}
-                    <div id="links{{ group.itemId }}" class="cs-toggle" data-uk-observe>
+                    <div id="links{{ item.itemId }}" class="cs-toggle" data-uk-observe>
                        <hr class="uk-width-9-10"/>
                         <article class="uk-article uk-margin-left uk-margin-right">
                             <a name="grouproom"></a>

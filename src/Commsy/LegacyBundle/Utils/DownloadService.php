@@ -57,7 +57,7 @@ class DownloadService
             mkdir($tempDirectory);
             
             // create PDF-file
-            $output = $this->serviceContainer->get('templating')->renderResponse('CommsyBundle:Material:detailPrint.html.twig', $detailArray);
+            $output = $this->serviceContainer->get('templating')->renderResponse('CommsyBundle:'.ucfirst($detailArray['item']->getItemType()).':detailPrint.html.twig', $detailArray);
             $pdf = $this->serviceContainer->get('knp_snappy.pdf')->getOutputFromHtml($output);
             file_put_contents($tempDirectory.'/test.pdf', $pdf);
         
@@ -395,6 +395,23 @@ class DownloadService
             }
         }
 
+        $categories = array();
+        if ($current_context->withTags()) {
+            $roomCategories = $this->serviceContainer->get('commsy_legacy.category_service')->getTags($roomId);
+            $dateCategories = $item->getTagsArray();
+            $categories = $this->getTagDetailArray($roomCategories, $dateCategories);
+        }
+
+        $articleList = [];
+        if ($item->getItemType() == 'discussion') {
+            $articleList = $item->getAllArticles()->to_array();
+        }
+
+        $members = [];
+        if ($item->getItemType() == 'group') {
+            $members = $item->getMemberItemList()->to_array();
+        }
+
         $infoArray['item'] = $item;
         $infoArray['readerList'] = $readerList;
         $infoArray['modifierList'] = $modifierList;
@@ -411,11 +428,15 @@ class DownloadService
         $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
+        $infoArray['showRating'] = $current_context->isAssessmentActive();
         $infoArray['ratingArray'] = $current_context->isAssessmentActive() ? [
             'ratingDetail' => $ratingDetail,
             'ratingAverageDetail' => $ratingAverageDetail,
             'ratingOwnDetail' => $ratingOwnDetail,
         ] : [];
+        $infoArray['roomCategories'] = $categories;
+        $infoArray['articleList'] = $articleList;
+        $infoArray['members'] = $members;
         
         if ($item->getItemType() == 'material') {
             $infoArray['sectionList'] = $sectionList;
@@ -432,5 +453,39 @@ class DownloadService
         }
                 
         return $infoArray;
+    }
+    
+    private function getTagDetailArray ($baseCategories, $itemCategories) {
+        $result = array();
+        $tempResult = array();
+        $addCategory = false;
+        foreach ($baseCategories as $baseCategory) {
+            if (!empty($baseCategory['children'])) {
+                $tempResult = $this->getTagDetailArray($baseCategory['children'], $itemCategories);
+            }
+            if (!empty($tempResult)) {
+                $addCategory = true;
+            }
+            $tempArray = array();
+            $foundCategory = false;
+            foreach ($itemCategories as $itemCategory) {
+                if ($baseCategory['item_id'] == $itemCategory['id']) {
+                    if ($addCategory) {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                    } else {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
+                    }
+                    $foundCategory = true;
+                }
+            }
+            if (!$foundCategory) {
+                if ($addCategory) {
+                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                }
+            }
+            $tempResult = array();
+            $addCategory = false;
+        }
+        return $result;
     }
 }

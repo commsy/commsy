@@ -385,7 +385,7 @@ class AnnouncementController extends Controller
     public function printAction($roomId, $itemId)
     {
 
-         $infoArray = $this->getDetailInfo($roomId, $itemId);
+        $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);

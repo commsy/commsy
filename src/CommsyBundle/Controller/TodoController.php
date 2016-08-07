@@ -13,6 +13,8 @@ use CommsyBundle\Form\Type\TodoType;
 use CommsyBundle\Form\Type\StepType;
 use CommsyBundle\Form\Type\AnnotationType;
 
+use Symfony\Component\HttpFoundation\Response;
+
 class TodoController extends Controller
 {
     /**
@@ -751,6 +753,248 @@ class TodoController extends Controller
                 'ratingAverageDetail' => $ratingAverageDetail,
                 'ratingOwnDetail' => $ratingOwnDetail,
             ),
+        );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/todo/{itemId}/print")
+     */
+    public function printAction($roomId, $itemId)
+    {
+
+        $infoArray = $this->getDetailInfo($roomId, $itemId);
+
+        // annotation form
+        $form = $this->createForm(AnnotationType::class);
+
+        $html = $this->renderView('CommsyBundle:Todo:detailPrint.html.twig', [
+            'roomId' => $roomId,
+            'item' => $infoArray['todo'],
+            'readerList' => $infoArray['readerList'],
+            'modifierList' => $infoArray['modifierList'],
+            'stepList' => $infoArray['stepList'],
+            'counterPosition' => $infoArray['counterPosition'],
+            'count' => $infoArray['count'],
+            'firstItemId' => $infoArray['firstItemId'],
+            'prevItemId' => $infoArray['prevItemId'],
+            'nextItemId' => $infoArray['nextItemId'],
+            'lastItemId' => $infoArray['lastItemId'],
+            'readCount' => $infoArray['readCount'],
+            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
+            'userCount' => $infoArray['userCount'],
+            'draft' => $infoArray['draft'],
+            'showRating' => $infoArray['showRating'],
+            'showHashtags' => $infoArray['showHashtags'],
+            'showCategories' => $infoArray['showCategories'],
+            'user' => $infoArray['user'],
+            'annotationForm' => $form->createView(),
+            'ratingArray' => $infoArray['ratingArray'],
+            'roomCategories' => 'roomCategories',
+        ]);
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        // get room item for information panel
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        $this->get('knp_snappy.pdf')->setOption('footer-line',true);
+        $this->get('knp_snappy.pdf')->setOption('footer-spacing', 1);
+        $this->get('knp_snappy.pdf')->setOption('footer-center',"[page] / [toPage]");
+        $this->get('knp_snappy.pdf')->setOption('header-line', true);
+        $this->get('knp_snappy.pdf')->setOption('header-spacing', 1 );
+        $this->get('knp_snappy.pdf')->setOption('header-right', date("d.m.y"));
+        $this->get('knp_snappy.pdf')->setOption('header-left', $roomItem->getTitle());
+        $this->get('knp_snappy.pdf')->setOption('header-center', "Commsy");
+        $this->get('knp_snappy.pdf')->setOption('images',true);
+        $this->get('knp_snappy.pdf')->setOption('load-media-error-handling','ignore');
+        $this->get('knp_snappy.pdf')->setOption('load-error-handling','ignore');
+
+        // set cookie for authentication - needed to request images
+        $this->get('knp_snappy.pdf')->setOption('cookie', [
+            'SID' => $legacyEnvironment->getSessionID(),
+        ]);
+
+       // return new Response($html);
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="print.pdf"'
+            ]
+        );
+    }
+    
+    private function getDetailInfo ($roomId, $itemId) {
+        $todoService = $this->get('commsy_legacy.todo_service');
+        $itemService = $this->get('commsy_legacy.item_service');
+        
+        $todo = $todoService->getTodo($itemId);
+
+        $stepList = $todo->getStepItemList()->to_array();
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $item = $todo;
+        $reader_manager = $legacyEnvironment->getReaderManager();
+        $reader = $reader_manager->getLatestReader($item->getItemID());
+        if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
+            $reader_manager->markRead($item->getItemID(), $item->getVersionID());
+        }
+
+        $noticed_manager = $legacyEnvironment->getNoticedManager();
+        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
+        if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
+            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
+        }
+
+        
+        $itemArray = array($todo);
+
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+ 
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $readerManager = $legacyEnvironment->getReaderManager();
+        $roomItem = $roomManager->getItem($todo->getContextId());        
+        $numTotalMember = $roomItem->getAllUsers();
+
+        $userManager = $legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager->setUserLimit();
+        $userManager->select();
+        $user_list = $userManager->get();
+        $all_user_count = $user_list->getCount();
+        $read_count = 0;
+        $read_since_modification_count = 0;
+
+        $current_user = $user_list->getFirst();
+        $id_array = array();
+        while ( $current_user ) {
+		   $id_array[] = $current_user->getItemID();
+		   $current_user = $user_list->getNext();
+		}
+		$readerManager->getLatestReaderByUserIDArray($id_array,$todo->getItemID());
+		$current_user = $user_list->getFirst();
+		while ( $current_user ) {
+	   	    $current_reader = $readerManager->getLatestReaderForUserByID($todo->getItemID(), $current_user->getItemID());
+            if ( !empty($current_reader) ) {
+                if ( $current_reader['read_date'] >= $todo->getModificationDate() ) {
+                    $read_count++;
+                    $read_since_modification_count++;
+                } else {
+                    $read_count++;
+                }
+            }
+		    $current_user = $user_list->getNext();
+		}
+        $read_percentage = round(($read_count/$all_user_count) * 100);
+        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
+        $readerService = $this->get('commsy_legacy.reader_service');
+        
+        $readerList = array();
+        $modifierList = array();
+        foreach ($itemArray as $item) {
+            $reader = $readerService->getLatestReader($item->getItemId());
+            if ( empty($reader) ) {
+               $readerList[$item->getItemId()] = 'new';
+            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
+               $readerList[$item->getItemId()] = 'changed';
+            }
+            
+            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+        }
+
+        // annotation form
+        $form = $this->createForm(AnnotationType::class);
+
+        $categories = array();
+        if ($current_context->withTags()) {
+            $roomCategories = $this->get('commsy_legacy.category_service')->getTags($roomId);
+            $todoCategories = $todo->getTagsArray();
+            $categories = $this->getTagDetailArray($roomCategories, $todoCategories);
+        }
+
+        $ratingDetail = array();
+        if ($current_context->isAssessmentActive()) {
+            $assessmentService = $this->get('commsy_legacy.assessment_service');
+            $ratingDetail = $assessmentService->getRatingDetail($todo);
+            $ratingAverageDetail = $assessmentService->getAverageRatingDetail($todo);
+            $ratingOwnDetail = $assessmentService->getOwnRatingDetail($todo);
+        }
+
+        $todos = $todoService->getListTodos($roomId);
+        $todoList = array();
+        $counterBefore = 0;
+        $counterAfter = 0;
+        $counterPosition = 0;
+        $foundTodo = false;
+        $firstItemId = false;
+        $prevItemId = false;
+        $nextItemId = false;
+        $lastItemId = false;
+        foreach ($todos as $tempTodo) {
+            if (!$foundTodo) {
+                if ($counterBefore > 5) {
+                    array_shift($todoList);
+                } else {
+                    $counterBefore++;
+                }
+                $todoList[] = $tempTodo;
+                if ($tempTodo->getItemID() == $todo->getItemID()) {
+                    $foundTodo = true;
+                }
+                if (!$foundTodo) {
+                    $prevItemId = $tempTodo->getItemId();
+                }
+                $counterPosition++;
+            } else {
+                if ($counterAfter < 5) {
+                    $todoList[] = $tempTodo;
+                    $counterAfter++;
+                    if (!$nextItemId) {
+                        $nextItemId = $tempTodo->getItemId();
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
+        if (!empty($todos)) {
+            if ($prevItemId) {
+                $firstItemId = $todos[0]->getItemId();
+            }
+            if ($nextItemId) {
+                $lastItemId = $todos[sizeof($todos)-1]->getItemId();
+            }
+        }
+
+        return array(
+            'roomId' => $roomId,
+            'todo' => $todoService->getTodo($itemId),
+            'stepList' => $stepList,
+            'readerList' => $readerList,
+            'modifierList' => $modifierList,
+            'user' => $legacyEnvironment->getCurrentUserItem(),
+            'annotationForm' => $form->createView(),
+            'userCount' => $all_user_count,
+            'readCount' => $read_count,
+            'readSinceModificationCount' => $read_since_modification_count,
+            'draft' => $itemService->getItem($itemId)->isDraft(),
+            'showCategories' => $current_context->withTags(),
+            'showHashtags' => $current_context->withBuzzwords(),
+            'roomCategories' => $categories,
+            'showRating' => $current_context->isAssessmentActive(),
+            'ratingArray' => $current_context->isAssessmentActive() ? [
+                'ratingDetail' => $ratingDetail,
+                'ratingAverageDetail' => $ratingAverageDetail,
+                'ratingOwnDetail' => $ratingOwnDetail,
+            ] : [],
+            'counterPosition' => $counterPosition,
+            'count' => sizeof($todos),
+            'firstItemId' => $firstItemId,
+            'prevItemId' => $prevItemId,
+            'nextItemId' => $nextItemId,
+            'lastItemId' => $lastItemId,
         );
     }
 }

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 {% import 'CommsyBundle:Base:printmacro.html.twig' as macros %}
 
-{% if material is defined %}
-    {% set item = material %}
+{% if topic is defined %}
+    {% set item = topic %}
 {% endif %}
 
 <html lang="de">
@@ -26,13 +26,13 @@
 
             <div>
 
-                {# material content panel #}
+                {# announcement content panel #}
                 <div class="uk-panel-box-primary">
                     {# content #}
                     <article>
                         {# title, etc. #}
                         <div>
-                            {{ macros.title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, ratingArray) }}
+                            {{ macros.title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) }}
                         </div>
                 
                         {# description #}
@@ -47,18 +47,13 @@
             
                         {# links #}
                         <div>
-                            {{ macros.links(item,showHashtags,showCategories,roomCategories) }}
+                            {{ macros.links(item,showHashtags,showCategories) }}
                         </div>
             
-                        {# workflow #}
-                        {% if showWorkflow %}
-                            <div>
-                                {{ macros.workflow(item, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate) }}
-                            </div>
-                        {% endif %}
+                        
                     </article>
                 
-                {% if sectionList is not empty %}
+                {% if readerList is not empty %}
                     <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top page-break-before">
                         <div class="uk-grid">
                             <div class="uk-text-large">
@@ -66,8 +61,8 @@
                             </div>
                         </div>
                     </div>       
-                    {# material sections #}
-                    {% for section in sectionList %}                               
+                    {# announcement sections #}
+                    {% for section in readerList %}
 
                             <article class="uk-article uk-position-relative page-break-inside">
                                 {# title #}
@@ -91,8 +86,7 @@
                 {% endif %}
                 
 
-                {# annotations #}
-                             
+                {# annotations #}             
                     
                         {{ render(controller(
                             'CommsyBundle:Annotation:feedPrint',

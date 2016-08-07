@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 {% import 'CommsyBundle:Base:printmacro.html.twig' as macros %}
 
-{% set item = announcement %}
+{% if announcement is defined %}
+    {% set item = announcement %}
+{% endif %}
 
 <html lang="de">
     <head>
@@ -30,22 +32,22 @@
                     <article>
                         {# title, etc. #}
                         <div>
-                            {{ macros.title(announcement, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) }}
+                            {{ macros.title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) }}
                         </div>
                 
                         {# description #}
                         <div>
-                            {{ macros.itemDescription('description', announcement, true, announcement.description) }}
+                            {{ macros.itemDescription('description', item, true, item.description) }}
                         </div>
                 
                         {# files #}
                         <div>
-                            {{ macros.files(announcement) }}
+                            {{ macros.files(item) }}
                         </div>
             
                         {# links #}
                         <div>
-                            {{ macros.links(announcement,showHashtags,showCategories) }}
+                            {{ macros.links(item,showHashtags,showCategories) }}
                         </div>
             
                         

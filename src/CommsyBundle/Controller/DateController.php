@@ -1441,7 +1441,7 @@ class DateController extends Controller
     public function printAction($roomId, $itemId)
     {
         $dateService = $this->get('commsy_legacy.date_service');
-        $itemService = $this->get('commsy.item_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         
         $date = $dateService->getDate($itemId);
 
@@ -1500,7 +1500,7 @@ class DateController extends Controller
         }
         $read_percentage = round(($read_count/$all_user_count) * 100);
         $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
         $modifierList = array();
@@ -1520,7 +1520,7 @@ class DateController extends Controller
 
         $categories = array();
         if ($current_context->withTags()) {
-            $roomCategories = $this->get('commsy.category_service')->getTags($roomId);
+            $roomCategories = $this->get('commsy_legacy.category_service')->getTags($roomId);
             $dateCategories = $date->getTagsArray();
             $categories = $this->getTagDetailArray($roomCategories, $dateCategories);
         }

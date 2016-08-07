@@ -1,4 +1,9 @@
-{% set link = url('commsy_' ~ item.type ~ '_detail', {'roomId': app.request.attributes.get('roomId'), 'itemId': item.itemId}) %}
+{% set type = item.type %}
+{% if item.type == 'label' or item.type == 'labels' %}
+    {% set type = item.labelType %}
+{% endif %}
+
+{% set link = url('commsy_' ~ type ~ '_detail', {'roomId': app.request.attributes.get('roomId'), 'itemId': item.itemId}) %}
 
 {% if contextItem.isProjectRoom %}
     {{ 'This email was sent from project room...'|trans({'%room_name%': contextItem.title}, 'mail') }}
@@ -23,11 +28,13 @@
         {{ 'group'|transchoice(0, {}, 'rubric') }}: {{ item.title }}
     {% elseif labelType == 'institution' or labelType == 'institutions' %}
         {{ 'institution'|transchoice(1, {}, 'rubric') }}: {{ item.title }}
+    {% elseif labelType == 'topic' or labelType == 'topics' %}
+        {{ 'topic'|transchoice(1, {}, 'rubric') }}: {{ item.title }}
     {% endif %}
 {% elseif item.type == 'discussion' or item.type == 'discussions' %}
     {{ 'discussion'|transchoice(0, {}, 'rubric') }}: {{ item.title }}
     {{ 'Number of entries'|trans({}, 'discussion') }}: {{ item.allArticlesCount }}
-    {{ 'Last entry'|trans({}, 'discussion') }}: {{ iten.latestArticleModificationDate|craue_date }}
+    {{ 'Last entry'|trans({}, 'discussion') }}: {{ item.latestArticleModificationDate|craue_date }}
 {% elseif item.type == 'date' %}
 
 {% endif %}

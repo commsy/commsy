@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 {% import 'CommsyBundle:Base:printmacro.html.twig' as macros %}
 
-{% set item = discussion %}
+{% if discussion is defined %}
+    {% set item = discussion %}
+{% endif %}
 
 <html lang="de">
     <head>
@@ -30,22 +32,22 @@
                     <article>
                         {# title, etc. #}
                         <div>
-                            {{ macros.title(discussion, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, ratingArray) }}
+                            {{ macros.title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, ratingArray) }}
                         </div>
                 
                         {# description #}
                         <div>
-                            {{ macros.itemDescription('description', discussion, true, discussion.description) }}
+                            {{ macros.itemDescription('description', item, true, item.description) }}
                         </div>
                 
                         {# files #}
                         <div>
-                            {{ macros.files(discussion) }}
+                            {{ macros.files(item) }}
                         </div>
             
                         {# links #}
                         <div>
-                            {{ macros.links(discussion,showHashtags,showCategories,roomCategories) }}
+                            {{ macros.links(item,showHashtags,showCategories,roomCategories) }}
                         </div>
             
                         

@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 {% import 'CommsyBundle:Base:printmacro.html.twig' as macros %}
 
-{% set item = date %}
+{% if date is defined %}
+    {% set item = date %}
+{% endif %}
 
 <html lang="de">
     <head>
@@ -30,27 +32,27 @@
 	                <article>
 	                    {# title, etc. #}
 	                    <div>
-	                        {{ macros.title(date, modifierList, userCount, readCount, readSinceModificationCount, draft) }}
+	                        {{ macros.title(item, modifierList, userCount, readCount, readSinceModificationCount, draft) }}
 	                    </div>
 
 	                    {# date #}
 	                    <div>
-	                        {{ macros.details(date) }}
+	                        {{ macros.details(item) }}
 	                    </div>
 	            
 	                    {# description #}
 	                    <div>
-	                        {{ macros.itemDescription('description', date, true, date.description) }}
+	                        {{ macros.itemDescription('description', item, true, item.description) }}
 	                    </div>
 	            
 	                    {# files #}
 	                    <div>
-	                        {{ macros.files(date) }}
+	                        {{ macros.files(item) }}
 	                    </div>
 	        
 	                    {# links #}
 	                    <div>
-	                        {{ macros.links(date,showHashtags,showCategories,roomCategories) }}
+	                        {{ macros.links(item,showHashtags,showCategories,roomCategories) }}
 	                    </div>
 	        
 	                    

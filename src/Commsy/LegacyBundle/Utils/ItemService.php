@@ -32,10 +32,12 @@ class ItemService
             $type = $item->getItemType();
 
             if ($type == 'label') {
-                $manager = $this->legacyEnvironment->getLabelManager();
-            } else {
-                $manager = $this->legacyEnvironment->getManager($type);
+                $labelManager = $this->legacyEnvironment->getLabelManager();
+                $labelItem = $labelManager->getItem($item->getItemID());
+                $type = $labelItem->getLabelType();
             }
+            
+            $manager = $this->legacyEnvironment->getManager($type);
 
             $item = $manager->getItem($item->getItemID());
             return $item;
