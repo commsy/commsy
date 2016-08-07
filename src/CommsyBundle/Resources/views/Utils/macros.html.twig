@@ -391,31 +391,37 @@
     </div>
 {% endmacro %}
 
-{% macro workflowTrafficLight(item) %}
+{% macro workflowTrafficLight(item, workflowTitles) %}
     {% import _self as macros %}
     
-    {{ macros.workflowStatus(item.workflowTrafficLight) }}
+    {{ macros.workflowStatus(item.workflowTrafficLight, workflowTitles) }}
 {% endmacro %}
 
-{% macro workflowStatus(status) %}
-    <div class="uk-text-nowrap">
-    {% if status == '0_green' %}
-        <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-success"></i>
-        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-    {% elseif status == '1_yellow' %}
-        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-        <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-warning"></i>
-        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-    {% elseif status == '2_red' %}
-        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-        <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-danger"></i>
-    {% else %}
-        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
-        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+{% macro workflowStatus(status, workflowTitles) %}
+    {% set title = '' %}
+    {% if workflowTitles[status] is defined %}
+        {% set title = workflowTitles[status] %}
     {% endif %}
+    <div class="uk-text-nowrap">
+        <span data-uk-tooltip title="{{ title }}">
+            {% if status == '0_green' %}
+                <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-success"></i>
+                <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+                <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+            {% elseif status == '1_yellow' %}
+                <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+                <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-warning"></i>
+                <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+            {% elseif status == '2_red' %}
+                <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+                <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+                <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-danger"></i>
+            {% else %}
+                <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+                <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+                <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+            {% endif %}
+        </span>
     </div>
 {% endmacro %}
 

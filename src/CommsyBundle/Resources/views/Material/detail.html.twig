@@ -202,7 +202,7 @@
                 
                     {# title, etc. #}
                     <div class="cs-toggle" data-uk-observe>
-                        {{ macrosMaterial.title(material, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, ratingArray) }}
+                        {{ macrosMaterial.title(material, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, ratingArray, workflowTitles) }}
                     </div>
             
                     {# description #}
@@ -223,7 +223,7 @@
                     {# workflow #}
                     {% if showWorkflow %}
                         <div id="workflow{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editworkflow', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                            {{ macrosItem.workflow(material, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate) }}
+                            {{ macrosItem.workflow(material, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate, workflowTitles) }}
                         </div>
                     {% endif %}
         

@@ -106,7 +106,13 @@ class MaterialController extends Controller
             'showRating' => $current_context->isAssessmentActive(),
             'showWorkflow' => $current_context->withWorkflow(),
             'ratingList' => $ratingList,
-            'allowedActions' => $allowedActions
+            'allowedActions' => $allowedActions,
+            'workflowTitles' => [
+                '0_green' => $roomItem->getWorkflowTrafficLightTextGreen(),
+                '1_yellow' => $roomItem->getWorkflowTrafficLightTextYellow(),
+                '2_red' => $roomItem->getWorkflowTrafficLightTextRed(),
+                '3_none' => '',
+            ]
         );
     }
 
@@ -306,6 +312,10 @@ class MaterialController extends Controller
      */
     public function detailAction($roomId, $itemId, $versionId = null, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+        
         $materialService = $this->get('commsy_legacy.material_service');
         if (!$versionId) {
             $material = $materialService->getMaterial($itemId);
@@ -377,6 +387,12 @@ class MaterialController extends Controller
             'canExportToWiki' => $canExportToWiki,
             'roomCategories' => $infoArray['roomCategories'],
             'versions' => $infoArray['versions'],
+            'workflowTitles' => [
+                '0_green' => $roomItem->getWorkflowTrafficLightTextGreen(),
+                '1_yellow' => $roomItem->getWorkflowTrafficLightTextYellow(),
+                '2_red' => $roomItem->getWorkflowTrafficLightTextRed(),
+                '3_none' => '',
+            ]
        );
     }
 
@@ -856,6 +872,10 @@ class MaterialController extends Controller
      */
     public function saveWorkflowAction($roomId, $itemId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+        
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
@@ -884,7 +904,13 @@ class MaterialController extends Controller
             'workflowUserArray' => $infoArray['workflowUserArray'],
             'workflowText' => $infoArray['workflowText'],
             'workflowValidityDate' => $infoArray['workflowValidityDate'],
-            'workflowResubmissionDate' => $infoArray['workflowResubmissionDate']
+            'workflowResubmissionDate' => $infoArray['workflowResubmissionDate'],
+            'workflowTitles' => [
+                '0_green' => $roomItem->getWorkflowTrafficLightTextGreen(),
+                '1_yellow' => $roomItem->getWorkflowTrafficLightTextYellow(),
+                '2_red' => $roomItem->getWorkflowTrafficLightTextRed(),
+                '3_none' => '',
+            ]
         );
     }
 
@@ -992,6 +1018,10 @@ class MaterialController extends Controller
      */
     public function saveAction($roomId, $itemId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+        
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
@@ -1021,7 +1051,13 @@ class MaterialController extends Controller
             'readCount' => $infoArray['readCount'],
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'showRating' => $infoArray['showRating'],
-            'showWorkflow' => $infoArray['showWorkflow']
+            'showWorkflow' => $infoArray['showWorkflow'],
+            'workflowTitles' => [
+                '0_green' => $roomItem->getWorkflowTrafficLightTextGreen(),
+                '1_yellow' => $roomItem->getWorkflowTrafficLightTextYellow(),
+                '2_red' => $roomItem->getWorkflowTrafficLightTextRed(),
+                '3_none' => '',
+            ]
         );
     }
 

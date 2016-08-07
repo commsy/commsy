@@ -1,4 +1,4 @@
-{% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, ratingArray) %}
+{% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, ratingArray, workflowTitles) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
     {% set pathName = '' %}
     {% if item.itemType == 'material' %}
@@ -30,7 +30,7 @@
                                 {{  macros.ratingStatusDetail(material, ratingArray) }}
                             {% endif %}
                             {%if showWorkflow%}
-                                {{  macros.workflowTrafficLight(material) }}
+                                {{  macros.workflowTrafficLight(material, workflowTitles) }}
                             {% endif %}
                             </div>
                         {% endif %}
@@ -175,7 +175,7 @@
    </div>
 {% endmacro %}
 
-{% macro titleSave(item, modifierList, userCount, readCount, readSinceModificationCount, showRating, showWorkflow) %}
+{% macro titleSave(item, modifierList, userCount, readCount, readSinceModificationCount, showRating, showWorkflow, workflowTitles) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
     <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
             <div class="uk-grid uk-margin-small-bottom">
@@ -195,7 +195,7 @@
                                 {{  macros.ratingStatus(material) }}
                             {% endif %}
                             {%if showWorkflow%}
-                                {{  macros.workflowTrafficLight(material) }}
+                                {{  macros.workflowTrafficLight(material, workflowTitles) }}
                             {% endif %}
                             </div>
                         {% endif %}

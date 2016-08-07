@@ -26,10 +26,10 @@ class ItemWorkflowType extends AbstractType
             ->add('workflowTrafficLight', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => array(
-                    '3_none' => 'none',
-                    '0_green' => 'valid',
-                    '1_yellow' => 'draft',
-                    '2_red' => 'invalid',
+                    '3_none' => '3_none',
+                    '0_green' => '0_green',
+                    '1_yellow' => '1_yellow',
+                    '2_red' => '2_red',
                 ),
                 'label' => 'workflowStatus',
                 'translation_domain' => 'item',

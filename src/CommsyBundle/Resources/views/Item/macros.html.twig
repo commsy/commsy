@@ -217,7 +217,7 @@
     {{ macros.editContent('links', item, true, content, preview, true, true, countEntries) }}
 {% endmacro %}
 
-{% macro workflow(item, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate) %}
+{% macro workflow(item, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate, workflowTitles) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
     {% set preview %}
@@ -226,7 +226,7 @@
         <div class="uk-width-1-3">
             <strong>{{ 'worflow status'|trans({}, "material") }}:</strong> <br/>
             <div class="uk-flex-inline">
-                <div class="uk-margin-right">{{ macros.workflowTrafficLight(item) }}</div>
+                <div class="uk-margin-right">{{ macros.workflowTrafficLight(item, workflowTitles) }}</div>
                 <div>{{workflowText}}</div>
              </div>         
         </div>
@@ -257,7 +257,7 @@
         <div class="uk-width-1-3">
             <strong>{{ 'worflow status'|trans({}, "material") }}:</strong> <br/>
             <div class="uk-flex-inline uk-margin-bottom">
-                <div class="uk-margin-right">{{ macros.workflowTrafficLight(item) }}</div>
+                <div class="uk-margin-right">{{ macros.workflowTrafficLight(item, workflowTitles) }}</div>
                 <div>{{workflowText}}</div>
              </div>         
         </div>
