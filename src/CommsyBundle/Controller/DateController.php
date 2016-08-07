@@ -473,6 +473,7 @@ class DateController extends Controller
             'showCategories' => $current_context->withTags(),
             'showHashtags' => $current_context->withBuzzwords(),
             'roomCategories' => $categories,
+            'isParticipating' => $date->isParticipant($legacyEnvironment->getCurrentUserItem()),
         );
     }
     
@@ -1574,5 +1575,25 @@ class DateController extends Controller
                 'Content-Disposition' => 'inline; filename="print.pdf"'
             ]
         );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/date/{itemId}/participate")
+     */
+    public function participateAction($roomId, $itemId, Request $request)
+    {
+        $dateService = $this->get('commsy_legacy.date_service');
+        $date = $dateService->getDate($itemId);
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
+        
+        if (!$date->isParticipant($legacyEnvironment->getCurrentUserItem())) {
+            $date->addParticipant($currentUser);
+        } else {
+            $date->removeParticipant($currentUser);
+        }
+
+        return $this->redirectToRoute('commsy_date_detail', array('roomId' => $roomId, 'itemId' => $itemId));
     }
 }

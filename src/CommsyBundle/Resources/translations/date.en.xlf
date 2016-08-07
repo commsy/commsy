@@ -234,6 +234,14 @@
                 <source>saveAllDates</source>
                 <target>Save for all dates of the series</target>
             </trans-unit>
+            <trans-unit id="add participant">
+                <source>add participant</source>
+                <target>Add participant</target>
+            </trans-unit>
+            <trans-unit id="remove participant">
+                <source>remove participant</source>
+                <target>Remove participant</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

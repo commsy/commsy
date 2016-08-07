@@ -91,6 +91,17 @@
                                                 <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                             {% endif %}
                                         </li>
+                                        
+                                        {# participant #}
+                                        <li>
+                                            <a href="{{ path('commsy_date_participate', {'roomId': roomId, 'itemId': date.itemId}) }}">
+                                                {% if not isParticipating %}
+                                                    <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'add participant'|trans({}, 'date')|capitalize }}
+                                                {% else %}
+                                                    <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'remove participant'|trans({}, 'date')|capitalize }}
+                                                {% endif %}
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>

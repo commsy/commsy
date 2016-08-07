@@ -234,6 +234,14 @@
                 <source>saveAllDates</source>
                 <target>Für alle Termine der Serie speichern</target>
             </trans-unit>
+            <trans-unit id="add participant">
+                <source>add participant</source>
+                <target>Teilnahme zusagen</target>
+            </trans-unit>
+            <trans-unit id="remove participant">
+                <source>remove participant</source>
+                <target>Teilnahme absagen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
