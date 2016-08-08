@@ -117,6 +117,11 @@
                                 if (title !== null) {
                                     $('.uk-breadcrumb').find('.last').find('span').html(title.text());
                                 }
+                                
+                                let workflow = $(result).find('.cs-workflow-traffic-light').html();
+                                if (workflow !== null) {
+                                    $('.uk-article').find('.cs-workflow-traffic-light').html(workflow);
+                                }
                             //});
                         });
                     });

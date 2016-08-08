@@ -403,7 +403,7 @@
         {% set title = workflowTitles[status] %}
     {% endif %}
     <div class="uk-text-nowrap">
-        <span data-uk-tooltip title="{{ title }}">
+        <span class="cs-workflow-traffic-light" data-uk-tooltip title="{{ title }}">
             {% if status == '0_green' %}
                 <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-success"></i>
                 <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
