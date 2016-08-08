@@ -23,13 +23,13 @@
             </div>
         </div>
         <div class="uk-flex">
-            <label class="uk-form-label">{{ 'hidden'|trans }}</label>
+            <label class="uk-form-label">{{ 'hidden'|trans({}, "form") }}</label>
             <div class="uk-flex uk-margin-small-top">
                 {{ form_widget(form.hidden) }}
             </div>
         </div>
         <div class="uk-flex">
-            <label class="uk-form-label">{{ 'hidden until'|trans }}</label>
+            <label class="uk-form-label">{{ 'hidden until'|trans({}, "form") }}</label>
             <div class="uk-flex uk-margin-small-top">
                 {{ form_widget(form.hiddendate) }}
             </div>

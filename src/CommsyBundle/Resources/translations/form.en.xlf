@@ -338,6 +338,14 @@
                 <source>use etherpad</source>
                 <target>Use etherpad</target>
             </trans-unit>
+            <trans-unit id="hidden">
+                <source>hidden</source>
+                <target>hidden</target>
+            </trans-unit>
+            <trans-unit id="hiddendate">
+                <source>hidden until</source>
+                <target>hidden until</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

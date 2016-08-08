@@ -42,7 +42,7 @@ class DateType extends AbstractType
             ))
             ->add('hiddendate', DateTimeSelectType::class, array(
                 'label' => 'hidden until',
-                'translation_domain' => 'announcement'
+                'translation_domain' => 'form'
             ))
         ;
         

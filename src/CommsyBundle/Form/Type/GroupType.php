@@ -42,7 +42,7 @@ class GroupType extends AbstractType
             ))
             ->add('hiddendate', DateTimeSelectType::class, array(
                 'label' => 'hidden until',
-                'translation_domain' => 'announcement'
+                'translation_domain' => 'form'
             ))
             ->add('save', SubmitType::class, array(
                 'attr' => array(

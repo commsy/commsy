@@ -50,7 +50,7 @@ class MaterialType extends AbstractType
             ))
             ->add('hiddendate', DateTimeSelectType::class, array(
                 'label' => 'hidden until',
-                'translation_domain' => 'announcement'
+                'translation_domain' => 'form'
             ))
             ->addEventSubscriber($this->etherpadFormListener)
             ->add('biblio_select', ChoiceType::class, array(

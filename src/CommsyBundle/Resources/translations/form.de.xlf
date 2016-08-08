@@ -338,6 +338,14 @@
                 <source>use etherpad</source>
                 <target>Etherpad als Editor verwenden</target>
             </trans-unit>
+            <trans-unit id="hidden">
+                <source>hidden</source>
+                <target>verbergen</target>
+            </trans-unit>
+            <trans-unit id="hiddendate">
+                <source>hidden until</source>
+                <target>verbergen bis</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
