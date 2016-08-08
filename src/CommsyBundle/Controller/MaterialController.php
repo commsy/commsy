@@ -1161,6 +1161,10 @@ class MaterialController extends Controller
      */
     public function createAction($roomId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+        
         $translator = $this->get('translator');
         
         $materialData = array();
@@ -1173,6 +1177,9 @@ class MaterialController extends Controller
         $materialItem->setBibKind('none');
         $materialItem->setDraftStatus(1);
         $materialItem->setPrivateEditing('1');
+        if ($roomItem->withWorkflow()) {
+            $materialItem->setWorkflowTrafficLight($roomItem->getWorkflowTrafficLightDefault());
+        }
         $materialItem->save();
 
         /* $form = $this->createForm('material', $materialData, array());
