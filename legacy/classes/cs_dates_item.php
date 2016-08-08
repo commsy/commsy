@@ -462,7 +462,7 @@ class cs_dates_item extends cs_item {
       $this->_saveFileLinks(); // this must be done after saving so we can be sure to have an item id
 
       global $symfonyContainer;
-      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.dates');
+      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.date');
       $em = $symfonyContainer->get('doctrine.orm.entity_manager');
       $repository = $em->getRepository('CommsyBundle:Dates');
 
@@ -478,7 +478,7 @@ class cs_dates_item extends cs_item {
       $this->SendDeleteEntryMailToModerators();
 
       global $symfonyContainer;
-      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.dates');
+      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.date');
       $em = $symfonyContainer->get('doctrine.orm.entity_manager');
       $repository = $em->getRepository('CommsyBundle:Dates');
 
