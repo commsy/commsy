@@ -242,6 +242,14 @@
                 <source>remove participant</source>
                 <target>Remove participant</target>
             </trans-unit>
+            <trans-unit id="calendar view">
+                <source>calendar view</source>
+                <target>Calendar</target>
+            </trans-unit>
+            <trans-unit id="list view">
+                <source>list view</source>
+                <target>List</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
