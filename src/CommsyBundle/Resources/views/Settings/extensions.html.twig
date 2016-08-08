@@ -34,21 +34,27 @@
                                 <div class='uk-form-controls'>
                                     <span style='width: 205px; display: inline-block;'>
                                         <label for='extension_settings_workflow_traffic_light_default_status_0'>
-                                            <img src="/templates/themes/default/img/workflow_traffic_light_green.png"/>
+                                            <i class="uk-icon-small uk-icon-circle uk-text-success"></i>
+                                            <i class="uk-icon-small uk-icon-circle-o"></i>
+                                            <i class="uk-icon-small uk-icon-circle-o"></i>
                                         </label>
                                         {{ form_widget(form.workflow.traffic_light.default_status.0) }}
                                     </span>
 
                                     <span style='width: 205px; display: inline-block;'>
                                         <label for='extension_settings_workflow_traffic_light_default_status_1'>
-                                            <img src="/templates/themes/default/img/workflow_traffic_light_yellow.png"/>
+                                            <i class="uk-icon-small uk-icon-circle-o"></i>
+                                            <i class="uk-icon-small uk-icon-circle uk-text-warning"></i>
+                                            <i class="uk-icon-small uk-icon-circle-o"></i>
                                         </label>
                                         {{ form_widget(form.workflow.traffic_light.default_status.1) }}
                                     </span>
 
                                     <span style='width: 205px; display: inline-block;'>
                                         <label for='extension_settings_workflow_traffic_light_default_status_2'>
-                                            <img src="/templates/themes/default/img/workflow_traffic_light_red.png"/>
+                                            <i class="uk-icon-small uk-icon-circle-o"></i>
+                                            <i class="uk-icon-small uk-icon-circle-o"></i>
+                                            <i class="uk-icon-small uk-icon-circle uk-text-danger"></i>
                                         </label>
                                         {{ form_widget(form.workflow.traffic_light.default_status.2) }}
                                     </span>
@@ -63,17 +69,23 @@
                                 <div class='uk-form-label'>{{ 'Status description' | trans({} , 'settings') }}</div>
                                 <div class='uk-form-controls'>
                                     <span style='width: 205px; display: inline-block;'>
-                                        <img src="/templates/themes/default/img/workflow_traffic_light_green.png"/>
+                                        <i class="uk-icon-small uk-icon-circle uk-text-success"></i>
+                                        <i class="uk-icon-small uk-icon-circle-o"></i>
+                                        <i class="uk-icon-small uk-icon-circle-o"></i>
                                         {{ form_widget(form.workflow.traffic_light.green_text) }}
                                     </span>
 
                                     <span style='width: 205px; display: inline-block;'>
-                                        <img src="/templates/themes/default/img/workflow_traffic_light_yellow.png"/>
+                                        <i class="uk-icon-small uk-icon-circle-o"></i>
+                                        <i class="uk-icon-small uk-icon-circle uk-text-warning"></i>
+                                        <i class="uk-icon-small uk-icon-circle-o"></i>
                                         {{ form_widget(form.workflow.traffic_light.yellow_text) }}
                                     </span>
 
                                     <span style='width: 205px; display: inline-block;'>
-                                        <img src="/templates/themes/default/img/workflow_traffic_light_red.png"/>
+                                        <i class="uk-icon-small uk-icon-circle-o"></i>
+                                        <i class="uk-icon-small uk-icon-circle-o"></i>
+                                        <i class="uk-icon-small uk-icon-circle uk-text-danger"></i>
                                         {{ form_widget(form.workflow.traffic_light.red_text) }}
                                     </span>
                                 </div>
