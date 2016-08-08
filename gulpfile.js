@@ -192,6 +192,10 @@ gulp.task('staticThemes', function(done) {
         promises.push(new Promise(function(resolve) {
             app.addStyle([
                 config.bowerDir + '/jstree/dist/themes/default/style.css',
+                config.bowerDir + '/nprogress/nprogress.css',
+                config.bowerDir + '/fullcalendar/dist/fullcalendar.css',
+                config.bowerDir + '/tooltipster/dist/css/tooltipster.bundle.min.css',
+                config.assetsDir + '/uikit-commsy/commsy.less',
                 theme.path + '/theme.less'
             ], 'commsy_' + theme.name + '.css').on('end', function() {
                 resolve();
