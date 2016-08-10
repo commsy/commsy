@@ -307,7 +307,6 @@
     {% set preview = '' %}
     {% set content = '' %}
  
-
     {% if not members is empty %}
        {% set preview %}
 
@@ -341,7 +340,7 @@
         {% endset %}
     
         {% set content %}
-        <div class="uk-margin-top uk-margin-bottom" data-uk-grid="{gutter: 20}">
+        <div class="uk-margin-top uk-margin-bottom" data-uk-grid="{gutter: 20}" data-uk-check-display>
             {% for member in members %}
         <div class="uk-width-medium-1-2">
 
