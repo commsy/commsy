@@ -371,6 +371,47 @@
                 <target>Konfiguration der E-Mail-Texte, die über das System verschickt werden.</target>
             </trans-unit>
 
+            <trans-unit id="email_select_text">
+                <source>Select e-mail text</source>
+                <target>Bitte wählen Sie eine Vorlage aus</target>
+            </trans-unit>
+            <trans-unit id="email_address">
+                <source>Address</source>
+                <target>Anrede</target>
+            </trans-unit>
+            <trans-unit id="email_salutation">
+                <source>Salutation</source>
+                <target>Grußformel</target>
+            </trans-unit>
+            <trans-unit id="email_delete_account">
+                <source>Delete account</source>
+                <target>Kennung löschen</target>
+            </trans-unit>
+            <trans-unit id="email_lock_account">
+                <source>Lock account</source>
+                <target>Kennung sperren</target>
+            </trans-unit>
+            <trans-unit id="email_approve_membership">
+                <source>Approve membership</source>
+                <target>Kennung freischalten / Status BenutzerIn</target>
+            </trans-unit>
+            <trans-unit id="email_change_status_moderator">
+                <source>Change status: moderator</source>
+                <target>Status Moderator</target>
+            </trans-unit>
+            <trans-unit id="email_change_status_contact_person">
+                <source>Change status: contact person</source>
+                <target>Zur/Zum AnsprechpartnerIn machen</target>
+            </trans-unit>
+            <trans-unit id="email_change_status_no_contact_person">
+                <source>Change status: no contact person</source>
+                <target>Status AnsprechpartnerIn entfernen</target>
+            </trans-unit>
+            <trans-unit id="email_change_status_read_only_user">
+                <source>Change status: read only user</source>
+                <target>Status lesendeR BenutzerIn</target>
+            </trans-unit>
+
             <!-- Extension settings -->
             <trans-unit id="extensions_configuration">
                 <source>Extensions Configuration</source>
