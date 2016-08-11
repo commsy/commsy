@@ -282,7 +282,7 @@ class LinkController extends Controller
                 $linkedItems = $membersList->to_array();
             }
         }
-        $ids = $item->getAllLinkeditemIDArray();
+        $ids = $item->getAllLinkedItemIDArray();
         foreach ($ids as $id) {
             $linkedItems[] = $itemService->getItem($id);
         }
