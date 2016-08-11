@@ -316,6 +316,50 @@
                 <source>Configure color theme text</source>
                 <target>Choose one of several available color themes for this room.</target>
             </trans-unit>
+            <trans-unit id="theme_default">
+                <source>default</source>
+                <target>default</target>
+            </trans-unit>
+            <trans-unit id="theme_football">
+                <source>football</source>
+                <target>football</target>
+            </trans-unit>
+            <trans-unit id="theme_stars">
+                <source>stars</source>
+                <target>stars</target>
+            </trans-unit>
+            <trans-unit id="theme_sun">
+                <source>sun</source>
+                <target>sun</target>
+            </trans-unit>
+            <trans-unit id="theme_ocean">
+                <source>ocean</source>
+                <target>ocean</target>
+            </trans-unit>
+            <trans-unit id="theme_schulcommsyhh">
+                <source>schulcommsyhh</source>
+                <target>schulcommsyhh</target>
+            </trans-unit>
+            <trans-unit id="theme_confetti">
+                <source>confetti</source>
+                <target>confetti</target>
+            </trans-unit>
+            <trans-unit id="theme_grey">
+                <source>grey</source>
+                <target>grey</target>
+            </trans-unit>
+            <trans-unit id="theme_darkblue">
+                <source>darkblue</source>
+                <target>darkblue</target>
+            </trans-unit>
+            <trans-unit id="theme_red">
+                <source>red</source>
+                <target>red</target>
+            </trans-unit>
+            <trans-unit id="theme_redgrey">
+                <source>redgrey</source>
+                <target>redgrey</target>
+            </trans-unit>
 
             <!-- Moderation settings -->
             <trans-unit id="moderation_configuration">
