@@ -178,6 +178,14 @@
                 setSort('workflow_status');
             });
             
+            $('#commsy-sort-time').on('click', function(event) {
+                setSort('time');
+            });
+            
+            $('#commsy-sort-place').on('click', function(event) {
+                setSort('place');
+            });
+            
             function setSort (newSort) {
                 if (newSort == $this.sort) {
                     if ($this.sortOrder == '') {

@@ -115,6 +115,14 @@
     $('#commsy-sort-workflow_status').on('click', function(event) {
         reloadCurrent('workflow_status', false);
     });
+    
+    $('#commsy-sort-time').on('click', function(event) {
+        reloadCurrent('time', false);
+    });
+    
+    $('#commsy-sort-place').on('click', function(event) {
+        reloadCurrent('place', false);
+    });
 
     function reloadCurrent (newSort, invert) {
         feedStart = 0;

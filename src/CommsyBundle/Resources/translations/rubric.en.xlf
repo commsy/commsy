@@ -250,6 +250,14 @@
                 <source>marktodostatus</source>
                 <target>Mark entries as "%status%"</target>
             </trans-unit>
+            <trans-unit id="time">
+                <source>time</source>
+                <target>Time</target>
+            </trans-unit>
+            <trans-unit id="place">
+                <source>place</source>
+                <target>Place</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
