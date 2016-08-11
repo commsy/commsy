@@ -70,6 +70,10 @@
                 <source>Back to room</source>
                 <target>Zurück zum Raum</target>
             </trans-unit>
+            <trans-unit id="create_entry">
+                <source>Create</source>
+                <target>Erstellen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

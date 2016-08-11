@@ -316,6 +316,50 @@
                 <source>Configure color theme text</source>
                 <target>Hier können Sie zwischen verschiedenen Farbschemata für diesen Raum auswählen.</target>
             </trans-unit>
+            <trans-unit id="theme_default">
+                <source>default</source>
+                <target>Standard</target>
+            </trans-unit>
+            <trans-unit id="theme_football">
+                <source>football</source>
+                <target>Fussball</target>
+            </trans-unit>
+            <trans-unit id="theme_stars">
+                <source>stars</source>
+                <target>Sterne</target>
+            </trans-unit>
+            <trans-unit id="theme_sun">
+                <source>sun</source>
+                <target>Sonne</target>
+            </trans-unit>
+            <trans-unit id="theme_ocean">
+                <source>ocean</source>
+                <target>Ozean</target>
+            </trans-unit>
+            <trans-unit id="theme_schulcommsyhh">
+                <source>schulcommsyhh</source>
+                <target>Schul-CommSy Hamburg</target>
+            </trans-unit>
+            <trans-unit id="theme_confetti">
+                <source>confetti</source>
+                <target>Konfetti</target>
+            </trans-unit>
+            <trans-unit id="theme_grey">
+                <source>grey</source>
+                <target>Grau</target>
+            </trans-unit>
+            <trans-unit id="theme_darkblue">
+                <source>darkblue</source>
+                <target>Dunkelblau</target>
+            </trans-unit>
+            <trans-unit id="theme_red">
+                <source>red</source>
+                <target>Rot</target>
+            </trans-unit>
+            <trans-unit id="theme_redgrey">
+                <source>redgrey</source>
+                <target>Rotgrau</target>
+            </trans-unit>
 
             <!-- Moderation settings -->
             <trans-unit id="moderation_configuration">
@@ -360,7 +404,7 @@
             </trans-unit>
             <trans-unit id="homenotice_text">
                 <source>Homenotice text</source>
-                <target>Sie können ein Material, eine Aufgabe, einen Termin oder eine Ankündigung als prominenten Hinweistext auf der Home anzeigen. Bitte geben Sie die Referenznummer des gewünschten Eintrags ein. Die Referenznummer finden Sie unterhalb eines Eintrags bei den Informationen zum Bearbeitungsstatus (auf das +-Zeichen klicken).</target>
+                <target>Sie können ein Material, eine Aufgabe, einen Termin oder eine Ankündigung als prominenten Hinweistext auf der Home anzeigen. Bitte geben Sie die Referenznummer des gewünschten Eintrags ein. Die Referenznummer finden Sie unterhalb eines Titels eines Eintrags, indem Sie auf das Pfeil-Icon (rechts neben "Bearbeiten") klicken.</target>
             </trans-unit>
             <trans-unit id="usernotice_text">
                 <source>Usernotice text</source>
@@ -369,6 +413,47 @@
             <trans-unit id="email_configuration_text">
                 <source>Email configuration text</source>
                 <target>Konfiguration der E-Mail-Texte, die über das System verschickt werden.</target>
+            </trans-unit>
+
+            <trans-unit id="email_select_text">
+                <source>Select e-mail text</source>
+                <target>Bitte wählen Sie eine Vorlage aus</target>
+            </trans-unit>
+            <trans-unit id="email_address">
+                <source>Address</source>
+                <target>Anrede</target>
+            </trans-unit>
+            <trans-unit id="email_salutation">
+                <source>Salutation</source>
+                <target>Grußformel</target>
+            </trans-unit>
+            <trans-unit id="email_delete_account">
+                <source>Delete account</source>
+                <target>Kennung löschen</target>
+            </trans-unit>
+            <trans-unit id="email_lock_account">
+                <source>Lock account</source>
+                <target>Kennung sperren</target>
+            </trans-unit>
+            <trans-unit id="email_approve_membership">
+                <source>Approve membership</source>
+                <target>Kennung freischalten / Status BenutzerIn</target>
+            </trans-unit>
+            <trans-unit id="email_change_status_moderator">
+                <source>Change status: moderator</source>
+                <target>Status Moderator</target>
+            </trans-unit>
+            <trans-unit id="email_change_status_contact_person">
+                <source>Change status: contact person</source>
+                <target>Zur/Zum AnsprechpartnerIn machen</target>
+            </trans-unit>
+            <trans-unit id="email_change_status_no_contact_person">
+                <source>Change status: no contact person</source>
+                <target>Status AnsprechpartnerIn entfernen</target>
+            </trans-unit>
+            <trans-unit id="email_change_status_read_only_user">
+                <source>Change status: read only user</source>
+                <target>Status lesendeR BenutzerIn</target>
             </trans-unit>
 
             <!-- Extension settings -->

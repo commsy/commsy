@@ -23,7 +23,7 @@
                                 {% endif %}
                             #}
 
-                                {{module|transchoice(1, {}, "rubric")|capitalize }}
+                                {{module|capitalize|transchoice(1, {}, "rubric") }}
                             {% else %}
                                 Missing rubric title
                             {% endif %}
