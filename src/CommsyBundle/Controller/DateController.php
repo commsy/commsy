@@ -44,7 +44,8 @@ class DateController extends Controller
         if ($dateFilter) {
             // setup filter form
             $defaultFilterValues = array(
-                'activated' => true
+                'activated' => true,
+                'past-dates' => false
             );
             $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
                 'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
@@ -55,6 +56,8 @@ class DateController extends Controller
 
             // set filter conditions on the date manager
             $dateService->setFilterConditions($filterForm);
+        } else {
+            $dateService->setPastFilter(false);
         }
 
         // get material list from manager service 
@@ -207,7 +210,8 @@ class DateController extends Controller
     {
         // setup filter form
         $defaultFilterValues = array(
-            'activated' => true
+            'activated' => true,
+            'past-dates' => false
         );
         $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
@@ -221,6 +225,8 @@ class DateController extends Controller
         if ($filterForm->isValid()) {
             // set filter conditions in material manager
             $dateService->setFilterConditions($filterForm);
+        } else {
+            $dateService->setPastFilter(false);
         }
 
         $itemsCountArray = $dateService->getCountArray($roomId);
@@ -240,7 +246,8 @@ class DateController extends Controller
     {
         // setup filter form
         $defaultFilterValues = array(
-            'activated' => true
+            'activated' => true,
+            'past-dates' => false
         );
         $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
@@ -323,7 +330,8 @@ class DateController extends Controller
     {
         // setup filter form
         $defaultFilterValues = array(
-            'activated' => true
+            'activated' => true,
+            'past-dates' => true
         );
         $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_date_calendar', array('roomId' => $roomId)),

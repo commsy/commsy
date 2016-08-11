@@ -346,6 +346,10 @@
                 <source>hidden until</source>
                 <target>verbergen bis</target>
             </trans-unit>
+            <trans-unit id="past-dates">
+                <source>past-dates</source>
+                <target>Vergangene Termine</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

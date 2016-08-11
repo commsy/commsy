@@ -22,6 +22,16 @@ class DateFilterType extends AbstractType
     {
         $builder
             ->add('activated', Filters\CheckboxFilterType::class, array(
+                'attr' => array(
+                    'onchange' => 'this.form.submit()',
+                ),
+                'translation_domain' => 'form',
+            ))
+            ->add('past-dates', Filters\CheckboxFilterType::class, array(
+                'attr' => array(
+                    'onchange' => 'this.form.submit()',
+                ),
+                'label' => 'past-dates',
                 'translation_domain' => 'form',
             ))
             ->add('rubrics', RubricFilterType::class, array(

@@ -51,6 +51,11 @@ class DateService
         if ($formData['activated']) {
             $this->dateManager->showNoNotActivatedEntries();
         }
+        
+        // past
+        if (!$formData['past-dates']) {
+            $this->dateManager->setFutureLimit();
+        }
 
         // rubrics
         if ($formData['rubrics']) {
@@ -91,6 +96,12 @@ class DateService
                     $this->dateManager->setTagArrayLimit($categories);
                 }
             }
+        }
+    }
+    
+    public function setPastFilter ($past) {
+        if (!$past) {
+            $this->dateManager->setFutureLimit();
         }
     }
     
