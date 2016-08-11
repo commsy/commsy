@@ -360,7 +360,7 @@
             </trans-unit>
             <trans-unit id="homenotice_text">
                 <source>Homenotice text</source>
-                <target>By entering the correct content ID number above, you can highlight a material, a task, an event or an announcement on top of the Home / noticeboard with an abbreviated feature text. To get the refering content ID number, view the piece of content you want to highlight in your browser, and click on the "+" where CommSy gives "Last edit" and versioning information. You can simply copy and paste the content ID number here.</target>
+                <target>By entering the correct content ID number above, you can highlight a material, a task, an event or an announcement on top of the Home / noticeboard with an abbreviated feature text. To get the refering content ID number, view the piece of content you want to highlight in your browser, and click on the arrow icon toggling information about the date of the "Last edit" and versioning. You can simply copy and paste the content ID number here.</target>
             </trans-unit>
             <trans-unit id="usernotice_text">
                 <source>Usernotice text</source>

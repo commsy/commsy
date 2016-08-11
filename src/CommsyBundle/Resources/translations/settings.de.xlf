@@ -360,7 +360,7 @@
             </trans-unit>
             <trans-unit id="homenotice_text">
                 <source>Homenotice text</source>
-                <target>Sie können ein Material, eine Aufgabe, einen Termin oder eine Ankündigung als prominenten Hinweistext auf der Home anzeigen. Bitte geben Sie die Referenznummer des gewünschten Eintrags ein. Die Referenznummer finden Sie unterhalb eines Eintrags bei den Informationen zum Bearbeitungsstatus (auf das +-Zeichen klicken).</target>
+                <target>Sie können ein Material, eine Aufgabe, einen Termin oder eine Ankündigung als prominenten Hinweistext auf der Home anzeigen. Bitte geben Sie die Referenznummer des gewünschten Eintrags ein. Die Referenznummer finden Sie unterhalb eines Titels eines Eintrags, indem Sie auf das Pfeil-Icon (rechts neben "Bearbeiten") klicken.</target>
             </trans-unit>
             <trans-unit id="usernotice_text">
                 <source>Usernotice text</source>
