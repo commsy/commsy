@@ -49,7 +49,7 @@ class DateController extends Controller
             // setup filter form
             $defaultFilterValues = array(
                 'activated' => true,
-                'past-dates' => false
+                'past-dates' => false,
             );
             $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
                 'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
@@ -545,6 +545,8 @@ class DateController extends Controller
 
             // set filter conditions on the date manager
             $dateService->setFilterConditions($filterForm);
+        } else {
+            $dateService->setPastFilter(false);
         }
 
         $listDates = $dateService->getCalendarEvents($roomId, $_GET['start'], $_GET['end']);

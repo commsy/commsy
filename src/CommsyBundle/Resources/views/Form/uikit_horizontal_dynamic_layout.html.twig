@@ -42,7 +42,7 @@
                 <input class="uk-hidden" type="radio" id="{{ child.vars.id }}" name="{{ child.vars.full_name }}" value="{{ child.vars.value }}" onchange="this.form.submit()" {% if child.vars.checked %} checked="checked"{% endif %} />
 
                 <span>
-                    <button class="uk-button uk-margin-small-bottom uk-margin-small-right{% if child.vars.checked %} uk-button-primary{% endif %}" onclick="$(this).parent().prev().prop('checked', !$(this).parent().prev().prop('checked')); $(this).parents('form').submit(); return false;">{{ child.vars.label }}</button>
+                    <span class="uk-button uk-margin-small-bottom uk-margin-small-right{% if child.vars.checked %} uk-button-primary{% endif %}" onclick="$(this).parent().prev().prop('checked', !$(this).parent().prev().prop('checked')); $(this).parents('form').submit(); return false;">{{ child.vars.label }}</span>
                 </span>
             {% endfor %}
         {% else %}
