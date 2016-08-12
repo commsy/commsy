@@ -1308,54 +1308,6 @@ if ( count($db) > 1 ) {
 }
 // multi master implementation - END
 
-/*********** SAVE SESSION ***********/
-
-// save session with history information
-// UPDATE: do not store ajax requests in history
-// comparison only works with $_GET['mod'] - not with $environment->getCurrentModule()...
-if ( $environment->getCurrentFunction() != 'getfile'
-     and $environment->getCurrentModule() != 'help'
-     and (!isset($_GET['mod']) or $_GET['mod'] != 'ajax')
-     and !($environment->getCurrentModule() == 'agb' and $environment->getCurrentFunction() == 'index')
-     and !empty($session)
-   ) {
-   $history = '';
-   $history = $session->getValue('history');
-   $current_page['context'] = $environment->getCurrentContextID();
-   $current_page['module'] = $current_module;
-   $current_page['function'] = $current_function;
-   $current_page['parameter'] = $environment->getCurrentParameterArray();
-
-   if ( !isset($_GET['mode']) or ($_GET['mode'] != 'print') ) {
-      if (empty($history)) {
-         $history[0] = $current_page;
-      } else {
-         $new_history[0] = $current_page;
-         if ($new_history[0] != $history[0]) {
-            $history = array_merge($new_history,$history);
-         }
-      }
-      while (count($history) > 5) {
-         array_pop($history);
-      }
-   }
-   if(isset($history[0]['parameter']['download'])) {
-      unset($history[0]['parameter']['download']);
-   }
-   unset($current_page);
-   $session->setValue('history',$history);
-   cleanupSession($session, $environment);
-   unset($history);
-   // kann sich die session nicht selbst speichern ???
-   $session_manager = $environment->getSessionManager();
-   $session_manager->update($session);
-   unset($session_manager);
-} elseif ( $environment->getCurrentModule() == 'agb' and $environment->getCurrentFunction() == 'index' ) {
-   $session_manager = $environment->getSessionManager();
-   $session_manager->save($session);
-   unset($session_manager);
-}
-
 /*********** LOGGING ***********/
 
 // Log information to database. If this part is changed, change it in page material_getfile.php, too!

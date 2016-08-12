@@ -12,18 +12,12 @@ services:
         class: Commsy\LegacyBundle\Authentication\LegacyAuthentication
         arguments: ['@commsy_legacy.environment']
 
-    # Event listeners
-    commsy_legacy.listener.legacy_kernel_listener:
-        class: Commsy\LegacyBundle\EventListener\LegacyKernelListener
-        arguments: ['@commsy_legacy.legacy_kernel', '@commsy_legacy.environment']
+    # Event subscriber
+    commsy_legacy.subscriber.KernelSubscriber:
+        class: Commsy\LegacyBundle\EventSubscriber\KernelSubscriber
+        arguments: ['@commsy_legacy.legacy_kernel', '@commsy_legacy.legacy_authentication', '@commsy_legacy.environment']
         tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 100 }
-
-    commsy_legacy.listener.legacy_authentication_listener:
-        class: Commsy\LegacyBundle\EventListener\LegacyAuthenticationListener
-        arguments: ['@commsy_legacy.legacy_authentication', '@commsy_legacy.environment']
-        tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 100 }
+            - { name: kernel.event_subscriber }
 
     # Legacy Environment
     commsy_legacy.environment:
