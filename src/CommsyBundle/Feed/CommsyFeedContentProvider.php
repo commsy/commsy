@@ -7,7 +7,7 @@ use Debril\RssAtomBundle\Exception\FeedException\FeedNotFoundException;
 use Debril\RssAtomBundle\Protocol\Parser\FeedContent;
 
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Component\Translation\TranslatorInterface;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
@@ -18,7 +18,7 @@ class CommsyFeedContentProvider implements FeedContentProviderInterface
     private $translator;
     private $feedCreatorFactory;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, RequestStack $requestStack, DataCollectorTranslator $translator, FeedCreatorFactory $feedCreatorFactory)
+    public function __construct(LegacyEnvironment $legacyEnvironment, RequestStack $requestStack, TranslatorInterface $translator, FeedCreatorFactory $feedCreatorFactory)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->requestStack = $requestStack;

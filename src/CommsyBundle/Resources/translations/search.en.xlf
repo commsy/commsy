@@ -18,6 +18,10 @@
                 <source>more results</source>
                 <target>More Results</target>
             </trans-unit>
+            <trans-unit id="search-no-results">
+                <source>No results found</source>
+                <target>No results found</target>
+            </trans-unit>
             <trans-unit id="search-results-title">
                 <source>Search Results (%totalHits% Hits)</source>
                 <target>Search Results (%totalHits% Hits)</target>
