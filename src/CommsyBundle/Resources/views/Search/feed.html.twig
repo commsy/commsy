@@ -1,22 +1,26 @@
 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
 {% for result in results %}
+    {% set entity = result.entity %}
+
     <article class="uk-comment">
 
         <header class="uk-comment-header uk-flex">
 
             {# user icon and modification time #}
             <div class="uk-margin-right uk-flex-item-none">
-                {% if result.entity.modifier.status >= 2 %}
-                    {{ macros.userIconLink(result.entity.modifier) }}
-                {% else %}
-                    {{ macros.userIcon(result.entity.modifier) }}
+                {% if entity.modifier is defined and entity.modifier is not empty %}
+                    {% if entity.modifier.status >= 2 %}
+                        {{ macros.userIconLink(entity.modifier) }}
+                    {% else %}
+                        {{ macros.userIcon(entity.modifier) }}
+                    {% endif %}
                 {% endif %}
                 <div class="uk-comment-meta">
-                    {% if result.entity.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                        {{ 'today'|trans({})|capitalize }}, {{ result.entity.modificationDate|date("H:i") }}
+                    {% if entity.modificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                        {{ 'today'|trans({})|capitalize }}, {{ entity.modificationDate|date("H:i") }}
                     {% else %}
-                        {{ result.entity.modificationDate|date("d.m.Y") }}
+                        {{ entity.modificationDate|date("d.m.Y") }}
                     {% endif %}
                 </div>
             </div>
@@ -24,22 +28,24 @@
             {# title and meta #}
             <div class="uk-width-8-10">
                 <h4 class="uk-comment-title">
-                    <a href="{{ path(result.routeName, {'roomId': result.entity.contextId, 'itemId': result.entity.itemId}) }}">
-                        {% if result.entity.title is defined %}
-                            {{ result.entity.title }}
+                    <a href="{{ path(result.routeName, {'roomId': entity.contextId, 'itemId': entity.itemId}) }}">
+                        {% if entity.title is defined %}
+                            {{ entity.title }}
                         {% endif %}
 
-                        {% if result.entity.firstname is defined and result.entity.lastname is defined %}
-                            {{ result.entity.firstname }} {{ result.entity.lastname }}
+                        {% if entity.firstname is defined and entity.lastname is defined %}
+                            {{ entity.firstname }} {{ entity.lastname }}
                         {% endif %}
                     </a>
                 </h4>
 
                 <div class="uk-comment-meta">
-                    {% if result.entity.author is defined and result.entity.author is not empty %}
-                        {{ 'by'|trans({})|capitalize }}: {{ result.entity.author }} ({{ result.entity.publishingDate }})
+                    {% if entity.author is defined and entity.author is not empty %}
+                        {{ 'by'|trans({})|capitalize }}: {{ entity.author }} ({{ entity.publishingDate }})
                     {% else %}
-                        {{ 'by'|trans({})|capitalize }}: {{ result.entity.modifier.fullname }} ({{ result.entity.getCreationDate|date("d.m.Y") }})
+                        {% if entity.modifier is defined and entity.modifier is not empty %}
+                            {{ 'by'|trans({})|capitalize }}: {{ entity.modifier.fullname }} ({{ entity.getCreationDate|date("d.m.Y") }})
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>
