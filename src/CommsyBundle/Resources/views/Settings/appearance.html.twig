@@ -5,7 +5,7 @@
 {% block content %}
     <div class="uk-grid">
 
-        <div class="uk-width-medium-3-4">
+        <div class="uk-width-medium-4-4">
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
@@ -24,26 +24,25 @@
                             <h1 class='uk-panel-title'>{{ 'Configure color theme'|trans({}, 'settings') }}</h1>
                             <div style="margin-bottom: 25px;">{{ 'Configure color theme text'|trans({}, 'settings') }}</div>
                             {{ form_row(form.theme) }}
-                        </div>                        
+                        </div>
                     {{ form_end(form) }}
                 </div>
                 
             </div>
         </div>
         
-        <div class="uk-width-medium-1-4">
+{#         <div class="uk-width-medium-1-4">
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div>{{ 'Information'|trans({}, 'settings') }}</div>
                     </div>
                 </div>
-
                 <div>
                     {{ 'Useful information'|trans({}, 'settings') }}
                 </div>
             </div>
+        </div> #}
 
-        </div>
     </div>
 {% endblock content %}

@@ -55,12 +55,18 @@ class GeneralSettingsType extends AbstractType
                 'constraints' => array(
                     new NotBlank(),
                 ),
+                'attr' => array(
+                    'style' => 'width: 250px;',
+                ),
             ))
             ->add('language', ChoiceType::class, array(
                 'choices' => array(
                     'User' => 'user',
                     'German' => 'de',
                     'English' => 'en',
+                ),
+                'attr' => array(
+                    'style' => 'width: 250px;',
                 ),
             ))
             ->add(
@@ -82,20 +88,20 @@ class GeneralSettingsType extends AbstractType
                 ))
                 ->add('room_image_data', HiddenType::class, array(
                 ))
-                ->add('repeat_x', CheckboxType::class, array(
-                    'label_attr' => array('class' => 'uk-form-label'),
-                    'value' => 'repeat_x',
-                ))
+                // ->add('repeat_x', CheckboxType::class, array(
+                //     'label_attr' => array('class' => 'uk-form-label'),
+                //     'value' => 'repeat_x',
+                // ))
 
                 // ->add('scroll_image', CheckboxType::class, array(
                 //     'label_attr' => array('class' => 'uk-form-label'),
                 //     'value' => 'scroll_image',
                 // ))
 
-                ->add('delete_custom_image', CheckboxType::class, array(
-                    'label_attr' => array('class' => 'uk-form-label'),
-                    'value' => 'delete_bg_image',
-                ))
+                // ->add('delete_custom_image', CheckboxType::class, array(
+                //     'label_attr' => array('class' => 'uk-form-label'),
+                //     'value' => 'delete_bg_image',
+                // ))
             )
             ->add('access_check', ChoiceType::class, array(
                 'required' => false,
@@ -144,10 +150,7 @@ class GeneralSettingsType extends AbstractType
             ))
         ;
 
-        // TODO: load bgimage of selected theme instead of always loading default theme bgimage
-        // TODO: remove label space for virtual field subgroupd "room_image" (so that no labels _and_ no space for labels is displayed for elements within group! 
-
-        // TODO: feed settings, theme configuration, filter room description input (cleanCKEditor)
+        // TODO: filter room description input (cleanCKEditor)
 
         // some form fields depend on the underlying data, so we delegate
         // the creation to an event listener

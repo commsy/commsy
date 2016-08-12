@@ -32,7 +32,7 @@
             </trans-unit>
             <trans-unit id="form-upload-2">
                 <source>selecting one</source>
-                <target>Or select one</target>
+                <target>Alternatively you can use the file selection dialog</target>
             </trans-unit>
             <trans-unit id="form-ideal-aspect-ratio">
                 <source>ideal aspect ratio</source>
