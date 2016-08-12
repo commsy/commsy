@@ -19,6 +19,12 @@ services:
         arguments: ['@request_stack', '@commsy_legacy.category_service']
         tags:
             - { name: form.type }
+            
+    commsy.filter.participant:
+        class: CommsyBundle\Filter\ParticipantFilterType
+        arguments: ['@request_stack', '@commsy_legacy.user_service']
+        tags:
+            - { name: form.type }
 
     # Migrations
     commsy.migrations.room:
@@ -313,6 +319,11 @@ services:
 
     commsy.form.type.moderationsupport:
         class: CommsyBundle\Form\Type\ModerationSupportType
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.participant:
+        class: CommsyBundle\Form\Type\ParticipantType
         tags:
             - { name: form.type }
 

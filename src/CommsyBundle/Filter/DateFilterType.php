@@ -49,6 +49,9 @@ class DateFilterType extends AbstractType
             ->add('rubrics', RubricFilterType::class, array(
                 'label' => false,
             ))
+            ->add('participant', ParticipantFilterType::class, array(
+                'label' => false,
+            ))
         ;
         if ($options['hasHashtags']) {
             $builder->add('hashtag', HashTagFilterType::class, array(

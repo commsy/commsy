@@ -72,6 +72,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
    private $_between_limit = null;
    private $_from_date_limit = null;
    private $_until_date_limit = null;
+   private $_participant_limit = null;
 
    /*
     * Translation Object
@@ -116,6 +117,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       $this->_related_user_limit = NULL;
       $this->_from_date_limit = null;
       $this->_until_date_limit = null;
+      $this->_participant_limit = null;
    }
 
    public function setNotOlderThanMonthLimit ( $month ) {
@@ -235,6 +237,10 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       $this->setDateModeLimit(2);
    }
 
+   function setParticipantArrayLimit ($limit) {
+       $this->_participant_limit = $limit;
+   }
+
    function _performQuery ($mode = 'select') {
       if ($mode == 'count') {
          $query = 'SELECT count('.$this->addDatabasePrefix('dates').'.item_id) AS count';
@@ -302,6 +308,10 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
         $tag_id_array = $this->_getTagIDArrayByTagIDArray($this->_tag_limit);
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('dates').'.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'"))) ';
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('dates').'.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'"))) ';
+     }
+     if ( isset($this->_participant_limit) ) {
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS participant_limit1 ON ( participant_limit1.deletion_date IS NULL AND ((participant_limit1.first_item_id='.$this->addDatabasePrefix('dates').'.item_id AND participant_limit1.second_item_type="'.CS_USER_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS participant_limit2 ON ( participant_limit2.deletion_date IS NULL AND ((participant_limit2.second_item_id='.$this->addDatabasePrefix('dates').'.item_id AND participant_limit2.first_item_type="'.CS_USER_TYPE.'"))) ';
      }
 
       // restrict dates by buzzword (la4)
@@ -424,11 +434,24 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
             $query .= ' OR (l42.first_item_id IN ('.encode(AS_DB,$id_string).') OR l42.second_item_id IN ('.encode(AS_DB,$id_string).') ))';
          }
       }
+      
       if (isset($this->_buzzword_limit)) {
          if ($this->_buzzword_limit ==-1){
             $query .= ' AND (l6.to_item_id IS NULL OR l6.deletion_date IS NOT NULL)';
          }else{
             $query .= ' AND buzzwords.item_id="'.encode(AS_DB,$this->_buzzword_limit).'"';
+         }
+      }
+
+      if ( isset($this->_participant_limit) ) {
+         $id_string = implode(', ',$this->_participant_limit);
+         
+         if( $this->_participant_limit == -1 ){
+            $query .= ' AND (participant_limit1.first_item_id IS NULL AND participant_limit1.second_item_id IS NULL)';
+            $query .= ' AND (participant_limit2.first_item_id IS NULL AND participant_limit2.second_item_id IS NULL)';
+         }else{
+            $query .= ' AND ( (participant_limit1.first_item_id IN ('.encode(AS_DB,$id_string).') OR participant_limit1.second_item_id IN ('.encode(AS_DB,$id_string).') )';
+            $query .= ' OR (participant_limit2.first_item_id IN ('.encode(AS_DB,$id_string).') OR participant_limit2.second_item_id IN ('.encode(AS_DB,$id_string).') ))';
          }
       }
 

@@ -87,6 +87,38 @@
     </div>
 {% endblock %}
 
+{% block participant_widget %}
+    {% import _self as macros %}
+
+    <div id="room-category">
+        <hr class="cs-list-divider"/>
+        <h4 class="cs-list-section-header">
+            <span class="cs-detail-section-header-background">
+                {{ 'participants'|trans({}, "date") }} 
+            </span>
+        </h4>
+
+        <div class="uk-hidden">
+            {% if form.children is not empty %}
+                {% for child in form.children %}
+                    <input type="checkbox" id="{{ child.vars.id }}" name="{{ child.vars.full_name }}" value="{{ child.vars.value }}" {% if child.vars.checked %} checked="checked"{% endif %} />
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div id="participants" data-cs-tree>
+            {% if form.vars is not empty %}
+                <ul class="uk-list uk-list-striped">
+                    {{ macros.nestedList(form.vars.choices, 0) }}
+                    </li>
+                </ul>
+            {% else %}
+                {{ 'No Participants'|trans({}, 'category') }}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
 {# Misc #}
 
 {% block form_start -%}
