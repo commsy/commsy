@@ -13,12 +13,10 @@
             })
             .done(function(result) {
                 var type = $($this).data('itemType');
-                // material
-                if (type == 'material') {
-                    location.href = $($this).data('returnUrl');
-                    // location.reload();
-                } else if (type == 'section') {
+                if (type == 'section') {
                     $($this).parents('.material-section').hide();
+                } else {
+                    location.href = $($this).data('returnUrl');
                 }
             });
         }, {

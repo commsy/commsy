@@ -818,16 +818,12 @@ class ItemController extends Controller
     {
         $environment = $this->get('commsy_legacy.environment')->getEnvironment();
         $itemService = $this->get('commsy_legacy.item_service');
-        $baseItem = $itemService->getItem($itemId);
-        
-        $rubricManager = $environment->getManager($baseItem->getItemType());
-        
-        $item = $rubricManager->getItem($itemId);
+        $item = $itemService->getTypedItem($itemId);
         
         $item->delete();
 
-        $route = 'commsy_'.$baseItem->getItemType().'_list';
-        if ($baseItem->getItemType() == 'date') {
+        $route = 'commsy_'.$item->getItemType().'_list';
+        if ($item->getItemType() == 'date') {
             $roomService = $this->get('commsy_legacy.room_service');
             $room = $roomService->getRoomItem($roomId);
             if ($room->getDatesPresentationStatus() != 'normal') {
