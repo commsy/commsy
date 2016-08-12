@@ -48,15 +48,13 @@ class SettingsController extends Controller
             )),
         ));
        
-        /*
-        $themeArray = $this->container->getParameter('liip_theme.themes');
-        dump("Themes:");
-        dump($themeArray);
-        dump("Current working directory:");
-        dump(getcwd());
-        dump("current items theme:");
-        dump($roomItem->getColorArray()['schema']);
-        */
+        // $themeArray = $this->container->getParameter('liip_theme.themes');
+        // dump("Themes:");
+        // dump($themeArray);
+        // dump("Current working directory:");
+        // dump(getcwd());
+        // dump("current items theme:");
+        // dump($roomItem->getColorArray()['schema']);
 
         $form->handleRequest($request);
         if ($form->isValid()) {

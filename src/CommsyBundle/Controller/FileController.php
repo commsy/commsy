@@ -47,17 +47,17 @@ class FileController extends Controller
         $filename = $roomItem->getBGImageFilename();
 
         if($filename == ''){
-            // TODO: determine selected theme instead of always loading default theme bg image here!
             $themesDir = $this->getParameter("themes_directory");
-            $completePath = $themesDir . "/" . "default/bg.jpg";
+            $completePath = $themesDir . "/" . $roomItem->getColorArray()['schema'] . "/bg.jpg";
         }
         else{
             $filepath = $this->getParameter('files_directory') . "/" .  $roomService->getRoomFileDirectory($roomId);
             $completePath = $filepath . "/" . $filename;
         }
 
-        if(file_exists($completePath)){
-        }
+        // if(file_exists($completePath)){
+        //     error_log($completePath);
+        // }
 
         $content = file_get_contents($completePath);
 
