@@ -374,6 +374,10 @@
                 <source>Array info text rubric</source>
                 <target>Rubrik:</target>
             </trans-unit>
+            <trans-unit id="rubric_message">
+                <source>Message</source>
+                <target>Text:</target>
+            </trans-unit>
             <trans-unit id="arrayrubricmail">
                 <source>Array mail text rubric</source>
                 <target>E-Mail-Texte:</target>
