@@ -6,7 +6,11 @@
         <li>
             <a href="#">
                 <i class="uk-icon-copy"></i>
-                <small id="cs-nav-copy-indicator"></small>
+                <small id="cs-nav-copy-indicator">
+                {% if count > 0 %}
+                    {{ count }}
+                {% endif %}
+                </small>
             </a>
         </li>
 

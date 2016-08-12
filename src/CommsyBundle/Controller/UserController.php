@@ -899,8 +899,17 @@ class UserController extends Controller
 
         $privateRoomItem = $currentUserItem->getOwnRoom();
 
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $sessionItem = $legacyEnvironment->getSessionItem();
+
+        $currentClipboardIds = array();
+        if ($sessionItem->issetValue('clipboard_ids')) {
+            $currentClipboardIds = $sessionItem->getValue('clipboard_ids');
+        }
+        
         return [
             'privateRoomItem' => $privateRoomItem,
+            'count' => sizeof($currentClipboardIds)
         ];
     }
     /**
