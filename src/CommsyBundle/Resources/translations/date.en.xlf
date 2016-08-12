@@ -226,6 +226,30 @@
                 <source>recurring date no chance hint</source>
                 <target>This settings cannot be changed</target>
             </trans-unit>
+            <trans-unit id="every">
+                <source>every</source>
+                <target>Every</target>
+            </trans-unit>
+            <trans-unit id="every week">
+                <source>every week</source>
+                <target>Every</target>
+            </trans-unit>
+            <trans-unit id="day">
+                <source>day</source>
+                <target>day</target>
+            </trans-unit>
+            <trans-unit id="week">
+                <source>week</source>
+                <target>week</target>
+            </trans-unit>
+            <trans-unit id="month">
+                <source>month</source>
+                <target>month</target>
+            </trans-unit>
+            <trans-unit id="repeat until">
+                <source>repeat until</source>
+                <target>Repeat until</target>
+            </trans-unit>
             <trans-unit id="saveThisDate">
                 <source>saveThisDate</source>
                 <target>Save for this date</target>
