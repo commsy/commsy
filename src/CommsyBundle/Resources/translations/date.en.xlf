@@ -250,6 +250,22 @@
                 <source>list view</source>
                 <target>List</target>
             </trans-unit>
+            <trans-unit id="prevYear">
+                <source>prevYear</source>
+                <target>previous year</target>
+            </trans-unit>
+            <trans-unit id="prev">
+                <source>prev</source>
+                <target>previous month / week / day</target>
+            </trans-unit>
+            <trans-unit id="next">
+                <source>next</source>
+                <target>next month / week / day</target>
+            </trans-unit>
+            <trans-unit id="nextYear">
+                <source>nextYear</source>
+                <target>next year</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
