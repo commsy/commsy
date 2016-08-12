@@ -778,6 +778,38 @@ class DiscussionController extends Controller
      */
     public function createArticleAction($roomId, $itemId, Request $request)
     {
+        $translator = $this->get('translator');
+
+        $discussionService = $this->get('commsy_legacy.discussion_service');
+        $transformer = $this->get('commsy_legacy.transformer.discussion');
+
+        $discussion = $discussionService->getDiscussion($itemId);
+
+        $articleList = $discussion->getAllArticles();
+        $articles = $articleList->to_array();
+        $countArticles = $articleList->getCount();
+
+        $article = $discussionService->getNewArticle();
+        $article->setTitle('['.$translator->trans('insert title').']');
+        $article->setDiscussionID($itemId);
+        $article->setPosition($countArticles+1);
+        $article->save();
+
+        $formData = $transformer->transform($section);
+        $form = $this->createForm(DiscussionArticleType::class, $formData, array(
+            'action' => $this->generateUrl('commsy_discussion_savearticle', array('roomId' => $roomId, 'itemId' => $article->getItemID()))
+        ));
+
+        return array(
+            'form' => $form->createView(),
+            'articleList' => $articleList,
+            'discussion' => $discussion,
+            'article' => $article,
+            'modifierList' => array(),
+            'userCount' => 0,
+            'readCount' => 0,
+            'readSinceModificationCount' => 0
+        );
     }
     
         /**
@@ -993,5 +1025,44 @@ class DiscussionController extends Controller
                 'ratingOwnDetail' => $ratingOwnDetail,
             ),
         );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/material/{itemId}/savearticle")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function saveArticleAction($roomId, $itemId, Request $request)
+    {
+        $translator = $this->get('translator');
+
+        $discussionService = $this->get('commsy_legacy.discussion_service');
+        $transformer = $this->get('commsy_legacy.transformer.discussion');
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        // get section
+        $article = $discussionService->getArticle($itemId);
+
+        $form = $this->createForm(DiscussionArticleType::class);
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            if ($form->get('save')->isClicked()) {
+                // update title
+                $article->setTitle($form->getData()['title']);
+
+                // update modifier
+                $article->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                $article->save();
+                
+            } else if ($form->get('cancel')->isClicked()) {
+                // remove not saved item
+                $article->delete();
+
+                $article->save();
+            }
+            return $this->redirectToRoute('commsy_discussion_detail', array('roomId' => $roomId, 'itemId' => $article->getDiscussionID()));
+        }
     }
 }
