@@ -2,7 +2,8 @@
     source:'{{ path('commsy_search_instant', {'roomId': roomId }) }}',
     delay: 300,
     msgResultsHeader: '{{ 'title search'|trans({}, 'search') }}',
-    msgMoreResults: '{{ 'more results'|trans({}, 'search') }}'
+    msgMoreResults: '{{ 'more results'|trans({}, 'search') }}',
+    msgNoResults: '{{ 'No results found'|trans({}, 'search') }}'
 }">
     
     {{ form_widget(form.phrase) }}
