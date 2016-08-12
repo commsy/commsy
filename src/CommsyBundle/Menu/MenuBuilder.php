@@ -322,6 +322,15 @@ class MenuBuilder
         // create breadcrumb menu
         $menu = $this->factory->createItem('root');
 
+        $portal = $this->legacyEnvironment->getCurrentPortalItem();
+        if ($portal) {
+            $baseUrl = $currentStack->getBaseUrl();
+
+            $menu->addChild('portal', [
+                'uri' => $baseUrl . '?cid=' . $portal->getItemId(),
+            ]);
+        }
+
         $roomId = $currentStack->attributes->get('roomId');
         if ($roomId) {
             $user = $this->userService->getPortalUserFromSessionId();
