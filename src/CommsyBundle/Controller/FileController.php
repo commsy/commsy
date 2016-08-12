@@ -37,27 +37,40 @@ class FileController extends Controller
     }
 
     /**
-    * @Route("/room/{roomId}/background/", name="getBackground")
+    * @Route(
+            "/room/{roomId}/{imageType}/background/", 
+            name="getBackground", 
+            defaults={"imageType": "theme"}, 
+            requirements={
+                "imageType": "custom|theme"
+            }
+        )
     */
-    public function getBackgroundImageAction($roomId)
+    public function getBackgroundImageAction($roomId, $imageType)
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
         $filename = $roomItem->getBGImageFilename();
 
-        if($filename == ''){
-            $themesDir = $this->getParameter("themes_directory");
+        $themesDir = $this->getParameter("themes_directory");
+
+        if($imageType == 'theme'){    
             $completePath = $themesDir . "/" . $roomItem->getColorArray()['schema'] . "/bg.jpg";
         }
-        else{
-            $filepath = $this->getParameter('files_directory') . "/" .  $roomService->getRoomFileDirectory($roomId);
-            $completePath = $filepath . "/" . $filename;
+        elseif($imageType =='custom'){
+            if($filename != ''){
+                $filepath = $this->getParameter('files_directory') . "/" .  $roomService->getRoomFileDirectory($roomId);
+                $completePath = $filepath . "/" . $filename;
+            }
+            else{
+                $completePath = $themesDir . "/customBgPlaceholder.png";
+            }
         }
 
-        // if(file_exists($completePath)){
-        //     error_log($completePath);
-        // }
+        if(file_exists($completePath)){
+            error_log($completePath);
+        }
 
         $content = file_get_contents($completePath);
 

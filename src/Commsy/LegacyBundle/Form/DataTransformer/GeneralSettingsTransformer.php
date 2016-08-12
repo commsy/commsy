@@ -107,9 +107,8 @@ class GeneralSettingsTransformer implements DataTransformerInterface
         else
             $roomObject->unsetBGImageRepeat();
 
-        if(isset($roomData['room_description'])) {
+        if(isset($roomData['room_description'])) 
             $roomObject->setDescription(strip_tags($roomData['room_description']));
-        }
         else 
             $roomObject->setDescription('');
 

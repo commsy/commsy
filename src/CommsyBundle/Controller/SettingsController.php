@@ -47,14 +47,6 @@ class SettingsController extends Controller
                 'roomId' => $roomId,
             )),
         ));
-       
-        // $themeArray = $this->container->getParameter('liip_theme.themes');
-        // dump("Themes:");
-        // dump($themeArray);
-        // dump("Current working directory:");
-        // dump(getcwd());
-        // dump("current items theme:");
-        // dump($roomItem->getColorArray()['schema']);
 
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -110,11 +102,13 @@ class SettingsController extends Controller
             return $this->redirectToRoute('commsy_settings_general', ["roomId" => $roomId]);
         }
 
-        $backgroundImage = $this->generateUrl("getBackground", array('roomId' => $roomId));
+        $backgroundImageCustom = $this->generateUrl("getBackground", array('roomId' => $roomId, 'imageType' => 'custom'));
+        $backgroundImageTheme = $this->generateUrl("getBackground", array('roomId' => $roomId, 'imageType' => 'theme'));
 
         return array(
             'form' => $form->createView(),
-            'bgImageFilepath' => $backgroundImage,
+            'bgImageFilepathCustom' => $backgroundImageCustom,
+            'bgImageFilepathTheme' => $backgroundImageTheme,
         );
     }
 
