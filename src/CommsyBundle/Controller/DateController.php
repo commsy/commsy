@@ -279,12 +279,14 @@ class DateController extends Controller
         if ($filterForm->isValid()) {
             // set filter conditions in material manager
             $dateService->setFilterConditions($filterForm);
+        } else {
+            $dateService->setPastFilter(false);
         }
 
         // get material list from manager service 
-        $dates = $dateService->getListDates($roomId,$max = 1000, $start = 0, $sort = 'date');
+        $dates = $dateService->getListDates($roomId, $max = null, $start = 0, $sort = 'date');
 
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();
         foreach ($dates as $item) {
@@ -296,9 +298,7 @@ class DateController extends Controller
             }
         }
 
-
         $itemsCountArray = $dateService->getCountArray($roomId);
-
 
         $html = $this->renderView('CommsyBundle:Date:listPrint.html.twig', [
             'roomId' => $roomId,
