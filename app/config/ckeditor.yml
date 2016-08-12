@@ -20,4 +20,3 @@ ivory_ck_editor:
             extraPlugins: "CommSyImage,CommSyAudio,CommSyVideo,CommSyDocument"
         cs_annotation_config:
             toolbar: [ [ "Cut", "Copy", "Paste", "PasteFromWord", "Undo", "Redo" ], ["Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript", "SpecialChar"] ]
-    

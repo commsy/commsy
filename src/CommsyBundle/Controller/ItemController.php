@@ -38,7 +38,11 @@ class ItemController extends Controller
         
         $formData = $transformer->transform($item);
         $formOptions = array(
-            'itemId' => $itemId
+            'itemId' => $itemId,
+            'uploadUrl' => $this->generateUrl('commsy_upload_ckupload', array(
+                'roomId' => $roomId,
+                'itemId' => $itemId
+            )),
         );
         
         $withRecurrence = false;
