@@ -51,10 +51,27 @@ class DateService
         if ($formData['activated']) {
             $this->dateManager->showNoNotActivatedEntries();
         }
-        
+
         // past
         if (!$formData['past-dates']) {
             $this->dateManager->setFutureLimit();
+        }
+
+        // dates between
+        $isBetweenFilterSet = false;
+        $fromDate = null;
+        if (isset($formData['date-from']['date'])) {
+            $isBetweenFilterSet = true;
+            $fromDate = $formData['date-from']['date']->format('Y-m-d 00:00:00');
+        }
+        $untilDate = null;
+        if (isset($formData['date-until']['date'])) {
+            $isBetweenFilterSet = true;
+            $untilDate = $formData['date-until']['date']->format('Y-m-d 23:59:59');
+        }
+        
+        if ($isBetweenFilterSet) {
+            $this->dateManager->setBetweenLimit($fromDate, $untilDate);
         }
 
         // rubrics

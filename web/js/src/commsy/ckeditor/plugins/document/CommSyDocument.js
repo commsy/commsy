@@ -620,7 +620,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 
 									//var fileIdRegEx = /commsy.php\/\.*iid=(\d*)/;
 									// regex filename
-									var fileNameRegEx = /commsy.php\/(.*)\?.*/;
+									var fileNameRegEx = /file\/(.*)/;
 									var filename = this.getValueOf('documentTab','fileselect');
 									var link = this.getValueOf('documentTab', 'documentUrl');
 

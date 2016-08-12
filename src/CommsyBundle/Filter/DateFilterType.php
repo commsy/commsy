@@ -8,6 +8,8 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
 
+use CommsyBundle\Form\Type\Custom\DateSelectType;
+
 class DateFilterType extends AbstractType
 {
     /**
@@ -33,6 +35,16 @@ class DateFilterType extends AbstractType
                 ),
                 'label' => 'past-dates',
                 'translation_domain' => 'form',
+            ))
+            ->add('date-from', DateSelectType::class, array(
+                'label' => 'date-from',
+                'translation_domain' => 'form',
+                'required' => false,
+            ))
+            ->add('date-until', DateSelectType::class, array(
+                'label' => 'date-until',
+                'translation_domain' => 'form',
+                'required' => false,
             ))
             ->add('rubrics', RubricFilterType::class, array(
                 'label' => false,

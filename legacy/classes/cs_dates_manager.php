@@ -70,6 +70,8 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
    var $_related_user_limit = NULL;
    private $_not_older_than_limit = NULL;
    private $_between_limit = null;
+   private $_from_date_limit = null;
+   private $_until_date_limit = null;
 
    /*
     * Translation Object
@@ -112,6 +114,8 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       $this->_not_older_than_limit = NULL;
       $this->_between_limit = null;
       $this->_related_user_limit = NULL;
+      $this->_from_date_limit = null;
+      $this->_until_date_limit = null;
    }
 
    public function setNotOlderThanMonthLimit ( $month ) {
@@ -125,12 +129,15 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
 
    public function setBetweenLimit( $startDate, $endDate )
    {
-   		if ( !empty($startDate) && !empty($endDate) )
-   		{
+   		if (!empty($startDate) && !empty($endDate)) {
    			$this->_between_limit = array(
    				"start"		=> $startDate,
    				"end"		=> $endDate
    			);
+   		} else if (!empty($startDate)) {
+       		$this->_from_date_limit = $startDate;
+   		} else if (!empty($endDate)) {
+       		$this->_until_date_limit = $endDate;
    		}
    }
 
@@ -556,6 +563,14 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       				)
       			)
       		";
+      }
+      else if ( isset($this->_from_date_limit) && !empty($this->_from_date_limit) )
+      {
+      		$query .= " AND " . $this->addDatabasePrefix($this->_db_table) . ".datetime_start >= '" . $this->_from_date_limit . "'";
+      }
+      else if ( isset($this->_until_date_limit) && !empty($this->_until_date_limit) )
+      {
+      		$query .= " AND " . $this->addDatabasePrefix($this->_db_table) . ".datetime_end <= '" . $this->_until_date_limit . "'";
       }
 
       if ( isset($this->_sort_order) ) {
