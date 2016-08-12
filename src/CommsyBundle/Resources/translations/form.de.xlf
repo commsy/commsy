@@ -350,6 +350,14 @@
                 <source>past-dates</source>
                 <target>Vergangene Termine</target>
             </trans-unit>
+            <trans-unit id="date-from">
+                <source>date-from</source>
+                <target>von</target>
+            </trans-unit>
+            <trans-unit id="date-until">
+                <source>date-until</source>
+                <target>bis</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

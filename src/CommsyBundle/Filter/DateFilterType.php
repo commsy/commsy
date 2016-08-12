@@ -39,10 +39,12 @@ class DateFilterType extends AbstractType
             ->add('date-from', DateSelectType::class, array(
                 'label' => 'date-from',
                 'translation_domain' => 'form',
+                'required' => false,
             ))
             ->add('date-until', DateSelectType::class, array(
                 'label' => 'date-until',
                 'translation_domain' => 'form',
+                'required' => false,
             ))
             ->add('rubrics', RubricFilterType::class, array(
                 'label' => false,
