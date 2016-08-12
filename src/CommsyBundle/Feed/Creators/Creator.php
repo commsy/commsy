@@ -4,7 +4,7 @@ namespace CommsyBundle\Feed\Creators;
 
 use \Debril\RssAtomBundle\Protocol\Parser\Item;
 
-use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 abstract class Creator
@@ -45,7 +45,7 @@ abstract class Creator
         $this->textConverter = $textConverter;
     }
 
-    public function setTranslator(DataCollectorTranslator $translator)
+    public function setTranslator(TranslatorInterface $translator)
     {
         $this->translator = $translator;
     }
