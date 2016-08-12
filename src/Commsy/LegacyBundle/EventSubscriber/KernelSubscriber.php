@@ -7,6 +7,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\FinishRequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 use Commsy\LegacyBundle\Authentication\LegacyAuthentication;
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
@@ -71,38 +72,38 @@ class KernelSubscriber implements EventSubscriberInterface
             return;
         }
 
-        // some services will handle authentication themselves or can bypass, like soap, rss, ...
+        // set user language
         $currentRequest = $event->getRequest();
-        $requestUri = $currentRequest->getRequestUri();
+        $currentRequest->setLocale($this->legacyEnvironment->getSelectedLanguage());
 
-        if (preg_match('/(soap|rss|_profiler|_wdt)/', $requestUri, $matches)) {
-            $isAuthenticated = true;
+        // Let the wrapped legacy kernel handle the legacy request.
+        // Setting a response in the event will directly jump to the response event.
+        $currentRequest = $event->getRequest();
+        if ($currentRequest->query->has('cid')) {
+            $response = $this->legacyKernel->handle($currentRequest);
+
+            $event->setResponse($response);
         } else {
-            $isAuthenticated = $this->legacyAuthentication->authenticate();
-        }
+            // some services will handle authentication themselves or can bypass, like soap, rss, ...
+            $currentRequest = $event->getRequest();
+            $requestUri = $currentRequest->getRequestUri();
 
-        // if not authenticated by the legacy code, redirect back to portal
-        if (!$isAuthenticated) {
-            // check if we currently have a portal item (not in server context)
-            $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
-
-            if ($portalItem) {
-                $url = $event->getRequest()->getBaseUrl() . '?cid=' . $portalItem->getItemID();
-                $response = new RedirectResponse($url);
-                $event->setResponse($response);
+            if (preg_match('/(soap|rss|_profiler|_wdt)/', $requestUri, $matches)) {
+                $isAuthenticated = true;
+            } else {
+                $isAuthenticated = $this->legacyAuthentication->authenticate();
             }
-        } else {
-            // set user language
-            $currentRequest = $event->getRequest();
-            $currentRequest->setLocale($this->legacyEnvironment->getSelectedLanguage());
 
-            // Let the wrapped legacy kernel handle the legacy request.
-            // Setting a response in the event will directly jump to the response event.
-            $currentRequest = $event->getRequest();
-            if ($currentRequest->query->has('cid')) {
-                $response = $this->legacyKernel->handle($currentRequest);
+            // if not authenticated by the legacy code, redirect back to portal
+            if (!$isAuthenticated) {
+                // check if we currently have a portal item (not in server context)
+                $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
-                $event->setResponse($response);
+                if ($portalItem) {
+                    $url = $event->getRequest()->getBaseUrl() . '?cid=' . $portalItem->getItemID();
+                    $response = new RedirectResponse($url);
+                    $event->setResponse($response);
+                }
             }
         }
     }
@@ -114,7 +115,10 @@ class KernelSubscriber implements EventSubscriberInterface
         }
 
         $session = $this->legacyEnvironment->getSessionItem();
-        $sessionManager = $this->legacyEnvironment->getSessionManager();
-        $sessionManager->update($session);
+
+        if ($session) {
+            $sessionManager = $this->legacyEnvironment->getSessionManager();
+            $sessionManager->update($session);
+        }
     }
 }
