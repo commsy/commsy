@@ -198,7 +198,7 @@ class SearchController extends Controller
 
                 $results[] = [
                     'title' => $title,
-                    'text' => $translator->transChoice($type, 0, [], 'rubric'),
+                    'text' => $translator->transChoice(ucfirst($type), 0, [], 'rubric'),
                     'url' => $url,
                 ];
             }
