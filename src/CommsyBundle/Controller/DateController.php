@@ -31,6 +31,10 @@ class DateController extends Controller
      */
     public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+        
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
         $dateFilter = $request->get('dateFilter');
@@ -49,6 +53,8 @@ class DateController extends Controller
             );
             $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
                 'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
+                'hasHashtags' => $roomItem->withBuzzwords(),
+                'hasCategories' => $roomItem->withTags(),
             ));
     
             // manually bind values from the request
@@ -208,6 +214,10 @@ class DateController extends Controller
      */
     public function listAction($roomId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+        
         // setup filter form
         $defaultFilterValues = array(
             'activated' => true,
@@ -215,6 +225,8 @@ class DateController extends Controller
         );
         $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
+            'hasHashtags' => $roomItem->withBuzzwords(),
+            'hasCategories' => $roomItem->withTags(),
         ));
 
         // get the material manager service
@@ -244,6 +256,10 @@ class DateController extends Controller
      */
     public function printlistAction($roomId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+        
         // setup filter form
         $defaultFilterValues = array(
             'activated' => true,
@@ -251,6 +267,8 @@ class DateController extends Controller
         );
         $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
+            'hasHashtags' => $roomItem->withBuzzwords(),
+            'hasCategories' => $roomItem->withTags(),
         ));
 
         // get the material manager service
@@ -328,6 +346,10 @@ class DateController extends Controller
      */
     public function calendarAction($roomId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+        
         // setup filter form
         $defaultFilterValues = array(
             'activated' => true,
@@ -335,6 +357,8 @@ class DateController extends Controller
         );
         $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_date_calendar', array('roomId' => $roomId)),
+            'hasHashtags' => $roomItem->withBuzzwords(),
+            'hasCategories' => $roomItem->withTags(),
         ));
 
         // get the material manager service
@@ -490,6 +514,10 @@ class DateController extends Controller
      */
     public function eventsAction($roomId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+        
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
         $dateFilter = $request->get('dateFilter');
@@ -503,10 +531,13 @@ class DateController extends Controller
         if ($dateFilter) {
             // setup filter form
             $defaultFilterValues = array(
-                'activated' => true
+                'activated' => true,
+                'past-dates' => true
             );
             $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
                 'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
+                'hasHashtags' => $roomItem->withBuzzwords(),
+                'hasCategories' => $roomItem->withTags(),
             ));
     
             // manually bind values from the request

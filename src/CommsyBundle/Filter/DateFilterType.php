@@ -37,14 +37,18 @@ class DateFilterType extends AbstractType
             ->add('rubrics', RubricFilterType::class, array(
                 'label' => false,
             ))
-            ->add('save', SubmitType::class, array(
-                'attr' => array(
-                    'class' => 'uk-button-primary',
-                ),
-                'label' => 'Filtern',
-                'translation_domain' => 'form',
-            ))
         ;
+        if ($options['hasHashtags']) {
+            $builder->add('hashtag', HashTagFilterType::class, array(
+                'label' => false,
+            ));
+        }
+
+        if ($options['hasCategories']) {
+            $builder->add('category', CategoryFilterType::class, array(
+                'label' => false,
+            ));
+        }
     }
 
     /**
@@ -66,10 +70,16 @@ class DateFilterType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'csrf_protection'   => false,
-            'validation_groups' => array('filtering'), // avoid NotBlank() constraint-related message
-            'method'            => 'get',
-        ));
+        $resolver
+            ->setDefaults(array(
+                'csrf_protection'   => false,
+                'validation_groups' => array('filtering'), // avoid NotBlank() constraint-related message
+                'method'            => 'get',
+            ))
+            ->setRequired(array(
+                'hasHashtags',
+                'hasCategories'
+            ))
+        ;
     }
 }
