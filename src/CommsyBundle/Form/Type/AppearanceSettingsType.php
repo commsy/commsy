@@ -36,7 +36,7 @@ class AppearanceSettingsType extends AbstractType
 
         $builder
             ->add('theme', ChoiceType::class, array(
-                'required' => false,
+                'required' => true,
                 'choices' => $themeChoices,
                 'constraints' => array(
                     new NotBlank(),

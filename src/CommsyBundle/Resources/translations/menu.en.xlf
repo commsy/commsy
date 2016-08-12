@@ -74,6 +74,12 @@
                 <source>Create</source>
                 <target>Create</target>
             </trans-unit>
+
+            <!-- breadcrumb -->
+            <trans-unit id="breadcrumb_portal">
+                <source>Portal</source>
+                <target>Portal</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
