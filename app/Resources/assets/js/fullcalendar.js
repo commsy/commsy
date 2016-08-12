@@ -47,6 +47,22 @@
         if ($('#calendar').data('height')) {
             $('#calendar').fullCalendar('option', 'height', $('#calendar').data('height'));
         }
+        
+        $('.fc-prevYear-button').tooltipster({
+            content: $('#calendar').data('translations').prevYear,
+        });
+        
+        $('.fc-prev-button').tooltipster({
+            content: $('#calendar').data('translations').prev,
+        });
+        
+        $('.fc-next-button').tooltipster({
+            content: $('#calendar').data('translations').next,
+        });
+        
+        $('.fc-nextYear-button').tooltipster({
+            content: $('#calendar').data('translations').nextYear,
+        });
     };
 
     function editEvent (event, revertFunc) {
@@ -121,5 +137,6 @@
                 +'</div>';
         
     }
+    
 
 })(UIkit);

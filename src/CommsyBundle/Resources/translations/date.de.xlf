@@ -226,6 +226,30 @@
                 <source>recurring date no chance hint</source>
                 <target>Diese Einstellungen können nicht verändert werden</target>
             </trans-unit>
+            <trans-unit id="every">
+                <source>every</source>
+                <target>Jeden</target>
+            </trans-unit>
+            <trans-unit id="every week">
+                <source>every week</source>
+                <target>Jede</target>
+            </trans-unit>
+            <trans-unit id="day">
+                <source>day</source>
+                <target>Tag</target>
+            </trans-unit>
+            <trans-unit id="week">
+                <source>week</source>
+                <target>Woche</target>
+            </trans-unit>
+            <trans-unit id="month">
+                <source>month</source>
+                <target>Monat</target>
+            </trans-unit>
+            <trans-unit id="repeat until">
+                <source>repeat until</source>
+                <target>Wiederholen bis</target>
+            </trans-unit>
             <trans-unit id="saveThisDate">
                 <source>saveThisDate</source>
                 <target>Für diesen Termin speichern</target>
@@ -249,6 +273,22 @@
             <trans-unit id="list view">
                 <source>list view</source>
                 <target>Liste</target>
+            </trans-unit>
+            <trans-unit id="prevYear">
+                <source>prevYear</source>
+                <target>vorheriges Jahr</target>
+            </trans-unit>
+            <trans-unit id="prev">
+                <source>prev</source>
+                <target>vorheriger Monat / Woche / Tag</target>
+            </trans-unit>
+            <trans-unit id="next">
+                <source>next</source>
+                <target>nächster Monat / Woche / Tag</target>
+            </trans-unit>
+            <trans-unit id="nextYear">
+                <source>nextYear</source>
+                <target>nächstes Jahr</target>
             </trans-unit>
         </body>
     </file>

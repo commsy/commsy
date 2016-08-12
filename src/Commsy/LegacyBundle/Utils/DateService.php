@@ -95,6 +95,17 @@ class DateService
             }
         }
         
+        // participants
+        if (isset($formData['participant'])) {
+            if (isset($formData['participant']['participant'])) {
+                $users = $formData['participant']['participant'];
+
+                if (!empty($users)) {
+                    $this->dateManager->setParticipantArrayLimit($users);
+                }
+            }
+        }
+        
         // hashtag
         if (isset($formData['hashtag'])) {
             if (isset($formData['hashtag']['hashtag'])) {

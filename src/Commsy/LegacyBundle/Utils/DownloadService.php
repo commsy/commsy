@@ -54,7 +54,7 @@ class DownloadService
             while (file_exists($tempDirectory)) {
                 $tempDirectory = $directory.'/'.$detailArray['item']->getTitle().'_'.$index;    
             }
-            mkdir($tempDirectory);
+            mkdir($tempDirectory, 0777, true);
             
             // create PDF-file
             $output = $this->serviceContainer->get('templating')->renderResponse('CommsyBundle:'.ucfirst($detailArray['item']->getItemType()).':detailPrint.html.twig', $detailArray);

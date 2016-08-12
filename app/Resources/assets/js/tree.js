@@ -53,6 +53,15 @@
                             $(element).jstree(true).select_node('tag_' + value);
                         }
                     });
+                    $('input[id*="filter_participant_participant"]').each(function() {
+                        var $input = $(this);
+
+                        if ($input.prop('checked')) {
+                            var value = $input.attr('value');
+
+                            $(element).jstree(true).select_node('tag_' + value);
+                        }
+                    });
 
                     /**
                      * the following event handler are registered, after checkbox sync
@@ -63,6 +72,7 @@
                         .on('changed.jstree', function(event, data) {
                             // sync tree state with Checkboxes
                             $('input[id*="filter_category_category"]').prop('checked', false);
+                            $('input[id*="filter_participant_participant"]').prop('checked', false);
 
                             $.each(data.selected, function() {
                                 $('input[value="' + this.substring(4) + '"]')
