@@ -14,12 +14,19 @@ class LogoutController extends Controller
     public function logoutAction($roomId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $contextId = $legacyEnvironment->getCurrentContextId();
-        $userId = $legacyEnvironment->getCurrentUserID();
+
+        $session = $legacyEnvironment->getSessionItem();
+        $sessionId = $session->getSessionID();
+
+        $sessionManager = $legacyEnvironment->getSessionManager();
+        $sessionManager->delete($sessionId, true);
+
+        $session->reset();
 
         $baseUrl = $request->getBaseUrl();
+        $portal = $legacyEnvironment->getCurrentPortalItem();
 
-        $url = $baseUrl . '?cid=' . $contextId . '&mod=context&fct=logout&iid=' . $userId;
+        $url = $baseUrl . '?cid=' . $portal->getItemId();
 
         return $this->redirect($url);
     }
