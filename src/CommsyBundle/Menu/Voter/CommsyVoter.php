@@ -22,15 +22,9 @@ class CommsyVoter implements VoterInterface
     {
         $roomId = $this->requestStack->getCurrentRequest()->attributes->get('roomId');
         $controllerArray = explode('_', $this->requestStack->getCurrentRequest()->attributes->get('_route'));
-
-        if ($controllerArray[2] == 'detail') {
-            if (stristr($item->getUri(), 'room/'.$roomId.'/'.$controllerArray[1])) {
-                return true;
-            }
-        } else {
-            if (stristr($item->getUri(), 'room/'.$roomId.'/'.$controllerArray[1].'/'.$controllerArray[2])) {
-                return true;
-            }
+        
+        if (stristr($item->getUri(), 'room/'.$roomId.'/'.$controllerArray[1])) {
+            return true;
         }
 
         return false;
