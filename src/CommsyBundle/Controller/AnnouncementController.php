@@ -68,6 +68,8 @@ class AnnouncementController extends Controller
     
             // apply filter
             $announcementService->setFilterConditions($filterForm);
+        } else {
+            $announcementService->showNoNotActivatedEntries();
         }
 
         // get announcement list from manager service 

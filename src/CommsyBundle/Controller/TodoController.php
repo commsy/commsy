@@ -179,6 +179,8 @@ class TodoController extends Controller
     
             // apply filter
             $todoService->setFilterConditions($filterForm);
+        } else {
+            $todoService->showNoNotActivatedEntries();
         }
 
         // get todo list from manager service 

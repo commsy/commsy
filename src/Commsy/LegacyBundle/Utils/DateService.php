@@ -179,4 +179,8 @@ class DateService
         $dateList = $this->dateManager->get();
         return $dateList->to_array();
     }
+    
+    public function showNoNotActivatedEntries(){
+        $this->dateManager->showNoNotActivatedEntries();
+    }
 }

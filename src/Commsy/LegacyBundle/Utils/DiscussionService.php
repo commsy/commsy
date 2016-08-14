@@ -125,4 +125,8 @@ class DiscussionService
     {
         return $this->discussionArticleManager->getNewItem();
     }
+    
+    public function showNoNotActivatedEntries(){
+        $this->discussionManager->showNoNotActivatedEntries();
+    }
 }

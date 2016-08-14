@@ -124,4 +124,8 @@ class TodoService
     {
         return $this->stepManager->getNewItem();
     }
+    
+    public function showNoNotActivatedEntries(){
+        $this->todoManager->showNoNotActivatedEntries();
+    }
 }

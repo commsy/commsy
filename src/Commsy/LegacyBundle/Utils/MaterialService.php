@@ -135,4 +135,8 @@ class MaterialService
     {
         return $this->materialManager->getVersionList($itemId);
     }
+    
+    public function showNoNotActivatedEntries(){
+        $this->materialManager->showNoNotActivatedEntries();
+    }
 }

@@ -64,6 +64,8 @@ class DiscussionController extends Controller
             
             // set filter conditions in material manager
             $discussionService->setFilterConditions($filterForm);
+        } else {
+            $discussionService->showNoNotActivatedEntries();
         }
 
         // get material list from manager service 
