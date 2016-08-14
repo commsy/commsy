@@ -15,6 +15,8 @@ use CommsyBundle\Form\Type\AnnotationType;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class TodoController extends Controller
 {
@@ -262,16 +264,6 @@ class TodoController extends Controller
     	        $versionId = $item->getVersionID();
     	        $noticedManager->markNoticed($id, $versionId);
     	        $readerManager->markRead($id, $versionId);
-    	        
-    	        $sectionList =$item->getSectionList();
-    	        if ( !empty($sectionList) ){
-    	            $sectionItem = $sectionList->getFirst();
-    	            while($sectionItem){
-    	               $noticedManager->markNoticed($sectionItem->getItemID(),$versionId);
-    	               $readerManager->markRead($sectionItem->getItemID(),$versionId);
-    	               $sectionItem = $sectionList->getNext();
-    	            }
-    	        }
     	        
     	        $annotationList =$item->getAnnotationList();
     	        if ( !empty($annotationList) ){
@@ -868,6 +860,112 @@ class TodoController extends Controller
             [
                 'Content-Type' => 'application/pdf',
                 'Content-Disposition' => 'inline; filename="print.pdf"'
+            ]
+        );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/todo/print")
+     */
+    public function printlistAction($roomId, Request $request)
+    {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        if (!$roomItem) {
+            throw $this->createNotFoundException('The requested room does not exist');
+        }
+
+        // setup filter form
+        $defaultFilterValues = array(
+            'activated' => true,
+        );
+        $filterForm = $this->createForm(TodoFilterType::class, $defaultFilterValues, array(
+            'action' => $this->generateUrl('commsy_todo_list', array(
+                'roomId' => $roomId,
+            )),
+            'hasHashtags' => $roomItem->withBuzzwords(),
+            'hasCategories' => $roomItem->withTags(),
+        ));
+
+        // get the announcement manager service
+        $todoService = $this->get('commsy_legacy.todo_service');
+
+        // apply filter
+        $filterForm->handleRequest($request);
+        if ($filterForm->isValid()) {
+            // set filter conditions in announcement manager
+            $todoService->setFilterConditions($filterForm);
+        }
+
+        // get announcement list from manager service 
+        $todos = $todoService->getListTodos($roomId);
+
+        $readerService = $this->get('commsy_legacy.reader_service');
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+
+        $readerList = array();
+        foreach ($todos as $item) {
+            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+        }
+
+        $ratingList = array();
+        if ($current_context->isAssessmentActive()) {
+            $assessmentService = $this->get('commsy_legacy.assessment_service');
+            $itemIds = array();
+            foreach ($todos as $todo) {
+                $itemIds[] = $todo->getItemId();
+            }
+            $ratingList = $assessmentService->getListAverageRatings($itemIds);
+        }
+
+        // get announcement list from manager service 
+        $itemsCountArray = $todoService->getCountArray($roomId);
+
+        $html = $this->renderView('CommsyBundle:Todo:listPrint.html.twig', [
+            'roomId' => $roomId,
+            'module' => 'todo',
+            'announcements' => $todos,
+            'readerList' => $readerList,
+            'itemsCountArray' => $itemsCountArray,
+            'showRating' => $roomItem->isAssessmentActive(),
+            'showHashTags' => $roomItem->withBuzzwords(),
+            'showCategories' => $roomItem->withTags(),
+            'ratingList' => $ratingList,
+            'showWorkflow' => $current_context->withWorkflow(),
+        ]);
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        // get room item for information panel
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        $this->get('knp_snappy.pdf')->setOption('footer-line',true);
+        $this->get('knp_snappy.pdf')->setOption('footer-spacing', 1);
+        $this->get('knp_snappy.pdf')->setOption('footer-center',"[page] / [toPage]");
+        $this->get('knp_snappy.pdf')->setOption('header-line', true);
+        $this->get('knp_snappy.pdf')->setOption('header-spacing', 1 );
+        $this->get('knp_snappy.pdf')->setOption('header-right', date("d.m.y"));
+        $this->get('knp_snappy.pdf')->setOption('header-left', $roomItem->getTitle());
+        $this->get('knp_snappy.pdf')->setOption('header-center', "Commsy");
+        $this->get('knp_snappy.pdf')->setOption('images',true);
+
+        // set cookie for authentication - needed to request images
+        $this->get('knp_snappy.pdf')->setOption('cookie', [
+            'SID' => $legacyEnvironment->getSessionID(),
+        ]);
+
+        //return new Response($html);
+        return new Response(
+            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="print.pdf"',
             ]
         );
     }
