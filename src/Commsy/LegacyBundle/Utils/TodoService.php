@@ -115,18 +115,13 @@ class TodoService
         return $this->stepManager->getItem($itemId);
     }
     
-    public function getSection($itemId)
+    public function getNewTodo()
     {
-        return $this->sectionManager->getItem($itemId);
-    }
-    
-    public function getNewMaterial()
-    {
-        return $this->materialManager->getNewItem();
+        return $this->todoManager->getNewItem();
     }
 
-    public function getNewSection()
+    public function getNewStep()
     {
-        return $this->sectionManager->getNewItem();
+        return $this->stepManager->getNewItem();
     }
 }
