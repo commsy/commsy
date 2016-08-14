@@ -36,7 +36,7 @@
 
                 $('#commsy-list-count-selected').html('0');
 
-                $this.articles.toggleClass('selectable');
+                $this.articles.toggleClass('selectable', true);
                 
                 $('#commsy-list-count-display').toggleClass('uk-hidden');
                 $('#commsy-list-count-edit').toggleClass('uk-hidden');
@@ -98,7 +98,7 @@
                 });
                 $(this).html($(this).data('title'));
                 
-                $this.articles.toggleClass('selectable');
+                $this.articles.toggleClass('selectable', false);
                 
                 $this.selectedCounter = 0;
                 $('#commsy-list-count-selected').html('0');
@@ -374,7 +374,7 @@
                     $(target).trigger('changed.uk.dom');
                     
                     $(target).find('article').each(function() {
-                        $(this).toggleClass('selectable');
+                        $(this).toggleClass('selectable', true);
                     });
                     
                     $this.bind();

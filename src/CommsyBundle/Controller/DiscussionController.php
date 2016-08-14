@@ -197,7 +197,7 @@ class DiscussionController extends Controller
         // get material list from manager service 
         $discussions = $discussionService->getListDiscussions($roomId);
 
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
@@ -638,15 +638,15 @@ class DiscussionController extends Controller
             $response = new BinaryFileResponse($zipFile);
             $response->deleteFileAfterSend(true);
     
-            $filename = 'CommSy_Material.zip';
+            $filename = 'CommSy_Discussion.zip';
             $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$filename);   
             $response->headers->set('Content-Disposition', $contentDisposition);
     
             return $response;
         } else if ($action == 'delete') {
-            $materialService = $this->get('commsy_legacy.material_service');
+            $discussionService = $this->get('commsy_legacy.discussion_service');
   		    foreach ($selectedIds as $id) {
-  		        $item = $materialService->getMaterial($id);
+  		        $item = $discussionService->getDiscussion($id);
   		        $item->delete();
   		    }
            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> '.$translator->transChoice('%count% deleted entries',count($selectedIds), array('%count%' => count($selectedIds)));
