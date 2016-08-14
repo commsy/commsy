@@ -28,16 +28,30 @@ class TodoTransformer implements DataTransformerInterface
             $todoData['description'] = $todoItem->getDescription();
             $todoData['permission'] = $todoItem->isPrivateEditing();
             
-            if ($announcementItem->isNotActivated()) {
+            if ($todoItem->isNotActivated()) {
                 $todoData['hidden'] = true;
                 
-                $activating_date = $announcementItem->getActivatingDate();
+                $activating_date = $todoItem->getActivatingDate();
                 if (!stristr($activating_date,'9999')){
                     $datetime = new \DateTime($activating_date);
                     $todoData['hiddendate']['date'] = $datetime;
                     $todoData['hiddendate']['time'] = $datetime;
                 }
             }
+            
+            if ($todoItem->getDate()) {
+                if ($todoItem->getDate() != '9999-00-00 00:00:00') {
+                    $datetimeDueDate = new \DateTime($todoItem->getDate());
+                    $todoData['due_date']['date'] = $datetimeDueDate;
+                    $todoData['due_date']['time'] = $datetimeDueDate;
+                }
+            }
+            
+            $todoData['time_planned'] = $todoItem->getPlannedTime();
+            
+            $todoData['time_type'] = $todoItem->getTimeType();
+            
+            $todoData['status'] = $todoItem->getInternalStatus();
         }
 
         return $todoData;
@@ -85,6 +99,16 @@ class TodoTransformer implements DataTransformerInterface
 	            $todoObject->setModificationDate(getCurrentDateTimeInMySQL());
 	        }
         }
+        
+        if ($todoData['due_date']) {
+            $todoObject->setDate($todoData['due_date']['date']->format('Y-m-d').' '.$todoData['due_date']['time']->format('H:i:s'));
+        }
+
+        $todoObject->setPlannedTime($todoData['time_planned']);
+        
+        $todoObject->setTimeType($todoData['time_type']);
+        
+        $todoObject->setStatus($todoData['status']);
 
         return $todoObject;
     }

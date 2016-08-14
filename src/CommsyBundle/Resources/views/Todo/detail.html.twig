@@ -91,6 +91,17 @@
                                                 <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                             {% endif %}
                                         </li>
+                                        
+                                        {# participant #}
+                                        <li>
+                                            <a href="{{ path('commsy_todo_participate', {'roomId': roomId, 'itemId': todo.itemId}) }}">
+                                                {% if not isParticipating %}
+                                                    <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'add responsibility'|trans({}, 'todo')|capitalize }}
+                                                {% else %}
+                                                    <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'remove responsibility'|trans({}, 'todo')|capitalize }}
+                                                {% endif %}
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -103,6 +114,11 @@
                     {# title, etc. #}
                     <div class="cs-toggle" data-uk-observe>
                         {{ macrosTodo.title(todo, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, ratingArray) }}
+                    </div>
+            
+                    {# details #}
+                    <div id="details{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_todo_editdetails', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }">
+                        {{ macrosTodo.details(todo) }}
                     </div>
             
                     {# description #}

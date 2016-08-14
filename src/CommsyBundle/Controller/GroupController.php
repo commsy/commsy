@@ -129,7 +129,7 @@ class GroupController extends Controller
         ));
 
         // get the group manager service
-        $groupService = $this->get('commsy.group_service');
+        $groupService = $this->get('commsy_legacy.group_service');
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -140,7 +140,7 @@ class GroupController extends Controller
 
         // get group list from manager service 
         $groups = $groupService->getListGroups($roomId);
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 

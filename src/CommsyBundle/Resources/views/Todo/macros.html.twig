@@ -303,7 +303,7 @@
         </div>
 {% endmacro %}
 
-{% macro details(date) %}
+{% macro details(todo) %}
     {% import _self as macros %}
     
     <hr class="uk-width-9-10"/>
@@ -322,7 +322,7 @@
 
             <div class="uk-width-1-10 uk-flex uk-text-right">
                 {# edit action #}
-                {% if is_granted('ITEM_EDIT', date.itemId) %}
+                {% if is_granted('ITEM_EDIT', todo.itemId) %}
                     <div class="cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
                         <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                     </div>
@@ -336,26 +336,34 @@
             <table class="ui-table">
                 <tr>
                     <td class="uk-text-top">
-                        <strong>{{ "date"|trans({},'date') }}</strong>
+                        <strong>{{ "status"|trans({},'todo') }}:</strong>
                     </td>
                     <td class="uk-text-top">
-                        {{ date.dateDescription }}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="uk-text-top">
-                        <strong>{{ "place"|trans({},'date') }}</strong>
-                    </td>
-                    <td class="uk-text-top">
-                        {{ date.place }}
+                        {{ todo.status }}
                     </td>
                 </tr>
                 <tr>
                     <td class="uk-text-top">
-                        <strong>{{ "participants"|trans({},'date') }}</strong>
+                        <strong>{{ "time planned"|trans({},'todo') }}:</strong>
                     </td>
                     <td class="uk-text-top">
-                        {{ macros.participants(date, date.participantsItemList.to_array) }}
+                        {{ todo.plannedTime }} {{ macros.timeType(todo.timeType) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="uk-text-top">
+                        <strong>{{ "due date"|trans({},'todo') }}:</strong>
+                    </td>
+                    <td class="uk-text-top">
+                        {{ todo.date|date("d.m.Y H:i:s") }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="uk-text-top">
+                        <strong>{{ "responsibility"|trans({},'todo') }}:</strong>
+                    </td>
+                    <td class="uk-text-top">
+                        {{ macros.responsibility(todo, todo.getProcessorItemList.to_array) }}
                     </td>
                 </tr>
             </table>
@@ -364,7 +372,17 @@
     
 {% endmacro %}
 
-{% macro participants(item,participants) %}
+{% macro timeType(type) %}
+    {% if type == '1' %}
+        {{ "minutes"|trans({},'todo') }}
+    {% elseif type == '2' %}
+        {{ "hours"|trans({},'todo') }}
+    {% elseif type == '3' %}
+        {{ "days"|trans({},'todo') }}
+    {% endif %}
+{% endmacro %}
+
+{% macro responsibility(item,participants) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
     {% if not participants is empty %}
         {% for participant in participants %}

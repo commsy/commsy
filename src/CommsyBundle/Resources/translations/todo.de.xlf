@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="de" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="pending">
+                <source>pending</source>
+                <target>nicht bearbeitet</target>
+            </trans-unit>
+            <trans-unit id="in progress">
+                <source>in progress</source>
+                <target>in Bearbeitung</target>
+            </trans-unit>
+            <trans-unit id="done">
+                <source>done</source>
+                <target>erledigt</target>
+            </trans-unit>
+            <trans-unit id="due date">
+                <source>due date</source>
+                <target>Fällig am</target>
+            </trans-unit>
+            <trans-unit id="minutes">
+                <source>minutes</source>
+                <target>Minuten</target>
+            </trans-unit>
+            <trans-unit id="hours">
+                <source>hours</source>
+                <target>Stunden</target>
+            </trans-unit>
+            <trans-unit id="days">
+                <source>days</source>
+                <target>Tage (1 Tag = 8 Stunden)</target>
+            </trans-unit>
+            <trans-unit id="time planned">
+                <source>time planned</source>
+                <target>Geplante Zeit</target>
+            </trans-unit>
+            <trans-unit id="status">
+                <source>status</source>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="responsibility">
+                <source>responsibility</source>
+                <target>Zuständigkeit</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
