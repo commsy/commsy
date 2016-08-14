@@ -616,9 +616,8 @@ class GroupController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.group');
         
         // create new group item
-        $groupItem = $groupService->getNewgroup();
+        $groupItem = $groupService->getNewGroup();
         $groupItem->setTitle('['.$translator->trans('insert title').']');
-        $groupItem->setBibKind('none');
         $groupItem->setDraftStatus(1);
         $groupItem->save();
 
