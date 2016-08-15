@@ -33,7 +33,10 @@ class UserTransformer implements DataTransformerInterface
                 $userData['autoSaveStatus'] = true;
             }
             $userData['title'] = $userItem->getTitle();
-            $userData['dateOfBirth'] = new \DateTime($userItem->getBirthday());
+            if($userItem->getBirthday()){
+                $userData['dateOfBirth'] = array();
+                $userData['dateOfBirth']['date'] = new \DateTime($userItem->getBirthday());
+            }
             $userData['email'] = $userItem->getEmail();
             $userData['hideEmailInThisRoom'] = $userItem->isEmailVisible();
             $userData['phone'] = $userItem->getTelephone();
@@ -77,7 +80,13 @@ class UserTransformer implements DataTransformerInterface
                 $userObject->turnAutoSaveOff();
             }
             $userObject->setTitle($userData['title']);
-            $userObject->setBirthday($userData['dateOfBirth']->format('Y-m-d'));
+            if($userData['dateOfBirth'] && $userData['dateOfBirth']['date']){
+                $userObject->setBirthday($userData['dateOfBirth']['date']->format('Y-m-d'));
+            }
+            else{
+                $userObject->setBirthday("");
+            }
+
             $userObject->setEmail($userData['email']);
             if ($userData['hideEmailInThisRoom']) {
                 $userObject->setEmailVisible();
