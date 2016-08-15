@@ -340,9 +340,9 @@ class RoomProfileType extends AbstractType
                 'expanded' => true,
                 'multiple' => false,
                 'choices'  => array(
-                    'none' => 'none',
-                    'weekly' => 'weekly',
-                    'daily' => 'daily'
+                    'none' => '1',
+                    'weekly' => '2',
+                    'daily' => '3'
                 ),
                 'label'    => 'newsletterStatus',
                 'required' => false,
