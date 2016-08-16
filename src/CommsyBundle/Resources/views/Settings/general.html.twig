@@ -137,7 +137,7 @@
         let reader = new FileReader();
         reader.onload = function(event){
             previewImage.src = event.target.result;
-            document.getElementById('general_settings_room_image_room_image_data').value = event.target.result;
+            document.getElementById('general_settings_room_image_room_image_data').value = f.name + ";" + event.target.result;
 
             // document.getElementById("imageInfo").innerHTML = 
             //         '<li>Name: '+f.name+

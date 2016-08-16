@@ -238,4 +238,8 @@ class UserService
         $moderatorList = $this->userManager->get();
         return $moderatorList->to_array();
     }
+    
+    public function showNoNotActivatedEntries(){
+        $this->userManager->showNoNotActivatedEntries();
+    }
 }

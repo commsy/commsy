@@ -159,6 +159,7 @@ gulp.task('js', function() {
         config.bowerDir + '/uikit/js/components/parallax.js',
         config.bowerDir + '/uikit/js/components/datepicker.js',
         config.bowerDir + '/uikit/js/components/timepicker.js',
+        config.bowerDir + '/uikit/js/components/form-select.js',
 
         config.assetsDir + '/js/**/*.js'
     ], 'commsy.js');

@@ -11,6 +11,9 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+
+use CommsyBundle\Form\Type\Custom\DateSelectType;
 
 use Doctrine\ORM\EntityManager;
 
@@ -45,12 +48,10 @@ class RoomProfileType extends AbstractType
         $builder
             ->add('firstname', TextType::class, array(
                 'label' => 'firstname',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('lastname', TextType::class, array(
                 'label' => 'lastname',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('userId', TextType::class, array(
@@ -58,22 +59,18 @@ class RoomProfileType extends AbstractType
                     new NotBlank(),
                 ),
                 'label' => 'userId',
-                'translation_domain' => 'profile',
                 'required' => true,
             ))
             ->add('currentPassword', TextType::class, array(
                 'label' => 'currentPassword',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('newPassword', TextType::class, array(
                 'label' => 'newPassword',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('newPasswordConfirm', TextType::class, array(
                 'label' => 'newPasswordConfirm',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('language', ChoiceType::class, array(
@@ -84,35 +81,38 @@ class RoomProfileType extends AbstractType
                     'en' => 'English'
                 ),
                 'label' => 'language',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('autoSaveStatus', CheckboxType::class, array(
                 'label'    => 'autoSaveStatus',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
             ->add('title', TextType::class, array(
                 'label' => 'title',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('titleChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
-            ->add('dateOfBirth', TextType::class, array(
+            ->add('dateOfBirth', DateSelectType::class, array(
                 'label'    => 'dateOfBirth',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('dateOfBirthChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
             ->add('image', FileType::class, array(
@@ -120,244 +120,281 @@ class RoomProfileType extends AbstractType
                     'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
                 ),
                 'label'    => 'image',
-                'translation_domain' => 'profile',
                 'required' => false,
+            ))
+            ->add('image_data', HiddenType::class, array(
             ))
             ->add('imageChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
             ->add('email', TextType::class, array(
                 'label'    => 'email',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('emailChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
             ->add('isEmailVisible', CheckboxType::class, array(
                 'label'    => 'isEmailVisible',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             ->add('isEmailVisibleChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
             ->add('phone', TextType::class, array(
                 'label'    => 'phone',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('phoneChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
             ->add('mobile', TextType::class, array(
                 'label'    => 'mobile',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('mobileChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
             ->add('street', TextType::class, array(
                 'label'    => 'street',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('streetChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
             ->add('zipcode', TextType::class, array(
                 'label'    => 'zipcode',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('zipcodeChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
             ->add('city', TextType::class, array(
                 'label'    => 'city',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('cityChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
             ->add('room', TextType::class, array(
                 'label'    => 'room',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('roomChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
             ->add('organisation', TextType::class, array(
                 'label'    => 'organisation',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('organisationChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
             ->add('position', TextType::class, array(
                 'label'    => 'position',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('positionChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
             ->add('icq', TextType::class, array(
                 'label'    => 'icq',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('icqChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
             ->add('msn', TextType::class, array(
                 'label'    => 'msn',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('msnChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
                 'required' => false,
-                'translation_domain' => 'profile',
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
             ->add('skype', TextType::class, array(
                 'label'    => 'skype',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('skypeChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
             ->add('yahoo', TextType::class, array(
                 'label'    => 'yahoo',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('yahooChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
             ->add('jabber', TextType::class, array(
                 'label'    => 'jabber',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('jabberChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
             ->add('homepage', TextType::class, array(
                 'label'    => 'homepage',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('homepageChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
             ->add('description', TextareaType::class, array(
                 'attr' => array('cols' => '80', 'rows' => '10'),
                 'label'    => 'description',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('descriptionChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'descriptionChangeInAllContexts',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
             ->add('newsletterStatus', ChoiceType::class, array(
                 'placeholder' => false,
+                'expanded' => true,
+                'multiple' => false,
                 'choices'  => array(
-                    '1' => 'none',
-                    '2' => 'weekly',
-                    '3' => 'daily'
+                    'none' => '1',
+                    'weekly' => '2',
+                    'daily' => '3'
                 ),
                 'label'    => 'newsletterStatus',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
             ->add('widgetStatus', CheckboxType::class, array(
                 'label'    => 'widgetStatus',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             ->add('calendarStatus', CheckboxType::class, array(
                 'label'    => 'calendarStatus',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             ->add('stackStatus', CheckboxType::class, array(
                 'label'    => 'stackStatus',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             ->add('portfolioStatus', CheckboxType::class, array(
                 'label'    => 'portfolioStatus',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             ->add('switchRoomStatus', CheckboxType::class, array(
                 'label'    => 'switchRoomStatus',
-                'translation_domain' => 'profile',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             
             ->add('save', SubmitType::class, array(
                 'label' => 'save',
                 'translation_domain' => 'form',
+                'attr' => array(
+                    'class' => 'uk-button-primary',
+                )
             ));
     }
 
@@ -370,6 +407,7 @@ class RoomProfileType extends AbstractType
     {
         $resolver
             ->setRequired(['itemId', 'uploadUrl'])
+            ->setDefaults(array('translation_domain' => 'profile'))
         ;
     }
 

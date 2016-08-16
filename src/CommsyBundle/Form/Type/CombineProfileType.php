@@ -50,7 +50,10 @@ class CombineProfileType extends AbstractType
             ))
             ->add('save', SubmitType::class, array(
                 'label' => 'save',
-                'translation_domain' => 'form'
+                'translation_domain' => 'form',
+                'attr' => array(
+                    'class' => 'uk-button-primary',
+                )
             ));
     }
 

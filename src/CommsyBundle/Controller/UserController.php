@@ -70,6 +70,8 @@ class UserController extends Controller
 
             // set filter conditions in user manager
             $userService->setFilterConditions($filterForm);
+        } else {
+            $userService->showNoNotActivatedEntries();
         }
 
         // get user list from manager service 

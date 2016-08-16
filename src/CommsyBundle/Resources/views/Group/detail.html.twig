@@ -99,7 +99,7 @@
 
                                         {# save #}
                                         <li>
-                                            <a href="{{ path('commsy_item_download', {'roomId': roomId, 'itemId': group.itemId}) }}" target="_blank">
+                                            <a href="{{ path('commsy_item_download', {'roomId': roomId, 'itemId': group.itemId}) }}">
                                                 <i class="uk-icon-small uk-icon-save uk-icon-justify uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
                                             </a>
                                         </li>
@@ -130,7 +130,7 @@
                                         {# delete #}
                                         <li>
                                             {% if is_granted('ITEM_EDIT', item.itemId) %}
-                                                <a class="" href="#">
+                                                <a class="commsy-action-delete" id="" href="#" data-delete-url="{{ path('commsy_item_delete', {'roomId': roomId, 'itemId': group.itemId}) }}" data-item-type="{{group.itemType}}" data-title="{{ 'list choice'|trans({},'rubric')|capitalize }}" data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}" data-return-url="{{ path('commsy_group_list', {'roomId': roomId}) }}">
                                                     <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                 </a>
                                             {% else %}
@@ -162,57 +162,11 @@
                         {{ macrosGroup.members(group,members) }}
                     </div>
  
-                    <div id="grouproom{{ group.itemId }}">
+                    {# grouproom #}
+                    <div class="cs-toggle" data-uk-observe>
                         <hr class="uk-width-9-10"/>
-                        <article class="uk-article uk-margin-left uk-margin-right">
-                            <a name="grouproom"></a>
-                            {# title row #}
-                            <div class="uk-grid uk-margin-small-bottom">
-                                <div class="uk-width-9-10">
-                                    <h4 class="cs-detail-section-header">
-                                        {{'grouproom'|trans({},'group') }} 
-                                    </h4>
-                                </div>
-                            </div>
-                            <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
-                                <div class="uk-flex">
-                                <div class="uk-width-1-5 uk-text-left">
-                                {% if group.isGroupRoomActivated %}
-                                    <a href="{{ path('commsy_room_home', {'roomId': group.groupRoomItem.ItemId}) }}" class="uk-icon-large uk-icon-button uk-icon-sign-in" data-uk-tooltip title="{{'enter grouproom'|trans({}) }}"></a>
-                                {% else %}
-                                    <span class="uk-icon-large uk-icon-button uk-icon-remove" data-uk-tooltip title="{{'no grouproom'|trans({},'group') }}"> </span>
-                                {% endif %}
-                                </div>
-                                <div class="uk-width-2-5 uk-text-left uk-margin-right">
-                                {% if group.isGroupRoomActivated %}
-                                    <span class="uk-text-bold">{{group.groupRoomItem.Title}}</span><br/>
-                                    <p>
-                                    {{'grouproom description text'|trans({},'group') }}    
-                                    </p>
-                                {% else %}
-                                    <span class="uk-text-bold">{{'no grouproom'|trans({},'group') }}</span><br/>
-                                    <p>
-                                    {{'no grouproom description text'|trans({},'group') }}    
-                                    </p>
-                                {% endif %}
-                                </div>
-                                <div class="uk-width-2-5 uk-text-left">
-                                {% if group.isGroupRoomActivated %}
-                                    <span class="uk-text-bold">{{'grouproom information'|trans({},'group') }}</span><br/>
-                                    <p>
-                                    {{'grouproom moderators'|trans({},'group') }}: {{group.groupRoomItem.ModeratorListString}}     
-                                    </p>
-                                    <p>
-                                      ToDo: Zuganglinks
-                                    </p>
-                                {% endif %}
-                                </div>
-                               </div>
-
-                            </div>
-                        </article>
+                        {{ macrosGroup.grouproom(group,members) }}
                     </div>
-
 
                     {# links #}
                     <div id="links{{ group.itemId }}" class="cs-toggle" data-uk-observe>

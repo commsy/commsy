@@ -6,6 +6,10 @@
                 <source>profile</source>
                 <target>Profil</target>
             </trans-unit>
+            <trans-unit id="userProfile">
+                <source>user profile</source>
+                <target>Benutzerprofil</target>
+            </trans-unit>
             <trans-unit id="firstname">
                 <source>firstname</source>
                 <target>Vorname</target>
@@ -185,6 +189,22 @@
             <trans-unit id="personalData">
                 <source>personalData</source>
                 <target>Persönliche Daten</target>
+            </trans-unit>
+            <trans-unit id="browser">
+                <source>browser</source>
+                <target>Browser</target>
+            </trans-unit>
+            <trans-unit id="newsletter">
+                <source>newsletter</source>
+                <target>Newsletter</target>
+            </trans-unit>
+            <trans-unit id="german">
+                <source>de</source>
+                <target>Deutsch</target>
+            </trans-unit>
+            <trans-unit id="english">
+                <source>en</source>
+                <target>Englisch</target>
             </trans-unit>
         </body>
     </file>

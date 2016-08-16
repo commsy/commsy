@@ -117,4 +117,8 @@ class AnnouncementService
     {
         return $this->announcementManager->getNewItem();
     }
+    
+    public function showNoNotActivatedEntries(){
+        $this->announcementManager->showNoNotActivatedEntries();
+    }
 }

@@ -115,4 +115,18 @@ class DiscussionService
     {
         return $this->discussionArticleManager->getItem($itemId);
     }
+    
+    public function getNewDiscussion()
+    {
+        return $this->discussionManager->getNewItem();
+    }
+    
+    public function getNewArticle()
+    {
+        return $this->discussionArticleManager->getNewItem();
+    }
+    
+    public function showNoNotActivatedEntries(){
+        $this->discussionManager->showNoNotActivatedEntries();
+    }
 }

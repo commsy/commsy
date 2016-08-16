@@ -99,7 +99,7 @@
         });
         $(this).html($(this).data('title'));
         
-        articles.toggleClass('selectable');
+        articles.toggleClass('selectable', false);
         
         selectedCounter = 0;
         $('#commsy-list-count-selected').html('0');
@@ -184,7 +184,8 @@
             inputs = target.find('input');
             
             if (articles.first().hasClass('selectable')) {
-                articles.addClass('selectable');
+                //articles.addClass('selectable');
+                addCheckboxes(articles);
             }
             
             if (selectAll == true) {
@@ -221,7 +222,8 @@
         inputs = target.find('input');
 
         if (selectable) {
-            articles.addClass('selectable');
+            //articles.addClass('selectable');
+            addCheckboxes(articles);
         }
 
         bind();
@@ -459,7 +461,7 @@
     function addCheckboxes (articles) {
         articles.each(function() {
             if ($.inArray(action, $(this).data('allowed-actions')) > -1) {
-                $(this).toggleClass('selectable');
+                $(this).toggleClass('selectable', true);
             }
         });
     }

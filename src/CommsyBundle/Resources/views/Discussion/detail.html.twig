@@ -39,7 +39,7 @@
 
                                         {# new entry #}
                                         <li>
-                                            <a href="{{ path('commsy_material_create', {'roomId': roomId}) }}" id="newEntry">
+                                            <a href="{{ path('commsy_discussion_create', {'roomId': roomId}) }}" id="newEntry">
                                                 <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
                                             </a>
                                         </li>
@@ -53,7 +53,7 @@
 
                                         {# save #}
                                         <li>
-                                            <a href="{{ path('commsy_item_download', {'roomId': roomId, 'itemId': discussion.itemId}) }}" target="_blank">
+                                            <a href="{{ path('commsy_item_download', {'roomId': roomId, 'itemId': discussion.itemId}) }}">
                                                 <i class="uk-icon-small uk-icon-save uk-icon-justify uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
                                             </a>
                                         </li>
@@ -97,7 +97,7 @@
 
                                         {# new article #}
                                          <li>
-                                            <a class="newArticle" href="#" id="newArticle" data-section-url="{{ path('commsy_discussion_createarticle', {'roomId': roomId, 'itemId': discussion.itemId}) }}">
+                                            <a class="newArticle" href="#" id="newArticle" data-article-url="{{ path('commsy_discussion_createarticle', {'roomId': roomId, 'itemId': discussion.itemId}) }}">
                                                 <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new article'|trans({},'discussion') }}
                                             </a>
                                         </li>
@@ -142,7 +142,7 @@
                 {# discussion articles #}
                 {% for article in articleList %}
                     {% set count = loop.index0 %}
-                    <div id="article_{{count}}" class="uk-panel uk-panel-box uk-margin-top material-section">
+                    <div id="article_{{count}}" class="uk-panel uk-panel-box uk-margin-top discussion-article">
                         <div class="uk-panel-teaser cs-panel-teaser-primary cs-remove-overflow cs-remove-section cs-toggle" data-cs-edit="{removeUrl: '/app_dev.php/room/201/material/1419/remove', draft: ''}">
                             <div class="uk-grid">
                                 <div class="uk-flex-inline uk-width-2-5 ">

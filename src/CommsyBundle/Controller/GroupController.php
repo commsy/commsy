@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Filter\GroupFilterType;
 use CommsyBundle\Form\Type\GroupType;
+use CommsyBundle\Form\Type\GrouproomType;
 use CommsyBundle\Form\Type\AnnotationType;
 
 use \ZipArchive;
@@ -129,7 +130,7 @@ class GroupController extends Controller
         ));
 
         // get the group manager service
-        $groupService = $this->get('commsy.group_service');
+        $groupService = $this->get('commsy_legacy.group_service');
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -140,7 +141,7 @@ class GroupController extends Controller
 
         // get group list from manager service 
         $groups = $groupService->getListGroups($roomId);
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
@@ -616,9 +617,8 @@ class GroupController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.group');
         
         // create new group item
-        $groupItem = $groupService->getNewgroup();
+        $groupItem = $groupService->getNewGroup();
         $groupItem->setTitle('['.$translator->trans('insert title').']');
-        $groupItem->setBibKind('none');
         $groupItem->setDraftStatus(1);
         $groupItem->save();
 
@@ -783,4 +783,139 @@ class GroupController extends Controller
         );
     }
 
+
+    /**
+     * @Route("/room/{roomId}/group/{itemId}/editgrouproom")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function editgrouproomAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($itemId);
+        
+        $groupService = $this->get('commsy_legacy.group_service');
+        $transformer = $this->get('commsy_legacy.transformer.group');
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+        
+        $formData = array();
+        $groupItem = NULL;
+        
+        // get date from DateService
+        $groupItem = $groupService->getGroup($itemId);
+        if (!$groupItem) {
+            throw $this->createNotFoundException('No group found for id ' . $itemId);
+        }
+        $formData = $transformer->transform($groupItem);
+        $form = $this->createForm(GrouproomType::class, $formData, array(
+            'action' => $this->generateUrl('commsy_group_editgrouproom', array(
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ))
+        ));
+        
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $saveType = $form->getClickedButton()->getName();
+            if ($saveType == 'save') {
+                $groupItem = $transformer->applyTransformation($groupItem, $form->getData());
+
+                // update modifier
+                $groupItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                $groupItem->save(true);
+            } else {
+                // ToDo ...
+            }
+            return $this->redirectToRoute('commsy_group_savegrouproom', array('roomId' => $roomId, 'itemId' => $itemId));
+        }
+        
+        return array(
+            'form' => $form->createView(),
+        );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/date/{itemId}/savegrouproom")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function savegrouproomAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($itemId);
+        
+        $groupService = $this->get('commsy_legacy.group_service');
+        $transformer = $this->get('commsy_legacy.transformer.date');
+        
+        $group = $groupService->getGroup($itemId);
+        
+        /* $itemArray = array($grouproom);
+        $modifierList = array();
+        foreach ($itemArray as $item) {
+            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+        }
+        
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $readerManager = $legacyEnvironment->getReaderManager();
+        //$roomItem = $roomManager->getItem($material->getContextId());        
+        //$numTotalMember = $roomItem->getAllUsers();
+        
+        $userManager = $legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager->setUserLimit();
+        $userManager->select();
+        $user_list = $userManager->get();
+        $all_user_count = $user_list->getCount();
+        $read_count = 0;
+        $read_since_modification_count = 0;
+
+        $current_user = $user_list->getFirst();
+        $id_array = array();
+        while ( $current_user ) {
+		   $id_array[] = $current_user->getItemID();
+		   $current_user = $user_list->getNext();
+		}
+		$readerManager->getLatestReaderByUserIDArray($id_array,$date->getItemID());
+		$current_user = $user_list->getFirst();
+		while ( $current_user ) {
+	   	    $current_reader = $readerManager->getLatestReaderForUserByID($date->getItemID(), $current_user->getItemID());
+            if ( !empty($current_reader) ) {
+                if ( $current_reader['read_date'] >= $date->getModificationDate() ) {
+                    $read_count++;
+                    $read_since_modification_count++;
+                } else {
+                    $read_count++;
+                }
+            }
+		    $current_user = $user_list->getNext();
+		}
+        $read_percentage = round(($read_count/$all_user_count) * 100);
+        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
+        $readerService = $this->get('commsy_legacy.reader_service');
+        
+        $readerList = array();
+        $modifierList = array();
+        foreach ($itemArray as $item) {
+            $reader = $readerService->getLatestReader($item->getItemId());
+            if ( empty($reader) ) {
+               $readerList[$item->getItemId()] = 'new';
+            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
+               $readerList[$item->getItemId()] = 'changed';
+            }
+            
+            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+        } */
+        
+        return array(
+            'roomId' => $roomId,
+            'item' => $group,
+            //'modifierList' => $modifierList,
+            //'userCount' => $all_user_count,
+            //'readCount' => $read_count,
+            //'readSinceModificationCount' => $read_since_modification_count,
+        );
+    }
 }

@@ -62,4 +62,9 @@ class GroupService
             $this->groupManager->showNoNotActivatedEntries();
         }
     }
+    
+    public function getNewGroup()
+    {
+        return $this->groupManager->getNewItem();
+    }
 }

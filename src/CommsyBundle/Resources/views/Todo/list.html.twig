@@ -41,7 +41,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ path('commsy_group_printlist', {'roomId': roomId}) }}" target="_blank" id="print">
+                    <a href="{{ path('commsy_todo_printlist', {'roomId': roomId}) }}" target="_blank" id="print">
                         <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                     </a>
                 </li>
@@ -96,7 +96,7 @@
                     
                     {% for status in statusList %}
                         <li>
-                            <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_todo_feedaction', {'roomId': roomId}) }}", "action": "mark{{ status }}"}' data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}">
+                            <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_todo_feedaction', {'roomId': roomId}) }}", "action": "mark{{ status }}"}'>
                                 <i class="uk-icon-justify uk-icon-small uk-icon-circle uk-visible-large"></i> {{ 'marktodostatus'|trans({'%status%': status}, 'rubric') }}
                             </a>
                         </li>

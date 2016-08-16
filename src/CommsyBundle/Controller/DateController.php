@@ -64,6 +64,7 @@ class DateController extends Controller
             $dateService->setFilterConditions($filterForm);
         } else {
             $dateService->setPastFilter(false);
+            $dateService->showNoNotActivatedEntries();
         }
 
         // get material list from manager service 

@@ -78,11 +78,12 @@ class SettingsController extends Controller
                     // case 2: file was send as base64 string via hidden "room_image_data" text field
                     else{
                         $data = $room_image_data['room_image_data'];
-                        list($type, $data) = explode(";", $data);
+                        list($fileName, $type, $date) = explode(";", $data);
                         list(, $data) = explode(",", $data);
                         list(, $extension) = explode("/", $type);
                         $data = base64_decode($data);
-                        $fileName = 'custom_bg_image.'.$extension;
+                        //$fileName = 'custom_bg_image.'.$extension;
+                        $fileName = "cid" . $roomId . "_bgimage_" . $fileName;
                         $absoluteFilepath = $saveDir . "/" . $fileName;
                         file_put_contents($absoluteFilepath, $data);
                     }

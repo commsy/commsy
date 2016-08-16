@@ -247,9 +247,19 @@ class cs_label_item extends cs_item {
       return $members->getCount();
    }
 
-   function getCountAllLinkItemList(){
+   function getCountAllLinkItemList($addUsers = true){
       $entries = $this->getAllLinkItemList();
-      return $entries->getCount();
+      $counter = 0;
+      if (!$addUsers) {
+          foreach ($entries->to_array() as $entry) {
+              if ($entry->getFirstLinkedItemType() != 'user' && $entry->getSecondLinkedItemType() != 'user') {
+                    $counter++;
+              }
+          }
+      } else {
+        $counter = $entries->getCount();
+      }
+      return $counter;
    }
 
    /** checks the data of the item.
