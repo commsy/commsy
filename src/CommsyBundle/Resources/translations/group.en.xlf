@@ -26,6 +26,14 @@
                 <source>no grouproom description text</source>
                 <target>There is no activ workspace for this group.</target>
             </trans-unit>
+            <trans-unit id="7">
+                <source>edit grouproom</source>
+                <target>Edit grouproom</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>activate grouproom</source>
+                <target>Activate grouproom</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

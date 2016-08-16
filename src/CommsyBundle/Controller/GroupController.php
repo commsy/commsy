@@ -818,9 +818,15 @@ class GroupController extends Controller
         
         $form->handleRequest($request);
         if ($form->isValid()) {
-            if ($form->get('save')->isClicked()) {
-                
-            } else if ($form->get('cancel')->isClicked()) {
+            $saveType = $form->getClickedButton()->getName();
+            if ($saveType == 'save') {
+                $groupItem = $transformer->applyTransformation($groupItem, $form->getData());
+
+                // update modifier
+                $groupItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                $groupItem->save(true);
+            } else {
                 // ToDo ...
             }
             return $this->redirectToRoute('commsy_group_savegrouproom', array('roomId' => $roomId, 'itemId' => $itemId));

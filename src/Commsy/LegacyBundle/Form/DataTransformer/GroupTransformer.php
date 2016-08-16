@@ -27,6 +27,7 @@ class GroupTransformer implements DataTransformerInterface
             $groupData['title'] = $groupItem->getTitle();
             $groupData['description'] = $groupItem->getDescription();
             $groupData['permission'] = $groupItem->isPrivateEditing();
+            $groupData['activate'] = $groupItem->isGroupRoomActivated();
             
             if ($groupItem->isNotActivated()) {
                 $groupData['hidden'] = true;
@@ -84,6 +85,12 @@ class GroupTransformer implements DataTransformerInterface
             if($groupObject->isNotActivated()){
 	            $groupObject->setModificationDate(getCurrentDateTimeInMySQL());
 	        }
+        }
+
+        if ($groupData['activate']) {
+            $groupObject->setGroupRoomActive();
+        } else {
+            $groupObject->unsetGroupRoomActive();
         }
 
         return $groupObject;
