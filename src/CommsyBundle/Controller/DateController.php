@@ -643,7 +643,7 @@ class DateController extends Controller
      */
     public function eventsdashboardAction($roomId, Request $request)
     {
-        $roomService = $this->get('commsy_legacy.room_service');
+        $itemService = $this->get('commsy_legacy.item_service');
         $dateService = $this->get('commsy_legacy.date_service');
         $userService = $this->get("commsy_legacy.user_service");
         $user = $userService->getPortalUserFromSessionId();
@@ -685,7 +685,7 @@ class DateController extends Controller
                 $color = $this->container->getParameter('commsy.themes.'.str_ireplace('-', '_', $date->getColor()));
             }
             
-            $context = $roomService->getRoomItem($date->getContextId());
+            $context = $itemService->getTypedItem($date->getContextId());
 
             $events[] = array('itemId' => $date->getItemId(),
                               'title' => $date->getTitle(),

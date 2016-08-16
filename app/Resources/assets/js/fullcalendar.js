@@ -65,6 +65,68 @@
         });
     };
 
+    if ($("#calendarDashboard").length) {
+        $('#calendarDashboard').fullCalendar({
+            // put your options and callbacks here
+            firstDay: 1,
+            lang: 'de',
+            businesHours: {
+                start: '8:00',
+                end: '16:00',
+                dow: [ 1, 2, 3, 4, 5 ]
+            },
+            header: {
+                left:   'month,agendaWeek,agendaDay',
+                center: 'title',
+                right:  'prevYear,prev,today,next,nextYear'
+            },
+            events: $('#calendarDashboard').data('events').url,
+            dayClick: function(date, jsEvent, view) {
+                if (!date.hasTime()) {
+                    date.time('12:00:00');
+                }
+            },
+            eventClick: function(calEvent, jsEvent, view) {
+                window.location.href = $('#calendarDashboard').data('events').dateUrl+'/'+calEvent.itemId;
+            },
+            eventMouseover: function(calEvent, jsEvent, view) {
+                $(jsEvent.currentTarget).tooltipster({
+                    content: $(renderEvent(calEvent)),
+                    delay: 0,
+                    animationDuration: 0,
+                }).tooltipster('show');
+            },
+            eventMouseout: function(calEvent, jsEvent, view) {
+                //UIkit.modal('#tooltip-'+calEvent._id).hide();
+            },
+            eventDrop: function(event, delta, revertFunc) {
+                revertFunc();
+            },
+            eventResize: function(event, delta, revertFunc) {
+                revertFunc();
+            },
+        });
+        if ($('#calendarDashboard').data('height')) {
+            $('#calendarDashboard').fullCalendar('option', 'height', $('#calendar').data('height'));
+        }
+        
+        $('.fc-prevYear-button').tooltipster({
+            content: $('#calendarDashboard').data('translations').prevYear,
+        });
+        
+        $('.fc-prev-button').tooltipster({
+            content: $('#calendarDashboard').data('translations').prev,
+        });
+        
+        $('.fc-next-button').tooltipster({
+            content: $('#calendarDashboard').data('translations').next,
+        });
+        
+        $('.fc-nextYear-button').tooltipster({
+            content: $('#calendarDashboard').data('translations').nextYear,
+        });
+    };
+
     function editEvent (event, revertFunc) {
         UIkit.modal.confirm($('#calendar').data('confirm-change'), function() {
             event.description = '...';
