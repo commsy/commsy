@@ -20,8 +20,8 @@ class ProfileController extends Controller
     */
     public function roomAction($roomId, $itemId, Request $request)
     {
-        // get room from RoomService
         $userService = $this->get('commsy_legacy.user_service');
+        $roomService = $this->get('commsy_legacy.room_service');
         $userItem = $userService->getUser($itemId);
 
         if (!$userItem) {
@@ -52,11 +52,26 @@ class ProfileController extends Controller
         if ($request->request->has('room_profile')) {
             $form->handleRequest($request);
             if ($form->isValid()) {
-                $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
-    
-                $userItem->save();
-    
                 $formData = $form->getData();
+
+                // save profile picture if given
+                if($formData['image_data']){
+                    $saveDir = implode("/", array($this->getParameter('files_directory'), $roomService->getRoomFileDirectory($userItem->getContextID())));
+                    $data = $formData['image_data'];
+                    list($fileName, $type, $data) = explode(";", $data);
+                    list(, $data) = explode(",", $data);
+                    list(, $extension) = explode("/", $type);
+                    $data = base64_decode($data);
+                    $fileName = implode("_", array('cid'.$userItem->getContextID(), $userItem->getUserID(), $fileName));
+                    $absoluteFilepath = implode("/", array($saveDir, $fileName));
+                    //dump("Saving profile under '" . $absoluteFilepath . "'");
+                    file_put_contents($absoluteFilepath, $data);
+                    $userItem->setPicture($fileName);
+                }
+    
+                $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
+                $userItem->save();
+
                 $userList = $userItem->getRelatedUserList();
                 $tempUserItem = $userList->getFirst();
                 while ($tempUserItem) {

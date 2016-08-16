@@ -11,7 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 use CommsyBundle\Form\Type\Custom\DateSelectType;
 
@@ -122,6 +122,8 @@ class RoomProfileType extends AbstractType
                 'label'    => 'image',
                 'required' => false,
             ))
+            ->add('image_data', HiddenType::class, array(
+            ))
             ->add('imageChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
                 'required' => false,
@@ -145,6 +147,9 @@ class RoomProfileType extends AbstractType
             ->add('isEmailVisible', CheckboxType::class, array(
                 'label'    => 'isEmailVisible',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             ->add('isEmailVisibleChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
@@ -387,6 +392,9 @@ class RoomProfileType extends AbstractType
             ->add('save', SubmitType::class, array(
                 'label' => 'save',
                 'translation_domain' => 'form',
+                'attr' => array(
+                    'class' => 'uk-button-primary',
+                )
             ));
     }
 

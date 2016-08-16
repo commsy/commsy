@@ -11,7 +11,7 @@
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div>{{ 'user profile'|trans({}, 'settings') }}</div>
+                        <div>{{ 'user profile'|trans({}, 'profile') }}</div>
                     </div>
                 </div>
                 
@@ -27,11 +27,11 @@
                                     <td>{{ form_row(form.firstname) }}</td>
                                     <td rowspan="7">
                                         <div class="uk-clearfix">
-                                                <img id="profile_form_user_image" class="uk-thumbnail uk-border-circle uk-float-right uk-margin-bottom" style="height:100px; width:100px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
-                                                <div class="uk-float-right uk-clearfix">
-                                                    {{ form_row(form.image, {'attr': {'class': 'uk-float-right'}}) }}
-                                                    {{ form_row(form.imageChangeInAllContexts, {'attr': {'class': 'uk-float-right'}}) }}
-                                                </div>
+                                            <img id="profile_form_user_image" class="uk-thumbnail uk-float-right uk-margin-bottom uk-border-circle" style="height:100px; width:100px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
+                                            <div class="uk-float-right uk-clearfix">
+                                                {{ form_row(form.image, {'attr': {'class': 'uk-float-right'}}) }}
+                                                {{ form_row(form.imageChangeInAllContexts, {'attr': {'class': 'uk-float-right'}}) }}
+                                            </div>
                                         </div>
                                         
                                     </td>
@@ -240,4 +240,56 @@
 
         </div>
     </div>
+
+    <script>
+    window.onload = function(){
+        document.querySelector('form.uk-form-horizontal').onsubmit = function(event){
+            this.querySelector('input[type="file"]').disabled = true;
+        }
+
+        let profileUpload = document.querySelector('.cs-upload-form');
+
+        profileUpload.ondragover = function(e){
+            e.preventDefault();
+            this.style.border = "1px solid black";
+            return false;
+        };
+        profileUpload.ondragleave = function(e){
+            e.preventDefault();
+            this.style.border = "";
+            return false;
+        };
+        profileUpload.ondragend = function(e){
+            e.preventDefault();
+            return false;
+        };
+        profileUpload.ondrop = function(e){
+            e.preventDefault();
+            this.style.border = "";
+            setProfileImage(e.dataTransfer.files[0], document.querySelector('#profile_form_user_image'));
+        };
+
+        profileUpload.querySelector('input[type="file"]').onchange = function(e){
+            setProfileImage(e.target.files[0], document.querySelector('#profile_form_user_image'));
+        };
+    };
+
+    function setProfileImage(f, previewImage){
+        // TODO: set threshold to sensible value (e.g. the real upload size limit of the server)!
+        if(f.size > 2000000){
+            alert("File size too large ("+(f.size / 1000) +" KB)! \n This service accepts image files up to 500 KB only!");
+            return false;
+        }
+        else if(f.type.substring(0, 5) != 'image'){
+            alert("Files of type '"+f.type+"' can not be used as profile images!");
+            return false;
+        }
+        let reader = new FileReader();
+        reader.onload = function(event){
+            previewImage.src = event.target.result;
+            document.getElementById('room_profile_image_data').value = f.name + ";" + event.target.result;
+        }
+        reader.readAsDataURL(f);
+    }
+    </script>
 {% endblock content %}
