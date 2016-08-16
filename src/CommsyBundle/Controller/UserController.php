@@ -157,6 +157,7 @@ class UserController extends Controller
     public function printlistAction($roomId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
@@ -175,10 +176,11 @@ class UserController extends Controller
             )),
             'hasHashtags' => false,
             'hasCategories' => false,
+            'isModerator' => $currentUser->isModerator(),
         ));
 
         // get the user manager service
-        $userService = $this->get('commsy.user_service');
+        $userService = $this->get('commsy_legacy.user_service');
 
         $userService->resetLimits();
         // apply filter
@@ -190,7 +192,7 @@ class UserController extends Controller
 
         // get user list from manager service 
         $users = $userService->getListUsers($roomId);
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
@@ -847,9 +849,11 @@ class UserController extends Controller
             $content = file_get_contents($rootDir.$filePath);
             if (!$content) {
                 $foundUserImage = false;
+                $file = 'user_unknown.gif';
             }
         } else {
-            $foundUserImage = false;   
+            $foundUserImage = false;
+            $file = 'user_unknown.gif';
         }
         if (!$foundUserImage) {
             $kernel = $this->get('kernel');

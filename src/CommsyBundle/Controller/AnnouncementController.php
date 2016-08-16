@@ -273,7 +273,7 @@ class AnnouncementController extends Controller
         // get announcement list from manager service 
         $announcements = $announcementService->getListAnnouncements($roomId);
 
-        $readerService = $this->get('commsy.reader_service');
+        $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
