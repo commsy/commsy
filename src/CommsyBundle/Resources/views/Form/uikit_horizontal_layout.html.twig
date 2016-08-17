@@ -159,3 +159,9 @@
     {% endif %}
 
 {% endblock %}
+
+{% block _additional_settings_template_status_widget %}
+    <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+{% endblock %}
+
+

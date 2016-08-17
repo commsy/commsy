@@ -3,6 +3,7 @@
 {% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
 
 {% block content %}
+
     <div class="uk-grid">
 
         <div class="uk-width-medium-4-4">
@@ -36,7 +37,13 @@
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Template'|trans({}, 'settings') }}</h1> 
                             <div style="margin-bottom: 25px;">{{ 'Template text'|trans({}, 'settings') }}</div>
-                            {{ form_widget(form.template) }}
+                            <div class='uk-form-row'>
+                                <div class='uk-form-label'>{{ 'Status' | trans({} , 'settings') }}</div>
+                                <div class='uk-form-controls'>
+                                    {{ form_widget(form.template.status) }} {{ 'Template status'|trans({}, 'settings') }}
+                                </div>
+                            </div>
+                            {{ form_rest(form.template) }}
                         </div>
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">

@@ -105,6 +105,9 @@ class AdditionalSettingsType extends AbstractType
                 ->add('status', CheckboxType::class, array(
                     'required' => false,
                     'label_attr' => array('class' => 'uk-form-label'),
+                    'attr' => array(
+                        'style' => 'vertical-align: baseline;',
+                    ),
                 ))
                 ->add('template_availability', ChoiceType::class, array(
                     'required' => false,

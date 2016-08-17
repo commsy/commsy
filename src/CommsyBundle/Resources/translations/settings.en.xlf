@@ -186,6 +186,10 @@
                 <source>Template</source>
                 <target>Template</target>
             </trans-unit>
+            <trans-unit id="templatestatus">
+                <source>Template status</source>
+                <target>Provide workspace as a template for new workspaces.</target>
+            </trans-unit>
             <trans-unit id="templateavailability">
                 <source>Template availability</source>
                 <target>Target group</target>
