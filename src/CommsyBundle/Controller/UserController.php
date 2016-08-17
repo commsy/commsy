@@ -856,10 +856,12 @@ class UserController extends Controller
             $file = 'user_unknown.gif';
         }
         if (!$foundUserImage) {
-            $kernel = $this->get('kernel');
-            $path = $kernel->getRootDir() . '/Resources/assets/img/user_unknown.gif';     
+            $path = $this->get('kernel')->getRootDir() . '/Resources/assets/img/user_unknown.gif';     
             $content = file_get_contents($path);
         }
+        
+        $file = preg_replace('/[[:^print:]]/', '', $file);
+        
         $response = new Response($content, Response::HTTP_OK, array('content-type' => 'image'));
         
         $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,$file);
