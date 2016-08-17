@@ -266,8 +266,6 @@ class AnnouncementController extends Controller
         if ($filterForm->isValid()) {
             // set filter conditions in announcement manager
             $announcementService->setFilterConditions($filterForm);
-        }else{
-            $announcementService->setDateLimit();
         }
 
         // get announcement list from manager service 
