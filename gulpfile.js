@@ -166,10 +166,10 @@ gulp.task('js', function() {
 });
 
 gulp.task('fonts', function() {
-    return app.copy(
-        config.bowerDir + '/uikit/fonts/*',
-        'web/fonts'
-    );
+    return app.copy([
+            config.assetsDir + '/fonts/*',
+            config.bowerDir + '/uikit/fonts/*'
+    ],'web/fonts');
 });
 
 gulp.task('images', function() {
