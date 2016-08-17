@@ -186,6 +186,10 @@
                 <source>Template</source>
                 <target>Vorlage</target>
             </trans-unit>
+            <trans-unit id="templatestatus">
+                <source>Template status</source>
+                <target>Raum als Vorlage verfügbar machen.</target>
+            </trans-unit>
             <trans-unit id="templateavailability">
                 <source>Template availability</source>
                 <target>Zielgruppe</target>
@@ -272,7 +276,7 @@
             </trans-unit>
             <trans-unit id="terms_text">
                 <source>Terms text</source>
-                <target>Hiermit werden Nutzungsvereinbarungen in den Prozess zur Anmeldung der Teilnahme an diesem Raum integriert. Potentielle TeilnehmerInnen müssen die AGBs bewußt ankreuzen, um Zutritt zu diesem Raum zu erhalten.</target>
+                <target>Hiermit werden Nutzungsvereinbarungen in den Prozess zur Anmeldung der Teilnahme an diesem Raum integriert. Potentielle TeilnehmerInnen müssen die AGBs akzeptieren, um Zutritt zu diesem Raum zu erhalten.</target>
             </trans-unit>
 
             <!-- Appearance settings -->
