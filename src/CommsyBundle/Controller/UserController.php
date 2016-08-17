@@ -21,6 +21,7 @@ use \ZipArchive;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
+use IDCI\Bundle\ColorSchemeBundle\Model\Color;
 
 class UserController extends Controller
 {
@@ -859,6 +860,44 @@ class UserController extends Controller
             $kernel = $this->get('kernel');
             $path = $kernel->getRootDir() . '/Resources/assets/img/user_unknown.gif';     
             $content = file_get_contents($path);
+            
+            $hexValue = dechex(crc32($user->getFullName()));
+            $colorCode = substr($hexValue, 0, 6);
+            
+            $color = new Color('#'.$colorCode);
+            
+            $hsl = $color->toHSL();
+            $l = $hsl->getLightness() + 45;
+            $decColor = $hsl->setLightness($l > 100 ? 100 : $l)->toDec();
+            
+            $imageWidth = 42;
+            $imageHeight = 42;
+            
+            $im = @ImageCreate ($imageWidth, $imageHeight);
+            
+            $background_color = ImageColorAllocate ($im, $decColor->getRed(), $decColor->getGreen(), $decColor->getBlue());
+            $text_color = ImageColorAllocate ($im, 120, 120, 120);
+            
+            $initialString = strtoupper(substr($user->getFirstname(), 0, 1)).strtoupper(substr($user->getLastname(), 0, 1));
+            
+            $fontSize = 16;
+            $font = realPath('fonts').'/LiberationSans-Regular.ttf';
+            $angle = 0;
+            
+            $textBox = imagettfbbox($fontSize,$angle,$font,$initialString);
+
+            // Get your Text Width and Height
+            $textWidth = $textBox[2]-$textBox[0];
+            $textHeight = $textBox[7]-$textBox[1];
+            
+            // Calculate coordinates of the text
+            $x = ($imageWidth/2) - ($textWidth/2);
+            $y = ($imageHeight/2) - ($textHeight/2);
+            
+            imagettftext($im, $fontSize, $angle, $x, $y, $text_color, $font, $initialString);
+            
+            ImagePNG ($im);
+            $content = $im;
         }
         $response = new Response($content, Response::HTTP_OK, array('content-type' => 'image'));
         
@@ -868,7 +907,7 @@ class UserController extends Controller
         
         return $response;
     }
-
+    
     /**
      * @Route("/room/{roomId}/user/rooms/{start}")
      * @Template("CommsyBundle:Menu:room_list.html.twig")

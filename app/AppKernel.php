@@ -26,6 +26,7 @@ class AppKernel extends Kernel
             new Craue\TwigExtensionsBundle\CraueTwigExtensionsBundle(),
             new Knp\Bundle\SnappyBundle\KnpSnappyBundle(),
             new Debril\RssAtomBundle\DebrilRssAtomBundle(),
+            new IDCI\Bundle\ColorSchemeBundle\IDCIColorSchemeBundle(),
            
             new CommsyBundle\CommsyBundle(),
             new Commsy\LegacyBundle\CommsyLegacyBundle(),

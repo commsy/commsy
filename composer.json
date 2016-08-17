@@ -42,7 +42,8 @@
         "ruflin/elastica": "3.2 as 2.99.0",
         "egeloen/ckeditor-bundle": "^4.0",
         "zendframework/zend-soap": "^2.6",
-        "debril/rss-atom-bundle": "^2.4"
+        "debril/rss-atom-bundle": "^2.4",
+        "idci/color-scheme-bundle": "dev-master"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
