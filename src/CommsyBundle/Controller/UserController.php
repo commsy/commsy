@@ -860,7 +860,12 @@ class UserController extends Controller
             $path = $this->get('kernel')->getRootDir() . '/Resources/assets/img/user_unknown.gif';     
             $content = file_get_contents($path);
             
-            $hexValue = dechex(crc32($user->getFullName()));
+            $colorBaseString = $user->getFullName();
+            if (!$colorBaseString) {
+                $colorBaseString = $user->getUserId();
+            }
+            
+            $hexValue = dechex(crc32($colorBaseString));
             $colorCode = substr($hexValue, 0, 6);
             
             $color = new Color('#'.$colorCode);
@@ -869,8 +874,8 @@ class UserController extends Controller
             $l = $hsl->getLightness() + 45;
             $decColor = $hsl->setLightness($l > 100 ? 100 : $l)->toDec();
             
-            $imageWidth = 42;
-            $imageHeight = 42;
+            $imageWidth = 100;
+            $imageHeight = 100;
             
             $im = @ImageCreate ($imageWidth, $imageHeight);
             
@@ -878,8 +883,11 @@ class UserController extends Controller
             $text_color = ImageColorAllocate ($im, 120, 120, 120);
             
             $initialString = strtoupper(substr($user->getFirstname(), 0, 1)).strtoupper(substr($user->getLastname(), 0, 1));
+            if (!$initialString) {
+                $initialString = strtoupper(substr($user->getUserId(), 0, 1));
+            }
             
-            $fontSize = 16;
+            $fontSize = 32;
             $font = realPath('fonts').'/LiberationSans-Regular.ttf';
             $angle = 0;
             
