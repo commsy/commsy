@@ -46,7 +46,7 @@ class AvatarService
     public function getAvatar($itemId, $type = 0, $colorScheme = 0)
     {
         $this->itemId = $itemId;
-        $this->user = $this->userService->getUser($this->itemId);
+        $this->user = $this->userService->getUser($itemId);
         $this->type = $type;
         $this->colorScheme = $colorScheme;
         
@@ -97,9 +97,12 @@ class AvatarService
         
         imagettftext($image, $fontSize, $angle, $x, $y, $colors['text'], $font, $initialString);
         
-        ImagePNG($image);
+        ob_start();
+        imagepng($image);
+        $stringdata = ob_get_contents();
+        ob_end_clean();
         
-        return $image;
+        return $stringdata;
     }
     
     function getColors($image) {

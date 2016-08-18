@@ -1,0 +1,80 @@
+<?php
+
+namespace CommsyBundle\Services;
+
+use Symfony\Component\DependencyInjection\ContainerInterface as Container;
+
+use Symfony\Component\HttpFoundation\Response;
+
+use Commsy\LegacyBundle\Services\LegacyEnvironment;
+
+class PrintService
+{    
+    private $legacyEnvironment;
+    
+    private $serviceContainer;
+    
+    public function __construct(LegacyEnvironment $legacyEnvironment, Container $container)
+    {
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        
+        $this->serviceContainer = $container;
+    }
+
+    public function printDetail($html, $debug = false)
+    {
+        $this->setOptions();
+
+        if (!$debug) {
+            return new Response(
+                $this->serviceContainer->get('knp_snappy.pdf')->getOutputFromHtml($html),
+                200,
+                [
+                    'Content-Type' => 'application/pdf',
+                    'Content-Disposition' => 'inline; filename="print.pdf"'
+                ]
+            );
+        } else {
+            return new Response($html);
+        }
+    }
+    
+    public function printList($html, $debug = false)
+    {
+        $this->setOptions();
+
+        if (!$debug) {
+            return new Response(
+                $this->serviceContainer->get('knp_snappy.pdf')->getOutputFromHtml($html),
+                200,
+                [
+                    'Content-Type' => 'application/pdf',
+                    'Content-Disposition' => 'inline; filename="print.pdf"',
+                ]
+            );
+        } else {
+            return new Response($html);
+        }
+    }
+    
+    function setOptions() {
+        $roomItem = $this->legacyEnvironment->getCurrentContextItem();
+        
+        $this->serviceContainer->get('knp_snappy.pdf')->setOption('footer-line',true);
+        $this->serviceContainer->get('knp_snappy.pdf')->setOption('footer-spacing', 1);
+        $this->serviceContainer->get('knp_snappy.pdf')->setOption('footer-center',"[page] / [toPage]");
+        $this->serviceContainer->get('knp_snappy.pdf')->setOption('header-line', true);
+        $this->serviceContainer->get('knp_snappy.pdf')->setOption('header-spacing', 1 );
+        $this->serviceContainer->get('knp_snappy.pdf')->setOption('header-right', date("d.m.y"));
+        $this->serviceContainer->get('knp_snappy.pdf')->setOption('header-left', $roomItem->getTitle());
+        $this->serviceContainer->get('knp_snappy.pdf')->setOption('header-center', "Commsy");
+        $this->serviceContainer->get('knp_snappy.pdf')->setOption('images',true);
+        $this->serviceContainer->get('knp_snappy.pdf')->setOption('load-media-error-handling','ignore');
+        $this->serviceContainer->get('knp_snappy.pdf')->setOption('load-error-handling','ignore');
+        
+        // set cookie for authentication - needed to request images
+        $this->serviceContainer->get('knp_snappy.pdf')->setOption('cookie', [
+            'SID' => $this->legacyEnvironment->getSessionID(),
+        ]);
+    }
+}
