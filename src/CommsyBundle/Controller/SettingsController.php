@@ -43,56 +43,11 @@ class SettingsController extends Controller
 
         $form = $this->createForm(GeneralSettingsType::class, $roomData, array(
             'roomId' => $roomId,
-            'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
-                'roomId' => $roomId,
-            )),
         ));
 
         $form->handleRequest($request);
         if ($form->isValid()) {
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
-
-            // TODO: should this be used for normal file uploads (materials etc.) while bg images are saved into specific theme subfolders?
-            // TODO: add constraintGroup so that 'room_image' is mandatory when 'custom_image' is selected (or load previous custom image, if present)
-
-            $room_image_data = $form['room_image']->getData();
-
-            if($room_image_data['choice'] == 'custom_image') {
-                if(!is_null($room_image_data['room_image_data'])){
-                    $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
-                    if(!is_dir($saveDir)){
-                        mkdir($saveDir, 0777, true);
-                    }
-                    $file = $room_image_data['room_image_upload'];
-                    $fileName = "";
-                    // case 1: file was send as "input file" via "room_image_upload" field (legacy case; does not occur with current client configuration)
-                    if(!is_null($file)){
-                        $extension = $file->guessExtension();
-                        if(!$extension) {
-                            $extension = "bin";
-                        }
-                        $fileName = 'custom_bg_image.'.$extension;
-                        $file->move($saveDir, $fileName);
-                        //$file->move($saveDir, $file->getClientOriginalName());
-                    }
-                    // case 2: file was send as base64 string via hidden "room_image_data" text field
-                    else{
-                        $data = $room_image_data['room_image_data'];
-                        list($fileName, $type, $date) = explode(";", $data);
-                        list(, $data) = explode(",", $data);
-                        list(, $extension) = explode("/", $type);
-                        $data = base64_decode($data);
-                        //$fileName = 'custom_bg_image.'.$extension;
-                        $fileName = "cid" . $roomId . "_bgimage_" . $fileName;
-                        $absoluteFilepath = $saveDir . "/" . $fileName;
-                        file_put_contents($absoluteFilepath, $data);
-                    }
-                    $roomItem->setBGImageFilename($fileName);
-                }
-            }
-            else{
-                $roomItem->setBGImageFilename('');
-            }
 
             $roomItem->save();
 
@@ -103,13 +58,8 @@ class SettingsController extends Controller
             return $this->redirectToRoute('commsy_settings_general', ["roomId" => $roomId]);
         }
 
-        $backgroundImageCustom = $this->generateUrl("getBackground", array('roomId' => $roomId, 'imageType' => 'custom'));
-        $backgroundImageTheme = $this->generateUrl("getBackground", array('roomId' => $roomId, 'imageType' => 'theme'));
-
         return array(
             'form' => $form->createView(),
-            'bgImageFilepathCustom' => $backgroundImageCustom,
-            'bgImageFilepathTheme' => $backgroundImageTheme,
         );
     }
 
@@ -215,11 +165,54 @@ class SettingsController extends Controller
         $form = $this->createForm(AppearanceSettingsType::class, $roomData, array(
             'roomId' => $roomId,
             'themes' => $themeArray,
+            'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
+                'roomId' => $roomId,
+            )),
         ));
         
         $form->handleRequest($request);
         if ($form->isValid()) {
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
+
+            // TODO: should this be used for normal file uploads (materials etc.) while bg images are saved into specific theme subfolders?
+            // TODO: add constraintGroup so that 'room_image' is mandatory when 'custom_image' is selected (or load previous custom image, if present)
+
+            $room_image_data = $form['room_image']->getData();
+
+            if($room_image_data['choice'] == 'custom_image') {
+                if(!is_null($room_image_data['room_image_data'])){
+                    $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
+                    if(!is_dir($saveDir)){
+                        mkdir($saveDir, 0777, true);
+                    }
+                    $file = $room_image_data['room_image_upload'];
+                    $fileName = "";
+                    // case 1: file was send as "input file" via "room_image_upload" field (legacy case; does not occur with current client configuration)
+                    if(!is_null($file)){
+                        $extension = $file->guessExtension();
+                        if(!$extension) {
+                            $extension = "bin";
+                        }
+                        $fileName = "cid" . $roomId . "_bgimage_" . $file->getClientOriginalName();
+                        $file->move($saveDir, $fileName);
+                    }
+                    // case 2: file was send as base64 string via hidden "room_image_data" text field
+                    else{
+                        $data = $room_image_data['room_image_data'];
+                        list($fileName, $type, $date) = explode(";", $data);
+                        list(, $data) = explode(",", $data);
+                        list(, $extension) = explode("/", $type);
+                        $data = base64_decode($data);
+                        $fileName = "cid" . $roomId . "_bgimage_" . $fileName;
+                        $absoluteFilepath = $saveDir . "/" . $fileName;
+                        file_put_contents($absoluteFilepath, $data);
+                    }
+                    $roomItem->setBGImageFilename($fileName);
+                }
+            }
+            else{
+                $roomItem->setBGImageFilename('');
+            }
 
             $roomItem->save();
 
@@ -230,8 +223,13 @@ class SettingsController extends Controller
             return $this->redirectToRoute('commsy_settings_appearance', ["roomId" => $roomId]);
         }
 
+        $backgroundImageCustom = $this->generateUrl("getBackground", array('roomId' => $roomId, 'imageType' => 'custom'));
+        $backgroundImageTheme = $this->generateUrl("getBackground", array('roomId' => $roomId, 'imageType' => 'theme'));
+
         return array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'bgImageFilepathCustom' => $backgroundImageCustom,
+            'bgImageFilepathTheme' => $backgroundImageTheme,
         );
     }
     

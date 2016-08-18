@@ -29,6 +29,14 @@ class AppearanceSettingsTransformer implements DataTransformerInterface
         if ($roomItem) {
             $roomData['dates_status'] = $roomItem->getDatesPresentationStatus();
             $roomData['theme'] = $roomItem->getColorArray()['schema'];
+            // room image
+            $backgroundImageFilename = $roomItem->getBGImageFilename();
+            if($backgroundImageFilename){
+                $roomData['room_image']['choice'] = 'custom_image';
+            }
+            else{
+                $roomData['room_image']['choice'] = 'default_image';
+            }
         }
         
         return $roomData;
@@ -50,6 +58,26 @@ class AppearanceSettingsTransformer implements DataTransformerInterface
         if( isset($roomData['theme']) ){
             $roomObject->setColorArray(array('schema' => $roomData['theme']));
         }
+
+        // delete bg image
+        /*
+        if (isset($roomData['delete_custom_image']) && $roomData['delete_custom_image'] == '1') {
+            $disc_manager = $this->legacyEnvironment->getDiscManager();
+
+            if($disc_manager->existsFile($roomObject->getBGImageFilename())) {
+                $disc_manager->unlinkFile($roomObject->getBGImageFilename());
+            }
+
+            $roomObject->setBGImageFilename('');
+        }
+        */
+
+        // bg image repeat
+        if (isset($roomData['room_image']['repeat_x']) && $roomData['room_image']['repeat_x'] == '1')
+            $roomObject->setBGImageRepeat();
+        else
+            $roomObject->unsetBGImageRepeat();
+            
         return $roomObject;
     }
 }

@@ -9,16 +9,13 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityManager;
 
-use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 
@@ -69,40 +66,6 @@ class GeneralSettingsType extends AbstractType
                     'style' => 'width: 250px;',
                 ),
             ))
-            ->add(
-                $builder->create('room_image', FormType::class, array('required' => false))
-                ->add('choice', ChoiceType::class, array(
-                    'expanded' => true,
-                    'multiple' => false,
-                    'choices' => array(
-                        'Theme image' => 'default_image',
-                        'Custom image' => 'custom_image',
-                    ),
-                ))
-                ->add('room_image_upload', FileType::class, array(
-                    'attr' => array(
-                        'required' => false,
-                        'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
-                    ),
-                    //'image_path' => 'webPath',
-                ))
-                ->add('room_image_data', HiddenType::class, array(
-                ))
-                // ->add('repeat_x', CheckboxType::class, array(
-                //     'label_attr' => array('class' => 'uk-form-label'),
-                //     'value' => 'repeat_x',
-                // ))
-
-                // ->add('scroll_image', CheckboxType::class, array(
-                //     'label_attr' => array('class' => 'uk-form-label'),
-                //     'value' => 'scroll_image',
-                // ))
-
-                // ->add('delete_custom_image', CheckboxType::class, array(
-                //     'label_attr' => array('class' => 'uk-form-label'),
-                //     'value' => 'delete_bg_image',
-                // ))
-            )
             ->add('access_check', ChoiceType::class, array(
                 'required' => false,
                 'choices' => array(
@@ -222,7 +185,7 @@ class GeneralSettingsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['roomId', 'uploadUrl'])
+            ->setRequired(['roomId'])
             ->setDefaults(array('translation_domain' => 'settings'))
         ;
     }

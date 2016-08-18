@@ -41,16 +41,6 @@ class GeneralSettingsTransformer implements DataTransformerInterface
                 $roomData['access_check'] = 'withcode';
             }
 
-            // room image
-            $backgroundImageFilename = $roomItem->getBGImageFilename();
-            if($backgroundImageFilename){
-                $roomData['room_image']['choice'] = 'custom_image';
-            }
-            else{
-                $roomData['room_image']['choice'] = 'default_image';
-            }
-		    $roomData['room_image']['repeat_x'] = $roomItem->issetBGImageRepeat();
-
             $roomData['room_description'] = $roomItem->getDescription();
             $rubrics = array_combine($defaultRubrics, array_fill(0, count($defaultRubrics), 'off'));
             foreach ($this->roomService->getRubricInformation($roomItem->getItemID(), true) as $rubric) {
@@ -87,25 +77,6 @@ class GeneralSettingsTransformer implements DataTransformerInterface
         if (isset($roomData['language'])) {
             $roomObject->setLanguage($roomData['language']);
         }
-
-        // delete bg image
-        /*
-        if (isset($roomData['delete_custom_image']) && $roomData['delete_custom_image'] == '1') {
-            $disc_manager = $this->legacyEnvironment->getDiscManager();
-
-            if($disc_manager->existsFile($roomObject->getBGImageFilename())) {
-                $disc_manager->unlinkFile($roomObject->getBGImageFilename());
-            }
-
-            $roomObject->setBGImageFilename('');
-        }
-        */
-
-        // bg image repeat
-        if (isset($roomData['room_image']['repeat_x']) && $roomData['room_image']['repeat_x'] == '1')
-            $roomObject->setBGImageRepeat();
-        else
-            $roomObject->unsetBGImageRepeat();
 
         if(isset($roomData['room_description'])) 
             $roomObject->setDescription(strip_tags($roomData['room_description']));

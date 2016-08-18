@@ -245,8 +245,8 @@
     <script>
     window.onload = function(){
 
-        let positionCover = document.querySelector('.uk-position-cover');
-        let coverFormControls = positionCover.getElementsByClassName('uk-form-controls')[0];
+        var positionCover = document.querySelector('.uk-position-cover');
+        var coverFormControls = positionCover.getElementsByClassName('uk-form-controls')[0];
 
         coverFormControls.style.marginLeft = "0px";
         coverFormControls.style.height = "100%";
@@ -255,7 +255,7 @@
             this.querySelector('input[type="file"]').disabled = true;
         }
 
-        let profileUpload = document.querySelector('.cs-upload-form');
+        var profileUpload = document.querySelector('.cs-upload-form');
 
         profileUpload.style.height = "100%";
         profileUpload.style.padding = "0";
@@ -312,21 +312,21 @@
             return false;
         }
 
-        let reader = new FileReader();
+        var reader = new FileReader();
         reader.onload = function(event){
             previewImage.onload = function(e){
                 this.onload = null;
 
-                let edgeLength = 200;
-                let offset = Math.abs(previewImage.naturalWidth - previewImage.naturalHeight) / 2;
-                let minDim = Math.min(previewImage.naturalWidth, previewImage.naturalHeight);
+                var edgeLength = 200;
+                var offset = Math.abs(previewImage.naturalWidth - previewImage.naturalHeight) / 2;
+                var minDim = Math.min(previewImage.naturalWidth, previewImage.naturalHeight);
 
                 var x = 0, y = 0;
                 if(previewImage.naturalWidth > previewImage.naturalHeight){
-                    var x = offset;
+                    x = offset;
                 }
                 else{
-                    var y = offset;
+                    y = offset;
                 }
 
                 var c = document.querySelector("#profile_image_hidden_data");
