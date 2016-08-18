@@ -21,7 +21,7 @@ use \ZipArchive;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
-use IDCI\Bundle\ColorSchemeBundle\Model\Color;
+use CommsyBundle\Services\AvatarService;
 
 class UserController extends Controller
 {
@@ -833,7 +833,7 @@ class UserController extends Controller
         if ( isset($portal_id) and !empty($portal_id) ) {
             $disc_manager->setPortalID($portal_id);
         } else {
-            $context_item = $this->getContextItem();
+            $context_item = $environment->getCurrentContextItem();
             if ( isset($context_item) ) {
                 $portal_item = $context_item->getContextItem();
                 if ( isset($portal_item) ) {
@@ -857,54 +857,13 @@ class UserController extends Controller
             $file = 'user_unknown.gif';
         }
         if (!$foundUserImage) {
-            $path = $this->get('kernel')->getRootDir() . '/Resources/assets/img/user_unknown.gif';     
+            $path = $this->get('kernel')->getRootDir() . '/Resources/assets/img/user_unknown.gif';   
+              
             $content = file_get_contents($path);
             
-            $colorBaseString = $user->getFullName();
-            if (!$colorBaseString) {
-                $colorBaseString = $user->getUserId();
-            }
+            $avatarService = $this->get('commsy.avatar_service');
             
-            $hexValue = dechex(crc32($colorBaseString));
-            $colorCode = substr($hexValue, 0, 6);
-            
-            $color = new Color('#'.$colorCode);
-            
-            $hsl = $color->toHSL();
-            $l = $hsl->getLightness() + 45;
-            $decColor = $hsl->setLightness($l > 100 ? 100 : $l)->toDec();
-            
-            $imageWidth = 100;
-            $imageHeight = 100;
-            
-            $im = @ImageCreate ($imageWidth, $imageHeight);
-            
-            $background_color = ImageColorAllocate ($im, $decColor->getRed(), $decColor->getGreen(), $decColor->getBlue());
-            $text_color = ImageColorAllocate ($im, 120, 120, 120);
-            
-            $initialString = strtoupper(substr($user->getFirstname(), 0, 1)).strtoupper(substr($user->getLastname(), 0, 1));
-            if (!$initialString) {
-                $initialString = strtoupper(substr($user->getUserId(), 0, 1));
-            }
-            
-            $fontSize = 32;
-            $font = realPath('fonts').'/LiberationSans-Regular.ttf';
-            $angle = 0;
-            
-            $textBox = imagettfbbox($fontSize,$angle,$font,$initialString);
-
-            // Get your Text Width and Height
-            $textWidth = $textBox[2]-$textBox[0];
-            $textHeight = $textBox[7]-$textBox[1];
-            
-            // Calculate coordinates of the text
-            $x = ($imageWidth/2) - ($textWidth/2);
-            $y = ($imageHeight/2) - ($textHeight/2);
-            
-            imagettftext($im, $fontSize, $angle, $x, $y, $text_color, $font, $initialString);
-            
-            ImagePNG ($im);
-            $content = $im;
+            $content = $avatarService->getAvatar($itemId);
         }
         
         $file = preg_replace('/[[:^print:]]/', '', $file);
