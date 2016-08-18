@@ -14,7 +14,6 @@
                         <div>{{ 'user profile'|trans({}, 'profile') }}</div>
                     </div>
                 </div>
-                
                 <div class="uk-margin-left uk-margin-right">
                     {{ form_start(form) }}
                         {{ form_errors(form) }}
@@ -26,14 +25,16 @@
                                 <tr>
                                     <td>{{ form_row(form.firstname) }}</td>
                                     <td rowspan="7">
-                                        <div class="uk-clearfix">
-                                            <img id="profile_form_user_image" class="uk-thumbnail uk-float-right uk-margin-bottom uk-border-circle" style="height:100px; width:100px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
-                                            <div class="uk-float-right uk-clearfix">
-                                                {{ form_row(form.image, {'attr': {'class': 'uk-float-right'}}) }}
-                                                {{ form_row(form.imageChangeInAllContexts, {'attr': {'class': 'uk-float-right'}}) }}
+                                        <div class="uk-clearfix uk-cover-background uk-position-relative">
+                                            <span style="width: 200px; position: absolute; text-align: center;">{{ 'profileimage'|trans({},'profile')|capitalize }}</span>
+                                            <img id="profile_form_user_image" class="uk-thumbnail uk-float-right uk-margin-bottom uk-border-circle" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
+                                            <div class="uk-position-cover">
+                                                {{ form_widget(form.image) }}
                                             </div>
                                         </div>
-                                        
+                                        <div class="uk-float-right uk-clearfix" style="margin-top: 220px; float: none; margin-top: 240px; width: 200px; text-aling: center;">
+                                            {{ form_row(form.imageChangeInAllContexts) }}
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr>
@@ -55,6 +56,10 @@
                                     <td>{{ form_row(form.language) }}</td>
                                 </tr>
                                 <tr>
+                                    <td>{{ form_row(form.dateOfBirth) }}</td>
+                                    <td>{{ form_row(form.dateOfBirthChangeInAllContexts) }}</td>
+                                </tr>
+                                <tr>
                                     <td>{{ form_row(form.autoSaveStatus) }}</td>
                                 </tr>
                             </table>
@@ -68,10 +73,6 @@
                                 <tr>
                                     <td>{{ form_row(form.title) }}</td>
                                     <td>{{ form_row(form.titleChangeInAllContexts) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ form_row(form.dateOfBirth) }}</td>
-                                    <td>{{ form_row(form.dateOfBirthChangeInAllContexts) }}</td>
                                 </tr>
                                 <tr>
                                     <td>{{ form_row(form.street) }}</td>
@@ -235,37 +236,63 @@
 
                 <div>
                     Some usefull text...
+                    <canvas id="profile_image_hidden_data" width="200px" height="200px" style="border: 1px solid black;" class="uk-hidden"></canvas>
                 </div>
             </div>
-
         </div>
     </div>
 
     <script>
     window.onload = function(){
+
+        let positionCover = document.querySelector('.uk-position-cover');
+        let coverFormControls = positionCover.getElementsByClassName('uk-form-controls')[0];
+
+        coverFormControls.style.marginLeft = "0px";
+        coverFormControls.style.height = "100%";
+
         document.querySelector('form.uk-form-horizontal').onsubmit = function(event){
             this.querySelector('input[type="file"]').disabled = true;
         }
 
         let profileUpload = document.querySelector('.cs-upload-form');
 
+        profileUpload.style.height = "100%";
+        profileUpload.style.padding = "0";
+
+        profileUpload.onmouseover = function(e){
+            e.preventDefault();
+            positionCover.style.opacity = "0.7";
+            return false;
+        };
+
+        profileUpload.onmouseleave = function(e){
+            e.preventDefault();
+            positionCover.style.opacity = "0.0";
+            return false;
+        };
+
         profileUpload.ondragover = function(e){
             e.preventDefault();
             this.style.border = "1px solid black";
+            positionCover.style.opacity = "0.7";
             return false;
         };
         profileUpload.ondragleave = function(e){
             e.preventDefault();
             this.style.border = "";
+            positionCover.style.opacity = "0.0";
             return false;
         };
         profileUpload.ondragend = function(e){
             e.preventDefault();
+            positionCover.style.opacity = "0.0";
             return false;
         };
         profileUpload.ondrop = function(e){
             e.preventDefault();
             this.style.border = "";
+            positionCover.style.opacity = "0.0";
             setProfileImage(e.dataTransfer.files[0], document.querySelector('#profile_form_user_image'));
         };
 
@@ -284,10 +311,34 @@
             alert("Files of type '"+f.type+"' can not be used as profile images!");
             return false;
         }
+
         let reader = new FileReader();
         reader.onload = function(event){
+            previewImage.onload = function(e){
+                this.onload = null;
+
+                let edgeLength = 200;
+                let offset = Math.abs(previewImage.naturalWidth - previewImage.naturalHeight) / 2;
+                let minDim = Math.min(previewImage.naturalWidth, previewImage.naturalHeight);
+
+                var x = 0, y = 0;
+                if(previewImage.naturalWidth > previewImage.naturalHeight){
+                    var x = offset;
+                }
+                else{
+                    var y = offset;
+                }
+
+                var c = document.querySelector("#profile_image_hidden_data");
+                var ctx = c.getContext("2d");
+
+                ctx.clearRect(0, 0, edgeLength, edgeLength);
+                ctx.drawImage(previewImage, x, y, minDim, minDim, 0, 0, edgeLength, edgeLength);
+
+                previewImage.src = c.toDataURL(f.type);
+            }
             previewImage.src = event.target.result;
-            document.getElementById('room_profile_image_data').value = f.name + ";" + event.target.result;
+            document.querySelector('#room_profile_image_data').value = f.name + ";" + event.target.result;
         }
         reader.readAsDataURL(f);
     }

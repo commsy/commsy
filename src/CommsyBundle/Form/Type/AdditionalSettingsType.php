@@ -110,7 +110,7 @@ class AdditionalSettingsType extends AbstractType
                     ),
                 ))
                 ->add('template_availability', ChoiceType::class, array(
-                    'required' => false,
+                    'required' => true,
                     'expanded' => false,
                     'multiple' => false,
                     'choices' => array(

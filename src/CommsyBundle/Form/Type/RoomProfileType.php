@@ -108,10 +108,15 @@ class RoomProfileType extends AbstractType
                 'required' => false,
             ))
             ->add('dateOfBirthChangeInAllContexts', CheckboxType::class, array(
-                'label'    => 'changeInAllContexts',
+                // 'label'    => 'changeInAllContexts',
+                'label'    => false,
                 'required' => false,
                 'label_attr' => array(
                     'class' => 'uk-form-label',
+                ),
+                'data' => true,
+                'attr' => array(
+                    'style' => 'display: none'
                 ),
             ))
             

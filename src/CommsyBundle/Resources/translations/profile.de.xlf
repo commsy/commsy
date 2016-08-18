@@ -62,9 +62,9 @@
                 <source>dateOfBirth</source>
                 <target>Geburtsdatum</target>
             </trans-unit>
-            <trans-unit id="image">
-                <source>image</source>
-                <target>Bild</target>
+            <trans-unit id="profileimage">
+                <source>profileimage</source>
+                <target>Profilbild</target>
             </trans-unit>
             <trans-unit id="email">
                 <source>email</source>
