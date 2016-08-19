@@ -3,8 +3,8 @@
 namespace CommsyBundle\Services;
 
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
-
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
@@ -14,15 +14,21 @@ class PrintService
     
     private $serviceContainer;
     
-    public function __construct(LegacyEnvironment $legacyEnvironment, Container $container)
+    private $requestStack;
+    
+    public function __construct(LegacyEnvironment $legacyEnvironment, Container $container, RequestStack $requestStack)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         
         $this->serviceContainer = $container;
+        
+        $this->requestStack = $requestStack;
     }
 
     public function printDetail($html, $debug = false)
     {
+        $debug = $this->requestStack->getCurrentRequest()->get('debug');
+        
         $this->setOptions();
 
         if (!$debug) {
@@ -41,6 +47,8 @@ class PrintService
     
     public function printList($html, $debug = false)
     {
+        $debug = $this->requestStack->getCurrentRequest()->get('debug');
+        
         $this->setOptions();
 
         if (!$debug) {

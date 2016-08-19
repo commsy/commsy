@@ -462,4 +462,4 @@ services:
         
     commsy.print_service:
         class: CommsyBundle\Services\PrintService
-        arguments: ['@commsy_legacy.environment', '@service_container']
+        arguments: ['@commsy_legacy.environment', '@service_container', '@request_stack']
