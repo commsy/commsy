@@ -68,39 +68,6 @@ class MenuBuilder
         return $menu;
     }
 
-    /**
-     * creates the roomlist sidebar
-     * @param  RequestStack $requestStack [description]
-     * @return knpMenu                    KnpMenu
-     */
-    public function createRoomlistMenu(RequestStack $requestStack)
-    {
-        // create roomlist
-        $currentStack = $requestStack->getCurrentRequest();
-        $currentUser = $this->legacyEnvironment->getCurrentUser();
-
-        $menu = $this->factory->createItem('root');
-
-        $roomId = $currentStack->attributes->get('roomId');
-
-        if ($roomId) {
-                // room navigation
-                $menu->addChild('room_navigation', array(
-                    'label' => 'Raum-Navigation',
-                    'route' => 'commsy_room_home',
-                    'routeParameters' => array('roomId' => $roomId),
-                    'extras' => array(
-                        'icon' => 'uk-icon-list uk-icon-small',
-                        'showList' => true,
-                        'user' => $currentUser,
-                        'roomId' => $roomId
-                        )
-                ));
-                $menu['room_navigation']->setLinkAttribute('id', 'rooms');
-        }
-        return $menu;
-    }
-
     public function createSettingsMenu(RequestStack $requestStack)
     {
         // get room Id

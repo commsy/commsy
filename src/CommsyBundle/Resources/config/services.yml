@@ -45,7 +45,6 @@ services:
         arguments: ['@knp_menu.factory', '@commsy_legacy.room_service', '@commsy_legacy.environment', '@commsy_legacy.user_service', '@security.authorization_checker']
         # tags:
         #     - { name: knp_menu.menu_builder, method: createProfileMenu, alias: profile }
-        #     - { name: knp_menu.menu_builder, method: createRoomlistMenu, alias: roomlist }
         #     - { name: knp_menu.menu_builder, method: createSettingsMenu, alias: settings }
         #     - { name: knp_menu.menu_builder, method: createMainMenu, alias: main }
         #     - { name: knp_menu.menu_builder, method: createBreadcrumbMenu, alias: breadcrumb }
@@ -77,13 +76,6 @@ services:
         arguments: ['@request_stack']
         tags:
             - { name: knp_menu.menu, alias: profile }
-
-    commsy.menu.roomlist:
-        class: Knp\Menu\MenuItem
-        factory: ['@commsy.menu.builder', createRoomlistMenu]
-        arguments: ['@request_stack']
-        tags:
-            - { name: knp_menu.menu, alias: roomlist }
 
     commsy.menu.voter.request:
         class: CommsyBundle\Menu\Voter\CommsyVoter
