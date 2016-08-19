@@ -197,12 +197,14 @@ class MenuBuilder
                         }
                     }
                     
-                    $menu->addChild($value, array(
+                    $menu->addChild($value, [
                         'label' => ucfirst($value),
                         'route' => $route,
                         'routeParameters' => array('roomId' => $roomId),
-                        'extras' => array('icon' => $this->getRubricIcon($value))
-                    ))
+                        'extras' => [
+                            'icon' => $this->getRubricIcon($value),
+                        ]
+                    ])
                     ->setExtra('translation_domain', 'menu');
                 }
             }
