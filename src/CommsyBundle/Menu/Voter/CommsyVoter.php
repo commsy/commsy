@@ -21,10 +21,10 @@ class CommsyVoter implements VoterInterface
     public function matchItem(ItemInterface $item)
     {
         $roomId = $this->requestStack->getCurrentRequest()->attributes->get('roomId');
-        $controllerArray = explode('_', $this->requestStack->getCurrentRequest()->attributes->get('_route'));
+        list($bundle, $controller, $action) = explode('_', $this->requestStack->getCurrentRequest()->attributes->get('_route'));
         
-        if (stristr($item->getUri(), 'room/'.$roomId.'/'.$controllerArray[1])) {
-            return true;
+        if (stristr($item->getUri(), 'room/' . $roomId . '/' . $controller)) {
+            return $action === 'detail';
         }
 
         return false;
