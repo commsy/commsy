@@ -46,7 +46,7 @@ class AvatarService
     public function getAvatar($itemId, $type = 0, $colorScheme = 0)
     {
         $this->itemId = $itemId;
-        $this->user = $this->userService->getUser($this->itemId);
+        $this->user = $this->userService->getUser($itemId);
         $this->type = $type;
         $this->colorScheme = $colorScheme;
         
@@ -97,34 +97,34 @@ class AvatarService
         
         imagettftext($image, $fontSize, $angle, $x, $y, $colors['text'], $font, $initialString);
         
-        ImagePNG($image);
+        ob_start();
+        imagepng($image);
+        $stringdata = ob_get_contents();
+        ob_end_clean();
         
-        return $image;
+        return $stringdata;
     }
     
     function getColors($image) {
         $colors = [];
         
-        $colorBaseString = $this->user->getFullName();
-        if (!$colorBaseString) {
-            $colorBaseString = $this->user->getUserId();
-        }
+        $colorBaseString = $this->user->getUserId();
             
-        $hexValue = dechex(crc32($colorBaseString));
+        $hexValue = dechex(crc32($colorBaseString.strrev($colorBaseString)));
         $colorCode = substr($hexValue, 0, 6);
             
         $color = new Color('#'.$colorCode);
         
         if ($this->colorScheme == 0) {
             $hsl = $color->toHSL();
-            $l = $hsl->getLightness() + 45;
-            $decColor = $hsl->setLightness($l > 100 ? 100 : $l)->toDec();
+            $l = $hsl->getLightness() + 50;
+            $decColor = $hsl->setLightness($l > 90 ? 90 : $l)->toDec();
             $colors['background'] = ImageColorAllocate ($image, $decColor->getRed(), $decColor->getGreen(), $decColor->getBlue());
             $colors['text'] = ImageColorAllocate ($image, 120, 120, 120);
         } else if ($this->colorScheme == 1) {
             $hsl = $color->toHSL();
             $l = $hsl->getLightness();
-            $decColor = $hsl->setLightness($l > 100 ? 100 : $l)->toDec();
+            $decColor = $hsl->setLightness($l > 90 ? 90 : $l)->toDec();
             if ($this->type == 1) {
                 $colors['background'] = ImageColorAllocate ($image, 255, 255, 255);
             } else {
@@ -144,7 +144,7 @@ class AvatarService
             
             $hsl = $color->toHSL();
             $l = $hsl->getLightness() + $percent;
-            $decColor = $hsl->setLightness($l > 100 ? 100 : $l)->toDec();
+            $decColor = $hsl->setLightness($l > 90 ? 90 : $l)->toDec();
             $colors['background'] = ImageColorAllocate ($image, $decColor->getRed(), $decColor->getGreen(), $decColor->getBlue());
         } else if ($this->colorScheme == 3) {
             $color = new Color('#6593B3');

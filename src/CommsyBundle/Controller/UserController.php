@@ -218,36 +218,7 @@ class UserController extends Controller
             'showCategories' => false,
         ]);
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-        // get room item for information panel
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
-
-        $this->get('knp_snappy.pdf')->setOption('footer-line',true);
-        $this->get('knp_snappy.pdf')->setOption('footer-spacing', 1);
-        $this->get('knp_snappy.pdf')->setOption('footer-center',"[page] / [toPage]");
-        $this->get('knp_snappy.pdf')->setOption('header-line', true);
-        $this->get('knp_snappy.pdf')->setOption('header-spacing', 1 );
-        $this->get('knp_snappy.pdf')->setOption('header-right', date("d.m.y"));
-        $this->get('knp_snappy.pdf')->setOption('header-left', $roomItem->getTitle());
-        $this->get('knp_snappy.pdf')->setOption('header-center', "Commsy");
-        $this->get('knp_snappy.pdf')->setOption('images',true);
-
-        // set cookie for authentication - needed to request images
-        $this->get('knp_snappy.pdf')->setOption('cookie', [
-            'SID' => $legacyEnvironment->getSessionID(),
-        ]);
-
-        //return new Response($html);
-        return new Response(
-            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
-            200,
-            [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="print.pdf"',
-            ]
-        );
+        return $this->get('commsy.print_service')->printList($html);
     }
 
     /**
@@ -822,33 +793,40 @@ class UserController extends Controller
     {
         $userService = $this->get('commsy_legacy.user_service');
         $user = $userService->getUser($itemId);
-        
+
         $file = $user->getPicture();
-        $rootDir = $this->get('kernel')->getRootDir().'/';
-
-        $environment = $this->get("commsy_legacy.environment")->getEnvironment();
-        $disc_manager = $environment->getDiscManager();
-        $disc_manager->setContextID($roomId);
-        $portal_id = $environment->getCurrentPortalID();
-        if ( isset($portal_id) and !empty($portal_id) ) {
-            $disc_manager->setPortalID($portal_id);
-        } else {
-            $context_item = $environment->getCurrentContextItem();
-            if ( isset($context_item) ) {
-                $portal_item = $context_item->getContextItem();
-                if ( isset($portal_item) ) {
-                    $disc_manager->setPortalID($portal_item->getItemID());
-                    unset($portal_item);
-                }
-                unset($context_item);
-            }
-        }
-        $filePath = $disc_manager->getFilePath().$file;
-
+        
         $foundUserImage = true;
-        if (file_exists($rootDir.$filePath)) {
-            $content = file_get_contents($rootDir.$filePath);
-            if (!$content) {
+        
+        if ($file != '') {
+            $rootDir = $this->get('kernel')->getRootDir().'/';
+
+            $environment = $this->get("commsy_legacy.environment")->getEnvironment();
+            $disc_manager = $environment->getDiscManager();
+            $disc_manager->setContextID($roomId);
+            $portal_id = $environment->getCurrentPortalID();
+            if ( isset($portal_id) and !empty($portal_id) ) {
+                $disc_manager->setPortalID($portal_id);
+            } else {
+                $context_item = $environment->getCurrentContextItem();
+                if ( isset($context_item) ) {
+                    $portal_item = $context_item->getContextItem();
+                    if ( isset($portal_item) ) {
+                        $disc_manager->setPortalID($portal_item->getItemID());
+                        unset($portal_item);
+                    }
+                    unset($context_item);
+                }
+            }
+            $filePath = $disc_manager->getFilePath().$file;
+    
+            if (file_exists($rootDir.$filePath)) {
+                $content = file_get_contents($rootDir.$filePath);
+                if (!$content) {
+                    $foundUserImage = false;
+                    $file = 'user_unknown.gif';
+                }
+            } else {
                 $foundUserImage = false;
                 $file = 'user_unknown.gif';
             }
@@ -856,15 +834,14 @@ class UserController extends Controller
             $foundUserImage = false;
             $file = 'user_unknown.gif';
         }
+        
         if (!$foundUserImage) {
-            $path = $this->get('kernel')->getRootDir() . '/Resources/assets/img/user_unknown.gif';   
-              
-            $content = file_get_contents($path);
-            
             $avatarService = $this->get('commsy.avatar_service');
             
             $content = $avatarService->getAvatar($itemId);
         }
+        
+        //error_log(print_r($content, true));
         
         $file = preg_replace('/[[:^print:]]/', '', $file);
         
@@ -957,37 +934,6 @@ class UserController extends Controller
             'linkedGroups' => $infoArray['linkedGroups'],
         ]);
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-        // get room item for information panel
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
-
-        $this->get('knp_snappy.pdf')->setOption('footer-line',true);
-        $this->get('knp_snappy.pdf')->setOption('footer-spacing', 1);
-        $this->get('knp_snappy.pdf')->setOption('footer-center',"[page] / [toPage]");
-        $this->get('knp_snappy.pdf')->setOption('header-line', true);
-        $this->get('knp_snappy.pdf')->setOption('header-spacing', 1 );
-        $this->get('knp_snappy.pdf')->setOption('header-right', date("d.m.y"));
-        $this->get('knp_snappy.pdf')->setOption('header-left', $roomItem->getTitle());
-        $this->get('knp_snappy.pdf')->setOption('header-center', "Commsy");
-        $this->get('knp_snappy.pdf')->setOption('images',true);
-        $this->get('knp_snappy.pdf')->setOption('load-media-error-handling','ignore');
-        $this->get('knp_snappy.pdf')->setOption('load-error-handling','ignore');
-
-        // set cookie for authentication - needed to request images
-        $this->get('knp_snappy.pdf')->setOption('cookie', [
-            'SID' => $legacyEnvironment->getSessionID(),
-        ]);
-
-       // return new Response($html);
-        return new Response(
-            $this->get('knp_snappy.pdf')->getOutputFromHtml($html),
-            200,
-            [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'inline; filename="print.pdf"'
-            ]
-        );
+        return $this->get('commsy.print_service')->printDetail($html);
     }
 }
