@@ -177,7 +177,14 @@ class SoapService
 //          $wiki_manager->deleteWiki($room_item);
     }
 
-    private function isSessionValid($sessionId)
+    /**
+     * Checks valid session
+     * 
+     * @param  string $sessionId
+     * 
+     * @return bool success
+     */
+    public function isSessionValid($sessionId)
     {
         $sessionManager = $this->legacyEnvironment->getSessionManager();
         $sessionItem = $sessionManager->get($sessionId);

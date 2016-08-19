@@ -155,5 +155,5 @@ commsy:
     mediawiki:
         # set the following variable to activate mediawiki extension
         enabled: true
-        url: http://127.0.0.1:8080
-        apiPath: /w/api.php
+        url: http://mediawiki.vm
+        apiPath: /api.php

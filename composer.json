@@ -43,7 +43,8 @@
         "egeloen/ckeditor-bundle": "^4.0",
         "zendframework/zend-soap": "^2.6",
         "debril/rss-atom-bundle": "^2.4",
-        "idci/color-scheme-bundle": "dev-master"
+        "idci/color-scheme-bundle": "dev-master",
+        "ci/restclientbundle": "^2.0"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",

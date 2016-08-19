@@ -17,5 +17,10 @@ class MediawikiService
 
     public function createWiki($roomId)
     {
+        $url = $this->wikiApiUrl.'?action=commsy&function=createwiki&session-id=123&context-id=123&format=json';
+        
+        $restClient = $this->container->get('circle.restclient');
+        
+        $json = $restClient->get($url)->getContent();
     }
 }
