@@ -121,6 +121,8 @@
         let target = $(element.data('commsy-list-action').target) ? UI.$(element.data('commsy-list-action').target) : [];
         if (!target.length) return;
 
+        selectable = true;
+
         articles = target.find('article');
         
         addCheckboxes(articles);
@@ -128,7 +130,6 @@
         inputs = target.find('input');
         selectedCounter = 0;
         selectAll = false;
-        selectable = false;
         sort = 'date';
         sortOrder = '';
         
@@ -149,8 +150,6 @@
         $('#commsy-select-actions-unselect').removeClass('uk-active');
         $('#commsy-select-actions-ok').removeClass('uk-active');
         $('#commsy-select-actions-cancel').removeClass('uk-active');
-        
-        selectable = true; 
         
         bind();       
     }
@@ -459,11 +458,13 @@
     }
     
     function addCheckboxes (articles) {
-        articles.each(function() {
-            if ($.inArray(action, $(this).data('allowed-actions')) > -1) {
-                $(this).toggleClass('selectable', true);
-            }
-        });
+        if (selectable) {
+            articles.each(function() {
+                if ($.inArray(action, $(this).data('allowed-actions')) > -1) {
+                    $(this).toggleClass('selectable', true);
+                }
+            });
+        }
     }
 
 })(UIkit);

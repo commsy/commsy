@@ -242,6 +242,9 @@
         
         action: function(action) {
             let $this = this;
+            
+            $this.selectable = false;
+            
             let target = this.options.target ? UI.$(this.options.target) : [];
             
             let entries =  target.find('input:checked').map(function() {
@@ -374,7 +377,9 @@
                     $(target).trigger('changed.uk.dom');
                     
                     $(target).find('article').each(function() {
-                        $(this).toggleClass('selectable', true);
+                        if ($this.selectable) {
+                            $(this).toggleClass('selectable', true);
+                        }
                     });
                     
                     $this.bind();
