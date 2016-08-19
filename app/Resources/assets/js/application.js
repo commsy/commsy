@@ -12,6 +12,19 @@
             });
     });
 
+    $(window).on( "load resize", function(){
+        // tooltip left margin only needs to be updated manually in firefox
+        if (typeof InstallTrigger !== 'undefined'){
+            var stylesheet = document.styleSheets[0];
+            if(stylesheet.cssRules[stylesheet.cssRules.length-1].cssText.substring(0, 11) == ".uk-tooltip"){
+                stylesheet.cssRules[stylesheet.cssRules.length-1].style.marginLeft = $('body').offset().left+"px";
+            }
+            else{
+                stylesheet.insertRule(".uk-tooltip {margin-left: "+$('body').offset().left+"px}", stylesheet.cssRules.length);
+            }
+        }
+    });
+
     // NProgress configuration
     NProgress.configure({
         showSpinner: false,

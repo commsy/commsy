@@ -310,7 +310,7 @@
             </trans-unit>
             <trans-unit id="Theme">
                 <source>Theme</source>
-                <target>Farbschema</target>
+                <target>Theme</target>
             </trans-unit>
             <trans-unit id="configure_events_text">
                 <source>Configure events text</source>
