@@ -103,10 +103,10 @@ class TopicController extends Controller
     }
     
    /**
-     * @Route("/room/{roomId}/topic/feed/{start}")
+     * @Route("/room/{roomId}/topic/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0, Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0,  $sort = 'date', Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -183,12 +183,12 @@ class TopicController extends Controller
         $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
         
         if ($action == 'markread') {
-            $topicService = $this->get('commsy.topic/{itemId_service');
+            $topicService = $this->get('commsy_legacy.topic_service');
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             $noticedManager = $legacyEnvironment->getNoticedManager();
             $readerManager = $legacyEnvironment->getReaderManager();
             foreach ($selectedIds as $id) {
-                $item = $topicService->getItem($id);
+                $item = $topicService->getTopic($id);
                 $versionId = $item->getVersionID();
                 $noticedManager->markNoticed($id, $versionId);
                 $readerManager->markRead($id, $versionId);
@@ -644,5 +644,82 @@ class TopicController extends Controller
         ]);
 
         return $this->get('commsy.print_service')->printDetail($html);
+    }
+    
+    /**
+     * @Route("/room/{roomId}/topic/print")
+     */
+    public function printlistAction($roomId, Request $request)
+    {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        if (!$roomItem) {
+            throw $this->createNotFoundException('The requested room does not exist');
+        }
+
+        // setup filter form
+        $defaultFilterValues = array(
+            'activated' => true,
+        );
+        $filterForm = $this->createForm(TopicFilterType::class, $defaultFilterValues, array(
+            'action' => $this->generateUrl('commsy_topic_list', array(
+                'roomId' => $roomId,
+            )),
+            'hasHashtags' => $roomItem->withBuzzwords(),
+            'hasCategories' => $roomItem->withTags(),
+        ));
+
+        // get the announcement manager service
+        $topicService = $this->get('commsy_legacy.topic_service');
+
+        // apply filter
+        $filterForm->handleRequest($request);
+        if ($filterForm->isValid()) {
+            // set filter conditions in announcement manager
+            $topicService->setFilterConditions($filterForm);
+        }
+
+        // get announcement list from manager service 
+        $topics = $topicService->getListTopics($roomId);
+
+        $readerService = $this->get('commsy_legacy.reader_service');
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+
+        $readerList = array();
+        foreach ($topics as $item) {
+            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+        }
+
+        $ratingList = array();
+        if ($current_context->isAssessmentActive()) {
+            $assessmentService = $this->get('commsy_legacy.assessment_service');
+            $itemIds = array();
+            foreach ($topics as $topic) {
+                $itemIds[] = $topic->getItemId();
+            }
+            $ratingList = $assessmentService->getListAverageRatings($itemIds);
+        }
+
+        // get announcement list from manager service 
+        $itemsCountArray = $topicService->getCountArray($roomId);
+
+        $html = $this->renderView('CommsyBundle:Topic:listPrint.html.twig', [
+            'roomId' => $roomId,
+            'module' => 'topic',
+            'announcements' => $topics,
+            'readerList' => $readerList,
+            'itemsCountArray' => $itemsCountArray,
+            'showRating' => $roomItem->isAssessmentActive(),
+            'showHashTags' => $roomItem->withBuzzwords(),
+            'showCategories' => $roomItem->withTags(),
+            'ratingList' => $ratingList,
+            'showWorkflow' => $current_context->withWorkflow(),
+        ]);
+
+        return $this->get('commsy.print_service')->printList($html);
     }
 }

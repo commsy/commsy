@@ -2,13 +2,13 @@
 
 {% for topic in topics %}
 
-        {% set entryAllowedActions = '' %}
-        {% if allowedActions[topic.itemId] is defined %}
-            {% set entryAllowedActions = allowedActions[topic.itemId] %}
-        {% endif %}
-        <div class="uk-width-medium-1-4" data-allowed-actions="{{ entryAllowedActions|json_encode() }}">
+        <div class="uk-width-medium-1-4">
 
-            <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
+            {% set entryAllowedActions = '' %}
+            {% if allowedActions[topic.itemId] is defined %}
+                {% set entryAllowedActions = allowedActions[topic.itemId] %}
+            {% endif %}
+            <article class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom" data-allowed-actions="{{ entryAllowedActions|json_encode() }}">
  
                 <div class="uk-panel-teaser cs-panel-teaser-user">
                     {{ macros.statusColor(readerList, topic.itemId, 'grid') }}
@@ -23,14 +23,14 @@
                         {% endif %}
                     </div>
                     <div class="uk-grid">
-                        <div class="uk-width-1-1 uk-text-truncate">
+                        <div class="uk-width-3-4 uk-text-truncate">
                            <span class="uk-text-large uk-text-middle">
                                <a href="{{ path('commsy_topic_detail', {'roomId': roomId, 'itemId': topic.itemId}) }}">{{ topic.title }} </a>
                            </span>
                         </div>
                     </div>
                 </div>
-
+                
                 <span>
                    {% set fileArray = topic.fileList.to_array %}
                    {{'files'|trans({}) }}: {% if not fileArray is empty %} {{macros.fileListShort(topic)}} {% else %} {{'no files'|trans({}) }} {% endif %}             
@@ -44,7 +44,9 @@
                         {{'topic path'|trans({}) }}: {% if topic.isPathActive %} {{'topic path activated'|trans({}) }}{% else %} {{'topic path not activated'|trans({}) }} {% endif %}              
                     </div>
                 </div>
-            </div>
+
+                
+            </article>
         </div>
 
 
