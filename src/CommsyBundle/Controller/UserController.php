@@ -843,8 +843,6 @@ class UserController extends Controller
             $content = $avatarService->getAvatar($itemId);
         }
         
-        //error_log(print_r($content, true));
-        
         $file = preg_replace('/[[:^print:]]/', '', $file);
         
         $response = new Response($content, Response::HTTP_OK, array('content-type' => 'image'));
