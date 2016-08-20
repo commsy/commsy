@@ -87,7 +87,7 @@
                 }
             },
             eventClick: function(calEvent, jsEvent, view) {
-                window.location.href = $('#calendarDashboard').data('events').dateUrl+'/'+calEvent.itemId;
+                window.location.href = $('#calendarDashboard').data('events').dateUrl+'/room/'+calEvent.contextId+'/date/'+calEvent.itemId;
             },
             eventMouseover: function(calEvent, jsEvent, view) {
                 $(jsEvent.currentTarget).tooltipster({

@@ -34,6 +34,10 @@
                 <source>participants</source>
                 <target>Teilnehmer</target>
             </trans-unit>
+            <trans-unit id="no particpants">
+                <source>no participants</source>
+                <target>keine Teilnehmer</target>
+            </trans-unit>
             <trans-unit id="info">
                 <source>info</source>
                 <target>Info</target>
