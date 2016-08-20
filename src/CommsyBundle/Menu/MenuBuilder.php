@@ -180,7 +180,7 @@ class MenuBuilder
 
                 // home navigation
                 $menu->addChild('room_home', array(
-                    'label' => 'Home',
+                    'label' => 'home',
                     'route' => 'commsy_room_home',
                     'routeParameters' => array('roomId' => $roomId),
                     'extras' => array('icon' => 'uk-icon-home uk-icon-small')
@@ -198,7 +198,7 @@ class MenuBuilder
                     }
                     
                     $menu->addChild($value, [
-                        'label' => ucfirst($value),
+                        'label' => $value,
                         'route' => $route,
                         'routeParameters' => array('roomId' => $roomId),
                         'extras' => [
