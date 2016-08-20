@@ -33,7 +33,7 @@ class DateTransformer implements DataTransformerInterface
             $dateData['start']['date'] = $datetimeStart;
             $dateData['start']['time'] = $datetimeStart;
             
-            $datetimeEnd = new \DateTime($dateItem->getDateTime_start());
+            $datetimeEnd = new \DateTime($dateItem->getDateTime_end());
             $dateData['end']['date'] = $datetimeEnd;
             $dateData['end']['time'] = $datetimeEnd;
             
@@ -106,9 +106,11 @@ class DateTransformer implements DataTransformerInterface
         
         $dateObject->setStartingDay($dateData['start']['date']->format('Y-m-d'));
         $dateObject->setStartingTime($dateData['start']['time']->format('H:i'));
+        $dateObject->setDatetime_start($dateData['start']['date']->format('Y-m-d').' '.$dateData['start']['time']->format('H:i:s'));
         
         $dateObject->setEndingDay($dateData['end']['date']->format('Y-m-d'));
         $dateObject->setEndingTime($dateData['end']['time']->format('H:i'));
+        $dateObject->setDatetime_end($dateData['end']['date']->format('Y-m-d').' '.$dateData['end']['time']->format('H:i:s'));
 
         $dateObject->setColor($dateData['color']);
 
