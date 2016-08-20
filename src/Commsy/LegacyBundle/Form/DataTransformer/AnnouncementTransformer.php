@@ -27,6 +27,8 @@ class AnnouncementTransformer implements DataTransformerInterface
             $announcementData['title'] = $announcementItem->getTitle();
             $announcementData['description'] = $announcementItem->getDescription();
 
+            $announcementData['permission'] = $announcementItem->isPrivateEditing();
+
             $datetime = new \DateTime($announcementItem->getSecondDateTime());
             $announcementData['validdate']['date'] = $datetime;
             $announcementData['validdate']['time'] = $datetime;
@@ -58,6 +60,12 @@ class AnnouncementTransformer implements DataTransformerInterface
     {
         $announcementObject->setTitle($announcementData['title']);
         $announcementObject->setDescription($announcementData['description']);
+
+        if ($announcementData['permission']) {
+            $announcementObject->setPrivateEditing('0');
+        } else {
+            $announcementObject->setPrivateEditing('1');
+        }
 
         if ($announcementData['validdate']['date'] && $announcementData['validdate']['time']) {
             // add validdate to validdate
