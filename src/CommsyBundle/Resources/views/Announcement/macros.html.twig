@@ -32,6 +32,8 @@
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                         {{ macros.actionIcons('title', item, true) }}
                         {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
+                    {% else %}
+                        {{ macros.actionIcons('title', item, false) }}
                     {% endif %}
                 </div>
             </div>
@@ -187,6 +189,8 @@
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                         {{ macros.actionIcons('title', item, true) }}
                         {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
+                    {% else %}
+                        {{ macros.actionIcons('title', item, false) }}
                     {% endif %}
                 </div>
             </div>
