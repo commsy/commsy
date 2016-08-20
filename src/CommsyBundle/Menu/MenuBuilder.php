@@ -297,6 +297,7 @@ class MenuBuilder
 
             $menu->addChild('portal', [
                 'uri' => $baseUrl . '?cid=' . $portal->getItemId(),
+                'attributes' => ['breadcrumb_portal' => true],
             ]);
         }
 
@@ -314,6 +315,7 @@ class MenuBuilder
                 $menu->addChild('dashboard', array(
                     'route' => 'commsy_dashboard_overview',
                     'routeParameters' => array('roomId' => $privateRoom->getItemId()),
+                    'attributes' => ['breadcrumb_dashboard' => true],
                 ));
             }
 
@@ -324,7 +326,8 @@ class MenuBuilder
                 // home
                 $menu->addChild($roomItem->getTitle(), array(
                     'route' => 'commsy_room_home',
-                    'routeParameters' => array('roomId' => $roomId)
+                    'routeParameters' => array('roomId' => $roomId),
+                    'attributes' => ['breadcrumb_room' => true],
                 ));
 
                 // get route information
@@ -348,7 +351,8 @@ class MenuBuilder
                     if (!$changeRubrikcLinkForDate) {
                         $menu->addChild($route[1], array(
                             'route' => $tempRoute,
-                            'routeParameters' => array('roomId' => $roomId)
+                            'routeParameters' => array('roomId' => $roomId),
+                            'attributes' => ['breadcrumb_rubric' => true],
                         ));
                     } else {
                         $menu->addChild($route[1]);
@@ -372,10 +376,9 @@ class MenuBuilder
                                 'routeParameters' => array(
                                     'roomId' => $roomId,
                                     'itemId' => $itemId
-                                )
+                                ),
+                                'attributes' => ['breadcrumb_item' => true],
                             ));
-                        } else {
-                            $menu->addChild('create', array());
                         }
                     }
                 }

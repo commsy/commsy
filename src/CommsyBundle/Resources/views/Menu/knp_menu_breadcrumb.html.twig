@@ -41,6 +41,6 @@
     {% if options.allow_safe_labels and item.getExtra('safe_label', false) %}
         {{ item.label|raw }}
     {% else %}
-        {{ item.label|capitalize|trans({}, 'menu') }}
+        {{ item.label|trans({}, 'menu') }}
     {% endif %}
 {% endblock %}

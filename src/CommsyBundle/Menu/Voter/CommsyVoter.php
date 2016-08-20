@@ -20,6 +20,11 @@ class CommsyVoter implements VoterInterface
 
     public function matchItem(ItemInterface $item)
     {
+        $attributes = $item->getAttributes();
+        if (isset($attributes['breadcrumb_rubric'])) {
+            return false;
+        }
+        
         $roomId = $this->requestStack->getCurrentRequest()->attributes->get('roomId');
         list($bundle, $controller, $action) = explode('_', $this->requestStack->getCurrentRequest()->attributes->get('_route'));
         

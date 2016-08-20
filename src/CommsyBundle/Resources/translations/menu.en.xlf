@@ -8,35 +8,35 @@
                 <target>Home</target>
             </trans-unit>
             <trans-unit id="announcement">
-                <source>Announcement</source>
+                <source>announcement</source>
                 <target>Announcements</target>
             </trans-unit>
             <trans-unit id="todo">
-                <source>Todo</source>
+                <source>todo</source>
                 <target>Todo</target>
             </trans-unit>
             <trans-unit id="date">
-                <source>Date</source>
+                <source>date</source>
                 <target>Dates</target>
             </trans-unit>
             <trans-unit id="discussion">
-                <source>Discussion</source>
+                <source>discussion</source>
                 <target>Discussions</target>
             </trans-unit>
             <trans-unit id="user">
-                <source>User</source>
+                <source>user</source>
                 <target>User</target>
             </trans-unit>
             <trans-unit id="group">
-                <source>Group</source>
+                <source>group</source>
                 <target>Groups</target>
             </trans-unit>
             <trans-unit id="topic">
-                <source>Topic</source>
+                <source>topic</source>
                 <target>Topics</target>
             </trans-unit>
             <trans-unit id="material">
-                <source>Material</source>
+                <source>material</source>
                 <target>Materials</target>
             </trans-unit>
             <trans-unit id="settings">
@@ -77,8 +77,12 @@
 
             <!-- breadcrumb -->
             <trans-unit id="breadcrumb_portal">
-                <source>Portal</source>
+                <source>portal</source>
                 <target>Portal</target>
+            </trans-unit>
+            <trans-unit id="breadcrumb_dashboard">
+                <source>dashboard</source>
+                <target>Dashboard</target>
             </trans-unit>
         </body>
     </file>
