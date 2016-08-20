@@ -821,7 +821,9 @@ class UserController extends Controller
             $filePath = $disc_manager->getFilePath().$file;
     
             if (file_exists($rootDir.$filePath)) {
-                $content = file_get_contents($rootDir.$filePath);
+                $processedImage = $this->container->get('liip_imagine.data.manager')->find('commsy_user_image', str_ireplace('../files', './', $filePath));
+                $content = $newimage_string = $this->container->get('liip_imagine.filter.manager')->applyFilter($processedImage, 'commsy_user_image')->getContent();
+                
                 if (!$content) {
                     $foundUserImage = false;
                     $file = 'user_unknown.gif';

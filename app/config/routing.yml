@@ -16,3 +16,6 @@ commsy_rss:
 # liip_theme:
 #     resource: "@LiipThemeBundle/Resources/config/routing.xml"
 #     prefix: /theme
+
+_liip_imagine:
+    resource: "@LiipImagineBundle/Resources/config/routing.xml"

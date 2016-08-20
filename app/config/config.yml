@@ -111,6 +111,23 @@ liip_theme:
     active_theme: 'default'
     assetic_integration: false
 
+liip_imagine:
+    resolvers:
+        default:
+            web_path: ~
+
+    filter_sets:
+        cache: ~
+        commsy_user_image:
+            quality: 100
+            filters:
+                thumbnail: { size: [100, 100], mode: outbound }
+                
+    loaders:
+        default:
+            filesystem:
+                data_root: '%kernel.root_dir%/../files'
+
 # KnpMenuBundle
 knp_menu:
     # use "twig: false" to disable the Twig extension and the TwigRenderer

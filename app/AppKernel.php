@@ -18,6 +18,7 @@ class AppKernel extends Kernel
             
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new Liip\ThemeBundle\LiipThemeBundle(),
+            new Liip\ImagineBundle\LiipImagineBundle(),
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new Lexik\Bundle\FormFilterBundle\LexikFormFilterBundle(),
             new FOS\ElasticaBundle\FOSElasticaBundle(),
