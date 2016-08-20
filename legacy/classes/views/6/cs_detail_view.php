@@ -1429,7 +1429,7 @@ class cs_detail_view extends cs_view {
    }
 
 
-   function _getItemAsHTML ($spaces=0) {
+   function _getItemAsHTML ($item) {
       include_once('functions/error_functions.php');
       trigger_error('cs_detail_view->_getItemAsHTML must be overwritten in subclass', E_USER_ERROR);
    }

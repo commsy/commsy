@@ -621,7 +621,10 @@ class DateController extends Controller
         $itemService = $this->get('commsy_legacy.item_service');
         $dateService = $this->get('commsy_legacy.date_service');
         $userService = $this->get("commsy_legacy.user_service");
-        $user = $userService->getPortalUserFromSessionId();
+        
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        
+        $user = $legacyEnvironment->getCurrentUserItem();
         $userList = $user->getRelatedUserList()->to_array();
 
         $listDates = array();

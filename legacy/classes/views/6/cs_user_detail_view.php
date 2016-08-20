@@ -387,7 +387,7 @@ class cs_user_detail_view extends cs_detail_view {
    }
 
 
-   function _getSubItemAsHTML($item, $anchor_number) {
+   function _getSubItemAsHTML($item, $anchor_number, $spaces=0) {
       $html = '';
       $formal_data = array();
 
