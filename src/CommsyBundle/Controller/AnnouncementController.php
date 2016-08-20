@@ -613,6 +613,7 @@ class AnnouncementController extends Controller
         if ($item->getItemType() == 'announcement') {
             // get announcement from announcementService
             $announcementItem = $announcementService->getannouncement($itemId);
+            $announcementItem->setDraftStatus($item->isDraft());
             if (!$announcementItem) {
                 throw $this->createNotFoundException('No announcement found for id ' . $roomId);
             }

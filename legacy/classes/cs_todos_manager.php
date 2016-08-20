@@ -460,7 +460,8 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
      $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
-              'type="todo"';
+              'type="todo",'.
+              'draft="'.encode(AS_DB,$item->isDraft()).'"';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
         include_once('functions/error_functions.php');

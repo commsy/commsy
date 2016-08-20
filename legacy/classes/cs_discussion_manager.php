@@ -509,7 +509,8 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
      $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
-              'type="discussion"';
+              'type="discussion",'.
+              'draft="'.encode(AS_DB,$item->isDraft()).'"';
 
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {

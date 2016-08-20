@@ -463,7 +463,8 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
      $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
               'context_id="'.encode(AS_DB,$announcement_item->getContextID()).'",'.
               'modification_date="'.$modification_date.'",'.
-              'type="announcement"';
+              'type="announcement",'.
+              'draft="'.encode(AS_DB,$announcement_item->isDraft()).'"';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
         include_once('functions/error_functions.php');
