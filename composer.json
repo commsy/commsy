@@ -45,7 +45,8 @@
         "debril/rss-atom-bundle": "^2.4",
         "idci/color-scheme-bundle": "dev-master",
         "ci/restclientbundle": "^2.0",
-        "liip/imagine-bundle": "^1.6"
+        "liip/imagine-bundle": "^1.6",
+        "nette/utils": "^2.4"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",

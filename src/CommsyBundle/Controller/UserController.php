@@ -843,11 +843,9 @@ class UserController extends Controller
             $content = $avatarService->getAvatar($itemId);
         }
         
-        $file = preg_replace('/[[:^print:]]/', '', $file);
-        
         $response = new Response($content, Response::HTTP_OK, array('content-type' => 'image'));
         
-        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,$file);
+        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, \Nette\Utils\Strings::webalize($file));
 
         $response->headers->set('Content-Disposition', $contentDisposition);
         
