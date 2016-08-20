@@ -4,7 +4,7 @@ namespace CommsyBundle\Utils;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
-use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Component\Translation\TranslatorInterface;
 
 use \Twig_Environment;
 
@@ -14,7 +14,7 @@ class MailAssistant
     private $translator;
     private $twig;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, DataCollectorTranslator $translator, Twig_Environment $twig)
+    public function __construct(LegacyEnvironment $legacyEnvironment, TranslatorInterface $translator, Twig_Environment $twig)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->translator = $translator;
