@@ -62,4 +62,9 @@ class TopicService
             $this->topicManager->showNoNotActivatedEntries();
         }
     }
+    
+    public function getNewTopic()
+    {
+        return $this->topicManager->getNewItem();
+    }
 }

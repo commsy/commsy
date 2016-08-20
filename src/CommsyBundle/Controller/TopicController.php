@@ -447,13 +447,10 @@ class TopicController extends Controller
         // create new topic item
         $topicItem = $topicService->getNewtopic();
         $topicItem->setTitle('['.$translator->trans('insert title').']');
-        $topicItem->setBibKind('none');
         $topicItem->setDraftStatus(1);
         $topicItem->save();
 
- 
         return $this->redirectToRoute('commsy_topic_detail', array('roomId' => $roomId, 'itemId' => $topicItem->getItemId()));
-
     }
 
 
