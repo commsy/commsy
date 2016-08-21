@@ -911,7 +911,8 @@ class UserController extends Controller
         
         return [
             'privateRoomItem' => $privateRoomItem,
-            'count' => sizeof($currentClipboardIds)
+            'count' => sizeof($currentClipboardIds),
+            'roomId' => $legacyEnvironment->getCurrentContextId(),
         ];
     }
     /**

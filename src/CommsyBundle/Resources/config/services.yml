@@ -455,3 +455,7 @@ services:
     commsy.print_service:
         class: CommsyBundle\Services\PrintService
         arguments: ['@commsy_legacy.environment', '@service_container', '@request_stack']
+        
+    commsy.copy_service:
+        class: CommsyBundle\Services\CopyService
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.item_service']

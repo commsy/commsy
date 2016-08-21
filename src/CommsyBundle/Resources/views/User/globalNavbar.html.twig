@@ -4,7 +4,7 @@
             <a href="#"><i class="uk-icon-bell-o"></i></a>
         </li>
         <li>
-            <a href="#">
+            <a href="{{ path('commsy_copy_list', {'roomId': roomId}) }}" title="{{ 'copies'|trans({}, "rubric")}}">
                 <i class="uk-icon-copy"></i>
                 <small id="cs-nav-copy-indicator">
                 {% if count > 0 %}
