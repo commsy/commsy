@@ -242,4 +242,8 @@ class UserService
     public function showNoNotActivatedEntries(){
         $this->userManager->showNoNotActivatedEntries();
     }
+    
+    public function showUserStatus ($status) {
+        $this->userManager->setStatusLimit($status);
+    }
 }

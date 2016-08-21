@@ -55,6 +55,7 @@ class UserController extends Controller
             // setup filter form
             $defaultFilterValues = [
                 'activated' => true,
+                'user_status' => 2,
             ];
             
             $filterForm = $this->createForm(UserFilterType::class, $defaultFilterValues, [
@@ -73,6 +74,7 @@ class UserController extends Controller
             $userService->setFilterConditions($filterForm);
         } else {
             $userService->showNoNotActivatedEntries();
+            $userService->showUserStatus(2);
         }
 
         // get user list from manager service 
@@ -118,6 +120,7 @@ class UserController extends Controller
         // setup filter form
         $defaultFilterValues = [
             'activated' => true,
+            'user_status' => 2,
         ];
         $filterForm = $this->createForm(UserFilterType::class, $defaultFilterValues, [
             'action' => $this->generateUrl('commsy_user_list', [
@@ -136,6 +139,9 @@ class UserController extends Controller
         if ($filterForm->isValid()) {
             // set filter conditions in user manager
             $userService->setFilterConditions($filterForm);
+        } else {
+            $userService->showNoNotActivatedEntries();
+            $userService->showUserStatus(2);
         }
 
         // get filtered and total number of results
