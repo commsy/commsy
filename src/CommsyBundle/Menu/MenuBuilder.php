@@ -209,6 +209,24 @@ class MenuBuilder
                 }
             }
 
+            $roomItem = $this->roomService->getRoomItem($roomId);
+            if ($roomItem->isGroupRoom()) {
+                $menu->addChild('room_navigation_space_3', array(
+                    'label' => ' ',
+                    'route' => 'commsy_room_home',
+                    'routeParameters' => array('roomId' => $roomId),
+                    'extras' => array('icon' => 'uk-icon-small')
+                ));
+                $projectRoomItem = $roomItem->getLinkedProjectItem();
+                $menu->addChild('room', array(
+                    'label' => 'Back to room',
+                    'route' => 'commsy_room_home',
+                    'routeParameters' => array('roomId' => $projectRoomItem->getItemId()),
+                    'extras' => array('icon' => 'uk-icon-reply uk-icon-small uk-icon-justify')
+                ))
+                ->setExtra('translation_domain', 'menu');
+            }
+
             if ($currentUser) {
                 if ($this->authorizationChecker->isGranted('MODERATOR')) {
                     $menu->addChild('room_navigation_space_2', array(
@@ -323,6 +341,15 @@ class MenuBuilder
             $roomItem = $this->roomService->getRoomItem($roomId);
     
             if ($roomItem) {
+                if ($roomItem->isGroupRoom()) {
+                    $projectRoomItem = $roomItem->getLinkedProjectItem();
+                    $menu->addChild($projectRoomItem->getTitle(), array(
+                        'route' => 'commsy_room_home',
+                        'routeParameters' => array('roomId' => $projectRoomItem->getItemId()),
+                        'attributes' => ['breadcrumb_grouproom_parent' => true],
+                    ));
+                }
+                
                 // home
                 $menu->addChild($roomItem->getTitle(), array(
                     'route' => 'commsy_room_home',
