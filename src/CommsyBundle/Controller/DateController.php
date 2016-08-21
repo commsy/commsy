@@ -244,11 +244,18 @@ class DateController extends Controller
 
         $itemsCountArray = $dateService->getCountArray($roomId);
 
+        $usageInfo = false;
+        if ($roomItem->getUsageInfoTextForRubricInForm('date') != '') {
+            $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('date');
+            $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('date');
+        }
+
         return array(
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
             'module' => 'date',
-            'itemsCountArray' => $itemsCountArray
+            'itemsCountArray' => $itemsCountArray,
+            'usageInfo' => $usageInfo,
         );
     }
 

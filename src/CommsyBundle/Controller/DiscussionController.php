@@ -146,6 +146,12 @@ class DiscussionController extends Controller
         // get material list from manager service 
         $itemsCountArray = $discussionService->getCountArray($roomId);
 
+        $usageInfo = false;
+        if ($roomItem->getUsageInfoTextForRubricInForm('discussion') != '') {
+            $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('discussion');
+            $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('discussion');
+        }
+
         return array(
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
@@ -155,6 +161,7 @@ class DiscussionController extends Controller
             'showWorkflow' => $roomItem->withWorkflow(),
             'showHashTags' => $roomItem->withBuzzwords(),
             'showCategories' => $roomItem->withTags(),
+            'usageInfo' => $usageInfo,
         );
         
     }

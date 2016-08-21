@@ -141,6 +141,12 @@ class UserController extends Controller
         // get filtered and total number of results
         $itemsCountArray = $userService->getCountArray($roomId, $currentUser->isModerator());
 
+        $usageInfo = false;
+        if ($roomItem->getUsageInfoTextForRubricInForm('user') != '') {
+            $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('user');
+            $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('user');
+        }
+
         return [
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
@@ -149,6 +155,7 @@ class UserController extends Controller
             'showRating' => false,
             'showHashTags' => false,
             'showCategories' => false,
+            'usageInfo' => $usageInfo,
         ];
     }
 

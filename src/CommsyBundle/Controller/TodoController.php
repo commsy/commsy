@@ -85,6 +85,12 @@ class TodoController extends Controller
             $todoService->setFilterConditions($filterForm);
         }
  
+        $usageInfo = false;
+        if ($roomItem->getUsageInfoTextForRubricInForm('todo') != '') {
+            $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('todo');
+            $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('todo');
+        }
+ 
         return array(
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
@@ -93,6 +99,7 @@ class TodoController extends Controller
             'showHashTags' => $roomItem->withBuzzwords(),
             'showCategories' => $roomItem->withTags(),
             'statusList' => $roomItem->getExtraToDoStatusArray(),
+            'usageInfo' => $usageInfo
         );
     }
     

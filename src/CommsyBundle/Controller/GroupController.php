@@ -92,6 +92,12 @@ class GroupController extends Controller
             $groupService->setFilterConditions($filterForm);
         }
 
+        $usageInfo = false;
+        if ($roomItem->getUsageInfoTextForRubricInForm('group') != '') {
+            $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('group');
+            $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('group');
+        }
+
         return array(
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
@@ -100,6 +106,7 @@ class GroupController extends Controller
             'showRating' => false,
             'showHashTags' => false,
             'showCategories' => false,
+            'usageInfo' => $usageInfo,
         );
     }
 

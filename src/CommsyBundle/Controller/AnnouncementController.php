@@ -221,6 +221,12 @@ class AnnouncementController extends Controller
         // get announcement list from manager service 
         $itemsCountArray = $announcementService->getCountArray($roomId);
 
+        $usageInfo = false;
+        if ($roomItem->getUsageInfoTextForRubricInForm('announcement') != '') {
+            $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('announcement');
+            $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('announcement');
+        }
+        
         return array(
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
@@ -229,6 +235,7 @@ class AnnouncementController extends Controller
             'showRating' => $roomItem->isAssessmentActive(),
             'showHashTags' => $roomItem->withBuzzwords(),
             'showCategories' => $roomItem->withTags(),
+            'usageInfo' => $usageInfo,
         );
     }
 

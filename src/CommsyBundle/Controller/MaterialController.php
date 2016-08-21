@@ -186,6 +186,12 @@ class MaterialController extends Controller
             $materialService->setFilterConditions($filterForm);
         }
 
+        $usageInfo = false;
+        if ($roomItem->getUsageInfoTextForRubricInForm('material') != '') {
+            $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('material');
+            $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('material');
+        }
+
         return array(
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
@@ -196,6 +202,7 @@ class MaterialController extends Controller
             'showHashTags' => $roomItem->withBuzzwords(),
             'showCategories' => $roomItem->withTags(),
             'material_filter' => $filterForm,
+            'usageInfo' => $usageInfo,
         );
     }
 

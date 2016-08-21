@@ -91,6 +91,12 @@ class TopicController extends Controller
             $topicService->setFilterConditions($filterForm);
         }
 
+        $usageInfo = false;
+        if ($roomItem->getUsageInfoTextForRubricInForm('topic') != '') {
+            $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('topic');
+            $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('topic');
+        }
+
         return array(
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
@@ -99,6 +105,7 @@ class TopicController extends Controller
             'showRating' => false,
             'showHashTags' => false,
             'showCategories' => false,
+            'usageInfo' => $usageInfo,
         );
     }
     

@@ -104,11 +104,18 @@ class ProjectController extends Controller
 
         $itemsCountArray = $projectService->getCountArray($roomId);
 
+        $usageInfo = false;
+        if ($roomItem->getUsageInfoTextForRubricInForm('project') != '') {
+            $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('project');
+            $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('project');
+        }
+
         return array(
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
             'module' => 'project',
-            'itemsCountArray' => $itemsCountArray
+            'itemsCountArray' => $itemsCountArray,
+            'usageInfo' => $usageInfo
         );
     }
     

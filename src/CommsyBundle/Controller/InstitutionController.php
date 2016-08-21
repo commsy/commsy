@@ -104,11 +104,18 @@ class InstitutionController extends Controller
 
         $itemsCountArray = $dateService->getCountArray($roomId);
 
+        $usageInfo = false;
+        if ($roomItem->getUsageInfoTextForRubricInForm('institution') != '') {
+            $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('institution');
+            $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('institution');
+        }
+
         return array(
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
             'module' => 'institution',
-            'itemsCountArray' => $itemsCountArray
+            'itemsCountArray' => $itemsCountArray,
+            'usageInfo' => $usageInfo,
         );
     }
     
