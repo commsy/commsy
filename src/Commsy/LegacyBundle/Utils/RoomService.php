@@ -72,6 +72,11 @@ class RoomService
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
+        if (!$roomItem) {
+            $privateRoomManager = $this->legacyEnvironment->getPrivateroomManager();
+            $roomItem = $privateRoomManager->getItem($roomId);
+        }
+
         return $roomItem;
     }
 

@@ -60,6 +60,12 @@ class CopyService
         $entries = [];
         $counter = 0;
         foreach ($currentClipboardIds as $currentClipboardId) {
+            if (!$start) {
+                $start = 0;
+            }
+            if (!$max) {
+                $max = count($currentClipboardIds);
+            }
             if ($counter >= $start && $counter < $start + $max) {
                 $typedItem = $this->itemService->getTypedItem($currentClipboardId);
                 if ($this->type) {
@@ -83,5 +89,23 @@ class CopyService
         if ($formData['type']) {
             $this->type = $formData['type'];
         }
+    }
+    
+    public function removeEntries ($roomId, $entries) {
+        $currentClipboardIds = array();
+        if ($this->sessionItem->issetValue('clipboard_ids')) {
+            $currentClipboardIds = $this->sessionItem->getValue('clipboard_ids');
+        }
+        
+        $clipboardIds = [];
+        foreach ($currentClipboardIds as $currentClipboardId) {
+            if (!in_array($currentClipboardId, $entries)) {
+                $clipboardIds[] = $currentClipboardId;
+            }
+        }
+        
+        $this->sessionItem->setValue('clipboard_ids', $clipboardIds);
+        
+        return $this->getCountArray($roomId);
     }
 }

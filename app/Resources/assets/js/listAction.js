@@ -403,9 +403,14 @@
                 $(this).removeClass('uk-comment-primary');
             });
 
-            if (action == 'copy') {
+            if (action == 'copy' || action == 'remove') {
                 let $indicator = $('#cs-nav-copy-indicator');
                 $indicator.html(result.data.count);
+            }
+            
+            if (action == 'remove') {
+                let $countDisplay = $('#commsy-list-count-display');
+                $countDisplay.html('('+result.data.countSelected+' - '+result.data.count+')')
             }
             
             // reload feed
