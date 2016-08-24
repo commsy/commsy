@@ -168,7 +168,6 @@ class CopyController extends Controller
         $itemService = $this->get('commsy_legacy.item_service');
         
         $action = $request->request->get('act');
-        error_log(print_r($action, true));
         
         $selectedIds = $request->request->get('data');
         if (!is_array($selectedIds)) {
