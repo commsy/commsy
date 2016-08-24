@@ -58,15 +58,19 @@ class CopyService
         }
         
         $entries = [];
+        $counter = 0;
         foreach ($currentClipboardIds as $currentClipboardId) {
-            $typedItem = $this->itemService->getTypedItem($currentClipboardId);
-            if ($this->type) {
-                if ($typedItem->getItemType() == $this->type) {
+            if ($counter >= $start && $counter < $start + $max) {
+                $typedItem = $this->itemService->getTypedItem($currentClipboardId);
+                if ($this->type) {
+                    if ($typedItem->getItemType() == $this->type) {
+                        $entries[] = $typedItem;
+                    }
+                } else {
                     $entries[] = $typedItem;
                 }
-            } else {
-                $entries[] = $typedItem;
             }
+            $counter++;
         }
 
         return $entries;

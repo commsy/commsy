@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 class CopyController extends Controller
 {
     /**
-     * @Route("/room/{roomId}/announcement/feed/{start}/{sort}")
+     * @Route("/room/{roomId}/copy/feed/{start}/{sort}")
      * @Template()
      */
     public function feedAction($roomId, $max = 10, $start = 0,  $sort = 'date', Request $request)
@@ -157,13 +157,14 @@ class CopyController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/announcement/feedaction")
+     * @Route("/room/{roomId}/copy/feedaction")
      */
     public function feedActionAction($roomId, Request $request)
     {
         $translator = $this->get('translator');
         
         $action = $request->request->get('act');
+        error_log(print_r($action, true));
         
         $selectedIds = $request->request->get('data');
         if (!is_array($selectedIds)) {
@@ -176,13 +177,13 @@ class CopyController extends Controller
         
         if ($action == 'insert') {
             
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('inserted %count% entries in this room',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'insertStack') {
 
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('%count% copied entries',count($selectedIds), array('%count%' => count($selectedIds)));
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('inserted %count% entries in my stack',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'remove') {
 
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('%count% copied entries',count($selectedIds), array('%count%' => count($selectedIds)));
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('removed %count% entries from list',count($selectedIds), array('%count%' => count($selectedIds)));
         } 
         
         return new JsonResponse([
