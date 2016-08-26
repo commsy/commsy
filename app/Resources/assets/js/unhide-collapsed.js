@@ -28,7 +28,10 @@
             let source = $($this.options.src);
 
             if (source.length) {
-                if (source.get(0).scrollHeight > $this.options.limit) {
+                let element = source.get(0);
+                let videoTags = $(element).find('video');
+
+                if (videoTags.length || element.scrollHeight > $this.options.limit) {
                     $this.element
                         .removeClass('uk-hidden')
                         .removeClass('uk-invisible');
