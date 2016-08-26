@@ -125,6 +125,9 @@ gulp.task('less', function() {
         config.bowerDir + '/nprogress/nprogress.css',
         config.bowerDir + '/fullcalendar/dist/fullcalendar.css',
         config.bowerDir + '/tooltipster/dist/css/tooltipster.bundle.min.css',
+        
+        config.bowerDir + '/video.js/dist/video-js.css',
+        
         config.assetsDir + '/uikit-commsy/commsy.less'
     ], 'commsy.css');
 });
@@ -160,6 +163,8 @@ gulp.task('js', function() {
         config.bowerDir + '/uikit/js/components/datepicker.js',
         config.bowerDir + '/uikit/js/components/timepicker.js',
         config.bowerDir + '/uikit/js/components/form-select.js',
+        
+        config.bowerDir + '/video.js/dist/video.js',
 
         config.assetsDir + '/js/**/*.js'
     ], 'commsy.js');
@@ -196,6 +201,9 @@ gulp.task('staticThemes', function(done) {
                 config.bowerDir + '/nprogress/nprogress.css',
                 config.bowerDir + '/fullcalendar/dist/fullcalendar.css',
                 config.bowerDir + '/tooltipster/dist/css/tooltipster.bundle.min.css',
+                
+                config.bowerDir + '/video.js/dist/video-js.css',
+                
                 config.assetsDir + '/uikit-commsy/commsy.less',
                 theme.path + '/theme.less'
             ], 'commsy_' + theme.name + '.css').on('end', function() {

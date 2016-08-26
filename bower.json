@@ -15,6 +15,7 @@
     "jstree": "latest",
     "nprogress": "latest",
     "fullcalendar": "latest",
-    "tooltipster": "latest"
+    "tooltipster": "latest",
+    "video.js": "latest"
   }
 }
