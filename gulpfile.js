@@ -56,7 +56,7 @@ app.getThemes = function() {
 };
 
 app.addStyle = function(paths, outputFilename) {
-    var lessFilter = plugins.filter(['*.less'], {
+    var lessFilter = plugins.filter(['**/*.less'], {
         restore: true
     });
 
