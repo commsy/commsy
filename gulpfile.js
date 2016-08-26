@@ -56,15 +56,23 @@ app.getThemes = function() {
 };
 
 app.addStyle = function(paths, outputFilename) {
+    var lessFilter = plugins.filter(['*.less'], {
+        restore: true
+    });
+
     return gulp.src(paths)
         .pipe(plugins.if(!config.production, plugins.plumber()))
         .pipe(plugins.if(config.sourceMaps, plugins.sourcemaps.init()))
+
+        .pipe(lessFilter)
         .pipe(plugins.less({
             paths: [
                 config.bowerDir + '/uikit/less',
                 config.assetsDir + '/uikit-commsy'
             ]
         }))
+        .pipe(lessFilter.restore)
+
         .pipe(plugins.concat('css/build/' + outputFilename))
         .pipe(plugins.if(config.production, plugins.cssnano()))
         .pipe(plugins.rev())
@@ -256,7 +264,6 @@ gulp.task('default', function(done) {
         'manifest',
         'postClean'
     )(done);
-
 });
 
 gulp.task('basic', function(done) {
@@ -266,5 +273,4 @@ gulp.task('basic', function(done) {
         'manifest',
         'postClean'
     )(done);
-
 });
