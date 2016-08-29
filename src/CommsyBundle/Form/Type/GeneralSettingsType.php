@@ -58,7 +58,7 @@ class GeneralSettingsType extends AbstractType
             ))
             ->add('language', ChoiceType::class, array(
                 'choices' => array(
-                    'User' => 'user',
+                    'User preferences' => 'user',
                     'German' => 'de',
                     'English' => 'en',
                 ),

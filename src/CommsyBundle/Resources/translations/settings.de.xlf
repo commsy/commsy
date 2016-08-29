@@ -49,8 +49,8 @@
                 <target>Code</target>
             </trans-unit>
             <trans-unit id="7">
-                <source>User</source>
-                <target>Benutzer</target>
+                <source>User preferences</source>
+                <target>Benutzerereinstellungen</target>
             </trans-unit>
             <trans-unit id="8">
                 <source>German</source>
