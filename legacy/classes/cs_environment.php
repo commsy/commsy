@@ -1894,6 +1894,7 @@ class cs_environment {
          }
          if ($this->_selected_language == 'user') {
             $this->_selected_language = $this->getUserLanguage();
+            //dump($this->getUserLanguage());
          }
       }
       return $this->_selected_language;
@@ -1915,6 +1916,7 @@ class cs_environment {
          $retour = $session_item->getValue('message_language_select');
       } else {
          $current_user = $this->getCurrentUserItem();
+
          if ( $current_user->isUser() ) {
             $retour = $current_user->getLanguage();
             if ($retour == 'browser') {
