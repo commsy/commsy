@@ -38,7 +38,7 @@ class UserTransformer implements DataTransformerInterface
                 $userData['dateOfBirth']['date'] = new \DateTime($userItem->getBirthday());
             }
             $userData['email'] = $userItem->getEmail();
-            $userData['hideEmailInThisRoom'] = $userItem->isEmailVisible();
+            $userData['hideEmailInThisRoom'] = !$userItem->isEmailVisible();
             $userData['phone'] = $userItem->getTelephone();
             $userData['mobile'] = $userItem->getCellularphone();
             $userData['street'] = $userItem->getStreet();
@@ -89,9 +89,9 @@ class UserTransformer implements DataTransformerInterface
 
             $userObject->setEmail($userData['email']);
             if ($userData['hideEmailInThisRoom']) {
-                $userObject->setEmailVisible();
-            } else {
                 $userObject->setEmailNotVisible();
+            } else {
+                $userObject->setEmailVisible();
             }
             $userObject->setTelephone($userData['phone']);
             $userObject->setCellularphone($userData['mobile']);

@@ -43,7 +43,9 @@
             </div>
             <span>
                 {% if user.email %}
-                    <a href="mailto:{{ user.email }}">{{ user.email }}</a>
+                    {% if user.isEmailVisible %}
+                        <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
+                    {% endif %}
                 {% else %}
                     {'no email'|trans({}) }
                 {% endif %}

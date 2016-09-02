@@ -91,11 +91,11 @@ class ProfileController extends Controller
                     if ($formData['emailChangeInAllContexts']) {
                         $tempUserItem->setEmail($formData['email']);
                     }
-                    if ($formData['isEmailVisibleChangeInAllContexts']) {
-                        if ($formData['isEmailVisible']) {
-                            $tempUserItem->setEmailVisible();
-                        } else {
+                    if ($formData['hideEmailInAllContexts']) {
+                        if ($formData['hideEmailInThisRoom']) {
                             $tempUserItem->setEmailNotVisible();
+                        } else {
+                            $tempUserItem->setEmailVisible();
                         }
                     }
                     if ($formData['phoneChangeInAllContexts']) {

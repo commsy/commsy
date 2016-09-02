@@ -47,7 +47,7 @@
                             {% if not item.email is empty %}
                             <tr>
                                 <td class="uk-text-bold">{{ 'email'|trans({}, 'user')}}:</td>
-                                {% if not item.isEmailVisible %}
+                                {% if item.isEmailVisible %}
                                     <td><a href="mailto:{{ item.email }}">{{ item.email }}</a></td>
                                 {% else %}
                                     <td>{{ 'emailHidden'|trans({}, 'user')}} (<a href="">ToDo: "send email"-link</a>)</td>
@@ -340,7 +340,7 @@
                         {% if not item.email is empty %}
                         <tr>
                             <td class="uk-text-bold">{{ 'email'|trans({}, 'user')}}:</td>
-                            {% if not item.isEmailVisible %}
+                            {% if item.isEmailVisible %}
                                 <td><a href="mailto:{{ item.email }}">{{ item.email }}</a></td>
                             {% else %}
                                 <td>{{ 'emailHidden'|trans({}, 'user')}} (<a href="">ToDo: "send email"-link</a>)</td>
