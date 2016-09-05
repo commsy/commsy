@@ -209,6 +209,13 @@
     </a>
 {% endmacro %}
 
+{% macro userIconProfileSettingsLink(user, size) %}
+    {% import _self as macros %}
+    <a href="{{ path('commsy_profile_general', {'roomId': user.contextId, 'itemId': user.itemId}) }}">
+        {{  macros.userIcon(user, size) }}
+    </a>
+{% endmacro %}
+
 {% macro actionIcons(title, item, edit) %}
     <div class="uk-width-1-10 uk-flex uk-text-right">
         {% if edit %}

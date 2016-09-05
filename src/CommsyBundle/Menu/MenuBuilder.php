@@ -54,7 +54,7 @@ class MenuBuilder
 
             $menu->addChild('profileImage', [
                 'label' => $currentUser->getFullname(),
-                'route' => 'commsy_profile_room',
+                'route' => 'commsy_profile_general',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
                     'itemId' => $currentUser->getItemId(),
@@ -63,6 +63,18 @@ class MenuBuilder
                     'user' => $currentUser,
                 ]
             ]);
+
+            $menu->addChild('room', array(
+                'label' => 'Back to room',
+                'route' => 'commsy_room_home',
+                'routeParameters' => array('roomId' => $currentStack->attributes->get('roomId')),
+                'extras' => array(
+                    'icon' => 'uk-icon-reply uk-icon-small uk-icon-justify',
+                    'user' => $currentUser,
+                )
+            ))
+            ->setExtra('translation_domain', 'menu');
+
         }
 
         return $menu;

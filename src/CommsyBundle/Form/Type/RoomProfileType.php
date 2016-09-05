@@ -76,9 +76,9 @@ class RoomProfileType extends AbstractType
             ->add('language', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices'  => array(
-                    'Browser' => 'browser',
-                    'Deutsch' => 'de',
-                    'English' => 'en'
+                    'browser' => 'browser',
+                    'de' => 'de',
+                    'en' => 'en'
                 ),
                 'label' => 'language',
                 'required' => false,

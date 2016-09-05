@@ -21,8 +21,10 @@
             </div>
 
             <div id="my_avatar">
-                {% block profile %}
-                {% endblock %}
+                {{ render(controller(
+                    'CommsyBundle:Profile:image',
+                    { 'roomId': app.request.attributes.get('roomId') }
+                ))}}
             </div>
 
             {% block side_navigation %}
