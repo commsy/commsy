@@ -580,11 +580,10 @@ class AnnouncementController extends Controller
         $dateTime->add(new \DateInterval('P1W'));
         $announcementItem->setSecondDateTime($dateTime->format('Y-m-d H:i:s'));
         $announcementItem->setDraftStatus(1);
+        $announcementItem->setPrivateEditing(1);
         $announcementItem->save();
 
-
         return $this->redirectToRoute('commsy_announcement_detail', array('roomId' => $roomId, 'itemId' => $announcementItem->getItemId()));
-
     }
 
 
