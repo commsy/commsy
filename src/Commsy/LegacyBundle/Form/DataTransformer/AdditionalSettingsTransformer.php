@@ -207,7 +207,7 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
          }
          
         /***************** save extra task status ************/
-        $roomObject->setExtraToDoStatusArray($roomData['tasks']['additional_status']);
+        $roomObject->setExtraToDoStatusArray(array_filter($roomData['tasks']['additional_status']));
 
         return $roomObject;
     }

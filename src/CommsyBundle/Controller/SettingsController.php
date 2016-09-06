@@ -117,15 +117,14 @@ class SettingsController extends Controller
 
         $transformer = $this->get('commsy_legacy.transformer.additional_settings');
         $roomData = $transformer->transform($roomItem);
-
         $form = $this->createForm(AdditionalSettingsType::class, $roomData, array(
             'roomId' => $roomId,
-            // TODO: add new task status choices for this particular room as array parameter!
             'newStatus' => $roomData['tasks']['additional_status'],
         ));
 
         $form->handleRequest($request);
         if ($form->isValid()) {
+
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
 
             $roomItem->save();

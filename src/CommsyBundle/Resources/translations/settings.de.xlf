@@ -268,7 +268,7 @@
             </trans-unit>
             <trans-unit id="tasks_text">
                 <source>Tasks text</source>
-                <target>In der Aufgabenrubrik gibt es normalerweise drei Bearbeitungsstatus: "nicht bearbeitet", "in Berabeitung" und "erledigt". Hier können Sie bei Bedarf noch eigene zusätzliche Status definieren.</target>
+                <target>In der Aufgabenrubrik gibt es normalerweise drei Bearbeitungsstatus: "nicht bearbeitet", "in Bearbeitung" und "erledigt". Hier können Sie bei Bedarf noch eigene zusätzliche Status definieren.</target>
             </trans-unit>   
             <trans-unit id="template_text">
                 <source>Template text</source>

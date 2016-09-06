@@ -77,7 +77,16 @@
     window.onload = function(){
         var savedStatusTexts = [];
         var statusList = document.getElementById('additional_status_list');
-        var statusCount = statusList.getElementsByTagName('input').length + 3;      // "+3" for three default status 
+        var statusInputFields = statusList.getElementsByTagName('input');
+
+        for(var i = 0; i < statusInputFields.length; i++){
+            addRemoveLink(statusInputFields[i]);
+        }
+
+        var statusCount = statusInputFields.length + 3;      // "+3" for three default status ('done', 'in progress', 'pending')
+
+        var maxFieldNumber = Math.max.apply(null, $.map(statusInputFields, function(element){  return( parseInt(element.name.match(/\d+/)) );  }  ));
+
         var newStatusTextField = document.getElementById('additional_settings_tasks_status');
         var newStatusButton = document.getElementById('additional_settings_tasks_status_option');
         newStatusButton.parentNode.className = "";
@@ -85,10 +94,10 @@
         newStatusButton.disabled = newStatusTextField.value.length < 1;
         newStatusButton.onclick = function(){
             if(savedStatusTexts.indexOf(newStatusTextField.value) < 0){
+                statusCount++;
                 addStatus(statusList, statusCount, newStatusTextField.value);
                 savedStatusTexts.push(newStatusTextField.value);
                 newStatusTextField.value = '';
-                statusCount++;
             }
             else{
                 alert("Der Status '"+newStatusTextField.value+"' existiert bereits. Bitte wählen Sie einen anderen Namen aus.");
@@ -97,22 +106,28 @@
         newStatusTextField.oninput = function(){
             newStatusButton.disabled = newStatusTextField.value.length < 1;
         }
-    };
+    }
 
     function addStatus(listElement, currentCount, statusText){
+
         var prototype = listElement.getAttribute('data-prototype');
         var newInput = prototype.replace(/__name__/g, currentCount);
         newInput = newInput.replace(/input/g, 'input value="'+statusText+'"');
+
         var newListItem= document.createElement('li');
         newListItem.innerHTML = newInput;
+
         var newLabel = newListItem.getElementsByTagName('label')[0];
         var newInput = newListItem.getElementsByTagName('input')[0];
+
         var newInputCopy = newInput.cloneNode(true);
         var superfluousDiv = newInput.parentNode;
         var containerDiv = superfluousDiv.parentNode; 
 
         containerDiv.removeChild(superfluousDiv); 
         containerDiv.appendChild(newInputCopy);
+
+        addRemoveLink(newInputCopy);
 
         if(newLabel){
             newLabel.className = "uk-form-label";
@@ -122,6 +137,23 @@
         newListItem.innerHTML = newListItem.innerHTML.replace('<br>', '');
 
         listElement.appendChild(newListItem);
+
+        document.getElementById('additional_settings_tasks_status_option').disabled = true;
+    }
+
+    function addRemoveLink(element){
+
+        var removeSpan = document.createElement('span');
+        removeSpan.className = 'uk-icon-remove uk-icon-small';
+        removeSpan.style.marginLeft = '10px';
+
+        var p = element.parentNode;
+        p.appendChild(removeSpan);
+        p.onclick = function(e){
+            e.preventDefault();
+            var container = p.parentNode;
+            container.removeChild(p);
+        }
     }
 
     var languageSelection = document.getElementById('additional_settings_terms_language');

@@ -98,6 +98,7 @@ class AdditionalSettingsType extends AbstractType
                         ),
                     ),
                     'allow_add' => true,
+                    'allow_delete' => true,
                 ))
             )
             ->add(
