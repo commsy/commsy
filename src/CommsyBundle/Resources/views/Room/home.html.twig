@@ -170,6 +170,7 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
+    $("#cover img").on('load', function(){
         var cover_width = $("#cover").width();
         var cover_height = $("#cover").height();
 
@@ -227,5 +228,6 @@
                 $("#cover img").attr("data-uk-parallax", "{y: '"+(transDir * Math.abs(img_height - cover_height))+"'}");
             }
         }
+    });
     </script>
 {% endblock %}
