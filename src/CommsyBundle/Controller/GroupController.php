@@ -566,6 +566,7 @@ class GroupController extends Controller
         $groupItem = $groupService->getNewGroup();
         $groupItem->setTitle('['.$translator->trans('insert title').']');
         $groupItem->setDraftStatus(1);
+        $groupItem->setPrivateEditing(1);
         $groupItem->save();
 
  

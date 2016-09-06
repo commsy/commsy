@@ -311,7 +311,7 @@
         if (entries.length > 0) {
             if (action != 'save' && action != 'send-list') {
                 // send action request
-                if (action == 'delete') {
+                if (action == 'delete' || action=='user-delete') {
                     UIkit.modal.confirm(element.data('confirm-delete'), function() {
                         executeAction (actionUrl, entries, input, target);
                     }, {

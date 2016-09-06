@@ -15,10 +15,10 @@ use CommsyBundle\Form\Type\CombineProfileType;
 class ProfileController extends Controller
 {
     /**
-    * @Route("/room/{roomId}/user/{itemId}/settings")
+    * @Route("/room/{roomId}/user/{itemId}/general")
     * @Template
     */
-    public function roomAction($roomId, $itemId, Request $request)
+    public function generalAction($roomId, $itemId, Request $request)
     {
         $userService = $this->get('commsy_legacy.user_service');
         $roomService = $this->get('commsy_legacy.room_service');
@@ -91,11 +91,11 @@ class ProfileController extends Controller
                     if ($formData['emailChangeInAllContexts']) {
                         $tempUserItem->setEmail($formData['email']);
                     }
-                    if ($formData['isEmailVisibleChangeInAllContexts']) {
-                        if ($formData['isEmailVisible']) {
-                            $tempUserItem->setEmailVisible();
-                        } else {
+                    if ($formData['hideEmailInAllContexts']) {
+                        if ($formData['hideEmailInThisRoom']) {
                             $tempUserItem->setEmailNotVisible();
+                        } else {
+                            $tempUserItem->setEmailVisible();
                         }
                     }
                     if ($formData['phoneChangeInAllContexts']) {
@@ -167,4 +167,15 @@ class ProfileController extends Controller
             'formCombine' => $formCombine->createView()
         );
     }
+
+    /**
+    * @Route("/room/{roomId}/user/profileImage")
+    * @Template
+    */
+    public function imageAction($roomId, Request $request)
+    {
+        $userService = $this->get('commsy_legacy.user_service');
+        return array('user' => $userService->getCurrentUserItem());
+    }
+
 }

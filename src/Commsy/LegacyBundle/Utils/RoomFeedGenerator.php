@@ -26,7 +26,15 @@ class RoomFeedGenerator
 
     public function getFeedList($roomId, $max, $start)
     {
-        $rubrics = $this->roomService->getRubricInformation($roomId);
+        $rubrics = array();
+
+        foreach ($this->roomService->getRubricInformation($roomId, true) as $rubric) {
+            list($rubricName, $modifier) = explode('_', $rubric);
+            if (strcmp($modifier, 'hide') != 0) {
+                $rubrics[] = $rubricName;
+            }
+        }
+
         if (in_array('group', $rubrics) || in_array('topic', $rubrics)) {
             $rubrics[] = 'label';
         }

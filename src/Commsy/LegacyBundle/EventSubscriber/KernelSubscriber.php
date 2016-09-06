@@ -72,10 +72,6 @@ class KernelSubscriber implements EventSubscriberInterface
             return;
         }
 
-        // set user language
-        $currentRequest = $event->getRequest();
-        $currentRequest->setLocale($this->legacyEnvironment->getSelectedLanguage());
-
         // Let the wrapped legacy kernel handle the legacy request.
         // Setting a response in the event will directly jump to the response event.
         $currentRequest = $event->getRequest();
@@ -106,6 +102,9 @@ class KernelSubscriber implements EventSubscriberInterface
                 }
             }
         }
+         // set user language
+        $currentRequest = $event->getRequest();
+        $currentRequest->setLocale($this->legacyEnvironment->getSelectedLanguage());
     }
 
     public function onKernelRequestFinished(FinishRequestEvent $event) {

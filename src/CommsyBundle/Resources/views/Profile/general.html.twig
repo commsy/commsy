@@ -1,4 +1,4 @@
-{% extends 'CommsyBundle:Profile:settings.html.twig' %}
+{% extends 'CommsyBundle:Base:profile.html.twig' %}
 
 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
@@ -111,8 +111,8 @@
                                     <td>{{ form_row(form.emailChangeInAllContexts) }}</td>
                                 </tr>
                                 <tr>
-                                    <td>{{ form_row(form.isEmailVisible) }}</td>
-                                    <td>{{ form_row(form.isEmailVisibleChangeInAllContexts) }}</td>
+                                    <td>{{ form_row(form.hideEmailInThisRoom) }}</td>
+                                    <td>{{ form_row(form.hideEmailInAllContexts) }}</td>
                                 </tr>
                                 <tr>
                                     <td>{{ form_row(form.phone) }}</td>
