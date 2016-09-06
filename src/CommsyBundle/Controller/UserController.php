@@ -294,7 +294,7 @@ class UserController extends Controller
                     $item = $userService->getUser($id);
                     $item->delete();
                 }
-                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('deleted %count% users',count($selectedIds), array('%count%' => count($selectedIds)));
+                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('%count% deleted entries',count($selectedIds), array('%count%' => count($selectedIds)));
             } else {
                 $noModeratorsError = true;
             }
