@@ -1,10 +1,10 @@
 ;(function(UI) {
     
     "use strict";
-
+if ($('#dashboard-ul').length > 0) {
     // listen for moved widgets
     UI.$html.on('stop.uk.sortable', function(e) {
-        console.log($('#dashboard-ul').data('dashboard').url);
+        
         
         let data = [];
         $('#dashboard-ul').children('li').each(function() {
@@ -28,5 +28,5 @@
             UIkit.notify(textStatus, 'danger');
         });
     });
-
+}
 })(UIkit);
