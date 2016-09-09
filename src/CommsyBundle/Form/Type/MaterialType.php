@@ -33,7 +33,7 @@ class MaterialType extends AbstractType
                 ),
                 'label' => 'title',
                 'attr' => array(
-                    'placeholder' => 'title',
+                    'placeholder' => $options['placeholderText'],
                     'class' => 'uk-form-width-medium cs-form-title',
                 ),
                 'translation_domain' => 'material',
@@ -41,16 +41,14 @@ class MaterialType extends AbstractType
             ->add('permission', CheckboxType::class, array(
                 'label' => 'permission',
                 'required' => false,
-                'translation_domain' => 'form',
+                'label_attr' => array('class' => 'uk-form-label'),
             ))
             ->add('hidden', CheckboxType::class, array(
                 'label' => 'hidden',
                 'required' => false,
-                'translation_domain' => 'form',
             ))
             ->add('hiddendate', DateTimeSelectType::class, array(
                 'label' => 'hidden until',
-                'translation_domain' => 'form'
             ))
             ->addEventSubscriber($this->etherpadFormListener)
             ->add('biblio_select', ChoiceType::class, array(
@@ -71,7 +69,6 @@ class MaterialType extends AbstractType
                 'label' => 'bib reference',
                 'choice_translation_domain' => true,
                 'required' => false,
-                'translation_domain' => 'form'
             ))
             ->addEventSubscriber(new AddBibliographicFieldListener())
             ->add('save', SubmitType::class, array(
@@ -79,7 +76,6 @@ class MaterialType extends AbstractType
                     'class' => 'uk-button-primary',
                 ),
                 'label' => 'save',
-                'translation_domain' => 'form',
             ))
             ->add('cancel', SubmitType::class, array(
                 'attr' => array(
@@ -87,7 +83,6 @@ class MaterialType extends AbstractType
                     'formnovalidate' => '',
                 ),
                 'label' => 'cancel',
-                'translation_domain' => 'form',
             ))
         ;
         
@@ -101,7 +96,8 @@ class MaterialType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired([])
+            ->setRequired(['placeholderText'])
+            ->setDefaults(array('translation_domain' => 'form'))
         ;
     }
 

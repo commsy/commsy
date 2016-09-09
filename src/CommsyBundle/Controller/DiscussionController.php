@@ -501,7 +501,7 @@ class DiscussionController extends Controller
         
         // create new material item
         $discussionItem = $discussionService->getNewDiscussion();
-        $discussionItem->setTitle('['.$translator->trans('insert title').']');
+        // $discussionItem->setTitle('['.$translator->trans('insert title').']');
         $discussionItem->setDraftStatus(1);
         $discussionItem->setPrivateEditing('1');
         $discussionItem->save();
@@ -805,11 +805,13 @@ class DiscussionController extends Controller
                 throw $this->createNotFoundException('No discussion found for id ' . $itemId);
             }
             $formData = $transformer->transform($discussionItem);
+            $translator = $this->get('translator');
             $form = $this->createForm(DiscussionType::class, $formData, array(
                 'action' => $this->generateUrl('commsy_discussion_edit', array(
                     'roomId' => $roomId,
                     'itemId' => $itemId,
-                ))
+                )),
+                'placeholderText' => '['.$translator->trans('insert title').']',
             ));
         } else if ($item->getItemType() == 'discarticle') {
             // get section from MaterialService

@@ -117,7 +117,7 @@ class TodoController extends Controller
         
         // create new todo item
         $todoItem = $todoService->getNewTodo();
-        $todoItem->setTitle('['.$translator->trans('insert title').']');
+        // $todoItem->setTitle('['.$translator->trans('insert title').']');
         $todoItem->setDraftStatus(1);
         $todoItem->setPrivateEditing('1');
         $todoItem->save();
@@ -636,11 +636,13 @@ class TodoController extends Controller
                 throw $this->createNotFoundException('No todo found for id ' . $itemId);
             }
             $formData = $transformer->transform($todoItem);
+            $translator = $this->get('translator');
             $form = $this->createForm(TodoType::class, $formData, array(
                 'action' => $this->generateUrl('commsy_todo_edit', array(
                     'roomId' => $roomId,
                     'itemId' => $itemId,
-                ))
+                )),
+                'placeholderText' => '['.$translator->trans('insert title').']',
             ));
         } else if ($item->getItemType() == 'step') {
             $todoItem = $todoService->getStep($itemId);

@@ -564,7 +564,7 @@ class GroupController extends Controller
         
         // create new group item
         $groupItem = $groupService->getNewGroup();
-        $groupItem->setTitle('['.$translator->trans('insert title').']');
+        // $groupItem->setTitle('['.$translator->trans('insert title').']');
         $groupItem->setDraftStatus(1);
         $groupItem->setPrivateEditing(1);
         $groupItem->save();
@@ -610,11 +610,13 @@ class GroupController extends Controller
             throw $this->createNotFoundException('No group found for id ' . $itemId);
         }
         $formData = $transformer->transform($groupItem);
+        $translator = $this->get('translator');
         $form = $this->createForm(GroupType::class, $formData, array(
             'action' => $this->generateUrl('commsy_group_edit', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId,
-            ))
+            )),
+            'placeholderText' => '['.$translator->trans('insert title').']',
         ));
         
         $form->handleRequest($request);

@@ -25,7 +25,7 @@ class DiscussionType extends AbstractType
                 ),
                 'label' => 'title',
                 'attr' => array(
-                    'placeholder' => 'title',
+                    'placeholder' => $options['placeholderText'],
                     'class' => 'uk-form-width-medium cs-form-title',
                 ),
                 'translation_domain' => 'material',
@@ -33,23 +33,19 @@ class DiscussionType extends AbstractType
             ->add('permission', CheckboxType::class, array(
                 'label' => 'permission',
                 'required' => false,
-                'translation_domain' => 'form',
             ))
             ->add('hidden', CheckboxType::class, array(
                 'label' => 'hidden',
                 'required' => false,
-                'translation_domain' => 'form',
             ))
             ->add('hiddendate', DateTimeSelectType::class, array(
                 'label' => 'hidden until',
-                'translation_domain' => 'form'
             ))
             ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 ),
                 'label' => 'save',
-                'translation_domain' => 'form',
             ))
             ->add('cancel', SubmitType::class, array(
                 'attr' => array(
@@ -57,7 +53,6 @@ class DiscussionType extends AbstractType
                     'formnovalidate' => '',
                 ),
                 'label' => 'cancel',
-                'translation_domain' => 'form',
             ))
         ;
         
@@ -71,7 +66,8 @@ class DiscussionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired([])
+            ->setRequired(['placeholderText'])
+            ->setDefaults(array('translation_domain' => 'form'))
         ;
     }
 

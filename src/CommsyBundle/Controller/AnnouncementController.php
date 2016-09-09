@@ -574,7 +574,7 @@ class AnnouncementController extends Controller
         
         // create new announcement item
         $announcementItem = $announcementService->getNewAnnouncement();
-        $announcementItem->setTitle('['.$translator->trans('insert title').']');
+        // $announcementItem->setTitle('['.$translator->trans('insert title').']');
         $dateTime = new \DateTime('now');
         $announcementItem->setFirstDateTime($dateTime->format('Y-m-d H:i:s'));
         $dateTime->add(new \DateInterval('P1W'));
@@ -624,11 +624,13 @@ class AnnouncementController extends Controller
                 throw $this->createNotFoundException('No announcement found for id ' . $roomId);
             }
             $formData = $transformer->transform($announcementItem);
+            $translator = $this->get('translator');
             $form = $this->createForm(AnnouncementType::class, $formData, array(
                 'action' => $this->generateUrl('commsy_announcement_edit', array(
                     'roomId' => $roomId,
                     'itemId' => $itemId,
-                ))
+                )),
+                'placeholderText' => '['.$translator->trans('insert title').']',
             ));
         } 
         

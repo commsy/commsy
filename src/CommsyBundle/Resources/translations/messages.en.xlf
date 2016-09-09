@@ -310,6 +310,10 @@
                 <source>steps</source>
                 <target>Steps</target>
             </trans-unit>
+            <trans-unit id="newStep">
+                <source>new step</source>
+                <target>New step</target>
+            </trans-unit>
             <trans-unit id="entriesMarkedDone">
                 <source>Set status of %count% entries to done</source>
                 <target>{0} No entries changed.|{1} Set status of %count% entry to "done".|]1,Inf[ Set status of %count% entries to "done".</target>

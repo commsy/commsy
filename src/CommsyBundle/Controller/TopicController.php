@@ -453,7 +453,7 @@ class TopicController extends Controller
         
         // create new topic item
         $topicItem = $topicService->getNewtopic();
-        $topicItem->setTitle('['.$translator->trans('insert title').']');
+        // $topicItem->setTitle('['.$translator->trans('insert title').']');
         $topicItem->setDraftStatus(1);
         $topicItem->save();
 
@@ -496,11 +496,13 @@ class TopicController extends Controller
             throw $this->createNotFoundException('No topic found for id ' . $itemId);
         }
         $formData = $transformer->transform($topicItem);
+        $translator = $this->get('translator');
         $form = $this->createForm(TopicType::class, $formData, array(
             'action' => $this->generateUrl('commsy_date_edit', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId,
-            ))
+            )),
+            'placeholderText' => '['.$translator->trans('insert title').']',
         ));
         
         $form->handleRequest($request);

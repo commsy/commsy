@@ -938,11 +938,13 @@ class MaterialController extends Controller
                 throw $this->createNotFoundException('No material found for id ' . $roomId);
             }
             $formData = $transformer->transform($materialItem);
+            $translator = $this->get('translator');
             $form = $this->createForm(MaterialType::class, $formData, array(
                 'action' => $this->generateUrl('commsy_material_edit', array(
                     'roomId' => $roomId,
                     'itemId' => $itemId,
-                ))
+                )),
+                'placeholderText' => '['.$translator->trans('insert title').']',
             ));
         } else if ($item->getItemType() == 'section') {
             // get section from MaterialService
@@ -1124,7 +1126,7 @@ class MaterialController extends Controller
         
         // create new material item
         $materialItem = $materialService->getNewMaterial();
-        $materialItem->setTitle('['.$translator->trans('insert title').']');
+        // $materialItem->setTitle('['.$translator->trans('insert title').']');
         $materialItem->setBibKind('none');
         $materialItem->setDraftStatus(1);
         $materialItem->setPrivateEditing('1');

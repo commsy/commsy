@@ -43,6 +43,9 @@ class ItemWorkflowType extends AbstractType
                 'required' => false,
                 'attr' => array(
                     'data-uk-toggle' => '{target:\'#workflowResubmission\'}'
+                ),
+                'label_attr' => array(
+                    'class' => 'uk-form-label'
                 )
             ))
             ->add('workflowResubmissionDate', DateTimeType::class, array(
@@ -93,6 +96,9 @@ class ItemWorkflowType extends AbstractType
                 'required' => false,
                 'attr' => array(
                     'data-uk-toggle' => '{target:\'#workflowValidity\'}'
+                ),
+                'label_attr' => array(
+                    'class' => 'uk-form-label'
                 )
             ))
             ->add('workflowValidityDate', DateTimeType::class, array(

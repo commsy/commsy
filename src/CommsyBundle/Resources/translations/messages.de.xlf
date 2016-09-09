@@ -310,6 +310,10 @@
                 <source>steps</source>
                 <target>Arbeitsschritte</target>
             </trans-unit>
+            <trans-unit id="newStep">
+                <source>new step</source>
+                <target>Neuer Arbeitsschritt</target>
+            </trans-unit>
             <trans-unit id="entriesMarkedDone">
                 <source>Set status of %count% entries to done</source>
                 <target>{0} Kein Eintrag verändert.|{1} Status eines Eintrages auf "erledigt" gesetzt.|]1,Inf[ Status von %count% Einträgen auf "erledigt" gesetzt.</target>
