@@ -25,12 +25,18 @@ class AnnouncementFilterType extends AbstractType
                     'onchange' => 'this.form.submit()',
                 ),
                 'translation_domain' => 'form',
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             ->add('activated', Filters\CheckboxFilterType::class, array(
                 'attr' => array(
                     'onchange' => 'this.form.submit()',
                 ),
                 'translation_domain' => 'form',
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             ->add('rubrics', RubricFilterType::class, array(
                 'label' => false,

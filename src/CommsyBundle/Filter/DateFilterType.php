@@ -28,6 +28,9 @@ class DateFilterType extends AbstractType
                     'onchange' => 'this.form.submit()',
                 ),
                 'translation_domain' => 'form',
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             ->add('past-dates', Filters\CheckboxFilterType::class, array(
                 'attr' => array(
@@ -35,6 +38,9 @@ class DateFilterType extends AbstractType
                 ),
                 'label' => 'past-dates',
                 'translation_domain' => 'form',
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             ->add('date-from', DateSelectType::class, array(
                 'label' => 'date-from',

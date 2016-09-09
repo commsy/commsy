@@ -23,6 +23,9 @@ class ProjectFilterType extends AbstractType
         $builder
             ->add('activated', Filters\CheckboxFilterType::class, array(
                 'translation_domain' => 'form',
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             ->add('rubrics', RubricFilterType::class, array(
                 'label' => false,

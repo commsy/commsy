@@ -23,6 +23,9 @@ class TopicFilterType extends AbstractType
         $builder
             ->add('activated', Filters\CheckboxFilterType::class, array(
                 'translation_domain' => 'form',
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             ->add('save', SubmitType::class, array(
                 'attr' => array(

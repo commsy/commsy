@@ -25,6 +25,9 @@ class MaterialFilterType extends AbstractType
                     'onchange' => 'this.form.submit()',
                 ),
                 'translation_domain' => 'form',
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
             ->add('rubrics', RubricFilterType::class, array(
                 'label' => false,
