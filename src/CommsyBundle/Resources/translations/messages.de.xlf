@@ -306,6 +306,10 @@
                 <source>unhide</source>
                 <target>mehr ...</target>
             </trans-unit>
+            <trans-unit id="steps">
+                <source>steps</source>
+                <target>Arbeitsschritte</target>
+            </trans-unit>
        </body>
     </file>
 </xliff>
