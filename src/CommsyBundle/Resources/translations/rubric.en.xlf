@@ -2,39 +2,39 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
-            <trans-unit id="1">
+            <trans-unit id="announcement">
                 <source>Announcement</source>
                 <target>{0}Announcement|{1}Announcements</target>
             </trans-unit>
-            <trans-unit id="2">
+            <trans-unit id="date">
                 <source>Date</source>
                 <target>{0}Date|{1}Dates</target>
             </trans-unit>
-            <trans-unit id="3">
+            <trans-unit id="material">
                 <source>Material</source>
                 <target>{0}Material|{1}Materials</target>
             </trans-unit>
-            <trans-unit id="4">
+            <trans-unit id="discussion">
                 <source>Discussion</source>
                 <target>{0}Discussion|{1}Discussions</target>
             </trans-unit>
-            <trans-unit id="5">
+            <trans-unit id="user">
                 <source>User</source>
                 <target>{0}User|{1}Users</target>
             </trans-unit>
-            <trans-unit id="6">
+            <trans-unit id="group">
                 <source>Group</source>
                 <target>{0}Group|{1}Groups</target>
             </trans-unit>
-            <trans-unit id="7">
+            <trans-unit id="todo">
                 <source>Todo</source>
                 <target>{0}Todo|{1}Todos</target>
             </trans-unit>
-            <trans-unit id="8">
+            <trans-unit id="task">
                 <source>Task</source>
                 <target>{0}Task|{1}Tasks</target>
             </trans-unit>
-            <trans-unit id="9">
+            <trans-unit id="topic">
                 <source>Topic</source>
                 <target>{0}Topic|{1}Topics</target>
             </trans-unit>
@@ -189,42 +189,6 @@
             <trans-unit id="rubrics">
                 <source>Rubrics</source>
                 <target>Rubrics</target>
-            </trans-unit>
-            <trans-unit id="announcement">
-                <source>Announcement</source>
-                <target>{0}Ankündigung|{1}Ankündigungen</target>
-            </trans-unit>
-            <trans-unit id="date">
-                <source>Date</source>
-                <target>{0}Termin|{1}Termine</target>
-            </trans-unit>
-            <trans-unit id="material">
-                <source>Material</source>
-                <target>{0}Material|{1}Materialien</target>
-            </trans-unit>
-            <trans-unit id="discussion">
-                <source>Discussion</source>
-                <target>{0}Diskussion|{1}Diskussionen</target>
-            </trans-unit>
-            <trans-unit id="user">
-                <source>User</source>
-                <target>{0}Person|{1}Personen</target>
-            </trans-unit>
-            <trans-unit id="group">
-                <source>Group</source>
-                <target>{0}Gruppe|{1}Gruppen</target>
-            </trans-unit>
-            <trans-unit id="todo">
-                <source>Todo</source>
-                <target>{0}Aufgabe|{1}Aufgaben</target>
-            </trans-unit>
-            <trans-unit id="task">
-                <source>Task</source>
-                <target>{0}Thema|{1}Themen</target>
-            </trans-unit>
-            <trans-unit id="topic">
-                <source>Topic</source>
-                <target>{0}Thema|{1}Themen</target>
             </trans-unit>
             <trans-unit id="project">
                 <source>project</source>
