@@ -346,7 +346,7 @@ class TodoController extends Controller
                 $item->setStatus(1);
                 $item->save();
             }
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('Set status of %count% entries',count($selectedIds), array('%count%' => count($selectedIds)));
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('Set status of %count% entries to pending', count($selectedIds), array('%count%' => count($selectedIds)), "messages");
         } else if ($action == 'markinprogress') {
             $todoService = $this->get('commsy_legacy.todo_service');
             foreach ($selectedIds as $id) {
@@ -354,7 +354,7 @@ class TodoController extends Controller
                 $item->setStatus(2);
                 $item->save();
             }
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('Set status of %count% entries',count($selectedIds), array('%count%' => count($selectedIds)));
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('Set status of %count% entries to in progress', count($selectedIds), array('%count%' => count($selectedIds)), "messages");
         } else if ($action == 'markdone') {
             $todoService = $this->get('commsy_legacy.todo_service');
             foreach ($selectedIds as $id) {
@@ -362,7 +362,7 @@ class TodoController extends Controller
                 $item->setStatus(3);
                 $item->save();
             }
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('Set status of %count% entries',count($selectedIds), array('%count%' => count($selectedIds)));
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('Set status of %count% entries to done', count($selectedIds), array('%count%' => count($selectedIds)), "messages");
         } else {
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             $roomManager = $legacyEnvironment->getRoomManager();
