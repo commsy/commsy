@@ -158,7 +158,7 @@
             </trans-unit>
             <trans-unit id="rubric_selection_text">
                 <source>Rubric selection text</source>
-                <target>Select and configure workspace rubrics. The option "show" means that this workspace rubric is shown as a short view on the home page. The option "hide" means that this workspace rubric is shown as a bar on the home page. The option "deactivate" means that this workspace rubric is not available in this Project workspace.</target>
+                <target>Select and configure workspace rubrics. The option "show" means that this workspace rubric is shown as a short view on the home page. The option "hide" means that this workspace rubric is shown as a bar on the home page. The option "deactivate" means that this workspace rubric is not available in this Project workspace. You can customize the rubric order in the side menu with drag &amp; drop.</target>
             </trans-unit>
             <trans-unit id="room_description_text">
                 <source>Room description text</source>
