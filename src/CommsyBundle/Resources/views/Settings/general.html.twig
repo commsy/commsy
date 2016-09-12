@@ -57,6 +57,24 @@
         </div> #}
     </div>
 {% endblock content %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var regExp = /\[([^\]]+)\]$/;
+        $("#general_settings_rubrics").on('change.uk.sortable', function(){
+            var $rubrics = $(this).find("select").map(function(){
+                var rubricsName = regExp.exec($(this).attr("name"));
+                if(rubricsName){
+                    return rubricsName[1];
+                }
+            }).get();
+            $("#general_settings_rubricOrder").val($rubrics);
+            console.log($("#general_settings_rubricOrder").val());
+        });
+    </script>
+{% endblock %}
+
 {# 
 <div class="tab" id="room_configuration">
     <div id="content_row_three">

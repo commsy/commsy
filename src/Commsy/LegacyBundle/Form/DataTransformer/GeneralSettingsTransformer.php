@@ -42,10 +42,14 @@ class GeneralSettingsTransformer implements DataTransformerInterface
             }
 
             $roomData['room_description'] = $roomItem->getDescription();
-            $rubrics = array_combine($defaultRubrics, array_fill(0, count($defaultRubrics), 'off'));
+            // $rubrics = array_combine($defaultRubrics, array_fill(0, count($defaultRubrics), 'off'));
+            $rubrics = array();
             foreach ($this->roomService->getRubricInformation($roomItem->getItemID(), true) as $rubric) {
                 list($rubricName, $modifier) = explode('_', $rubric);
                 $rubrics[$rubricName] = $modifier;
+            }
+            foreach(array_diff($defaultRubrics, array_keys($rubrics)) as $deactivated_rubric){
+                $rubrics[$deactivated_rubric] = 'off';
             }
             $roomData['rubrics'] = $rubrics;
         }
@@ -62,8 +66,8 @@ class GeneralSettingsTransformer implements DataTransformerInterface
      */
     public function applyTransformation($roomObject, $roomData)
     {
-        $rubricArray = array();
-        foreach ($roomData['rubrics'] as $rubricName => $rubricValue) { 
+        foreach(explode(",", $roomData['rubricOrder']) as $rubricName){
+            $rubricValue = $roomData['rubrics'][$rubricName];
             if (strcmp($rubricValue, 'off') == 0) {
                 continue;
             }

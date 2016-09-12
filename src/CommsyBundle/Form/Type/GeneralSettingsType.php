@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 
@@ -97,13 +98,13 @@ class GeneralSettingsType extends AbstractType
                         'class' => 'uk-panel-box',
                     ),
                 ),
-                // FIXME: sortable
-                /*
                 'attr' => array(
                     'class' => 'uk-sortable',
                     'data-uk-sortable' => '',
                 ),
-                */
+            ))
+            ->add('rubricOrder', HiddenType::class, array(
+
             ))
             ->add('save', SubmitType::class, array(
                 'position' => 'last',
