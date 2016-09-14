@@ -134,7 +134,7 @@
 {% macro links(item,withTags,withCategories,roomCategories) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
     
-    {%set countEntries = item.tagsArray|length + item.buzzwordArray|length + item.AllLinkeditemIDArray|length %}
+    {% set countEntries = item.tagsArray|length + item.buzzwordArray|length + item.AllLinkeditemIDArray|length %}
 
     {% set preview %}
     <div class="uk-grid">
@@ -163,7 +163,7 @@
                 {% endif %}
             </div>
         {% endif %}
-        {%if withTags %}
+        {% if withTags %}
             <div class="uk-width-1-3">
                 <strong>{{ 'hashtags'|trans({}, "room") }}:</strong> <br/>
                 {% set count = 1 %}

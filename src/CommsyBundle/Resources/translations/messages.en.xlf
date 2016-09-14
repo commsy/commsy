@@ -4,7 +4,7 @@
         <body>
             <trans-unit id="1">
                 <source>by</source>
-                <target>von</target>
+                <target>by</target>
             </trans-unit>
             <trans-unit id="2">
                 <source>when</source>
@@ -76,7 +76,7 @@
             </trans-unit>         
             <trans-unit id="19">
                 <source>description</source>
-                <target>description</target>
+                <target>Description</target>
             </trans-unit>
             <trans-unit id="20">
                 <source>files</source>

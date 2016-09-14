@@ -301,20 +301,20 @@ class ItemController extends Controller
             }
             $buzzwordItem = $buzzwordList->getNext();
         }
-        
+
         $form = $this->createForm(ItemLinksType::class, $formData, array(
             'filterRubric' => $optionsData['filterRubric'],
             'filterPublic' => $optionsData['filterPublic'],
             'items' => $optionsData['items'],
             'itemsLinked' => $optionsData['itemsLinked'],
-            'itemsLatest' => $optionsData['itemsLatest'],
+            'itemsLatest' => array_flip($optionsData['itemsLatest']),
             'categories' => $optionsData['categories'],
-            'hashtags' => $optionsData['hashtags']
+            'hashtags' => array_flip($optionsData['hashtags'])
         ));
 
         $form->handleRequest($request);
         if ($form->isValid()) {
-            // if ($form->get('save')->isClicked()) {
+             if ($form->get('save')->isClicked()) {
                 // ToDo ...
                 $data = $form->getData();
 
@@ -349,9 +349,9 @@ class ItemController extends Controller
                     $buzzwordItem = $buzzwordList->getNext();
                 }
     			
-            // } else if ($form->get('cancel')->isClicked()) {
-                // ToDo ...
-            // }
+            } else if ($form->get('cancel')->isClicked()) {
+                //ToDo ...
+            }
             // exit;
             return $this->redirectToRoute('commsy_item_savelinks', array('roomId' => $roomId, 'itemId' => $itemId));
 
@@ -368,6 +368,7 @@ class ItemController extends Controller
             'showCategories' => $roomItem->withTags(),
             'showHashtags' => $roomItem->withBuzzwords(),
             'items' => $items,
+            'itemsLatest' => $optionsData['itemsLatest'],
         );
     }
     
@@ -381,6 +382,9 @@ class ItemController extends Controller
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
+        $roomService = $this->get('commsy_legacy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
+
         $materialService = $this->get('commsy_legacy.material_service');
         
         $tempItem = NULL;
@@ -399,6 +403,8 @@ class ItemController extends Controller
         return array(
             'roomId' => $roomId,
             'item' => $tempItem,
+            'showHashTags' => $roomItem->withBuzzwords(),
+            'showCategories' => $roomItem->withTags(),
             'modifierList' => $modifierList
         );
     }
