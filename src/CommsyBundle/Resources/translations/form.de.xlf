@@ -287,7 +287,7 @@
                 <target>Diskussionen</target>
             </trans-unit>
             <trans-unit id="person">
-                <source>person</source>
+                <source>user</source>
                 <target>Personen</target>
             </trans-unit>
             <trans-unit id="topic">

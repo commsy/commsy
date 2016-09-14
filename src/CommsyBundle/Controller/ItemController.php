@@ -306,7 +306,7 @@ class ItemController extends Controller
             'filterRubric' => $optionsData['filterRubric'],
             'filterPublic' => $optionsData['filterPublic'],
             'items' => $optionsData['items'],
-            'itemsLinked' => $optionsData['itemsLinked'],
+            'itemsLinked' => array_flip($optionsData['itemsLinked']),
             'itemsLatest' => array_flip($optionsData['itemsLatest']),
             'categories' => $optionsData['categories'],
             'hashtags' => array_flip($optionsData['hashtags'])
