@@ -62,16 +62,17 @@
     {{ parent() }}
     <script>
         var regExp = /\[([^\]]+)\]$/;
-        $("#general_settings_rubrics").on('change.uk.sortable', function(){
-            var $rubrics = $(this).find("select").map(function(){
+        function setRubricOrder(){
+            var $rubrics = $("#general_settings_rubrics").find("select").map(function(){
                 var rubricsName = regExp.exec($(this).attr("name"));
                 if(rubricsName){
                     return rubricsName[1];
                 }
             }).get();
             $("#general_settings_rubricOrder").val($rubrics);
-            console.log($("#general_settings_rubricOrder").val());
-        });
+        }
+        document.onload = setRubricOrder();
+        $("#general_settings_rubrics").on('change.uk.sortable', setRubricOrder);
     </script>
 {% endblock %}
 
