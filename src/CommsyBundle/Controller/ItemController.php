@@ -379,19 +379,11 @@ class ItemController extends Controller
      */
     public function saveLinksAction($roomId, $itemId, Request $request)
     {
-        $itemService = $this->get('commsy_legacy.item_service');
-        $item = $itemService->getItem($itemId);
-        
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
-        $materialService = $this->get('commsy_legacy.material_service');
-        
-        $tempItem = NULL;
-        
-        if ($item->getItemType() == 'material') {
-            $tempItem = $materialService->getMaterial($itemId);
-        }
+        $itemService = $this->get('commsy_legacy.item_service');
+        $tempItem = $itemService->getTypedItem($itemId);
 
         $itemArray = array($tempItem);
     
