@@ -28,7 +28,7 @@
                 {% set counter = 1 %}
                 {% for section in sectionList %}
                     <li class="uk-panel uk-panel-box uk-sortable-handle" id="section_{{section.itemId}}">
-                        <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a> {{ macros.fileListShort(section) }}
+                        <a href="#section{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a> {{ macros.fileListShort(section) }}
                     </li>
                 {% set counter = counter + 1  %}
                 {% endfor %}

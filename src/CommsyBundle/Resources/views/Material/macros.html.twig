@@ -387,7 +387,7 @@
                     <ul class="uk-list uk-list-striped uk-width-2-3">          
                         {% for section in sectionList %}
                             <li>
-                                <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">
+                                <a href="#section{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">
                                     {{ loop.index }}. {{ section.title|raw }}
                                 </a>
 

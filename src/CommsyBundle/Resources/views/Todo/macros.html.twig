@@ -443,7 +443,7 @@
                     <ul class="uk-list uk-list-striped uk-width-2-3">          
                         {% for step in stepList %}
                             <li>
-                                <a href="#{{ step.itemId }}" data-uk-tooltip title="{{ step.title|raw }}">
+                                <a href="#step{{ step.itemId }}" data-uk-tooltip title="{{ step.title|raw }}">
                                     {{ loop.index }}. {{ step.title|raw }}
                                 </a>
 
