@@ -1,0 +1,40 @@
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+{% import 'CommsyBundle:Todo:macros.html.twig' as macrosTodo %}
+
+<hr class="uk-width-9-10  cs-detail-divider"/>
+<article class="uk-article uk-margin-left uk-margin-right">
+    <div class="cs-edit-spinner uk-hidden uk-position-cover uk-text-center uk-position-z-index">
+        <div class="uk-margin-small-top uk-container-center">
+            <i class="uk-icon-spinner uk-icon-small uk-icon-spin"></i>
+        </div>
+    </div>
+    <div class="uk-width-9-10">
+        <h4 class="uk-width-1-2 cs-brand-color">
+            {{ 'sort steps'|trans }} 
+        </h4>
+    </div>
+    <div class="uk-width-9-10" data-uk-observe>
+        <div style="position:absolute;" class="uk-list step-list uk-list-striped">
+            {% set counter = 1 %}
+            {% for step in stepList %}
+                <div class="uk-panel uk-panel-box cs-remove-padding cs-brand-color">
+                    {{counter}}.
+                </div>
+            {% set counter = counter + 1  %}
+            {% endfor %}
+        </div>
+        {% if not stepList is empty %}
+            <ul class="uk-list uk-sortable step-list cs-padding-left-20 uk-list-striped uk-width-2-3" data-uk-sortable>
+                {% set counter = 1 %}
+                {% for step in stepList %}
+                    <li class="uk-panel uk-panel-box uk-sortable-handle" id="step_{{step.itemId}}">
+                        <a href="#step{{ step.itemId }}" data-uk-tooltip title="{{ step.title|raw }}">{{ step.title|raw }}</a> {{ macros.fileListShort(step) }}
+                    </li>
+                {% set counter = counter + 1  %}
+                {% endfor %}
+            </ul>
+            <button id="sorting_save" name="sorting" class="uk-button-primary uk-button" {# data-uk-url="{{ path('commsy_todo_sortsteps', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}" #}>{{ 'save'|trans({}, 'form') }}</button>
+            <button id="sorting_cancel" name="sorting" class="uk-button-primary uk-button" {# data-uk-url="{{ path('commsy_todo_sortsteps', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}" #}>{{ 'cancel'|trans({}, 'form') }}</button>
+        {% endif %}
+    </div>
+</article>

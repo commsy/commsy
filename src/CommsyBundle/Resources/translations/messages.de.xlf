@@ -278,6 +278,10 @@
                 <source>sort sections</source>
                 <target>Abschnitte sortieren</target>
             </trans-unit>
+            <trans-unit id="sort steps">
+                <source>sort steps</source>
+                <target>Arbeitsschritte sortieren</target>
+            </trans-unit>
             <trans-unit id="lastModifiedEntries">
                 <source>lastModifiedEntries</source>
                 <target>Zuletzt bearbeitet</target>
