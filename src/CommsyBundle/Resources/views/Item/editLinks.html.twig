@@ -118,7 +118,7 @@
                                                     <a href="">{{ form_label(entry) }}</a>
                                                 </h4>
                                                 <div class="uk-comment-meta">
-                                                    {% if currentItem.author != '' %}
+                                                    {% if currentItem.author is defined and currentItem.author != '' %}
                                                         {{ 'by'|trans({})|capitalize }}: {{currentItem.author}} ({{currentItem.publishingdate}})
                                                     {% else %}
                                                         {{ 'by'|trans({})|capitalize }}: {{currentItem.modificatorItem.fullname}} ({{currentItem.getCreationDate|date("d.m.Y")}})
