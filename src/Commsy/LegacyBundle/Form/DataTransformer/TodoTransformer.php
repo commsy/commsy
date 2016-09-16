@@ -67,13 +67,19 @@ class TodoTransformer implements DataTransformerInterface
      */
     public function applyTransformation($todoObject, $todoData)
     {
-        $todoObject->setTitle($todoData['title']);
-        $todoObject->setDescription($todoData['description']);
+        if(isset($todoData['title'])){
+            $todoObject->setTitle($todoData['title']);
+        }
+        if(isset($todoData['description'])){
+            $todoObject->setDescription($todoData['description']);
+        }
         
-        if ($todoData['permission']) {
-            $todoObject->setPrivateEditing('0');
-        } else {
-            $todoObject->setPrivateEditing('1');
+        if(isset($todoData['permission'])){
+            if ($todoData['permission']) {
+                $todoObject->setPrivateEditing('0');
+            } else {
+                $todoObject->setPrivateEditing('1');
+            }
         }
 
         if (isset($todoData['hidden'])) {
@@ -99,16 +105,22 @@ class TodoTransformer implements DataTransformerInterface
 	            $todoObject->setModificationDate(getCurrentDateTimeInMySQL());
 	        }
         }
-        
-        if ($todoData['due_date']) {
+
+        if (isset($todoData['due_date'])) {
             $todoObject->setDate($todoData['due_date']['date']->format('Y-m-d').' '.$todoData['due_date']['time']->format('H:i:s'));
         }
 
-        $todoObject->setPlannedTime($todoData['time_planned']);
+        if (isset($todoData['time_planned'])){
+            $todoObject->setPlannedTime($todoData['time_planned']);
+        }
         
-        $todoObject->setTimeType($todoData['time_type']);
-        
-        $todoObject->setStatus($todoData['status']);
+        if (isset($todoData['time_type'])){
+            $todoObject->setTimeType($todoData['time_type']);
+        }
+
+        if (isset($todoData['status'])){
+            $todoObject->setStatus($todoData['status']);
+        }
 
         return $todoObject;
     }
