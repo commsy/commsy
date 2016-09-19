@@ -84,6 +84,11 @@ class MaterialTransformer implements DataTransformerInterface
                 }
             }
 
+            $materialData['sections'] = array();
+            foreach($materialItem->getSectionList()->to_array() as $id => $item){
+                $materialData['sections'][$item->getItemID()] = $item->getTitle();
+            }
+
         }
 
         return $materialData;
@@ -161,6 +166,19 @@ class MaterialTransformer implements DataTransformerInterface
             if($materialObject->isNotActivated()){
 	            $materialObject->setModificationDate(getCurrentDateTimeInMySQL());
 	        }
+        }
+
+        // sections
+        if(isset($materialData['sectionOrder'])){
+            $section_manager = $this->legacyEnvironment->getSectionManager();
+            $newSectionOrder = explode(",", $materialData['sectionOrder']);
+            foreach ($newSectionOrder as $counter => $id) {
+                $section_item = $section_manager->getItem($id);
+                if(!empty($section_item)){
+                    $section_item->setNumber($counter+1);
+                    $section_item->save();
+                }
+            }
         }
         
         return $materialObject;

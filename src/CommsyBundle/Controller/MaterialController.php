@@ -16,6 +16,7 @@ use CommsyBundle\Filter\MaterialFilterType;
 use CommsyBundle\Form\Type\AnnotationType;
 use CommsyBundle\Form\Type\MaterialType;
 use CommsyBundle\Form\Type\SectionType;
+use CommsyBundle\Form\Type\MaterialSectionType;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -1285,14 +1286,78 @@ class MaterialController extends Controller
 
         $material = $materialService->getMaterial($itemId);
 
-        $sectionList = $material->getSectionList()->to_array();
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($itemId);
+
+        $transformer = $this->get('commsy_legacy.transformer.material');
+
+        if (!$material) {
+            throw $this->createNotFoundException('No material found for id ' . $itemId);
+        }
+        $formData = $transformer->transform($material);
+
+        $formOptions = array(
+            'action' => $this->generateUrl('commsy_material_editsections', array(
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            )),
+        );
+
+        $form = $this->createForm(MaterialSectionType::class, $formData, $formOptions);
+
+        $form->handleRequest($request);
+
+        $submittedFormData = $form->getData();
+
+        if ($form->isValid()) {
+            $saveType = $form->getClickedButton()->getName();
+            if ($saveType == 'save') {
+                $formData = $form->getData();
+
+                $material = $transformer->applyTransformation($material, $formData);
+
+                $material->save();
+
+                if ($item->isDraft()) {
+                    $item->setDraftStatus(0);
+                    $item->saveAsItem();
+                }
+            } else if ($form->get('cancel')->isClicked()) {
+                // ToDo ...
+            }
+            return $this->redirectToRoute('commsy_material_savesections', array('roomId' => $roomId, 'itemId' => $itemId));
+        }
 
         return array(
-            'sectionList' => $sectionList,
-            'material' => $material
+            'material' => $material,
+            'form' => $form->createView(),
+            'sectionList' => $material->getSectionList()->to_array(),
         );
     }
     
+    /**
+     * @Route("/room/{roomId}/material/{itemId}/savesections")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function savesectionsAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($itemId);
+
+        $materialService = $this->get('commsy_legacy.material_service');
+        $transformer = $this->get('commsy_legacy.transformer.material');
+
+        $material = $materialService->getMaterial($itemId);
+
+        return array(
+            'roomId' => $roomId,
+            'item' => $material,
+            'sections' => $material->getSectionList()->to_array(),
+        );
+    }
+
+
     /**
      * @Route("/room/{roomId}/material/feedaction")
      */
