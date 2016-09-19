@@ -13,6 +13,7 @@ use CommsyBundle\Form\Type\TodoType;
 use CommsyBundle\Form\Type\StepType;
 use CommsyBundle\Form\Type\AnnotationType;
 use CommsyBundle\Form\Type\TodoDetailsType;
+use CommsyBundle\Form\Type\TodoStepType;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -552,25 +553,6 @@ class TodoController extends Controller
     }
     
     /**
-     * @Route("/room/{roomId}/todo/{itemId}/editsteps")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     */
-    public function editStepsAction($roomId, $itemId, Request $request)
-    {
-        $todoService = $this->get('commsy_legacy.todo_service');
-
-        $todo = $todoService->getTodo($itemId);
-
-        $stepList = $todo->getStepItemList()->to_array();
-
-        return array(
-            'stepList' => $stepList,
-            'todo' => $todo
-        );
-    }
-    
-    /**
      * @Route("/room/{roomId}/todo/{itemId}/createstep")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
@@ -776,6 +758,95 @@ class TodoController extends Controller
     }
     
     /**
+     * @Route("/room/{roomId}/todo/{itemId}/editsteps")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function editstepsAction($roomId, $itemId, Request $request)
+    {
+        $todoService = $this->get('commsy_legacy.todo_service');
+
+        $todo = $todoService->getTodo($itemId);
+
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($itemId);
+
+        $transformer = $this->get('commsy_legacy.transformer.todo');
+
+        $todoItem = $todoService->getTodo($itemId);
+        if (!$todoItem) {
+            throw $this->createNotFoundException('No todo found for id ' . $itemId);
+        }
+        $formData = $transformer->transform($todoItem);
+
+        $formOptions = array(
+            'action' => $this->generateUrl('commsy_todo_editsteps', array(
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            )),
+        );
+
+        $form = $this->createForm(TodoStepType::class, $formData, $formOptions);
+        
+        $form->handleRequest($request);
+        
+        $submittedFormData = $form->getData();
+        
+        if ($form->isValid()) {
+            dump($form->getData());
+            $saveType = $form->getClickedButton()->getName();
+            if ($saveType == 'save') {
+                $formData = $form->getData();
+                
+                $todoItem = $transformer->applyTransformation($todoItem, $formData);
+                
+                $todoItem->save();
+                
+                if ($item->isDraft()) {
+                    $item->setDraftStatus(0);
+                    $item->saveAsItem();
+                }
+            } else if ($form->get('cancel')->isClicked()) {
+                // ToDo ...
+            } 
+            return $this->redirectToRoute('commsy_todo_savesteps', array('roomId' => $roomId, 'itemId' => $itemId));
+        }
+
+        dump($form);
+
+        return array(
+            'todo' => $todo,
+            'form' => $form->createView(),
+        );
+    }
+
+
+    /**
+     * @Route("/room/{roomId}/todo/{itemId}/savesteps")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function savestepsAction($roomId, $itemId, Request $request)
+    {
+        dump($request);
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($itemId);
+        
+        $todoService = $this->get('commsy_legacy.todo_service');
+        $transformer = $this->get('commsy_legacy.transformer.todo');
+        
+        $todo = $todoService->getTodo($itemId);
+        
+        $stepList = $todo->getStepItemList()->to_array();
+        
+        return array(
+            'roomId' => $roomId,
+            'item' => $todo,
+            'steps' => $stepList,
+        );
+    }
+
+    /**
      * @Route("/room/{roomId}/todo/{itemId}/editdetails")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
@@ -784,7 +855,7 @@ class TodoController extends Controller
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId); 
+        $roomItem = $roomManager->getItem($roomId);
         
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
@@ -829,8 +900,9 @@ class TodoController extends Controller
         $form->handleRequest($request);
         
         $submittedFormData = $form->getData();
-        
+
         if ($form->isValid()) {
+            dump($form->getData());
             $saveType = $form->getClickedButton()->getName();
             if ($saveType == 'save') {
                 $formData = $form->getData();
@@ -865,6 +937,7 @@ class TodoController extends Controller
      */
     public function savedetailsAction($roomId, $itemId, Request $request)
     {
+        dump($request);
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         

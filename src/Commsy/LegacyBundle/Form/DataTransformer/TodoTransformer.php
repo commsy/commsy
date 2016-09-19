@@ -46,6 +46,11 @@ class TodoTransformer implements DataTransformerInterface
                     $todoData['due_date']['time'] = $datetimeDueDate;
                 }
             }
+
+            $todoData['steps'] = array();
+            foreach($todoItem->getStepItemList()->to_array() as $id => $item){
+                $todoData['steps'][$id] = $item->getTitle();
+            }
             
             $todoData['time_planned'] = $todoItem->getPlannedTime();
             
@@ -120,6 +125,12 @@ class TodoTransformer implements DataTransformerInterface
 
         if (isset($todoData['status'])){
             $todoObject->setStatus($todoData['status']);
+        }
+
+        // steps
+        if(isset($todoData['stepOrder'])){
+            $newStepOrder = explode(",", $todoData['stepOrder']);
+            // TODO: if step order has changed, remove all steps from ToDo item and add them again in the new order!
         }
 
         return $todoObject;

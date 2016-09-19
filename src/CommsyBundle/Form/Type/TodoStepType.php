@@ -7,10 +7,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
 
-class TodoType extends AbstractType
+class TodoStepType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
