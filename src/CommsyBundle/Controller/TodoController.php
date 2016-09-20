@@ -793,7 +793,6 @@ class TodoController extends Controller
         $submittedFormData = $form->getData();
         
         if ($form->isValid()) {
-            dump($form->getData());
             $saveType = $form->getClickedButton()->getName();
             if ($saveType == 'save') {
                 $formData = $form->getData();
@@ -811,8 +810,6 @@ class TodoController extends Controller
             } 
             return $this->redirectToRoute('commsy_todo_savesteps', array('roomId' => $roomId, 'itemId' => $itemId));
         }
-
-        dump($form);
 
         return array(
             'todo' => $todo,
