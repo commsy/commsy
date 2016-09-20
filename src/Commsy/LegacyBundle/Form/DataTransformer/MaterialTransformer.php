@@ -71,6 +71,10 @@ class MaterialTransformer implements DataTransformerInterface
                 $materialData['biblio_sub']['foto_reason'] = $materialItem->getFotoReason();
                 $materialData['biblio_sub']['foto_date'] = $materialItem->getFotoDate();
 
+                $materialData['sections'] = array();
+                foreach($materialItem->getSectionList()->to_array() as $id => $item){
+                    $materialData['sections'][$item->getItemID()] = $item->getTitle();
+                }
             }
             
             if ($materialItem->isNotActivated()) {
@@ -83,12 +87,6 @@ class MaterialTransformer implements DataTransformerInterface
                     $materialData['hiddendate']['time'] = $datetime;
                 }
             }
-
-            $materialData['sections'] = array();
-            foreach($materialItem->getSectionList()->to_array() as $id => $item){
-                $materialData['sections'][$item->getItemID()] = $item->getTitle();
-            }
-
         }
 
         return $materialData;

@@ -114,13 +114,22 @@
                                 $this.registerArticleEvents(article);
                                 
                                 let title = $(result).find('.uk-article-title');
-                                if (title !== null) {
+                                if (title !== null && title.text()) {
                                     $('.uk-breadcrumb').find('.last').find('span').html(title.text());
                                 }
                                 
                                 let workflow = $(result).find('.cs-workflow-traffic-light').html();
                                 if (workflow !== null) {
                                     $('.uk-article').find('.cs-workflow-traffic-light').html(workflow);
+                                }
+
+                                let sections = $(result).find('#section-list');
+                                if(sections !== null){
+                                    let counter = 0;
+                                    sections.find("li").each(function() {
+                                        $($(this).find("a:first").attr('href')).closest('article').detach().insertAfter("#section_"+counter+" div:first");
+                                        counter++;
+                                    })
                                 }
                             //});
                         });

@@ -384,7 +384,7 @@
 
                 {# preview #}
                 <div class="toggle-sections-{{ item.itemId }} cs-toggle-preview">
-                    <ul class="uk-list uk-list-striped uk-width-2-3">          
+                    <ul id="section-list" class="uk-list uk-list-striped uk-width-2-3">
                         {% for section in sectionList %}
                             <li>
                                 <a href="#section{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">
