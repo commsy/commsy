@@ -69,17 +69,17 @@ class FileController extends Controller
         }
 
         if(file_exists($completePath)){
-            error_log($completePath);
+            $content = file_get_contents($completePath);
+
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mimeType = finfo_file($finfo, $completePath);
+
+            $response = new Response($content, Response::HTTP_OK, array('content-type' => $mimeType));
+            $response->headers->set('Content-Disposition', $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,$filename));
         }
-
-        $content = file_get_contents($completePath);
-
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mimeType = finfo_file($finfo, $completePath);
-
-        $response = new Response($content, Response::HTTP_OK, array('content-type' => $mimeType));
-        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$filename);
-        $response->headers->set('Content-Disposition', $contentDisposition);
+        else{
+            $response = new Response("Background image not found!", Response::HTTP_NOT_FOUND);
+        }
 
         return $response;
     }

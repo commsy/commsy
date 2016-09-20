@@ -17,6 +17,7 @@ class ProfileController extends Controller
     /**
     * @Route("/room/{roomId}/user/{itemId}/general")
     * @Template
+    * @Security("is_granted('ITEM_EDIT', itemId)")
     */
     public function generalAction($roomId, $itemId, Request $request)
     {
