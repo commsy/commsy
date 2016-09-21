@@ -378,7 +378,7 @@ class TodoController extends Controller
                     $item->setStatus(array_search ($tempAction, $statusArray));
                     $item->save();
                 }
-                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('Set status of %count% entries',count($selectedIds), array('%count%' => count($selectedIds)));
+                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('Set status of %count% entries to %status%',count($selectedIds), array('%count%' => count($selectedIds), '%status%' => substr($action, 4)));
             }
         }
 
