@@ -42,6 +42,14 @@
                 <source>responsibility</source>
                 <target>Responsibility</target>
             </trans-unit>
+            <trans-unit id="add esponsibility">
+                <source>add responsibility</source>
+                <target>Indicate responsibility</target>
+            </trans-unit>
+            <trans-unit id="remove esponsibility">
+                <source>remove responsibility</source>
+                <target>Release responsibility</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

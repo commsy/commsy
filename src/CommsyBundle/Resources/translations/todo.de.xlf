@@ -42,6 +42,14 @@
                 <source>responsibility</source>
                 <target>Zuständigkeit</target>
             </trans-unit>
+            <trans-unit id="add responsibility">
+                <source>add responsibility</source>
+                <target>Zuständigkeit signalisieren</target>
+            </trans-unit>
+            <trans-unit id="remove responsibility">
+                <source>remove responsibility</source>
+                <target>Zuständigkeit abgeben</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
