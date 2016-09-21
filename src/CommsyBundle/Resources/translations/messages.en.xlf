@@ -330,6 +330,38 @@
                 <source>Set status of %count% entries to in progress</source>
                 <target>{0} No entries changed.|{1} Set status of %count% entry to "in progress".|]1,Inf[ Set status of %count% entries to "in progress".</target>
             </trans-unit>
+
+
+
+            <trans-unit id="64">
+                <source>set status of %count% users to blocked</source>
+                 <target>{0} No user locked.|{1} One user locked.|]1,Inf[ %count% users locked.</target>
+           </trans-unit> 
+            <trans-unit id="65">
+                <source>confirmed %count% users</source>
+                 <target>{0} No user Approved/Unlocked.|{1} One user Approved/Unlocked.|]1,Inf[ %count% users Approved/Unlocked.</target>
+           </trans-unit>
+           <trans-unit id="66">
+                <source>set status of %count% users to reading user</source>
+                 <target>{0} No user status set to "reading user".|{1} One user status set to "reading user".|]1,Inf[ %count% users status set to "reading user".</target>
+           </trans-unit>
+           <trans-unit id="67">
+                <source>set status of %count% users to user</source>
+                 <target>{0} No user status set to "User".|{1} One user status set to "User".|]1,Inf[ %count%  users status set to "User".</target>
+           </trans-unit>
+           <trans-unit id="68">
+                <source>set status of %count% users to moderator</source>
+                 <target>{0} No user status set to "Moderator".|{1} One user status set to "Moderator".|]1,Inf[ %count% users status set to "Moderator".</target>
+           </trans-unit>
+           <trans-unit id="69">
+                <source>set status of %count% users to contact</source>
+                 <target>{0} No user status set to "contact person".|{1} One user status set to "contact person".|]1,Inf[ %count% users status set to "contact person".</target>
+           </trans-unit>
+           <trans-unit id="70">
+                <source>removed contact status of %count% users</source>
+                 <target>{0} No "contact person" status of user removed.|{1} One "contact person" status of user removed.|]1,Inf[ %count% "contact person" status of users removed.</target>
+           </trans-unit>
+
         </body>
     </file>
 </xliff>

@@ -330,6 +330,34 @@
                 <source>Set status of %count% entries to in progress</source>
                 <target>{0} Kein Eintrag verändert.|{1} Status eines Eintrages auf "in Bearbeitung" gesetzt.|]1,Inf[ Status von %count% Einträgen auf "in Bearbeitung" gesetzt.</target>
            </trans-unit>
+           <trans-unit id="64">
+                <source>set status of %count% users to blocked</source>
+                 <target>{0} Keine Kennung gesperrt.|{1} Eine Kennung gesperrt.|]1,Inf[ %count% Kennungen gesperrt.</target>
+           </trans-unit> 
+            <trans-unit id="65">
+                <source>confirmed %count% users</source>
+                 <target>{0} Keine Kennung freigeschaltet.|{1} Eine Kennung freigeschaltet.|]1,Inf[ %count% Kennungen freigeschaltet.</target>
+           </trans-unit>
+           <trans-unit id="66">
+                <source>set status of %count% users to reading user</source>
+                 <target>{0} Kein Status verändert.|{1} Status eines Benutzers auf "LesendeR BenutzerIn" gesetzt.|]1,Inf[ Status von %count% Benutzer auf "LesendeR BenutzerIn" gesetzt.</target>
+           </trans-unit>
+           <trans-unit id="67">
+                <source>set status of %count% users to user</source>
+                 <target>{0} Kein Status verändert.|{1} Status eines Benutzers auf "Benutzer" gesetzt.|]1,Inf[ Status von %count% Benutzer auf "Benutzer" gesetzt.</target>
+           </trans-unit>
+           <trans-unit id="68">
+                <source>set status of %count% users to moderator</source>
+                 <target>{0} Kein Status verändert.|{1} Status eines Benutzers auf "Moderator" gesetzt.|]1,Inf[ Status von %count% Benutzer auf "Moderator" gesetzt.</target>
+           </trans-unit>
+           <trans-unit id="69">
+                <source>set status of %count% users to contact</source>
+                 <target>{0} Kein Status verändert.|{1} Ein Benutzer zu AnsprechpartnerIn gemacht.|]1,Inf[ %count% Benutzer zu Ansprechpartnern gemacht.</target>
+           </trans-unit>
+           <trans-unit id="70">
+                <source>removed contact status of %count% users</source>
+                 <target>{0} Kein Status verändert.|{1} Ein Benutzer als AnsprechpartnerIn entfernt.|]1,Inf[ %count% Benutzer als Ansprechpartnern entfernt.</target>
+           </trans-unit>
        </body>
     </file>
 </xliff>
