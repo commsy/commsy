@@ -152,12 +152,12 @@ class ProfileController extends Controller
                 
                 $privateRoomItem->save();
                 
-                return $this->redirectToRoute('commsy_profile_room', array('roomId' => $roomId, 'itemId' => $itemId));
+                return $this->redirectToRoute('commsy_profile_general', array('roomId' => $roomId, 'itemId' => $itemId));
             }
         } else if ($request->request->has('combine_profile')) {
             $form->handleRequest($request);
             if ($form->isValid()) {
-                return $this->redirectToRoute('commsy_profile_room', array('roomId' => $roomId, 'itemId' => $itemId));
+                return $this->redirectToRoute('commsy_profile_general', array('roomId' => $roomId, 'itemId' => $itemId));
             }
         }
 
