@@ -26,10 +26,10 @@
                     </div>
                     {% if not form.sections is empty %}
                         <ul class="uk-list uk-sortable section-list cs-padding-left-20 uk-list-striped uk-width-2-3" data-uk-sortable>
-                            {% set counter = 1 %}
+                            {% set counter = 0 %}
                             {% for sectionId, sectionName in form.sections %}
                                 <li class="uk-panel uk-panel-box uk-sortable-handle" id="section_{{sectionId}}">
-                                    <a href="#section{{ sectionId }}" data-uk-tooltip title="{{ sectionName.vars.data|raw }}">{{ sectionName.vars.data|raw }}</a> {{ macros.fileListShort(sectionList[counter]) }}
+                                    <a href="#section{{ sectionId }}" data-uk-tooltip title="{{ sectionName.vars.data|raw }}">{{ sectionName.vars.data|raw }}</a> {{ macros.fileListShort(sectionList[sectionList|keys[counter]]) }}
                                 </li>
                                 {% set counter = counter + 1  %}
                             {% endfor %}

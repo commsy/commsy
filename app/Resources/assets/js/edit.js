@@ -127,7 +127,9 @@
                                 if(sections !== null){
                                     let counter = 0;
                                     sections.find("li").each(function() {
-                                        $($(this).find("a:first").attr('href')).closest('article').detach().insertAfter("#section_"+counter+" div:first");
+                                        let section_container = $($(this).find("a:first").attr('href')).closest('article').parent().detach();
+                                        section_container.attr("id", "section_"+counter);
+                                        $("#section-content").append( section_container );
                                         counter++;
                                     })
                                 }
