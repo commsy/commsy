@@ -733,13 +733,11 @@ class DateController extends Controller
      */
     public function createAction($roomId, $dateDescription, Request $request)
     {
-        $translator = $this->get('translator');
-        
         $dateService = $this->get('commsy_legacy.date_service');
 
         // create new material item
         $dateItem = $dateService->getNewDate();
-        $dateItem->setTitle('['.$translator->trans('insert title').']');
+        //$dateItem->setTitle('['.$translator->trans('insert title').']');
         $dateItem->setDraftStatus(1);
         $dateItem->setPrivateEditing('1');
 
@@ -861,6 +859,8 @@ class DateController extends Controller
      */
     public function editAction($roomId, $itemId, Request $request)
     {
+        $translator = $this->get('translator');
+
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
@@ -884,6 +884,7 @@ class DateController extends Controller
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             )),
+            'placeholderText' => '['.$translator->trans('insert title').']',
         );
         if ($dateItem->getRecurrencePattern() != '') {
             $formOptions['attr']['unsetRecurrence'] = true;

@@ -2,7 +2,7 @@
 
     "use strict";
 
-    $('.commsy-action-delete').on('click', function() {
+    $('.commsy-action-delete').on('click', function(event) {
         let $this = this;
         event.preventDefault();
         UIkit.modal.confirm($(this).data('confirm-delete'), function() {

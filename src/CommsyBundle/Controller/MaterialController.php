@@ -917,6 +917,8 @@ class MaterialController extends Controller
         $materialService = $this->get('commsy_legacy.material_service');
         $transformer = $this->get('commsy_legacy.transformer.material');
 
+        $translator = $this->get('translator');
+
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
         
@@ -939,7 +941,6 @@ class MaterialController extends Controller
                 throw $this->createNotFoundException('No material found for id ' . $roomId);
             }
             $formData = $transformer->transform($materialItem);
-            $translator = $this->get('translator');
             $form = $this->createForm(MaterialType::class, $formData, array(
                 'action' => $this->generateUrl('commsy_material_edit', array(
                     'roomId' => $roomId,
@@ -954,7 +955,7 @@ class MaterialController extends Controller
                 throw $this->createNotFoundException('No section found for id ' . $roomId);
             }
             $formData = $transformer->transform($materialItem);
-            $form = $this->createForm(SectionType::class, $formData, array());
+            $form = $this->createForm(SectionType::class, $formData, array('placeholderText' => '['.$translator->trans('insert title').']'));
         }
         
         $form->handleRequest($request);
@@ -1177,14 +1178,14 @@ class MaterialController extends Controller
         $countSections = $sectionList->getCount();
 
         $section = $materialService->getNewSection();
-        $section->setTitle('['.$translator->trans('insert title').']');
         $section->setLinkedItemId($itemId);
         $section->setNumber($countSections+1);
         $section->save();
 
         $formData = $transformer->transform($section);
         $form = $this->createForm(SectionType::class, $formData, array(
-            'action' => $this->generateUrl('commsy_material_savesection', array('roomId' => $roomId, 'itemId' => $section->getItemID()))
+            'action' => $this->generateUrl('commsy_material_savesection', array('roomId' => $roomId, 'itemId' => $section->getItemID())),
+            'placeholderText' => '['.$translator->trans('insert title').']',
         ));
 
         return array(
@@ -1206,16 +1207,21 @@ class MaterialController extends Controller
      */
     public function saveSectionAction($roomId, $itemId, Request $request)
     {
-        $translator = $this->get('translator');
-
         $materialService = $this->get('commsy_legacy.material_service');
         $transformer = $this->get('commsy_legacy.transformer.material');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
+        $translator = $this->get('translator');
+
         // get section
         $section = $materialService->getSection($itemId);
 
-        $form = $this->createForm(SectionType::class);
+        $formData = $transformer->transform($section);
+
+        $form = $this->createForm(SectionType::class, $formData, array(
+            'action' => $this->generateUrl('commsy_material_savesection', array('roomId' => $roomId, 'itemId' => $section->getItemID())),
+            'placeholderText' => '['.$translator->trans('insert title').']',
+        ));
 
         $form->handleRequest($request);
         if ($form->isValid()) {

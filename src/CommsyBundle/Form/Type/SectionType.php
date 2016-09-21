@@ -27,7 +27,7 @@ class SectionType extends AbstractType
                 ),
                 'label' => 'Title',
                 'attr' => array(
-                    'placeholder' => 'Section title',
+                    'placeholder' => $options['placeholderText'],
                     'class' => 'uk-form-width-medium',
                 ),
                 'translation_domain' => 'material',
@@ -37,7 +37,6 @@ class SectionType extends AbstractType
                     'class' => 'uk-button-primary',
                 ),
                 'label' => 'save',
-                'translation_domain' => 'form',
             ))
             ->add('cancel', SubmitType::class, array(
                 'attr' => array(
@@ -45,7 +44,6 @@ class SectionType extends AbstractType
                     'formnovalidate' => '',
                 ),
                 'label' => 'cancel',
-                'translation_domain' => 'form',
             ))
         ;
     }
@@ -58,7 +56,8 @@ class SectionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired([])
+            ->setRequired(array('placeholderText'))
+            ->setDefaults(array('translation_domain' => 'form'))
         ;
     }
 

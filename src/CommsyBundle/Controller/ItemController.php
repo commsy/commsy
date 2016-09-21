@@ -829,6 +829,13 @@ class ItemController extends Controller
             }
         }
 
-        return $this->redirectToRoute($route, array('roomId' => $roomId));        
+        if ($item->getItemType() == 'section') {
+            $route = 'commsy_material_detail';
+            $materialService = $this->get('commsy_legacy.material_service');
+            $section = $materialService->getSection($item->getItemID());
+            return $this->redirectToRoute($route, array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));
+        }
+
+        return $this->redirectToRoute($route, array('roomId' => $roomId));
     }
 }
