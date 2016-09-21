@@ -330,9 +330,6 @@
                 <source>Set status of %count% entries to in progress</source>
                 <target>{0} No entries changed.|{1} Set status of %count% entry to "in progress".|]1,Inf[ Set status of %count% entries to "in progress".</target>
             </trans-unit>
-
-
-
             <trans-unit id="64">
                 <source>set status of %count% users to blocked</source>
                  <target>{0} No user locked.|{1} One user locked.|]1,Inf[ %count% users locked.</target>
@@ -361,7 +358,10 @@
                 <source>removed contact status of %count% users</source>
                  <target>{0} No "contact person" status of user removed.|{1} One "contact person" status of user removed.|]1,Inf[ %count% "contact person" status of users removed.</target>
            </trans-unit>
-
+            <trans-unit id="entriesMarkedInCustom">
+                <source>Set status of %count% entries to %status%</source>
+                <target>{0} No entries changed.|{1} Set status of %count% entry to "%status%".|]1,Inf[ Set status of %count% entries to "%status%".</target>
+           </trans-unit>
         </body>
     </file>
 </xliff>
