@@ -357,7 +357,7 @@
            <trans-unit id="70">
                 <source>removed contact status of %count% users</source>
                  <target>{0} Kein Status verändert.|{1} Ein Benutzer als AnsprechpartnerIn entfernt.|]1,Inf[ %count% Benutzer als Ansprechpartnern entfernt.</target>
-           </trans-unit>
+             </trans-unit>
             <trans-unit id="entriesMarkedInCustom">
                 <source>Set status of %count% entries to %status%</source>
                 <target>{0} Kein Eintrag verändert.|{1} Status eines Eintrages auf "%status%" gesetzt.|]1,Inf[ Status von %count% Einträgen auf "%status%" gesetzt.</target>
