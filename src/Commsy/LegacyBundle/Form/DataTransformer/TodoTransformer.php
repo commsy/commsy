@@ -39,24 +39,25 @@ class TodoTransformer implements DataTransformerInterface
                 }
             }
             
-            if ($todoItem->getDate()) {
-                if ($todoItem->getDate() != '9999-00-00 00:00:00') {
-                    $datetimeDueDate = new \DateTime($todoItem->getDate());
-                    $todoData['due_date']['date'] = $datetimeDueDate;
-                    $todoData['due_date']['time'] = $datetimeDueDate;
+            if (get_class($todoItem) != 'cs_step_item') {
+                if ($todoItem->getDate()) {
+                    if ($todoItem->getDate() != '9999-00-00 00:00:00') {
+                        $datetimeDueDate = new \DateTime($todoItem->getDate());
+                        $todoData['due_date']['date'] = $datetimeDueDate;
+                        $todoData['due_date']['time'] = $datetimeDueDate;
+                    }
                 }
-            }
+                $todoData['steps'] = array();
+                foreach($todoItem->getStepItemList()->to_array() as $id => $item){
+                    $todoData['steps'][$id] = $item->getTitle();
+                }
 
-            $todoData['steps'] = array();
-            foreach($todoItem->getStepItemList()->to_array() as $id => $item){
-                $todoData['steps'][$id] = $item->getTitle();
+                $todoData['time_planned'] = $todoItem->getPlannedTime();
+
+                $todoData['time_type'] = $todoItem->getTimeType();
+
+                $todoData['status'] = $todoItem->getInternalStatus();
             }
-            
-            $todoData['time_planned'] = $todoItem->getPlannedTime();
-            
-            $todoData['time_type'] = $todoItem->getTimeType();
-            
-            $todoData['status'] = $todoItem->getInternalStatus();
         }
 
         return $todoData;
@@ -111,26 +112,27 @@ class TodoTransformer implements DataTransformerInterface
 	        }
         }
 
-        if (isset($todoData['due_date'])) {
-            $todoObject->setDate($todoData['due_date']['date']->format('Y-m-d').' '.$todoData['due_date']['time']->format('H:i:s'));
-        }
+        if (get_class($todoObject) != 'cs_step_item') {
+            if (isset($todoData['time_planned'])){
+                $todoObject->setPlannedTime($todoData['time_planned']);
+            }
 
-        if (isset($todoData['time_planned'])){
-            $todoObject->setPlannedTime($todoData['time_planned']);
-        }
-        
-        if (isset($todoData['time_type'])){
-            $todoObject->setTimeType($todoData['time_type']);
-        }
+            if (isset($todoData['time_type'])){
+                $todoObject->setTimeType($todoData['time_type']);
+            }
 
-        if (isset($todoData['status'])){
-            $todoObject->setStatus($todoData['status']);
-        }
+            if (isset($todoData['status'])){
+                $todoObject->setStatus($todoData['status']);
+            }
 
-        // steps
-        if(isset($todoData['stepOrder'])){
-            $newStepOrder = explode(",", $todoData['stepOrder']);
-            // TODO: if step order has changed, remove all steps from ToDo item and add them again in the new order!
+            // steps
+            if(isset($todoData['stepOrder'])){
+                $newStepOrder = explode(",", $todoData['stepOrder']);
+            }
+
+            if (isset($todoData['due_date'])) {
+                $todoObject->setDate($todoData['due_date']['date']->format('Y-m-d').' '.$todoData['due_date']['time']->format('H:i:s'));
+            }
         }
 
         return $todoObject;

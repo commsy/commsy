@@ -13,16 +13,23 @@
             })
             .done(function(result) {
                 var type = $($this).data('itemType');
-                if (type == 'section') {
-                    $($this).parents('.material-section').hide();
+                if (type == 'section' || type == 'step') {
+                    if(type == 'section'){
+                        $($this).parents('.material-section').hide();
+                    }
+                    if(type == 'step'){
+                        $($this).parents('.todo-step').hide();
+                    }
                     var urlPathParts = $($this).data('deleteUrl').split("/");
-                    var sectionLi =$("#section-list a[href='#section"+urlPathParts[urlPathParts.length-2]+"']").closest("li");
-                    sectionLi.nextAll("li").each(function(){
-                        var sectionLineParts = $(this).find("a").text().trim().split(" ");
-                        sectionLineParts[0] = (parseInt(sectionLineParts[0]) - 1).toString() + ".";
-                        $(this).find("a").text(sectionLineParts.join(" "));
+                    var listElement = $("#"+type+"-list a[href='#"+type+urlPathParts[urlPathParts.length-2]+"']").closest("li");
+                    listElement.nextAll("li").each(function(){
+                        var lineParts = $(this).find("a").text().trim().split(" ");
+                        lineParts[0] = (parseInt(lineParts[0]) - 1).toString() + ".";
+                        $(this).find("a").text(lineParts.join(" "));
                     });
-                    sectionLi.remove();
+                    listElement.remove();
+                    var listHeader = $("#"+type+"-list").closest("article").find("h4").first();
+                    listHeader.text( listHeader.text().replace(/\d+/g, $("#"+type+"-list li").length));
                 } else {
                     location.href = $($this).data('returnUrl');
                 }

@@ -412,7 +412,7 @@
         <div class="uk-grid uk-margin-small-bottom">
             <div class="uk-width-9-10">
                 <h4 class="cs-detail-section-header">
-                    {{- "sections"|trans({}) }}
+                    {{- "steps"|trans({}) }}
                     ({{ stepList|length }})
                 </h4>
             </div>
@@ -440,7 +440,7 @@
 
                 {# preview #}
                 <div class="toggle-sections-{{ item.itemId }} cs-toggle-preview">
-                    <ul class="uk-list uk-list-striped uk-width-2-3">          
+                    <ul id="step-list" class="uk-list uk-list-striped uk-width-2-3">
                         {% for step in stepList %}
                             <li>
                                 <a href="#step{{ step.itemId }}" data-uk-tooltip title="{{ step.title|raw }}">

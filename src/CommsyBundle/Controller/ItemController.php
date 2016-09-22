@@ -836,6 +836,13 @@ class ItemController extends Controller
             return $this->redirectToRoute($route, array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));
         }
 
+        if ($item->getItemType() == 'step') {
+            $route = 'commsy_todo_detail';
+            $todoService = $this->get('commsy_legacy.todo_service');
+            $step = $todoService->getStep($item->getItemID());
+            return $this->redirectToRoute($route, array('roomId' => $roomId, 'itemId' => $step->getTodoID()));
+        }
+
         return $this->redirectToRoute($route, array('roomId' => $roomId));
     }
 }
