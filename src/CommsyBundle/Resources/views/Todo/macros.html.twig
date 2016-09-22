@@ -419,11 +419,12 @@
 
             <div class="uk-width-1-10 uk-flex uk-text-right">
                 {# edit action #}
-                {% if is_granted('ITEM_EDIT', item.itemId) %}
+                {# TODO: Right now, there there is nothing that can be edited in the step list. To make them sortable like material sections, steps need a new 'number' column in the corresponding database table. #}
+                {# {% if is_granted('ITEM_EDIT', item.itemId) %}
                     <div class="cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
                         <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                     </div>
-                {% endif %}
+                {% endif %} #}
 
                 {# toggle action #}
                 {% if not stepList is empty %}

@@ -652,6 +652,8 @@ class TodoController extends Controller
         $todoService = $this->get('commsy_legacy.todo_service');
         $transformer = $this->get('commsy_legacy.transformer.todo');
 
+        $translator = $this->get('translator');
+
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
         
@@ -664,7 +666,6 @@ class TodoController extends Controller
                 throw $this->createNotFoundException('No todo found for id ' . $itemId);
             }
             $formData = $transformer->transform($todoItem);
-            $translator = $this->get('translator');
             $form = $this->createForm(TodoType::class, $formData, array(
                 'action' => $this->generateUrl('commsy_todo_edit', array(
                     'roomId' => $roomId,
@@ -679,10 +680,7 @@ class TodoController extends Controller
             }
             $formData = $transformer->transform($todoItem);
             $form = $this->createForm(StepType::class, $formData, array(
-                'action' => $this->generateUrl('commsy_todo_edit', array(
-                    'roomId' => $roomId,
-                    'itemId' => $itemId,
-                ))
+                'placeholderText' => '['.$translator->trans('insert title').']',
             ));
         }
         

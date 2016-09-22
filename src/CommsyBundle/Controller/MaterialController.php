@@ -955,7 +955,9 @@ class MaterialController extends Controller
                 throw $this->createNotFoundException('No section found for id ' . $roomId);
             }
             $formData = $transformer->transform($materialItem);
-            $form = $this->createForm(SectionType::class, $formData, array('placeholderText' => '['.$translator->trans('insert title').']'));
+            $form = $this->createForm(SectionType::class, $formData, array(
+                'placeholderText' => '['.$translator->trans('insert title').']',
+            ));
         }
         
         $form->handleRequest($request);
