@@ -73,7 +73,8 @@ class ItemLinksType extends AbstractType
             ->add('itemsLinked', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => $options['itemsLinked'],
-                'label' => 'itemsLinked',
+                // 'label' => 'itemsLinked',
+                'label' => false,
                 'translation_domain' => 'item',
                 'required' => false,
                 'expanded' => true,
