@@ -346,6 +346,7 @@ class GroupController extends Controller
             'showWorkflow' => $infoArray['showWorkflow'],
             'showHashtags' => $infoArray['showHashtags'],
             'showCategories' => $infoArray['showCategories'],
+            'roomCategories' => $infoArray['roomCategories'],
             'members' => $infoArray['members'],
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
@@ -523,7 +524,13 @@ class GroupController extends Controller
         $membersList = $group->getMemberItemList();
         $members = $membersList->to_array();
         
-        
+        $categories = array();
+        if ($current_context->withTags()) {
+            $roomCategories = $this->get('commsy_legacy.category_service')->getTags($roomId);
+            $groupCategories = $group->getTagsArray();
+            $categories = $this->getTagDetailArray($roomCategories, $groupCategories);
+        }
+
         $infoArray['group'] = $group;
         $infoArray['readerList'] = $readerList;
         $infoArray['modifierList'] = $modifierList;
@@ -543,10 +550,44 @@ class GroupController extends Controller
         $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
+        $infoArray['roomCategories'] = $categories;
         $infoArray['members'] = $members;
 
-        
         return $infoArray;
+    }
+
+    private function getTagDetailArray ($baseCategories, $itemCategories) {
+        $result = array();
+        $tempResult = array();
+        $addCategory = false;
+        foreach ($baseCategories as $baseCategory) {
+            if (!empty($baseCategory['children'])) {
+                $tempResult = $this->getTagDetailArray($baseCategory['children'], $itemCategories);
+            }
+            if (!empty($tempResult)) {
+                $addCategory = true;
+            }
+            $tempArray = array();
+            $foundCategory = false;
+            foreach ($itemCategories as $itemCategory) {
+                if ($baseCategory['item_id'] == $itemCategory['id']) {
+                    if ($addCategory) {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                    } else {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
+                    }
+                    $foundCategory = true;
+                }
+            }
+            if (!$foundCategory) {
+                if ($addCategory) {
+                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                }
+            }
+            $tempResult = array();
+            $addCategory = false;
+        }
+        return $result;
     }
 
 

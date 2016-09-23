@@ -169,26 +169,9 @@
                     </div>
 
                     {# links #}
-                    <div id="links{{ group.itemId }}" class="cs-toggle" data-uk-observe>
-                       <hr class="uk-width-9-10"/>
-                        <article class="uk-article uk-margin-left uk-margin-right">
-                            <a name="grouproom"></a>
-                            {# title row #}
-                            <div class="uk-grid uk-margin-small-bottom">
-                                <div class="uk-width-9-10">
-                                    <h4 class="cs-detail-section-header">
-                                        {{'links'|trans({}) }} 
-                                    </h4>
-                                </div>
-                            </div>
- 
-            {{ render(controller(
-                'CommsyBundle:Link:showDetailLong',
-                { 'roomId': item.contextId, 'itemId': item.itemId }
-            ))}}            
-                        </article>
-                    </div>
-        
+                    <div id="links{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': group.contextId, 'itemId': group.itemId}) }}' }">
+                        {{ macrosItem.links(group,showHashtags,showCategories,roomCategories) }}
+                    </div>        
                 </article>
             </div>
                     </div>
