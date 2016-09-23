@@ -13,12 +13,15 @@
             })
             .done(function(result) {
                 var type = $($this).data('itemType');
-                if (type == 'section' || type == 'step') {
+                if (type == 'section' || type == 'step' || type == 'discarticle') {
                     if(type == 'section'){
                         $($this).parents('.material-section').hide();
                     }
                     if(type == 'step'){
                         $($this).parents('.todo-step').hide();
+                    }
+                    if(type == 'discarticle'){
+                        $($this).parents('.discussion-article').hide();
                     }
                     var urlPathParts = $($this).data('deleteUrl').split("/");
                     var listElement = $("#"+type+"-list a[href='#"+type+urlPathParts[urlPathParts.length-2]+"']").closest("li");

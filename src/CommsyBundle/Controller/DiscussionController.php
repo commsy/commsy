@@ -705,18 +705,18 @@ class DiscussionController extends Controller
         $item = $itemService->getItem($itemId);
         
         $discussionService = $this->get('commsy_legacy.discussion_service');
-        
+
         $tempItem = null;
         
         if ($item->getItemType() == 'discussion') {
             $tempItem = $discussionService->getDiscussion($itemId);
-        } else if ($item->getItemType() == 'article') {
+        } else if ($item->getItemType() == 'discarticle') {
             $tempItem = $discussionService->getArticle($itemId); 
         }
 
         $tempItem->delete();
 
-        return $this->redirectToRoute('commsy_discussion_list', array('roomId' => $roomId));        
+        return $this->redirectToRoute('commsy_discussion_list', array('roomId' => $roomId));
     }
     
     /**
@@ -727,6 +727,7 @@ class DiscussionController extends Controller
     public function createArticleAction($roomId, $itemId, Request $request)
     {
         $translator = $this->get('translator');
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $discussionService = $this->get('commsy_legacy.discussion_service');
         $transformer = $this->get('commsy_legacy.transformer.discussion');
@@ -745,7 +746,8 @@ class DiscussionController extends Controller
 
         $formData = $transformer->transform($section);
         $form = $this->createForm(DiscussionArticleType::class, $formData, array(
-            'action' => $this->generateUrl('commsy_discussion_savearticle', array('roomId' => $roomId, 'itemId' => $article->getItemID()))
+            'action' => $this->generateUrl('commsy_discussion_savearticle', array('roomId' => $roomId, 'itemId' => $article->getItemID())),
+            'placeholderText' => '['.$translator->trans('insert title').']',
         ));
 
         return array(
@@ -756,7 +758,8 @@ class DiscussionController extends Controller
             'modifierList' => array(),
             'userCount' => 0,
             'readCount' => 0,
-            'readSinceModificationCount' => 0
+            'readSinceModificationCount' => 0,
+            'currentUser' => $legacyEnvironment->getCurrentUserItem(),
         );
     }
     
@@ -790,22 +793,31 @@ class DiscussionController extends Controller
         $item = $itemService->getItem($itemId);
         
         $discussionService = $this->get('commsy_legacy.discussion_service');
-        $transformer = $this->get('commsy_legacy.transformer.discussion');
+
+        $translator = $this->get('translator');
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
         
         $formData = array();
         $materialItem = NULL;
-        
+
+        $transformer = NULL;
+
+        if ($item->getItemType() == 'discussion') {
+            $transformer = $this->get('commsy_legacy.transformer.discussion');
+        } else if ($item->getItemType() == 'discarticle') {
+            $transformer = $this->get('commsy_legacy.transformer.discarticle');
+        }
+
         if ($item->getItemType() == 'discussion') {
             // get material from MaterialService
             $discussionItem = $discussionService->getDiscussion($itemId);
             if (!$discussionItem) {
                 throw $this->createNotFoundException('No discussion found for id ' . $itemId);
             }
+
             $formData = $transformer->transform($discussionItem);
-            $translator = $this->get('translator');
             $form = $this->createForm(DiscussionType::class, $formData, array(
                 'action' => $this->generateUrl('commsy_discussion_edit', array(
                     'roomId' => $roomId,
@@ -820,7 +832,9 @@ class DiscussionController extends Controller
                 throw $this->createNotFoundException('No discussion article found for id ' . $itemId);
             }
             $formData = $transformer->transform($discussionArticleItem);
-            $form = $this->createForm(DiscussionArticleType::class, $formData, array());
+            $form = $this->createForm(DiscussionArticleType::class, $formData, array(
+                'placeholderText' => '['.$translator->trans('insert title').']',
+            ));
         }
         
         $form->handleRequest($request);
@@ -990,10 +1004,17 @@ class DiscussionController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.discussion');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
+        $translator = $this->get('translator');
+
         // get section
         $article = $discussionService->getArticle($itemId);
 
-        $form = $this->createForm(DiscussionArticleType::class);
+        $formData = $transformer->transform($article);
+
+        $form = $this->createForm(DiscussionArticleType::class, $formData, array(
+            'action' => $this->generateUrl('commsy_discussion_savearticle', array('roomId' => $roomId, 'itemId' => $article->getItemID())),
+            'placeholderText' => '['.$translator->trans('insert title').']',
+        ));
 
         $form->handleRequest($request);
         if ($form->isValid()) {

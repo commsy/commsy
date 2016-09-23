@@ -8,7 +8,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
 
@@ -23,7 +22,7 @@ class DiscussionArticleType extends AbstractType
                 ),
                 'label' => 'title',
                 'attr' => array(
-                    'placeholder' => 'title',
+                    'placeholder' => $options['placeholderText'],
                     'class' => 'uk-form-width-medium cs-form-title',
                 ),
                 'translation_domain' => 'material',
@@ -31,14 +30,12 @@ class DiscussionArticleType extends AbstractType
             ->add('permission', CheckboxType::class, array(
                 'label' => 'permission',
                 'required' => false,
-                'translation_domain' => 'form',
             ))
             ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 ),
                 'label' => 'save',
-                'translation_domain' => 'form',
             ))
             ->add('cancel', SubmitType::class, array(
                 'attr' => array(
@@ -46,7 +43,6 @@ class DiscussionArticleType extends AbstractType
                     'formnovalidate' => '',
                 ),
                 'label' => 'cancel',
-                'translation_domain' => 'form',
             ))
         ;
         
@@ -60,7 +56,8 @@ class DiscussionArticleType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired([])
+            ->setRequired(array('placeholderText'))
+            ->setDefaults(array('translation_domain' => 'form'))
         ;
     }
 

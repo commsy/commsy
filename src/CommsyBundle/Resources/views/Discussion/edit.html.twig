@@ -8,16 +8,17 @@
                     {{ form_widget(form.title) }}
             </div>
         </div>
-            <div class="uk-flex uk-margin-bottom uk-margin-small-top">
-                <div>
-                    <label class="">
-                        {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
-                    </label>
-                </div>
-                <div class="uk-margin-left">
-                    {{ form_widget(form.permission) }}  
-                </div>
+        <div class="uk-flex uk-margin-bottom uk-margin-small-top">
+            <div>
+                <label class="">
+                    {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
+                </label>
             </div>
+            <div class="uk-margin-left">
+                {{ form_widget(form.permission) }}
+            </div>
+        </div>
+        {% if form.vars.name == "discussion"  %}
             <div class="uk-flex">
                 <label class="uk-form-label">{{ 'hidden'|trans({}, "form") }}</label>
                 <div class="uk-flex uk-margin-small-top">
@@ -30,14 +31,15 @@
                     {{ form_widget(form.hiddendate) }}
                 </div>
             </div>
-            <div class="uk-flex uk-margin-small-top">
-                <div class="uk-margin-small-left">
-                    {{ form_row(form.save) }}
-                </div>
-                <div class="uk-margin-small-left">
-                    {{ form_row(form.cancel) }}
-                </div>
-            </div>   
+        {% endif %}
+        <div class="uk-flex uk-margin-small-top">
+            <div class="uk-margin-small-left">
+                {{ form_row(form.save) }}
+            </div>
+            <div class="uk-margin-small-left">
+                {{ form_row(form.cancel) }}
+            </div>
+        </div>
         {{ form_end(form) }}
     </div>
 </div>

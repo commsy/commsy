@@ -4,7 +4,7 @@
     {% if item.itemType == 'discussion' %}
         {% set pathName = 'commsy_discussion_edit' %}
     {% elseif item.itemType == 'discarticle' %}
-        <a name="section{{item.ItemID}}"></a>
+        <a name="discarticle{{item.ItemID}}"></a>
         {% set pathName = 'commsy_discussion_edit' %}
     {% endif %}
     {% if userCount == 0 %}
@@ -32,8 +32,8 @@
                         <div class="uk-width-1-1">
                             <h1 class="uk-article-title">{{ item.title|raw }}</h1>
                         </div>
-                {% endif %}
-                </div>
+                    {% endif %}
+                    </div>
                 </div>        
                 <div class="uk-width-1-10  uk-text-right">
                     <!-- <i class="uk-icon-small uk-icon-hover uk-icon-edit"></i> -->
@@ -363,10 +363,10 @@
 
                 {# preview #}
                 <div class="toggle-sections-{{ item.itemId }} cs-toggle-preview">
-                    <ul class="uk-list uk-list-striped uk-width-2-3">          
+                    <ul id="discarticle-list" class="uk-list uk-list-striped uk-width-2-3">
                         {% for section in sectionList %}
                             <li>
-                                <a href="#article{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">
+                                <a href="#discarticle{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">
                                     {{ loop.index }}. {{ section.title|raw }}
                                 </a>
 
