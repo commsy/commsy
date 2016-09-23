@@ -21,7 +21,7 @@
             <div class="uk-accordion" data-uk-accordion="{collapse: false}">
                 {% for type,rubric in linkedItemsByRubric %}
                     <h3 class="uk-accordion-title">
-                    <i class="{{ macros.iconClassForItemType(type) }}"></i> {{ type|trans({})|capitalize }} ({{ rubric|length }})</a>
+                    <i class="{{ macros.iconClassForItemType(type) }}"></i> {{ type|capitalize|trans({}) }} ({{ rubric|length }})</a>
                     </h3>
                     <div class="uk-accordion-content">
                         <ul class="uk-list uk-margin-bottom-remove">
