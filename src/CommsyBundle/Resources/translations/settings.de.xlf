@@ -158,7 +158,7 @@
             </trans-unit>
             <trans-unit id="rubric_selection_text">
                 <source>Rubric selection text</source>
-                <target>Wählen Sie die Rubriken und ihre Reihenfolge aus. Die Option "anzeigen" bedeutet, dass diese Rubrik als Kurzansicht auf der Home erscheint. Die Option "verbergen" bedeutet, dass diese Rubrik als Balken auf der Einsteigsseite erscheint. Die Option "deaktiviert" bedeutet, dass diese Rubrik in dem Projektraum nicht zur Verfügung steht. Die Reihenfolge der Rubriken im Menü können Sie per Drag &amp; Drop konfigurieren.</target>
+                <target>Wählen Sie die Rubriken und ihre Reihenfolge aus. Die Option "anzeigen" bedeutet, dass diese Rubrik in der Navigation erscheint. Die Option "verbergen" bedeutet, dass die Einträge dieser Rubrik nicht im Bereich "Die neuesten Einträge in diesem Raum" auf der Einsteigsseite erscheinen. Die Option "deaktiviert" bedeutet, dass diese Rubrik in dem CommSy-Raum nicht zur Verfügung steht. Die Reihenfolge der Rubriken im Navigationsmenü können Sie per Drag &amp; Drop konfigurieren.</target>
             </trans-unit>
             <trans-unit id="room_description_text">
                 <source>Room description text</source>
