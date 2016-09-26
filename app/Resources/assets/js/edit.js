@@ -2,6 +2,12 @@
 
     "use strict";
 
+    let partMapping = {
+        'material': 'section',
+        'todo': 'step',
+        'discussion': 'discarticle'
+    }
+
     UI.component('edit', {
 
         defaults: {
@@ -112,10 +118,19 @@
                                 article.html($(result));
 
                                 $this.registerArticleEvents(article);
-                                
+
                                 let title = $(result).find('.uk-article-title');
                                 if (title !== null && title.text()) {
-                                    $('.uk-breadcrumb').find('.last').find('span').html(title.text());
+                                    // material/todo/discussion title edited
+                                    if($this.options.editUrl.includes(window.location.pathname.split("/").pop())) {
+                                        $('.uk-breadcrumb').find('.last').find('span').html(title.text());
+                                    }
+                                    // section/step/article title edited
+                                    else {
+                                        let editParts = $this.options.editUrl.split("/");
+                                        let anchor = $("a[href='#" + partMapping[editParts[editParts.length-3]] + editParts[editParts.length-2] + "']");
+                                        anchor.text(anchor.html().trim().split(" ")[0] + " " + title.text());
+                                    }
                                 }
                                 
                                 let workflow = $(result).find('.cs-workflow-traffic-light').html();
