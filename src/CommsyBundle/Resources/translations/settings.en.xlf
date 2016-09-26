@@ -158,7 +158,7 @@
             </trans-unit>
             <trans-unit id="rubric_selection_text">
                 <source>Rubric selection text</source>
-                <target>Select and configure workspace rubrics. The option "show" means that this workspace rubric is shown in the navigation menu on the home page. The option "hide" means that entries from this workspace rubric are included in the "Latest entries in this room" section on the home page. The option "deactivate" means that this workspace rubric is not available in this CommSy room. You can customize the rubric order in the side menu with drag &amp; drop.</target>
+                <target>Select and configure workspace rubrics. The option "Show" means that this workspace rubric is shown in the navigation menu on the home page. The option "Hide" means that entries from this workspace rubric are included in the "Latest entries in this room" section on the home page. The option "Deactivate" means that this workspace rubric is not available in this CommSy room. You can customize the rubric order in the side menu with drag &amp; drop.</target>
             </trans-unit>
             <trans-unit id="room_description_text">
                 <source>Room description text</source>
