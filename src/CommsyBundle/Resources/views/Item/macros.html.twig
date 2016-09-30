@@ -255,29 +255,31 @@
 
     {% set content %}
     <div class="uk-grid">
-        <div class="uk-width-1-3">
-            <strong>{{ 'worflow status'|trans({}, "material") }}:</strong> <br/>
-            <div class="uk-flex-inline uk-margin-bottom">
-                <div class="uk-margin-right">{{ macros.workflowTrafficLight(item, workflowTitles) }}</div>
-                <div>{{workflowText}}</div>
-             </div>         
-        </div>
-        <div class="uk-width-1-3">
-            {% if workflowValidityDate != '0000-00-00 00:00:00' %}
+        {% if withTrafficLight %}
+            <div class="uk-width-1-3">
+                <strong>{{ 'worflow status'|trans({}, "material") }}:</strong> <br/>
+                <div class="uk-flex-inline uk-margin-bottom">
+                    <div class="uk-margin-right">{{ macros.workflowTrafficLight(item, workflowTitles) }}</div>
+                    <div>{{workflowText}}</div>
+                 </div>
+            </div>
+        {% endif %}
+        {% if workflowValidityDate != '0000-00-00 00:00:00' and withValidity %}
+            <div class="uk-width-1-3">
                 <div class="uk-margin-bottom">
                     <strong>{{ 'workflow validity date'|trans({}, "material") }}</strong>: <br/>
                     {{ workflowValidityDate|craue_date }}       
                 </div>
-            {% endif %}
-        </div>
-        <div class="uk-width-1-3">
-            {% if workflowResubmissionDate != '0000-00-00 00:00:00' %}
+            </div>
+        {% endif %}
+        {% if workflowResubmissionDate != '0000-00-00 00:00:00' and withResubmission %}
+            <div class="uk-width-1-3">
                 <div class="uk-margin-bottom">
                     <strong>{{ 'workflow resubmission date'|trans({}, "material") }}</strong>:<br/> 
                     {{ workflowResubmissionDate|craue_date }}
                 </div>
-           {% endif %}
-       </div>
+            </div>
+       {% endif %}
        {% if not workflowGroupArray is empty %}
             <div class="uk-width-1-2">
                 <strong>{{ 'workflow marked as read by groups'|trans({}, "material") }}:</strong><br/>
