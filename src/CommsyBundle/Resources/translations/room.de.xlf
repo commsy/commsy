@@ -36,7 +36,7 @@
             </trans-unit>
             <trans-unit id="10">
                 <source>hashtags</source>
-                <target>Schlagworte</target>
+                <target>Schlagwörter</target>
             </trans-unit>
              <trans-unit id="11">
                 <source>categories</source>
@@ -64,7 +64,7 @@
             </trans-unit>
             <trans-unit id="17">
                 <source>no hashtags</source>
-                <target>Keine Schlagworte vorhanden</target>
+                <target>Keine Schlagwörter vorhanden</target>
             </trans-unit>
             <trans-unit id="18">
                 <source>project</source>
