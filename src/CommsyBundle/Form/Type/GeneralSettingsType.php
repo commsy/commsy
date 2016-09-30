@@ -94,9 +94,6 @@ class GeneralSettingsType extends AbstractType
                         'Hide' => 'hide',
                         'Off' => 'off',
                     ),
-                    'attr' => array(
-                        'class' => 'uk-panel-box',
-                    ),
                 ),
                 'attr' => array(
                     'class' => 'uk-sortable',
