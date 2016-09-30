@@ -175,6 +175,8 @@ class ItemController extends Controller
         $workflowData['textGreen'] = $room->getWorkflowTrafficLightTextGreen();
         $workflowData['textYellow'] = $room->getWorkflowTrafficLightTextYellow();
         $workflowData['textRed'] = $room->getWorkflowTrafficLightTextRed();
+        $workflowData['withResubmission'] = $room->withWorkflowResubmission();
+        $workflowData['workflowValidity'] = $room->withWorkflowValidity();
 
         return array(
             'item' => $tempItem,
