@@ -61,8 +61,8 @@ class EtherpadEditSubscriber implements EventSubscriberInterface
             $result = $event->getControllerResult();
 
             if (array_key_exists('save', $result)) {
-                if (array_key_exists('itemId', $result)) {
-                    $materialItem = $this->materialService->getMaterial($result['itemId']);
+                if (array_key_exists('item', $result) && $result['item']->getItemID()) {
+                    $materialItem = $this->materialService->getMaterial($result['item']->getItemID());
                     if ($materialItem->getEtherpadEditor()) {
                         // get description text from etherpad
                         $etherpadService = $this->container->get('commsy.etherpad_service');

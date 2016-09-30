@@ -117,6 +117,8 @@ class ItemController extends Controller
         }
         
         return array(
+            // etherpad subscriber (material save)
+            // important: save and item->id parameter are needed
             'save' => true,
             'roomId' => $roomId,
             'item' => $item,
