@@ -106,50 +106,57 @@
                            var $textarea = $(this).attr('id').replace('cke_', '');
                            $('#'+$textarea).val(CKEDITOR.instances[$textarea].getData());
                         });
-                        
-                        // submit the form manually
-                        $.ajax({
-                            url: $this.options.editUrl,
-                            type: "POST",
-                            data: $(this).serialize()+'&'+buttonpressed+'=true'
-                        })
-                        .done(function(result) {
-                            //article.fadeOut(function() {
-                                article.html($(result));
 
-                                $this.registerArticleEvents(article);
+                        if(buttonpressed.includes("cancel")){
+                            let pathParts = window.location.pathname.split("/");
+                            pathParts.pop();
+                            window.location.href = pathParts.join("/");
+                        }
+                        else{
+                            // submit the form manually
+                            $.ajax({
+                                url: $this.options.editUrl,
+                                type: "POST",
+                                data: $(this).serialize()+'&'+buttonpressed+'=true'
+                            })
+                            .done(function(result) {
+                                //article.fadeOut(function() {
+                                    article.html($(result));
 
-                                let title = $(result).find('.uk-article-title');
-                                if (title !== null && title.text()) {
-                                    // material/todo/discussion title edited
-                                    if($this.options.editUrl.includes(window.location.pathname.split("/").pop())) {
-                                        $('.uk-breadcrumb').find('.last').find('span').html(title.text());
+                                    $this.registerArticleEvents(article);
+
+                                    let title = $(result).find('.uk-article-title');
+                                    if (title !== null && title.text()) {
+                                        // material/todo/discussion title edited
+                                        if($this.options.editUrl.includes(window.location.pathname.split("/").pop())) {
+                                            $('.uk-breadcrumb').find('.last').find('span').html(title.text());
+                                        }
+                                        // section/step/article title edited
+                                        else {
+                                            let editParts = $this.options.editUrl.split("/");
+                                            let anchor = $("a[href='#" + partMapping[editParts[editParts.length-3]] + editParts[editParts.length-2] + "']");
+                                            anchor.text(anchor.html().trim().split(" ")[0] + " " + title.text());
+                                        }
                                     }
-                                    // section/step/article title edited
-                                    else {
-                                        let editParts = $this.options.editUrl.split("/");
-                                        let anchor = $("a[href='#" + partMapping[editParts[editParts.length-3]] + editParts[editParts.length-2] + "']");
-                                        anchor.text(anchor.html().trim().split(" ")[0] + " " + title.text());
+                                    
+                                    let workflow = $(result).find('.cs-workflow-traffic-light').html();
+                                    if (workflow !== null) {
+                                        $('.uk-article').find('.cs-workflow-traffic-light').html(workflow);
                                     }
-                                }
-                                
-                                let workflow = $(result).find('.cs-workflow-traffic-light').html();
-                                if (workflow !== null) {
-                                    $('.uk-article').find('.cs-workflow-traffic-light').html(workflow);
-                                }
 
-                                let sections = $(result).find('#section-list');
-                                if(sections !== null){
-                                    let counter = 0;
-                                    sections.find("li").each(function() {
-                                        let section_container = $($(this).find("a:first").attr('href')).closest('article').parent().detach();
-                                        section_container.attr("id", "section_"+counter);
-                                        $("#section-content").append( section_container );
-                                        counter++;
-                                    })
-                                }
-                            //});
-                        });
+                                    let sections = $(result).find('#section-list');
+                                    if(sections !== null){
+                                        let counter = 0;
+                                        sections.find("li").each(function() {
+                                            let section_container = $($(this).find("a:first").attr('href')).closest('article').parent().detach();
+                                            section_container.attr("id", "section_"+counter);
+                                            $("#section-content").append( section_container );
+                                            counter++;
+                                        })
+                                    }
+                                //});
+                            });
+                        }
                     });
                 //});
             });
