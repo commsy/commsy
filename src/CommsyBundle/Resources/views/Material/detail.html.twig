@@ -221,9 +221,9 @@
                     </div>
         
                     {# workflow #}
-                    {% if showWorkflow %}
+                    {% if showWorkflow and (withTrafficLight or withResubmission or withValidity) %}
                         <div id="workflow{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editworkflow', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                            {{ macrosItem.workflow(material, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate, workflowTitles) }}
+                            {{ macrosItem.workflow(material, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate, workflowTitles, withTrafficLight, withResubmission, withValidity) }}
                         </div>
                     {% endif %}
         

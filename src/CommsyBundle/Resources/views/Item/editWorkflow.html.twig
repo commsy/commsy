@@ -20,44 +20,51 @@
     {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
     {{ form_start(form) }}
     {{ form_errors(form) }}
-    {{ form_label(form.workflowTrafficLight) }}
-    <div class="uk-flex">
+
+    <div
+        {% if not workflow.withTrafficLight %}
+            class="uk-hidden"
+        {% endif %}
+    >
+        {{ form_label(form.workflowTrafficLight) }}
         <div class="uk-flex">
-            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="{{ 'workflowNoStatus'|trans({}, 'item') }}">
-                <div>
-                    {{ form_widget(form.workflowTrafficLight[0]) }}
+            <div class="uk-flex">
+                <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="{{ 'workflowNoStatus'|trans({}, 'item') }}">
+                    <div>
+                        {{ form_widget(form.workflowTrafficLight[0]) }}
+                    </div>
+                    <div class="uk-margin-small-left">
+                        {{ macros.workflowStatus('3_none') }}
+                    </div>
                 </div>
-                <div class="uk-margin-small-left">
-                    {{ macros.workflowStatus('3_none') }}
+                <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="{{workflow.textGreen}}">
+                    <div>
+                        {{ form_widget(form.workflowTrafficLight[1]) }}
+                    </div>
+                    <div class="uk-margin-small-left">
+                        {{ macros.workflowStatus('0_green') }}
+                    </div>
                 </div>
-            </div>
-            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="{{workflow.textGreen}}">
-                <div>
-                    {{ form_widget(form.workflowTrafficLight[1]) }}
+                <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="{{workflow.textYellow}}">
+                    <div>
+                        {{ form_widget(form.workflowTrafficLight[2]) }}
+                    </div>
+                    <div class="uk-margin-small-left">
+                        {{ macros.workflowStatus('1_yellow') }}
+                    </div>
                 </div>
-                <div class="uk-margin-small-left">
-                    {{ macros.workflowStatus('0_green') }}
-                </div>
-            </div>
-            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="{{workflow.textYellow}}">
-                <div>
-                    {{ form_widget(form.workflowTrafficLight[2]) }}
-                </div>
-                <div class="uk-margin-small-left">
-                    {{ macros.workflowStatus('1_yellow') }}
-                </div>
-            </div>
-            <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="{{workflow.textRed}}">
-                <div>
-                    {{ form_widget(form.workflowTrafficLight[3]) }}
-                </div>
-                <div class="uk-margin-small-left">
-                    {{ macros.workflowStatus('2_red') }}
+                <div class="uk-flex uk-margin-small-top uk-margin-right" data-uk-tooltip title="{{workflow.textRed}}">
+                    <div>
+                        {{ form_widget(form.workflowTrafficLight[3]) }}
+                    </div>
+                    <div class="uk-margin-small-left">
+                        {{ macros.workflowStatus('2_red') }}
+                    </div>
                 </div>
             </div>
         </div>
+        <hr/>
     </div>
-    <hr/>
 
     <div
         {% if not workflow.withResubmission %}
