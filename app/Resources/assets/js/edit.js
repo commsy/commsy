@@ -108,9 +108,16 @@
                         });
 
                         if(buttonpressed.includes("cancel")){
-                            let pathParts = window.location.pathname.split("/");
-                            pathParts.pop();
-                            window.location.href = pathParts.join("/");
+                            // cancel editing a NEW entry => return to list view
+                            if($("#breadcrumb-nav .current.last").text().trim() == ""){
+                                let pathParts = window.location.pathname.split("/");
+                                pathParts.pop();
+                                window.location.href = pathParts.join("/");      
+                            }
+                            // cancel editing an EXISTING entry => return to detail view of the entry
+                            else{
+                                window.location.href = window.location.href;
+                            }
                         }
                         else{
                             // submit the form manually
