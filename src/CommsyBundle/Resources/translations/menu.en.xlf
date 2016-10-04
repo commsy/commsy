@@ -84,6 +84,10 @@
                 <source>dashboard</source>
                 <target>Dashboard</target>
             </trans-unit>
+            <trans-unit id="project">
+                <source>project</source>
+                <target>Project rooms</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

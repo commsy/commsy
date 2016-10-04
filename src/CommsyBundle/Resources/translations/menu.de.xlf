@@ -43,6 +43,10 @@
                 <source>settings</source>
                 <target>Einstellungen</target>
             </trans-unit>
+            <trans-unit id="project">
+                <source>project</source>
+                <target>Projekträume</target>
+            </trans-unit>
 
             <!-- settings sidebar menu entries -->
             <trans-unit id="general_settings">
