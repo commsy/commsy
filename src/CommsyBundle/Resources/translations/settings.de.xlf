@@ -575,7 +575,7 @@
             </trans-unit>
             <trans-unit id="guest_access">
                 <source>Guest Access</source>
-                <target>Gast Zugang</target>
+                <target>Gastzugang</target>
             </trans-unit>
         </body>
     </file>
