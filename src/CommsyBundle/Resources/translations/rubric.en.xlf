@@ -192,11 +192,11 @@
             </trans-unit>
             <trans-unit id="project">
                 <source>project</source>
-                <target>Project rooms</target>
+                <target>{0}Project room|{1}Project rooms</target>
             </trans-unit>
             <trans-unit id="institution">
                 <source>institution</source>
-                <target>Institutions</target>
+                <target>{0}Institution|{1}Institutions</target>
             </trans-unit>
             <trans-unit id="markdone">
                 <source>markdone</source>

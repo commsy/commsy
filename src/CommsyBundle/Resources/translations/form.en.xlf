@@ -282,6 +282,10 @@
                 <source>material</source>
                 <target>Materials</target>
             </trans-unit>
+            <trans-unit id="project">
+                <source>project</source>
+                <target>Project rooms</target>
+            </trans-unit>
             <trans-unit id="discussion">
                 <source>discussion</source>
                 <target>Discussions</target>

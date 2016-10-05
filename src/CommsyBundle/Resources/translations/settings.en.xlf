@@ -108,6 +108,10 @@
                 <source>Material</source>
                 <target>Material</target>
             </trans-unit>
+            <trans-unit id="project">
+                <source>project</source>
+                <target>Project rooms</target>
+            </trans-unit>
             <trans-unit id="discussion">
                 <source>Discussion</source>
                 <target>Discussion</target>

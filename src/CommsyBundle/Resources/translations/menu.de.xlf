@@ -47,6 +47,10 @@
                 <source>project</source>
                 <target>Projekträume</target>
             </trans-unit>
+            <trans-unit id="institution">
+                <source>institution</source>
+                <target>{0}Institution|{1}Institutionen</target>
+            </trans-unit>
 
             <!-- settings sidebar menu entries -->
             <trans-unit id="general_settings">

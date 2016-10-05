@@ -88,6 +88,10 @@
                 <source>project</source>
                 <target>Project rooms</target>
             </trans-unit>
+            <trans-unit id="institution">
+                <source>institution</source>
+                <target>{0}Institution|{1}Institutions</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
