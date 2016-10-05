@@ -561,6 +561,20 @@
                 <source>Status description</source>
                 <target>Status description:</target>
             </trans-unit>
+
+            <trans-unit id="open_for_guest">
+                <source>Is this room open for guests?</source>
+                <target>Is this room open for guests?</target>
+            </trans-unit>
+            <trans-unit id="material_open_for_guest">
+                <source>Are materials open for guests?</source>
+                <target>Are materials open for guests?</target>
+            </trans-unit>
+            <trans-unit id="assignment_restricted">
+                <source>Only members are allow to assign project rooms</source>
+                <target>Only members are allow to assign project rooms</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

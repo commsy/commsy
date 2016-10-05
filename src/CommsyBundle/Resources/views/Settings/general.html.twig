@@ -23,6 +23,11 @@
                             {{ form_row(form.title) }}
                             {{ form_row(form.language) }}
                             {{ form_row(form.access_check) }}
+                            {% if form.assignment_restricted is defined %}
+                                {{ form_row(form.assignment_restricted) }}
+                            {% endif %}
+
+
                         </div>
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
@@ -49,6 +54,16 @@
                             <div style="margin-bottom: 25px;">{{ 'Room description text'|trans({}, 'settings') }}</div>
                             {{ form_row(form.room_description) }}
                         </div>
+
+                        <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                            <h1 class='uk-panel-title'>{{ 'Guest Access'|trans({}, 'settings') }}</h1>
+                            {% if form.open_for_guest is defined %}
+                                {{ form_row(form.open_for_guest) }}
+                            {% endif %}
+                            {% if form.material_open_for_guest is defined %}
+                                {{ form_row(form.material_open_for_guest) }}
+                            {% endif %}
+                            </div>
 
                     {{ form_end(form) }}
                 </div>

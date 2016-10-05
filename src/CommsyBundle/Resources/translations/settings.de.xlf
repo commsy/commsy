@@ -561,6 +561,22 @@
                 <source>Status description</source>
                 <target>Status-Beschreibung:</target>
             </trans-unit>
+            <trans-unit id="open_for_guest">
+                <source>Is this room open for guests?</source>
+                <target>Ist der Raum für Gäste zugänglich?</target>
+            </trans-unit>
+            <trans-unit id="material_open_for_guest">
+                <source>Are materials open for guests?</source>
+                <target>Sind Materialien für Gäste zugänglich?</target>
+            </trans-unit>
+            <trans-unit id="assignment_restricted">
+                <source>Only members are allow to assign project rooms</source>
+                <target>Nur Raummitgliedern gestatten Projekträume zuzuweisen</target>
+            </trans-unit>
+            <trans-unit id="guest_access">
+                <source>Guest Access</source>
+                <target>Gast Zugang</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
