@@ -94,7 +94,7 @@
             </trans-unit>
             <trans-unit id="community_rooms">
                 <source>Community rooms</source>
-                <target>Gemeinschaftsräume</target>
+                <target>Zuordnung</target>
             </trans-unit>
             <trans-unit id="announcement">
                 <source>Announcement</source>
