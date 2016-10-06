@@ -347,7 +347,7 @@ class cs_server_item extends cs_guide_item
                             }
                             if ($daysTillLock >= $inactivitySendMailDeleteDays and
                                 ($user->getMailSendLocked() or empty($inactivitySendMailLockDays) and
-                                    empty($inactivityLockDays)) and !empty($inactivitySendMailDeleteDays)) {var_dump("testing");
+                                    empty($inactivityLockDays)) and !empty($inactivitySendMailDeleteDays)) {
                                 // send mail delete in the next y days
                                 if (!$user->getMailSendBeforeDelete()) {
                                         
