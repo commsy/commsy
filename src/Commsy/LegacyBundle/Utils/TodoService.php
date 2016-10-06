@@ -32,7 +32,7 @@ class TodoService
         }
 
         if ($sort) {
-            //$this->todoManager->setOrder($sort);
+            $this->todoManager->setSortOrder($sort);
         }
 
         $this->todoManager->select();
