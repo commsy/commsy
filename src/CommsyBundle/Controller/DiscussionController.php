@@ -33,7 +33,7 @@ class DiscussionController extends Controller
         if (!$discussionFilter) {
             $discussionFilter = $request->query->get('discussion_filter');
         }
-        
+       
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         
         $roomManager = $legacyEnvironment->getRoomManager();
@@ -69,7 +69,7 @@ class DiscussionController extends Controller
         }
 
         // get material list from manager service 
-        $discussions = $discussionService->getListDiscussions($roomId, $max, $start);
+        $discussions = $discussionService->getListDiscussions($roomId, $max, $start, $sort);
 
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();

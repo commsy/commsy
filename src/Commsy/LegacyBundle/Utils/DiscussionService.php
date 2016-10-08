@@ -32,7 +32,7 @@ class DiscussionService
         }
 
         if ($sort) {
-            $this->discussionManager->setOrder($sort);
+            $this->discussionManager->setSortOrder($sort);
         }
 
         $this->discussionManager->select();
