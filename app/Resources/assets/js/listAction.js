@@ -212,20 +212,22 @@
     });
     
     window.addEventListener('feedDidReload', function (e) {
-        let target = $(element.data('commsy-list-action').target) ? UI.$(element.data('commsy-list-action').target) : [];
-        if (!target.length) return;
-        
-        articles = target.find('article');
-        addCheckboxes(articles);
-        
-        inputs = target.find('input');
+        if (element) {
+            let target = $(element.data('commsy-list-action').target) ? UI.$(element.data('commsy-list-action').target) : [];
+            if (!target.length) return;
 
-        if (selectable) {
-            //articles.addClass('selectable');
+            articles = target.find('article');
             addCheckboxes(articles);
-        }
 
-        bind();
+            inputs = target.find('input');
+
+            if (selectable) {
+                //articles.addClass('selectable');
+                addCheckboxes(articles);
+            }
+
+            bind();
+        }
     });
     
     $('#commsy-sort-title').on('click', function(event) {
@@ -235,9 +237,17 @@
     $('#commsy-sort-modificator').on('click', function(event) {
         setSort('modificator');
     });
+
+    $('#commsy-sort-creator').on('click', function(event) {
+        setSort('creator');
+    });
     
     $('#commsy-sort-date').on('click', function(event) {
         setSort('date');
+    });
+
+    $('#commsy-sort-latest').on('click', function(event) {
+        setSort('latest');
     });
     
     $('#commsy-sort-assessment').on('click', function(event) {

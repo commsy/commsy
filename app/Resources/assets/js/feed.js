@@ -103,9 +103,17 @@
     $('#commsy-sort-modificator').on('click', function(event) {
         reloadCurrent('modificator', false);
     });
+
+    $('#commsy-sort-creator').on('click', function(event) {
+        reloadCurrent('creator', false);
+    });
     
     $('#commsy-sort-date').on('click', function(event) {
         reloadCurrent('date', true);
+    });
+
+    $('#commsy-sort-latest').on('click', function(event) {
+        reloadCurrent('latest', true);
     });
     
     $('#commsy-sort-assessment').on('click', function(event) {
