@@ -53,7 +53,13 @@
                             <h1 class='uk-panel-title'>{{ 'Room description'|trans({}, 'settings') }}</h1>
                             <div style="margin-bottom: 25px;">{{ 'Room description text'|trans({}, 'settings') }}</div>
                             {{ form_row(form.room_description) }}
+                            {% if form.community_rooms is defined %}
+                                {{ form_row(form.community_rooms) }}
+                            {% endif %}
                         </div>
+                        
+                            
+                        
                         {% if form.open_for_guest is defined or form.material_open_for_guest is defined %}
                             <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                                 <h1 class='uk-panel-title'>{{ 'Guest Access'|trans({}, 'settings') }}</h1>
