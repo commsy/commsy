@@ -26,6 +26,7 @@
     "gulp-babel": "^6.1.1",
     "gulp-concat": "^2.6.0",
     "gulp-cssnano": "^2.1.0",
+    "gulp-filter": "^4.0.0",
     "gulp-if": "^1.2.5",
     "gulp-jsoncombine": "^1.0.3",
     "gulp-less": "^3.0.3",
