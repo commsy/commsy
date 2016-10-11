@@ -18,5 +18,6 @@ ivory_ck_editor:
         cs_item_config:
             toolbar: [ [ "Cut", "Copy", "Paste", "PasteFromWord", "Undo", "Redo" ], ["Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript", "SpecialChar"] , ["NumberedList", "BulletedList", "Outdent", "Indent", "Blockquote"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"], "/", ["Format"], ["Font"], ["FontSize"], ["TextColor", "BGColor", "RemoveFormat", "Maximize", "Source"], ["Link", "Unlink", "Table", "HorizontalRule", "Smiley", "Flash"], ["CommSyImage", "CommSyDocument", "CommSyAudio", "CommSyVideo"] ]
             extraPlugins: "CommSyImage,CommSyAudio,CommSyVideo,CommSyDocument"
+            floatSpaceDockedOffsetX: 180
         cs_annotation_config:
             toolbar: [ [ "Cut", "Copy", "Paste", "PasteFromWord", "Undo", "Redo" ], ["Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript", "SpecialChar"] ]
