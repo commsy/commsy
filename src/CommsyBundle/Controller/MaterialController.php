@@ -1293,6 +1293,7 @@ class MaterialController extends Controller
      */
     public function editSectionsAction($roomId, $itemId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $materialService = $this->get('commsy_legacy.material_service');
 
         $material = $materialService->getMaterial($itemId);
@@ -1326,6 +1327,8 @@ class MaterialController extends Controller
                 $formData = $form->getData();
 
                 $material = $transformer->applyTransformation($material, $formData);
+
+                $material->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
                 $material->save();
 
