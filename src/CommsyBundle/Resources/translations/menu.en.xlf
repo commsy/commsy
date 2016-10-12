@@ -86,7 +86,7 @@
             </trans-unit>
             <trans-unit id="breadcrumb_copy">
                 <source>copy</source>
-                <target>Copy</target>
+                <target>My copies</target>
             </trans-unit>
             <trans-unit id="project">
                 <source>project</source>

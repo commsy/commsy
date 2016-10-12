@@ -234,6 +234,10 @@
                 <source>Copy</source>
                 <target>Copy</target>
             </trans-unit>
+            <trans-unit id="mycopies">
+                <source>Copies</source>
+                <target>My copies</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

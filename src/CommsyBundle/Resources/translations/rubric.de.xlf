@@ -232,7 +232,11 @@
             </trans-unit>
             <trans-unit id="copy">
                 <source>Copy</source>
-                <target>Kopien</target>
+                <target>Kopie</target>
+            </trans-unit>
+            <trans-unit id="mycopies">
+                <source>Copies</source>
+                <target>Meine Kopien</target>
             </trans-unit>
         </body>
     </file>

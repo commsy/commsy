@@ -94,7 +94,7 @@
             </trans-unit>
             <trans-unit id="breadcrumb_copy">
                 <source>copy</source>
-                <target>Kopien</target>
+                <target>Meine Kopien</target>
             </trans-unit>
         </body>
     </file>
