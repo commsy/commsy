@@ -362,6 +362,10 @@
                 <source>date-until</source>
                 <target>bis</target>
             </trans-unit>
+            <trans-unit id="type">
+                <source>Type</source>
+                <target>Typ</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

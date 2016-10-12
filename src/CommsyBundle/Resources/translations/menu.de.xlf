@@ -92,6 +92,10 @@
                 <source>dashboard</source>
                 <target>Dashboard</target>
             </trans-unit>
+            <trans-unit id="breadcrumb_copy">
+                <source>copy</source>
+                <target>Kopien</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

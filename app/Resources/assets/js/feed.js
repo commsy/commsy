@@ -123,6 +123,10 @@
     $('#commsy-sort-workflow_status').on('click', function(event) {
         reloadCurrent('workflow_status', false);
     });
+
+    $('#commsy-sort-status').on('click', function(event) {
+        reloadCurrent('status', false);
+    });
     
     $('#commsy-sort-time').on('click', function(event) {
         reloadCurrent('time', false);
