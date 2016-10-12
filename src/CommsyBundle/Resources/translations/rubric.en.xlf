@@ -126,6 +126,14 @@
                 <source>selected entries</source>
                 <target>Choose action</target>
             </trans-unit>
+            <trans-unit id="action_insert">
+                <source>insert</source>
+                <target>Insert</target>
+            </trans-unit>
+            <trans-unit id="action_remove">
+                <source>remove</source>
+                <target>Remove</target>
+            </trans-unit>
             <trans-unit id="31">
                 <source>mark read</source>
                 <target>Mark as read</target>
@@ -221,6 +229,10 @@
             <trans-unit id="place">
                 <source>place</source>
                 <target>Place</target>
+            </trans-unit>
+            <trans-unit id="copy">
+                <source>Copy</source>
+                <target>Copy</target>
             </trans-unit>
         </body>
     </file>

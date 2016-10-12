@@ -257,6 +257,10 @@
     $('#commsy-sort-workflow_status').on('click', function(event) {
         setSort('workflow_status');
     });
+
+    $('#commsy-sort-status').on('click', function(event) {
+        setSort('status');
+    });
     
     function setSort (newSort) {
         if (newSort == sort) {

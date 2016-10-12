@@ -32,7 +32,7 @@ class CopyFilterType extends AbstractType
                 ),
                 'required' => false,
                 'placeholder' => 'no restrictions',
-                'translation_domain' => 'rubric',
+                'translation_domain' => 'form',
             ))
         ;
     }
