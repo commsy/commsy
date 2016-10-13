@@ -236,6 +236,18 @@ class cs_server_item extends cs_guide_item
                     $user_array = $user_manager->getUserLastLoginLaterAs($date_lastlogin_do, $portal_item->getItemID(), 0);
                     if (!empty($user_array)) {
                         foreach ($user_array as $user) {
+
+                            if ($user->getStatus() == 0
+                                && !$user->getNotifyLockDate()
+                                && !$user->getMailSendBeforeLock()
+                                && !$user->getMailSendLocked()) {
+                                $user->setNotifyLockDate();
+                                $user->setMailSendBeforeLock();
+                                $user->setMailSendLocked();
+                                $user->setLockSendMailDate();
+                                $user->save();
+                            }
+
                             // set user mail for log
                             $to = $user->getEmail();
                             // calc days from lastlogin till now
