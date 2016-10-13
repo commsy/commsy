@@ -330,6 +330,10 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
             $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.status';
          } elseif ( $this->_sort_order == 'status_rev' ) {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.status DESC';
+         } elseif ( $this->_sort_order == 'modificator' ) {
+            $query .= ' ORDER BY people.lastname';
+         } elseif ( $this->_sort_order == 'modificator_rev' ) {
+            $query .= ' ORDER BY people.lastname DESC';
          }
       }else{
          $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.date DESC';

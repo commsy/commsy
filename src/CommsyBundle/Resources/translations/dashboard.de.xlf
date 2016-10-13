@@ -10,6 +10,18 @@
                 <source>external access</source>
                 <target>Freigegebene Einträge</target>
             </trans-unit>
+            <trans-unit id="externalAccessMyEntries">
+                <source>external access to my entries</source>
+                <target>Meine freigegebenen Einträge</target>
+            </trans-unit>
+            <trans-unit id="externalAccessOtherEntries">
+                <source>external access to other entries</source>
+                <target>Andere freigegebene Einträge</target>
+            </trans-unit>
+            <trans-unit id="noItems">
+                <source>no items</source>
+                <target>Keine Einträge</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

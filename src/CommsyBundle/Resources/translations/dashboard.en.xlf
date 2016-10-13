@@ -10,6 +10,18 @@
                 <source>external access</source>
                 <target>External access</target>
             </trans-unit>
+            <trans-unit id="externalAccessMyEntries">
+                <source>external access to my entries</source>
+                <target>External access to my entries</target>
+            </trans-unit>
+            <trans-unit id="externalAccessOtherEntries">
+                <source>external access to other entries</source>
+                <target>External access to other entries</target>
+            </trans-unit>
+            <trans-unit id="noItems">
+                <source>no items</source>
+                <target>No items</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -118,6 +118,10 @@
                 <source>link to entry</source>
                 <target>Link zum Eintrag</target>
             </trans-unit>
+            <trans-unit id="search results">
+                <source>search results</source>
+                <target>Suchergebnisse</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
