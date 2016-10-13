@@ -26,6 +26,10 @@
                 <source>No hashtag has been created yet.</source>
                 <target>Bisher wurden noch keine Schlagwörter angelegt.</target>
             </trans-unit>
+            <trans-unit id="hashtag-combine">
+                <source>Combine hashtags</source>
+                <target>Schlagwörter zusammenlegen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
