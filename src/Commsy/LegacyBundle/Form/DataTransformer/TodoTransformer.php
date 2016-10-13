@@ -40,13 +40,14 @@ class TodoTransformer implements DataTransformerInterface
             }
             
             if (get_class($todoItem) != 'cs_step_item') {
-                if ($todoItem->getDate()) {
-                    if ($todoItem->getDate() != '9999-00-00 00:00:00') {
-                        $datetimeDueDate = new \DateTime($todoItem->getDate());
-                        $todoData['due_date']['date'] = $datetimeDueDate;
-                        $todoData['due_date']['time'] = $datetimeDueDate;
-                    }
+                if ($todoItem->getDate() && $todoItem->getDate() != '9999-00-00 00:00:00') {
+                    $datetimeDueDate = new \DateTime($todoItem->getDate());
+                } else{
+                    $datetimeDueDate = new \DateTime();
                 }
+                $todoData['due_date']['date'] = $datetimeDueDate;
+                $todoData['due_date']['time'] = $datetimeDueDate;
+
                 $todoData['steps'] = array();
                 foreach($todoItem->getStepItemList()->to_array() as $id => $item){
                     $todoData['steps'][$id] = $item->getTitle();
