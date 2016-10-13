@@ -42,12 +42,15 @@ class RoomController extends Controller
             'hasCategories' => $roomItem->withTags(),
         ));
 
+        $header = "latest entries";
+
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isValid()) {
             // set filter conditions in feed generator
             $roomFeedGenerator = $this->get('commsy_legacy.room_feed_generator');
             $roomFeedGenerator->setFilterConditions($filterForm);
+            $header = "search results";
         }
 
         // ...and prepare some data
@@ -145,6 +148,7 @@ class RoomController extends Controller
             'bgImageFilepath' => $backgroundImage,
             'serviceLinkExternal' => $serviceLinkExternal,
             'rss' => $rss,
+            'header' => $header,
         ];
     }
 
