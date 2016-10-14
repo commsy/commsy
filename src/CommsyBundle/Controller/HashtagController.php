@@ -129,7 +129,23 @@ class HashtagController extends Controller
             // persist changes / delete hashtag
             $labelManager = $legacyEnvironment->getLabelManager();
 
-            die('exit');
+            $mergeData=$mergeForm->getData();
+            $firstID=$mergeData['first']->getItemId();
+            $secondID=$mergeData['second']->getItemId();
+
+            $buzzwordItemOne = $labelManager->getItem($firstID);
+            $buzzwordItemTwo = $labelManager->getItem($secondID);
+                    
+            // change name of item one, save it and delete the item two
+            $buzzwordOne = $buzzwordItemOne->getName();
+            $buzzwordTwo = $buzzwordItemTwo->getName();
+
+            $newName = $buzzwordOne. "/" . $buzzwordTwo;
+
+            $buzzwordItemOne->setName($newName);
+            $buzzwordItemOne->setModificationDate(getCurrentDateTimeInMySQL());
+            $buzzwordItemOne->save();
+            $buzzwordItemTwo->delete();
 
             
 

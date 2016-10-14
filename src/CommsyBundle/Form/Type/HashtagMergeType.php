@@ -64,6 +64,7 @@ class HashtagMergeType extends AbstractType
                         ),
                         'label' => 'Combine',
                         'translation_domain' => 'hashtag',
+                        'validation_groups' => false,
                     ])
             ;
 
