@@ -82,19 +82,19 @@ class HashtagController extends Controller
             $hashtag->setType('buzzword');
         }
 
-        $form = $this->createForm(HashtagEditType::class, $hashtag);
+        $editForm = $this->createForm(HashtagEditType::class, $hashtag);
 
-        $form->handleRequest($request);
-        if ($form->isValid()) {
+        $editForm->handleRequest($request);
+        if ($editForm->isValid()) {
             // persist changes / delete hashtag
             $labelManager = $legacyEnvironment->getLabelManager();
 
-            if ($form->has('delete') && $form->get('delete')->isClicked()) {
+            if ($editForm->has('delete') && $editForm->get('delete')->isClicked()) {
                 $buzzwordItem = $labelManager->getItem($hashtag->getItemId());
                 $buzzwordItem->delete();
             }
 
-            if ($form->has('new') && $form->get('new')->isClicked()) {
+            if ($editForm->has('new') && $editForm->get('new')->isClicked()) {
                 $buzzwordItem = $labelManager->getNewItem();
 
                 $buzzwordItem->setLabelType('buzzword');
@@ -105,7 +105,7 @@ class HashtagController extends Controller
                 $buzzwordItem->save();
             }
 
-            if ($form->has('update') && $form->get('update')->isClicked()) {
+            if ($editForm->has('update') && $editForm->get('update')->isClicked()) {
                 $buzzwordItem = $labelManager->getItem($hashtag->getItemId());
 
                 $buzzwordItem->setName($hashtag->getName());
@@ -121,7 +121,7 @@ class HashtagController extends Controller
         $hashtags = $repository->findRoomHashtags($roomId);
 
         return [
-            'form' => $form->createView(),
+            'editForm' => $editForm->createView(),
             'roomId' => $roomId,
             'hashtags' => $hashtags,
             'labelId' => $labelId,

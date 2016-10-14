@@ -1,6 +1,6 @@
 {% extends 'CommsyBundle:Base:room.html.twig' %}
 
-{% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
+{% form_theme editForm 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
 
 {% block content %}
     <div class="uk-grid">
@@ -19,9 +19,9 @@
                     <div class="uk-grid">
                         {# form column #}
                         <div class="uk-width-1-3">
-                            {{ form_start(form) }}
-                            {{ form_widget(form) }}
-                            {{ form_end(form) }}
+                            {{ form_start(editForm) }}
+                            {{ form_widget(editForm) }}
+                            {{ form_end(editForm) }}
                         </div>
 
                         {# show existing hashtags #}
