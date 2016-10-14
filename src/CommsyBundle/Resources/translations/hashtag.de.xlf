@@ -30,6 +30,10 @@
                 <source>Combine hashtags</source>
                 <target>Schlagwörter zusammenlegen</target>
             </trans-unit>
+            <trans-unit id="combine">
+                <source>Combine</source>
+                <target>Zusammenlegen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
