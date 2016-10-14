@@ -94,3 +94,4 @@ wikis/*
 web/commsy
 var
 htdocs/jsMath/*
+vagrant/*
