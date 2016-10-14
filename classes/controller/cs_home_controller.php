@@ -585,6 +585,7 @@
 									}
 									$column2 = $view->_text_as_html_short($date.$time);
 									$column3 = $item->getPlace();
+									$color = $item->getColor();
 								}
 								else
 								{
@@ -788,7 +789,8 @@
 							'has_attachments'	=> $with_files,
 							'attachment_count'	=> $file_count,
 							'attachment_infos'	=> $attachment_infos,
-							'may_enter'			=> $may_enter
+							'may_enter'			=> $may_enter,
+							'color'             => $color
 						);
 
 						$item = $list->getNext();

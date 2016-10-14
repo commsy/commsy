@@ -260,6 +260,11 @@
 										{/if}
 		                            {/if}
 	                        </div>
+	                        <div class="column_20">
+    	                        {if $rubric@key == 'date'}
+	                        		<div style="width:10px; height:10px; margin-top:7px; margin-left:2px; background-color:{$item.color}; border:1px solid #cccccc;">&nbsp;</div>
+	                        	{/if}
+	                        </div>
 		                    <div class="clear"> </div>
 	                    </div>
 	                {/foreach}
