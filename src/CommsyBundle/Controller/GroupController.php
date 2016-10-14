@@ -181,7 +181,7 @@ class GroupController extends Controller
      * @Route("/room/{roomId}/group/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'title', Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -215,7 +215,7 @@ class GroupController extends Controller
         }
 
         // get group list from manager service 
-        $groups = $groupService->getListGroups($roomId, $max, $start);
+        $groups = $groupService->getListGroups($roomId, $max, $start, $sort);
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();

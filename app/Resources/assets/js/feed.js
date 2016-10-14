@@ -170,7 +170,11 @@
         sort = newSort;
         
         var el = $('.feed-load-more');
-        
+
+        if(el.length < 1){
+            el = $('.feed-load-more-grid');
+        }
+
         // get current query string
         var queryString = document.location.search;
 
