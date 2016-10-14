@@ -585,7 +585,11 @@
 									}
 									$column2 = $view->_text_as_html_short($date.$time);
 									$column3 = $item->getPlace();
-									$color = $item->getColor();
+									if ($item->getColor() != '') {
+									    $color = $item->getColor();
+									} else {
+    									$color = false;
+									}
 								}
 								else
 								{
