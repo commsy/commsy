@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
 use CommsyBundle\Form\Type\HashtagEditType;
+use CommsyBundle\Form\Type\HashtagMergeType;
 use CommsyBundle\Entity\Labels;
 
 class HashtagController extends Controller
@@ -84,6 +85,7 @@ class HashtagController extends Controller
 
         $editForm = $this->createForm(HashtagEditType::class, $hashtag);
 
+
         $editForm->handleRequest($request);
         if ($editForm->isValid()) {
             // persist changes / delete hashtag
@@ -120,11 +122,28 @@ class HashtagController extends Controller
 
         $hashtags = $repository->findRoomHashtags($roomId);
 
+        $mergeForm = $this->createForm(HashtagMergeType::class, null, ['roomId'=>$roomId]);
+
+        $mergeForm->handleRequest($request);
+        if ($mergeForm->isValid()) {
+            // persist changes / delete hashtag
+            $labelManager = $legacyEnvironment->getLabelManager();
+
+            die('exit');
+
+            
+
+            return $this->redirectToRoute('commsy_hashtag_edit', [
+                'roomId' => $roomId,
+            ]);
+        }
+
         return [
             'editForm' => $editForm->createView(),
             'roomId' => $roomId,
             'hashtags' => $hashtags,
             'labelId' => $labelId,
+            'mergeForm' => $mergeForm->createView(),
         ];
     }
 }

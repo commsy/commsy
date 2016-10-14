@@ -46,26 +46,10 @@
                     </div>
                 </div>
                 <div class="uk-grid">
-
-                    <div class="uk-width-1-3 uk-flex">
-                        
-                        <select>
-                            {% for hashtag in hashtags %}
-                            <option value= "{{- hashtag.itemId -}}">{{- hashtag.name -}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="uk-width-1-3 uk-flex">
-                        <select>
-                            {% for hashtag in hashtags %}
-                            <option value="{{- hashtag.itemId -}}">{{- hashtag.name -}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="uk-width-1-3">
-                        <button class="uk-button-primary uk-button">
-                            {{ 'Combine'|trans({}, 'hashtag') }}
-                        </button>
+                    <div>
+                            {{ form_start(mergeForm) }}
+                            {{ form_widget(mergeForm) }}
+                            {{ form_end(mergeForm) }}
                     </div>
                 </div>
             </div>
