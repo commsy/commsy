@@ -276,6 +276,16 @@ class TodoController extends Controller
     	        $noticedManager->markNoticed($id, $versionId);
     	        $readerManager->markRead($id, $versionId);
     	        
+                $stepList =$item->getStepItemList();
+                if ( !empty($stepList) ){
+                    $stepItem = $stepList->getFirst();
+                    while($stepItem){
+                       $noticedManager->markNoticed($stepItem->getItemID(),$versionId);
+                       $readerManager->markRead($stepItem->getItemID(),$versionId);
+                       $stepItem = $stepList->getNext();
+                    }
+                }
+
     	        $annotationList =$item->getAnnotationList();
     	        if ( !empty($annotationList) ){
     	            $annotationItem = $annotationList->getFirst();
