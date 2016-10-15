@@ -51,15 +51,20 @@ class UserService
         $this->userManager->resetLimits();
     }
 
-    public function getListUsers($roomId, $max = NULL, $start = NULL, $moderation = false)
+    public function getListUsers($roomId, $max = NULL, $start = NULL, $moderation = false, $sort = NULL)
     {
-       $this->userManager->setContextLimit($roomId);
+        $this->userManager->setContextLimit($roomId);
         if ($max !== NULL && $start !== NULL) {
             $this->userManager->setIntervalLimit($start, $max);
         }
         if (!$moderation) {
             $this->userManager->setUserLimit();
         }
+
+        if ($sort) {
+            $this->userManager->setSortOrder($sort);
+        }
+
         $this->userManager->setOrder('name');
         $this->userManager->select();
         $userList = $this->userManager->get();

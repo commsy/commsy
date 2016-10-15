@@ -136,6 +136,14 @@
         reloadCurrent('place', false);
     });
 
+    $('#commsy-sort-name').on('click', function(event) {
+        reloadCurrent('name', false);
+    });
+
+    $('#commsy-sort-email').on('click', function(event) {
+        reloadCurrent('email', false);
+    });
+
     function reloadCurrent (newSort, invert) {
         feedStart = 0;
         
