@@ -2646,6 +2646,30 @@ class cs_user_item extends cs_item {
    	$this->_unsetExtra('LOCK_SEND_MAIL_DATE');
    }
 
+   function setNotifyLockDate(){
+    $this->_addExtra('NOTIFY_LOCK_DATE', getCurrentDateTimeInMySQL());
+   }
+   
+   function getNotifyLockDate(){
+    return $this->_getExtra('NOTIFY_LOCK_DATE');
+   }
+   
+   function unsetNotifyLockDate(){
+    $this->_unsetExtra('NOTIFY_LOCK_DATE');
+   }
+
+  function setNotifyDeleteDate(){
+    $this->_addExtra('NOTIFY_DELETE_DATE', getCurrentDateTimeInMySQL());
+   }
+   
+   function getNotifyDeleteDate(){
+    return $this->_getExtra('NOTIFY_DELETE_DATE');
+   }
+   
+   function unsetNotifyDeleteDate(){
+    $this->_unsetExtra('NOTIFY_DELETE_DATE');
+   }
+
     function resetInactivity() {
         $this->unsetMailSendBeforeLock();
         $this->unsetMailSendLocked();
@@ -2654,6 +2678,8 @@ class cs_user_item extends cs_item {
         $this->unsetMailSendNextLock();
         $this->unsetLockSendMailDate();
         $this->unsetLock();
+        $this->unsetNotifyLockDate();
+        $this->unsetNotifyDeleteDate();
 
         $this->save();
     }
