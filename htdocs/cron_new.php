@@ -440,22 +440,28 @@ $file = fopen('var/'.$filename,'w+');
 
 fwrite($file,'<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head><body>');
 
-$memory_limit2 = 640 * 1024 * 1024;
-$memory_limit = ini_get('memory_limit');
-if ( !empty($memory_limit) ) {
-   if ( strstr($memory_limit,'M') ) {
-      $memory_limit = substr($memory_limit,0,strlen($memory_limit)-1);
-      $memory_limit = $memory_limit * 1024 * 1024;
-   } elseif ( strstr($memory_limit,'K') ) {
-      $memory_limit = substr($memory_limit,0,strlen($memory_limit)-1);
-      $memory_limit = $memory_limit * 1024;
+
+$currentMemoryLimit = ini_get('memory_limit');
+
+// If the current memory limit equals "-1" (typically CLI), do not adjust it
+if ($currentMemoryLimit !== "-1") {
+   if ( !empty($currentMemoryLimit) ) {
+      if ( strstr($currentMemoryLimit,'M') ) {
+         $currentMemoryLimit = substr($currentMemoryLimit,0,strlen($currentMemoryLimit)-1);
+         $currentMemoryLimit = $currentMemoryLimit * 1024 * 1024;
+      } elseif ( strstr($currentMemoryLimit,'K') ) {
+         $currentMemoryLimit = substr($currentMemoryLimit,0,strlen($currentMemoryLimit)-1);
+         $currentMemoryLimit = $currentMemoryLimit * 1024;
+      }
    }
-}
-if ( $memory_limit < $memory_limit2 ) {
-   ini_set('memory_limit',$memory_limit2);
-   $memory_limit3 = ini_get('memory_limit');
-   if ( $memory_limit3 != $memory_limit2 ) {
-      fwrite($file, 'Waring: Can not set memory limit. Script may stop. Please try 640M in your php.ini.'.LF);
+
+   $newMemoryLimit = 640 * 1024 * 1024;
+   if ( $currentMemoryLimit < $newMemoryLimit ) {
+      ini_set('memory_limit',$newMemoryLimit);
+      $memory_limit3 = ini_get('memory_limit');
+      if ( $memory_limit3 != $newMemoryLimit ) {
+         fwrite($file, 'Waring: Can not set memory limit. Script may stop. Please try 640M in your php.ini.'.LF);
+      }
    }
 }
 
