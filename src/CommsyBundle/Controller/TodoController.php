@@ -879,7 +879,6 @@ class TodoController extends Controller
      */
     public function savestepsAction($roomId, $itemId, Request $request)
     {
-        dump($request);
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
@@ -953,7 +952,6 @@ class TodoController extends Controller
         $submittedFormData = $form->getData();
 
         if ($form->isValid()) {
-            dump($form->getData());
             $saveType = $form->getClickedButton()->getName();
             if ($saveType == 'save') {
                 $formData = $form->getData();
@@ -988,7 +986,6 @@ class TodoController extends Controller
      */
     public function savedetailsAction($roomId, $itemId, Request $request)
     {
-        dump($request);
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
