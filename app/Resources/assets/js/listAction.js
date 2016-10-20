@@ -464,16 +464,17 @@
                 $(target).trigger('changed.uk.dom');
                 
                 bind();
-                
-                if (!hideMessage) {
-                    UIkit.notify({
-                        message : message,
-                        status  : status,
-                        timeout : timeout,
-                        pos     : 'top-center'
-                    });
-                }
             }
+
+            if (!hideMessage) {
+                UIkit.notify({
+                    message : message,
+                    status  : status,
+                    timeout : timeout,
+                    pos     : 'top-center'
+                });
+            }
+
         }).fail(function(jqXHR, textStatus, errorThrown) {
             UIkit.notify(errorMessage, 'danger');
         });

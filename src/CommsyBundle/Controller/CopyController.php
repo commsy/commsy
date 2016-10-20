@@ -292,8 +292,6 @@ class CopyController extends Controller
             $result['countSelected'] = $countArray['count'];
 
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('removed %count% entries from list',count($selectedIds), array('%count%' => count($selectedIds)), 'messages');
-
-            error_log($message);
         } 
         
         return new JsonResponse([
