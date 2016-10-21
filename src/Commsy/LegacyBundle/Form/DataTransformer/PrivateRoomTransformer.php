@@ -49,6 +49,13 @@ class PrivateRoomTransformer implements DataTransformerInterface
             } else {
                 $privateRoomData['switchRoomStatus'] = false;
             }
+            if($privateRoomItem->getPrivateRoomNewsletterActivity() == 'none'){
+                $privateRoomData['newsletterStatus'] = '1';
+            } elseif ($privateRoomItem->getPrivateRoomNewsletterActivity() == 'weekly') {
+                $privateRoomData['newsletterStatus'] = '2';
+            } elseif ($privateRoomItem->getPrivateRoomNewsletterActivity() == 'daily') {
+                $privateRoomData['newsletterStatus'] = '3';
+            }
         }
         return $privateRoomData;
     }
@@ -93,6 +100,13 @@ class PrivateRoomTransformer implements DataTransformerInterface
             } else {
                 $privateRoomObject->setCSBarShowOldRoomSwitcher('-1');
             }
+
+            $set_to = 'none';
+            if(isset($privateRoomData['newsletterStatus']) && !empty($privateRoomData['newsletterStatus'])) {
+                if($privateRoomData['newsletterStatus'] == '2') $set_to = 'weekly';
+                elseif($privateRoomData['newsletterStatus'] == '3') $set_to = 'daily';
+            }
+            $privateRoomObject->setPrivateRoomNewsletterActivity($set_to);
         }
         return $privateRoomObject;
     }
