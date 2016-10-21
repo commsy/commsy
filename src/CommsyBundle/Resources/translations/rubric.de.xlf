@@ -128,11 +128,15 @@
             </trans-unit>
             <trans-unit id="action_insert">
                 <source>insert</source>
-                <target>Einfügen</target>
+                <target>Einfügen in "%roomname%"</target>
+            </trans-unit>
+            <trans-unit id="action_insert_stack">
+                <source>insert stack</source>
+                <target>Einfügen in "Meine Ablage"</target>
             </trans-unit>
             <trans-unit id="action_remove">
                 <source>remove</source>
-                <target>Löschen</target>
+                <target>Löschen aus "Meine Kopien"</target>
             </trans-unit>
             <trans-unit id="31">
                 <source>mark read</source>

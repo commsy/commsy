@@ -153,6 +153,7 @@ class CopyController extends Controller
             'module' => 'copies',
             'itemsCountArray' => $itemsCountArray,
             'usageInfo' => null,
+            'roomname' => $roomItem->getTitle(),
         );
     }
 
