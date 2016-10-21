@@ -1387,11 +1387,9 @@ class cs_user_item extends cs_item {
       if ( !$user_item->isOnlyReadUser() ) {
          if ( $user_item->isRoot() or
                ( $user_item->getContextID() == $this->getContextID()
-                 and ( $user_item->isModerator()
-                       or ( $user_item->isUser()
-                            and ( $this->getUserID() == $user_item->getUserID() )
-                            and ( $this->getAuthSource() == $user_item->getAuthSource() )
-                          )
+                 and ( $user_item->isUser()
+                        and ( $this->getUserID() == $user_item->getUserID() )
+                        and ( $this->getAuthSource() == $user_item->getAuthSource() )
                      )
                )
             ) {

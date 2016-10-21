@@ -53,7 +53,7 @@
 
                                         {# save #}
                                         <li>
-                                            <a href="{{ path('commsy_item_download', {'roomId': roomId, 'itemId': discussion.itemId}) }}">
+                                            <a href="{{ path('commsy_item_download', {'roomId': roomId, 'itemId': discussion.itemId}) }}" download>
                                                 <i class="uk-icon-small uk-icon-save uk-icon-justify uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
                                             </a>
                                         </li>

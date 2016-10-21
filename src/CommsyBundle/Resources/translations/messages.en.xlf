@@ -362,6 +362,14 @@
                 <source>Set status of %count% entries to %status%</source>
                 <target>{0} No entries changed.|{1} Set status of %count% entry to "%status%".|]1,Inf[ Set status of %count% entries to "%status%".</target>
            </trans-unit>
+           <trans-unit id="entriesInserted">
+                <source>inserted %count% entries in this room</source>
+                <target>{0} No entry inserted.|{1} Inserted one entry into this room.|]1,Inf[ Inserted %count% entries into this room.</target>
+           </trans-unit>
+           <trans-unit id="entriesRemoved">
+                <source>removed %count% entries from list</source>
+                <target>{0} No entrey removed.|{1} Removed one entry from list.|]1,Inf[ Removed %count% entries from list.</target>
+           </trans-unit>
         </body>
     </file>
 </xliff>
