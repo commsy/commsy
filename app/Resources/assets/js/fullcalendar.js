@@ -6,7 +6,7 @@
         $('#calendar').fullCalendar({
             // put your options and callbacks here
             firstDay: 1,
-            lang: 'de',
+            locale: $("#calendar").data("options").locale,
             businesHours: {
                 start: '8:00',
                 end: '16:00',
@@ -69,7 +69,7 @@
         $('#calendarDashboard').fullCalendar({
             // put your options and callbacks here
             firstDay: 1,
-            lang: 'de',
+            locale: $("#calendarDashboard").data("options").locale,
             businesHours: {
                 start: '8:00',
                 end: '16:00',

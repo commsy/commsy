@@ -448,29 +448,33 @@
           url: url
         }).done(function(result) {
             let foundArticles = false;
-            if ($(result).filter('article').length) {
-                foundArticles = true;
-            } else if ($(result).find('article').length) {
-                foundArticles = true
+            if (/<[a-z][\s\S]*>/i.test(result)){
+                if ($(result).filter('article').length) {
+                    foundArticles = true;
+                } else if ($(result).find('article').length) {
+                    foundArticles = true
+                }
             }
-            
+
+            let target = el.data('feed').target;
+            $(target).empty();
+
             if (foundArticles) {
-                let target = el.data('feed').target;
-                $(target).empty();
                 $(target).html(result);
                 $(target).trigger('changed.uk.dom');
                 
                 bind();
-                
-                if (!hideMessage) {
-                    UIkit.notify({
-                        message : message,
-                        status  : status,
-                        timeout : timeout,
-                        pos     : 'top-center'
-                    });
-                }
             }
+
+            if (!hideMessage) {
+                UIkit.notify({
+                    message : message,
+                    status  : status,
+                    timeout : timeout,
+                    pos     : 'top-center'
+                });
+            }
+
         }).fail(function(jqXHR, textStatus, errorThrown) {
             UIkit.notify(errorMessage, 'danger');
         });

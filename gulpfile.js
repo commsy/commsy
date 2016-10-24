@@ -150,7 +150,7 @@ gulp.task('js', function() {
 
         config.bowerDir + '/moment/moment.js',
         config.bowerDir + '/fullcalendar/dist/fullcalendar.js',
-        config.bowerDir + '/fullcalendar/dist/lang-all.js',
+        config.bowerDir + '/fullcalendar/dist/locale-all.js',
         
         config.bowerDir + '/tooltipster/dist/js/tooltipster.bundle.min.js',
 

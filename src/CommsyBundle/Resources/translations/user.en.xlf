@@ -6,6 +6,10 @@
                 <source>title</source>
                 <target>Title</target>
             </trans-unit>
+            <trans-unit id="surname">
+                <source>surname</source>
+                <target>Surname</target>
+            </trans-unit>
             <trans-unit id="dateOfBirth">
                 <source>dateOfBirth</source>
                 <target>Date of birth</target>

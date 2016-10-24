@@ -153,6 +153,7 @@ class CopyController extends Controller
             'module' => 'copies',
             'itemsCountArray' => $itemsCountArray,
             'usageInfo' => null,
+            'roomname' => $roomItem->getTitle(),
         );
     }
 
@@ -164,7 +165,7 @@ class CopyController extends Controller
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         
         $translator = $this->get('translator');
-        
+
         $itemService = $this->get('commsy_legacy.item_service');
         
         $action = $request->request->get('act');
@@ -233,7 +234,7 @@ class CopyController extends Controller
             if (!empty($errorArray)) {
                 $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-bolt\'></i> '.implode(', ', $errorArray);
             } else {
-                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('inserted %count% entries in this room',count($selectedIds), array('%count%' => count($selectedIds)));
+                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('inserted %count% entries in this room',count($selectedIds), array('%count%' => count($selectedIds)), 'messages');
             }
         } else if ($action == 'insertStack') {
             $privateRoomItem = $legacyEnvironment->getCurrentUser()->getOwnRoom();
@@ -286,12 +287,12 @@ class CopyController extends Controller
             }
         } else if ($action == 'remove') {
             $copyService = $this->get('commsy.copy_service');
-            
+
             $countArray = $copyService->removeEntries($roomId, $selectedIds);
             $result['count'] = $countArray['countAll'];
             $result['countSelected'] = $countArray['count'];
-            
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('removed %count% entries from list',count($selectedIds), array('%count%' => count($selectedIds)));
+
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('removed %count% entries from list',count($selectedIds), array('%count%' => count($selectedIds)), 'messages');
         } 
         
         return new JsonResponse([

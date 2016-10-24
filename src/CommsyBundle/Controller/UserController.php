@@ -78,7 +78,7 @@ class UserController extends Controller
         }
 
         // get user list from manager service 
-        $users = $userService->getListUsers($roomId, $max, $start, $currentUser->isModerator());
+        $users = $userService->getListUsers($roomId, $max, $start, $currentUser->isModerator(), $sort);
         $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = [];

@@ -111,9 +111,13 @@ class db_mysql_connector {
       return $this->_db_errno;
    }
 
-   public function getError () {
-      return $this->_db_error;
-   }
+    public function getError() {
+        if (isset($this->_db_error[2])) {
+            return $this->_db_error[2];
+        }
+
+        return "";
+    }
 
    public function setDisplayOff () {
       $this->_display = false;

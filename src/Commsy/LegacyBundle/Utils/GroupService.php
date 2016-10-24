@@ -40,11 +40,15 @@ class GroupService
         return $group;
     }
     
-    public function getListGroups($roomId, $max = NULL, $start = NULL)
+    public function getListGroups($roomId, $max = NULL, $start = NULL, $sort = NULL)
     {
         $this->groupManager->setContextLimit($roomId);
         if ($max !== NULL && $start !== NULL) {
             $this->groupManager->setIntervalLimit($start, $max);
+        }
+
+        if ($sort) {
+            $this->groupManager->setSortOrder($sort);
         }
 
         $this->groupManager->select();

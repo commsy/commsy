@@ -276,6 +276,16 @@ class TodoController extends Controller
     	        $noticedManager->markNoticed($id, $versionId);
     	        $readerManager->markRead($id, $versionId);
     	        
+                $stepList =$item->getStepItemList();
+                if ( !empty($stepList) ){
+                    $stepItem = $stepList->getFirst();
+                    while($stepItem){
+                       $noticedManager->markNoticed($stepItem->getItemID(),$versionId);
+                       $readerManager->markRead($stepItem->getItemID(),$versionId);
+                       $stepItem = $stepList->getNext();
+                    }
+                }
+
     	        $annotationList =$item->getAnnotationList();
     	        if ( !empty($annotationList) ){
     	            $annotationItem = $annotationList->getFirst();
@@ -869,7 +879,6 @@ class TodoController extends Controller
      */
     public function savestepsAction($roomId, $itemId, Request $request)
     {
-        dump($request);
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
@@ -943,7 +952,6 @@ class TodoController extends Controller
         $submittedFormData = $form->getData();
 
         if ($form->isValid()) {
-            dump($form->getData());
             $saveType = $form->getClickedButton()->getName();
             if ($saveType == 'save') {
                 $formData = $form->getData();
@@ -978,7 +986,6 @@ class TodoController extends Controller
      */
     public function savedetailsAction($roomId, $itemId, Request $request)
     {
-        dump($request);
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         

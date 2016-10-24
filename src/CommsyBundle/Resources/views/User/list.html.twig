@@ -18,7 +18,7 @@
 
 {% block editbox %}
     <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-        <button class="uk-button uk-button-mini">{{ 'actions'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
+        <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
         <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
             <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
                 <li>
@@ -80,6 +80,20 @@
         </div>
     </div>
 {% endblock%}
+
+{% block sortbox %}
+        {# sort dropdown #}
+        <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+            <button class="uk-button uk-button-mini cs-button-list">{{ 'list sort'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
+            <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
+                <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+                    <li><a href="#" id="commsy-sort-name" class="uk-clearfix"><span class="uk-float-left">{{ 'surname'|trans({},'user') }}</span><span class="uk-float-right"><i id="commsy-sort-name-chevron" class=""></i></span></a></li>
+                    <li><a href="#" id="commsy-sort-email" class="uk-clearfix"><span class="uk-float-left">{{ 'email'|trans({},'user') }}</span><span class="uk-float-right"><i id="commsy-sort-email-chevron" class=""></i></span></a></li>
+                    <li><a href="#" id="commsy-sort-status" class="uk-clearfix"><span class="uk-float-left">{{ 'user status'|trans({},'user') }}</span><span class="uk-float-right"><i id="commsy-sort-status-chevron" class=""></i></span></a></li>
+                </ul>
+            </div>
+        </div>
+{% endblock %}
 
 {% block listaction %}
     <li>

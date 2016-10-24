@@ -136,6 +136,14 @@
         reloadCurrent('place', false);
     });
 
+    $('#commsy-sort-name').on('click', function(event) {
+        reloadCurrent('name', false);
+    });
+
+    $('#commsy-sort-email').on('click', function(event) {
+        reloadCurrent('email', false);
+    });
+
     function reloadCurrent (newSort, invert) {
         feedStart = 0;
         
@@ -170,7 +178,11 @@
         sort = newSort;
         
         var el = $('.feed-load-more');
-        
+
+        if(el.length < 1){
+            el = $('.feed-load-more-grid');
+        }
+
         // get current query string
         var queryString = document.location.search;
 
