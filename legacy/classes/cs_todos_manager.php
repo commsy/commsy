@@ -152,8 +152,9 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
      }
      if ( !empty($this->_search_array) ||
            (isset($this->_sort_order) and
-           ($this->_sort_order == 'modificator' || $this->_sort_order == 'modificator_rev')) ) {
-         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS people ON (people.item_id='.$this->addDatabasePrefix('todos').'.creator_id )'; // modificator_id (TBD)
+           ($this->_sort_order == 'creator' || $this->_sort_order == 'creator_rev' || $this->_sort_order == 'modificator' || $this->_sort_order == 'modificator_rev')) ) {
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS creator ON (creator.item_id='.$this->addDatabasePrefix('todos').'.creator_id )'; // modificator_id (TBD)
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS modificator ON (modificator.item_id='.$this->addDatabasePrefix('todos').'.modifier_id )';
 
          //look in filenames of linked files for the search_limit
          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('item_link_file').' ON '.$this->addDatabasePrefix('todos').'.item_id = '.$this->addDatabasePrefix('item_link_file').'.item_iid'.
@@ -297,7 +298,7 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND '.$this->addDatabasePrefix('step').'.deletion_date IS NULL';
          $query .= ' AND (';
-         $field_array = array('TRIM(CONCAT(people.firstname," ",people.lastname))',$this->addDatabasePrefix('todos').'.description',$this->addDatabasePrefix('todos').'.title',$this->addDatabasePrefix('step').'.title',$this->addDatabasePrefix('step').'.description',$this->addDatabasePrefix('files').'.filename');
+         $field_array = array('TRIM(CONCAT(creator.firstname," ",creator.lastname))',$this->addDatabasePrefix('todos').'.description',$this->addDatabasePrefix('todos').'.title',$this->addDatabasePrefix('step').'.title',$this->addDatabasePrefix('step').'.description',$this->addDatabasePrefix('files').'.filename');
          $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
          $query .= $search_limit_query_code;
          $query .= ')';
@@ -330,10 +331,14 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
             $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.status';
          } elseif ( $this->_sort_order == 'status_rev' ) {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.status DESC';
+         } elseif ( $this->_sort_order == 'creator' ) {
+            $query .= ' ORDER BY creator.lastname';
+         } elseif ( $this->_sort_order == 'creator_rev' ) {
+            $query .= ' ORDER BY creator.lastname DESC';
          } elseif ( $this->_sort_order == 'modificator' ) {
-            $query .= ' ORDER BY people.lastname';
+            $query .= ' ORDER BY modificator.lastname';
          } elseif ( $this->_sort_order == 'modificator_rev' ) {
-            $query .= ' ORDER BY people.lastname DESC';
+            $query .= ' ORDER BY modificator.lastname DESC';
          }
       }else{
          $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.date DESC';

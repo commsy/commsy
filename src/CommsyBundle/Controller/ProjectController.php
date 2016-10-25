@@ -105,6 +105,10 @@ class ProjectController extends Controller
         $itemsCountArray = $projectService->getCountArray($roomId);
 
         $usageInfo = false;
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
         if ($roomItem->getUsageInfoTextForRubricInForm('project') != '') {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('project');
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('project');

@@ -44,7 +44,7 @@
                 </h4>
 
                 <div class="uk-comment-meta">
-                    {{ 'by'|trans({})|capitalize }}: {{todo.modificatorItem.fullname}} ({{todo.getCreationDate|date("d.m.Y")}})
+                    {{ 'by'|trans({})|capitalize }}: {{todo.getCreator.fullname}} ({{todo.getCreationDate|date("d.m.Y")}})
                 </div>
                
                 <div class="uk-comment-meta">
