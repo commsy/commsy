@@ -153,7 +153,7 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
      if ( !empty($this->_search_array) ||
            (isset($this->_sort_order) and
            ($this->_sort_order == 'creator' || $this->_sort_order == 'creator_rev' || $this->_sort_order == 'modificator' || $this->_sort_order == 'modificator_rev')) ) {
-         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS creator ON (creator.item_id='.$this->addDatabasePrefix('todos').'.creator_id )'; // modificator_id (TBD)
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS creator ON (creator.item_id='.$this->addDatabasePrefix('todos').'.creator_id )';
          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS modificator ON (modificator.item_id='.$this->addDatabasePrefix('todos').'.modifier_id )';
 
          //look in filenames of linked files for the search_limit

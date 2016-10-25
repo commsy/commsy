@@ -38,29 +38,36 @@
             </div>
 
             {# title and meta #}
-            <div class="uk-width-8-10">
-                <h4 class="uk-comment-title">
+            <div class="uk-width-6-10">
+                <h4 class="uk-comment-title uk-text-truncate">
                     <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': material.itemId}) }}">{{ material.title }}</a>
                 </h4>
 
                 <div class="uk-comment-meta">
-                    {% if material.author != '' %}
-                        {{ 'by'|trans({})|capitalize }}: {{material.author}} ({{material.publishingdate}})
-                    {% else %}
-                        {{ 'by'|trans({})|capitalize }}: {{material.modificatorItem.fullname}} ({{material.getCreationDate|date("d.m.Y")}})
-                    {% endif %}
+                    {{ 'by'|trans({})|capitalize }}: {{material.getCreator.fullname}} ({{material.getCreationDate|date("d.m.Y")}})
                 </div>
                
                 <div class="uk-comment-meta">
                     {{  macros.fileListShort(material) }}
                 </div>
             </div>
-            {%if showRating or showWorkflow%}
+
+            {# author and publishing date #}
+            <div class="uk-width-2-10 uk-text-right uk-text-muted">
+                {% if material.author != '' %}
+                    {{ 'author'|trans({}, 'form') }}: {{material.author}} 
+                    {% if material.publishingdate != '0' %}
+                        ({{material.publishingdate}})
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            {% if showRating or showWorkflow %}
                 <div class="uk-width-2-10 uk-text-right">
-                    {%if showRating%}
+                    {% if showRating %}
                         {{  macros.ratingStatus(material, ratingList) }}
                     {% endif %}
-                    {%if showWorkflow%}
+                    {% if showWorkflow %}
                         {{  macros.workflowTrafficLight(material, workflowTitles) }}
                     {% endif %}
                 </div>
