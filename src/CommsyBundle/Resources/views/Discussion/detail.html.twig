@@ -129,7 +129,7 @@
                     {# articles #}
                     <div id="articles{{ discussion.itemId }}" class="cs-edit-section cs-toggle"
                     {% if articleList|length > 0 %}
-                        data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_discussion_editarticles', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}' }"
+                        {# data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_discussion_editarticles', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}' }" #}
                     {% endif %}
                     >
                         {{ macrosDiscussion.articles(discussion, articleList) }}

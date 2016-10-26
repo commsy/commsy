@@ -213,6 +213,7 @@ class UploadController extends Controller
                 $oldFileIds = $tempItem->getFileIDArray();
                 
                 $tempItem->setFileIDArray($formData['oldFiles']);
+                $tempItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                 
                 $tempItem->save();
     
