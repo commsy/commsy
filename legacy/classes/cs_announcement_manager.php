@@ -173,8 +173,10 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
 
       if ( isset($this->_search_array) AND !empty($this->_search_array) ||
            (isset($this->_sort_order) and
-           ($this->_sort_order == 'modificator' || $this->_sort_order == 'modificator_rev')) ) {
-         $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' AS people ON (people.item_id='.$this->addDatabasePrefix('announcement').'.creator_id )'; // modificator_id (TBD)
+           ($this->_sort_order == 'modificator' || $this->_sort_order == 'modificator_rev' || $this->_sort_order == 'creator' || $this->_sort_order == 'creator_rev')) ) {
+
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' AS creator ON (creator.item_id='.$this->addDatabasePrefix('announcement').'.creator_id )';
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' AS modificator ON (modificator.item_id='.$this->addDatabasePrefix('announcement').'.modifier_id )';
 
          //look in filenames of linked files for the search_limit
          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('item_link_file').' ON '.$this->addDatabasePrefix('announcement').'.item_id = '.$this->addDatabasePrefix('item_link_file').'.item_iid'.
@@ -301,7 +303,7 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
       // restrict sql-statement by search limit, create wheres
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND (';
-         $field_array = array('TRIM(CONCAT(people.firstname," ",people.lastname))',$this->addDatabasePrefix('announcement').'.description',$this->addDatabasePrefix('announcement').'.title',$this->addDatabasePrefix('files').'.filename');
+         $field_array = array('TRIM(CONCAT(creator.firstname," ",creator.lastname))',$this->addDatabasePrefix('announcement').'.description',$this->addDatabasePrefix('announcement').'.title',$this->addDatabasePrefix('files').'.filename');
          $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
          $query .= $search_limit_query_code;
          $query .= ')';
@@ -334,10 +336,14 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
 		 	$query .= ' ORDER BY assessments_avg';
 		 } elseif( $this->_sort_order == 'assessment_rev') {
 		 	$query .= ' ORDER BY assessments_avg DESC';
+         } elseif ( $this->_sort_order == 'creator' ) {
+            $query .= ' ORDER BY creator.lastname';
+         } elseif ( $this->_sort_order == 'creator_rev' ) {
+            $query .= ' ORDER BY creator.lastname DESC';
          } elseif ( $this->_sort_order == 'modificator' ) {
-            $query .= ' ORDER BY people.lastname';
+            $query .= ' ORDER BY modificator.lastname';
          } elseif ( $this->_sort_order == 'modificator_rev' ) {
-            $query .= ' ORDER BY people.lastname DESC';
+            $query .= ' ORDER BY modificator.lastname DESC';
          }
       } else {
          $query .= ' ORDER BY '.$this->addDatabasePrefix('announcement').'.modification_date DESC';
