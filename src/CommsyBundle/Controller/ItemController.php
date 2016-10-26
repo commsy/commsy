@@ -57,12 +57,12 @@ class ItemController extends Controller
         $form->handleRequest($request);
         if ($form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
-            
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             if ($saveType == 'save' || $saveType == 'saveThisDate') {
                 $item = $transformer->applyTransformation($item, $form->getData());
+                $item->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                 $item->save();
             } else if ($saveType == 'saveAllDates') {
-                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
                 $dateService = $this->get('commsy_legacy.date_service');
                 $datesArray = $dateService->getRecurringDates($item->getContextId(), $item->getRecurrenceId());
                 $formData = $form->getData();
@@ -74,7 +74,7 @@ class ItemController extends Controller
                     $tempDate->save();
                 }
             } else {
-                // ToDo ...
+                throw new UnexpectedValueException("Value must be one of 'save', 'saveThisDate' and 'saveAllDates'.");
             }
             
             return $this->redirectToRoute('commsy_item_savedescription', array('roomId' => $roomId, 'itemId' => $itemId));
@@ -158,7 +158,9 @@ class ItemController extends Controller
         $form->handleRequest($request);
         if ($form->isValid()) {
             if ($form->get('save')->isClicked()) {
+                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
                 $tempItem = $transformer->applyTransformation($tempItem, $form->getData());
+                $tempItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                 $tempItem->save();
             } else if ($form->get('cancel')->isClicked()) {
                 // ToDo ...
@@ -328,6 +330,8 @@ class ItemController extends Controller
 
                 // save linked entries
                 $item->setLinkedItemsByIDArray($itemData);
+
+                $item->setModificatorItem($environment->getCurrentUserItem());
 
                 // save categories
                 $item->setTagListByID($data['categories']);

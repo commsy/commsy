@@ -772,9 +772,9 @@ class DiscussionController extends Controller
     {
         $discussionService = $this->get('commsy_legacy.discussion_service');
 
-        $discussion = $discussionService->getMaterial($itemId);
+        $discussion = $discussionService->getDiscussion($itemId);
 
-        $articlesList = $discussion->getSectionList()->to_array();
+        $articlesList = $discussion->getAllArticles()->to_array();
 
         return array(
             'articlesList' => $articlesList,

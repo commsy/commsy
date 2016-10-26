@@ -94,7 +94,7 @@
             </trans-unit>
             <trans-unit id="institution">
                 <source>institution</source>
-                <target>{0}Institution|{1}Institutions</target>
+                <target>Institutions</target>
             </trans-unit>
         </body>
     </file>

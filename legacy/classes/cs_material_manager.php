@@ -589,8 +589,9 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
                    ' LEFT JOIN '.$this->addDatabasePrefix('files').' ON '.$this->addDatabasePrefix('item_link_file').'.file_id = '.$this->addDatabasePrefix('files').'.files_id';
          //look in filenames of linked files for the search_limit
       }elseif((isset($this->_order) and
-           ($this->_order == 'modificator' || $this->_order == 'modificator_rev'))){
-         $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' AS people ON '.$this->addDatabasePrefix('materials').'.modifier_id=people.item_id';
+           ($this->_order == 'modificator' || $this->_order == 'modificator_rev' || $this->_order == 'creator' || $this->_order == 'creator_rev'))){
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS creator ON (creator.item_id='.$this->addDatabasePrefix('materials').'.creator_id )';
+         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS modificator ON (modificator.item_id='.$this->addDatabasePrefix('materials').'.modifier_id )';
       } elseif((isset($this->_order) && ($this->_order == 'assessment' || $this->_order == 'assessment_rev'))) {
       	$query .= ' LEFT JOIN ' . $this->addDatabasePrefix('assessments') . ' ON ' . $this->addDatabasePrefix('materials') . '.item_id=assessments.item_link_id AND assessments.deletion_date IS NULL';
       }
@@ -809,10 +810,14 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
             $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.author ASC, '.$this->addDatabasePrefix('materials').'.title ASC';
          } elseif ($this->_order == 'author_rev') {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('materials').'.author DESC, '.$this->addDatabasePrefix('materials').'.title DESC';
+         } elseif ( $this->_order == 'creator' ) {
+            $query .= ' ORDER BY creator.lastname';
+         } elseif ( $this->_order == 'creator_rev' ) {
+            $query .= ' ORDER BY creator.lastname DESC';
          }elseif ( $this->_order == 'modificator' ) {
-            $query .= ' ORDER BY people.lastname';
+            $query .= ' ORDER BY modificator.lastname';
          } elseif ( $this->_order == 'modificator_rev' ) {
-            $query .= ' ORDER BY people.lastname DESC';
+            $query .= ' ORDER BY modificator.lastname DESC';
 		 } elseif( $this->_order == 'assessment' ) {
 		 	$query .= ' ORDER BY assessments_avg DESC';
 		 } elseif( $this->_order == 'assessment_rev') {
