@@ -360,19 +360,21 @@ if ( empty($command) and empty($command_delete) ) {
                $user->makeNoContactPerson();
             }
             
+            $showTakeOver = true;
             if(empty($_POST['login_as'])){
                global $symfonyContainer;
-               $allow_moderator_takeover = $symfonyContainer->getParameter('commsy.security.allow_moderator_takeover');
+               $allowModeratorTakeover = $symfonyContainer->getParameter('commsy.security.allow_moderator_takeover');
                
-            	if(!$allow_moderator_takeover){
-            		$login_as = 1;
-            	} else {
-            		$login_as = 2;
+            	if (!$allowModeratorTakeover) {
+            		$showTakeOver = false;
             	}
-
+            } else {
+                if ($_POST['login_as'] == 1) {
+                    $showTakeOver = false;
+                }
             }
             
-            if($_POST['login_as'] == 1 or $login_as == 1){
+            if (!$showTakeOver) {
             	$user->deactivateLoginAsAnotherUser();
             } else {
             	$user->unsetDeactivateLoginAsAnotherUser();
