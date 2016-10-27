@@ -31,12 +31,18 @@ class InstitutionController extends Controller
      */
     public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
         // setup filter form
         $defaultFilterValues = array(
             'activated' => true
         );
         $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
+            'hasHashtags' => $roomItem->withBuzzwords(),
+            'hasCategories' => $roomItem->withTags(),
         ));
 
         // get the material manager service
@@ -84,12 +90,18 @@ class InstitutionController extends Controller
      */
     public function listAction($roomId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
         // setup filter form
         $defaultFilterValues = array(
             'activated' => true
         );
         $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
+            'hasHashtags' => $roomItem->withBuzzwords(),
+            'hasCategories' => $roomItem->withTags(),
         ));
 
         // get the material manager service
