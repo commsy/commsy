@@ -74,6 +74,10 @@
                 <source>Export to Wiki</source>
                 <target>Export to Wiki</target>
             </trans-unit>
+            <trans-unit id="newHashtag">
+                <source>newHashtag</source>
+                <target>New Hashtag</target>
+            </trans-unit>
          </body>
     </file>
 </xliff>

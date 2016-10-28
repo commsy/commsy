@@ -49,7 +49,7 @@ class cs_time_manager extends cs_labels_manager {
     *
     *  @return cs_label_item a time label
     */
-   function getNewItem() {
+   function getNewItem($label_type = '') {
       $item = new cs_time_item($this->_environment);
       $item->makeSystemLabel();
       return $item;
