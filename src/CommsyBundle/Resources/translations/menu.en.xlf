@@ -43,6 +43,14 @@
                 <source>settings</source>
                 <target>Settings</target>
             </trans-unit>
+            <trans-unit id="project">
+                <source>project</source>
+                <target>Project rooms</target>
+            </trans-unit>
+            <trans-unit id="institution">
+                <source>institution</source>
+                <target>Institutions</target>
+            </trans-unit>
 
             <!-- settings sidebar menu entries -->
             <trans-unit id="general_settings">
@@ -88,14 +96,25 @@
                 <source>copy</source>
                 <target>My copies</target>
             </trans-unit>
-            <trans-unit id="project">
-                <source>project</source>
-                <target>Project rooms</target>
+
+            <!-- profile -->
+            <trans-unit id="profile_account">
+                <source>profile</source>
+                <target>Account</target>
             </trans-unit>
-            <trans-unit id="institution">
-                <source>institution</source>
-                <target>Institutions</target>
+            <trans-unit id="profile_personal_data">
+                <source>personal_data</source>
+                <target>Personal data</target>
             </trans-unit>
+            <trans-unit id="profile_notifications">
+                <source>notifications</source>
+                <target>Notifications</target>
+            </trans-unit>
+            <trans-unit id="profile_additional">
+                <source>additional_functions</source>
+                <target>Additional functions</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

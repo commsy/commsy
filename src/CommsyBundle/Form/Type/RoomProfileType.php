@@ -54,25 +54,6 @@ class RoomProfileType extends AbstractType
                 'label' => 'lastname',
                 'required' => false,
             ))
-            ->add('userId', TextType::class, array(
-                'constraints' => array(
-                    new NotBlank(),
-                ),
-                'label' => 'userId',
-                'required' => true,
-            ))
-            ->add('currentPassword', TextType::class, array(
-                'label' => 'currentPassword',
-                'required' => false,
-            ))
-            ->add('newPassword', TextType::class, array(
-                'label' => 'newPassword',
-                'required' => false,
-            ))
-            ->add('newPasswordConfirm', TextType::class, array(
-                'label' => 'newPasswordConfirm',
-                'required' => false,
-            ))
             ->add('language', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices'  => array(
@@ -260,59 +241,11 @@ class RoomProfileType extends AbstractType
                 ),
             ))
             
-            ->add('icq', TextType::class, array(
-                'label'    => 'icq',
-                'required' => false,
-            ))
-            ->add('icqChangeInAllContexts', CheckboxType::class, array(
-                'label'    => 'changeInAllContexts',
-                'required' => false,
-                'label_attr' => array(
-                    'class' => 'uk-form-label',
-                ),
-            ))
-            
-            ->add('msn', TextType::class, array(
-                'label'    => 'msn',
-                'required' => false,
-            ))
-            ->add('msnChangeInAllContexts', CheckboxType::class, array(
-                'label'    => 'changeInAllContexts',
-                'required' => false,
-                'label_attr' => array(
-                    'class' => 'uk-form-label',
-                ),
-            ))
-            
             ->add('skype', TextType::class, array(
                 'label'    => 'skype',
                 'required' => false,
             ))
             ->add('skypeChangeInAllContexts', CheckboxType::class, array(
-                'label'    => 'changeInAllContexts',
-                'required' => false,
-                'label_attr' => array(
-                    'class' => 'uk-form-label',
-                ),
-            ))
-            
-            ->add('yahoo', TextType::class, array(
-                'label'    => 'yahoo',
-                'required' => false,
-            ))
-            ->add('yahooChangeInAllContexts', CheckboxType::class, array(
-                'label'    => 'changeInAllContexts',
-                'required' => false,
-                'label_attr' => array(
-                    'class' => 'uk-form-label',
-                ),
-            ))
-            
-            ->add('jabber', TextType::class, array(
-                'label'    => 'jabber',
-                'required' => false,
-            ))
-            ->add('jabberChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
                 'required' => false,
                 'label_attr' => array(
@@ -339,55 +272,6 @@ class RoomProfileType extends AbstractType
             ))
             ->add('descriptionChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'descriptionChangeInAllContexts',
-                'required' => false,
-                'label_attr' => array(
-                    'class' => 'uk-form-label',
-                ),
-            ))
-            
-            ->add('newsletterStatus', ChoiceType::class, array(
-                'placeholder' => false,
-                'expanded' => true,
-                'multiple' => false,
-                'choices'  => array(
-                    'none' => '1',
-                    'weekly' => '2',
-                    'daily' => '3'
-                ),
-                'label'    => 'newsletterStatus',
-                'required' => false,
-            ))
-            
-            ->add('widgetStatus', CheckboxType::class, array(
-                'label'    => 'widgetStatus',
-                'required' => false,
-                'label_attr' => array(
-                    'class' => 'uk-form-label',
-                ),
-            ))
-            ->add('calendarStatus', CheckboxType::class, array(
-                'label'    => 'calendarStatus',
-                'required' => false,
-                'label_attr' => array(
-                    'class' => 'uk-form-label',
-                ),
-            ))
-            ->add('stackStatus', CheckboxType::class, array(
-                'label'    => 'stackStatus',
-                'required' => false,
-                'label_attr' => array(
-                    'class' => 'uk-form-label',
-                ),
-            ))
-            ->add('portfolioStatus', CheckboxType::class, array(
-                'label'    => 'portfolioStatus',
-                'required' => false,
-                'label_attr' => array(
-                    'class' => 'uk-form-label',
-                ),
-            ))
-            ->add('switchRoomStatus', CheckboxType::class, array(
-                'label'    => 'switchRoomStatus',
                 'required' => false,
                 'label_attr' => array(
                     'class' => 'uk-form-label',

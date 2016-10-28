@@ -226,8 +226,20 @@ services:
         tags:
             - { name: form.type }
 
-    commsy.form.type.combine_profile:
-        class: CommsyBundle\Form\Type\CombineProfileType
+    commsy.form.type.profile_account:
+        class: CommsyBundle\Form\Type\ProfileAccountType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.profile_notifications:
+        class: CommsyBundle\Form\Type\ProfileNotificationsType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.profile_additional:
+        class: CommsyBundle\Form\Type\ProfileAdditionalType
         arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
         tags:
             - { name: form.type }

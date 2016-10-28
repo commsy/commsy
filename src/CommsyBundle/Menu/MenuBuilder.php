@@ -52,20 +52,9 @@ class MenuBuilder
 
         if ($currentUser->getItemId() != '') {
 
-            $menu->addChild('profileImage', [
-                'label' => $currentUser->getFullname(),
-                'route' => 'commsy_profile_general',
-                'routeParameters' => [
-                    'roomId' => $currentStack->attributes->get('roomId'),
-                    'itemId' => $currentUser->getItemId(),
-                ],
-                'extras' => [
-                    'user' => $currentUser,
-                ]
-            ]);
-
             $menu->addChild('account', [
-                'label' => 'account',
+                //'label' => $currentUser->getFullname(),
+                'label' => 'profile',
                 'route' => 'commsy_profile_account',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
@@ -74,7 +63,47 @@ class MenuBuilder
                 'extras' => [
                     'user' => $currentUser,
                 ]
-            ]);
+            ])
+            ->setExtra('translation_domain', 'menu');
+
+            $menu->addChild('personal', [
+                'label' => 'personal_data',
+                'route' => 'commsy_profile_general',
+                'routeParameters' => [
+                    'roomId' => $currentStack->attributes->get('roomId'),
+                    'itemId' => $currentUser->getItemId(),
+                ],
+                'extras' => [
+                    'user' => $currentUser,
+                ]
+            ])
+            ->setExtra('translation_domain', 'menu');
+
+            $menu->addChild('notifications', [
+                'label' => 'notifications',
+                'route' => 'commsy_profile_notifications',
+                'routeParameters' => [
+                    'roomId' => $currentStack->attributes->get('roomId'),
+                    'itemId' => $currentUser->getItemId(),
+                ],
+                'extras' => [
+                    'user' => $currentUser,
+                ]
+            ])
+            ->setExtra('translation_domain', 'menu');
+
+            $menu->addChild('additional', [
+                'label' => 'additional_functions',
+                'route' => 'commsy_profile_additional',
+                'routeParameters' => [
+                    'roomId' => $currentStack->attributes->get('roomId'),
+                    'itemId' => $currentUser->getItemId(),
+                ],
+                'extras' => [
+                    'user' => $currentUser,
+                ]
+            ])
+            ->setExtra('translation_domain', 'menu');
 
             $menu->addChild('room', array(
                 'label' => 'Back to room',

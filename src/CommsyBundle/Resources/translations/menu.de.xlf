@@ -96,6 +96,25 @@
                 <source>copy</source>
                 <target>Meine Kopien</target>
             </trans-unit>
+
+            <!-- profile -->
+            <trans-unit id="profile_account">
+                <source>profile</source>
+                <target>Zugangsdaten</target>
+            </trans-unit>
+            <trans-unit id="profile_personal_data">
+                <source>personal_data</source>
+                <target>Persönliche Daten</target>
+            </trans-unit>
+            <trans-unit id="profile_notifications">
+                <source>notifications</source>
+                <target>Benachrichtigungen</target>
+            </trans-unit>
+            <trans-unit id="profile_additional">
+                <source>additional_functions</source>
+                <target>Zusatzfunktionen</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

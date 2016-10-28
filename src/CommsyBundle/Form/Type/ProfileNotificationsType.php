@@ -5,14 +5,14 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Doctrine\ORM\EntityManager;
-
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+
+use Doctrine\ORM\EntityManager;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
-class CombineProfileType extends AbstractType
+class ProfileNotificationsType extends AbstractType
 {
     private $em;
     private $legacyEnvironment;
@@ -38,16 +38,20 @@ class CombineProfileType extends AbstractType
         $userManager = $this->legacyEnvironment->getUserManager();
         $this->userItem = $userManager->getItem($options['itemId']);
 
-        $builder->add('combineUserId', TextType::class, array(
-                'label' => 'combineUserId',
-                'translation_domain' => 'profile',
+        $builder
+            ->add('newsletterStatus', ChoiceType::class, array(
+                'placeholder' => false,
+                'expanded' => true,
+                'multiple' => false,
+                'choices'  => array(
+                    'none' => '1',
+                    'weekly' => '2',
+                    'daily' => '3'
+                ),
+                'label'    => 'newsletterStatus',
                 'required' => false,
             ))
-            ->add('combinePassword', TextType::class, array(
-                'label' => 'combinePassword',
-                'translation_domain' => 'profile',
-                'required' => false,
-            ))
+            
             ->add('save', SubmitType::class, array(
                 'label' => 'save',
                 'translation_domain' => 'form',
@@ -66,6 +70,7 @@ class CombineProfileType extends AbstractType
     {
         $resolver
             ->setRequired(['itemId'])
+            ->setDefaults(array('translation_domain' => 'profile'))
         ;
     }
 
@@ -78,7 +83,7 @@ class CombineProfileType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'combine_profile';
+        return 'room_profile';
     }
     
 }
