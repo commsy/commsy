@@ -16,7 +16,7 @@
             <ul id="linksFormTabs" class="uk-tab" data-uk-tab="{connect:'#linksForm'}">
                 <li><a href="">{{ 'linkedEntries'|trans({}) }}</a></li>
                 <li><a href="">{{ 'categories'|trans({})|capitalize }}</a></li>
-                <li><a href="">{{ 'hashtags'|trans({})|capitalize }}</a></li>
+                <li><a href="">{{ 'hashtags'|trans({}, 'room')|capitalize }}</a></li>
             </ul>
             
             {{ form_start(form) }}

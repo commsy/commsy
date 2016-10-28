@@ -5,9 +5,6 @@ namespace Application\Migrations;
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 class Version20150623133246 extends AbstractMigration
 {
     /**
@@ -15,14 +12,21 @@ class Version20150623133246 extends AbstractMigration
      */
     public function up(Schema $schema)
     {
-        // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE external_viewer ADD PRIMARY KEY (item_id, user_id)');
-        $this->addSql('ALTER TABLE zzz_external_viewer ADD PRIMARY KEY (item_id, user_id)');
+        $tables = [
+            'external_viewer',
+            'zzz_external_viewer',
+            'workflow_read',
+            'zzz_workflow_read'
+        ];
 
-        $this->addSql('ALTER TABLE workflow_read ADD PRIMARY KEY (item_id, user_id)');
-        $this->addSql('ALTER TABLE zzz_workflow_read ADD PRIMARY KEY (item_id, user_id)');
+        foreach ($tables as $table) {
+            $this->dropIndexes($table);
+            $this->addPrimaryKey($table);
+            $this->deleteDuplicates($table);
+            $this->updatePrimaryKey($table);
+        }
     }
 
     /**
@@ -30,13 +34,30 @@ class Version20150623133246 extends AbstractMigration
      */
     public function down(Schema $schema)
     {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->throwIrreversibleMigrationException();
+    }
 
-        $this->addSql('ALTER TABLE external_viewer DROP PRIMARY KEY');
-        $this->addSql('ALTER TABLE zzz_external_viewer DROP PRIMARY KEY');
+    private function dropIndexes($tableName) {
+        $schemaManager = $this->connection->getSchemaManager();
 
-        $this->addSql('ALTER TABLE workflow_read DROP PRIMARY KEY');
-        $this->addSql('ALTER TABLE zzz_workflow_read DROP PRIMARY KEY');
+        $indexes = $schemaManager->listTableIndexes($tableName);
+        foreach ($indexes as $index) {
+            $this->addSql('DROP INDEX `' . $index->getName() . '` ON ' . $tableName);
+        }
+    }
+
+    private function addPrimaryKey($tableName) {
+        $this->addSql('ALTER TABLE ' . $tableName . ' ADD id INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY(id)');
+    }
+
+    private function deleteDuplicates($tableName) {
+        $this->addSql('ALTER TABLE ' . $tableName . ' ADD INDEX tmp (item_id, user_id)');
+        $this->addSql('DELETE T1 FROM ' . $tableName . ' T1 INNER JOIN ' . $tableName . ' T2 ON T1.item_id = T2.item_id AND T1.user_id = T2.user_id AND T1.id > T2.id');
+        $this->addSql('ALTER TABLE ' . $tableName . ' DROP INDEX tmp');
+    }
+
+    private function updatePrimaryKey($tableName) {
+        $this->addSql('ALTER TABLE ' . $tableName . ' DROP id');
+        $this->addSql('ALTER TABLE ' . $tableName . ' ADD PRIMARY KEY pk_' . $tableName . ' (item_id, user_id)');
     }
 }

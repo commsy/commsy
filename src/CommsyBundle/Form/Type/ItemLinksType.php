@@ -65,7 +65,6 @@ class ItemLinksType extends AbstractType
             //     'placeholder' => false,
             //     'choices' => $options['items'],
             //     'label' => 'items',
-            //     'translation_domain' => 'item',
             //     'required' => false,
             //     'expanded' => true,
             //     'multiple' => true
@@ -75,7 +74,6 @@ class ItemLinksType extends AbstractType
                 'choices' => $options['itemsLinked'],
                 // 'label' => 'itemsLinked',
                 'label' => false,
-                'translation_domain' => 'item',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true
@@ -84,7 +82,6 @@ class ItemLinksType extends AbstractType
                 'placeholder' => false,
                 'choices' => $options['itemsLatest'],
                 // 'label' => 'itemsLatest',
-                'translation_domain' => 'item',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true
@@ -103,7 +100,6 @@ class ItemLinksType extends AbstractType
                 'placeholder' => false,
                 'choices' => $options['categories'],
                 // 'label' => 'categories',
-                'translation_domain' => 'item',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true,
@@ -112,14 +108,12 @@ class ItemLinksType extends AbstractType
                 'placeholder' => false,
                 'choices' => $options['hashtags'],
                 'label' => 'hashtags',
-                'translation_domain' => 'item',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true
             ))
             ->add('newHashtag', TextType::class, array(
                 'label' => 'newHashtag',
-                'translation_domain' => 'item',
                 'required' => false
             ))
             ->add('save', SubmitType::class, array(
@@ -144,7 +138,6 @@ class ItemLinksType extends AbstractType
                 'placeholder' => false,
                 'choices' => $options['items'],
                 'label' => 'items',
-                'translation_domain' => 'item',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true
@@ -154,7 +147,6 @@ class ItemLinksType extends AbstractType
                 'placeholder' => false,
                 'choices' => $options['itemsLinked'],
                 'label' => 'itemsLinked',
-                'translation_domain' => 'item',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true
@@ -164,7 +156,6 @@ class ItemLinksType extends AbstractType
                 'placeholder' => false,
                 'choices' => $options['itemsLatest'],
                 'label' => 'itemsLatest',
-                'translation_domain' => 'item',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true
@@ -221,6 +212,7 @@ class ItemLinksType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
+            ->setDefaults(array('translation_domain' => 'item'))
             ->setRequired(array('filterRubric', 'filterPublic', 'items', 'itemsLinked', 'itemsLatest', 'categories', 'hashtags'))
         ;
     }
