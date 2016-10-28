@@ -64,6 +64,18 @@ class MenuBuilder
                 ]
             ]);
 
+            $menu->addChild('account', [
+                'label' => 'account',
+                'route' => 'commsy_profile_account',
+                'routeParameters' => [
+                    'roomId' => $currentStack->attributes->get('roomId'),
+                    'itemId' => $currentUser->getItemId(),
+                ],
+                'extras' => [
+                    'user' => $currentUser,
+                ]
+            ]);
+
             $menu->addChild('room', array(
                 'label' => 'Back to room',
                 'route' => 'commsy_room_home',
