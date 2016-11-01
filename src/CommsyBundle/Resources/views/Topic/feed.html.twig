@@ -13,7 +13,7 @@
                 <div class="uk-panel-teaser cs-panel-teaser-user">
                     {{ macros.statusColor(readerList, topic.itemId, 'grid') }}
  
-                    <div class="items-checkbox uk-float-left uk-margin-right uk-hidden">
+                    <div class="items-checkbox uk-float-left uk-margin-small-right uk-hidden">
                         {% if is_granted('ITEM_EDIT', topic.itemId) %}
                             <form class="uk-form">
                                 <input type="checkbox" value="{{ topic.itemId }}">
@@ -22,8 +22,8 @@
                             <i class="uk-icon-ban uk-icon-small red"></i>
                         {% endif %}
                     </div>
-                    <div class="uk-grid">
-                        <div class="uk-text-truncate">
+                    <div class="uk-grid uk-text-truncate">
+                        <div>
                            <span class="uk-text-large">
                                <a href="{{ path('commsy_topic_detail', {'roomId': roomId, 'itemId': topic.itemId}) }}">{{ topic.title }} </a>
                            </span>

@@ -107,7 +107,7 @@
         $('#commsy-list-count-display').toggleClass('uk-hidden');
         $('#commsy-list-count-edit').toggleClass('uk-hidden');
 
-        $(".feed .uk-grid .uk-text-truncate").css("padding-left", "35px");
+        $(".feed .uk-grid.uk-text-truncate div").css("padding-left", "35px");
         $(".feed .uk-grid .uk-icon-sign-in").toggleClass("uk-hidden");
         
         selectAll = false;
@@ -154,7 +154,7 @@
         $('#commsy-select-actions-ok').removeClass('uk-active');
         $('#commsy-select-actions-cancel').removeClass('uk-active');
 
-        $(".feed .uk-grid .uk-text-truncate").css("padding-left", "0px");
+        $(".feed .uk-grid.uk-text-truncate div").css("padding-left", "0px");
         $(".feed .uk-grid .uk-icon-sign-in").toggleClass("uk-hidden");
         
         bind();       
