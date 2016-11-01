@@ -147,7 +147,7 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
 
      if ( ( isset($this->_search_array) AND !empty($this->_search_array) )
         ) {
-        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('step').' ON ('.$this->addDatabasePrefix('step').'.todo_item_id = '.$this->addDatabasePrefix('todos').'.item_id AND '.$this->addDatabasePrefix('step').'.context_id = "'.encode(AS_DB,$this->_room_limit).'")';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('step').' ON ('.$this->addDatabasePrefix('step').'.todo_item_id = '.$this->addDatabasePrefix('todos').'.item_id AND '.$this->addDatabasePrefix('step').'.context_id = "'.encode(AS_DB,$this->_room_limit).'" AND '.$this->addDatabasePrefix('step').'.deletion_date IS NULL)';
      }
      if ( !empty($this->_search_array) ||
            (isset($this->_sort_order) and
@@ -294,7 +294,6 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
 
       // restrict sql-statement by search limit, create wheres
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
-         $query .= ' AND '.$this->addDatabasePrefix('step').'.deletion_date IS NULL';
          $query .= ' AND (';
          $field_array = array('TRIM(CONCAT(people.firstname," ",people.lastname))',$this->addDatabasePrefix('todos').'.description',$this->addDatabasePrefix('todos').'.title',$this->addDatabasePrefix('step').'.title',$this->addDatabasePrefix('step').'.description',$this->addDatabasePrefix('files').'.filename');
          $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
