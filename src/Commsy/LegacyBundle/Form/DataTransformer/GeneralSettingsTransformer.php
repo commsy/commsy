@@ -52,6 +52,12 @@ class GeneralSettingsTransformer implements DataTransformerInterface
                 $rubrics[$deactivated_rubric] = 'off';
             }
             $roomData['rubrics'] = $rubrics;
+
+            $roomData['assignment_restricted'] = $roomItem->isAssignmentOnlyOpenForRoomMembers();
+
+            $roomData['open_for_guest'] = $roomItem->isOpenForGuests();
+
+            $roomData['material_open_for_guest'] = $roomItem->isMaterialOpenForGuests();
         }
         return $roomData;
     }
@@ -105,9 +111,17 @@ class GeneralSettingsTransformer implements DataTransformerInterface
             }
 
         } elseif($roomObject->isCommunityRoom()) {
-            if(isset($roomData['room_assignment'])) {
-                if($roomData['room_assignment'] === 'open') $roomObject->setAssignmentOpenForAnybody();
-                elseif($roomData['room_assignment'] === 'closed') $roomObject->setAssignmentOnlyOpenForRoomMembers();
+            if(isset($roomData['assignment_restricted'])) {
+                if($roomData['assignment_restricted']) $roomObject->setAssignmentOnlyOpenForRoomMembers();
+                else $roomObject->setAssignmentOpenForAnybody();
+            }
+            if(isset($roomData['open_for_guest'])){
+                if($roomData['open_for_guest']) $roomObject->setOpenForGuests();
+                else $roomObject->setClosedForGuests();
+            }
+            if(isset($roomData['material_open_for_guest'])){
+                if($roomData['material_open_for_guest']) $roomObject->setMaterialOpenForGuests();
+                else $roomObject->setMaterialClosedForGuests();
             }
         }
 

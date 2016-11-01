@@ -124,14 +124,17 @@ class GeneralSettingsType extends AbstractType
                 $form
                     ->add('open_for_guest', CheckboxType::class, array(
                         'label' => 'Is this room open for guests?',
+                        'label_attr' => array('class' => 'uk-form-label'),
                         'required' => false
                     ))
                     ->add('material_open_for_guest', CheckboxType::class, array(
                         'label' => 'Are materials open for guests?',
+                        'label_attr' => array('class' => 'uk-form-label'),
                         'required' => false
                     ))
                     ->add('assignment_restricted', CheckboxType::class, array(
                         'label' => 'Only members are allow to assign project rooms',
+                        'label_attr' => array('class' => 'uk-form-label'),
                         'required' => false
                     ))
                 ;

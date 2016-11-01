@@ -574,7 +574,10 @@
                 <source>Only members are allow to assign project rooms</source>
                 <target>Only members are allow to assign project rooms</target>
             </trans-unit>
-
+            <trans-unit id="guest_access">
+                <source>Guest Access</source>
+                <target>Guest Access</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
