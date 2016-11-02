@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
 use CommsyBundle\Form\Type\HashtagEditType;
+use CommsyBundle\Form\Type\HashtagMergeType;
 use CommsyBundle\Entity\Labels;
 
 class HashtagController extends Controller
@@ -82,19 +83,20 @@ class HashtagController extends Controller
             $hashtag->setType('buzzword');
         }
 
-        $form = $this->createForm(HashtagEditType::class, $hashtag);
+        $editForm = $this->createForm(HashtagEditType::class, $hashtag);
 
-        $form->handleRequest($request);
-        if ($form->isValid()) {
+
+        $editForm->handleRequest($request);
+        if ($editForm->isValid()) {
             // persist changes / delete hashtag
             $labelManager = $legacyEnvironment->getLabelManager();
 
-            if ($form->has('delete') && $form->get('delete')->isClicked()) {
+            if ($editForm->has('delete') && $editForm->get('delete')->isClicked()) {
                 $buzzwordItem = $labelManager->getItem($hashtag->getItemId());
                 $buzzwordItem->delete();
             }
 
-            if ($form->has('new') && $form->get('new')->isClicked()) {
+            if ($editForm->has('new') && $editForm->get('new')->isClicked()) {
                 $buzzwordItem = $labelManager->getNewItem();
 
                 $buzzwordItem->setLabelType('buzzword');
@@ -105,7 +107,7 @@ class HashtagController extends Controller
                 $buzzwordItem->save();
             }
 
-            if ($form->has('update') && $form->get('update')->isClicked()) {
+            if ($editForm->has('update') && $editForm->get('update')->isClicked()) {
                 $buzzwordItem = $labelManager->getItem($hashtag->getItemId());
 
                 $buzzwordItem->setName($hashtag->getName());
@@ -120,11 +122,44 @@ class HashtagController extends Controller
 
         $hashtags = $repository->findRoomHashtags($roomId);
 
+        $mergeForm = $this->createForm(HashtagMergeType::class, null, ['roomId'=>$roomId]);
+
+        $mergeForm->handleRequest($request);
+        if ($mergeForm->isValid()) {
+            // persist changes / delete hashtag
+            $labelManager = $legacyEnvironment->getLabelManager();
+
+            $mergeData=$mergeForm->getData();
+            $firstID=$mergeData['first']->getItemId();
+            $secondID=$mergeData['second']->getItemId();
+
+            $buzzwordItemOne = $labelManager->getItem($firstID);
+            $buzzwordItemTwo = $labelManager->getItem($secondID);
+                    
+            // change name of item one, save it and delete the item two
+            $buzzwordOne = $buzzwordItemOne->getName();
+            $buzzwordTwo = $buzzwordItemTwo->getName();
+
+            $newName = $buzzwordOne. "/" . $buzzwordTwo;
+
+            $buzzwordItemOne->setName($newName);
+            $buzzwordItemOne->setModificationDate(getCurrentDateTimeInMySQL());
+            $buzzwordItemOne->save();
+            $buzzwordItemTwo->delete();
+
+            
+
+            return $this->redirectToRoute('commsy_hashtag_edit', [
+                'roomId' => $roomId,
+            ]);
+        }
+
         return [
-            'form' => $form->createView(),
+            'editForm' => $editForm->createView(),
             'roomId' => $roomId,
             'hashtags' => $hashtags,
             'labelId' => $labelId,
+            'mergeForm' => $mergeForm->createView(),
         ];
     }
 }
