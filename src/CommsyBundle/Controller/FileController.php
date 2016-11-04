@@ -55,8 +55,11 @@ class FileController extends Controller
 
         $themesDir = $this->getParameter("themes_directory");
 
-        if($imageType == 'theme'){    
+        if($imageType == 'theme'){
             $completePath = $themesDir . "/" . $roomItem->getColorArray()['schema'] . "/bg.jpg";
+            if(!file_exists($completePath)){
+                $completePath = $themesDir . "/" . mb_strtolower($roomItem->getColorArray()['schema']) . "/bg.jpg";
+            }
         }
         elseif($imageType =='custom'){
             if($filename != ''){
