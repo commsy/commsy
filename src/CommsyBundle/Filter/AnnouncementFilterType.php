@@ -43,14 +43,14 @@ class AnnouncementFilterType extends AbstractType
             ))
         ;
 
-        if ($options['hasHashtags']) {
-            $builder->add('hashtag', HashTagFilterType::class, array(
+        if ($options['hasCategories']) {
+            $builder->add('category', CategoryFilterType::class, array(
                 'label' => false,
             ));
         }
 
-        if ($options['hasCategories']) {
-            $builder->add('category', CategoryFilterType::class, array(
+        if ($options['hasHashtags']) {
+            $builder->add('hashtag', HashTagFilterType::class, array(
                 'label' => false,
             ));
         }
