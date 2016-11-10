@@ -105,6 +105,16 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'menu');
 
+            $menu->addChild('room_navigation_space_2', array(
+                'label' => ' ',
+                'route' => 'commsy_profile_account',
+                'routeParameters' => [
+                    'roomId' => $currentStack->attributes->get('roomId'),
+                    'itemId' => $currentUser->getItemId(),
+                ],
+                'extras' => array('icon' => 'uk-icon-small')
+            ));
+
             $menu->addChild('room', array(
                 'label' => 'Back to room',
                 'route' => 'commsy_room_home',
