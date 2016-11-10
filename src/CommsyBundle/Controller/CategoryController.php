@@ -109,6 +109,14 @@ class CategoryController extends Controller
         }
 
         $createNewForm = $this->createForm(Types\CategoryNewType::class, $category);
+
+        $categoryEditTitle = '';
+
+        if($createNewForm->has('new')){
+            $categoryEditTitle = 'Create new category';
+        } elseif ($createNewForm->has('update')) {
+            $categoryEditTitle = 'Edit category';
+        }
         
         $createNewForm->handleRequest($request);
         if ($createNewForm->isValid()) {
@@ -122,6 +130,7 @@ class CategoryController extends Controller
             
             return $this->redirectToRoute('commsy_category_edit', [
                 'roomId' => $roomId,
+                'editTitle' => $categoryEditTitle,
             ]);
         }
 
@@ -153,6 +162,7 @@ class CategoryController extends Controller
 
             return $this->redirectToRoute('commsy_category_edit', [
                 'roomId' => $roomId,
+                'editTitle' => $categoryEditTitle,
             ]);
         }
 
@@ -160,6 +170,7 @@ class CategoryController extends Controller
             'newForm' => $createNewForm->createView(),
             'editForm' => $editForm->createView(),
             'roomId' => $roomId,
+            'editTitle' => $categoryEditTitle,
         ];
     }
 }

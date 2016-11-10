@@ -18,9 +18,13 @@
                 <source>Edit categories</source>
                 <target>Edit categories</target>
             </trans-unit>
+            <trans-unit id="category-edit">
+                <source>Edit category</source>
+                <target>Edit category</target>
+            </trans-unit>
             <trans-unit id="category-label-title">
                 <source>Title</source>
-                <target>Titel</target>
+                <target>Title</target>
             </trans-unit>
             <trans-unit id="category-button-add">
                 <source>Create new category</source>
