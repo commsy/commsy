@@ -18,6 +18,10 @@
                 <source>Edit categories</source>
                 <target>Kategorien bearbeiten</target>
             </trans-unit>
+            <trans-unit id="category-edit">
+                <source>Edit category</source>
+                <target>Kategorie bearbeiten</target>
+            </trans-unit>
             <trans-unit id="category-label-title">
                 <source>Title</source>
                 <target>Titel</target>

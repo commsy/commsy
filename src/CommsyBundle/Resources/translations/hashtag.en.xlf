@@ -26,6 +26,14 @@
                 <source>No hashtag has been created yet.</source>
                 <target>No hashtag has been created yet.</target>
             </trans-unit>
+            <trans-unit id="hashtag-combine">
+                <source>Combine hashtags</source>
+                <target>Combine hashtags</target>
+            </trans-unit>
+            <trans-unit id="combine">
+                <source>Combine</source>
+                <target>Combine</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

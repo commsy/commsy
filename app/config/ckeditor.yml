@@ -14,10 +14,14 @@ ivory_ck_editor:
         CommSyDocument:
             path:     "/js/src/commsy/ckeditor/plugins/document/"
             filename: "CommSyDocument.js"
+        tableresize:
+            path:     "/js/src/commsy/ckeditor/plugins/tableresize/"
+            filename: "plugin.js"
     configs:
         cs_item_config:
             toolbar: [ [ "Cut", "Copy", "Paste", "PasteFromWord", "Undo", "Redo" ], ["Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript", "SpecialChar"] , ["NumberedList", "BulletedList", "Outdent", "Indent", "Blockquote"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"], "/", ["Format"], ["Font"], ["FontSize"], ["TextColor", "BGColor", "RemoveFormat", "Maximize", "Source"], ["Link", "Unlink", "Table", "HorizontalRule", "Smiley", "Flash"], ["CommSyImage", "CommSyDocument", "CommSyAudio", "CommSyVideo"] ]
-            extraPlugins: "CommSyImage,CommSyAudio,CommSyVideo,CommSyDocument"
+            extraPlugins: "CommSyImage,CommSyAudio,CommSyVideo,CommSyDocument,tableresize"
             floatSpaceDockedOffsetX: 180
         cs_annotation_config:
             toolbar: [ [ "Cut", "Copy", "Paste", "PasteFromWord", "Undo", "Redo" ], ["Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript", "SpecialChar"] ]
+                

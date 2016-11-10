@@ -27,7 +27,6 @@ class CategoryNewType extends AbstractType
                     new Constraints\NotBlank(),
                 ],
                 'label' => 'Title',
-                'translation_domain' => 'category',
                 'required' => true,
             ])
 
@@ -39,18 +38,23 @@ class CategoryNewType extends AbstractType
                 if (!$category->getItemId()) {
                     $form->add('new', Types\SubmitType::class, [
                         'attr' => [
-                            'class' => 'uk-button-primary',
+                            'class' => 'uk-button-primary uk-hidden',
                         ],
                         'label' => 'Create new category',
-                        'translation_domain' => 'category',
                     ]);
                 } else {
                     $form->add('update', Types\SubmitType::class, [
                         'attr' => [
-                            'class' => 'uk-button-primary',
+                            'class' => 'uk-button-primary uk-hidden',
                         ],
                         'label' => 'Update category',
-                        'translation_domain' => 'category',
+                    ]);
+                    $form->add('cancel', Types\SubmitType::class, [
+                        'attr' => [
+                            'class' => 'uk-button-primary uk-hidden',
+                        ],
+                        'label' => 'cancel',
+                        'translation_domain' => 'form',
                     ]);
                 }
             })
@@ -66,6 +70,7 @@ class CategoryNewType extends AbstractType
     {
         $resolver
             ->setRequired([])
+            ->setDefaults(array('translation_domain' => 'category'))
         ;
     }
 

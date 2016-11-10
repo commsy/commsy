@@ -35,7 +35,7 @@
                         {% endif %}
                     </div>
             </div>
-            <div>
+            <div class="uk-width-8-10">
                 <h4 class="uk-comment-title">
                     <a href="{{ path('commsy_date_detail', {'roomId': roomId, 'itemId': date.itemId}) }}">{{ date.title }}</a>
                 </h4>
@@ -45,6 +45,11 @@
                 <div class="uk-comment-meta">
                     {{  macros.fileListShort(date) }}
                 </div>
+            </div>
+            <div class="uk-width-2-10 uk-text-right uk-text-muted uk-vertical-align">
+                {% if date.color != "cs-date-color-no-color" and date.color != "" %}
+                    <span class="uk-vertical-align-middle uk-margin-right uk-icon-square {{date.color}}"></span>
+                {% endif %}
             </div>
         </header>
     </article>
