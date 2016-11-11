@@ -78,8 +78,6 @@ class cs_popup_mailtogroup_controller implements cs_popup_controller {
 			$mail["message"] = $form_data["mailcontent"];
 			
 			$email = new cs_mail();
-			//$email->set_from_name($mail["from_name"]);
-			//$email->set_from_email($mail["from_email"]);
 			$email->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
             $email->set_from_name($this->_environment->getCurrentPortalItem()->getTitle());
 			$email->set_reply_to_name($mail["reply_to_name"]);

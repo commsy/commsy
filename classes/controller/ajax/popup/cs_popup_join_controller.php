@@ -26,9 +26,6 @@ class cs_popup_join_controller implements cs_popup_controller {
 
 	public function save($form_data, $additional = array()) {
 		$mail = new cs_mail();
-		//TODO: feed mail with formdata etc.
-		//$mail->set_from_email($this->_environment->getCurrentUser()->getEmail());
-		//$mail->set_from_name($this->_environment->getCurrentUser()->getFullName());
 		$mail->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
         $mail->set_from_name($this->_environment->getCurrentPortalItem()->getTitle());
 

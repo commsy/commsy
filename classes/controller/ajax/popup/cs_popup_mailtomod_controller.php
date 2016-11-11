@@ -32,11 +32,12 @@ class cs_popup_mailtomod_controller implements cs_popup_controller {
 
 	public function save($form_data, $additional = array()) {
 		$mail = new cs_mail();
-		
-		//$mail->set_from_email($this->_environment->getCurrentUser()->getEmail());
-		//$mail->set_from_name($this->_environment->getCurrentUser()->getFullName());
 		$mail->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
         $mail->set_from_name($this->_environment->getCurrentPortalItem()->getTitle());
+
+        $currentUser = $this->_environment->getCurrentUser();
+        $mail->set_reply_to_name($currentUser->getFullName());
+		$mail->set_reply_to_email($currentUser->getEmail());
 		
 		$roomId = null;
 		if (isset($additional['roomId']) && !empty($additional['roomId'])) {
