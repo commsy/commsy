@@ -3,24 +3,24 @@ ivory_ck_editor:
     default_config: cs_item_config
     plugins:
         CommSyImage:
-            path:     "/js/src/commsy/ckeditor/plugins/image/"
+            path:     "/bundles/commsy/image/"
             filename: "plugin.js"
         CommSyAudio:
-            path:     "/js/src/commsy/ckeditor/plugins/audio/"
+            path:     "/bundles/commsy/audio/"
             filename: "CommSyAudio.js"
         CommSyVideo:
-            path:     "/js/src/commsy/ckeditor/plugins/video/"
+            path:     "/bundles/commsy/video/"
             filename: "CommSyVideo.js"
         CommSyDocument:
-            path:     "/js/src/commsy/ckeditor/plugins/document/"
+            path:     "/bundles/commsy/document/"
             filename: "CommSyDocument.js"
         tableresize:
-            path:     "/js/src/commsy/ckeditor/plugins/tableresize/"
+            path:     "/bundles/commsy/tableresize/"
             filename: "plugin.js"
     configs:
         cs_item_config:
             toolbar: [ [ "Cut", "Copy", "Paste", "PasteFromWord", "Undo", "Redo" ], ["Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript", "SpecialChar"] , ["NumberedList", "BulletedList", "Outdent", "Indent", "Blockquote"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"], "/", ["Format"], ["Font"], ["FontSize"], ["TextColor", "BGColor", "RemoveFormat", "Maximize", "Source"], ["Link", "Unlink", "Table", "HorizontalRule", "Smiley", "Flash"], ["CommSyImage", "CommSyDocument", "CommSyAudio", "CommSyVideo"] ]
-            extraPlugins: "CommSyImage,CommSyAudio,CommSyVideo,CommSyDocument,tableresize"
+            extraPlugins: "CommSyImage,CommSyAudio,CommSyVideo,CommSyDocument,tabletools"
             floatSpaceDockedOffsetX: 180
         cs_annotation_config:
             toolbar: [ [ "Cut", "Copy", "Paste", "PasteFromWord", "Undo", "Redo" ], ["Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript", "SpecialChar"] ]
