@@ -166,11 +166,64 @@ class CategoryController extends Controller
             ]);
         }
 
+
+        $mergeForm = $this->createForm(Types\CategoryMergeType::class, null, ['roomId'=>$roomId]);
+
+        $mergeForm->handleRequest($request);
+        if ($mergeForm->isValid()) {
+            
+
+            $mergeData=$mergeForm->getData();
+            $tagIdOne=$mergeData['first']->getItemId();
+            $tagIdTwo=$mergeData['second']->getItemId();
+
+             
+            $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $environment->setCurrentContextID($roomId);
+
+            $tagManager = $environment->getTagManager();
+            $tag2TagManager = $environment->getTag2TagManager();
+
+            if ( $tag2TagManager->isASuccessorOfB($tagIdOne, $tagIdTwo) ) {
+                $tagIdOneTemp = $tagIdOne;
+                $tagIdOne = $tagIdTwo;
+                $tagIdTwo = $tagIdOneTemp;
+            }
+            
+            // get both
+            $tagItemOne = $tagManager->getItem($tagIdOne);
+            $tagItemTwo = $tagManager->getItem($tagIdTwo);
+            
+            //TODO: Welches Element liegt auf der höheren Ebene
+            // for now, we put the combined tags under the parent of the first one
+            $putId = $tag2TagManager->getFatherItemId($tagIdOne);
+            
+            // merge them
+            $tag2TagManager->combine($tagIdOne, $tagIdTwo, $putId);
+            
+            $tagOne = $tagItemOne->getTitle();
+            $tagTwo = $tagItemTwo->getTitle();
+            $newName = $tagOne . '/' . $tagTwo;
+
+
+            $tagItemOne->setName($newName);
+            $tagItemOne->setModificationDate(getCurrentDateTimeInMySQL());
+            $tagItemOne->save();
+            $tagItemTwo->delete();
+
+            
+
+            return $this->redirectToRoute('commsy_category_edit', [
+                'roomId' => $roomId,
+            ]);
+        }
+
         return [
             'newForm' => $createNewForm->createView(),
             'editForm' => $editForm->createView(),
             'roomId' => $roomId,
             'editTitle' => $categoryEditTitle,
+            'mergeForm' => $mergeForm->createView(),
         ];
     }
 }

@@ -42,12 +42,13 @@ class Tag
      */
     private $modifierId;
 
-    /**
+     /**
      * @var integer
      *
-     * @ORM\Column(name="deleter_id", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="deleter_id", referencedColumnName="item_id")
      */
-    private $deleterId;
+    private $deleter;
 
     /**
      * @var \DateTime
@@ -162,27 +163,27 @@ class Tag
     }
 
     /**
-     * Set deleterId
+     * Set deleter
      *
-     * @param integer $deleterId
+     * @param \CommsyBundle\Entity\User $deleter
      *
-     * @return Tag
+     * @return Labels
      */
-    public function setDeleterId($deleterId)
+    public function setDeleter(\CommsyBundle\Entity\User $deleter = null)
     {
-        $this->deleterId = $deleterId;
+        $this->deleter = $deleter;
 
         return $this;
     }
 
     /**
-     * Get deleterId
+     * Get deleter
      *
-     * @return integer
+     * @return \CommsyBundle\Entity\User
      */
-    public function getDeleterId()
+    public function getDeleter()
     {
-        return $this->deleterId;
+        return $this->deleter;
     }
 
     /**

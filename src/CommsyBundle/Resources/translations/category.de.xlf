@@ -38,6 +38,14 @@
                 <source>No categories has been created yet.</source>
                 <target>Bisher wurden keine Kategorien angelegt.</target>
             </trans-unit>
+            <trans-unit id="category-combine">
+                <source>Combine categories</source>
+                <target>Kategorien zusammenlegen</target>
+            </trans-unit>
+            <trans-unit id="combine">
+                <source>Combine</source>
+                <target>Zusammenlegen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
