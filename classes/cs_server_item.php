@@ -534,11 +534,11 @@ class cs_server_item extends cs_guide_item
         if ($mod_user_first) {
             $fullnameFirstModUser = $mod_user_first->getFullName();
         } else {
-            $mail->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
-            $mail->set_from_name($this->_environment->getCurrentPortalItem()->getTitle());
-
             $fullnameFirstModUser = '';
         }
+
+        $mail->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
+        $mail->set_from_name($this->_environment->getCurrentPortalItem()->getTitle());
         
 
         // set message body for every inactivity state
