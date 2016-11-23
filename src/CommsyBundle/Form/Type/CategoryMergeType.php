@@ -5,9 +5,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type as Types;
-use Symfony\Component\Validator\Constraints;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Doctrine\ORM\EntityRepository;
 
@@ -24,45 +21,41 @@ class CategoryMergeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('first', EntityType::class, array(
-                    'class' => 'CommsyBundle:Tag',
-                    'query_builder' => function (EntityRepository $er) use ($options) {
-                        return $er->createQueryBuilder('l')
-                                ->andWhere('l.contextId = :roomId')
-                                ->andWhere('l.deletionDate IS NULL')
-                                ->andWhere('l.deleter IS NULL')
-                                ->setParameter('roomId', $options['roomId'] );
-                                        },
-                    'label' => false,
-                    'choice_label' => 'title',
+            ->add('first', EntityType::class, [
+                'class' => 'CommsyBundle:Tag',
+                'query_builder' => function (EntityRepository $er) use ($options) {
+                    return $er->createQueryBuilder('l')
+                            ->andWhere('l.contextId = :roomId')
+                            ->andWhere('l.deletionDate IS NULL')
+                            ->andWhere('l.deleter IS NULL')
+                            ->setParameter('roomId', $options['roomId'] );
+                },
+                'label' => false,
+                'choice_label' => 'title',
 
-                ))
+            ])
+            ->add('second', EntityType::class, [
+                'class' => 'CommsyBundle:Tag',
+                'query_builder' => function (EntityRepository $er) use ($options) {
+                    return $er->createQueryBuilder('l')
+                            ->andWhere('l.contextId = :roomId')
+                            ->andWhere('l.deletionDate IS NULL')
+                            ->andWhere('l.deleter IS NULL')
+                            ->setParameter('roomId', $options['roomId']);
+                },
+                'label' => false,
+                'choice_label' => 'title',
 
-            ->add('second', EntityType::class, array(
-                    'class' => 'CommsyBundle:Tag',
-                    'query_builder' => function (EntityRepository $er) use ($options){
-                        return $er->createQueryBuilder('l')
-                                ->andWhere('l.contextId = :roomId')
-                                ->andWhere('l.deletionDate IS NULL')
-                                ->andWhere('l.deleter IS NULL')
-                                ->setParameter('roomId', $options['roomId']);
-                                        },
-                    'label' => false,
-                    'choice_label' => 'title',
-
-                ))
-
-
-
+            ])
             ->add('combine', Types\SubmitType::class, [
-                        'attr' => array(
-                            'class' => 'uk-button-primary',
-                        ),
-                        'label' => 'Combine',
-                        'translation_domain' => 'category',
-                        'validation_groups' => false,
-                    ])
-            ;
+                'attr' => [
+                    'class' => 'uk-button-primary',
+                ],
+                'label' => 'Combine',
+                'translation_domain' => 'category',
+                'validation_groups' => false,
+            ])
+        ;
 
     }
 

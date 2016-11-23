@@ -171,20 +171,16 @@ class CategoryController extends Controller
 
         $mergeForm->handleRequest($request);
         if ($mergeForm->isValid()) {
-            
+            $mergeData = $mergeForm->getData();
+            $tagIdOne = $mergeData['first']->getItemId();
+            $tagIdTwo = $mergeData['second']->getItemId();
 
-            $mergeData=$mergeForm->getData();
-            $tagIdOne=$mergeData['first']->getItemId();
-            $tagIdTwo=$mergeData['second']->getItemId();
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
-             
-            $environment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $environment->setCurrentContextID($roomId);
+            $tagManager = $legacyEnvironment->getTagManager();
+            $tag2TagManager = $legacyEnvironment->getTag2TagManager();
 
-            $tagManager = $environment->getTagManager();
-            $tag2TagManager = $environment->getTag2TagManager();
-
-            if ( $tag2TagManager->isASuccessorOfB($tagIdOne, $tagIdTwo) ) {
+            if ($tag2TagManager->isASuccessorOfB($tagIdOne, $tagIdTwo)) {
                 $tagIdOneTemp = $tagIdOne;
                 $tagIdOne = $tagIdTwo;
                 $tagIdTwo = $tagIdOneTemp;
@@ -194,8 +190,7 @@ class CategoryController extends Controller
             $tagItemOne = $tagManager->getItem($tagIdOne);
             $tagItemTwo = $tagManager->getItem($tagIdTwo);
             
-            //TODO: Welches Element liegt auf der höheren Ebene
-            // for now, we put the combined tags under the parent of the first one
+            // we put the combined tag under the parent of the first one
             $putId = $tag2TagManager->getFatherItemId($tagIdOne);
             
             // merge them
@@ -205,13 +200,10 @@ class CategoryController extends Controller
             $tagTwo = $tagItemTwo->getTitle();
             $newName = $tagOne . '/' . $tagTwo;
 
-
             $tagItemOne->setName($newName);
             $tagItemOne->setModificationDate(getCurrentDateTimeInMySQL());
             $tagItemOne->save();
             $tagItemTwo->delete();
-
-            
 
             return $this->redirectToRoute('commsy_category_edit', [
                 'roomId' => $roomId,
