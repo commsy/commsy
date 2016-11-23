@@ -195,15 +195,6 @@ class CategoryController extends Controller
             
             // merge them
             $tag2TagManager->combine($tagIdOne, $tagIdTwo, $putId);
-            
-            $tagOne = $tagItemOne->getTitle();
-            $tagTwo = $tagItemTwo->getTitle();
-            $newName = $tagOne . '/' . $tagTwo;
-
-            $tagItemOne->setName($newName);
-            $tagItemOne->setModificationDate(getCurrentDateTimeInMySQL());
-            $tagItemOne->save();
-            $tagItemTwo->delete();
 
             return $this->redirectToRoute('commsy_category_edit', [
                 'roomId' => $roomId,
