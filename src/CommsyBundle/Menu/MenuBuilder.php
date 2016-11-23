@@ -61,6 +61,7 @@ class MenuBuilder
                     'itemId' => $currentUser->getItemId(),
                 ],
                 'extras' => [
+                    'icon' => 'uk-icon-user uk-icon-small uk-icon-justify',
                     'user' => $currentUser,
                 ]
             ])
@@ -74,6 +75,7 @@ class MenuBuilder
                     'itemId' => $currentUser->getItemId(),
                 ],
                 'extras' => [
+                    'icon' => 'uk-icon-user-secret uk-icon-small uk-icon-justify',
                     'user' => $currentUser,
                 ]
             ])
@@ -87,6 +89,7 @@ class MenuBuilder
                     'itemId' => $currentUser->getItemId(),
                 ],
                 'extras' => [
+                    'icon' => 'uk-icon-envelope uk-icon-small uk-icon-justify',
                     'user' => $currentUser,
                 ]
             ])
@@ -100,6 +103,7 @@ class MenuBuilder
                     'itemId' => $currentUser->getItemId(),
                 ],
                 'extras' => [
+                    'icon' => 'uk-icon-plus-square uk-icon-small uk-icon-justify',
                     'user' => $currentUser,
                 ]
             ])
