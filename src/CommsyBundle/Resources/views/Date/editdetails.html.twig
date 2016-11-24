@@ -136,6 +136,28 @@
 </div>
 
 <script>
+$('#date_start_date, #date_start_time, #date_end_date, #date_end_time').change(function() {
+    var startDate = new Date($('#date_start_date').val().split(".").reverse().join("/"));
+    var endDate   = new Date($('#date_end_date').val().split(".").reverse().join("/"));
+
+    startDate.setHours($('#date_start_time').val().split(":")[0]);
+    startDate.setMinutes($('#date_start_time').val().split(":")[1]);
+
+    endDate.setHours($('#date_end_time').val().split(":")[0]);
+    endDate.setMinutes($('#date_end_time').val().split(":")[1]);
+
+    if (startDate.getTime() > endDate.getTime()) {
+        if($(this).attr('id').indexOf('start') > 0) {
+            $('#date_end_date').val($('#date_start_date').val());
+            $('#date_end_time').val($('#date_start_time').val());
+        }
+        else {
+            $('#date_start_date').val($('#date_end_date').val());
+            $('#date_start_time').val($('#date_end_time').val());
+        }
+    }
+})
+
 var $recurring = $('#date_recurring_select');
 // When sport gets selected ...
 $recurring.change(function() {
