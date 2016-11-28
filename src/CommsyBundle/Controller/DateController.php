@@ -822,7 +822,7 @@ class DateController extends Controller
         
         $date->save();
         
-        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->trans('date changed');
+        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->trans('date changed', [], 'date');
         
         $start = $date->getStartingDay();
         if ($date->getStartingTime() != '') {
