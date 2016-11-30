@@ -28,7 +28,9 @@ class CategoryMergeType extends AbstractType
                             ->andWhere('l.contextId = :roomId')
                             ->andWhere('l.deletionDate IS NULL')
                             ->andWhere('l.deleter IS NULL')
-                            ->setParameter('roomId', $options['roomId'] );
+                            ->andWhere('l.title != ?2')
+                            ->setParameter('roomId', $options['roomId'] )
+                            ->setParameter('2', 'CS_TAG_ROOT' );
                 },
                 'label' => false,
                 'choice_label' => 'title',
@@ -41,7 +43,9 @@ class CategoryMergeType extends AbstractType
                             ->andWhere('l.contextId = :roomId')
                             ->andWhere('l.deletionDate IS NULL')
                             ->andWhere('l.deleter IS NULL')
-                            ->setParameter('roomId', $options['roomId']);
+                            ->andWhere('l.title != ?2')
+                            ->setParameter('roomId', $options['roomId'])
+                            ->setParameter('2', 'CS_TAG_ROOT' );
                 },
                 'label' => false,
                 'choice_label' => 'title',
