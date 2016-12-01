@@ -74,7 +74,7 @@
             </trans-unit>
             <trans-unit id="13">
                 <source>Access check</source>
-                <target>Teilnahme</target>
+                <target>Teilnahmeüberprüfung</target>
             </trans-unit>
             <trans-unit id="14">
                 <source>Room description</source>
