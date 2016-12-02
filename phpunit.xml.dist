@@ -12,7 +12,7 @@
 	<php>
         <ini name="error_reporting" value="E_ERROR" />
 
-        <var name="DB_DSN" value="mysql:dbname=commsy_test;host=localhost" />
+        <var name="DB_DSN" value="mysql:dbname=commsy_test;host=commsy8_db" />
         <var name="DB_USER" value="commsy" />
         <var name="DB_PASSWD" value="commsy" />
         <var name="DB_DBNAME" value="commsy_test" />
