@@ -267,8 +267,6 @@ class DeleteInactiveUserTest extends DatabaseTestCase
                 user.status = 0'
         )->getRowCount());
 
-        exit;
-
         /**
          * Deletion notification deadline
          */
@@ -279,7 +277,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $this->assertEquals(6, $this->getConnection()->createQueryTable(
             'user', 'SELECT * FROM user WHERE
-                user.extras LIKE "%NOTIFY_DELETE_DATE%"
+                user.extras LIKE "%NOTIFY_DELETE_DATE%" AND
                 user.status = 0'
         )->getRowCount());
 
@@ -293,8 +291,8 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $this->assertEquals(6, $this->getConnection()->createQueryTable(
             'user', 'SELECT * FROM user WHERE
-                user.extras LIKE "%NOTIFY_DELETE_DATE%"
-                user.extras LIKE "%MAIL_SEND_NEXT_DELETE%"
+                user.extras LIKE "%NOTIFY_DELETE_DATE%" AND
+                user.extras LIKE "%MAIL_SEND_NEXT_DELETE%" AND
                 user.status = 0'
         )->getRowCount());
 
@@ -308,11 +306,11 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $this->assertEquals(6, $this->getConnection()->createQueryTable(
             'user', 'SELECT * FROM user WHERE
-                user.deletion_date IS NOT NULL,
-                user.deleter_id IS NOT NULL,
-                user.extras LIKE "%NOTIFY_DELETE_DATE%"
-                user.extras LIKE "%MAIL_SEND_NEXT_DELETE%"
-                user.extras LIKE "%MAIL_SEND_DELETE%"
+                user.deletion_date IS NOT NULL AND
+                user.deleter_id IS NOT NULL AND
+                user.extras LIKE "%NOTIFY_DELETE_DATE%" AND
+                user.extras LIKE "%MAIL_SEND_NEXT_DELETE%" AND
+                user.extras LIKE "%MAIL_SEND_DELETE%" AND
                 user.status = 0'
         )->getRowCount());
 
