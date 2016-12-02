@@ -1870,7 +1870,7 @@
 		<field name="lastname">USER</field>
 		<field name="email">USER@mail.mail</field>
 		<field name="city"></field>
-		<field name="lastlogin">2016-12-02 19:15:37</field>
+		<field name="lastlogin" xsi:nil="true" />
 		<field name="visible">1</field>
 		<field name="extras">a:5:{s:8:&quot;LANGUAGE&quot;;s:7:&quot;browser&quot;;s:23:&quot;DEFAULT_MAIL_VISIBILITY&quot;;s:1:&quot;1&quot;;s:19:&quot;AGB_ACCEPTANCE_DATE&quot;;s:0:&quot;&quot;;s:15:&quot;ACCOUNTWANTMAIL&quot;;s:3:&quot;yes&quot;;s:12:&quot;ROOMWANTMAIL&quot;;s:3:&quot;yes&quot;;}</field>
 		<field name="auth_source">102</field>
