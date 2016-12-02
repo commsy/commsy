@@ -36,8 +36,11 @@ function getDateFromDateString ($date_string) {
    return date("Ymd", mktime(date('H'), date('i'), date('s'), $month, $day, date('Y')));
 }
 
-function getCurrentDateTimeInMySQL () {
-   return date("Y-m-d H:i:s");
+if (!function_exists('getCurrentDateTimeInMySQL')) {
+    function getCurrentDateTimeInMySQL()
+    {
+        return date("Y-m-d H:i:s");
+    }
 }
 
 function getCurrentDateTimeMinusMinutesInMySQL ( $minutes ) {
@@ -52,8 +55,11 @@ function getCurrentDateTimeMinusHoursInMySQL ( $hours ) {
    return date('Y-m-d H:i:s', mktime((date('H')-$hours), date('i'), date('s'), date('m'), date('d'), date('Y')));
 }
 
-function getCurrentDateTimeMinusDaysInMySQL ( $days ) {
-   return date('Y-m-d H:i:s', mktime(date('H'), date('i'), date('s'), date('m'), (date('d')-$days), date('Y')));
+if (!function_exists('getCurrentDateTimeMinusDaysInMySQL')) {
+    function getCurrentDateTimeMinusDaysInMySQL($days)
+    {
+        return date('Y-m-d H:i:s', mktime(date('H'), date('i'), date('s'), date('m'), (date('d')-$days), date('Y')));
+    }
 }
 
 function getCurrentDateTimeMinusMonthsInMySQL ( $months ) {
@@ -64,8 +70,11 @@ function getCurrentDateTimePlusMinutesInMySQL ( $minutes ) {
 	return date('Y-m-d H:i:s', mktime(date('H'), (date('i')+$minutes), date('s'), date('m'), date('d'), date('Y')));
 }
 
-function getCurrentDateTimePlusDaysInMySQL ( $days ) {
-	return date('Y-m-d H:i:s', mktime(date('H'), (date('i')), date('s'), date('m'), date('d')+$days, date('Y')));
+if (!function_exists('getCurrentDateTimePlusDaysInMySQL')) {
+    function getCurrentDateTimePlusDaysInMySQL ($days)
+    {
+        return date('Y-m-d H:i:s', mktime(date('H'), (date('i')), date('s'), date('m'), date('d')+$days, date('Y')));
+    }
 }
 
    function convertDateFromInput ( $date,$language) {

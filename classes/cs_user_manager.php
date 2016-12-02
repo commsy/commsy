@@ -1401,7 +1401,10 @@ class cs_user_manager extends cs_manager {
       $hash_manager->deleteHashesForUser($item_id);
       unset($hash_manager);
 
+      // delete all related items
       $user_item->deleteAllEntriesOfUser();
+
+      // delete the user item itself
       $current_datetime = getCurrentDateTimeInMySQL();
       $current_user = $this->_environment->getCurrentUserItem();
       $user_id = $current_user->getItemID();

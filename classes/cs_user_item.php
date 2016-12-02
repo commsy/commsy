@@ -2585,14 +2585,6 @@ class cs_user_item extends cs_item {
    	}
    	return $retour;
    }
-
-    function setMailSendNextLock(){
-    $this->_addExtra('MAIL_SEND_NEXT_LOCK', '1');
-   }
-   
-   function unsetMailSendNextLock(){
-    $this->_unsetExtra('MAIL_SEND_NEXT_LOCK');
-   }
    
    function getMailSendNextLock(){
     $retour = false;
@@ -2675,7 +2667,6 @@ class cs_user_item extends cs_item {
         $this->unsetMailSendLocked();
         $this->unsetMailSendBeforeDelete();
         $this->unsetMailSendNextDelete();
-        $this->unsetMailSendNextLock();
         $this->unsetLockSendMailDate();
         $this->unsetLock();
         $this->unsetNotifyLockDate();

@@ -849,38 +849,59 @@ class cs_room_manager extends cs_context_manager {
       return $retour;
    }
    
-   function deleteRoomOfUserAndUserItemsInactivity($uid) {
+    function deleteRoomOfUserAndUserItemsInactivity($uid) {
    	
-   	// create backup of item
-   	$disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
-   	$current_datetime = getCurrentDateTimeInMySQL();
-   	#$query  = 'SELECT '.$this->addDatabasePrefix('room').'.* FROM '.$this->addDatabasePrefix('room').' WHERE '.$this->addDatabasePrefix('room').'.creator_id = "'.$uid.'"';
-   	// list of rooms where user is member
-   	#$query = 'SELECT * FROM '.$this->addDatabasePrefix('user').','.$this->addDatabasePrefix('room').' WHERE '.$this->addDatabasePrefix('user').'.user_id = "'.$uid.'" AND '.$this->addDatabasePrefix('user').'.context_id = '.$this->addDatabasePrefix('room').'.item_id AND '.$this->addDatabasePrefix('user').'.deletion_date IS NULL';
-   	$query = 'SELECT * FROM '.$this->addDatabasePrefix('user').','.$this->addDatabasePrefix('room').' WHERE '.$this->addDatabasePrefix('user').'.user_id = "'.$uid.'" AND '.$this->addDatabasePrefix('user').'.context_id = '.$this->addDatabasePrefix('room').'.item_id AND '.$this->addDatabasePrefix('room').'.type != "community" AND '.$this->addDatabasePrefix('user').'.deletion_date IS NULL AND 1 >= (SELECT count(*) FROM '.$this->addDatabasePrefix('user').' WHERE '.$this->addDatabasePrefix('user').'.context_id = '.$this->addDatabasePrefix('room').'.item_id AND '.$this->addDatabasePrefix('user').'.deletion_date IS NULL)';
-   	$result = $this->_db_connector->performQuery($query);
-   	if ( isset($result) ) {
-   		foreach ( $result as $rs ) {
-   			$insert_query = 'UPDATE '.$this->addDatabasePrefix('room').' SET';
-   			$insert_query .= ' modification_date = "'.$current_datetime.'",';
-   			$insert_query .= ' deletion_date = "'.$current_datetime.'"';
-   			$insert_query .=' WHERE item_id = "'.$rs['item_id'].'"';
-   			$result2 = $this->_db_connector->performQuery($insert_query);
-   			if ( !isset($result2) or !$result2 ) {
-   				include_once('functions/error_functions.php');
-   				trigger_error('Problems automatic deleting materials from query: "'.$insert_query.'"',E_USER_WARNING);
-   			}
-   		}
-   		$user_query = 'UPDATE '.$this->addDatabasePrefix('user').' SET';
-   		$user_query .= ' modification_date = "'.$current_datetime.'",';
-   		$user_query .= ' deletion_date = "'.$current_datetime.'"';
-   		$user_query .=' WHERE user_id = "'.$rs['user_id'].'"';
-   		$result3 = $this->_db_connector->performQuery($user_query);
-   		if ( !isset($result3) or !$result3 ) {
-   			include_once('functions/error_functions.php');
-   			trigger_error('Problems automatic deleting materials from query: "'.$user_query.'"',E_USER_WARNING);
-   		}
-   	}
-   }
+        // create backup of item
+        $disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
+        $current_datetime = getCurrentDateTimeInMySQL();
+        #$query  = 'SELECT '.$this->addDatabasePrefix('room').'.* FROM '.$this->addDatabasePrefix('room').' WHERE '.$this->addDatabasePrefix('room').'.creator_id = "'.$uid.'"';
+
+        // list of rooms where user is member
+        $query = '
+            SELECT
+                *
+            FROM '
+                . $this->addDatabasePrefix('user') . ','
+                . $this->addDatabasePrefix('room') . '
+            WHERE '
+                . $this->addDatabasePrefix('user') . '.user_id = "'.$uid.'" AND '
+                . $this->addDatabasePrefix('user') . '.context_id = ' . $this->addDatabasePrefix('room') . '.item_id AND '
+                . $this->addDatabasePrefix('room') . '.type != "community" AND '
+                . $this->addDatabasePrefix('user') . '.deletion_date IS NULL AND
+                1 >= (
+                    SELECT
+                        COUNT(*)
+                    FROM '
+                        . $this->addDatabasePrefix('user') . '
+                    WHERE '
+                        . $this->addDatabasePrefix('user') . '.context_id = ' . $this->addDatabasePrefix('room') . '.item_id AND '
+                        . $this->addDatabasePrefix('user') . '.deletion_date IS NULL
+                )';
+
+        $result = $this->_db_connector->performQuery($query);
+        if ( isset($result) ) {
+            foreach ( $result as $rs ) {
+                $insert_query = 'UPDATE '.$this->addDatabasePrefix('room').' SET';
+                $insert_query .= ' modification_date = "'.$current_datetime.'",';
+                $insert_query .= ' deletion_date = "'.$current_datetime.'"';
+                $insert_query .=' WHERE item_id = "'.$rs['item_id'].'"';
+                $result2 = $this->_db_connector->performQuery($insert_query);
+                if ( !isset($result2) or !$result2 ) {
+                    include_once('functions/error_functions.php');
+                    trigger_error('Problems automatic deleting materials from query: "'.$insert_query.'"',E_USER_WARNING);
+                }
+            }
+
+            $user_query = 'UPDATE '.$this->addDatabasePrefix('user').' SET';
+            $user_query .= ' modification_date = "'.$current_datetime.'",';
+            $user_query .= ' deletion_date = "'.$current_datetime.'"';
+            $user_query .=' WHERE user_id = "'.$rs['user_id'].'"';
+            $result3 = $this->_db_connector->performQuery($user_query);
+            if ( !isset($result3) or !$result3 ) {
+                include_once('functions/error_functions.php');
+                trigger_error('Problems automatic deleting materials from query: "'.$user_query.'"',E_USER_WARNING);
+            }
+        }
+    }
 }
 ?>
