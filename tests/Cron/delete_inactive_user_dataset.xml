@@ -91,6 +91,24 @@
 		<field name="email">USER@mail.mail</field>
 		<field name="language">browser</field>
 	</row>
+	<row>
+		<field name="commsy_id">101</field>
+		<field name="user_id">ONLY_MEMBER</field>
+		<field name="password_md5">2e40ad879e955201df4dedbf8d479a12</field>
+		<field name="firstname">USER</field>
+		<field name="lastname">USER</field>
+		<field name="email">USER@mail.mail</field>
+		<field name="language">browser</field>
+	</row>
+	<row>
+		<field name="commsy_id">101</field>
+		<field name="user_id">ANOTHER_WITH_TWO_ROOMS</field>
+		<field name="password_md5">2e40ad879e955201df4dedbf8d479a12</field>
+		<field name="firstname">USER</field>
+		<field name="lastname">USER</field>
+		<field name="email">USER@mail.mail</field>
+		<field name="language">browser</field>
+	</row>
 	</table_data>
 	<table_data name="auth_source">
 	<row>
@@ -154,6 +172,16 @@
 		<field name="user_item_id">147</field>
 		<field name="rss">67afd4840f9e63495567a43bf5f274b7</field>
 		<field name="ical">41bc9136c4e62f9fef4ee37927515cde</field>
+	</row>
+	<row>
+		<field name="user_item_id">167</field>
+		<field name="rss">e830c7f0bc515212fe64c325f5516718</field>
+		<field name="ical">d28480cb8d4d571408384fba97540f1b</field>
+	</row>
+	<row>
+		<field name="user_item_id">172</field>
+		<field name="rss">2783fd805c2fe3b27de6d34a5c9cf075</field>
+		<field name="ical">8ea16dfabbe63898f83dd47619cc01f2</field>
 	</row>
 	</table_data>
 	<table_data name="homepage_link_page_page">
@@ -645,6 +673,198 @@
 		<field name="deletion_date" xsi:nil="true" />
 		<field name="modification_date">2016-12-02 19:15:36</field>
 	</row>
+	<row>
+		<field name="item_id">158</field>
+		<field name="context_id">101</field>
+		<field name="type">user</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:29:58</field>
+	</row>
+	<row>
+		<field name="item_id">159</field>
+		<field name="context_id">101</field>
+		<field name="type">privateroom</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:29:58</field>
+	</row>
+	<row>
+		<field name="item_id">160</field>
+		<field name="context_id">159</field>
+		<field name="type">user</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:29:58</field>
+	</row>
+	<row>
+		<field name="item_id">161</field>
+		<field name="context_id">159</field>
+		<field name="type">tag</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:29:58</field>
+	</row>
+	<row>
+		<field name="item_id">162</field>
+		<field name="context_id">101</field>
+		<field name="type">user</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:30:12</field>
+	</row>
+	<row>
+		<field name="item_id">163</field>
+		<field name="context_id">101</field>
+		<field name="type">privateroom</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:30:12</field>
+	</row>
+	<row>
+		<field name="item_id">164</field>
+		<field name="context_id">163</field>
+		<field name="type">user</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:30:12</field>
+	</row>
+	<row>
+		<field name="item_id">165</field>
+		<field name="context_id">163</field>
+		<field name="type">tag</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:30:12</field>
+	</row>
+	<row>
+		<field name="item_id">166</field>
+		<field name="context_id">101</field>
+		<field name="type">project</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:31:13</field>
+	</row>
+	<row>
+		<field name="item_id">167</field>
+		<field name="context_id">166</field>
+		<field name="type">user</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:30:24</field>
+	</row>
+	<row>
+		<field name="item_id">168</field>
+		<field name="context_id">166</field>
+		<field name="type">label</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:31:13</field>
+	</row>
+	<row>
+		<field name="item_id">169</field>
+		<field name="context_id">166</field>
+		<field name="type">link_item</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:30:24</field>
+	</row>
+	<row>
+		<field name="item_id">170</field>
+		<field name="context_id">166</field>
+		<field name="type">tag</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:30:24</field>
+	</row>
+	<row>
+		<field name="item_id">171</field>
+		<field name="context_id">101</field>
+		<field name="type">project</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:31:35</field>
+	</row>
+	<row>
+		<field name="item_id">172</field>
+		<field name="context_id">171</field>
+		<field name="type">user</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:30:43</field>
+	</row>
+	<row>
+		<field name="item_id">173</field>
+		<field name="context_id">166</field>
+		<field name="type">user</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:31:13</field>
+	</row>
+	<row>
+		<field name="item_id">174</field>
+		<field name="context_id">171</field>
+		<field name="type">label</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:31:35</field>
+	</row>
+	<row>
+		<field name="item_id">175</field>
+		<field name="context_id">171</field>
+		<field name="type">link_item</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:30:43</field>
+	</row>
+	<row>
+		<field name="item_id">176</field>
+		<field name="context_id">166</field>
+		<field name="type">task</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:31:13</field>
+	</row>
+	<row>
+		<field name="item_id">177</field>
+		<field name="context_id">171</field>
+		<field name="type">tag</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:30:44</field>
+	</row>
+	<row>
+		<field name="item_id">178</field>
+		<field name="context_id">171</field>
+		<field name="type">user</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:31:35</field>
+	</row>
+	<row>
+		<field name="item_id">179</field>
+		<field name="context_id">171</field>
+		<field name="type">task</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:31:35</field>
+	</row>
+	<row>
+		<field name="item_id">180</field>
+		<field name="context_id">166</field>
+		<field name="type">link_item</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:31:13</field>
+	</row>
+	<row>
+		<field name="item_id">181</field>
+		<field name="context_id">171</field>
+		<field name="type">link_item</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:31:35</field>
+	</row>
 	</table_data>
 	<table_data name="labels">
 	<row>
@@ -657,7 +877,7 @@
 		<field name="modification_date">2016-12-01 11:29:36</field>
 		<field name="deletion_date" xsi:nil="true" />
 		<field name="name">ALL</field>
-		<field name="description">In diese Gruppe werden automatisch alle Mitglieder des Projektraums eingetragen. Sie wurde vom System erzeugt und kann nicht gelÃƒÂ¶scht werden.</field>
+		<field name="description">In diese Gruppe werden automatisch alle Mitglieder des Projektraums eingetragen. Sie wurde vom System erzeugt und kann nicht gelÃƒÆ’Ã‚Â¶scht werden.</field>
 		<field name="type">group</field>
 		<field name="extras">a:1:{s:12:&quot;SYSTEM_LABEL&quot;;i:1;}</field>
 		<field name="public">0</field>
@@ -691,7 +911,41 @@
 		<field name="modification_date">2016-12-02 19:15:36</field>
 		<field name="deletion_date" xsi:nil="true" />
 		<field name="name">ALL</field>
-		<field name="description">In diese Gruppe werden automatisch alle Mitglieder des Projektraums eingetragen. Sie wurde vom System erzeugt und kann nicht gelöscht werden.</field>
+		<field name="description">In diese Gruppe werden automatisch alle Mitglieder des Projektraums eingetragen. Sie wurde vom System erzeugt und kann nicht gelÃ¶scht werden.</field>
+		<field name="type">group</field>
+		<field name="extras">a:1:{s:12:&quot;SYSTEM_LABEL&quot;;i:1;}</field>
+		<field name="public">0</field>
+		<field name="locking_date" xsi:nil="true" />
+		<field name="locking_user_id" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="item_id">168</field>
+		<field name="context_id">166</field>
+		<field name="creator_id">167</field>
+		<field name="modifier_id">173</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:30:24</field>
+		<field name="modification_date">2016-12-02 20:31:13</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="name">ALL</field>
+		<field name="description">This group cannot be deleted. It contains all members of Project workspace.</field>
+		<field name="type">group</field>
+		<field name="extras">a:1:{s:12:&quot;SYSTEM_LABEL&quot;;i:1;}</field>
+		<field name="public">0</field>
+		<field name="locking_date" xsi:nil="true" />
+		<field name="locking_user_id" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="item_id">174</field>
+		<field name="context_id">171</field>
+		<field name="creator_id">172</field>
+		<field name="modifier_id">178</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:30:43</field>
+		<field name="modification_date">2016-12-02 20:31:35</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="name">ALL</field>
+		<field name="description">This group cannot be deleted. It contains all members of Project workspace.</field>
 		<field name="type">group</field>
 		<field name="extras">a:1:{s:12:&quot;SYSTEM_LABEL&quot;;i:1;}</field>
 		<field name="public">0</field>
@@ -771,6 +1025,66 @@
 		<field name="first_item_id">155</field>
 		<field name="first_item_type">user</field>
 		<field name="second_item_id">148</field>
+		<field name="second_item_type">group</field>
+		<field name="sorting_place" xsi:nil="true" />
+		<field name="extras">a:0:{}</field>
+	</row>
+	<row>
+		<field name="item_id">169</field>
+		<field name="context_id">166</field>
+		<field name="creator_id">162</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:30:24</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:30:24</field>
+		<field name="first_item_id">167</field>
+		<field name="first_item_type">user</field>
+		<field name="second_item_id">168</field>
+		<field name="second_item_type">group</field>
+		<field name="sorting_place" xsi:nil="true" />
+		<field name="extras">a:0:{}</field>
+	</row>
+	<row>
+		<field name="item_id">175</field>
+		<field name="context_id">171</field>
+		<field name="creator_id">162</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:30:43</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:30:43</field>
+		<field name="first_item_id">172</field>
+		<field name="first_item_type">user</field>
+		<field name="second_item_id">174</field>
+		<field name="second_item_type">group</field>
+		<field name="sorting_place" xsi:nil="true" />
+		<field name="extras">a:0:{}</field>
+	</row>
+	<row>
+		<field name="item_id">180</field>
+		<field name="context_id">166</field>
+		<field name="creator_id">167</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:31:13</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:31:13</field>
+		<field name="first_item_id">173</field>
+		<field name="first_item_type">user</field>
+		<field name="second_item_id">168</field>
+		<field name="second_item_type">group</field>
+		<field name="sorting_place" xsi:nil="true" />
+		<field name="extras">a:0:{}</field>
+	</row>
+	<row>
+		<field name="item_id">181</field>
+		<field name="context_id">171</field>
+		<field name="creator_id">172</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:31:35</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-02 20:31:35</field>
+		<field name="first_item_id">178</field>
+		<field name="first_item_type">user</field>
+		<field name="second_item_id">174</field>
 		<field name="second_item_type">group</field>
 		<field name="sorting_place" xsi:nil="true" />
 		<field name="extras">a:0:{}</field>
@@ -945,6 +1259,110 @@
 		<field name="item_id">157</field>
 		<field name="modifier_id">147</field>
 	</row>
+	<row>
+		<field name="item_id">160</field>
+		<field name="modifier_id">160</field>
+	</row>
+	<row>
+		<field name="item_id">164</field>
+		<field name="modifier_id">164</field>
+	</row>
+	<row>
+		<field name="item_id">166</field>
+		<field name="modifier_id">158</field>
+	</row>
+	<row>
+		<field name="item_id">166</field>
+		<field name="modifier_id">162</field>
+	</row>
+	<row>
+		<field name="item_id">166</field>
+		<field name="modifier_id">167</field>
+	</row>
+	<row>
+		<field name="item_id">167</field>
+		<field name="modifier_id">162</field>
+	</row>
+	<row>
+		<field name="item_id">168</field>
+		<field name="modifier_id">162</field>
+	</row>
+	<row>
+		<field name="item_id">168</field>
+		<field name="modifier_id">167</field>
+	</row>
+	<row>
+		<field name="item_id">169</field>
+		<field name="modifier_id">162</field>
+	</row>
+	<row>
+		<field name="item_id">170</field>
+		<field name="modifier_id">162</field>
+	</row>
+	<row>
+		<field name="item_id">171</field>
+		<field name="modifier_id">158</field>
+	</row>
+	<row>
+		<field name="item_id">171</field>
+		<field name="modifier_id">162</field>
+	</row>
+	<row>
+		<field name="item_id">171</field>
+		<field name="modifier_id">172</field>
+	</row>
+	<row>
+		<field name="item_id">172</field>
+		<field name="modifier_id">162</field>
+	</row>
+	<row>
+		<field name="item_id">173</field>
+		<field name="modifier_id">160</field>
+	</row>
+	<row>
+		<field name="item_id">174</field>
+		<field name="modifier_id">162</field>
+	</row>
+	<row>
+		<field name="item_id">174</field>
+		<field name="modifier_id">172</field>
+	</row>
+	<row>
+		<field name="item_id">175</field>
+		<field name="modifier_id">162</field>
+	</row>
+	<row>
+		<field name="item_id">176</field>
+		<field name="modifier_id">158</field>
+	</row>
+	<row>
+		<field name="item_id">176</field>
+		<field name="modifier_id">167</field>
+	</row>
+	<row>
+		<field name="item_id">177</field>
+		<field name="modifier_id">162</field>
+	</row>
+	<row>
+		<field name="item_id">178</field>
+		<field name="modifier_id">160</field>
+	</row>
+	<row>
+		<field name="item_id">179</field>
+		<field name="modifier_id">158</field>
+	</row>
+	<row>
+		<field name="item_id">179</field>
+		<field name="modifier_id">172</field>
+	</row>
+	<row>
+		<field name="item_id">180</field>
+		<field name="modifier_id">167</field>
+	</row>
+	<row>
+		<field name="item_id">181</field>
+		<field name="modifier_id">172</field>
+	</row>
 	</table_data>
 	<table_data name="links">
 	</table_data>
@@ -975,7 +1393,7 @@
 		<field name="title">Testportal</field>
 		<field name="extras">a:12:{s:9:&quot;SHOWTITLE&quot;;i:1;s:15:&quot;CHECKNEWMEMBERS&quot;;i:1;s:11:&quot;DESCRIPTION&quot;;a:2:{s:2:&quot;DE&quot;;s:0:&quot;&quot;;s:2:&quot;EN&quot;;s:0:&quot;&quot;;}s:12:&quot;DEFAULT_AUTH&quot;;i:102;s:8:&quot;HOMECONF&quot;;s:27:&quot;community_tiny,project_tiny&quot;;s:28:&quot;INACTIVITY_OVERWRITE_CONTENT&quot;;s:1:&quot;2&quot;;s:15:&quot;INACTIVITY_LOCK&quot;;s:3:&quot;365&quot;;s:27:&quot;INACTIVITY_MAIL_BEFORE_LOCK&quot;;s:2:&quot;20&quot;;s:17:&quot;INACTIVITY_DELETE&quot;;s:3:&quot;365&quot;;s:22:&quot;INACTIVITY_MAIL_DELETE&quot;;s:2:&quot;20&quot;;s:29:&quot;INACTIVITY_CONFIGURATION_DATE&quot;;s:19:&quot;2016-12-01 01:55:11&quot;;s:17:&quot;MAX_ROOM_ACTIVITY&quot;;i:5;}</field>
 		<field name="status">1</field>
-		<field name="activity">60</field>
+		<field name="activity">86</field>
 		<field name="type">portal</field>
 		<field name="is_open_for_guests">1</field>
 		<field name="url"></field>
@@ -1013,7 +1431,7 @@
 		<field name="modification_date">2016-12-01 11:29:36</field>
 		<field name="deletion_date" xsi:nil="true" />
 		<field name="title">Raum mit Moderator und Benutzer</field>
-		<field name="extras">a:9:{s:12:&quot;ROOM_CONTEXT&quot;;s:3:&quot;uni&quot;;s:10:&quot;TIMESPREAD&quot;;i:7;s:8:&quot;HOMECONF&quot;;s:102:&quot;announcement_short,date_short,todo_none,material_tiny,discussion_tiny,user_tiny,topic_none,group_short&quot;;s:24:&quot;RUBRIC_TRANSLATION_ARRAY&quot;;a:2:{s:5:&quot;TOPIC&quot;;a:3:{s:4:&quot;NAME&quot;;s:5:&quot;topic&quot;;s:2:&quot;DE&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;N&quot;;s:4:&quot;NOMS&quot;;s:5:&quot;Thema&quot;;s:4:&quot;GENS&quot;;s:6:&quot;Themas&quot;;s:4:&quot;AKKS&quot;;s:5:&quot;Thema&quot;;s:4:&quot;DATS&quot;;s:5:&quot;Thema&quot;;s:5:&quot;NOMPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;GENPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;AKKPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;DATPL&quot;;s:6:&quot;Themen&quot;;}s:2:&quot;EN&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;N&quot;;s:4:&quot;NOMS&quot;;s:5:&quot;topic&quot;;s:4:&quot;GENS&quot;;s:5:&quot;topic&quot;;s:4:&quot;AKKS&quot;;s:5:&quot;topic&quot;;s:4:&quot;DATS&quot;;s:5:&quot;topic&quot;;s:5:&quot;NOMPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;GENPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;AKKPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;DATPL&quot;;s:6:&quot;topics&quot;;}}s:7:&quot;PROJECT&quot;;a:3:{s:4:&quot;NAME&quot;;s:7:&quot;project&quot;;s:2:&quot;DE&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;M&quot;;s:4:&quot;NOMS&quot;;s:11:&quot;Projektraum&quot;;s:4:&quot;GENS&quot;;s:12:&quot;Projektraums&quot;;s:4:&quot;AKKS&quot;;s:11:&quot;Projektraum&quot;;s:4:&quot;DATS&quot;;s:11:&quot;Projektraum&quot;;s:5:&quot;NOMPL&quot;;s:15:&quot;ProjektrÃƒÆ’Ã‚Â¤ume&quot;;s:5:&quot;GENPL&quot;;s:15:&quot;ProjektrÃƒÆ’Ã‚Â¤ume&quot;;s:5:&quot;AKKPL&quot;;s:15:&quot;ProjektrÃƒÆ’Ã‚Â¤ume&quot;;s:5:&quot;DATPL&quot;;s:16:&quot;ProjektrÃƒÆ’Ã‚Â¤umen&quot;;}s:2:&quot;EN&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;M&quot;;s:4:&quot;NOMS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;GENS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;AKKS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;DATS&quot;;s:17:&quot;project workspace&quot;;s:5:&quot;NOMPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;GENPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;AKKPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;DATPL&quot;;s:18:&quot;project workspaces&quot;;}}}s:9:&quot;SHOWTITLE&quot;;i:1;s:15:&quot;CHECKNEWMEMBERS&quot;;i:1;s:8:&quot;LANGUAGE&quot;;s:2:&quot;de&quot;;s:10:&quot;RSS_STATUS&quot;;i:-1;s:11:&quot;SERVICELINK&quot;;i:1;}</field>
+		<field name="extras">a:9:{s:12:&quot;ROOM_CONTEXT&quot;;s:3:&quot;uni&quot;;s:10:&quot;TIMESPREAD&quot;;i:7;s:8:&quot;HOMECONF&quot;;s:102:&quot;announcement_short,date_short,todo_none,material_tiny,discussion_tiny,user_tiny,topic_none,group_short&quot;;s:24:&quot;RUBRIC_TRANSLATION_ARRAY&quot;;a:2:{s:5:&quot;TOPIC&quot;;a:3:{s:4:&quot;NAME&quot;;s:5:&quot;topic&quot;;s:2:&quot;DE&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;N&quot;;s:4:&quot;NOMS&quot;;s:5:&quot;Thema&quot;;s:4:&quot;GENS&quot;;s:6:&quot;Themas&quot;;s:4:&quot;AKKS&quot;;s:5:&quot;Thema&quot;;s:4:&quot;DATS&quot;;s:5:&quot;Thema&quot;;s:5:&quot;NOMPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;GENPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;AKKPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;DATPL&quot;;s:6:&quot;Themen&quot;;}s:2:&quot;EN&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;N&quot;;s:4:&quot;NOMS&quot;;s:5:&quot;topic&quot;;s:4:&quot;GENS&quot;;s:5:&quot;topic&quot;;s:4:&quot;AKKS&quot;;s:5:&quot;topic&quot;;s:4:&quot;DATS&quot;;s:5:&quot;topic&quot;;s:5:&quot;NOMPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;GENPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;AKKPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;DATPL&quot;;s:6:&quot;topics&quot;;}}s:7:&quot;PROJECT&quot;;a:3:{s:4:&quot;NAME&quot;;s:7:&quot;project&quot;;s:2:&quot;DE&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;M&quot;;s:4:&quot;NOMS&quot;;s:11:&quot;Projektraum&quot;;s:4:&quot;GENS&quot;;s:12:&quot;Projektraums&quot;;s:4:&quot;AKKS&quot;;s:11:&quot;Projektraum&quot;;s:4:&quot;DATS&quot;;s:11:&quot;Projektraum&quot;;s:5:&quot;NOMPL&quot;;s:15:&quot;ProjektrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤ume&quot;;s:5:&quot;GENPL&quot;;s:15:&quot;ProjektrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤ume&quot;;s:5:&quot;AKKPL&quot;;s:15:&quot;ProjektrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤ume&quot;;s:5:&quot;DATPL&quot;;s:16:&quot;ProjektrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¤umen&quot;;}s:2:&quot;EN&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;M&quot;;s:4:&quot;NOMS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;GENS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;AKKS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;DATS&quot;;s:17:&quot;project workspace&quot;;s:5:&quot;NOMPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;GENPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;AKKPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;DATPL&quot;;s:18:&quot;project workspaces&quot;;}}}s:9:&quot;SHOWTITLE&quot;;i:1;s:15:&quot;CHECKNEWMEMBERS&quot;;i:1;s:8:&quot;LANGUAGE&quot;;s:2:&quot;de&quot;;s:10:&quot;RSS_STATUS&quot;;i:-1;s:11:&quot;SERVICELINK&quot;;i:1;}</field>
 		<field name="status">1</field>
 		<field name="activity">5</field>
 		<field name="type">project</field>
@@ -1036,7 +1454,7 @@
 		<field name="modification_date">2016-12-01 11:26:01</field>
 		<field name="deletion_date" xsi:nil="true" />
 		<field name="title">Raum mit einem Moderator</field>
-		<field name="extras">a:9:{s:12:&quot;ROOM_CONTEXT&quot;;s:3:&quot;uni&quot;;s:10:&quot;TIMESPREAD&quot;;i:7;s:8:&quot;HOMECONF&quot;;s:102:&quot;announcement_short,date_short,todo_none,material_tiny,discussion_tiny,user_tiny,topic_none,group_short&quot;;s:24:&quot;RUBRIC_TRANSLATION_ARRAY&quot;;a:2:{s:5:&quot;TOPIC&quot;;a:3:{s:4:&quot;NAME&quot;;s:5:&quot;topic&quot;;s:2:&quot;DE&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;N&quot;;s:4:&quot;NOMS&quot;;s:5:&quot;Thema&quot;;s:4:&quot;GENS&quot;;s:6:&quot;Themas&quot;;s:4:&quot;AKKS&quot;;s:5:&quot;Thema&quot;;s:4:&quot;DATS&quot;;s:5:&quot;Thema&quot;;s:5:&quot;NOMPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;GENPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;AKKPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;DATPL&quot;;s:6:&quot;Themen&quot;;}s:2:&quot;EN&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;N&quot;;s:4:&quot;NOMS&quot;;s:5:&quot;topic&quot;;s:4:&quot;GENS&quot;;s:5:&quot;topic&quot;;s:4:&quot;AKKS&quot;;s:5:&quot;topic&quot;;s:4:&quot;DATS&quot;;s:5:&quot;topic&quot;;s:5:&quot;NOMPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;GENPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;AKKPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;DATPL&quot;;s:6:&quot;topics&quot;;}}s:7:&quot;PROJECT&quot;;a:3:{s:4:&quot;NAME&quot;;s:7:&quot;project&quot;;s:2:&quot;DE&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;M&quot;;s:4:&quot;NOMS&quot;;s:11:&quot;Projektraum&quot;;s:4:&quot;GENS&quot;;s:12:&quot;Projektraums&quot;;s:4:&quot;AKKS&quot;;s:11:&quot;Projektraum&quot;;s:4:&quot;DATS&quot;;s:11:&quot;Projektraum&quot;;s:5:&quot;NOMPL&quot;;s:13:&quot;ProjektrÃƒÂ¤ume&quot;;s:5:&quot;GENPL&quot;;s:13:&quot;ProjektrÃƒÂ¤ume&quot;;s:5:&quot;AKKPL&quot;;s:13:&quot;ProjektrÃƒÂ¤ume&quot;;s:5:&quot;DATPL&quot;;s:14:&quot;ProjektrÃƒÂ¤umen&quot;;}s:2:&quot;EN&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;M&quot;;s:4:&quot;NOMS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;GENS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;AKKS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;DATS&quot;;s:17:&quot;project workspace&quot;;s:5:&quot;NOMPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;GENPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;AKKPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;DATPL&quot;;s:18:&quot;project workspaces&quot;;}}}s:9:&quot;SHOWTITLE&quot;;i:1;s:15:&quot;CHECKNEWMEMBERS&quot;;i:1;s:8:&quot;LANGUAGE&quot;;s:2:&quot;de&quot;;s:10:&quot;RSS_STATUS&quot;;i:-1;s:11:&quot;SERVICELINK&quot;;i:1;}</field>
+		<field name="extras">a:9:{s:12:&quot;ROOM_CONTEXT&quot;;s:3:&quot;uni&quot;;s:10:&quot;TIMESPREAD&quot;;i:7;s:8:&quot;HOMECONF&quot;;s:102:&quot;announcement_short,date_short,todo_none,material_tiny,discussion_tiny,user_tiny,topic_none,group_short&quot;;s:24:&quot;RUBRIC_TRANSLATION_ARRAY&quot;;a:2:{s:5:&quot;TOPIC&quot;;a:3:{s:4:&quot;NAME&quot;;s:5:&quot;topic&quot;;s:2:&quot;DE&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;N&quot;;s:4:&quot;NOMS&quot;;s:5:&quot;Thema&quot;;s:4:&quot;GENS&quot;;s:6:&quot;Themas&quot;;s:4:&quot;AKKS&quot;;s:5:&quot;Thema&quot;;s:4:&quot;DATS&quot;;s:5:&quot;Thema&quot;;s:5:&quot;NOMPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;GENPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;AKKPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;DATPL&quot;;s:6:&quot;Themen&quot;;}s:2:&quot;EN&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;N&quot;;s:4:&quot;NOMS&quot;;s:5:&quot;topic&quot;;s:4:&quot;GENS&quot;;s:5:&quot;topic&quot;;s:4:&quot;AKKS&quot;;s:5:&quot;topic&quot;;s:4:&quot;DATS&quot;;s:5:&quot;topic&quot;;s:5:&quot;NOMPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;GENPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;AKKPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;DATPL&quot;;s:6:&quot;topics&quot;;}}s:7:&quot;PROJECT&quot;;a:3:{s:4:&quot;NAME&quot;;s:7:&quot;project&quot;;s:2:&quot;DE&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;M&quot;;s:4:&quot;NOMS&quot;;s:11:&quot;Projektraum&quot;;s:4:&quot;GENS&quot;;s:12:&quot;Projektraums&quot;;s:4:&quot;AKKS&quot;;s:11:&quot;Projektraum&quot;;s:4:&quot;DATS&quot;;s:11:&quot;Projektraum&quot;;s:5:&quot;NOMPL&quot;;s:13:&quot;ProjektrÃƒÆ’Ã‚Â¤ume&quot;;s:5:&quot;GENPL&quot;;s:13:&quot;ProjektrÃƒÆ’Ã‚Â¤ume&quot;;s:5:&quot;AKKPL&quot;;s:13:&quot;ProjektrÃƒÆ’Ã‚Â¤ume&quot;;s:5:&quot;DATPL&quot;;s:14:&quot;ProjektrÃƒÆ’Ã‚Â¤umen&quot;;}s:2:&quot;EN&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;M&quot;;s:4:&quot;NOMS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;GENS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;AKKS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;DATS&quot;;s:17:&quot;project workspace&quot;;s:5:&quot;NOMPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;GENPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;AKKPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;DATPL&quot;;s:18:&quot;project workspaces&quot;;}}}s:9:&quot;SHOWTITLE&quot;;i:1;s:15:&quot;CHECKNEWMEMBERS&quot;;i:1;s:8:&quot;LANGUAGE&quot;;s:2:&quot;de&quot;;s:10:&quot;RSS_STATUS&quot;;i:-1;s:11:&quot;SERVICELINK&quot;;i:1;}</field>
 		<field name="status">1</field>
 		<field name="activity">0</field>
 		<field name="type">project</field>
@@ -1059,7 +1477,7 @@
 		<field name="modification_date">2016-12-02 19:15:36</field>
 		<field name="deletion_date" xsi:nil="true" />
 		<field name="title">Raum mit zwei Moderatoren</field>
-		<field name="extras">a:9:{s:12:&quot;ROOM_CONTEXT&quot;;s:3:&quot;uni&quot;;s:10:&quot;TIMESPREAD&quot;;i:7;s:8:&quot;HOMECONF&quot;;s:102:&quot;announcement_short,date_short,todo_none,material_tiny,discussion_tiny,user_tiny,topic_none,group_short&quot;;s:24:&quot;RUBRIC_TRANSLATION_ARRAY&quot;;a:2:{s:5:&quot;TOPIC&quot;;a:3:{s:4:&quot;NAME&quot;;s:5:&quot;topic&quot;;s:2:&quot;DE&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;N&quot;;s:4:&quot;NOMS&quot;;s:5:&quot;Thema&quot;;s:4:&quot;GENS&quot;;s:6:&quot;Themas&quot;;s:4:&quot;AKKS&quot;;s:5:&quot;Thema&quot;;s:4:&quot;DATS&quot;;s:5:&quot;Thema&quot;;s:5:&quot;NOMPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;GENPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;AKKPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;DATPL&quot;;s:6:&quot;Themen&quot;;}s:2:&quot;EN&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;N&quot;;s:4:&quot;NOMS&quot;;s:5:&quot;topic&quot;;s:4:&quot;GENS&quot;;s:5:&quot;topic&quot;;s:4:&quot;AKKS&quot;;s:5:&quot;topic&quot;;s:4:&quot;DATS&quot;;s:5:&quot;topic&quot;;s:5:&quot;NOMPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;GENPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;AKKPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;DATPL&quot;;s:6:&quot;topics&quot;;}}s:7:&quot;PROJECT&quot;;a:3:{s:4:&quot;NAME&quot;;s:7:&quot;project&quot;;s:2:&quot;DE&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;M&quot;;s:4:&quot;NOMS&quot;;s:11:&quot;Projektraum&quot;;s:4:&quot;GENS&quot;;s:12:&quot;Projektraums&quot;;s:4:&quot;AKKS&quot;;s:11:&quot;Projektraum&quot;;s:4:&quot;DATS&quot;;s:11:&quot;Projektraum&quot;;s:5:&quot;NOMPL&quot;;s:13:&quot;Projekträume&quot;;s:5:&quot;GENPL&quot;;s:13:&quot;Projekträume&quot;;s:5:&quot;AKKPL&quot;;s:13:&quot;Projekträume&quot;;s:5:&quot;DATPL&quot;;s:14:&quot;Projekträumen&quot;;}s:2:&quot;EN&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;M&quot;;s:4:&quot;NOMS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;GENS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;AKKS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;DATS&quot;;s:17:&quot;project workspace&quot;;s:5:&quot;NOMPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;GENPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;AKKPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;DATPL&quot;;s:18:&quot;project workspaces&quot;;}}}s:9:&quot;SHOWTITLE&quot;;i:1;s:15:&quot;CHECKNEWMEMBERS&quot;;i:1;s:8:&quot;LANGUAGE&quot;;s:2:&quot;de&quot;;s:10:&quot;RSS_STATUS&quot;;i:-1;s:11:&quot;SERVICELINK&quot;;i:1;}</field>
+		<field name="extras">a:9:{s:12:&quot;ROOM_CONTEXT&quot;;s:3:&quot;uni&quot;;s:10:&quot;TIMESPREAD&quot;;i:7;s:8:&quot;HOMECONF&quot;;s:102:&quot;announcement_short,date_short,todo_none,material_tiny,discussion_tiny,user_tiny,topic_none,group_short&quot;;s:24:&quot;RUBRIC_TRANSLATION_ARRAY&quot;;a:2:{s:5:&quot;TOPIC&quot;;a:3:{s:4:&quot;NAME&quot;;s:5:&quot;topic&quot;;s:2:&quot;DE&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;N&quot;;s:4:&quot;NOMS&quot;;s:5:&quot;Thema&quot;;s:4:&quot;GENS&quot;;s:6:&quot;Themas&quot;;s:4:&quot;AKKS&quot;;s:5:&quot;Thema&quot;;s:4:&quot;DATS&quot;;s:5:&quot;Thema&quot;;s:5:&quot;NOMPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;GENPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;AKKPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;DATPL&quot;;s:6:&quot;Themen&quot;;}s:2:&quot;EN&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;N&quot;;s:4:&quot;NOMS&quot;;s:5:&quot;topic&quot;;s:4:&quot;GENS&quot;;s:5:&quot;topic&quot;;s:4:&quot;AKKS&quot;;s:5:&quot;topic&quot;;s:4:&quot;DATS&quot;;s:5:&quot;topic&quot;;s:5:&quot;NOMPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;GENPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;AKKPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;DATPL&quot;;s:6:&quot;topics&quot;;}}s:7:&quot;PROJECT&quot;;a:3:{s:4:&quot;NAME&quot;;s:7:&quot;project&quot;;s:2:&quot;DE&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;M&quot;;s:4:&quot;NOMS&quot;;s:11:&quot;Projektraum&quot;;s:4:&quot;GENS&quot;;s:12:&quot;Projektraums&quot;;s:4:&quot;AKKS&quot;;s:11:&quot;Projektraum&quot;;s:4:&quot;DATS&quot;;s:11:&quot;Projektraum&quot;;s:5:&quot;NOMPL&quot;;s:13:&quot;ProjektrÃ¤ume&quot;;s:5:&quot;GENPL&quot;;s:13:&quot;ProjektrÃ¤ume&quot;;s:5:&quot;AKKPL&quot;;s:13:&quot;ProjektrÃ¤ume&quot;;s:5:&quot;DATPL&quot;;s:14:&quot;ProjektrÃ¤umen&quot;;}s:2:&quot;EN&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;M&quot;;s:4:&quot;NOMS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;GENS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;AKKS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;DATS&quot;;s:17:&quot;project workspace&quot;;s:5:&quot;NOMPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;GENPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;AKKPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;DATPL&quot;;s:18:&quot;project workspaces&quot;;}}}s:9:&quot;SHOWTITLE&quot;;i:1;s:15:&quot;CHECKNEWMEMBERS&quot;;i:1;s:8:&quot;LANGUAGE&quot;;s:2:&quot;de&quot;;s:10:&quot;RSS_STATUS&quot;;i:-1;s:11:&quot;SERVICELINK&quot;;i:1;}</field>
 		<field name="status">1</field>
 		<field name="activity">5</field>
 		<field name="type">project</field>
@@ -1072,6 +1490,52 @@
 		<field name="room_description"></field>
 		<field name="lastlogin">2016-12-02 18:15:37</field>
 	</row>
+	<row>
+		<field name="item_id">166</field>
+		<field name="context_id">101</field>
+		<field name="creator_id">162</field>
+		<field name="modifier_id">167</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:30:23</field>
+		<field name="modification_date">2016-12-02 20:31:13</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="title">Raum mit Moderator und Benutzer #2</field>
+		<field name="extras">a:9:{s:12:&quot;ROOM_CONTEXT&quot;;s:3:&quot;uni&quot;;s:10:&quot;TIMESPREAD&quot;;i:7;s:8:&quot;HOMECONF&quot;;s:102:&quot;announcement_short,date_short,todo_none,material_tiny,discussion_tiny,user_tiny,topic_none,group_short&quot;;s:24:&quot;RUBRIC_TRANSLATION_ARRAY&quot;;a:2:{s:5:&quot;TOPIC&quot;;a:3:{s:4:&quot;NAME&quot;;s:5:&quot;topic&quot;;s:2:&quot;DE&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;N&quot;;s:4:&quot;NOMS&quot;;s:5:&quot;Thema&quot;;s:4:&quot;GENS&quot;;s:6:&quot;Themas&quot;;s:4:&quot;AKKS&quot;;s:5:&quot;Thema&quot;;s:4:&quot;DATS&quot;;s:5:&quot;Thema&quot;;s:5:&quot;NOMPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;GENPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;AKKPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;DATPL&quot;;s:6:&quot;Themen&quot;;}s:2:&quot;EN&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;N&quot;;s:4:&quot;NOMS&quot;;s:5:&quot;topic&quot;;s:4:&quot;GENS&quot;;s:5:&quot;topic&quot;;s:4:&quot;AKKS&quot;;s:5:&quot;topic&quot;;s:4:&quot;DATS&quot;;s:5:&quot;topic&quot;;s:5:&quot;NOMPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;GENPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;AKKPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;DATPL&quot;;s:6:&quot;topics&quot;;}}s:7:&quot;PROJECT&quot;;a:3:{s:4:&quot;NAME&quot;;s:7:&quot;project&quot;;s:2:&quot;DE&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;M&quot;;s:4:&quot;NOMS&quot;;s:11:&quot;Projektraum&quot;;s:4:&quot;GENS&quot;;s:12:&quot;Projektraums&quot;;s:4:&quot;AKKS&quot;;s:11:&quot;Projektraum&quot;;s:4:&quot;DATS&quot;;s:11:&quot;Projektraum&quot;;s:5:&quot;NOMPL&quot;;s:13:&quot;Projekträume&quot;;s:5:&quot;GENPL&quot;;s:13:&quot;Projekträume&quot;;s:5:&quot;AKKPL&quot;;s:13:&quot;Projekträume&quot;;s:5:&quot;DATPL&quot;;s:14:&quot;Projekträumen&quot;;}s:2:&quot;EN&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;M&quot;;s:4:&quot;NOMS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;GENS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;AKKS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;DATS&quot;;s:17:&quot;project workspace&quot;;s:5:&quot;NOMPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;GENPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;AKKPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;DATPL&quot;;s:18:&quot;project workspaces&quot;;}}}s:9:&quot;SHOWTITLE&quot;;i:1;s:15:&quot;CHECKNEWMEMBERS&quot;;i:1;s:8:&quot;LANGUAGE&quot;;s:2:&quot;en&quot;;s:10:&quot;RSS_STATUS&quot;;i:-1;s:11:&quot;SERVICELINK&quot;;i:1;}</field>
+		<field name="status">1</field>
+		<field name="activity">5</field>
+		<field name="type">project</field>
+		<field name="public">0</field>
+		<field name="is_open_for_guests">0</field>
+		<field name="continuous">-1</field>
+		<field name="template">-1</field>
+		<field name="contact_persons">USEr USER</field>
+		<field name="description" xsi:nil="true" />
+		<field name="room_description"></field>
+		<field name="lastlogin">2016-12-02 19:31:14</field>
+	</row>
+	<row>
+		<field name="item_id">171</field>
+		<field name="context_id">101</field>
+		<field name="creator_id">162</field>
+		<field name="modifier_id">172</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:30:43</field>
+		<field name="modification_date">2016-12-02 20:31:35</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="title">Raum mit Moderator und Benutzer #3</field>
+		<field name="extras">a:9:{s:12:&quot;ROOM_CONTEXT&quot;;s:3:&quot;uni&quot;;s:10:&quot;TIMESPREAD&quot;;i:7;s:8:&quot;HOMECONF&quot;;s:102:&quot;announcement_short,date_short,todo_none,material_tiny,discussion_tiny,user_tiny,topic_none,group_short&quot;;s:24:&quot;RUBRIC_TRANSLATION_ARRAY&quot;;a:2:{s:5:&quot;TOPIC&quot;;a:3:{s:4:&quot;NAME&quot;;s:5:&quot;topic&quot;;s:2:&quot;DE&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;N&quot;;s:4:&quot;NOMS&quot;;s:5:&quot;Thema&quot;;s:4:&quot;GENS&quot;;s:6:&quot;Themas&quot;;s:4:&quot;AKKS&quot;;s:5:&quot;Thema&quot;;s:4:&quot;DATS&quot;;s:5:&quot;Thema&quot;;s:5:&quot;NOMPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;GENPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;AKKPL&quot;;s:6:&quot;Themen&quot;;s:5:&quot;DATPL&quot;;s:6:&quot;Themen&quot;;}s:2:&quot;EN&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;N&quot;;s:4:&quot;NOMS&quot;;s:5:&quot;topic&quot;;s:4:&quot;GENS&quot;;s:5:&quot;topic&quot;;s:4:&quot;AKKS&quot;;s:5:&quot;topic&quot;;s:4:&quot;DATS&quot;;s:5:&quot;topic&quot;;s:5:&quot;NOMPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;GENPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;AKKPL&quot;;s:6:&quot;topics&quot;;s:5:&quot;DATPL&quot;;s:6:&quot;topics&quot;;}}s:7:&quot;PROJECT&quot;;a:3:{s:4:&quot;NAME&quot;;s:7:&quot;project&quot;;s:2:&quot;DE&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;M&quot;;s:4:&quot;NOMS&quot;;s:11:&quot;Projektraum&quot;;s:4:&quot;GENS&quot;;s:12:&quot;Projektraums&quot;;s:4:&quot;AKKS&quot;;s:11:&quot;Projektraum&quot;;s:4:&quot;DATS&quot;;s:11:&quot;Projektraum&quot;;s:5:&quot;NOMPL&quot;;s:13:&quot;Projekträume&quot;;s:5:&quot;GENPL&quot;;s:13:&quot;Projekträume&quot;;s:5:&quot;AKKPL&quot;;s:13:&quot;Projekträume&quot;;s:5:&quot;DATPL&quot;;s:14:&quot;Projekträumen&quot;;}s:2:&quot;EN&quot;;a:9:{s:5:&quot;GENUS&quot;;s:1:&quot;M&quot;;s:4:&quot;NOMS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;GENS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;AKKS&quot;;s:17:&quot;project workspace&quot;;s:4:&quot;DATS&quot;;s:17:&quot;project workspace&quot;;s:5:&quot;NOMPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;GENPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;AKKPL&quot;;s:18:&quot;project workspaces&quot;;s:5:&quot;DATPL&quot;;s:18:&quot;project workspaces&quot;;}}}s:9:&quot;SHOWTITLE&quot;;i:1;s:15:&quot;CHECKNEWMEMBERS&quot;;i:1;s:8:&quot;LANGUAGE&quot;;s:2:&quot;en&quot;;s:10:&quot;RSS_STATUS&quot;;i:-1;s:11:&quot;SERVICELINK&quot;;i:1;}</field>
+		<field name="status">1</field>
+		<field name="activity">5</field>
+		<field name="type">project</field>
+		<field name="public">0</field>
+		<field name="is_open_for_guests">0</field>
+		<field name="continuous">-1</field>
+		<field name="template">-1</field>
+		<field name="contact_persons">USEr USER</field>
+		<field name="description" xsi:nil="true" />
+		<field name="room_description"></field>
+		<field name="lastlogin">2016-12-02 19:31:36</field>
+	</row>
 	</table_data>
 	<table_data name="room_privat">
 	<row>
@@ -1083,7 +1547,7 @@
 		<field name="creation_date">2016-12-01 01:56:05</field>
 		<field name="modification_date">2016-12-01 01:56:05</field>
 		<field name="deletion_date" xsi:nil="true" />
-		<field name="title">Mein persÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶nlicher Raum</field>
+		<field name="title">Mein persÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶nlicher Raum</field>
 		<field name="extras">a:3:{s:9:&quot;SHOWTITLE&quot;;i:1;s:15:&quot;CHECKNEWMEMBERS&quot;;i:1;s:11:&quot;SERVICELINK&quot;;i:1;}</field>
 		<field name="status">1</field>
 		<field name="activity">0</field>
@@ -1105,7 +1569,7 @@
 		<field name="creation_date">2016-12-01 10:12:15</field>
 		<field name="modification_date">2016-12-01 10:12:15</field>
 		<field name="deletion_date" xsi:nil="true" />
-		<field name="title">Mein persÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶nlicher Raum</field>
+		<field name="title">Mein persÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶nlicher Raum</field>
 		<field name="extras">a:3:{s:9:&quot;SHOWTITLE&quot;;i:1;s:15:&quot;CHECKNEWMEMBERS&quot;;i:1;s:11:&quot;SERVICELINK&quot;;i:1;}</field>
 		<field name="status">1</field>
 		<field name="activity">0</field>
@@ -1127,7 +1591,7 @@
 		<field name="creation_date">2016-12-01 10:52:04</field>
 		<field name="modification_date">2016-12-01 10:52:04</field>
 		<field name="deletion_date" xsi:nil="true" />
-		<field name="title">Mein persÃƒÆ’Ã‚Â¶nlicher Raum</field>
+		<field name="title">Mein persÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶nlicher Raum</field>
 		<field name="extras">a:3:{s:9:&quot;SHOWTITLE&quot;;i:1;s:15:&quot;CHECKNEWMEMBERS&quot;;i:1;s:11:&quot;SERVICELINK&quot;;i:1;}</field>
 		<field name="status">1</field>
 		<field name="activity">0</field>
@@ -1149,7 +1613,7 @@
 		<field name="creation_date">2016-12-01 10:52:42</field>
 		<field name="modification_date">2016-12-01 10:52:42</field>
 		<field name="deletion_date" xsi:nil="true" />
-		<field name="title">Mein persÃƒÆ’Ã‚Â¶nlicher Raum</field>
+		<field name="title">Mein persÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶nlicher Raum</field>
 		<field name="extras">a:3:{s:9:&quot;SHOWTITLE&quot;;i:1;s:15:&quot;CHECKNEWMEMBERS&quot;;i:1;s:11:&quot;SERVICELINK&quot;;i:1;}</field>
 		<field name="status">1</field>
 		<field name="activity">0</field>
@@ -1171,7 +1635,7 @@
 		<field name="creation_date">2016-12-01 11:25:46</field>
 		<field name="modification_date">2016-12-01 11:25:46</field>
 		<field name="deletion_date" xsi:nil="true" />
-		<field name="title">Mein persÃƒÂ¶nlicher Raum</field>
+		<field name="title">Mein persÃƒÆ’Ã‚Â¶nlicher Raum</field>
 		<field name="extras">a:3:{s:9:&quot;SHOWTITLE&quot;;i:1;s:15:&quot;CHECKNEWMEMBERS&quot;;i:1;s:11:&quot;SERVICELINK&quot;;i:1;}</field>
 		<field name="status">1</field>
 		<field name="activity">0</field>
@@ -1180,7 +1644,7 @@
 		<field name="is_open_for_guests">0</field>
 		<field name="continuous">1</field>
 		<field name="template">-1</field>
-		<field name="contact_persons">USEr USER</field>
+		<field name="contact_persons">USER USER</field>
 		<field name="description"></field>
 		<field name="lastlogin" xsi:nil="true" />
 	</row>
@@ -1193,7 +1657,7 @@
 		<field name="creation_date">2016-12-01 11:26:46</field>
 		<field name="modification_date">2016-12-01 11:26:46</field>
 		<field name="deletion_date" xsi:nil="true" />
-		<field name="title">Mein persÃƒÂ¶nlicher Raum</field>
+		<field name="title">Mein persÃƒÆ’Ã‚Â¶nlicher Raum</field>
 		<field name="extras">a:3:{s:9:&quot;SHOWTITLE&quot;;i:1;s:15:&quot;CHECKNEWMEMBERS&quot;;i:1;s:11:&quot;SERVICELINK&quot;;i:1;}</field>
 		<field name="status">1</field>
 		<field name="activity">0</field>
@@ -1215,7 +1679,7 @@
 		<field name="creation_date">2016-12-02 19:13:05</field>
 		<field name="modification_date">2016-12-02 19:13:05</field>
 		<field name="deletion_date" xsi:nil="true" />
-		<field name="title">Mein persönlicher Raum</field>
+		<field name="title">Mein persÃ¶nlicher Raum</field>
 		<field name="extras">a:3:{s:9:&quot;SHOWTITLE&quot;;i:1;s:15:&quot;CHECKNEWMEMBERS&quot;;i:1;s:11:&quot;SERVICELINK&quot;;i:1;}</field>
 		<field name="status">1</field>
 		<field name="activity">0</field>
@@ -1236,6 +1700,50 @@
 		<field name="deleter_id" xsi:nil="true" />
 		<field name="creation_date">2016-12-02 19:15:02</field>
 		<field name="modification_date">2016-12-02 19:15:02</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="title">My private workspace</field>
+		<field name="extras">a:3:{s:9:&quot;SHOWTITLE&quot;;i:1;s:15:&quot;CHECKNEWMEMBERS&quot;;i:1;s:11:&quot;SERVICELINK&quot;;i:1;}</field>
+		<field name="status">1</field>
+		<field name="activity">0</field>
+		<field name="type">privateroom</field>
+		<field name="public">0</field>
+		<field name="is_open_for_guests">0</field>
+		<field name="continuous">1</field>
+		<field name="template">-1</field>
+		<field name="contact_persons">USER USER</field>
+		<field name="description"></field>
+		<field name="lastlogin" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="item_id">159</field>
+		<field name="context_id">101</field>
+		<field name="creator_id">158</field>
+		<field name="modifier_id">158</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:29:58</field>
+		<field name="modification_date">2016-12-02 20:29:58</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="title">Mein persönlicher Raum</field>
+		<field name="extras">a:3:{s:9:&quot;SHOWTITLE&quot;;i:1;s:15:&quot;CHECKNEWMEMBERS&quot;;i:1;s:11:&quot;SERVICELINK&quot;;i:1;}</field>
+		<field name="status">1</field>
+		<field name="activity">0</field>
+		<field name="type">privateroom</field>
+		<field name="public">0</field>
+		<field name="is_open_for_guests">0</field>
+		<field name="continuous">1</field>
+		<field name="template">-1</field>
+		<field name="contact_persons">USER USER</field>
+		<field name="description"></field>
+		<field name="lastlogin" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="item_id">163</field>
+		<field name="context_id">101</field>
+		<field name="creator_id">162</field>
+		<field name="modifier_id">162</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:30:11</field>
+		<field name="modification_date">2016-12-02 20:30:12</field>
 		<field name="deletion_date" xsi:nil="true" />
 		<field name="title">My private workspace</field>
 		<field name="extras">a:3:{s:9:&quot;SHOWTITLE&quot;;i:1;s:15:&quot;CHECKNEWMEMBERS&quot;;i:1;s:11:&quot;SERVICELINK&quot;;i:1;}</field>
@@ -1272,7 +1780,7 @@
 		<field name="title">CommSy-Server</field>
 		<field name="extras">a:3:{s:8:&quot;HOMECONF&quot;;s:0:&quot;&quot;;s:12:&quot;DEFAULT_AUTH&quot;;s:3:&quot;100&quot;;s:7:&quot;VERSION&quot;;s:5:&quot;8.1.8&quot;;}</field>
 		<field name="status">1</field>
-		<field name="activity">84</field>
+		<field name="activity">85</field>
 		<field name="type">server</field>
 		<field name="is_open_for_guests">1</field>
 		<field name="url"></field>
@@ -1404,6 +1912,50 @@
 		<field name="deletion_date" xsi:nil="true" />
 		<field name="title">CS_TAG_ROOT</field>
 	</row>
+	<row>
+		<field name="item_id">161</field>
+		<field name="context_id">159</field>
+		<field name="creator_id">98</field>
+		<field name="modifier_id">98</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:29:58</field>
+		<field name="modification_date">2016-12-02 20:29:58</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="title">CS_TAG_ROOT</field>
+	</row>
+	<row>
+		<field name="item_id">165</field>
+		<field name="context_id">163</field>
+		<field name="creator_id">98</field>
+		<field name="modifier_id">98</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:30:12</field>
+		<field name="modification_date">2016-12-02 20:30:12</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="title">CS_TAG_ROOT</field>
+	</row>
+	<row>
+		<field name="item_id">170</field>
+		<field name="context_id">166</field>
+		<field name="creator_id">162</field>
+		<field name="modifier_id">162</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:30:24</field>
+		<field name="modification_date">2016-12-02 20:30:24</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="title">CS_TAG_ROOT</field>
+	</row>
+	<row>
+		<field name="item_id">177</field>
+		<field name="context_id">171</field>
+		<field name="creator_id">162</field>
+		<field name="modifier_id">162</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:30:44</field>
+		<field name="modification_date">2016-12-02 20:30:44</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="title">CS_TAG_ROOT</field>
+	</row>
 	</table_data>
 	<table_data name="tag2tag">
 	</table_data>
@@ -1433,6 +1985,30 @@
 		<field name="title">TASK_USER_REQUEST</field>
 		<field name="status">CLOSED</field>
 		<field name="linked_item_id">155</field>
+	</row>
+	<row>
+		<field name="item_id">176</field>
+		<field name="context_id">166</field>
+		<field name="creator_id">158</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:30:43</field>
+		<field name="modification_date">2016-12-02 20:31:13</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="title">TASK_USER_REQUEST</field>
+		<field name="status">CLOSED</field>
+		<field name="linked_item_id">173</field>
+	</row>
+	<row>
+		<field name="item_id">179</field>
+		<field name="context_id">171</field>
+		<field name="creator_id">158</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:31:03</field>
+		<field name="modification_date">2016-12-02 20:31:35</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="title">TASK_USER_REQUEST</field>
+		<field name="status">CLOSED</field>
+		<field name="linked_item_id">178</field>
 	</row>
 	</table_data>
 	<table_data name="template_portfolio">
@@ -1479,7 +2055,7 @@
 		<field name="lastname">USER</field>
 		<field name="email">USER@mail.mail</field>
 		<field name="city"></field>
-		<field name="lastlogin">2016-12-01 11:29:37</field>
+		<field name="lastlogin" xsi:nil="true" />
 		<field name="visible">1</field>
 		<field name="extras">a:2:{s:8:&quot;LANGUAGE&quot;;s:7:&quot;browser&quot;;s:23:&quot;DEFAULT_MAIL_VISIBILITY&quot;;s:1:&quot;1&quot;;}</field>
 		<field name="auth_source">102</field>
@@ -1525,7 +2101,7 @@
 		<field name="lastname">USER</field>
 		<field name="email">USER@mail.mail</field>
 		<field name="city"></field>
-		<field name="lastlogin">2016-12-01 10:12:17</field>
+		<field name="lastlogin" xsi:nil="true" />
 		<field name="visible">1</field>
 		<field name="extras">a:2:{s:8:&quot;LANGUAGE&quot;;s:7:&quot;browser&quot;;s:23:&quot;DEFAULT_MAIL_VISIBILITY&quot;;s:1:&quot;1&quot;;}</field>
 		<field name="auth_source">108</field>
@@ -1594,7 +2170,7 @@
 		<field name="lastname">USER</field>
 		<field name="email">USER@mail.mail</field>
 		<field name="city"></field>
-		<field name="lastlogin">2016-12-01 10:52:06</field>
+		<field name="lastlogin" xsi:nil="true" />
 		<field name="visible">1</field>
 		<field name="extras">a:2:{s:8:&quot;LANGUAGE&quot;;s:7:&quot;browser&quot;;s:23:&quot;DEFAULT_MAIL_VISIBILITY&quot;;s:1:&quot;1&quot;;}</field>
 		<field name="auth_source">102</field>
@@ -1640,7 +2216,7 @@
 		<field name="lastname">USER</field>
 		<field name="email">USER@mail.mail</field>
 		<field name="city"></field>
-		<field name="lastlogin">2016-12-01 10:52:43</field>
+		<field name="lastlogin" xsi:nil="true" />
 		<field name="visible">1</field>
 		<field name="extras">a:2:{s:8:&quot;LANGUAGE&quot;;s:7:&quot;browser&quot;;s:23:&quot;DEFAULT_MAIL_VISIBILITY&quot;;s:1:&quot;1&quot;;}</field>
 		<field name="auth_source">108</field>
@@ -1686,7 +2262,7 @@
 		<field name="lastname">USER</field>
 		<field name="email">USER@mail.mail</field>
 		<field name="city"></field>
-		<field name="lastlogin">2016-12-01 11:26:18</field>
+		<field name="lastlogin" xsi:nil="true" />
 		<field name="visible">1</field>
 		<field name="extras">a:2:{s:8:&quot;LANGUAGE&quot;;s:7:&quot;browser&quot;;s:23:&quot;DEFAULT_MAIL_VISIBILITY&quot;;s:1:&quot;1&quot;;}</field>
 		<field name="auth_source">102</field>
@@ -1778,7 +2354,7 @@
 		<field name="lastname">USER</field>
 		<field name="email">USER@mail.mail</field>
 		<field name="city"></field>
-		<field name="lastlogin">2016-12-01 11:26:48</field>
+		<field name="lastlogin" xsi:nil="true" />
 		<field name="visible">1</field>
 		<field name="extras">a:2:{s:8:&quot;LANGUAGE&quot;;s:7:&quot;browser&quot;;s:23:&quot;DEFAULT_MAIL_VISIBILITY&quot;;s:1:&quot;1&quot;;}</field>
 		<field name="auth_source">108</field>
@@ -1893,7 +2469,7 @@
 		<field name="lastname">USER</field>
 		<field name="email">USER@mail.mail</field>
 		<field name="city"></field>
-		<field name="lastlogin">2016-12-02 19:15:42</field>
+		<field name="lastlogin" xsi:nil="true" />
 		<field name="visible">1</field>
 		<field name="extras">a:2:{s:8:&quot;LANGUAGE&quot;;s:7:&quot;browser&quot;;s:23:&quot;DEFAULT_MAIL_VISIBILITY&quot;;s:1:&quot;1&quot;;}</field>
 		<field name="auth_source">102</field>
@@ -1934,6 +2510,190 @@
 		<field name="deletion_date" xsi:nil="true" />
 		<field name="user_id">ANOTHER_WITH_ROOM</field>
 		<field name="status">3</field>
+		<field name="is_contact">0</field>
+		<field name="firstname">USER</field>
+		<field name="lastname">USER</field>
+		<field name="email">USER@mail.mail</field>
+		<field name="city"></field>
+		<field name="lastlogin" xsi:nil="true" />
+		<field name="visible">1</field>
+		<field name="extras">a:4:{s:8:&quot;LANGUAGE&quot;;s:7:&quot;browser&quot;;s:19:&quot;AGB_ACCEPTANCE_DATE&quot;;s:0:&quot;&quot;;s:16:&quot;EMAIL_VISIBILITY&quot;;s:1:&quot;1&quot;;s:11:&quot;USERCOMMENT&quot;;s:0:&quot;&quot;;}</field>
+		<field name="auth_source">102</field>
+		<field name="description"></field>
+		<field name="expire_date" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="item_id">158</field>
+		<field name="context_id">101</field>
+		<field name="creator_id">158</field>
+		<field name="modifier_id" xsi:nil="true" />
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:29:58</field>
+		<field name="modification_date">2016-12-02 20:29:58</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="user_id">ONLY_MEMBER</field>
+		<field name="status">2</field>
+		<field name="is_contact">0</field>
+		<field name="firstname">USER</field>
+		<field name="lastname">USER</field>
+		<field name="email">USER@mail.mail</field>
+		<field name="city"></field>
+		<field name="lastlogin" xsi:nil="true" />
+		<field name="visible">1</field>
+		<field name="extras">a:2:{s:8:&quot;LANGUAGE&quot;;s:7:&quot;browser&quot;;s:23:&quot;DEFAULT_MAIL_VISIBILITY&quot;;s:1:&quot;1&quot;;}</field>
+		<field name="auth_source">102</field>
+		<field name="description"></field>
+		<field name="expire_date" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="item_id">160</field>
+		<field name="context_id">159</field>
+		<field name="creator_id">160</field>
+		<field name="modifier_id">160</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:29:58</field>
+		<field name="modification_date">2016-12-02 20:29:58</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="user_id">ONLY_MEMBER</field>
+		<field name="status">3</field>
+		<field name="is_contact">0</field>
+		<field name="firstname">USER</field>
+		<field name="lastname">USER</field>
+		<field name="email">USER@mail.mail</field>
+		<field name="city"></field>
+		<field name="lastlogin" xsi:nil="true" />
+		<field name="visible">1</field>
+		<field name="extras">a:3:{s:8:&quot;LANGUAGE&quot;;s:7:&quot;browser&quot;;s:19:&quot;AGB_ACCEPTANCE_DATE&quot;;s:0:&quot;&quot;;s:16:&quot;EMAIL_VISIBILITY&quot;;s:1:&quot;1&quot;;}</field>
+		<field name="auth_source">102</field>
+		<field name="description"></field>
+		<field name="expire_date" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="item_id">162</field>
+		<field name="context_id">101</field>
+		<field name="creator_id">162</field>
+		<field name="modifier_id" xsi:nil="true" />
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:30:11</field>
+		<field name="modification_date">2016-12-02 20:30:12</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="user_id">ANOTHER_WITH_TWO_ROOMS</field>
+		<field name="status">2</field>
+		<field name="is_contact">0</field>
+		<field name="firstname">USER</field>
+		<field name="lastname">USER</field>
+		<field name="email">USER@mail.mail</field>
+		<field name="city"></field>
+		<field name="lastlogin" xsi:nil="true" />
+		<field name="visible">1</field>
+		<field name="extras">a:2:{s:8:&quot;LANGUAGE&quot;;s:7:&quot;browser&quot;;s:23:&quot;DEFAULT_MAIL_VISIBILITY&quot;;s:1:&quot;1&quot;;}</field>
+		<field name="auth_source">102</field>
+		<field name="description"></field>
+		<field name="expire_date" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="item_id">164</field>
+		<field name="context_id">163</field>
+		<field name="creator_id">164</field>
+		<field name="modifier_id">164</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:30:11</field>
+		<field name="modification_date">2016-12-02 20:30:12</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="user_id">ANOTHER_WITH_TWO_ROOMS</field>
+		<field name="status">3</field>
+		<field name="is_contact">0</field>
+		<field name="firstname">USER</field>
+		<field name="lastname">USER</field>
+		<field name="email">USER@mail.mail</field>
+		<field name="city"></field>
+		<field name="lastlogin" xsi:nil="true" />
+		<field name="visible">1</field>
+		<field name="extras">a:3:{s:8:&quot;LANGUAGE&quot;;s:7:&quot;browser&quot;;s:19:&quot;AGB_ACCEPTANCE_DATE&quot;;s:0:&quot;&quot;;s:16:&quot;EMAIL_VISIBILITY&quot;;s:1:&quot;1&quot;;}</field>
+		<field name="auth_source">102</field>
+		<field name="description"></field>
+		<field name="expire_date" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="item_id">167</field>
+		<field name="context_id">166</field>
+		<field name="creator_id">167</field>
+		<field name="modifier_id" xsi:nil="true" />
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:30:23</field>
+		<field name="modification_date">2016-12-02 20:30:23</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="user_id">ANOTHER_WITH_TWO_ROOMS</field>
+		<field name="status">3</field>
+		<field name="is_contact">1</field>
+		<field name="firstname">USER</field>
+		<field name="lastname">USER</field>
+		<field name="email">USER@mail.mail</field>
+		<field name="city"></field>
+		<field name="lastlogin" xsi:nil="true" />
+		<field name="visible">1</field>
+		<field name="extras">a:5:{s:8:&quot;LANGUAGE&quot;;s:7:&quot;browser&quot;;s:23:&quot;DEFAULT_MAIL_VISIBILITY&quot;;s:1:&quot;1&quot;;s:19:&quot;AGB_ACCEPTANCE_DATE&quot;;s:0:&quot;&quot;;s:15:&quot;ACCOUNTWANTMAIL&quot;;s:3:&quot;yes&quot;;s:12:&quot;ROOMWANTMAIL&quot;;s:3:&quot;yes&quot;;}</field>
+		<field name="auth_source">102</field>
+		<field name="description"></field>
+		<field name="expire_date" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="item_id">172</field>
+		<field name="context_id">171</field>
+		<field name="creator_id">172</field>
+		<field name="modifier_id" xsi:nil="true" />
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:30:43</field>
+		<field name="modification_date">2016-12-02 20:30:43</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="user_id">ANOTHER_WITH_TWO_ROOMS</field>
+		<field name="status">3</field>
+		<field name="is_contact">1</field>
+		<field name="firstname">USER</field>
+		<field name="lastname">USER</field>
+		<field name="email">USER@mail.mail</field>
+		<field name="city"></field>
+		<field name="lastlogin" xsi:nil="true" />
+		<field name="visible">1</field>
+		<field name="extras">a:5:{s:8:&quot;LANGUAGE&quot;;s:7:&quot;browser&quot;;s:23:&quot;DEFAULT_MAIL_VISIBILITY&quot;;s:1:&quot;1&quot;;s:19:&quot;AGB_ACCEPTANCE_DATE&quot;;s:0:&quot;&quot;;s:15:&quot;ACCOUNTWANTMAIL&quot;;s:3:&quot;yes&quot;;s:12:&quot;ROOMWANTMAIL&quot;;s:3:&quot;yes&quot;;}</field>
+		<field name="auth_source">102</field>
+		<field name="description"></field>
+		<field name="expire_date" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="item_id">173</field>
+		<field name="context_id">166</field>
+		<field name="creator_id">158</field>
+		<field name="modifier_id">160</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:30:43</field>
+		<field name="modification_date">2016-12-02 20:31:13</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="user_id">ONLY_MEMBER</field>
+		<field name="status">2</field>
+		<field name="is_contact">0</field>
+		<field name="firstname">USER</field>
+		<field name="lastname">USER</field>
+		<field name="email">USER@mail.mail</field>
+		<field name="city"></field>
+		<field name="lastlogin" xsi:nil="true" />
+		<field name="visible">1</field>
+		<field name="extras">a:4:{s:8:&quot;LANGUAGE&quot;;s:7:&quot;browser&quot;;s:19:&quot;AGB_ACCEPTANCE_DATE&quot;;s:0:&quot;&quot;;s:16:&quot;EMAIL_VISIBILITY&quot;;s:1:&quot;1&quot;;s:11:&quot;USERCOMMENT&quot;;s:0:&quot;&quot;;}</field>
+		<field name="auth_source">102</field>
+		<field name="description"></field>
+		<field name="expire_date" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="item_id">178</field>
+		<field name="context_id">171</field>
+		<field name="creator_id">158</field>
+		<field name="modifier_id">160</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-02 20:31:02</field>
+		<field name="modification_date">2016-12-02 20:31:35</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="user_id">ONLY_MEMBER</field>
+		<field name="status">2</field>
 		<field name="is_contact">0</field>
 		<field name="firstname">USER</field>
 		<field name="lastname">USER</field>

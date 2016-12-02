@@ -27,6 +27,44 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 // TODO: remove portal content configuration
 
     /**
+     * Tests if a user is completely deleted with all his room memberships
+     */
+    public function testFullDelete()
+    {
+        global $environment;
+        $environment->setCurrentContextID(101);
+
+        $userManager = $environment->getUserManager();
+        $userManager->setCacheOff();
+
+        $portalUser = $userManager->getItem(158);
+        $privateRoomUser = $userManager->getItem(160);
+        $firstRoomUser = $userManager->getItem(173);
+        $secondRoomUser = $userManager->getItem(178);
+
+        $this->assertEquals(101, $portalUser->getContextID());
+        $this->assertFalse($portalUser->isDeleted());
+        $this->assertTrue($privateRoomUser->getContextItem()->isPrivateRoom());
+        $this->assertFalse($privateRoomUser->isDeleted());
+        $this->assertEquals(166, $firstRoomUser->getContextID());
+        $this->assertFalse($firstRoomUser->isDeleted());
+        $this->assertEquals(171, $secondRoomUser->getContextID());
+        $this->assertFalse($secondRoomUser->isDeleted());
+
+        $portalUser->deleteUserCausedByInactivity();
+
+        $portalUser = $userManager->getItem(158);
+        $privateRoomUser = $userManager->getItem(160);
+        $firstRoomUser = $userManager->getItem(173);
+        $secondRoomUser = $userManager->getItem(178);
+
+        $this->assertTrue($portalUser->isDeleted());
+        $this->assertTrue($privateRoomUser->isDeleted());
+        $this->assertTrue($firstRoomUser->isDeleted());
+        $this->assertTrue($secondRoomUser->isDeleted());
+    }
+
+    /**
      * Two users with the same or a similar user id in terms of case sensitivity
      * must not be deleted if only one is affected
      */
@@ -81,12 +119,9 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $user->deleteUserCausedByInactivity();
 
-        $this->assertEquals(20, $this->getConnection()->createQueryTable(
-            'user', 'SELECT * FROM user WHERE user.deletion_date IS NULL'
-        )->getRowCount(), 'User without room');
-        $this->assertEquals(3, $this->getConnection()->createQueryTable(
-            'room', 'SELECT * FROM room WHERE room.deletion_DATE IS NULL'
-        )->getRowCount());
+        $user = $userManager->getItem(118);
+
+        $this->assertTrue($user->isDeleted());
     }
 
     /**
@@ -194,7 +229,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $portalUserList = $userManager->get();
 
-        $this->assertEquals(8, $portalUserList->getCount(), 'Pre-Condition');
+        $this->assertEquals(10, $portalUserList->getCount(), 'Pre-Condition');
 
         // start date
         $timestamp = 1500000000; // 2017-07-14 04:40:00
@@ -208,7 +243,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
             $portalUser = $portalUserList->getNext();
         }
 
-        $this->assertEquals(8, $this->getConnection()->createQueryTable(
+        $this->assertEquals(10, $this->getConnection()->createQueryTable(
             'user', 'SELECT * FROM user WHERE user.lastlogin = "' . \DateTesting::$dateTime . '"'
         )->getRowCount());
 
@@ -262,7 +297,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $server->_cronInactiveUserDelete();
 
-        $this->assertEquals(8, $this->getConnection()->createQueryTable(
+        $this->assertEquals(10, $this->getConnection()->createQueryTable(
             'user', 'SELECT * FROM user WHERE
                 user.extras LIKE "%NOTIFY_LOCK_DATE%" AND
                 user.extras NOT LIKE "%MAIL_SEND_LOCK%" AND
@@ -277,7 +312,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $server->_cronInactiveUserDelete();
 
-        $this->assertEquals(8, $this->getConnection()->createQueryTable(
+        $this->assertEquals(10, $this->getConnection()->createQueryTable(
             'user', 'SELECT * FROM user WHERE
                 user.extras LIKE "%NOTIFY_LOCK_DATE%" AND
                 user.extras LIKE "%MAIL_SEND_LOCK%" AND
@@ -292,7 +327,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $server->_cronInactiveUserDelete();
 
-        $this->assertEquals(8, $this->getConnection()->createQueryTable(
+        $this->assertEquals(10, $this->getConnection()->createQueryTable(
             'user', 'SELECT * FROM user WHERE
                 user.extras LIKE "%NOTIFY_LOCK_DATE%" AND
                 user.extras LIKE "%MAIL_SEND_LOCK%" AND
@@ -309,7 +344,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $server->_cronInactiveUserDelete();
 
-        $this->assertEquals(8, $this->getConnection()->createQueryTable(
+        $this->assertEquals(10, $this->getConnection()->createQueryTable(
             'user', 'SELECT * FROM user WHERE
                 user.extras NOT LIKE "%NOTIFY_DELETE_DATE%" AND
                 user.extras NOT LIKE "%MAIL_SEND_NEXT_DELETE%" AND
@@ -325,7 +360,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $server->_cronInactiveUserDelete();
 
-        $this->assertEquals(8, $this->getConnection()->createQueryTable(
+        $this->assertEquals(10, $this->getConnection()->createQueryTable(
             'user', 'SELECT * FROM user WHERE
                 user.extras LIKE "%NOTIFY_DELETE_DATE%" AND
                 user.status = 0'
@@ -339,7 +374,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $server->_cronInactiveUserDelete();
 
-        $this->assertEquals(8, $this->getConnection()->createQueryTable(
+        $this->assertEquals(10, $this->getConnection()->createQueryTable(
             'user', 'SELECT * FROM user WHERE
                 user.extras LIKE "%NOTIFY_DELETE_DATE%" AND
                 user.extras LIKE "%MAIL_SEND_NEXT_DELETE%" AND
@@ -354,7 +389,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $server->_cronInactiveUserDelete();
 
-        $this->assertEquals(8, $this->getConnection()->createQueryTable(
+        $this->assertEquals(10, $this->getConnection()->createQueryTable(
             'user', 'SELECT * FROM user WHERE
                 user.deletion_date IS NOT NULL AND
                 user.deleter_id IS NOT NULL AND
