@@ -1189,7 +1189,7 @@ class cs_user_item extends cs_item {
       $this->_save($user_manager);
       $item_id = $this->getItemID();
       if ( empty( $item_id ) ) {
-         $this->setItemID($user_mananger->getCreateID());
+         $this->setItemID($user_manager->getCreateID());
       }
 
       plugin_hook('user_save', $this);
