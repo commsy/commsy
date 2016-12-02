@@ -24,60 +24,6 @@ class DeleteInactiveUserTest extends DatabaseTestCase
         return $this->createMySQLXMLDataSet('tests/Cron/delete_inactive_user_dataset.xml');
     }
 
-//    public function testDeleteSingleMembership()
-//    {
-//        global $environment;
-//        $environment->setCurrentContextID(101);
-//
-//        # pre condition
-//        $this->assertEquals(16, $this->getConnection()->getRowCount('user'), 'Pre-Condition');
-//
-//        /**
-//         * We delete a user with a single room membership, the room itself has two members.
-//         * The user must be deleted, but the room should stay intact.
-//         */
-//        $roomManager = $environment->getRoomManager();
-//        $roomManager->deleteRoomOfUserAndUserItemsInactivity('WITH_ROOM');
-//
-//        $activeUserQueryTable = $this->getConnection()->createQueryTable(
-//            'user', 'SELECT * FROM user WHERE user.deletion_date IS NULL'
-//        );
-//        $activeRoomQueryTable = $this->getConnection()->createQueryTable(
-//            'room', 'SELECT * FROM room WHERE room.deletion_DATE IS NULL'
-//        );
-//
-//        $this->assertEquals(11, $activeUserQueryTable->getRowCount(), 'User with room');
-//        $this->assertEquals(2, $activeRoomQueryTable->getRowCount());
-//    }
-//
-//    public function testDeleteMultiMembership()
-//    {
-//        global $environment;
-//        $environment->setCurrentContextID(101);
-//
-//        # pre condition
-//        $this->assertEquals(16, $this->getConnection()->getRowCount('user'), 'Pre-Condition');
-//
-//        /**
-//         * We delete a user with multiple room memberships and expect that the user
-//         * and only his room will be deleted
-//         */
-//        $roomManager = $environment->getRoomManager();
-//        $roomManager->deleteRoomOfUserAndUserItemsInactivity('WITH_TWO_ROOMS');
-//
-//        $activeUserQueryTable = $this->getConnection()->createQueryTable(
-//            'user', 'SELECT * FROM user WHERE user.deletion_date IS NULL'
-//        );
-//        $activeRoomQueryTable = $this->getConnection()->createQueryTable(
-//            'room', 'SELECT * FROM room WHERE room.deletion_DATE IS NULL'
-//        );
-//
-//        $this->assertEquals(10, $activeUserQueryTable->getRowCount(), 'User with two room');
-//        $this->assertEquals(1, $activeRoomQueryTable->getRowCount());
-//    }
-//
-
-
 // TODO: remove portal content configuration
 
     /**
@@ -86,7 +32,28 @@ class DeleteInactiveUserTest extends DatabaseTestCase
      */
     public function testDeleteSameUserDifferentPortals()
     {
+        global $environment;
+        $environment->setCurrentContextID(101);
 
+        $userManager = $environment->getUserManager();
+        $userManager->setCacheOff();
+
+        $firstUser = $userManager->getItem(118);
+        $secondUser = $userManager->getItem(122);
+
+        $this->assertInstanceOf('cs_user_item', $firstUser);
+        $this->assertInstanceOf('cs_user_item', $secondUser);
+        $this->assertEquals(101, $firstUser->getContextID());
+        $this->assertEquals(107, $secondUser->getContextID());
+        $this->assertEquals($firstUser->getUserID(), $secondUser->getUserID());
+
+        $firstUser->deleteUserCausedByInactivity();
+
+        $firstUser = $userManager->getItem(118);
+        $secondUser = $userManager->getItem(122);
+
+        $this->assertTrue($firstUser->isDeleted());
+        $this->assertFalse($secondUser->isDeleted());
     }
 
     /**
@@ -94,36 +61,119 @@ class DeleteInactiveUserTest extends DatabaseTestCase
      */
     public function testDeleteNoRoom()
     {
-//        global $environment;
-//        $environment->setCurrentContextID(101);
-//
-//        # pre condition
-//        $this->assertEquals(16, $this->getConnection()->getRowCount('user'), 'Pre-Condition');
-//
-//        $roomManager = $environment->getRoomManager();
-//        $roomManager->deleteRoomOfUserAndUserItemsInactivity('NO_ROOM');
-//
-//        $this->assertEquals(12, $this->getConnection()->createQueryTable(
-//            'user', 'SELECT * FROM user WHERE user.deletion_date IS NULL'
-//        )->getRowCount(), 'User without room');
-//        $this->assertEquals(2, $this->getConnection()->createQueryTable(
-//            'room', 'SELECT * FROM room WHERE room.deletion_DATE IS NULL'
-//        )->getRowCount());
+        global $environment;
+        $environment->setCurrentContextID(101);
+
+        $userManager = $environment->getUserManager();
+        $userManager->setCacheOff();
+
+        $user = $userManager->getItem(118);
+
+        # pre condition
+        $projectRooms = $user->getRelatedProjectList();
+        $communityRooms = $user->getRelatedCommunityList();
+        $allRooms = new \cs_list();
+        $allRooms->addList($projectRooms);
+        $allRooms->addList($communityRooms);
+
+        $this->assertTrue($allRooms->isEmpty());
+        $this->assertEquals(101, $user->getContextID());
+
+        $user->deleteUserCausedByInactivity();
+
+        $this->assertEquals(20, $this->getConnection()->createQueryTable(
+            'user', 'SELECT * FROM user WHERE user.deletion_date IS NULL'
+        )->getRowCount(), 'User without room');
+        $this->assertEquals(3, $this->getConnection()->createQueryTable(
+            'room', 'SELECT * FROM room WHERE room.deletion_DATE IS NULL'
+        )->getRowCount());
     }
 
+    /**
+     * The user is the last moderator of a room and must not be deleted
+     */
     public function testDeleteLastModerator()
     {
+        global $environment;
+        $environment->setCurrentContextID(101);
 
+        $userManager = $environment->getUserManager();
+        $userManager->setCacheOff();
+
+        $moderator = $userManager->getItem(131);
+
+        $roomManager = $environment->getRoomManager();
+        $roomManager->setCacheOff();
+
+        $room = $roomManager->getItem(130);
+
+        # pre condition
+        $this->assertInstanceOf('cs_user_item', $moderator);
+        $this->assertEquals(130, $moderator->getContextID());
+        $this->assertFalse($moderator->isModerator());
+        $this->assertEquals(1, $room->getModeratorList()->getCount());
+
+        $moderator->getRelatedPortalUserItem()->deleteUserCausedByInactivity();
+
+        $moderator = $userManager->getItem(131);
+
+        $this->assertFalse($moderator->isDeleted());
     }
 
-    public function testDeleteLastMember()
+    /**
+     * The user is a normal member of a room and should be deleted
+     */
+    public function testDeleteMember()
     {
+        global $environment;
+        $environment->setCurrentContextID(101);
 
+        $userManager = $environment->getUserManager();
+        $userManager->setCacheOff();
+
+        $user = $userManager->getItem(135);
+
+        # pre condition
+        $this->assertInstanceOf('cs_user_item', $user);
+        $this->assertEquals(113, $user->getContextID());
+        $this->assertFalse($user->isModerator());
+
+        $user->getRelatedPortalUserItem()->deleteUserCausedByInactivity();
+
+        $user = $userManager->getItem(126);
+
+        $this->assertTrue($user->isDeleted());
     }
 
+    /**
+     * The user is not the last moderator of a room and can be deleted
+     */
     public function testDeleteNotLastModerator()
     {
+        global $environment;
+        $environment->setCurrentContextID(101);
 
+        $userManager = $environment->getUserManager();
+        $userManager->setCacheOff();
+
+        $firstModerator = $userManager->getItem(147);
+        $secondModerator = $userManager->getItem(155);
+
+        # pre condition
+        $this->assertInstanceOf('cs_user_item', $firstModerator);
+        $this->assertInstanceOf('cs_user_item', $secondModerator);
+        $this->assertEquals(146, $firstModerator->getContextID());
+        $this->assertEquals(146, $secondModerator->getContextID());
+        $this->assertTrue($firstModerator->isModerator());
+        $this->assertTrue($secondModerator->isModerator());
+
+        $firstModerator->getRelatedPortalUserItem()->deleteUserCausedByInactivity();
+
+        $firstModerator = $userManager->getItem(147);
+        $secondModerator = $userManager->getItem(155);
+
+        $this->assertTrue($firstModerator->isDeleted());
+        $this->assertFalse($secondModerator->isDeleted());
     }
 
     /**
@@ -144,7 +194,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $portalUserList = $userManager->get();
 
-        $this->assertEquals(6, $portalUserList->getCount(), 'Pre-Condition');
+        $this->assertEquals(8, $portalUserList->getCount(), 'Pre-Condition');
 
         // start date
         $timestamp = 1500000000; // 2017-07-14 04:40:00
@@ -158,7 +208,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
             $portalUser = $portalUserList->getNext();
         }
 
-        $this->assertEquals(6, $this->getConnection()->createQueryTable(
+        $this->assertEquals(8, $this->getConnection()->createQueryTable(
             'user', 'SELECT * FROM user WHERE user.lastlogin = "' . \DateTesting::$dateTime . '"'
         )->getRowCount());
 
@@ -212,7 +262,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $server->_cronInactiveUserDelete();
 
-        $this->assertEquals(6, $this->getConnection()->createQueryTable(
+        $this->assertEquals(8, $this->getConnection()->createQueryTable(
             'user', 'SELECT * FROM user WHERE
                 user.extras LIKE "%NOTIFY_LOCK_DATE%" AND
                 user.extras NOT LIKE "%MAIL_SEND_LOCK%" AND
@@ -227,7 +277,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $server->_cronInactiveUserDelete();
 
-        $this->assertEquals(6, $this->getConnection()->createQueryTable(
+        $this->assertEquals(8, $this->getConnection()->createQueryTable(
             'user', 'SELECT * FROM user WHERE
                 user.extras LIKE "%NOTIFY_LOCK_DATE%" AND
                 user.extras LIKE "%MAIL_SEND_LOCK%" AND
@@ -242,7 +292,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $server->_cronInactiveUserDelete();
 
-        $this->assertEquals(6, $this->getConnection()->createQueryTable(
+        $this->assertEquals(8, $this->getConnection()->createQueryTable(
             'user', 'SELECT * FROM user WHERE
                 user.extras LIKE "%NOTIFY_LOCK_DATE%" AND
                 user.extras LIKE "%MAIL_SEND_LOCK%" AND
@@ -259,7 +309,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $server->_cronInactiveUserDelete();
 
-        $this->assertEquals(6, $this->getConnection()->createQueryTable(
+        $this->assertEquals(8, $this->getConnection()->createQueryTable(
             'user', 'SELECT * FROM user WHERE
                 user.extras NOT LIKE "%NOTIFY_DELETE_DATE%" AND
                 user.extras NOT LIKE "%MAIL_SEND_NEXT_DELETE%" AND
@@ -275,7 +325,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $server->_cronInactiveUserDelete();
 
-        $this->assertEquals(6, $this->getConnection()->createQueryTable(
+        $this->assertEquals(8, $this->getConnection()->createQueryTable(
             'user', 'SELECT * FROM user WHERE
                 user.extras LIKE "%NOTIFY_DELETE_DATE%" AND
                 user.status = 0'
@@ -289,7 +339,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $server->_cronInactiveUserDelete();
 
-        $this->assertEquals(6, $this->getConnection()->createQueryTable(
+        $this->assertEquals(8, $this->getConnection()->createQueryTable(
             'user', 'SELECT * FROM user WHERE
                 user.extras LIKE "%NOTIFY_DELETE_DATE%" AND
                 user.extras LIKE "%MAIL_SEND_NEXT_DELETE%" AND
@@ -304,7 +354,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $server->_cronInactiveUserDelete();
 
-        $this->assertEquals(6, $this->getConnection()->createQueryTable(
+        $this->assertEquals(8, $this->getConnection()->createQueryTable(
             'user', 'SELECT * FROM user WHERE
                 user.deletion_date IS NOT NULL AND
                 user.deleter_id IS NOT NULL AND
