@@ -35,6 +35,9 @@ class DeleteInactiveUserTest extends DatabaseTestCase
         $userManager = $environment->getUserManager();
         $userManager->setCacheOff();
 
+        $itemManager = $environment->getItemManager();
+        $itemManager->setCacheOff();
+
         $user = $userManager->getItem(109);
 
         $this->assertInstanceOf('cs_user_item', $user);
@@ -42,21 +45,15 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $user->deleteUserCausedByInactivity();
 
-        // test user table
-        $this->assertEquals(1, $this->getConnection()->createQueryTable(
-            'user', 'SELECT * FROM user WHERE
-                user.item_id = 109 AND
-                user.deletion_date IS NOT NULL AND
-                user.deleter_id IS NOT NULL'
-        )->getRowCount(), 'testDelete');
+        // test users
+        $this->assertTrue($userManager->getItem(109)->isDeleted());
+        $this->assertTrue($userManager->getItem(111)->isDeleted());
+        $this->assertTrue($userManager->getItem(139)->isDeleted());
 
-        // test item table
-        $this->assertEquals(1, $this->getConnection()->createQueryTable(
-            'items', 'SELECT * FROM items WHERE
-                items.item_id = 109 AND
-                items.deletion_date IS NOT NULL AND
-                items.deleter_id IS NOT NULL'
-        )->getRowCount(), 'testDelete');
+        // test items
+        $this->assertTrue($itemManager->getItem(109)->isDeleted());
+        $this->assertTrue($itemManager->getItem(111)->isDeleted());
+        $this->assertTrue($itemManager->getItem(139)->isDeleted());
 
         // test auth table
         $this->assertEquals(0, $this->getConnection()->createQueryTable(
