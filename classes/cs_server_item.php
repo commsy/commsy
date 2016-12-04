@@ -304,16 +304,8 @@ class cs_server_item extends cs_guide_item
                                     if ($mail->send()) {
                                         $user->setMailSendBeforeDelete();
 
-                                        // delete user and related content
-                                        $user->delete();
-
-                                        $room_manager = $this->_environment->getRoomManager();
-                                        $room_manager->deleteRoomOfUserAndUserItemsInactivity($this->getUserID());
-
-                                        // delete user authentication
-                                        $authentication = $this->_environment->getAuthenticationObject();
-                                        $authentication->delete($user->getItemID());
-                                        $user->save();
+                                        // handle deletion
+                                        $user->deleteUserCausedByInactivity();
 
                                         $cron_array['success'] = true;
                                         $cron_array['success_text'] = 'send delete mail to '.$to;
