@@ -273,7 +273,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
             'user', 'SELECT * FROM user WHERE
                 user.item_id = 109 AND
                 user.extras LIKE "%NOTIFY_LOCK_DATE%"'
-        )->getRowCount(), 'testInactivityLastLogin');
+        )->getRowCount(), 'testInactivityUserWakeUp');
 
         $user = $userManager->getItem(109);
         $user->updateLastLogin();
@@ -284,7 +284,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
             'user', 'SELECT * FROM user WHERE
                 user.item_id = 109 AND
                 user.extras NOT LIKE "%NOTIFY_LOCK_DATE%"'
-        )->getRowCount(), 'testInactivityLastLogin');
+        )->getRowCount(), 'testInactivityUserWakeUp');
     }
 
     /**
