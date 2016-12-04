@@ -178,7 +178,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $this->assertInstanceOf('cs_user_item', $user);
         $this->assertEquals(101, $user->getContextID());
-        $this->assertTrue($user->isLocked());
+        $this->assertEquals(0, $user->getStatus());
 
         // 2017-07-14 04:40:00
         $timestamp = 1500000000;
