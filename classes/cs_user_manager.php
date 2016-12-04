@@ -1529,7 +1529,7 @@ class cs_user_manager extends cs_manager {
          }
          if ( !empty($row['deleter_id']) and !$roomMover->isUserInRoom($row['deleter_id'],$roomMover->getRoomId())) {
             $deleter = $this->_environment->getCurrentUser();
-            $deleter_id = $creator->getItemId();
+            $deleter_id = $deleter->getItemId();
             unset($deleter);
          }
 
