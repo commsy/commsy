@@ -903,5 +903,25 @@ class cs_room_manager extends cs_context_manager {
             }
         }
     }
+
+    public function getNumberOfModerators($roomId)
+    {
+        $query = '
+            SELECT COUNT(user.item_id) AS numMods FROM user
+            WHERE
+                user.deleter_id IS NULL AND
+                user.deletion_date IS NULL AND
+                user.status = 3 AND
+                user.context_id = ' . encode(AS_DB, $roomId) . '
+        ';
+
+        $result = $this->_db_connector->performQuery($query);
+
+        if ($result && isset($result[0]['numMods'])) {
+            return (int) $result[0]['numMods'];
+        }
+
+        return 0;
+    }
 }
 ?>

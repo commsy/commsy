@@ -229,10 +229,42 @@ class cs_server_item extends cs_guide_item
                         $date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL($inactivitySendMailDeleteDays);
                     }
 
+                    $projectManager = $this->_environment->getProjectManager();
+                    $communityManager = $this->_environment->getCommunityManager();
+                    $roomManager = $this->_environment->getRoomManager();
+
                     // get array of users
                     $user_array = $user_manager->getUserLastLoginLaterAs($date_lastlogin_do, $portal_item->getItemID(), 0);
                     if (!empty($user_array)) {
                         foreach ($user_array as $user) {
+                            // check if user is last moderator of a room
+                            $roomList = new \cs_list();
+
+                            $roomList->addList($projectManager->getRelatedProjectListForUserForMyArea($user));
+                            $roomList->addList($communityManager->getRelatedCommunityListForUser($user));
+
+                            $isLastModerator = false;
+
+                            if (!$roomList->isEmpty()) {
+                                $room = $roomList->getFirst();
+                                while ($room) {
+                                    $roomUser = $user->getRelatedUserItemInContext($room->getItemID());
+
+                                    if ($roomUser->isModerator()) {
+                                        if ($roomManager->getNumberOfModerators($room->getItemID()) === 1) {
+                                            $isLastModerator = true;
+                                            break;
+                                        }
+                                    }
+
+                                    $room = $roomList->getNext();
+                                }
+                            }
+
+                            if ($isLastModerator) {
+                                $user->resetInactivity();
+                                continue;
+                            }
 
                             if ($user->getStatus() == 0
                                 && !$user->getNotifyLockDate()

@@ -2752,13 +2752,6 @@ class cs_user_item extends cs_item {
         }
 
         $this->delete();
-//        $room_manager = $this->_environment->getRoomManager();
-//        $room_manager->deleteRoomOfUserAndUserItemsInactivity($this->getUserID());
-//
-//        // delete user authentication
-//        $authentication = $this->_environment->getAuthenticationObject();
-//        $authentication->delete($user->getItemID());
-//        $user->save();
 
         $authentication = $this->_environment->getAuthenticationObject();
         $authentication->delete($this->getItemID());
