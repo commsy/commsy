@@ -358,6 +358,7 @@ class cs_server_item extends cs_guide_item
 
                                     $mail = $this->sendMailForUserInactivity("deleteNext", $user, $portal_item, $days);
                                     if ($mail->send()) {
+                                        $user->setMailSendNextDelete();
                                         $user->setMailSendBeforeDelete();
                                         $user->save();
 
@@ -380,7 +381,6 @@ class cs_server_item extends cs_guide_item
                                     if(!$user->getMailSendNextDelete()) {
                                         $mail = $this->sendMailForUserInactivity("deleteNotify", $user, $portal_item, $daysTillLock);
                                         if ($mail->send()) {
-                                            $user->setMailSendNextDelete();
                                             $user->setNotifyDeleteDate();
                                             $user->save();
 
