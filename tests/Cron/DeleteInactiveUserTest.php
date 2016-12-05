@@ -187,6 +187,12 @@ class DeleteInactiveUserTest extends DatabaseTestCase
         $server = $environment->getServerItem();
         $server->_cronInactiveUserDelete();
 
+        $timestamp = 1500000000 + (365 - 20) * 24 * 60 * 60;;
+        \DateTesting::$dateTime = date("Y-m-d H:i:s", $timestamp);
+
+        $server = $environment->getServerItem();
+        $server->_cronInactiveUserDelete();
+
         $this->assertEquals(1, $this->getConnection()->createQueryTable(
             'user', 'SELECT * FROM user WHERE
                 user.item_id = 122 AND
@@ -274,6 +280,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 
         $user = $userManager->getItem(109);
         $user->updateLastLogin();
+        $user->resetInactivity();
 
         $server->_cronInactiveUserDelete();
 
@@ -327,9 +334,11 @@ class DeleteInactiveUserTest extends DatabaseTestCase
         $userManager->setCacheOff();
 
         $user = $userManager->getItem(109);
+        $user->setStatus(2);
 
         $this->assertInstanceOf('cs_user_item', $user);
         $this->assertEquals(101, $user->getContextID());
+        $this->assertEquals(2, $user->getStatus());
 
         // update user last login
         // 2017-07-14 04:40:00
