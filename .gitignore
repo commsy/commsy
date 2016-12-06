@@ -95,3 +95,5 @@ web/commsy
 var
 htdocs/jsMath/*
 vagrant/*
+
+phpunit.xml

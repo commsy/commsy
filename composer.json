@@ -1,5 +1,15 @@
 {
-	"require" : {
-		"willdurand/negotiation" : "1.3.0"
-	}
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "require" : {
+    "willdurand/negotiation" : "1.3.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "5.5.*",
+    "phpunit/php-invoker": "*",
+    "phpunit/dbunit": ">=1.2"
+  }
 }

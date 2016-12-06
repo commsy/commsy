@@ -3389,20 +3389,6 @@ class cs_portal_item extends cs_guide_item {
    	}
    	return $retour;
    }
-   
-   public function setInactivityOverwriteContent($flag){
-   	$this->_addExtra('INACTIVITY_OVERWRITE_CONTENT', $flag);
-   }
-   
-   public function isInactivityOverwriteContent(){
-   	$retour = false;
-   	if($this->_issetExtra('INACTIVITY_OVERWRITE_CONTENT')) {
-   		if($this->_getExtra('INACTIVITY_OVERWRITE_CONTENT') == 1){
-   			$retour = true;
-   		}
-   	}
-   	return $retour;
-   }
 
    public function setInactivityConfigDate()
    {
@@ -3418,10 +3404,6 @@ class cs_portal_item extends cs_guide_item {
             $retour = $this->_getExtra('INACTIVITY_CONFIGURATION_DATE');
         }
         return $retour;
-   }
-   
-   public function unsetInactivityOverwriteContent(){
-   	$this->_unsetExtra('INACTIVITY_OVERWRITE_CONTENT');
    }
    
    public function setDaysBeforeExpiringPasswordSendMail($days){

@@ -1189,7 +1189,7 @@ class cs_user_item extends cs_item {
       $this->_save($user_manager);
       $item_id = $this->getItemID();
       if ( empty( $item_id ) ) {
-         $this->setItemID($user_mananger->getCreateID());
+         $this->setItemID($user_manager->getCreateID());
       }
 
       plugin_hook('user_save', $this);
@@ -1898,52 +1898,6 @@ class cs_user_item extends cs_item {
          $step_manager->deleteStepsOfUser($this->getItemID());
    	}
    }
-   
-   function deleteAllEntriesOfUserByInactivity(){
-
-   	$portal_manager = $this->_environment->getPortalManager();
-   	$portal = $portal_manager->getItem($this->getContextID());
-   	
-   	$user_manager = $this->_environment->getUserManager();
-   	$user_array = $user_manager->getAllUserItemArray($this->getUserID());
-   	// falscher benutzer wird durchlaufen: es müssen alle user items durchlaufen werden
-   	// replace entries
-   	#pr($user_array);
-   	if($portal->isInactivityOverwriteContent()) {
-   		$announcement_manager = $this->_environment->getAnnouncementManager();
-   		$dates_manager = $this->_environment->getDatesManager();
-   		$discussion_manager = $this->_environment->getDiscussionManager();
-   		$discarticle_manager = $this->_environment->getDiscussionarticleManager();
-   		$material_manager = $this->_environment->getMaterialManager();
-   		$section_manager = $this->_environment->getSectionManager();
-   		$annotation_manager = $this->_environment->getAnnotationManager();
-   		$label_manager = $this->_environment->getLabelManager();
-   		$tag_manager = $this->_environment->getTagManager();
-   		$todo_manager = $this->_environment->getToDoManager();
-   		$step_manager = $this->_environment->getStepManager();
-   		 
-   	foreach ($user_array as $user){
-   		// replace users entries with the standart message for deleted entries
-   		$announcement_manager->deleteAnnouncementsofUser($user->getItemID());
-   		$dates_manager->deleteDatesOfUser($user->getItemID());
-   		$discussion_manager->deleteDiscussionsOfUser($user->getItemID());
-   		$discarticle_manager->deleteDiscarticlesOfUser($user->getItemID());
-   		$material_manager->deleteMaterialsOfUser($user->getItemID());
-   		$section_manager->deleteSectionsOfUser($user->getItemID());
-   		$annotation_manager->deleteAnnotationsOfUser($user->getItemID());
-   		$label_manager->deleteLabelsOfUser($user->getItemID());
-   		if ( empty($disable_overwrite) or $disable_overwrite != 'flag'){
-   			$tag_manager->deleteTagsOfUser($user->getItemID());
-   		}
-   		$step_manager->deleteStepsOfUser($user->getItemID());
-   	}
-   		 
-   		 
-   	}
-   	$room_manager = $this->_environment->getRoomManager();
-   	$room_manager->deleteRoomOfUserAndUserItemsInactivity($this->getUserID());
-   	
-   }
 
    function setAGBAcceptance () {
       include_once('functions/date_functions.php');
@@ -2585,14 +2539,6 @@ class cs_user_item extends cs_item {
    	}
    	return $retour;
    }
-
-    function setMailSendNextLock(){
-    $this->_addExtra('MAIL_SEND_NEXT_LOCK', '1');
-   }
-   
-   function unsetMailSendNextLock(){
-    $this->_unsetExtra('MAIL_SEND_NEXT_LOCK');
-   }
    
    function getMailSendNextLock(){
     $retour = false;
@@ -2675,7 +2621,6 @@ class cs_user_item extends cs_item {
         $this->unsetMailSendLocked();
         $this->unsetMailSendBeforeDelete();
         $this->unsetMailSendNextDelete();
-        $this->unsetMailSendNextLock();
         $this->unsetLockSendMailDate();
         $this->unsetLock();
         $this->unsetNotifyLockDate();
@@ -2793,5 +2738,23 @@ class cs_user_item extends cs_item {
    	   $this->setPortalConnectionInfoDB($tab_new_array);
    	}
    }
+
+    /**
+     * Deletes a user caused by inactivity, expects a portal user
+     *
+     * @throws Exception
+     */
+    public function deleteUserCausedByInactivity()
+    {
+        $userContext = $this->getContextItem();
+        if (!$userContext->isPortal()) {
+            throw new \Exception('expecting portal user');
+        }
+
+        $this->delete();
+
+        $authentication = $this->_environment->getAuthenticationObject();
+        $authentication->delete($this->getItemID());
+    }
 }
 ?>

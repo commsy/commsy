@@ -1,12 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit bootstrap="tests/bootstrap.php" backupGlobals="false"
-	backupStaticAttributes="false" strict="true" verbose="true">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.5/phpunit.xsd"
+         backupGlobals="false"
+         backupStaticAttributes="false"
+         bootstrap="tests/bootstrap.php"
+         convertErrorsToExceptions="false"
+         convertNoticesToExceptions="false"
+         convertWarningsToExceptions="false">
+
+	<php>
+        <ini name="error_reporting" value="E_ERROR" />
+
+        <var name="DB_DSN" value="mysql:dbname=commsy_test;host=commsy8_db" />
+        <var name="DB_USER" value="commsy" />
+        <var name="DB_PASSWD" value="commsy" />
+        <var name="DB_DBNAME" value="commsy_test" />
+	</php>
 
 	<testsuites>
 		<testsuite name="CommSy">
-			<directory suffix="Test.php">tests/unit/</directory>
-			<directory suffix="Test.php">tests/integration/</directory>
+			<directory suffix="Test.php">tests</directory>
 		</testsuite>
 	</testsuites>
 
