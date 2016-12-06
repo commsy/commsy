@@ -62,7 +62,7 @@
             </trans-unit>
             <trans-unit id="10">
                 <source>Title</source>
-                <target>Titel</target>
+                <target>Raumname</target>
             </trans-unit>
             <trans-unit id="11">
                 <source>Language</source>
