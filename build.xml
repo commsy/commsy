@@ -40,6 +40,7 @@
 		<chmod file="${basedir}/composer.phar" perm="u+x" />
 		<exec dir="${basedir}/" executable="./composer.phar" failonerror="true">
 			<arg value="install" />
+			<arg value="--no-dev" />
 		</exec>
 	</target>
 
