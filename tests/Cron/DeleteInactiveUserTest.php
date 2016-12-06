@@ -185,12 +185,14 @@ class DeleteInactiveUserTest extends DatabaseTestCase
         \DateTesting::$dateTime = date("Y-m-d H:i:s", $timestamp);
 
         $server = $environment->getServerItem();
+
+        // first run will set lock flags
         $server->_cronInactiveUserDelete();
 
-        $timestamp = 1500000000 + (365 - 20) * 24 * 60 * 60;;
+        $timestamp = 1500000000 + (365 - 20) * 24 * 60 * 60;
         \DateTesting::$dateTime = date("Y-m-d H:i:s", $timestamp);
 
-        $server = $environment->getServerItem();
+        // second run will send deletion notification
         $server->_cronInactiveUserDelete();
 
         $this->assertEquals(1, $this->getConnection()->createQueryTable(
@@ -334,7 +336,6 @@ class DeleteInactiveUserTest extends DatabaseTestCase
         $userManager->setCacheOff();
 
         $user = $userManager->getItem(109);
-        $user->setStatus(2);
 
         $this->assertInstanceOf('cs_user_item', $user);
         $this->assertEquals(101, $user->getContextID());
