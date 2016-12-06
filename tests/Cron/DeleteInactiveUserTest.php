@@ -493,6 +493,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
                 user.item_id = 109 AND
                 user.extras LIKE "%NOTIFY_DELETE_DATE%" AND
                 user.extras LIKE "%MAIL_SEND_NEXT_DELETE%" AND
+                user.extras LIKE "%MAIL_SEND_DELETE%" AND
                 user.status = 0'
         )->getRowCount());
 
