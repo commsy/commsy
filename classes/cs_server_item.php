@@ -326,16 +326,12 @@ class cs_server_item extends cs_guide_item
                             }
 
                             // delete user
-                            if (($inactivityDeleteDays - $inactivitySendMailDeleteDays + $daysTillLock) >= $inactivityDeleteDays and $user->getMailSendBeforeDelete() and !empty($inactivityDeleteDays)) {
+                            if (    $daysTillLock >= $inactivitySendMailDeleteDays &&
+                                    $user->getMailSendBeforeDelete() && !empty($inactivityDeleteDays)) {
                                 // mail locked send or locked configuration is not set
-                                if (($user->getMailSendLocked() or (empty($inactivitySendMailLockDays) and empty($inactivityLockDays)))) {
-                                    $auth_source_manager = $this->_environment->getAuthSourceManager();
-                                    $auth_source_item = $auth_source_manager->getItem($user->getAuthSource());
-
+                                if (($user->getMailSendLocked() || (empty($inactivitySendMailLockDays) && empty($inactivityLockDays)))) {
                                     $mail = $this->sendMailForUserInactivity("deleted", $user, $portal_item, $days);
                                     if ($mail->send()) {
-                                        // $user->setMailSendBeforeDelete();
-
                                         // handle deletion
                                         $user->deleteUserCausedByInactivity();
 
@@ -349,11 +345,10 @@ class cs_server_item extends cs_guide_item
                             }
 
                             // inform about next day deletion
-                            if (($inactivityDeleteDays - $inactivitySendMailDeleteDays + $daysTillLock) >= $inactivityDeleteDays - 1 and
-                                (!empty($user->getNotifyDeleteDate()) and $user->getMailSendLocked()
-                                    or (empty($inactivitySendMailLockDays)
-                                        and empty($inactivityLockDays))
-                                ) and !empty($inactivityDeleteDays)) {
+                            if ($daysTillLock >= $inactivitySendMailDeleteDays - 1 &&
+                                    (!empty($user->getNotifyDeleteDate()) && $user->getMailSendLocked()
+                                        || (empty($inactivitySendMailLockDays) && empty($inactivityLockDays))
+                                    ) && !empty($inactivityDeleteDays)) {
                                 if (!$user->getMailSendBeforeDelete()) {
                                     // send mail next day delete
 
