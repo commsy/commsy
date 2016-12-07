@@ -82,6 +82,16 @@
             // show the loading spinner
             $(article).find('.cs-edit-spinner').toggleClass('uk-hidden', false);
 
+            var editButtons = $('.cs-edit');
+            editButtons.removeClass('cs-edit');
+            editButtons.each(function(){
+                $(this).find('a').attr('title', 'close the current form to edit this section');
+            });
+
+            $("#cs-additional-actions").addClass('uk-hidden');
+            $("#cs-additional-actions").parent().find("button.uk-button").addClass("uk-text-muted");
+
+
             // send ajax request to get edit html
             $.ajax({
               url: this.options.editUrl
@@ -99,6 +109,14 @@
                     // override form submit behaviour
                     article.find('form').submit(function (event) {
                         event.preventDefault();
+
+                        editButtons.addClass('cs-edit');
+                        $("#cs-additional-actions").removeClass('uk-hidden');
+                        $("#cs-additional-actions").parent().find("button.uk-button").removeClass("uk-text-muted");
+
+                        editButtons.each(function(){
+                            $(this).find('a').attr('title', $(this).data('edit-title'));
+                        });
 
                         $(article).find('.cs-save-spinner').toggleClass('uk-hidden', false);
                         
@@ -126,7 +144,7 @@
                                 type: "POST",
                                 data: $(this).serialize()+'&'+buttonpressed+'=true'
                             })
-                            .done(function(result) {
+                            .done(function(result, statusText, xhrObject) {
                                 //article.fadeOut(function() {
                                     article.html($(result));
 

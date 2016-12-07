@@ -62,7 +62,7 @@
             </trans-unit>
             <trans-unit id="10">
                 <source>Title</source>
-                <target>Titel</target>
+                <target>Raumname</target>
             </trans-unit>
             <trans-unit id="11">
                 <source>Language</source>
@@ -74,7 +74,7 @@
             </trans-unit>
             <trans-unit id="13">
                 <source>Access check</source>
-                <target>Teilnahme</target>
+                <target>Teilnahmeüberprüfung</target>
             </trans-unit>
             <trans-unit id="14">
                 <source>Room description</source>
@@ -404,7 +404,7 @@
             </trans-unit>
             <trans-unit id="homenotice">
                 <source>Homenotice</source>
-                <target>Hinweistext auf der Home</target>
+                <target>Hinweistext auf der Einstiegsseite</target>
             </trans-unit>
             <trans-unit id="usernotice">
                 <source>Usernotice</source>
@@ -416,7 +416,7 @@
             </trans-unit>
             <trans-unit id="homenotice_text">
                 <source>Homenotice text</source>
-                <target>Sie können ein Material, eine Aufgabe, einen Termin oder eine Ankündigung als prominenten Hinweistext auf der Home anzeigen. Bitte geben Sie die Referenznummer des gewünschten Eintrags ein. Die Referenznummer finden Sie unterhalb eines Titels eines Eintrags, indem Sie auf das Pfeil-Icon (rechts neben "Bearbeiten") klicken.</target>
+                <target>Sie können ein Material, eine Aufgabe, einen Termin oder eine Ankündigung als prominenten Hinweistext auf der Einstiegsseite anzeigen. Bitte geben Sie die Referenznummer des gewünschten Eintrags ein. Die Referenznummer finden Sie unterhalb eines Titels eines Eintrags, indem Sie auf das Pfeil-Icon (rechts neben "Bearbeiten") klicken.</target>
             </trans-unit>
             <trans-unit id="usernotice_text">
                 <source>Usernotice text</source>
