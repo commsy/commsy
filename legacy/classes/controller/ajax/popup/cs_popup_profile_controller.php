@@ -412,43 +412,6 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								#$save = true;
 							}
 
-							// mail settings
-// 							if(!empty($form_data['mail_account'])) {
-// 								if($portalUser->getAccountWantMail() == 'no') {
-// 									$portalUser->setAccountWantMail('yes');
-// 									$save = true;
-// 								}
-// 							} else {
-// 								if($portalUser->getAccountWantMail() == 'yes') {
-// 									$portalUser->setAccountWantMail('no');
-// 									$save = true;
-// 								}
-// 							}
-
-// 							if(!empty($form_data['mail_room'])) {
-// 								if($portalUser->getOpenRoomWantMail() == 'no') {
-// 									$portalUser->setOpenRoomWantMail('yes');
-// 									$save = true;
-// 								}
-// 							} else {
-// 								if($portalUser->getOpenRoomWantMail() == 'yes') {
-// 									$portalUser->setOpenRoomWantMail('no');
-// 									$save = true;
-// 								}
-// 							}
-
-/*							if(!empty($form_data['mail_delete_entry'])) {
-								if($portalUser->getDeleteEntryWantMail() == 'no') {
-									$portalUser->setDeleteEntryWantMail('yes');
-									$save = true;
-								}
-							} else {
-								if($portalUser->getDeleteEntryWantMail() == 'yes') {
-									$portalUser->setDeleteEntryWantMail('no');
-									$save = true;
-								}
-							}
-*/
 							$change_name = false;
 							
 							$text_converter = $this->_environment->getTextConverter();
