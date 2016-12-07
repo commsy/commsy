@@ -38,6 +38,14 @@
                 <source>No categories has been created yet.</source>
                 <target>No categories has been created yet.</target>
             </trans-unit>
+            <trans-unit id="category-combine">
+                <source>Combine categories</source>
+                <target>Combine categories</target>
+            </trans-unit>
+            <trans-unit id="combine">
+                <source>Combine</source>
+                <target>Combine</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -166,11 +166,47 @@ class CategoryController extends Controller
             ]);
         }
 
+
+        $mergeForm = $this->createForm(Types\CategoryMergeType::class, null, ['roomId'=>$roomId]);
+
+        $mergeForm->handleRequest($request);
+        if ($mergeForm->isValid()) {
+            $mergeData = $mergeForm->getData();
+            $tagIdOne = $mergeData['first']->getItemId();
+            $tagIdTwo = $mergeData['second']->getItemId();
+
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+            $tagManager = $legacyEnvironment->getTagManager();
+            $tag2TagManager = $legacyEnvironment->getTag2TagManager();
+
+            if ($tag2TagManager->isASuccessorOfB($tagIdOne, $tagIdTwo)) {
+                $tagIdOneTemp = $tagIdOne;
+                $tagIdOne = $tagIdTwo;
+                $tagIdTwo = $tagIdOneTemp;
+            }
+            
+            // get both
+            $tagItemOne = $tagManager->getItem($tagIdOne);
+            $tagItemTwo = $tagManager->getItem($tagIdTwo);
+            
+            // we put the combined tag under the parent of the first one
+            $putId = $tag2TagManager->getFatherItemId($tagIdOne);
+            
+            // merge them
+            $tag2TagManager->combine($tagIdOne, $tagIdTwo, $putId);
+
+            return $this->redirectToRoute('commsy_category_edit', [
+                'roomId' => $roomId,
+            ]);
+        }
+
         return [
             'newForm' => $createNewForm->createView(),
             'editForm' => $editForm->createView(),
             'roomId' => $roomId,
             'editTitle' => $categoryEditTitle,
+            'mergeForm' => $mergeForm->createView(),
         ];
     }
 }
