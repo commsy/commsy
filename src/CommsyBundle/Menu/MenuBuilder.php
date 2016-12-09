@@ -378,10 +378,8 @@ class MenuBuilder
 
         $portal = $this->legacyEnvironment->getCurrentPortalItem();
         if ($portal) {
-            $baseUrl = $currentStack->getBaseUrl();
-
             $menu->addChild('portal', [
-                'uri' => $baseUrl . '?cid=' . $portal->getItemId(),
+                'uri' => $currentStack->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId(),
                 'attributes' => ['breadcrumb_portal' => true],
             ]);
         }
