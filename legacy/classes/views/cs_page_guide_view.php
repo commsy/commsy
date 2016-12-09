@@ -1979,7 +1979,7 @@ class cs_page_guide_view extends cs_page_view {
    				';
    			} else {
    				$html .= '
-   							<a href="commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=context&fct=logout&iid=' . $currentUser->getItemID() . '" id="tm_logout" title="' . $translator->getMessage("LOGOUT") . '">
+   							<a href="room/' . $this->_environment->getCurrentContextID() . '/logout" id="tm_logout" title="' . $translator->getMessage("LOGOUT") . '">
    								&nbsp;
    							</a>
    				';
