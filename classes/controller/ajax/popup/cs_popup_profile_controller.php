@@ -778,21 +778,21 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							// im portal nur default wert
 							// im raum default wert und raum wert?
 
-							setValue($currentUser, $portalUser, 'setTelephone', $text_converter->sanitizeHTML($form_data['telephone']));
-							setValue($currentUser, $portalUser, 'setCellularphone', $text_converter->sanitizeHTML($form_data['cellularphone']));
-							setValue($currentUser, $portalUser, 'setStreet', $text_converter->sanitizeHTML($form_data['street']));
-							setValue($currentUser, $portalUser, 'setZipcode', $text_converter->sanitizeHTML($form_data['zipcode']));
-							setValue($currentUser, $portalUser, 'setCity', $text_converter->sanitizeHTML($form_data['city']));
-							setValue($currentUser, $portalUser, 'setRoom', $text_converter->sanitizeHTML($form_data['room']));
-							setValue($currentUser, $portalUser, 'setOrganisation', $text_converter->sanitizeHTML($form_data['organisation']));
-							setValue($currentUser, $portalUser, 'setPosition', $text_converter->sanitizeHTML($form_data['position']));
-							setValue($currentUser, $portalUser, 'setICQ', $text_converter->sanitizeHTML($form_data['icq']));
-							setValue($currentUser, $portalUser, 'setMSN', $text_converter->sanitizeHTML($form_data['msn']));
-							setValue($currentUser, $portalUser, 'setSkype', $text_converter->sanitizeHTML($form_data['skype']));
-							setValue($currentUser, $portalUser, 'setYahoo', $text_converter->sanitizeHTML($form_data['yahoo']));
-							setValue($currentUser, $portalUser, 'setJabber', $text_converter->sanitizeHTML($form_data['jabber']));
-							setValue($currentUser, $portalUser, 'setHomepage', $text_converter->sanitizeHTML($form_data['homepage']));
-							setValue($currentUser, $portalUser, 'setDescription', $form_data['description']);
+							setValue($currentUser, null, 'setTelephone', $text_converter->sanitizeHTML($form_data['telephone']));
+							setValue($currentUser, null, 'setCellularphone', $text_converter->sanitizeHTML($form_data['cellularphone']));
+							setValue($currentUser, null, 'setStreet', $text_converter->sanitizeHTML($form_data['street']));
+							setValue($currentUser, null, 'setZipcode', $text_converter->sanitizeHTML($form_data['zipcode']));
+							setValue($currentUser, null, 'setCity', $text_converter->sanitizeHTML($form_data['city']));
+							setValue($currentUser, null, 'setRoom', $text_converter->sanitizeHTML($form_data['room']));
+							setValue($currentUser, null, 'setOrganisation', $text_converter->sanitizeHTML($form_data['organisation']));
+							setValue($currentUser, null, 'setPosition', $text_converter->sanitizeHTML($form_data['position']));
+							setValue($currentUser, null, 'setICQ', $text_converter->sanitizeHTML($form_data['icq']));
+							setValue($currentUser, null, 'setMSN', $text_converter->sanitizeHTML($form_data['msn']));
+							setValue($currentUser, null, 'setSkype', $text_converter->sanitizeHTML($form_data['skype']));
+							setValue($currentUser, null, 'setYahoo', $text_converter->sanitizeHTML($form_data['yahoo']));
+							setValue($currentUser, null, 'setJabber', $text_converter->sanitizeHTML($form_data['jabber']));
+							setValue($currentUser, null, 'setHomepage', $text_converter->sanitizeHTML($form_data['homepage']));
+							setValue($currentUser, null, 'setDescription', $form_data['description']);
 
 							// delete picture handling
 							if(isset($form_data['delete_picture']) && $currentUser->getPicture()) {
