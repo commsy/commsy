@@ -1142,26 +1142,7 @@ class MaterialController extends Controller
         }
         $materialItem->save();
 
-        /* $form = $this->createForm('material', $materialData, array());
-        
-        $form->handleRequest($request);
-        if ($form->isValid()) {
-            $materialItem = $transformer->applyTransformation($materialItem, $form->getData());
-            $materialItem->save();
-            return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $materialItem->getItemId()));
-
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
-        } */
-
         return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $materialItem->getItemId()));
-
-        /* return array(
-            'material' => $materialItem,
-            'form' => $form->createView()
-        ); */
     }
 
     /**
