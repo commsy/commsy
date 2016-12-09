@@ -285,16 +285,16 @@ if ( $copy_array['BGImage'] ) {
 }
 
 // wiki
-if ( $copy_array['wiki'] ) {
-   if ( $old_room->existWiki() ) {
-      $wiki_manager = $environment->getWikiManager();
-      $wiki_manager->copyWiki($old_room,$new_room);
-      unset($wiki_manager);
-   } else {
-      $new_room->unsetWikiExists();
-      // wiki config and wiki data will not be deleted
-   }
-}
+//if ( $copy_array['wiki'] ) {
+//   if ( $old_room->existWiki() ) {
+//      $wiki_manager = $environment->getWikiManager();
+//      $wiki_manager->copyWiki($old_room,$new_room);
+//      unset($wiki_manager);
+//   } else {
+//      $new_room->unsetWikiExists();
+//      // wiki config and wiki data will not be deleted
+//   }
+//}
 
 // information box
 if ( $copy_array['informationbox'] ) {
