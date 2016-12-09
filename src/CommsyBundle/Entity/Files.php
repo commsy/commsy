@@ -27,7 +27,8 @@ class Files
     /**
      * @var integer
      *
-     * @ORM\Column(name="context_id", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Items")
+     * @ORM\JoinColumn(name="context_id", referencedColumnName="item_id")
      */
     private $contextId;
 

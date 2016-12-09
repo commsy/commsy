@@ -18,10 +18,10 @@ class Version20160727112623 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP TABLE homepage_page');
-        $this->addSql('DROP TABLE homepage_link_page_page');
-        $this->addSql('DROP TABLE zzz_homepage_page');
-        $this->addSql('DROP TABLE zzz_homepage_link_page_page');
+        $this->addSql('DROP TABLE IF EXISTS homepage_page');
+        $this->addSql('DROP TABLE IF EXISTS homepage_link_page_page');
+        $this->addSql('DROP TABLE IF EXISTS zzz_homepage_page');
+        $this->addSql('DROP TABLE IF EXISTS zzz_homepage_link_page_page');
     }
 
     /**
