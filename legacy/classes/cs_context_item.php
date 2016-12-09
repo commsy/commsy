@@ -6105,8 +6105,6 @@ class cs_context_item extends cs_item {
   }
   
   function isWikiEnabled () {
-    xdebug_break(); 
-      
   	if ($this->_issetExtra('WIKI_ENABLED')) {
   		if ($this->_getExtra('WIKI_ENABLED')) {
       		return true;
