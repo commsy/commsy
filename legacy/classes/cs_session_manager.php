@@ -299,13 +299,19 @@ class cs_session_manager {
     *
     * @param string the session id
     */
-   function _saveSessionIDInCookie ($session_id, $toolname) {
-      if ( $toolname != 'commsy' ) {
-         $cookie_name = 'SID_'.$toolname;
-      } else {
-         $cookie_name = 'SID';
-      }
-      setcookie($cookie_name, $session_id, 0, $this->_settings['cookiepath'], $this->_settings['domain'], 0);
+   function _saveSessionIDInCookie ($session_id, $toolname)
+    {
+        if ($toolname != 'commsy') {
+            $cookie_name = 'SID_'.$toolname;
+        } else {
+            $cookie_name = 'SID';
+        }
+
+        if (!isset($this->_settings['cookiepath']) || empty($this->_settings['cookiepath'])) {
+            $this->_settings['cookiepath'] = '/';
+        }
+
+        setcookie($cookie_name, $session_id, 0, $this->_settings['cookiepath'], $this->_settings['domain'], 0);
    }
 
    /** delete cookie with session id, internal -> do not use

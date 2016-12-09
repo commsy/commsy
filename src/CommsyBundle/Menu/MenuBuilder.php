@@ -52,10 +52,9 @@ class MenuBuilder
 
         if ($currentUser->getItemId() != '') {
 
-            $menu->addChild('account', [
-                //'label' => $currentUser->getFullname(),
-                'label' => 'profile',
-                'route' => 'commsy_profile_account',
+            $menu->addChild('personal', [
+                'label' => 'personal_data',
+                'route' => 'commsy_profile_general',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
                     'itemId' => $currentUser->getItemId(),
@@ -67,9 +66,10 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'menu');
 
-            $menu->addChild('personal', [
-                'label' => 'personal_data',
-                'route' => 'commsy_profile_general',
+            $menu->addChild('account', [
+                //'label' => $currentUser->getFullname(),
+                'label' => 'profile',
+                'route' => 'commsy_profile_account',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
                     'itemId' => $currentUser->getItemId(),

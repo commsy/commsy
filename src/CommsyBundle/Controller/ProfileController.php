@@ -62,7 +62,6 @@ class ProfileController extends Controller
                 $data = base64_decode($data);
                 $fileName = implode("_", array('cid'.$userItem->getContextID(), $userItem->getUserID(), $fileName));
                 $absoluteFilepath = implode("/", array($saveDir, $fileName));
-                //dump("Saving profile under '" . $absoluteFilepath . "'");
                 file_put_contents($absoluteFilepath, $data);
                 $userItem->setPicture($fileName);
             }
@@ -183,6 +182,8 @@ class ProfileController extends Controller
 
         $form->handleRequest($request);
         if ($form->isValid()) {
+            $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
+            $userItem->save();
             return $this->redirectToRoute('commsy_profile_account', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
@@ -215,7 +216,10 @@ class ProfileController extends Controller
 
         $form->handleRequest($request);
         if ($form->isValid()) {
-            return $this->redirectToRoute('commsy_profile_notifications', array('roomId' => $roomId, 'itemId' => $itemId));
+            $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
+            $userItem->save();
+            $privateRoomItem = $privateRoomTransformer->applyTransformation($privateRoomItem, $form->getData());
+            $privateRoomItem->save();
         }
 
         return array(
@@ -247,7 +251,10 @@ class ProfileController extends Controller
 
         $form->handleRequest($request);
         if ($form->isValid()) {
-            return $this->redirectToRoute('commsy_profile_additional', array('roomId' => $roomId, 'itemId' => $itemId));
+            $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
+            $userItem->save();
+            $privateRoomItem = $privateRoomTransformer->applyTransformation($privateRoomItem, $form->getData());
+            $privateRoomItem->save();
         }
 
         return array(

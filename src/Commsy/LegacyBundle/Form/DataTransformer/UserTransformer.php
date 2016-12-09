@@ -71,6 +71,34 @@ class UserTransformer implements DataTransformerInterface
     {
         if ($userObject) {
             $userObject->setUserId($userData['userId']);
+
+            // get portal user if in room context
+            if ( !$this->legacyEnvironment->inPortal() )
+            {
+                $portalUser = $this->legacyEnvironment->getPortalUserItem();
+            }
+            else
+            {
+                $portalUser = $this->legacyEnvironment->getCurrentUserItem();
+            }
+
+            $authentication = $userObject->_environment->getAuthenticationObject();
+            if($authentication->changeUserID($userData['userId'], $portalUser)) {
+                $session_manager = $this->legacyEnvironment->getSessionManager();
+                $session = $this->legacyEnvironment->getSessionItem();
+                $session_id_old = $session->getSessionID();
+                $session_manager->delete($session_id_old, true);
+                $session->createSessionID($userData['userId']);
+                $cookie = $session->getValue('cookie');
+                if($cookie == 1) $session->setValue('cookie', 2);
+
+                $session_manager->save($session);
+                unset($session_manager);
+            }
+            else{
+                die("ERROR: changing User ID not successful");
+            }
+
             $userObject->setFirstname($userData['firstname']);
             $userObject->setLastname($userData['lastname']);
             $userObject->setLanguage($userData['language']);
@@ -80,7 +108,7 @@ class UserTransformer implements DataTransformerInterface
                 $userObject->turnAutoSaveOff();
             }
             $userObject->setTitle($userData['title']);
-            if($userData['dateOfBirth'] && $userData['dateOfBirth']['date']){
+            if(array_key_exists('dateOfBirth', $userData) && $userData['dateOfBirth'] && $userData['dateOfBirth']['date']){
                 $userObject->setBirthday($userData['dateOfBirth']['date']->format('Y-m-d'));
             }
             else{
