@@ -206,6 +206,10 @@
                 <source>en</source>
                 <target>English</target>
             </trans-unit>
+            <trans-unit id="profile_signout">
+                <source>Sign out</source>
+                <target>Sign out</target>
+            </trans-unit>
          </body>
     </file>
 </xliff>

@@ -17,16 +17,10 @@
 
         <div id="commsy_navigation">
 
-            <div id="portal_logo">
-            </div>
+            {# CommSy Logo #}
+            <div id="commsy_logo"></div>
 
-            <div id="my_avatar">
-                {{ render(controller(
-                    'CommsyBundle:Profile:image',
-                    { 'roomId': app.request.attributes.get('roomId') }
-                ))}}
-            </div>
-
+            {# Context Navigation #}
             {% block side_navigation %}
             {% endblock %}
 
@@ -56,8 +50,19 @@
 
                     <div class="uk-navbar-content">
                         <ul class="uk-navbar-nav">
-                            <li>
-                                <a href="{{ path('commsy_logout_logout', {'roomId': app.request.attributes.get('roomId') }) }}"><i class="uk-icon-power-off"></i></a>
+                            <li id="navbar_user_icon" class="uk-parent" data-uk-dropdown>
+                                {{ render(controller(
+                                    'CommsyBundle:Profile:image',
+                                    { 'roomId': app.request.attributes.get('roomId') }
+                                ))}}
+
+                                <div class="uk-dropdown uk-dropdown-small uk-dropdown-navbar">
+                                    <ul class="uk-nav uk-nav-navbar">
+                                        <li>
+                                            <a href="{{ path('commsy_logout_logout', {'roomId': app.request.attributes.get('roomId') }) }}"><i class="uk-icon-power-off"></i> {{ 'Sign out'|trans([], 'profile') }}</a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </li>
                         </ul>
                     </div>
