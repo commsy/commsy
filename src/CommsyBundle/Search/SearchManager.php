@@ -43,9 +43,10 @@ class SearchManager
         // query context
         $matchQuery = new Queries\Match();
         $matchQuery->setFieldQuery('_all', $this->query);
+        $matchQuery->setFieldOperator('_all', 'and');
 
         $boolQuery->addMust($matchQuery);
-        
+
         // filter context
         $contextFilter = $this->createContextFilter();
 
@@ -71,14 +72,12 @@ class SearchManager
         $boolQuery = new Queries\BoolQuery();
 
         // query context
-        $matchTitleQuery = new Queries\Match();
-        $matchTitleQuery->setFieldQuery('title', $this->query);
+        $multiMatchQuery = new Queries\MultiMatch();
+        $multiMatchQuery->setQuery($this->query);
+        $multiMatchQuery->setFields(['title', 'firstName', 'lastName']);
+        $multiMatchQuery->setOperator('and');
 
-        $matchFirstnameQuery = new Queries\Match();
-        $matchFirstnameQuery->setFieldQuery('firstName', $this->query);
-
-        $boolQuery->addShould($matchTitleQuery);
-        $boolQuery->addShould($matchFirstnameQuery);
+        $boolQuery->addMust($multiMatchQuery);
 
         // filter context
         $contextFilter = $this->createContextFilter();
