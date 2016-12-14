@@ -44,6 +44,9 @@ class CommsyExtension extends Extension
         // db
         $container->setParameter('commsy.db.backup_prefix', $config['db']['backup_prefix']);
 
+        // email
+        $container->setParameter('commsy.email.from', $config['email']['from']);
+
         // login
         $container->setParameter('commsy.login.shibboleth_direct_login', $config['login']['shibboleth_direct_login']);
         $container->setParameter('commsy.login.shibboleth_redirect_url', $config['login']['shibboleth_redirect_url']);

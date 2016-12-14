@@ -74,6 +74,10 @@ commsy:
     db:
         backup_prefix: 'zzz'
 
+    # E-Mail
+    email:
+        from: '%email.from%'
+
     # Login
     login:
         shibboleth_direct_login: false
