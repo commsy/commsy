@@ -96,7 +96,7 @@ class DashboardController extends Controller
         $roomItem->setDashboardLayout($requestContent->data);
         $roomItem->save();
         
-        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->trans('dashboard changed');
+        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->trans('dashboard changed', [], 'messages');
         
         return new JsonResponse(array('message' => $message,
                                       'timeout' => '5550',

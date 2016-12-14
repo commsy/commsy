@@ -370,6 +370,10 @@
                 <source>removed %count% entries from list</source>
                 <target>{0} Keinen Eintrag entfert.|{1} Einen Eintrag aus der Liste entfernt.|]1,Inf[ %count% Einträge aus der Liste entfernt.</target>
            </trans-unit>
+           <trans-unit id="dashboardChanged">
+                <source>dashboard changed</source>
+                <target>Dashboard-Layout aktualisiert.</target>
+           </trans-unit>
        </body>
     </file>
 </xliff>
