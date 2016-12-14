@@ -518,31 +518,11 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				                     $wiki_manager->closeWiki();
 				                  }
 				               
-				               	$current_context->moveToArchive();
-                              $this->_environment->activateArchiveMode();                             
+				               	    $current_context->moveToArchive();
+                                    $this->_environment->activateArchiveMode();
 				               } else {
 				               	// templates can not closed / archived
 				               	// so do nothing
-				               	/*
-					               $current_context->close();
-					               // Fix: Find Group-Rooms if existing
-					               if( $current_context->isGrouproomActive() ) {
-					                  $groupRoomList = $current_context->getGroupRoomList();
-	
-					                  if( !$groupRoomList->isEmpty() ) {
-					                     $room_item = $groupRoomList->getFirst();
-	
-					                     while($room_item) {
-					                        // All GroupRooms have to be closed too
-					                        $room_item->close();
-					                        $room_item->save();
-	
-					                        $room_item = $groupRoomList->getNext();
-					                     }
-					                  }
-					               }
-					               // ~Fix
-					               */
 				               }
 				            }
 				         }
@@ -551,26 +531,26 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				         else {
 				            // archive
 				            if ( $this->_environment->isArchiveMode() ) {
-            	            $current_context->backFromArchive();
-            	            $this->_environment->deactivateArchiveMode();
-                        }
+                                $current_context->backFromArchive();
+                                $this->_environment->deactivateArchiveMode();
+                            }
 	                                 	            
-	         	            // wiki
-	                        if($current_context->existWiki() and $c_use_soap_for_wiki){
-	                           $wiki_manager = $this->_environment->getWikiManager();
-	                           $wiki_manager->openWiki();
-	                        }            
-					         }
-				         }
-				         
-				         $languages = $this->_environment->getAvailableLanguageArray();
-				         foreach ($languages as $language) {
-				            if (!empty($form_data['agb_text_'.mb_strtolower($language, 'UTF-8')])) {
-				               $agbtext_array[mb_strtoupper($language, 'UTF-8')] = $form_data['agb_text_'.mb_strtolower($language, 'UTF-8')];
-				            } else {
-				               $agbtext_array[mb_strtoupper($language, 'UTF-8')] = '';
-				            }
-				         }
+                                // wiki
+                                if($current_context->existWiki() and $c_use_soap_for_wiki){
+                                   $wiki_manager = $this->_environment->getWikiManager();
+                                   $wiki_manager->openWiki();
+                                }
+                         }
+                     }
+
+                         $languages = $this->_environment->getAvailableLanguageArray();
+                         foreach ($languages as $language) {
+                            if (!empty($form_data['agb_text_'.mb_strtolower($language, 'UTF-8')])) {
+                               $agbtext_array[mb_strtoupper($language, 'UTF-8')] = $form_data['agb_text_'.mb_strtolower($language, 'UTF-8')];
+                            } else {
+                               $agbtext_array[mb_strtoupper($language, 'UTF-8')] = '';
+                            }
+                         }
 
 				         if(($agbtext_array != $current_context->getAGBTextArray()) or ($form_data['agb_status'] != $current_context->getAGBStatus())) {
 				            $current_context->setAGBStatus($form_data['agb_status']);

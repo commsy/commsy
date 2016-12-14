@@ -48,6 +48,9 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
                 $roomData['template']['template_availability'] = $roomItem->getTemplateAvailability();
             }
 
+            // archived
+            $roomData['archived']['active'] = !$roomItem->isOpen();
+
             // terms and conditions
             $roomData['terms']['status'] = $roomItem->getAGBStatus();
             if ($roomData['terms']['status'] != '1'){
@@ -119,23 +122,37 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
             } else {
                $roomObject->setNotTemplate();
             }
-         } elseif ( $roomObject->isProjectRoom()
-                    or $roomObject->isCommunityRoom()
-                    or $roomObject->isPrivateRoom()
-                    or $roomObject->isGroupRoom()
-                  ) {
+        } elseif ( $roomObject->isProjectRoom()
+                or $roomObject->isCommunityRoom()
+                or $roomObject->isPrivateRoom()
+                or $roomObject->isGroupRoom()
+              ) {
             $roomObject->setNotTemplate();
-         }
-         if ( isset($template['template_availability'])){
+        }
+        if ( isset($template['template_availability'])){
             if ( $roomObject->isCommunityRoom() ){
                $roomObject->setCommunityTemplateAvailability($template['template_availability']);
             } else{
                $roomObject->setTemplateAvailability($template['template_availability']);
             }
-         }
-         if ( isset($template['template_description'])){
+        }
+        if ( isset($template['template_description'])){
             $roomObject->setTemplateDescription($template['template_description']);
-         }
+        }
+
+        /********* save archive options ******/
+        $archived = $roomData['archived'];
+        if (isset($archived['active'])) {
+            if ($archived['active']) {
+                $roomObject->moveToArchive();
+                $this->legacyEnvironment->activateArchiveMode();
+            } else {
+                if ($this->legacyEnvironment->isArchiveMode()) {
+                    $roomObject->backFromArchive();
+                    $this->legacyEnvironment->deactivateArchiveMode();
+                }
+            }
+        }
 
         /***************** save room status *************/
         /*

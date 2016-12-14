@@ -127,6 +127,16 @@ class AdditionalSettingsType extends AbstractType
                     ),
                 ))
             )
+            ->add(
+                $builder->create('archived', FormType::class, [])
+                ->add('active', CheckboxType::class, [
+                    'required' => false,
+                    'label' => 'Archived',
+                    'label_attr' => [
+                        'class' => 'uk-form-label',
+                    ],
+                ])
+            )
             /*
             ->add('room_status', CheckboxType::class, array(
                 'required' => false,

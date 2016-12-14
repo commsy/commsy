@@ -239,8 +239,12 @@
                 <target>Structural auxilaries</target>
             </trans-unit>
             <trans-unit id="archiveroom">
-                <source>Room status</source>
+                <source>Archive room</source>
                 <target>Archive room</target>
+            </trans-unit>
+            <trans-unit id="settings-label-archive">
+                <source>Archived</source>
+                <target>Archived</target>
             </trans-unit>
             <trans-unit id="terms">
                 <source>Terms</source>
@@ -277,6 +281,10 @@
             <trans-unit id="template_text">
                 <source>Template text</source>
                 <target>Provide this workspace as a template for new workspaces. By choosing a template, you will get a prepopulated workspace with contents from an archived workspace except for user information.</target>
+            </trans-unit>
+            <trans-unit id="archive_text">
+                <source>Archive text</source>
+                <target>Archived rooms will be persisted in their current state, content can not be changed. The reading access to all entries will still remain.</target>
             </trans-unit>
             <trans-unit id="terms_text">
                 <source>Terms text</source>

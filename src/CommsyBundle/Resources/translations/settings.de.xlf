@@ -239,8 +239,12 @@
                 <target>Strukturierungshilfen</target>
             </trans-unit>
             <trans-unit id="archiveroom">
-                <source>Room status</source>
+                <source>Archive room</source>
                 <target>Raum archivieren</target>
+            </trans-unit>
+            <trans-unit id="settings-label-archive">
+                <source>Archived</source>
+                <target>Archiviert</target>
             </trans-unit>
             <trans-unit id="terms">
                 <source>Terms</source>
@@ -277,6 +281,10 @@
             <trans-unit id="template_text">
                 <source>Template text</source>
                 <target>Machen Sie diesen Raum als Vorlage für neue Räume verfügbar. Bei Auswahl einer Vorlage beim Eröffnen eines Raumes werden sämtliche Voreinstellungen und Inhalte der Vorlage in den neuen Raum übernommen, mit Ausnahme der Informationen zu Personen.</target>
+            </trans-unit>
+            <trans-unit id="archive_text">
+                <source>Archive text</source>
+                <target>In archivierten Räumen können keine Änderungen mehr vorgenommen werden. Der Zugriff auf alle Inhalte bleibt aber weiterhin bestehen.</target>
             </trans-unit>
             <trans-unit id="terms_text">
                 <source>Terms text</source>

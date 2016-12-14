@@ -16,12 +16,14 @@
 
                 <div>
                     {{ form_start(form) }}
+                        {# structural auxilaries #}
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Structural auxilaries'|trans({}, 'settings') }}</h1>
                             <div style="margin-bottom: 25px;"></div>
                             {{ form_widget(form.structural_auxilaries) }}
                         </div>
 
+                        {# tasks configuration #}
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Tasks'|trans({}, 'settings') }}</h1>
                             <div style="margin-bottom: 25px;">{{ 'Tasks text'|trans({}, 'settings') }}</div>
@@ -34,6 +36,7 @@
                             </ul>
                         </div>
 
+                        {# template #}
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Template'|trans({}, 'settings') }}</h1> 
                             <div style="margin-bottom: 25px;">{{ 'Template text'|trans({}, 'settings') }}</div>
@@ -46,6 +49,15 @@
                             {{ form_rest(form.template) }}
                         </div>
 
+                        {# archived #}
+                        <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                            <h1 class='uk-panel-title'>{{ 'Archive room'|trans({}, 'settings') }}</h1>
+                            <div style="margin-bottom: 25px;">{{ 'Archive text'|trans({}, 'settings') }}</div>
+                            {{ form_row(form.archived.active) }}
+                            {{ form_rest(form.archived) }}
+                        </div>
+
+                        {# terms #}
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Terms'|trans({}, 'settings') }}</h1> 
                             <div style="margin-bottom: 25px;">{{ 'Terms text'|trans({}, 'settings') }}</div>
