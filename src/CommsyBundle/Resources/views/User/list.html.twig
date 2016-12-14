@@ -94,20 +94,3 @@
             </div>
         </div>
 {% endblock %}
-
-{% block listaction %}
-    <li>
-        <a href="#" id="commsy-select-actions-mark-read">
-            <i class="uk-icon-justify uk-icon-small uk-icon-check-square-o uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
-        </a>
-    </li>
-    
-    <li>
-        <a href="#" id="commsy-select-actions-send-list" data-cs-action-send-list='{
-            "url": "{{ path('commsy_item_sendlist', {'roomId': roomId}) }}",
-            "errorMessage": "<i class=\"uk-icon-medium uk-icon-info\"></i> {{ 'action error'|trans }}"
-        }'>
-            <i class="uk-icon-small uk-icon-envelope-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({})|capitalize }}
-        </a>
-    </li>
-{% endblock %}
