@@ -37,7 +37,7 @@ class UploadType extends AbstractType
                 ),
                 'required' => false,
                 'translation_domain' => 'material',
-                //'image_path' => 'webPath',
+                'multiple' => true,
             ))
             ->add('save', SubmitType::class, array(
                 'attr' => array(
