@@ -455,25 +455,11 @@ class ItemController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/item/send", condition="request.isXmlHttpRequest()")
+     * @Route("/room/{roomId}/{itemId}/send")
      * @Template()
      **/
-    public function sendAction($roomId, Request $request)
+    public function sendAction($roomId, $itemId, Request $request)
     {
-        // extract item id from request data
-        $requestContent = $request->getContent();
-        if (empty($requestContent)) {
-            throw new \Exception('no request content given');
-        }
-
-        $jsonArray = json_decode($requestContent, true);
-
-        if (!isset($jsonArray['itemId']) || empty($jsonArray['itemId'])) {
-            throw new \Exception('no item id given');
-        }
-
-        $itemId = $jsonArray['itemId'];
-
         // get item
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
@@ -490,14 +476,15 @@ class ItemController extends Controller
 
         $formData = [
             'additional_recipients' => [
-                'a', 'b', 'c'
+                'schoenfeld@effective-webwork.de',
             ],
             'send_to_groups' => [
                 $defaultGroupId
             ],
-            'send_to_group_all' => 'Yes',
-            'send_to_all' => 'Yes',
+            'send_to_group_all' => true,
+            'send_to_all' => true,
             'message' => $mailAssistant->prepareMessage($item),
+            'copy_to_sender' => false,
         ];
 
         $form = $this->createForm(SendType::class, $formData, [
@@ -506,7 +493,17 @@ class ItemController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // if cancel was clicked, redirect back to detail page
+            if ($form->get('cancel')->isClicked()) {
+                return $this->redirectToRoute('commsy_' . $item->getType() . '_detail', [
+                    'roomId' => $roomId,
+                    'itemId' => $itemId,
+                ]);
+            }
 
+            // send mail
+            $message = $mailAssistant->getSwiftMessage($form->getData());
+            $this->get('mailer')->send($message);
         }
 
         return [

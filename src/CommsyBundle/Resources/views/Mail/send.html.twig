@@ -36,7 +36,11 @@
     {{ 'Number of entries'|trans({}, 'discussion') }}: {{ item.allArticlesCount }}
     {{ 'Last entry'|trans({}, 'discussion') }}: {{ item.latestArticleModificationDate|craue_date }}
 {% elseif item.type == 'date' %}
-
+    {{ item.startingDay|craue_date }}
+    {{ item.startingTime }}
+    -
+    {{ item.endingDay|craue_date }}
+    {{ item.endingTime }}
 {% endif %}
 
 <br>---<br>

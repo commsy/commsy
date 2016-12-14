@@ -1,47 +1,91 @@
+{% extends 'CommsyBundle:Base:room.html.twig' %}
+
 {% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
 
-<article class="uk-article uk-position-relative cs-send">
-    {{ form_start(form) }}
+{% block content %}
+    <div class="uk-grid">
 
-        {{ form_row(form.subject) }}
-        {{ form_row(form.message) }}
+        <div class="uk-width-1-1">
 
-        {% if form.send_to_attendees is defined %}
-            {{ form_row(form.send_to_attendees) }}
-        {% endif %}
+            {# new project room#}
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div class="uk-text-large">{{ 'Send item'|trans({}, "mail") }}</div>
+                    </div>
+                </div>
 
-        {% if form.send_to_assigned is defined %}
-            {{ form_row(form.send_to_assigned) }}
-        {% endif %}
+                <div>
+                    {{ form_start(form) }}
 
-        {% if form.send_to_group_all is defined %}
-            {{ form_row(form.send_to_group_all) }}
-        {% endif %}
+                        {{ form_row(form.subject) }}
+                        {{ form_row(form.message) }}
 
-        {% if form.send_to_groups is defined %}
-            {{ form_row(form.send_to_groups) }}
-        {% endif %}
+                        {% if form.send_to_attendees is defined %}
+                            {{ form_row(form.send_to_attendees) }}
+                        {% endif %}
 
-        {% if form.send_to_institutions is defined %}
-            {{ form_row(form.send_to_institutions) }}
-        {% endif %}
+                        {% if form.send_to_assigned is defined %}
+                            {{ form_row(form.send_to_assigned) }}
+                        {% endif %}
 
-        {% if form.send_to_all is defined %}
-            {{ form_row(form.send_to_all) }}
-        {% endif %}
+                        {% if form.send_to_group_all is defined %}
+                            {{ form_row(form.send_to_group_all) }}
+                        {% endif %}
 
-        {{ form_row(form.copy_to_sender) }}
-        {{ form_row(form.additional_recipients) }}
+                        {% if form.send_to_groups is defined %}
+                            {{ form_row(form.send_to_groups) }}
+                        {% endif %}
 
-        <div class="uk-form-row">
-            <a href="#" id="cs-form-send-add-recipient">{{ 'Add another recipient'|trans({}, 'mail') }}</a>
+                        {% if form.send_to_institutions is defined %}
+                            {{ form_row(form.send_to_institutions) }}
+                        {% endif %}
+
+                        {% if form.send_to_all is defined %}
+                            {{ form_row(form.send_to_all) }}
+                        {% endif %}
+
+                        {{ form_row(form.copy_to_sender) }}
+                        {{ form_row(form.additional_recipients) }}
+
+                        <div class="uk-form-row">
+                            <a href="#" id="cs-form-send-add-recipient">{{ 'Add another recipient'|trans({}, 'mail') }}</a>
+                        </div>
+
+                        <div class="uk-form-row">
+                            {{ form_widget(form.save) }}
+                            {{ form_widget(form.cancel) }}
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+
         </div>
 
-        <div class="uk-form-row">
-            {{ form_widget(form.save) }}
-            {{ form_widget(form.cancel) }}
-        </div>
-    {{ form_end(form) }}
-</article>
+    </div>
+{% endblock %}
 
-<hr class="uk-width-9-10">
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $('#cs-form-send-add-recipient').on('click', function(event) {
+            event.preventDefault();
+
+            var emailContainer = $('#send_additional_recipients');
+
+            // grab the prototype template
+            var newWidget = emailContainer.data('prototype');
+
+            // get the number of current used email fields
+            var currentEmailCount = $('send[additional_recipients]').length;
+
+            // replace the "__name__" used in the id and name of the prototype
+            // with a number that's unique to the other fields
+            newWidget = newWidget.replace(/__name__/g, currentEmailCount);
+
+            // add the new element
+            $(newWidget).appendTo(emailContainer);
+        });
+    </script>
+{% endblock %}

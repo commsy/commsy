@@ -54,6 +54,10 @@
                 <source>Send</source>
                 <target>Send</target>
             </trans-unit>
+            <trans-unit id="mailSendItem">
+                <source>Send item</source>
+                <target>Send item</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

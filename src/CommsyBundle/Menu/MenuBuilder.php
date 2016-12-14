@@ -425,7 +425,7 @@ class MenuBuilder
                 // get route information
                 $route = explode('_', $currentStack->attributes->get('_route'));
 
-                if (isset($route[1]) && !in_array($route[1], ['room', 'dashboard', 'search', 'hashtag', 'category'])) {
+                if (isset($route[1]) && !in_array($route[1], ['room', 'dashboard', 'search', 'hashtag', 'category', 'item'])) {
 
                     // rubric
                     $tempRoute = 'commsy_'.$route[1].'_'.'list';

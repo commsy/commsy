@@ -181,8 +181,12 @@ class SendType extends AbstractType
                 'translation_domain' => 'mail',
             ])
             ->add('cancel', SubmitType::class, [
+                'attr' => [
+                    'formnovalidate' => 'formnovalidate',
+                ],
                 'label' => 'cancel',
-                'translation_domain' => 'form'
+                'translation_domain' => 'form',
+                'validation_groups' => false,
             ])
         ;
     }

@@ -72,11 +72,7 @@
 
                                         {# send #}
                                         <li>
-                                            <a href="#" data-cs-action-send="{
-                                                'url': '{{ path('commsy_item_send', {'roomId': roomId}) }}',
-                                                'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}',
-                                                'itemId': {{ todo.itemId }}
-                                            }">
+                                            <a href="{{ path('commsy_item_send', {'roomId': roomId, 'itemId': todo.itemId}) }}">
                                                 <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send'|trans({})|capitalize }}
                                             </a>
                                         </li>
