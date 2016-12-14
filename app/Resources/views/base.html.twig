@@ -27,9 +27,9 @@
         </div>
 
         <div id="content">
-            <!-- navbar -->
+            {# NavBar #}
             <nav class="uk-navbar uk-navbar-attached">
-                <!-- right -->
+                {# right #}
                 <div class="uk-navbar-flip">
                     <div class="uk-navbar-content">
                         {# global search #}
@@ -68,7 +68,7 @@
                     </div>
                 </div>
                 
-                <!-- toggle -->
+                {# toggle #}
                 <a href="" class="uk-navbar-toggle uk-visible-small"></a>
 
                 {# left #}
@@ -79,9 +79,11 @@
                         </a>
                     </li>
 
-                    <li data-uk-dropdown="{mode:'click'}" data-commsy-room-navigation="{
+                    {# room navigation #}
+                    <li id="room-navigation" data-uk-dropdown="{mode:'click'}" data-commsy-room-navigation="{
                         source:'{{ path('commsy_search_roomnavigation', {'roomId': app.request.attributes.get('roomId') }) }}',
-                        minLength: 0
+                        minLength: 0,
+                        msgNoResults: '{{ 'No results found'|trans({}, 'search') }}'
                     }">
                         <a class="cs-link-highlight">
                             {% block roomTitle %}
@@ -91,9 +93,9 @@
                         </a>
 
                         <!-- This is the dropdown -->
-                        <div class="uk-dropdown uk-dropdown-scrollable uk-dropdown-width-2" style="height: 200px;">
+                        <div class="uk-dropdown uk-dropdown-scrollable uk-dropdown-width-2">
                             <div class="uk-form">
-                                <input class="uk-width-1-1" type="text" placeholder="{{ 'room search text'|trans({}, "rubric")}}">
+                                <input class="uk-margin-bottom uk-width-1-1" type="text" placeholder="{{ 'room search text'|trans({}, "rubric")}}">
                                 <script type="text/autocomplete">
                                     {%- verbatim -%}
                                     <ul class="uk-nav uk-nav-autocomplete uk-autocomplete-results">
@@ -101,8 +103,13 @@
                                             {{~items}}
                                             <li data-url="{{!$item.url}}">
                                                 <a>
+                                                    {{#$item.text == 'project'}}
+                                                        <i class="uk-margin-small-right uk-icon-angle-right"></i>
+                                                    {{/end}}
+                                                    {{#$item.text == 'community'}}
+                                                        <i class="uk-margin-small-right uk-icon-angle-double-right"></i>
+                                                    {{/end}}
                                                     {{ $item.title }}
-                                                    <div>{{ $item.text }}</div>
                                                 </a>
                                             </li>
                                             {{/items}}

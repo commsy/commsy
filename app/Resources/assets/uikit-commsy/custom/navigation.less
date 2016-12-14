@@ -5,7 +5,7 @@
     height: 100%;
     background: #2B2F3E;
     position: fixed;
-    xleft: 0;
+    left: 0;
     top: 0;
     transform: translate(0px, 0px);
     transition: width 0.28s ease-in-out 0s;
@@ -16,54 +16,43 @@
     z-index:5000;
     font-weight:bold;
 }
-    
-    
-
 @media (max-width: 1300px) {
-    #commsy_navigation{
+    #commsy_navigation {
         width: 40px;
     }
+
     #commsy_navigation:hover {
         width: 200px;
     }
 }
 
 @media (min-width: 1300px) {
-    #commsy_navigation{
+    #commsy_navigation {
         width: 200px;
     }
+
     #content {
         margin: 0 auto 0 200px;
     }
 }
 
+#commsy_navigation {
+    #commsy_logo {
+        background: #FF404B url(../../img/commsy_logo_short.png) 10px 5px no-repeat;
+        height: 50px;
+        transition: ease-in-out 0.3s;
 
-#commsy_navigation #commsy_logo {
-    background: #FF404B url(../../img/commsy_logo_short.png) 10px 5px no-repeat;
-    height: 50px;
-    transition: ease-in-out 0.3s;
-}
-    
-#commsy_navigation #commsy_logo p {
-    text-indent: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-}
-    
-#commsy_navigation:hover #commsy_logo {
-    background: #FF404B url(../../img/commsy_logo_120.png) 30px 5px no-repeat;
-    transition: ease-in-out 0.3s;
-}
+        p {
+            text-indent: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+    }
 
-@media (min-width: 1300px) {
- #commsy_navigation #commsy_logo {
+    &:hover #commsy_logo {
         background: #FF404B url(../../img/commsy_logo_120.png) 30px 5px no-repeat;
         transition: ease-in-out 0.3s;
     }
-}
-
-#navbar_user_icon a img {
-    margin-top: 10px;
 }
 
 ul#commsy_fields {
@@ -95,160 +84,34 @@ ul#commsy_fields li a:hover {
     box-shadow: inset -10px 0px 5px 0px rgba(0,0,0,0.3);    
 }
 
-ul#switch_room {
-    border-top: 1px solid #34394A;
-    border-bottom: 1px solid #34394A;
-    margin-top: 0px;
-    position: relative;
-    z-index: 597;
-    list-style-type: none;
-    overflow: hidden;
-}
-
-#commsy_navigation:hover > ul#switch_room {
-    overflow: visible;
-}
-
-ul#switch_room li.sub_menue {
-    color: #FF404B;
-    display: block;
-    padding: 10px 5px 10px 10px;
-    cursor: pointer !important;
-}
-
-ul#switch_room li.sub_menue:hover {
-    color: #FF404B;
-    background: url(../../img/door_icon.png) 24px 10px no-repeat #232631;
-    -webkit-box-shadow: inset -10px 0px 5px 0px rgba(0,0,0,0.3);
-    -moz-box-shadow: inset -10px 0px 5px 0px rgba(0,0,0,0.3);
-    box-shadow: inset -10px 0px 5px 0px rgba(0,0,0,0.3);    
-}
-
-ul#switch_room li:hover ul {
-    visibility: visible;
-}
-
-ul#switch_room li:hover > ul {
-    visibility: visible;
-    transition: background-color 0.5s ease; 
-}
-
-ul#switch_room li ul li a {
-    padding: 5px 20px;
-    display: block;
-    color: #FFF;
-    text-decoration: none;
-    border-bottom: 1px solid #34394A;
-}
-
-ul#switch_room li ul li a:hover {
-    color: #FF404B;
-    background: #232631;
-    -webkit-box-shadow: inset -10px 0px 5px 0px rgba(0,0,0,0.3);
-    -moz-box-shadow: inset -10px 0px 5px 0px rgba(0,0,0,0.3);
-    box-shadow: inset -10px 0px 5px 0px rgba(0,0,0,0.3);    
-}
-
 .cs-menue-padding {
     padding: 0px 10px 0px 0px;
 }
-
-.cs-roomlist {
-    overflow:auto;
-    padding-left:0px !important;
-
-    left: 200px;
-    top: -40px;
-    display: block;
-    min-width: 250%;
-    max-width: 400%;
-    border-top: 1px solid #34394A;
-    height:400px;
-    overflow-y:auto;
-    overflow-x:hidden;
-
-    visibility: hidden;
-    position: absolute;
-    z-index: 598;
-    width: 100%;
-    background-color: #2B2F3E;
-    list-style-type: none;
-}
-
-.cs-room-dashboard {
-    white-space:normal;
-    height: 40px;
-    overflow:hidden;
-}
-
-.cs-room-search {
-    white-space:normal;
-    padding: 5px 20px;
-    display: block;
-    color: #FFF;
-    text-decoration: none;
-    border-bottom: 1px solid #34394A;
-}
-
-.cs-roomsearch-field {
-    background: rgba(255, 255, 255, 1) none repeat scroll 0 0;
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    border-radius: 0;
-    box-sizing: border-box;
-    color: #444444;
-    font: inherit;
-    height: 30px;
-    margin: 0;
-    padding: 0 0 0 30px;
-    transition: all 0.2s linear 0s;
-    vertical-align: middle;   
-    width: 450px !important;
-}
-
-#cs-room-dropdown {
-    margin-top: 10px;
-    background: transparent;
-    width: 435px;
-    padding: 0;
-    display: block;
-}
-
-// Profile
-// ========================================================================
-#profile-image {
-    max-height: 100px;
-}
-
-#profile-nav {
-  padding: 5px;
-  padding-top: 5px;
-}
-
-#commsy_navigation:hover  #profile-nav {
-  padding: 5px;
-  padding-top: 5px;
-  padding-left:70px;
-}
-
-
 @media (min-width: 1300px) {
-    #commsy_navigation #profile-nav {
-        padding-left:70px;
+    #commsy_navigation #commsy_logo {
+        background: #FF404B url(../../img/commsy_logo_120.png) 30px 5px no-repeat;
+        transition: ease-in-out 0.3s;
     }
 }
 
-
-
-#profile-nav .uk-thumbnail-caption {
-  color: #cfcfcf;
+#navbar_user_icon a img {
+    margin-top: 10px;
 }
 
-.nav-collapsed #profile-nav {
-    .uk-thumbnail-caption {
-        display: none;
-    }
+// Navigation
+// ========================================================================
+li#room-navigation {
+    & > div.uk-dropdown {
+        height: 400px;
+        max-height: 400px;
 
-    .uk-icon-cog {
-        display: none;
+        div.uk-dropdown {
+            padding: 0;
+            border: none;
+
+            li {
+
+            }
+        }
     }
 }

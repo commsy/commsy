@@ -248,7 +248,7 @@ class SearchController extends Controller
 
             $results[] = [
                 'title' => $room->getTitle(),
-                'text' => $translator->trans($room->getType(), [], 'room'),
+                'text' => $room->getType(),
                 'url' => $url,
             ];
         }
