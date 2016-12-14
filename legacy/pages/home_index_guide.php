@@ -478,10 +478,33 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
                 $body .= $translator->getMessage('MAIL_SEND_TO',$recipients);
                 $body .= LF;
                 if ($check_message == 'YES') {
-                   $body .= $translator->getMessage('MAIL_USER_FREE_LINK').LF;
-                   $body .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$current_item_id.'&mod=account&fct=index'.'&selstatus=1';
+                    global $symfonyContainer;
+                    $router = $symfonyContainer->get('router');
+
+                    $url = $router->generate(
+                        'commsy_user_list', [
+                            'roomId' => $item->getItemID(),
+                            'user_filter' => [
+                                'user_status' => 1,
+                            ],
+                        ],
+                        0
+                    );
+
+
+                    $body .= $translator->getMessage('MAIL_USER_FREE_LINK').LF;
+                    $body .= $url;
                 } else {
-                   $body .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$current_item_id;
+                    global $symfonyContainer;
+                    $router = $symfonyContainer->get('router');
+
+                    $url = $router->generate(
+                        'commsy_room_home',
+                        ['roomId' => $item->getItemID()],
+                        0
+                    );
+
+                    $body .= $url;
                 }
                 $mail = new cs_mail();
                 $mail->set_to(implode(',',$email_array));
