@@ -24,7 +24,7 @@ class AnnotationType extends AbstractType
             ->add('description', CKEditorType::class, array(
                 'config_name' => 'cs_annotation_config',
                 'label' => ' ',
-                'required' => false,
+                'required' => true,
                 'attr' => array(
                     'placeholder' => 'annotation',
                     'class' => 'uk-form-width-large',
@@ -36,7 +36,13 @@ class AnnotationType extends AbstractType
                     'class' => 'uk-button-primary',
                 ),
                 'label' => 'save',
-                'translation_domain' => 'form',
+            ))
+            ->add('cancel', SubmitType::class, array(
+                'attr' => array(
+                    'formnovalidate' => 'formnovalidate',
+                ),
+                'label' => 'cancel',
+                'validation_groups' => 'false',
             ))
         ;
     }
@@ -50,6 +56,9 @@ class AnnotationType extends AbstractType
     {
         $resolver
             ->setRequired([])
+            ->setDefaults([
+                'translation_domain' => 'form',
+            ])
         ;
     }
 
