@@ -527,10 +527,10 @@ class DateController extends Controller
             // set filter conditions on the date manager
             $dateService->setFilterConditions($filterForm);
         } else {
-            $dateService->setPastFilter(false);
+            $dateService->setPastFilter(true);
         }
 
-        $listDates = $dateService->getCalendarEvents($roomId, $_GET['start'], $_GET['end']);
+        $listDates = $dateService->getCalendarEvents($roomId, $request->get('start'), $request->get('end'));
 
         $events = array();
         foreach ($listDates as $date) {
