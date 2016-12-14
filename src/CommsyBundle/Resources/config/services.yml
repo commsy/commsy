@@ -349,7 +349,7 @@ services:
     # Utils
     commsy.utils.mail_assistant:
         class: CommsyBundle\Utils\MailAssistant
-        arguments: ['@commsy_legacy.environment', '@translator', '@twig']
+        arguments: ['@commsy_legacy.environment', '@translator', '@twig', '%commsy.email.from%']
 
     # Commands
     commsy.command.cron_command:

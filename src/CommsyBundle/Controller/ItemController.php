@@ -476,13 +476,13 @@ class ItemController extends Controller
 
         $formData = [
             'additional_recipients' => [
-                'schoenfeld@effective-webwork.de',
+                '',
             ],
             'send_to_groups' => [
                 $defaultGroupId
             ],
-            'send_to_group_all' => true,
-            'send_to_all' => true,
+            'send_to_group_all' => false,
+            'send_to_all' => false,
             'message' => $mailAssistant->prepareMessage($item),
             'copy_to_sender' => false,
         ];
@@ -502,7 +502,7 @@ class ItemController extends Controller
             }
 
             // send mail
-            $message = $mailAssistant->getSwiftMessage($form->getData());
+            $message = $mailAssistant->getSwiftMessage($form->getData(), $item);
             $this->get('mailer')->send($message);
         }
 

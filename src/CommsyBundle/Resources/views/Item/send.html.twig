@@ -52,10 +52,8 @@
                             <a href="#" id="cs-form-send-add-recipient">{{ 'Add another recipient'|trans({}, 'mail') }}</a>
                         </div>
 
-                        <div class="uk-form-row">
-                            {{ form_widget(form.save) }}
-                            {{ form_widget(form.cancel) }}
-                        </div>
+                        {{ form_row(form.save) }}
+                        {{ form_row(form.cancel) }}
                     {{ form_end(form) }}
                 </div>
             </div>

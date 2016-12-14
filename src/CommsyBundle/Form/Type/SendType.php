@@ -167,6 +167,9 @@ class SendType extends AbstractType
                 'label' => 'Additional recipients',
                 'entry_type' => EmailType::class,
                 'entry_options' => [
+                    'attr' => [
+                        'class' => 'uk-form-width-medium',
+                    ],
                     'required' => false,
                     'label' => false,
                 ],
@@ -177,6 +180,9 @@ class SendType extends AbstractType
                 'translation_domain' => 'mail',
             ])
             ->add('save', SubmitType::class, [
+                'attr' => [
+                    'class' => 'uk-button-primary',
+                ],
                 'label' => 'Send',
                 'translation_domain' => 'mail',
             ])
