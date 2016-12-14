@@ -293,6 +293,26 @@ class MenuBuilder
                 ))
                 ->setExtra('translation_domain', 'menu');
             }
+
+            if (!$inPrivateRoom) {
+                if ($currentUser) {
+                    if ($this->authorizationChecker->isGranted('MODERATOR')) {
+                        $menu->addChild('room_navigation_space_2', array(
+                            'label' => ' ',
+                            'route' => 'commsy_room_home',
+                            'routeParameters' => array('roomId' => $roomId),
+                            'extras' => array('icon' => 'uk-icon-small')
+                        ));
+                        $menu->addChild('room_configuration', array(
+                            'label' => 'settings',
+                            'route' => 'commsy_settings_general',
+                            'routeParameters' => array('roomId' => $roomId),
+                            'extras' => array('icon' => 'uk-icon-wrench uk-icon-small')
+                        ))
+                            ->setExtra('translation_domain', 'menu');
+                    }
+                }
+            }
         }
         
         return $menu;
