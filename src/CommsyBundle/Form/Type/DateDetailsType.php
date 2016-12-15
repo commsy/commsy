@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
+
 use CommsyBundle\Form\Type\Custom\DateTimeSelectType;
 
 use CommsyBundle\Form\Type\Event\AddRecurringFieldListener;
@@ -97,7 +98,6 @@ class DateDetailsType extends AbstractType
                 ))
                 ->add('cancel', SubmitType::class, array(
                     'attr' => array(
-                        'class' => 'uk-button-primary',
                         'formnovalidate' => '',
                     ),
                     'label' => 'cancel',
@@ -122,7 +122,6 @@ class DateDetailsType extends AbstractType
                 ))
                 ->add('cancel', SubmitType::class, array(
                     'attr' => array(
-                        'class' => 'uk-button-primary',
                         'formnovalidate' => '',
                     ),
                     'label' => 'cancel',

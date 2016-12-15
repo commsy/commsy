@@ -34,7 +34,6 @@ class StepType extends AbstractType
             ))
             ->add('cancel', SubmitType::class, array(
                 'attr' => array(
-                    'class' => 'uk-button-primary',
                     'formnovalidate' => '',
                 ),
                 'label' => 'cancel',
