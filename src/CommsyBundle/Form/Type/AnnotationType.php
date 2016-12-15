@@ -23,13 +23,17 @@ class AnnotationType extends AbstractType
         $builder
             ->add('description', CKEditorType::class, array(
                 'config_name' => 'cs_annotation_config',
-                'label' => ' ',
+                'label' => 'Add new annotation',
                 'required' => true,
                 'attr' => array(
                     'placeholder' => 'annotation',
                     'class' => 'uk-form-width-large',
                 ),
+                'label_attr' => array(
+                    'style' => 'font-weight: bold;'
+                ),
                 'translation_domain' => 'item',
+                'input_sync' => true,
             ))
             ->add('save', SubmitType::class, array(
                 'attr' => array(

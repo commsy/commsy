@@ -78,6 +78,10 @@
                 <source>newHashtag</source>
                 <target>Neues Schlagwort</target>
             </trans-unit>
+            <trans-unit id="newAnnotation">
+                <source>Add new annotation</source>
+                <target>Anmerkung hinzufügen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
