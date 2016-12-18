@@ -487,22 +487,25 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
                             'user_filter' => [
                                 'user_status' => 1,
                             ],
-                        ],
-                        0
+                        ]
                     );
-
 
                     $body .= $translator->getMessage('MAIL_USER_FREE_LINK').LF;
-                    $body .= $url;
                 } else {
                     $url = $router->generate(
-                        'commsy_room_home',
-                        ['roomId' => $room_item->getItemID()],
-                        0
+                        'commsy_room_home', [
+                            'roomId' => $room_item->getItemID(),
+                        ]
                     );
-
-                    $body .= $url;
                 }
+
+                $requestStack = $symfonyContainer->get('request_stack');
+                $currentRequest = $requestStack->getCurrentRequest();
+                if ($currentRequest) {
+                    $url = $currentRequest->getHttpHost() . $url;
+                }
+
+                $body .= $url;
 
                 $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
 
