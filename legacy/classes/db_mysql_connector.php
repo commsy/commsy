@@ -107,9 +107,13 @@ class db_mysql_connector {
       return $this->_query_array;
    }
 
-   public function getErrno () {
-      return $this->_db_errno;
-   }
+    public function getErrno () {
+        if ($this->_db_errno === "00000") {
+            return "";
+        }
+
+        return $this->_db_errno;
+    }
 
     public function getError() {
         if (isset($this->_db_error[2])) {
