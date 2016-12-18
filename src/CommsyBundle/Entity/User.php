@@ -31,9 +31,10 @@ class User
     /**
      * @var integer
      *
-     * @ORM\Column(name="creator_id", type="integer", nullable=false)
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="creator_id", referencedColumnName="item_id")
      */
-    private $creatorId = '0';
+    private $creator;
 
     /**
      * @var User
@@ -187,27 +188,27 @@ class User
     }
 
     /**
-     * Set creatorId
+     * Set creator
      *
-     * @param integer $creatorId
+     * @param \CommsyBundle\Entity\User $modifier
      *
      * @return User
      */
-    public function setCreatorId($creatorId)
+    public function setCreator(\CommsyBundle\Entity\User $creator = null)
     {
-        $this->creatorId = $creatorId;
+        $this->creator = $creator;
 
         return $this;
     }
 
     /**
-     * Get creatorId
+     * Get creator
      *
-     * @return integer
+     * @return \CommsyBundle\Entity\User
      */
-    public function getCreatorId()
+    public function getCreator()
     {
-        return $this->creatorId;
+        return $this->creator;
     }
 
     /**
@@ -215,7 +216,7 @@ class User
      *
      * @param \CommsyBundle\Entity\User $modifier
      *
-     * @return Materials
+     * @return User
      */
     public function setModifier(\CommsyBundle\Entity\User $modifier = null)
     {

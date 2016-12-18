@@ -22,7 +22,10 @@
 
                     {# setup "load more" if we do not show all results yet #}
                     {% if totalHits != results|length %}
-                        <div class="feed-load-more" data-uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomId }}/search/results/more/{{ query }}/", "target": "#search-feed"}'>
+                        <div class="feed-load-more" data-uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{
+                                "url": "{{ app.request.baseURL }}/room/{{ roomId }}/searchmore/{{ query }}/",
+                                "target": "#search-feed"
+                        }'>
                             <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
                             <div class="cs-toggle-class"></div>
                         </div>

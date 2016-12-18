@@ -139,7 +139,7 @@ class SearchManager
      * Creats a Terms Filter to restrict the search to contexts, the
      * user is allowed to access
      * 
-     * @return Elastica\Query\Terms The terms filter
+     * @return \Elastica\Query\Terms The terms filter
      */
     private function createContextFilter()
     {

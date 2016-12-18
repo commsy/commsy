@@ -110,7 +110,7 @@ class SearchController extends Controller
     /**
      * Returns more search results
      * 
-     * @Route("/room/{roomId}/search/results/more/{query}/{start}/{sort}")
+     * @Route("/room/{roomId}/searchmore/{query}/{start}/{sort}")
      * @Template
      */
     public function moreResultsAction($roomId, $query, $start = 0, $sort = 'date', Request $request)
