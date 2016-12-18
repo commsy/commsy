@@ -508,7 +508,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
 
                 $message = \Swift_Message::newInstance()
                     ->setSubject($subject)
-                    ->setBody($body, 'text/html')
+                    ->setBody($body, 'text/plain')
                     ->setFrom([$emailFrom => $room_item->getTitle()])
                     ->setReplyTo([$user_item->getEmail() => $user_item->getFullname()])
                     ->setTo($email_array);
@@ -561,7 +561,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
 
                 $message = \Swift_Message::newInstance()
                     ->setSubject($subject)
-                    ->setBody($body, 'text/html')
+                    ->setBody($body, 'text/plain')
                     ->setFrom([$emailFrom => $fromName])
                     ->setReplyTo([$contact_moderator->getEmail() => $contact_moderator->getFullname()])
                     ->setTo($user_item->getEmail());
