@@ -504,10 +504,39 @@ class ItemController extends Controller
             // send mail
             $message = $mailAssistant->getSwiftMessage($form->getData(), $item);
             $this->get('mailer')->send($message);
+
+            // redirect to success page
+            return $this->redirectToRoute('commsy_item_sendsuccess', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]);
         }
 
         return [
             'form' => $form->createView()
+        ];
+    }
+
+    /**
+     * @Route("/room/{roomId}/{itemId}/send/success")
+     * @Template()
+     **/
+    public function sendSuccessAction($roomId, $itemId)
+    {
+        // get item
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getTypedItem($itemId);
+
+        if (!$item) {
+            throw $this->createNotFoundException('no item found for id ' . $itemId);
+        }
+
+        return [
+            'link' => $this->generateUrl('commsy_' . $item->getType() . '_detail', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]),
+            'title' => $item->getTitle(),
         ];
     }
     
