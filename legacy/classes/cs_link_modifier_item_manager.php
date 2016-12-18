@@ -68,30 +68,32 @@ class cs_link_modifier_item_manager extends cs_link_father_manager {
      * @param integer item_id    id of the item
      * @param integer user_id    id of modifier, default set to id of current user
      */
-   function markEdited ($item_id,$user_id = '') {
-      if ($user_id == '') {
-         $user_id = $this->_current_user_id;
-      }
-	   if ( !empty($user_id) ) {
+    function markEdited($item_id, $user_id = '')
+    {
+        if ($user_id == '') {
+            $user_id = $this->_current_user_id;
+        }
 
-	      $query = 'INSERT INTO '.$this->addDatabasePrefix('link_modifier_item').' SET '.
-	               ' item_id="'.encode(AS_DB,$item_id).'", '.
-	               ' modifier_id="'.encode(AS_DB,$user_id).'"'.
-                 ' ON DUPLICATE KEY UPDATE'.
-                 ' item_id="'.encode(AS_DB,$item_id).'", '.
-                 ' modifier_id="'.encode(AS_DB,$user_id).'"';
-	      $this->_db_connector->setDisplayOff();
-         $result = $this->_db_connector->performQuery($query);
-	      $this->_db_connector->setDisplayOn();
-         // The database is used as a set. So if an entry is allready in the db, it mustn't be added again
-         // Error 1062 is the "duplicate entry" error. It just tells us, this user has edited the item before
-         // So do nothing.
-         $errno = $this->_db_connector->getErrno();
-         if (!empty($errno) and $errno != 1062) { //The database is used as a set...
-            include_once('functions/error_functions.php');trigger_error('Problems marking item as modified from query: "'.$query.'"');
-         }
-	   }
-   }
+        if (!empty($user_id)) {
+            $query = '
+                INSERT INTO '.$this->addDatabasePrefix('link_modifier_item').' SET '.
+                ' item_id="'.encode(AS_DB,$item_id).'", '.
+                ' modifier_id="'.encode(AS_DB,$user_id).'"'.
+                ' ON DUPLICATE KEY UPDATE'.
+                ' item_id="'.encode(AS_DB,$item_id).'", '.
+                ' modifier_id="'.encode(AS_DB,$user_id).'"
+            ';
+
+            $this->_db_connector->setDisplayOff();$this->_db_connector->performQuery($query);
+            $this->_db_connector->setDisplayOn();
+
+            $errno = $this->_db_connector->getErrno();
+            if (!empty($errno)) {
+                include_once('functions/error_functions.php');
+                trigger_error('Problems marking item as modified from query: "'.$query.'"');
+            }
+        }
+    }
 
    function mergeAccounts ($account_new,$account_old) {
       $query_test = 'SELECT * FROM '.$this->addDatabasePrefix('link_modifier_item').' WHERE modifier_id = "'.encode(AS_DB,$account_old).'";';
