@@ -477,13 +477,14 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
                 }
                 $body .= $translator->getMessage('MAIL_SEND_TO',$recipients);
                 $body .= LF;
-                if ($check_message == 'YES') {
-                    global $symfonyContainer;
-                    $router = $symfonyContainer->get('router');
 
+                global $symfonyContainer;
+                $router = $symfonyContainer->get('router');
+
+                if ($check_message == 'YES') {
                     $url = $router->generate(
                         'commsy_user_list', [
-                            'roomId' => $item->getItemID(),
+                            'roomId' => $room_item->getItemID(),
                             'user_filter' => [
                                 'user_status' => 1,
                             ],
@@ -495,34 +496,26 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
                     $body .= $translator->getMessage('MAIL_USER_FREE_LINK').LF;
                     $body .= $url;
                 } else {
-                    global $symfonyContainer;
-                    $router = $symfonyContainer->get('router');
-
                     $url = $router->generate(
                         'commsy_room_home',
-                        ['roomId' => $item->getItemID()],
+                        ['roomId' => $room_item->getItemID()],
                         0
                     );
 
                     $body .= $url;
                 }
-                $mail = new cs_mail();
-                $mail->set_to(implode(',',$email_array));
-                $server_item = $environment->getServerItem();
-                $default_sender_address = $server_item->getDefaultSenderAddress();
-                if (!empty($default_sender_address)) {
-                   $mail->set_from_email($default_sender_address);
-                } else {
-                   $mail->set_from_email('@');
-                }
-                $current_context = $environment->getCurrentContextItem();
-                $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_context->getTitle()));
-                $mail->set_from_name($room_item->getTitle());
-                $mail->set_reply_to_name($user_item->getFullname());
-                $mail->set_reply_to_email($user_item->getEmail());
-                $mail->set_subject($subject);
-                $mail->set_message($body);
-                $mail->send();
+
+                $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+
+                $message = \Swift_Message::newInstance()
+                    ->setSubject($subject)
+                    ->setBody($body, 'text/html')
+                    ->setFrom([$emailFrom => $room_item->getTitle()])
+                    ->setReplyTo([$user_item->getEmail() => $user_item->getFullname()])
+                    ->setTo($email_array);
+
+                $symfonyContainer->get('mailer')->send($message);
+
                 $translator->setSelectedLanguage($old_lang);
              }
           }
@@ -563,22 +556,18 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
              $body .= LF.LF;
              $body .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$environment->getCurrentContextID();
 
-             // send mail to user
-             $mail = new cs_mail();
-             $mail->set_to($user_item->getEmail());
-             $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
-            $server_item = $environment->getServerItem();
-           $default_sender_address = $server_item->getDefaultSenderAddress();
-           if (!empty($default_sender_address)) {
-                $mail->set_from_email($default_sender_address);
-           } else {
-             $mail->set_from_email('@');
-           }
-             $mail->set_reply_to_email($contact_moderator->getEmail());
-             $mail->set_reply_to_name($contact_moderator->getFullname());
-             $mail->set_subject($subject);
-             $mail->set_message($body);
-             $mail->send();
+                $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+
+                $fromName = $translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle());
+
+                $message = \Swift_Message::newInstance()
+                    ->setSubject($subject)
+                    ->setBody($body, 'text/html')
+                    ->setFrom([$emailFrom => $fromName])
+                    ->setReplyTo([$contact_moderator->getEmail() => $contact_moderator->getFullname()])
+                    ->setTo($user_item->getEmail());
+
+                $symfonyContainer->get('mailer')->send($message);
           }
        }
    } elseif ( $room_item->checkNewMembersWithCode()
