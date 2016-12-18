@@ -18,21 +18,21 @@
 
 {# content #}
 {% if item.type == 'material' or item.type == 'materials' %}
-    {{ 'material'|transchoice(0, {}, 'rubric') }}: {{ item.title }}
+    {{ 'material'|transchoice(0, {}, 'rubric')|capitalize }}: {{ item.title }}
 {% elseif item.type == 'announcement' or item.type == 'announcements' %}
-    {{ 'announcement'|transchoice(0, {}, 'rubric') }}: {{ item.title }}
+    {{ 'announcement'|transchoice(0, {}, 'rubric')|capitalize }}: {{ item.title }}
 {% elseif item.type == 'label' or item.type == 'labels' %}
     {% set labelType = item.labelType %}
 
     {% if labelType == 'group' or labelType == 'groups' %}
-        {{ 'group'|transchoice(0, {}, 'rubric') }}: {{ item.title }}
+        {{ 'group'|transchoice(0, {}, 'rubric')|capitalize }}: {{ item.title }}
     {% elseif labelType == 'institution' or labelType == 'institutions' %}
-        {{ 'institution'|transchoice(1, {}, 'rubric') }}: {{ item.title }}
+        {{ 'institution'|transchoice(1, {}, 'rubric')|capitalize }}: {{ item.title }}
     {% elseif labelType == 'topic' or labelType == 'topics' %}
-        {{ 'topic'|transchoice(1, {}, 'rubric') }}: {{ item.title }}
+        {{ 'topic'|transchoice(1, {}, 'rubric')|capitalize }}: {{ item.title }}
     {% endif %}
 {% elseif item.type == 'discussion' or item.type == 'discussions' %}
-    {{ 'discussion'|transchoice(0, {}, 'rubric') }}: {{ item.title }}
+    {{ 'discussion'|transchoice(0, {}, 'rubric')|capitalize }}: {{ item.title }}
     {{ 'Number of entries'|trans({}, 'discussion') }}: {{ item.allArticlesCount }}
     {{ 'Last entry'|trans({}, 'discussion') }}: {{ item.latestArticleModificationDate|craue_date }}
 {% elseif item.type == 'date' %}
