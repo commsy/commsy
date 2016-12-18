@@ -502,7 +502,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
                 $requestStack = $symfonyContainer->get('request_stack');
                 $currentRequest = $requestStack->getCurrentRequest();
                 if ($currentRequest) {
-                    $url = $currentRequest->getHttpHost() . $url;
+                    $url = $currentRequest->getSchemeAndHttpHost() . $url;
                 }
 
                 $body .= $url;
