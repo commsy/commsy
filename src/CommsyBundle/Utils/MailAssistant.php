@@ -120,7 +120,9 @@ class MailAssistant
             $additionalRecipients = array_filter($formData['additional_recipients']);
 
             if (!empty($additionalRecipients)) {
-                $message->addTo($formData['additional_recipients']);
+                array_walk($additionalRecipients, function($additionalRecipient) use ($message) {
+                    $message->addTo($additionalRecipient);
+                });
             }
         }
 
