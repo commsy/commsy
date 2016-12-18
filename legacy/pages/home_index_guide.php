@@ -248,7 +248,6 @@ if (isOption($option, $translator->getMessage('CONTACT_MAIL_SEND_BUTTON'))){
 }
 
 if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON'))) {
-   include_once('classes/cs_mail.php');
    $room_manager = $environment->getRoomManager();
    $room_item = $room_manager->getItem($current_item_id);
    $portal_item = $environment->getCurrentPortalItem();
@@ -578,6 +577,20 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
       $account_mode = 'member';
       $error = 'code';
    }
+
+        /**
+         * Swift mailer will spool emails, instead of sending them directly.
+         * Because the redirect call below will exit the script without triggering the
+         * mandatory kernel termination event, we flush the queue manually.
+         */
+        global $symfonyContainer;
+
+        $mailer = $symfonyContainer->get('mailer');
+        $transport = $symfonyContainer->get('swiftmailer.transport.real');
+
+        $spool = $mailer->getTransport()->getSpool();
+        $spool->flushQueue($transport);
+
    if ($account_mode == 'to_room'){
       redirect($current_item_id, 'home', 'index', '');
    } else {
