@@ -18,9 +18,7 @@ use Symfony\Component\Debug\Debug;
 //     exit('You are not allowed to access this file. Check '.basename(__FILE__).' for more information.');
 // }
 
-/**
- * @var Composer\Autoload\ClassLoader $loader
- */
+/** @var \Composer\Autoload\ClassLoader $loader */
 $loader = require __DIR__.'/../app/autoload.php';
 Debug::enable();
 
