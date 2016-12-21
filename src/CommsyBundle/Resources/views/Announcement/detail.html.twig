@@ -141,7 +141,10 @@
                             </div>
                             <div class="uk-width-8-10">
                                 {{ form_start(annotationForm, {'action': path('commsy_annotation_create', {'roomId': announcement.contextId, 'itemId': announcement.itemId}), 'method': 'POST'}) }}
-                                {{ form_widget(annotationForm) }}
+                                    <p>
+                                        {{ form_label(annotationForm.description) }}
+                                    </p>
+                                    {{ form_widget(annotationForm.description) }}
                                 {{ form_end(annotationForm) }}
                             </div>                            
                         </header>
