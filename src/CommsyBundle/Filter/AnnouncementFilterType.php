@@ -24,7 +24,6 @@ class AnnouncementFilterType extends AbstractType
                 'attr' => array(
                     'onchange' => 'this.form.submit()',
                 ),
-                'translation_domain' => 'form',
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
@@ -33,7 +32,6 @@ class AnnouncementFilterType extends AbstractType
                 'attr' => array(
                     'onchange' => 'this.form.submit()',
                 ),
-                'translation_domain' => 'form',
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
@@ -80,6 +78,7 @@ class AnnouncementFilterType extends AbstractType
                 'csrf_protection'   => false,
                 'validation_groups' => array('filtering'), // avoid NotBlank() constraint-related message
                 'method'            => 'get',
+                'translation_domain' => 'form',
             ))
             ->setRequired(array(
                 'hasHashtags',
