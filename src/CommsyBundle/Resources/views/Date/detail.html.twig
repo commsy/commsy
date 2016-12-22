@@ -107,14 +107,9 @@
                 
                 {# content #}
                 <article class="uk-article uk-position-relative" data-uk-observe>
-                    {# title, etc. #}
+                    {# title, details, etc. #}
                     <div class="cs-toggle" data-uk-observe>
                         {{ macrosDate.title(date, modifierList, userCount, readCount, readSinceModificationCount, draft) }}
-                    </div>
-            
-                    {# date #}
-                    <div id="details{{ date.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_date_editdetails', {'roomId': date.contextId, 'itemId': date.itemId}) }}' }">
-                        {{ macrosDate.details(date) }}
                     </div>
             
                     {# description #}

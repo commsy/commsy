@@ -28,7 +28,6 @@ class DateDetailsType extends AbstractType
                     'placeholder' => 'startdate',
                     'class' => 'uk-form-width-medium',
                 ),
-                'translation_domain' => 'date'
             ))
             ->add('end', DateTimeSelectType::class, array(
                 'constraints' => array(
@@ -38,7 +37,6 @@ class DateDetailsType extends AbstractType
                     'placeholder' => 'enddate',
                     'class' => 'uk-form-width-medium',
                 ),
-                'translation_domain' => 'date',
             ))
             ->add('place', TextType::class, array(
                 'label' => 'place',
@@ -46,7 +44,6 @@ class DateDetailsType extends AbstractType
                     'placeholder' => 'place',
                     'class' => 'uk-form-width-medium',
                 ),
-                'translation_domain' => 'date',
                 'required' => false,
             ))
             ->add('color', ChoiceType::class, array(
@@ -65,7 +62,6 @@ class DateDetailsType extends AbstractType
                     'cs-date-color-10' => 'cs-date-color-10',
                 ),
                 'label' => 'color',
-                'translation_domain' => 'date',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => false
@@ -84,7 +80,6 @@ class DateDetailsType extends AbstractType
                     'label' => 'recurring date',
                     'choice_translation_domain' => true,
                     'required' => false,
-                    'translation_domain' => 'date'
                 ))
                 ->addEventSubscriber(new AddRecurringFieldListener())
             ;
@@ -111,14 +106,12 @@ class DateDetailsType extends AbstractType
                         'class' => 'uk-button-primary',
                     ),
                     'label' => 'saveThisDate',
-                    'translation_domain' => 'date',
                 ))
                 ->add('saveAllDates', SubmitType::class, array(
                     'attr' => array(
                         'class' => 'uk-button-primary',
                     ),
                     'label' => 'saveAllDates',
-                    'translation_domain' => 'date',
                 ))
                 ->add('cancel', SubmitType::class, array(
                     'attr' => array(
@@ -143,6 +136,7 @@ class DateDetailsType extends AbstractType
     {
         $resolver
             ->setRequired([])
+            ->setDefaults(['translation_domain' => 'date'])
         ;
     }
 
