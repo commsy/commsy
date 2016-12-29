@@ -240,8 +240,8 @@ class cs_server_item extends cs_guide_item
                             // check if user is last moderator of a room
                             $roomList = new \cs_list();
 
-                            $roomList->addList($projectManager->getRelatedProjectListForUserForMyArea($user));
-                            $roomList->addList($communityManager->getRelatedCommunityListForUser($user));
+                            $roomList->addList($projectManager->getRelatedProjectRooms($user, $portal_item->getItemID()));
+                            $roomList->addList($communityManager->getRelatedCommunityRooms($user, $portal_item->getItemID()));
 
                             $isLastModerator = false;
 

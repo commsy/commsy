@@ -767,7 +767,7 @@
 		<field name="modification_date">2016-12-04 14:55:57</field>
 		<field name="deletion_date" xsi:nil="true" />
 		<field name="title">Portal A</field>
-		<field name="extras">a:11:{s:9:&quot;SHOWTITLE&quot;;i:1;s:15:&quot;CHECKNEWMEMBERS&quot;;i:1;s:11:&quot;DESCRIPTION&quot;;a:2:{s:2:&quot;DE&quot;;s:0:&quot;&quot;;s:2:&quot;EN&quot;;s:0:&quot;&quot;;}s:12:&quot;DEFAULT_AUTH&quot;;i:102;s:8:&quot;HOMECONF&quot;;s:27:&quot;community_tiny,project_tiny&quot;;s:15:&quot;INACTIVITY_LOCK&quot;;s:3:&quot;365&quot;;s:27:&quot;INACTIVITY_MAIL_BEFORE_LOCK&quot;;s:2:&quot;20&quot;;s:17:&quot;INACTIVITY_DELETE&quot;;s:3:&quot;365&quot;;s:22:&quot;INACTIVITY_MAIL_DELETE&quot;;s:2:&quot;20&quot;;s:29:&quot;INACTIVITY_CONFIGURATION_DATE&quot;;s:19:&quot;2016-12-04 14:55:57&quot;;s:17:&quot;MAX_ROOM_ACTIVITY&quot;;i:9;}</field>
+		<field name="extras">a:11:{s:9:&quot;SHOWTITLE&quot;;i:1;s:15:&quot;CHECKNEWMEMBERS&quot;;i:1;s:11:&quot;DESCRIPTION&quot;;a:2:{s:2:&quot;DE&quot;;s:0:&quot;&quot;;s:2:&quot;EN&quot;;s:0:&quot;&quot;;}s:12:&quot;DEFAULT_AUTH&quot;;i:102;s:8:&quot;HOMECONF&quot;;s:27:&quot;community_tiny,project_tiny&quot;;s:15:&quot;INACTIVITY_LOCK&quot;;s:3:&quot;365&quot;;s:27:&quot;INACTIVITY_MAIL_BEFORE_LOCK&quot;;s:2:&quot;14";s:17:&quot;INACTIVITY_DELETE&quot;;s:3:&quot;365&quot;;s:22:&quot;INACTIVITY_MAIL_DELETE&quot;;s:1:&quot;1&quot;;s:29:&quot;INACTIVITY_CONFIGURATION_DATE&quot;;s:19:&quot;2016-12-04 14:55:57&quot;;s:17:&quot;MAX_ROOM_ACTIVITY&quot;;i:9;}</field>
 		<field name="status">1</field>
 		<field name="activity">57</field>
 		<field name="type">portal</field>

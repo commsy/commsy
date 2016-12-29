@@ -453,6 +453,10 @@ class cs_project_manager extends cs_room2_manager {
       }
    }
 
+    public function getRelatedProjectRooms($userItem, $contextId) {
+        return $this->_getRelatedContextListForUser($userItem->getUserID(), $userItem->getAuthSource(), $contextId);
+    }
+
    function getRelatedProjectListForUser ($user_item, $context_id) {
    	  if($this->_environment->getCurrentPortalID() == 0){
    	  	return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$context_id);

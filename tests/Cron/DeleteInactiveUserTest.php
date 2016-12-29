@@ -30,7 +30,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
     public function testDelete()
     {
         global $environment;
-        $environment->setCurrentContextID(101);
+        $environment->setCurrentContextID(99);
 
         $userManager = $environment->getUserManager();
         $userManager->setCacheOff();
@@ -74,7 +74,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
     public function testDeleteNoOverride()
     {
         global $environment;
-        $environment->setCurrentContextID(101);
+        $environment->setCurrentContextID(99);
 
         global $c_datenschutz_disable_overwriting;
         $c_datenschutz_disable_overwriting = true;
@@ -102,7 +102,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
     public function testDeleteSameUserDifferentPortals()
     {
         global $environment;
-        $environment->setCurrentContextID(101);
+        $environment->setCurrentContextID(99);
 
         $userManager = $environment->getUserManager();
         $userManager->setCacheOff();
@@ -189,7 +189,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
         // first run will set lock flags
         $server->_cronInactiveUserDelete();
 
-        $timestamp = 1500000000 + (365 - 20) * 24 * 60 * 60;
+        $timestamp = 1500000000 + (365 - 1) * 24 * 60 * 60;
         \DateTesting::$dateTime = date("Y-m-d H:i:s", $timestamp);
 
         // second run will send deletion notification
@@ -378,7 +378,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
         /**
          * This is one day before lock notification deadline, expect same state
          */
-        $timestamp = 1500000000 + (365 - 21) * 24 * 60 * 60;
+        $timestamp = 1500000000 + (365 - 15) * 24 * 60 * 60;
         \DateTesting::$dateTime = date("Y-m-d H:i:s", $timestamp);
 
         $server->_cronInactiveUserDelete();
@@ -400,7 +400,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
         /**
          * Lock notification deadline, expect notification extra
          */
-        $timestamp = 1500000000 + (365 - 20) * 24 * 60 * 60;
+        $timestamp = 1500000000 + (365 - 14) * 24 * 60 * 60;
         \DateTesting::$dateTime = date("Y-m-d H:i:s", $timestamp);
 
         $server->_cronInactiveUserDelete();
@@ -450,7 +450,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
         /**
          * One day before deletion notification deadline, expect same state
          */
-        $timestamp = 1500000000 + (365 * 2 - 21) * 24 * 60 * 60;
+        $timestamp = 1500000000 + (365 * 2 - 2) * 24 * 60 * 60;
         \DateTesting::$dateTime = date("Y-m-d H:i:s", $timestamp);
 
         $server->_cronInactiveUserDelete();
@@ -468,7 +468,7 @@ class DeleteInactiveUserTest extends DatabaseTestCase
         /**
          * Deletion notification deadline
          */
-        $timestamp = 1500000000 + (365 * 2 - 20) * 24 * 60 * 60;
+        $timestamp = 1500000000 + (365 * 2 - 1) * 24 * 60 * 60;
         \DateTesting::$dateTime = date("Y-m-d H:i:s", $timestamp);
 
         $server->_cronInactiveUserDelete();
@@ -477,6 +477,8 @@ class DeleteInactiveUserTest extends DatabaseTestCase
             'user', 'SELECT * FROM user WHERE
                 user.item_id = 109 AND
                 user.extras LIKE "%NOTIFY_DELETE_DATE%" AND
+                user.extras NOT LIKE "%MAIL_SEND_NEXT_DELETE%" AND
+                user.extras NOT LIKE "%MAIL_SEND_DELETE%" AND
                 user.status = 0'
         )->getRowCount());
 
@@ -494,7 +496,9 @@ class DeleteInactiveUserTest extends DatabaseTestCase
                 user.extras LIKE "%NOTIFY_DELETE_DATE%" AND
                 user.extras LIKE "%MAIL_SEND_NEXT_DELETE%" AND
                 user.extras LIKE "%MAIL_SEND_DELETE%" AND
-                user.status = 0'
+                user.status = 0 AND
+                user.deletion_date IS NULL AND
+                user.deleter_id IS NULL'
         )->getRowCount());
 
         /**
@@ -527,6 +531,6 @@ class DeleteInactiveUserTest extends DatabaseTestCase
 //
 //        MAIL_SEND_LOCKED
 //        LOCK_SEND_MAIL_DATE
-//        MAIL_SEND_DELETE
+//        MAIL_SEND_DELETED
     }
 }

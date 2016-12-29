@@ -2753,6 +2753,11 @@ class cs_user_item extends cs_item {
 
         $this->delete();
 
+        $ownRoom = $this->getOwnRoom($userContext->getItemID());
+        if (isset($ownRoom)) {
+            $ownRoom->delete();
+        }
+
         $authentication = $this->_environment->getAuthenticationObject();
         $authentication->delete($this->getItemID());
     }
