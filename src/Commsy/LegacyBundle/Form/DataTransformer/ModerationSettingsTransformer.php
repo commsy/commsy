@@ -14,6 +14,19 @@ class ModerationSettingsTransformer implements DataTransformerInterface
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->roomService = $roomService;
+        $this->emailTexts = array(
+          'Select e-mail text' => '-1',
+          '------------------' => 'disabled',
+          'Address' => 'MAIL_BODY_HELLO',                                               // 2
+          'Salutation' => 'MAIL_BODY_CIAO',                                             // 3
+          'Delete account' => 'MAIL_BODY_USER_ACCOUNT_DELETE',                          // 5
+          'Lock account' => 'MAIL_BODY_USER_ACCOUNT_LOCK',                              // 6
+          'Approve membership' => 'MAIL_BODY_USER_STATUS_USER',                         // 7
+          'Change status: moderator' => 'MAIL_BODY_USER_STATUS_MODERATOR',              // 8
+          'Change status: contact person' => 'MAIL_BODY_USER_MAKE_CONTACT_PERSON',      // 9
+          'Change status: no contact person' => 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON', // 10
+          'Change status: read only user' => 'MAIL_BODY_USER_STATUS_USER_READ_ONLY',    // 11
+        );
     }
 
     /**
@@ -93,15 +106,25 @@ class ModerationSettingsTransformer implements DataTransformerInterface
             $roomData['usernotice']['array_info_text'] = $array_info_text;
 
             // Mail
-            foreach ($roomItem->getEmailTextArray() as $name => $valueArray){
+            $roomData['email_configuration'] = array();
+            $roomData['email_configuration']['email_text_titles'] = $this->emailTexts;
+            foreach ($roomItem->getEmailTextArray() as $name => $valueArray) {
                 foreach ($valueArray as $language => $message) {
                     if(!empty($message)){
-                        $roomData['email_configuration'][mb_strtolower(str_replace("CHOICE", "BODY", $name)) . "_" . $language] = $message;                        
+                        $roomData['email_configuration'][mb_strtolower(str_replace("CHOICE", "BODY", $name)) . "_" . $language] = $message;
                     }
                 }
             }
-        }   
 
+            $emailDefaultValues = array();
+            foreach (array_values($this->emailTexts) as $message_tag) {
+                foreach (['de', 'en'] as $language) {
+                    $emailDefaultValues[mb_strtolower(str_replace("CHOICE", "BODY", $message_tag)) . "_" . $language] = $translator->getEmailMessageInLang($language,$message_tag);
+                }
+            }
+
+            $roomData['email_configuration'] = array_merge($emailDefaultValues, $roomData['email_configuration']);
+        }
         return $roomData;
     }
 

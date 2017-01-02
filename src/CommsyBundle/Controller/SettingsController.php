@@ -82,6 +82,7 @@ class SettingsController extends Controller
 
         $form = $this->createForm(ModerationSettingsType::class, $roomData, array(
             'roomId' => $roomId,
+            'emailTextTitles' => $roomData['email_configuration']['email_text_titles'],
         ));
 
         $form->handleRequest($request);
