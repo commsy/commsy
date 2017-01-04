@@ -15,14 +15,6 @@
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div class="uk-text-large">
                             {% if not module is empty %}
-                            {#
-                                {% if module == 'material' %}
-                                    <i class="uk-icon-justify uk-icon-medium uk-icon-file-o"></i>
-                                {% elseif module == 'announcement'%}
-                                    <i class="uk-icon-justify uk-icon-small uk-icon-comment-o"></i>
-                                {% endif %}
-                            #}
-
                                 {{module|capitalize|transchoice(1, {}, "rubric") }}
                             {% else %}
                                 Missing rubric title
@@ -48,12 +40,6 @@
                             <div class="uk-float-right uk-margin-small-left">
                                 <a href="{{ path('commsy_date_list', {'roomId': roomId}) }}" class="uk-text-contrast"><i class="uk-icon-list-ul uk-icon-small cs-icon-mute" data-uk-tooltip title="{{ 'list view'|trans({}, "date") }}"></i></a>
                             </div>
-
-                            {# selection mode old code
-                            <button class="uk-button uk-button-mini" data-uk-button data-commsy-select="{target:'.feed ul', actionUrl: '{{ path('commsy_material_feedaction', {'roomId': roomId}) }}'}" data-title="{{ 'list choice'|trans({},'rubric')|capitalize }}" data-alt-title="{{ 'unset list choice'|trans({},'rubric')|capitalize }}" data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}">
-                                {{ 'list choice'|trans({},'rubric')|capitalize }}
-                            </button>
-                            #}
                         </div>
                     </div>
                 </div>

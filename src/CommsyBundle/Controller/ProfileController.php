@@ -75,8 +75,8 @@ class ProfileController extends Controller
                 if ($formData['titleChangeInAllContexts']) {
                     $tempUserItem->setTitle($formData['title']);
                 }
-                if ($formData['dateOfBirthChangeInAllContexts']) {
-                    $tempUserItem->setBirthday($formData['dateOfBirth']);
+                if ($formData['dateOfBirthChangeInAllContexts'] && $formData['dateOfBirth']['date']) {
+                    $tempUserItem->setBirthday($formData['dateOfBirth']['date']->format('Y-m-d'));
                 }
                 if ($formData['imageChangeInAllContexts']) {
                     $discService = $this->get('commsy_legacy.disc_service');
@@ -119,20 +119,8 @@ class ProfileController extends Controller
                 if ($formData['positionChangeInAllContexts']) {
                     $tempUserItem->setPosition($formData['position']);
                 }
-                if ($formData['icqChangeInAllContexts']) {
-                    $tempUserItem->setICQ($formData['icq']);
-                }
-                if ($formData['msnChangeInAllContexts']) {
-                    $tempUserItem->setMSN($formData['msn']);
-                }
                 if ($formData['skypeChangeInAllContexts']) {
                     $tempUserItem->setSkype($formData['skype']);
-                }
-                if ($formData['yahooChangeInAllContexts']) {
-                    $tempUserItem->setYahoo($formData['yahoo']);
-                }
-                if ($formData['jabberChangeInAllContexts']) {
-                    $tempUserItem->setJabber($formData['jabber']);
                 }
                 if ($formData['homepageChangeInAllContexts']) {
                     $tempUserItem->setHomepage($formData['homepage']);

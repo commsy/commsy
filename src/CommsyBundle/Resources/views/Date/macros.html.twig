@@ -1,5 +1,6 @@
 {% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+    {% import _self as dateMacros %}
     {% set pathName = 'commsy_date_edit' %}
     {% if userCount == 0 %}
         {% set userCount = 1 %}
@@ -143,7 +144,60 @@
                                     </div>                            
                                 </div>                        
                             </div>
+                        </div> <!-- toggle-title uk-hidden -->
+
+                        {# content #}
+                        <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
+                            <table class="ui-table">
+                                <tr>
+                                    <td class="uk-text-top">
+                                        <strong>{{ "date"|trans({},'date') }}</strong>
+                                    </td>
+                                    <td class="uk-text-top">
+                                        {{ item.dateDescription }}
+                                    </td>
+                                </tr>
+                                {% if item.getRecurrencePattern is defined and not item.getRecurrencePattern is empty %}
+                                    <tr>
+                                        <td class="uk-text-top">
+                                            <strong>{{ "recurring date"|trans({},'date') }}</strong>
+                                        </td>
+                                        <td class="uk-text-top">
+                                            {{ _self.recurringDateDescription(item) }}
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                                <tr>
+                                    <td class="uk-text-top">
+                                        <strong>{{ "place"|trans({},'date') }}</strong>
+                                    </td>
+                                    <td class="uk-text-top">
+                                        {{ item.place }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="uk-text-top">
+                                        <strong>{{ "color"|trans({},'date') }}</strong>
+                                    </td>
+                                    <td class="uk-text-top {{ item.color }}">
+                                        {% if item.color == 'cs-date-color-no-color' or item.color == '' %}
+                                            <i class="uk-icon uk-icon-circle-thin"></i>
+                                        {% else %}
+                                            <i class="uk-icon uk-icon-circle"></i>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="uk-text-top">
+                                        <strong>{{ "participants"|trans({},'date') }}</strong>
+                                    </td>
+                                    <td class="uk-text-top">
+                                        {{ dateMacros.participants(item, item.participantsItemList.to_array) }}
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -153,6 +207,7 @@
 
 {% macro titleSave(item, modifierList, userCount, readCount, readSinceModificationCount) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+    {% import _self as dateMacros %}
     <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
             <div class="uk-grid uk-margin-small-bottom">
                 <div class="uk-width-9-10 uk-margin-small-bottom" >        
@@ -290,7 +345,60 @@
                                     </div>                            
                                 </div>                        
                             </div>
+                        </div> <!-- toggle-title uk-hidden -->
+
+                        {# content #}
+                        <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
+                            <table class="ui-table">
+                                <tr>
+                                    <td class="uk-text-top">
+                                        <strong>{{ "date"|trans({},'date') }}</strong>
+                                    </td>
+                                    <td class="uk-text-top">
+                                        {{ item.dateDescription }}
+                                    </td>
+                                </tr>
+                                {% if item.getRecurrencePattern is defined and not item.getRecurrencePattern is empty %}
+                                    <tr>
+                                        <td class="uk-text-top">
+                                            <strong>{{ "recurring date"|trans({},'date') }}</strong>
+                                        </td>
+                                        <td class="uk-text-top">
+                                            {{ _self.recurringDateDescription(item) }}
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                                <tr>
+                                    <td class="uk-text-top">
+                                        <strong>{{ "place"|trans({},'date') }}</strong>
+                                    </td>
+                                    <td class="uk-text-top">
+                                        {{ item.place }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="uk-text-top">
+                                        <strong>{{ "color"|trans({},'date') }}</strong>
+                                    </td>
+                                    <td class="uk-text-top {{ item.color }}">
+                                        {% if item.color == 'cs-date-color-no-color' or item.color == '' %}
+                                            <i class="uk-icon uk-icon-circle-thin"></i>
+                                        {% else %}
+                                            <i class="uk-icon uk-icon-circle"></i>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="uk-text-top">
+                                        <strong>{{ "participants"|trans({},'date') }}</strong>
+                                    </td>
+                                    <td class="uk-text-top">
+                                        {{ dateMacros.participants(item, item.participantsItemList.to_array) }}
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
+
                     </div>
                 </div>
             </div>

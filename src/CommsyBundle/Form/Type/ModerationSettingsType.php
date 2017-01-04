@@ -60,8 +60,8 @@ class ModerationSettingsType extends AbstractType
                     'expanded' => true,
                     'multiple' => false,
                     'choices' => array(
-                        'Show' => '1',
-                        'Do not show' => '0',
+                        'Show info' => '1',
+                        'Do not show info' => '0',
                     ),
                 ))
             )
@@ -119,19 +119,7 @@ class ModerationSettingsType extends AbstractType
                 ->add('array_mail_text_rubric', ChoiceType::class, array(
                     'expanded' => false,
                     'multiple' => false,
-                    'choices' => array(
-                        'Select e-mail text' => '-1',
-                        '------------------' => 'disabled',
-                        'Address' => 'MAIL_BODY_HELLO',                                               // 2
-                        'Salutation' => 'MAIL_BODY_CIAO',                                             // 3
-                        'Delete account' => 'MAIL_BODY_USER_ACCOUNT_DELETE',                          // 5
-                        'Lock account' => 'MAIL_BODY_USER_ACCOUNT_LOCK',                              // 6
-                        'Approve membership' => 'MAIL_BODY_USER_STATUS_USER',                         // 7
-                        'Change status: moderator' => 'MAIL_BODY_USER_STATUS_MODERATOR',              // 8
-                        'Change status: contact person' => 'MAIL_BODY_USER_MAKE_CONTACT_PERSON',      // 9
-                        'Change status: no contact person' => 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON', // 10
-                        'Change status: read only user' => 'MAIL_BODY_USER_STATUS_USER_READ_ONLY',    // 11
-                    ),
+                    'choices' => $options['emailTextTitles'],
                     'data' => '-1',
                 ))
 
@@ -217,7 +205,7 @@ class ModerationSettingsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['roomId'])
+            ->setRequired(['roomId', 'emailTextTitles'])
             ->setDefaults(array('translation_domain' => 'settings'))
         ;
     }

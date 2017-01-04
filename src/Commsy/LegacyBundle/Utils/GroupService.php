@@ -15,7 +15,7 @@ class GroupService
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment;
-        
+
         $this->groupManager = $this->legacyEnvironment->getEnvironment()->getGroupManager();
         $this->groupManager->reset();
     }

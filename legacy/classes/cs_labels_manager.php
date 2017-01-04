@@ -536,6 +536,10 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
            $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastname ASC';
         } elseif ( $this->_sort_order == 'modificator_rev' ) {
            $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastname DESC';
+        } elseif ( $this->_sort_order == 'date' ) {
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('labels').'.modification_date DESC';
+        } elseif ( $this->_sort_order == 'date_rev' ) {
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('labels').'.modification_date ASC';
         }
      }
 

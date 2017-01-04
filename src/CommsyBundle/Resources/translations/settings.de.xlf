@@ -62,7 +62,7 @@
             </trans-unit>
             <trans-unit id="10">
                 <source>Title</source>
-                <target>Raumname</target>
+                <target>Titel:</target>
             </trans-unit>
             <trans-unit id="11">
                 <source>Language</source>
@@ -397,9 +397,13 @@
             <trans-unit id="arrayrubricmail">
                 <source>Array mail text rubric</source>
                 <target>E-Mail-Texte:</target>
-            </trans-unit>            
-            <trans-unit id="donotshow">
-                <source>Do not show</source>
+            </trans-unit>
+            <trans-unit id="showinfo">
+                <source>Show info</source>
+                <target>anzeigen</target>
+            </trans-unit>
+            <trans-unit id="donotshowinfo">
+                <source>Do not show info</source>
                 <target>ausblenden</target>
             </trans-unit>
             <trans-unit id="mailbodyde">

@@ -597,22 +597,15 @@ class GroupController extends Controller
      */
     public function createAction($roomId, Request $request)
     {
-        $translator = $this->get('translator');
-        
-        $groupData = array();
         $groupService = $this->get('commsy_legacy.group_service');
-        $transformer = $this->get('commsy_legacy.transformer.group');
         
         // create new group item
         $groupItem = $groupService->getNewGroup();
-        // $groupItem->setTitle('['.$translator->trans('insert title').']');
         $groupItem->setDraftStatus(1);
         $groupItem->setPrivateEditing(1);
         $groupItem->save();
 
- 
         return $this->redirectToRoute('commsy_group_detail', array('roomId' => $roomId, 'itemId' => $groupItem->getItemId()));
-
     }
 
 

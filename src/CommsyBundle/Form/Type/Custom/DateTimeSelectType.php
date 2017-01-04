@@ -21,6 +21,7 @@ class DateTimeSelectType extends AbstractType
                 'required' => false,
                 'attr' => array(
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
+                    'class' => 'uk-form-controls',
                 )
             ))
             ->add('time', DateTimeType::class, array(
@@ -30,7 +31,8 @@ class DateTimeSelectType extends AbstractType
                 'format' => 'HH:mm',
                 'required' => false,
                 'attr' => array(
-                    'data-uk-timepicker' => ''
+                    'data-uk-timepicker' => '',
+                    'style' => 'margin-left: 5px;',
                 )
             ));
     }

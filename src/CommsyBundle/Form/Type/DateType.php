@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use CommsyBundle\Form\Type\Custom\DateTimeSelectType;
 
+use CommsyBundle\Form\Type\Event\AddRecurringFieldListener;
 use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
 
 class DateType extends AbstractType
@@ -30,20 +31,92 @@ class DateType extends AbstractType
                 ),
                 'translation_domain' => 'material',
             ))
+            ->add('start', DateTimeSelectType::class, array(
+                'constraints' => array(
+                ),
+                'label' => 'startdate',
+                'attr' => array(
+                    'placeholder' => 'startdate',
+                    'class' => 'uk-form-width-medium uk-form-controls',
+                ),
+                'translation_domain' => 'date',
+            ))
+            ->add('end', DateTimeSelectType::class, array(
+                'constraints' => array(
+                ),
+                'label' => 'enddate',
+                'attr' => array(
+                    'placeholder' => 'enddate',
+                    'class' => 'uk-form-width-medium uk-form-controls',
+                ),
+                'translation_domain' => 'date',
+            ))
+            ->add('place', TextType::class, array(
+                'label' => 'place',
+                'attr' => array(
+                    'placeholder' => 'place',
+                    'class' => 'uk-form-width-medium uk-form-controls',
+                ),
+                'required' => false,
+                'translation_domain' => 'date',
+            ))
+            ->add('color', ChoiceType::class, array(
+                'placeholder' => false,
+                'choices' => array(
+                    'cs-date-color-no-color' => 'cs-date-color-no-color',
+                    'cs-date-color-01' => 'cs-date-color-01',
+                    'cs-date-color-02' => 'cs-date-color-02',
+                    'cs-date-color-03' => 'cs-date-color-03',
+                    'cs-date-color-04' => 'cs-date-color-04',
+                    'cs-date-color-05' => 'cs-date-color-05',
+                    'cs-date-color-06' => 'cs-date-color-06',
+                    'cs-date-color-07' => 'cs-date-color-07',
+                    'cs-date-color-08' => 'cs-date-color-08',
+                    'cs-date-color-09' => 'cs-date-color-09',
+                    'cs-date-color-10' => 'cs-date-color-10',
+                ),
+                'translation_domain' => 'date',
+                'label' => 'color',
+                'required' => false,
+                'expanded' => true,
+                'multiple' => false
+            ))
             ->add('permission', CheckboxType::class, array(
+                'attr' => array('class' => 'uk-form-controls'),
                 'label' => 'permission',
+                'label_attr' => array('class' => 'uk-form-label'),
                 'required' => false,
             ))
             ->add('hidden', CheckboxType::class, array(
+                'attr' => array('class' => 'uk-form-controls'),
                 'label' => 'hidden',
+                'label_attr' => array('class' => 'uk-form-label'),
                 'required' => false,
             ))
             ->add('hiddendate', DateTimeSelectType::class, array(
+                'attr' => array('class' => 'uk-form-controls'),
                 'label' => 'hidden until',
+                'label_attr' => array('class' => 'uk-form-label'),
             ))
         ;
         
         if (!isset($options['attr']['unsetRecurrence'])) {
+            $builder
+                ->add('recurring_select', ChoiceType::class, array(
+                    'choices'  => array(
+                        'RecurringDailyType' => 'RecurringDailyType',
+                        'RecurringWeeklyType' => 'RecurringWeeklyType',
+                        'RecurringMonthlyType' => 'RecurringMonthlyType',
+                        'RecurringYearlyType' => 'RecurringYearlyType',
+                    ),
+                    'attr' => array('class' => 'uk-form-controls'),
+                    'label' => 'recurring date',
+                    'choice_translation_domain' => true,
+                    'required' => false,
+                    'translation_domain' => 'date',
+                ))
+                ->addEventSubscriber(new AddRecurringFieldListener())
+            ;
             $builder
                 ->add('save', SubmitType::class, array(
                     'attr' => array(
