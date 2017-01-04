@@ -60,8 +60,8 @@ class ModerationSettingsType extends AbstractType
                     'expanded' => true,
                     'multiple' => false,
                     'choices' => array(
-                        'Show' => '1',
-                        'Do not show' => '0',
+                        'Show info' => '1',
+                        'Do not show info' => '0',
                     ),
                 ))
             )

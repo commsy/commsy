@@ -398,9 +398,13 @@
                 <source>Array mail text rubric</source>
                 <target>Edit e-mail texts:</target>
             </trans-unit> 
-            <trans-unit id="donotshow">
-                <source>Do not show</source>
-                <target>Do not show</target>
+            <trans-unit id="showinfo">
+                <source>Show info</source>
+                <target>show</target>
+            </trans-unit>
+            <trans-unit id="donotshowinfo">
+                <source>Do not show info</source>
+                <target>do not show</target>
             </trans-unit>
             <trans-unit id="mailbodyde">
                 <source>body_de</source>
