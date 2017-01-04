@@ -60,6 +60,10 @@ services:
         class: Commsy\LegacyBundle\Utils\GroupService
         arguments: ['@commsy_legacy.environment']
 
+    commsy_legacy.institution_service:
+        class: Commsy\LegacyBundle\Utils\InstitutionService
+        arguments: ['@commsy_legacy.environment']
+
     commsy_legacy.topic_service:
         class: Commsy\LegacyBundle\Utils\TopicService
         arguments: ['@commsy_legacy.environment']
@@ -184,7 +188,11 @@ services:
     commsy_legacy.transformer.group:
         class: Commsy\LegacyBundle\Form\DataTransformer\GroupTransformer
         arguments: ['@commsy_legacy.environment']
-        
+
+    commsy_legacy.transformer.institution:
+        class: Commsy\LegacyBundle\Form\DataTransformer\InstitutionTransformer
+        arguments: ['@commsy_legacy.environment']
+
     commsy_legacy.transformer.topic:
         class: Commsy\LegacyBundle\Form\DataTransformer\TopicTransformer
         arguments: ['@commsy_legacy.environment']
