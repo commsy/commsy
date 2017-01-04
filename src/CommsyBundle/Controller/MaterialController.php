@@ -395,7 +395,7 @@ class MaterialController extends Controller
             $read = $request->request->get('read');
 
             if ($currentContextItem->withWorkflow()) {
-                if ($read) {
+                if ($read == 'true') {
                     $itemManager->markItemAsWorkflowRead($itemId, $currentUserItem->getItemID());
                 } else {
                     $itemManager->markItemAsWorkflowNotRead($itemId, $currentUserItem->getItemID());
