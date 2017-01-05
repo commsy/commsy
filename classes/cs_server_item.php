@@ -250,7 +250,7 @@ class cs_server_item extends cs_guide_item
                                 while ($room) {
                                     $roomUser = $user->getRelatedUserItemInContext($room->getItemID());
 
-                                    if ($roomUser->isModerator()) {
+                                    if ($roomUser && $roomUser->isModerator()) {
                                         if ($roomManager->getNumberOfModerators($room->getItemID()) === 1) {
                                             $isLastModerator = true;
                                             break;
