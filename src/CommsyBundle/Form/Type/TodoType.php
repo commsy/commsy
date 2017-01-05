@@ -30,6 +30,48 @@ class TodoType extends AbstractType
                 ),
                 'translation_domain' => 'material',
             ))
+            ->add('due_date', DateTimeSelectType::class, array(
+                'constraints' => array(
+                ),
+                'label' => 'due date',
+                'attr' => array(
+                    'placeholder' => 'due date',
+                    'class' => 'uk-form-width-medium',
+                ),
+                'translation_domain' => 'todo',
+                'required' => false,
+            ))
+            ->add('time_planned', TextType::class, array(
+                'constraints' => array(
+                ),
+                'label' => 'time planned',
+                'attr' => array(
+                ),
+                'translation_domain' => 'todo',
+                'required' => false,
+            ))
+            ->add('time_type', ChoiceType::class, array(
+                'choices' => array (
+                    'minutes' => '1',
+                    'hours' => '2',
+                    'days' => '3',
+                ),
+                'constraints' => array(
+                ),
+                'label' => 'time type',
+                'attr' => array(
+                ),
+                'translation_domain' => 'todo',
+            ))
+            ->add('status', ChoiceType::class, array(
+                'choices' => $options['statusChoices'],
+                'constraints' => array(
+                ),
+                'label' => 'status',
+                'attr' => array(
+                ),
+                'translation_domain' => 'todo',
+            ))
             ->add('permission', CheckboxType::class, array(
                 'label' => 'permission',
                 'required' => false,
@@ -65,7 +107,7 @@ class TodoType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['placeholderText'])
+            ->setRequired(['placeholderText', 'statusChoices',])
             ->setDefaults(array('translation_domain' => 'form'))
         ;
     }

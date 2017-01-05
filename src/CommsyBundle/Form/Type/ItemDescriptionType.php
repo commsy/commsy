@@ -46,14 +46,12 @@ class ItemDescriptionType extends AbstractType
                         'class' => 'uk-button-primary',
                     ),
                     'label' => 'save',
-                    'translation_domain' => 'form',
                 ))
                 ->add('cancel', SubmitType::class, array(
                     'attr' => array(
                         'formnovalidate' => '',
                     ),
                     'label' => 'cancel',
-                    'translation_domain' => 'form',
                 ))
             ;
         } else {
@@ -77,7 +75,6 @@ class ItemDescriptionType extends AbstractType
                         'formnovalidate' => '',
                     ),
                     'label' => 'cancel',
-                    'translation_domain' => 'form',
                 ))
             ;
         }
@@ -92,6 +89,7 @@ class ItemDescriptionType extends AbstractType
     {
         $resolver
             ->setRequired(['itemId', 'uploadUrl'])
+            ->setDefaults(array('translation_domain' => 'form'))
         ;
     }
 

@@ -21,29 +21,30 @@
                     {% endif %}
                 {% endif %}
                 <div class="uk-margin-top">
-                <div class="uk-form-row">
-                    <label class="uk-form-label">
-                        {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
-                    </label>
-                    <div class="uk-margin-left">
-                        {{ form_widget(form.permission) }}
+                    <div class="uk-form-row">
+                        <label class="uk-form-label">
+                            {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
+                        </label>
+                        <div class="uk-margin-left">
+                            {{ form_widget(form.permission) }}
+                        </div>
                     </div>
-                </div>
-                <div class="uk-form-row">
-                    <label class="uk-form-label">{{ 'hidden'|trans({}, "form")|capitalize }}</label>
-                    <div class="uk-flex uk-margin-small-top">
-                        {{ form_widget(form.hidden) }}
+                    <div class="uk-form-row">
+                        <label class="uk-form-label">{{ 'hidden'|trans({}, "form")|capitalize }}</label>
+                        <div class="uk-flex uk-margin-small-top">
+                            {{ form_widget(form.hidden) }}
+                        </div>
                     </div>
-                </div>
-                <div class="uk-form-row">
-                    <label class="uk-form-label">{{ 'hidden until'|trans({}, "form")|capitalize }}</label>
-                    <div class="uk-flex uk-margin-small-top">
-                        {{ form_widget(form.hiddendate) }}
+                    <div class="uk-form-row">
+                        <label class="uk-form-label">{{ 'hidden until'|trans({}, "form")|capitalize }}</label>
+                        <div class="uk-flex uk-margin-small-top">
+                            {{ form_widget(form.hiddendate) }}
+                        </div>
                     </div>
-                </div>
-                <div class="uk-form-row">
-                    {{ form_label(form.biblio_select) }}
-                    {{ form_widget(form.biblio_select) }}
+                    <div class="uk-form-row">
+                        {{ form_label(form.biblio_select) }}
+                        {{ form_widget(form.biblio_select) }}
+                    </div>
                 </div>
             {% endif %}
 
