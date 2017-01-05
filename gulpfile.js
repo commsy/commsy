@@ -67,7 +67,7 @@ app.addStyle = function(paths, outputFilename) {
         .pipe(lessFilter)
         .pipe(plugins.less({
             paths: [
-                config.bowerDir + '/uikit/less',
+                config.bowerDir + '/uikit/src/less',
                 config.assetsDir + '/uikit-commsy'
             ]
         }))
