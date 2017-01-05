@@ -37,9 +37,8 @@ class DateType extends AbstractType
                 'label' => 'startdate',
                 'attr' => array(
                     'placeholder' => 'startdate',
-                    'class' => 'uk-form-width-medium uk-form-controls',
+                    'class' => 'uk-form-width-medium',
                 ),
-                'translation_domain' => 'date',
             ))
             ->add('end', DateTimeSelectType::class, array(
                 'constraints' => array(
@@ -47,18 +46,16 @@ class DateType extends AbstractType
                 'label' => 'enddate',
                 'attr' => array(
                     'placeholder' => 'enddate',
-                    'class' => 'uk-form-width-medium uk-form-controls',
+                    'class' => 'uk-form-width-medium',
                 ),
-                'translation_domain' => 'date',
             ))
             ->add('place', TextType::class, array(
                 'label' => 'place',
                 'attr' => array(
                     'placeholder' => 'place',
-                    'class' => 'uk-form-width-medium uk-form-controls',
+                    'class' => 'uk-form-width-medium',
                 ),
                 'required' => false,
-                'translation_domain' => 'date',
             ))
             ->add('color', ChoiceType::class, array(
                 'placeholder' => false,
@@ -75,28 +72,27 @@ class DateType extends AbstractType
                     'cs-date-color-09' => 'cs-date-color-09',
                     'cs-date-color-10' => 'cs-date-color-10',
                 ),
-                'translation_domain' => 'date',
                 'label' => 'color',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => false
             ))
             ->add('permission', CheckboxType::class, array(
-                'attr' => array('class' => 'uk-form-controls'),
                 'label' => 'permission',
                 'label_attr' => array('class' => 'uk-form-label'),
                 'required' => false,
+                'translation_domain' => 'form',
             ))
             ->add('hidden', CheckboxType::class, array(
-                'attr' => array('class' => 'uk-form-controls'),
                 'label' => 'hidden',
                 'label_attr' => array('class' => 'uk-form-label'),
                 'required' => false,
+                'translation_domain' => 'form',
             ))
             ->add('hiddendate', DateTimeSelectType::class, array(
-                'attr' => array('class' => 'uk-form-controls'),
                 'label' => 'hidden until',
                 'label_attr' => array('class' => 'uk-form-label'),
+                'translation_domain' => 'form',
             ))
         ;
         
@@ -109,11 +105,9 @@ class DateType extends AbstractType
                         'RecurringMonthlyType' => 'RecurringMonthlyType',
                         'RecurringYearlyType' => 'RecurringYearlyType',
                     ),
-                    'attr' => array('class' => 'uk-form-controls'),
                     'label' => 'recurring date',
                     'choice_translation_domain' => true,
                     'required' => false,
-                    'translation_domain' => 'date',
                 ))
                 ->addEventSubscriber(new AddRecurringFieldListener())
             ;
@@ -123,12 +117,14 @@ class DateType extends AbstractType
                         'class' => 'uk-button-primary',
                     ),
                     'label' => 'save',
+                    'translation_domain' => 'form',
                 ))
                 ->add('cancel', SubmitType::class, array(
                     'attr' => array(
                         'formnovalidate' => '',
                     ),
                     'label' => 'cancel',
+                    'translation_domain' => 'form',
                 ))
             ;
         } else {
@@ -138,20 +134,19 @@ class DateType extends AbstractType
                         'class' => 'uk-button-primary',
                     ),
                     'label' => 'saveThisDate',
-                    'translation_domain' => 'date',
                 ))
                 ->add('saveAllDates', SubmitType::class, array(
                     'attr' => array(
                         'class' => 'uk-button-primary',
                     ),
                     'label' => 'saveAllDates',
-                    'translation_domain' => 'date',
                 ))
                 ->add('cancel', SubmitType::class, array(
                     'attr' => array(
                         'formnovalidate' => '',
                     ),
                     'label' => 'cancel',
+                    'translation_domain' => 'form',
                 ))
             ;
         }
@@ -167,7 +162,7 @@ class DateType extends AbstractType
     {
         $resolver
             ->setRequired(array('placeholderText'))
-            ->setDefaults(array('translation_domain' => 'form'))
+            ->setDefaults(array('translation_domain' => 'date'))
         ;
     }
 

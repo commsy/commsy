@@ -252,7 +252,7 @@
             </trans-unit>
             <trans-unit id="form-permission">
                 <source>permission</source>
-                <target>Only from %name% editable</target>
+                <target>Only editable by %name% </target>
             </trans-unit>
             <trans-unit id="form-no-restrictions">
                 <source>no restrictions</source>

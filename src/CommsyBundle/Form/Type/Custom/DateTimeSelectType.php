@@ -21,7 +21,6 @@ class DateTimeSelectType extends AbstractType
                 'required' => false,
                 'attr' => array(
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
-                    'class' => 'uk-form-controls',
                 )
             ))
             ->add('time', DateTimeType::class, array(

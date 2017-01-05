@@ -24,17 +24,15 @@
                 </div>
                 <div class="uk-form-row">
                     {{ form_label(form.color) }}
-                    <span class="uk-form-controls">
-                        {% for tempColor in form.color.iterator %}
-                            <span class="{{ tempColor.vars['value'] }}">
-                            {% if tempColor.vars['value'] == 'cs-date-color-no-color' %}
-                                <i class="uk-icon-medium uk-icon-circle-thin"></i>
-                            {% else %}
-                                <i class="uk-icon-medium uk-icon-circle"></i>
-                            {% endif %}
-                            </span><span class="uk-margin-small-right">{{ form_widget(tempColor) }}</span>
-                        {% endfor %}
-                    </span>
+                    {% for tempColor in form.color.iterator %}
+                        <span class="{{ tempColor.vars['value'] }}">
+                        {% if tempColor.vars['value'] == 'cs-date-color-no-color' %}
+                            <i class="uk-icon-medium uk-icon-circle-thin"></i>
+                        {% else %}
+                            <i class="uk-icon-medium uk-icon-circle"></i>
+                        {% endif %}
+                        </span><span class="uk-margin-small-right">{{ form_widget(tempColor) }}</span>
+                    {% endfor %}
                 </div>
 
                 {% if form.recurring_select is defined %}
@@ -111,13 +109,13 @@
                     </div>
                 </div>
                 <div class="uk-form-row">
-                    <label class="uk-form-label">{{ 'hidden'|trans({}, "form") }}</label>
+                    <label class="uk-form-label">{{ 'hidden'|trans({}, "form")|capitalize }}</label>
                     <div class="uk-flex uk-margin-small-top">
                         {{ form_widget(form.hidden) }}
                     </div>
                 </div>
                 <div class="uk-form-row">
-                    <label class="uk-form-label">{{ 'hidden until'|trans({}, "form") }}</label>
+                    <label class="uk-form-label">{{ 'hidden until'|trans({}, "form")|capitalize }}</label>
                     <div class="uk-flex uk-margin-small-top">
                         {{ form_widget(form.hiddendate) }}
                     </div>
