@@ -11,7 +11,7 @@
   ],
   "dependencies": {
     "jquery": "~2.2",
-    "uikit": "~2.26",
+    "uikit": "~2.27",
     "jstree": "latest",
     "nprogress": "latest",
     "fullcalendar": "latest",

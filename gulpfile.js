@@ -67,7 +67,7 @@ app.addStyle = function(paths, outputFilename) {
         .pipe(lessFilter)
         .pipe(plugins.less({
             paths: [
-                config.bowerDir + '/uikit/src/less',
+                config.bowerDir + '/uikit/less',
                 config.assetsDir + '/uikit-commsy'
             ]
         }))
@@ -154,23 +154,23 @@ gulp.task('js', function() {
         
         config.bowerDir + '/tooltipster/dist/js/tooltipster.bundle.min.js',
 
-        config.bowerDir + '/uikit/src/js/uikit.js',
-        config.bowerDir + '/uikit/src/js/components/autocomplete.js',
-        config.bowerDir + '/uikit/src/js/components/search.js',
-        config.bowerDir + '/uikit/src/js/components/nestable.js',
-        config.bowerDir + '/uikit/src/js/components/tooltip.js',
-        config.bowerDir + '/uikit/src/js/components/grid.js',
-        config.bowerDir + '/uikit/src/js/components/accordion.js',
-        config.bowerDir + '/uikit/src/js/components/upload.js',
-        config.bowerDir + '/uikit/src/js/components/sticky.js',
-        config.bowerDir + '/uikit/src/js/components/slider.js',
-        config.bowerDir + '/uikit/src/js/components/lightbox.js',
-        config.bowerDir + '/uikit/src/js/components/sortable.js',
-        config.bowerDir + '/uikit/src/js/components/notify.js',
-        config.bowerDir + '/uikit/src/js/components/parallax.js',
-        config.bowerDir + '/uikit/src/js/components/datepicker.js',
-        config.bowerDir + '/uikit/src/js/components/timepicker.js',
-        config.bowerDir + '/uikit/src/js/components/form-select.js',
+        config.bowerDir + '/uikit/js/uikit.js',
+        config.bowerDir + '/uikit/js/components/autocomplete.js',
+        config.bowerDir + '/uikit/js/components/search.js',
+        config.bowerDir + '/uikit/js/components/nestable.js',
+        config.bowerDir + '/uikit/js/components/tooltip.js',
+        config.bowerDir + '/uikit/js/components/grid.js',
+        config.bowerDir + '/uikit/js/components/accordion.js',
+        config.bowerDir + '/uikit/js/components/upload.js',
+        config.bowerDir + '/uikit/js/components/sticky.js',
+        config.bowerDir + '/uikit/js/components/slider.js',
+        config.bowerDir + '/uikit/js/components/lightbox.js',
+        config.bowerDir + '/uikit/js/components/sortable.js',
+        config.bowerDir + '/uikit/js/components/notify.js',
+        config.bowerDir + '/uikit/js/components/parallax.js',
+        config.bowerDir + '/uikit/js/components/datepicker.js',
+        config.bowerDir + '/uikit/js/components/timepicker.js',
+        config.bowerDir + '/uikit/js/components/form-select.js',
         
         config.bowerDir + '/video.js/dist/video.js',
 
@@ -181,7 +181,7 @@ gulp.task('js', function() {
 gulp.task('fonts', function() {
     return app.copy([
             config.assetsDir + '/fonts/*',
-            config.bowerDir + '/uikit/src/fonts/*'
+            config.bowerDir + '/uikit/fonts/*'
     ],'web/fonts');
 });
 
