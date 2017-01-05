@@ -16,7 +16,7 @@
             </trans-unit>
             <trans-unit id="due date">
                 <source>due date</source>
-                <target>due</target>
+                <target>Due</target>
             </trans-unit>
             <trans-unit id="minutes">
                 <source>minutes</source>

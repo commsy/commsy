@@ -117,14 +117,9 @@
                 
                 {# content #}
                 <article class="uk-article uk-position-relative" data-uk-observe>
-                    {# title, etc. #}
+                    {# title, details, etc. #}
                     <div class="cs-toggle" data-uk-observe>
                         {{ macrosTodo.title(todo, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, ratingArray) }}
-                    </div>
-            
-                    {# details #}
-                    <div id="details{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_todo_editdetails', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }">
-                        {{ macrosTodo.details(todo) }}
                     </div>
             
                     {# description #}

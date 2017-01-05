@@ -12,7 +12,6 @@ use CommsyBundle\Filter\TodoFilterType;
 use CommsyBundle\Form\Type\TodoType;
 use CommsyBundle\Form\Type\StepType;
 use CommsyBundle\Form\Type\AnnotationType;
-use CommsyBundle\Form\Type\TodoDetailsType;
 use CommsyBundle\Form\Type\TodoStepType;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -416,19 +415,18 @@ class TodoController extends Controller
         $stepList = $todo->getStepItemList()->to_array();
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $item = $todo;
+
         $reader_manager = $legacyEnvironment->getReaderManager();
-        $reader = $reader_manager->getLatestReader($item->getItemID());
-        if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
-            $reader_manager->markRead($item->getItemID(), $item->getVersionID());
+        $reader = $reader_manager->getLatestReader($todo->getItemID());
+        if(empty($reader) || $reader['read_date'] < $todo->getModificationDate()) {
+            $reader_manager->markRead($todo->getItemID(), $todo->getVersionID());
         }
 
         $noticed_manager = $legacyEnvironment->getNoticedManager();
-        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
-            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
+        $noticed = $noticed_manager->getLatestNoticed($todo->getItemID());
+        if(empty($noticed) || $noticed['read_date'] < $todo->getModificationDate()) {
+            $noticed_manager->markNoticed($todo->getItemID(), $todo->getVersionID());
         }
-
         
         $itemArray = array($todo);
 
@@ -666,23 +664,39 @@ class TodoController extends Controller
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
         
         $formData = array();
         $todoItem = NULL;
+
+        $statusChoices = array(
+            $translator->trans('pending', [], 'todo') => '1',
+            $translator->trans('in progress', [], 'todo') => '2',
+            $translator->trans('done', [], 'todo') => '3',
+        );
+
+        foreach ($roomItem->getExtraToDoStatusArray() as $key => $value) {
+            $statusChoices[$value] = $key;
+        }
         
+        $formOptions = array(
+            'action' => $this->generateUrl('commsy_todo_edit', array(
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            )),
+            'statusChoices' => $statusChoices,
+            'placeholderText' => '['.$translator->trans('insert title').']',
+        );
+
         if ($item->getItemType() == 'todo') {
             $todoItem = $todoService->getTodo($itemId);
             if (!$todoItem) {
                 throw $this->createNotFoundException('No todo found for id ' . $itemId);
             }
             $formData = $transformer->transform($todoItem);
-            $form = $this->createForm(TodoType::class, $formData, array(
-                'action' => $this->generateUrl('commsy_todo_edit', array(
-                    'roomId' => $roomId,
-                    'itemId' => $itemId,
-                )),
-                'placeholderText' => '['.$translator->trans('insert title').']',
-            ));
+            $form = $this->createForm(TodoType::class, $formData, $formOptions);
         } else if ($item->getItemType() == 'step') {
             $todoItem = $todoService->getStep($itemId);
             if (!$todoItem) {
@@ -896,171 +910,6 @@ class TodoController extends Controller
         );
     }
 
-    /**
-     * @Route("/room/{roomId}/todo/{itemId}/editdetails")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     */
-    public function editdetailsAction($roomId, $itemId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
-        
-        $itemService = $this->get('commsy_legacy.item_service');
-        $item = $itemService->getItem($itemId);
-        
-        $todoService = $this->get('commsy_legacy.todo_service');
-        $transformer = $this->get('commsy_legacy.transformer.todo');
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
-        
-        $formData = array();
-        
-        // get date from DateService
-        $todoItem = $todoService->getTodo($itemId);
-        if (!$todoItem) {
-            throw $this->createNotFoundException('No todo found for id ' . $itemId);
-        }
-        $formData = $transformer->transform($todoItem);
-        
-        $translator = $this->get('translator');
-        
-        $statusChoices = array(
-            $translator->trans('pending', [], 'todo') => '1',
-            $translator->trans('in progress', [], 'todo') => '2',
-            $translator->trans('done', [], 'todo') => '3',
-        );
-
-        foreach ($roomItem->getExtraToDoStatusArray() as $key => $value) {
-            $statusChoices[$value] = $key;
-        }
-        
-        $formOptions = array(
-            'action' => $this->generateUrl('commsy_todo_editdetails', array(
-                'roomId' => $roomId,
-                'itemId' => $itemId,
-            )),
-            'statusChoices' => $statusChoices,
-        );
-
-        $form = $this->createForm(TodoDetailsType::class, $formData, $formOptions);
-        
-        $form->handleRequest($request);
-        
-        $submittedFormData = $form->getData();
-
-        if ($form->isValid()) {
-            $saveType = $form->getClickedButton()->getName();
-            if ($saveType == 'save') {
-                $formData = $form->getData();
-                
-                $todoItem = $transformer->applyTransformation($todoItem, $formData);
-                
-                $todoItem->save();
-                
-                if ($item->isDraft()) {
-                    $item->setDraftStatus(0);
-                    $item->saveAsItem();
-                }
-            } else if ($form->get('cancel')->isClicked()) {
-                // ToDo ...
-            } 
-            return $this->redirectToRoute('commsy_todo_savedetails', array('roomId' => $roomId, 'itemId' => $itemId));
-        }
-        
-        return array(
-            'form' => $form->createView(),
-            'showHashtags' => $current_context->withBuzzwords(),
-            'showCategories' => $current_context->withTags(),
-            'currentUser' => $legacyEnvironment->getCurrentUserItem(),
-            'todo' => $todoItem
-        );
-    }
-    
-    /**
-     * @Route("/room/{roomId}/todo/{itemId}/savedetails")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     */
-    public function savedetailsAction($roomId, $itemId, Request $request)
-    {
-        $itemService = $this->get('commsy_legacy.item_service');
-        $item = $itemService->getItem($itemId);
-        
-        $todoService = $this->get('commsy_legacy.todo_service');
-        $transformer = $this->get('commsy_legacy.transformer.todo');
-        
-        $todo = $todoService->getTodo($itemId);
-        
-        $itemArray = array($todo);
-        $modifierList = array();
-        foreach ($itemArray as $item) {
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
-        }
-        
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $readerManager = $legacyEnvironment->getReaderManager();
-        //$roomItem = $roomManager->getItem($material->getContextId());        
-        //$numTotalMember = $roomItem->getAllUsers();
-        
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $user_list = $userManager->get();
-        $all_user_count = $user_list->getCount();
-        $read_count = 0;
-        $read_since_modification_count = 0;
-
-        $current_user = $user_list->getFirst();
-        $id_array = array();
-        while ( $current_user ) {
-		   $id_array[] = $current_user->getItemID();
-		   $current_user = $user_list->getNext();
-		}
-		$readerManager->getLatestReaderByUserIDArray($id_array,$todo->getItemID());
-		$current_user = $user_list->getFirst();
-		while ( $current_user ) {
-	   	    $current_reader = $readerManager->getLatestReaderForUserByID($todo->getItemID(), $current_user->getItemID());
-            if ( !empty($current_reader) ) {
-                if ( $current_reader['read_date'] >= $todo->getModificationDate() ) {
-                    $read_count++;
-                    $read_since_modification_count++;
-                } else {
-                    $read_count++;
-                }
-            }
-		    $current_user = $user_list->getNext();
-		}
-        $read_percentage = round(($read_count/$all_user_count) * 100);
-        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
-        $readerService = $this->get('commsy_legacy.reader_service');
-        
-        $readerList = array();
-        $modifierList = array();
-        foreach ($itemArray as $item) {
-            $reader = $readerService->getLatestReader($item->getItemId());
-            if ( empty($reader) ) {
-               $readerList[$item->getItemId()] = 'new';
-            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-               $readerList[$item->getItemId()] = 'changed';
-            }
-            
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
-        }
-        
-        return array(
-            'roomId' => $roomId,
-            'item' => $todo,
-            'modifierList' => $modifierList,
-            'userCount' => $all_user_count,
-            'readCount' => $read_count,
-            'readSinceModificationCount' => $read_since_modification_count,
-        );
-    }
-    
     /**
      * @Route("/room/{roomId}/todo/{itemId}/rating/{vote}")
      * @Template()

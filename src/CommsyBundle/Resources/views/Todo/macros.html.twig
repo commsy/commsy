@@ -148,7 +148,48 @@
                                     </div>                            
                                 </div>                        
                             </div>
-                        </div>
+                        </div><!-- toggle-title uk-hidden -->
+
+                        {% if item.itemType != "step"  %}
+                            {# content #}
+                            <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
+                                <table class="ui-table">
+                                    <tr>
+                                        <td class="uk-text-top">
+                                            <strong>{{ "status"|trans({},'todo') }}:</strong>
+                                        </td>
+                                        <td class="uk-text-top">
+                                            {{ item.status }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="uk-text-top">
+                                            <strong>{{ "time planned"|trans({},'todo') }}:</strong>
+                                        </td>
+                                        <td class="uk-text-top">
+                                            {{ item.plannedTime }} {{ _self.timeType(item.timeType) }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="uk-text-top">
+                                            <strong>{{ "due date"|trans({},'todo') }}:</strong>
+                                        </td>
+                                        <td class="uk-text-top">
+                                            {{ item.date|date("d.m.Y H:i:s") }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="uk-text-top">
+                                            <strong>{{ "responsibility"|trans({},'todo') }}:</strong>
+                                        </td>
+                                        <td class="uk-text-top">
+                                            {{ _self.responsibility(item, item.getProcessorItemList.to_array) }}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        {% endif %}
+
                     </div>
                 </div>
             </div>
@@ -301,79 +342,51 @@
                                 </div>                        
                             </div>
                         </div>
+
+                        {% if item.itemType != "step"  %}
+                            {# content #}
+                            <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
+                                <table class="ui-table">
+                                    <tr>
+                                        <td class="uk-text-top">
+                                            <strong>{{ "status"|trans({},'todo') }}:</strong>
+                                        </td>
+                                        <td class="uk-text-top">
+                                            {{ item.status }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="uk-text-top">
+                                            <strong>{{ "time planned"|trans({},'todo') }}:</strong>
+                                        </td>
+                                        <td class="uk-text-top">
+                                            {{ item.plannedTime }} {{ _self.timeType(item.timeType) }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="uk-text-top">
+                                            <strong>{{ "due date"|trans({},'todo') }}:</strong>
+                                        </td>
+                                        <td class="uk-text-top">
+                                            {{ item.date|date("d.m.Y H:i:s") }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="uk-text-top">
+                                            <strong>{{ "responsibility"|trans({},'todo') }}:</strong>
+                                        </td>
+                                        <td class="uk-text-top">
+                                            {{ _self.responsibility(item, item.getProcessorItemList.to_array) }}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        {% endif %}
+
                     </div>
                 </div>
             </div>
         </div>
-{% endmacro %}
-
-{% macro details(todo) %}
-    {% import _self as macros %}
-    
-    <hr class="uk-width-9-10"/>
-
-    <article class="uk-article uk-margin-left uk-margin-right">
-        <a name="details"></a>
-        {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
-
-        {# title row #}
-        <div class="uk-grid uk-margin-small-bottom">
-            <div class="uk-width-9-10">
-                <h4 class="cs-detail-section-header">
-                    {{ "info"|trans({},'date') }}
-                </h4>
-            </div>
-
-            <div class="uk-width-1-10 uk-flex uk-text-right">
-                {# edit action #}
-                {% if is_granted('ITEM_EDIT', todo.itemId) %}
-                    <div class="cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
-                        <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
-                    </div>
-                {% endif %}
-
-           </div>
-        </div>
-
-        {# content #}
-        <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
-            <table class="ui-table">
-                <tr>
-                    <td class="uk-text-top">
-                        <strong>{{ "status"|trans({},'todo') }}:</strong>
-                    </td>
-                    <td class="uk-text-top">
-                        {{ todo.status }}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="uk-text-top">
-                        <strong>{{ "time planned"|trans({},'todo') }}:</strong>
-                    </td>
-                    <td class="uk-text-top">
-                        {{ todo.plannedTime }} {{ macros.timeType(todo.timeType) }}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="uk-text-top">
-                        <strong>{{ "due date"|trans({},'todo') }}:</strong>
-                    </td>
-                    <td class="uk-text-top">
-                        {{ todo.date|date("d.m.Y H:i:s") }}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="uk-text-top">
-                        <strong>{{ "responsibility"|trans({},'todo') }}:</strong>
-                    </td>
-                    <td class="uk-text-top">
-                        {{ macros.responsibility(todo, todo.getProcessorItemList.to_array) }}
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </article>
-    
 {% endmacro %}
 
 {% macro timeType(type) %}
