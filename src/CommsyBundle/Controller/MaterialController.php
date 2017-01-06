@@ -27,6 +27,10 @@ use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 class MaterialController extends Controller
 {
+    // setup filter form default values
+    private $defaultFilterValues = array(
+            'hide-deactivated-entries' => true,
+    );
     /**
      * @Route("/room/{roomId}/material/feed/{start}/{sort}")
      * @Template()
@@ -53,11 +57,7 @@ class MaterialController extends Controller
         $materialService = $this->get('commsy_legacy.material_service');
 
         if ($materialFilter) {
-            // setup filter form
-            $defaultFilterValues = array(
-                'activated' => true,
-            );
-            $filterForm = $this->createForm(MaterialFilterType::class, $defaultFilterValues, array(
+            $filterForm = $this->createForm(MaterialFilterType::class, $this->defaultFilterValues, array(
                 'action' => $this->generateUrl('commsy_material_list', array(
                     'roomId' => $roomId,
                 )),
@@ -67,11 +67,9 @@ class MaterialController extends Controller
 
             // manually bind values from the request
             $filterForm->submit($materialFilter);
-        
+
             // set filter conditions in material manager
             $materialService->setFilterConditions($filterForm);
-        } else {
-            $materialService->showNoNotActivatedEntries();
         }
 
         // get material list from manager service 
@@ -134,14 +132,9 @@ class MaterialController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-
-
         // get the material manager service
         $materialService = $this->get('commsy_legacy.material_service');
-        $defaultFilterValues = array(
-            'activated' => true,
-        );
-        $filterForm = $this->createForm(MaterialFilterType::class, $defaultFilterValues, array(
+        $filterForm = $this->createForm(MaterialFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_material_list', array(
                 'roomId' => $roomId,
             )),
@@ -158,34 +151,6 @@ class MaterialController extends Controller
 
         // get material list from manager service 
         $itemsCountArray = $materialService->getCountArray($roomId);
-
-
-
-
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true,
-        );
-        $filterForm = $this->createForm(MaterialFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_material_list', array(
-                'roomId' => $roomId,
-            )),
-            'hasHashtags' => $roomItem->withBuzzwords(),
-            'hasCategories' => $roomItem->withTags(),
-        ));
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-
-        // get the material manager service
-        $materialService = $this->get('commsy_legacy.material_service');
-
-        // apply filter
-        $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
-            // set filter conditions in material manager
-            $materialService->setFilterConditions($filterForm);
-        }
 
         $usageInfo = false;
         if ($roomItem->getUsageInfoTextForRubricInForm('material') != '') {
@@ -221,11 +186,7 @@ class MaterialController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true,
-        );
-        $filterForm = $this->createForm(MaterialFilterType::class, $defaultFilterValues, array(
+        $filterForm = $this->createForm(MaterialFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_material_list', array(
                 'roomId' => $roomId,
             )),

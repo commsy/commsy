@@ -20,7 +20,7 @@ class AnnouncementFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('active', Filters\CheckboxFilterType::class, array(
+            ->add('hide-invalid-entries', Filters\CheckboxFilterType::class, array(
                 'attr' => array(
                     'onchange' => 'this.form.submit()',
                 ),
@@ -28,7 +28,7 @@ class AnnouncementFilterType extends AbstractType
                     'class' => 'uk-form-label',
                 ),
             ))
-            ->add('activated', Filters\CheckboxFilterType::class, array(
+            ->add('hide-deactivated-entries', Filters\CheckboxFilterType::class, array(
                 'attr' => array(
                     'onchange' => 'this.form.submit()',
                 ),

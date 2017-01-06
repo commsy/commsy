@@ -48,12 +48,12 @@ class DateService
         $formData = $filterForm->getData();
 
         // activated
-        if (!$formData['activated']) {
+        if ($formData['hide-deactivated-entries']) {
             $this->dateManager->showNoNotActivatedEntries();
         }
 
         // past
-        if (!$formData['past-dates']) {
+        if ($formData['hide-past-dates']) {
             $this->dateManager->setFutureLimit();
         }
 

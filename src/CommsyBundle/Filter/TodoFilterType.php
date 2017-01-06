@@ -20,7 +20,7 @@ class TodoFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('activated', Filters\CheckboxFilterType::class, array(
+            ->add('hide-deactivated-entries', Filters\CheckboxFilterType::class, array(
                 'attr' => array(
                     'onchange' => 'this.form.submit()',
                 ),

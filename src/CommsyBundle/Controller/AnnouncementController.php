@@ -25,6 +25,11 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class AnnouncementController extends Controller
 {
+    // setup filter form default values
+    private $defaultFilterValues = array(
+        'hide-deactivated-entries' => true,
+        'hide-invalid-entries' => true,
+    );
     /**
      * @Route("/room/{roomId}/announcement/feed/{start}/{sort}")
      * @Template()
@@ -51,11 +56,7 @@ class AnnouncementController extends Controller
         $announcementService = $this->get('commsy_legacy.announcement_service');
 
         if ($announcementFilter) {
-            // setup filter form
-            $defaultFilterValues = array(
-                'activated' => true,
-            );
-            $filterForm = $this->createForm(AnnouncementFilterType::class, $defaultFilterValues, array(
+            $filterForm = $this->createForm(AnnouncementFilterType::class, $this->defaultFilterValues, array(
                 'action' => $this->generateUrl('commsy_announcement_list', array(
                     'roomId' => $roomId,
                 )),
@@ -68,8 +69,6 @@ class AnnouncementController extends Controller
     
             // apply filter
             $announcementService->setFilterConditions($filterForm);
-        } else {
-            $announcementService->showNoNotActivatedEntries();
         }
 
         // get announcement list from manager service 
@@ -125,11 +124,7 @@ class AnnouncementController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true,
-        );
-        $filterForm = $this->createForm(AnnouncementFilterType::class, $defaultFilterValues, array(
+        $filterForm = $this->createForm(AnnouncementFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_announcement_list', array(
                 'roomId' => $roomId,
             )),
@@ -197,10 +192,7 @@ class AnnouncementController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        $defaultFilterValues = array(
-            'activated' => true,
-        );
-        $filterForm = $this->createForm(AnnouncementFilterType::class, $defaultFilterValues, array(
+        $filterForm = $this->createForm(AnnouncementFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_announcement_list', array(
                 'roomId' => $roomId,
             )),
@@ -253,11 +245,7 @@ class AnnouncementController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true,
-        );
-        $filterForm = $this->createForm(AnnouncementFilterType::class, $defaultFilterValues, array(
+        $filterForm = $this->createForm(AnnouncementFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_announcement_list', array(
                 'roomId' => $roomId,
             )),

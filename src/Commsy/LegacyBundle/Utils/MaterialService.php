@@ -60,8 +60,8 @@ class MaterialService
         $formData = $filterForm->getData();
 
         // activated
-        if (!$formData['activated']) {
-            $this->materialManager->showNotActivatedEntries();
+        if ($formData['hide-deactivated-entries']) {
+            $this->materialManager->showNoNotActivatedEntries();
         }
 
         // rubrics

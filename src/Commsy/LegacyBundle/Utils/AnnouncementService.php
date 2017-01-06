@@ -18,6 +18,7 @@ class AnnouncementService
         $this->announcementManager = $this->legacyEnvironment->getAnnouncementManager();
         $this->announcementManager->reset();
         $this->announcementManager->showNoNotActivatedEntries();
+        $this->announcementManager->setDateLimit(getCurrentDateTimeInMySQL());
     }
 
     public function getCountArray($roomId)
@@ -29,7 +30,6 @@ class AnnouncementService
         $this->announcementManager->resetLimits();
         $this->announcementManager->select();
         $countAnnouncementArray['countAll'] = $this->announcementManager->getCountAll();
-
         return $countAnnouncementArray;
     }
 
@@ -58,12 +58,12 @@ class AnnouncementService
         $formData = $filterForm->getData();
 
         // activated
-        if (!$formData['activated']) {
-            $this->announcementManager->showNotActivatedEntries();
+        if ($formData['hide-deactivated-entries']) {
+            $this->announcementManager->showNoNotActivatedEntries();
         }
         
         // active
-        if ($formData['active']) {
+        if ($formData['hide-invalid-entries']) {
             $this->announcementManager->setDateLimit(getCurrentDateTimeInMySQL());
         }
 

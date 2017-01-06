@@ -10,13 +10,17 @@
                 <source>Filter</source>
                 <target>Filter</target>
             </trans-unit>
-            <trans-unit id="form-filter-activated">
-                <source>Activated</source>
-                <target>Show hidden entries</target>
+            <trans-unit id="form-filter-hide-deactivated-entries">
+                <source>Hide-deactivated-entries</source>
+                <target>Hide deactivated entries</target>
             </trans-unit>
-            <trans-unit id="form-filter-active">
-                <source>Active</source>
-                <target>Show inactive entries</target>
+            <trans-unit id="form-filter-hide-invalid-entries">
+                <source>Hide-invalid-entries</source>
+                <target>Hide invalid entries</target>
+            </trans-unit>
+            <trans-unit id="form-filter-past-dates">
+                <source>Hide-past-dates</source>
+                <target>Hide past dates</target>
             </trans-unit>
              <trans-unit id="form-save">
                 <source>save</source>
@@ -344,15 +348,11 @@
             </trans-unit>
             <trans-unit id="hidden">
                 <source>hidden</source>
-                <target>hidden</target>
+                <target>deactivated</target>
             </trans-unit>
             <trans-unit id="hiddendate">
                 <source>hidden until</source>
-                <target>hidden until</target>
-            </trans-unit>
-            <trans-unit id="past-dates">
-                <source>Past-dates</source>
-                <target>Show past dates</target>
+                <target>deactivated until</target>
             </trans-unit>
             <trans-unit id="date-from">
                 <source>Date-from</source>

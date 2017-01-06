@@ -4,7 +4,6 @@ namespace CommsyBundle\Filter;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
 
@@ -23,7 +22,7 @@ class DateFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('activated', Filters\CheckboxFilterType::class, array(
+            ->add('hide-deactivated-entries', Filters\CheckboxFilterType::class, array(
                 'attr' => array(
                     'onchange' => 'this.form.submit()',
                 ),
@@ -31,7 +30,7 @@ class DateFilterType extends AbstractType
                     'class' => 'uk-form-label',
                 ),
             ))
-            ->add('past-dates', Filters\CheckboxFilterType::class, array(
+            ->add('hide-past-dates', Filters\CheckboxFilterType::class, array(
                 'attr' => array(
                     'onchange' => 'this.form.submit()',
                 ),
@@ -85,9 +84,9 @@ class DateFilterType extends AbstractType
     {
         $resolver
             ->setDefaults(array(
-                'csrf_protection'   => false,
-                'validation_groups' => array('filtering'), // avoid NotBlank() constraint-related message
-                'method'            => 'get',
+                'csrf_protection'    => false,
+                'validation_groups'  => array('filtering'), // avoid NotBlank() constraint-related message
+                'method'             => 'get',
                 'translation_domain' => 'form',
             ))
             ->setRequired(array(
