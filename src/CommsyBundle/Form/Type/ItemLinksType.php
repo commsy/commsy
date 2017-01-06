@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use Commsy\LegacyBundle\Utils\RoomService;
@@ -113,8 +114,19 @@ class ItemLinksType extends AbstractType
                 'multiple' => true
             ))
             ->add('newHashtag', TextType::class, array(
+                'attr' => array(
+                    'placeholder' => 'Hashtag'
+                ),
                 'label' => 'newHashtag',
                 'required' => false
+            ))
+            ->add('newHashtagAdd', ButtonType::class, array(
+                'attr' => array(
+                    'id' => 'addNewHashtag',
+                    'data-cs-add-hashtag' => $options['hashtagEditUrl'],
+                ),
+                'label' => 'addNewHashtag',
+                'translation_domain' => 'form',
             ))
             ->add('save', SubmitType::class, array(
                 'attr' => array(
@@ -212,7 +224,7 @@ class ItemLinksType extends AbstractType
     {
         $resolver
             ->setDefaults(array('translation_domain' => 'item'))
-            ->setRequired(array('filterRubric', 'filterPublic', 'items', 'itemsLinked', 'itemsLatest', 'categories', 'hashtags'))
+            ->setRequired(array('filterRubric', 'filterPublic', 'items', 'itemsLinked', 'itemsLatest', 'categories', 'hashtags', 'hashtagEditUrl'))
         ;
     }
 

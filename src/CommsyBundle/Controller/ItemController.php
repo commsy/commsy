@@ -317,7 +317,8 @@ class ItemController extends Controller
             'itemsLinked' => array_flip($optionsData['itemsLinked']),
             'itemsLatest' => array_flip($optionsData['itemsLatest']),
             'categories' => $optionsData['categories'],
-            'hashtags' => array_flip($optionsData['hashtags'])
+            'hashtags' => array_flip($optionsData['hashtags']),
+            'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', array('roomId' => $roomId))
         ));
 
         $form->handleRequest($request);
@@ -613,7 +614,12 @@ class ItemController extends Controller
         while ($latestItem) {
             $tempTypedItem = $itemService->getTypedItem($latestItem->getItemId());
             if ($tempTypedItem) {
-                $optionsData['itemsLatest'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
+                $optionsData['itemsLatest'][] = array(
+                    'title' => $tempTypedItem->getTitle(), 
+                    'text' => $tempTypedItem->getType(), 
+                    'url' => '', 
+                    'id' => $tempTypedItem->getItemId()
+                );
             }
             $latestItem = $latestItemList->getNext();
         }

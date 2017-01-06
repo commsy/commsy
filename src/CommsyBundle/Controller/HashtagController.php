@@ -58,6 +58,48 @@ class HashtagController extends Controller
     }
 
     /**
+     * @Route("/room/{roomId}/hashtag/add")
+     */
+    public function addAction($roomId, Request $request)
+    {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        $labelManager = $legacyEnvironment->getLabelManager();
+
+        if (!$roomItem->withBuzzwords()) {
+            throw $this->createAccessDeniedException('The requested room does not have hashtags enabled.');
+        }
+
+        $buzzwordId = null;
+        $buzzwordItem = null;
+
+        if ($request->request->get('title')) {
+            $hashtagTitle = $request->request->get('title');
+
+            $buzzwordItem = $labelManager->getNewItem();
+
+            $buzzwordItem->setLabelType('buzzword');
+            $buzzwordItem->setContextID($roomId);
+            $buzzwordItem->setCreatorItem($legacyEnvironment->getCurrentUserItem());
+            $buzzwordItem->setName($hashtagTitle);
+
+            $buzzwordItem->save();
+
+            $buzzwordId = $buzzwordItem->getItemID();
+
+            return $this->json([
+                'buzzwordId' => $buzzwordId,
+                'buzzwordTitle' => $buzzwordItem->getName(),
+            ]);
+        } else {
+            throw $this->createAccessDeniedException('Title is empty');
+        }
+    }    
+
+    /**
      * @Route("/room/{roomId}/hashtag/edit/{labelId}")
      * @Template()
      */
