@@ -666,7 +666,7 @@ class cs_server_item extends cs_guide_item
                                     $mod_contact_list = $portal_item->getContactModeratorList();
                                     $mod_user_first = $mod_contact_list->getFirst();
                                     $mail->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
-                                    $mail->set_from_name($this->_environment->getCurrentPortalItem()->getTitle());
+                                    $mail->set_from_name($portal_item->getTitle());
 
                                     // link
                                     $url_to_portal = '';
