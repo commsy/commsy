@@ -48,7 +48,7 @@ class DateService
         $formData = $filterForm->getData();
 
         // activated
-        if ($formData['activated']) {
+        if (!$formData['activated']) {
             $this->dateManager->showNoNotActivatedEntries();
         }
 

@@ -12,11 +12,11 @@
             </trans-unit>
             <trans-unit id="form-filter-activated">
                 <source>Activated</source>
-                <target>accessible entries</target>
+                <target>Show hidden entries</target>
             </trans-unit>
             <trans-unit id="form-filter-active">
                 <source>Active</source>
-                <target>Still active</target>
+                <target>Show inactive entries</target>
             </trans-unit>
              <trans-unit id="form-save">
                 <source>save</source>
@@ -351,16 +351,16 @@
                 <target>hidden until</target>
             </trans-unit>
             <trans-unit id="past-dates">
-                <source>past-dates</source>
-                <target>past dates</target>
+                <source>Past-dates</source>
+                <target>Show past dates</target>
             </trans-unit>
             <trans-unit id="date-from">
-                <source>date-from</source>
-                <target>from</target>
+                <source>Date-from</source>
+                <target>From</target>
             </trans-unit>
             <trans-unit id="date-until">
-                <source>date-until</source>
-                <target>until</target>
+                <source>Date-until</source>
+                <target>Until</target>
             </trans-unit>
             <trans-unit id="type">
                 <source>Type</source>

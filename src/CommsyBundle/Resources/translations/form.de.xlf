@@ -12,11 +12,11 @@
             </trans-unit>
             <trans-unit id="form-filter-activated">
                 <source>Activated</source>
-                <target>Freigeschaltete Einträge</target>
+                <target>Verborgene Einträge anzeigen</target>
             </trans-unit>
             <trans-unit id="form-filter-active">
                 <source>Active</source>
-                <target>Heute noch gültig</target>
+                <target>Ungültige Einträge anzeigen</target>
             </trans-unit>
             <trans-unit id="form-save">
                 <source>save</source>
@@ -351,15 +351,15 @@
                 <target>verbergen bis</target>
             </trans-unit>
             <trans-unit id="past-dates">
-                <source>past-dates</source>
-                <target>Vergangene Termine</target>
+                <source>Past-dates</source>
+                <target>Vergangene Termine anzeigen</target>
             </trans-unit>
             <trans-unit id="date-from">
-                <source>date-from</source>
+                <source>Date-from</source>
                 <target>von</target>
             </trans-unit>
             <trans-unit id="date-until">
-                <source>date-until</source>
+                <source>Date-until</source>
                 <target>bis</target>
             </trans-unit>
             <trans-unit id="type">
