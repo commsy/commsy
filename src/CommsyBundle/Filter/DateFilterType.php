@@ -27,7 +27,6 @@ class DateFilterType extends AbstractType
                 'attr' => array(
                     'onchange' => 'this.form.submit()',
                 ),
-                'translation_domain' => 'form',
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
@@ -36,20 +35,14 @@ class DateFilterType extends AbstractType
                 'attr' => array(
                     'onchange' => 'this.form.submit()',
                 ),
-                'label' => 'past-dates',
-                'translation_domain' => 'form',
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
             ))
             ->add('date-from', DateSelectType::class, array(
-                'label' => 'date-from',
-                'translation_domain' => 'form',
                 'required' => false,
             ))
             ->add('date-until', DateSelectType::class, array(
-                'label' => 'date-until',
-                'translation_domain' => 'form',
                 'required' => false,
             ))
             ->add('rubrics', RubricFilterType::class, array(
@@ -95,6 +88,7 @@ class DateFilterType extends AbstractType
                 'csrf_protection'   => false,
                 'validation_groups' => array('filtering'), // avoid NotBlank() constraint-related message
                 'method'            => 'get',
+                'translation_domain' => 'form',
             ))
             ->setRequired(array(
                 'hasHashtags',
