@@ -112,11 +112,11 @@
             </trans-unit>
             <trans-unit id="user">
                 <source>user</source>
-                <target>Benutzer</target>
+                <target>BenutzerIn</target>
             </trans-unit>
             <trans-unit id="moderator">
                 <source>moderator</source>
-                <target>Moderator</target>
+                <target>ModeratorIn</target>
             </trans-unit>
             <trans-unit id="emailHidden">
                 <source>emailHidden</source>
