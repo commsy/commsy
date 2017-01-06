@@ -17,5 +17,8 @@
     "fullcalendar": "latest",
     "tooltipster": "latest",
     "video.js": "latest"
+  },
+  "resolutions": {
+    "jquery": "~2.2"
   }
 }
