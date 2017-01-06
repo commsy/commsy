@@ -147,7 +147,7 @@
                 
                 {% if showHashtags %}
                 <li>
-                    <div class="uk-grid-width-small-1-4" data-uk-grid data-uk-check-display>
+                    <div class="uk-grid-width-small-1-4 hashtag-form" data-uk-grid data-uk-check-display>
                         {% for hashtag in form.hashtags %}
                             <div>
                             {{ form_widget(hashtag) }}
@@ -156,11 +156,11 @@
                         {% endfor %}
                     </div>
                     <div class="uk-margin-top uk-flex">
-                        <div>
-                            {{ form_label(form.newHashtag) }}
-                        </div>
                         <div class="uk-margin-small-left">
                             {{ form_widget(form.newHashtag) }}
+                        </div>
+                        <div class="uk-margin-small-left">
+                            {{ form_widget(form.newHashtagAdd) }}
                         </div>
                     </div>
                 </li>

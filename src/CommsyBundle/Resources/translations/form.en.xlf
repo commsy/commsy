@@ -366,6 +366,10 @@
                 <source>Type</source>
                 <target>Type</target>
             </trans-unit>
+            <trans-unit id="addNewHashtag">
+                <source>addNewHashtag</source>
+                <target>add hashtag</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
