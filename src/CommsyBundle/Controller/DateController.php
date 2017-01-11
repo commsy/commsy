@@ -19,12 +19,17 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 use CommsyBundle\Filter\DateFilterType;
+use CommsyBundle\Validator\Constraints\EndDateConstraint;
 
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Form\FormError;
 
 class DateController extends Controller
 {    
+    private $defaultFilterValues = array(
+            'hide-deactivated-entries' => true,
+            'hide-past-dates' => true
+    );
     /**
      * @Route("/room/{roomId}/date/feed/{start}/{sort}")
      * @Template()
@@ -46,12 +51,7 @@ class DateController extends Controller
         $dateService = $this->get('commsy_legacy.date_service');
         
         if ($dateFilter) {
-            // setup filter form
-            $defaultFilterValues = array(
-                'activated' => true,
-                'past-dates' => false,
-            );
-            $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
+            $filterForm = $this->createForm(DateFilterType::class, $this->defaultFilterValues, array(
                 'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
                 'hasHashtags' => $roomItem->withBuzzwords(),
                 'hasCategories' => $roomItem->withTags(),
@@ -59,7 +59,6 @@ class DateController extends Controller
     
             // manually bind values from the request
             $filterForm->submit($dateFilter);
-
             // set filter conditions on the date manager
             $dateService->setFilterConditions($filterForm);
         } else {
@@ -219,12 +218,7 @@ class DateController extends Controller
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
         
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true,
-            'past-dates' => false
-        );
-        $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
+        $filterForm = $this->createForm(DateFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
             'hasHashtags' => $roomItem->withBuzzwords(),
             'hasCategories' => $roomItem->withTags(),
@@ -268,12 +262,7 @@ class DateController extends Controller
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
         
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true,
-            'past-dates' => false
-        );
-        $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
+        $filterForm = $this->createForm(DateFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
             'hasHashtags' => $roomItem->withBuzzwords(),
             'hasCategories' => $roomItem->withTags(),
@@ -328,13 +317,8 @@ class DateController extends Controller
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
-        
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true,
-            'past-dates' => true
-        );
-        $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
+
+        $filterForm = $this->createForm(DateFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_date_calendar', array('roomId' => $roomId)),
             'hasHashtags' => $roomItem->withBuzzwords(),
             'hasCategories' => $roomItem->withTags(),
@@ -346,7 +330,6 @@ class DateController extends Controller
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isValid()) {
-            // set filter conditions in material manager
             $dateService->setFilterConditions($filterForm);
         }
 
@@ -365,7 +348,7 @@ class DateController extends Controller
     {
         // setup filter form
         $defaultFilterValues = array(
-            'activated' => true
+            'Hide-deactivated-entries' => true
         );
 
         // get the material manager service
@@ -508,14 +491,9 @@ class DateController extends Controller
         
         // get the date service
         $dateService = $this->get('commsy_legacy.date_service');
-        
+
         if ($dateFilter) {
-            // setup filter form
-            $defaultFilterValues = array(
-                'activated' => true,
-                'past-dates' => true
-            );
-            $filterForm = $this->createForm(DateFilterType::class, $defaultFilterValues, array(
+            $filterForm = $this->createForm(DateFilterType::class, $this->defaultFilterValues, array(
                 'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
                 'hasHashtags' => $roomItem->withBuzzwords(),
                 'hasCategories' => $roomItem->withTags(),
@@ -1019,7 +997,12 @@ class DateController extends Controller
             $submittedFormData['start']['date'],
             $startDateConstraint
         );
-        
+
+        $errorList->addAll($this->get('validator')->validate(
+            $submittedFormData,
+            new EndDateConstraint()
+        ));
+
         if ($form->isValid() && (count($errorList) === 0)) {
             $saveType = $form->getClickedButton()->getName();
             if ($saveType == 'save') {
@@ -1097,9 +1080,9 @@ class DateController extends Controller
                 // ToDo ...
             } 
             return $this->redirectToRoute('commsy_date_savedetails', array('roomId' => $roomId, 'itemId' => $itemId));
-        }else {
-            if (count($errorList) > 0) {
-                $form->get('start')->addError(new FormError('Start date must not be empty'));
+        } else {
+            foreach($errorList as $error) {
+                $form->get('start')->addError(new FormError($error->getMessage()));
             }
         }
         

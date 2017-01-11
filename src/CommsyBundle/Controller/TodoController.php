@@ -21,6 +21,10 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class TodoController extends Controller
 {
+    // setup filter form default values
+    private $defaultFilterValues = array(
+            'hide-deactivated-entries' => true,
+    );
     /**
      * @Route("/room/{roomId}/todo")
      * @Template()
@@ -38,10 +42,7 @@ class TodoController extends Controller
         
         // get the todo manager service
         $todoService = $this->get('commsy_legacy.todo_service');
-        $defaultFilterValues = array(
-            'activated' => true,
-        );
-        $filterForm = $this->createForm(TodoFilterType::class, $defaultFilterValues, array(
+        $filterForm = $this->createForm(TodoFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_todo_list', array(
                 'roomId' => $roomId,
             )),
@@ -59,12 +60,7 @@ class TodoController extends Controller
         // get todo list from manager service 
         $itemsCountArray = $todoService->getCountArray($roomId);
         
-        
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true,
-        );
-        $filterForm = $this->createForm(TodoFilterType::class, $defaultFilterValues, array(
+        $filterForm = $this->createForm(TodoFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_todo_list', array(
                 'roomId' => $roomId,
             )),
@@ -170,11 +166,7 @@ class TodoController extends Controller
         $todoService = $this->get('commsy_legacy.todo_service');
 
         if ($todoFilter) {
-            // setup filter form
-            $defaultFilterValues = array(
-                'activated' => true,
-            );
-            $filterForm = $this->createForm(TodoFilterType::class, $defaultFilterValues, array(
+            $filterForm = $this->createForm(TodoFilterType::class, $this->defaultFilterValues, array(
                 'action' => $this->generateUrl('commsy_todo_list', array(
                     'roomId' => $roomId,
                 )),
@@ -995,11 +987,7 @@ class TodoController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true,
-        );
-        $filterForm = $this->createForm(TodoFilterType::class, $defaultFilterValues, array(
+        $filterForm = $this->createForm(TodoFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_todo_list', array(
                 'roomId' => $roomId,
             )),

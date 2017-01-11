@@ -59,8 +59,8 @@ class TodoService
         $formData = $filterForm->getData();
 
         // activated
-        if (!$formData['activated']) {
-            $this->todoManager->showNotActivatedEntries();
+        if ($formData['hide-deactivated-entries']) {
+            $this->todoManager->showNoNotActivatedEntries();
         }
 
         // rubrics
