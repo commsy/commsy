@@ -9,8 +9,9 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+
+use CommsyBundle\Form\Type\Custom\DateSelectType;
 
 class UserType extends AbstractType
 {
@@ -26,31 +27,10 @@ class UserType extends AbstractType
                 'translation_domain' => 'user',
                 'required' => false,
             ))
-            ->add('dateOfBirth', DateType::class, array(
-                'label' => 'dateOfBirth',
-                'widget' => 'single_text',
-                'format' => 'dd.MM.yyyy',
-                'attr' => array(
-                    'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
-                    'class' => 'cs-form-input-inline',
-                ),
+            ->add('dateOfBirth', DateSelectType::class, array(
+                'label'    => 'dateOfBirth',
                 'translation_domain' => 'user',
                 'required' => false,
-            ))
-            ->add('userImage', FileType::class, array(
-                'label' => 'userImage',
-                'attr' => array(
-                    'placeholder' => 'userImage',
-                    'class' => 'upload',
-                    'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
-                ),
-                'translation_domain' => 'user',
-                'required' => false,
-            ))
-            ->add('deleteUserImage', CheckboxType::class, array(
-                'label' => 'deleteUserImage',
-                'required' => false,
-                'translation_domain' => 'user',
             ))
             ->add('email', TextType::class, array(
                 'constraints' => array(
