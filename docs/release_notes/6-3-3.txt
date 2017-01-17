@@ -1,3 +1,0 @@
-CommSy Version 6.3.3
-
-Bugfix-Release of CommSy
