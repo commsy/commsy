@@ -349,11 +349,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
                           $current_context->save();
 
                           if ($current_context->isGroupRoom()) {
-                            $group_item = $current_context->getLinkedGroupItem();
-                            $group_item->unsetGroupRoomActive();
-                            $group_item->unsetGroupRoomItemID();
-                            $group_item->save();
-                            $this->_popup_controller->setSuccessfullItemIDReturn($current_context->getLinkedProjectItemID());
+                          	$this->_popup_controller->setSuccessfullItemIDReturn($current_context->getLinkedProjectItemID());
                           } else {
                           	$this->_popup_controller->setSuccessfullItemIDReturn($this->_environment->getCurrentPortalID());
                           }
