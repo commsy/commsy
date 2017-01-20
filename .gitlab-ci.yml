@@ -30,9 +30,6 @@ before_script:
   # Install global Node.js packages
   - npm -g install bower gulp
 
-  # Install Node.js dependencies
-  - npm install
-
 services:
   - mariadb:latest
 
@@ -44,27 +41,25 @@ variables:
   MYSQL_PASSWORD: changeme
 
 stages:
+  - build
   - test
-  - release
+  - package
+
+##########
+## Jobs
+##########
 
 build:
-  stage: test
+  stage: build
   script:
     - cp legacy/etc/cs_config.php-dist legacy/etc/cs_config.php
     - cp app/config/parameters.yml.dist app/config/parameters.yml
     - 'sed -i "s/database_host:     127.0.0.1/database_host:     mariadb/" app/config/parameters.yml'
     - php composer.phar install --no-interaction
-    - bower --allow-root --config.analytics=false install
-    - gulp
-    - phpunit
-
-release:
-  stage: release
-  script:
+    - npm install
     - bower --allow-root --config.analytics=false install
     - gulp --prod
   artifacts:
-    name: "commsy_${CI_BUILD_TAG}"
     paths:
       - app/
       - bin/
@@ -72,10 +67,36 @@ release:
       - legacy/
       - src/
       - var/
+      - vendor/
       - web/
-      - composer.json
-      - composer.lock
-      - composer.phar
+      - LICENSE.md
       - README.md
-  only:
-    - tags
+      - VERSION
+
+test:
+  stage: test
+  script:
+    - phpunit
+  dependencies:
+    - build
+
+package:
+  stage: package
+  script:
+    - rm app/config/parameters.yml
+  dependencies:
+    - build
+  artifacts:
+      name: "commsy_${CI_BUILD_REF_NAME}"
+      paths:
+      - app/
+      - bin/
+      - files/
+      - legacy/
+      - src/
+      - var/
+      - vendor/
+      - web/
+      - LICENSE.md
+      - README.md
+      - VERSION
