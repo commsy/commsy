@@ -15,8 +15,12 @@
         
             <ul id="linksFormTabs" class="uk-tab" data-uk-tab="{connect:'#linksForm'}">
                 <li><a href="">{{ 'linkedEntries'|trans({}) }}</a></li>
-                <li><a href="">{{ 'categories'|trans({})|capitalize }}</a></li>
-                <li><a href="">{{ 'hashtags'|trans({}, 'room')|capitalize }}</a></li>
+                {% if showCategories %}
+                    <li><a href="">{{ 'categories'|trans({})|capitalize }}</a></li>
+                {% endif %}
+                {% if showHashtags %}
+                    <li><a href="">{{ 'hashtags'|trans({}, 'room')|capitalize }}</a></li>
+                {% endif %}
             </ul>
             
             {{ form_start(form) }}
@@ -139,10 +143,12 @@
                         </div>
                     </div>
                 </li>
-                {%if showCategories %}
+                {% if showCategories %}
                 <li>
                     {{ form_widget(form.categories) }}
                 </li>
+                {% else %}
+                    {% do form.categories.setRendered %}
                 {% endif %}
                 
                 {% if showHashtags %}
@@ -164,6 +170,12 @@
                         </div>
                     </div>
                 </li>
+                {% else %}
+                    {% for hashtag in form.hashtags %}
+                        {% do hashtag.setRendered %}
+                    {% endfor %}
+                    {% do form.newHashtag.setRendered %}
+                    {% do form.newHashtagAdd.setRendered %}
                 {% endif %}
             </ul>
             
