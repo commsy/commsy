@@ -11,31 +11,37 @@
             </h4>
         </div>
     </div>
-    <div>
 
-    {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
-    {{ form_start(form) }}
-    {{ form_errors(form) }}
-    
-    <div class="uk-flex">
-        <div>
-            {{ form_widget(form.oldFiles) }}
-        </div>
-    </div>
-    <div class="uk-flex uk-margin-small-top">
-        <div class="uk-width-9-10 cs-upload-form">
-            {{ form_widget(form.files) }}
-        </div>
-    </div>
-    <div class="uk-flex uk-margin-small-top">
-        <div>
-            {{ form_row(form.save) }}
-        </div>
-        <div class="uk-margin-small-left">
-            {{ form_row(form.cancel) }}
-        </div>
-    </div>
-    
-    {{ form_end(form) }}
+    <div>
+        {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
+
+        {{ form_start(form) }}
+            <div class="uk-flex">
+                <div data-prototype="{{ form_widget(form.files.vars.prototype)|e('html_attr') }}">
+                    {% for file in form.files %}
+                        {{ form_widget(file.checked) }}
+                        {{ form_widget(file.fileId) }}
+
+                        <label class="uk-form-label" for="{{ file.vars.id }}">
+                            {{- file.vars.value.filename }} ({{ file.vars.value.creationDate|craue_datetime }})
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="uk-flex uk-margin-small-top">
+                <div class="uk-width-9-10 cs-upload-form">
+                    {{ form_widget(form.upload) }}
+                </div>
+            </div>
+            <div class="uk-flex uk-margin-small-top">
+                <div>
+                    {{ form_row(form.save) }}
+                </div>
+                <div class="uk-margin-small-left">
+                    {{ form_row(form.cancel) }}
+                </div>
+            </div>
+
+        {{ form_end(form) }}
     </div>
 </div>

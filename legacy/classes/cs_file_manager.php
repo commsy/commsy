@@ -253,8 +253,17 @@ class cs_file_manager extends cs_manager implements cs_export_import_interface {
          $file_item->setFileID($result);
          $saved = $this->_saveOnDisk($file_item);
          if ($saved) {
+             $discManager = $this->_environment->getDiscManager();
+             $filePath = $discManager->getFilePath($this->_environment->getCurrentPortalID(), $file_item->getContextID());
+             $filePath .= $file_item->getFileID();
+             $fileExtension = substr(strrchr($file_item->getFileName(), '.'), 1);
+             $filePath .= '.' . $fileExtension;
+
+             $filePath = ltrim($filePath, '\.\./');
+
             $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
-                     ' size="'.encode(AS_DB,filesize($file_item->getDiskFileName())).'"'.
+                     ' size="'.encode(AS_DB,filesize($file_item->getDiskFileName())).'",'.
+                     ' filepath="'.encode(AS_DB,$filePath).'"'.
                      ' WHERE files_id="'.encode(AS_DB,$file_item->getFileID()).'"';
             $result = $this->_db_connector->performQuery($query);
          }
@@ -262,7 +271,7 @@ class cs_file_manager extends cs_manager implements cs_export_import_interface {
           include_once('functions/error_functions.php');
           trigger_error("Filemanager: Problem creating file entry: ".$query, E_USER_ERROR);
        }
-       unset($file_item);
+
        return $saved;
     }
 

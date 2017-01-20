@@ -1,6 +1,7 @@
 <?php
 namespace CommsyBundle\Controller;
 
+use CommsyBundle\Form\Model\File;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -25,24 +26,23 @@ class UploadController extends Controller
 
         $files = $request->files->all();
 
-        $saveFileIds = false;
         $fileIds = array();
 
-        foreach ($files['files'] as $file) {
-            if ($itemId) {
+        if ($item) {
+            foreach ($files['files'] as $file) {
                 /*
                     check type of item:
                     user    ->  user image
                     room    ->  room icon
                     portal  ->  portal icon
                     <other> ->  attachment to item
-                    
+
                     $file is an instance of Symfony\Component\HttpFoundation\File\UploadedFile
                     Array
                     (
                         [0] => Symfony\Component\HttpFoundation\File\UploadedFile Object
                             (
-                                [test:Symfony\Component\HttpFoundation\File\UploadedFile:private] => 
+                                [test:Symfony\Component\HttpFoundation\File\UploadedFile:private] =>
                                 [originalName:Symfony\Component\HttpFoundation\File\UploadedFile:private] => box_checked.png
                                 [mimeType:Symfony\Component\HttpFoundation\File\UploadedFile:private] => image/png
                                 [size:Symfony\Component\HttpFoundation\File\UploadedFile:private] => 2329
@@ -52,117 +52,95 @@ class UploadController extends Controller
                             )
                     )
                 */
-                
-                if ($item->getItemType() == 'user') {
-                    $srcfile = $file->getPathname();
-    				$targetfile = $srcfile . "_converted";
-    				// resize image to a maximum width of 150px and keep ratio
-    	            $size = getimagesize($srcfile);
-    	            $x_orig= $size[0];
-    	            $y_orig= $size[1];
-    	            //$verhaeltnis = $x_orig/$y_orig;
-    	            $verhaeltnis = $y_orig/$x_orig;
-    	            $max_width = 150;
-    	            //$ratio = 1.618; // Goldener Schnitt
-    	            //$ratio = 1.5;   // 2:3
-    	            //$ratio = 1.334; // 3:4
-    	            $ratio = 1;       // 1:1
-    	            if($verhaeltnis < $ratio){
-    	               // Breiter als 1:$ratio
-    	               $source_width = ($size[1] * $max_width) / ($max_width * $ratio);
-    	               $source_height = $size[1];
-    	               $source_x = ($size[0] - $source_width) / 2;
-    	               $source_y = 0;
-    	            } else {
-    	               // Höher als 1:$ratio
-    	               $source_width = $size[0];
-    	               $source_height = ($size[0] * ($max_width * $ratio)) / ($max_width);
-    	               $source_x = 0;
-    	               $source_y = ($size[1] - $source_height) / 2;
-    	            }
-    	            switch ($size[2]) {
-    	                  case '1':
-    	                     $im = imagecreatefromgif($srcfile);
-    	                     break;
-    	                  case '2':
-    	                     $im = imagecreatefromjpeg($srcfile);
-    	                     break;
-    	                  case '3':
-    	                     $im = imagecreatefrompng($srcfile);
-    	                     break;
-    	            }
-                    $newimg = imagecreatetruecolor($max_width,($max_width * $ratio));
-                    imagecopyresampled($newimg, $im, 0, 0, $source_x, $source_y, $max_width, ceil($max_width * $ratio), $source_width, $source_height);
-                    imagepng($newimg,$targetfile);
-                    imagedestroy($im);
-                    imagedestroy($newimg);
-    
-    				// determ new file name
-    				$environment = $this->get("commsy_legacy.environment")->getEnvironment();
-    				$userService = $this->get("commsy_legacy.user_service");
-    				$userItem = $userService->getUser($itemId);
-    				$filename = 'cid' . $environment->getCurrentContextID() . '_' . $userItem->getUserID() . '.png';
-    				
-    				// copy file and set picture
-                    $discService = $this->get('commsy_legacy.disc_service');
-    				$discService->copyFile($targetfile, $filename, true);
-    				$userItem->setPicture($filename);
-    				$userItem->save();
-    				
-    				$response->setData(array(
-                        'userImage' => $this->generateUrl('commsy_user_image', array(
-                            'roomId' => $roomId,
-                            'itemId' => $itemId
-                        ))
-                    ));
-    				
-                } else if ($item->getItemType() == 'room') {
-                    
-                } else if ($item->getItemType() == 'portal') {
-                    
-                } else {
-                    $saveFileIds = true;
-                    
-					$fileItem = $fileService->getNewFile();
-					
-					$fileItem->setTempKey($file->getPathname());
-					
-					$fileData = array();
-                    $fileData['tmp_name'] = $file->getPathname();
-                    $fileData['name'] = $file->getClientOriginalName();
-					$fileItem->setPostFile($fileData);
-					
-					$fileItem->save();
-                    $fileIds[] = $fileItem->getFileId();
+
+                switch ($item->getItemType()) {
+                    case 'user':
+                        $srcfile = $file->getPathname();
+                        $targetfile = $srcfile . "_converted";
+
+                        // resize image to a maximum width of 150px and keep ratio
+                        $size = getimagesize($srcfile);
+                        $x_orig= $size[0];
+                        $y_orig= $size[1];
+                        $verhaeltnis = $y_orig/$x_orig;
+                        $max_width = 150;
+                        $ratio = 1;
+                        if($verhaeltnis < $ratio){
+                            // Breiter als 1:$ratio
+                            $source_width = ($size[1] * $max_width) / ($max_width * $ratio);
+                            $source_height = $size[1];
+                            $source_x = ($size[0] - $source_width) / 2;
+                            $source_y = 0;
+                        } else {
+                            // Höher als 1:$ratio
+                            $source_width = $size[0];
+                            $source_height = ($size[0] * ($max_width * $ratio)) / ($max_width);
+                            $source_x = 0;
+                            $source_y = ($size[1] - $source_height) / 2;
+                        }
+                        switch ($size[2]) {
+                            case '1':
+                                $im = imagecreatefromgif($srcfile);
+                                break;
+                            case '2':
+                                $im = imagecreatefromjpeg($srcfile);
+                                break;
+                            case '3':
+                                $im = imagecreatefrompng($srcfile);
+                                break;
+                        }
+                        $newimg = imagecreatetruecolor($max_width,($max_width * $ratio));
+                        imagecopyresampled($newimg, $im, 0, 0, $source_x, $source_y, $max_width, ceil($max_width * $ratio), $source_width, $source_height);
+                        imagepng($newimg,$targetfile);
+                        imagedestroy($im);
+                        imagedestroy($newimg);
+
+                        // determ new file name
+                        $environment = $this->get("commsy_legacy.environment")->getEnvironment();
+                        $userService = $this->get("commsy_legacy.user_service");
+                        $userItem = $userService->getUser($itemId);
+                        $filename = 'cid' . $environment->getCurrentContextID() . '_' . $userItem->getUserID() . '.png';
+
+                        // copy file and set picture
+                        $discService = $this->get('commsy_legacy.disc_service');
+                        $discService->copyFile($targetfile, $filename, true);
+                        $userItem->setPicture($filename);
+                        $userItem->save();
+
+                        $response->setData([
+                            'userImage' => $this->generateUrl('commsy_user_image', [
+                                'roomId' => $roomId,
+                                'itemId' => $itemId,
+                            ])
+                        ]);
+                        break;
+
+                    default:
+                        $fileItem = $fileService->getNewFile();
+
+                        $fileItem->setTempKey($file->getPathname());
+
+                        $fileData = array();
+                        $fileData['tmp_name'] = $file->getPathname();
+                        $fileData['name'] = $file->getClientOriginalName();
+                        $fileItem->setPostFile($fileData);
+
+                        $fileItem->save();
+                        $fileIds[] = $fileItem->getFileId();
+                        break;
                 }
             }
         }
 
-        if ($saveFileIds) {
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $tempManager = $legacyEnvironment->getManager($item->getItemType());
-            $tempItem = $tempManager->getItem($item->getItemId());
-            
-            $responseData = array();
-            foreach ($fileIds as $fileId) {
-                $tempFile = $fileService->getFile($fileId);
-                $responseData[$fileId] = $tempFile->getFilename().' ('.$tempFile->getCreationDate().')';
-            }
-            
-            $response->setData(array(
-                'fileIds' => $responseData,
-            ));
-            
-            $oldFileIds = $tempItem->getFileIDArray();
-            
-            $fileIds = array_merge($oldFileIds, $fileIds);
-            
-            $tempItem->setFileIDArray($fileIds);
-            
-            $tempItem->save();
+        $responseData = array();
+        foreach ($fileIds as $fileId) {
+            $tempFile = $fileService->getFile($fileId);
+            $responseData[$fileId] = $tempFile->getFilename().' ('.$tempFile->getCreationDate().')';
         }
         
-        return $response;
+        return $response->setData([
+            'fileIds' => $responseData,
+        ]);
     }
     
     /**
@@ -174,70 +152,73 @@ class UploadController extends Controller
     {
         // get material from MaterialService
         $itemService = $this->get('commsy_legacy.item_service');
-        $item = $itemService->getItem($itemId);
+        $item = $itemService->getTypedItem($itemId);
 
         if (!$item) {
             throw $this->createNotFoundException('No item found for id ' . $itemId);
         }
 
-        $uploadData = array();
+        // collect currently assigned files
+        $assignedFiles = [];
 
         $fileService = $this->get('commsy_legacy.file_service');
-        $oldFileIds = $item->getFileIDArray();
-        $optionsData = array();
-        $uploadData['oldFiles'] = array();
-        $optionsData['oldFiles'] = array();
-        foreach ($oldFileIds as $oldFileId) {
-            $tempFile = $fileService->getFile($oldFileId);
-            $uploadData['oldFiles'][] = $oldFileId;
-            $optionsData['oldFiles'][$tempFile->getFilename().' ('.$tempFile->getCreationDate().')'] = $oldFileId;
+        $currentFileIds = $item->getFileIDArray();
+        foreach ($currentFileIds as $currentFileId) {
+            $currentFile = $fileService->getFile($currentFileId);
+
+            // convert legacy file object into a form usable file object
+            $formFile = new File();
+            $formFile->setFileId($currentFile->getFileID());
+            $formFile->setFilename($currentFile->getFileName());
+            $formFile->setCreationDate(new \DateTime($currentFile->getCreationDate()));
+            $formFile->setChecked(true);
+
+            $assignedFiles['files'][] = $formFile;
         }
 
-        $form = $this->createForm(UploadType::class, $uploadData, array(
-            'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
+        $form = $this->createForm(UploadType::class, $assignedFiles, [
+            'uploadUrl' => $this->generateUrl('commsy_upload_upload', [
                 'roomId' => $roomId,
                 'itemId' => $itemId
-            )),
-            'oldFiles' => $optionsData['oldFiles'],
-        ));
-        
+            ]),
+        ]);
+
         $form->handleRequest($request);
+
         if ($form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $formData = $form->getData();
-    
+                $files = $formData['files'];
+
+                $checkedFileIds = [];
+                $uncheckedFileIds = [];
+                foreach ($files as $file) {
+                    if ($file->getChecked()) {
+                        $checkedFileIds[] = $file->getFileId();
+                    } else {
+                        $uncheckedFileIds[] = $file->getFileId();
+                    }
+                }
+
+                // update item
                 $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-                $tempManager = $legacyEnvironment->getManager($item->getItemType());
-                $tempItem = $tempManager->getItem($item->getItemId());
-    
-                $oldFileIds = $tempItem->getFileIDArray();
-                
-                $tempItem->setFileIDArray($formData['oldFiles']);
-                $tempItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
-                
-                $tempItem->save();
-    
-                $deleteFileIds = array_diff($oldFileIds, $formData['oldFiles']);
-                
-                foreach ($deleteFileIds as $deleteFileId) {
-                    $tempFile = $fileService->getFile($deleteFileId);
+                $item->setFileIDArray($checkedFileIds);
+                $item->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                $item->save();
+
+                // delete unchecked files
+                foreach ($uncheckedFileIds as $uncheckedFileId) {
+                    $tempFile = $fileService->getFile($uncheckedFileId);
                     $tempFile->delete();
                 }
-                
-                // persist
-                // $em = $this->getDoctrine()->getManager();
-                // $em->persist($room);
-                // $em->flush();
-            } else if ($form->get('cancel')->isClicked()) {
-                // ToDo ...
             }
             
             return $this->redirectToRoute('commsy_upload_uploadsave', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
-        return array(
-            'form' => $form->createView()
-        );
+        return [
+            'form' => $form->createView(),
+        ];
     }
     
     /**

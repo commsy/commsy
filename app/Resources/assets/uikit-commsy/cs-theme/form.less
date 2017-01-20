@@ -150,12 +150,15 @@ input:not([type]).uk-form-tiny {
     margin-top:25px !important;
 }
 
-#upload_oldFiles .uk-form-controls{
-    float:left;
-}
-#upload_oldFiles .uk-form-label{
-    padding:3px 0px 0px 20px;
-    font-weight:normal;
+form[name="upload"] {
+    div[data-prototype] .uk-form-controls {
+        float:left;
+    }
+
+    .uk-form-label {
+        padding: 3px 0px 0px 20px;
+        font-weight:normal;
+    }
 }
 
 #material_title {

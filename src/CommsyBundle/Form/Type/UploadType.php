@@ -2,11 +2,13 @@
 namespace CommsyBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+
+use CommsyBundle\Form\Type\CheckedFileType;
 
 class UploadType extends AbstractType
 {
@@ -21,16 +23,13 @@ class UploadType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('oldFiles', ChoiceType::class, array(
-                'placeholder' => false,
-                'choices' => $options['oldFiles'],
-                'label' => 'files',
-                'translation_domain' => 'profile',
-                'required' => false,
-                'expanded' => true,
-                'multiple' => true
-            ))
-            ->add('files', FileType::class, array(
+            ->add('files', CollectionType::class, [
+                'allow_add' => true,
+                'entry_type' => CheckedFileType::class,
+                'entry_options' => [
+                ],
+            ])
+            ->add('upload', FileType::class, array(
                 'label' => 'upload',
                 'attr' => array(
                      'data-uk-csupload' => '{"path": "' . $options['uploadUrl'] . '"}',
@@ -64,7 +63,7 @@ class UploadType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['uploadUrl', 'oldFiles'])
+            ->setRequired(['uploadUrl'])
         ;
     }
 

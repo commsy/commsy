@@ -56,8 +56,31 @@
                     if (responseData['userImage']) {
                         $('#profile_form_user_image').attr('src', responseData['userImage'] + '?' + Math.random());
                     } else if (responseData['fileIds']) {
+                        let prototypeNode = $('form[name="upload"] div[data-prototype]');
+                        let prototype = prototypeNode.data('prototype');
+
+                        let index = prototypeNode.find(':input[type="checkbox"]').length;
+
                         for (let key in responseData['fileIds']) {
-                            $('#upload_oldFiles').append('<div class="uk-form-controls"><input type="checkbox" id="upload_oldFiles_' + key +'" name="upload[oldFiles][]" value="' + key +'" checked="checked"></div><label class="uk-form-label" for="upload_oldFiles_' + key +'">' + responseData['fileIds'][key] + '</label>');
+
+                            let indexedPrototype = prototype.replace(/__name__/g, index);
+
+                            let prototypeInputNode = $(indexedPrototype).find(':input');
+                            prototypeInputNode.attr('checked', 'checked');
+                            prototypeInputNode.val(key);
+
+                            let labelNode = $('<label class="uk-form-label"></label>')
+                                .attr('for', 'upload_files_' + index + '_checked')
+                                .html(responseData['fileIds'][key]);
+
+                            index++;
+
+                            let formControlNode = $('<div class="uk-form-controls"></div>')
+                                .append(prototypeInputNode);
+
+                            prototypeNode
+                                .append(formControlNode)
+                                .append(labelNode);
                         }
                     }
                 }
