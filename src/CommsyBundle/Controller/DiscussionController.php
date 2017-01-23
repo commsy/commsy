@@ -21,6 +21,10 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class DiscussionController extends Controller
 {
+    // setup filter form default values
+    private $defaultFilterValues = array(
+            'hide-deactivated-entries' => true,
+    );
     /**
      * @Route("/room/{roomId}/discussion/feed/{start}/{sort}")
      * @Template()
@@ -47,11 +51,7 @@ class DiscussionController extends Controller
         $discussionService = $this->get('commsy_legacy.discussion_service');
         
         if ($discussionFilter) {
-            // setup filter form
-            $defaultFilterValues = array(
-                'activated' => true
-            );
-            $filterForm = $this->createForm(DiscussionFilterType::class, $defaultFilterValues, array(
+            $filterForm = $this->createForm(DiscussionFilterType::class, $this->defaultFilterValues, array(
                 'action' => $this->generateUrl('commsy_discussion_list', array(
                     'roomId' => $roomId)
                 ),
@@ -62,13 +62,11 @@ class DiscussionController extends Controller
             // manually bind values from the request
             $filterForm->submit($discussionFilter);
             
-            // set filter conditions in material manager
+            // set filter conditions in discussion manager
             $discussionService->setFilterConditions($filterForm);
-        } else {
-            $discussionService->showNoNotActivatedEntries();
         }
 
-        // get material list from manager service 
+        // get discussion list from manager service
         $discussions = $discussionService->getListDiscussions($roomId, $max, $start, $sort);
 
         $readerService = $this->get('commsy_legacy.reader_service');
@@ -121,11 +119,10 @@ class DiscussionController extends Controller
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
-        
-        $defaultFilterValues = array(
-            'activated' => true,
-        );
-        $filterForm = $this->createForm(DiscussionFilterType::class, $defaultFilterValues, array(
+
+        // get the discussion manager service
+        $discussionService = $this->get('commsy_legacy.discussion_service');
+        $filterForm = $this->createForm(DiscussionFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_discussion_list', array(
                 'roomId' => $roomId,
             )),
@@ -133,17 +130,14 @@ class DiscussionController extends Controller
             'hasCategories' => $roomItem->withTags(),
         ));
 
-        // get the discussion manager service
-        $discussionService = $this->get('commsy_legacy.discussion_service');
-
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isValid()) {
-            // set filter conditions in material manager
+            // set filter conditions in discussion manager
             $discussionService->setFilterConditions($filterForm);
         }
 
-        // get material list from manager service 
+        // get discussion list from manager service
         $itemsCountArray = $discussionService->getCountArray($roomId);
 
         $usageInfo = false;
@@ -181,11 +175,7 @@ class DiscussionController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
         
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true
-        );
-        $filterForm = $this->createForm(DiscussionFilterType::class, $defaultFilterValues, array(
+        $filterForm = $this->createForm(DiscussionFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_discussion_list', array(
                 'roomId' => $roomId)
             ),
@@ -225,7 +215,7 @@ class DiscussionController extends Controller
             $ratingList = $assessmentService->getListAverageRatings($itemIds);
         }
 
-        // get material list from manager service 
+        // get material list from manager service
         $itemsCountArray = $discussionService->getCountArray($roomId);
 
 

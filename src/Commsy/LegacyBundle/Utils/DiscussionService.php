@@ -60,7 +60,7 @@ class DiscussionService
         $formData = $filterForm->getData();
 
         // activated
-        if ($formData['activated']) {
+        if ($formData['hide-deactivated-entries']) {
             $this->discussionManager->showNoNotActivatedEntries();
         }
 
