@@ -192,26 +192,21 @@
     {% endif %}
 {% endmacro %}
 
-{% macro userIcon(user, size) %}
+{% macro userIcon(user, size, showTooltip) %}
+    {% set showTooltip = showTooltip ?? true %}
+
     {% if size == 'small' %}
-        <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
+        <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
     {% elseif size matches '/^\\d+$/' %}
-        <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:{{ size }}px; width:{{ size }}px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
+        <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:{{ size }}px; width:{{ size }}px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
     {% else %}
-        <img class="uk-comment-avatar uk-thumbnail uk-border-circle cs-comment-thumbnail" style="height:42px; width:42px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
+        <img class="uk-comment-avatar uk-thumbnail uk-border-circle cs-comment-thumbnail" style="height:42px; width:42px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
     {% endif %}
 {% endmacro %}
 
 {% macro userIconLink(user, size) %}
     {% import _self as macros %}
     <a href="{{ path('commsy_user_detail', {'roomId': user.contextId, 'itemId': user.itemId}) }}">
-        {{  macros.userIcon(user, size) }}
-    </a>
-{% endmacro %}
-
-{% macro userIconProfileSettingsLink(user, size) %}
-    {% import _self as macros %}
-    <a href="{{ path('commsy_profile_general', {'roomId': user.contextId, 'itemId': user.itemId}) }}">
         {{  macros.userIcon(user, size) }}
     </a>
 {% endmacro %}
