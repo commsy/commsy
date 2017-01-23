@@ -23,10 +23,9 @@ class LogoutController extends Controller
 
         $session->reset();
 
-        $baseUrl = $request->getBaseUrl();
         $portal = $legacyEnvironment->getCurrentPortalItem();
 
-        $url = $baseUrl . '?cid=' . $portal->getItemId();
+        $url = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
 
         return $this->redirect($url);
     }
