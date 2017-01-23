@@ -134,7 +134,11 @@
                         }
                         // cancel editing an EXISTING entry => return to detail view of the entry
                         else {
-                            window.location.href = window.location.href;
+                            // trigger reload of the current URL
+                            // We are using the Location.reload() method, since
+                            // setting window.location.href might not result in a reload, if
+                            // there is an anchor currently set
+                            window.location.reload(true);
                         }
                     } else{
                         // submit the form manually

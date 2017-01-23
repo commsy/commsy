@@ -17,6 +17,8 @@
 
         {{ form_start(form) }}
             <div class="uk-flex">
+                {% do form.files.setRendered %}
+
                 <div data-prototype="{{ form_widget(form.files.vars.prototype)|e('html_attr') }}">
                     {% for file in form.files %}
                         {{ form_widget(file.checked) }}
