@@ -63,6 +63,7 @@
                             <div style="margin-bottom: 25px;">{{ 'Terms text'|trans({}, 'settings') }}</div>
                             {{ form_widget(form.terms) }}
                         </div>
+                        {{ form_row(form._token) }}
                         {{ form_row(form.save) }}
                     {{ form_end(form, {'render_rest': false}) }}
                 </div>
