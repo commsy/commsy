@@ -24,6 +24,8 @@ class RecurringYearlyType extends AbstractType
                 ),
                 'label' => 'recurrenceDayOfMonth',
                 'attr' => array(
+                    'style' => 'margin: 0px 3px;',
+                    'size' => '2',
                 ),
                 'translation_domain' => 'date',
             ))
@@ -61,6 +63,7 @@ class RecurringYearlyType extends AbstractType
                 'format' => 'dd.MM.yyyy',
                 'attr' => array(
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
+                    'style' => 'margin: 0px 3px;',
                 ),
                 'translation_domain' => 'date',
             ))

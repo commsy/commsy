@@ -24,6 +24,8 @@ class RecurringWeeklyType extends AbstractType
                 ),
                 'label' => 'recurrenceWeek',
                 'attr' => array(
+                    'style' => 'margin: 0px 3px;',
+                    'size' => '2',
                 ),
                 'translation_domain' => 'date',
             ))
@@ -42,6 +44,9 @@ class RecurringWeeklyType extends AbstractType
                     'sunday' => 'sunday',
                 ),
                 'label' => 'recurrenceDaysOfWeek',
+                'label_attr' => array(
+                    'class' => 'uk-margin-top-remove',
+                ),
                 'translation_domain' => 'date',
                 'required' => false,
                 'expanded' => true,
@@ -56,6 +61,7 @@ class RecurringWeeklyType extends AbstractType
                 'format' => 'dd.MM.yyyy',
                 'attr' => array(
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
+                    'style' => 'margin: 0px 3px;',
                 ),
                 'translation_domain' => 'date',
             ))

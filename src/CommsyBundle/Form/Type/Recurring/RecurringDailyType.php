@@ -26,6 +26,8 @@ class RecurringDailyType extends AbstractType
                 'label' => 'recurrenceDay',
                 'attr' => array(
                     'class' => 'cs-form-input-inline',
+                    'style' => 'margin: 0px 3px;',
+                    'size' => '2',
                 ),
                 'translation_domain' => 'date',
             ))
@@ -39,6 +41,7 @@ class RecurringDailyType extends AbstractType
                 'attr' => array(
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
                     'class' => 'cs-form-input-inline',
+                    'style' => 'margin: 0px 3px;',
                 ),
                 'translation_domain' => 'date',
             ))

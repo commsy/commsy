@@ -53,46 +53,53 @@
 
                 {% if form.recurring_sub is defined %}
                 <div class="uk-form-row">
-                    <div id="date_recurring_sub">
+                    <label class="uk-form-label">Wiederholung</label>
+                    <div id="date_recurring_sub" style="margin-left: 200px">
                         {% if form.recurring_sub.recurrenceDay is defined %}
-                            <div class="uk-flex uk-margin-small-top">
+                            <div class="uk-margin-small-top">
                                 <div>
                                     {{ 'every'|trans({}, 'date') }}{{ form_widget(form.recurring_sub.recurrenceDay) }}.{{ 'day'|trans({}, 'date') }}
                                 </div>
-                                <div class="uk-margin-left">
+                                <div class="uk-margin-small-top">
                                     {{ 'repeat until'|trans({}, 'date') }}{{ form_widget(form.recurring_sub.untilDate) }}
                                 </div>
                             </div>
                         {% elseif form.recurring_sub.recurrenceWeek is defined and form.recurring_sub.recurrenceDaysOfWeek is defined %}
-                            <div class="uk-flex uk-margin-small-top">
-                                <div>
+                            <div class="uk-margin-small-top">
+                                <div class="uk-form-row">
                                     {{ 'every week'|trans({}, 'date') }}{{ form_widget(form.recurring_sub.recurrenceWeek) }}.{{ 'week'|trans({}, 'date') }}
                                 </div>
-                                <div class="uk-margin-left">
-                                    {{ 'every'|trans({}, 'date') }}{{ form_widget(form.recurring_sub.recurrenceDaysOfWeek) }}
+                                <div class="uk-form-row">
+                                    {{ form_label(form.recurring_sub.recurrenceDaysOfWeek) }}
+                                    <div class="uk-form-controls">
+                                        {% for weekDay in form.recurring_sub.recurrenceDaysOfWeek.iterator %}
+                                            <input type="checkbox" value="{{ weekDay.vars['value'] }}" style="vertical-align: baseline;">
+                                            <label>{{weekDay.vars['value']|trans({}, 'date')}}</label>
+                                        {% endfor %}
+                                    </div>
                                 </div>
-                                <div class="uk-margin-left">
+                                <div class="uk-form-row">
                                     {{ 'repeat until'|trans({}, 'date') }}{{ form_widget(form.recurring_sub.untilDate) }}
                                 </div>
                             </div>
                         {% elseif form.recurring_sub.recurrenceMonth is defined and form.recurring_sub.recurrenceDayOfMonthInterval is defined  and form.recurring_sub.recurrenceDayOfMonth is defined %}
-                            <div class="uk-flex uk-margin-small-top">
+                            <div class="uk-margin-small-top">
                                 <div>
                                     {{ 'every'|trans({}, 'date') }}{{ form_widget(form.recurring_sub.recurrenceMonth) }}.{{ 'month'|trans({}, 'date') }}
                                 </div>
-                                <div class="uk-margin-left">
+                                <div class="uk-margin-small-top">
                                     {{ 'every'|trans({}, 'date') }}{{ form_widget(form.recurring_sub.recurrenceDayOfMonthInterval) }}{{ form_widget(form.recurring_sub.recurrenceDayOfMonth) }}
                                 </div>
-                                <div class="uk-margin-left">
+                                <div class="uk-margin-small-top">
                                     {{ 'repeat until'|trans({}, 'date') }}{{ form_widget(form.recurring_sub.untilDate) }}
                                 </div>
                             </div>
                         {% elseif form.recurring_sub.recurrenceDayOfMonth is defined and form.recurring_sub.recurrenceMonthOfYear is defined  %}
-                            <div class="uk-flex uk-margin-small-top">
+                            <div class="uk-margin-small-top">
                                 <div>
                                     {{ 'every'|trans({}, 'date') }}{{ form_widget(form.recurring_sub.recurrenceDayOfMonth) }}{{ form_widget(form.recurring_sub.recurrenceMonthOfYear) }}
                                 </div>
-                                <div class="uk-margin-left">
+                                <div class="uk-margin-small-top">
                                     {{ 'repeat until'|trans({}, 'date') }}{{ form_widget(form.recurring_sub.untilDate) }}
                                 </div>
                             </div>
@@ -138,7 +145,8 @@
                     {{ form_row(form.cancel) }}
                 </div>
             </div>   
-        {{ form_end(form) }}
+            {{ form_row(form._token) }}
+        {{ form_end(form, {'render_rest': false}) }}
     </div>
 </div>
 
