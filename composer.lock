@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ebf2d19886eb0e87e4306a55f6386897",
+    "content-hash": "a922748caf3248309e4f3e1447f58a27",
     "packages": [
         {
             "name": "ci/restclientbundle",
@@ -143,16 +143,16 @@
         },
         {
             "name": "debril/feed-io",
-            "version": "v2.4.9",
+            "version": "v2.4.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alexdebril/feed-io.git",
-                "reference": "ea753c4f3b0e0eae18be11c4938e9774810ffda3"
+                "reference": "265d33f8f17c7a4e07b1b35c3a2c558d92da1951"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alexdebril/feed-io/zipball/ea753c4f3b0e0eae18be11c4938e9774810ffda3",
-                "reference": "ea753c4f3b0e0eae18be11c4938e9774810ffda3",
+                "url": "https://api.github.com/repos/alexdebril/feed-io/zipball/265d33f8f17c7a4e07b1b35c3a2c558d92da1951",
+                "reference": "265d33f8f17c7a4e07b1b35c3a2c558d92da1951",
                 "shasum": ""
             },
             "require": {
@@ -197,21 +197,21 @@
                 "news",
                 "rss"
             ],
-            "time": "2017-01-09T14:33:21+00:00"
+            "time": "2017-01-16T08:52:06+00:00"
         },
         {
             "name": "debril/rss-atom-bundle",
-            "version": "v2.5.2",
+            "version": "v3.0.4",
             "target-dir": "Debril/RssAtomBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alexdebril/rss-atom-bundle.git",
-                "reference": "d323a49a21e4ce8b4d342ce0590f850422dd0b9d"
+                "reference": "9117ad40a537661906b43a6f0ccd4719dcde6c19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alexdebril/rss-atom-bundle/zipball/d323a49a21e4ce8b4d342ce0590f850422dd0b9d",
-                "reference": "d323a49a21e4ce8b4d342ce0590f850422dd0b9d",
+                "url": "https://api.github.com/repos/alexdebril/rss-atom-bundle/zipball/9117ad40a537661906b43a6f0ccd4719dcde6c19",
+                "reference": "9117ad40a537661906b43a6f0ccd4719dcde6c19",
                 "shasum": ""
             },
             "require": {
@@ -253,7 +253,7 @@
                 "atom",
                 "rss"
             ],
-            "time": "2016-11-28T13:15:30+00:00"
+            "time": "2017-01-09T23:23:52+00:00"
         },
         {
             "name": "doctrine/annotations",

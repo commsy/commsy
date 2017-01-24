@@ -4,8 +4,8 @@ namespace CommsyBundle\Feed;
 
 use Debril\RssAtomBundle\Provider\FeedContentProviderInterface;
 use Debril\RssAtomBundle\Exception\FeedException\FeedNotFoundException;
-use Debril\RssAtomBundle\Protocol\Parser\FeedContent;
 
+use FeedIo\Feed;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -52,7 +52,7 @@ class CommsyFeedContentProvider implements FeedContentProviderInterface
 
             $this->feedCreatorFactory->setGuestAccess($isGuestAccess);
 
-            $feed = new FeedContent();
+            $feed = new Feed();
             $feed->setLastModified($this->getLastModified());
             $feed->setTitle($this->getTitle($currentContextItem));
             $feed->setDescription($this->getDescription($currentContextItem));
@@ -61,7 +61,7 @@ class CommsyFeedContentProvider implements FeedContentProviderInterface
             $items = $this->getItems($currentContextItem);
 
             foreach ($items as $item) {
-                $feed->addItem($this->feedCreatorFactory->createItem($item));
+                $feed->add($this->feedCreatorFactory->createItem($item));
             }
 
             return $feed;

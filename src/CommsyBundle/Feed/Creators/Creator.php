@@ -2,7 +2,7 @@
 
 namespace CommsyBundle\Feed\Creators;
 
-use \Debril\RssAtomBundle\Protocol\Parser\Item;
+use FeedIo\Feed\Item;
 
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
@@ -23,10 +23,10 @@ abstract class Creator
         $feedItem = new Item();
 
         $feedItem->setTitle($this->getTitle($item));
-        $feedItem->setUpdated(new \DateTime($item->getModificationDate()));
+        $feedItem->setLastModified(new \DateTime($item->getModificationDate()));
 
         if ($this->generateAuthor($item)) {
-            $feedItem->setAuthor($this->getAuthor($item));
+            $feedItem->set('author', $this->getAuthor($item));
         }
 
         $feedItem->setDescription($this->getDescription($item));
