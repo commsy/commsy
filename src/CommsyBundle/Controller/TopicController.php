@@ -23,6 +23,10 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class TopicController extends Controller
 {
+    // setup filter form default values
+    private $defaultFilterValues = array(
+        'hide-deactivated-entries' => true,
+    );
     /**
      * @Route("/room/{roomId}/topic")
      * @Template()
@@ -38,14 +42,9 @@ class TopicController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-
-
-       // get the topic manager service
+        // get the topic manager service
         $topicService = $this->get('commsy_legacy.topic_service');
-        $defaultFilterValues = array(
-            'activated' => false,
-        );
-        $filterForm = $this->createForm(TopicFilterType::class, $defaultFilterValues, array(
+        $filterForm = $this->createForm(TopicFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_topic_list', array(
                 'roomId' => $roomId,
             )),
@@ -58,38 +57,13 @@ class TopicController extends Controller
         if ($filterForm->isValid()) {
             // set filter conditions in topic manager
             $topicService->setFilterConditions($filterForm);
+        }
+        else {
+            $topicService->showNoNotActivatedEntries();
         }
 
         // get topic list from manager service 
         $itemsCountArray = $topicService->getCountArray($roomId);
-
-
-
-
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => false,
-        );
-        $filterForm = $this->createForm(TopicFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_topic_list', array(
-                'roomId' => $roomId,
-            )),
-            'hasHashtags' => false,
-            'hasCategories' => false,
-        ));
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-
-        // get the topic manager service
-        $topicService = $this->get('commsy_legacy.topic_service');
-
-        // apply filter
-        $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
-            // set filter conditions in topic manager
-            $topicService->setFilterConditions($filterForm);
-        }
 
         $usageInfo = false;
         if ($roomItem->getUsageInfoTextForRubricInForm('topic') != '') {
@@ -115,6 +89,13 @@ class TopicController extends Controller
      */
     public function feedAction($roomId, $max = 10, $start = 0,  $sort = 'date', Request $request)
     {
+        // extract current filter from parameter bag (embedded controller call)
+        // or from query paramters (AJAX)
+        $topicFilter = $request->get('topicFilter');
+        if (!$topicFilter) {
+            $topicFilter = $request->query->get('topic_filter');
+        }
+
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();
@@ -124,30 +105,31 @@ class TopicController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => false,
-        );
-        $filterForm = $this->createForm(TopicFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_topic_list', array(
-                'roomId' => $roomId,
-            )),
-            'hasHashtags' => false,
-            'hasCategories' => false,
-        ));
-
         // get the topic manager service
         $topicService = $this->get('commsy_legacy.topic_service');
 
-        // apply filter
-        $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($topicFilter) {
+            $filterForm = $this->createForm(TopicFilterType::class, $this->defaultFilterValues, array(
+                'action' => $this->generateUrl('commsy_topic_list', array(
+                    'roomId' => $roomId,
+                )),
+                'hasHashtags' => false,
+                'hasCategories' => false,
+            ));
+
+            // manually bind values from the request
+            $filterForm->submit($topicFilter);
+
             // set filter conditions in topic manager
             $topicService->setFilterConditions($filterForm);
+        }
+        else {
+            $topicService->showNoNotActivatedEntries();
         }
 
         // get topic list from manager service 
         $topics = $topicService->getListTopics($roomId, $max, $start);
+
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
@@ -669,11 +651,7 @@ class TopicController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true,
-        );
-        $filterForm = $this->createForm(TopicFilterType::class, $defaultFilterValues, array(
+        $filterForm = $this->createForm(TopicFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_topic_list', array(
                 'roomId' => $roomId,
             )),

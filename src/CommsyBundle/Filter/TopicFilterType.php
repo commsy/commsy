@@ -2,9 +2,9 @@
 namespace CommsyBundle\Filter;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
 
@@ -21,19 +21,20 @@ class TopicFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('activated', Filters\CheckboxFilterType::class, array(
+            ->add('hide-deactivated-entries', Filters\CheckboxFilterType::class, array(
                 'translation_domain' => 'form',
+                'attr' => array(
+                    'onchange' => 'this.form.submit()',
+                ),
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
             ))
-            ->add('save', SubmitType::class, array(
-                'attr' => array(
-                    'class' => 'uk-button-primary',
-                ),
-                'label' => 'Filtern',
-                'translation_domain' => 'form',
-            ))
+            // hack: this field is required because the only other field in the form is a
+            // checkbox that is not passed in the request to the server when the checkbox is
+            // unchecked and symfony couldn't distinguish between a submitted form with an
+            // unchecked checkbox and no submitted form at all
+            ->add('field0', HiddenType::class, [])
         ;
 
         if ($options['hasCategories']) {
@@ -47,28 +48,6 @@ class TopicFilterType extends AbstractType
                 'label' => false,
             ));
         }
-
-
-        // $builder
-        //     ->add('title', 'text', array(
-        //         'constraints' => array(
-        //             new NotBlank(),
-        //         ),
-        //         'label' => false,
-        //         'attr' => array(
-        //             'placeholder' => 'New Category',
-        //             'class' => 'uk-form-width-medium',
-        //         ),
-        //         'translation_domain' => 'category',
-        //     ))
-        //     ->add('save', 'submit', array(
-        //         'attr' => array(
-        //             'class' => 'uk-button-primary',
-        //         ),
-        //         'label' => 'Add',
-        //         'translation_domain' => 'form',
-        //     ))
-        // ;
     }
 
     /**

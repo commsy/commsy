@@ -1,17 +1,17 @@
 {% extends 'CommsyBundle:Base:list.html.twig' %}
 {% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
 
-
 {% block contentwidth %}
     <div class="uk-width-medium-2-3">
 {% endblock %}    
 
-
 {% block feed %}
     <div id="topic-feed" class="uk-grid">
         {{ render(controller(
-            'CommsyBundle:Topic:feed',
-            { 'roomId': roomId }
+            'CommsyBundle:Topic:feed', {
+                'roomId': roomId,
+                'topicFilter': app.request.query.get('topic_filter')
+            }
         ))}}
     </div>
     <div class="feed-load-more-grid" data-uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomId }}/topic/feed/", "target": "#topic-feed"}'>
@@ -53,4 +53,4 @@
             </ul>
         </div>
     </div>
-{% endblock%}
+{% endblock %}

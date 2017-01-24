@@ -21,10 +21,10 @@ class DiscussionFilterType extends AbstractType
     {
         $builder
             ->add('hide-deactivated-entries', Filters\CheckboxFilterType::class, array(
+                'translation_domain' => 'form',
                 'attr' => array(
                     'onchange' => 'this.form.submit()',
                 ),
-                'translation_domain' => 'form',
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),

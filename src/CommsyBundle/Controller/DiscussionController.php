@@ -23,7 +23,7 @@ class DiscussionController extends Controller
 {
     // setup filter form default values
     private $defaultFilterValues = array(
-            'hide-deactivated-entries' => true,
+        'hide-deactivated-entries' => true,
     );
     /**
      * @Route("/room/{roomId}/discussion/feed/{start}/{sort}")

@@ -27,6 +27,7 @@ class TopicService
         $this->topicManager->select();
         $countTopic = array();
         $countTopicArray['count'] = sizeof($this->topicManager->get()->to_array());
+        $this->topicManager->resetLimits();
         $this->topicManager->select();
         $countTopicArray['countAll'] = $this->topicManager->getCountAll();
 
@@ -56,9 +57,8 @@ class TopicService
     public function setFilterConditions(Form $filterForm)
     {
         $formData = $filterForm->getData();
-
         // activated
-        if ($formData['activated']) {
+        if ($formData['hide-deactivated-entries']) {
             $this->topicManager->showNoNotActivatedEntries();
         }
     }
@@ -66,5 +66,9 @@ class TopicService
     public function getNewTopic()
     {
         return $this->topicManager->getNewItem();
+    }
+
+    public function showNoNotActivatedEntries(){
+        $this->topicManager->showNoNotActivatedEntries();
     }
 }
