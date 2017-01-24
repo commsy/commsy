@@ -6,21 +6,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Translation\Translator;
-use Symfony\Component\Translation\Loader\ArrayLoader;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Filter\CopyFilterType;
-use CommsyBundle\Form\Type\AnnotationType;
-use CommsyBundle\Form\Type\AnnouncementType;
-
-use \ZipArchive;
-
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 
 class CopyController extends Controller
@@ -32,7 +21,7 @@ class CopyController extends Controller
     public function feedAction($roomId, $max = 10, $start = 0,  $sort = 'date', Request $request)
     {
         // extract current filter from parameter bag (embedded controller call)
-        // or from query paramters (AJAX)
+        // or from query parameters (AJAX)
         $copyFilter = $request->get('copyFilter');
         if (!$copyFilter) {
             $copyFilter = $request->query->get('copy_filter');
@@ -44,21 +33,33 @@ class CopyController extends Controller
         $roomItem = $roomManager->getItem($roomId);
 
         if (!$roomItem) {
-            throw $this->createNotFoundException('The requested room does not exist');
+            $privateRoomManager = $legacyEnvironment->getPrivateRoomManager();
+            $roomItem = $privateRoomManager->getItem($roomId);
+
+            if (!$roomItem) {
+                throw $this->createNotFoundException('The requested room does not exist');
+            }
         }
 
-        // get the announcement manager service
+        // get the copy service
         $copyService = $this->get('commsy.copy_service');
 
-        if ($copyFilter) {
-            // setup filter form
-            
+        if ($roomItem->isPrivateRoom()) {
+            $rubrics = [
+                "material" => "material",
+                "discussion" => "discussion",
+                "date" => "date",
+                "todo" => "todo",
+            ];
+        } else {
             $roomService = $this->get('commsy_legacy.room_service');
             $rubrics = $roomService->getRubricInformation($roomId);
             $rubrics = array_combine($rubrics, $rubrics);
-            
-            $defaultFilterValues = array(
-            );
+        }
+
+        if ($copyFilter) {
+            // setup filter form
+            $defaultFilterValues = [];
             $filterForm = $this->createForm(CopyFilterType::class, $defaultFilterValues, array(
                 'action' => $this->generateUrl('commsy_copy_list', array(
                     'roomId' => $roomId,
@@ -71,23 +72,13 @@ class CopyController extends Controller
     
             // apply filter
             $copyService->setFilterConditions($filterForm);
-        } else {
-            
         }
 
         // get announcement list from manager service 
         $entries = $copyService->getListEntries($roomId, $max, $start, $sort);
 
-        $readerService = $this->get('commsy_legacy.reader_service');
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $currentContext = $legacyEnvironment->getCurrentContextItem();
-
-        $roomService = $this->get('commsy_legacy.room_service');
-        $rubrics = $roomService->getRubricInformation($roomId);
-
         $stackRubrics = ['date', 'material', 'discussion', 'todo'];
 
-        $readerList = array();
         $allowedActions = array();
         foreach ($entries as $item) {
             if (in_array($item->getItemType(), $rubrics)) {
@@ -99,11 +90,11 @@ class CopyController extends Controller
             $allowedActions[$item->getItemID()][] = 'remove';
         }
 
-        return array(
+        return [
             'roomId' => $roomId,
             'entries' => $entries,
             'allowedActions' => $allowedActions,
-       );
+        ];
     }
     
     /**
@@ -118,15 +109,28 @@ class CopyController extends Controller
         $roomItem = $roomManager->getItem($roomId);
 
         if (!$roomItem) {
-            throw $this->createNotFoundException('The requested room does not exist');
+            $privateRoomManager = $legacyEnvironment->getPrivateRoomManager();
+            $roomItem = $privateRoomManager->getItem($roomId);
+
+            if (!$roomItem) {
+                throw $this->createNotFoundException('The requested room does not exist');
+            }
         }
 
-        $roomService = $this->get('commsy_legacy.room_service');
-        $rubrics = $roomService->getRubricInformation($roomId);
-        $rubrics = array_combine($rubrics, $rubrics);
+        if ($roomItem->isPrivateRoom()) {
+            $rubrics = [
+                "material" => "material",
+                "discussion" => "discussion",
+                "date" => "date",
+                "todo" => "todo",
+            ];
+        } else {
+            $roomService = $this->get('commsy_legacy.room_service');
+            $rubrics = $roomService->getRubricInformation($roomId);
+            $rubrics = array_combine($rubrics, $rubrics);
+        }
 
-        $defaultFilterValues = array(
-        );
+        $defaultFilterValues = [];
         $filterForm = $this->createForm(CopyFilterType::class, $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_copy_list', array(
                 'roomId' => $roomId,
@@ -134,27 +138,27 @@ class CopyController extends Controller
             'rubrics' => $rubrics,
         ));
 
-        // get the announcement manager service
+        // get the copy service
         $copyService = $this->get('commsy.copy_service');
 
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isValid()) {
-            // set filter conditions in announcement manager
+            // set filter conditions
             $copyService->setFilterConditions($filterForm);
         }
 
-        // get announcement list from manager service 
+        // get number of items
         $itemsCountArray = $copyService->getCountArray($roomId);
         
-        return array(
+        return [
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
             'module' => 'copies',
             'itemsCountArray' => $itemsCountArray,
             'usageInfo' => null,
             'roomname' => $roomItem->getTitle(),
-        );
+        ];
     }
 
     /**
@@ -165,7 +169,6 @@ class CopyController extends Controller
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         
         $translator = $this->get('translator');
-
         $itemService = $this->get('commsy_legacy.item_service');
         
         $action = $request->request->get('act');
@@ -216,9 +219,6 @@ class CopyController extends Controller
                     // archive
                     $copy = $importItem->copy();
                     
-                    $rubric = $item->getItemType();
-                    $iid = $copy->getItemID();
-                    
                     $err = $copy->getErrorArray();
                     if (!empty($err)) {
                         $errorArray[$copy->getItemID()] = $err;
@@ -266,11 +266,7 @@ class CopyController extends Controller
                         }
                         
                         // archive
-                        
                         $copy = $importItem->copy();
-                        
-                        $rubric = $item->getItemType();
-                        $iid = $copy->getItemID();
                         
                         $err = $copy->getErrorArray();
                         if (!empty($err)) {

@@ -29,17 +29,16 @@ class RoomService
         $rubrics = array();
         if (!empty($homeConfiguration)) {
             $rubricConfigurations = explode(',', $homeConfiguration);
-            
+
             foreach ($rubricConfigurations as $rubricConfiguration) {
                 list($rubricName) = explode('_', $rubricConfiguration);
                 $rubrics[] = $rubricName;
             }
         }
-        if($includeModifier){
+        if ($includeModifier) {
             return $rubricConfigurations;
-        }
-        else{
-            return $rubrics;    
+        } else {
+            return $rubrics;
         }
     }
 
