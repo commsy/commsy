@@ -105,12 +105,13 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
         if ( isset($categories['mandatory']) and !empty($categories['mandatory']) and $categories['mandatory'] == true ) {
             $roomObject->setTagMandatory();
         } else {
-            $roomObject->unsetBuzzwordMandatory();
+            $roomObject->unsetTagMandatory();
         }
+
         if ( isset($categories['edit']) and !empty($categories['edit']) and $categories['edit'] == true ) {
-            $roomObject->setTagEditedByModerator();
-        } else {
             $roomObject->setTagEditedByAll();
+        } else {
+            $roomObject->setTagEditedByModerator();
         }
 
         /********* save template options ******/
