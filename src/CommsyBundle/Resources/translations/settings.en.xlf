@@ -590,6 +590,32 @@
                 <source>Guest Access</source>
                 <target>Guest Access</target>
             </trans-unit>
+
+            <!-- Delete -->
+            <trans-unit id="settings_delete_title">
+                <source>Delete room</source>
+                <target>Delete room</target>
+            </trans-unit>
+            <trans-unit id="settings_delete_intro">
+                <source>Delete intro</source>
+                <target>Attention: The entire room and all data will be deleted. This action cannot be undone!</target>
+            </trans-unit>
+            <trans-unit id="settings_delete_explanation_start">
+                <source>Delete explanation start</source>
+                <target>To progress, please enter</target>
+            </trans-unit>
+            <trans-unit id="settings_delete_explanation_end">
+                <source>Delete explanation end</source>
+                <target>and confirm the process.</target>
+            </trans-unit>
+            <trans-unit id="settings_delete_confirm_label">
+                <source>Confirm</source>
+                <target>Confirm</target>
+            </trans-unit>
+            <trans-unit id="settings_delete_button">
+                <source>Delete</source>
+                <target>Delete</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

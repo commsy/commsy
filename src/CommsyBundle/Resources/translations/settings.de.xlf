@@ -589,6 +589,32 @@
                 <source>Guest Access</source>
                 <target>Gastzugang</target>
             </trans-unit>
+
+            <!-- Delete -->
+            <trans-unit id="settings_delete_title">
+                <source>Delete room</source>
+                <target>Raum löschen</target>
+            </trans-unit>
+            <trans-unit id="settings_delete_intro">
+                <source>Delete intro</source>
+                <target>Achtung: Der gesamte Raum und alle Daten werden gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden!</target>
+            </trans-unit>
+            <trans-unit id="settings_delete_explanation_start">
+                <source>Delete explanation start</source>
+                <target>Bitte geben Sie </target>
+            </trans-unit>
+            <trans-unit id="settings_delete_explanation_end">
+                <source>Delete explanation end</source>
+                <target>ein und bestätigen den Vorgang.</target>
+            </trans-unit>
+            <trans-unit id="settings_delete_confirm_label">
+                <source>Confirm</source>
+                <target>Bestätigung</target>
+            </trans-unit>
+            <trans-unit id="settings_delete_button">
+                <source>Delete</source>
+                <target>Löschen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -6,6 +6,10 @@
                 <source>A label with the same name already exists.</source>
                 <target>A label with the same name already exists.</target>
             </trans-unit>
+            <trans-unit id="validators_identical_to">
+                <source>The input does not match {{ compared_value }}</source>
+                <target>The input does not match {{ compared_value }}</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

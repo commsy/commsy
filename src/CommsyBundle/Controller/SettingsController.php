@@ -2,6 +2,7 @@
 
 namespace CommsyBundle\Controller;
 
+use CommsyBundle\Form\Type\Settings\DeleteType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -274,5 +275,41 @@ class SettingsController extends Controller
         return array(
             'form' => $form->createView()
         );
+    }
+
+    /**
+     * @Route("/room/{roomId}/settings/delete")
+     * @Template
+     * @Security("is_granted('MODERATOR')")
+     */
+    public function deleteAction($roomId, Request $request)
+    {
+        $form = $this->createForm(DeleteType::class, [], []);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // get room from RoomService
+            $roomService = $this->get('commsy_legacy.room_service');
+            $roomItem = $roomService->getRoomItem($roomId);
+
+            if (!$roomItem) {
+                throw $this->createNotFoundException('No room found for id ' . $roomId);
+            }
+
+            $roomItem->delete();
+            $roomItem->save();
+
+            // redirect back to portal
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $portal = $legacyEnvironment->getCurrentPortalItem();
+
+            $url = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
+
+            return $this->redirect($url);
+        }
+
+        return [
+            'form' => $form->createView(),
+        ];
     }
 }
