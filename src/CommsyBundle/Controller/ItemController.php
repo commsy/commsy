@@ -286,7 +286,7 @@ class ItemController extends Controller
         // get all categories -> tree
         $categoryService = $this->get('commsy_legacy.category_service');
         $categories = $categoryService->getTags($roomId);
-        $optionsData['categories'] = $this->getChoicesAsTree($categories);
+        $optionsData['categories'] = $this->transformTagArray($categories);
         
         $categoriesList = $item->getTagList();
         $categoryItem = $categoriesList->getFirst();
@@ -363,13 +363,7 @@ class ItemController extends Controller
             } else if ($form->get('cancel')->isClicked()) {
                 //ToDo ...
             }
-            // exit;
             return $this->redirectToRoute('commsy_item_savelinks', array('roomId' => $roomId, 'itemId' => $itemId));
-
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
         }
 
         return array(
@@ -540,16 +534,20 @@ class ItemController extends Controller
             'title' => $item->getTitle(),
         ];
     }
-    
-    private function getChoicesAsTree ($choicesArray) {
-        $result = array();
-        foreach ($choicesArray as $choice) {
-            $result[$choice['title']] = $choice['item_id'];
-            if (!empty($choice['children'])) {
-                $result['children'] = $this->getChoicesAsTree($choice['children']);
+
+    private function transformTagArray($tagArray)
+    {
+        $array = [];
+
+        foreach ($tagArray as $tag) {
+            $array[$tag['title']] = $tag['item_id'];
+
+            if (!empty($tag['children'])) {
+                $array[$tag['title'] . 'sub'] = $this->transformTagArray($tag['children']);
             }
         }
-        return $result;
+
+        return $array;
     }
 
     /**

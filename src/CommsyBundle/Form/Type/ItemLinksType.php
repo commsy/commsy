@@ -62,18 +62,9 @@ class ItemLinksType extends AbstractType
                     'class' => 'uk-form-row uk-form-width-medium',
                 )
             ))
-            // ->add('items', 'choice', array(
-            //     'placeholder' => false,
-            //     'choices' => $options['items'],
-            //     'label' => 'items',
-            //     'required' => false,
-            //     'expanded' => true,
-            //     'multiple' => true
-            // ))
             ->add('itemsLinked', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => $options['itemsLinked'],
-                // 'label' => 'itemsLinked',
                 'label' => false,
                 'required' => false,
                 'expanded' => true,
@@ -82,25 +73,13 @@ class ItemLinksType extends AbstractType
             ->add('itemsLatest', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => $options['itemsLatest'],
-                // 'label' => 'itemsLatest',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true
             ))
-            // ->add('filterPublic', 'choice', array(
-            //     'placeholder' => false,
-            //     'choices' => $options['filterPublic'],
-            //     'label' => 'filterPublic',
-            //     'translation_domain' => 'form',
-            //     'required' => false,
-            //     'attr' => array(
-            //         'class' => 'uk-form-row uk-form-width-medium',
-            //     )
-            // ))
             ->add('categories', TreeChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => $options['categories'],
-                // 'label' => 'categories',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true,
@@ -143,76 +122,6 @@ class ItemLinksType extends AbstractType
                 'translation_domain' => 'form',
             ))
         ;
-        
-        $formModifier = function (FormInterface $form, array $options) {
-            $form->add('items', ChoiceType::class, array(
-                'placeholder' => false,
-                'choices' => $options['items'],
-                'label' => 'items',
-                'required' => false,
-                'expanded' => true,
-                'multiple' => true
-            ));
-            
-            $form->add('itemsLinked', ChoiceType::class, array(
-                'placeholder' => false,
-                'choices' => $options['itemsLinked'],
-                'label' => 'itemsLinked',
-                'required' => false,
-                'expanded' => true,
-                'multiple' => true
-            ));
-
-            $form->add('itemsLatest', ChoiceType::class, array(
-                'placeholder' => false,
-                'choices' => $options['itemsLatest'],
-                'label' => 'itemsLatest',
-                'required' => false,
-                'expanded' => true,
-                'multiple' => true
-            ));
-        };
-
-        // $builder->addEventListener(
-        //     FormEvents::PRE_SET_DATA,
-        //     function (FormEvent $event) use ($formModifier, $options) {
-        //         $formModifier($event->getForm(), $options);
-        //     }
-        // );
-
-        // $builder->addEventListener(
-        //     FormEvents::PRE_SUBMIT,
-        //     function (FormEvent $event) use ($formModifier) {
-        //         $data = $event->getData();
-        //         $tempData = $this->getTempData($data);
-                
-        //         $formModifier($event->getForm(), $tempData);
-
-        //         $eventData = array();
-        //         if (isset($tempData['itemsLinked'])) {
-        //             if (!empty(array_keys($tempData['itemsLinked']))) {
-        //                 $eventData['items'] = array_keys($tempData['itemsLinked']);
-        //                 $eventData['itemsLinked'] = array_keys($tempData['itemsLinked']);
-        //                 $eventData['itemsLatest'] = array_keys($tempData['itemsLinked']);
-        //             } else {
-        //                 $eventData['items'] = $tempData['itemsLinked'];
-        //                 $eventData['itemsLinked'] = $tempData['itemsLinked'];
-        //                 $eventData['itemLastest'] = $tempData['itemsLinked'];
-        //             }
-        //         }
-                
-        //         $event->setData($eventData);
-        //         if (isset($eventData['items'])) {
-        //             $event->getForm()->get('items')->setData($eventData['items']);
-        //         }
-        //         if (isset($eventData['itemsLinked'])) {
-        //             $event->getForm()->get('itemsLinked')->setData($eventData['itemsLinked']);
-        //         }
-        //         if (isset($eventData['itemsLatest'])) {
-        //             $event->getForm()->get('itemsLatest')->setData($eventData['itemsLatest']);
-        //         }
-        //     }
-        // );
     }
 
     /**
@@ -223,8 +132,19 @@ class ItemLinksType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(array('translation_domain' => 'item'))
-            ->setRequired(array('filterRubric', 'filterPublic', 'items', 'itemsLinked', 'itemsLatest', 'categories', 'hashtags', 'hashtagEditUrl'))
+            ->setDefaults([
+                'translation_domain' => 'item',
+            ])
+            ->setRequired([
+                'filterRubric',
+                'filterPublic',
+                'items',
+                'itemsLinked',
+                'itemsLatest',
+                'categories',
+                'hashtags',
+                'hashtagEditUrl',
+            ])
         ;
     }
 

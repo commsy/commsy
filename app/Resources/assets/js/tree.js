@@ -44,24 +44,19 @@
             $(element)
                 .on('ready.jstree', function(event, data) {
                     // sync checkbox with tree state
-                    $('input[id*="filter_category_category"]').each(function() {
-                        var $input = $(this);
+                    let selectNode = function() {
+                        let $input = $(this);
 
                         if ($input.prop('checked')) {
-                            var value = $input.attr('value');
+                            let value = $input.attr('value');
 
                             $(element).jstree(true).select_node('tag_' + value);
                         }
-                    });
-                    $('input[id*="filter_participant_participant"]').each(function() {
-                        var $input = $(this);
+                    };
 
-                        if ($input.prop('checked')) {
-                            var value = $input.attr('value');
-
-                            $(element).jstree(true).select_node('tag_' + value);
-                        }
-                    });
+                    $('input[id*="filter_category_category"]').each(selectNode);
+                    $('input[id*="filter_participant_participant"]').each(selectNode);
+                    $('input[id*="itemLinks_categories"]').each(selectNode);
 
                     /**
                      * the following event handler are registered, after checkbox sync
@@ -73,6 +68,7 @@
                             // sync tree state with Checkboxes
                             $('input[id*="filter_category_category"]').prop('checked', false);
                             $('input[id*="filter_participant_participant"]').prop('checked', false);
+                            $('input[id*="itemLinks_categories"]').prop('checked', false);
 
                             $.each(data.selected, function() {
                                 $('input[value="' + this.substring(4) + '"]')
@@ -88,20 +84,23 @@
         }
     });
     
-    jQuery.jstree.plugins.nohover = function () { this.hover_node = jQuery.noop; };
+    jQuery.jstree.plugins.nohover = function() {
+        this.hover_node = jQuery.noop;
+    };
+
     $('.cs-tree-plain').first('ul').jstree({
-                                                core: {
-                                                    themes: {
-                                                        icons: false
-                                                    },
-                                                    multiple: true
-                                                },
-                                                checkbox: {
-                                                    keep_selected_style: false
-                                                },
-                                                plugins: [
-                                                    "wholerow", "nohover"
-                                                ]
-                                            });
+        core: {
+            themes: {
+                icons: false
+            },
+            multiple: true
+        },
+        checkbox: {
+            keep_selected_style: false
+        },
+        plugins: [
+            "wholerow", "nohover"
+        ]
+    });
 
 })(UIkit);
