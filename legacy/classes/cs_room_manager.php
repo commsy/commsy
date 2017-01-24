@@ -652,63 +652,44 @@ class cs_room_manager extends cs_context_manager {
    # statistic functions - END
    ##########################################################
 
-   function moveFromDbToBackup($context_id){
-      global $symfonyContainer;
-      $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+    function moveFromDbToBackup($context_id)
+    {
+        global $symfonyContainer;
+        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
 
-      $retour = false;
-      if ( !empty($context_id) ) {
-         $query = 'INSERT INTO '.$c_db_backup_prefix.'_'.$this->_db_table.' SELECT * FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.item_id = "'.$context_id.'"';
-         $result = $this->_db_connector->performQuery($query);
-         if ( !isset($result) ) {
-            include_once('functions/error_functions.php');
-            trigger_error('Problems while copying to backup-table: '.$query,E_USER_WARNING);
-         } else {
-            $retour = $this->deleteFromDb($context_id);
-         }
-      }
-      return $retour;
-   }
+        if (!empty($context_id)) {
+            $query = 'INSERT INTO ' . $c_db_backup_prefix . '_' . $this->_db_table . ' SELECT * FROM ' . $this->_db_table . ' WHERE ' . $this->_db_table . '.item_id = "' . $context_id . '"';
+            $this->_db_connector->performQuery($query);
 
-   function moveFromBackupToDb($context_id){
-      global $symfonyContainer;
-      $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+            $this->deleteFromDb($context_id);
+        }
+    }
 
-      $retour = false;
-      if ( !empty($context_id) ) {
-      	$query = 'INSERT INTO '.$this->_db_table.' SELECT * FROM '.$c_db_backup_prefix.'_'.$this->_db_table.' WHERE '.$c_db_backup_prefix.'_'.$this->_db_table.'.item_id = "'.$context_id.'"';
-      	$result = $this->_db_connector->performQuery($query);
-         if ( !isset($result) ) {
-            include_once('functions/error_functions.php');
-            trigger_error('Problems while copying from backup-table: '.$query,E_USER_WARNING);
-         } else {
-            $retour = $this->deleteFromDb($context_id, true);
-         }
-      }
-      return $retour;
-   }
+    function moveFromBackupToDb($context_id)
+    {
+        global $symfonyContainer;
+        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
 
-   function deleteFromDb($context_id, $from_backup = false){
-      global $symfonyContainer;
-      $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
-      
-      $retour = false;
+        if (!empty($context_id)) {
+            $query = 'INSERT INTO ' . $this->_db_table . ' SELECT * FROM ' . $c_db_backup_prefix . '_' . $this->_db_table . ' WHERE ' . $c_db_backup_prefix . '_' . $this->_db_table . '.item_id = "' . $context_id . '"';
+            $this->_db_connector->performQuery($query);
 
-      $db_prefix = '';
-      if($from_backup){
-         $db_prefix .= $c_db_backup_prefix.'_';
-      }
-      $query = 'DELETE FROM '.$db_prefix.$this->_db_table.' WHERE '.$db_prefix.$this->_db_table.'.item_id = "'.$context_id.'"';
+            $this->deleteFromDb($context_id, true);
+        }
+    }
 
-      $result = $this->_db_connector->performQuery($query);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Problems deleting after move to or from backup-table: '.$query,E_USER_WARNING);
-      } elseif ( !empty($result[0]) ) {
-         $retour = true;
-      }
-      return $retour;
-   }
+    function deleteFromDb($context_id, $from_backup = false)
+    {
+        global $symfonyContainer;
+        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+
+        $db_prefix = '';
+        if ($from_backup) {
+            $db_prefix .= $c_db_backup_prefix . '_';
+        }
+        $query = 'DELETE FROM ' . $db_prefix . $this->_db_table . ' WHERE ' . $db_prefix . $this->_db_table . '.item_id = "' . $context_id . '"';
+        $this->_db_connector->performQuery($query);
+    }
 
    function deleteReallyOlderThan ($days) {
       $retour = false;
