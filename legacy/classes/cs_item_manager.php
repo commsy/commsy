@@ -1000,245 +1000,181 @@ class cs_item_manager extends cs_manager {
    # archive functions
    ########################################################
 
-   function moveFromDbToBackup($context_id){
-      global $symfonyContainer;
-      $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+    function moveFromDbToBackup($context_id)
+    {
+        global $symfonyContainer;
+        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
 
-      $retour = false;
-      if ( !empty($context_id) ) {
-         $query = 'INSERT INTO '.$c_db_backup_prefix.'_'.$this->_db_table.' SELECT * FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.item_id = "'.$context_id.'"';
-         $result = $this->_db_connector->performQuery($query);
-         if ( !isset($result) ) {
-            include_once('functions/error_functions.php');
-            trigger_error('Problems while copying to backup-table: '.$query,E_USER_WARNING);
-         } else {
-            $query = 'DELETE FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.item_id = "'.$context_id.'"';
-            $result = $this->_db_connector->performQuery($query);
-            if ( !isset($result) ) {
-               include_once('functions/error_functions.php');
-               trigger_error('Problems deleting after move to backup-table: '.$query,E_USER_WARNING);
-            } elseif ( !empty($result[0]) ) {
-               $retour = true;
-            }
-         }
-         $query = 'INSERT INTO '.$c_db_backup_prefix.'_'.$this->_db_table.' SELECT * FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.context_id = "'.$context_id.'"';
-         $result = $this->_db_connector->performQuery($query);
-         if ( !isset($result) ) {
-            include_once('functions/error_functions.php');
-            trigger_error('Problems while copying to backup-table: '.$query,E_USER_WARNING);
-         } else {
-            $query = 'DELETE FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.context_id = "'.$context_id.'"';
-            $result = $this->_db_connector->performQuery($query);
-            if ( !isset($result) ) {
-               include_once('functions/error_functions.php');
-               trigger_error('Problems deleting after move to backup-table: '.$query,E_USER_WARNING);
-               $retour = false;
-            } elseif ( !empty($result[0]) ) {
-               $retour = true;
-            } else {
-               $retour = false;
-            }
-         }
-      }
-      return $retour;
-   }
+        if (!empty($context_id)) {
+            $query = 'INSERT INTO ' . $c_db_backup_prefix . '_' . $this->_db_table . ' SELECT * FROM ' . $this->_db_table . ' WHERE ' . $this->_db_table . '.item_id = "' . $context_id . '"';
+            $this->_db_connector->performQuery($query);
 
-   function moveFromBackupToDb($context_id){
-      global $symfonyContainer;
-      $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+            $query = 'DELETE FROM ' . $this->_db_table . ' WHERE ' . $this->_db_table . '.item_id = "' . $context_id . '"';
+            $this->_db_connector->performQuery($query);
 
-      $retour = false;
-      if ( !empty($context_id) ) {
-      	$query = 'INSERT INTO '.$this->_db_table.' SELECT * FROM '.$c_db_backup_prefix.'_'.$this->_db_table.' WHERE '.$c_db_backup_prefix.'_'.$this->_db_table.'.item_id = "'.$context_id.'"';
-      	$result = $this->_db_connector->performQuery($query);
-         if ( !isset($result) ) {
-            include_once('functions/error_functions.php');
-            trigger_error('Problems while copying from backup-table: '.$query,E_USER_WARNING);
-         } else {
-         	$query = 'DELETE FROM '.$c_db_backup_prefix.'_'.$this->_db_table.' WHERE '.$c_db_backup_prefix.'_'.$this->_db_table.'.item_id = "'.$context_id.'"';
-         	$result = $this->_db_connector->performQuery($query);
-            if ( !isset($result) ) {
-               include_once('functions/error_functions.php');
-               trigger_error('Problems deleting after move from backup-table: '.$query,E_USER_WARNING);
-            } elseif ( !empty($result[0]) ) {
-               $retour = true;
-            }
-         }
-         $query = 'INSERT INTO '.$this->_db_table.' SELECT * FROM '.$c_db_backup_prefix.'_'.$this->_db_table.' WHERE '.$c_db_backup_prefix.'_'.$this->_db_table.'.context_id = "'.$context_id.'"';
-         $result = $this->_db_connector->performQuery($query);
-         if ( !isset($result) ) {
-            include_once('functions/error_functions.php');
-            trigger_error('Problems while copying from backup-table: '.$query,E_USER_WARNING);
-         } else {
-            $query = 'DELETE FROM '.$c_db_backup_prefix.'_'.$this->_db_table.' WHERE '.$c_db_backup_prefix.'_'.$this->_db_table.'.context_id = "'.$context_id.'"';
-            $result = $this->_db_connector->performQuery($query);
-            if ( !isset($result) ) {
-               include_once('functions/error_functions.php');
-               trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
-               $retour = false;
-            } elseif ( !empty($result[0]) ) {
-               $retour = true;
-            } else {
-               $retour = false;
-            }
-         }
-      }
-      return $retour;
-   }
+            $query = 'INSERT INTO ' . $c_db_backup_prefix . '_' . $this->_db_table . ' SELECT * FROM ' . $this->_db_table . ' WHERE ' . $this->_db_table . '.context_id = "' . $context_id . '"';
+            $this->_db_connector->performQuery($query);
 
-   public function moveFromDbToBackupWorkflow ( $context_id ) {
-   	$db_table = 'workflow_read';
-   	
-      $id_array_items = array();
-      $item_manager = $this->_environment->getItemManager();
-      $item_manager->setContextLimit($context_id);
-      $item_manager->select();
-      $item_list = $item_manager->get();
-      $temp_item = $item_list->getFirst();
-      while($temp_item){
-         $id_array_items[] = $temp_item->getItemID();
-         $temp_item = $item_list->getNext();
-      }
+            $query = 'DELETE FROM ' . $this->_db_table . ' WHERE ' . $this->_db_table . '.context_id = "' . $context_id . '"';
+            $this->_db_connector->performQuery($query);
+        }
+    }
 
-      $id_array_users = array();
-      $user_manager = $this->_environment->getUserManager();
-      $user_manager->setContextLimit($context_id);
-      $user_manager->select();
-      $user_list = $user_manager->get();
-      $temp_user = $user_list->getFirst();
-      while($temp_user){
-         $id_array_users[] = $temp_user->getItemID();
-         $temp_user = $user_list->getNext();
-      }
-      
-      global $symfonyContainer;
-      $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+    function moveFromBackupToDb($context_id)
+    {
+        global $symfonyContainer;
+        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
 
-      $retour = false;
-      if(!empty($id_array_items) and !empty($id_array_users)){
-         if ( !empty($context_id) ) {
-            $query = 'INSERT INTO '.$c_db_backup_prefix.'_'.$db_table.' SELECT * FROM '.$db_table.' WHERE '.$db_table.'.item_id IN ('.implode(",", $id_array_items).') OR '.$db_table.'.user_id IN ('.implode(",", $id_array_users).')';
-            $result = $this->_db_connector->performQuery($query);
-            if ( !isset($result) ) {
-               include_once('functions/error_functions.php');
-               trigger_error('Problems while copying data of "'.$db_table.'" to backup-table: '.$query,E_USER_WARNING);
-            } else {
-               $retour = $this->_deleteFromDbWorkflow($context_id);
-            }
-         }
-      }
-      return $retour;
-   }
-      
-   function moveFromBackupToDbWorkflow ( $context_id ) {
-   	$db_table = 'workflow_read';
-   	
-   	$id_array_items = array();
-      $zzz_item_manager = $this->_environment->getZzzItemManager();
-      $zzz_item_manager->setContextLimit($context_id);
-      $zzz_item_manager->select();
-      $item_list = $zzz_item_manager->get();
-      $temp_item = $item_list->getFirst();
-      while($temp_item){
-         $id_array_items[] = $temp_item->getItemID();
-         $temp_item = $item_list->getNext();
-      }
+        if (!empty($context_id)) {
+            $query = 'INSERT INTO ' . $this->_db_table . ' SELECT * FROM ' . $c_db_backup_prefix . '_' . $this->_db_table . ' WHERE ' . $c_db_backup_prefix . '_' . $this->_db_table . '.item_id = "' . $context_id . '"';
+            $this->_db_connector->performQuery($query);
 
-      $id_array_users = array();
-      $zzz_user_manager = $this->_environment->getZzzUserManager();
-      $zzz_user_manager->setContextLimit($context_id);
-      $zzz_user_manager->select();
-      $user_list = $zzz_user_manager->get();
-      $temp_user = $user_list->getFirst();
-      while($temp_user){
-         $id_array_users[] = $temp_user->getItemID();
-         $temp_user = $user_list->getNext();
-      }
-      
-      global $symfonyContainer;
-      $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+            $query = 'DELETE FROM ' . $c_db_backup_prefix . '_' . $this->_db_table . ' WHERE ' . $c_db_backup_prefix . '_' . $this->_db_table . '.item_id = "' . $context_id . '"';
+            $this->_db_connector->performQuery($query);
 
-      $retour = false;
-      if(!empty($id_array_items) and !empty($id_array_users)){
-         if ( !empty($context_id) ) {
-         	$query = 'INSERT INTO '.$db_table.' SELECT * FROM '.$c_db_backup_prefix.'_'.$db_table.' WHERE '.$c_db_backup_prefix.'_'.$db_table.'.item_id IN ('.implode(",", $id_array_items).') OR '.$c_db_backup_prefix.'_'.$db_table.'.user_id IN ('.implode(",", $id_array_users).')';
-         	$result = $this->_db_connector->performQuery($query);
-            if ( !isset($result) ) {
-               include_once('functions/error_functions.php');
-               trigger_error('Problems while copying data of "'.$db_table.'" from backup-table: '.$query,E_USER_WARNING);
-            } else {
-               $retour = $this->_deleteFromDbWorkflow($context_id, true);
-            }
-         }
-      }
-      return $retour;
-   }
-   
-   // archive
-   private function _deleteFromDbWorkflow($context_id, $from_backup = false){
-   	  $db_table = 'workflow_read';
-   	
-   	  global $symfonyContainer;
-      $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+            $query = 'INSERT INTO ' . $this->_db_table . ' SELECT * FROM ' . $c_db_backup_prefix . '_' . $this->_db_table . ' WHERE ' . $c_db_backup_prefix . '_' . $this->_db_table . '.context_id = "' . $context_id . '"';
+            $this->_db_connector->performQuery($query);
 
-      $retour = false;
-      
-      $db_prefix = '';
-      $id_array_items = array();
-      $id_array_users = array();
-      if(!$from_backup){
-         $item_manager = $this->_environment->getItemManager();
-         $item_manager->setContextLimit($context_id);
-         $item_manager->select();
-         $item_list = $item_manager->get();
-         $temp_item = $item_list->getFirst();
-         while($temp_item){
+            $query = 'DELETE FROM ' . $c_db_backup_prefix . '_' . $this->_db_table . ' WHERE ' . $c_db_backup_prefix . '_' . $this->_db_table . '.context_id = "' . $context_id . '"';
+            $this->_db_connector->performQuery($query);
+        }
+    }
+
+    public function moveFromDbToBackupWorkflow($context_id)
+    {
+        $db_table = 'workflow_read';
+
+        $id_array_items = array();
+        $item_manager = $this->_environment->getItemManager();
+        $item_manager->setContextLimit($context_id);
+        $item_manager->select();
+        $item_list = $item_manager->get();
+        $temp_item = $item_list->getFirst();
+        while ($temp_item) {
             $id_array_items[] = $temp_item->getItemID();
             $temp_item = $item_list->getNext();
-         }
-         $user_manager = $this->_environment->getUserManager();
-         $user_manager->setContextLimit($context_id);
-         $user_manager->select();
-         $user_list = $user_manager->get();
-         $temp_user = $user_list->getFirst();
-         while($temp_user){
+        }
+
+        $id_array_users = array();
+        $user_manager = $this->_environment->getUserManager();
+        $user_manager->setContextLimit($context_id);
+        $user_manager->select();
+        $user_list = $user_manager->get();
+        $temp_user = $user_list->getFirst();
+        while ($temp_user) {
             $id_array_users[] = $temp_user->getItemID();
             $temp_user = $user_list->getNext();
-         }
-      } else {
-         $db_prefix .= $c_db_backup_prefix.'_';
-         $zzz_item_manager = $this->_environment->getZzzItemManager();
-         $zzz_item_manager->setContextLimit($context_id);
-         $zzz_item_manager->select();
-         $item_list = $zzz_item_manager->get();
-         $temp_item = $item_list->getFirst();
-         while($temp_item){
+        }
+
+        global $symfonyContainer;
+        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+
+        if (!empty($id_array_items) and !empty($id_array_users)) {
+            if (!empty($context_id)) {
+                $query = 'INSERT INTO ' . $c_db_backup_prefix . '_' . $db_table . ' SELECT * FROM ' . $db_table . ' WHERE ' . $db_table . '.item_id IN (' . implode(",", $id_array_items) . ') OR ' . $db_table . '.user_id IN (' . implode(",", $id_array_users) . ')';
+                $this->_db_connector->performQuery($query);
+
+                $this->_deleteFromDbWorkflow($context_id);
+            }
+        }
+    }
+
+    function moveFromBackupToDbWorkflow($context_id)
+    {
+        $db_table = 'workflow_read';
+
+        $id_array_items = array();
+        $zzz_item_manager = $this->_environment->getZzzItemManager();
+        $zzz_item_manager->setContextLimit($context_id);
+        $zzz_item_manager->select();
+        $item_list = $zzz_item_manager->get();
+        $temp_item = $item_list->getFirst();
+        while ($temp_item) {
             $id_array_items[] = $temp_item->getItemID();
             $temp_item = $item_list->getNext();
-         }
-         $zzz_user_manager = $this->_environment->getZzzUserManager();
-         $zzz_user_manager->setContextLimit($context_id);
-         $zzz_user_manager->select();
-         $user_list = $zzz_user_manager->get();
-         $temp_user = $user_list->getFirst();
-         while($temp_user){
+        }
+
+        $id_array_users = array();
+        $zzz_user_manager = $this->_environment->getZzzUserManager();
+        $zzz_user_manager->setContextLimit($context_id);
+        $zzz_user_manager->select();
+        $user_list = $zzz_user_manager->get();
+        $temp_user = $user_list->getFirst();
+        while ($temp_user) {
             $id_array_users[] = $temp_user->getItemID();
             $temp_user = $user_list->getNext();
-         }
-      }
-      
-      if(!empty($id_array_items) and !empty($id_array_users)){
-      	$query = 'DELETE FROM '.$db_prefix.$db_table.' WHERE '.$db_prefix.$db_table.'.item_id IN ('.implode(",", $id_array_items).') OR '.$db_prefix.$db_table.'.user_id IN ('.implode(",", $id_array_users).')';
-      	$result = $this->_db_connector->performQuery($query);
-	      if ( !isset($result) ) {
-	         include_once('functions/error_functions.php');
-	         trigger_error('Problems deleting data of "'.$db_table.'" after move to or from backup-table: '.$query,E_USER_WARNING);
-	      } elseif ( !empty($result[0]) ) {
-	         $retour = true;
-	      }
-      }
-      return $retour;
-   }   
+        }
+
+        global $symfonyContainer;
+        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+
+        if (!empty($id_array_items) and !empty($id_array_users)) {
+            if (!empty($context_id)) {
+                $query = 'INSERT INTO ' . $db_table . ' SELECT * FROM ' . $c_db_backup_prefix . '_' . $db_table . ' WHERE ' . $c_db_backup_prefix . '_' . $db_table . '.item_id IN (' . implode(",", $id_array_items) . ') OR ' . $c_db_backup_prefix . '_' . $db_table . '.user_id IN (' . implode(",", $id_array_users) . ')';
+                $this->_db_connector->performQuery($query);
+
+                $this->_deleteFromDbWorkflow($context_id, true);
+            }
+        }
+    }
+
+    // archive
+    private function _deleteFromDbWorkflow($context_id, $from_backup = false)
+    {
+        $db_table = 'workflow_read';
+
+        global $symfonyContainer;
+        $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+
+        $db_prefix = '';
+        $id_array_items = array();
+        $id_array_users = array();
+        if (!$from_backup) {
+            $item_manager = $this->_environment->getItemManager();
+            $item_manager->setContextLimit($context_id);
+            $item_manager->select();
+            $item_list = $item_manager->get();
+            $temp_item = $item_list->getFirst();
+            while ($temp_item) {
+                $id_array_items[] = $temp_item->getItemID();
+                $temp_item = $item_list->getNext();
+            }
+            $user_manager = $this->_environment->getUserManager();
+            $user_manager->setContextLimit($context_id);
+            $user_manager->select();
+            $user_list = $user_manager->get();
+            $temp_user = $user_list->getFirst();
+            while ($temp_user) {
+                $id_array_users[] = $temp_user->getItemID();
+                $temp_user = $user_list->getNext();
+            }
+        } else {
+            $db_prefix .= $c_db_backup_prefix . '_';
+            $zzz_item_manager = $this->_environment->getZzzItemManager();
+            $zzz_item_manager->setContextLimit($context_id);
+            $zzz_item_manager->select();
+            $item_list = $zzz_item_manager->get();
+            $temp_item = $item_list->getFirst();
+            while ($temp_item) {
+                $id_array_items[] = $temp_item->getItemID();
+                $temp_item = $item_list->getNext();
+            }
+            $zzz_user_manager = $this->_environment->getZzzUserManager();
+            $zzz_user_manager->setContextLimit($context_id);
+            $zzz_user_manager->select();
+            $user_list = $zzz_user_manager->get();
+            $temp_user = $user_list->getFirst();
+            while ($temp_user) {
+                $id_array_users[] = $temp_user->getItemID();
+                $temp_user = $user_list->getNext();
+            }
+        }
+
+        if (!empty($id_array_items) and !empty($id_array_users)) {
+            $query = 'DELETE FROM ' . $db_prefix . $db_table . ' WHERE ' . $db_prefix . $db_table . '.item_id IN (' . implode(",", $id_array_items) . ') OR ' . $db_prefix . $db_table . '.user_id IN (' . implode(",", $id_array_users) . ')';
+            $this->_db_connector->performQuery($query);
+        }
+    }
    
    ########################################################
    # archive functions - END

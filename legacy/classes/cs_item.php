@@ -2867,7 +2867,9 @@ function getExternalViewerArray(){
    protected function replaceElasticItem($objectPersister, $repository) {
         $object = $repository->findOneByItemId($this->getItemID());
 
-        $objectPersister->replaceOne($object);
+        if ($object) {
+            $objectPersister->replaceOne($object);
+        }
    }
 
    protected function deleteElasticItem($objectPersister, $repository) {
