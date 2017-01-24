@@ -71,10 +71,13 @@
                                 </div>
                                 <div class="uk-form-row">
                                     {{ form_label(form.recurring_sub.recurrenceDaysOfWeek) }}
-                                    <div class="uk-form-controls">
+                                    <br/>
+                                    <div class="uk-margin-left">
                                         {% for weekDay in form.recurring_sub.recurrenceDaysOfWeek.iterator %}
-                                            <input type="checkbox" value="{{ weekDay.vars['value'] }}" style="vertical-align: baseline;">
-                                            <label>{{weekDay.vars['value']|trans({}, 'date')}}</label>
+                                            <div>
+                                                <input type="checkbox" value="{{ weekDay.vars['value'] }}" style="vertical-align: baseline;">
+                                                <label>{{weekDay.vars['value']|trans({}, 'date')}}</label>
+                                            </div>
                                         {% endfor %}
                                     </div>
                                 </div>
