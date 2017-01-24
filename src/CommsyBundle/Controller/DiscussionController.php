@@ -65,6 +65,9 @@ class DiscussionController extends Controller
             // set filter conditions in discussion manager
             $discussionService->setFilterConditions($filterForm);
         }
+        else {
+            $discussionService->showNoNotActivatedEntries();
+        }
 
         // get discussion list from manager service
         $discussions = $discussionService->getListDiscussions($roomId, $max, $start, $sort);
@@ -135,6 +138,9 @@ class DiscussionController extends Controller
         if ($filterForm->isValid()) {
             // set filter conditions in discussion manager
             $discussionService->setFilterConditions($filterForm);
+        }
+        else {
+            $discussionService->showNoNotActivatedEntries();
         }
 
         // get discussion list from manager service
