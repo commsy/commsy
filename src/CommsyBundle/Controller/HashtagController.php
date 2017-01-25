@@ -59,6 +59,7 @@ class HashtagController extends Controller
 
     /**
      * @Route("/room/{roomId}/hashtag/add")
+     * @Security("is_granted('CATEGORY_EDIT')")
      */
     public function addAction($roomId, Request $request)
     {
@@ -102,6 +103,7 @@ class HashtagController extends Controller
     /**
      * @Route("/room/{roomId}/hashtag/edit/{labelId}")
      * @Template()
+     * @Security("is_granted('CATEGORY_EDIT')")
      */
     public function editAction($roomId, $labelId = null, Request $request)
     {

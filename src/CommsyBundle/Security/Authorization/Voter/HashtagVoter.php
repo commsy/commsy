@@ -7,9 +7,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
-class CategoryVoter extends Voter
+class HashtagVoter extends Voter
 {
-    const EDIT = 'CATEGORY_EDIT';
+    const EDIT = 'HASHTAG_EDIT';
 
     private $legacyEnvironment;
 
@@ -36,11 +36,10 @@ class CategoryVoter extends Voter
         // }
 
         $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
-        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         
         switch ($attribute) {
             case self::EDIT:
-                return $this->canEdit($currentRoom, $currentUser);
+                return $this->canEdit($currentRoom);
 
                 // TODO:
                 // // my stack check
@@ -57,23 +56,13 @@ class CategoryVoter extends Voter
         throw new \LogicException('This code should not be reached!');
     }
 
-    private function canEdit($currentRoom, $currentUser)
+    private function canEdit($currentRoom)
     {
         // categories are not editable in archived rooms
         if ($currentRoom->isArchived()) {
             return false;
         }
 
-        // categories are editable if tags are editable by all or
-        // the user is moderator
-        if ($currentUser->isUser()) {
-            $currentContext = $this->legacyEnvironment->getCurrentContextItem();
-
-            if ($currentContext->isTagEditedByAll() || $currentUser->isModerator()) {
-                return true;
-            }
-        }
-
-        return false;
+        return true;
     }
 }
