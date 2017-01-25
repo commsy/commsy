@@ -73,6 +73,10 @@
                 <source>extensions</source>
                 <target>Erweiterungen</target>
             </trans-unit>
+            <trans-unit id="delete_settings">
+                <source>delete</source>
+                <target>Löschen</target>
+            </trans-unit>
 
             <trans-unit id="menu_back_to_room">
                 <source>Back to room</source>
