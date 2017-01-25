@@ -43,10 +43,8 @@ class AnnouncementController extends Controller
             $announcementFilter = $request->query->get('announcement_filter');
         }
         
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        $roomService = $this->get('commsy_legacy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -115,10 +113,8 @@ class AnnouncementController extends Controller
      */
     public function shortfeedAction($roomId, $max = 10, $start = 0,  $sort = NULL, Request $request)
     {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        $roomService = $this->get('commsy_legacy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -183,10 +179,8 @@ class AnnouncementController extends Controller
      */
     public function listAction($roomId, Request $request)
     {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        $roomService = $this->get('commsy_legacy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -236,10 +230,8 @@ class AnnouncementController extends Controller
      */
     public function printlistAction($roomId, Request $request)
     {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        $roomService = $this->get('commsy_legacy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -409,14 +401,12 @@ class AnnouncementController extends Controller
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
-        
-
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
- 
-        $roomManager = $legacyEnvironment->getRoomManager();
+
+        $roomService = $this->get('commsy_legacy.room_service');
         $readerManager = $legacyEnvironment->getReaderManager();
-        $roomItem = $roomManager->getItem($announcement->getContextId());        
+        $roomItem = $roomService->getRoomItem($announcement->getContextId());
         $numTotalMember = $roomItem->getAllUsers();
 
         $userManager = $legacyEnvironment->getUserManager();

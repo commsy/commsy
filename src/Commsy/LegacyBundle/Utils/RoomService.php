@@ -22,8 +22,7 @@ class RoomService
     public function getRubricInformation($roomId, $includeModifier = false)
     {
         // get the rooms rubric configuration
-        $roomManager = $this->legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        $roomItem = $this->getRoomItem($roomId);
         $homeConfiguration = $roomItem->getHomeConf();
 
         $rubrics = array();
@@ -50,9 +49,7 @@ class RoomService
     public function getUserList($roomId)
     {
         // get person list
-        $roomManager = $this->legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
-        
+        $roomItem = $this->getRoomItem($roomId);
         $personList = $roomItem->getUserList();
 
         return $personList->to_array();
@@ -95,8 +92,7 @@ class RoomService
     public function getRoomTitle($roomId)
     {
         // return room title
-        $roomManager = $this->legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        $roomItem = $this->getRoomItem($roomId);
 
         return $roomItem->getTitle();
     }

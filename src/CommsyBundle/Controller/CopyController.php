@@ -119,6 +119,7 @@ class CopyController extends Controller
 
         if ($roomItem->isPrivateRoom()) {
             $rubrics = [
+                "announcement" => "announcement",
                 "material" => "material",
                 "discussion" => "discussion",
                 "date" => "date",

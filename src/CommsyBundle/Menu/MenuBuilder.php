@@ -168,22 +168,6 @@ class MenuBuilder
             ))
             ->setExtra('translation_domain', 'menu');
 
-            // delete
-            $menu->addChild('Delete', [
-                'label' => 'delete',
-                'route' => 'commsy_settings_delete',
-                'routeParameters' => [
-                    'roomId' => $roomId,
-                ],
-                'extras' => [
-                    'icon' => 'uk-icon-trash uk-icon-small uk-icon-justify'
-                ],
-            ])
-            ->setAttributes([
-                'class' => 'uk-button-danger',
-            ])
-            ->setExtra('translation_domain', 'menu');
-
             $menu->addChild('room_navigation_space_2', array(
                 'label' => ' ',
                 'route' => 'commsy_room_home',
@@ -235,6 +219,8 @@ class MenuBuilder
                 }
             }
 
+            $rubrics = [];
+
             if (!$inPrivateRoom) {
                 // rubric room information
                 $rubrics = $this->roomService->getRubricInformation($roomId);
@@ -247,28 +233,40 @@ class MenuBuilder
                     'extras' => array('icon' => 'uk-icon-home uk-icon-small')
                 ))
                 ->setExtra('translation_domain', 'menu');
-    
-                // loop through rubrics to build the menu
-                foreach ($rubrics as $value) {
-                    $route = 'commsy_'.$value.'_list';
-                    if ($value == 'date') {
-                        $room = $this->roomService->getRoomItem($roomId);
-                        if ($room->getDatesPresentationStatus() != 'normal') {
-                            $route = 'commsy_date_calendar';
-                        }
-                    }
-                    
-                    $menu->addChild($value, [
-                        'label' => $value,
-                        'route' => $route,
-                        'routeParameters' => array('roomId' => $roomId),
-                        'extras' => [
-                            'icon' => $this->getRubricIcon($value),
-                        ]
-                    ])
-                    ->setExtra('translation_domain', 'menu');
-                }
             }
+            // dashboard menu
+            else {
+                $rubrics = [
+                    "announcement" => "announcement",
+                    "material" => "material",
+                    "discussion" => "discussion",
+                    "date" => "date",
+                    "todo" => "todo",
+                ];
+
+            }
+
+            // loop through rubrics to build the menu
+            foreach ($rubrics as $value) {
+                $route = 'commsy_'.$value.'_list';
+                if ($value == 'date') {
+                    $room = $this->roomService->getRoomItem($roomId);
+                    if ($room->getDatesPresentationStatus() != 'normal') {
+                        $route = 'commsy_date_calendar';
+                    }
+                }
+
+                $menu->addChild($value, [
+                    'label' => $value,
+                    'route' => $route,
+                    'routeParameters' => array('roomId' => $roomId),
+                    'extras' => [
+                        'icon' => $this->getRubricIcon($value),
+                    ]
+                ])
+                ->setExtra('translation_domain', 'menu');
+            }
+
 
             $roomItem = $this->roomService->getRoomItem($roomId);
             if ($roomItem->isGroupRoom()) {

@@ -36,9 +36,8 @@ class DateController extends Controller
      */
     public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        $roomService = $this->get('commsy_legacy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
         
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -214,9 +213,8 @@ class DateController extends Controller
      */
     public function listAction($roomId, Request $request)
     {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        $roomService = $this->get('commsy_legacy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
         
         $filterForm = $this->createForm(DateFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
@@ -258,9 +256,8 @@ class DateController extends Controller
      */
     public function printlistAction($roomId, Request $request)
     {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        $roomService = $this->get('commsy_legacy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
         
         $filterForm = $this->createForm(DateFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_date_list', array('roomId' => $roomId)),
@@ -314,9 +311,8 @@ class DateController extends Controller
      */
     public function calendarAction($roomId, Request $request)
     {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        $roomService = $this->get('commsy_legacy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
 
         $filterForm = $this->createForm(DateFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_date_calendar', array('roomId' => $roomId)),
@@ -387,14 +383,13 @@ class DateController extends Controller
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
-        
         $itemArray = array($date);
 
         $current_context = $legacyEnvironment->getCurrentContextItem();
  
-        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomService = $this->get('commsy_legacy.room_service');
         $readerManager = $legacyEnvironment->getReaderManager();
-        $roomItem = $roomManager->getItem($date->getContextId());        
+        $roomItem = $roomService->getRoomItem($date->getContextId());
         $numTotalMember = $roomItem->getAllUsers();
 
         $userManager = $legacyEnvironment->getUserManager();
@@ -478,9 +473,8 @@ class DateController extends Controller
     {
         $translator = $this->get('translator');
         
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        $roomService = $this->get('commsy_legacy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
         
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -1514,9 +1508,9 @@ class DateController extends Controller
 
         $current_context = $legacyEnvironment->getCurrentContextItem();
  
-        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomService = $this->get('commsy_legacy.room_service');
         $readerManager = $legacyEnvironment->getReaderManager();
-        $roomItem = $roomManager->getItem($date->getContextId());        
+        $roomItem = $roomService->getRoomItem($date->getContextId());
         $numTotalMember = $roomItem->getAllUsers();
 
         $userManager = $legacyEnvironment->getUserManager();

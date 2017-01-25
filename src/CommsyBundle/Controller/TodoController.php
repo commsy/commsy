@@ -31,10 +31,8 @@ class TodoController extends Controller
      */
     public function listAction($roomId, Request $request)
     {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        $roomService = $this->get('commsy_legacy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -67,9 +65,6 @@ class TodoController extends Controller
             'hasHashtags' => $roomItem->withBuzzwords(),
             'hasCategories' => $roomItem->withTags(),
         ));
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
 
         // get the todo manager service
         $todoService = $this->get('commsy_legacy.todo_service');
@@ -152,11 +147,9 @@ class TodoController extends Controller
         if (!$todoFilter) {
             $todoFilter = $request->query->get('todo_filter');
         }
-        
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        $roomService = $this->get('commsy_legacy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -367,8 +360,8 @@ class TodoController extends Controller
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('Set status of %count% entries to done', count($selectedIds), array('%count%' => count($selectedIds)), "messages");
         } else {
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $roomManager = $legacyEnvironment->getRoomManager();
-            $roomItem = $roomManager->getItem($roomId);
+            $roomService = $this->get('commsy_legacy.room_service');
+            $roomItem = $roomService->getRoomItem($roomId);
             $statusArray = $roomItem->getExtraToDoStatusArray();
             
             $tempAction = str_ireplace('mark', '', $action);
@@ -424,9 +417,9 @@ class TodoController extends Controller
 
         $current_context = $legacyEnvironment->getCurrentContextItem();
  
-        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomService = $this->get('commsy_legacy.room_service');
         $readerManager = $legacyEnvironment->getReaderManager();
-        $roomItem = $roomManager->getItem($todo->getContextId());        
+        $roomItem = $roomService->getRoomItem($todo->getContextId());
         $numTotalMember = $roomItem->getAllUsers();
 
         $userManager = $legacyEnvironment->getUserManager();
@@ -657,8 +650,8 @@ class TodoController extends Controller
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        $roomService = $this->get('commsy_legacy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
         
         $formData = array();
         $todoItem = NULL;
@@ -978,10 +971,8 @@ class TodoController extends Controller
      */
     public function printlistAction($roomId, Request $request)
     {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
+        $roomService = $this->get('commsy_legacy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
@@ -1068,14 +1059,13 @@ class TodoController extends Controller
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
 
-        
         $itemArray = array($todo);
 
         $current_context = $legacyEnvironment->getCurrentContextItem();
- 
-        $roomManager = $legacyEnvironment->getRoomManager();
+
+        $roomService = $this->get('commsy_legacy.room_service');
         $readerManager = $legacyEnvironment->getReaderManager();
-        $roomItem = $roomManager->getItem($todo->getContextId());        
+        $roomItem = $roomService->getRoomItem($todo->getContextId());
         $numTotalMember = $roomItem->getAllUsers();
 
         $userManager = $legacyEnvironment->getUserManager();
