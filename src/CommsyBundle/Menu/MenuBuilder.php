@@ -168,6 +168,22 @@ class MenuBuilder
             ))
             ->setExtra('translation_domain', 'menu');
 
+            // delete
+            $menu->addChild('Delete', [
+                'label' => 'delete',
+                'route' => 'commsy_settings_delete',
+                'routeParameters' => [
+                    'roomId' => $roomId,
+                ],
+                'extras' => [
+                    'icon' => 'uk-icon-trash uk-icon-small uk-icon-justify'
+                ],
+            ])
+            ->setAttributes([
+                'class' => 'uk-button-danger',
+            ])
+            ->setExtra('translation_domain', 'menu');
+
             $menu->addChild('room_navigation_space_2', array(
                 'label' => ' ',
                 'route' => 'commsy_room_home',
