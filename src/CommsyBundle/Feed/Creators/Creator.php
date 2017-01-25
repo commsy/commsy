@@ -61,7 +61,7 @@ abstract class Creator
         $modifierItem = $item->getModificatorItem();
 
         if ($contextItem->isCommunityRoom()) {
-            if ($this->isGuestAccess()) {
+            if ($this->isGuestAccess) {
                 return $modifierItem->isVisibleForAll();
             }
         }

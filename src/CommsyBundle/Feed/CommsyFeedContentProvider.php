@@ -61,7 +61,10 @@ class CommsyFeedContentProvider implements FeedContentProviderInterface
             $items = $this->getItems($currentContextItem);
 
             foreach ($items as $item) {
-                $feed->add($this->feedCreatorFactory->createItem($item));
+                $feedItem = $this->feedCreatorFactory->createItem($item);
+                if ($feedItem) {
+                    $feed->add($feedItem);
+                }
             }
 
             return $feed;
@@ -108,8 +111,6 @@ class CommsyFeedContentProvider implements FeedContentProviderInterface
 
     private function getTitle($currentContextItem)
     {
-        $title = '';
-
         if ($currentContextItem->isPrivateRoom()) {
             $currentPortalItem = $this->legacyEnvironment->getCurrentPortalItem();
             $title = $currentPortalItem->getTitle();
@@ -166,7 +167,7 @@ class CommsyFeedContentProvider implements FeedContentProviderInterface
             $types[] = 'step';
         }
 
-        if ($contextItem->withRubric('group') || $contextItem->withRubric('institution') || $contextItem->withRubric('institution')) {
+        if ($contextItem->withRubric('group') || $contextItem->withRubric('institution') || $contextItem->withRubric('topic')) {
             $types[] = 'label';
         }
 
@@ -181,7 +182,7 @@ class CommsyFeedContentProvider implements FeedContentProviderInterface
         $itemManager->showNoNotActivatedEntries();
 
         if ($contextItem->isPrivateRoom()) {
-            $ownerUserItem = $currentContextItem->getOwnerUserItem();
+            $ownerUserItem = $contextItem->getOwnerUserItem();
 
             $roomIds = [];
 
@@ -205,8 +206,6 @@ class CommsyFeedContentProvider implements FeedContentProviderInterface
             $itemManager->setTypeArrayLimit($this->getTypes($contextItem));
         }
 
-        $result = $itemManager->_performQuery();
-
-        return $result;
+        return $itemManager->_performQuery();
     }
 }

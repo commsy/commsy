@@ -48,6 +48,10 @@ class FeedCreatorFactory
 
         if ($commsyItem->getType() === 'label') {
             $type = $commsyItem->getLabelType();
+            if (in_array($type, ['buzzword'])) {
+                return;
+            }
+
             $manager = $this->legacyEnvironment->getManager($type);
             $commsyItem = $manager->getItem($commsyItem->getItemId());
         }
@@ -68,6 +72,6 @@ class FeedCreatorFactory
             }
         }
 
-        throw new \RuntimeException('No creator can create a feed item for this rubric');
+        throw new \RuntimeException('No creator found that supports the rubric "' . $rubric . '"');
     }
 }
