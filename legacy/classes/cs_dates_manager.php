@@ -262,7 +262,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       }
 
       $query .= ' FROM '.$this->addDatabasePrefix('dates');
-      $query .= ' INNER JOIN items ON '.$this->addDatabasePrefix('items').'.item_id = '.$this->addDatabasePrefix('dates').'.item_id AND '.$this->addDatabasePrefix('items').'.draft != "1"';
+      $query .= ' INNER JOIN ' . $this->addDatabasePrefix('items') . ' ON '.$this->addDatabasePrefix('items').'.item_id = '.$this->addDatabasePrefix('dates').'.item_id AND '.$this->addDatabasePrefix('items').'.draft != "1"';
 
       if ( !empty($this->_search_array) ||
            (isset($this->_sort_order) and

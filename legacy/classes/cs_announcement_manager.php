@@ -169,7 +169,7 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
 	  }
 
       $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
-      $query .= ' INNER JOIN items ON '.$this->addDatabasePrefix('items').'.item_id = '.$this->addDatabasePrefix('announcement').'.item_id AND '.$this->addDatabasePrefix('items').'.draft != "1"';
+      $query .= ' INNER JOIN ' . $this->addDatabasePrefix('items') . ' ON '.$this->addDatabasePrefix('items').'.item_id = '.$this->addDatabasePrefix('announcement').'.item_id AND '.$this->addDatabasePrefix('items').'.draft != "1"';
 
       if ( isset($this->_search_array) AND !empty($this->_search_array) ||
            (isset($this->_sort_order) and

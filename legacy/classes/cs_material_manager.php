@@ -515,7 +515,7 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
 
       $query .= ' FROM '.$this->addDatabasePrefix('materials');
       $query .= ' INNER JOIN tmp3'.$temp_number.' ON '.$this->addDatabasePrefix('materials').'.item_id=tmp3'.$temp_number.'.item_id AND '.$this->addDatabasePrefix('materials').'.version_id=tmp3'.$temp_number.'.version_id';
-      $query .= ' INNER JOIN items ON '.$this->addDatabasePrefix('items').'.item_id = '.$this->addDatabasePrefix('materials').'.item_id AND '.$this->addDatabasePrefix('items').'.draft != "1"';
+      $query .= ' INNER JOIN ' . $this->addDatabasePrefix('items') . ' ON '.$this->addDatabasePrefix('items').'.item_id = '.$this->addDatabasePrefix('materials').'.item_id AND '.$this->addDatabasePrefix('items').'.draft != "1"';
 
       if ( ( isset($this->_search_array) AND !empty($this->_search_array) )
            or ( isset($this->_only_files_limit) and $this->_only_files_limit )
