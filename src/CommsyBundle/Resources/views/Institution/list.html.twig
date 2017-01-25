@@ -34,11 +34,15 @@
         <button class="uk-button uk-button-mini cs-button-list">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
         <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
             <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+
+                {% if is_granted('ITEM_EDIT', 'NEW') %}
                 <li>
                      <a href="{{ path('commsy_institution_create', {'roomId': roomId}) }}">
                         <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
                     </a>
                 </li>
+                {% endif %}
+
                 <li>
                     <a href="{{ path('commsy_institution_printlist', {'roomId': roomId}) }}" target="_blank" id="print">
                         <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}

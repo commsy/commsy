@@ -25,7 +25,7 @@ class RoomController extends Controller
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
-        // get room item for information panel
+        // get room item
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 

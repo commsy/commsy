@@ -41,11 +41,11 @@ class ItemVoter extends Voter
         // }
         
         $itemId = $object;
-        
-        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
-        $item = $this->itemService->getTypedItem($itemId);
 
+        $item = $this->itemService->getTypedItem($itemId);
         if ($item) {
+            $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+
             switch ($attribute) {
                 case self::SEE:
                     return $this->canView($item, $currentUser);
@@ -55,7 +55,9 @@ class ItemVoter extends Voter
             }
         } else if ($itemId == 'NEW') {
             if ($attribute == self::EDIT) {
-                return true;
+                $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
+
+                return !$currentRoom->isArchived();
             }
         }
 
@@ -73,6 +75,10 @@ class ItemVoter extends Voter
 
     private function canEdit($item, $currentUser)
     {
+        if ($item->getContextItem()->isArchived()) {
+            return false;
+        }
+
         if ($item->mayEdit($currentUser)) {
             return true;
         }

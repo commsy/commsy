@@ -28,7 +28,7 @@ class ItemService
     {
         $item = $this->getItem($itemId);
 
-        if ($item) {
+        if ($item && is_object($item)) {
             $type = $item->getItemType();
 
             if ($type == 'label') {
