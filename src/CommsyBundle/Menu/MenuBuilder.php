@@ -236,19 +236,13 @@ class MenuBuilder
             }
 
             $rubrics = [];
+            $label = "home";
+            $icon = "uk-icon-home";
+            $route = "commsy_room_home";
 
             if (!$inPrivateRoom) {
                 // rubric room information
                 $rubrics = $this->roomService->getRubricInformation($roomId);
-
-                // home navigation
-                $menu->addChild('room_home', array(
-                    'label' => 'home',
-                    'route' => 'commsy_room_home',
-                    'routeParameters' => array('roomId' => $roomId),
-                    'extras' => array('icon' => 'uk-icon-home uk-icon-small')
-                ))
-                ->setExtra('translation_domain', 'menu');
             }
             // dashboard menu
             else {
@@ -259,8 +253,19 @@ class MenuBuilder
                     "date" => "date",
                     "todo" => "todo",
                 ];
-
+                $label = "overview";
+                $icon = "uk-icon-justify uk-icon-qrcode";
+                $route = "commsy_dashboard_overview";
             }
+
+            // home navigation
+            $menu->addChild('room_home', array(
+                'label' => $label,
+                'route' => $route,
+                'routeParameters' => array('roomId' => $roomId),
+                'extras' => array('icon' => $icon . ' uk-icon-small')
+            ))
+            ->setExtra('translation_domain', 'menu');
 
             // loop through rubrics to build the menu
             foreach ($rubrics as $value) {
@@ -404,12 +409,6 @@ class MenuBuilder
                 $this->legacyEnvironment->setCurrentPortalID($authSource->getContextId());
                 $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
                 $privateRoom = $privateRoomManager->getRelatedOwnRoomForUser($user,$this->legacyEnvironment->getCurrentPortalID());
-                
-                $menu->addChild('dashboard', array(
-                    'route' => 'commsy_dashboard_overview',
-                    'routeParameters' => array('roomId' => $privateRoom->getItemId()),
-                    'attributes' => ['breadcrumb_dashboard' => true],
-                ));
             }
 
             $itemId = $currentStack->attributes->get('itemId');
@@ -424,13 +423,23 @@ class MenuBuilder
                         'attributes' => ['breadcrumb_grouproom_parent' => true],
                     ));
                 }
-                
-                // home
-                $menu->addChild($roomItem->getTitle(), array(
-                    'route' => 'commsy_room_home',
-                    'routeParameters' => array('roomId' => $roomId),
-                    'attributes' => ['breadcrumb_room' => true],
-                ));
+
+                if ($roomItem->isPrivateRoom()) {
+                    // dashboard
+                    $menu->addChild('Dashboard', array(
+                        'route' => 'commsy_dashboard_overview',
+                        'routeParameters' => array('roomId' => $roomId),
+                        'attributes' => ['breadcrumb_room' => true],
+                    ));
+                }
+                else {
+                    // home
+                    $menu->addChild($roomItem->getTitle(), array(
+                        'route' => 'commsy_room_home',
+                        'routeParameters' => array('roomId' => $roomId),
+                        'attributes' => ['breadcrumb_room' => true],
+                    ));
+                }
 
                 // get route information
                 $route = explode('_', $currentStack->attributes->get('_route'));

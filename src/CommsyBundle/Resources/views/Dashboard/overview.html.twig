@@ -8,7 +8,7 @@
 
 {% block breadcrumb %}
     {{ knp_menu_render('breadcrumb', 
-        {'template': 'CommsyBundle:Menu:knp_menu_breadcrumb_dashboard.html.twig', 
+        {'template': 'CommsyBundle:Menu:knp_menu_breadcrumb.html.twig',
         'currentAsLink':false}) 
     }}
 {% endblock %}
@@ -21,8 +21,6 @@
                 {{ macros.dashboardFeed(roomItem) }}
             {% elseif layoutItem == 'dashboard-calendar' %}
                 {{ macros.dashboardCalendar(roomItem) }}
-            {% elseif layoutItem == 'dashboard-rss' %}
-                {{ macros.dashboardRss(roomItem) }}
             {% elseif layoutItem == 'dashboard-external-access' %}
                 {{ macros.dashboardExternalAccess(roomItem) }}
             {% endif %}
@@ -30,7 +28,6 @@
     {% else %}
         {{ macros.dashboardFeed(roomItem) }}
         {{ macros.dashboardCalendar(roomItem) }}
-        {{ macros.dashboardRss(roomItem) }}
         {{ macros.dashboardExternalAccess(roomItem) }}
     {% endif %}
     </ul>

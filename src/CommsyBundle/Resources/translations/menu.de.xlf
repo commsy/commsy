@@ -115,6 +115,10 @@
                 <target>Zusatzfunktionen</target>
             </trans-unit>
 
+            <trans-unit id="dashboard_overview">
+                <source>overview</source>
+                <target>Übersicht</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
