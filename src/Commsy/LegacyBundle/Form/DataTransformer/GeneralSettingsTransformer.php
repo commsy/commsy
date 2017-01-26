@@ -39,6 +39,7 @@ class GeneralSettingsTransformer implements DataTransformerInterface
                 $roomData['access_check'] = 'never';
             } else if ($roomItem->checkNewMembersWithCode()) {
                 $roomData['access_check'] = 'withcode';
+                $roomData['access_code'] = $roomItem->getCheckNewMemberCode();
             }
 
             $roomData['room_description'] = $roomItem->getDescription();
@@ -58,6 +59,7 @@ class GeneralSettingsTransformer implements DataTransformerInterface
             $roomData['open_for_guest'] = $roomItem->isOpenForGuests();
 
             $roomData['material_open_for_guest'] = $roomItem->isMaterialOpenForGuests();
+
         }
         return $roomData;
     }
@@ -137,8 +139,7 @@ class GeneralSettingsTransformer implements DataTransformerInterface
                     break;
                 case "withcode":
                     $roomObject->setCheckNewMemberWithCode();
-                    // TODO: add 'code' field to form!
-                    //$roomObject->setCheckNewMemberCode($roomData['code']);
+                    $roomObject->setCheckNewMemberCode($roomData['access_code']);
                     break;
             }
         }

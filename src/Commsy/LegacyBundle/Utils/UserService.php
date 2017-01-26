@@ -185,7 +185,7 @@ class UserService
           while($requested_user){
              $requested_user->makeUser();
              $requested_user->save();
-             $task_manager = $this->_environment->getTaskManager();
+             $task_manager = $this->legacyEnvironment->getTaskManager();
              $task_list = $task_manager->getTaskListForItem($requested_user);
              if (!empty($task_list)){
                 $task = $task_list->getFirst();

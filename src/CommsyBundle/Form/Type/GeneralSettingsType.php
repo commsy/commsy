@@ -72,8 +72,15 @@ class GeneralSettingsType extends AbstractType
                 'choices' => array(
                     'Never' => 'never',
                     'Always' => 'always',
-                    'Code' => 'code',
+                    'Code' => 'withcode',
                 ),
+            ))
+            ->add('access_code', TextType::class, array(
+                'required' => false,
+                'attr' => array(
+                    'style' => 'display: none;',
+                ),
+                'label' => false,
             ))
             ->add('room_description', TextareaType::class, array(
                 'attr' => array(
