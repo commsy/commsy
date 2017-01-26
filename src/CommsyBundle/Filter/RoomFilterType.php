@@ -26,6 +26,9 @@ class RoomFilterType extends AbstractType
                 ],
                 'mapped' => false,
                 'translation_domain' => 'room',
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ])
             ->add('archived', Filters\CheckboxFilterType::class, [
                 'apply_filter' => false, // disable filter
@@ -34,6 +37,9 @@ class RoomFilterType extends AbstractType
                 ],
                 'mapped' => false,
                 'translation_domain' => 'room',
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ])
             ->add('type', Filters\ChoiceFilterType::class, [
                 'attr' => [

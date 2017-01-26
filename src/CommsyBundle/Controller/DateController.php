@@ -864,150 +864,17 @@ class DateController extends Controller
         $form = $this->createForm(DateType::class, $formData, $formOptions);
         
         $form->handleRequest($request);
+
         if ($form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
-
-            if ($saveType == 'save' || $saveType == 'saveThisDate') {
-                $dateItem = $transformer->applyTransformation($dateItem, $form->getData());
-
-                // update modifier
-                $dateItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
-
-                $dateItem->save();
-                
-                if ($item->isDraft()) {
-                    $item->setDraftStatus(0);
-                    $item->saveAsItem();
-                }
-            } else if ($saveType == 'saveAllDates') {
-                $dateService = $this->get('commsy_legacy.date_service');
-                $datesArray = $dateService->getRecurringDates($dateItem->getContextId(), $dateItem->getRecurrenceId());
-                $formData = $form->getData();
-                $dateItem = $transformer->applyTransformation($dateItem, $formData);
-                $dateItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
-                $dateItem->save();
-                foreach ($datesArray as $tempDate) {
-                    $tempDate->setTitle($dateItem->getTitle());
-                    $tempDate->setPrivateEditing($dateItem->isPrivateEditing());
-                    $tempDate->setModificatorItem($legacyEnvironment->getCurrentUserItem());
-                    $tempDate->save();
-                }
-            } else {
-                // ToDo ...
-            }
-            return $this->redirectToRoute('commsy_date_save', array('roomId' => $roomId, 'itemId' => $itemId));
-            
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
-        }
-        
-        return array(
-            'form' => $form->createView(),
-            'showHashtags' => $current_context->withBuzzwords(),
-            'showCategories' => $current_context->withTags(),
-            'currentUser' => $legacyEnvironment->getCurrentUserItem(),
-            'withRecurrence' => $dateItem->getRecurrencePattern() != '',
-        );
-    }
-    
-    private function getTagDetailArray ($baseCategories, $itemCategories) {
-        $result = array();
-        $tempResult = array();
-        $addCategory = false;
-        foreach ($baseCategories as $baseCategory) {
-            if (!empty($baseCategory['children'])) {
-                $tempResult = $this->getTagDetailArray($baseCategory['children'], $itemCategories);
-            }
-            if (!empty($tempResult)) {
-                $addCategory = true;
-            }
-            $tempArray = array();
-            $foundCategory = false;
-            foreach ($itemCategories as $itemCategory) {
-                if ($baseCategory['item_id'] == $itemCategory['id']) {
-                    if ($addCategory) {
-                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
-                    } else {
-                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
-                    }
-                    $foundCategory = true;
-                }
-            }
-            if (!$foundCategory) {
-                if ($addCategory) {
-                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
-                }
-            }
-            $tempResult = array();
-            $addCategory = false;
-        }
-        return $result;
-    }
-    
-    /**
-     * @Route("/room/{roomId}/date/{itemId}/editdetails")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     */
-    public function editdetailsAction($roomId, $itemId, Request $request)
-    {
-        $itemService = $this->get('commsy_legacy.item_service');
-        $item = $itemService->getItem($itemId);
-        
-        $dateService = $this->get('commsy_legacy.date_service');
-        $transformer = $this->get('commsy_legacy.transformer.date');
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
-        
-        $formData = array();
-        $materialItem = NULL;
-        
-        // get date from DateService
-        $dateItem = $dateService->getDate($itemId);
-        if (!$dateItem) {
-            throw $this->createNotFoundException('No date found for id ' . $itemId);
-        }
-        $formData = $transformer->transform($dateItem);
-        $formOptions = array(
-            'action' => $this->generateUrl('commsy_date_editdetails', array(
-                'roomId' => $roomId,
-                'itemId' => $itemId,
-            )),
-        );
-        if ($dateItem->getRecurrencePattern() != '') {
-            $formOptions['attr']['unsetRecurrence'] = true;
-        }
-        $form = $this->createForm(DateDetailsType::class, $formData, $formOptions);
-        
-        $form->handleRequest($request);
-        
-        $submittedFormData = $form->getData();
-        
-        $startDateConstraint = new NotBlank();
-        $errorList = $this->get('validator')->validate(
-            $submittedFormData['start']['date'],
-            $startDateConstraint
-        );
-
-        $errorList->addAll($this->get('validator')->validate(
-            $submittedFormData,
-            new EndDateConstraint()
-        ));
-
-        if ($form->isValid() && (count($errorList) === 0)) {
-            $saveType = $form->getClickedButton()->getName();
+            $formData = $form->getData();
             if ($saveType == 'save') {
-                $formData = $form->getData();
-                
                 $valuesBeforeChange = array();
-	            $valuesBeforeChange['startingTime'] = $dateItem->getStartingTime();
-	            $valuesBeforeChange['endingTime'] = $dateItem->getEndingTime();
-	            $valuesBeforeChange['place'] = $dateItem->getPlace();
-	            $valuesBeforeChange['color'] = $dateItem->getColor();
-                
+                $valuesBeforeChange['startingTime'] = $dateItem->getStartingTime();
+                $valuesBeforeChange['endingTime'] = $dateItem->getEndingTime();
+                $valuesBeforeChange['place'] = $dateItem->getPlace();
+                $valuesBeforeChange['color'] = $dateItem->getColor();
+
                 $dateItem = $transformer->applyTransformation($dateItem, $formData);
 
                 // update modifier
@@ -1051,33 +918,30 @@ class DateController extends Controller
                     $item->saveAsItem();
                 }
             } else if ($saveType == 'saveThisDate') {
-                $formData = $form->getData();
                 $dateItem = $transformer->applyTransformation($dateItem, $formData);
                 $dateItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                 $dateItem->save();
             } else if ($saveType == 'saveAllDates') {
                 $dateService = $this->get('commsy_legacy.date_service');
                 $datesArray = $dateService->getRecurringDates($dateItem->getContextId(), $dateItem->getRecurrenceId());
-                $formData = $form->getData();
                 $dateItem = $transformer->applyTransformation($dateItem, $formData);
                 $dateItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                 $dateItem->save();
                 foreach ($datesArray as $tempDate) {
-                    $tempDate->setStartingTime($dateItem->getStartingTime());
-                    $tempDate->setEndingTime($dateItem->getEndingTime());
-                    $tempDate->setPlace($dateItem->getPlace());
-                    $tempDate->setColor($dateItem->getColor());
+                    $tempDate->setTitle($dateItem->getTitle());
+                    $tempDate->setPrivateEditing($dateItem->isPrivateEditing());
                     $tempDate->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                     $tempDate->save();
                 }
-            } else if ($form->get('cancel')->isClicked()) {
+            } else {
                 // ToDo ...
-            } 
-            return $this->redirectToRoute('commsy_date_savedetails', array('roomId' => $roomId, 'itemId' => $itemId));
-        } else {
-            foreach($errorList as $error) {
-                $form->get('start')->addError(new FormError($error->getMessage()));
             }
+            return $this->redirectToRoute('commsy_date_save', array('roomId' => $roomId, 'itemId' => $itemId));
+            
+            // persist
+            // $em = $this->getDoctrine()->getManager();
+            // $em->persist($room);
+            // $em->flush();
         }
         
         return array(
@@ -1085,10 +949,45 @@ class DateController extends Controller
             'showHashtags' => $current_context->withBuzzwords(),
             'showCategories' => $current_context->withTags(),
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
-            'date' => $dateItem
+            'withRecurrence' => $dateItem->getRecurrencePattern() != '',
+            'date' => $dateItem,
         );
     }
-    
+
+    private function getTagDetailArray ($baseCategories, $itemCategories) {
+        $result = array();
+        $tempResult = array();
+        $addCategory = false;
+        foreach ($baseCategories as $baseCategory) {
+            if (!empty($baseCategory['children'])) {
+                $tempResult = $this->getTagDetailArray($baseCategory['children'], $itemCategories);
+            }
+            if (!empty($tempResult)) {
+                $addCategory = true;
+            }
+            $tempArray = array();
+            $foundCategory = false;
+            foreach ($itemCategories as $itemCategory) {
+                if ($baseCategory['item_id'] == $itemCategory['id']) {
+                    if ($addCategory) {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                    } else {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
+                    }
+                    $foundCategory = true;
+                }
+            }
+            if (!$foundCategory) {
+                if ($addCategory) {
+                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                }
+            }
+            $tempResult = array();
+            $addCategory = false;
+        }
+        return $result;
+    }
+
     /**
      * @Route("/room/{roomId}/date/{itemId}/save")
      * @Template()
@@ -1171,89 +1070,6 @@ class DateController extends Controller
         );
     }
     
-    /**
-     * @Route("/room/{roomId}/date/{itemId}/savedetails")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     */
-    public function savedetailsAction($roomId, $itemId, Request $request)
-    {
-        $itemService = $this->get('commsy_legacy.item_service');
-        $item = $itemService->getItem($itemId);
-        
-        $dateService = $this->get('commsy_legacy.date_service');
-        $transformer = $this->get('commsy_legacy.transformer.date');
-        
-        $date = $dateService->getDate($itemId);
-        
-        $itemArray = array($date);
-        $modifierList = array();
-        foreach ($itemArray as $item) {
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
-        }
-        
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $readerManager = $legacyEnvironment->getReaderManager();
-        //$roomItem = $roomManager->getItem($material->getContextId());        
-        //$numTotalMember = $roomItem->getAllUsers();
-        
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
-        $userManager->setUserLimit();
-        $userManager->select();
-        $user_list = $userManager->get();
-        $all_user_count = $user_list->getCount();
-        $read_count = 0;
-        $read_since_modification_count = 0;
-
-        $current_user = $user_list->getFirst();
-        $id_array = array();
-        while ( $current_user ) {
-		   $id_array[] = $current_user->getItemID();
-		   $current_user = $user_list->getNext();
-		}
-		$readerManager->getLatestReaderByUserIDArray($id_array,$date->getItemID());
-		$current_user = $user_list->getFirst();
-		while ( $current_user ) {
-	   	    $current_reader = $readerManager->getLatestReaderForUserByID($date->getItemID(), $current_user->getItemID());
-            if ( !empty($current_reader) ) {
-                if ( $current_reader['read_date'] >= $date->getModificationDate() ) {
-                    $read_count++;
-                    $read_since_modification_count++;
-                } else {
-                    $read_count++;
-                }
-            }
-		    $current_user = $user_list->getNext();
-		}
-        $read_percentage = round(($read_count/$all_user_count) * 100);
-        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
-        $readerService = $this->get('commsy_legacy.reader_service');
-        
-        $readerList = array();
-        $modifierList = array();
-        foreach ($itemArray as $item) {
-            $reader = $readerService->getLatestReader($item->getItemId());
-            if ( empty($reader) ) {
-               $readerList[$item->getItemId()] = 'new';
-            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-               $readerList[$item->getItemId()] = 'changed';
-            }
-            
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
-        }
-        
-        return array(
-            'roomId' => $roomId,
-            'item' => $date,
-            'modifierList' => $modifierList,
-            'userCount' => $all_user_count,
-            'readCount' => $read_count,
-            'readSinceModificationCount' => $read_since_modification_count,
-        );
-    }
-    
-    
     function saveRecurringDates($dateItem, $isNewRecurring, $valuesToChange, $formData){
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
        
@@ -1308,24 +1124,24 @@ class DateController extends Controller
                             $addonDays = 5;
                         } elseif($day == 'sunday') {
                             $addonDays = 6;
+                        }
+
+                        $temp = clone $monday;
+                        $temp->add(new \DateInterval('P' . $addonDays . 'D'));
+
+                        if($temp > $startDate && $temp <= $endDate) {
+                            $recurringDateArray[] = $temp;
+                        }
+
+                        unset($temp);
                     }
 
-                    $temp = clone $monday;
-                    $temp->add(new \DateInterval('P' . $addonDays . 'D'));
-
-                    if($temp > $startDate && $temp <= $endDate) {
-                        $recurringDateArray[] = $temp;
-                    }
-
-                    unset($temp);
+                    $monday->add(new \DateInterval('P' . $formData['recurring_sub']['recurrenceWeek'] . 'W'));
                 }
+                $recurringPatternArray['recurring_sub']['recurrenceDaysOfWeek'] = $formData['recurring_sub']['recurrenceDaysOfWeek'];
+                $recurringPatternArray['recurring_sub']['recurrenceWeek'] = $formData['recurring_sub']['recurrenceWeek'];
 
-                $monday->add(new \DateInterval('P' . $formData['recurring_sub']['recurrenceWeek'] . 'W'));
-            }
-            $recurringPatternArray['recurring_sub']['recurrenceDaysOfWeek'] = $formData['recurring_sub']['recurrenceDaysOfWeek'];
-            $recurringPatternArray['recurring_sub']['recurrenceWeek'] = $formData['recurring_sub']['recurrenceWeek'];
-
-            unset($monday);
+                unset($monday);
 
             // monthly recurring
             } else if($formData['recurring_select'] == 'RecurringMonthlyType') {

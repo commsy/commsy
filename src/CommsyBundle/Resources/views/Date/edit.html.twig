@@ -1,3 +1,5 @@
+{% import 'CommsyBundle:Date:macros.html.twig' as macrosDate %}
+
 <div class="uk-margin-right uk-margin-bottom uk-position-relative uk-padding-remove">
     {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
     <div class="uk-form-horizontal">
@@ -75,7 +77,7 @@
                                     <div class="uk-margin-left">
                                         {% for weekDay in form.recurring_sub.recurrenceDaysOfWeek.iterator %}
                                             <div>
-                                                <input type="checkbox" value="{{ weekDay.vars['value'] }}" style="vertical-align: baseline;">
+                                                <input type="checkbox" value="{{ weekDay.vars['value'] }}" name="date[recurring_sub][recurrenceDaysOfWeek][]" style="vertical-align: baseline;">
                                                 <label>{{weekDay.vars['value']|trans({}, 'date')}}</label>
                                             </div>
                                         {% endfor %}
