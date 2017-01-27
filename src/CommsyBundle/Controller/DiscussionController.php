@@ -13,9 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use CommsyBundle\Filter\DiscussionFilterType;
 use CommsyBundle\Form\Type\DiscussionType;
 use CommsyBundle\Form\Type\DiscussionArticleType;
-use CommsyBundle\Form\Type\SectionType;
 
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -246,6 +244,7 @@ class DiscussionController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
+     * @Security("is_granted('ITEM_SEE', itemId)")
      */
     public function detailAction($roomId, $itemId, Request $request)
     {

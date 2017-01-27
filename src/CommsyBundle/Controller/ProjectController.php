@@ -9,13 +9,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
-
-use Symfony\Component\HttpFoundation\JsonResponse;
-
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-
 use CommsyBundle\Filter\ProjectFilterType;
 use CommsyBundle\Entity\Room;
 
@@ -127,6 +120,7 @@ class ProjectController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
+     * @Security("is_granted('ITEM_SEE', itemId)")
      */
     public function detailAction($roomId, $itemId, Request $request)
     {

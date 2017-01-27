@@ -7,8 +7,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Translation\Translator;
-use Symfony\Component\Translation\Loader\ArrayLoader;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -16,9 +14,6 @@ use CommsyBundle\Filter\AnnouncementFilterType;
 use CommsyBundle\Form\Type\AnnotationType;
 use CommsyBundle\Form\Type\AnnouncementType;
 
-use \ZipArchive;
-
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -303,6 +298,7 @@ class AnnouncementController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
+     * @Security("is_granted('ITEM_SEE', itemId)")
      */
     public function detailAction($roomId, $itemId, Request $request)
     {

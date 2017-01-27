@@ -144,6 +144,7 @@ class InstitutionController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
+     * @Security("is_granted('ITEM_SEE', itemId)")
      */
     public function detailAction($roomId, $itemId, Request $request)
     {

@@ -11,18 +11,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Form\Type\DateType;
-use CommsyBundle\Form\Type\DateDetailsType;
 use CommsyBundle\Form\Type\AnnotationType;
 
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 use CommsyBundle\Filter\DateFilterType;
 use CommsyBundle\Validator\Constraints\EndDateConstraint;
-
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Form\FormError;
 
 class DateController extends Controller
 {    
@@ -361,6 +356,7 @@ class DateController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
+     * @Security("is_granted('ITEM_SEE', itemId)")
      */
     public function detailAction($roomId, $itemId, Request $request)
     {

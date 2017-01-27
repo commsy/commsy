@@ -66,6 +66,10 @@ class ItemVoter extends Voter
 
     private function canView($item, $currentUser)
     {
+        if ($item->isDeleted()) {
+            return false;
+        }
+
         if ($item->maySee($currentUser)) {
             return true;
         }

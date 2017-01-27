@@ -14,7 +14,6 @@ use CommsyBundle\Form\Type\StepType;
 use CommsyBundle\Form\Type\AnnotationType;
 use CommsyBundle\Form\Type\TodoStepType;
 
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -389,6 +388,7 @@ class TodoController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
+     * @Security("is_granted('ITEM_SEE', itemId)")
      */
     public function detailAction($roomId, $itemId, Request $request)
     {

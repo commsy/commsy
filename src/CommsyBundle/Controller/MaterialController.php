@@ -7,8 +7,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Translation\Translator;
-use Symfony\Component\Translation\Loader\ArrayLoader;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -18,12 +16,8 @@ use CommsyBundle\Form\Type\MaterialType;
 use CommsyBundle\Form\Type\SectionType;
 use CommsyBundle\Form\Type\MaterialSectionType;
 
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 class MaterialController extends Controller
 {
@@ -251,6 +245,7 @@ class MaterialController extends Controller
      *     "versionId": "\d+"
      * }))
      * @Template()
+     * @Security("is_granted('ITEM_SEE', itemId)")
      */
     public function detailAction($roomId, $itemId, $versionId = null, Request $request)
     {
