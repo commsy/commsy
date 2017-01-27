@@ -94,7 +94,7 @@ class ItemLinksType extends AbstractType
             ))
             ->add('newHashtag', TextType::class, array(
                 'attr' => array(
-                    'placeholder' => 'Hashtag'
+                    'placeholder' => $options['placeholderText'],
                 ),
                 'label' => 'newHashtag',
                 'required' => false
@@ -144,6 +144,7 @@ class ItemLinksType extends AbstractType
                 'categories',
                 'hashtags',
                 'hashtagEditUrl',
+                'placeholderText',
             ])
         ;
     }

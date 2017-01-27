@@ -310,6 +310,8 @@ class ItemController extends Controller
             $buzzwordItem = $buzzwordList->getNext();
         }
 
+        $translator = $this->get('translator');
+
         $form = $this->createForm(ItemLinksType::class, $formData, array(
             'filterRubric' => $optionsData['filterRubric'],
             'filterPublic' => $optionsData['filterPublic'],
@@ -318,7 +320,8 @@ class ItemController extends Controller
             'itemsLatest' => array_flip($optionsData['itemsLatest']),
             'categories' => $optionsData['categories'],
             'hashtags' => array_flip($optionsData['hashtags']),
-            'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', array('roomId' => $roomId))
+            'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', array('roomId' => $roomId)),
+            'placeholderText' => $translator->trans('Hashtag', [], 'hashtag'),
         ));
 
         $form->handleRequest($request);

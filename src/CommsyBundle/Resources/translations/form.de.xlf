@@ -368,7 +368,7 @@
             </trans-unit>
             <trans-unit id="addNewHashtag">
                 <source>addNewHashtag</source>
-                <target>Hashtag hinzufügen</target>
+                <target>Schlagwort hinzufügen</target>
             </trans-unit>
         </body>
     </file>
