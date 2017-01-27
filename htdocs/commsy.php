@@ -1664,7 +1664,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 /*********** SAVE DATETIME OF LAST ACTIVITY ***********/
 if ($current_user->isUser() and !$current_user->isRoot()) {
    $current_user->updateLastLogin();
-   if($current_user->getMailSendNextLock() || $current_user->getMailSendBeforeLock() || $portal_user->getNotifyLockDate()) {
+   if($current_user->getMailSendNextLock() || $current_user->getMailSendBeforeLock() || $current_user->getNotifyLockDate()) {
       // reset inactivity by login
       $current_user->resetInactivity();
    }
