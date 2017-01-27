@@ -459,6 +459,7 @@ class DateController extends Controller
             'showHashtags' => $current_context->withBuzzwords(),
             'roomCategories' => $categories,
             'isParticipating' => $date->isParticipant($legacyEnvironment->getCurrentUserItem()),
+            'isRecurring' => ($date->getRecurrenceId() != ''),
         );
     }
     

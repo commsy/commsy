@@ -48,6 +48,7 @@ class DateType extends AbstractType
                     'placeholder' => 'enddate',
                     'class' => 'uk-form-width-medium',
                 ),
+                'required' => false,
             ))
             ->add('place', TextType::class, array(
                 'label' => 'place',

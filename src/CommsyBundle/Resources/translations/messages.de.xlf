@@ -374,6 +374,10 @@
                 <source>dashboard changed</source>
                 <target>Dashboard-Layout aktualisiert.</target>
            </trans-unit>
+            <trans-unit id="delete_recurring_dates">
+                <source>trash recurring</source>
+                <target>Alle Termine der Serie löschen</target>
+            </trans-unit>
        </body>
     </file>
 </xliff>

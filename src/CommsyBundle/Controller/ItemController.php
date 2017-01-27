@@ -860,15 +860,37 @@ class ItemController extends Controller
         $environment = $this->get('commsy_legacy.environment')->getEnvironment();
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
-        
+
         $item->delete();
 
+        $this->removeItemFromClipboard($itemId);
+
         $route = 'commsy_'.$item->getItemType().'_list';
+
         if ($item->getItemType() == 'date') {
             $roomService = $this->get('commsy_legacy.room_service');
             $room = $roomService->getRoomItem($roomId);
             if ($room->getDatesPresentationStatus() != 'normal') {
                 $route = 'commsy_date_calendar';
+            }
+            // remove recurring events
+            if ($request->query->has('recurring') && $item->getRecurrenceId() != '') {
+                $dates_manager = $environment->getDatesManager();
+                $dates_manager->resetLimits();
+
+                $date_item = $dates_manager->getItem($itemId);
+                $recurrence_id = $date_item->getRecurrenceId();
+                $dates_manager->setRecurrenceLimit($recurrence_id);
+
+                $dates_manager->setWithoutDateModeLimit();
+                $dates_manager->select();
+                $dates_list = $dates_manager->get();
+
+                $temp_date = $dates_list->getFirst();
+                while($temp_date) {
+                    $temp_date->delete();
+                    $temp_date = $dates_list->getNext();
+                }
             }
         }
 
@@ -887,5 +909,20 @@ class ItemController extends Controller
         }
 
         return $this->redirectToRoute($route, array('roomId' => $roomId));
+    }
+
+    private function removeItemFromClipboard($itemId)
+    {
+        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $sessionItem = $environment->getSessionItem();
+        if ($sessionItem->issetValue('clipboard_ids')) {
+            $currentClipboardIds = $sessionItem->getValue('clipboard_ids');
+            if (in_array($itemId, $currentClipboardIds)) {
+                unset($currentClipboardIds[array_search($itemId, $currentClipboardIds)]);
+                $sessionItem->setValue('clipboard_ids', $currentClipboardIds);
+            }
+            $sessionManager = $environment->getSessionManager();
+            $sessionManager->save($sessionItem);
+        }
     }
 }
