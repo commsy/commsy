@@ -26,19 +26,24 @@
             // init code
             UI.ready(function(context) {
                 UI.$("[data-cs-tree]", context).each(function() {
-                    var element = UI.$(this);
+                    let element = UI.$(this);
 
                     if (!element.data("tree")) {
-                        var obj = UI.tree(element, UI.Utils.options(element.attr("data-cs-tree")));
+                        let obj = UI.tree(element, UI.Utils.options(element.attr("data-cs-tree")));
                     }
                 });
             });
         },
 
         init: function() {
-            var $this = this;
+            let $this = this;
 
-            var element = $this.element[0];
+            let element = $this.element[0];
+
+            // disable checkbox three_state option if this tree exists in item edit context
+            if ($(element).closest('form[name="itemLinks"]').length) {
+                this.options.tree.checkbox.three_state = false;
+            }
 
             // init jstree
             $(element)
