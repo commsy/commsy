@@ -27,7 +27,7 @@
         init: function() {
             let $this = this;
 
-            this.element.on('click', function() {
+            this.element.on('click', function(event) {
                 event.preventDefault();
 
                 // send ajax request
