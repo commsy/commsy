@@ -20,7 +20,9 @@
                         <!-- <i class="uk-icon-ban uk-icon-small red"></i> -->
                     {#% endif %#}
                 </div>
-               <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
+                <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">
+                    <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
+                </a>
                 <span class="uk-text-large uk-text-middle uk-text-truncate">
                     <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">{{ user.title }} {{user.fullname}}</a>
                     <div class="uk-align-right {% if not user.isUser %}cs-moderation-warning{% endif %} uk-text-muted">
