@@ -253,6 +253,8 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
         						$itemBackup = $item;
         						$item = $item->getGroupRoomItem();
         						include_once('include/inc_room_copy.php');
+        						$item->setLinkedGroupItemID($itemBackup->getItemId());
+        						$item->save();
         						$item = $itemBackup;
         					}
         					
