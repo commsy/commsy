@@ -369,7 +369,7 @@
 								$grouproom_item = $this->_item->getGroupRoomItem();
 								if(isset($grouproom_item) && !empty($grouproom_item)) {
 									$group_room_user_item = $grouproom_item->getUserByUserID($current_user->getUserID(), $current_user->getAuthSource());
-									$group_room_user_item->reject();
+									$group_room_user_item->delete();
 									$group_room_user_item->save();
 								}
 							}
