@@ -493,7 +493,13 @@ class ItemController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             // if cancel was clicked, redirect back to detail page
             if ($form->get('cancel')->isClicked()) {
-                return $this->redirectToRoute('commsy_' . $item->getType() . '_detail', [
+
+                $itemType = $item->getType();
+                if ($item->getType() == 'label') {
+                    $itemType = $item->getLabelType();
+                }
+
+                return $this->redirectToRoute('commsy_' . $itemType . '_detail', [
                     'roomId' => $roomId,
                     'itemId' => $itemId,
                 ]);
@@ -529,8 +535,13 @@ class ItemController extends Controller
             throw $this->createNotFoundException('no item found for id ' . $itemId);
         }
 
+        $itemType = $item->getType();
+        if ($item->getType() == 'label') {
+            $itemType = $item->getLabelType();
+        }
+
         return [
-            'link' => $this->generateUrl('commsy_' . $item->getType() . '_detail', [
+            'link' => $this->generateUrl('commsy_' . $itemType . '_detail', [
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             ]),
