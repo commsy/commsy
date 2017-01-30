@@ -26,7 +26,7 @@ class DateTransformer implements DataTransformerInterface
         if ($dateItem) {
             $dateData['title'] = $dateItem->getTitle();
             $dateData['description'] = $dateItem->getDescription();
-            $dateData['permission'] = $dateItem->isPrivateEditing();
+            $dateData['permission'] = !($dateItem->isPublic());
             $dateData['place'] = $dateItem->getPlace();
             
             $datetimeStart = new \DateTime($dateItem->getDateTime_start());
@@ -95,11 +95,11 @@ class DateTransformer implements DataTransformerInterface
     {
         $dateObject->setTitle($dateData['title']);
         $dateObject->setDescription($dateData['description']);
-        
+
         if ($dateData['permission']) {
-            $dateObject->setPrivateEditing('0');
+            $dateObject->setPublic(0);
         } else {
-            $dateObject->setPrivateEditing('1');
+            $dateObject->setPublic(1);
         }
 
         $dateObject->setPlace($dateData['place']);

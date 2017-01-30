@@ -847,6 +847,7 @@ class DateController extends Controller
         if (!$dateItem) {
             throw $this->createNotFoundException('No date found for id ' . $itemId);
         }
+
         $formData = $transformer->transform($dateItem);
         $formOptions = array(
             'action' => $this->generateUrl('commsy_date_edit', array(
@@ -926,8 +927,9 @@ class DateController extends Controller
                 $dateItem->save();
                 foreach ($datesArray as $tempDate) {
                     $tempDate->setTitle($dateItem->getTitle());
-                    $tempDate->setPrivateEditing($dateItem->isPrivateEditing());
+                    $tempDate->setPublic((int)$dateItem->isPublic());
                     $tempDate->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                    $tempDate->setColor($dateItem->getColor());
                     $tempDate->save();
                 }
             } else {
