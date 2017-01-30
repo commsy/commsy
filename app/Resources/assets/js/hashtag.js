@@ -30,6 +30,13 @@
                 $this.onClickItem($this.element);
                 
             });
+
+            $('#itemLinks_newHashtag').keypress(function(e) {
+                if(e.which == 13) {
+                    e.preventDefault();
+                    $this.onClickItem($this.element);
+                }
+            });
         },
 
         onClickItem: function(element) {
