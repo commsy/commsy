@@ -142,7 +142,7 @@ services:
     # Search
     commsy.search.manager:
         class: CommsyBundle\Search\SearchManager
-        arguments: ['@fos_elastica.finder.commsy', '@commsy_legacy.user_service']
+        arguments: ['@fos_elastica.finder.commsy', '@commsy_legacy.user_service', '@commsy_legacy.item_service']
 
     # Validator
     commsy.validator.unique_label_name:

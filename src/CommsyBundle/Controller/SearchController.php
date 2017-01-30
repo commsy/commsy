@@ -21,7 +21,7 @@ class SearchController extends Controller
      *
      * @Template
      */
-    public function searchFormAction($roomId)
+    public function searchFormAction($roomId, $linkSearch = false)
     {
         $form = $this->createForm(SearchType::class, [], [
             'action' => $this->generateUrl('commsy_search_results', [
@@ -32,6 +32,7 @@ class SearchController extends Controller
         return [
             'form' => $form->createView(),
             'roomId' => $roomId,
+            'linkSearch' => $linkSearch
         ];
     }
 
@@ -151,9 +152,9 @@ class SearchController extends Controller
     /**
      * Serves JSON results for instant search aka search-as-you-type
      * 
-     * @Route("/room/{roomId}/search/instant")
+     * @Route("/room/{roomId}/search/instant/{linkSearch}")
      */
-    public function instantAction($roomId, Request $request)
+    public function instantAction($roomId, $linkSearch = false, Request $request)
     {
         $results = [];
 
@@ -167,6 +168,12 @@ class SearchController extends Controller
             $searchManager->setQuery($query);
 
             $instantResults = $searchManager->getInstantResults();
+
+            // get every linked item id and add it to the query
+            // to exclude this items from the resultlist
+            if ($linkSearch) {
+                $instantResults = $searchManager->getLinkedItemResults($linkSearch);
+            }
 
             foreach ($instantResults as $hybridResult) {
                 $transformed = $hybridResult->getTransformed();
@@ -200,14 +207,31 @@ class SearchController extends Controller
                     'title' => $title,
                     'text' => $translator->transChoice(ucfirst($type), 0, [], 'rubric'),
                     'url' => $url,
+                    'value' => $transformed->getItemId(),
                 ];
             }
         }
 
+        $response = $this->autocompleteJsonStructure($results, $linkSearch);
+
+        return $response;
+    }
+
+    /**
+     * Serves JSON results with a specific structure for autocompletion
+     * 
+     */
+    private function autocompleteJsonStructure($results, $linkSearch = false)
+    {
         $response = new JsonResponse();
-        $response->setData([
-            'results' => $results,
-        ]);
+        // set json structure for uikit autocomplete
+        if ($linkSearch) {
+            $response->setData($results);
+        } else {
+            $response->setData([
+                'results' => $results,
+            ]);
+        }
 
         return $response;
     }

@@ -9,10 +9,18 @@
             <h4>{{ 'links'|trans({})}}</h4>
         </div>
     </div>
+    <div>
+        {#{ render(controller(
+        'CommsyBundle:Search:searchForm',
+        { 'roomId': app.request.attributes.get('roomId'), 'linkSearch': itemId }
+        ))}#}
+    </div>
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
     <div class="uk-grid uk-margin-top-remove">
         <div class="uk-width-9-10">
             {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
-        
+
             <ul id="linksFormTabs" class="uk-tab" data-uk-tab="{connect:'#linksForm'}">
                 <li><a href="">{{ 'linkedEntries'|trans({}) }}</a></li>
                 {% if showCategories %}
@@ -22,10 +30,6 @@
                     <li><a href="">{{ 'hashtags'|trans({}, 'room')|capitalize }}</a></li>
                 {% endif %}
             </ul>
-            
-            {{ form_start(form) }}
-            {{ form_errors(form) }}
-            
             <!-- This is the container of the content items -->
             <ul id="linksForm" class="uk-switcher uk-margin">
                 <li>
@@ -38,13 +42,11 @@
                             <ul id="linked-entry-switcher" class="uk-switcher uk-margin-bottom uk-margin-top">
                                 <li>
                                     <!-- search entries -->
-                                    <div class="uk-autocomplete uk-form" data-uk-autocomplete="{source:'{{ path('commsy_item_autocomplete', {roomId:roomId, itemId:itemId, feedAmount:"10"}) }}'}">
-                                        {{ form_widget(form.filterSearch) }}
+                                    <div class="uk-autocomplete uk-form" data-uk-autocomplete="{source:'{{ path('commsy_search_instant', {'roomId': roomId, 'linkSearch': itemId}) }}'}" data-cs-link-search>
+                                        <input type="text">
                                     </div>
-                                    {{ form_widget(form.filterRubric) }}
                                 </li>
                                 <li>
-
                                     <div id="linksSubTab">
                                         <!-- latest entries -->
                                         {{ 'lastModifiedEntries'|trans({}) }}

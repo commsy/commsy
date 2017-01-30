@@ -43,25 +43,25 @@ class ItemLinksType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('filterSearch', SearchType::class, array(
-                'label' => 'filterSearch',
-                'required' => false,
-                'translation_domain' => 'form',
-                'attr' => array(
-                    'class' => 'uk-form-row uk-form-width-medium uk-search-field',
-                )
-            ))
-            ->add('filterRubric', ChoiceType::class, array(
-                'placeholder' => false,
-                'choices' => $options['filterRubric'],
-                'label' => 'filterRubric',
-                'choice_translation_domain' => true,
-                'translation_domain' => 'form',
-                'required' => false,
-                'attr' => array(
-                    'class' => 'uk-form-row uk-form-width-medium',
-                )
-            ))
+            // ->add('filterSearch', SearchType::class, array(
+            //     'label' => 'filterSearch',
+            //     'required' => false,
+            //     'translation_domain' => 'form',
+            //     'attr' => array(
+            //         'class' => 'uk-form-row uk-form-width-medium uk-search-field',
+            //     )
+            // ))
+            // ->add('filterRubric', ChoiceType::class, array(
+            //     'placeholder' => false,
+            //     'choices' => $options['filterRubric'],
+            //     'label' => 'filterRubric',
+            //     'choice_translation_domain' => true,
+            //     'translation_domain' => 'form',
+            //     'required' => false,
+            //     'attr' => array(
+            //         'class' => 'uk-form-row uk-form-width-medium',
+            //     )
+            // ))
             ->add('itemsLinked', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => $options['itemsLinked'],

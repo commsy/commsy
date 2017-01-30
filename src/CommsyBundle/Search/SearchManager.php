@@ -4,6 +4,7 @@ namespace CommsyBundle\Search;
 use FOS\ElasticaBundle\Finder\TransformedFinder;
 
 use Commsy\LegacyBundle\Utils\UserService;
+use Commsy\LegacyBundle\Utils\ItemService;
 
 use Elastica\Query as Queries;
 use Elastica\Aggregation as Aggregations;
@@ -12,15 +13,17 @@ class SearchManager
 {
     private $commsyFinder;
     private $userService;
+    private $itemService;
 
     private $query;
     private $rubric;
     private $context;
 
-    public function __construct(TransformedFinder $commsyFinder, UserService $userService)
+    public function __construct(TransformedFinder $commsyFinder, UserService $userService, ItemService $itemService)
     {
         $this->commsyFinder = $commsyFinder;
         $this->userService = $userService;
+        $this->itemService = $itemService;
     }
 
     public function setQuery($query)
@@ -133,6 +136,43 @@ class SearchManager
         $boolQuery->addFilter($idsQuery);
 
         return $this->commsyFinder->find($boolQuery);
+    }
+
+    public function getLinkedItemResults($itemId)
+    {
+        $boolQuery = new Queries\BoolQuery();
+
+        // query context
+        $multiMatchQuery = new Queries\MultiMatch();
+        $multiMatchQuery->setQuery($this->query);
+        $multiMatchQuery->setFields(['title', 'firstName', 'lastName']);
+        $multiMatchQuery->setOperator('and');
+
+        $boolQuery->addMust($multiMatchQuery);
+
+        // filter context
+        $contextFilter = $this->createContextFilter();
+
+        $boolQuery->addFilter($contextFilter);
+
+        $excludeFilter = $this->createExcludeFilter($itemId);
+
+        $boolQuery->addMustNot($excludeFilter);
+
+        return $this->commsyFinder->findHybrid($boolQuery, 10);
+    }
+
+
+    public function createExcludeFilter($itemId)
+    {
+        $linkedItems = $this->itemService->getLinkedItemIdArray($itemId);
+
+        $itemFilter = new Queries\Ids();
+        $itemFilter->setIds($linkedItems);
+        // $itemFilter->setTerms('itemId', $linkedItems);
+
+        return $itemFilter;
+
     }
 
     /**

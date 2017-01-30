@@ -45,6 +45,20 @@ class ItemService
 
         return null;
     }
+
+    public function getLinkedItemIdArray($itemId)
+    {
+        $item = $this->getTypedItem($itemId);
+
+        $linkedItems = $item->getAllLinkItemList()->to_array();
+
+        foreach ($linkedItems as $key => $value) {
+            $linkedItemIdArray[] = $value->getSecondLinkedItemID();
+        }
+
+        return $linkedItemIdArray;
+
+    }
     
     public function getEditorsForItem ($item) {
         $user = $this->legacyEnvironment->getCurrentUserItem();

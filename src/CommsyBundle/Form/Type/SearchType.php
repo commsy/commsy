@@ -24,6 +24,7 @@ class SearchType extends AbstractType
                     'placeholder' => 'Search...',
                     'class' => 'uk-search-field',
                 ],
+                'required' => false,
                 'translation_domain' => 'search',
             ])
         ;
