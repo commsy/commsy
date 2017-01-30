@@ -28,9 +28,9 @@
                                     <select id="general_settings_access_check" name="general_settings[access_check]">
                                         {% for key,val in form.access_check.vars.choices %}
                                             {% if form.access_check.vars.value == val.value %}
-                                                <option value="{{val.value}}" selected>{{val.label}}</option>
+                                                <option value="{{val.value}}" selected>{{val.label|trans({}, 'settings')}}</option>
                                             {% else %}
-                                                <option value="{{val.value}}">{{val.label}}</option>
+                                                <option value="{{val.value}}">{{val.label|trans({}, 'settings')}}</option>
                                             {% endif %}
                                         {% endfor %}
                                     </select>
