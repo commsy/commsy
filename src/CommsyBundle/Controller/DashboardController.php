@@ -41,16 +41,16 @@ class DashboardController extends Controller
 
     
     /**
-     * @Route("/dashboard/{roomId}/feed/{start}")
+     * @Route("/dashboard/{roomId}/feed/{start}/{sort}")
      * @Template()
      */
     public function feedAction($roomId, $max = 10, $start = 0)
     {
         // collect information for feed panel
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $userid=$legacyEnvironment->getCurrentUser()->getUserID();
+        $userId = $legacyEnvironment->getCurrentUser()->getUserID();
         $dashboardFeedGenerator = $this->get('commsy_legacy.dashboard_feed_generator');
-        $feedList = $dashboardFeedGenerator->getFeedList($userid, $max, $start);
+        $feedList = $dashboardFeedGenerator->getFeedList($userId, $max, $start);
 
         $userService = $this->get("commsy_legacy.user_service");
         $user = $userService->getPortalUserFromSessionId();
@@ -58,24 +58,25 @@ class DashboardController extends Controller
         $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();
-        $tempFeedList = array();
+        $feedItems = [];
         foreach ($feedList as $item) {
-            if ($item != NULL) {
-                $tempFeedList[] = $item;
+            if ($item != null) {
+                $feedItems[] = $item;
+
                 $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
                 $reader = $readerService->getLatestReaderForUserByID($item->getItemId(), $relatedUser->getItemId());
-                if ( empty($reader) ) {
-                   $readerList[$item->getItemId()] = 'new';
-                } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-                   $readerList[$item->getItemId()] = 'changed';
+                if (empty($reader)) {
+                    $readerList[$item->getItemId()] = 'new';
+                } elseif ($reader['read_date'] < $item->getModificationDate()) {
+                    $readerList[$item->getItemId()] = 'changed';
                 }
             }
         }
 
-        return array(
-            'feedList' => $tempFeedList,
+        return [
+            'feedList' => $feedItems,
             'readerList' => $readerList
-        );
+        ];
     }
     
     /**
