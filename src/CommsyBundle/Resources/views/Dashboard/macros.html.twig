@@ -1,5 +1,5 @@
 {% macro dashboardFeed(roomItem) %}
-    <li id="dashboard-feed" class="uk-grid-margin">
+    <li id="dashboard-latest" class="uk-grid-margin">
         <div class="uk-panel uk-panel-box uk-panel-box-primary">
             <div class="uk-panel-teaser cs-panel-teaser-primary">
                 <div class="uk-flex uk-flex-middle">
@@ -7,6 +7,7 @@
                     <div class="uk-text-large">{{ 'latest entries from all rooms'|trans({}, "room") }}</div>
                  </div>
             </div>
+
             <div class="cs-widget-content">
                 <ul id="dashboard-feed" class="uk-comment-list">
                     {{ render(controller(
@@ -18,6 +19,7 @@
                     <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
                 </div>
             </div>
+
         </div>
     </li>
 {% endmacro %}
