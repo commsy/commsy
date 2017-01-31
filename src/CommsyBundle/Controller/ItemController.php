@@ -298,6 +298,7 @@ class ItemController extends Controller
         // get all hashtags -> list
         $buzzwordManager = $environment->getBuzzwordManager();
         $buzzwordManager->setContextLimit($roomId);
+        $buzzwordManager->setTypeLimit('buzzword');
         $buzzwordManager->select();
         $buzzwordList = $buzzwordManager->get();
         $buzzwordItem = $buzzwordList->getFirst();
