@@ -27,6 +27,7 @@ class InstitutionService
         $this->institutionManager->select();
         $countInstitution = array();
         $countInstitutionArray['count'] = sizeof($this->institutionManager->get()->to_array());
+        $this->institutionManager->resetLimits();
         $this->institutionManager->select();
         $countInstitutionArray['countAll'] = $this->institutionManager->getCountAll();
 
@@ -62,7 +63,7 @@ class InstitutionService
         $formData = $filterForm->getData();
 
         // activated
-        if ($formData['activated']) {
+        if ($formData['hide-deactivated-entries']) {
             $this->institutionManager->showNoNotActivatedEntries();
         }
     }
@@ -72,5 +73,9 @@ class InstitutionService
         $institution = $this->institutionManager->getNewItem();
         $institution->setLabelType(CS_INSTITUTION_TYPE);
         return $institution;
+    }
+
+    public function showNoNotActivatedEntries(){
+        $this->institutionManager->showNoNotActivatedEntries();
     }
 }

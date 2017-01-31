@@ -16,7 +16,11 @@ use CommsyBundle\Form\Type\GroupType;
 use CommsyBundle\Form\Type\AnnotationType;
 
 class InstitutionController extends Controller
-{    
+{
+    // setup filter form default values
+    private $defaultFilterValues = array(
+        'hide-deactivated-entries' => true,
+    );
     /**
      * @Route("/room/{roomId}/institution/feed/{start}/{sort}")
      * @Template()
@@ -27,11 +31,7 @@ class InstitutionController extends Controller
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true
-        );
-        $filterForm = $this->createForm(InstitutionFilterType::class, $defaultFilterValues, array(
+        $filterForm = $this->createForm(InstitutionFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_institution_list', array('roomId' => $roomId)),
             'hasHashtags' => $roomItem->withBuzzwords(),
             'hasCategories' => $roomItem->withTags(),
@@ -45,6 +45,8 @@ class InstitutionController extends Controller
         if ($filterForm->isValid()) {
             // set filter conditions in institution service
             $institutionService->setFilterConditions($filterForm);
+        } else {
+            $institutionService->showNoNotActivatedEntries();
         }
 
         // get institution list from institution service 
@@ -86,11 +88,7 @@ class InstitutionController extends Controller
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true
-        );
-        $filterForm = $this->createForm(InstitutionFilterType::class, $defaultFilterValues, array(
+        $filterForm = $this->createForm(InstitutionFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_institution_list', array('roomId' => $roomId)),
             'hasHashtags' => $roomItem->withBuzzwords(),
             'hasCategories' => $roomItem->withTags(),
@@ -104,6 +102,8 @@ class InstitutionController extends Controller
         if ($filterForm->isValid()) {
             // set filter conditions in institution manager
             $institutionService->setFilterConditions($filterForm);
+        } else {
+            $institutionService->showNoNotActivatedEntries();
         }
 
         $itemsCountArray = $institutionService->getCountArray($roomId);
@@ -607,11 +607,7 @@ class InstitutionController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => false,
-        );
-        $filterForm = $this->createForm(InstitutionFilterType::class, $defaultFilterValues, array(
+        $filterForm = $this->createForm(InstitutionFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_institution_list', array(
                 'roomId' => $roomId,
             )),

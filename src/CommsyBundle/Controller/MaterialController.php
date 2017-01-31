@@ -64,6 +64,8 @@ class MaterialController extends Controller
 
             // set filter conditions in material manager
             $materialService->setFilterConditions($filterForm);
+        } else {
+            $materialService->showNoNotActivatedEntries();
         }
 
         // get material list from manager service 
@@ -141,6 +143,8 @@ class MaterialController extends Controller
         if ($filterForm->isValid()) {
             // set filter conditions in material manager
             $materialService->setFilterConditions($filterForm);
+        } else {
+            $materialService->showNoNotActivatedEntries();
         }
 
         // get material list from manager service 

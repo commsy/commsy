@@ -2,6 +2,7 @@
 namespace CommsyBundle\Filter;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -20,15 +21,16 @@ class InstitutionFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('activated', Filters\CheckboxFilterType::class, array(
+            ->add('hide-deactivated-entries', Filters\CheckboxFilterType::class, array(
+                'translation_domain' => 'form',
                 'attr' => array(
                     'onchange' => 'this.form.submit()',
                 ),
-                'translation_domain' => 'form',
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
             ))
+            ->add('field0', HiddenType::class, [])
         ;
 
         if ($options['hasCategories']) {
