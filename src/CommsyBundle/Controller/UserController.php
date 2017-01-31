@@ -910,6 +910,27 @@ class UserController extends Controller
             'roomId' => $legacyEnvironment->getCurrentContextId(),
         ];
     }
+
+    /**
+     * Displays the all room link in top navbar.
+     * This is an embedded controller action.
+     *
+     * @Template()
+     *
+     * @return Response The HTML response
+     */
+    public function allRoomsNavbarAction()
+    {
+        $userService = $this->get('commsy_legacy.user_service');
+        $currentUserItem = $userService->getCurrentUserItem();
+
+        $privateRoomItem = $currentUserItem->getOwnRoom();
+
+        return [
+            'privateRoomItem' => $privateRoomItem,
+        ];
+    }
+
     /**
      * @Route("/room/{roomId}/user/{itemId}/print")
      */

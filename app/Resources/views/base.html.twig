@@ -73,11 +73,10 @@
 
                 {# left #}
                 <ul class="uk-navbar-nav">
-                    <li>
-                        <a class="cs-link-highlight" href="{{ path('commsy_room_listall', {'roomId': app.request.attributes.get('roomId') }) }}">
-                            {{ 'All rooms'|trans([], 'room') }}
-                        </a>
-                    </li>
+                    {# All Rooms #}
+                    {{ render(controller(
+                        'CommsyBundle:User:allRoomsNavbar'
+                    ))}}
 
                     {# room navigation #}
                     <li id="room-navigation" data-uk-dropdown="{mode:'click'}" data-commsy-room-navigation="{
