@@ -130,37 +130,10 @@ class UserType extends AbstractType
                 'translation_domain' => 'user',
                 'required' => false,
             ))
-            ->add('msn', TextType::class, array(
-                'label' => 'msn',
-                'attr' => array(
-                    'placeholder' => 'msn',
-                    'class' => '',
-                ),
-                'translation_domain' => 'user',
-                'required' => false,
-            ))
             ->add('skype', TextType::class, array(
                 'label' => 'skype',
                 'attr' => array(
                     'placeholder' => 'skype',
-                    'class' => '',
-                ),
-                'translation_domain' => 'user',
-                'required' => false,
-            ))
-            ->add('icq', TextType::class, array(
-                'label' => 'icq',
-                'attr' => array(
-                    'placeholder' => 'icq',
-                    'class' => '',
-                ),
-                'translation_domain' => 'user',
-                'required' => false,
-            ))
-            ->add('yahoo', TextType::class, array(
-                'label' => 'yahoo',
-                'attr' => array(
-                    'placeholder' => 'yahoo',
                     'class' => '',
                 ),
                 'translation_domain' => 'user',
