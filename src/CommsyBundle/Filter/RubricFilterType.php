@@ -54,8 +54,10 @@ class RubricFilterType extends AbstractType
                                     ->andWhere('l.contextId = :contextId')
                                     ->andWhere('l.type = :type')
                                     ->andWhere('l.deletionDate IS NULL')
+                                    ->andWhere('l.name != :all')
                                     ->setParameter('contextId', $roomId)
-                                    ->setParameter('type', 'group');
+                                    ->setParameter('type', 'group')
+                                    ->setParameter('all', 'ALL');
                             },
                             'choice_label' => 'name',
                             'translation_domain' => 'form',
