@@ -1325,20 +1325,19 @@ class cs_project_item extends cs_room_item {
       return $retour;
    }
 
-   public function backGrouproomsFromArchive () {
-      $retour = true;
-      $zzz_group_room_manager = $this->_environment->getZzzGroupRoomManager();
-      $zzz_group_room_manager->setContextLimit($this->getContextID());
-      $zzz_group_room_manager->setProjectroomLimit($this->getItemID());
-      $zzz_group_room_manager->select();
-      $group_room_list = $zzz_group_room_manager->get();
-      $group_room_item = $group_room_list->getFirst();
-      while($group_room_item){
-         $retour = $retour and $group_room_item->backFromArchive();
-         $group_room_item = $group_room_list->getNext();
-      }
-      unset($zzz_group_room_manager);
-      return $retour;
-   }
+    public function backGrouproomsFromArchive()
+    {
+        $zzz_group_room_manager = $this->_environment->getZzzGroupRoomManager();
+        $zzz_group_room_manager->setContextLimit($this->getContextID());
+        $zzz_group_room_manager->setProjectroomLimit($this->getItemID());
+        $zzz_group_room_manager->select();
+        $group_room_list = $zzz_group_room_manager->get();
+        $group_room_item = $group_room_list->getFirst();
+        while ($group_room_item) {
+            $group_room_item->backFromArchive();
+            $group_room_item = $group_room_list->getNext();
+        }
+        unset($zzz_group_room_manager);
+    }
 }
 ?>
