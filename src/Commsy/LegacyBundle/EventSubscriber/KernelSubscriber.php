@@ -76,9 +76,16 @@ class KernelSubscriber implements EventSubscriberInterface
         // Setting a response in the event will directly jump to the response event.
         $currentRequest = $event->getRequest();
         if ($currentRequest->query->has('cid')) {
-            $response = $this->legacyKernel->handle($currentRequest);
+            $pathInfo = $currentRequest->getPathInfo();
+            if (strlen($pathInfo) > 1) {
+                $url = $currentRequest->getSchemeAndHttpHost() . '?cid=' . $currentRequest->query->get('cid');
+                $response = new RedirectResponse($url);
+                $event->setResponse($response);
+            } else {
+                $response = $this->legacyKernel->handle($currentRequest);
 
-            $event->setResponse($response);
+                $event->setResponse($response);
+            }
         } else {
             // some services will handle authentication themselves or can bypass, like soap, rss, ...
             $currentRequest = $event->getRequest();
