@@ -675,7 +675,6 @@ if ( $environment->inPrivateRoom()
 						if (mb_stristr($title, $searchWord) !== false )
 						{
 							$titleCount++;
-							break;
 						}
 					}
 					
