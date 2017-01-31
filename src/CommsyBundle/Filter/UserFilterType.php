@@ -40,7 +40,7 @@ class UserFilterType extends AbstractType
             $statusChoices = [
                 'is blocked' => '0',
                 'is applying' => '1',
-                'user' => '2',
+                'user' => '8',
                 'moderator' => '3',
                 'is contact' => 'is contact',
                 'reading user' => '4',
