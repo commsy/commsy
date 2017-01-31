@@ -31,10 +31,10 @@
                 
                 if (foundArticles) {
                     // append the data
-                    var target = el.data('feed').target;
+                    let target = el.data('feed').target;
                     $(target).append(result);
         
-                    var event = new CustomEvent(
+                    let event = new CustomEvent(
                     	'feedDidLoad', 
                     	{
                     		detail: {
@@ -59,13 +59,13 @@
 
     // listen to "inview.uk.scrollspy" event on "feed-load-more-grid" classes
     $('.feed-load-more-grid').on('inview.uk.scrollspy', function() {
-        var el = $(this);
+        let el = $(this);
 
         // get current query string
-        var queryString = document.location.search;
+        let queryString = document.location.search;
 
         // build up the url
-        var url = el.data('feed').url  + feedStart + queryString;
+        let url = el.data('feed').url  + feedStart + queryString;
 
         // send ajax request to get more items
         $.ajax({
@@ -82,7 +82,7 @@
                 
                 if (foundArticles) {
                     // append the data
-                    var target = el.data('feed').target;
+                    let target = el.data('feed').target;
                     $(target).append(result);
         
                     // increase for next run
@@ -177,17 +177,17 @@
         }
         sort = newSort;
         
-        var el = $('.feed-load-more');
+        let el = $('.feed-load-more');
 
         if(el.length < 1){
             el = $('.feed-load-more-grid');
         }
 
         // get current query string
-        var queryString = document.location.search;
+        let queryString = document.location.search;
 
         // build up the url
-        var url = el.data('feed').url  + feedStart + '/' + sort + sortOrder + queryString;
+        let url = el.data('feed').url  + feedStart + '/' + sort + sortOrder + queryString;
 
         // send ajax request to get more items
         $.ajax({
@@ -204,11 +204,11 @@
                 
                 if (foundArticles) {
                     // append the data
-                    var target = el.data('feed').target;
+                    let target = el.data('feed').target;
                     //$(target).append(result);
                     $(target).html($(result));
                     
-                    var event = new CustomEvent(
+                    let event = new CustomEvent(
                     	'feedDidReload', 
                     	{
                     		detail: {},
