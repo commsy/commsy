@@ -2,6 +2,8 @@
 
 namespace CommsyBundle\Controller;
 
+use DateTime;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -227,6 +229,7 @@ class DateController extends Controller
             $dateService->setFilterConditions($filterForm);
         } else {
             $dateService->setPastFilter(false);
+            $dateService->showNoNotActivatedEntries();
         }
 
         $itemsCountArray = $dateService->getCountArray($roomId);
@@ -322,6 +325,9 @@ class DateController extends Controller
         $filterForm->handleRequest($request);
         if ($filterForm->isValid()) {
             $dateService->setFilterConditions($filterForm);
+        } else {
+            $dateService->setPastFilter(false);
+            $dateService->showNoNotActivatedEntries();
         }
 
         return array(
@@ -479,9 +485,11 @@ class DateController extends Controller
         if (!$dateFilter) {
             $dateFilter = $request->query->get('date_filter');
         }
-        
         // get the date service
         $dateService = $this->get('commsy_legacy.date_service');
+
+        $startDate = $request->get('start');
+        $endDate = $request->get('end');
 
         if ($dateFilter) {
             $filterForm = $this->createForm(DateFilterType::class, $this->defaultFilterValues, array(
@@ -495,11 +503,19 @@ class DateController extends Controller
 
             // set filter conditions on the date manager
             $dateService->setFilterConditions($filterForm);
+
+            if (isset($dateFilter['date-from']['date']) && !empty($dateFilter['date-from']['date'])) {
+                $startDate = DateTime::createFromFormat('d.m.Y', $dateFilter['date-from']['date'])->format('Y-m-d 00:00:00');
+            }
+            if (isset($dateFilter['date-until']['date']) && !empty($dateFilter['date-until']['date'])) {
+                $endDate = DateTime::createFromFormat('d.m.Y', $dateFilter['date-until']['date'])->format('Y-m-d 23:59:59');
+            }
         } else {
-            $dateService->setPastFilter(true);
+            $dateService->setPastFilter(false);
+            $dateService->showNoNotActivatedEntries();
         }
 
-        $listDates = $dateService->getCalendarEvents($roomId, $request->get('start'), $request->get('end'));
+        $listDates = $dateService->getCalendarEvents($roomId, $startDate, $endDate);
 
         $events = array();
         foreach ($listDates as $date) {
