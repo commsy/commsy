@@ -296,6 +296,7 @@ class ItemController extends Controller
         }
 
         // get all hashtags -> list
+        $optionsData['hashtags'] = [];
         $buzzwordManager = $environment->getBuzzwordManager();
         $buzzwordManager->setContextLimit($roomId);
         $buzzwordManager->setTypeLimit('buzzword');
