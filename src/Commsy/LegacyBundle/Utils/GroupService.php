@@ -27,6 +27,7 @@ class GroupService
         $this->groupManager->select();
         $countGroup = array();
         $countGroupArray['count'] = sizeof($this->groupManager->get()->to_array());
+        $this->groupManager->resetLimits();
         $this->groupManager->select();
         $countGroupArray['countAll'] = $this->groupManager->getCountAll();
 
@@ -62,7 +63,7 @@ class GroupService
         $formData = $filterForm->getData();
 
         // activated
-        if ($formData['activated']) {
+        if ($formData['hide-deactivated-entries']) {
             $this->groupManager->showNoNotActivatedEntries();
         }
     }
@@ -70,5 +71,9 @@ class GroupService
     public function getNewGroup()
     {
         return $this->groupManager->getNewItem();
+    }
+
+    public function showNoNotActivatedEntries(){
+        $this->groupManager->showNoNotActivatedEntries();
     }
 }

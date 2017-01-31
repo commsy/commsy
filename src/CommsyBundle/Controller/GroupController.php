@@ -20,6 +20,10 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class GroupController extends Controller
 {
+    // setup filter form default values
+    private $defaultFilterValues = array(
+        'hide-deactivated-entries' => true,
+    );
     /**
      * @Route("/room/{roomId}/group")
      * @Template()
@@ -35,14 +39,9 @@ class GroupController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-
-
        // get the group manager service
         $groupService = $this->get('commsy_legacy.group_service');
-        $defaultFilterValues = array(
-            'activated' => false,
-        );
-        $filterForm = $this->createForm(GroupFilterType::class, $defaultFilterValues, array(
+        $filterForm = $this->createForm(GroupFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_group_list', array(
                 'roomId' => $roomId,
             )),
@@ -55,38 +54,13 @@ class GroupController extends Controller
         if ($filterForm->isValid()) {
             // set filter conditions in group manager
             $groupService->setFilterConditions($filterForm);
+        }
+        else {
+            $groupService->showNoNotActivatedEntries();
         }
 
         // get group list from manager service 
         $itemsCountArray = $groupService->getCountArray($roomId);
-
-
-
-
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => false,
-        );
-        $filterForm = $this->createForm(GroupFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_group_list', array(
-                'roomId' => $roomId,
-            )),
-            'hasHashtags' => false,
-            'hasCategories' => false,
-        ));
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-
-        // get the group manager service
-        $groupService = $this->get('commsy_legacy.group_service');
-
-        // apply filter
-        $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
-            // set filter conditions in group manager
-            $groupService->setFilterConditions($filterForm);
-        }
 
         $usageInfo = false;
         if ($roomItem->getUsageInfoTextForRubricInForm('group') != '') {
@@ -120,11 +94,7 @@ class GroupController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => false,
-        );
-        $filterForm = $this->createForm(GroupFilterType::class, $defaultFilterValues, array(
+        $filterForm = $this->createForm(GroupFilterType::class, $this->defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_group_list', array(
                 'roomId' => $roomId,
             )),
@@ -140,6 +110,9 @@ class GroupController extends Controller
         if ($filterForm->isValid()) {
             // set filter conditions in group manager
             $groupService->setFilterConditions($filterForm);
+        }
+        else {
+            $groupService->showNoNotActivatedEntries();
         }
 
         // get group list from manager service 
@@ -179,6 +152,13 @@ class GroupController extends Controller
      */
     public function feedAction($roomId, $max = 10, $start = 0, $sort = 'title', Request $request)
     {
+        // extract current filter from parameter bag (embedded controller call)
+        // or from query paramters (AJAX)
+        $groupFilter = $request->get('groupFilter');
+        if (!$groupFilter) {
+            $groupFilter = $request->query->get('group_filter');
+        }
+
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $roomManager = $legacyEnvironment->getRoomManager();
@@ -188,26 +168,25 @@ class GroupController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => false,
-        );
-        $filterForm = $this->createForm(GroupFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_group_list', array(
-                'roomId' => $roomId,
-            )),
-            'hasHashtags' => false,
-            'hasCategories' => false,
-        ));
-
         // get the group manager service
         $groupService = $this->get('commsy_legacy.group_service');
 
-        // apply filter
-        $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
-            // set filter conditions in group manager
+        if ($groupFilter) {
+            $filterForm = $this->createForm(GroupFilterType::class, $this->defaultFilterValues, array(
+                'action' => $this->generateUrl('commsy_group_list', array(
+                    'roomId' => $roomId,
+                )),
+                'hasHashtags' => false,
+                'hasCategories' => false,
+            ));
+
+            // manually bind values from the request
+            $filterForm->submit($groupFilter);
+
             $groupService->setFilterConditions($filterForm);
+        }
+        else {
+            $groupService->showNoNotActivatedEntries();
         }
 
         // get group list from manager service 
