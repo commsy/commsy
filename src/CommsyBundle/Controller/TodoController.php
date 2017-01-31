@@ -52,28 +52,12 @@ class TodoController extends Controller
         if ($filterForm->isValid()) {
             // set filter conditions in todo manager
             $todoService->setFilterConditions($filterForm);
+        } else {
+            $todoService->showNoNotActivatedEntries();
         }
 
         // get todo list from manager service 
         $itemsCountArray = $todoService->getCountArray($roomId);
-        
-        $filterForm = $this->createForm(TodoFilterType::class, $this->defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_todo_list', array(
-                'roomId' => $roomId,
-            )),
-            'hasHashtags' => $roomItem->withBuzzwords(),
-            'hasCategories' => $roomItem->withTags(),
-        ));
-
-        // get the todo manager service
-        $todoService = $this->get('commsy_legacy.todo_service');
-
-        // apply filter
-        $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
-            // set filter conditions in todo manager
-            $todoService->setFilterConditions($filterForm);
-        }
  
         $usageInfo = false;
         if ($roomItem->getUsageInfoTextForRubricInForm('todo') != '') {
