@@ -95,7 +95,7 @@ class cs_popup_material_controller extends cs_rubric_popup_main_controller imple
 										$modifier_array[]['name'] = $translator->getMessage('COMMON_DELETED_USER');
 									}
 								} elseif(	($current_user->isUser() && isset($modificator) && $modificator->isVisibleForLoggedIn()) ||
-											(!$user->isUser() && isset($modificator) && $modificator->isVisibleForAll()) ||
+											(!$current_user->isUser() && isset($modificator) && $modificator->isVisibleForAll()) ||
 											(isset($modificator) && $this->_environment->getCurrentUserID() == $modificator->getItemID())) {
 									if(!$modificator->isDeleted() && $modificator->maySee($current_user)) {
 										if(!$this->_environment->inPortal()) {
@@ -109,7 +109,7 @@ class cs_popup_material_controller extends cs_rubric_popup_main_controller imple
 									} else {
 										$modifier_array[]['name'] = $translator->getMessage('COMMON_DELETED_USER');
 									}
-								} elseif($item->mayExternalSee($current_user())) {
+								} elseif($item->mayExternalSee($current_user)) {
 									$modifier_array[] = $modificator->getFullname();
 								} else {
 									if(isset($modificator) && !$modificator->isDeleted()) {
