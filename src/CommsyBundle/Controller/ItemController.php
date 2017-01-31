@@ -238,7 +238,7 @@ class ItemController extends Controller
             $tempLinkedItem = $itemLinkedList->getNext();
         }
         if (empty($optionsData['itemsLinked'])) {
-            $optionsData['itemsLinked'] = array();
+            $optionsData['itemsLinked'] = [];
         }
         // add number of linked items to feed amount
         $countLinked = count($optionsData['itemsLinked']);
@@ -280,7 +280,7 @@ class ItemController extends Controller
             $latestItem = $latestItemList->getNext();
         }
         if (empty($optionsData['itemsLatest'])) {
-            $optionsData['itemsLatest'] = array();
+            $optionsData['itemsLatest'] = [];
         }
         
         // get all categories -> tree
@@ -314,7 +314,7 @@ class ItemController extends Controller
 
         $translator = $this->get('translator');
 
-        $form = $this->createForm(ItemLinksType::class, $formData, array(
+        $form = $this->createForm(ItemLinksType::class, $formData, [
             'filterRubric' => $optionsData['filterRubric'],
             'filterPublic' => $optionsData['filterPublic'],
             'items' => $optionsData['items'],
@@ -322,56 +322,37 @@ class ItemController extends Controller
             'itemsLatest' => array_flip($optionsData['itemsLatest']),
             'categories' => $optionsData['categories'],
             'hashtags' => array_flip($optionsData['hashtags']),
-            'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', array('roomId' => $roomId)),
+            'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId]),
             'placeholderText' => $translator->trans('Hashtag', [], 'hashtag'),
-        ));
+        ]);
 
         $form->handleRequest($request);
         if ($form->isValid()) {
              if ($form->get('save')->isClicked()) {
-                // ToDo ...
                 $data = $form->getData();
 
                 $itemData = array_merge($data['itemsLinked'], $data['itemsLatest']);
 
-                // save linked entries
-                $item->setLinkedItemsByIDArray($itemData);
-
+                // update modifier
                 $item->setModificatorItem($environment->getCurrentUserItem());
 
-                // save categories
+                // save links
+                $item->setLinkedItemsByIDArray($itemData);
                 $item->setTagListByID($data['categories']);
+                $item->setBuzzwordListByID($data['hashtags']);
+
+                // persist
                 $item->save();
-                
-    			// save hashtags
-    			$buzzwordList = $buzzwordManager->get();
-                $buzzwordItem = $buzzwordList->getFirst();
-                while ($buzzwordItem) {
-                    $selected_ids = $buzzwordItem->getAllLinkedItemIDArrayLabelVersion();
-                    if (in_array($buzzwordItem->getItemId(), $data['hashtags'])) {
-            			$selected_ids[] = $itemId;
-                        $selected_ids = array_unique($selected_ids);
-                    } else {
-                        $index = 0;
-                        foreach ($selected_ids as $selected_id) {
-                            if ($selected_id == $itemId) {
-                                unset($selected_ids[$index]);
-                                break;
-                            }
-                            $index++;
-                        }
-                    }
-                    $buzzwordItem->saveLinksByIDArray($selected_ids);
-                    $buzzwordItem = $buzzwordList->getNext();
-                }
-    			
             } else if ($form->get('cancel')->isClicked()) {
                 //ToDo ...
             }
-            return $this->redirectToRoute('commsy_item_savelinks', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('commsy_item_savelinks', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]);
         }
 
-        return array(
+        return [
             'itemId' => $itemId,
             'roomId' => $roomId,
             'form' => $form->createView(),
@@ -379,7 +360,7 @@ class ItemController extends Controller
             'showHashtags' => $roomItem->withBuzzwords(),
             'items' => $items,
             'itemsLatest' => $optionsData['itemsLatest'],
-        );
+        ];
     }
     
     /**
