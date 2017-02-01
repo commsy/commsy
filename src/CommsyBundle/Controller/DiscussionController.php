@@ -730,7 +730,6 @@ class DiscussionController extends Controller
         $discussion = $discussionService->getDiscussion($itemId);
 
         $articleList = $discussion->getAllArticles();
-        $articles = $articleList->to_array();
         $countArticles = $articleList->getCount();
 
         $article = $discussionService->getNewArticle();
@@ -739,7 +738,7 @@ class DiscussionController extends Controller
         $article->setPosition($countArticles+1);
         $article->save();
 
-        $formData = $transformer->transform($section);
+        $formData = $transformer->transform($article);
         $form = $this->createForm(DiscussionArticleType::class, $formData, array(
             'action' => $this->generateUrl('commsy_discussion_savearticle', array('roomId' => $roomId, 'itemId' => $article->getItemID())),
             'placeholderText' => '['.$translator->trans('insert title').']',
