@@ -505,7 +505,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				            	
 				            	// wiki
 				            	if($current_context->existWiki() and $c_use_soap_for_wiki){
-				            		$wiki_manager = $environment->getWikiManager();
+				            		$wiki_manager = $this->_environment->getWikiManager();
 				            		$wiki_manager->openWiki();
 				            	}
 				            	 
@@ -543,6 +543,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
                          }
                      }
 
+                     $agbtext_array = [];
                          $languages = $this->_environment->getAvailableLanguageArray();
                          foreach ($languages as $language) {
                             if (!empty($form_data['agb_text_'.mb_strtolower($language, 'UTF-8')])) {
@@ -672,63 +673,6 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 
 						if($form_data['show_information_box'] == '1') $current_context->setwithInformationBox('yes');
 						else $current_context->setwithInformationBox('no');
-
-						// usage information
-
-
-						/*
-						 * $default_rubrics = $current_context->getAvailableRubrics();
-        $array_info_text = array();
-        $rubric_array = array();
-        $temp_array['rubric']  = $translator->getMessage('HOME_INDEX');
-        $temp_array['key'] = 'home';
-	    $temp_array['title'] = $current_context->getUsageInfoHeaderForRubric('home');
-	    $temp_array['text'] = $current_context->getUsageInfoTextForRubricInForm('home');
-        $array_info_text[] = $temp_array;
-        foreach ($default_rubrics as $rubric) {
-             $temp_array = array();
-             switch ( mb_strtoupper($rubric, 'UTF-8') ){
-                case 'ANNOUNCEMENT':
-                   $temp_array['rubric'] = $translator->getMessage('ANNOUNCEMENT_INDEX');
-                   break;
-                case 'DATE':
-                   $temp_array['rubric'] = $translator->getMessage('DATE_INDEX');
-                   break;
-                case 'DISCUSSION':
-                   $temp_array['rubric'] = $translator->getMessage('DISCUSSION_INDEX');
-                   break;
-                case 'INSTITUTION':
-                   $temp_array['rubric'] = $translator->getMessage('INSTITUTION_INDEX');
-                   break;
-                case 'GROUP':
-                   $temp_array['rubric'] = $translator->getMessage('GROUP_INDEX');
-                   break;
-                case 'MATERIAL':
-                   $temp_array['rubric'] = $translator->getMessage('MATERIAL_INDEX');
-                   break;
-                case 'PROJECT':
-                   $temp_array['rubric'] = $translator->getMessage('PROJECT_INDEX');
-                   break;
-                case 'TODO':
-                   $temp_array['rubric'] = $translator->getMessage('TODO_INDEX');
-                   break;
-                case 'TOPIC':
-                   $temp_array['rubric'] = $translator->getMessage('TOPIC_INDEX');
-                   break;
-                case 'USER':
-                   $temp_array['rubric'] = $translator->getMessage('USER_INDEX');
-                   break;
-                default:
-                   $temp_array['rubric'] = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_configuration_usageinfo_form(113) ');
-                   break;
-              }
-              $temp_array['key'] = $rubric;
-	          $temp_array['title'] = $current_context->getUsageInfoHeaderForRubric($rubric);
-	          $temp_array['text'] = $current_context->getUsageInfoTextForRubricInForm($rubric);
-              $array_info_text[] = $temp_array;
-              unset($temp_array);
-         }
-						 */
 
 						// get usage information
 				        $info_array = array();

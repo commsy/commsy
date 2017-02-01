@@ -32,8 +32,7 @@ class ItemController extends Controller
         $item = $itemService->getTypedItem($itemId);
         
         $transformer = $this->get('commsy_legacy.transformer.'.$item->getItemType());
-        
-        $formData = array();
+
         $itemType = $item->getItemType();
         
         $formData = $transformer->transform($item);
@@ -78,11 +77,6 @@ class ItemController extends Controller
             }
             
             return $this->redirectToRoute('commsy_item_savedescription', array('roomId' => $roomId, 'itemId' => $itemId));
-
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
         }
 
         // etherpad
@@ -265,7 +259,6 @@ class ItemController extends Controller
         // get latest edited items from current user
         $itemManager->setContextLimit($roomId);
         $itemManager->setUserUserIDLimit($environment->getCurrentUser()->getUserId());
-        // $itemManager->setIntervalLimit(10);
         $itemManager->select();
         $latestItemList = $itemManager->get();
 
