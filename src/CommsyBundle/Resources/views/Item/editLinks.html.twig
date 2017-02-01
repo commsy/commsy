@@ -154,6 +154,7 @@
                 {% endif %}
                 
                 {% if showHashtags %}
+                {% do form.hashtags.setRendered %}
                 <li>
                     <div class="uk-grid-width-small-1-4 hashtag-form" data-uk-grid data-uk-check-display>
                         {% for hashtag in form.hashtags %}
