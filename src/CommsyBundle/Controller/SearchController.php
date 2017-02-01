@@ -167,12 +167,12 @@ class SearchController extends Controller
             $searchManager = $this->get('commsy.search.manager');
             $searchManager->setQuery($query);
 
-            $instantResults = $searchManager->getInstantResults();
-
             // get every linked item id and add it to the query
             // to exclude this items from the resultlist
             if ($linkSearch) {
-                $instantResults = $searchManager->getLinkedItemResults($linkSearch);
+                $instantResults = $searchManager->getLinkedItemResults($roomId, $linkSearch);
+            } else {
+                $instantResults = $searchManager->getInstantResults();
             }
 
             foreach ($instantResults as $hybridResult) {

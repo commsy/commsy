@@ -254,7 +254,10 @@ class ItemController extends Controller
             
         }
 
-        $formData['itemsLinked'] = $item->getAllLinkedItemIDArray();
+        $linkedItemIds = $item->getAllLinkedItemIDArray();
+        foreach ($linkedItemIds as $linkedId) {
+            $formData['itemsLinked'][$linkedId] = true;
+        }
 
         // get latest edited items from current user
         $itemManager->setContextLimit($roomId);
@@ -319,12 +322,14 @@ class ItemController extends Controller
             'placeholderText' => $translator->trans('Hashtag', [], 'hashtag'),
         ]);
 
+        //dump($form); exit;
+
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
              if ($form->get('save')->isClicked()) {
                 $data = $form->getData();
 
-                $itemData = array_merge($data['itemsLinked'], $data['itemsLatest']);
+                $itemData = array_merge(array_keys($data['itemsLinked']), $data['itemsLatest']);
 
                 // update modifier
                 $item->setModificatorItem($environment->getCurrentUserItem());
@@ -896,6 +901,27 @@ class ItemController extends Controller
         }
 
         return $this->redirectToRoute($route, array('roomId' => $roomId));
+    }
+
+    /**
+     * @Route("/room/{roomId}/item/{itemId}/get", condition="request.isXmlHttpRequest()")
+     * @Template()
+     * @Security("is_granted('ITEM_SEE', itemId)")
+     */
+    public function singleArticleAction($roomId, $itemId)
+    {
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getTypedItem($itemId);
+
+        if (!$item) {
+            throw $this->createNotFoundException('no item found for id ' . $itemId);
+        }
+
+        return [
+            'item' => $item,
+        ];
+
+        return $response;
     }
 
     private function removeItemFromClipboard($itemId)

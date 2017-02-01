@@ -1784,42 +1784,6 @@ class cs_item {
          }
       }
 
-      /* link user group with grouproom via netnavigation
-      if ( $this->isA(CS_LABEL_TYPE)
-           and $this->getLabelType() == CS_GROUP_TYPE
-         ) {
-         $user_id_array = $rubric_sorted_array[CS_USER_TYPE];
-         $user_id_array2 = array();
-         foreach ($user_id_array as $value) {
-            if ( !empty($value['iid']) ) {
-               $user_id_array2[] = $value['iid'];
-            }
-         }
-         $user_id_array = $user_id_array2;
-         unset($user_id_array2);
-
-         $member_list = $this->getMemberItemList();
-         $member_item = $member_list->getFirst();
-         $member_id_array = array();
-         while ($member_item) {
-            if ( !in_array($member_item->getItemID(),$user_id_array) ) {
-               $this->removeMember2($member_item);
-            } else {
-               $member_id_array[] = $member_item->getItemID();
-            }
-            $member_item = $member_list->getNext();
-         }
-
-         foreach ( $user_id_array as $iid ) {
-            if ( !in_array($iid,$member_id_array) ) {
-               $this->addMember2ByItemID($iid);
-            }
-         }
-
-         unset($rubric_sorted_array[CS_USER_TYPE]);
-      }
-      */
-
       // translation of entry to rubrics for new private room
       if ( $this->_environment->inPrivateRoom()
            and in_array(CS_ENTRY_TYPE,$rubric_array)
@@ -1862,15 +1826,6 @@ class cs_item {
             if (isset($rubric_sorted_array[$rubric])){
                $this->_setValue($rubric, $rubric_sorted_array[$rubric], FALSE);
             }
-
-            /* link user group with grouproom via netnavigation
-            elseif ( $this->isA(CS_LABEL_TYPE)
-                       and $this->getLabelType() == CS_GROUP_TYPE
-                       and $rubric = CS_USER_TYPE
-                     ) {
-               // do nothing
-            }
-            */
 
             else{
                $this->_setValue($rubric, array(), FALSE);

@@ -2,22 +2,18 @@
 namespace CommsyBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use Commsy\LegacyBundle\Utils\RoomService;
 use Commsy\LegacyBundle\Utils\ItemService;
-use CommsyBundle\Entity\Materials;
-use CommsyBundle\Form\Type\TreeChoiceType;
 
 class ItemLinksType extends AbstractType
 {
@@ -43,33 +39,16 @@ class ItemLinksType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            // ->add('filterSearch', SearchType::class, array(
-            //     'label' => 'filterSearch',
-            //     'required' => false,
-            //     'translation_domain' => 'form',
-            //     'attr' => array(
-            //         'class' => 'uk-form-row uk-form-width-medium uk-search-field',
-            //     )
-            // ))
-            // ->add('filterRubric', ChoiceType::class, array(
-            //     'placeholder' => false,
-            //     'choices' => $options['filterRubric'],
-            //     'label' => 'filterRubric',
-            //     'choice_translation_domain' => true,
-            //     'translation_domain' => 'form',
-            //     'required' => false,
-            //     'attr' => array(
-            //         'class' => 'uk-form-row uk-form-width-medium',
-            //     )
-            // ))
-            ->add('itemsLinked', ChoiceType::class, array(
-                'placeholder' => false,
-                'choices' => $options['itemsLinked'],
+            ->add('itemsLinked', CollectionType::class, [
+                'allow_add' => true,
+                'allow_delete' => true,
                 'label' => false,
                 'required' => false,
-                'expanded' => true,
-                'multiple' => true
-            ))
+                'entry_type' => CheckboxType::class,
+                'entry_options' => [
+//                    'choices' => $options['itemsLinked'],
+                ],
+            ])
             ->add('itemsLatest', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => $options['itemsLatest'],

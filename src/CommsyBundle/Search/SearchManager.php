@@ -138,7 +138,7 @@ class SearchManager
         return $this->commsyFinder->find($boolQuery);
     }
 
-    public function getLinkedItemResults($itemId)
+    public function getLinkedItemResults($roomId, $itemId)
     {
         $boolQuery = new Queries\BoolQuery();
 
@@ -151,10 +151,13 @@ class SearchManager
         $boolQuery->addMust($multiMatchQuery);
 
         // filter context
-        $contextFilter = $this->createContextFilter();
+        // we are only interested in entries for the current room
+        $contextFilter = new Queries\Terms();
+        $contextFilter->setTerms('contextId', [$roomId]);
 
         $boolQuery->addFilter($contextFilter);
 
+        // results must not match already linked entries or the item itself
         $excludeFilter = $this->createExcludeFilter($itemId);
 
         $boolQuery->addMustNot($excludeFilter);
@@ -168,8 +171,7 @@ class SearchManager
         $linkedItems = $this->itemService->getLinkedItemIdArray($itemId);
 
         $itemFilter = new Queries\Ids();
-        $itemFilter->setIds($linkedItems);
-        // $itemFilter->setTerms('itemId', $linkedItems);
+        $itemFilter->setIds(array_merge($linkedItems, [$itemId]));
 
         return $itemFilter;
 

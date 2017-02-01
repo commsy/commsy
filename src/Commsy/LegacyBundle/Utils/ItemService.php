@@ -49,8 +49,9 @@ class ItemService
     public function getLinkedItemIdArray($itemId)
     {
         $item = $this->getTypedItem($itemId);
-
         $linkedItems = $item->getAllLinkItemList()->to_array();
+
+        $linkedItemIdArray = [];
 
         foreach ($linkedItems as $key => $value) {
             $linkedItemIdArray[] = $value->getSecondLinkedItemID();
