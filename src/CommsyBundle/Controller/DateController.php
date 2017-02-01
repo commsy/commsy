@@ -330,11 +330,18 @@ class DateController extends Controller
             $dateService->showNoNotActivatedEntries();
         }
 
-        return array(
+        $usageInfo = false;
+        if ($roomItem->getUsageInfoTextForRubricInForm('date') != '') {
+            $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('date');
+            $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('date');
+        }
+
+        return [
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
-            'module' => 'date'
-        );
+            'module' => 'date',
+            'usageInfo' => $usageInfo,
+        ];
     }
     
     /**
