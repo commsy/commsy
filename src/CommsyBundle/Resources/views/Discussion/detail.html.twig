@@ -111,11 +111,6 @@
                     <div class="cs-toggle" data-uk-observe>
                         {{ macrosDiscussion.title(discussion, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, ratingArray) }}
                     </div>
-            
-                    {# files #}
-                    <div id="files{{ discussion.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}' }">
-                        {{ macrosItem.files(discussion) }}
-                    </div>
         
                     {# links #}
                     <div id="links{{ discussion.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}' }">
