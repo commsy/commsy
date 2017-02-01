@@ -139,6 +139,13 @@ class RoomFeedGenerator
             $item = $itemList->getNext();
         }
 
+        // post-filter for disabled entries
+        $feedList = array_filter($feedList, function($feedItem) {
+            $modifcationDate = new \DateTime($feedItem->getModificationDate());
+
+            return $modifcationDate <= new \DateTime();
+        });
+
         return $feedList;
     }
 
