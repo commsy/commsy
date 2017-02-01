@@ -13,7 +13,8 @@
                     multiple: true
                 },
                 checkbox: {
-                    keep_selected_style: false
+                    keep_selected_style: false,
+                    three_state: false
                 },
                 plugins: [
                     "wholerow",
@@ -39,11 +40,6 @@
             let $this = this;
 
             let element = $this.element[0];
-
-            // disable checkbox three_state option if this tree exists in item edit context
-            if ($(element).closest('form[name="itemLinks"]').length) {
-                this.options.tree.checkbox.three_state = false;
-            }
 
             // init jstree
             $(element)
@@ -101,7 +97,8 @@
             multiple: true
         },
         checkbox: {
-            keep_selected_style: false
+            keep_selected_style: false,
+            three_state: false
         },
         plugins: [
             "wholerow", "nohover"
