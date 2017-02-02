@@ -116,7 +116,7 @@
         
                     {# links #}
                     <div id="links{{ announcement.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}' }">
-                        {{ macrosItem.links(announcement,showHashtags,showCategories) }}
+                        {{ macrosItem.links(announcement,showHashtags,showCategories,roomCategories) }}
                     </div>
         
                 </article>

@@ -337,6 +337,7 @@ class AnnouncementController extends Controller
             'showWorkflow' => $infoArray['showWorkflow'],
             'showHashtags' => $infoArray['showHashtags'],
             'showCategories' => $infoArray['showCategories'],
+            'roomCategories' => $infoArray['categories'],
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
             'ratingArray' => $infoArray['ratingArray'],
@@ -506,7 +507,14 @@ class AnnouncementController extends Controller
         // mark annotations as read
         $annotationList = $announcement->getAnnotationList();
         $annotationService->markAnnotationsReadedAndNoticed($annotationList);
-        
+
+        $categories = array();
+        if ($current_context->withTags()) {
+            $roomCategories = $this->get('commsy_legacy.category_service')->getTags($roomId);
+            $announcementCategories = $announcement->getTagsArray();
+            $categories = $this->getTagDetailArray($roomCategories, $announcementCategories);
+        }
+
         $ratingDetail = array();
         if ($current_context->isAssessmentActive()) {
             $assessmentService = $this->get('commsy_legacy.assessment_service');
@@ -534,6 +542,7 @@ class AnnouncementController extends Controller
         $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
+        $infoArray['categories'] = $categories;
         $infoArray['ratingArray'] = $current_context->isAssessmentActive() ? [
             'ratingDetail' => $ratingDetail,
             'ratingAverageDetail' => $ratingAverageDetail,
@@ -541,6 +550,40 @@ class AnnouncementController extends Controller
         ] : [];
         
         return $infoArray;
+    }
+
+    private function getTagDetailArray ($baseCategories, $itemCategories) {
+        $result = array();
+        $tempResult = array();
+        $addCategory = false;
+        foreach ($baseCategories as $baseCategory) {
+            if (!empty($baseCategory['children'])) {
+                $tempResult = $this->getTagDetailArray($baseCategory['children'], $itemCategories);
+            }
+            if (!empty($tempResult)) {
+                $addCategory = true;
+            }
+            $tempArray = array();
+            $foundCategory = false;
+            foreach ($itemCategories as $itemCategory) {
+                if ($baseCategory['item_id'] == $itemCategory['id']) {
+                    if ($addCategory) {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                    } else {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
+                    }
+                    $foundCategory = true;
+                }
+            }
+            if (!$foundCategory) {
+                if ($addCategory) {
+                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                }
+            }
+            $tempResult = array();
+            $addCategory = false;
+        }
+        return $result;
     }
 
     /**
