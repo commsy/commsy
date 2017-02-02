@@ -433,6 +433,11 @@
                 $countDisplay.html('('+result.data.countSelected+' - '+result.data.count+')')
             }
             
+            if (action == 'user-delete') {
+                let $countDisplay = $('#commsy-list-count-display');
+                $countDisplay.html($countDisplay.html().replace(/\d+/g, function(match){return parseInt(match)-entries.length}));
+            }
+
             // reload feed
             reloadFeed(result, false);
             stopEdit();
