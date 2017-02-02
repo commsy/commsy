@@ -59,7 +59,7 @@ class DateController extends Controller
             $dateService->setFilterConditions($filterForm);
         } else {
             $dateService->setPastFilter(false);
-            $dateService->showNoNotActivatedEntries();
+            $dateService->hideDeactivatedEntries();
         }
 
         // get material list from manager service 
@@ -219,17 +219,17 @@ class DateController extends Controller
             'hasCategories' => $roomItem->withTags(),
         ));
 
-        // get the material manager service
+        // get the date manager service
         $dateService = $this->get('commsy_legacy.date_service');
 
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isValid()) {
-            // set filter conditions in material manager
+            // set filter conditions in date manager
             $dateService->setFilterConditions($filterForm);
         } else {
             $dateService->setPastFilter(false);
-            $dateService->showNoNotActivatedEntries();
+            $dateService->hideDeactivatedEntries();
         }
 
         $itemsCountArray = $dateService->getCountArray($roomId);
@@ -263,19 +263,19 @@ class DateController extends Controller
             'hasCategories' => $roomItem->withTags(),
         ));
 
-        // get the material manager service
+        // get the date manager service
         $dateService = $this->get('commsy_legacy.date_service');
 
         // apply filter
         $filterForm->handleRequest($request);
         if ($filterForm->isValid()) {
-            // set filter conditions in material manager
+            // set filter conditions in date manager
             $dateService->setFilterConditions($filterForm);
         } else {
             $dateService->setPastFilter(false);
         }
 
-        // get material list from manager service 
+        // get date list from manager service
         $dates = $dateService->getListDates($roomId, $max = null, $start = 0, $sort = 'date');
 
         $readerService = $this->get('commsy_legacy.reader_service');
@@ -327,7 +327,7 @@ class DateController extends Controller
             $dateService->setFilterConditions($filterForm);
         } else {
             $dateService->setPastFilter(false);
-            $dateService->showNoNotActivatedEntries();
+            $dateService->hideDeactivatedEntries();
         }
 
         $usageInfo = false;
@@ -519,7 +519,7 @@ class DateController extends Controller
             }
         } else {
             $dateService->setPastFilter(false);
-            $dateService->showNoNotActivatedEntries();
+            $dateService->hideDeactivatedEntries();
         }
 
         $listDates = $dateService->getCalendarEvents($roomId, $startDate, $endDate);

@@ -180,7 +180,8 @@ class DateService
         return $dateList->to_array();
     }
     
-    public function showNoNotActivatedEntries(){
+    public function hideDeactivatedEntries()
+    {
         $this->dateManager->showNoNotActivatedEntries();
     }
 }
