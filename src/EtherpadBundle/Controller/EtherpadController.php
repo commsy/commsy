@@ -34,7 +34,7 @@ class EtherpadController extends Controller
         if (!$material->getEtherpadEditorID() || !in_array($material->getEtherpadEditorID(), $pads->padIDs)) {
 
             // plain material id vs. material id + random string?
-            $pad = $client->createGroupPad($group->groupID, $materialId);
+            $pad = $client->createGroupPad($group->groupID, $materialId, '');
 
             $material->setEtherpadEditorID($pad->padID);
             $material->save();

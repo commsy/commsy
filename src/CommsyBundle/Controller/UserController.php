@@ -258,11 +258,12 @@ class UserController extends Controller
         
         $noModeratorsError = false;
         
+        $userService = $this->get('commsy_legacy.user_service');
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $noticedManager = $legacyEnvironment->getNoticedManager();
+        $readerManager = $legacyEnvironment->getReaderManager();
+
         if ($action == 'markread') {
-            $userService = $this->get('commsy_legacy.user_service');
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $noticedManager = $legacyEnvironment->getNoticedManager();
-            $readerManager = $legacyEnvironment->getReaderManager();
             foreach ($selectedIds as $id) {
                 $item = $userService->getUser($id);
                 $versionId = $item->getVersionID();
@@ -280,10 +281,6 @@ class UserController extends Controller
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'user-delete') {
             if ($this->contextHasModerators($roomId, $selectedIds)) {
-                $userService = $this->get('commsy_legacy.user_service');
-                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-                $noticedManager = $legacyEnvironment->getNoticedManager();
-                $readerManager = $legacyEnvironment->getReaderManager();
                 foreach ($selectedIds as $id) {
                     $item = $userService->getUser($id);
                     $item->delete();
@@ -294,10 +291,6 @@ class UserController extends Controller
             }
         } else if ($action == 'user-block') {
             if ($this->contextHasModerators($roomId, $selectedIds)) {
-                $userService = $this->get('commsy_legacy.user_service');
-                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-                $noticedManager = $legacyEnvironment->getNoticedManager();
-                $readerManager = $legacyEnvironment->getReaderManager();
                 foreach ($selectedIds as $id) {
                     $item = $userService->getUser($id);
                     $item->setStatus(0);
@@ -308,10 +301,6 @@ class UserController extends Controller
                 $noModeratorsError = true;
             }
         } else if ($action == 'user-confirm') {
-            $userService = $this->get('commsy_legacy.user_service');
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $noticedManager = $legacyEnvironment->getNoticedManager();
-            $readerManager = $legacyEnvironment->getReaderManager();
             foreach ($selectedIds as $id) {
                 $item = $userService->getUser($id);
                 $item->setStatus(2);
@@ -320,10 +309,6 @@ class UserController extends Controller
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('confirmed %count% users',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'user-status-reading-user') {
             if ($this->contextHasModerators($roomId, $selectedIds)) {
-                $userService = $this->get('commsy_legacy.user_service');
-                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-                $noticedManager = $legacyEnvironment->getNoticedManager();
-                $readerManager = $legacyEnvironment->getReaderManager();
                 foreach ($selectedIds as $id) {
                     $item = $userService->getUser($id);
                     $item->setStatus(4);
@@ -335,10 +320,6 @@ class UserController extends Controller
             }
         } else if ($action == 'user-status-user') {
             if ($this->contextHasModerators($roomId, $selectedIds)) {
-                $userService = $this->get('commsy_legacy.user_service');
-                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-                $noticedManager = $legacyEnvironment->getNoticedManager();
-                $readerManager = $legacyEnvironment->getReaderManager();
                 foreach ($selectedIds as $id) {
                     $item = $userService->getUser($id);
                     $item->setStatus(2);
@@ -349,10 +330,6 @@ class UserController extends Controller
                 $noModeratorsError = true;
             }
         } else if ($action == 'user-status-moderator') {
-            $userService = $this->get('commsy_legacy.user_service');
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $noticedManager = $legacyEnvironment->getNoticedManager();
-            $readerManager = $legacyEnvironment->getReaderManager();
             foreach ($selectedIds as $id) {
                 $item = $userService->getUser($id);
                 $item->setStatus(3);
@@ -360,10 +337,6 @@ class UserController extends Controller
             }
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to moderator',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'user-contact') {
-            $userService = $this->get('commsy_legacy.user_service');
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $noticedManager = $legacyEnvironment->getNoticedManager();
-            $readerManager = $legacyEnvironment->getReaderManager();
             foreach ($selectedIds as $id) {
                 $item = $userService->getUser($id);
                 $item->makeContactPerson();
@@ -371,10 +344,6 @@ class UserController extends Controller
             }
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to contact',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'user-contact-remove') {
-            $userService = $this->get('commsy_legacy.user_service');
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $noticedManager = $legacyEnvironment->getNoticedManager();
-            $readerManager = $legacyEnvironment->getReaderManager();
             foreach ($selectedIds as $id) {
                 $item = $userService->getUser($id);
                 $item->makeNoContactPerson();

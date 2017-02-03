@@ -19,7 +19,6 @@ class MaterialService
 
         $this->materialManager = $this->legacyEnvironment->getMaterialManager();
         $this->materialManager->reset();
-        $this->materialManager->showNoNotActivatedEntries();
         
         $this->sectionManager = $this->legacyEnvironment->getSectionManager();
         $this->sectionManager->reset();
