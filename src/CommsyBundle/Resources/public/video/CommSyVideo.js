@@ -370,17 +370,12 @@ CKEDITOR.plugins.add( "CommSyVideo",
 													} else {
 														inputUrl.disable();
 														// set file url in textInput
-														var cid = getUrlParam('cid');
-														var mod = getUrlParam('mod');
-														var iid = getUrlParam('iid');
 														
 														var input = this.getInputElement().$;
-											//			alert(input.options[input.selectedIndex].text);
 														
-														fileUrl = 'commsy.php/' + input.options[input.selectedIndex].text + '?cid=' + cid + '&mod=' + mod + '&fct=getfile&iid=' + this.getValue();
+														fileUrl = this.getValue();
 														
 														encodeFileUrl = encodeURI(fileUrl);
-											//			alert(encodeFileUrl);
 														inputUrl.setValue(encodeFileUrl);
 													}
 												}

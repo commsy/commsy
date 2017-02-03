@@ -61,43 +61,43 @@ CKEDITOR.plugins.add( "CommSyAudio",
 										'default' : 'null',
 										onLoad: function ()
 										{
-											var dialog = this.getDialog();
-											var fileSelect = dialog.getContentElement( 'audioTab' , 'fileselect' );
-											var j;
-											fileSelect.clear();
-											fileSelect.add('<Auswahl>', 'null');
-											for(j = 0; j < fileItems.length; j++) {
-												if(fileItems[j][2] == 'mp3'){
-													fileSelect.add(fileSelect.items[j][0],fileSelect.items[j][1]);
-												}
-											}
+											// var dialog = this.getDialog();
+											// var fileSelect = dialog.getContentElement( 'audioTab' , 'fileselect' );
+											// var j;
+											// fileSelect.clear();
+											// fileSelect.add('<Auswahl>', 'null');
+											// for(j = 0; j < fileItems.length; j++) {
+											// 	if(fileItems[j][2] == 'mp3'){
+											// 		fileSelect.add(fileSelect.items[j][0],fileSelect.items[j][1]);
+											// 	}
+											// }
 										},
 										onChange : function ()
 										{
-											var dialog = this.getDialog();
-											var audioUrl = dialog.getContentElement( 'audioTab', 'audioUrl' );
-											var fileSelect = dialog.getContentElement( 'audioTab', 'fileselect' );
-											audioUrl.enable();
+											// var dialog = this.getDialog();
+											// var audioUrl = dialog.getContentElement( 'audioTab', 'audioUrl' );
+											// var fileSelect = dialog.getContentElement( 'audioTab', 'fileselect' );
+											// audioUrl.enable();
 											
-											if(this.getValue() == 'mediaplayer'){
-												var j;
-												fileSelect.clear();
-												fileSelect.add('<Auswahl>', 'null');
-												for(j = 0; j < fileItems.length; j++) {
-													if(fileItems[j][2] == 'mp3'){
-														fileSelect.add(fileSelect.items[j][0],fileSelect.items[j][1]);
-													}
-												}
-											} else if(this.getValue() == 'wmaplayer') {
-												var j;
-												fileSelect.clear();
-												fileSelect.add('<Auswahl>', 'null');
-												for(j = 0; j < fileItems.length; j++) {
-													if(fileItems[j][2] == 'wma'){
-														fileSelect.add(fileSelect.items[j][0],fileSelect.items[j][1]);
-													}
-												}
-											}
+											// if(this.getValue() == 'mediaplayer'){
+											// 	var j;
+											// 	fileSelect.clear();
+											// 	fileSelect.add('<Auswahl>', 'null');
+											// 	for(j = 0; j < fileItems.length; j++) {
+											// 		if(fileItems[j][2] == 'mp3'){
+											// 			fileSelect.add(fileSelect.items[j][0],fileSelect.items[j][1]);
+											// 		}
+											// 	}
+											// } else if(this.getValue() == 'wmaplayer') {
+											// 	var j;
+											// 	fileSelect.clear();
+											// 	fileSelect.add('<Auswahl>', 'null');
+											// 	for(j = 0; j < fileItems.length; j++) {
+											// 		if(fileItems[j][2] == 'wma'){
+											// 			fileSelect.add(fileSelect.items[j][0],fileSelect.items[j][1]);
+											// 		}
+											// 	}
+											// }
 											
 										}
 									},
