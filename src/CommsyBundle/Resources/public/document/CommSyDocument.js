@@ -13,7 +13,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 		{
 			label:		"sonstige Medien",
 			command:	"CommSyDocument",
-			icon:		"/js/src/commsy/ckeditor/plugins/document/images/icon.png"
+			icon:		"/bundles/commsy/document/images/icon.png"
 		} );
 		
 		CKEDITOR.dialog.add( 'CommSyDocument', function ( instance )
