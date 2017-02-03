@@ -146,32 +146,37 @@
 
     function reloadCurrent (newSort, invert) {
         feedStart = 0;
-        
+
+        sort = $(".cs-sort-active").attr("id").split("-")[$(".cs-sort-active").attr("id").split("-").length-1];
+        // current sort order depends on state of chevron
+        let chevronDown = $('#commsy-sort-'+sort+'-chevron').attr('class').endsWith("down");
+        sortOrder = (chevronDown && !invert) || (!chevronDown && invert) ? '_rev' : '';
+
         $('#commsy-sort-'+sort+'-chevron').removeClass('uk-icon-chevron-up');
         $('#commsy-sort-'+sort+'-chevron').removeClass('uk-icon-chevron-down');
         if (newSort == sort) {
             if (sortOrder == '') {
                 sortOrder = '_rev';
-                if (!invert) {
-                    $('#commsy-sort-'+newSort+'-chevron').addClass('uk-icon-chevron-down');
-                } else {
+                if (invert) {
                     $('#commsy-sort-'+newSort+'-chevron').addClass('uk-icon-chevron-up');
+                } else {
+                    $('#commsy-sort-'+newSort+'-chevron').addClass('uk-icon-chevron-down');
                 }
             } else {
                 sortOrder = '';
-                if (!invert) {
-                    $('#commsy-sort-'+newSort+'-chevron').addClass('uk-icon-chevron-up');
-                } else {
+                if (invert) {
                     $('#commsy-sort-'+newSort+'-chevron').addClass('uk-icon-chevron-down');
+                } else {
+                    $('#commsy-sort-'+newSort+'-chevron').addClass('uk-icon-chevron-up');
                 }
             }
         } else {
             $('#commsy-sort-'+sort).removeClass('cs-sort-active');
             $('#commsy-sort-'+newSort).addClass('cs-sort-active');
-            if (!invert) {
-                $('#commsy-sort-'+newSort+'-chevron').addClass('uk-icon-chevron-up');
-            } else {
+            if (invert) {
                 $('#commsy-sort-'+newSort+'-chevron').addClass('uk-icon-chevron-down');
+            } else {
+                $('#commsy-sort-'+newSort+'-chevron').addClass('uk-icon-chevron-up');
             }
             sortOrder = '';
         }
