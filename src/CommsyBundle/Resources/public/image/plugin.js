@@ -43,7 +43,7 @@
 			// Register the toolbar button.
 			editor.ui.addButton && editor.ui.addButton( 'CommSyImage', {
 				label: editor.lang.common.image,
-				icon: '/js/src/commsy/ckeditor/plugins/image/icons/image.png',
+				icon: '/bundles/commsy/image/icons/image.png',
 				command: pluginName,
 				toolbar: 'insert,10'
 			});

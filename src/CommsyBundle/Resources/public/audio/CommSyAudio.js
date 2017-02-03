@@ -13,7 +13,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 		{
 			label:		"Audio",
 			command:	"CommSyAudio",
-			icon:		"/js/src/commsy/ckeditor/plugins/audio/images/icon.png"
+			icon:		"/bundles/commsy/audio/images/icon.png"
 		} );
 		
 		CKEDITOR.dialog.add( 'CommSyAudio', function ( instance )
