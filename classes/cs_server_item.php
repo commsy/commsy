@@ -706,7 +706,11 @@ class cs_server_item extends cs_guide_item
                                     $body .= "\n\n";
                                     $body .= $translator->getEmailMessage('EMAIL_BODY_PASSWORD_EXPIRATION', $link);
                                     $body .= "\n\n";
-                                    $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $mod_user_first->getFullName(), $portal_item->getTitle());
+                                    if ($mod_user_first) {
+                                        $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $mod_user_first->getFullName(), $portal_item->getTitle());
+                                    } else {
+                                        $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', '', $portal_item->getTitle());
+                                    }
                                     $body .= "\n\n";
                                     $body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
 
