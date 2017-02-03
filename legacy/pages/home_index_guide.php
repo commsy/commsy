@@ -543,7 +543,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
              if($environment->getCurrentPortalItem()->getHideAccountname()){
              	$userid = 'XXX '.$translator->getMessage('COMMON_DATASECURITY');
              } else {
-             	$userid = $user->getUserID();
+             	$userid = $user_item->getUserID();
              }
 
              // email texts
@@ -594,8 +594,17 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
         $spool = $mailer->getTransport()->getSpool();
         $spool->flushQueue($transport);
 
-   if ($account_mode == 'to_room'){
-      redirect($current_item_id, 'home', 'index', '');
+    if ($account_mode == 'to_room'){
+        // router
+        $router = $symfonyContainer->get('router');
+
+        $url = $router->generate(
+            'commsy_room_home', [
+                'roomId' => $room_item->getItemID(),
+            ]
+        );
+        redirect_with_url($url);
+        // redirect($current_item_id, 'home', 'index', '');
    } else {
       $get_params = $environment->getCurrentParameterArray();
       if (isset($get_params['sort'])){
