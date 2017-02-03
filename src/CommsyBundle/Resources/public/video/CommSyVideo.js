@@ -92,13 +92,6 @@ CKEDITOR.plugins.add( "CommSyVideo",
 							new Array( '<Auswahl>' , 'null', 'null')
 					);
 					
-					// fill select with filenames and file extension
-					var i,fileId;
-					for(i = 0; i < files.length; i++){
-						fileId = document.getElementsByName('form_data[file_' + i + ']');
-						fileItems.push(new Array(files[i].innerHTML, fileId[0].value, files[i].innerHTML.substr(files[i].innerHTML.lastIndexOf('.')+1, 3)));
-					}
-					
 					var SelectBoxItems = new Array(
 							new Array( '<Bitte Videotyp auswählen>', 'null'),
 							new Array( 'CommSy Video', 'projekktor'),
@@ -344,7 +337,26 @@ CKEDITOR.plugins.add( "CommSyVideo",
 												items : fileItems,
 												onLoad : function ()
 												{
-													this.disable();
+													var dialog = this.getDialog();
+													var filelistUrl = $('*[data-cs-filelisturl]').data("csFilelisturl").path;
+
+													if (filelistUrl) {
+														$.ajax({
+																url: filelistUrl,
+														}).done(function(response) {
+															// var dialog = $this.getDialog();
+															// fill dropdown with file entries
+															var fileSelect = dialog.getContentElement( 'videoTab', 'fileselect' );
+															for(i = 0; i < response.files.length; i++){
+																
+																fileSelect.add(
+																		response.files[i].name,
+																		response.files[i].path,
+																		response.files[i].ext
+																	);
+															}
+														});
+													}
 												},
 												onChange : function () 
 												{

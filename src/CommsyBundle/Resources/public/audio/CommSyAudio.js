@@ -20,19 +20,21 @@ CKEDITOR.plugins.add( "CommSyAudio",
 				{
 					var audio;
 					// parse filenames from edit dialog
-					var files = document.getElementsByName('file_name');
+					// var files = document.getElementsByName('file_name');
 					var urlDecodeFlag = true;
 					
 					fileItems = new Array (
 							new Array( '<Auswahl>' , 'null')
 					);
+
+
 					
 					// fill select with filenames
-					var i,fileId;
-					for(i = 0; i < files.length; i++){
-						fileId = document.getElementsByName('form_data[file_' + i + ']');
-						fileItems.push(new Array(files[i].innerHTML, fileId[0].value, files[i].innerHTML.substr(files[i].innerHTML.lastIndexOf('.')+1, 3)));
-					}
+					// var i,fileId;
+					// for(i = 0; i < files.length; i++){
+					// 	fileId = document.getElementsByName('form_data[file_' + i + ']');
+					// 	fileItems.push(new Array(files[i].innerHTML, fileId[0].value, files[i].innerHTML.substr(files[i].innerHTML.lastIndexOf('.')+1, 3)));
+					// }
 					
 					var SelectBoxItems = new Array(
 							new Array( '<Bitte Audiotyp auswählen>', 'null'),
@@ -109,6 +111,29 @@ CKEDITOR.plugins.add( "CommSyAudio",
 												id: 'fileselect',
 												label: 'Angehängte Datei auswählen',
 												items : fileItems,
+												onLoad : function ()
+												{
+													var dialog = this.getDialog();
+													var filelistUrl = $('*[data-cs-filelisturl]').data("csFilelisturl").path;
+
+													if (filelistUrl) {
+														$.ajax({
+																url: filelistUrl,
+														}).done(function(response) {
+															// var dialog = $this.getDialog();
+															// fill dropdown with file entries
+															var fileSelect = dialog.getContentElement( 'audioTab', 'fileselect' );
+															for(i = 0; i < response.files.length; i++){
+																
+																fileSelect.add(
+																		response.files[i].name,
+																		response.files[i].path,
+																		response.files[i].ext
+																	);
+															}
+														});
+													}
+												},
 												onChange : function () 
 												{
 													// disable textInput if file is selected
@@ -128,7 +153,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 														var input = this.getInputElement().$;
 														
 														// build url for embedding
-														fileUrl = 'commsy.php/' + input.options[input.selectedIndex].text + '?cid=' + cid + '&mod=' + mod + '&fct=getfile&iid=' + this.getValue();
+														fileUrl = this.getValue();
 														
 //														encodeFileUrl = encodeURIComponent(fileUrl);
 //															alert(encodeFileUrl);

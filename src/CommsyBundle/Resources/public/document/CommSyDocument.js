@@ -35,13 +35,6 @@ CKEDITOR.plugins.add( "CommSyDocument",
 							new Array( '<Auswahl>' , null)
 					);
 					
-					// fill select with filenames
-					var i,fileId;
-					for(i = 0; i < files.length; i++){
-						fileId = document.getElementsByName('form_data[file_' + i + ']');
-						fileItems.push(new Array(files[i].innerHTML, fileId[0].value, files[i].innerHTML.substr(files[i].innerHTML.lastIndexOf('.')+1, 3)));
-					}
-					
 					var floatItems = new Array (
 							new Array ('<nichts>','null'),
 							new Array ('Links','left'),
@@ -164,7 +157,26 @@ CKEDITOR.plugins.add( "CommSyDocument",
 												items : fileItems,
 												onLoad : function ()
 												{
-													this.disable();
+													var dialog = this.getDialog();
+													var filelistUrl = $('*[data-cs-filelisturl]').data("csFilelisturl").path;
+
+													if (filelistUrl) {
+														$.ajax({
+																url: filelistUrl,
+														}).done(function(response) {
+															// var dialog = $this.getDialog();
+															// fill dropdown with file entries
+															var fileSelect = dialog.getContentElement( 'documentTab', 'fileselect' );
+															for(i = 0; i < response.files.length; i++){
+																
+																fileSelect.add(
+																		response.files[i].name,
+																		response.files[i].path,
+																		response.files[i].ext
+																	);
+															}
+														});
+													}
 												},
 												onChange : function () 
 												{
