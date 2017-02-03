@@ -20,7 +20,6 @@ class InstitutionService
         $this->institutionManager->reset();
     }
 
-
     public function getCountArray($roomId)
     {
         $this->institutionManager->setContextLimit($roomId);
@@ -33,7 +32,6 @@ class InstitutionService
 
         return $countInstitutionArray;
     }
-
 
     public function getInstitution($itemId)
     {

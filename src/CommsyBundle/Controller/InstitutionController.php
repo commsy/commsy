@@ -27,23 +27,26 @@ class InstitutionController extends Controller
      */
     public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
+        $institutionFilter = $request->get('institutionFilter');
+        if (!$institutionFilter) {
+            $institutionFilter = $request->query->get('institution_filter');
+        }
+
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
-        $filterForm = $this->createForm(InstitutionFilterType::class, $this->defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_institution_list', array('roomId' => $roomId)),
-            'hasHashtags' => $roomItem->withBuzzwords(),
-            'hasCategories' => $roomItem->withTags(),
-        ));
-
         // get the institution service
         $institutionService = $this->get('commsy_legacy.institution_service');
 
-        // apply filter
-        $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
-            // set filter conditions in institution service
+        if ($institutionFilter) {
+            $filterForm = $this->createForm(InstitutionFilterType::class, $this->defaultFilterValues, array(
+                'action' => $this->generateUrl('commsy_institution_list', array('roomId' => $roomId)),
+                'hasHashtags' => $roomItem->withBuzzwords(),
+                'hasCategories' => $roomItem->withTags(),
+            ));
+
+            $filterForm->submit($institutionFilter);
             $institutionService->setFilterConditions($filterForm);
         } else {
             $institutionService->showNoNotActivatedEntries();
