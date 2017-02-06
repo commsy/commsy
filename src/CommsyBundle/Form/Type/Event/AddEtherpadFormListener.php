@@ -37,6 +37,14 @@ class AddEtherpadFormListener implements EventSubscriberInterface
                 'required' => false,
                 'translation_domain' => 'form',
             ));
+        } else {
+            $form->add('editor_switch', CheckboxType::class, array(
+                'label' => 'use etherpad',
+                'required' => false,
+                'translation_domain' => 'form',
+                'disabled' => 'true',
+                'label_attr' => ['class' => 'uk-text-muted'],
+            ));
         }
     }
 }

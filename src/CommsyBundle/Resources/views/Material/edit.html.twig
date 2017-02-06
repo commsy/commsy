@@ -11,15 +11,13 @@
         {% if not form.biblio_sub is defined %}
             {% if form.vars.name != "section"  %}
                 <div class="uk-margin-top">
-                    {% if isDraft %}
-                        {% if form.editor_switch is defined %}
-                            <div class="uk-form-row">
-                                {{ form_label(form.editor_switch) }}
-                                <div class="uk-margin-left">
-                                    {{ form_widget(form.editor_switch) }}
-                                </div>
+                    {% if form.editor_switch is defined %}
+                        <div class="uk-form-row">
+                            {{ form_label(form.editor_switch) }}
+                            <div class="uk-margin-left">
+                                {{ form_widget(form.editor_switch) }}
                             </div>
-                        {% endif %}
+                        </div>
                     {% endif %}
                     <div class="uk-form-row">
                         <label class="uk-form-label">
