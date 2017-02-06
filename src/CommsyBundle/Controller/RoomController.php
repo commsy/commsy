@@ -379,4 +379,18 @@ class RoomController extends Controller
             'rooms' => $rooms,
         ];
     }
+
+    /**
+     * @Route("/room/{roomId}/logo")
+     * @Template()
+     */
+    public function logoAction($roomId, Request $request)
+    {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+
+        return [
+            'portalUrl' => $request->getSchemeAndHttpHost() . '?cid=' . $portalItem->getItemId(),
+        ];
+    }
 }
