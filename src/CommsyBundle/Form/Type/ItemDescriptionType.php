@@ -32,7 +32,8 @@ class ItemDescriptionType extends AbstractType
                 'attr' => array(
                     'placeholder' => 'Description',
                     'class' => 'uk-form-width-large ckeditor-upload',
-                    'data-cs-uploadurl' => '{"path": "' . $options['uploadUrl'] . '"}'
+                    'data-cs-uploadurl' => '{"path": "' . $options['uploadUrl'] . '"}',
+                    'data-cs-filelisturl' => '{"path": "' . $options['filelistUrl'] . '"}'
                 ),
                 'translation_domain' => 'material',
                 'required' => false,
@@ -88,7 +89,7 @@ class ItemDescriptionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['itemId', 'uploadUrl'])
+            ->setRequired(['itemId', 'uploadUrl', 'filelistUrl'])
             ->setDefaults(array('translation_domain' => 'form'))
         ;
     }

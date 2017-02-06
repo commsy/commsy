@@ -31,7 +31,7 @@ class DateController extends Controller
      * @Route("/room/{roomId}/date/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date_rev', Request $request)
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);

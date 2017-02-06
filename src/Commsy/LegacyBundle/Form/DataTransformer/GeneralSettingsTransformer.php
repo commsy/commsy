@@ -60,6 +60,14 @@ class GeneralSettingsTransformer implements DataTransformerInterface
 
             $roomData['material_open_for_guest'] = $roomItem->isMaterialOpenForGuests();
 
+            $linkedCommunityRooms = array();
+
+            foreach ($roomItem->getCommunityList()->to_array() as $key => $communityRoom) {
+                $linkedCommunityRooms[] = $communityRoom->getItemID();
+            }
+
+            $roomData['community_rooms'] = $linkedCommunityRooms;
+
         }
         return $roomData;
     }
@@ -96,20 +104,13 @@ class GeneralSettingsTransformer implements DataTransformerInterface
             $roomObject->setDescription('');
 
         // assignment
-        if($roomObject->isProjectRoom()) {
-            $community_room_array = array();
-
-            // get community room ids
-            foreach($roomData as $key => $value) {
-                if(mb_substr($key, 0, 18) === 'communityroomlist_') $community_room_array[] = $value;
-            }
-            
+        if($roomObject->isProjectRoom() && isset($roomData['community_rooms'])) {
             /*
              * if assignment is mandatory, the array must not be empty
              */
-            if ($this->legacyEnvironment->getCurrentPortalItem()->getProjectRoomLinkStatus() !== "mandatory" || sizeof($community_room_array) > 0 )
+            if ($this->legacyEnvironment->getCurrentPortalItem()->getProjectRoomLinkStatus() !== "mandatory" || sizeof($roomData['community_rooms']) > 0 )
             {
-                $roomObject->setCommunityListByID($community_room_array);
+                $roomObject->setCommunityListByID(array_values($roomData['community_rooms']));
             }
 
         } elseif($roomObject->isCommunityRoom()) {

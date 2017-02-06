@@ -42,6 +42,10 @@ class ItemController extends Controller
                 'roomId' => $roomId,
                 'itemId' => $itemId
             )),
+            'filelistUrl' => $this->generateUrl('commsy_item_filelist', array(
+                'roomId' => $roomId,
+                'itemId' => $itemId
+            )),
         );
         
         $withRecurrence = false;
@@ -711,6 +715,33 @@ class ItemController extends Controller
         return [
             'form' => $form->createView()
         ];
+    }
+
+    /**
+     * @Route("/room/{roomId}/item/{itemId}/filelist")
+     * @Template()
+     **/
+    public function filelistAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($itemId);
+
+        $files = $item->getFileList()->to_array();
+        $fileArray = array();
+
+        foreach ($files as $key => $file) {
+            $fileArray[] = array (
+                'name' => $file->getFileName(),
+                'path' => $file->getFilePath(),
+                'id' => $file->getFileID(),
+                'ext' => $file->getExtension(),
+            );
+        }
+
+        return new JsonResponse([
+            'files' => $fileArray,
+        ]);
+
     }
 
 

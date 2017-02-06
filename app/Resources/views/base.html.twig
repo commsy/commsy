@@ -18,7 +18,10 @@
         <div id="commsy_navigation">
 
             {# CommSy Logo #}
-            <div id="commsy_logo"></div>
+            {{ render(controller(
+                'CommsyBundle:Room:logo',
+                { 'roomId': app.request.attributes.get('roomId') }
+            ))}}
 
             {# Context Navigation #}
             {% block side_navigation %}
