@@ -254,63 +254,59 @@ class UploadController extends Controller
         $item = $itemService->getTypedItem($itemId);
         $fileIds = $item->getFileIDArray();
 
-        // ckeditor upload action
-        if(!empty($_FILES)) {
-            $post_file_ids = array();
-            $tempFile = $_FILES['upload']['tmp_name'];
+        if ($request->files) {
 
-            $focus_element_onload = 'Filedata';
+            $file = $request->files->get('upload');
 
-            $file_array = array();
+            if ($file && $file->isValid() && $file->getClientSize()) {
+                $movedFile = $file->move($file->getPathInfo()->getRealPath(), $file->getFilename() . 'commsy3');
 
-            if( !empty($tempFile) && $_FILES['upload']['size'] > 0) {
                 require_once('functions/date_functions.php');
-                move_uploaded_file($tempFile, $tempFile . 'commsy3');
-                $temp_array = array();
-                $temp_array['name'] = $_FILES['upload']['name'];
-                $temp_array['tmp_name'] = $tempFile . 'commsy3';
-                $temp_array['file_id'] = $temp_array['name'] . '_' . getCurrentDateTimeInMySQL();
-                $file_array[] = $temp_array;
+
+                $fileInfo = [
+                    'name' => $file->getClientOriginalName(),
+                    'tmp_name' => $movedFile->getRealPath(),
+                    'file_id' => $file->getClientOriginalName() . '_' . getCurrentDateTimeInMySQL(),
+                ];
+
+                $fileManager = $legacyEnvironment->getFileManager();
+                $fileItem = $fileManager->getNewItem();
+                $fileItem->setTempKey($fileInfo['file_id']);
+                $fileItem->setPostFile($fileInfo);
+                $fileItem->setTempUploadFromEditorSessionID($legacyEnvironment->getSessionID());
+                $fileItem->save();
+
+                // save file ids to item
+                $fileIds = array_merge($fileIds, [$fileItem->getFileID()]);
+                $item->setFileIDArray($fileIds);
+                $item->save();
+
+                // generate file url
+                $fileUrl = $this->generateUrl('commsy_file_getfile', [
+                    'fileId' => $fileItem->getFileID()
+                ]);
+
+                // Nach dem Speichern des Eintrags die Items-Tabelle anhand temp=true und der extras->SESSION_ID durchsuchen.
+                // Text im Textfeld nach Dateinamen parsen und passende Dateien aus der files-Tabelle mit dem Item verlinken.
+                // Extras temp und id zurücksetzen.
+                // cron für das regelmäßige löschen von temp-files.
+                $callback_function  = '';
+                $callback_function .= '<script type="text/javascript">'.LF;
+                $callback_function .= '<!--'.LF;
+                $callback_function .= 'var fileTypeFunction = function () {';
+                $callback_function .= 'var dialog = this.getDialog();';
+                $callback_function .= 'if(dialog.getName() == "CommSyVideoDialog"){';
+                $callback_function .= 'var element = dialog.getContentElement( "videoTab", "videoType" );';
+                $callback_function .= 'element.setValue("'.$fileItem->getMime().'")';
+                $callback_function .= '}';
+                $callback_function .= '};';
+                $callback_function .= 'window.parent.CKEDITOR.tools.callFunction('.$_GET['CKEditorFuncNum'].', "'.$fileUrl.'", fileTypeFunction);'.LF;
+                $callback_function .= '-->'.LF;
+                $callback_function .= '</script>'.LF;
+                echo $callback_function;
             }
-         
-            $file_data = $file_array[0];
-            $file_manager = $legacyEnvironment->getFileManager();
-            $file_item = $file_manager->getNewItem();
-            $file_item->setTempKey($file_data["file_id"]);
-            $file_item->setPostFile($file_data);
-            $file_item->setTempUploadFromEditorSessionID($legacyEnvironment->getSessionID());
-            $file_item->save();
-            unlink($file_data["tmp_name"]);
-
-            // save file ids to item
-            $fileIds = array_merge($fileIds, array($file_item->getFileID()));
-            $item->setFileIDArray($fileIds);
-            $item->save();
-
-            // generate file url
-            $fileUrl = $this->generateUrl('commsy_file_getfile', array(
-                'fileId' => $file_item->getFileID()
-            ));
-         
-            // Nach dem Speichern des Eintrags die Items-Tabelle anhand temp=true und der extras->SESSION_ID durchsuchen.
-            // Text im Textfeld nach Dateinamen parsen und passende Dateien aus der files-Tabelle mit dem Item verlinken.
-            // Extras temp und id zurücksetzen.
-            // cron für das regelmäßige löschen von temp-files.
-            $callback_function  = '';
-            $callback_function .= '<script type="text/javascript">'.LF;
-            $callback_function .= '<!--'.LF;
-            $callback_function .= 'var fileTypeFunction = function () {';
-            $callback_function .= 'var dialog = this.getDialog();';
-            $callback_function .= 'if(dialog.getName() == "CommSyVideo"){';
-            $callback_function .= 'var element = dialog.getContentElement( "videoTab", "videoType" );';
-            $callback_function .= 'element.setValue("'.$file_item->getMime().'")';
-            $callback_function .= '}';
-            $callback_function .= '};';
-            $callback_function .= 'window.parent.CKEDITOR.tools.callFunction('.$_GET['CKEditorFuncNum'].', "'.$fileUrl.'", fileTypeFunction);'.LF;
-            $callback_function .= '-->'.LF;
-            $callback_function .= '</script>'.LF;
-            echo $callback_function;
         }
+
         exit;
     }
 }
