@@ -4,6 +4,10 @@
 
 {% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
 
+{% block side_navigation %}
+    {{ knp_menu_render('account') }}
+{% endblock %}
+
 {% block content %}
     <div class="uk-grid">
 
@@ -20,9 +24,6 @@
                         
                         <div class="uk-panel uk-margin-large-bottom">
                             <table class="uk-table">
-                                <tr>
-                                    <td>{{ form_row(form.stackStatus) }}</td>
-                                </tr>
                                 <tr>
                                     <td>{{ form_row(form.portfolioStatus) }}</td>
                                 </tr>

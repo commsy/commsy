@@ -59,13 +59,10 @@
                                     { 'roomId': app.request.attributes.get('roomId') }
                                 ))}}
 
-                                <div class="uk-dropdown uk-dropdown-small uk-dropdown-navbar">
-                                    <ul class="uk-nav uk-nav-navbar">
-                                        <li>
-                                            <a href="{{ path('commsy_logout_logout', {'roomId': app.request.attributes.get('roomId') }) }}"><i class="uk-icon-power-off"></i> {{ 'Sign out'|trans([], 'profile') }}</a>
-                                        </li>
-                                    </ul>
-                                </div>
+                                {{ render(controller(
+                                    'CommsyBundle:Profile:menu',
+                                    { 'roomId': app.request.attributes.get('roomId') }
+                                ))}}
                             </li>
                         </ul>
                     </div>

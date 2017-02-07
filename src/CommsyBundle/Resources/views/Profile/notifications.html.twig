@@ -4,6 +4,10 @@
 
 {% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
 
+{% block side_navigation %}
+    {{ knp_menu_render('account') }}
+{% endblock %}
+
 {% block content %}
     <div class="uk-grid">
 

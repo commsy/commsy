@@ -118,6 +118,14 @@
                 <source>additional_functions</source>
                 <target>Zusatzfunktionen</target>
             </trans-unit>
+            <trans-unit id="profile_address">
+                <source>address</source>
+                <target>Anschrift</target>
+            </trans-unit>
+            <trans-unit id="profile_contact">
+                <source>contact</source>
+                <target>Kontaktdaten</target>
+            </trans-unit>
 
             <trans-unit id="dashboard_overview">
                 <source>overview</source>
