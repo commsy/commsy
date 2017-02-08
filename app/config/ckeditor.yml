@@ -2,6 +2,15 @@ ivory_ck_editor:
     inline: true
     default_config: cs_item_config
     plugins:
+        menubutton:
+            path:     "/bundles/commsy/menubutton/"
+            filename: "plugin.js"
+        language:
+            path:     "/bundles/commsy/language/"
+            filename: "plugin.js"
+        bidi:
+            path:     "/bundles/commsy/bidi/"
+            filename: "plugin.js"
         CommSyImage:
             path:     "/bundles/commsy/image/"
             filename: "plugin.js"
@@ -19,9 +28,10 @@ ivory_ck_editor:
             filename: "plugin.js"
     configs:
         cs_item_config:
-            toolbar: [ [ "Cut", "Copy", "Paste", "PasteFromWord", "Undo", "Redo" ], ["Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript", "SpecialChar"] , ["NumberedList", "BulletedList", "Outdent", "Indent", "Blockquote"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"], "/", ["Format"], ["Font"], ["FontSize"], ["TextColor", "BGColor", "RemoveFormat", "Maximize", "Source"], ["Link", "Unlink", "Table", "HorizontalRule", "Smiley", "Flash"], ["CommSyImage", "CommSyDocument", "CommSyAudio", "CommSyVideo"] ]
-            extraPlugins: "CommSyImage,CommSyAudio,CommSyVideo,CommSyDocument,tabletools"
+            toolbar: [ [ "Cut", "Copy", "Paste", "PasteFromWord", "Undo", "Redo" ], ["Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript", "SpecialChar"] , ["NumberedList", "BulletedList", "Outdent", "Indent", "Blockquote"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"], "/", ["Format"], ["Font"], ["FontSize"], ["TextColor", "BGColor", "RemoveFormat", "Maximize", "Source"], ["Link", "Unlink", "Table", "HorizontalRule", "Smiley"], ["Language", "BidiLtr", "BidiRtl"], ["CommSyImage", "CommSyDocument", "CommSyAudio", "CommSyVideo"] ]
+            extraPlugins: "menubutton,language,bidi,tabletools,CommSyImage,CommSyAudio,CommSyVideo,CommSyDocument"
             floatSpaceDockedOffsetX: 180
+            language_list: ['de:German', 'en:English']
         cs_annotation_config:
             toolbar: [ [ "Cut", "Copy", "Paste", "PasteFromWord", "Undo", "Redo" ], ["Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript", "SpecialChar"] ]
                 
