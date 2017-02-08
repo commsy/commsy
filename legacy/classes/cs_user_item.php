@@ -1830,6 +1830,7 @@ class cs_user_item extends cs_item {
       $new_room_user->unsetCreatorID();
       $new_room_user->unsetCreatorDate();
       $new_room_user->unsetAGBAcceptanceDate();
+      $new_room_user->_unsetValue('modifier_id');
       return $new_room_user;
    }
 

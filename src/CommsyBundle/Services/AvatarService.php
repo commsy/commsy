@@ -72,9 +72,9 @@ class AvatarService
             $image = @ImageCreate($this->imageWidth, $this->imageHeight);
             $fontSize = 38;
         }
-        
+
         $colors = $this->getColors($image);
-        
+
         imagefill($image, 0, 0, $colors['background']);
         
         $initialString = strtoupper(substr($this->user->getFirstname(), 0, 1)).strtoupper(substr($this->user->getLastname(), 0, 1));
@@ -101,7 +101,6 @@ class AvatarService
         imagepng($image);
         $stringdata = ob_get_contents();
         ob_end_clean();
-        
         return $stringdata;
     }
     

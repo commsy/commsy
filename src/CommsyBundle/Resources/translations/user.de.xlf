@@ -170,6 +170,10 @@
                 <source>no moderators left</source>
                 <target>Durch diese Aktion gäbe es keine Moderatoren mehr im Raum. Bitte die Auswahl anpassen!</target>
             </trans-unit>
+            <trans-unit id="send mail">
+                <source>send mail</source>
+                <target>E-Mail senden</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

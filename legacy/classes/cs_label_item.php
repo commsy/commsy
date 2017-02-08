@@ -639,7 +639,7 @@ class cs_label_item extends cs_item {
                   $temp_user_item = $user_list->getFirst();
                   while ($temp_user_item) {
                     if ($group_room_item) {
-                       if ($temp_user_item->getContextID() == $group_room_item->getContextID()) {
+                       if ($temp_user_item->getContextID() == $group_room_item->getItemID()) {
                           if ($temp_user_item->getStatus() == '3') {
                              $may_edit = true;
                           }
