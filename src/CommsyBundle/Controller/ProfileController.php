@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 use CommsyBundle\Entity\User;
 use CommsyBundle\Form\Type\RoomProfileType;
+use CommsyBundle\Form\Type\RoomProfileAddressType;
+use CommsyBundle\Form\Type\RoomProfileContactType;
 use CommsyBundle\Form\Type\ProfileAccountType;
 use CommsyBundle\Form\Type\ProfileNotificationsType;
 use CommsyBundle\Form\Type\ProfileAdditionalType;
@@ -147,6 +149,74 @@ class ProfileController extends Controller
     }
 
     /**
+    * @Route("/room/{roomId}/user/{itemId}/address")
+    * @Template
+    * @Security("is_granted('ITEM_EDIT', itemId)")
+    */
+    public function addressAction($roomId, $itemId, Request $request)
+    {
+        $userTransformer = $this->get('commsy_legacy.transformer.user');
+        $userService = $this->get('commsy_legacy.user_service');
+        $userItem = $userService->getUser($itemId);
+        $userData = $userTransformer->transform($userItem);
+
+        $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
+        $privateRoomItem = $userItem->getOwnRoom();
+        $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
+
+        $userData = array_merge($userData, $privateRoomData);
+
+        $form = $this->createForm(RoomProfileAddressType::class, $userData, array(
+            'itemId' => $itemId,
+        ));
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
+            $userItem->save();
+            return $this->redirectToRoute('commsy_profile_address', array('roomId' => $roomId, 'itemId' => $itemId));
+        }
+
+        return array(
+            'form' => $form->createView(),
+        );
+    }
+
+    /**
+    * @Route("/room/{roomId}/user/{itemId}/contact")
+    * @Template
+    * @Security("is_granted('ITEM_EDIT', itemId)")
+    */
+    public function contactAction($roomId, $itemId, Request $request)
+    {
+        $userTransformer = $this->get('commsy_legacy.transformer.user');
+        $userService = $this->get('commsy_legacy.user_service');
+        $userItem = $userService->getUser($itemId);
+        $userData = $userTransformer->transform($userItem);
+
+        $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
+        $privateRoomItem = $userItem->getOwnRoom();
+        $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
+
+        $userData = array_merge($userData, $privateRoomData);
+
+        $form = $this->createForm(RoomProfileContactType::class, $userData, array(
+            'itemId' => $itemId,
+        ));
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
+            $userItem->save();
+            return $this->redirectToRoute('commsy_profile_contact', array('roomId' => $roomId, 'itemId' => $itemId));
+        }
+
+        return array(
+            'form' => $form->createView(),
+        );
+    }
+
+    /**
     * @Route("/room/{roomId}/user/{itemId}/account")
     * @Template
     * @Security("is_granted('ITEM_EDIT', itemId)")
@@ -258,6 +328,19 @@ class ProfileController extends Controller
     {
         $userService = $this->get('commsy_legacy.user_service');
         return array('user' => $userService->getCurrentUserItem());
+    }
+
+    /**
+    * @Route("/room/{roomId}/user/dropdownmenu")
+    * @Template
+    */
+    public function menuAction($roomId, Request $request)
+    {
+        $userService = $this->get('commsy_legacy.user_service');
+        return [
+            'userId' => $userService->getCurrentUserItem()->getItemId(),
+            'roomId' => $roomId,
+        ];
     }
 
 }

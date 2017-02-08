@@ -210,6 +210,14 @@
                 <source>Sign out</source>
                 <target>Sign out</target>
             </trans-unit>
+            <trans-unit id="account">
+                <source>Account</source>
+                <target>Account</target>
+            </trans-unit>
+            <trans-unit id="roomProfile">
+                <source>Room profile</source>
+                <target>Room profile</target>
+            </trans-unit>
          </body>
     </file>
 </xliff>

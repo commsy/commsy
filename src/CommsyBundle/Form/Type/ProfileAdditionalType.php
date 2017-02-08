@@ -39,13 +39,6 @@ class ProfileAdditionalType extends AbstractType
         $this->userItem = $userManager->getItem($options['itemId']);
 
         $builder
-            ->add('stackStatus', CheckboxType::class, array(
-                'label'    => 'stackStatus',
-                'required' => false,
-                'label_attr' => array(
-                    'class' => 'uk-form-label',
-                ),
-            ))
             ->add('portfolioStatus', CheckboxType::class, array(
                 'label'    => 'portfolioStatus',
                 'required' => false,

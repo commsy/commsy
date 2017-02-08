@@ -57,6 +57,13 @@ services:
           tags:
               - { name: knp_menu.menu, alias: breadcrumb }
 
+    commsy.menu.account:
+        class: Knp\Menu\MenuItem
+        factory: ['@commsy.menu.builder', createAccountMenu]
+        arguments: ['@request_stack']
+        tags:
+            - { name: knp_menu.menu, alias: account }
+
     commsy.menu.profile:
         class: Knp\Menu\MenuItem
         factory: ['@commsy.menu.builder', createProfileMenu]
@@ -216,6 +223,18 @@ services:
 
     commsy.form.type.room_profile:
         class: CommsyBundle\Form\Type\RoomProfileType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.room_profile_address:
+        class: CommsyBundle\Form\Type\RoomProfileAddressType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.room_profile_contact:
+        class: CommsyBundle\Form\Type\RoomProfileContactType
         arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
         tags:
             - { name: form.type }

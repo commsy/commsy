@@ -37,34 +37,15 @@ class MenuBuilder
         $this->authorizationChecker = $authorizationChecker;
     }
 
-    /**
-     * creates the profile sidebar
-     * @param  RequestStack $requestStack [description]
-     * @return knpMenu                    KnpMenu
-     */
-    public function createProfileMenu(RequestStack $requestStack)
+    public function createAccountMenu(RequestStack $requestStack)
     {
-        // create profile
+       // create profile
         $currentStack = $requestStack->getCurrentRequest();
         $currentUser = $this->legacyEnvironment->getCurrentUser();
 
         $menu = $this->factory->createItem('root');
 
         if ($currentUser->getItemId() != '') {
-
-            $menu->addChild('personal', [
-                'label' => 'personal_data',
-                'route' => 'commsy_profile_general',
-                'routeParameters' => [
-                    'roomId' => $currentStack->attributes->get('roomId'),
-                    'itemId' => $currentUser->getItemId(),
-                ],
-                'extras' => [
-                    'icon' => 'uk-icon-user uk-icon-small uk-icon-justify',
-                    'user' => $currentUser,
-                ]
-            ])
-            ->setExtra('translation_domain', 'menu');
 
             $menu->addChild('account', [
                 //'label' => $currentUser->getFullname(),
@@ -104,6 +85,69 @@ class MenuBuilder
                 ],
                 'extras' => [
                     'icon' => 'uk-icon-plus-square uk-icon-small uk-icon-justify',
+                    'user' => $currentUser,
+                ]
+            ])
+            ->setExtra('translation_domain', 'menu');
+        }
+
+        return $menu;
+    }
+
+    /**
+     * creates the profile sidebar
+     * @param  RequestStack $requestStack [description]
+     * @return knpMenu                    KnpMenu
+     */
+    public function createProfileMenu(RequestStack $requestStack)
+    {
+        // create profile
+        $currentStack = $requestStack->getCurrentRequest();
+        $currentUser = $this->legacyEnvironment->getCurrentUser();
+
+        $menu = $this->factory->createItem('root');
+
+        if ($currentUser->getItemId() != '') {
+
+            $menu->addChild('personal', [
+                'label' => 'personal_data',
+                'route' => 'commsy_profile_general',
+                'routeParameters' => [
+                    'roomId' => $currentStack->attributes->get('roomId'),
+                    'itemId' => $currentUser->getItemId(),
+                ],
+                'extras' => [
+                    'icon' => 'uk-icon-user uk-icon-small uk-icon-justify',
+                    'user' => $currentUser,
+                ]
+            ])
+            ->setExtra('translation_domain', 'menu');
+
+
+            $menu->addChild('address', [
+                'label' => 'address',
+                'route' => 'commsy_profile_address',
+                'routeParameters' => [
+                    'roomId' => $currentStack->attributes->get('roomId'),
+                    'itemId' => $currentUser->getItemId(),
+                ],
+                'extras' => [
+                    'icon' => 'uk-icon-map-o uk-icon-small uk-icon-justify',
+                    'user' => $currentUser,
+                ]
+            ])
+            ->setExtra('translation_domain', 'menu');
+
+
+            $menu->addChild('contact', [
+                'label' => 'contact',
+                'route' => 'commsy_profile_contact',
+                'routeParameters' => [
+                    'roomId' => $currentStack->attributes->get('roomId'),
+                    'itemId' => $currentUser->getItemId(),
+                ],
+                'extras' => [
+                    'icon' => 'uk-icon-at uk-icon-small uk-icon-justify',
                     'user' => $currentUser,
                 ]
             ])

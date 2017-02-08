@@ -18,9 +18,6 @@
                     {{ form_start(form) }}
                         {{ form_errors(form) }}
                         <div class="uk-panel uk-margin-large-bottom">
-                            <div class="uk-panel uk-panel-header">
-                                <h3>{{ 'profile'|trans({},'profile') }}</h3>
-                            </div>
                             <table class="uk-table">
                                 <tr>
                                     <td>{{ form_row(form.firstname) }}</td>
@@ -52,81 +49,6 @@
                                 </tr>
                             </table>
                         </div>
-    
-                        <div class="uk-panel uk-margin-large-bottom">
-                            <div class="uk-panel uk-panel-header">
-                                <h3>{{ 'personalData'|trans({},'profile') }}</h3>
-                            </div>
-                            <table class="uk-table">
-                                <tr>
-                                    <td>{{ form_row(form.title) }}</td>
-                                    <td>{{ form_row(form.titleChangeInAllContexts) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ form_row(form.street) }}</td>
-                                    <td>{{ form_row(form.streetChangeInAllContexts) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ form_row(form.zipcode) }}</td>
-                                    <td>{{ form_row(form.zipcodeChangeInAllContexts) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ form_row(form.city) }}</td>
-                                    <td>{{ form_row(form.cityChangeInAllContexts) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ form_row(form.room) }}</td>
-                                    <td>{{ form_row(form.roomChangeInAllContexts) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ form_row(form.organisation) }}</td>
-                                    <td>{{ form_row(form.organisationChangeInAllContexts) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ form_row(form.position) }}</td>
-                                    <td>{{ form_row(form.positionChangeInAllContexts) }}</td>
-                                </tr>
-                            </table>
-                        </div>
-                        
-                        <div class="uk-panel uk-margin-large-bottom">
-                            <div class="uk-panel uk-panel-header">
-                                <h3>{{ 'contactData'|trans({},'profile')|capitalize }}</h3>
-                            </div>
-                            <table class="uk-table">
-                                <tr>
-                                    <td>{{ form_row(form.email) }}</td>
-                                    <td>{{ form_row(form.emailChangeInAllContexts) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ form_row(form.hideEmailInThisRoom) }}</td>
-                                    <td>{{ form_row(form.hideEmailInAllContexts) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ form_row(form.phone) }}</td>
-                                    <td>{{ form_row(form.phoneChangeInAllContexts) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ form_row(form.mobile) }}</td>
-                                    <td>{{ form_row(form.mobileChangeInAllContexts) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ form_row(form.skype) }}</td>
-                                    <td>{{ form_row(form.skypeChangeInAllContexts) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ form_row(form.homepage) }}</td>
-                                    <td>{{ form_row(form.homepageChangeInAllContexts) }}</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">
-                                        {{ form_row(form.description) }}
-                                        {{ form_row(form.descriptionChangeInAllContexts) }}
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                           
                         <div class="uk-panel uk-margin-large-bottom">
                             <table class="uk-table">
                                 <tr>
@@ -134,7 +56,7 @@
                                 </tr>
                             </table>
                         </div>
-                    {{ form_end(form) }}
+                    {{ form_end(form, {'render_rest': false}) }}
                 </div>
             </div>
         </div>

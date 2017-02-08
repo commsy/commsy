@@ -175,6 +175,13 @@
                         <div class="toggle-title-{{ item.itemId }}">
                             <div class="uk-panel">
                                 <div class="uk-grid">
+                                    {#
+                                        ***
+                                        NOTE: User entries can only be edited by the user himself atm., so displaying the last modificator does not make sense here. 
+                                        Since this may change in the future, the corresponding code remains is not deleted here.
+                                        ***
+                                    #}
+                                    {#
                                     <div class="uk-width-1-1">
                                         <div class="uk-flex">
                                             <div class="uk-margin-right">
@@ -190,13 +197,20 @@
                                             </div>
                                         </div>
                                     </div>
+                                    #}
                                 </div>
                             </div>
                         </div>
                         <div class="toggle-title-{{ item.itemId }} uk-hidden">
                             <div class="uk-panel">
                                 <div class="uk-grid">
-                                    <div class="uk-width-2-5">
+                                {#
+                                    ***
+                                    NOTE: User entries can only be edited by the user himself atm., so displaying the last modificator does not make sense here. 
+                                    Since this may change in the future, the corresponding code remains is not deleted here.
+                                    ***
+                                #}
+                                {#    <div class="uk-width-2-5">
                                         <div class="uk-flex">
                                             <div class="uk-margin-right">
                                                 {% if item.modificatorItem.isUser %}
@@ -253,8 +267,8 @@
                                         </div>
                                         {% endif %}
                                         {% endif %}
-                                    </div>                            
-                                </div>                        
+                                    </div>   #}
+                                </div>
                             </div>
                             <div class="uk-panel uk-margin-top">
                                 <div class="uk-grid">
