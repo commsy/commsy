@@ -63,7 +63,7 @@ class GroupTransformer implements DataTransformerInterface
             $groupObject->setPrivateEditing('1');
         }
 
-        if (isset($groupData['hidden'])) {
+        if (isset($groupData['hidden']) && !empty($groupData['hidden'])) {
             if (isset($groupData['hiddendate']) && isset($groupData['hiddendate']['date'])) {
                 $datetime = $groupData['hiddendate']['date'];
                 if ($groupData['hiddendate']['time']) {
