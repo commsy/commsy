@@ -122,6 +122,10 @@
                 <source>search results</source>
                 <target>Suchergebnisse</target>
             </trans-unit>
+            <trans-unit id="rooms">
+                <source>Rooms</source>
+                <target>Räume</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
