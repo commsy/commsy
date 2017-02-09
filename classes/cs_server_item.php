@@ -853,11 +853,11 @@ class cs_server_item extends cs_guide_item
                                 $mail->set_to($to);
 
                                 if ($mail->send()) {
-                                    $cron_array['success'] = true;
-                                    $cron_array['success_text'] = 'send mail to '.$to;
+                                    $cron_array['success'.'_'.$portal_item->getItemId().'_'.$user->getItemId()] = true;
+                                    $cron_array['success_text'.'_'.$portal_item->getItemId().'_'.$user->getItemId()] = 'send mail to '.$to;
                                 } else {
-                                    $cron_array['success'] = false;
-                                    $cron_array['success_text'] = 'failed send mail to '.$to;
+                                    $cron_array['success'.'_'.$portal_item->getItemId().'_'.$user->getItemId()] = false;
+                                    $cron_array['success_text'.'_'.$portal_item->getItemId().'_'.$user->getItemId()] = 'failed send mail to '.$to;
                                 }
                             }
                         }
@@ -866,12 +866,12 @@ class cs_server_item extends cs_guide_item
                         $time = round($time_end - $time_start, 0);
                         $cron_array['time'] = $time;
                     } else {
-                        $cron_array['success'] = true;
-                        $cron_array['success_text'] = 'nothing to do';
+                        $cron_array['success'.'_'.$portal_item->getItemId()] = true;
+                        $cron_array['success_text'.'_'.$portal_item->getItemId()] = 'nothing to do';
                     }
                 } else {
-                    $cron_array['success'] = true;
-                    $cron_array['success_text'] = 'nothing to do';
+                    $cron_array['success'.'_'.$portal_item->getItemId()] = true;
+                    $cron_array['success_text'.'_'.$portal_item->getItemId()] = 'nothing to do';
                 }
 
                 unset($portal_item);
