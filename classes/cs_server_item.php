@@ -781,7 +781,7 @@ class cs_server_item extends cs_guide_item
                                 //$mail->set_from_email($mod_user_first->getEmail());
                                 //$mail->set_from_name($mod_user_first->getFullname());
                                 $mail->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
-                                $mail->set_from_name($this->_environment->getCurrentPortalItem()->getTitle());
+                                $mail->set_from_name($portal_item->getTitle());
 
                                 if ($user->getPasswordExpireDate() > getCurrentDateTimeInMySQL()) {
                                     $start_date = new DateTime(getCurrentDateTimeInMySQL());
