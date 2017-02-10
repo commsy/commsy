@@ -56,6 +56,9 @@
                                 </tr>
                             </table>
                         </div>
+                        <canvas id="profile_image_hidden_data" width="200px" height="200px" style="border: 1px solid black;" class="uk-hidden"></canvas>
+                        {{ form_row(form.image_data) }}
+                        {{ form_row(form._token) }}
                     {{ form_end(form, {'render_rest': false}) }}
                 </div>
             </div>
