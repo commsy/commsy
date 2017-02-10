@@ -37,17 +37,24 @@ Icon
 /vendor/
 /web/bundles/
 
-/var/*
-!/var/cache
-/var/cache/*
+var/*
+!var/cache
+var/cache/*
 !var/cache/.gitkeep
-!/var/logs
-/var/logs/*
+!var/cache/htmlpurifier
+var/cache/htmlpurifier/*
+!var/cache/htmlpurifier/.gitkeep
+!var/logs
+var/logs/*
 !var/logs/.gitkeep
-!/var/sessions
-/var/sessions/*
+!var/sessions
+var/sessions/*
 !var/sessions/.gitkeep
 !var/SymfonyRequirements.php
+
+!var/test
+var/test/*
+!var/test/.gitkeep
 
 ######################
 # Eclipse related    #
@@ -103,9 +110,6 @@ web/templates/templates_c/*
 files/[0-9]*
 files/templates/individual/*
 files/temp
-
-libs/HTMLPurifier/HTMLPurifier/DefinitionCache/*
-legacy/libs/HTMLPurifier/HTMLPurifier/DefinitionCache/*
 
 external_pages/[0-9]*
 htdocs/css/external_portal_styles/[0-9]*
