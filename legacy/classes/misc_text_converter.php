@@ -3537,20 +3537,19 @@ class misc_text_converter {
       }
       return $text;
    }
-   
-   private function _constructHTMLPurifier() {
-      require_once 'libs/HTMLPurifier/HTMLPurifier.auto.php';
-      // Allow Full HTML
-      $configFullHTML = $this->_getFullHTMLPurifierConfig();
-      $this->_FullHTMLPurifier = new HTMLPurifier($configFullHTML);
-      // Do not allow HTML
-      $configHTML = $this->_getHTMLPurifierConfig();
-      $this->_HTMLPurifier = new HTMLPurifier($configHTML);
-      
-      
-      
-      
-   }
+
+    private function _constructHTMLPurifier()
+    {
+        require_once '../vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
+
+        // Allow Full HTML
+        $configFullHTML = $this->_getFullHTMLPurifierConfig();
+        $this->_FullHTMLPurifier = new HTMLPurifier($configFullHTML);
+
+        // Do not allow HTML
+        $configHTML = $this->_getHTMLPurifierConfig();
+        $this->_HTMLPurifier = new HTMLPurifier($configHTML);
+    }
    
    private function _getHTMLPurifierConfig() {
       $config = HTMLPurifier_Config::createDefault();
