@@ -6070,6 +6070,11 @@ class cs_context_item extends cs_item {
     return $this->_user_list;
   }
 
+  function resetUserList () {
+      $userManager = $this->_environment->getUserManager();
+      $userManager->setCacheOff();
+      unset($this->_user_list);
+  }
 
   function isUser ($user) {
     $retour = false;

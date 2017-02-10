@@ -56,6 +56,9 @@ class PasswordExpiredTest extends DatabaseTestCase
         
         $this->setPasswordSettingsOnPortal($portal);
         
+        
+        // set initial expire date on portal users
+        $portal->resetUserList();
         $portal_users = $portal->getUserList();
 		$portal_user = $portal_users->getFirst();
 		while ($portal_user){
@@ -65,6 +68,7 @@ class PasswordExpiredTest extends DatabaseTestCase
         
         $expireDate = getCurrentDateTimePlusDaysInMySQL($portal->getPasswordExpiration());
         
+        $portal->resetUserList();
         $portal_users = $portal->getUserList();
 		$portal_user = $portal_users->getFirst();
 		while ($portal_user){
@@ -73,22 +77,70 @@ class PasswordExpiredTest extends DatabaseTestCase
 			$portal_user = $portal_users->getNext();
 		}
         
+        $portal->resetUserList();
         $portal_users = $portal->getUserList();
 		$portal_user = $portal_users->getFirst();
 		while ($portal_user){
-			$this->assertEquals($expireDate, $portal_user->getPasswordExpireDate());
+			$this->assertEquals(substr($expireDate, 0, 17), substr($portal_user->getPasswordExpireDate(), 0, 17)); // compare without seconds -> runtime of test might make this assertion false
 			$portal_user = $portal_users->getNext();
 		}
         
+        
+        // "run cron" to test sending the password change preparation emails.
         $serverItem = $environment->getServerItem();
         $cronArray = $serverItem->_cronCheckPasswordExpiredSoon();
         
+        $portal->resetUserList();
         $portal_users = $portal->getUserList();
 		$portal_user = $portal_users->getFirst();
 		while ($portal_user){
     		$successKey = 'success_'.$portal->getItemId().'_'.$portal_user->getItemId();
 			$this->assertTrue(in_array($successKey, array_keys($cronArray)));
 			$this->assertTrue($cronArray[$successKey]);
+			$portal_user = $portal_users->getNext();
+		}
+		
+		$portal->resetUserList();
+		$portal_users = $portal->getUserList();
+		$portal_user = $portal_users->getFirst();
+		while ($portal_user){
+            $portal_user->setPasswordExpireDate(-1);
+			$portal_user->save();
+			$this->assertFalse($portal_user->isPasswordExpiredEmailSend());
+			$portal_user = $portal_users->getNext();
+		}
+		
+		
+		// "run cron" to change the passwords.
+		$cronArray = $serverItem->_cronCheckPasswordExpired();
+		
+		$portal->resetUserList();
+		$portal_users = $portal->getUserList();
+		$portal_user = $portal_users->getFirst();
+		while ($portal_user){
+    		$successKey = 'success_'.$portal->getItemId().'_'.$portal_user->getItemId();
+			$this->assertTrue(in_array($successKey, array_keys($cronArray)));
+			$this->assertTrue($cronArray[$successKey]);
+			$this->assertTrue($portal_user->isPasswordExpiredEmailSend());
+			$portal_user = $portal_users->getNext();
+		}
+		
+		
+		// set expitation date to test if send email flag is reset to null
+		$portal->resetUserList();
+		$portal_users = $portal->getUserList();
+		$portal_user = $portal_users->getFirst();
+		while ($portal_user){
+    		$portal_user->setPasswordExpireDate($expireDate);
+    		$portal_user->save();
+    		$portal_user = $portal_users->getNext();
+		}
+		
+		$portal->resetUserList();
+		$portal_users = $portal->getUserList();
+		$portal_user = $portal_users->getFirst();
+		while ($portal_user){
+			$this->assertFalse($portal_user->isPasswordExpiredEmailSend());
 			$portal_user = $portal_users->getNext();
 		}
     }
