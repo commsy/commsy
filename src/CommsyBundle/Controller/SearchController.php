@@ -299,6 +299,14 @@ class SearchController extends Controller
                 return 1;
             }
 
+            if ($a->getType() === 'grouproom') {
+                $extras = $a->getExtras();
+
+                if (isset($extras['PROJECT_ROOM_ITEM_ID']) && $extras['PROJECT_ROOM_ITEM_ID'] === $b->getItemID()) {
+                    return 1;
+                }
+            }
+
             return strcasecmp($a->getTitle(), $b->getTitle());
         });
 
