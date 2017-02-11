@@ -45,6 +45,7 @@ twig:
     form_themes:
         - CommsyBundle:Form:uikit_layout.html.twig
         - LexikFormFilterBundle:Form:form_div_layout.html.twig
+        - CommsyBundle:Form:ckeditor_widget.html.twig
 
 # Doctrine Configuration
 doctrine:

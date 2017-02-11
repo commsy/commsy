@@ -18,6 +18,7 @@ use CommsyBundle\Form\Type\SendListType;
 use CommsyBundle\Form\Type\ItemDescriptionType;
 use CommsyBundle\Form\Type\ItemLinksType;
 use CommsyBundle\Form\Type\ItemWorkflowType;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ItemController extends Controller
 {
@@ -732,7 +733,9 @@ class ItemController extends Controller
         foreach ($files as $key => $file) {
             $fileArray[] = array (
                 'name' => $file->getFileName(),
-                'path' => $file->getFilePath(),
+                'path' => $this->generateUrl('commsy_file_getfile', [
+                    'fileId' => $file->getFileID(),
+                ], UrlGeneratorInterface::ABSOLUTE_PATH),
                 'id' => $file->getFileID(),
                 'ext' => $file->getExtension(),
             );

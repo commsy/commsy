@@ -1,0 +1,13 @@
+{% extends 'IvoryCKEditorBundle:Form:ckeditor_widget.html.twig' %}
+
+{% block ckeditor_widget %}
+    <div id="cke_top"></div>
+
+    <textarea {{ block('widget_attributes') }}>{{ value }}</textarea>
+
+    {% if enable and not async %}
+        {{ block('_ckeditor_javascript') }}
+    {% endif %}
+
+    <div id="cke_bottom"></div>
+{% endblock %}

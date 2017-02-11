@@ -3577,12 +3577,15 @@ class misc_text_converter {
         $config->set('HTML.Allowed', NULL);
 
         $config->set('HTML.SafeIframe', true);
-        $config->set('URI.SafeIframeRegexp', '%^(https?:)?//(www\.youtube(?:-nocookie)?\.com/embed/|player\.vimeo\.com/video/|de\.slideshare\.net/slideshow/embed_code/key/)%');
+        $config->set('URI.SafeIframeRegexp', '%^(https?:)?//(www\.youtube(?:-nocookie)?\.com/embed/|www\.podcampus\.de/nodes/|de\.slideshare\.net/slideshow/embed_code/key/)%');
 
         // allow target=
         $config->set('Attr.AllowedFrameTargets', '_blank,_self,_top,_parent');
 
         $def = $config->getHTMLDefinition(true);
+
+        // <div/>-Definition
+        $def->addAttribute('div', 'data-type', 'Text');
 
         // Attribute for object
         $def->addAttribute('object', 'autoplay', 'Enum#true,false');
@@ -3593,31 +3596,39 @@ class misc_text_converter {
 
         // Attribute for param
         $def->addAttribute('param', 'bgcolor', 'Text');
+//
+//        // Attribute for embed
+//        $def->addAttribute('embed', 'autoplay', 'Enum#true,false');
+//        $def->addAttribute('embed', 'bgcolor', 'Text');
+//        $def->addAttribute('embed', 'controller', 'Text');
+//        $def->addAttribute('embed', 'devicefont', 'Text');
+//        $def->addAttribute('embed', 'loop', 'Text');
+//        $def->addAttribute('embed', 'pluginspage', 'Text');
+//        $def->addAttribute('embed', 'quality', 'Text');
+//        $def->addAttribute('embed', 'scale', 'Text');
+//        $def->addAttribute('embed', 'type', 'Text');
+//        $def->addAttribute('embed', 'autostart', 'Text');
+//        $def->addAttribute('embed', 'showcontrols', 'Text');
+//        $def->addAttribute('embed', 'showstatusbar', 'Text');
+//        $def->addAttribute('embed', 'standby', 'Text');
+//        $def->addAttribute('embed', 'commsytype', 'Text');
 
-        // Attribute for embed
-        $def->addAttribute('embed', 'autoplay', 'Enum#true,false');
-        $def->addAttribute('embed', 'bgcolor', 'Text');
-        $def->addAttribute('embed', 'controller', 'Text');
-        $def->addAttribute('embed', 'devicefont', 'Text');
-        $def->addAttribute('embed', 'loop', 'Text');
-        $def->addAttribute('embed', 'pluginspage', 'Text');
-        $def->addAttribute('embed', 'quality', 'Text');
-        $def->addAttribute('embed', 'scale', 'Text');
-        $def->addAttribute('embed', 'type', 'Text');
-        $def->addAttribute('embed', 'autostart', 'Text');
-        $def->addAttribute('embed', 'showcontrols', 'Text');
-        $def->addAttribute('embed', 'showstatusbar', 'Text');
-        $def->addAttribute('embed', 'standby', 'Text');
-        $def->addAttribute('embed', 'commsytype', 'Text');
-
+        // <video/>-Definition
         $def->addElement('video', 'Block', 'Flow', 'Common', array());
         $def->addAttribute('video', 'width', 'Text');
         $def->addAttribute('video', 'height', 'Text');
         $def->addAttribute('video', 'controls', 'Bool');
         $def->addAttribute('video', 'src', 'URI');
 
+        // <audio/>-Definition
+        $def->addElement('audio', 'Block', 'Flow', 'Common', array());
+        $def->addAttribute('audio', 'width', 'Text');
+        $def->addAttribute('audio', 'height', 'Text');
+        $def->addAttribute('audio', 'controls', 'Bool');
+        $def->addAttribute('audio', 'src', 'URI');
+
         $def->addElement('source', 'Block', 'Flow', 'Common', array());
-        $def->addAttribute('source', 'src', 'Text');
+        $def->addAttribute('source', 'src', 'URI');
         $def->addAttribute('source', 'type', 'Text');
 
         return $config;

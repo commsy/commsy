@@ -39,13 +39,14 @@
         "knplabs/knp-snappy-bundle": "^1.4",
         "tomnomnom/etherpad-lite-client": "^0.1.2",
         "ruflin/elastica": "3.2 as 2.99.0",
-        "egeloen/ckeditor-bundle": "^4.0",
+        "egeloen/ckeditor-bundle": "dev-master",
         "zendframework/zend-soap": "^2.6",
         "debril/rss-atom-bundle": "^3.0",
         "idci/color-scheme-bundle": "dev-master",
         "ci/restclientbundle": "^2.0",
         "liip/imagine-bundle": "^1.6",
-        "nette/utils": "^2.4"
+        "nette/utils": "^2.4",
+        "ezyang/htmlpurifier": "^4.8"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
