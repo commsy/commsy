@@ -381,7 +381,7 @@ class TodoController extends Controller
         
         $todo = $todoService->getTodo($itemId);
 
-        $stepList = $todo->getStepItemList()->to_array();
+        $steps = $todo->getStepItemList()->to_array();
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -470,10 +470,16 @@ class TodoController extends Controller
             $ratingOwnDetail = $assessmentService->getOwnRatingDetail($todo);
         }
 
+        $timeSpendSum = 0;
+        foreach ($steps as $step) {
+            $timeSpendSum += $step->getMinutes();
+        }
+
         return array(
             'roomId' => $roomId,
             'todo' => $todoService->getTodo($itemId),
-            'stepList' => $stepList,
+            'stepList' => $steps,
+            'timeSpendSum' => $timeSpendSum,
             'readerList' => $readerList,
             'modifierList' => $modifierList,
             'user' => $legacyEnvironment->getCurrentUserItem(),
@@ -599,6 +605,11 @@ class TodoController extends Controller
             if ($form->get('save')->isClicked()) {
                 // update title
                 $step->setTitle($form->getData()['title']);
+
+                // spend hours
+                $hours = is_numeric($form->getData()['time_spend']['hour']) ? $form->getData()['time_spend']['hour'] : 0;
+                $minutes = is_numeric($form->getData()['time_spend']['minute']) ? $form->getData()['time_spend']['minute'] : 0;
+                $step->setMinutes($hours * 60 + $minutes);
 
                 // update modifier
                 $step->setModificatorItem($legacyEnvironment->getCurrentUserItem());

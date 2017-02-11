@@ -2,6 +2,7 @@
 namespace CommsyBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -26,6 +27,16 @@ class StepType extends AbstractType
                 ),
                 'translation_domain' => 'todo',
             ))
+            ->add('time_spend', TimeType::class, [
+                'label' => 'time spend',
+                'widget' => 'text',
+                'input' => 'array',
+                'placeholder' => [
+                    'hour' => 'hh',
+                    'minute' => 'mm',
+                ],
+                'translation_domain' => 'todo',
+            ])
             ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
