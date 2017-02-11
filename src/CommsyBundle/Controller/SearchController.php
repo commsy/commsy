@@ -250,13 +250,14 @@ class SearchController extends Controller
 
         $query = $request->get('search', '');
 
-        $translator = $this->get('translator');
         $router = $this->container->get('router');
 
         $searchManager = $this->get('commsy.search.manager');
         $searchManager->setQuery($query);
 
         $roomResults = $searchManager->getRoomResults();
+
+        $roomResults = $this->filterRoomsByContext($roomResults);
 
         foreach ($roomResults as $room) {
             // construct target url
@@ -283,5 +284,24 @@ class SearchController extends Controller
         ]);
 
         return $response;
+    }
+
+    /**
+     * Sorts an array of room items by their context id and keeps respecting the room hierarchy
+     * Community -> Project -> Group
+     *
+     * @param $rooms array of room items
+     */
+    private function filterRoomsByContext(&$rooms)
+    {
+        usort($rooms, function($a, $b) {
+            if ($a->getContextID() === $b->getItemID()) {
+                return 1;
+            }
+
+            return strcasecmp($a->getTitle(), $b->getTitle());
+        });
+
+        return $rooms;
     }
 }
