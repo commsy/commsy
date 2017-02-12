@@ -66,6 +66,10 @@
                 <source>Back to</source>
                 <target>Zurück zu</target>
             </trans-unit>
+            <trans-unit id="mailSendMail">
+                <source>Send mail</source>
+                <target>E-Mail senden</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use CommsyBundle\Filter\UserFilterType;
 
 use CommsyBundle\Form\Type\UserType;
+use CommsyBundle\Form\Type\UserSendType;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -762,6 +763,87 @@ class UserController extends Controller
         );
     }
 
+    /**
+     * @Route("/room/{roomId}/user/{itemId}/send")
+     * @Template()
+     * @Security("is_granted('ITEM_SEE', itemId)")
+     */
+    public function sendAction($roomId, $itemId, Request $request)
+    {
+        // get item
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getTypedItem($itemId);
+
+        if (!$item) {
+            throw $this->createNotFoundException('no item found for id ' . $itemId);
+        }
+
+        $formData = [
+            'message' => '',
+            'copy_to_sender' => false,
+        ];
+
+        $form = $this->createForm(UserSendType::class, $formData, []);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $formData = $form->getData();
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+            $portalItem = $legacyEnvironment->getCurrentPortalItem();
+            $currentUser = $legacyEnvironment->getCurrentUserItem();
+
+            $from = $this->getParameter('commsy.email.from');
+
+            $message = \Swift_Message::newInstance()
+                ->setSubject($formData['subject'])
+                ->setBody($formData['message'], 'text/html')
+                ->setFrom([$from => $portalItem->getTitle()])
+                ->setReplyTo([$currentUser->getEmail() => $currentUser->getFullName()])
+                ->setTo([$item->getEmail() => $item->getFullName()]);
+
+            // form option: copy_to_sender
+            if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
+                $message->setCc($message->getReplyTo());
+            }
+
+            // send mail
+            $this->get('mailer')->send($message);
+
+            // redirect to success page
+            return $this->redirectToRoute('commsy_user_sendsuccess', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]);
+        }
+
+        return [
+            'form' => $form->createView()
+        ];
+    }
+
+    /**
+     * @Route("/room/{roomId}/user/{itemId}/send/success")
+     * @Template()
+     **/
+    public function sendSuccessAction($roomId, $itemId)
+    {
+        // get item
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getTypedItem($itemId);
+
+        if (!$item) {
+            throw $this->createNotFoundException('no item found for id ' . $itemId);
+        }
+
+        return [
+            'link' => $this->generateUrl('commsy_user_detail', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]),
+            'title' => $item->getFullname(),
+        ];
+    }
     
     /**
      * @Route("/room/{roomId}/user/{itemId}/image")

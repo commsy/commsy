@@ -287,6 +287,11 @@ services:
         arguments: ['@commsy.utils.mail_assistant']
         tags:
             - { name: form.type }
+
+    commsy.form.type.user_send:
+            class: CommsyBundle\Form\Type\UserSendType
+            tags:
+                - { name: form.type }
             
     commsy.form.type.sendList:
         class: CommsyBundle\Form\Type\SendListType

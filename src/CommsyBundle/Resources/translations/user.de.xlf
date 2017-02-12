@@ -122,6 +122,10 @@
                 <source>emailHidden</source>
                 <target>verborgen</target>
             </trans-unit>
+            <trans-unit id="userEmailSend">
+                <source>send email</source>
+                <target>E-Mail senden</target>
+            </trans-unit>
             <trans-unit id="delete">
                 <source>delete</source>
                 <target>Kennung(en) löschen</target>
