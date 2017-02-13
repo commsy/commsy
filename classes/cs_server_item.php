@@ -647,11 +647,12 @@ class cs_server_item extends cs_guide_item
                     if ($user_manager->getCountUserPasswordExpiredByContextID($portal_item->getItemID()) > 0) {
                         $expired_user_array = $user_manager->getUserPasswordExpiredByContextID($portal_item->getItemID());
                         require_once 'classes/cs_mail.php';
+                        global $c_password_expiration_user_ids_ignore;
                         foreach ($expired_user_array as $user) {
                             $auth_manager = $this->_environment->getAuthSourceManager();
                             $auth_item = $auth_manager->getItem($user->getAuthSource());
                             if ($auth_item->getSourceType() == 'MYSQL') {
-                                if (!$user->isPasswordExpiredEmailSend()) {
+                                if (!$user->isPasswordExpiredEmailSend() && !in_array($user->getUserId(), $c_password_expiration_user_ids_ignore)) {
                                     $auth_manager = $authentication->getAuthManager($user->getAuthSource());
                                     $auth_manager->changePassword($user->getUserID(), uniqid('', true));
 
@@ -769,95 +770,98 @@ class cs_server_item extends cs_guide_item
                     if ($user_manager->getCountUserPasswordExpiredSoonByContextID($portal_item->getItemID(), $portal_item) > 0) {
                         $expired_user_array = $user_manager->getUserPasswordExpiredSoonByContextID($portal_item->getItemID(), $portal_item);
                         require_once 'classes/cs_mail.php';
+                        global $c_password_expiration_user_ids_ignore;
                         foreach ($expired_user_array as $user) {
-                            $auth_manager = $this->_environment->getAuthSourceManager();
-                            $auth_item = $auth_manager->getItem($user->getAuthSource());
-                            if ($auth_item->getSourceType() == 'MYSQL') {
-                                //                            if (!$user->isPasswordExpiredEmailSend()){
-                                $mail = new cs_mail();
-
-                                $mod_contact_list = $portal_item->getContactModeratorList();
-                                $mod_user_first = $mod_contact_list->getFirst();
-                                //$mail->set_from_email($mod_user_first->getEmail());
-                                //$mail->set_from_name($mod_user_first->getFullname());
-                                $mail->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
-                                $mail->set_from_name($portal_item->getTitle());
-
-                                if ($user->getPasswordExpireDate() > getCurrentDateTimeInMySQL()) {
-                                    $start_date = new DateTime(getCurrentDateTimeInMySQL());
-                                    $since_start = $start_date->diff(new DateTime($user->getPasswordExpireDate()));
-                                    $days = $since_start->days;
-                                    if ($days == 0) {
-                                        $days = 1;
+                            if (!in_array($user->getUserId(), $c_password_expiration_user_ids_ignore)) {
+                                $auth_manager = $this->_environment->getAuthSourceManager();
+                                $auth_item = $auth_manager->getItem($user->getAuthSource());
+                                if ($auth_item->getSourceType() == 'MYSQL') {
+                                    //                            if (!$user->isPasswordExpiredEmailSend()){
+                                    $mail = new cs_mail();
+    
+                                    $mod_contact_list = $portal_item->getContactModeratorList();
+                                    $mod_user_first = $mod_contact_list->getFirst();
+                                    //$mail->set_from_email($mod_user_first->getEmail());
+                                    //$mail->set_from_name($mod_user_first->getFullname());
+                                    $mail->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
+                                    $mail->set_from_name($portal_item->getTitle());
+    
+                                    if ($user->getPasswordExpireDate() > getCurrentDateTimeInMySQL()) {
+                                        $start_date = new DateTime(getCurrentDateTimeInMySQL());
+                                        $since_start = $start_date->diff(new DateTime($user->getPasswordExpireDate()));
+                                        $days = $since_start->days;
+                                        if ($days == 0) {
+                                            $days = 1;
+                                        }
                                     }
-                                }
-
-                                $subject = $translator->getMessage('EMAIL_PASSWORD_EXPIRATION_SOON_SUBJECT', $portal_item->getTitle(), $days);
-                                $to = $user->getEmail();
-                                $to_name = $user->getFullname();
-                                if (!empty($to_name)) {
-                                    $to = $to_name." <".$to.">";
-                                }
-
-                                // link
-                                $url_to_portal = '';
-                                if (!empty($portal_item)) {
-                                    $url_to_portal = $portal_item->getURL();
-                                }
-                                $c_commsy_cron_path = $this->_environment->getConfiguration('c_commsy_cron_path');
-                                if (isset($c_commsy_cron_path)) {
-                                    $link = $c_commsy_cron_path;
-                                } elseif (!empty($url_to_portal)) {
-                                    $c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
-                                    if (stristr($c_commsy_domain, 'https://')) {
-                                        $link = 'https://';
+    
+                                    $subject = $translator->getMessage('EMAIL_PASSWORD_EXPIRATION_SOON_SUBJECT', $portal_item->getTitle(), $days);
+                                    $to = $user->getEmail();
+                                    $to_name = $user->getFullname();
+                                    if (!empty($to_name)) {
+                                        $to = $to_name." <".$to.">";
+                                    }
+    
+                                    // link
+                                    $url_to_portal = '';
+                                    if (!empty($portal_item)) {
+                                        $url_to_portal = $portal_item->getURL();
+                                    }
+                                    $c_commsy_cron_path = $this->_environment->getConfiguration('c_commsy_cron_path');
+                                    if (isset($c_commsy_cron_path)) {
+                                        $link = $c_commsy_cron_path;
+                                    } elseif (!empty($url_to_portal)) {
+                                        $c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
+                                        if (stristr($c_commsy_domain, 'https://')) {
+                                            $link = 'https://';
+                                        } else {
+                                            $link = 'http://';
+                                        }
+                                        $link .= $url_to_portal;
+                                        $file = 'commsy.php';
+                                        $c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
+                                        if (!empty($c_single_entry_point)) {
+                                            $file = $c_single_entry_point;
+                                        }
+                                        $link .= '/'.$file;
                                     } else {
-                                        $link = 'http://';
+                                        $file = $_SERVER['PHP_SELF'];
+                                        $file = str_replace('cron', 'commsy', $file);
+                                        $link = 'http://'.$_SERVER['HTTP_HOST'].$file;
                                     }
-                                    $link .= $url_to_portal;
-                                    $file = 'commsy.php';
-                                    $c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
-                                    if (!empty($c_single_entry_point)) {
-                                        $file = $c_single_entry_point;
+                                    $link .= '?cid='.$portal_item->getItemID().'&mod=home&fct=index';
+                                    // link
+    
+                                    //content
+                                    $email_text_array = $portal_item->getEmailTextArray();
+                                    $translator->setEmailTextArray($portal_item->getEmailTextArray());
+    
+                                    $body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullName());
+                                    $body .= "\n\n";
+                                    $body .= $translator->getEmailMessage('EMAIL_BODY_PASSWORD_EXPIRATION_SOON', $days, $link);
+                                    $body .= "\n\n";
+                                    if ($mod_user_first) {
+                                        $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $mod_user_first->getFullName(), $portal_item->getTitle());
+                                    } else {
+                                        $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', '', $portal_item->getTitle());
                                     }
-                                    $link .= '/'.$file;
-                                } else {
-                                    $file = $_SERVER['PHP_SELF'];
-                                    $file = str_replace('cron', 'commsy', $file);
-                                    $link = 'http://'.$_SERVER['HTTP_HOST'].$file;
-                                }
-                                $link .= '?cid='.$portal_item->getItemID().'&mod=home&fct=index';
-                                // link
-
-                                //content
-                                $email_text_array = $portal_item->getEmailTextArray();
-                                $translator->setEmailTextArray($portal_item->getEmailTextArray());
-
-                                $body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullName());
-                                $body .= "\n\n";
-                                $body .= $translator->getEmailMessage('EMAIL_BODY_PASSWORD_EXPIRATION_SOON', $days, $link);
-                                $body .= "\n\n";
-                                if ($mod_user_first) {
-                                    $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $mod_user_first->getFullName(), $portal_item->getTitle());
-                                } else {
-                                    $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', '', $portal_item->getTitle());
-                                }
-                                $body .= "\n\n";
-                                $body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-
-                                $context_item = $this->_environment->getServerItem();
-                                $translator->setEmailTextArray($context_item->getEmailTextArray());
-
-                                $mail->set_subject($subject);
-                                $mail->set_message($body);
-                                $mail->set_to($to);
-
-                                if ($mail->send()) {
-                                    $cron_array['success'.'_'.$portal_item->getItemId().'_'.$user->getItemId()] = true;
-                                    $cron_array['success_text'.'_'.$portal_item->getItemId().'_'.$user->getItemId()] = 'send mail to '.$to;
-                                } else {
-                                    $cron_array['success'.'_'.$portal_item->getItemId().'_'.$user->getItemId()] = false;
-                                    $cron_array['success_text'.'_'.$portal_item->getItemId().'_'.$user->getItemId()] = 'failed send mail to '.$to;
+                                    $body .= "\n\n";
+                                    $body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
+    
+                                    $context_item = $this->_environment->getServerItem();
+                                    $translator->setEmailTextArray($context_item->getEmailTextArray());
+    
+                                    $mail->set_subject($subject);
+                                    $mail->set_message($body);
+                                    $mail->set_to($to);
+    
+                                    if ($mail->send()) {
+                                        $cron_array['success'.'_'.$portal_item->getItemId().'_'.$user->getItemId()] = true;
+                                        $cron_array['success_text'.'_'.$portal_item->getItemId().'_'.$user->getItemId()] = 'send mail to '.$to;
+                                    } else {
+                                        $cron_array['success'.'_'.$portal_item->getItemId().'_'.$user->getItemId()] = false;
+                                        $cron_array['success_text'.'_'.$portal_item->getItemId().'_'.$user->getItemId()] = 'failed send mail to '.$to;
+                                    }
                                 }
                             }
                         }

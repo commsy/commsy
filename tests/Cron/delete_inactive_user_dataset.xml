@@ -507,6 +507,14 @@
 		<field name="deletion_date" xsi:nil="true" />
 		<field name="modification_date">2016-12-04 16:14:29</field>
 	</row>
+		<row>
+		<field name="item_id">143</field>
+		<field name="context_id">101</field>
+		<field name="type">user</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date" xsi:nil="true" />
+	</row>
 	</table_data>
 	<table_data name="labels">
 	<row>
@@ -516,7 +524,7 @@
 		<field name="modifier_id">118</field>
 		<field name="deleter_id" xsi:nil="true" />
 		<field name="creation_date">2016-12-04 14:58:55</field>
-		<field name="modification_date">0000-00-00 00:00:00</field>
+		<field name="modification_date">2016-12-04 14:58:55</field>
 		<field name="deletion_date" xsi:nil="true" />
 		<field name="name">ALL</field>
 		<field name="description">GROUP_ALL_DESC</field>
@@ -742,8 +750,8 @@
 		<field name="new_hack">0</field>
 		<field name="copy_of">0</field>
 		<field name="workflow_status"></field>
-		<field name="workflow_resubmission_date">0000-00-00 00:00:00</field>
-		<field name="workflow_validity_date">0000-00-00 00:00:00</field>
+		<field name="workflow_resubmission_date">2016-12-04 16:14:29</field>
+		<field name="workflow_validity_date">2016-12-04 16:14:29</field>
 		<field name="locking_date" xsi:nil="true" />
 		<field name="locking_user_id" xsi:nil="true" />
 	</row>
@@ -1494,6 +1502,29 @@
 		<field name="extras">a:4:{s:8:&quot;LANGUAGE&quot;;s:7:&quot;browser&quot;;s:19:&quot;AGB_ACCEPTANCE_DATE&quot;;s:0:&quot;&quot;;s:16:&quot;EMAIL_VISIBILITY&quot;;s:1:&quot;1&quot;;s:11:&quot;USERCOMMENT&quot;;s:0:&quot;&quot;;}</field>
 		<field name="auth_source">102</field>
 		<field name="description"></field>
+		<field name="expire_date" xsi:nil="true" />
+	</row>
+		<row>
+		<field name="item_id">143</field>
+		<field name="context_id">101</field>
+		<field name="creator_id">99</field>
+		<field name="modifier_id">99</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2006-09-13 12:17:17</field>
+		<field name="modification_date">2006-09-13 12:17:17</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="user_id">root</field>
+		<field name="status">2</field>
+		<field name="is_contact">1</field>
+		<field name="firstname">CommSy</field>
+		<field name="lastname">Administrator</field>
+		<field name="email"></field>
+		<field name="city"></field>
+		<field name="lastlogin" xsi:nil="true" />
+		<field name="visible">1</field>
+		<field name="extras"></field>
+		<field name="auth_source">100</field>
+		<field name="description" xsi:nil="true" />
 		<field name="expire_date" xsi:nil="true" />
 	</row>
 	</table_data>

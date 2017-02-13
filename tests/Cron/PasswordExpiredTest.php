@@ -51,6 +51,7 @@ class PasswordExpiredTest extends DatabaseTestCase
     public function testPasswordExpiration()
     {
         global $environment;
+        global $c_password_expiration_user_ids_ignore;
         
         $portal = $this->setUpPortal();
         
@@ -95,8 +96,13 @@ class PasswordExpiredTest extends DatabaseTestCase
 		$portal_user = $portal_users->getFirst();
 		while ($portal_user){
     		$successKey = 'success_'.$portal->getItemId().'_'.$portal_user->getItemId();
-			$this->assertTrue(in_array($successKey, array_keys($cronArray)));
-			$this->assertTrue($cronArray[$successKey]);
+    		if (!in_array($portal_user->getUserId(), $c_password_expiration_user_ids_ignore)) {
+			    $this->assertTrue(in_array($successKey, array_keys($cronArray)));
+                $this->assertTrue($cronArray[$successKey]);
+			} else {
+    			$this->assertFalse(in_array($successKey, array_keys($cronArray)));
+                $this->assertNull($cronArray[$successKey]);
+			}
 			$portal_user = $portal_users->getNext();
 		}
 		
@@ -119,9 +125,15 @@ class PasswordExpiredTest extends DatabaseTestCase
 		$portal_user = $portal_users->getFirst();
 		while ($portal_user){
     		$successKey = 'success_'.$portal->getItemId().'_'.$portal_user->getItemId();
-			$this->assertTrue(in_array($successKey, array_keys($cronArray)));
-			$this->assertTrue($cronArray[$successKey]);
-			$this->assertTrue($portal_user->isPasswordExpiredEmailSend());
+    		if (!in_array($portal_user->getUserId(), $c_password_expiration_user_ids_ignore)) {
+			    $this->assertTrue(in_array($successKey, array_keys($cronArray)));
+                $this->assertTrue($cronArray[$successKey]);
+                $this->assertTrue($portal_user->isPasswordExpiredEmailSend());
+			} else {
+    			$this->assertFalse(in_array($successKey, array_keys($cronArray)));
+                $this->assertNull($cronArray[$successKey]);
+                $this->assertFalse($portal_user->isPasswordExpiredEmailSend());
+			}
 			$portal_user = $portal_users->getNext();
 		}
 		
