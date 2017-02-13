@@ -81,9 +81,9 @@ class UserController extends Controller
         foreach ($users as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
             if ($currentUser->isModerator()) {
-                $allowedActions[$item->getItemID()] = ['markread', 'copy', 'save', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
+                $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'copy', 'save', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
             } else {
-                $allowedActions[$item->getItemID()] = ['markread'];
+                $allowedActions[$item->getItemID()] = ['markread', 'sendmail'];
             }
         }
 
@@ -761,6 +761,82 @@ class UserController extends Controller
             'readCount' => $read_count,
             'readSinceModificationCount' => $read_since_modification_count,
         );
+    }
+
+    /**
+     * @Route("/room/{roomId}/user/sendMultiple")
+     * @Template()
+     */
+    public function sendMultipleAction($roomId, Request $request)
+    {
+        if (!$request->query->has('userIds')) {
+            throw $this->createNotFoundException('no user ids found');
+        }
+
+        $userIds = $request->query->get('userIds');
+
+        $userService = $this->get('commsy_legacy.user_service');
+
+        $formData = [
+            'message' => '',
+            'copy_to_sender' => false,
+        ];
+
+        $form = $this->createForm(UserSendType::class, $formData, []);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $formData = $form->getData();
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+            $portalItem = $legacyEnvironment->getCurrentPortalItem();
+            $currentUser = $legacyEnvironment->getCurrentUserItem();
+
+            $from = $this->getParameter('commsy.email.from');
+
+            $to = [];
+            foreach ($userIds as $userId) {
+                $user = $userService->getUser($userId);
+                $to[$user->getEmail()] = $user->getFullName();
+            }
+
+            $message = \Swift_Message::newInstance()
+                ->setSubject($formData['subject'])
+                ->setBody($formData['message'], 'text/html')
+                ->setFrom([$from => $portalItem->getTitle()])
+                ->setReplyTo([$currentUser->getEmail() => $currentUser->getFullName()])
+                ->setTo($to);
+
+            // form option: copy_to_sender
+            if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
+                $message->setCc($message->getReplyTo());
+            }
+
+            // send mail
+            $this->get('mailer')->send($message);
+
+            // redirect to success page
+            return $this->redirectToRoute('commsy_user_sendmultiplesuccess', [
+                'roomId' => $roomId,
+            ]);
+        }
+
+        return [
+            'form' => $form->createView()
+        ];
+    }
+
+    /**
+     * @Route("/room/{roomId}/user/sendMultiple/success")
+     * @Template()
+     **/
+    public function sendMultipleSuccessAction($roomId)
+    {
+        return [
+            'link' => $this->generateUrl('commsy_user_list', [
+                'roomId' => $roomId,
+            ]),
+        ];
     }
 
     /**
