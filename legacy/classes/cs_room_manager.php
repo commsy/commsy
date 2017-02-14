@@ -360,7 +360,7 @@ class cs_room_manager extends cs_context_manager {
             }
             $query .= $this->addDatabasePrefix($this->_db_table).'.extras LIKE "%'.encode(AS_DB,$log_arg_limit).'%"';
          }
-         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.extras LIKE "%'.encode(AS_DB,$this->_logarchive_limit).'%"';
+//         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.extras LIKE "%'.encode(AS_DB,$this->_logarchive_limit).'%"';
          $query .= ')';
       }
 
