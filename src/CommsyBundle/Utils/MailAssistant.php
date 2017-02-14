@@ -265,10 +265,10 @@ class MailAssistant
     private function generateMessageData($item)
     {
         $data = [];
-
+        /*
         $type = $item->getType();
         if ($type === 'date') {
-            /*
+
             // set up style of days and times
             $parse_time_start = convertTimeFromInput($item->getStartingTime());
             $conforms = $parse_time_start['conforms'];
@@ -385,9 +385,9 @@ class MailAssistant
             }
             $content = $dates_content;
 
-            */
-        }
 
+        }
+        */
         return $data;
     }
 }

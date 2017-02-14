@@ -325,6 +325,7 @@ class GroupController extends Controller
             'roomCategories' => $infoArray['roomCategories'],
             'members' => $infoArray['members'],
             'user' => $infoArray['user'],
+            'userIsMember' => $infoArray['userIsMember'],
             'annotationForm' => $form->createView(),
        );
     }
@@ -528,6 +529,7 @@ class GroupController extends Controller
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
         $infoArray['roomCategories'] = $categories;
         $infoArray['members'] = $members;
+        $infoArray['userIsMember'] = $membersList->inList($infoArray['user']);
 
         return $infoArray;
     }
@@ -876,5 +878,113 @@ class GroupController extends Controller
             //'readCount' => $read_count,
             //'readSinceModificationCount' => $read_since_modification_count,
         );
+    }
+
+    /**
+     * @Route("/room/{roomId}/group/{itemId}/join")
+     * @Template()
+     */
+    public function joinAction($roomId, $itemId, Request $request)
+    {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        $groupService = $this->get('commsy_legacy.group_service');
+        $groupItem = $groupService->getGroup($itemId);
+
+        if (!$roomItem) {
+            throw $this->createNotFoundException('The requested room does not exist');
+        } elseif (!$groupItem) {
+            throw $this->createNotFoundException('The requested group does not exists');
+        }
+
+        $current_user = $legacyEnvironment->getCurrentUser();
+
+        $roomGroupitem = $groupItem->getGroupRoomItem();
+        if ( isset($roomGroupItem) and !empty($roomGroupItem) ) {
+            // TODO: join group room
+            // joinGroupRoom();
+            throw new Exception("Joining a group room is not yet implemented!");
+        } else {
+            $groupItem->addMember($current_user);
+            /*
+            if($legacyEnvironment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() === '1') {
+                $wiki_manager = $this->_environment->getWikiManager();
+                $wiki_manager->updateNotification();
+            }
+            */
+       }
+
+        return new JsonResponse(array(
+           'title' => $groupItem->getTitle(),
+           'groupId' => $itemId,
+           'memberId' => $current_user->getItemId(),
+        ));
+    }
+
+    /**
+     * @Route("/room/{roomId}/group/{itemId}/leave")
+     * @Template()
+     */
+    public function leaveAction($roomId, $itemId, Request $request)
+    {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        $groupService = $this->get('commsy_legacy.group_service');
+        $groupItem = $groupService->getGroup($itemId);
+
+        if (!$roomItem) {
+            throw $this->createNotFoundException('The requested room does not exist');
+        } elseif (!$groupItem) {
+            throw $this->createNotFoundException('The requested group does not exists');
+        }
+
+        $current_user = $legacyEnvironment->getCurrentUser();
+
+        $groupItem->removeMember($current_user);
+/*
+        if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() === '1') {
+            $wiki_manager = $this->_environment->getWikiManager();
+            $wiki_manager->updateNotification();
+        }
+
+        if($groupItem->isGroupRoomActivated()) {
+            $grouproom_item = $this->_item->getGroupRoomItem();
+            if(isset($grouproom_item) && !empty($grouproom_item)) {
+                $group_room_user_item = $grouproom_item->getUserByUserID($current_user->getUserID(), $current_user->getAuthSource());
+                $group_room_user_item->reject();
+                $group_room_user_item->save();
+            }
+        }
+*/
+        return new JsonResponse(array(
+           'title' => $groupItem->getTitle(),
+           'groupId' => $itemId,
+           'memberId' => $current_user->getItemId(),
+        ));
+    }
+
+    /**
+     * @Route("/room/{roomId}/group/{itemId}/members", requirements={
+     *     "itemId": "\d+"
+     * }))
+     * @Template()
+     * @Security("is_granted('ITEM_SEE', itemId)")
+     */
+    public function membersAction($roomId, $itemId, Request $request)
+    {
+        $groupService = $this->get('commsy_legacy.group_service');
+        $group = $groupService->getGroup($itemId);
+        $membersList = $group->getMemberItemList();
+        $members = $membersList->to_array();
+        return [
+            'group' => $group,
+            'members' => $members,
+        ];
     }
 }

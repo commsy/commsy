@@ -13,7 +13,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use CommsyBundle\Filter\UserFilterType;
 
 use CommsyBundle\Form\Type\UserType;
+<<<<<<< HEAD
+use CommsyBundle\Form\Type\SendType;
+=======
 use CommsyBundle\Form\Type\UserSendType;
+>>>>>>> 5d8c58c89cfbc1333af605173d34a88607107475
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -81,9 +85,15 @@ class UserController extends Controller
         foreach ($users as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
             if ($currentUser->isModerator()) {
+<<<<<<< HEAD
+                $allowedActions[$item->getItemID()] = ['markread', 'user-send-mail', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
+            } else {
+                $allowedActions[$item->getItemID()] = ['markread', 'user-send-mail'];
+=======
                 $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'copy', 'save', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
             } else {
                 $allowedActions[$item->getItemID()] = ['markread', 'sendmail'];
+>>>>>>> 5d8c58c89cfbc1333af605173d34a88607107475
             }
         }
 
@@ -157,6 +167,42 @@ class UserController extends Controller
             'showHashTags' => false,
             'showCategories' => false,
             'usageInfo' => $usageInfo,
+        ];
+    }
+
+    /**
+     * @Route("/room/{roomId}/user/sendmail")
+     * @Template()
+     */
+    public function sendMailAction($roomId, Request $request)
+    {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        
+        $userService = $this->get('commsy_legacy.user_service');
+
+        $userItems = array();
+
+        $userIds = $request->query->get('userIds');
+
+        foreach ($userIds as $userId) {
+            $userItems[] = $userService->getUser($userId);
+        }
+
+        $formData = [
+            'additional_recipients' => [],
+            'send_to_groups' => [],
+            'send_to_group_all' => false,
+            'send_to_all' => false,
+            'message' => '',
+            'copy_to_sender' => false,
+        ];
+
+        $form = $this->createForm(SendType::class, $formData, [
+            'users' => $userItems,
+        ]);
+
+        return [
+            'form' => $form->createView(),
         ];
     }
 
@@ -280,6 +326,9 @@ class UserController extends Controller
                 }
             }
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
+
+        } else if ($action == 'user-send-mail') {
+            return $this->redirectToRoute('commsy_user_sendmail', array('roomId' => $roomId, 'userIds' => $selectedIds));
         } else if ($action == 'user-delete') {
             if ($this->contextHasModerators($roomId, $selectedIds)) {
                 foreach ($selectedIds as $id) {
@@ -1091,4 +1140,5 @@ class UserController extends Controller
 
         return $this->get('commsy.print_service')->printDetail($html);
     }
+
 }

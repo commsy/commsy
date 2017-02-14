@@ -56,12 +56,107 @@ class SendType extends AbstractType
             ])
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options, $mailAssistant) {
                 $form = $event->getForm();
-                $item = $options['item'];
 
-                if ($item->getType() == 'date') {
+                if(isset($options['item']) && !empty($options['item'])) {
+                    $item = $options['item'];
+                    if ($item->getType() == 'date') {
+                        $form
+                            ->add('send_to_attendees', ChoiceType::class, [
+                                'label' => 'Send to attendees',
+                                'choices' => [
+                                    'Yes' => true,
+                                    'No' => false,
+                                ],
+                                'expanded' => true,
+                                'translation_domain' => 'mail',
+                                'choice_translation_domain' => 'form',
+                                'required' => true,
+                            ])
+                        ;
+                    }
+
+                    if ($item->getType() == 'todo') {
+                        $form
+                            ->add('send_to_assigned', ChoiceType::class, [
+                                'label' => 'Send to assigned',
+                                'choices' => [
+                                    'Yes' => true,
+                                    'No' => false,
+                                ],
+                                'expanded' => true,
+                                'translation_domain' => 'mail',
+                                'choice_translation_domain' => 'form',
+                                'required' => true,
+                            ])
+                        ;
+                    }
+
+                    if ($mailAssistant->showGroupAllRecipients($item)) {
+                        $form
+                            ->add('send_to_group_all', ChoiceType::class, [
+                                'label' => 'Send to all room members',
+                                'choices' => [
+                                    'Yes' => true,
+                                    'No' => false,
+                                ],
+                                'expanded' => true,
+                                'translation_domain' => 'mail',
+                                'choice_translation_domain' => 'form',
+                                'required' => true,
+                            ])
+                        ;
+                    }
+
+                    if ($mailAssistant->showGroupRecipients($item)) {
+                        $groups = $mailAssistant->getGroupChoices($item);
+
+                        $form
+                            ->add('send_to_groups', ChoiceType::class, [
+                                'label' => 'Send to groups',
+                                'choices' => $groups,
+                                'expanded' => true,
+                                'multiple' => true,
+                                'translation_domain' => 'mail',
+                                'choice_translation_domain' => 'form',
+                                'required' => true,
+                            ])
+                        ;
+                    } else if ($mailAssistant->showInstitutionRecipients($item)) {
+                        $institutions = $mailAssistant->getInstitutionChoices($item);
+
+                        $form
+                            ->add('send_to_institutions', ChoiceType::class, [
+                                'label' => 'Send to institution',
+                                'choices' => $institutions,
+                                'expanded' => true,
+                                'multiple' => true,
+                                'translation_domain' => 'mail',
+                                'choice_translation_domain' => 'form',
+                                'required' => true,
+                            ])
+                        ;
+                    }
+
+                    if ($mailAssistant->showAllMembersRecipients($item)) {
+                        $form
+                            ->add('send_to_all', ChoiceType::class, [
+                                'label' => 'Send to all room members',
+                                'choices' => [
+                                    'Yes' => true,
+                                    'No' => false,
+                                ],
+                                'expanded' => true,
+                                'translation_domain' => 'mail',
+                                'choice_translation_domain' => 'form',
+                                'required' => true,
+                            ])
+                        ;
+                    }
+                } else if(isset($options['users']) && !empty($options['users'])) {
+                    $users = $options['users'];
                     $form
-                        ->add('send_to_attendees', ChoiceType::class, [
-                            'label' => 'Send to attendees',
+                        ->add('send_to_selected', ChoiceType::class, [
+                            'label' => 'Send to selected room members',
                             'choices' => [
                                 'Yes' => true,
                                 'No' => false,
@@ -74,83 +169,6 @@ class SendType extends AbstractType
                     ;
                 }
 
-                if ($item->getType() == 'todo') {
-                    $form
-                        ->add('send_to_assigned', ChoiceType::class, [
-                            'label' => 'Send to assigned',
-                            'choices' => [
-                                'Yes' => true,
-                                'No' => false,
-                            ],
-                            'expanded' => true,
-                            'translation_domain' => 'mail',
-                            'choice_translation_domain' => 'form',
-                            'required' => true,
-                        ])
-                    ;
-                }
-
-                if ($mailAssistant->showGroupAllRecipients($item)) {
-                    $form
-                        ->add('send_to_group_all', ChoiceType::class, [
-                            'label' => 'Send to all room members',
-                            'choices' => [
-                                'Yes' => true,
-                                'No' => false,
-                            ],
-                            'expanded' => true,
-                            'translation_domain' => 'mail',
-                            'choice_translation_domain' => 'form',
-                            'required' => true,
-                        ])
-                    ;
-                }
-
-                if ($mailAssistant->showGroupRecipients($item)) {
-                    $groups = $mailAssistant->getGroupChoices($item);
-
-                    $form
-                        ->add('send_to_groups', ChoiceType::class, [
-                            'label' => 'Send to groups',
-                            'choices' => $groups,
-                            'expanded' => true,
-                            'multiple' => true,
-                            'translation_domain' => 'mail',
-                            'choice_translation_domain' => 'form',
-                            'required' => true,
-                        ])
-                    ;
-                } else if ($mailAssistant->showInstitutionRecipients($item)) {
-                    $institutions = $mailAssistant->getInstitutionChoices($item);
-
-                    $form
-                        ->add('send_to_institutions', ChoiceType::class, [
-                            'label' => 'Send to institution',
-                            'choices' => $institutions,
-                            'expanded' => true,
-                            'multiple' => true,
-                            'translation_domain' => 'mail',
-                            'choice_translation_domain' => 'form',
-                            'required' => true,
-                        ])
-                    ;
-                }
-
-                if ($mailAssistant->showAllMembersRecipients($item)) {
-                    $form
-                        ->add('send_to_all', ChoiceType::class, [
-                            'label' => 'Send to all room members',
-                            'choices' => [
-                                'Yes' => true,
-                                'No' => false,
-                            ],
-                            'expanded' => true,
-                            'translation_domain' => 'mail',
-                            'choice_translation_domain' => 'form',
-                            'required' => true,
-                        ])
-                    ;
-                }
             })
             ->add('copy_to_sender', ChoiceType::class, [
                 'label' => 'Copy to sender',
@@ -207,6 +225,10 @@ class SendType extends AbstractType
         $resolver
             ->setRequired('item')
             ->setAllowedTypes('item', 'cs_item')
+            ->setDefaults([
+                'users' => [],
+                'item' => null,
+            ])
         ;
     }
 
