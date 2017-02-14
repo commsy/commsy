@@ -13,11 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use CommsyBundle\Filter\UserFilterType;
 
 use CommsyBundle\Form\Type\UserType;
-<<<<<<< HEAD
-use CommsyBundle\Form\Type\SendType;
-=======
 use CommsyBundle\Form\Type\UserSendType;
->>>>>>> 5d8c58c89cfbc1333af605173d34a88607107475
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -85,15 +81,9 @@ class UserController extends Controller
         foreach ($users as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
             if ($currentUser->isModerator()) {
-<<<<<<< HEAD
-                $allowedActions[$item->getItemID()] = ['markread', 'user-send-mail', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
-            } else {
-                $allowedActions[$item->getItemID()] = ['markread', 'user-send-mail'];
-=======
                 $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'copy', 'save', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
             } else {
                 $allowedActions[$item->getItemID()] = ['markread', 'sendmail'];
->>>>>>> 5d8c58c89cfbc1333af605173d34a88607107475
             }
         }
 

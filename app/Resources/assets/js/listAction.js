@@ -117,19 +117,14 @@
     }
 
     function startEdit (el) {
-        console.debug(el);
         element = el;
 
         actionUrl = element.data('commsy-list-action').actionUrl;
-        console.debug(actionUrl);
 
         let target = $(element.data('commsy-list-action').target) ? UI.$(element.data('commsy-list-action').target) : [];
         if (!target.length) {
-            console.debug("Target empty!");
             return;
         }
-
-        console.debug(target);
 
         selectable = true;
 
