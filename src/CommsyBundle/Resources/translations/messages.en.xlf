@@ -378,6 +378,23 @@
                 <source>trash recurring</source>
                 <target>Delete all dates of this series</target>
             </trans-unit>
+
+            <trans-unit id="join">
+                <source>join</source>
+                <target>Join</target>
+            </trans-unit>
+            <trans-unit id="leave">
+                <source>leave</source>
+                <target>Leave</target>
+            </trans-unit>
+            <trans-unit id="groupJoined">
+                <source>Joined group %s</source>
+                <target>Joined group %s</target>
+            </trans-unit>
+            <trans-unit id="groupLeft">
+                <source>Left group %s</source>
+                <target>Left group %s</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

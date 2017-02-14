@@ -83,6 +83,39 @@
                                 <div id="cs-additional-actions" class="uk-dropdown  uk-padding-remove">
                                     <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
 
+                                        {# join group #}
+                                        {% if userIsMember %}
+                                            <li style="display: none;">
+                                        {% else %}
+                                            <li>
+                                        {% endif %}
+                                            <a href="#" data-cs-action-join="{
+                                                'url': '{{ path('commsy_group_join', {'roomId': roomId, 'itemId': group.itemId}) }}',
+                                                'successMessage': '<i class=\'uk-icon-medium uk-icon-sign-in\'></i> {{ 'Joined group %s'|trans|format(group.title) }}',
+                                                'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}',
+                                                'groupId': [ {{ group.itemId }} ]
+                                            }">
+                                                <i class="uk-icon-small uk-icon-sign-in uk-icon-justify uk-visible-large"></i> {{ 'join'|trans({})|capitalize }}
+                                            </a>
+                                        </li>
+
+                                        {# leave group #}
+                                        {% if userIsMember %}
+                                            <li>
+                                        {% else %}
+                                            <li style="display: none;">
+                                        {% endif %}
+                                            <a href="#" data-cs-action-leave="{
+                                                'url': '{{ path('commsy_group_leave', {'roomId': roomId, 'itemId': group.itemId}) }}',
+                                                'successMessage': '<i class=\'uk-icon-medium uk-icon-sign-out\'></i> {{ 'Left group %s'|trans|format(group.title) }}',
+                                                'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}',
+                                                'groupId': [ {{ group.itemId }} ]
+                                            }">
+                                                <i class="uk-icon-small uk-icon-sign-out uk-icon-justify uk-visible-large"></i> {{ 'leave'|trans({})|capitalize }}
+                                            </a>
+                                        </li>
+
+
                                         {# new entry #}
                                         <li>
                                             <a class="" href="{{ path('commsy_group_create', {'roomId': roomId}) }}" id="newEntry">
@@ -156,7 +189,7 @@
                     </div>
             
                     {# members #}
-                    <div id="member{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': group.contextId, 'itemId': group.itemId}) }}' }">
+                    <div id="member{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe>
                         {{ macrosGroup.members(group,members) }}
                     </div>
  
