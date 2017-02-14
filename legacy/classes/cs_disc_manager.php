@@ -293,34 +293,37 @@ class cs_disc_manager {
       }
    }
 
-   private function _full_rmdir($dirname) {
-      if ( $dirHandle = opendir($dirname) ) {
-         $old_cwd = getcwd();
-         chdir($dirname);
+    private function _full_rmdir($dirname)
+    {
+        if (is_dir($dirname)) {
+            if ($dirHandle = opendir($dirname)) {
+                $old_cwd = getcwd();
+                chdir($dirname);
 
-         while ($file = readdir($dirHandle)){
-            if ($file == '.' || $file == '..') continue;
-            if ( is_dir($file) ) {
-               if ( !$this->_full_rmdir($file) ) {
-                  chdir($old_cwd);
-                  return false;
-               }
-            } else {
-               if ( !@unlink($file) ) {
-                  chdir($old_cwd);
-                  return false;
-               }
+                while ($file = readdir($dirHandle)) {
+                    if ($file == '.' || $file == '..') continue;
+                    if (is_dir($file)) {
+                        if (!$this->_full_rmdir($file)) {
+                            chdir($old_cwd);
+                            return false;
+                        }
+                    } else {
+                        if (!@unlink($file)) {
+                            chdir($old_cwd);
+                            return false;
+                        }
+                    }
+                }
+
+                closedir($dirHandle);
+                chdir($old_cwd);
+                if (!rmdir($dirname)) return false;
+                return true;
             }
-         }
+        }
 
-         closedir($dirHandle);
-         chdir($old_cwd);
-         if (!rmdir($dirname)) return false;
-         return true;
-      } else {
-         return false;
-      }
-   }
+        return false;
+    }
 
    public function removeDirectory ( $dir ) {
       return $this->_full_rmdir($dir);
@@ -403,10 +406,11 @@ class cs_disc_manager {
       return $retour;
    }
 
-   public function removeRoomDir($first_id, $second_id){
-      $dir = $this->_getFilePath($first_id,$second_id);
-      $this->_full_rmdir($dir);
-   }
+    public function removeRoomDir($first_id, $second_id)
+    {
+        $dir = $this->_getFilePath($first_id, $second_id);
+        $this->_full_rmdir($dir);
+    }
 
    public function saveURL2Temp ( $url, $filename ) {
       $out = fopen($this->getTempFolder().'/'.$filename,'wb');
