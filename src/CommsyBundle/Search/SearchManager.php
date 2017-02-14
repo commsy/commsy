@@ -135,7 +135,7 @@ class SearchManager
 
         $boolQuery->addFilter($idsQuery);
 
-        return $this->commsyFinder->find($boolQuery);
+        return $this->commsyFinder->find($boolQuery, 50);
     }
 
     public function getLinkedItemResults($roomId, $itemId)

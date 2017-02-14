@@ -251,31 +251,59 @@ class SearchController extends Controller
         $query = $request->get('search', '');
 
         $router = $this->container->get('router');
+        $translator = $this->container->get('translator');
 
         $searchManager = $this->get('commsy.search.manager');
         $searchManager->setQuery($query);
 
         $roomResults = $searchManager->getRoomResults();
 
-        $roomResults = $this->filterRoomsByContext($roomResults);
-
+        $rooms = [
+            'community' => [],
+            'project' => [],
+            'grouproom' => [],
+        ];
         foreach ($roomResults as $room) {
-            // construct target url
+            $rooms[$room->getType()][] = $room;
+        }
+
+        $rooms = array_merge($rooms['community'], $rooms['project'], $rooms['grouproom']);
+
+        $lastType = null;
+        foreach ($rooms as $room) {
             $url = '#';
 
-            $routeName = 'commsy_room_home';
-            if ($router->getRouteCollection()->get($routeName)) {
-                $url = $this->generateUrl(
-                    $routeName,
-                    ['roomId' => $room->getItemId()]
-                );
+            if (!$lastType || $lastType != $room->getType()) {
+                if (in_array($room->getType(), ['project', 'community'])) {
+                    $title = $translator->trans(ucfirst($room->getType()) . ' Rooms', [], 'room');
+                } else {
+                    $title = $translator->trans('Group Rooms', [], 'room');
+                }
+
+                $results[] = [
+                    'title' => $title,
+                    'text' => 'dummy',
+                    'url' => $url,
+                    'disabled' => true,
+                ];
+            } else {
+                // construct target url
+                $routeName = 'commsy_room_home';
+                if ($router->getRouteCollection()->get($routeName)) {
+                    $url = $this->generateUrl(
+                        $routeName,
+                        ['roomId' => $room->getItemId()]
+                    );
+                }
+
+                $results[] = [
+                    'title' => $room->getTitle(),
+                    'text' => $room->getType(),
+                    'url' => $url,
+                ];
             }
 
-            $results[] = [
-                'title' => $room->getTitle(),
-                'text' => $room->getType(),
-                'url' => $url,
-            ];
+            $lastType = $room->getType();
         }
 
         $response = new JsonResponse();
@@ -284,32 +312,5 @@ class SearchController extends Controller
         ]);
 
         return $response;
-    }
-
-    /**
-     * Sorts an array of room items by their context id and keeps respecting the room hierarchy
-     * Community -> Project -> Group
-     *
-     * @param $rooms array of room items
-     */
-    private function filterRoomsByContext(&$rooms)
-    {
-        usort($rooms, function($a, $b) {
-            if ($a->getContextID() === $b->getItemID()) {
-                return 1;
-            }
-
-            if ($a->getType() === 'grouproom') {
-                $extras = $a->getExtras();
-
-                if (isset($extras['PROJECT_ROOM_ITEM_ID']) && $extras['PROJECT_ROOM_ITEM_ID'] === $b->getItemID()) {
-                    return 1;
-                }
-            }
-
-            return strcasecmp($a->getTitle(), $b->getTitle());
-        });
-
-        return $rooms;
     }
 }

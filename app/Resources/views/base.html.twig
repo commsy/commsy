@@ -95,18 +95,20 @@
                         <div class="uk-dropdown uk-dropdown-scrollable uk-dropdown-width-2">
                             <div class="uk-form">
                                 <input class="uk-margin-bottom uk-width-1-1" type="text" placeholder="{{ 'room search text'|trans({}, "rubric")}}">
+                                <div class="uk-text-center">{{ 'Top 50 matches'|trans({}, 'search') }}</div>
+
                                 <script type="text/autocomplete">
                                     {%- verbatim -%}
                                     <ul class="uk-nav uk-nav-autocomplete uk-autocomplete-results">
                                         {{#items && items.length}}
                                             {{~items}}
-                                            <li data-url="{{!$item.url}}">
+                                            <li data-url="{{!$item.url}}"{{#$item.disabled}} class="uk-skip uk-text-bold"{{/end}}>
                                                 <a>
                                                     {{#$item.text == 'project'}}
-                                                        <i class="uk-margin-small-right uk-icon-angle-right"></i>
+                                                        <i class="uk-margin-small-right uk-icon-angle-double-right"></i>
                                                     {{/end}}
                                                     {{#$item.text == 'community'}}
-                                                        <i class="uk-margin-small-right uk-icon-angle-double-right"></i>
+                                                        <i class="uk-margin-small-right uk-icon-angle-right"></i>
                                                     {{/end}}
                                                     {{ $item.title }}
                                                 </a>

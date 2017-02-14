@@ -30,6 +30,10 @@
                 <source>Restrict Results</source>
                 <target>Ergebnisse einschränken</target>
             </trans-unit>
+            <trans-unit id="search-results-top50">
+                <source>Top 50 matches</source>
+                <target>Die 50 besten Treffer</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

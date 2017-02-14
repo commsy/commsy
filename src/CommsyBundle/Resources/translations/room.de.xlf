@@ -102,6 +102,10 @@
                 <source>Community Rooms</source>
                 <target>Gemeinschaftsräume</target>
             </trans-unit>
+            <trans-unit id="room-grouprooms">
+                <source>Group Rooms</source>
+                <target>Gruppenräume</target>
+            </trans-unit>
             <trans-unit id="enter room">
                 <source>enter room</source>
                 <target>Raum betreten</target>
