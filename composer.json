@@ -46,7 +46,8 @@
         "ci/restclientbundle": "^2.0",
         "liip/imagine-bundle": "^1.6",
         "nette/utils": "^2.4",
-        "ezyang/htmlpurifier": "^4.8"
+        "ezyang/htmlpurifier": "^4.8",
+        "symfony/stopwatch": "^3.2"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",

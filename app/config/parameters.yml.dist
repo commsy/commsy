@@ -11,6 +11,10 @@ parameters:
     # You should uncomment this if you want use pdo_sqlite
     # database_path: "%kernel.root_dir%/data.db3"
 
+    router.request_context.host: example.org
+    router.request_context.scheme: https
+    router.request_context.base_url: ~
+
     mailer_transport:  smtp
     mailer_host:       127.0.0.1
     mailer_port:       25
