@@ -1093,7 +1093,6 @@ class cs_links_manager extends cs_manager {
       $retour = NULL;
       $rows = array();
 
-#      $sql1 = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.* AS item_id FROM '.$this->addDatabasePrefix($this->_db_table).' LEFT JOIN '.$this->addDatabasePrefix('items').' ON '.$this->addDatabasePrefix($this->_db_table).'.to_item_id='.$this->addDatabasePrefix('items').'.item_id WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.$context_id.'"AND '.$this->addDatabasePrefix('items').'.context_id IS NULL;';
       $sql1 = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.* FROM '.$this->addDatabasePrefix($this->_db_table).' LEFT JOIN '.$this->addDatabasePrefix('items').' ON '.$this->addDatabasePrefix($this->_db_table).'.to_item_id='.$this->addDatabasePrefix('items').'.item_id WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.$context_id.'"AND '.$this->addDatabasePrefix('items').'.context_id IS NULL;';
       $result = $this->_db_connector->performQuery($sql1);
       if ( !empty($result) ) {
@@ -1109,8 +1108,7 @@ class cs_links_manager extends cs_manager {
             $rows[] = $row;
          }
       }
-
-      $rows = array_unique($rows);
+      
       if ( !empty($rows) ) {
          foreach ( $rows as $row ) {
             $sql3 = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE to_item_id="'.$row['to_item_id'].'" AND to_version_id="'.$row['to_version_id'].'" AND from_item_id="'.$row['from_item_id'].'" AND from_version_id="'.$row['from_version_id'].'";';
