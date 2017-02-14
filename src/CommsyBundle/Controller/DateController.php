@@ -109,9 +109,9 @@ class DateController extends Controller
         $selectAllStart = $request->request->get('selectAllStart');
         
         if ($selectAll == 'true') {
-            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $request);
-            foreach ($entries['materials'] as $key => $value) {
-                $selectedIds[] = $value->getItemId();
+            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, 'date_rev', $request);
+            foreach ($entries['dates'] as $date) {
+                $selectedIds[] = $date->getItemId();
             }
         }
         
@@ -839,7 +839,7 @@ class DateController extends Controller
                                           'editable' => $date->isPublic(),
                                           'description' => $date->getDateDescription(),
                                           'place' => $date->getPlace(),
-                                          'participants' => $participantsDisplay
+                                          'participants' => ''
                                       ),
                                     ));
     }

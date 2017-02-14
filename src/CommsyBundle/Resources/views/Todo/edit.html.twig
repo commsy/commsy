@@ -44,6 +44,13 @@
                     </div>
                 </div>
             </div>
+        {% else %}
+            <div class="uk-margin-top">
+                <div class="uk-form-row">
+                    {{ form_label(form.time_spend) }}
+                    {{ form_widget(form.time_spend) }}
+                </div>
+            </div>
         {% endif %}
         <div class="uk-flex uk-margin-small-top">
             <div class="uk-margin-small-left">

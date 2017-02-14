@@ -34,6 +34,10 @@
                 <source>time planned</source>
                 <target>Geplante Zeit</target>
             </trans-unit>
+            <trans-unit id="todo-time-spend">
+                <source>time spend</source>
+                <target>Aufgewändete Zeit</target>
+            </trans-unit>
             <trans-unit id="status">
                 <source>status</source>
                 <target>Status</target>

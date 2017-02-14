@@ -1,6 +1,7 @@
 ivory_ck_editor:
     inline: true
     default_config: cs_item_config
+
     plugins:
         menubutton:
             path:     "/bundles/commsy/menubutton/"
@@ -11,27 +12,63 @@ ivory_ck_editor:
         bidi:
             path:     "/bundles/commsy/bidi/"
             filename: "plugin.js"
-        CommSyImage:
-            path:     "/bundles/commsy/image/"
+        commsyimage:
+            path:     "/bundles/commsy/commsyimage/"
             filename: "plugin.js"
-        CommSyAudio:
-            path:     "/bundles/commsy/audio/"
-            filename: "CommSyAudio.js"
-        CommSyVideo:
-            path:     "/bundles/commsy/video/"
-            filename: "CommSyVideo.js"
-        CommSyDocument:
-            path:     "/bundles/commsy/document/"
-            filename: "CommSyDocument.js"
+        commsyaudio:
+            path:     "/bundles/commsy/commsyaudio/"
+            filename: "plugin.js"
+        commsyvideo:
+            path:     "/bundles/commsy/commsyvideo/"
+            filename: "plugin.js"
+        commsydocument:
+            path:     "/bundles/commsy/commsydocument/"
+            filename: "plugin.js"
         tableresize:
             path:     "/bundles/commsy/tableresize/"
             filename: "plugin.js"
+        sharedspace:
+            path:     "/bundles/commsy/sharedspace/"
+            filename: "plugin.js"
+        widget:
+            path:     "/bundles/commsy/widget/"
+            filename: "plugin.js"
+        lineutils:
+            path:     "/bundles/commsy/lineutils/"
+            filename: "plugin.js"
+        widgetselection:
+            path:     "/bundles/commsy/widgetselection/"
+            filename: "plugin.js"
+        sourcedialog:
+            path:     "/bundles/commsy/sourcedialog/"
+            filename: "plugin.js"
+
+    toolbars:
+        configs:
+            simpleToolbar: [ "@clipboard", "@basicstyles" ]
+            fullToolbar: [ [ "html5audio" ], "@clipboard", "@basicstyles" , "@paragraph", "@justify", "@misc", "/", "@format", "@style", "@content", "@language", "@commsy" ]
+        items:
+            clipboard: [ "Cut", "Copy", "Paste", "PasteFromWord", "Undo", "Redo" ]
+            basicstyles: [ "Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript" ]
+            paragraph: [ "NumberedList", "BulletedList", "Outdent", "Indent", "Blockquote" ]
+            justify: [ "JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock" ]
+            misc: [ "Sourcedialog" ]
+            format: [ "Format", "Font", "FontSize" ]
+            style: [ "TextColor", "BGColor", "RemoveFormat" ]
+            content: [ "Link", "Unlink", "Table", "HorizontalRule" ]
+            language: [ "Language", "BidiLtr", "BidiRtl" ]
+            commsy: [ "Commsyimage", "Commsyvideo", "Commsyaudio", "Commsydocument" ]
+
     configs:
         cs_item_config:
-            toolbar: [ [ "Cut", "Copy", "Paste", "PasteFromWord", "Undo", "Redo" ], ["Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript", "SpecialChar"] , ["NumberedList", "BulletedList", "Outdent", "Indent", "Blockquote"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"], "/", ["Format"], ["Font"], ["FontSize"], ["TextColor", "BGColor", "RemoveFormat", "Maximize", "Source"], ["Link", "Unlink", "Table", "HorizontalRule", "Smiley"], ["Language", "BidiLtr", "BidiRtl"], ["CommSyImage", "CommSyDocument", "CommSyAudio", "CommSyVideo"] ]
-            extraPlugins: "menubutton,language,bidi,tabletools,CommSyImage,CommSyAudio,CommSyVideo,CommSyDocument"
-            floatSpaceDockedOffsetX: 180
+            toolbar: "fullToolbar"
+            extraPlugins: "sourcedialog,lineutils,widgetselection,sharedspace,widget,menubutton,language,bidi,tabletools,commsyvideo,commsyimage,commsyaudio,commsydocument"
             language_list: ['de:German', 'en:English']
+            removePlugins: 'floatingspace,maximize,resize'
+            sharedSpaces:
+                top: 'cke_top'
+                bottom: 'cke_bottom'
+
         cs_annotation_config:
-            toolbar: [ [ "Cut", "Copy", "Paste", "PasteFromWord", "Undo", "Redo" ], ["Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript", "SpecialChar"] ]
+            toolbar: "simpleToolbar"
                 

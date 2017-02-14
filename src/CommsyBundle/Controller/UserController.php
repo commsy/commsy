@@ -13,7 +13,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use CommsyBundle\Filter\UserFilterType;
 
 use CommsyBundle\Form\Type\UserType;
+<<<<<<< HEAD
 use CommsyBundle\Form\Type\SendType;
+=======
+use CommsyBundle\Form\Type\UserSendType;
+>>>>>>> 5d8c58c89cfbc1333af605173d34a88607107475
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -81,9 +85,15 @@ class UserController extends Controller
         foreach ($users as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
             if ($currentUser->isModerator()) {
+<<<<<<< HEAD
                 $allowedActions[$item->getItemID()] = ['markread', 'user-send-mail', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
             } else {
                 $allowedActions[$item->getItemID()] = ['markread', 'user-send-mail'];
+=======
+                $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'copy', 'save', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
+            } else {
+                $allowedActions[$item->getItemID()] = ['markread', 'sendmail'];
+>>>>>>> 5d8c58c89cfbc1333af605173d34a88607107475
             }
         }
 
@@ -802,6 +812,163 @@ class UserController extends Controller
         );
     }
 
+    /**
+     * @Route("/room/{roomId}/user/sendMultiple")
+     * @Template()
+     */
+    public function sendMultipleAction($roomId, Request $request)
+    {
+        if (!$request->query->has('userIds')) {
+            throw $this->createNotFoundException('no user ids found');
+        }
+
+        $userIds = $request->query->get('userIds');
+
+        $userService = $this->get('commsy_legacy.user_service');
+
+        $formData = [
+            'message' => '',
+            'copy_to_sender' => false,
+        ];
+
+        $form = $this->createForm(UserSendType::class, $formData, []);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $formData = $form->getData();
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+            $portalItem = $legacyEnvironment->getCurrentPortalItem();
+            $currentUser = $legacyEnvironment->getCurrentUserItem();
+
+            $from = $this->getParameter('commsy.email.from');
+
+            $to = [];
+            foreach ($userIds as $userId) {
+                $user = $userService->getUser($userId);
+                $to[$user->getEmail()] = $user->getFullName();
+            }
+
+            $message = \Swift_Message::newInstance()
+                ->setSubject($formData['subject'])
+                ->setBody($formData['message'], 'text/html')
+                ->setFrom([$from => $portalItem->getTitle()])
+                ->setReplyTo([$currentUser->getEmail() => $currentUser->getFullName()])
+                ->setTo($to);
+
+            // form option: copy_to_sender
+            if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
+                $message->setCc($message->getReplyTo());
+            }
+
+            // send mail
+            $this->get('mailer')->send($message);
+
+            // redirect to success page
+            return $this->redirectToRoute('commsy_user_sendmultiplesuccess', [
+                'roomId' => $roomId,
+            ]);
+        }
+
+        return [
+            'form' => $form->createView()
+        ];
+    }
+
+    /**
+     * @Route("/room/{roomId}/user/sendMultiple/success")
+     * @Template()
+     **/
+    public function sendMultipleSuccessAction($roomId)
+    {
+        return [
+            'link' => $this->generateUrl('commsy_user_list', [
+                'roomId' => $roomId,
+            ]),
+        ];
+    }
+
+    /**
+     * @Route("/room/{roomId}/user/{itemId}/send")
+     * @Template()
+     * @Security("is_granted('ITEM_SEE', itemId)")
+     */
+    public function sendAction($roomId, $itemId, Request $request)
+    {
+        // get item
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getTypedItem($itemId);
+
+        if (!$item) {
+            throw $this->createNotFoundException('no item found for id ' . $itemId);
+        }
+
+        $formData = [
+            'message' => '',
+            'copy_to_sender' => false,
+        ];
+
+        $form = $this->createForm(UserSendType::class, $formData, []);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $formData = $form->getData();
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+            $portalItem = $legacyEnvironment->getCurrentPortalItem();
+            $currentUser = $legacyEnvironment->getCurrentUserItem();
+
+            $from = $this->getParameter('commsy.email.from');
+
+            $message = \Swift_Message::newInstance()
+                ->setSubject($formData['subject'])
+                ->setBody($formData['message'], 'text/html')
+                ->setFrom([$from => $portalItem->getTitle()])
+                ->setReplyTo([$currentUser->getEmail() => $currentUser->getFullName()])
+                ->setTo([$item->getEmail() => $item->getFullName()]);
+
+            // form option: copy_to_sender
+            if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
+                $message->setCc($message->getReplyTo());
+            }
+
+            // send mail
+            $this->get('mailer')->send($message);
+
+            // redirect to success page
+            return $this->redirectToRoute('commsy_user_sendsuccess', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]);
+        }
+
+        return [
+            'form' => $form->createView()
+        ];
+    }
+
+    /**
+     * @Route("/room/{roomId}/user/{itemId}/send/success")
+     * @Template()
+     **/
+    public function sendSuccessAction($roomId, $itemId)
+    {
+        // get item
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getTypedItem($itemId);
+
+        if (!$item) {
+            throw $this->createNotFoundException('no item found for id ' . $itemId);
+        }
+
+        return [
+            'link' => $this->generateUrl('commsy_user_detail', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]),
+            'title' => $item->getFullname(),
+        ];
+    }
     
     /**
      * @Route("/room/{roomId}/user/{itemId}/image")

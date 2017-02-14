@@ -58,6 +58,11 @@ class TodoTransformer implements DataTransformerInterface
                 $todoData['time_type'] = $todoItem->getTimeType();
 
                 $todoData['status'] = $todoItem->getInternalStatus();
+            } else {
+                $minutes = $todoItem->getMinutes();
+                $todoData['time_spend'] = [];
+                $todoData['time_spend']['hour'] = (int) ($minutes / 60);
+                $todoData['time_spend']['minute'] = $minutes % 60;
             }
         }
 
@@ -134,6 +139,10 @@ class TodoTransformer implements DataTransformerInterface
             if (isset($todoData['due_date'])) {
                 $todoObject->setDate($todoData['due_date']['date']->format('Y-m-d').' '.$todoData['due_date']['time']->format('H:i:s'));
             }
+        } else {
+            $hours = is_numeric($todoData['time_spend']['hour']) ? $todoData['time_spend']['hour'] : 0;
+            $minutes = is_numeric($todoData['time_spend']['minute']) ? $todoData['time_spend']['minute'] : 0;
+            $todoObject->setMinutes($hours * 60 + $minutes);
         }
 
         return $todoObject;

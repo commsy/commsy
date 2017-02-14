@@ -140,6 +140,18 @@ services:
         tags:
             - { name: kernel.event_listener, event: lexik_form_filter.apply.orm.room_filter.membership , method: onGetFilterCondition }
 
+    commsy.listener.command_error:
+        class: CommsyBundle\EventListener\ConsoleErrorListener
+        arguments: ['@logger']
+        tags:
+            - { name: kernel.event_listener, event: console.terminate }
+
+    commsy.listener.command_exception:
+        class: CommsyBundle\EventListener\ConsoleExceptionListener
+        arguments: ['@logger']
+        tags:
+            - { name: kernel.event_listener, event: console.exception }
+
     commsy.etherpad_form_listener:
         class: CommsyBundle\Form\Type\Event\AddEtherpadFormListener
         arguments: ["@service_container"]
@@ -287,6 +299,11 @@ services:
         arguments: ['@commsy.utils.mail_assistant']
         tags:
             - { name: form.type }
+
+    commsy.form.type.user_send:
+            class: CommsyBundle\Form\Type\UserSendType
+            tags:
+                - { name: form.type }
             
     commsy.form.type.sendList:
         class: CommsyBundle\Form\Type\SendListType
@@ -380,7 +397,6 @@ services:
     # Commands
     commsy.command.cron_command:
         class: CommsyBundle\Command\CronCommand
-        arguments: ['%kernel.root_dir%', '@commsy_legacy.environment']
         tags:
             - { name: console.command }
 

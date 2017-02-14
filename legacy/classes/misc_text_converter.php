@@ -3537,93 +3537,102 @@ class misc_text_converter {
       }
       return $text;
    }
-   
-   private function _constructHTMLPurifier() {
-      require_once 'libs/HTMLPurifier/HTMLPurifier.auto.php';
-      // Allow Full HTML
-      $configFullHTML = $this->_getFullHTMLPurifierConfig();
-      $this->_FullHTMLPurifier = new HTMLPurifier($configFullHTML);
-      // Do not allow HTML
-      $configHTML = $this->_getHTMLPurifierConfig();
-      $this->_HTMLPurifier = new HTMLPurifier($configHTML);
-      
-      
-      
-      
-   }
-   
-   private function _getHTMLPurifierConfig() {
-      $config = HTMLPurifier_Config::createDefault();
-      
-      $config->set('HTML.Allowed', '');
-   }
-   
-   private function _getFullHTMLPurifierConfig() {
-      $config = HTMLPurifier_Config::createDefault();
-      
-      $config->set('HTML.Allowed', NULL);
-      // allow flash
-      $config->set('HTML.SafeObject', true);
-      $config->set('HTML.SafeEmbed', true);
-      $config->set('Output.FlashCompat', true);
-      
-      // allow to embed youtube videos
-      //$config->set('Filter.YouTube', true);
 
-      $config->set('HTML.SafeIframe', true);
-      $config->set('URI.SafeIframeRegexp', '%^(https?:)?//(www\.youtube(?:-nocookie)?\.com/embed/|player\.vimeo\.com/video/|de\.slideshare\.net/slideshow/embed_code/key/)%');
+    private function _constructHTMLPurifier()
+    {
+        require_once '../vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
 
-      // //de.slideshare.net/slideshow/embed_code/key/
-      
-      // allow target=
-      $config->set('Attr.AllowedFrameTargets', '_blank,_self,_top,_parent');
-      
-      $def = $config->getHTMLDefinition(true);
-      
-      // Attribute for object
-      $def->addAttribute('object', 'autoplay', 'Enum#true,false');
-      $def->addAttribute('object', 'classid', 'Text');
-      $def->addAttribute('object', 'codebase', 'Text');
-      $def->addAttribute('object', 'standby', 'Text');
-      $def->addAttribute('object', 'commsytype', 'Text');
-      
-      // Attribute for param
-      $def->addAttribute('param', 'bgcolor', 'Text');
-      
-      // Attribute for embed
-      $def->addAttribute('embed', 'autoplay', 'Enum#true,false');
-      $def->addAttribute('embed', 'bgcolor', 'Text');
-      $def->addAttribute('embed', 'controller', 'Text');
-      $def->addAttribute('embed', 'devicefont', 'Text');
-      $def->addAttribute('embed', 'loop', 'Text');
-      $def->addAttribute('embed', 'pluginspage', 'Text');
-      $def->addAttribute('embed', 'quality', 'Text');
-      $def->addAttribute('embed', 'scale', 'Text');
-      $def->addAttribute('embed', 'type', 'Text');
-      $def->addAttribute('embed', 'autostart', 'Text');
-      $def->addAttribute('embed', 'showcontrols', 'Text');
-      $def->addAttribute('embed', 'showstatusbar', 'Text');
-      $def->addAttribute('embed', 'standby', 'Text');
-      $def->addAttribute('embed', 'commsytype', 'Text');
+        // Allow Full HTML
+        $configFullHTML = $this->_getFullHTMLPurifierConfig();
+        $this->_FullHTMLPurifier = new HTMLPurifier($configFullHTML);
 
-      $def->addElement('video', 'Block', 'Flow', 'Common', array());
-      $def->addAttribute('video', 'width', 'Text');
-      $def->addAttribute('video', 'height', 'Text');
+        // Do not allow HTML
+        $configHTML = $this->_getHTMLPurifierConfig();
+        $this->_HTMLPurifier = new HTMLPurifier($configHTML);
+    }
 
-      $def->addElement('source', 'Block', 'Flow', 'Common', array());
-      $def->addAttribute('source', 'src', 'Text');
-      $def->addAttribute('source', 'type', 'Text');
+    private function _getHTMLPurifierConfig()
+    {
+        $config = HTMLPurifier_Config::createDefault();
 
-      
-      
-      // config for description ckeditor
-      #$config->set('HTML.AllowedElements', 'p,b,strong,i,em,u,a,ol,ul,li,hr,blockquote,img,table,tr,td,th,span,div,strike,sub,sup,br');
-      #$config->set('HTML.AllowedAttributes', 'a.href,img.src,img.width,img.height,img.alt,img.title,img.style,span.class,span.style,div.style');
-      #$config->set('HTML.AllowedAttributes','a.target');
-      
-      
-      return $config;
-   }
+        global $symfonyContainer;
+        $kernelDir = $symfonyContainer->getParameter('kernel.root_dir');
+
+        $config->set('Cache.SerializerPath', $kernelDir . '/../var/cache/htmlpurifier');
+
+        $config->set('HTML.Allowed', '');
+
+        return $config;
+    }
+
+    private function _getFullHTMLPurifierConfig()
+    {
+        $config = HTMLPurifier_Config::createDefault();
+
+        global $symfonyContainer;
+        $kernelDir = $symfonyContainer->getParameter('kernel.root_dir');
+
+        $config->set('Cache.SerializerPath', $kernelDir . '/../var/cache/htmlpurifier');
+
+        $config->set('HTML.Allowed', NULL);
+
+        $config->set('HTML.SafeIframe', true);
+        $config->set('URI.SafeIframeRegexp', '%^(https?:)?//(www\.youtube(?:-nocookie)?\.com/embed/|www\.podcampus\.de/nodes/|de\.slideshare\.net/slideshow/embed_code/key/)%');
+
+        // allow target=
+        $config->set('Attr.AllowedFrameTargets', '_blank,_self,_top,_parent');
+
+        $def = $config->getHTMLDefinition(true);
+
+        // <div/>-Definition
+        $def->addAttribute('div', 'data-type', 'Text');
+
+        // Attribute for object
+        $def->addAttribute('object', 'autoplay', 'Enum#true,false');
+        $def->addAttribute('object', 'classid', 'Text');
+        $def->addAttribute('object', 'codebase', 'Text');
+        $def->addAttribute('object', 'standby', 'Text');
+        $def->addAttribute('object', 'commsytype', 'Text');
+
+        // Attribute for param
+        $def->addAttribute('param', 'bgcolor', 'Text');
+//
+//        // Attribute for embed
+//        $def->addAttribute('embed', 'autoplay', 'Enum#true,false');
+//        $def->addAttribute('embed', 'bgcolor', 'Text');
+//        $def->addAttribute('embed', 'controller', 'Text');
+//        $def->addAttribute('embed', 'devicefont', 'Text');
+//        $def->addAttribute('embed', 'loop', 'Text');
+//        $def->addAttribute('embed', 'pluginspage', 'Text');
+//        $def->addAttribute('embed', 'quality', 'Text');
+//        $def->addAttribute('embed', 'scale', 'Text');
+//        $def->addAttribute('embed', 'type', 'Text');
+//        $def->addAttribute('embed', 'autostart', 'Text');
+//        $def->addAttribute('embed', 'showcontrols', 'Text');
+//        $def->addAttribute('embed', 'showstatusbar', 'Text');
+//        $def->addAttribute('embed', 'standby', 'Text');
+//        $def->addAttribute('embed', 'commsytype', 'Text');
+
+        // <video/>-Definition
+        $def->addElement('video', 'Block', 'Flow', 'Common', array());
+        $def->addAttribute('video', 'width', 'Text');
+        $def->addAttribute('video', 'height', 'Text');
+        $def->addAttribute('video', 'controls', 'Bool');
+        $def->addAttribute('video', 'src', 'URI');
+
+        // <audio/>-Definition
+        $def->addElement('audio', 'Block', 'Flow', 'Common', array());
+        $def->addAttribute('audio', 'width', 'Text');
+        $def->addAttribute('audio', 'height', 'Text');
+        $def->addAttribute('audio', 'controls', 'Bool');
+        $def->addAttribute('audio', 'src', 'URI');
+
+        $def->addElement('source', 'Block', 'Flow', 'Common', array());
+        $def->addAttribute('source', 'src', 'URI');
+        $def->addAttribute('source', 'type', 'Text');
+
+        return $config;
+    }
    
    public function sanitizeHTML($text) {
       

@@ -14,8 +14,7 @@
                         {{ 'sort steps'|trans }}
                     </h4>
                 </div>
-                {# {{ form_label(form.steps) }} #}
-                {# {{ form_widget(form.steps) }} #}
+
                 <div class="uk-width-9-10" data-uk-observe>
                     <div style="position:absolute;" class="uk-list step-list uk-list-striped">
                         {% set counter = 1 %}
@@ -31,7 +30,7 @@
                             {% set counter = 1 %}
                             {% for stepId, stepName in form.steps %}
                                 <li class="uk-panel uk-panel-box uk-sortable-handle" id="step_{{stepId}}">
-                                    <a href="#step{{ stepId }}" data-uk-tooltip title="{{ stepName.vars.data|raw }}">{{ stepName.vars.data|raw }}</a> {# {{ macros.fileListShort(stepName) }} #}
+                                    <a href="#step{{ stepId }}" data-uk-tooltip title="{{ stepName.vars.data|raw }}">{{ stepName.vars.data|raw }}</a>
                                 </li>
                             {% set counter = counter + 1  %}
                             {% endfor %}
