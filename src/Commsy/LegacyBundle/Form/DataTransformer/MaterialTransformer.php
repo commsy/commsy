@@ -40,9 +40,10 @@ class MaterialTransformer implements DataTransformerInterface
             $materialData['draft'] = $materialItem->isDraft();
             $materialData['description'] = $materialItem->getDescription();
             $materialData['permission'] = $materialItem->isPrivateEditing();
-            $materialData['editor_switch'] = $materialItem->getEtherpadEditor() > 0;
 
             if (get_class($materialItem) != 'cs_section_item') {
+
+                $materialData['editor_switch'] = $materialItem->getEtherpadEditor() > 0;
 
                 if ($materialItem->getBibKind() != 'none') {
                     $materialData['biblio_select'] = 'Biblio'.ucfirst($materialItem->getBibKind()).'Type';
