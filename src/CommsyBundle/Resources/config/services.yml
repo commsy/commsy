@@ -400,6 +400,11 @@ services:
         tags:
             - { name: console.command }
 
+    commsy.command.email_upload:
+        class: CommsyBundle\Command\EmailUploadCommand
+        tags:
+            - { name: console.command }
+
     commsy.command.db_check:
         class: CommsyBundle\Command\DBCheckCommand
         arguments: ['@doctrine.orm.entity_manager']

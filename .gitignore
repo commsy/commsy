@@ -50,6 +50,9 @@ var/logs/*
 !var/sessions
 var/sessions/*
 !var/sessions/.gitkeep
+!var/temp
+var/temp/*
+!var/temp/.gitkeep
 !var/SymfonyRequirements.php
 
 !var/test

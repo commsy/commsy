@@ -42,14 +42,4 @@ $c_send_email = 'print';
 //$c_media_integration_url = '';
 //$c_media_integration_pw = '';
 //$c_media_integration_pw_api = '';
-
-// enable upload via e-mail
-// needed: php5-imap
-//$c_email_upload                = false;
-//$c_email_upload_server         = 'mail.example.com';
-//$c_email_upload_server_port    = '143';
-//$c_email_upload_server_options = '/imap/ssl/validate-cert'; # default is empty
-//$c_email_upload_email_account  = 'email@example.com';
-//$c_email_upload_email_password = 'secret';
-//$c_email_upload_email_address  = 'email2commsy@example.com'; # default is empty, than account will be displayed
 ?>

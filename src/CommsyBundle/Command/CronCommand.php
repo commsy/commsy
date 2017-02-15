@@ -35,6 +35,7 @@ class CronCommand extends ContainerAwareCommand
         $logger = $container->get('logger');
 
         chdir($kernelRootDir.'/../legacy/');
+        $legacyEnvironment->setCacheOff();
 
         $this->stopwatch = new Stopwatch();
 
@@ -54,18 +55,6 @@ class CronCommand extends ContainerAwareCommand
             }
             $this->performCronTasks($legacyEnvironment->getServerID(), $output);
         }
-
-
-
-
-
-
-//        $logger->info('123');
-//
-//
-//        $output->writeln('<comment>comment</comment>');
-//        $output->writeln('<question>question</question>');
-//        $output->writeln('<error>error</error>');
     }
 
     private function performCronTasks($contextId, $output)

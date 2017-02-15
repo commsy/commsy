@@ -23,6 +23,11 @@ parameters:
 
     # email
     email.from: example@example.com
+    email.upload.enabled: false
+    email.upload.port: 993
+    email.upload.options: /imap/ssl
+    email.upload.account: example@example.org
+    email.upload.password: ~
 
     locale:            en
 

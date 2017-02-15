@@ -47,7 +47,8 @@
         "liip/imagine-bundle": "^1.6",
         "nette/utils": "^2.4",
         "ezyang/htmlpurifier": "^4.8",
-        "symfony/stopwatch": "^3.2"
+        "symfony/stopwatch": "^3.2",
+        "php-imap/php-imap": "^2.0"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
