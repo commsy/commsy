@@ -84,6 +84,7 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue('example@example.com')
                         ->end()
                     ->end()
+                ->end()
                 ->arrayNode('upload')
                     ->children()
                         ->booleanNode('enabled')
