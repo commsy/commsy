@@ -40,7 +40,7 @@ class EmailUploadCommand extends ContainerAwareCommand
         $password = $container->getParameter('commsy.email.upload.password');
 
         $output->writeln('<info>Connecting to mailbox</info>');
-        $mailbox = new Mailbox('{'.$server.':'.$port.':'.$options.'}INBOX', $account, $password, $kernelRootDir . '/../var/temp/');
+        $mailbox = new Mailbox('{'.$server.':'.$port.$options.'}INBOX', $account, $password, $kernelRootDir . '/../var/temp/');
 
         // read all messages
         $mailIds = $mailbox->searchMailbox('ALL');
