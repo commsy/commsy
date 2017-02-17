@@ -1092,8 +1092,15 @@ class UserController extends Controller
 
         $privateRoomItem = $currentUserItem->getOwnRoom();
 
+        if ($privateRoomItem) {
+            $itemId = $privateRoomItem->getItemId();
+        } else {
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $itemId = $legacyEnvironment->getCurrentContextId();
+        }
+
         return [
-            'privateRoomItem' => $privateRoomItem,
+            'itemId' => $itemId,
         ];
     }
 
