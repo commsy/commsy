@@ -560,11 +560,7 @@ class ItemController extends Controller
         $roomService = $this->get('commsy_legacy.room_service');
         
         $itemService = $this->get('commsy_legacy.item_service');
-        $item = $itemService->getTypedItem($itemId);
 
-        $roomItem = $roomService->getRoomItem($roomId);
-        
-        $formData = array();
         $optionsData = array();
         $items = array();
         
@@ -628,15 +624,6 @@ class ItemController extends Controller
         return new JsonResponse([
             $optionsData['itemsLatest']
         ]);
-
-        // return array(
-        //     'itemId' => $itemId,
-        //     'roomId' => $roomId,
-        //     'form' => $form->createView(),
-        //     'showCategories' => $roomItem->withTags(),
-        //     'showHashtags' => $roomItem->withBuzzwords(),
-        //     'items' => $items,
-        // );
     }
 
     /**

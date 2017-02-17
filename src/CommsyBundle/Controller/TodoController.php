@@ -705,11 +705,6 @@ class TodoController extends Controller
                 // ToDo ...
             }
             return $this->redirectToRoute('commsy_todo_save', array('roomId' => $roomId, 'itemId' => $itemId));
-            
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
         }
         
         return array(
@@ -777,8 +772,7 @@ class TodoController extends Controller
             }
 		    $current_user = $user_list->getNext();
 		}
-        $read_percentage = round(($read_count/$all_user_count) * 100);
-        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
+
         $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
@@ -817,7 +811,7 @@ class TodoController extends Controller
         if ($vote != 'remove') {
             $assessmentService->rateItem($todo, $vote);
         } else {
-            $assessmentService->removeRating($material);
+            $assessmentService->removeRating($todo);
         }
         
         $assessmentService = $this->get('commsy_legacy.assessment_service');
