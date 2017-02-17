@@ -138,11 +138,7 @@
                     </div>
                     
                     {# steps #}
-                    <div id="steps{{ todo.itemId }}" class="cs-edit-section cs-toggle"
-                    {% if stepList|length > 0 %}
-                        data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_todo_editsteps', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }"
-                    {% endif %}
-                    >
+                    <div id="steps{{ todo.itemId }}" class="cs-edit-section cs-toggle">
                         {{ macrosTodo.steps(todo, stepList) }}
                     </div>
                 </article>

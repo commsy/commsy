@@ -537,7 +537,7 @@ class TodoController extends Controller
     
     /**
      * @Route("/room/{roomId}/todo/{itemId}/createstep")
-     * @Template()
+     * @Template("@Commsy/Todo/editStep.html.twig")
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
     public function createStepAction($roomId, $itemId, Request $request)
@@ -547,42 +547,32 @@ class TodoController extends Controller
         $todoService = $this->get('commsy_legacy.todo_service');
         $transformer = $this->get('commsy_legacy.transformer.todo');
 
-        $todo = $todoService->getTodo($itemId);
-
-        $stepList = $todo->getStepItemList();
-        $steps = $stepList->to_array();
-        // $countSteps = $stepList->getCount();
-
         $step = $todoService->getNewStep();
         $step->setTodoID($itemId);
-        // TODO: if steps are to be sortable, the corresponding table needs an additional "number" column
-        //$step->setNumber($countSteps+1);
         $step->save();
 
         $formData = $transformer->transform($step);
         $form = $this->createForm(StepType::class, $formData, array(
-            'action' => $this->generateUrl('commsy_todo_savestep', array('roomId' => $roomId, 'itemId' => $step->getItemID())),
+            'action' => $this->generateUrl('commsy_todo_editstep', [
+                'roomId' => $roomId,
+                'itemId' => $step->getItemID()
+            ]),
             'placeholderText' => '['.$translator->trans('insert title').']',
         ));
 
-        return array(
+        return [
             'form' => $form->createView(),
-            'stepList' => $stepList,
-            'todo' => $todo,
             'step' => $step,
-            'modifierList' => array(),
-            'userCount' => 0,
-            'readCount' => 0,
-            'readSinceModificationCount' => 0
-        );
+            'new' => true,
+        ];
     }
-    
+
     /**
-     * @Route("/room/{roomId}/todo/{itemId}/savestep")
+     * @Route("/room/{roomId}/todo/{itemId}/editstep")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
-    public function saveStepAction($roomId, $itemId, Request $request)
+    public function editStepAction($roomId, $itemId, Request $request)
     {
         $todoService = $this->get('commsy_legacy.todo_service');
         $transformer = $this->get('commsy_legacy.transformer.todo');
@@ -595,37 +585,57 @@ class TodoController extends Controller
 
         $formData = $transformer->transform($step);
 
-        $form = $this->createForm(StepType::class, $formData, array(
-            'action' => $this->generateUrl('commsy_todo_savestep', array('roomId' => $roomId, 'itemId' => $step->getItemID())),
+        $form = $this->createForm(StepType::class, $formData, [
+            'action' => $this->generateUrl('commsy_todo_editstep', [
+                'roomId' => $roomId,
+                'itemId' => $step->getItemID()
+            ]),
             'placeholderText' => '['.$translator->trans('insert title').']',
-        ));
+        ]);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted()) {
             if ($form->get('save')->isClicked()) {
-                // update title
-                $step->setTitle($form->getData()['title']);
+                if ($form->isValid()) {
 
-                // spend hours
-                $hours = is_numeric($form->getData()['time_spend']['hour']) ? $form->getData()['time_spend']['hour'] : 0;
-                $minutes = is_numeric($form->getData()['time_spend']['minute']) ? $form->getData()['time_spend']['minute'] : 0;
-                $step->setMinutes($hours * 60 + $minutes);
+                    $formData = $form->getData();
 
-                // update modifier
-                $step->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                    // update title
+                    $step->setTitle($formData['title']);
 
-                $step->save();
+                    // spend hours
+                    $step->setMinutes($formData['time_spend']['hour'] * 60 + $formData['time_spend']['minute']);
 
-            } else if ($form->get('cancel')->isClicked()) {
-                // remove not saved item
-                $step->delete();
+                    // update modifier
+                    $step->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
-                $step->save();
+                    $step->save();
+
+                    return $this->redirectToRoute('commsy_todo_detail', [
+                        'roomId' => $roomId,
+                        'itemId' => $step->getTodoID(),
+                        '_fragment' => 'step' . $itemId,
+                    ]);
+                }
+            } else {
+                if ($form->get('cancel')->isClicked()) {
+                    // remove not saved item
+                    $step->delete();
+                    $step->save();
+
+                    return $this->redirectToRoute('commsy_todo_detail', [
+                        'roomId' => $roomId,
+                        'itemId' => $step->getTodoID(),
+                    ]);
+                }
             }
-            return $this->redirectToRoute('commsy_todo_detail', array('roomId' => $roomId, 'itemId' => $step->getTodoID()));
         }
-    }
 
+        return [
+            'form' => $form->createView(),
+            'step' => $step,
+        ];
+    }
 
     /**
      * @Route("/room/{roomId}/todo/{itemId}/edit")
@@ -670,23 +680,12 @@ class TodoController extends Controller
             'placeholderText' => '['.$translator->trans('insert title').']',
         );
 
-        if ($item->getItemType() == 'todo') {
-            $todoItem = $todoService->getTodo($itemId);
-            if (!$todoItem) {
-                throw $this->createNotFoundException('No todo found for id ' . $itemId);
-            }
-            $formData = $transformer->transform($todoItem);
-            $form = $this->createForm(TodoType::class, $formData, $formOptions);
-        } else if ($item->getItemType() == 'step') {
-            $todoItem = $todoService->getStep($itemId);
-            if (!$todoItem) {
-                throw $this->createNotFoundException('No step found for id ' . $itemId);
-            }
-            $formData = $transformer->transform($todoItem);
-            $form = $this->createForm(StepType::class, $formData, array(
-                'placeholderText' => '['.$translator->trans('insert title').']',
-            ));
+        $todoItem = $todoService->getTodo($itemId);
+        if (!$todoItem) {
+            throw $this->createNotFoundException('No todo found for id ' . $itemId);
         }
+        $formData = $transformer->transform($todoItem);
+        $form = $this->createForm(TodoType::class, $formData, $formOptions);
         
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -802,91 +801,6 @@ class TodoController extends Controller
             'userCount' => $all_user_count,
             'readCount' => $read_count,
             'readSinceModificationCount' => $read_since_modification_count,
-        );
-    }
-    
-    /**
-     * @Route("/room/{roomId}/todo/{itemId}/editsteps")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     */
-    public function editstepsAction($roomId, $itemId, Request $request)
-    {
-        $todoService = $this->get('commsy_legacy.todo_service');
-
-        $todo = $todoService->getTodo($itemId);
-
-        $itemService = $this->get('commsy_legacy.item_service');
-        $item = $itemService->getItem($itemId);
-
-        $transformer = $this->get('commsy_legacy.transformer.todo');
-
-        $todoItem = $todoService->getTodo($itemId);
-        if (!$todoItem) {
-            throw $this->createNotFoundException('No todo found for id ' . $itemId);
-        }
-        $formData = $transformer->transform($todoItem);
-
-        $formOptions = array(
-            'action' => $this->generateUrl('commsy_todo_editsteps', array(
-                'roomId' => $roomId,
-                'itemId' => $itemId,
-            )),
-        );
-
-        $form = $this->createForm(TodoStepType::class, $formData, $formOptions);
-        
-        $form->handleRequest($request);
-        
-        $submittedFormData = $form->getData();
-        
-        if ($form->isValid()) {
-            $saveType = $form->getClickedButton()->getName();
-            if ($saveType == 'save') {
-                $formData = $form->getData();
-                
-                $todoItem = $transformer->applyTransformation($todoItem, $formData);
-                
-                $todoItem->save();
-                
-                if ($item->isDraft()) {
-                    $item->setDraftStatus(0);
-                    $item->saveAsItem();
-                }
-            } else if ($form->get('cancel')->isClicked()) {
-                // ToDo ...
-            } 
-            return $this->redirectToRoute('commsy_todo_savesteps', array('roomId' => $roomId, 'itemId' => $itemId));
-        }
-
-        return array(
-            'todo' => $todo,
-            'form' => $form->createView(),
-        );
-    }
-
-
-    /**
-     * @Route("/room/{roomId}/todo/{itemId}/savesteps")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     */
-    public function savestepsAction($roomId, $itemId, Request $request)
-    {
-        $itemService = $this->get('commsy_legacy.item_service');
-        $item = $itemService->getItem($itemId);
-        
-        $todoService = $this->get('commsy_legacy.todo_service');
-        $transformer = $this->get('commsy_legacy.transformer.todo');
-        
-        $todo = $todoService->getTodo($itemId);
-        
-        $stepList = $todo->getStepItemList()->to_array();
-        
-        return array(
-            'roomId' => $roomId,
-            'item' => $todo,
-            'steps' => $stepList,
         );
     }
 

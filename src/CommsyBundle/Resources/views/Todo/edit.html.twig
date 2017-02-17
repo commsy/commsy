@@ -8,50 +8,41 @@
                     {{ form_widget(form.title) }}
             </div>
         </div>
-        {% if form.vars.name != "step"  %}
-            <div class="uk-margin-top">
-                <div class="uk-form-row">
-                    {{ form_label(form.due_date) }}
-                    {{ form_widget(form.due_date) }}
-                </div>
+        <div class="uk-margin-top">
+            <div class="uk-form-row">
+                {{ form_label(form.due_date) }}
+                {{ form_widget(form.due_date) }}
+            </div>
 
-                <div class="uk-form-row">
-                    {{ form_label(form.time_planned) }}
-                    {{ form_widget(form.time_planned) }} {{ form_widget(form.time_type) }}
-                </div>
-                <div class="uk-form-row">
-                    {{ form_label(form.status) }}
-                    {{ form_widget(form.status) }}
-                </div>
-                <div class="uk-form-row">
-                    <label class="uk-form-label">
-                        {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
-                    </label>
-                    <div class="uk-margin-left">
-                        {{ form_widget(form.permission) }}
-                    </div>
-                </div>
-                <div class="uk-form-row">
-                    <label class="uk-form-label">{{ 'hidden'|trans({}, "form")|capitalize }}</label>
-                    <div class="uk-flex uk-margin-small-top">
-                        {{ form_widget(form.hidden) }}
-                    </div>
-                </div>
-                <div class="uk-form-row">
-                    <label class="uk-form-label">{{ 'hidden until'|trans({}, "form")|capitalize }}</label>
-                    <div class="uk-flex uk-margin-small-top">
-                        {{ form_widget(form.hiddendate) }}
-                    </div>
+            <div class="uk-form-row">
+                {{ form_label(form.time_planned) }}
+                {{ form_widget(form.time_planned) }} {{ form_widget(form.time_type) }}
+            </div>
+            <div class="uk-form-row">
+                {{ form_label(form.status) }}
+                {{ form_widget(form.status) }}
+            </div>
+            <div class="uk-form-row">
+                <label class="uk-form-label">
+                    {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
+                </label>
+                <div class="uk-margin-left">
+                    {{ form_widget(form.permission) }}
                 </div>
             </div>
-        {% else %}
-            <div class="uk-margin-top">
-                <div class="uk-form-row">
-                    {{ form_label(form.time_spend) }}
-                    {{ form_widget(form.time_spend) }}
+            <div class="uk-form-row">
+                <label class="uk-form-label">{{ 'hidden'|trans({}, "form")|capitalize }}</label>
+                <div class="uk-flex uk-margin-small-top">
+                    {{ form_widget(form.hidden) }}
                 </div>
             </div>
-        {% endif %}
+            <div class="uk-form-row">
+                <label class="uk-form-label">{{ 'hidden until'|trans({}, "form")|capitalize }}</label>
+                <div class="uk-flex uk-margin-small-top">
+                    {{ form_widget(form.hiddendate) }}
+                </div>
+            </div>
+        </div>
         <div class="uk-flex uk-margin-small-top">
             <div class="uk-margin-small-left">
                 {{ form_row(form.save) }}
