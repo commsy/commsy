@@ -25,22 +25,13 @@
             let $this = this;
 
             this.element.on('click', function(event) {
-                event.preventDefault();
+                if (event.target.nodeName != "INPUT") {
+                    var checkbox = $(this).find('input[type="checkbox"]')[0];
+                    $(checkbox).prop("checked", !$(checkbox).prop("checked"));
+                }
 
-                $this.onClickItem($this.element);
-                
+                $(this).toggleClass('uk-comment-primary');
             });
-        },
-
-        onClickItem: function(element) {
-            var $this = this;
-
-            // toggle linked items
-            var checkbox = element.find('input[type=checkbox]')[0];
-            $(checkbox).prop("checked", !$(checkbox).prop("checked"));
-
-            element.toggleClass('uk-comment-primary');
-            
         }
     });
 
