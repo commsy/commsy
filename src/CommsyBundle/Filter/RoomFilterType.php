@@ -21,6 +21,7 @@ class RoomFilterType extends AbstractType
     {
         $builder
             ->add('membership', Filters\CheckboxFilterType::class, [
+                'label' => 'hide-rooms-without-membership',
                 'attr' => [
                     'onchange' => 'this.form.submit()',
                 ],
@@ -31,6 +32,7 @@ class RoomFilterType extends AbstractType
                 ),
             ])
             ->add('archived', Filters\CheckboxFilterType::class, [
+                'label' => 'hide-archived-rooms',
                 'apply_filter' => false, // disable filter
                 'attr' => [
                     'onchange' => 'this.form.submit()',

@@ -130,6 +130,14 @@
                 <source>Rooms</source>
                 <target>Rooms</target>
             </trans-unit>
+            <trans-unit id="hide-archived">
+                <source>hide-archived-rooms</source>
+                <target>Hide archived rooms</target>
+            </trans-unit>
+            <trans-unit id="hide-without-membership">
+                <source>hide-rooms-without-membership</source>
+                <target>Hide rooms without membership</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
