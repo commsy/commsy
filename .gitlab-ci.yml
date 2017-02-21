@@ -14,7 +14,7 @@ before_script:
   - apt-get install zip -yqq
 
   # Install phpunit, the tool that we will use for testing
-  - curl -o /usr/local/bin/phpunit -L https://phar.phpunit.de/phpunit.phar
+  - curl -o /usr/local/bin/phpunit -L https://phar.phpunit.de/phpunit-5.7.phar
   - chmod +x /usr/local/bin/phpunit
 
   # Install mysql driver
