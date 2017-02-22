@@ -44,7 +44,7 @@
     require_once 'classes/cs_environment.php';
 
     global $c_send_email;
-    $c_send_email = false;
+    $c_send_email = true;
 
     global $environment;
     $environment = new \cs_environment();

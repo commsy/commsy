@@ -719,7 +719,7 @@ class cs_server_item extends cs_guide_item
                                     $mail->set_to($to);
 
                                     if ($mail->send()) {
-                                        $user->setPasswordExpiredEmailSend();
+                                        $user->setPasswordExpireDate($portal_item->getPasswordExpiration());
                                         $user->save();
                                         $cron_array['success'.'_'.$portal_item->getItemId().'_'.$user->getItemId()] = true;
                                         $cron_array['success_text'.'_'.$portal_item->getItemId().'_'.$user->getItemId()] = 'send mail to '.$to;
@@ -848,7 +848,7 @@ class cs_server_item extends cs_guide_item
                                 $context_item = $this->_environment->getServerItem();
                                 $translator->setEmailTextArray($context_item->getEmailTextArray());
 
-                                $mail->set_subject($subject);
+                                $mail->set_subject(html_entity_decode($subject));
                                 $mail->set_message($body);
                                 $mail->set_to($to);
 

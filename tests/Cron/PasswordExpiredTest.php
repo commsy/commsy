@@ -121,26 +121,7 @@ class PasswordExpiredTest extends DatabaseTestCase
     		$successKey = 'success_'.$portal->getItemId().'_'.$portal_user->getItemId();
 			$this->assertTrue(in_array($successKey, array_keys($cronArray)));
 			$this->assertTrue($cronArray[$successKey]);
-			$this->assertTrue($portal_user->isPasswordExpiredEmailSend());
-			$portal_user = $portal_users->getNext();
-		}
-		
-		
-		// set expitation date to test if send email flag is reset to null
-		$portal->resetUserList();
-		$portal_users = $portal->getUserList();
-		$portal_user = $portal_users->getFirst();
-		while ($portal_user){
-    		$portal_user->setPasswordExpireDate($expireDate);
-    		$portal_user->save();
-    		$portal_user = $portal_users->getNext();
-		}
-		
-		$portal->resetUserList();
-		$portal_users = $portal->getUserList();
-		$portal_user = $portal_users->getFirst();
-		while ($portal_user){
-			$this->assertFalse($portal_user->isPasswordExpiredEmailSend());
+            $this->assertEquals(substr($expireDate, 0, 17), substr($portal_user->getPasswordExpireDate(), 0, 17)); // compare without seconds -> runtime of test might make this assertion false
 			$portal_user = $portal_users->getNext();
 		}
     }
