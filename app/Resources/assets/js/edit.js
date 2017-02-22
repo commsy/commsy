@@ -146,12 +146,6 @@
 
                         // $(article).find('.cs-save-spinner').toggleClass('uk-hidden', false);
 
-                        // sync cke content
-                        $('div[id^="cke_"]div[role="application"]').each(function () {
-                            let $textarea = $(this).attr('id').replace('cke_', '');
-                            $('#'+$textarea).val(CKEDITOR.instances[$textarea].getData());
-                        });
-
                         let formData = form.serializeArray();
                         formData.push({ name: this.name, value: this.value });
 

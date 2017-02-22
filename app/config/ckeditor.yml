@@ -1,6 +1,7 @@
 ivory_ck_editor:
     inline: true
     default_config: cs_item_config
+    input_sync: true
 
     plugins:
         menubutton:
