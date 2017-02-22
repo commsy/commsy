@@ -60,6 +60,7 @@ build:
     - bower --allow-root --config.analytics=false install
     - gulp --prod
   artifacts:
+    expire_in: 1 week
     paths:
       - app/
       - bin/
@@ -87,16 +88,17 @@ package:
   dependencies:
     - build
   artifacts:
-      name: "commsy_${CI_BUILD_REF_NAME}"
-      paths:
-      - app/
-      - bin/
-      - files/
-      - legacy/
-      - src/
-      - var/
-      - vendor/
-      - web/
-      - LICENSE.md
-      - README.md
-      - VERSION
+    expire_in: 1 week
+    name: "commsy_${CI_BUILD_REF_NAME}"
+    paths:
+    - app/
+    - bin/
+    - files/
+    - legacy/
+    - src/
+    - var/
+    - vendor/
+    - web/
+    - LICENSE.md
+    - README.md
+    - VERSION
