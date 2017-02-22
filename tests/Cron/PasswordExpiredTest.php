@@ -51,6 +51,7 @@ class PasswordExpiredTest extends DatabaseTestCase
     public function testPasswordExpiration()
     {
         global $environment;
+        global $c_password_expiration_user_ids_ignore;
         
         $portal = $this->setUpPortal();
         
@@ -89,17 +90,22 @@ class PasswordExpiredTest extends DatabaseTestCase
         // "run cron" to test sending the password change preparation emails.
         $serverItem = $environment->getServerItem();
         $cronArray = $serverItem->_cronCheckPasswordExpiredSoon();
-        
+
         $portal->resetUserList();
         $portal_users = $portal->getUserList();
 		$portal_user = $portal_users->getFirst();
 		while ($portal_user){
     		$successKey = 'success_'.$portal->getItemId().'_'.$portal_user->getItemId();
-			$this->assertTrue(in_array($successKey, array_keys($cronArray)));
-			$this->assertTrue($cronArray[$successKey]);
+    		if (!in_array($portal_user->getUserId(), $c_password_expiration_user_ids_ignore)) {
+			    $this->assertTrue(in_array($successKey, array_keys($cronArray)));
+                $this->assertTrue($cronArray[$successKey]);
+			} else {
+    			$this->assertFalse(in_array($successKey, array_keys($cronArray)));
+                $this->assertNull($cronArray[$successKey]);
+			}
 			$portal_user = $portal_users->getNext();
 		}
-		
+
 		$portal->resetUserList();
 		$portal_users = $portal->getUserList();
 		$portal_user = $portal_users->getFirst();
@@ -109,7 +115,7 @@ class PasswordExpiredTest extends DatabaseTestCase
 			$this->assertFalse($portal_user->isPasswordExpiredEmailSend());
 			$portal_user = $portal_users->getNext();
 		}
-		
+
 		
 		// "run cron" to change the passwords.
 		$cronArray = $serverItem->_cronCheckPasswordExpired();
