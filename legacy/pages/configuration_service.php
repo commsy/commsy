@@ -145,20 +145,6 @@ else {
             } else {
                   $item->setServiceEmail('');
             }
-
-            // external link to support formular
-            if ( !empty($_POST['service_link_external'])
-                 and ( !isset($_POST['reset'])
-                       or !$_POST['reset']
-                     )
-                 and ( empty($temp_service_link_external)
-                       or $temp_service_link_external != $_POST['service_link_external']
-                     )
-               ) {
-               $item->setServiceLinkExternal($_POST['service_link_external']);
-            } else {
-               $item->setServiceLinkExternal('');
-            }
          }
 
          // Save item

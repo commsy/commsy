@@ -84,17 +84,14 @@ class RoomController extends Controller
         $roomService = $this->get('commsy_legacy.room_service');
         $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
 
-        $serviceLinkExternal = $roomItem->getServiceLinkExternal();
-        if ($serviceLinkExternal == '') {
-           $portalItem = $legacyEnvironment->getCurrentPortalItem();
-           if (isset($portalItem) and !empty($portalItem)) {
-              $serviceLinkExternal = $portalItem->getServiceLinkExternal();
-           }
-           unset($portal_item);
-        }
-        if ($serviceLinkExternal == '') {
-           $serverItem = $legacyEnvironment->getServerItem();
-           $serviceLinkExternal = $serverItem->getServiceLinkExternal();
+        // support mail
+        $serviceContact = [
+            'show' => false,
+        ];
+        $portalItem = $roomItem->getContextItem();
+        if ($portalItem->showServiceLink()) {
+            $serviceContact['show'] = true;
+            $serviceContact['email'] = $portalItem->getServiceEmail();
         }
 
         // RSS-Feed / iCal
@@ -158,7 +155,7 @@ class RoomController extends Controller
             'showCategories' => $roomItem->withTags(),
             'countAnnouncements' => $countAnnouncements,
             'bgImageFilepath' => $backgroundImage,
-            'serviceLinkExternal' => $serviceLinkExternal,
+            'serviceContact' => $serviceContact,
             'rss' => $rss,
             'iCal' => $iCal,
             'header' => $header,

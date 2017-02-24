@@ -138,6 +138,14 @@
                 <source>hide-rooms-without-membership</source>
                 <target>Räume ohne Mitgliedschaft ausblenden</target>
             </trans-unit>
+            <trans-unit id="room_support_label">
+                <source>Support:</source>
+                <target>Support:</target>
+            </trans-unit>
+            <trans-unit id="room_support_link">
+                <source>E-Mail to support</source>
+                <target>E-Mail an Support</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
