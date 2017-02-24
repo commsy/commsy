@@ -48,7 +48,8 @@
         "nette/utils": "^2.4",
         "ezyang/htmlpurifier": "^4.8",
         "symfony/stopwatch": "^3.2",
-        "php-imap/php-imap": "^2.0"
+        "php-imap/php-imap": "^2.0",
+        "jsvrcek/ics": "^0.5.1"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",

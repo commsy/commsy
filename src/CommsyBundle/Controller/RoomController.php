@@ -97,27 +97,41 @@ class RoomController extends Controller
            $serviceLinkExternal = $serverItem->getServiceLinkExternal();
         }
 
-        // RSS-Feed
+        // RSS-Feed / iCal
         $rss = [
             'show' => false,
             'url' => $this->generateUrl('commsy_rss', [
                 'contextId' => $roomId,
             ]),
         ];
+        $iCal = [
+            'show' => false,
+            'url' => $this->generateUrl('commsy_ical_getcontent', [
+                'contextId' => $roomId,
+            ])
+        ];
 
         if (!$roomItem->isLocked() && !$roomItem->isClosed()) {
             $currentUserItem = $legacyEnvironment->getCurrentUserItem();
 
-            if ($roomItem->isOpenForGuests()) {
-                $rss['show'] = true;
-            } else {
+            $rss['show'] = true;
+
+            $roomService = $this->get('commsy_legacy.room_service');
+            $rubricInformation = $roomService->getRubricInformation($roomItem->getItemID());
+
+            $iCal['show'] = in_array('date', $rubricInformation);
+
+            if (!$roomItem->isOpenForGuests()) {
                 if ($currentUserItem->isUser()) {
                     $hashManager = $legacyEnvironment->getHashManager();
 
-                    $rss['show'] = true;
                     $rss['url'] = $this->generateUrl('commsy_rss', [
                         'contextId' => $roomId,
                         'hid' => $hashManager->getRSSHashForUser($currentUserItem->getItemID()),
+                    ]);
+                    $iCal['url'] = $this->generateUrl('commsy_ical_getcontent', [
+                        'contextId' => $roomId,
+                        'hid' => $hashManager->getICalHashForUser($currentUserItem->getItemID()),
                     ]);
                 }
             }
@@ -146,6 +160,7 @@ class RoomController extends Controller
             'bgImageFilepath' => $backgroundImage,
             'serviceLinkExternal' => $serviceLinkExternal,
             'rss' => $rss,
+            'iCal' => $iCal,
             'header' => $header,
         ];
     }
