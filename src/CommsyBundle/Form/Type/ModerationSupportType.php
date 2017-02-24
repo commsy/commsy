@@ -19,12 +19,12 @@ class ModerationSupportType extends AbstractType
     {
         $builder
             ->add('subject', TextType::class, array(
-                'label' => 'subject',
+                'label' => 'Subject',
                 'translation_domain' => 'form',
                 'attr' => array(
                     'class' => 'uk-width-1-1',
                 ),
-                'translation_domain' => 'material',
+                'translation_domain' => 'mail',
             ))
             ->add('message', TextareaType::class, [
                 'label' => 'message',
