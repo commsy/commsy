@@ -303,9 +303,10 @@ class ProfileController extends Controller
 
         $userData = array_merge($userData, $privateRoomData);
 
-        $form = $this->createForm(ProfileAdditionalType::class, $userData, array(
+        $form = $this->createForm(ProfileAdditionalType::class, $userData, [
             'itemId' => $itemId,
-        ));
+            'emailToCommsy' => $this->getParameter('email.upload.enabled'),
+        ]);
 
         $form->handleRequest($request);
         if ($form->isValid()) {

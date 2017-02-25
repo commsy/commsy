@@ -49,13 +49,17 @@ class PrivateRoomTransformer implements DataTransformerInterface
             } else {
                 $privateRoomData['switchRoomStatus'] = false;
             }
-            if($privateRoomItem->getPrivateRoomNewsletterActivity() == 'none'){
+            if ($privateRoomItem->getPrivateRoomNewsletterActivity() == 'none') {
                 $privateRoomData['newsletterStatus'] = '1';
             } elseif ($privateRoomItem->getPrivateRoomNewsletterActivity() == 'weekly') {
                 $privateRoomData['newsletterStatus'] = '2';
             } elseif ($privateRoomItem->getPrivateRoomNewsletterActivity() == 'daily') {
                 $privateRoomData['newsletterStatus'] = '3';
             }
+
+            // email to commsy
+            $privateRoomData['emailToCommsy'] = $privateRoomItem->getEmailToCommSy();
+            $privateRoomData['emailToCommsySecret'] = $privateRoomItem->getEmailToCommSySecret();
         }
         return $privateRoomData;
     }
@@ -71,30 +75,30 @@ class PrivateRoomTransformer implements DataTransformerInterface
     public function applyTransformation($privateRoomObject, $privateRoomData)
     {
         if ($privateRoomObject) {
-           if ($privateRoomData['widgetStatus'] == '1') {
+            if ($privateRoomData['widgetStatus'] == '1') {
                 $privateRoomObject->setCSBarShowWidgets('1');
             } else {
                 $privateRoomObject->setCSBarShowWidgets('-1');
             }
-            
+
             if ($privateRoomData['calendarStatus'] == '1') {
                 $privateRoomObject->setCSBarShowCalendar('1');
             } else {
                 $privateRoomObject->setCSBarShowCalendar('-1');
             }
-            
+
             if ($privateRoomData['stackStatus'] == '1') {
                 $privateRoomObject->setCSBarShowStack('1');
             } else {
                 $privateRoomObject->setCSBarShowStack('-1');
             }
-            
+
             if ($privateRoomData['portfolioStatus'] == '1') {
                 $privateRoomObject->setCSBarShowPortfolio('1');
             } else {
                 $privateRoomObject->setCSBarShowPortfolio('-1');
             }
-            
+
             if ($privateRoomData['switchRoomStatus'] == '1') {
                 $privateRoomObject->setCSBarShowOldRoomSwitcher('1');
             } else {
@@ -102,11 +106,25 @@ class PrivateRoomTransformer implements DataTransformerInterface
             }
 
             $set_to = 'none';
-            if(isset($privateRoomData['newsletterStatus']) && !empty($privateRoomData['newsletterStatus'])) {
-                if($privateRoomData['newsletterStatus'] == '2') $set_to = 'weekly';
-                elseif($privateRoomData['newsletterStatus'] == '3') $set_to = 'daily';
+            if (isset($privateRoomData['newsletterStatus']) && !empty($privateRoomData['newsletterStatus'])) {
+                if ($privateRoomData['newsletterStatus'] == '2') $set_to = 'weekly';
+                elseif ($privateRoomData['newsletterStatus'] == '3') $set_to = 'daily';
             }
             $privateRoomObject->setPrivateRoomNewsletterActivity($set_to);
+
+            // email to commsy
+            if (isset($privateRoomData['emailToCommsy'])) {
+                if ($privateRoomData['emailToCommsy'] == '1') {
+                    $privateRoomObject->setEmailToCommSy();
+                } else {
+                    $privateRoomObject->unsetEmailToCommSy();
+                }
+            }
+            if (isset($privateRoomData['emailToCommsySecret'])) {
+                $privateRoomObject->setEmailToCommSySecret($privateRoomData['emailToCommsySecret']);
+            } else {
+                $privateRoomObject->setEmailToCommSySecret('');
+            }
         }
         return $privateRoomObject;
     }

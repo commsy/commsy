@@ -218,6 +218,18 @@
                 <source>Room profile</source>
                 <target>Room profile</target>
             </trans-unit>
+            <trans-unit id="profile_header_emailToCommsy">
+                <source>E-Mail to CommSy</source>
+                <target>Email to CommSy</target>
+            </trans-unit>
+            <trans-unit id="profile_label_emailToCommsy">
+                <source>emailToCommsy</source>
+                <target>Email to Commsy</target>
+            </trans-unit>
+            <trans-unit id="profile_label_emailToCommsySecret">
+                <source>emailToCommsySecret</source>
+                <target>Personal secret</target>
+            </trans-unit>
          </body>
     </file>
 </xliff>
