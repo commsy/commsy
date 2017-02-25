@@ -286,22 +286,22 @@ class SearchController extends Controller
                     'url' => $url,
                     'disabled' => true,
                 ];
-            } else {
-                // construct target url
-                $routeName = 'commsy_room_home';
-                if ($router->getRouteCollection()->get($routeName)) {
-                    $url = $this->generateUrl(
-                        $routeName,
-                        ['roomId' => $room->getItemId()]
-                    );
-                }
-
-                $results[] = [
-                    'title' => $room->getTitle(),
-                    'text' => $room->getType(),
-                    'url' => $url,
-                ];
             }
+
+            // construct target url
+            $routeName = 'commsy_room_home';
+            if ($router->getRouteCollection()->get($routeName)) {
+                $url = $this->generateUrl(
+                    $routeName,
+                    ['roomId' => $room->getItemId()]
+                );
+            }
+
+            $results[] = [
+                'title' => $room->getTitle(),
+                'text' => $room->getType(),
+                'url' => $url,
+            ];
 
             $lastType = $room->getType();
         }
