@@ -15,14 +15,8 @@ class Version20170225094328 extends AbstractMigration
      */
     public function up(Schema $schema)
     {
-        $this->addSql('
-            UPDATE
-                labels
-            SET
-                public = 0
-            WHERE
-                labels.type = "group"
-        ');
+        $this->addSql('UPDATE labels SET public = 0 WHERE labels.type = "group" ');
+        $this->addSql('UPDATE zzz_labels SET public = 0 WHERE labels.type = "group" ');
     }
 
     /**
