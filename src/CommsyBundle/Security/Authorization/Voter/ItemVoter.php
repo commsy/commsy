@@ -43,9 +43,8 @@ class ItemVoter extends Voter
         $itemId = $object;
 
         $item = $this->itemService->getTypedItem($itemId);
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
         if ($item) {
-            $currentUser = $this->legacyEnvironment->getCurrentUserItem();
-
             switch ($attribute) {
                 case self::SEE:
                     return $this->canView($item, $currentUser);
@@ -55,6 +54,10 @@ class ItemVoter extends Voter
             }
         } else if ($itemId == 'NEW') {
             if ($attribute == self::EDIT) {
+                if ($currentUser->isOnlyReadUser()) {
+                    return false;
+                }
+
                 $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
 
                 return !$currentRoom->isArchived();
