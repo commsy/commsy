@@ -395,6 +395,10 @@
                 <source>Left group %s</source>
                 <target>Gruppe %s verlassen</target>
             </trans-unit>
+            <trans-unit id="noEmail">
+                <source>no email</source>
+                <target>Keine Email-Adresse angegeben</target>
+            </trans-unit>
        </body>
     </file>
 </xliff>

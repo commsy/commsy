@@ -193,7 +193,8 @@ class ICalController extends Controller
             $endTime = new \DateTime($item->getDateTime_end());
             if ($startTime >= $endTime) {
                 // add one hour
-                $startTime->add(new \DateInterval('P1H'));
+                $endTime = $startTime;
+                $endTime->add(new \DateInterval('PT1H'));
             }
 
             $allDay = false;

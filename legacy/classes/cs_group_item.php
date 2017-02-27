@@ -286,5 +286,13 @@ class cs_group_item extends cs_label_item {
       }
       parent::delete();
    }
+
+    /** returns whether the given user may edit the group item or not
+     * for CommSy 9: only the moderators or groups creator may edit
+     * the group item
+     */
+    function mayEdit($user_item) {
+        return ($user_item->getStatus() == '3' || $user_item->getItemId() == $this->getModificatorID());
+    }
 }
 ?>
