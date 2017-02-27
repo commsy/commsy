@@ -7,6 +7,7 @@ fi
 
 case "$1" in
     clean)
+        docker-compose -f docker-compose.yml -f docker-compose-dev.yml stop
         docker-compose -f docker-compose.yml -f docker-compose-dev.yml rm
         ;;
     rebuild)
