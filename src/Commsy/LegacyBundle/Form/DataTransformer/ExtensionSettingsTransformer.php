@@ -162,6 +162,7 @@ class ExtensionSettingsTransformer implements DataTransformerInterface
             $this->mediaWiki->createWiki($roomObject->getItemID());
         } else {
             $roomObject->setWikiEnabled(false);
+            $this->mediaWiki->deleteWiki($roomObject->getItemID());
         }
 
         $roomObject->save();
