@@ -14,7 +14,7 @@ class ProjectTransformer implements DataTransformerInterface
     }
 
     /**
-     * Transforms a cs_topic_item object to an array
+     * Transforms a cs_project_item object to an array
      *
      * @param cs_topic_item $dateItem
      * @return array
@@ -34,9 +34,9 @@ class ProjectTransformer implements DataTransformerInterface
     /**
      * Applies an array of data to an existing object
      *
-     * @param object $topicObject
-     * @param array $topicData
-     * @return cs_topic_item|null
+     * @param object $projectObject
+     * @param array $projectData
+     * @return cs_project_item|null
      * @throws TransformationFailedException if room item is not found.
      */
     public function applyTransformation($projectObject, $projectData)

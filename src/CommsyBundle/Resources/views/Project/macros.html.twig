@@ -5,7 +5,8 @@
         {% set userCount = 1 %}
     {% endif %}
 
-    <div id="section{{ item.itemId }}" class="cs-edit-section cs-toggle" data-cs-edit="{editUrl: '{{ path('commsy_project_edit', {'roomId': item.contextId, 'itemId': item.itemId}) }}', draft: 'false'}">
+    <div id="section{{ item.itemId }}" class="cs-toggle">
+    {#<div id="section{{ item.itemId }}" class="cs-edit-section cs-toggle" data-cs-edit="{editUrl: '{{ path('commsy_project_edit', {'roomId': item.contextId, 'itemId': item.itemId}) }}', draft: 'false'}">#}
         <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
             <div class="uk-grid uk-margin-small-bottom">
                 <div class="uk-width-9-10 uk-margin-small-bottom" >
@@ -17,12 +18,12 @@
                 </div>
                 <div class="uk-width-1-10  uk-text-right">
                     {# edit #}
-                    {% if is_granted('ITEM_EDIT', item.itemId) %}
-                        {{ macros.actionIcons('title', item, true) }}
-                        {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
-                    {% else %}
-                        {{ macros.actionIcons('title', item, false) }}
-                    {% endif %}
+                    {#{% if is_granted('ITEM_EDIT', item.itemId) %}#}
+                        {#{{ macros.actionIcons('title', item, true) }}#}
+                        {#{% include 'CommsyBundle:Utils:editSpinner.html.twig' %}#}
+                    {#{% else %}#}
+                        {#{{ macros.actionIcons('title', item, false) }}#}
+                    {#{% endif %}#}
                 </div>
             </div>
         </div>
