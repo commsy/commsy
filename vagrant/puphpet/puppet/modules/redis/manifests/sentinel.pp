@@ -36,6 +36,11 @@
 #
 #   Default: redis/redis-sentinel.conf.erb
 #
+# [*daemonize*]
+#   Have Redis sentinel run as a daemon.
+#
+#   Default: true
+#
 # [*down_after*]
 #   Number of milliseconds the master (or any attached slave or sentinel)
 #   should be unreachable (as in, not acceptable reply to PING, continuously,
@@ -101,6 +106,12 @@
 #
 #   Default: 2
 #
+# [*sentinel_bind*]
+#   Allow optional sentinel server ip binding.  Can help overcome
+#   issues arising from protect-mode added Redis 3.2
+#
+#   Default: undef
+#
 # [*sentinel_port*]
 #   The port of sentinel server.
 #
@@ -131,6 +142,11 @@
 #   Path to the notification script
 #
 #   Default: undef
+#
+# [*client_reconfig_script*]
+#   Path to the client-reconfig script
+#
+#   Default: undef
 # == Actions:
 #   - Install and configure Redis Sentinel
 #
@@ -144,34 +160,37 @@
 #   }
 #
 class redis::sentinel (
-  $auth_pass           = $::redis::params::sentinel_auth_pass,
-  $config_file         = $::redis::params::sentinel_config_file,
-  $config_file_orig    = $::redis::params::sentinel_config_file_orig,
-  $config_file_mode    = $::redis::params::sentinel_config_file_mode,
-  $conf_template       = $::redis::params::sentinel_conf_template,
-  $down_after          = $::redis::params::sentinel_down_after,
-  $failover_timeout    = $::redis::params::sentinel_failover_timeout,
-  $init_script         = $::redis::params::sentinel_init_script,
-  $init_template       = $::redis::params::sentinel_init_template,
-  $log_file            = $::redis::params::log_file,
-  $master_name         = $::redis::params::sentinel_master_name,
-  $redis_host          = $::redis::params::bind,
-  $redis_port          = $::redis::params::port,
-  $package_name        = $::redis::params::sentinel_package_name,
-  $package_ensure      = $::redis::params::sentinel_package_ensure,
-  $parallel_sync       = $::redis::params::sentinel_parallel_sync,
-  $pid_file            = $::redis::params::sentinel_pid_file,
-  $quorum              = $::redis::params::sentinel_quorum,
-  $sentinel_port       = $::redis::params::sentinel_port,
-  $service_group       = $::redis::params::service_group,
-  $service_name        = $::redis::params::sentinel_service_name,
-  $service_user        = $::redis::params::service_user,
-  $working_dir         = $::redis::params::sentinel_working_dir,
-  $notification_script = $::redis::params::sentinel_notification_script,
+  $auth_pass              = $::redis::params::sentinel_auth_pass,
+  $config_file            = $::redis::params::sentinel_config_file,
+  $config_file_orig       = $::redis::params::sentinel_config_file_orig,
+  $config_file_mode       = $::redis::params::sentinel_config_file_mode,
+  $conf_template          = $::redis::params::sentinel_conf_template,
+  $daemonize              = $::redis::params::sentinel_daemonize,
+  $down_after             = $::redis::params::sentinel_down_after,
+  $failover_timeout       = $::redis::params::sentinel_failover_timeout,
+  $init_script            = $::redis::params::sentinel_init_script,
+  $init_template          = $::redis::params::sentinel_init_template,
+  $log_file               = $::redis::params::log_file,
+  $master_name            = $::redis::params::sentinel_master_name,
+  $redis_host             = $::redis::params::bind,
+  $redis_port             = $::redis::params::port,
+  $package_name           = $::redis::params::sentinel_package_name,
+  $package_ensure         = $::redis::params::sentinel_package_ensure,
+  $parallel_sync          = $::redis::params::sentinel_parallel_sync,
+  $pid_file               = $::redis::params::sentinel_pid_file,
+  $quorum                 = $::redis::params::sentinel_quorum,
+  $sentinel_bind          = $::redis::params::sentinel_bind,
+  $sentinel_port          = $::redis::params::sentinel_port,
+  $service_group          = $::redis::params::service_group,
+  $service_name           = $::redis::params::sentinel_service_name,
+  $service_ensure         = $::redis::params::service_ensure,
+  $service_user           = $::redis::params::service_user,
+  $working_dir            = $::redis::params::sentinel_working_dir,
+  $notification_script    = $::redis::params::sentinel_notification_script,
+  $client_reconfig_script = $::redis::params::sentinel_client_reconfig_script,
 ) inherits redis::params {
-  $daemonize = $::redis::daemonize
 
-  unless defined(Package['$package_name']) {
+  unless defined(Package[$package_name]) {
     ensure_resource('package', $package_name, {
       'ensure' => $package_ensure
     })
@@ -196,6 +215,7 @@ class redis::sentinel (
   }
 
   if $init_script {
+
     file {
       $init_script:
         ensure  => present,
@@ -205,14 +225,17 @@ class redis::sentinel (
         content => template($init_template),
         require => Package[$package_name];
     }
+
     exec {
       '/usr/sbin/update-rc.d redis-sentinel defaults':
-        require => File[$init_script];
+        subscribe   => File[$init_script],
+        refreshonly => true;
     }
+
   }
 
   service { $service_name:
-    ensure     => $::redis::params::service_ensure,
+    ensure     => $service_ensure,
     enable     => $::redis::params::service_enable,
     hasrestart => $::redis::params::service_hasrestart,
     hasstatus  => $::redis::params::service_hasstatus,

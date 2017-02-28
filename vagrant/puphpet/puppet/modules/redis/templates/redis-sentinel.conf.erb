@@ -1,3 +1,6 @@
+<% if @sentinel_bind -%>
+bind <%= @sentinel_bind %>
+<% end -%>
 port <%= @sentinel_port %>
 dir <%= @working_dir %>
 <% if @daemonize -%>daemonize yes<% else -%>daemonize no<% end %>
@@ -12,6 +15,9 @@ sentinel auth-pass <%= @master_name %> <%= @auth_pass %>
 <% end -%>
 <% if @notification_script -%>
 sentinel notification-script <%= @master_name %> <%= @notification_script %>
+<% end -%>
+<% if @client_reconfig_script -%>
+sentinel client-reconfig-script <%= @master_name %> <%= @client_reconfig_script %>
 <% end -%>
 
 logfile <%= @log_file %>
