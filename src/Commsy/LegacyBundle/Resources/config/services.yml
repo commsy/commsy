@@ -192,3 +192,7 @@ services:
     commsy_legacy.transformer.topic:
         class: Commsy\LegacyBundle\Form\DataTransformer\TopicTransformer
         arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.transformer.project:
+        class: Commsy\LegacyBundle\Form\DataTransformer\ProjectTransformer
+        arguments: ['@commsy_legacy.environment']

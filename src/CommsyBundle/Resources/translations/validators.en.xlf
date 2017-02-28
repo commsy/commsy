@@ -10,6 +10,14 @@
                 <source>The input does not match {{ compared_value }}</source>
                 <target>The input does not match {{ compared_value }}</target>
             </trans-unit>
+            <trans-unit id="validators_room_agb">
+                <source>You must accept room agb.</source>
+                <target>You must accept room agb.</target>
+            </trans-unit>
+            <trans-unit id="validators_room_code">
+                <source>Your access code is invalid.</source>
+                <target>Your access code is invalid.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

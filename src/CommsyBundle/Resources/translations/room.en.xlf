@@ -110,6 +110,10 @@
                 <source>enter room</source>
                 <target>Enter rooom</target>
             </trans-unit>
+            <trans-unit id="room_no_access">
+                <source>no access</source>
+                <target>No access</target>
+            </trans-unit>
             <trans-unit id="become member">
                 <source>become member</source>
                 <target>Become member</target>
@@ -145,6 +149,34 @@
             <trans-unit id="room_support_link">
                 <source>E-Mail to support</source>
                 <target>E-Mail to support</target>
+            </trans-unit>
+            <trans-unit id="room_locked">
+                <source>This room is currently locked.</source>
+                <target>This room is currently locked.</target>
+            </trans-unit>
+            <trans-unit id="room_rejected">
+                <source>Your request has been rejected.</source>
+                <target>Your request has been rejected.</target>
+            </trans-unit>
+            <trans-unit id="room_requested">
+                <source>Your request has not been processed yet.</source>
+                <target>Your request has not been answered yet.</target>
+            </trans-unit>
+            <trans-unit id="room_request">
+                <source>Request membership</source>
+                <target>Request membership</target>
+            </trans-unit>
+            <trans-unit id="room_agb">
+                <source>AGB</source>
+                <target>AGB</target>
+            </trans-unit>
+            <trans-unit id="room_agb_accept">
+                <source>Accept</source>
+                <target>Accept</target>
+            </trans-unit>
+            <trans-unit id="room_code">
+                <source>Code</source>
+                <target>Code</target>
             </trans-unit>
         </body>
     </file>

@@ -1894,7 +1894,6 @@ class cs_environment {
          }
          if ($this->_selected_language == 'user') {
             $this->_selected_language = $this->getUserLanguage();
-            //dump($this->getUserLanguage());
          }
       }
       return $this->_selected_language;
