@@ -88,7 +88,7 @@
                
                 <ul id="room-info" class="uk-list uk-list-striped">
                     {# RSS / iCal #}
-                    {% if rss.show or iCal.show %}
+                    {% if rss.show or iCal.show or wiki.show %}
                         <li>
                             {% if rss.show %}
                             <a href="{{ rss.url }}">
@@ -99,6 +99,12 @@
                             {% if iCal.show %}
                                 <a href="{{ iCal.url }}">
                                     iCal <i class="uk-icon-calendar-o uk-icon-small"></i>
+                                </a>
+                            {% endif %}
+
+                            {% if wiki.show %}
+                                <a href="{{ wiki.url }}">
+                                    Wiki <i class="uk-external-link uk-icon-small"></i>
                                 </a>
                             {% endif %}
                         </li>
