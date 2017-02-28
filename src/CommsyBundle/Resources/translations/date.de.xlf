@@ -294,6 +294,10 @@
                 <source>nextYear</source>
                 <target>nächstes Jahr</target>
             </trans-unit>
+            <trans-unit id="date_action_export">
+                <source>export dates</source>
+                <target>Termine exportieren</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -104,6 +104,12 @@ class KernelSubscriber implements EventSubscriberInterface
 
                 if ($portalItem) {
                     $url = $event->getRequest()->getBaseUrl() . '?cid=' . $portalItem->getItemID();
+
+                    // if this is an room url, send us to room detail view on portal
+                    if (preg_match('/room\/([0-9]+)/', $requestUri, $roomIdMatch)) {
+                        $url .= '&mod=home&fct=index&room_id=' . $roomIdMatch[1];
+                    }
+
                     $response = new RedirectResponse($url);
                     $event->setResponse($response);
                 }

@@ -130,6 +130,22 @@
                 <source>Rooms</source>
                 <target>Rooms</target>
             </trans-unit>
+            <trans-unit id="hide-archived">
+                <source>hide-archived-rooms</source>
+                <target>Hide archived rooms</target>
+            </trans-unit>
+            <trans-unit id="hide-without-membership">
+                <source>hide-rooms-without-membership</source>
+                <target>Hide rooms without membership</target>
+            </trans-unit>
+            <trans-unit id="room_support_label">
+                <source>Support:</source>
+                <target>Support:</target>
+            </trans-unit>
+            <trans-unit id="room_support_link">
+                <source>E-Mail to support</source>
+                <target>E-Mail to support</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -9,24 +9,22 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
-
 class StepType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class, array(
-                'constraints' => array(
+            ->add('title', TextType::class, [
+                'constraints' => [
                     new NotBlank(),
-                ),
+                ],
                 'label' => 'title',
-                'attr' => array(
+                'attr' => [
                     'placeholder' => $options['placeholderText'],
                     'class' => 'uk-form-width-medium cs-form-title',
-                ),
+                ],
                 'translation_domain' => 'todo',
-            ))
+            ])
             ->add('time_spend', TimeType::class, [
                 'label' => 'time spend',
                 'widget' => 'text',
@@ -37,18 +35,19 @@ class StepType extends AbstractType
                 ],
                 'translation_domain' => 'todo',
             ])
-            ->add('save', SubmitType::class, array(
-                'attr' => array(
+            ->add('save', SubmitType::class, [
+                'attr' => [
                     'class' => 'uk-button-primary',
-                ),
+                ],
                 'label' => 'save',
-            ))
-            ->add('cancel', SubmitType::class, array(
-                'attr' => array(
+            ])
+            ->add('cancel', SubmitType::class, [
+                'validation_groups' => false,
+                'attr' => [
                     'formnovalidate' => '',
-                ),
+                ],
                 'label' => 'cancel',
-            ))
+            ])
         ;
         
     }
@@ -61,8 +60,8 @@ class StepType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(array('placeholderText'))
-            ->setDefaults(array('translation_domain' => 'form'))
+            ->setRequired(['placeholderText'])
+            ->setDefaults(['translation_domain' => 'form'])
         ;
     }
 

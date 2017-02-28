@@ -138,11 +138,7 @@
                     </div>
                     
                     {# steps #}
-                    <div id="steps{{ todo.itemId }}" class="cs-edit-section cs-toggle"
-                    {% if stepList|length > 0 %}
-                        data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_todo_editsteps', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }"
-                    {% endif %}
-                    >
+                    <div id="steps{{ todo.itemId }}" class="cs-edit-section cs-toggle">
                         {{ macrosTodo.steps(todo, stepList) }}
                     </div>
                 </article>
@@ -247,21 +243,23 @@
                 
                 <div id="annotations{{ todo.itemId }}" class="uk-panel uk-panel-box uk-margin-bottom uk-panel-box-primary ">
 
-                    <article class="uk-comment">
-                        <header class="uk-comment-header uk-flex">
-                            <div class="uk-margin-right uk-flex-item-none">
-                                {{  macros.userIconLink(user) }}
-                            </div>
-                            <div class="uk-width-8-10">
-                                {{ form_start(annotationForm, {'action': path('commsy_annotation_create', {'roomId': todo.contextId, 'itemId': todo.itemId}), 'method': 'POST'}) }}
-                                    <p>
-                                        {{ form_label(annotationForm.description) }}
-                                    </p>
-                                    {{ form_widget(annotationForm.description) }}
-                                {{ form_end(annotationForm) }}
-                            </div>                            
-                        </header>
-                    </article>
+                    {% if is_granted('ITEM_EDIT', 'NEW') %}
+                        <article class="uk-comment">
+                            <header class="uk-comment-header uk-flex">
+                                <div class="uk-margin-right uk-flex-item-none">
+                                    {{  macros.userIconLink(user) }}
+                                </div>
+                                <div class="uk-width-8-10">
+                                    {{ form_start(annotationForm, {'action': path('commsy_annotation_create', {'roomId': todo.contextId, 'itemId': todo.itemId}), 'method': 'POST'}) }}
+                                        <p>
+                                            {{ form_label(annotationForm.description) }}
+                                        </p>
+                                        {{ form_widget(annotationForm.description) }}
+                                    {{ form_end(annotationForm) }}
+                                </div>
+                            </header>
+                        </article>
+                    {% endif %}
 
                     {{ render(controller(
                         'CommsyBundle:Annotation:feed',

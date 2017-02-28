@@ -47,24 +47,6 @@
                 if ($user->getCount() > 0) {
                     $count_new_accounts = $user->getCount();
                 }
-                
-				// // tasks
-				// $manager = $this->_environment->getTaskManager();
-				// $manager->resetLimits();
-				// $manager->setContextLimit($this->_environment->getCurrentContextID());
-				// $manager->setStatusLimit('REQUEST');
-				// $manager->select();
-				// $tasks = $manager->get();
-				// $task = $tasks->getFirst();
-				// $count_new_accounts = 0;
-				// while($task){
-				// 	$mode = $task->getTitle();
-				// 	$task = $tasks->getNext();
-				// 	if ($mode == 'TASK_USER_REQUEST'){
-				// 		$count_new_accounts ++;
-				// 	}
-				
-				// }
 			}
 			$this->setSuccessfullDataReturn(array("count" => $count_new_accounts));
 			echo $this->_return;
@@ -173,8 +155,6 @@
 				
 				// prepare mail
 				$mail = new cs_mail();
-				//$mail->set_from_email($admin->getEmail());
-				//$mail->set_from_name($admin->getFullname());
 				$mail->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
                 $mail->set_from_name($this->_environment->getCurrentPortalItem()->getTitle());
 				$mail->set_reply_to_email($admin->getEmail());
@@ -570,19 +550,6 @@
 			$user_manager->reset();
 			$user_manager->setContextLimit($this->_environment->getCurrentContextID());
 			$count_all = $user_manager->getCountAll();
-
-			// set restrictions
-			/*
-			 * if ( !empty($sort) ) {
-			      $user_manager->setSortOrder($sort);
-			   }
-
-			   if ( !empty($sel_auth_source)
-			        and  $sel_auth_source != -1
-			      ) {
-			      $user_manager->setAuthSourceLimit($sel_auth_source);
-			   }
-			 */
 
 			if(!empty($restrictions['search'])) $user_manager->setSearchLimit($restrictions['search']);
 

@@ -210,6 +210,7 @@ class DateController extends Controller
      */
     public function listAction($roomId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
         
@@ -240,12 +241,32 @@ class DateController extends Controller
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('date');
         }
 
+        // iCal
+        $iCalUrl = $this->generateUrl('commsy_ical_getcontent', [
+            'contextId' => $roomId,
+            'export' => true,
+        ]);
+
+        $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+
+        if (!$roomItem->isOpenForGuests()) {
+            if ($currentUserItem->isUser()) {
+                $hashManager = $legacyEnvironment->getHashManager();
+                $iCalUrl = $this->generateUrl('commsy_ical_getcontent', [
+                    'contextId' => $roomId,
+                    'hid' => $hashManager->getICalHashForUser($currentUserItem->getItemID()),
+                    'export' => true,
+                ]);
+            }
+        }
+
         return array(
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
             'module' => 'date',
             'itemsCountArray' => $itemsCountArray,
             'usageInfo' => $usageInfo,
+            'iCalUrl' => $iCalUrl,
         );
     }
 

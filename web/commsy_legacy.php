@@ -192,26 +192,6 @@ $context_item_current = $environment->getCurrentContextItem();
 
 /*********** SERVER INITIALIZATION AND JUMP TO SINGLE PORTAL ***********/
 
-// send user to item with id == iid - rewriteRule - TinyUrl with CommSy ID
-if(isset($_GET['item_id'])){
-    $iid = $_GET['item_id'];
-    if(!empty($iid)){
-        $item_manager = $environment->getItemManager();
-        $item = $item_manager->getItem($iid);
-        if(isset($item) and !empty($item)){
-            $item_type = $item->getItemType();
-            if($item_type == 'project' or $item_type == 'community'){
-                redirect($iid,'home','index');
-            } else {
-                $params = array();
-                $params['iid'] = $iid;
-                redirect($item->getContextID(),$item->getItemType(),'detail',$params);
-                unset($params);
-            }
-        }
-        unset($item_manager);
-    }
-}
 // send user to ...
 // portal home, if only one exists and cid in URL was empty
 // or to server initialization, if server item does not exist (not implemented yet)

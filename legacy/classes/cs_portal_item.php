@@ -851,13 +851,7 @@ class cs_portal_item extends cs_guide_item {
       $item_id = $this->getItemID();
       parent::save();
       $this->_time_list = NULL;
-      /*
-       * Was soll das denn?
-      $manager = $this->_environment->getPortalManager();
-      $this->setServiceLinkActive();
-      $this->_save($manager);
-      unset($manager);
-      */
+
       if ( empty($item_id) ) {
          $this->generateLayoutImages();
       }

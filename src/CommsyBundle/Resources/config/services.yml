@@ -394,6 +394,10 @@ services:
         class: CommsyBundle\Utils\MailAssistant
         arguments: ['@commsy_legacy.environment', '@translator', '@twig', '%commsy.email.from%']
 
+    commsy.utils.mail_account:
+        class: CommsyBundle\Utils\AccountMail
+        arguments: ['@commsy_legacy.environment', '@router']
+
     # Commands
     commsy.command.cron_command:
         class: CommsyBundle\Command\CronCommand

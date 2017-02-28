@@ -49,7 +49,7 @@
                         <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
                     {% endif %}
                 {% else %}
-                    {'no email'|trans({}) }
+                    {{ 'no email'|trans({}) }}
                 {% endif %}
             </span><br/>
             <div class="uk-flex uk-flex-space-between">

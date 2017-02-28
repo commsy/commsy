@@ -2,66 +2,63 @@
 
     "use strict";
 
+    var handleForm = function(form) {
+        form.find('button').click(function(event) {
+            let $button = $(this);
+
+            // cancel is not handled via ajax
+            if ($button.attr('name') == "step[save]") {
+                let form = $(this).closest('form');
+                if (form[0].checkValidity()) {
+                    event.preventDefault();
+
+                    let formData = form.serializeArray();
+                    formData.push({ name: this.name, value: this.value });
+
+                    // submit the form manually
+                    $.ajax({
+                        url: form.attr('action'),
+                        type: "POST",
+                        data: formData
+                    })
+                    .done(function(result, statusText, xhrObject) {
+                        let $result = $(result);
+
+                        if ($result.find('ul.form-errors').length) {
+                            // if form is invalid, replace with html response
+                            let lastChild = $('#step-content').children().last();
+                            lastChild.replaceWith($result);
+                            handleForm($result.find('form'));
+                        } else {
+                            window.location.reload(true);
+                        }
+                    });
+                }
+            }
+        });
+    };
+
     $(".newStep").on('click', function(){
         // Create new step element in todo view
-        
-        var url = $(this).data('stepUrl');
+
+        let url = $(this).data('stepUrl');
         // send ajax request to get new step item
         $.ajax({
             url: url
         })
         .done(function(result) {
-            // set step item in todo view
+            // insert ajax response as last element in #step-content
+            $('#step-content').append(result);
 
-            if ($('.todo-step').last()[0]) {
-                $('.todo-step').last().after(result);
-                $('.todo-step').last()[0].scrollIntoView();
-            } else {
-                $('#step-content').html(result);
-                $('#step-content').children()[0].scrollIntoView();
+            // scroll to the appended element
+            let lastChild = $('#step-content').children().last();
+            if (lastChild) {
+                lastChild[0].scrollIntoView();
             }
-            
+
+            // override form submit behaviour
+            handleForm(lastChild.find('form'));
         });
     });
-
-    // THIS IS NOT USED RIGHT NOW BECAUSE TODO STEPS ARE NOT SORTABLE, YET!
-    // UIkit.on('changed.uk.dom', function(event) {
-    //     $("#sorting_save").unbind().on('click', function() {
-    //         var article = $("#sorting_cancel").parents('.cs-edit-section');
-
-    //         // show the loading spinner
-    //         $(article).find('.cs-edit-spinner').toggleClass('uk-hidden', false);
-
-    //         var sorting = [];
-    //         $(".section-list li").each(function() {
-    //             var id = $(this).attr('id').match(/([\d]+)/g);
-    //             sorting.push(id);
-    //         });
-            
-    //         $.ajax({
-    //             type: "POST",
-    //             url: $(this).data('ukUrl'),
-    //             data: JSON.stringify(sorting)
-    //         })
-    //         .done(function(result) {
-    //             location.reload();
-    //         });
-            
-    //     });
-
-    //     $("#sorting_cancel").unbind().on('click', function() {
-    //         var article = $("#sorting_cancel").parents('.cs-edit-section');
-
-    //         // show the loading spinner
-    //         $(article).find('.cs-edit-spinner').toggleClass('uk-hidden', false);
-    //         location.reload();
-    //     });
-
-    //     // remove insert title on click
-    //     $('#remove-on-click input[type=text]').on('focus', function() {
-    //         $(this).val("");
-    //     });
-
-    // });
 
 })(UIkit);

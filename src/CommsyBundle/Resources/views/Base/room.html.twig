@@ -10,15 +10,3 @@
         'currentAsLink':false
     }) }}
 {% endblock %}
-
-{% block additionalNavbarContent %}
-    {% if serviceLinkExternal is defined %}
-        <div class="uk-navbar-content">
-            <ul class="uk-navbar-nav">
-                <li>
-                    <a href="{{ serviceLinkExternal }}"><i class="uk-icon-question-circle"></i></a>
-                </li>
-            </ul>
-        </div>
-    {% endif %}
-{% endblock %}

@@ -104,6 +104,7 @@ class MenuBuilder
         // create profile
         $currentStack = $requestStack->getCurrentRequest();
         $currentUser = $this->legacyEnvironment->getCurrentUser();
+        $roomId = $currentStack->attributes->get('roomId');
 
         $menu = $this->factory->createItem('root');
 
@@ -150,6 +151,20 @@ class MenuBuilder
                     'icon' => 'uk-icon-at uk-icon-small uk-icon-justify',
                     'user' => $currentUser,
                 ]
+            ])
+            ->setExtra('translation_domain', 'menu');
+
+            $menu->addChild('room_navigation_space_2', [
+                'label' => ' ',
+                'route' => 'commsy_room_home',
+                'routeParameters' => ['roomId' => $roomId],
+                'extras' => ['icon' => 'uk-icon-small']
+            ]);
+            $menu->addChild('room', [
+                'label' => 'Back to room',
+                'route' => 'commsy_room_home',
+                'routeParameters' => ['roomId' => $roomId],
+                'extras' => ['icon' => 'uk-icon-reply uk-icon-small uk-icon-justify']
             ])
             ->setExtra('translation_domain', 'menu');
         }

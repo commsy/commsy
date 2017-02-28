@@ -333,21 +333,23 @@
                 
                 <div id="annotations{{ material.itemId }}" class="uk-panel uk-panel-box uk-margin-bottom uk-panel-box-primary ">
 
-                    <article class="uk-comment">
-                        <header class="uk-comment-header uk-flex">
-                            <div class="uk-margin-right uk-flex-item-none">
-                                {{  macros.userIconLink(user) }}
-                            </div>
-                            <div class="uk-width-8-10">
-                                {{ form_start(annotationForm, {'action': path('commsy_annotation_create', {'roomId': material.contextId, 'itemId': material.itemId}), 'method': 'POST'}) }}
-                                    <p>
-                                        {{ form_label(annotationForm.description) }}
-                                    </p>
-                                    {{ form_widget(annotationForm.description) }}
-                                {{ form_end(annotationForm) }}
-                            </div>                            
-                        </header>
-                    </article>
+                    {% if is_granted('ITEM_EDIT', 'NEW') %}
+                        <article class="uk-comment">
+                            <header class="uk-comment-header uk-flex">
+                                <div class="uk-margin-right uk-flex-item-none">
+                                    {{  macros.userIconLink(user) }}
+                                </div>
+                                <div class="uk-width-8-10">
+                                    {{ form_start(annotationForm, {'action': path('commsy_annotation_create', {'roomId': material.contextId, 'itemId': material.itemId}), 'method': 'POST'}) }}
+                                        <p>
+                                            {{ form_label(annotationForm.description) }}
+                                        </p>
+                                        {{ form_widget(annotationForm.description) }}
+                                    {{ form_end(annotationForm) }}
+                                </div>
+                            </header>
+                        </article>
+                    {% endif %}
 
                     {{ render(controller(
                         'CommsyBundle:Annotation:feed',

@@ -2,6 +2,7 @@
 
 namespace CommsyBundle\Controller;
 
+use CommsyBundle\Utils\AccountMail;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -396,6 +397,36 @@ class UserController extends Controller
         
         if ($noModeratorsError) {
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('no moderators left', array(), 'user');
+        }
+
+        // inform user about account action
+        if (in_array($action, [
+            'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user',
+            'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'])) {
+
+            if (!$noModeratorsError) {
+                $accountMail = $this->get('commsy.utils.mail_account');
+                $mailer = $this->get('mailer');
+
+                $fromAddress = $this->getParameter('commsy.email.from');
+                $fromSender = $legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
+
+                foreach ($selectedIds as $userId) {
+                    $user = $userService->getUser($userId);
+
+                    $subject = $accountMail->generateSubject($action);
+                    $body = $accountMail->generateBody($user, $action);
+
+                    $mailMessage = \Swift_Message::newInstance()
+                        ->setSubject($subject)
+                        ->setBody($body, 'text/plain')
+                        ->setFrom([$fromAddress => $fromSender])
+                        ->setTo([$user->getEmail()]);
+
+                    // send mail
+                    $mailer->send($mailMessage);
+                }
+            }
         }
         
         return new JsonResponse([

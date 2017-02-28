@@ -2,6 +2,7 @@
 namespace CommsyBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -39,21 +40,38 @@ class ProfileAdditionalType extends AbstractType
         $this->userItem = $userManager->getItem($options['itemId']);
 
         $builder
-            ->add('portfolioStatus', CheckboxType::class, array(
+            ->add('portfolioStatus', CheckboxType::class, [
                 'label'    => 'portfolioStatus',
                 'required' => false,
-                'label_attr' => array(
+                'label_attr' => [
                     'class' => 'uk-form-label',
-                ),
-            ))
-            
-            ->add('save', SubmitType::class, array(
+                ],
+            ]);
+
+        if ($options['emailToCommsy']) {
+            $builder
+                ->add('emailToCommsy', CheckboxType::class, [
+                    'label' => 'emailToCommsy',
+                    'required' => false,
+                    'label_attr' => [
+                        'class' => 'uk-form-label',
+                    ]
+                ])
+
+                ->add('emailToCommsySecret', TextType::class, [
+                    'label' => 'emailToCommsySecret',
+                    'required' => false,
+                ]);
+        }
+
+        $builder
+            ->add('save', SubmitType::class, [
                 'label' => 'save',
                 'translation_domain' => 'form',
-                'attr' => array(
+                'attr' => [
                     'class' => 'uk-button-primary',
-                )
-            ));
+                ]
+            ]);
     }
 
     /**
@@ -64,7 +82,7 @@ class ProfileAdditionalType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['itemId'])
+            ->setRequired(['itemId', 'emailToCommsy'])
             ->setDefaults(array('translation_domain' => 'profile'))
         ;
     }
