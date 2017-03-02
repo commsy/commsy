@@ -323,7 +323,8 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
         $room_list = $room_manager->get();
 
         
-        $default_id = $this->_environment->getCurrentPortalItem()->getDefaultProjectTemplateID();
+        //$default_id = $this->_environment->getCurrentPortalItem()->getDefaultProjectTemplateID();
+        $default_id = '-1'; // -> #3187
         if ($room_list->isNotEmpty() or $default_id != '-1' ) {
         	$current_user = $this->_environment->getCurrentUser();
         	if ( $default_id != '-1' ) {
