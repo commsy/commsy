@@ -42,6 +42,7 @@
     require_once 'functions/date_functions.php';
 
     require_once 'classes/cs_environment.php';
+    require_once 'classes/interfaces/cs_export_import_interface.php';
 
     global $c_send_email;
     $c_send_email = true;
