@@ -372,7 +372,7 @@
             </trans-unit>
             <trans-unit id="final_choice">
                 <source>etherpadText</source>
-                <target><![CDATA[<span style='word-break: break-word;'><div class='uk-margin-small-bottom'>]]>Etherpad ermöglicht das gleichzeitige Bearbeiten der Beschreibung durch mehrerer Personen, bietet jedoch weniger Formatierungsoptionen als der Standard-Editor. <![CDATA[</div><br/><b>]]>Diese Option kann nicht nachträglich geändert werden!<![CDATA[</b></span>]]></target>
+                <target><![CDATA[<span style='word-break: keep-all;'><div class='uk-margin-small-bottom'>]]>Etherpad ermöglicht das gleichzeitige Bearbeiten der Beschreibung durch mehrere Personen, bietet jedoch weniger Formatierungsoptionen als der Standard-Editor. <![CDATA[</div><br/><div class='uk-text-bold'>]]>Diese Option kann nicht nachträglich geändert werden!<![CDATA[</div></span>]]></target>
             </trans-unit>
         </body>
     </file>
