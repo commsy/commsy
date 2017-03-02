@@ -369,7 +369,17 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
         }
         
         // show group room templates if item is new or item has no grouproom
-        if(!empty($template_array) && $itemObject === null){
+
+        $showTemplateSelect = false;
+        if (!$itemObject) {
+            $showTemplateSelect = true;
+        } else {
+            if (!$itemObject->isGroupRoomActivated()) {
+                $showTemplateSelect = true;
+            }
+        }
+
+        if(!empty($template_array) && $showTemplateSelect){
         	$this->_popup_controller->assign('popup', 'withTemplate', '1');
         	$this->_popup_controller->assign('popup', 'template', $template_array);
         } else {
