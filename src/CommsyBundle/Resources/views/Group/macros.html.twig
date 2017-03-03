@@ -402,7 +402,7 @@
 {% endmacro %}
 
 
-{% macro grouproom(item) %}
+{% macro grouproom(item, roomId, userIsGroupMember, roomMemberStatus) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
     <div id="grouproom{{ item.itemId }}" class="cs-edit-section cs-toggle" data-cs-edit="{editUrl: '{{ path('commsy_group_editgrouproom', {'roomId': item.contextId, 'itemId': item.itemId}) }}'}">
         <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
@@ -423,7 +423,13 @@
                                 <div class="uk-flex">
                                     <div class="uk-width-1-5 uk-text-left">
                                         {% if item.isGroupRoomActivated %}
-                                            <a href="{{ path('commsy_room_home', {'roomId': item.groupRoomItem.ItemId}) }}" class="uk-icon-large uk-icon-button uk-icon-sign-in" data-uk-tooltip title="{{'enter grouproom'|trans({}) }}"></a>
+                                            <div class="uk-width-1-5 uk-text-left">
+                                                {% if userIsGroupMember and roomMemberStatus == 'enter' %}
+                                                    <a href="{{ path('commsy_room_home', {'roomId': item.groupRoomItem.ItemId}) }}" class="uk-icon-large uk-icon-button uk-icon-sign-in" data-uk-tooltip title="{{'enter grouproom'|trans({}) }}"></a>
+                                                {% else %}
+                                                    <span class="uk-icon-large uk-icon-button uk-icon-remove" data-uk-tooltip title="{{'no access'|trans({}, 'room') }}"> </span>
+                                                {% endif %}
+                                            </div>
                                         {% else %}
                                             <span class="uk-icon-large uk-icon-button uk-icon-remove" data-uk-tooltip title="{{'no grouproom'|trans({},'group') }}"> </span>
                                         {% endif %}
@@ -433,6 +439,13 @@
                                             <span class="uk-text-bold">{{item.groupRoomItem.Title}}</span><br/>
                                             <p>
                                             {{'grouproom description text'|trans({},'group') }}    
+                                            </p>
+                                            <p>
+                                            {% if userIsGroupMember %}
+                                                {{ macros.contextLink(roomId, item.getGroupRoomItem, roomMemberStatus) }}
+                                            {% else %}
+                                                {{'grouproom access'|trans({},'group') }}
+                                            {% endif %}
                                             </p>
                                         {% else %}
                                             <span class="uk-text-bold">{{'no grouproom'|trans({},'group') }}</span><br/>
@@ -446,9 +459,6 @@
                                             <span class="uk-text-bold">{{'grouproom information'|trans({},'group') }}</span><br/>
                                             <p>
                                                 {{'grouproom moderators'|trans({},'group') }}: {{item.groupRoomItem.ModeratorListString}}     
-                                            </p>
-                                            <p>
-                                                ToDo: Zuganglinks
                                             </p>
                                         {% endif %}
                                     </div>

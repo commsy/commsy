@@ -319,25 +319,6 @@ class MenuBuilder
                 ->setExtra('translation_domain', 'menu');
             }
 
-
-            $roomItem = $this->roomService->getRoomItem($roomId);
-            if ($roomItem->isGroupRoom()) {
-                $menu->addChild('room_navigation_space_3', array(
-                    'label' => ' ',
-                    'route' => 'commsy_room_home',
-                    'routeParameters' => array('roomId' => $roomId),
-                    'extras' => array('icon' => 'uk-icon-small')
-                ));
-                $projectRoomItem = $roomItem->getLinkedProjectItem();
-                $menu->addChild('room', array(
-                    'label' => 'Back to room',
-                    'route' => 'commsy_room_home',
-                    'routeParameters' => array('roomId' => $projectRoomItem->getItemId()),
-                    'extras' => array('icon' => 'uk-icon-reply uk-icon-small uk-icon-justify')
-                ))
-                ->setExtra('translation_domain', 'menu');
-            }
-
             if (!$inPrivateRoom) {
                 if ($currentUser) {
                     if ($this->authorizationChecker->isGranted('MODERATOR')) {

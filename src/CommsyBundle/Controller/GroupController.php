@@ -296,8 +296,18 @@ class GroupController extends Controller
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
-
         $infoArray = $this->getDetailInfo($roomId, $itemId);
+
+        $memberStatus = '';
+
+        if($infoArray['group']->isGroupRoomActivated()) {
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $userService = $this->get('commsy_legacy.user_service');
+            $memberStatus = $userService->getMemberStatus(
+                $infoArray['group']->getGroupRoomItem(),
+                $legacyEnvironment->getCurrentUser()
+            );
+        }
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
@@ -326,6 +336,7 @@ class GroupController extends Controller
             'members' => $infoArray['members'],
             'user' => $infoArray['user'],
             'userIsMember' => $infoArray['userIsMember'],
+            'memberStatus' => $memberStatus,
             'annotationForm' => $form->createView(),
        );
     }
@@ -764,7 +775,7 @@ class GroupController extends Controller
         $formData = array();
         $groupItem = NULL;
         
-        // get date from DateService
+        // get group from GroupService
         $groupItem = $groupService->getGroup($itemId);
         if (!$groupItem) {
             throw $this->createNotFoundException('No group found for id ' . $itemId);
@@ -980,11 +991,46 @@ class GroupController extends Controller
     {
         $groupService = $this->get('commsy_legacy.group_service');
         $group = $groupService->getGroup($itemId);
+
         $membersList = $group->getMemberItemList();
         $members = $membersList->to_array();
+
         return [
             'group' => $group,
             'members' => $members,
         ];
     }
+
+    /**
+     * @Route("/room/{roomId}/group/{itemId}/grouproom", requirements={
+     *     "itemId": "\d+"
+     * }))
+     * @Template()
+     * @Security("is_granted('ITEM_SEE', itemId)")
+     */
+    public function groupRoomAction($roomId, $itemId, Request $request)
+    {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $groupService = $this->get('commsy_legacy.group_service');
+        $group = $groupService->getGroup($itemId);
+
+        $membersList = $group->getMemberItemList();
+        $members = $membersList->to_array();
+
+        $userService = $this->get('commsy_legacy.user_service');
+        $memberStatus = '';
+        $memberStatus = $userService->getMemberStatus(
+                $group->getGroupRoomItem(),
+                $legacyEnvironment->getCurrentUser()
+        );
+
+        return [
+            'group' => $group,
+            'roomId' => $roomId,
+            'userIsMember' => $membersList->inList($legacyEnvironment->getCurrentUserItem()),
+            'memberStatus' => $memberStatus,
+        ];
+    }
+
 }
