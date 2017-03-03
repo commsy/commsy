@@ -235,20 +235,62 @@ class UserService
 
         return $searchableRoomList->to_array();
     }
-    
-    public function getModeratorsForContext ($contextId) {
+
+    public function getModeratorsForContext($contextId)
+    {
         $this->userManager->setContextLimit($contextId);
         $this->userManager->setStatusLimit(3);
         $this->userManager->select();
         $moderatorList = $this->userManager->get();
         return $moderatorList->to_array();
     }
-    
-    public function showNoNotActivatedEntries(){
+
+    public function showNoNotActivatedEntries()
+    {
         $this->userManager->showNoNotActivatedEntries();
     }
-    
-    public function showUserStatus ($status) {
+
+    public function showUserStatus($status)
+    {
         $this->userManager->setStatusLimit($status);
+    }
+
+    public function getMemberStatus($room, $currentUser)
+    {
+        /**
+         * States: enter, join, locked, request, requested, rejected
+         */
+
+        if ($currentUser->isRoot()) {
+            return 'enter';
+        } else {
+            $userManager = $this->legacyEnvironment->getUserManager();
+            $userManager->setUserIDLimit($currentUser->getUserID());
+            $userManager->setAuthSourceLimit($currentUser->getAuthSource());
+            $userManager->setContextLimit($room->getItemID());
+            $userManager->select();
+            $roomUserList = $userManager->get();
+            $roomUser = $roomUserList->getFirst();
+
+            if ($roomUser) {
+                if ($room->mayEnter($roomUser)) {
+                    return 'enter';
+                }
+
+                if ($room->isLocked()) {
+                    return 'locked';
+                }
+
+                if ($roomUser->isRequested()) {
+                    return 'requested';
+                }
+
+                if ($roomUser->isRejected()) {
+                    return 'rejected';
+                }
+            }
+        }
+
+        return 'join';
     }
 }

@@ -110,6 +110,10 @@
                 <source>enter room</source>
                 <target>Raum betreten</target>
             </trans-unit>
+            <trans-unit id="room_no_access">
+                <source>no access</source>
+                <target>Kein Zugang</target>
+            </trans-unit>
             <trans-unit id="become member">
                 <source>become member</source>
                 <target>Mitgliedschaft beantragen</target>
@@ -145,6 +149,34 @@
             <trans-unit id="room_support_link">
                 <source>E-Mail to support</source>
                 <target>E-Mail an Support</target>
+            </trans-unit>
+            <trans-unit id="room_locked">
+                <source>This room is currently locked.</source>
+                <target>Dieser Raum ist derzeit gesperrt.</target>
+            </trans-unit>
+            <trans-unit id="room_rejected">
+                <source>Your request has been rejected.</source>
+                <target>Ihre Anfrage wurde abgelehnt.</target>
+            </trans-unit>
+            <trans-unit id="room_requested">
+                <source>Your request has not been processed yet.</source>
+                <target>Ihre Anfrage wartet noch auf Bearbeitung.</target>
+            </trans-unit>
+            <trans-unit id="room_request">
+                <source>Request membership</source>
+                <target>Mitgliedschaft beantragen</target>
+            </trans-unit>
+            <trans-unit id="room_agb">
+                <source>AGB</source>
+                <target>Nutzungsbedingungen</target>
+            </trans-unit>
+            <trans-unit id="room_agb_accept">
+                <source>Accept</source>
+                <target>Akzeptieren</target>
+            </trans-unit>
+            <trans-unit id="room_code">
+                <source>Code</source>
+                <target>Teilnahmecode</target>
             </trans-unit>
         </body>
     </file>

@@ -749,8 +749,13 @@ class ItemController extends Controller
         $rubricManager = $environment->getManager($baseItem->getItemType());
         
         $item = $rubricManager->getItem($itemId);
-        
-        $rubricManager->setContextLimit($roomId);
+
+        if ($baseItem->getItemType() == 'project') {
+            $rubricManager->setCommunityroomLimit($roomId);
+            $rubricManager->setContextLimit($environment->getCurrentPortalID());
+        } else {
+            $rubricManager->setContextLimit($roomId);
+        }
         
         if ($item->getItemType() == 'date') {
             $rubricManager->setWithoutDateModeLimit();

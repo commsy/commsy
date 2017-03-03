@@ -372,7 +372,7 @@
             </trans-unit>
             <trans-unit id="final_choice">
                 <source>etherpadText</source>
-                <target><![CDATA[<span style='word-break: break-word;'><div class='uk-margin-small-bottom'>]]>Etherpad allows multiple users to work concurrently on the same material but provides fewer options than the default editor. <![CDATA[</div><br/><b>]]>This option cannot be changed afterwards!<![CDATA[</b>]]></target>
+                <target><![CDATA[<span style='word-break: keep-all;'><div class='uk-margin-small-bottom'>]]>Etherpad allows multiple users to work concurrently on the same material but provides fewer options than the default editor. <![CDATA[</div><br/><div class='uk-text-bold'>]]>This option cannot be changed afterwards!<![CDATA[</div>]]></target>
             </trans-unit>
         </body>
     </file>

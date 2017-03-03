@@ -153,20 +153,6 @@ class MenuBuilder
                 ]
             ])
             ->setExtra('translation_domain', 'menu');
-
-            $menu->addChild('room_navigation_space_2', [
-                'label' => ' ',
-                'route' => 'commsy_room_home',
-                'routeParameters' => ['roomId' => $roomId],
-                'extras' => ['icon' => 'uk-icon-small']
-            ]);
-            $menu->addChild('room', [
-                'label' => 'Back to room',
-                'route' => 'commsy_room_home',
-                'routeParameters' => ['roomId' => $roomId],
-                'extras' => ['icon' => 'uk-icon-reply uk-icon-small uk-icon-justify']
-            ])
-            ->setExtra('translation_domain', 'menu');
         }
 
         return $menu;
@@ -241,20 +227,6 @@ class MenuBuilder
             ->setAttributes([
                 'class' => 'uk-button-danger',
             ])
-            ->setExtra('translation_domain', 'menu');
-
-            $menu->addChild('room_navigation_space_2', array(
-                'label' => ' ',
-                'route' => 'commsy_room_home',
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-small')
-            ));
-            $menu->addChild('room', array(
-                'label' => 'Back to room',
-                'route' => 'commsy_room_home',
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-reply uk-icon-small uk-icon-justify')
-            ))
             ->setExtra('translation_domain', 'menu');
         }
 
@@ -474,6 +446,13 @@ class MenuBuilder
             $roomItem = $this->roomService->getRoomItem($roomId);
     
             if ($roomItem) {
+
+                // get route information
+                $route = explode('_', $currentStack->attributes->get('_route'));
+
+                $accountSettings = ['account', 'notifications', 'additional'];
+                $roomProfileSettings = ['general', 'address', 'contact'];
+
                 if ($roomItem->isGroupRoom()) {
                     $projectRoomItem = $roomItem->getLinkedProjectItem();
                     $menu->addChild($projectRoomItem->getTitle(), array(
@@ -491,7 +470,7 @@ class MenuBuilder
                         'attributes' => ['breadcrumb_room' => true],
                     ));
                 }
-                else {
+                elseif (isset($route[2]) && !in_array($route[2], $accountSettings)) {
                     // home
                     $menu->addChild($roomItem->getTitle(), array(
                         'route' => 'commsy_room_home',
@@ -500,10 +479,7 @@ class MenuBuilder
                     ));
                 }
 
-                // get route information
-                $route = explode('_', $currentStack->attributes->get('_route'));
-
-                if (isset($route[1]) && !in_array($route[1], ['room', 'dashboard', 'search', 'hashtag', 'category', 'item'])) {
+                if (isset($route[1]) && !in_array($route[1], ['room', 'dashboard', 'search', 'hashtag', 'category', 'item', 'profile', 'settings'])) {
 
                     // rubric
                     $tempRoute = 'commsy_'.$route[1].'_'.'list';
@@ -550,6 +526,33 @@ class MenuBuilder
                                 'attributes' => ['breadcrumb_item' => true],
                             ));
                         }
+                    }
+                }
+
+                elseif (isset($route[1]) && $route[1] == 'settings') {
+                    $menu->addChild('settings', array(
+                        'route' => 'commsy_settings_general',
+                        'routeParameters' => array('roomId' => $roomId),
+                        'attributes' => ['breadcrumb_room' => true],
+                    ));
+                }
+
+                elseif (isset($route[1]) && isset($route[2]) && $route[1] == 'profile') {
+                    // room profile
+                    if (in_array($route[2], $roomProfileSettings)) {
+                        $menu->addChild('Room profile', array(
+                            'route' => 'commsy_profile_' . $route[2],
+                            'routeParameters' => array('roomId' => $roomId, 'itemId' => $currentStack->attributes->get('itemId')),
+                            'attributes' => ['breadcrumb_room' => true],
+                        ));
+                    }
+                    // account
+                    elseif (in_array($route[2], $accountSettings)) {
+                        $menu->addChild('Account', array(
+                            'route' => 'commsy_profile_' . $route[2],
+                            'routeParameters' => array('roomId' => $roomId, 'itemId' => $currentStack->attributes->get('itemId')),
+                            'attributes' => ['breadcrumb_room' => false],
+                        ));
                     }
                 }
             }

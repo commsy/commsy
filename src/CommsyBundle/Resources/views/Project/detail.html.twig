@@ -1,4 +1,7 @@
 {% extends 'CommsyBundle:Base:room.html.twig' %}
+
+{% import 'CommsyBundle:Item:macros.html.twig' as macrosItem %}
+{% import 'CommsyBundle:Project:macros.html.twig' as macrosProject %}
 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
 {% set project = item %}
@@ -8,7 +11,7 @@
 
         <div class="uk-width-medium-4-5">
 
-            {# material content panel #}
+            {# project content panel #}
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
 
                 <div class="uk-panel-teaser cs-panel-teaser-primary cs-remove-overflow">
@@ -29,13 +32,22 @@
 
                 {# content #}
                 <article class="uk-article uk-position-relative" data-uk-observe>
-                    {{ project.title }}
-                    
-                    {{ project.contactModeratorListString }}
-                    
-                    {{ project.description }}
-                    
-                    {{ macros.contextLink(roomId, project, currentUser) }}
+                    {# title, etc. #}
+                    <div class="cs-toggle" data-uk-observe>
+                        {{ macrosProject.title(project, modifierList, userCount, readCount, readSinceModificationCount) }}
+                    </div>
+
+                    {# description #}
+                    <div id="description{{ project.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': project.contextId, 'itemId': project.itemId}) }}' }">
+                        {{ macrosItem.itemDescription('description', project, true, project.description) }}
+                    </div>
+
+                    {# access #}
+                    <div id="description{{ project.itemId }}" class="cs-toggle" data-uk-observe>
+                        <hr class="uk-width-9-10"/>
+
+                        {{ macrosProject.access(project, roomId, memberStatus) }}
+                    </div>
                 </article>
             </div>
         </div>
@@ -44,10 +56,13 @@
             {# quick navigation #}
             <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" data-uk-sticky>
                 <div class="uk-panel-teaser uk-text-large cs-panel-teaser-primary uk-margin-remove">
-                    
+                    {{ 'quick navigation'|trans({})|capitalize }}
                 </div>
-                <div>
-                    
+                <div id="cs-nav-quick" class="cs-nav-quick">
+                    <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ project.itemId }}\']'}" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
+                        <li><a href="#description{{ project.itemId }}">{{ 'entry description'|trans({})}}</a></li>
+                        <li><a href="#access{{ project.itemId }}">{{ 'Membership'|trans({},'room')}}</a></li>
+                    </ul>
                 </div>
             </div>
         </div>

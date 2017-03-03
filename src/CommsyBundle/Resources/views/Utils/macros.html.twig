@@ -450,13 +450,13 @@
         <a href="{{ path('commsy_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>
     {% else %}
         {% if contextMemberStatus == 'join' %}
-            User ...
+            <a href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}">{{ 'become member'|trans({}, 'room') }}</a>
         {% elseif contextMemberStatus == 'locked' %}
-            Locked ...
+            {{ 'This room is currently locked.'|trans({}, 'room') }}
         {% elseif contextMemberStatus == 'requested' %}
-            Requested ...
+            {{ 'Your request has not been processed yet.'|trans({}, 'room') }}
         {% elseif contextMemberStatus == 'rejected' %}
-            Rejected ...
+            {{ 'Your request has been rejected.'|trans({}, 'room') }}
         {% else %}
             <a href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}">{{ 'become member'|trans({}, 'room') }}</a>
         {% endif %}

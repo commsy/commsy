@@ -94,7 +94,7 @@ class RoomController extends Controller
             $serviceContact['email'] = $portalItem->getServiceEmail();
         }
 
-        // RSS-Feed / iCal
+        // RSS-Feed / iCal / Wiki
         $rss = [
             'show' => false,
             'url' => $this->generateUrl('commsy_rss', [
@@ -107,6 +107,10 @@ class RoomController extends Controller
                 'contextId' => $roomId,
             ])
         ];
+        $wiki = [
+            'show' => false,
+            'url' => str_ireplace('[COMMSY_CONTEXT_ID]', $roomItem->getItemId(), $this->getParameter('commsy.mediawiki.roomWikiUrl')),
+        ];
 
         if (!$roomItem->isLocked() && !$roomItem->isClosed()) {
             $currentUserItem = $legacyEnvironment->getCurrentUserItem();
@@ -117,6 +121,10 @@ class RoomController extends Controller
             $rubricInformation = $roomService->getRubricInformation($roomItem->getItemID());
 
             $iCal['show'] = in_array('date', $rubricInformation);
+
+            if ($roomItem->isWikiEnabled()) {
+                $wiki['show'] = true;
+            }
 
             if (!$roomItem->isOpenForGuests()) {
                 if ($currentUserItem->isUser()) {
@@ -130,6 +138,7 @@ class RoomController extends Controller
                         'contextId' => $roomId,
                         'hid' => $hashManager->getICalHashForUser($currentUserItem->getItemID()),
                     ]);
+                    $wiki['url'] = $wiki['url'].'?session-id='.$legacyEnvironment->getSessionID();
                 }
             }
         }
@@ -158,6 +167,7 @@ class RoomController extends Controller
             'serviceContact' => $serviceContact,
             'rss' => $rss,
             'iCal' => $iCal,
+            'wiki' => $wiki,
             'header' => $header,
         ];
     }

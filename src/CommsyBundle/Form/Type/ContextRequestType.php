@@ -3,67 +3,78 @@ namespace CommsyBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-
-use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
 
 class ContextRequestType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('description', TextareaType::class, array(
+            ->add('description', TextareaType::class, [
                 'label' => 'description',
-                'attr' => array(
-                ),
+                'attr' => [
+                    'rows' => 5,
+                    'cols' => 80,
+                ],
                 'translation_domain' => 'room',
                 'required' => false,
-            ))
+            ])
         ;
-        if (isset($options['checkNewMembersWithCode'])) {
+        if ($options['checkNewMembersWithCode']) {
             $builder
-                ->add('code', TextType::class, array(
-                    'label' => 'code',
-                    'attr' => array(
-                    ),
+                ->add('code', TextType::class, [
+                    'constraints' => [
+                        new Constraints\EqualTo([
+                            'value' => $options['checkNewMembersWithCode'],
+                            'message' => 'Your access code is invalid.',
+                        ]),
+                    ],
+                    'label' => 'Code',
+                    'attr' => [
+                    ],
                     'translation_domain' => 'room',
                     'required' => false,
-                ))
+                ])
             ;
         }
-        if (isset($options['withAGB'])) {
+        if ($options['withAGB']) {
             $builder
-                ->add('agb', CheckboxType::class, array(
-                    'label' => 'agb',
-                    'attr' => array(
-                    ),
+                ->add('agb', CheckboxType::class, [
+                    'constraints' => [
+                        new Constraints\IsTrue([
+                            'message' => 'You must accept room agb.',
+                        ]),
+                    ],
+                    'label' => 'AGB',
+                    'attr' => [
+                    ],
                     'translation_domain' => 'room',
-                    'required' => false,
-                ))
+                    'required' => true,
+                ])
             ;
         }
         $builder
-            ->add('save', SubmitType::class, array(
-                'attr' => array(
+            ->add('request', SubmitType::class, [
+                'attr' => [
                     'class' => 'uk-button-primary',
-                ),
+                ],
                 'label' => 'become member',
                 'translation_domain' => 'room',
-            ))
-            ->add('cancel', SubmitType::class, array(
-                'attr' => array(
-                    'class' => 'uk-button-primary',
+            ])
+            ->add('cancel', SubmitType::class, [
+                'attr' => [
+                    'class' => 'uk-button-secondary',
                     'formnovalidate' => '',
-                ),
+                ],
                 'label' => 'cancel',
                 'translation_domain' => 'form',
-            ))
+                'validation_groups' => false,
+            ])
         ;
     }
 
@@ -75,7 +86,7 @@ class ContextRequestType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired([])
+            ->setRequired(['checkNewMembersWithCode', 'withAGB'])
         ;
     }
 
@@ -88,6 +99,6 @@ class ContextRequestType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'project';
+        return 'request';
     }
 }

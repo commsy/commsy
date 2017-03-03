@@ -212,7 +212,7 @@
             </trans-unit>
             <trans-unit id="account">
                 <source>Account</source>
-                <target>Account</target>
+                <target>Zugang</target>
             </trans-unit>
             <trans-unit id="roomProfile">
                 <source>Room profile</source>

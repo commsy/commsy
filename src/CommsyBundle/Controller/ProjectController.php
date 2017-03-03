@@ -125,16 +125,26 @@ class ProjectController extends Controller
     public function detailAction($roomId, $itemId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $userService = $this->get('commsy_legacy.user_service');
                 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($itemId);
         
         $currentUser = $legacyEnvironment->getCurrentUser();
+
+        $infoArray = $this->getDetailInfo($roomItem);
+
+        $memberStatus = $userService->getMemberStatus($roomItem, $currentUser);
         
         return [
             'roomId' => $roomId,
             'item' => $roomItem,
             'currentUser' => $currentUser,
+            'modifierList' => $infoArray['modifierList'],
+            'userCount' => $infoArray['userCount'],
+            'readCount' => $infoArray['readCount'],
+            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
+            'memberStatus' => $memberStatus,
         ];
     }
 
@@ -221,7 +231,58 @@ class ProjectController extends Controller
      */
     public function editAction()
     {
+    }
 
+    private function getDetailInfo($room)
+    {
+        $itemService = $this->get('commsy_legacy.item_service');
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $readerManager = $legacyEnvironment->getReaderManager();
+
+        $info = [];
+
+        // modifier
+        $info['modifierList'][$room->getItemId()] = $itemService->getAdditionalEditorsForItem($room);
+
+        // total user count
+        $userManager = $legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager->setUserLimit();
+        $userManager->select();
+        $userList = $userManager->get();
+
+        $info['userCount'] = $userList->getCount();
+
+        // total and since modification reader count
+        $readerCount = 0;
+        $readSinceModificationCount = 0;
+        $currentUser = $userList->getFirst();
+
+        $userIds = array();
+        while ($currentUser) {
+            $userIds[] = $currentUser->getItemID();
+
+            $currentUser = $userList->getNext();
+        }
+
+        $readerManager->getLatestReaderByUserIDArray($userIds, $room->getItemID());
+        $currentUser = $userList->getFirst();
+        while ($currentUser) {
+            $currentReader = $readerManager->getLatestReaderForUserByID($room->getItemID(), $currentUser->getItemID());
+            if ( !empty($currentReader) ) {
+                if ($currentReader['read_date'] >= $room->getModificationDate()) {
+                    $readSinceModificationCount++;
+                }
+
+                $readerCount++;
+            }
+            $currentUser = $userList->getNext();
+        }
+
+        $info['readCount'] = $readerCount;
+        $info['readSinceModificationCount'] = $readSinceModificationCount;
+
+        return $info;
     }
 
     private function copySettings($masterRoom, $targetRoom)
@@ -348,41 +409,6 @@ class ProjectController extends Controller
         }
 
         return $templates;
-    }
-
-    private function assignTemplateVars() {
-        $current_user = $this->_environment->getCurrentUserItem();
-        $current_context = $this->_environment->getCurrentContextItem();
-
-        $current_portal = $this->_environment->getCurrentPortalItem();
-        $room_manager = $this->_environment->getProjectManager();
-        $room_manager->setContextLimit($current_portal->getItemID());
-        $room_manager->setTemplateLimit();
-        $room_manager->select();
-        $room_list = $room_manager->get();
-
-
-        $default_id = $this->_environment->getCurrentPortalItem()->getDefaultProjectTemplateID();
-        if ($room_list->isNotEmpty() or $default_id != '-1' ) {
-            $current_user = $this->_environment->getCurrentUser();
-            if ( $default_id != '-1' ) {
-                $default_item = $room_manager->getItem($default_id);
-                if ( isset($default_item) ) {
-                    $template_availability = $default_item->getTemplateAvailability();
-                    if ( $template_availability == '0' ) {
-                        $temp_array['text'] = '*'.$default_item->getTitle();
-                        $temp_array['value'] = $default_item->getItemID();
-                        $template_array[] = $temp_array;
-                        $temp_array = array();
-                        $temp_array['text'] = '------------------------';
-                        $temp_array['value'] = 'disabled';
-                        $template_array[] = $temp_array;
-                    }
-                }
-            }
-        }
-
-        $this->_popup_controller->assign("item", "languages", $this->_environment->getAvailableLanguageArray());
     }
     
     private function memberStatus($item)

@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 use CommsyBundle\Filter\ProjectFilterType;
 
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Form\FormError;
 
@@ -70,215 +71,264 @@ class ContextController extends Controller
                 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($itemId);
-        
-        $formData = array();
-        $formOptions = array();
-        
+
+        // determine form options
+        $formOptions = [
+            'checkNewMembersWithCode' => false,
+            'withAGB' => false,
+        ];
+
         if ($roomItem->checkNewMembersWithCode()) {
-            $formOptions['checkNewMembersWithCode'] = true;
+            $formOptions['checkNewMembersWithCode'] = $roomItem->getCheckNewMemberCode();
         }
         
         $agbText = '';
-        if ($roomItem->getAGBStatus() != 2 and $roomItem->withAGBDatasecurity()) {
+        if ($roomItem->getAGBStatus() != 2) {
             $formOptions['withAGB'] = true;
-            $agbText = $item->getAGBTextArray();
+
+            // get agb text in users language
+            $agbText = $roomItem->getAGBTextArray()[strtoupper($legacyEnvironment->getUserLanguage())];
         }
         
-        $form = $this->createForm(ContextRequestType::class, $formData, $formOptions);
+        $form = $this->createForm(ContextRequestType::class, null, $formOptions);
         
         $form->handleRequest($request);
-        if ($form->isValid()) {
-            $saveType = $form->getClickedButton()->getName();
+        if ($form->isSubmitted() && $form->isValid()) {
 
-            if ($saveType == 'save') {
+            if ($form->get('request')->isClicked()) {
                 $formData = $form->getData();
-                
-		        $currentItemId = $itemId;
-		        $labelItem = null;
-                if(empty($roomItem)){
-                    $grouproomFlag = true;
-                    $roomItem = $roomManager->getItem($additional['context_id']);
-                    $currentItemId = $additional['context_id'];
-                    // label item holen und addmember ausführen wenn kein member
-                    $labelManager = $legacyEnvironment->getLabelManager();
-                    $labelItem = $labelManager->getItem($itemId);
-		        }
-		        
-                $portalItem = $legacyEnvironment->getCurrentPortalItem();
-                $agbFlag = false;
-		      
-                if($portalItem->withAGBDatasecurity()){
-				    if($roomItem->getAGBStatus() == 1){
-					    if($formData['agb']){
-						    $agbFlag = true;
-					    } else {
-						    $agbFlag = false;
-					    }
-				    } else {
-					    $agbFlag = true;
-				    }
-			    } else {
-                    $agbFlag = true;
-			    }
-			  
-                // build new user_item
-                if ((!$roomItem->checkNewMembersWithCode() or ($roomItem->getCheckNewMemberCode() == $formData['code']) or ($roomItem->getCheckNewMemberCode() and !empty($formData['description']))) and $agbFlag) {
-                    $currentUser = $legacyEnvironment->getCurrentUserItem();
-                    $privateRoomUserItem = $currentUser->getRelatedPrivateRoomUserItem();
-                    if (isset($privateRoomUserItem)) {
-		                $userItem = $privateRoomUserItem->cloneData();
-                        $picture = $privateRoomUserItem->getPicture();
-		            } else {
-		                $userItem = $currentUser->cloneData();
-                        $picture = $currentUser->getPicture();
-		            }
-                    $userItem->setContextID($currentItemId);
-                    if (!empty($picture)) {
-		                $valueArray = explode('_',$picture);
-                        $valueArray[0] = 'cid'.$userItem->getContextID();
-                        $new_picture_name = implode('_',$valueArray);
-                        $discManager = $legacyEnvironment->getDiscManager();
-                        $discManager->copyImageFromRoomToRoom($picture,$userItem->getContextID());
-                        $userItem->setPicture($new_picture_name);
-		            }
-                    if (isset($formData['description'])) {
-		                $userItem->setUserComment($formData['description']);
-		            }
 
-                    //check room_settings
-                    if ((!$roomItem->checkNewMembersNever() and !$roomItem->checkNewMembersWithCode()) or ($roomItem->checkNewMembersWithCode() and $roomItem->getCheckNewMemberCode() != $formData['code'])) {
-		                $userItem->request();
-                        $checkMessage = 'YES'; // for mail body
-                        $accountMode = 'info';
-		            } else {
-		                $userItem->makeUser(); // for mail body
-                        $checkMessage = 'NO';
-                        $accountMode = 'to_room';
-                        // save link to the group ALL
-                        $groupManager = $legacyEnvironment->getLabelManager();
-                        $groupManager->setExactNameLimit('ALL');
-                        $groupManager->setContextLimit($currentItemId);
-                        $groupManager->select();
-                        $groupList = $groupManager->get();
-                        if ($groupList->getCount() == 1) {
-                            $group = $groupList->getFirst();
-                            $group->setTitle('ALL');
-                            $userItem->setGroupByID($group->getItemID());
-		                }
-		            
-                        if(isset($labelItem) and !empty($labelItem)){
-		            	    if(!$labelItem->isMember($currentUser)){
-		            		    $labelItem->addMember($currentUser);
-		            	    }
-		                }
-    		        }
-		         
-                    if($portalItem->withAGBDatasecurity()){
-                        if($roomItem->getAGBStatus()){
-                            if($formData['agb']){
-                                $userItem->setAGBAcceptance();
-		                    }
-		                }
-		            }
-		      
-                    // test if user id already exists (reload page)
-                    $userId = $userItem->getUserID();
-                    $userTestItem = $roomItem->getUserByUserID($userId,$userItem->getAuthSource());
-                    if (!isset($userTestItem) and mb_strtoupper($userId, 'UTF-8') != 'GUEST' and mb_strtoupper($userId, 'UTF-8') != 'ROOT') {
-		                $userItem->save();
-                        $userItem->setCreatorID2ItemID();
-		      
-                        // save task
-                        if (!$roomItem->checkNewMembersNever() and !$roomItem->checkNewMembersWithCode()) {
-                            $taskManager = $legacyEnvironment->getTaskManager();
-                            $taskItem = $taskManager->getNewItem();
-                            $currentUser = $legacyEnvironment->getCurrentUserItem();
-                            $taskItem->setCreatorItem($currentUser);
-                            $taskItem->setContextID($roomItem->getItemID());
-                            $taskItem->setTitle('TASK_USER_REQUEST');
-                            $taskItem->setStatus('REQUEST');
-                            $taskItem->setItem($userItem);
-                            $taskItem->save();
-    		            }
-    		      
-    		            // send email to moderators if necessary
-    		            $userManager = $legacyEnvironment->getUserManager();
-    		            $userManager->resetLimits();
-    		            $userManager->setModeratorLimit();
-    		            $userManager->setContextLimit($currentItemId);
-    		            $userManager->select();
-    		            $userList = $userManager->get();
-    		            $emailAddresses = array();
-    		            $moderatorItem = $userList->getFirst();
-    		            $recipients = '';
-    		            while ($moderatorItem) {
-    		                $wantsMail = $moderatorItem->getAccountWantMail();
-                            if (!empty($wantsMail) and $wantsMail == 'yes') {
-    		                    $emailAddresses[] = $moderatorItem->getEmail();
-                                $recipients .= $moderatorItem->getFullname()."\n";
-    		                }
-                            $moderatorItem = $userList->getNext();
-    		            }
-    		      
-    		            // language
-    		            $language = $roomItem->getLanguage();
-    		            if ($language == 'user') {
-    		                $language = $userItem->getLanguage();
-                            if ($language == 'browser') {
-    		                    $language = $legacyEnvironment->getSelectedLanguage();
-    		                }
-    		            }
-    		      
-    		            /*
-        		         *  ToDo: Send emails to new user and moderators. See cs_popup_userContextJoin_controller -> save() -> case 'context_join' for details.
-        		         */
-    		        }
-		        } elseif ($roomItem->checkNewMembersWithCode() and $roomItem->getCheckNewMemberCode() != $formData['code']) {
-		            $accountMode = 'member';
-                    $error = 'code';
-                    //$this->_popup_controller->setErrorReturn(111, 'wrong_code', array());
-		        } elseif (!$agbFlag and $portalItem->withAGBDatasecurity() and $roomItem->getAGBStatus() == 1){
-                    //$this->_popup_controller->setErrorReturn(115, 'agb_not_accepted', array());
-		        }
-		      
-                if ($accountMode =='to_room'){
-                    $data['cid'] = $legacyEnvironment->getCurrentContextID();
-                    if($labelItem){
-                        $data['item_id'] = $labelItem->getItemID();
-                        $data['mod'] = 'group';
-		            } else {
-                        $data['item_id'] = $roomItem->getItemID();
-                        $data['mod'] = 'project';
-		            }
-                    //$this->_popup_controller->setSuccessfullDataReturn($data);
-		        } else {
-                    $data['cid'] = $legacyEnvironment->getCurrentContextID();
-                    if($labelItem){
-                        $data['item_id'] = $labelItem->getItemID();
-                        $data['mod'] = 'group';
-		            } else {
-                        $data['item_id'] = $roomItem->getItemID();
-                        $data['mod'] = 'project';
-		            }
-                    //$this->_popup_controller->setSuccessfullDataReturn($data);
-		        }
-		        
-            } else {
-                // ToDo ...
+                // At this point we can assume that the user has accepted agb and
+                // provided the correct code if necessary (or provided no code at all).
+                // We can now build a new user item and set the appropriate status
+
+                $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+                $privateRoomUserItem = $currentUserItem->getRelatedPrivateRoomUserItem();
+
+                if ($privateRoomUserItem) {
+                    $newUser = $privateRoomUserItem->cloneData();
+                    $newPicture = $privateRoomUserItem->getPicture();
+                } else {
+                    $newUser = $currentUserItem->cloneData();
+                    $newPicture = $currentUserItem->getPicture();
+                }
+
+                $newUser->setContextID($roomItem->getItemID());
+
+                if (!empty($newPicture)) {
+                    $values = explode('_', $newPicture);
+                    $values[0] = 'cid' . $newUser->getContextID();
+
+                    $newPictureName = implode('_', $values);
+
+                    $discManager = $legacyEnvironment->getDiscManager();
+                    $discManager->copyImageFromRoomToRoom($newPicture, $newUser->getContextID());
+                    $newUser->setPicture($newPictureName);
+                }
+
+                if ($formData['description']) {
+                    $newUser->setUserComment($formData['description']);
+                }
+
+                if ($roomItem->checkNewMembersAlways() ||
+                    ($roomItem->checkNewMembersWithCode() && !isset($formData['code']))) {
+                    // The user either needs to ask for access or provided no code
+                    $newUser->request();
+                    $isRequest = true;
+                } else {
+                    // no authorization is needed at all or the code was correct
+                    $newUser->makeUser();
+                    $isRequest = false;
+
+                    // link user with group "all"
+                    $groupManager = $legacyEnvironment->getLabelManager();
+                    $groupManager->setExactNameLimit('ALL');
+                    $groupManager->setContextLimit($roomItem->getItemID());
+                    $groupManager->select();
+                    $groupList = $groupManager->get();
+                    $group = $groupList->getFirst();
+
+                    if ($group) {
+                        $group->addMember($newUser);
+                    }
+                }
+
+                if ($roomItem->getAGBStatus()) {
+                    $newUser->setAGBAcceptance();
+                }
+
+                // check if user id already exists
+                $userTestItem = $roomItem->getUserByUserID($newUser->getUserID(), $newUser->getAuthSource());
+                if (!$userTestItem && !$newUser->isReallyGuest() && !$newUser->isRoot()) {
+                    $newUser->save();
+                    $newUser->setCreatorID2ItemID();
+
+                    // save task
+                    if ($isRequest) {
+                        $taskManager = $legacyEnvironment->getTaskManager();
+                        $taskItem = $taskManager->getNewItem();
+
+                        $taskItem->setCreatorItem($currentUserItem);
+                        $taskItem->setContextID($roomItem->getItemID());
+                        $taskItem->setTitle('TASK_USER_REQUEST');
+                        $taskItem->setStatus('REQUEST');
+                        $taskItem->setItem($newUser);
+                        $taskItem->save();
+                    }
+
+                    // mail to moderators
+                    $message = \Swift_Message::newInstance()
+                        ->setFrom([$this->getParameter('commsy.email.from') => $roomItem->getContextItem()->getTitle()])
+                        ->setReplyTo([$newUser->getEmail() => $newUser->getFullName()]);
+
+                    $userManager = $legacyEnvironment->getUserManager();
+                    $userManager->resetLimits();
+                    $userManager->setModeratorLimit();
+                    $userManager->setContextLimit($roomItem->getItemID());
+                    $userManager->select();
+
+                    $moderatorList = $userManager->get();
+                    $moderator = $moderatorList->getFirst();
+                    $moderators = '';
+                    while ($moderator) {
+                        if ($moderator->getAccountWantMail() == 'yes') {
+                            $message->addTo($moderator->getEmail(), $moderator->getFullname());
+                            $moderators .= $moderator->getFullname() . "\n";
+                        }
+
+                        $moderator = $moderatorList->getNext();
+                    }
+
+                    // language
+                    $language = $roomItem->getLanguage();
+                    if ($language == 'user') {
+                        $language = $newUser->getLanguage();
+                        if ($language == 'browser') {
+                            $language = $legacyEnvironment->getSelectedLanguage();
+                        }
+                    }
+
+                    $translator = $legacyEnvironment->getTranslationObject();
+
+                    if ($message->getTo()) {
+                        $savedLanguage = $translator->getSelectedLanguage();
+                        $translator->setSelectedLanguage($language);
+
+                        $message->setSubject($translator->getMessage('USER_JOIN_CONTEXT_MAIL_SUBJECT', $newUser->getFullname(), $roomItem->getTitle()));
+
+                        $body = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(date("Y-m-d H:i:s")), $translator->getTimeInLang(date("Y-m-d H:i:s")));
+                        $body .= "\n\n";
+
+                        if ($legacyEnvironment->getCurrentPortalItem()->getHideAccountname()) {
+                            $userId = 'XXX ' . $translator->getMessage('COMMON_DATASECURITY');
+                        } else {
+                            $userId = $newUser->getUserID();
+                        }
+                        $body .= $translator->getMessage('USER_JOIN_CONTEXT_MAIL_BODY', $newUser->getFullname(), $userId, $newUser->getEmail(), $roomItem->getTitle());
+                        $body .= "\n\n";
+
+                        if ($isRequest) {
+                            $body .= $translator->getMessage('USER_GET_MAIL_STATUS_YES');
+                        } else {
+                            $body .= $translator->getMessage('USER_GET_MAIL_STATUS_NO');
+                        }
+                        $body .= "\n\n";
+
+                        if ($formData['description']) {
+                            $body .= $translator->getMessage('MAIL_COMMENT_BY', $newUser->getFullname(), $formData['description']);
+                            $body .= "\n\n";
+                        }
+
+                        $body .= $translator->getMessage('MAIL_SEND_TO', $moderators);
+                        $body .= "\n";
+
+                        if ($isRequest) {
+                            $body .= $translator->getMessage('MAIL_USER_FREE_LINK') . "\n";
+                            $body .= $this->generateUrl('commsy_user_list', [
+                                'roomId' => $roomItem->getItemID(),
+                                'user_filter' => [
+                                    'user_status' => 1,
+                                ],
+                            ], UrlGeneratorInterface::ABSOLUTE_URL);
+                        } else {
+                            $body .= $this->generateUrl('commsy_room_home', [
+                                'roomId' => $roomItem->getItemID(),
+                            ], UrlGeneratorInterface::ABSOLUTE_URL);
+                        }
+
+                        $message->setBody($body, 'text/plain');
+
+                        $this->get('mailer')->send($message);
+
+                        $translator->setSelectedLanguage($savedLanguage);
+                    }
+                }
+
+                // inform user if request required no authorization
+                if ($newUser->isUser()) {
+                    $moderatorList = $roomItem->getModeratorList();
+                    $contactModerator = $moderatorList->getFirst();
+
+                    $translator = $legacyEnvironment->getTranslationObject();
+                    $translator->setEmailTextArray($roomItem->getEmailTextArray());
+                    $translator->setContext('project');
+
+                    $savedLanguage = $translator->getSelectedLanguage();
+
+                    $language = $roomItem->getLanguage();
+                    if ($language == 'user') {
+                        $language = $newUser->getLanguage();
+                        if ($language == 'browser') {
+                            $language = $legacyEnvironment->getSelectedLanguage();
+                        }
+                    }
+
+                    if ($legacyEnvironment->getCurrentPortalItem()->getHideAccountname()) {
+                        $userId = 'XXX ' . $translator->getMessage('COMMON_DATASECURITY');
+                    } else {
+                        $userId = $newUser->getUserID();
+                    }
+
+                    $translator->setSelectedLanguage($language);
+
+                    $subject = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_USER', $roomItem->getTitle());
+
+                    $body  = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(date("Y-m-d H:i:s")), $translator->getTimeInLang(date("Y-m-d H:i:s")));
+                    $body .= "\n\n";
+                    $body .= $translator->getEmailMessage('MAIL_BODY_HELLO', $newUser->getFullname());
+                    $body .= "\n\n";
+                    $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER', $userId, $roomItem->getTitle());
+                    $body .= "\n\n";
+                    $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $contactModerator->getFullname(), $roomItem->getTitle());
+                    $body .= "\n\n";
+                    $body .= $this->generateUrl('commsy_room_home', [
+                        'roomId' => $roomItem->getItemID(),
+                    ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+                    $message = \Swift_Message::newInstance()
+                        ->setSubject($subject)
+                        ->setBody($body, 'text/plain')
+                        ->setFrom([$this->getParameter('commsy.email.from') => $roomItem->getContextItem()->getTitle()])
+                        ->setReplyTo([$contactModerator->getEmail() => $contactModerator->getFullName()])
+                        ->setTo([$newUser->getEmail()]);
+
+                    $this->get('mailer')->send($message);
+
+                    $translator->setSelectedLanguage($savedLanguage);
+                }
             }
-            
-            return $this->redirectToRoute('commsy_project_detail', array('roomId' => $roomId, 'itemId' => $itemId));
-            
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
+
+            // redirect to detail page
+            return $this->redirectToRoute('commsy_project_detail', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]);
         }
         
-        return array(
+        return [
             'form' => $form->createView(),
             'agbText' => $agbText,
-        );
+        ];
     }
     
 }
