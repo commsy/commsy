@@ -21,21 +21,47 @@ class MediawikiService
         $this->legacyEnvironment = $legacyEnvironment;
     }
 
-    public function createWiki($roomId)
+    public function enableWiki($roomId)
     {
-        $url = $this->wikiApiUrl.'?action=commsy&function=createwiki&session-id='.$this->legacyEnvironment->getEnvironment()->getSessionID().'&context-id='.$roomId.'&format=json';
-        
-        $restClient = $this->container->get('circle.restclient');
-        
-        $json = $restClient->get($url)->getContent();
+        $result = false;
+        if (!$this->isWikiEnabled($roomId)) {
+            $url = $this->wikiApiUrl . '?action=commsy&function=enablewiki&session-id=' . $this->legacyEnvironment->getEnvironment()->getSessionID() . '&context-id=' . $roomId . '&format=json';
+            $restClient = $this->container->get('circle.restclient');
+            $json = json_decode($restClient->get($url)->getContent());
+            if (!isset($json->commsy->error)) {
+                if ($json->commsy->result == 'wiki enabled') {
+                    $result = true;
+                }
+            }
+        }
+        return $result;
     }
 
-    public function deleteWiki($roomId)
+    public function disableWiki($roomId)
     {
-        $url = $this->wikiApiUrl.'?action=commsy&function=deletewiki&session-id='.$this->legacyEnvironment->getEnvironment()->getSessionID().'&context-id='.$roomId.'&format=json';
+        $result = false;
+        if ($this->isWikiEnabled($roomId)) {
+            $url = $this->wikiApiUrl . '?action=commsy&function=disablewiki&session-id=' . $this->legacyEnvironment->getEnvironment()->getSessionID() . '&context-id=' . $roomId . '&format=json';
+            $restClient = $this->container->get('circle.restclient');
+            $json = json_decode($restClient->get($url)->getContent());
+            if (!isset($json->commsy->error)) {
+                if ($json->commsy->result == 'wiki enabled') {
+                    $result = true;
+                }
+            }
+        }
+        return $result;
+    }
 
+    public function isWikiEnabled($roomId){
+        $url = $this->wikiApiUrl.'?action=commsy&function=iswikienabled&session-id='.$this->legacyEnvironment->getEnvironment()->getSessionID().'&context-id='.$roomId.'&format=json';
         $restClient = $this->container->get('circle.restclient');
-
-        $json = $restClient->get($url)->getContent();
+        $json = json_decode($restClient->get($url)->getContent());
+        if (!isset($json->commsy->error)) {
+            if ($json->commsy->result == 'wiki is enabled') {
+                return true;
+            }
+        }
+        return false;
     }
 }

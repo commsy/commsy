@@ -158,11 +158,21 @@ class ExtensionSettingsTransformer implements DataTransformerInterface
         }
         
         if ($roomData['wikiEnabled']) {
-            $roomObject->setWikiEnabled(true);
-            $this->mediaWiki->createWiki($roomObject->getItemID());
+            if ($this->mediaWiki->enableWiki($roomObject->getItemID())) {
+                $roomObject->setWikiEnabled(true);
+            } else if ($this->mediaWiki->isWikiEnabled($roomObject->getItemID())) {
+                $roomObject->setWikiEnabled(true);
+            } else {
+                $roomObject->setWikiEnabled(false);
+            }
         } else {
-            $roomObject->setWikiEnabled(false);
-            $this->mediaWiki->deleteWiki($roomObject->getItemID());
+            if ($this->mediaWiki->disableWiki($roomObject->getItemID())) {
+                $roomObject->setWikiEnabled(false);
+            } else if (!$this->mediaWiki->isWikiEnabled($roomObject->getItemID())) {
+                $roomObject->setWikiEnabled(false);
+            } else {
+                $roomObject->setWikiEnabled(true);
+            }
         }
 
         $roomObject->save();
