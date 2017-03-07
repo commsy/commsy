@@ -101,12 +101,7 @@ class RoomController extends Controller
                 'contextId' => $roomId,
             ]),
         ];
-        $iCal = [
-            'show' => false,
-            'url' => $this->generateUrl('commsy_ical_getcontent', [
-                'contextId' => $roomId,
-            ])
-        ];
+
         $wiki = [
             'show' => false,
             'url' => str_ireplace('[COMMSY_CONTEXT_ID]', $roomItem->getItemId(), $this->getParameter('commsy.mediawiki.roomWikiUrl')),
@@ -116,11 +111,6 @@ class RoomController extends Controller
             $currentUserItem = $legacyEnvironment->getCurrentUserItem();
 
             $rss['show'] = true;
-
-            $roomService = $this->get('commsy_legacy.room_service');
-            $rubricInformation = $roomService->getRubricInformation($roomItem->getItemID());
-
-            $iCal['show'] = in_array('date', $rubricInformation);
 
             if ($roomItem->isWikiEnabled()) {
                 $wiki['show'] = true;
@@ -134,10 +124,7 @@ class RoomController extends Controller
                         'contextId' => $roomId,
                         'hid' => $hashManager->getRSSHashForUser($currentUserItem->getItemID()),
                     ]);
-                    $iCal['url'] = $this->generateUrl('commsy_ical_getcontent', [
-                        'contextId' => $roomId,
-                        'hid' => $hashManager->getICalHashForUser($currentUserItem->getItemID()),
-                    ]);
+
                     $wiki['url'] = $wiki['url'].'?session-id='.$legacyEnvironment->getSessionID();
                 }
             }
@@ -166,7 +153,6 @@ class RoomController extends Controller
             'bgImageFilepath' => $backgroundImage,
             'serviceContact' => $serviceContact,
             'rss' => $rss,
-            'iCal' => $iCal,
             'wiki' => $wiki,
             'header' => $header,
         ];

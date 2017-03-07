@@ -298,6 +298,10 @@
                 <source>export dates</source>
                 <target>Termine exportieren</target>
             </trans-unit>
+            <trans-unit id="date_action_abo">
+                <source>abo dates</source>
+                <target>Termine abonnieren</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

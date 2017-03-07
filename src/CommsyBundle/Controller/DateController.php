@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 use CommsyBundle\Filter\DateFilterType;
 use CommsyBundle\Validator\Constraints\EndDateConstraint;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class DateController extends Controller
 {    
@@ -242,32 +243,49 @@ class DateController extends Controller
         }
 
         // iCal
-        $iCalUrl = $this->generateUrl('commsy_ical_getcontent', [
-            'contextId' => $roomId,
-            'export' => true,
-        ]);
+        $iCal = [
+            'show' => false,
+            'aboUrl' => $this->generateUrl('commsy_ical_getcontent', [
+                'contextId' => $roomId,
+            ], UrlGeneratorInterface::ABSOLUTE_URL),
+            'exportUrl' => $this->generateUrl('commsy_ical_getcontent', [
+                'contextId' => $roomId,
+                'export' => true,
+            ], UrlGeneratorInterface::ABSOLUTE_URL),
+        ];
 
-        $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+        if ($roomItem->isOpenForGuests()) {
+            $iCal['show'] = true;
+        } else {
+            $currentUserItem = $legacyEnvironment->getCurrentUserItem();
 
-        if (!$roomItem->isOpenForGuests()) {
             if ($currentUserItem->isUser()) {
+                $iCal['show'] = true;
+
                 $hashManager = $legacyEnvironment->getHashManager();
-                $iCalUrl = $this->generateUrl('commsy_ical_getcontent', [
+                $iCalHash = $hashManager->getICalHashForUser($currentUserItem->getItemID());
+
+                $iCal['aboUrl'] = $this->generateUrl('commsy_ical_getcontent', [
                     'contextId' => $roomId,
-                    'hid' => $hashManager->getICalHashForUser($currentUserItem->getItemID()),
+                    'hid' => $iCalHash,
+                ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+                $iCal['exportUrl'] = $this->generateUrl('commsy_ical_getcontent', [
+                    'contextId' => $roomId,
+                    'hid' => $iCalHash,
                     'export' => true,
-                ]);
+                ], UrlGeneratorInterface::ABSOLUTE_URL);
             }
         }
 
-        return array(
+        return [
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
             'module' => 'date',
             'itemsCountArray' => $itemsCountArray,
             'usageInfo' => $usageInfo,
-            'iCalUrl' => $iCalUrl,
-        );
+            'iCal' => $iCal,
+        ];
     }
 
        /**
