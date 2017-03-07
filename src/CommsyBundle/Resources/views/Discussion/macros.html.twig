@@ -322,7 +322,25 @@
         </div>
 {% endmacro %}
 
-{% macro articles(item, sectionList) %}
+
+{% macro articleTree(articles, level) %}
+    {% set opened = false %}
+
+    {% for child in articles %}
+        <li id="article_{{ child.item.itemId }}" data-jstree='{"opened": {{ opened }}}'>
+            {{- child.item.title -}}
+
+        {% if child.children is defined %}
+            <ul>
+                {{ _self.articleTree(child.children, level+1) }}
+            </ul>
+        {% endif %}
+
+        </li>
+    {% endfor %}
+{% endmacro %}
+
+{% macro articles(item, articleList, articleTree) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macrosUtils %}
 
     <hr class="uk-width-9-10"/>
@@ -336,50 +354,20 @@
             <div class="uk-width-9-10">
                 <h4 class="cs-detail-section-header">
                     {{- "articles"|trans({},'discussion') }}
-                    ({{ sectionList|length }})
+                    ({{ articleList|length }})
                 </h4>
             </div>
-
-            <div class="uk-width-1-10 uk-flex uk-text-right">
-                {# edit action #}
-                {% if is_granted('ITEM_EDIT', item.itemId) %}
-                    <div class="cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
-                        <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
-                    </div>
-                {% endif %}
-
-                {# toggle action #}
-                {% if not sectionList is empty %}
-                    <div class="cs-toggle-icon uk-margin-left uk-width-1-1 uk-invisible" data-cs-unhide-collapsed="{src: '.toggle-sections-{{ item.itemId }}'}">
-                        <a class="cs-toggle" data-uk-toggle="{target:'.toggle-sections-{{ item.itemId }}', cls: 'cs-toggle-full'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
-                    </div>
-                {% endif %}
-           </div>
         </div>
 
         {# content #}
-        {% if not sectionList is empty %}
+        {% if not articleList is empty %}
             <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
 
-                {# preview #}
-                <div class="toggle-sections-{{ item.itemId }} cs-toggle-preview">
-                    <ul id="discarticle-list" class="uk-list uk-list-striped uk-width-2-3">
-                        {% for section in sectionList %}
-                            <li>
-                                <a href="#discarticle{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">
-                                    {{ loop.index }}. {{ section.title|raw }}
-                                </a>
-
-                                {{ macrosUtils.fileListShort(section) }}
-                            </li>                      
-                        {% endfor %}
+                <div class="uk-width-2-3" data-cs-tree='{"tree": {"checkbox": {"visible": false}}}'>
+                    <ul class="uk-list">
+                        {{ _self.articleTree(articleTree.children, 0) }}
                     </ul>
                 </div>
-
-                <a class="uk-invisible" href="#" data-cs-unhide-collapsed="{src: '.toggle-sections-{{ item.itemId }}'}" data-cs-readmore>
-                    <span class="cs-readmoreless">{{- "read more"|trans({}) -}}</span>
-                    <span class="cs-readmoreless uk-hidden">{{- "read less"|trans({}) -}}</span>
-                </a>
 
             </div>
         {% else %}

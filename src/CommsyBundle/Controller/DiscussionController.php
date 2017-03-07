@@ -250,10 +250,11 @@ class DiscussionController extends Controller
     {
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
-        return array(
+        return [
             'roomId' => $roomId,
             'discussion' => $infoArray['discussion'],
             'articleList' => $infoArray['articleList'],
+            'articleTree' => $infoArray['articleTree'],
             'readerList' => $infoArray['readerList'],
             'modifierList' => $infoArray['modifierList'],
             'discussionList' => $infoArray['discussionList'],
@@ -273,7 +274,7 @@ class DiscussionController extends Controller
             'user' => $infoArray['user'],
             'ratingArray' => $infoArray['ratingArray'],
             'roomCategories' => $infoArray['roomCategories'],
-       );
+        ];
     }
     
     private function getDetailInfo ($roomId, $itemId) {
@@ -284,10 +285,9 @@ class DiscussionController extends Controller
 
         $discussion = $discussionService->getDiscussion($itemId);
         
-        $articleList = $discussion->getAllArticles()->to_array();
-        
-        $itemArray = array($discussion);
-        $itemArray = array_merge($itemArray, $articleList);
+        $articleList = $discussion->getAllArticles();
+
+        $itemArray = array_merge([$discussion], $articleList->to_array());
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
@@ -419,8 +419,11 @@ class DiscussionController extends Controller
             $categories = $this->getTagDetailArray($roomCategories, $discussionCategories);
         }
 
+        $articleTree = $this->get('commsy_legacy.discussion_service')->buildArticleTree($articleList);
+
         $infoArray['discussion'] = $discussion;
-        $infoArray['articleList'] = $articleList;
+        $infoArray['articleList'] = $articleList->to_array();
+        $infoArray['articleTree'] = $articleTree;
         $infoArray['readerList'] = $readerList;
         $infoArray['modifierList'] = $modifierList;
         $infoArray['discussionList'] = $discussionList;
@@ -488,39 +491,18 @@ class DiscussionController extends Controller
      */
     public function createAction($roomId, Request $request)
     {
-        $translator = $this->get('translator');
-        
-        $discussionData = array();
         $discussionService = $this->get('commsy_legacy.discussion_service');
-        $transformer = $this->get('commsy_legacy.transformer.discussion');
         
-        // create new material item
+        // create a new discussion
         $discussionItem = $discussionService->getNewDiscussion();
-        // $discussionItem->setTitle('['.$translator->trans('insert title').']');
         $discussionItem->setDraftStatus(1);
         $discussionItem->setPrivateEditing('1');
         $discussionItem->save();
 
-        /* $form = $this->createForm(MaterialType::class, $materialData, array());
-        
-        $form->handleRequest($request);
-        if ($form->isValid()) {
-            $materialItem = $transformer->applyTransformation($materialItem, $form->getData());
-            $materialItem->save();
-            return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $materialItem->getItemId()));
-
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
-        } */
-
-        return $this->redirectToRoute('commsy_discussion_detail', array('roomId' => $roomId, 'itemId' => $discussionItem->getItemId()));
-
-        /* return array(
-            'material' => $materialItem,
-            'form' => $form->createView()
-        ); */
+        return $this->redirectToRoute('commsy_discussion_detail', [
+            'roomId' => $roomId,
+            'itemId' => $discussionItem->getItemId(),
+        ]);
     }
     
     /**
@@ -730,21 +712,80 @@ class DiscussionController extends Controller
         $discussion = $discussionService->getDiscussion($itemId);
 
         $articleList = $discussion->getAllArticles();
-        $countArticles = $articleList->getCount();
+
+        // calculate new position
+        if ($request->query->has('answerTo')) {
+            // get parent position
+            $parentId = $request->query->get('answerTo');
+            $daManager = $legacyEnvironment->getDiscussionArticlesManager();
+            $parentArticle = $daManager->getItem($parentId);
+            $parentPosition = $parentArticle->getPosition();
+        } else {
+            $parentId = 0;
+            $parentPosition = 0;
+        }
+
+        /**
+         * TODO: Instead of iteration all articles to find the latest in the parents branch
+         * it would be much better to ask only for all childs of an article or directly
+         * for the latest position
+         */
+        $numParentDots = substr_count($parentPosition, '.');
+        $article = $articleList->getFirst();
+        $newRelativeNumericPosition = 1;
+        while ($article) {
+            $position = $article->getPosition();
+
+            $numDots = substr_count($position, '.');
+
+            if ($parentPosition == 0) {
+                if ($numDots == 0) {
+                    // compare against our latest stored position
+                    if (sprintf('%1$04d', $newRelativeNumericPosition) <= $position) {
+                        $newRelativeNumericPosition++;
+                    }
+                }
+            } else {
+                // if the parent position is one level above the child ones and
+                // the position string is start of the child position
+                if ($numDots == $numParentDots + 1 && substr($position, 0, strlen($parentPosition)) == $parentPosition) {
+                    // extract the last position part
+                    $positionExp = explode('.', $position);
+                    $lastPositionPart = $positionExp[sizeof($positionExp) - 1];
+
+                    // compare against our latest stored position
+                    if (sprintf('%1$04d', $newRelativeNumericPosition) <= $lastPositionPart) {
+                        $newRelativeNumericPosition++;
+                    }
+                }
+            }
+
+            $article = $articleList->getNext();
+        }
+
+        // new position is relative to the parent position
+        $newPosition = '';
+        if ($parentPosition != 0) {
+            $newPosition .= $parentPosition . '.';
+        }
+        $newPosition .=  sprintf('%1$04d', $newRelativeNumericPosition);
 
         $article = $discussionService->getNewArticle();
         $article->setTitle('['.$translator->trans('insert title').']');
         $article->setDiscussionID($itemId);
-        $article->setPosition($countArticles+1);
+        $article->setPosition($newPosition);
         $article->save();
 
         $formData = $transformer->transform($article);
-        $form = $this->createForm(DiscussionArticleType::class, $formData, array(
-            'action' => $this->generateUrl('commsy_discussion_savearticle', array('roomId' => $roomId, 'itemId' => $article->getItemID())),
+        $form = $this->createForm(DiscussionArticleType::class, $formData, [
+            'action' => $this->generateUrl('commsy_discussion_savearticle', [
+                'roomId' => $roomId,
+                'itemId' => $article->getItemID()
+            ]),
             'placeholderText' => '['.$translator->trans('insert title').']',
-        ));
+        ]);
 
-        return array(
+        return [
             'form' => $form->createView(),
             'articleList' => $articleList,
             'discussion' => $discussion,
@@ -754,7 +795,8 @@ class DiscussionController extends Controller
             'readCount' => 0,
             'readSinceModificationCount' => 0,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
-        );
+            'parentId' => $parentId,
+        ];
     }
     
         /**

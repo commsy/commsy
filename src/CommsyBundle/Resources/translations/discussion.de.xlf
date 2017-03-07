@@ -26,6 +26,10 @@
                 <source>latest article</source>
                 <target>Neuester Beitrag</target>
             </trans-unit>
+            <trans-unit id="discussion_answer_article">
+                <source>Answer</source>
+                <target>Antworten</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
