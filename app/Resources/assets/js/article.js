@@ -2,8 +2,8 @@
 
     "use strict";
 
-    $(".newArticle").on('click', function(){
-        // Create new section element in material view
+    $(".newArticle").on('click', function() {
+        // Create new section element in discussion view
         
         var url = $(this).data('article-url');
         // send ajax request to get new section item

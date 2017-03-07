@@ -135,17 +135,6 @@
                     if (form[0].checkValidity()) {
                         event.preventDefault();
 
-                        // editButtons.addClass('cs-edit');
-                        // $("#cs-additional-actions")
-                        //     .removeClass('uk-hidden')
-                        //     .parent().find("button.uk-button").removeClass("uk-text-muted");
-                        //
-                        // editButtons.each(function(){
-                        //     $(this).find('a').attr('title', $(this).data('edit-title'));
-                        // });
-
-                        // $(article).find('.cs-save-spinner').toggleClass('uk-hidden', false);
-
                         let formData = form.serializeArray();
                         formData.push({ name: this.name, value: this.value });
 
@@ -164,48 +153,6 @@
                             } else {
                                 window.location.reload(true);
                             }
-
-
-
-
-
-
-                            // $this.registerArticleEvents(article);
-                            //
-                            // let title = $(result).find('.uk-article-title');
-                            // if (title !== null && title.text()) {
-                            //     // material/todo/discussion title edited
-                            //     if($this.options.editUrl.includes(window.location.pathname.split("/").pop())) {
-                            //         $('.uk-breadcrumb').find('.last').find('span').html(title.text());
-                            //     }
-                            //     // section/step/article title edited
-                            //     else {
-                            //         let editParts = $this.options.editUrl.split("/");
-                            //         let anchor = $("a[href='#" + partMapping[editParts[editParts.length-3]] + editParts[editParts.length-2] + "']");
-                            //         anchor.text(anchor.html().trim().split(" ")[0] + " " + title.text());
-                            //     }
-                            // }
-                            //
-                            // let workflow = $(result).find('.cs-workflow-traffic-light').html();
-                            // if (workflow !== null) {
-                            //     $('.uk-article').find('.cs-workflow-traffic-light').html(workflow);
-                            // }
-                            //
-                            // let sections = $(result).find('#section-list');
-                            // if (sections !== null) {
-                            //     let counter = 0;
-                            //     sections.find("li").each(function() {
-                            //         let section_container = $($(this).find("a:first").attr('href')).closest('article').parent().detach();
-                            //         section_container.attr("id", "section_"+counter);
-                            //         $("#section-content").append( section_container );
-                            //         counter++;
-                            //     })
-                            // }
-                            //
-                            // // only redirect if there was no error
-                            // if (!$(result).find('ul.form-errors').length) {
-                            //     window.location.reload(true);
-                            // }
                         });
                     }
                 }

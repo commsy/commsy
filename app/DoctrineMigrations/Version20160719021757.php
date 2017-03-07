@@ -26,6 +26,8 @@ class Version20160719021757 extends AbstractMigration implements ContainerAwareI
      */
     public function up(Schema $schema)
     {
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+
         $this->write("updating workflow states in materials");
         $this->updateWorkflowStates("materials");
 
@@ -42,7 +44,8 @@ class Version20160719021757 extends AbstractMigration implements ContainerAwareI
 
     }
 
-    private function updateWorkflowStates($table) {
+    private function updateWorkflowStates($table)
+    {
         $queryBuilder = $this->connection->createQueryBuilder();
         
         $qb = $queryBuilder
