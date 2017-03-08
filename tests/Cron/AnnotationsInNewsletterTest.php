@@ -33,6 +33,7 @@ class AnnotationsInNewsletterTest extends DatabaseTestCase
         $portal = $this->setUpPortal();
 
         $testMaterialId = 142; // material "Material" from test dump
+        $testMaterialId2 = 144; // material "Material" from test dump
 
         // add new annotation to existing material
         $annotationManager = $environment->getAnnotationManager();
@@ -42,6 +43,14 @@ class AnnotationsInNewsletterTest extends DatabaseTestCase
             $annotationItem->setContextId(134);
             $annotationItem->setTitle('TEST Newsletter #'.$i);
             $annotationItem->setLinkedItemId($testMaterialId);
+            $annotationItem->save();
+        }
+
+        for ($i = 0; $i < 3; $i++) {
+            $annotationItem = $annotationManager->getNewItem();
+            $annotationItem->setContextId(117);
+            $annotationItem->setTitle('TEST Newsletter 2 #'.$i);
+            $annotationItem->setLinkedItemId($testMaterialId2);
             $annotationItem->save();
         }
 

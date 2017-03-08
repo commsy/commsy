@@ -678,7 +678,7 @@ class cs_privateroom_item extends cs_room_item {
                   }
 
                   $annotation_item = $annotation_list->getFirst();
-                  $annotationsStillToSend;
+                  $annotationsStillToSend = array();
                   while ($annotation_item) {
                       if (!in_array($annotation_item, $annotationsInNewsletter)) {
                           $annotationsStillToSend[] = $annotation_item;
