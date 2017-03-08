@@ -1,5 +1,6 @@
 <?php
 	require_once('classes/controller/cs_list_controller.php');
+    require_once('etc/cs_stopwords.php');
 
 	class cs_search_controller extends cs_list_controller {
 		const		SEARCH_WORDS_LIMIT = 2;
@@ -104,11 +105,6 @@
 					$this->_params[$key.'_'.$value] = "true";
 				}
 			}
-			// $seltag_tmp = $seltag_array['seltag'];
-			// if(!empty($seltag_tmp)){
-			// 	$seltag_array['seltag'] = '';
-			// 	$seltag_array['seltag'] = $seltag_tmp;
-			// }
 			
             unset($this->_params['seltag']);
             
@@ -125,35 +121,6 @@
 			} elseif(isset($_GET['option'])) {
 				$option = $_GET['option'];
 			}
-
-			/*
-			 *
-
-// Find current browsing starting point
-if ( isset($_GET['from']) ) {
-   $from = $_GET['from'];
-}  else {
-   $from = 1;
-}
-
-// Find current browsing interval
-// The browsing interval is applied to all rubrics!
-if ( isset($_GET['interval']) ) {
-   $interval = $_GET['interval'];
-}  else {
-   $interval = CS_LIST_INTERVAL;
-}
-
-*/
-			
-
-			/*
-			 * // Handle attaching
-			   if ( isset($mode) && ($mode == 'formattach' or $mode == 'detailattach') ) {
-			      $attach_type = CS_USER_TYPE;
-			      include('pages/index_attach_inc.php');
-			   }
-			 */
 
 			$rubrics = $this->getRubrics();
 
@@ -199,128 +166,6 @@ if ( isset($_GET['interval']) ) {
 				$rubric_array[] = $this->_params['selrubric'];
 			}
 
-			/*
-
-
-   ///////////////////////////////////////
-   // perform list actions              //
-   ///////////////////////////////////////
-   #pr($_POST);
-   if ( isOption($option,$translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
-        and $_POST['index_view_action'] != '-1'
-        and !empty($selected_ids)
-      ) {
-      // prepare action process
-      switch ($_POST['index_view_action']) {
-         case 1:
-            $action = 'ENTRY_MARK_AS_READ';
-            $error = false;
-            $user_manager = $environment->getUserManager();
-            $noticed_manager = $environment->getNoticedManager();
-            foreach ($selected_ids as $id) {
-               $user_item = $user_manager->getItem($id);
-               $version_id = $user_item->getVersionID();
-               // Nur die UserItemID in die noticed DB einfügen??
-               $noticed_manager->markNoticed($id, $version_id );
-               $annotation_list =$user_item->getAnnotationList();
-               if ( !empty($annotation_list) ){
-                  $annotation_item = $annotation_list->getFirst();
-                  while($annotation_item){
-                     $noticed_manager->markNoticed($annotation_item->getItemID(),'0');
-                     $annotation_item = $annotation_list->getNext();
-                  }
-               }
-            }
-            break;
-         case 2:
-            $action = 'USER_EMAIL_SEND';
-
-         $current_user = $environment->getCurrentUser();
-         $user_item_id = $current_user->getItemID();
-         $action_array = array();
-         $action_array['user_item_id'] = $user_item_id;
-         $action_array['action'] = $action;
-         $action_array['backlink']['cid'] = $environment->getCurrentContextID();
-         $action_array['backlink']['mod'] = $environment->getCurrentModule();
-         $action_array['backlink']['fct'] = $environment->getCurrentFunction();
-         $action_array['backlink']['par'] = '';
-         $action_array['selected_ids'] = $selected_ids;
-         $params = array();
-         $params['step'] = 1;
-         $session->setValue('index_action',$action_array);
-         redirect( $environment->getCurrentContextID(),
-                   'user',
-                   'action',
-                   $params);
-            break;
-         default:
-            include_once('functions/error_functions.php');
-            trigger_error('action ist not defined',E_USER_ERROR);
-      }
-      $session->unsetValue('cid'.$environment->getCurrentContextID().
-                              '_'.$environment->getCurrentModule().
-                              '_selected_ids');
-      $selected_ids = array();
-   } // end if (perform list actions)
-
-
-
-
-
-
-
-
-// Get available buzzwords
-$buzzword_manager = $environment->getLabelManager();
-$buzzword_manager->resetLimits();
-$buzzword_manager->setContextLimit($environment->getCurrentContextID());
-$buzzword_manager->setTypeLimit('buzzword');
-$buzzword_manager->setGetCountLinks();
-$buzzword_manager->select();
-$buzzword_list = $buzzword_manager->get();
-$count_all = 0;
-
-// Durchführung möglicher Einschränkungen
-foreach($sel_array as $rubric => $value){
-   $label_manager = $environment->getManager($rubric);
-   $label_manager->setContextLimit($environment->getCurrentContextID());
-   $label_manager->select();
-   $rubric_list = $label_manager->get();
-   $temp_rubric_list = clone $rubric_list;
-   $view->setAvailableRubric($rubric,$temp_rubric_list);
-   $view->setSelectedRubric($rubric,$value);
-   unset($rubric_list);
-}
-
-// translation of entry to rubrics for new private room
-if ( $environment->inPrivateRoom()
-     and in_array(CS_ENTRY_TYPE,$rubric_array)
-   ) {
-   $temp_array = array();
-   $temp_array2 = array();
-   $rubric_array2 = array();
-   $temp_array[] = CS_ANNOUNCEMENT_TYPE;
-   $temp_array[] = CS_TODO_TYPE;
-   $temp_array[] = CS_DISCUSSION_TYPE;
-   $temp_array[] = CS_MATERIAL_TYPE;
-   $temp_array[] = CS_DATE_TYPE;
-   foreach ( $temp_array as $temp_rubric ) {
-      if ( !in_array($temp_rubric,$rubric_array) ) {
-         $temp_array2[] = $temp_rubric;
-      }
-   }
-   foreach ( $rubric_array as $temp_rubric ) {
-      if ( $temp_rubric != CS_ENTRY_TYPE ) {
-         $rubric_array2[] = $temp_rubric;
-      } else {
-         $rubric_array2 = array_merge($rubric_array2,$temp_array2);
-      }
-   }
-   $rubric_array = $rubric_array2;
-   unset($rubric_array2);
-}
-*/
-
 			// convert search_rubric to item type
 			$item_types = array();
 			foreach($rubric_array as $rubric) {
@@ -328,19 +173,38 @@ if ( $environment->inPrivateRoom()
 			}
 			
 			$converter = $this->_environment->getTextConverter();
-			#$this->_params['search'] = $converter->sanitizeHTML($this->_params['search']);
-			#pr($this->_params['search']);
-			// sanitize search words
-			$search_words = explode(' ', $converter->sanitizeHTML($this->_params['search']));
-			$search_words_num = (self::SEARCH_WORDS_LIMIT > sizeof($search_words) ? sizeof($search_words) : self::SEARCH_WORDS_LIMIT);
 
-			$search_words = array_slice($search_words, 0, $search_words_num);
+			// sanitize search words
+            $search_words = $converter->sanitizeHTML($this->_params['search']);
+            $search_words = strtr($search_words, [
+                '-' => ' ',
+            ]);
+			$search_words = explode(' ', $search_words);
 
 			$search_words_tmp = array();
+			global $stopwords;
 			foreach($search_words as $word) {
-				if(strlen($word) >= 1) $search_words_tmp[] = strtolower($word);
+				if(strlen($word) >= 1) {
+				    $word = strtolower($word);
+
+                    // filter stopwords
+                    $match = false;
+                    foreach ($stopwords as $language => $words) {
+                        if (in_array($word, $words)) {
+                            $match = true;
+                            break;
+                        }
+                    }
+
+                    if (!$match) {
+                        $search_words_tmp[] = $word;
+                    }
+                }
 			}
 			$this->_search_words = $search_words_tmp;
+
+            $search_words_num = (self::SEARCH_WORDS_LIMIT > sizeof($this->_search_words) ? sizeof($this->_search_words) : self::SEARCH_WORDS_LIMIT);
+            $this->_search_words = array_slice($this->_search_words, 0, $search_words_num);
 
 #			if (!empty($this->_search_words)) {
 				/************************************************************************************
