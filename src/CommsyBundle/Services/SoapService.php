@@ -234,4 +234,22 @@ class SoapService
         $sessionManager = $this->legacyEnvironment->getSessionManager();
         $sessionManager->updateSessionCreationDate($sessionId);
     }
+
+
+    /**
+     * Returns a userId
+     *
+     * @param  string $sessionId
+     *
+     * @return string user_id
+     */
+    public function getUserIdBySessionId($sessionId)
+    {
+        if ($this->isSessionValid($sessionId)) {
+            $sessionManager = $this->legacyEnvironment->getSessionManager();
+            $sessionItem = $sessionManager->get($sessionId);
+            return $sessionItem->getValue('user_id');
+        }
+        return false;
+    }
 }
