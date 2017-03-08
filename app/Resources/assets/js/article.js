@@ -30,9 +30,12 @@
                 $li.append($result);
                 $li[0].scrollIntoView();
             } else {
-                if ($('.discussion-article').last()[0]) {
-                    $('.discussion-article').last().after(result);
-                    $('.discussion-article').last()[0].scrollIntoView();
+                if ($('.discussion-article').length) {
+                    let $mainUl = $('#article-content').children('ul')[0];
+
+                    let $li = $('<li>').appendTo($mainUl);
+                    $li.append($result);
+                    $li[0].scrollIntoView();
                 } else {
                     $('#article-content').html(result);
                     $('#article-content').children()[0].scrollIntoView();
