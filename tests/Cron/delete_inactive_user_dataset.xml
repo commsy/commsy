@@ -507,13 +507,21 @@
 		<field name="deletion_date" xsi:nil="true" />
 		<field name="modification_date">2016-12-04 16:14:29</field>
 	</row>
-		<row>
+	<row>
 		<field name="item_id">143</field>
 		<field name="context_id">101</field>
 		<field name="type">user</field>
 		<field name="deleter_id" xsi:nil="true" />
 		<field name="deletion_date" xsi:nil="true" />
 		<field name="modification_date" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="item_id">144</field>
+		<field name="context_id">117</field>
+		<field name="type">material</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="modification_date">2016-12-04 16:14:29</field>
 	</row>
 	</table_data>
 	<table_data name="labels">
@@ -741,6 +749,31 @@
 		<field name="modification_date">2016-12-04 16:14:29</field>
 		<field name="deletion_date" xsi:nil="true" />
 		<field name="title">Material</field>
+		<field name="description"></field>
+		<field name="author"></field>
+		<field name="publishing_date">0</field>
+		<field name="public">1</field>
+		<field name="world_public">0</field>
+		<field name="extras">a:3:{s:8:&quot;BIB_KIND&quot;;s:4:&quot;none&quot;;s:20:&quot;WORKFLOWRESUBMISSION&quot;;s:1:&quot;0&quot;;s:16:&quot;WORKFLOWVALIDITY&quot;;s:1:&quot;0&quot;;}</field>
+		<field name="new_hack">0</field>
+		<field name="copy_of">0</field>
+		<field name="workflow_status"></field>
+		<field name="workflow_resubmission_date">2016-12-04 16:14:29</field>
+		<field name="workflow_validity_date">2016-12-04 16:14:29</field>
+		<field name="locking_date" xsi:nil="true" />
+		<field name="locking_user_id" xsi:nil="true" />
+	</row>
+	<row>
+		<field name="item_id">144</field>
+		<field name="version_id">0</field>
+		<field name="context_id">117</field>
+		<field name="creator_id">139</field>
+		<field name="deleter_id" xsi:nil="true" />
+		<field name="creation_date">2016-12-04 16:14:29</field>
+		<field name="modifier_id">139</field>
+		<field name="modification_date">2016-12-04 16:14:29</field>
+		<field name="deletion_date" xsi:nil="true" />
+		<field name="title">Material 2</field>
 		<field name="description"></field>
 		<field name="author"></field>
 		<field name="publishing_date">0</field>

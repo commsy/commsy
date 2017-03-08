@@ -524,6 +524,7 @@ class cs_privateroom_item extends cs_room_item {
                   $annotation_manager->showNoNotActivatedEntries();
                   $annotation_manager->select();
                   $annotation_list = $annotation_manager->get();
+                  $annotationsInNewsletter = array();
 
                   for ( $i =0; $i<$count; $i++){
                      $rubric_array = explode('_', $rubrics[$i]);
@@ -583,6 +584,7 @@ class cs_privateroom_item extends cs_room_item {
                                        $linked_item = $annotation_item->getLinkedItem();
                                        if ($linked_item->getItemID() == $rubric_item->getItemID()) {
                                           $annotation_count++;
+                                          $annotationsInNewsletter[] = $annotation_item;
                                        }
                                     }
                                     $annotation_item = $annotation_list->getNext();   
@@ -674,6 +676,37 @@ class cs_privateroom_item extends cs_room_item {
                      }
                      $j = $i+1;
                   }
+
+                  $annotation_item = $annotation_list->getFirst();
+                  $annotationsStillToSend = array();
+                  while ($annotation_item) {
+                      if (!in_array($annotation_item, $annotationsInNewsletter)) {
+                          $annotationsStillToSend[] = $annotation_item;
+                      }
+                      $annotation_item = $annotation_list->getNext();
+                  }
+
+                  $annotation_info_text = '';
+                   if (count($annotationsStillToSend) == 1) {
+                       $annotation_info_text .= '&nbsp;&nbsp;<span class="changed">'.$translator->getMessage('COMMON_NEW_ANNOTATION_ADDITIONAL').':</span>';
+                   } else if (count($annotationsStillToSend) > 1) {
+                       $annotation_info_text .= '&nbsp;&nbsp;<span class="changed">'.$translator->getMessage('COMMON_NEW_ANNOTATIONS_ADDITIONAL').':</span>';
+                   }
+
+                   if (!empty($annotation_info_text)){
+                       $temp_body_annotation = BRLF.LF.$annotation_info_text;
+                       foreach ($annotationsStillToSend as $annotationStillToSend) {
+                           $temp_rubric_item = $annotationStillToSend->getLinkedItem();
+                           $annotation_title = '';
+                           if ($annotationStillToSend->getTitle() != '') {
+                               $annotation_title = ' ('.$annotationStillToSend->getTitle().')';
+                           }
+                           $ahref_curl = '<a href="'.$curl_text.$item->getItemID().'&amp;mod='.$temp_rubric_item->getItemType().'&amp;fct=detail&amp;iid='.$temp_rubric_item->getItemId().'">'.$temp_rubric_item->getTitle().'</a>'.$annotation_title;
+                           $temp_body_annotation .= BR . '&nbsp;&nbsp;&nbsp;&nbsp;- ' . $ahref_curl;
+                       }
+                       $body2 .= $temp_body_annotation.BRLF.LF;
+                   }
+
                   $item = $list2->getNext();
                   if (!empty($body2)){
                      $body  .= $body_title;

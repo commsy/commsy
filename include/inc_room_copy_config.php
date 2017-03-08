@@ -55,6 +55,8 @@ $copy_array['informationbox'] = true;
 $copy_array['myentrydisplayconf'] = false;
 $copy_array['grouproomfct'] = false;
 $copy_array['rss'] = true;
+$copy_array['language'] = true;
+$copy_array['visibilitydefaults'] = true;
 
 // now adaption for special rooms
 if ( $old_room->isProjectRoom() ) {
@@ -332,6 +334,38 @@ if ($copy_array['rss']) {
         $new_room->turnRSSOn();
     } else {
         $new_room->turnRSSOff();
+    }
+}
+
+// config of language
+if ( $copy_array['language'] ) {
+    $new_room->setLanguage($old_room->getLanguage());
+}
+
+// config of dates presentation status
+if ( $copy_array['visibilitydefaults'] ) {
+    if ($old_room->isActionBarVisibleAsDefault()) {
+        $new_room->setActionBarVisibilityDefault('1');
+    } else {
+        $new_room->setActionBarVisibilityDefault('-1');
+    }
+
+    if ($old_room->isReferenceBarVisibleAsDefault()) {
+        $new_room->setReferenceBarVisibilityDefault('1');
+    } else {
+        $new_room->setReferenceBarVisibilityDefault('-1');
+    }
+
+    if ($old_room->isDetailsBarVisibleAsDefault()) {
+        $new_room->setDetailsBarVisibilityDefault('1');
+    } else {
+        $new_room->setDetailsBarVisibilityDefault('-1');
+    }
+
+    if ($old_room->isAnnotationsBarVisibleAsDefault()) {
+        $new_room->setAnnotationsBarVisibilityDefault('1');
+    } else {
+        $new_room->setAnnotationsBarVisibilityDefault('-1');
     }
 }
 
