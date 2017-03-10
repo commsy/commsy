@@ -44,6 +44,9 @@ class AppearanceSettingsType extends AbstractType
                 'constraints' => array(
                     new NotBlank(),
                 ),
+                'attr' => array(
+                    'data-themeurl' => $options['themeBackgroundPlaceholder'],
+                ),
             ))
             ->add('dates_status', ChoiceType::class, array(
                 'expanded' => true,
@@ -105,7 +108,7 @@ class AppearanceSettingsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['roomId', 'themes', 'uploadUrl'])
+            ->setRequired(['roomId', 'themes', 'uploadUrl', 'themeBackgroundPlaceholder'])
             ->setDefaults(array('translation_domain' => 'settings'))
         ;
     }

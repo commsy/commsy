@@ -94,6 +94,7 @@
 
         let positionCover = document.getElementsByClassName('uk-position-cover');
         let coverFormControls = positionCover[0].getElementsByClassName('uk-form-controls')[0];
+        var themeSelect = document.getElementById("appearance_settings_theme");
 
         coverFormControls.style.marginLeft = "0px";
 
@@ -109,6 +110,20 @@
             // toggleUploadListener(this, deleteRow, scrollRow, repeatRow);
             // toggleUploadListener(this, deleteRow, repeatRow);
             toggleUploadListener(this);
+        }
+
+        themeSelect.onchange = function(event) {
+            let selectedOption = this.options[this.selectedIndex];
+            let themeBackgroundImage = document.getElementById("themeBackgroundImage");
+            themeBackgroundImage.src = this.getAttribute('data-themeurl').replace("THEME_NAME", selectedOption.value);
+            themeSelect.disabled = true;
+            themeBackgroundImage.onload = function(loadEvent) {
+                themeSelect.disabled = false;
+            }
+            themeBackgroundImage.onerror = function(errorEvent) {
+                themeSelect.disabled = false;
+                alert("Unable to background image for theme '" + selectedOption.textContent + "'. Please select a different theme!");
+            }
         }
 
         document.querySelector('form.uk-form-horizontal').onsubmit = function(event){

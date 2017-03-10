@@ -169,6 +169,9 @@ class SettingsController extends Controller
             'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
                 'roomId' => $roomId,
             )),
+            'themeBackgroundPlaceholder' => $this->generateUrl('getThemeBackground', array(
+                'theme' => 'THEME_NAME'
+            )),
         ));
         
         $form->handleRequest($request);
