@@ -1,7 +1,7 @@
-# Open specific ports
-#
+# This depends on puppetlabs/firewall: https://github.com/puppetlabs/puppetlabs-firewall
+# Adds a firewall rule
 define puphpet::firewall::port (
-  $port     = false,
+  $port = false,
   $protocol = tcp,
   $action   = 'accept',
   $priority = 100,
@@ -22,7 +22,7 @@ define puphpet::firewall::port (
 
   if ! defined(Firewall[$rule_name]) {
     firewall { $rule_name:
-      dport  => $port_real,
+      port   => $port_real,
       proto  => $protocol,
       action => $action,
     }

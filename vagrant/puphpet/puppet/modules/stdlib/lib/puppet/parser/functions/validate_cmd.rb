@@ -53,7 +53,7 @@ module Puppet::Parser::Functions
     rescue Puppet::ExecutionFailure => detail
       msg += "\n#{detail}"
       raise Puppet::ParseError, msg
-    rescue StandardError => detail
+    rescue Exception => detail
       msg += "\n#{detail.class.name} #{detail}"
       raise Puppet::ParseError, msg
     ensure

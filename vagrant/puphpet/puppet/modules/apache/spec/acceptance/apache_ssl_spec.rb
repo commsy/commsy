@@ -1,7 +1,14 @@
 require 'spec_helper_acceptance'
 require_relative './version.rb'
 
-describe 'apache ssl' do
+case fact('osfamily')
+when 'RedHat'
+  vhostd = '/etc/httpd/conf.d'
+when 'Debian'
+  vhostd = '/etc/apache2/sites-available'
+end
+
+describe 'apache ssl', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
 
   describe 'ssl parameters' do
     it 'runs without error' do
@@ -21,7 +28,7 @@ describe 'apache ssl' do
       apply_manifest(pp, :catch_failures => true)
     end
 
-    describe file("#{$vhost_dir}/15-default-ssl.conf") do
+    describe file("#{vhostd}/15-default-ssl.conf") do
       it { is_expected.to be_file }
       it { is_expected.to contain 'SSLCertificateFile      "/tmp/ssl_cert"' }
       it { is_expected.to contain 'SSLCertificateKeyFile   "/tmp/ssl_key"' }
@@ -62,13 +69,12 @@ describe 'apache ssl' do
           ssl_verify_depth     => 'test',
           ssl_options          => ['test', 'test1'],
           ssl_proxyengine      => true,
-          ssl_proxy_protocol   => 'TLSv1.2',
         }
       EOS
       apply_manifest(pp, :catch_failures => true)
     end
 
-    describe file("#{$vhost_dir}/25-test_ssl.conf") do
+    describe file("#{vhostd}/25-test_ssl.conf") do
       it { is_expected.to be_file }
       it { is_expected.to contain 'SSLCertificateFile      "/tmp/ssl_cert"' }
       it { is_expected.to contain 'SSLCertificateKeyFile   "/tmp/ssl_key"' }

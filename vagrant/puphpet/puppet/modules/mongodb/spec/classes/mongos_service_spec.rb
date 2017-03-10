@@ -3,13 +3,18 @@ require 'spec_helper'
 describe 'mongodb::mongos::service', :type => :class do
 
   context 'on Debian with service_manage set to true' do
-    with_debian_facts
+    let :facts do
+      {
+        :osfamily        => 'Debian',
+        :operatingsystem => 'Debian',
+      }
+    end
 
-    let :pre_condition do
+    let :pre_condition do          
       "class { 'mongodb::mongos':
          configdb => ['127.0.0.1:27019'],
        }"
-    end
+    end 
 
     describe 'include init script' do
       it { is_expected.to contain_file('/etc/init.d/mongos') }
@@ -22,7 +27,12 @@ describe 'mongodb::mongos::service', :type => :class do
   end
 
   context 'on Debian with service_manage set to false' do
-    with_debian_facts
+    let :facts do
+      {
+        :osfamily        => 'Debian',
+        :operatingsystem => 'Debian',
+      }
+    end
 
     let :pre_condition do
       "class { 'mongodb::mongos':
@@ -38,7 +48,12 @@ describe 'mongodb::mongos::service', :type => :class do
   end
 
   context 'on RedHat with service_manage set to true' do
-    with_redhat_facts
+    let :facts do
+      {
+        :osfamily        => 'RedHat',
+        :operatingsystem => 'RedHat',
+      }
+    end
 
     let :pre_condition do
       "class { 'mongodb::mongos':
@@ -61,7 +76,12 @@ describe 'mongodb::mongos::service', :type => :class do
   end
 
   context 'on RedHat with service_manage set to false' do
-    with_redhat_facts
+    let :facts do
+      {
+        :osfamily        => 'RedHat',
+        :operatingsystem => 'RedHat',
+      }
+    end
 
     let :pre_condition do
       "class { 'mongodb::mongos':

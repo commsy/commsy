@@ -42,22 +42,6 @@ describe Puppet::Type.type(:vcsrepo).provider(:hg) do
         provider.create
       end
     end
-
-    context "when basic auth is used" do
-      it "should execute 'hg clone'" do
-        resource[:source] = 'something'
-        resource[:basic_auth_username] = 'user'
-        resource[:basic_auth_password] = 'pass'
-        provider.expects(:hg).with('clone',
-          resource.value(:source),
-          resource.value(:path),
-            "--config","\"auth.x.prefix=" + resource.value(:source) + "\"",
-            "--config","\"auth.x.username=" + resource.value(:basic_auth_username) + "\"",
-            "--config","\"auth.x.password=" + resource.value(:basic_auth_password) + "\"",
-            "--config","\"auth.x.schemes=http https" + "\"")
-        provider.create
-      end
-    end
   end
 
   describe 'destroying' do
@@ -88,14 +72,14 @@ describe Puppet::Type.type(:vcsrepo).provider(:hg) do
       context "when its SHA is not different than the current SHA" do
         it "should return the ref" do
           resource[:revision] = '0.6'
-          expect(provider.revision).to eq('0.6')
+          provider.revision.should == '0.6'
         end
       end
 
       context "when its SHA is different than the current SHA" do
         it "should return the current SHA" do
           resource[:revision] = '0.5.3'
-          expect(provider.revision).to eq('34e6012c783a')
+          provider.revision.should == '34e6012c783a'
         end
       end
     end
@@ -108,7 +92,7 @@ describe Puppet::Type.type(:vcsrepo).provider(:hg) do
         it "should return it" do
           resource[:revision] = '34e6012c783a'
           provider.expects(:hg).with('tags').returns(fixture(:hg_tags))
-          expect(provider.revision).to eq(resource.value(:revision))
+          provider.revision.should == resource.value(:revision)
         end
       end
 
@@ -116,7 +100,7 @@ describe Puppet::Type.type(:vcsrepo).provider(:hg) do
         it "should return the current SHA" do
           resource[:revision] = 'not-the-same'
           provider.expects(:hg).with('tags').returns(fixture(:hg_tags))
-          expect(provider.revision).to eq('34e6012c783a')
+          provider.revision.should == '34e6012c783a'
         end
       end
     end

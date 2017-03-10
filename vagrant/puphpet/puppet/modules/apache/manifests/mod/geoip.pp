@@ -8,7 +8,6 @@ class apache::mod::geoip (
   $scan_proxy_header_field    = undef,
   $use_last_xforwarededfor_ip = undef,
 ) {
-  include ::apache
   ::apache::mod { 'geoip': }
 
   # Template uses:
@@ -23,7 +22,6 @@ class apache::mod::geoip (
   file { 'geoip.conf':
     ensure  => file,
     path    => "${::apache::mod_dir}/geoip.conf",
-    mode    => $::apache::file_mode,
     content => template('apache/mod/geoip.conf.erb'),
     require => Exec["mkdir ${::apache::mod_dir}"],
     before  => File[$::apache::mod_dir],

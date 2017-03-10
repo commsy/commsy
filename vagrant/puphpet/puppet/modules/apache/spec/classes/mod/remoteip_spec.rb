@@ -1,6 +1,11 @@
 require 'spec_helper'
 
 describe 'apache::mod::remoteip', :type => :class do
+  let :pre_condition do
+    [
+      'include apache',
+    ]
+  end
   context "on a Debian OS" do
     let :facts do
       {

@@ -16,7 +16,6 @@ Puppet::Type.type(:firewallchain).provide :iptables_chain do
   })
 
   defaultfor :kernel => :linux
-  confine :kernel => :linux
 
   # chain name is greedy so we anchor from the end.
   # [\d+:\d+] doesn't exist on ebtables
@@ -38,7 +37,7 @@ Puppet::Type.type(:firewallchain).provide :iptables_chain do
     }
   }
   InternalChains = /^(PREROUTING|POSTROUTING|BROUTING|INPUT|FORWARD|OUTPUT)$/
-  Tables = 'nat|mangle|filter|raw|rawpost|broute|security'
+  Tables = 'nat|mangle|filter|raw|rawpost|broute'
   Nameformat = /^(.+):(#{Tables}):(IP(v[46])?|ethernet)$/
 
   def create

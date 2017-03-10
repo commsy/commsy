@@ -10,12 +10,6 @@ describe 'rvm::system' do
 
   context "default parameters", :compile do
     it { should_not contain_exec('system-rvm-get') }
-
-    it do
-      should contain_exec('system-rvm').with({
-          'path'    => '/usr/bin:/usr/sbin:/bin:/usr/local/bin',
-      })
-    end
   end
 
   context "with present version", :compile do

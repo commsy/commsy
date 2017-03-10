@@ -3,7 +3,13 @@ require 'spec_helper'
 describe 'mongodb::mongos::install', :type => :class do
 
   describe 'it should include package' do
-    with_debian_facts
+
+    let :facts do
+      {
+        :osfamily        => 'Debian',
+        :operatingsystem => 'Debian',
+      }
+    end
 
     let :pre_condition do
       "class { 'mongodb::mongos':

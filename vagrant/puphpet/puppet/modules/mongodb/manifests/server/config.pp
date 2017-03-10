@@ -55,7 +55,6 @@ class mongodb::server::config {
   $bind_ip         = $mongodb::server::bind_ip
   $directoryperdb  = $mongodb::server::directoryperdb
   $profile         = $mongodb::server::profile
-  $maxconns        = $mongodb::server::maxconns
   $set_parameter   = $mongodb::server::set_parameter
   $syslog          = $mongodb::server::syslog
   $ssl             = $mongodb::server::ssl
@@ -101,7 +100,7 @@ class mongodb::server::config {
     #Pick which config content to use
     if $config_content {
       $cfg_content = $config_content
-    } elsif $version and (versioncmp($version, '2.6.0') >= 0) {
+    } elsif (versioncmp($version, '2.6.0') >= 0) {
       # Template uses:
       # - $auth
       # - $bind_ip
@@ -133,9 +132,6 @@ class mongodb::server::config {
       # - $shardsvr
       # - $slowms
       # - $smallfiles
-      # - $ssl
-      # - $ssl_ca
-      # - $ssl_key
       # - $syslog
       # - $verbose
       # - $verbositylevel
@@ -210,15 +206,6 @@ class mongodb::server::config {
       group   => $group,
       require => File[$config]
     }
-
-    if $pidfilepath {
-      file { $pidfilepath:
-        ensure => file,
-        mode   => '0644',
-        owner  => $user,
-        group  => $group,
-      }
-    }
   } else {
     file { $dbpath:
       ensure => absent,
@@ -236,7 +223,7 @@ class mongodb::server::config {
       content => template('mongodb/mongorc.js.erb'),
       owner   => 'root',
       group   => 'root',
-      mode    => '0600'
+      mode    => '0644'
     }
   } else {
     file { $rcfile:

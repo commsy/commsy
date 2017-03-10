@@ -8,14 +8,14 @@ describe 'postgresql::server::db', :unless => UNSUPPORTED_PLATFORMS.include?(fac
         class { 'postgresql::server':
           postgres_password => 'space password',
         }
-        postgresql::server::tablespace { 'postgresql-test-db':
+        postgresql::server::tablespace { 'postgresql_test_db':
           location => '#{tmpdir}',
         } ->
-        postgresql::server::db { 'postgresql-test-db':
+        postgresql::server::db { 'postgresql_test_db':
           comment    => 'testcomment',
-          user       => 'test-user',
+          user       => 'test',
           password   => 'test1',
-          tablespace => 'postgresql-test-db',
+          tablespace => 'postgresql_test_db',
         }
       EOS
 
@@ -27,12 +27,12 @@ describe 'postgresql::server::db', :unless => UNSUPPORTED_PLATFORMS.include?(fac
       shell("chmod 600 /root/.pgpass")
       shell("psql -U postgres -h localhost --command='\\l'")
 
-      psql('--command="select datname from pg_database" "postgresql-test-db"') do |r|
-        expect(r.stdout).to match(/postgresql-test-db/)
+      psql('--command="select datname from pg_database" postgresql_test_db') do |r|
+        expect(r.stdout).to match(/postgresql_test_db/)
         expect(r.stderr).to eq('')
       end
 
-      psql('--command="SELECT 1 FROM pg_roles WHERE rolname=\'test-user\'"') do |r|
+      psql('--command="SELECT 1 FROM pg_roles WHERE rolname=\'test\'"') do |r|
         expect(r.stdout).to match(/\(1 row\)/)
       end
 
@@ -43,11 +43,11 @@ describe 'postgresql::server::db', :unless => UNSUPPORTED_PLATFORMS.include?(fac
       else
         comment_information_function = "obj_description"
       end
-      psql("--dbname postgresql-test-db --command=\"SELECT pg_catalog.#{comment_information_function}(d.oid, 'pg_database') FROM pg_catalog.pg_database d WHERE datname = 'postgresql-test-db' AND pg_catalog.#{comment_information_function}(d.oid, 'pg_database') = 'testcomment'\"") do |r|
+      psql("--dbname postgresql_test_db --command=\"SELECT pg_catalog.#{comment_information_function}(d.oid, 'pg_database') FROM pg_catalog.pg_database d WHERE datname = 'postgresql_test_db' AND pg_catalog.#{comment_information_function}(d.oid, 'pg_database') = 'testcomment'\"") do |r|
         expect(r.stdout).to match(/\(1 row\)/)
       end
     ensure
-      psql('--command=\'drop database "postgresql-test-db" postgres\'')
+      psql('--command="drop database postgresql_test_db" postgres')
       psql('--command="DROP USER test"')
     end
   end

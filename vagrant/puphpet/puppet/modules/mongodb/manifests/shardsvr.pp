@@ -1,4 +1,5 @@
 # Wrapper class useful for hiera based deployments
+
 class mongodb::shardsvr(
   $shards = undef
 ) {

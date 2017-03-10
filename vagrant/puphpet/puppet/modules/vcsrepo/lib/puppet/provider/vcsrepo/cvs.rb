@@ -3,8 +3,8 @@ require File.join(File.dirname(__FILE__), '..', 'vcsrepo')
 Puppet::Type.type(:vcsrepo).provide(:cvs, :parent => Puppet::Provider::Vcsrepo) do
   desc "Supports CVS repositories/workspaces"
 
-  commands :cvs => 'cvs'
-  has_features :gzip_compression, :reference_tracking, :modules, :cvs_rsh, :user
+  optional_commands   :cvs => 'cvs'
+  has_features :gzip_compression, :reference_tracking, :modules, :cvs_rsh
 
   def create
     if !@resource.value(:source)
@@ -33,13 +33,13 @@ Puppet::Type.type(:vcsrepo).provide(:cvs, :parent => Puppet::Provider::Vcsrepo) 
   end
 
   def latest?
-    Puppet.debug "Checking for updates because 'ensure => latest'"
+    debug "Checking for updates because 'ensure => latest'"
     at_path do
       # We cannot use -P to prune empty dirs, otherwise
       # CVS would report those as "missing", regardless
       # if they have contents or updates.
       is_current = (runcvs('-nq', 'update', '-d').strip == "")
-      if (!is_current) then Puppet.debug "There are updates available on the checkout's current branch/tag." end
+      if (!is_current) then debug "There are updates available on the checkout's current branch/tag." end
       return is_current
     end
   end
@@ -62,7 +62,7 @@ Puppet::Type.type(:vcsrepo).provide(:cvs, :parent => Puppet::Provider::Vcsrepo) 
       else
         @rev = 'HEAD'
       end
-      Puppet.debug "Checkout is on branch/tag '#{@rev}'"
+      debug "Checkout is on branch/tag '#{@rev}'"
     end
     return @rev
   end
@@ -119,17 +119,19 @@ Puppet::Type.type(:vcsrepo).provide(:cvs, :parent => Puppet::Provider::Vcsrepo) 
 
   def runcvs(*args)
     if @resource.value(:cvs_rsh)
-      Puppet.debug "Using CVS_RSH = " + @resource.value(:cvs_rsh)
+      debug "Using CVS_RSH = " + @resource.value(:cvs_rsh)
       e = { :CVS_RSH => @resource.value(:cvs_rsh) }
     else
       e = {}
     end
 
-    if @resource.value(:user) and @resource.value(:user) != Facter['id'].value
-      Puppet.debug "Running as user " + @resource.value(:user)
-      Puppet::Util::Execution.execute([:cvs, *args], :uid => @resource.value(:user), :custom_environment => e, :combine => true)
-    else
-      Puppet::Util::Execution.execute([:cvs, *args], :custom_environment => e, :combine => true)
+    # The location of withenv changed from Puppet 2.x to 3.x
+    withenv = Puppet::Util.method(:withenv) if Puppet::Util.respond_to?(:withenv)
+    withenv = Puppet::Util::Execution.method(:withenv) if Puppet::Util::Execution.respond_to?(:withenv)
+    fail("Cannot set custom environment #{e}") if e && !withenv
+
+    withenv.call e do
+      Puppet.debug cvs *args
     end
   end
 end

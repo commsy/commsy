@@ -85,4 +85,26 @@ class FileController extends Controller
 
         return $response;
     }
+
+    /**
+     * @Route("/theme/{theme}/background", name="getThemeBackground")
+     */
+    public function getThemeBackgroundAction($theme)
+    {
+        $themesDir = $this->getParameter("themes_directory");
+        $filePath = $themesDir . "/" . $theme . "/bg.jpg";
+
+        if(file_exists($filePath)) {
+            $content = file_get_contents($filePath);
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mimeType = finfo_file($finfo, $filePath);
+
+            $response = new Response($content, Response::HTTP_OK, array('content-type' => $mimeType));
+            $response->headers->set('Content-Disposition', $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,"bg.jpg"));
+        }
+        else {
+            $response = new Response("Could not find background image for selected theme!", Response::HTTP_NOT_FOUND);
+        }
+        return $response;
+    }
 }

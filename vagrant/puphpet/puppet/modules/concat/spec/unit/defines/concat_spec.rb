@@ -19,7 +19,6 @@ describe 'concat', :type => :define do
       :replace        => true,
       :order          => 'alpha',
       :ensure_newline => false,
-      :validate_cmd   => nil,
     }.merge(params)
 
     safe_name            = title.gsub('/', '_')
@@ -29,21 +28,12 @@ describe 'concat', :type => :define do
     default_warn_message = '# This file is managed by Puppet. DO NOT EDIT.'
 
     file_defaults = {
-      :backup  => p[:backup],
+      :backup  => false,
     }
 
     let(:title) { title }
     let(:params) { params }
-    let(:facts) do
-      {
-        :concat_basedir => concatdir,
-        :id             => id,
-        :osfamily       => 'Debian',
-        :path           => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
-        :kernel         => 'Linux',
-        :is_pe          => false,
-      }
-    end
+    let(:facts) {{ :concat_basedir => concatdir, :id => id }}
 
     if p[:ensure] == 'present'
       it do
@@ -78,20 +68,19 @@ describe 'concat', :type => :define do
 
       it do
         should contain_file(title).with(file_defaults.merge({
-          :ensure       => 'present',
-          :owner        => p[:owner],
-          :group        => p[:group],
-          :mode         => p[:mode],
-          :replace      => p[:replace],
-          :path         => p[:path],
-          :alias        => "concat_#{title}",
-          :source       => "#{fragdir}/#{concat_name}",
-          :validate_cmd => p[:validate_cmd],
-          :backup       => p[:backup],
+          :ensure  => 'present',
+          :owner   => p[:owner],
+          :group   => p[:group],
+          :mode    => p[:mode],
+          :replace => p[:replace],
+          :path    => p[:path],
+          :alias   => "concat_#{title}",
+          :source  => "#{fragdir}/#{concat_name}",
+          :backup  => p[:backup],
         }))
       end
 
-      cmd = "#{concatdir}/bin/concatfragments.rb " +
+      cmd = "#{concatdir}/bin/concatfragments.sh " +
             "-o \"#{concatdir}/#{safe_name}/fragments.concat.out\" " +
             "-d \"#{concatdir}/#{safe_name}\""
 
@@ -138,6 +127,7 @@ describe 'concat', :type => :define do
         it do
           should contain_file(file).with(file_defaults.merge({
             :ensure => 'absent',
+            :backup => false,
             :force  => true,
           }))
         end
@@ -175,7 +165,7 @@ describe 'concat', :type => :define do
         context title do
           let(:title) { title }
           it 'should fail' do
-            expect { catalogue }.to raise_error(Puppet::Error, /is not an absolute path/)
+            expect { should }.to raise_error(Puppet::Error, /is not an absolute path/)
           end
         end
       end
@@ -205,7 +195,7 @@ describe 'concat', :type => :define do
       let(:title) { '/etc/foo.bar' }
       let(:params) {{ :ensure => 'invalid' }}
       it 'should fail' do
-        expect { catalogue }.to raise_error(Puppet::Error, /#{Regexp.escape('does not match "^present$|^absent$"')}/)
+        expect { should }.to raise_error(Puppet::Error, /#{Regexp.escape('does not match "^present$|^absent$"')}/)
       end
     end
   end # ensure =>
@@ -220,7 +210,7 @@ describe 'concat', :type => :define do
         let(:title) { '/etc/foo.bar' }
         let(:params) {{ :path => path }}
         it 'should fail' do
-          expect { catalogue }.to raise_error(Puppet::Error, /is not an absolute path/)
+          expect { should }.to raise_error(Puppet::Error, /is not an absolute path/)
         end
       end
     end
@@ -235,7 +225,7 @@ describe 'concat', :type => :define do
       let(:title) { '/etc/foo.bar' }
       let(:params) {{ :owner => false }}
       it 'should fail' do
-        expect { catalogue }.to raise_error(Puppet::Error, /is not a string/)
+        expect { should }.to raise_error(Puppet::Error, /is not a string/)
       end
     end
   end # owner =>
@@ -249,7 +239,7 @@ describe 'concat', :type => :define do
       let(:title) { '/etc/foo.bar' }
       let(:params) {{ :group => false }}
       it 'should fail' do
-        expect { catalogue }.to raise_error(Puppet::Error, /is not a string/)
+        expect { should }.to raise_error(Puppet::Error, /is not a string/)
       end
     end
   end # group =>
@@ -263,7 +253,7 @@ describe 'concat', :type => :define do
       let(:title) { '/etc/foo.bar' }
       let(:params) {{ :mode => false }}
       it 'should fail' do
-        expect { catalogue }.to raise_error(Puppet::Error, /is not a string/)
+        expect { should }.to raise_error(Puppet::Error, /is not a string/)
       end
     end
   end # mode =>
@@ -281,7 +271,7 @@ describe 'concat', :type => :define do
           it_behaves_like 'concat', '/etc/foo.bar', { :warn => warn }
 
           it 'should create a warning' do
-            skip('rspec-puppet support for testing warning()')
+            pending('rspec-puppet support for testing warning()')
           end
         end
       end
@@ -291,7 +281,7 @@ describe 'concat', :type => :define do
       let(:title) { '/etc/foo.bar' }
       let(:params) {{ :warn => 123 }}
       it 'should fail' do
-        expect { catalogue }.to raise_error(Puppet::Error, /is not a string or boolean/)
+        expect { should }.to raise_error(Puppet::Error, /is not a string or boolean/)
       end
     end
   end # warn =>
@@ -307,7 +297,7 @@ describe 'concat', :type => :define do
       let(:title) { '/etc/foo.bar' }
       let(:params) {{ :force => 123 }}
       it 'should fail' do
-        expect { catalogue }.to raise_error(Puppet::Error, /is not a boolean/)
+        expect { should }.to raise_error(Puppet::Error, /is not a boolean/)
       end
     end
   end # force =>
@@ -329,7 +319,7 @@ describe 'concat', :type => :define do
       let(:title) { '/etc/foo.bar' }
       let(:params) {{ :backup => [] }}
       it 'should fail' do
-        expect { catalogue }.to raise_error(Puppet::Error, /backup must be string or bool/)
+        expect { should }.to raise_error(Puppet::Error, /backup must be string or bool/)
       end
     end
   end # backup =>
@@ -345,7 +335,7 @@ describe 'concat', :type => :define do
       let(:title) { '/etc/foo.bar' }
       let(:params) {{ :replace => 123 }}
       it 'should fail' do
-        expect { catalogue }.to raise_error(Puppet::Error, /is not a boolean/)
+        expect { should }.to raise_error(Puppet::Error, /is not a boolean/)
       end
     end
   end # replace =>
@@ -361,7 +351,7 @@ describe 'concat', :type => :define do
       let(:title) { '/etc/foo.bar' }
       let(:params) {{ :order => 'invalid' }}
       it 'should fail' do
-        expect { catalogue }.to raise_error(Puppet::Error, /#{Regexp.escape('does not match "^alpha$|^numeric$"')}/)
+        expect { should }.to raise_error(Puppet::Error, /#{Regexp.escape('does not match "^alpha$|^numeric$"')}/)
       end
     end
   end # order =>
@@ -377,28 +367,10 @@ describe 'concat', :type => :define do
       let(:title) { '/etc/foo.bar' }
       let(:params) {{ :ensure_newline => 123 }}
       it 'should fail' do
-        expect { catalogue }.to raise_error(Puppet::Error, /is not a boolean/)
+        expect { should }.to raise_error(Puppet::Error, /is not a boolean/)
       end
     end
   end # ensure_newline =>
-
-  context 'validate_cmd =>' do
-    if Puppet::Util::Package::versioncmp(Puppet::version, '3.5.0') > 0
-      context '/usr/bin/test -e %' do
-        it_behaves_like 'concat', '/etc/foo.bar', { :validate_cmd => '/usr/bin/test -e %' }
-      end
-
-      [ 1234, true ].each do |cmd|
-        context cmd do
-          let(:title) { '/etc/foo.bar' }
-          let(:params) {{ :validate_cmd => cmd }}
-          it 'should fail' do
-            expect { catalogue }.to raise_error(Puppet::Error, /\$validate_cmd must be a string/)
-          end
-        end
-      end
-    end
-  end # validate_cmd =>
 
   describe 'deprecated parameter' do
     context 'gnu =>' do
@@ -406,7 +378,7 @@ describe 'concat', :type => :define do
         it_behaves_like 'concat', '/etc/foo.bar', { :gnu => 'foo'}
 
         it 'should create a warning' do
-          skip('rspec-puppet support for testing warning()')
+          pending('rspec-puppet support for testing warning()')
         end
       end
     end

@@ -1,7 +1,7 @@
 Puppet::Type.newtype(:elasticsearch_plugin) do
 
   @doc = "Plugin installation type"
-
+  
   ensurable do
     defaultvalues
     defaultto :present
@@ -19,17 +19,17 @@ Puppet::Type.newtype(:elasticsearch_plugin) do
     desc 'Source of the package. puppet:// or file:// resource'
   end
 
-  newparam(:proxy) do
+  newparam(:proxy_args) do
     desc 'Proxy Host'
   end
 
   newparam(:plugin_dir) do
-    desc 'Path to the Plugins directory'
+    desc 'Plugin directory'
     defaultto '/usr/share/elasticsearch/plugins'
   end
 
-  newparam(:plugin_path) do
-    desc 'Override name of the directory created for the plugin'
+  newparam(:install_options) do
+    desc 'Installation options'
   end
 
 end

@@ -9,12 +9,10 @@
 # === Parameters
 #
 # [*module_dir*]
-#   Directory name where the module has been installed
-#   This is automatically generated based on the module name
-#   Specify a value here to override the auto generated value
+#   Directory name where the module will be installed
 #   Value type is string
 #   Default value: None
-#   This variable is optional
+#   This variable is deprecated
 #
 # [*ensure*]
 #   Whether the plugin will be installed or removed.
@@ -48,21 +46,12 @@
 #   Default value: None
 #   This variable is optional
 #
-# [*proxy_username*]
-#   Proxy auth username to use when installing the plugin
-#   Value type is string
-#   Default value: None
-#   This variable is optional
-#
-# [*proxy_password*]
-#   Proxy auth username to use when installing the plugin
-#   Value type is string
-#   Default value: None
-#   This variable is optional
-#
 # [*instances*]
 #   Specify all the instances related
 #   value type is string or array
+#
+# [*install_options*]
+#   Pass options to the plugin installer
 #
 # === Examples
 #
@@ -82,57 +71,44 @@
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 define elasticsearch::plugin(
-  $instances      = undef,
-  $module_dir     = undef,
-  $ensure         = 'present',
-  $url            = undef,
-  $source         = undef,
-  $proxy_host     = undef,
-  $proxy_port     = undef,
-  $proxy_username = undef,
-  $proxy_password = undef,
+  $instances,
+  $module_dir      = undef,
+  $ensure          = 'present',
+  $url             = undef,
+  $source          = undef,
+  $proxy_host      = undef,
+  $proxy_port      = undef,
+  $install_options = undef
 ) {
 
   include elasticsearch
 
-  case $ensure {
-    'installed', 'present': {
-      if empty($instances) {
-        fail('no $instances defined')
-      }
-
-      $_file_ensure = 'directory'
-      $_file_before = []
-    }
-    'absent': {
-      $_file_ensure = $ensure
-      $_file_before = File[$elasticsearch::plugindir]
-    }
-    default: {
-      fail("'${ensure}' is not a valid ensure parameter value")
-    }
+  $notify_service = $elasticsearch::restart_on_change ? {
+    false   => undef,
+    default => Elasticsearch::Service[$instances],
   }
 
-  if ! empty($instances) and $elasticsearch::restart_plugin_change {
-    Elasticsearch_plugin[$name] {
-      notify +> Elasticsearch::Instance[$instances],
-    }
+  if ($module_dir != undef) {
+    warning("module_dir settings is deprecated for plugin ${name}. The directory is now auto detected.")
   }
 
   # set proxy by override or parse and use proxy_url from
   # elasticsearch::proxy_url or use no proxy at all
-
+  
   if ($proxy_host != undef and $proxy_port != undef) {
-    if ($proxy_username != undef and $proxy_password != undef) {
-      $_proxy_auth = "${proxy_username}:${proxy_password}@"
-    } else {
-      $_proxy_auth = undef
+    $proxy = "-DproxyPort=${proxy_port} -DproxyHost=${proxy_host}"
+  }
+  elsif ($elasticsearch::proxy_url != undef) {
+    $proxy_host_from_url = regsubst($elasticsearch::proxy_url, '(http|https)://([^:]+)(|:\d+).+', '\2')
+    $proxy_port_from_url = regsubst($elasticsearch::proxy_url, '(?:http|https)://[^:/]+(?::([0-9]+))?(?:/.*)?', '\1')
+    
+    # validate parsed values before using them
+    if (is_string($proxy_host_from_url) and is_integer($proxy_port_from_url)) {
+      $proxy = "-DproxyPort=${proxy_port_from_url} -DproxyHost=${proxy_host_from_url}"
     }
-    $_proxy = "http://${_proxy_auth}${proxy_host}:${proxy_port}"
-  } elsif ($elasticsearch::proxy_url != undef) {
-    $_proxy = $elasticsearch::proxy_url
-  } else {
-    $_proxy = undef
+  }
+  else {
+    $proxy = undef
   }
 
   if ($source != undef) {
@@ -148,28 +124,31 @@ define elasticsearch::plugin(
       before => Elasticsearch_plugin[$name],
     }
 
-  } else {
-    $file_source = undef
-  }
-
-  if ($url != undef) {
+  } elsif ($url != undef) {
     validate_string($url)
   }
 
-  $_module_dir = es_plugin_name($module_dir, $name)
+  case $ensure {
+    'installed', 'present': {
 
-  elasticsearch_plugin { $name:
-    ensure      => $ensure,
-    source      => $file_source,
-    url         => $url,
-    proxy       => $_proxy,
-    plugin_dir  => $::elasticsearch::plugindir,
-    plugin_path => $module_dir,
-  } ->
-  file { "${elasticsearch::plugindir}/${_module_dir}":
-    ensure  => $_file_ensure,
-    mode    => 'o+Xr',
-    recurse => true,
-    before  => $_file_before,
+      elasticsearch_plugin { $name:
+        ensure          => 'present',
+        source          => $file_source,
+        url             => $url,
+        proxy_args      => $proxy,
+        plugin_dir      => $::elasticsearch::plugindir,
+        install_options => $install_options,
+        notify          => $notify_service,
+      }
+
+    }
+    'absent': {
+      elasticsearch_plugin { $name:
+        ensure => absent,
+      }
+    }
+    default: {
+      fail("${ensure} is not a valid ensure command.")
+    }
   }
 }

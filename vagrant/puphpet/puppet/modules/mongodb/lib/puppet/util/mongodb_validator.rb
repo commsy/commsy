@@ -31,7 +31,7 @@ module Puppet
       #
       # @return true if the connection is successful, false otherwise.
       def attempt_connection
-        Timeout::timeout(Puppet[:http_connect_timeout]) do
+        Timeout::timeout(Puppet[:configtimeout]) do
           begin
             TCPSocket.new(@mongodb_server, @mongodb_port).close
             true

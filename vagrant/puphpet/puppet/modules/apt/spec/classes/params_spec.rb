@@ -1,6 +1,9 @@
 require 'spec_helper'
 describe 'apt::params', :type => :class do
-  let(:facts) { { :lsbdistid => 'Debian', :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :puppetversion => Puppet.version, } }
+  let(:facts) { { :lsbdistid => 'Debian', :osfamily => 'Debian', :lsbdistcodename => 'wheezy', :puppetversion   => Puppet.version, } }
+  let (:title) { 'my_package' }
+
+  it { is_expected.to contain_apt__params }
 
   # There are 4 resources in this class currently
   # there should not be any more resources because it is a params class
@@ -10,7 +13,7 @@ describe 'apt::params', :type => :class do
   end
 
   describe "With lsb-release not installed" do
-    let(:facts) { { :osfamily => 'Debian', :puppetversion => Puppet.version, } }
+    let(:facts) { { :osfamily => 'Debian', :puppetversion   => Puppet.version, } }
     let (:title) { 'my_package' }
 
     it do

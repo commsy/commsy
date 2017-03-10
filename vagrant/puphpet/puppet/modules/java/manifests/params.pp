@@ -15,7 +15,7 @@ class java::params {
   case $::osfamily {
     'RedHat': {
       case $::operatingsystem {
-        'RedHat', 'CentOS', 'OracleLinux', 'Scientific', 'OEL': {
+        'RedHat', 'CentOS', 'OracleLinux', 'Scientific': {
           if (versioncmp($::operatingsystemrelease, '5.0') < 0) {
             $jdk_package = 'java-1.6.0-sun-devel'
             $jre_package = 'java-1.6.0-sun'
@@ -24,24 +24,14 @@ class java::params {
             $jdk_package = 'java-1.6.0-openjdk-devel'
             $jre_package = 'java-1.6.0-openjdk'
           }
-          elsif (versioncmp($::operatingsystemrelease, '7.1') < 0) {
+          else {
             $jdk_package = 'java-1.7.0-openjdk-devel'
             $jre_package = 'java-1.7.0-openjdk'
-          }
-          else {
-            $jdk_package = 'java-1.8.0-openjdk-devel'
-            $jre_package = 'java-1.8.0-openjdk'
           }
         }
         'Fedora': {
-          if (versioncmp($::operatingsystemrelease, '21') < 0) {
-            $jdk_package = 'java-1.7.0-openjdk-devel'
-            $jre_package = 'java-1.7.0-openjdk'
-          }
-          else {
-            $jdk_package = 'java-1.8.0-openjdk-devel'
-            $jre_package = 'java-1.8.0-openjdk'
-          }
+          $jdk_package = 'java-1.7.0-openjdk-devel'
+          $jre_package = 'java-1.7.0-openjdk'
         }
         'Amazon': {
           $jdk_package = 'java-1.7.0-openjdk-devel'
@@ -56,6 +46,7 @@ class java::params {
     }
     'Debian': {
       case $::lsbdistcodename {
+        default: { fail("unsupported release ${::lsbdistcodename}") }
         'lenny', 'squeeze', 'lucid', 'natty': {
           $java  = {
             'jdk' => {
@@ -110,49 +101,8 @@ class java::params {
               'alternative_path' => '/usr/lib/jvm/j2sdk1.7-oracle/jre/bin/java',
               'java_home'        => '/usr/lib/jvm/j2sdk1.7-oracle/jre/',
             },
-            'oracle-j2re' => {
-              'package'          => 'oracle-j2re1.8',
-              'alternative'      => 'j2re1.8-oracle',
-              'alternative_path' => '/usr/lib/jvm/j2re1.8-oracle/bin/java',
-              'java_home'        => '/usr/lib/jvm/j2re1.8-oracle/',
-            },
-            'oracle-j2sdk' => {
-              'package'          => 'oracle-j2sdk1.8',
-              'alternative'      => 'j2sdk1.8-oracle',
-              'alternative_path' => '/usr/lib/jvm/j2sdk1.8-oracle/bin/java',
-              'java_home'        => '/usr/lib/jvm/j2sdk1.8-oracle/',
-              },
           }
         }
-        'vivid', 'wily', 'xenial': {
-          $java =  {
-            'jdk' => {
-              'package'          => 'openjdk-8-jdk',
-              'alternative'      => "java-1.8.0-openjdk-${::architecture}",
-              'alternative_path' => "/usr/lib/jvm/java-1.8.0-openjdk-${::architecture}/bin/java",
-              'java_home'        => "/usr/lib/jvm/java-1.8.0-openjdk-${::architecture}/",
-            },
-            'jre' => {
-              'package'          => 'openjdk-8-jre-headless',
-              'alternative'      => "java-1.8.0-openjdk-${::architecture}",
-              'alternative_path' => "/usr/lib/jvm/java-1.8.0-openjdk-${::architecture}/bin/java",
-              'java_home'        => "/usr/lib/jvm/java-1.8.0-openjdk-${::architecture}/",
-            }
-          }
-        }
-        default: { fail("unsupported release ${::lsbdistcodename}") }
-      }
-    }
-    'OpenBSD': {
-      $java = {
-        'jdk' => { 'package' => 'jdk', },
-        'jre' => { 'package' => 'jre', },
-      }
-    }
-    'FreeBSD': {
-      $java = {
-        'jdk' => { 'package' => 'openjdk', },
-        'jre' => { 'package' => 'openjdk-jre', },
       }
     }
     'Solaris': {
@@ -163,25 +113,27 @@ class java::params {
     }
     'Suse': {
       case $::operatingsystem {
-        'SLES': {
-          if (versioncmp($::operatingsystemrelease, '12') >= 0) {
-            $jdk_package = 'java-1_7_0-openjdk-devel'
-            $jre_package = 'java-1_7_0-openjdk'
-          } elsif (versioncmp($::operatingsystemrelease, '11.4') >= 0) {
-            $jdk_package = 'java-1_7_0-ibm-devel'
-            $jre_package = 'java-1_7_0-ibm'
-          } else {
-            $jdk_package = 'java-1_6_0-ibm-devel'
-            $jre_package = 'java-1_6_0-ibm'
-          }
-        }
-        'OpenSuSE': {
-          $jdk_package = 'java-1_7_0-openjdk-devel'
-          $jre_package = 'java-1_7_0-openjdk'
-        }
         default: {
           $jdk_package = 'java-1_6_0-ibm-devel'
           $jre_package = 'java-1_6_0-ibm'
+        }
+
+        'SLES': {
+          case $::operatingsystemmajrelease{
+            default: {
+              $jdk_package = 'java-1_6_0-ibm-devel'
+              $jre_package = 'java-1_6_0-ibm'
+            }
+            '12': {
+              $jdk_package = 'java-1_7_0-openjdk-devel'
+              $jre_package = 'java-1_7_0-openjdk'
+            }
+          }
+        }
+
+        'OpenSuSE': {
+          $jdk_package = 'java-1_7_0-openjdk-devel'
+          $jre_package = 'java-1_7_0-openjdk'
         }
       }
       $java = {

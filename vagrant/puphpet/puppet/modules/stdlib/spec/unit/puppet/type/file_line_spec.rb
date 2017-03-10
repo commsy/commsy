@@ -41,13 +41,10 @@ describe Puppet::Type.type(:file_line) do
     expect { file_line[:path] = 'file' }.to raise_error(Puppet::Error, /File paths must be fully qualified/)
   end
   it 'should require that a line is specified' do
-    expect { Puppet::Type.type(:file_line).new(:name => 'foo', :path => '/tmp/file') }.to raise_error(Puppet::Error, /line is a required attribute/)
-  end
-  it 'should not require that a line is specified when matching for absence' do
-    expect { Puppet::Type.type(:file_line).new(:name => 'foo', :path => '/tmp/file', :ensure => :absent, :match_for_absence => :true, :match => 'match') }.not_to raise_error
+    expect { Puppet::Type.type(:file_line).new(:name => 'foo', :path => '/tmp/file') }.to raise_error(Puppet::Error, /Both line and path are required attributes/)
   end
   it 'should require that a file is specified' do
-    expect { Puppet::Type.type(:file_line).new(:name => 'foo', :line => 'path') }.to raise_error(Puppet::Error, /path is a required attribute/)
+    expect { Puppet::Type.type(:file_line).new(:name => 'foo', :line => 'path') }.to raise_error(Puppet::Error, /Both line and path are required attributes/)
   end
   it 'should default to ensure => present' do
     expect(file_line[:ensure]).to eq :present

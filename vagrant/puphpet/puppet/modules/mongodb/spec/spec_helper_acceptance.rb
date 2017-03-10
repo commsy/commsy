@@ -1,10 +1,21 @@
 #! /usr/bin/env ruby -S rspec
 require 'beaker-rspec'
-require 'beaker/puppet_install_helper'
 
 UNSUPPORTED_PLATFORMS = []
 
-run_puppet_install_helper
+unless ENV['RS_PROVISION'] == 'no' or ENV['BEAKER_provision'] == 'no'
+  if hosts.first.is_pe?
+    install_pe
+    on hosts, 'mkdir -p /etc/puppetlabs/facter/facts.d'
+  else
+    install_puppet
+    on hosts, 'mkdir -p /etc/facter/facts.d'
+    on hosts, '/bin/touch /etc/puppet/hiera.yaml'
+  end
+  hosts.each do |host|
+    on host, "mkdir -p #{host['distmoduledir']}"
+  end
+end
 
 RSpec.configure do |c|
   # Project root

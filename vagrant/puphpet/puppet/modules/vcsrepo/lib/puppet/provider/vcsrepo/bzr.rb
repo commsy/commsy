@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__), '..', 'vcsrepo')
 Puppet::Type.type(:vcsrepo).provide(:bzr, :parent => Puppet::Provider::Vcsrepo) do
   desc "Supports Bazaar repositories"
 
-  commands :bzr => 'bzr'
+  optional_commands   :bzr => 'bzr'
   has_features :reference_tracking
 
   def create
@@ -52,7 +52,6 @@ Puppet::Type.type(:vcsrepo).provide(:bzr, :parent => Puppet::Provider::Vcsrepo) 
         bzr('update', '-r', desired, ':parent')
       end
     end
-    update_owner
   end
 
   def latest
@@ -71,7 +70,6 @@ Puppet::Type.type(:vcsrepo).provide(:bzr, :parent => Puppet::Provider::Vcsrepo) 
 
   def create_repository(path)
     bzr('init', path)
-    update_owner
   end
 
   def clone_repository(revision)
@@ -82,12 +80,6 @@ Puppet::Type.type(:vcsrepo).provide(:bzr, :parent => Puppet::Provider::Vcsrepo) 
     args.push(@resource.value(:source),
               @resource.value(:path))
     bzr(*args)
-    update_owner
   end
 
-  def update_owner
-    if @resource.value(:owner) or @resource.value(:group)
-      set_ownership
-    end
-  end
 end

@@ -126,7 +126,9 @@ describe 'apache::service', :type => :class do
         'service_manage' => false
       }
     end
-    it { is_expected.not_to contain_service('httpd') }
+    it 'should not manage the httpd service' do
+      subject.should_not contain_service('httpd')
+    end
   end
 
   context "on a FreeBSD 5 OS" do

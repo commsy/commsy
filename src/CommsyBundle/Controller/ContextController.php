@@ -58,7 +58,6 @@ class ContextController extends Controller
         );
     }
     
-    
     /**
      * @Route("/room/{roomId}/context/{itemId}/request", requirements={
      *     "itemId": "\d+"
@@ -319,10 +318,20 @@ class ContextController extends Controller
             }
 
             // redirect to detail page
-            return $this->redirectToRoute('commsy_project_detail', [
-                'roomId' => $roomId,
-                'itemId' => $itemId,
-            ]);
+            $route = "";
+            if ($roomItem->isGroupRoom()) {
+                $route = $this->redirectToRoute('commsy_group_detail', [
+                    'roomId' => $roomId,
+                    'itemId' => $roomItem->getLinkedGroupItemID(),
+                ]);
+            }
+            else {
+                $route = $this->redirectToRoute('commsy_project_detail', [
+                    'roomId' => $roomId,
+                    'itemId' => $itemId,
+                ]);
+            }
+            return $route;
         }
         
         return [

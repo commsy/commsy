@@ -1,7 +1,9 @@
-require 'spec_helper'
-
 describe 'apache::mod::ext_filter', :type => :class do
-  it_behaves_like "a mod class, without including apache"
+  let :pre_condition do
+    'class { "apache":
+      default_mods => false,
+    }'
+  end
   context "on a Debian OS" do
     let :facts do
       {

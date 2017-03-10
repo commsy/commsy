@@ -10,7 +10,7 @@
 <%       destination = "#{@logroot}/#{log['file']}" -%>
 <%     end -%>
 <%   elsif log['syslog'] -%>
-<%     destination = log['syslog'] -%>
+<%     destination = "syslog" -%>
 <%   elsif log['pipe'] -%>
 <%     destination = log['pipe'] -%>
 <%   else -%>

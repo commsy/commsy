@@ -73,6 +73,7 @@ define php::module (
 
   $real_module_prefix = $module_prefix ? {
     ''      => $php::module_prefix,
+    false   => '',
     default => $module_prefix,
   }
 

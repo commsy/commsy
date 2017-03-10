@@ -1,9 +1,10 @@
 require 'spec_helper_acceptance'
 
-describe 'changing the source' do
-  before :all do
-    iptables_flush_all_tables
-    ip6tables_flush_all_tables
+describe 'firewall type' do
+  describe 'reset' do
+    it 'deletes all rules' do
+      shell('iptables --flush; iptables -t nat --flush; iptables -t mangle --flush')
+    end
   end
 
   describe 'when unmanaged rules exist' do
