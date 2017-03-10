@@ -993,7 +993,15 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       	) {
       	$this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_PASSWORD_LENGTH_ERROR',$this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_TRY_UNTIL_LOCK'));
       	$this->_form->setFailure('try_until_lock','');
-      }      
+      }
+
+      // email regex
+      if ( !empty($this->_form_post['email_regex'])
+         and (preg_match($this->_form_post['email_regex'], null) === false)
+        ) {
+           $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_EMAIL_REGEX_WRONG_REGEX_ERROR',$this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_EMAIL_REGEX_WRONG_REGEX_ERROR'));
+           $this->_form->setFailure('email_regex','');
+      }
    }
 }
 ?>
