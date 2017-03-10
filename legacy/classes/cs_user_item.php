@@ -2775,5 +2775,31 @@ class cs_user_item extends cs_item {
    	   $this->setPortalConnectionInfoDB($tab_new_array);
    	}
    }
+
+    function setIsAllowedToCreateContext ($value) {
+        $this->_addExtra('IS_ALLOWED_TO_CREATE_CONTEXT', $value);
+    }
+
+    function getIsAllowedToCreateContext () {
+        $retour = '';
+        if ($this->_issetExtra('IS_ALLOWED_TO_CREATE_CONTEXT')) {
+            $retour = $this->_getExtra('IS_ALLOWED_TO_CREATE_CONTEXT');
+        }
+        return $retour;
+    }
+
+    public function isAllowedToCreateContext () {
+       if ($this->getIsAllowedToCreateContext() != '') {
+          if ($this->getIsAllowedToCreateContext() == -1) {
+             return false;
+          } else {
+             return true;
+          }
+      } else {
+          $auth_source_manager = $this->_environment->getAuthSourceManager();
+          $auth_source_item = $auth_source_manager->getItem($this->getAuthSource());
+          return $auth_source_item->isUserAllowedToCreateContext();
+      }
+   }
 }
 ?>
