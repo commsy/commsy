@@ -40,6 +40,7 @@ $message["CONFIGURATION_AUTHENTICATION_EMAIL_REGEX"]["de"] = "Regular expression
 $message["CONFIGURATION_AUTHENTICATION_EMAIL_REGEX_INFO"]["de"] = "Please include delimiter and modifier";
 $message["CONFIGURATION_AUTHENTICATION_EMAIL_REGEX_WRONG_REGEX_ERROR"]["de"] = "The regular expression is not correct.";
 $message["CONFIGURATION_AUTHENTICATION_EMAIL_REGEX_ERROR"]["de"] = "The given email-address does not match the requirements set by the portal moderators.";
+$message["CONFIGURATION_AUTHENTICATION_USER_IS_ALLOWED_TO_CREATE_CONTEXT"]["de"] = "Users are allowed to create rooms";
 $message["CONFIGURATION_AUTHENTICATION_HOST"]["en"] = "Server";
 $message["CONFIGURATION_AUTHENTICATION_HOST_ERROR"]["en"] = "Please add https:// or http:// at the server address.";
 $message["CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID"]["en"] = "Userid (in path)";

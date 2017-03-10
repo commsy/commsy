@@ -547,6 +547,11 @@ class cs_configuration_authentication_form extends cs_rubric_form {
            $this->_form->addText('Info E-Mail Regex', $translator->getMessage('CONFIGURATION_AUTHENTICATION_EMAIL_REGEX_INFO'), $translator->getMessage('CONFIGURATION_AUTHENTICATION_EMAIL_REGEX_INFO'));
        }
 
+       if(!$disabled) {
+           $this->_form->addEmptyLine();
+           $this->_form->addRadioGroup('user_is_allowed_to_create_context', $translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_IS_ALLOWED_TO_CREATE_CONTEXT'), '', $this->_yes_no_array, '', '', true, '', '', $disabled);
+       }
+
       if(!$disabled){
       	$this->_form->addEmptyLine();
       }
@@ -625,6 +630,12 @@ class cs_configuration_authentication_form extends cs_rubric_form {
 
          $this->_values['email_regex'] = $this->_item->getEmailRegex();
 
+         if ($this->_item->isUserAllowedToCreateContext()) {
+             $this->_values['user_is_allowed_to_create_context'] = 1;
+         } else {
+             $this->_values['user_is_allowed_to_create_context'] = 2;
+         }
+
          $current_context = $this->_environment->getCurrentContextItem();
          
          // Datenschutz
@@ -692,7 +703,12 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          if( empty($this->_values['try_until_lock'])) {
          	$this->_values['try_until_lock'] = 0;
          }
-         
+
+         if($this->_item->isUserAllowedToCreateContext()){
+             $this->_values['user_is_allowed_to_create_context'] = 1;
+         } else {
+             $this->_values['user_is_allowed_to_create_context'] = 2;
+         }
          
 //          if($this->_values['temporary_lock'] == 2){
 //          	$this->

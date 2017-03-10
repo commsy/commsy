@@ -430,6 +430,28 @@ class cs_auth_source_item extends cs_item {
         $this->_addExtra('EMAIL_REGEX',$value);
     }
 
+
+    public function getUserAllowedToCreateContext() {
+        $retour = '';
+        $value = $this->_getExtra('USER_IS_ALLOWED_TO_CREATE_CONTEXT');
+        if ( !empty($value) ) {
+            $retour = $value;
+        }
+        return $retour;
+    }
+
+    public function setUserIsAllowedToCreateContext($value) {
+        $this->_addExtra('USER_IS_ALLOWED_TO_CREATE_CONTEXT',$value);
+    }
+
+    public function isUserAllowedToCreateContext(){
+        if(($this->getUserAllowedToCreateContext() == -1)){
+            return false;
+        } else {
+            return true;
+        }
+    }
+
    /**
     * Get Shibboleth direct login configuration
     * 

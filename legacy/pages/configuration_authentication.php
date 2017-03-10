@@ -244,6 +244,13 @@ else {
                 if ( isset($_POST['email_regex']) ) {
                     $authItem->setEmailRegex($_POST['email_regex']);
                 }
+                if ( isset($_POST['user_is_allowed_to_create_context']) ) {
+	            	if ($_POST['user_is_allowed_to_create_context'] == 1) {
+                        $authItem->setUserIsAllowedToCreateContext(1);
+					} else {
+                        $authItem->setUserIsAllowedToCreateContext(-1);
+					}
+				}
 			   }
 			   
 			   if ( $_POST['auth_source'] != -1
