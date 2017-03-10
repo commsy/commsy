@@ -538,8 +538,15 @@ class cs_configuration_authentication_form extends cs_rubric_form {
 	      $this->_form->addTextfield('password_generation','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_GENERATION'),'',2,10,false,'','','','','','',$disabled);
 	      $this->_form->combine();
 	      $this->_form->addText('Info', $translator->getMessage('CONFIGURATION_AUTHENTICATION_GENERATION'), $translator->getMessage('CONFIGURATION_AUTHENTICATION_GENERATION_INFO'));
-	      
       }
+
+       if($this->_commsy_default){
+           $this->_form->addEmptyLine();
+           $this->_form->addTextfield('email_regex','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_EMAIL_REGEX'),'',250,30,false,'','','','','','',$disabled);
+           $this->_form->combine();
+           $this->_form->addText('Info E-Mail Regex', $translator->getMessage('CONFIGURATION_AUTHENTICATION_EMAIL_REGEX_INFO'), $translator->getMessage('CONFIGURATION_AUTHENTICATION_EMAIL_REGEX_INFO'));
+       }
+
       if(!$disabled){
       	$this->_form->addEmptyLine();
       }
@@ -615,8 +622,9 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $this->_values['password_length'] = $this->_item->getPasswordLength();
          $this->_values['password_smallchar'] = $this->_item->getPasswordSecureSmallchar();
          $this->_values['password_number'] = $this->_item->getPasswordSecureNumber();
-         
-         
+
+         $this->_values['email_regex'] = $this->_item->getEmailRegex();
+
          $current_context = $this->_environment->getCurrentContextItem();
          
          // Datenschutz

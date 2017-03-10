@@ -241,6 +241,9 @@ else {
 	            if ( isset($_POST['password_number']) ) {
 	            	$authItem->setPasswordSecureNumber($_POST['password_number']);
 	            }
+                if ( isset($_POST['email_regex']) ) {
+                    $authItem->setEmailRegex($_POST['email_regex']);
+                }
 			   }
 			   
 			   if ( $_POST['auth_source'] != -1

@@ -192,6 +192,14 @@ class cs_home_member_form extends cs_rubric_form {
             $this->_error_array[] = $this->_translator->getMessage('USER_EMAIL_VALID_ERROR');
             $this->_form->setFailure('email','');
             $this->_form->setFailure('email_confirmation','');
+
+            $auth_source_manager = $this->_environment->getAuthSourceManager();
+            $auth_source_item = $auth_source_manager->getItem($this->_form_post['auth_source']);
+            if($auth_source_item->getEmailRegex() != ''){
+                if (!preg_match($auth_source_item->getEmailRegex(), $this->_form_post['email'])) {
+                    $this->_error_array[] = $this->_translator->getMessage('EMAIL_REGEX_ERROR');
+                }
+            }
          }
       }
       if ($this->_environment->getCurrentContextItem()->withAGB() and $this->_environment->getCurrentContextItem()->withAGBDatasecurity()){

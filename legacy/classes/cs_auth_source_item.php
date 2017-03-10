@@ -416,7 +416,20 @@ class cs_auth_source_item extends cs_item {
    	   	return false;
    	   }
    }
-   
+
+    public function getEmailRegex() {
+        $retour = '';
+        $value = $this->_getExtra('EMAIL_REGEX');
+        if ( !empty($value) ) {
+            $retour = $value;
+        }
+        return $retour;
+    }
+
+    public function setEmailRegex($value) {
+        $this->_addExtra('EMAIL_REGEX',$value);
+    }
+
    /**
     * Get Shibboleth direct login configuration
     * 
