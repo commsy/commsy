@@ -4,8 +4,7 @@
 
 module Puppet::Parser::Functions
   newfunction(:suffix, :type => :rvalue, :doc => <<-EOS
-This function applies a suffix to all elements in an array, or to the keys
-in a hash.
+This function applies a suffix to all elements in an array.
 
 *Examples:*
 
@@ -19,10 +18,10 @@ Will return: ['ap','bp','cp']
     raise(Puppet::ParseError, "suffix(): Wrong number of arguments " +
       "given (#{arguments.size} for 1)") if arguments.size < 1
 
-    enumerable = arguments[0]
+    array = arguments[0]
 
-    unless enumerable.is_a?(Array) or enumerable.is_a?(Hash)
-      raise Puppet::ParseError, "suffix(): expected first argument to be an Array or a Hash, got #{enumerable.inspect}"
+    unless array.is_a?(Array)
+      raise Puppet::ParseError, "suffix(): expected first argument to be an Array, got #{array.inspect}"
     end
 
     suffix = arguments[1] if arguments[1]
@@ -33,17 +32,10 @@ Will return: ['ap','bp','cp']
       end
     end
 
-    if enumerable.is_a?(Array)
-      # Turn everything into string same as join would do ...
-      result = enumerable.collect do |i|
-        i = i.to_s
-        suffix ? i + suffix : i
-      end
-    else
-      result = Hash[enumerable.map do |k,v|
-        k = k.to_s
-        [ suffix ? k + suffix : k, v ]
-      end]
+    # Turn everything into string same as join would do ...
+    result = array.collect do |i|
+      i = i.to_s
+      suffix ? i + suffix : i
     end
 
     return result

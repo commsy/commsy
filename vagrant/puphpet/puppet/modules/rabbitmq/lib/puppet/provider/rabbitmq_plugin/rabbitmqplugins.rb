@@ -34,11 +34,7 @@ Puppet::Type.type(:rabbitmq_plugin).provide(:rabbitmqplugins, :parent => Puppet:
   end
 
   def create
-    if resource[:umask] == nil
-      rabbitmqplugins('enable', resource[:name])
-    else
-      Puppet::Util::withumask(resource[:umask]) { rabbitmqplugins('enable', resource[:name]) }
-    end
+    rabbitmqplugins('enable', resource[:name])
   end
 
   def destroy

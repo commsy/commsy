@@ -23,23 +23,14 @@ describe Puppet::Type.type(:vcsrepo).provider(:cvs_provider) do
         resource[:source] = ':ext:source@example.com:/foo/bar'
         resource[:revision] = 'an-unimportant-value'
         expects_chdir('/tmp')
-        Puppet::Util::Execution.expects(:execute).with([:cvs, '-d', resource.value(:source), 'checkout', '-r', 'an-unimportant-value', '-d', 'test', 'bar'], :custom_environment => {}, :combine => true)
-        provider.create
-      end
-
-      it "should execute 'cvs checkout' as user 'muppet'" do
-        resource[:source] = ':ext:source@example.com:/foo/bar'
-        resource[:revision] = 'an-unimportant-value'
-        resource[:user] = 'muppet'
-        expects_chdir('/tmp')
-        Puppet::Util::Execution.expects(:execute).with([:cvs, '-d', resource.value(:source), 'checkout', '-r', 'an-unimportant-value', '-d', 'test', 'bar'], :uid => 'muppet', :custom_environment => {}, :combine => true)
+        provider.expects(:cvs).with('-d', resource.value(:source), 'checkout', '-r', 'an-unimportant-value', '-d', 'test', 'bar')
         provider.create
       end
 
       it "should just execute 'cvs checkout' without a revision" do
         resource[:source] = ':ext:source@example.com:/foo/bar'
         resource.delete(:revision)
-        Puppet::Util::Execution.expects(:execute).with([:cvs, '-d', resource.value(:source), 'checkout', '-d', File.basename(resource.value(:path)), File.basename(resource.value(:source))], :custom_environment => {}, :combine => true)
+        provider.expects(:cvs).with('-d', resource.value(:source), 'checkout', '-d', File.basename(resource.value(:path)), File.basename(resource.value(:source)))
         provider.create
       end
 
@@ -48,7 +39,7 @@ describe Puppet::Type.type(:vcsrepo).provider(:cvs_provider) do
           resource[:source] = ':ext:source@example.com:/foo/bar'
           resource[:compression] = '3'
           resource.delete(:revision)
-          Puppet::Util::Execution.expects(:execute).with([:cvs, '-d', resource.value(:source), '-z', '3', 'checkout', '-d', File.basename(resource.value(:path)), File.basename(resource.value(:source))], :custom_environment => {}, :combine => true)
+          provider.expects(:cvs).with('-d', resource.value(:source), '-z', '3', 'checkout', '-d', File.basename(resource.value(:path)), File.basename(resource.value(:source)))
           provider.create
         end
       end
@@ -57,7 +48,7 @@ describe Puppet::Type.type(:vcsrepo).provider(:cvs_provider) do
     context "when a source is not given" do
       it "should execute 'cvs init'" do
         resource.delete(:source)
-        Puppet::Util::Execution.expects(:execute).with([:cvs, '-d', resource.value(:path), 'init'], :custom_environment => {}, :combine => true)
+        provider.expects(:cvs).with('-d', resource.value(:path), 'init')
         provider.create
       end
     end
@@ -95,7 +86,7 @@ describe Puppet::Type.type(:vcsrepo).provider(:cvs_provider) do
       end
       it "should read CVS/Tag" do
         File.expects(:read).with(@tag_file).returns("T#{@tag}")
-        expect(provider.revision).to eq(@tag)
+        provider.revision.should == @tag
       end
     end
 
@@ -104,7 +95,7 @@ describe Puppet::Type.type(:vcsrepo).provider(:cvs_provider) do
         File.expects(:exist?).with(@tag_file).returns(false)
       end
       it "assumes HEAD" do
-        expect(provider.revision).to eq('HEAD')
+        provider.revision.should == 'HEAD'
       end
     end
   end
@@ -116,7 +107,7 @@ describe Puppet::Type.type(:vcsrepo).provider(:cvs_provider) do
 
     it "should use 'cvs update -dr'" do
       expects_chdir
-      Puppet::Util::Execution.expects(:execute).with([:cvs, 'update', '-dr', @tag, '.'], :custom_environment => {}, :combine => true)
+      provider.expects(:cvs).with('update', '-dr', @tag, '.')
       provider.revision = @tag
     end
   end

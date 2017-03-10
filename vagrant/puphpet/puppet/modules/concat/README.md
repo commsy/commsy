@@ -1,4 +1,6 @@
-#concat
+#Concat
+
+[![Build Status](https://travis-ci.org/puppetlabs/puppetlabs-concat.png?branch=master)](https://travis-ci.org/puppetlabs/puppetlabs-concat)
 
 ####Table of Contents
 
@@ -6,40 +8,41 @@
 2. [Module Description - What the module does and why it is useful](#module-description)
 3. [Setup - The basics of getting started with concat](#setup)
     * [What concat affects](#what-concat-affects)
+    * [Setup requirements](#setup-requirements)
     * [Beginning with concat](#beginning-with-concat)
 4. [Usage - Configuration options and additional functionality](#usage)
+    * [API _deprecations_](#api-deprecations)
 5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
-    * [Public Defines](#public-defines)
-    * [Parameters](#parameters)
-    * [Deprecations](#deprecations)
-6. [Limitations - OS compatibility, etc.](#limitations)
-7. [Development - Guide for contributing to the module](#development)
+5. [Limitations - OS compatibility, etc.](#limitations)
+6. [Development - Guide for contributing to the module](#development)
 
 ##Overview
 
-The concat module lets you construct files from multiple ordered fragments of text.
+This module constructs files from multiple fragments in an ordered way.
 
 ##Module Description
 
-The concat module lets you gather `concat::fragment` resources from your other modules and order them through a single `concat` resource into a coherent file. It does this through a Ruby script and a temporary holding space for the fragments.
+This module lets you use many concat::fragment{} resources throughout
+your modules to construct a single file at the end.  It does this through
+a shell (or ruby) script and a temporary holding space for the fragments.
 
 ##Setup
 
 ###What concat affects
 
-* Installs `concatfragments.rb`.
-* Adds a `concat/` directory into Puppet's `vardir`.
+* Installs concatfragments.[sh|rb] based on platform.
+* Adds a concat/ directory into Puppets `vardir`.
 
 ###Beginning with concat
 
 To start using concat you need to create:
 
 * A concat{} resource for the final file.
-* One or more concat::fragment{}s.
+* One or more concat::fragment{}'s. 
 
 A minimal example might be:
 
-~~~
+```puppet
 concat { '/tmp/file':
   ensure => present,
 }
@@ -49,15 +52,29 @@ concat::fragment { 'tmpfile':
   content => 'test contents',
   order   => '01'
 }
-~~~
+```
 
 ##Usage
 
-###Maintain a list of the major modules on a node
+Please be aware that there have been a number of [API
+_deprecations_](#api-deprecations).
 
-To maintain an motd file that lists the modules on one of your nodes, first create a class to frame up the file:
+If you wanted a /etc/motd file that listed all the major modules
+on the machine.  And that would be maintained automatically even
+if you just remove the include lines for other modules you could
+use code like below, a sample /etc/motd would be:
 
-~~~
+<pre>
+Puppet modules on this server:
+
+    -- Apache
+    -- MySQL
+</pre>
+
+Local sysadmins can also append to the file by just editing /etc/motd.local
+their changes will be incorporated into the puppet managed motd.
+
+```puppet
 class motd {
   $motd = '/etc/motd'
 
@@ -73,7 +90,7 @@ class motd {
     order   => '01'
   }
 
-  # let local users add to the motd by creating a file called
+  # local users on the machine can append to motd by just creating
   # /etc/motd.local
   concat::fragment{ 'motd_local':
     target => $motd,
@@ -82,7 +99,7 @@ class motd {
   }
 }
 
-# let other modules register themselves in the motd
+# used by other modules to register themselves in the motd
 define motd::register($content="", $order='10') {
   if $content == "" {
     $body = $name
@@ -96,188 +113,325 @@ define motd::register($content="", $order='10') {
     content => "    -- $body\n"
   }
 }
-~~~
+```
 
-Then, in the declarations for each module on the node, add `motd::register{ 'Apache': }` to register the module in the motd.
+To use this you'd then do something like:
 
-~~~
+```puppet
 class apache {
   include apache::install, apache::config, apache::service
 
   motd::register{ 'Apache': }
 }
-~~~
-
-These two steps populate the /etc/motd file with a list of the installed and registered modules, which stays updated even if you just remove the registered modules' `include` lines. System administrators can append text to the list by writing to /etc/motd.local.
-
-When you're finished, the motd file will look something like this:
-
-~~~
-  Puppet modules on this server:
-
-    -- Apache
-    -- MySQL
-
-  <contents of /etc/motd.local>
-~~~
+```
 
 ##Reference
 
-**Note**: Several of this module's parameters and features have been deprecated. See the [Deprecations](#deprecations) section below.
+###Classes
 
-###Public defines
-* `concat`: Manages a file, compiled from one or more text fragments.
-* `concat::fragment`: Manages a fragment of text to be compiled into a file.
+####Public classes
+
+####Private classes
+* `concat::setup`: Sets up the concat script/directories.
 
 ###Parameters
 
-####`concat`
+###Defines
 
-All the parameters listed below are optional.
-
-#####`backup`
-
-Specifies whether (and how) to back up the destination file before overwriting it. Your value gets passed on to Puppet's [native `file` resource](https://docs.puppetlabs.com/references/latest/type.html#file-attribute-backup) for execution. Valid options: 'true', 'false', or a string representing either a target filebucket or a filename extension beginning with ".". Default value: 'puppet'.
+####concat
 
 #####`ensure`
+Controls if the combined file is present or absent.
 
-Specifies whether the destination file should exist. Setting to 'absent' tells Puppet to delete the destination file if it exists, and negates the effect of any other parameters. Valid options: 'present' and 'absent'. Default value: 'present'.
-
-
-#####`ensure_newline`
-
-Specifies whether to ensure there's a new line at the end of each fragment. Valid options: 'true' and 'false'. Default value: 'false'.
-
-#####`force`
-
-In case no fragments have been added, this parameter specifies whether to go ahead and create a potentially empty file. Valid options: 'true' and 'false'. Default value: 'false'.
-
-#####`group`
-
-Specifies a permissions group for the destination file. Valid options: a string containing a group name. Default value: undefined.
-
-#####`mode`
-
-Specifies the permissions mode of the destination file. Valid options: a string containing a permission mode value in octal notation. Default value: '0644'.
-
-#####`order`
-
-Specifies a method for sorting your fragments by name within the destination file. Valid options: 'alpha' (e.g., '1, 10, 2') or 'numeric' (e.g., '1, 2, 10'). Default value: 'alpha'.
-
-You can override this setting for individual fragments by adjusting the `order` parameter in their `concat::fragment` declarations.
-
-#####`owner`
-
-
-Specifies the owner of the destination file. Valid options: a string containing a username. Default value: undefined.
+######Example
+- ensure => present
+- ensure => absent
 
 #####`path`
+Controls the destination of the file to create.
 
+######Example
+- path => '/tmp/filename'
 
-Specifies a destination file for the combined fragments. Valid options: a string containing an absolute path. Default value: the title of your declared resource.
+#####`owner`
+Set the owner of the combined file.
 
-#####`replace`
+######Example
+- owner => 'root'
 
-Specifies whether to overwrite the destination file if it already exists. Valid options: 'true' and 'false'. Default value: 'true'.
+#####`group`
+Set the group of the combined file.
 
-#####`validate_cmd`
+######Example
+- group => 'root'
 
-Specifies a validation command to apply to the destination file. Requires Puppet version 3.5 or newer. Valid options: a string to be passed to a file resource. Default value: undefined.
+#####`mode`
+Set the mode of the combined file.
+
+######Example
+- mode => '0644'
 
 #####`warn`
+Determine if a warning message should be added at the top of the file to let
+users know it was autogenerated by Puppet.  It should be a boolean or a string
+containing the contents of the warning message.
 
-Specifies whether to add a warning message at the top of the destination file so users know it was autogenerated by Puppet. Valid options: 'true', 'false', or a string to be delivered as a warning message. Default value: 'false'.
+######Example
+- warn => true
+- warn => false
+- warn => '# This file is autogenerated!'
 
+#####`force`
+Determine if empty files are allowed when no fragments were added.
 
-If you set this parameter to 'true', Puppet adds the following message:
+######Example
+- force => true
+- force => false
 
-~~~
-# This file is managed by Puppet. DO NOT EDIT.
-~~~
+#####`backup`
+Controls the filebucket behavior used for the file.
 
-####`concat::fragment`
+######Example
+- backup => 'puppet'
 
+#####`replace`
+Controls if Puppet should replace the destination file if it already exists.
 
-Except where noted, all the below parameters are optional.
-
-#####`content`
-
-Supplies the content of the fragment. **Note**: You must supply either a `content` parameter or a `source` parameter. Valid options: a string. Default value: undef.
-
-#####`ensure`
-
-Specifies whether the fragment should be included in the destination file or discarded. Valid options: 'present' and 'absent'. Default value: 'present'.
+######Example
+- replace => true
+- replace => false
 
 #####`order`
+Controls the way in which the shell script chooses to sort the files.  It's
+rare you'll need to adjust this.
 
-Reorders your fragments within the destination file. Fragments that share the same order number are ordered by name. Valid options: a string (recommended) or an integer. Default value: '10'.
+######Allowed Values
+- order => 'alpha'
+- order => 'numeric'
 
-#####`source`
+#####`ensure_newline`
+Ensure there's a newline at the end of the fragments.
 
-Specifies a file to read into the content of the fragment. **Note**: You must supply either a `content` parameter or a `source` parameter. Valid options: a string or an array, containing one or more Puppet URLs. Default value: undefined.
+######Example
+- ensure_newline => true
+- ensure_newline => false
+
+####concat::fragment
 
 #####`target`
+Choose the destination file of the fragment.
 
-*Required.* Specifies the destination file of the fragment. Valid options: a string containing the title of the parent `concat` resource.
+######Example
+- target => '/tmp/testfile'
 
-###Deprecations
+#####`content`
+Create the content of the fragment.
 
-**`concat` has the following deprecations**
+######Example
+- content => 'test file contents'
 
-#####`gnu`
+#####`source`
+Find the sources within Puppet of the fragment.
 
-Generates a catalog compile time warning and has no effect. This parameter was silently ignored in version `1.0.0` and will be removed in a future release.
+######Example
+- source => 'puppet:///modules/test/testfile'
+- source => ['puppet:///modules/test/1', 'puppet:///modules/test/2']
 
-#####stringified 'true'/'false' values deprecated in `warn`
+#####`order`
+Order the fragments.
 
-Passing stringified boolean values (strings of 'true' and 'false') to the `warn` parameter of `concat` is deprecated. Generates a catalog compile time warning, and will be silently treated as the concatenated file header/warning message in a future release.
+######Example
+- order => '01'
+
+Best practice is to pass a string to this parameter but integer values are accepted.
+
+#####`ensure`
+Control the file of fragment created.
+
+######Example
+- ensure => 'present'
+- ensure => 'absent'
+
+#####`mode`
+Set the mode of the fragment.
+
+######Example
+- mode => '0644'
+
+#####`owner`
+Set the owner of the fragment.
+
+######Example
+- owner => 'root'
+
+#####`group`
+Set the group of the fragment.
+
+######Example
+- group => 'root'
+
+#####`backup`
+Control the filebucket behavior for the fragment.
+
+######Example
+- backup => 'puppet'
+
+### API _deprecations_
+
+#### Since version `1.0.0`
+
+##### `concat{}` `warn` parameter
+
+```puppet
+concat { '/tmp/file':
+  ensure => present,
+  warn   => 'true',  # generates stringified boolean value warning
+}
+```
+
+Using stringified Boolean values as the `warn` parameter to `concat` is
+deprecated, generates a catalog compile time warning, and will be silently
+treated as the concatenated file header/warning message in a future release.
+
+The following strings are considered a stringified Boolean value:
+
+ * `'true'`
+ * `'yes'`
+ * `'on'`
+ * `'false'`
+ * `'no'`
+ * `'off'`
 
 Please migrate to using the Puppet DSL's native [Boolean data
 type](http://docs.puppetlabs.com/puppet/3/reference/lang_datatypes.html#booleans).
 
+##### `concat{}` `gnu` parameter
 
-**`concat::fragment` has the following deprecations**
+```puppet
+concat { '/tmp/file':
+  ensure => present,
+  gnu    => $foo,    # generates deprecation warning
+}
+```
 
-#####`backup`
+The `gnu` parameter to `concat` is deprecated, generates a catalog compile time
+warning, and has no effect.  This parameter will be removed in a future
+release.
 
-Generates a catalog compile time warning and has no effect. In the `1.0.0` release this parameter controlled file bucketing of the file fragment. Bucketing the fragment(s) is redundant with bucketing the final concatenated file and this feature has been removed.
+Note that this parameter was silently ignored in the `1.0.0` release.
 
+##### `concat::fragment{}` `ensure` parameter
 
-#####`group`
+```puppet
+concat::fragment { 'cpuinfo':
+  ensure => '/proc/cpuinfo', # generates deprecation warning
+  target => '/tmp/file',
+}
+```
 
-Generates a catalog compile time warning and has no effect. Had no user-visible effect in version `1.0.0` and will be removed in a future release.
+Passing a value other than `'present'` or `'absent'` as the `ensure` parameter
+to `concat::fragment` is deprecated and generates a catalog compile time
+warning.  The warning will become a catalog compilation failure in a future
+release.
 
-#####`mode`
+This type emulates the Puppet core `file` type's disfavored [`ensure`
+semantics](http://docs.puppetlabs.com/references/latest/type.html#file-attribute-ensure)
+of treating a file path as a directive to create a symlink.  This feature is
+problematic in several ways.  It copies an API semantic of another type that is
+both frowned upon and not generally well known.  It's behavior may be
+surprising in that the target concatenated file will not be a symlink nor is
+there any common file system that has a concept of a section of a plain file
+being symbolically linked to another file.  Additionally, the behavior is
+generally inconsistent with most Puppet types in that a missing source file
+will be silently ignored.
 
-Generates a catalog compile time warning and has no effect. Had no user-visible effect in version `1.0.0` and will be removed in a future release.
+If you want to use the content of a file as a fragment please use the `source`
+parameter.
 
+##### `concat::fragment{}` `mode/owner/group` parameters
 
-#####`owner`
+```puppet
+concat::fragment { 'foo':
+  target  => '/tmp/file',
+  content => 'foo',
+  mode    => $mode,       # generates deprecation warning
+  owner   => $owner,      # generates deprecation warning
+  group   => $group,      # generates deprecation warning
+}
+```
 
-Generates a catalog compile time warning and has no effect. Had no user-visible effect in version `1.0.0` and will be removed in a future release.
+The `mode` parameter to `concat::fragment` is deprecated, generates a catalog compile time warning, and has no effect.
 
-#####file paths are deprecated in `ensure`
+The `owner` parameter to `concat::fragment` is deprecated, generates a catalog
+compile time warning, and has no effect.
 
-Passing a value other than 'present' or 'absent' in the `ensure` parameter of `concat::fragment` is **deprecated**, and generates a catalog compile time warning. The warning will become a catalog compilation failure in a future release.
+The `group` parameter to `concat::fragment` is deprecated, generates a catalog
+compile time warning, and has no effect.
 
-If you want to use the content of a file as a fragment please use the [`source`](#source) parameter.
+These parameters had no user visible effect in version `1.0.0` and will be
+removed in a future release.
 
-####`concat::setup`
+##### `concat::fragment{}` `backup` parameter
 
-The `concat::setup` class should no longer be directly included in the manifest. It will be removed in a future release.
+```puppet
+concat::fragment { 'foo':
+  target  => '/tmp/file',
+  content => 'foo',
+  backup  => 'bar',       # generates deprecation warning
+}
+```
+
+The `backup` parameter to `concat::fragment` is deprecated, generates a catalog
+compile time warning, and has no effect.  It will be removed in a future
+release.
+
+In the `1.0.0` release this parameter controlled file bucketing of the file
+fragment.  Bucketting the fragment(s) is redundant with bucketting the final
+concatenated file and this feature has been removed.
+
+##### `class { 'concat::setup': }`
+
+```puppet
+include concat::setup     # generates deprecation warning
+
+class { 'concat::setup': } # generates deprecation warning
+```
+
+The `concat::setup` class is deprecated as a public API of this module and
+should no longer be directly included in the manifest.  This class may be
+removed in a future release.
+
+##### Parameter validation
+
+While not an API depreciation, users should be aware that all public parameters
+in this module are now validated for at least variable type.  This may cause
+validation errors in a manifest that was previously silently misbehaving.
 
 ##Limitations
 
-This module has been tested on [all PE-supported platforms](https://forge.puppetlabs.com/supported#compat-matrix), and no issues have been identified.
+This module has been tested on:
 
-##Development
+* RedHat Enterprise Linux (and Centos) 5/6
+* Debian 6/7
+* Ubuntu 12.04
 
-Puppet Labs modules on the Puppet Forge are open projects, and community contributions are essential for keeping them great. We can't access the huge number of platforms and myriad of hardware, software, and deployment configurations that Puppet is intended to serve.
+Testing on other platforms has been light and cannot be guaranteed.
 
-We want to keep it as easy as possible to contribute changes so that our modules work in your environment. There are a few guidelines that we need contributors to follow so that we can have a chance of keeping on top of things.
+#Development
 
-For more information, see our [module contribution guide.](https://docs.puppetlabs.com/forge/contributing.html)
+Puppet Labs modules on the Puppet Forge are open projects, and community
+contributions are essential for keeping them great. We can’t access the
+huge number of platforms and myriad of hardware, software, and deployment
+configurations that Puppet is intended to serve.
+
+We want to keep it as easy as possible to contribute changes so that our
+modules work in your environment. There are a few guidelines that we need
+contributors to follow so that we can have a chance of keeping on top of things.
+
+You can read the complete module contribution guide [on the Puppet Labs wiki.](http://projects.puppetlabs.com/projects/module-site/wiki/Module_contributing)
 
 ###Contributors
 
-To see who's already involved, see the [list of contributors.](https://github.com/puppetlabs/puppetlabs-concat/graphs/contributors)
+The list of contributors can be found at:
+
+https://github.com/puppetlabs/puppetlabs-concat/graphs/contributors

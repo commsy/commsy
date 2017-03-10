@@ -3,14 +3,9 @@ require 'set'
 Puppet::Type.type(:rabbitmq_erlang_cookie).provide(:ruby) do
 
   defaultfor :feature => :posix
-
-  env_path = '/opt/puppetlabs/bin:/usr/local/bin:/usr/bin:/bin'
-  puppet_path = Puppet::Util.withenv(:PATH => env_path) do
-    Puppet::Util.which('puppet')
+  has_command(:puppet, 'puppet') do
+    environment :PATH => '/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin'
   end
-
-  confine :false => puppet_path.nil?
-  has_command(:puppet, puppet_path) unless puppet_path.nil?
 
   def exists?
     # Hack to prevent the create method from being called.

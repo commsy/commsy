@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'composer::selfupdate' do
-  ['RedHat', 'Debian', 'FreeBSD'].each do |osfamily|
+  ['RedHat', 'Debian'].each do |osfamily|
     context "on #{osfamily} operating system family" do
       let(:facts) { {
           :osfamily => osfamily,

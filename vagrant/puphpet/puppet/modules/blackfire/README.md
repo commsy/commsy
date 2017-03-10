@@ -1,23 +1,20 @@
+Puppet module for installing, configuring and managing [Blackfire PHP profiler](https://blackfire.io/).
+
 [![Build Status](https://travis-ci.org/s12v/puppet-blackfire.svg?branch=master)](https://travis-ci.org/s12v/puppet-blackfire)
 [![Puppet Forge](https://img.shields.io/puppetforge/dt/s12v/blackfire.svg)](https://forge.puppetlabs.com/s12v/blackfire)
 
+
 # blackfire
 
-#### Table of Contents
+## Support
 
-1. [Description](#description)
-2. [Setup - The basics of getting started with blackfire](#setup)
-    * [What blackfire affects](#what-blackfire-affects)
-    * [Setup requirements](#setup-requirements)
-    * [Beginning with blackfire](#beginning-with-blackfire)
-3. [Usage - Configuration options and additional functionality](#usage)
-4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
-5. [Limitations - OS compatibility, etc.](#limitations)
-6. [Development - Guide for contributing to the module](#development)
+This module is currently tested on:
 
-## Description
+ - Ubuntu (14.04, 12.04, 10.04)
+ - Centos (7.0, 6.6)
+ - Debian (8.0, 7.8, 6.0)
 
-Puppet module for installing, configuring and managing [Blackfire PHP profiler](https://blackfire.io/).
+It may work on other distros.
 
 ## Setup
 
@@ -26,15 +23,11 @@ Puppet module for installing, configuring and managing [Blackfire PHP profiler](
 * The module adds blackfire repository and overwrites blackfire configuration file.
 * It _does not_ restart any service, you have to do it manually.
 
-### Setup requirements
-
-Make sure blackfire is installed after PHP.
-
-### Beginning with blackfire
+## Usage
 
 The module includes a single public class `blackfire`.
 
-#### Minimal configuration
+### Minimal configuration
 
 You need to provide at least `server_id` and `server_token` parameters.
 Also you might want to subscribe your service to be restarted when configuration has changed:
@@ -47,7 +40,7 @@ class { 'blackfire':
 ```
 You can get these parameters on https://blackfire.io/account/credentials.
 
-## Usage
+### Provide configuration for the Agent and PHP extension
 
 If you want to provide additional parameters to Agent or PHP extension:
 ```puppet
@@ -106,23 +99,10 @@ class { 'blackfire':
    - `log_level` - Log verbosity level (4: debug, 3: info, 2: warning, 1: error). Default is *1*
    - `manage` - Manage PHP extension. Default is *true*
    - `version` - Which version of the probe to install. Default is *latest*
-   - `ini_path` - Path of the blackfire.ini file to be generated. If not set, will try find out the path by installed PHP Version. Default is *empty*
  - `server_id` - Server ID to use for the agent (See https://blackfire.io/account/credentials)
  - `server_token` - Server Token to use for the agent (See https://blackfire.io/account/credentials)
 
-## Limitations
-
-This module is currently tested on:
-
- - Ubuntu (14.04, 12.04, 10.04)
- - Centos (7.0, 6.6)
- - Debian (8.0, 7.8, 6.0)
-
-It may work on other distros.
-
-## Development
-
-### Module testing
+## Module testing
 
  - `bundle exec rake validate` - Check syntax of Ruby files and call :syntax and :metadata / Validate manifests, templates, and ruby files 
  - `bundle exec rake lint` - Check puppet manifests with puppet-lint / Run puppet-lint

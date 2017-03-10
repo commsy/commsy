@@ -7,8 +7,7 @@ describe 'erlang', :type => :class do
     let(:facts) { {
       :osfamily => 'Debian',
       :lsbdistid => 'debian',
-      :lsbdistcodename => 'squeeze',
-      :operatingsystemrelease => '5'
+      :lsbdistcodename => 'squeeze'
     }}
 
     context 'with no parameters' do

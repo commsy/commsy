@@ -17,7 +17,6 @@ describe 'concat::fragment', :type => :define do
     concatdir        = '/var/lib/puppet/concat'
     fragdir          = "#{concatdir}/#{safe_target_name}"
     id               = 'root'
-    gid              = 'root'
     if p[:ensure] == 'absent'
       safe_ensure = p[:ensure] 
     else
@@ -25,16 +24,7 @@ describe 'concat::fragment', :type => :define do
     end
 
     let(:title) { title }
-    let(:facts) do
-      {
-        :concat_basedir => concatdir,
-        :id             => id,
-        :gid            => gid,
-        :osfamily       => 'Debian',
-        :path           => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
-        :is_pe          => false,
-      }
-    end
+    let(:facts) {{ :concat_basedir => concatdir, :id => id }}
     let(:params) { params }
     let(:pre_condition) do
       "concat{ '#{p[:target]}': }"
@@ -50,17 +40,8 @@ describe 'concat::fragment', :type => :define do
         :source  => p[:source],
         :content => p[:content],
         :alias   => "concat_fragment_#{title}",
-        :backup  => 'puppet',
+        :backup  => false,
       })
-      # The defined() function doesn't seem to work properly with puppet 3.4 and rspec.
-      # defined() works on its own, rspec works on its own, but together they
-      # determine that $gid is not defined and cause errors here. Work around
-      # it by ignoring this check for older puppet version.
-      if Puppet::Util::Package.versioncmp(Puppet.version, '3.5.0') >= 0
-        should contain_file("#{fragdir}/fragments/#{p[:order]}_#{safe_name}").with({
-          :group   => gid,
-        })
-      end
     end
   end
 
@@ -83,11 +64,11 @@ describe 'concat::fragment', :type => :define do
 
     context 'false' do
       let(:title) { 'motd_header' }
-      let(:facts) {{ :concat_basedir => '/tmp', :is_pe => false }}
+      let(:facts) {{ :concat_basedir => '/tmp' }}
       let(:params) {{ :target => false }}
 
       it 'should fail' do
-        expect { catalogue }.to raise_error(Puppet::Error, /is not a string/)
+        expect { should }.to raise_error(Puppet::Error, /is not a string/)
       end
     end
   end # target =>
@@ -104,11 +85,11 @@ describe 'concat::fragment', :type => :define do
 
     context 'any value other than \'present\' or \'absent\'' do
       let(:title) { 'motd_header' }
-      let(:facts) {{ :concat_basedir => '/tmp', :is_pe => false }}
+      let(:facts) {{ :concat_basedir => '/tmp' }}
       let(:params) {{ :ensure => 'invalid', :target => '/etc/motd' }}
 
       it 'should create a warning' do
-        skip('rspec-puppet support for testing warning()')
+        pending('rspec-puppet support for testing warning()')
       end
     end
   end # ensure =>
@@ -125,11 +106,11 @@ describe 'concat::fragment', :type => :define do
 
     context 'false' do
       let(:title) { 'motd_header' }
-      let(:facts) {{ :concat_basedir => '/tmp', :is_pe => false }}
+      let(:facts) {{ :concat_basedir => '/tmp' }}
       let(:params) {{ :content => false, :target => '/etc/motd' }}
 
       it 'should fail' do
-        expect { catalogue }.to raise_error(Puppet::Error, /is not a string/)
+        expect { should }.to raise_error(Puppet::Error, /is not a string/)
       end
     end
   end # content =>
@@ -146,11 +127,11 @@ describe 'concat::fragment', :type => :define do
 
     context 'false' do
       let(:title) { 'motd_header' }
-      let(:facts) {{ :concat_basedir => '/tmp', :is_pe => false }}
+      let(:facts) {{ :concat_basedir => '/tmp' }}
       let(:params) {{ :source => false, :target => '/etc/motd' }}
 
       it 'should fail' do
-        expect { catalogue }.to raise_error(Puppet::Error, /is not a string or an Array/)
+        expect { should }.to raise_error(Puppet::Error, /is not a string or an Array/)
       end
     end
   end # source =>
@@ -167,39 +148,11 @@ describe 'concat::fragment', :type => :define do
 
     context 'false' do
       let(:title) { 'motd_header' }
-      let(:facts) {{ :concat_basedir => '/tmp', :is_pe => false }}
+      let(:facts) {{ :concat_basedir => '/tmp' }}
       let(:params) {{ :order => false, :target => '/etc/motd' }}
 
       it 'should fail' do
-        expect { catalogue }.to raise_error(Puppet::Error, /is not a string or integer/)
-      end
-    end
-
-    context '123:456' do
-      let(:title) { 'motd_header' }
-      let(:facts) {{ :concat_basedir => '/tmp', :is_pe => false }}
-      let(:params) {{ :order => '123:456', :target => '/etc/motd' }}
-
-      it 'should fail' do
-        expect { catalogue }.to raise_error(Puppet::Error, /cannot contain/)
-      end
-    end
-    context '123/456' do
-      let(:title) { 'motd_header' }
-      let(:facts) {{ :concat_basedir => '/tmp', :is_pe => false }}
-      let(:params) {{ :order => '123/456', :target => '/etc/motd' }}
-
-      it 'should fail' do
-        expect { catalogue }.to raise_error(Puppet::Error, /cannot contain/)
-      end
-    end
-    context '123\n456' do
-      let(:title) { 'motd_header' }
-      let(:facts) {{ :concat_basedir => '/tmp', :is_pe => false }}
-      let(:params) {{ :order => "123\n456", :target => '/etc/motd' }}
-
-      it 'should fail' do
-        expect { catalogue }.to raise_error(Puppet::Error, /cannot contain/)
+        expect { should }.to raise_error(Puppet::Error, /is not a string or integer/)
       end
     end
   end # order =>
@@ -209,15 +162,7 @@ describe 'concat::fragment', :type => :define do
 
     context 'ensure => target and source' do
       let(:title) { 'motd_header' }
-      let(:facts) do
-        {
-          :concat_basedir => '/tmp',
-          :osfamily       => 'Debian',
-          :id             => 'root',
-          :is_pe          => false,
-          :gid            => 'root',
-        }
-      end
+      let(:facts) {{ :concat_basedir => '/tmp' }}
       let(:params) do
         {
           :target  => '/etc/motd',
@@ -227,21 +172,13 @@ describe 'concat::fragment', :type => :define do
       end
 
       it 'should fail' do
-        expect { catalogue }.to raise_error(Puppet::Error, /#{Regexp.escape(error_msg)}/m)
+        expect { should }.to raise_error(Puppet::Error, /#{Regexp.escape(error_msg)}/m)
       end
     end
 
     context 'ensure => target and content' do
       let(:title) { 'motd_header' }
-      let(:facts) do
-        {
-          :concat_basedir => '/tmp',
-          :osfamily       => 'Debian',
-          :id             => 'root',
-          :is_pe          => false,
-          :gid            => 'root',
-        }
-      end
+      let(:facts) {{ :concat_basedir => '/tmp' }}
       let(:params) do
         {
           :target  => '/etc/motd',
@@ -251,21 +188,13 @@ describe 'concat::fragment', :type => :define do
       end
 
       it 'should fail' do
-        expect { catalogue }.to raise_error(Puppet::Error, /#{Regexp.escape(error_msg)}/m)
+        expect { should }.to raise_error(Puppet::Error, /#{Regexp.escape(error_msg)}/m)
       end
     end
 
     context 'source and content' do
       let(:title) { 'motd_header' }
-      let(:facts) do
-        {
-          :concat_basedir => '/tmp',
-          :osfamily       => 'Debian',
-          :id             => 'root',
-          :is_pe          => false,
-          :gid            => 'root',
-        }
-      end
+      let(:facts) {{ :concat_basedir => '/tmp' }}
       let(:params) do
         {
           :target => '/etc/motd',
@@ -275,7 +204,7 @@ describe 'concat::fragment', :type => :define do
       end
 
       it 'should fail' do
-        expect { catalogue }.to raise_error(Puppet::Error, /#{Regexp.escape(error_msg)}/m)
+        expect { should }.to raise_error(Puppet::Error, /#{Regexp.escape(error_msg)}/m)
       end
     end
 
@@ -290,7 +219,7 @@ describe 'concat::fragment', :type => :define do
         }
 
         it 'should create a warning' do
-          skip('rspec-puppet support for testing warning()')
+          pending('rspec-puppet support for testing warning()')
         end
       end
     end # mode =>
@@ -303,7 +232,7 @@ describe 'concat::fragment', :type => :define do
         }
 
         it 'should create a warning' do
-          skip('rspec-puppet support for testing warning()')
+          pending('rspec-puppet support for testing warning()')
         end
       end
     end # owner =>
@@ -316,7 +245,7 @@ describe 'concat::fragment', :type => :define do
         }
 
         it 'should create a warning' do
-          skip('rspec-puppet support for testing warning()')
+          pending('rspec-puppet support for testing warning()')
         end
       end
     end # group =>
@@ -329,7 +258,7 @@ describe 'concat::fragment', :type => :define do
         }
 
         it 'should create a warning' do
-          skip('rspec-puppet support for testing warning()')
+          pending('rspec-puppet support for testing warning()')
         end
       end
     end # backup =>

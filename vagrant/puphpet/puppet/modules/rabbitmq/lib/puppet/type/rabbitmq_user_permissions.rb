@@ -47,6 +47,7 @@ Puppet::Type.newtype(:rabbitmq_user_permissions) do
     [self[:name].split('@')[0]]
   end
 
+  # I may want to dissalow whitespace
   def validate_permissions(value)
     begin
       Regexp.new(value)

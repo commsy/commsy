@@ -14,19 +14,16 @@
 #   Default: true
 #
 class firewall::linux::archlinux (
-  $ensure         = 'running',
-  $enable         = true,
-  $service_name   = $::firewall::params::service_name,
-  $package_name   = $::firewall::params::package_name,
-  $package_ensure = $::firewall::params::package_ensure,
-) inherits ::firewall::params {
-  if $package_name {
-    package { $package_name:
-      ensure => $package_ensure,
-    }
+  $ensure = 'running',
+  $enable = true
+) {
+  service { 'iptables':
+    ensure    => $ensure,
+    enable    => $enable,
+    hasstatus => true,
   }
 
-  service { $service_name:
+  service { 'ip6tables':
     ensure    => $ensure,
     enable    => $enable,
     hasstatus => true,
@@ -34,11 +31,11 @@ class firewall::linux::archlinux (
 
   file { '/etc/iptables/iptables.rules':
     ensure => present,
-    before => Service[$service_name],
+    before => Service['iptables'],
   }
 
   file { '/etc/iptables/ip6tables.rules':
     ensure => present,
-    before => Service[$service_name],
+    before => Service['ip6tables'],
   }
 }

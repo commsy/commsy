@@ -1,13 +1,7 @@
-# == Class: puphpet::beanstalkd::console
-#
-# Downloads beanstalkd_console.
-#
-# Usage:
-#
-# class { 'puphpet::beanstalkd::console':
-#   install_location => '/path/to/webroot'
-# }
-#
+# This depends on puppetlabs-vcsrepo: https://github.com/puppetlabs/puppetlabs-vcsrepo.git
+# This depends on puppet-beanstalkd: https://github.com/puphpet/puppet-beanstalkd
+# This depends on puppet-composer: https://github.com/tPl0ch/puppet-composer
+# Installs beanstalk_console from https://github.com/ptrofimov/beanstalk_console
 class puphpet::beanstalkd::console(
   $install_location
 ) {

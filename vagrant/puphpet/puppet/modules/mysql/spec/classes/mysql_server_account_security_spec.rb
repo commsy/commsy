@@ -1,16 +1,10 @@
 require 'spec_helper'
 
 describe 'mysql::server::account_security' do
-  on_supported_os.each do |os, facts|
-    context "on #{os}" do
-      context "with fqdn==myhost.mydomain" do
-        let(:facts) {
-          facts.merge({
-            :root_home => '/root',
-            :fqdn => 'myhost.mydomain',
-            :hostname => 'myhost',
-          })
-        }
+  on_pe_supported_platforms(PLATFORMS).each do |pe_version,pe_platforms|
+    pe_platforms.each do |pe_platform,facts|
+      describe "on #{pe_version} #{pe_platform}" do
+        let(:facts) { facts.merge({:fqdn => 'myhost.mydomain', :hostname => 'myhost'}) }
 
         [ 'root@myhost.mydomain',
           'root@127.0.0.1',
@@ -38,14 +32,8 @@ describe 'mysql::server::account_security' do
         end
       end
 
-      context "with fqdn==localhost" do
-        let(:facts) {
-          facts.merge({
-            :root_home => '/root',
-            :fqdn => 'localhost',
-            :hostname => 'localhost',
-          })
-        }
+      describe "on #{pe_version} #{pe_platform} with fqdn==localhost" do
+        let(:facts) { facts.merge({:fqdn => 'localhost', :hostname => 'localhost'}) }
 
         [ 'root@127.0.0.1',
           'root@::1',
@@ -60,14 +48,8 @@ describe 'mysql::server::account_security' do
         end
       end
 
-      context "with fqdn==localhost.localdomain" do
-        let(:facts) {
-          facts.merge({
-            :root_home => '/root',
-            :fqdn => 'localhost.localdomain',
-            :hostname => 'localhost',
-          })
-        }
+      describe "on #{pe_version} #{pe_platform} with fqdn==localhost.localdomain" do
+        let(:facts) { facts.merge({:fqdn => 'localhost.localdomain', :hostname => 'localhost'}) }
 
         [ 'root@127.0.0.1',
           'root@::1',

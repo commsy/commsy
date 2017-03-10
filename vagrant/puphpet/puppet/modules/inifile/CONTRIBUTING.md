@@ -41,9 +41,11 @@ Checklist (and a short version for the impatient)
 
     * Pre-requisites:
 
+      - Sign the [Contributor License Agreement](https://cla.puppetlabs.com/)
+
       - Make sure you have a [GitHub account](https://github.com/join)
 
-      - [Create a ticket](https://tickets.puppetlabs.com/secure/CreateIssue!default.jspa), or [watch the ticket](https://tickets.puppetlabs.com/browse/) you are patching for.
+      - [Create a ticket](http://projects.puppetlabs.com/projects/modules/issues/new), or [watch the ticket](http://projects.puppetlabs.com/projects/modules/issues) you are patching for.
 
     * Preferred method:
 
@@ -92,7 +94,17 @@ The long version
       whitespace or other "whitespace errors".  You can do this by
       running "git diff --check" on your changes before you commit.
 
-  2.  Sending your patches
+  2.  Sign the Contributor License Agreement
+
+      Before we can accept your changes, we do need a signed Puppet
+      Labs Contributor License Agreement (CLA).
+
+      You can access the CLA via the [Contributor License Agreement link](https://cla.puppetlabs.com/)
+
+      If you have any questions about the CLA, please feel free to
+      contact Puppet Labs via email at cla-submissions@puppetlabs.com.
+
+  3.  Sending your patches
 
       To submit your changes via a GitHub pull request, we _highly_
       recommend that you have them on a topic branch, instead of
@@ -112,7 +124,7 @@ The long version
       in order to open a pull request.
 
 
-  3.  Update the related GitHub issue.
+  4.  Update the related GitHub issue.
 
       If there is a GitHub issue associated with the change you
       submitted, then you should update the ticket to include the
@@ -159,7 +171,7 @@ If you already have those gems installed, make sure they are up-to-date:
 With all dependencies in place and up-to-date we can now run the tests:
 
 ```shell
-% bundle exec rake spec
+% rake spec
 ```
 
 This will execute all the [rspec tests](http://rspec-puppet.com/) tests
@@ -178,8 +190,8 @@ installed on your system.
 You can run them by issuing the following command
 
 ```shell
-% bundle exec rake spec_clean
-% bundle exec rspec spec/acceptance
+% rake spec_clean
+% rspec spec/acceptance
 ```
 
 This will now download a pre-fabricated image configured in the [default node-set](./spec/acceptance/nodesets/default.yml),
@@ -208,9 +220,13 @@ review.
 Additional Resources
 ====================
 
-* [Getting additional help](http://puppet.com/community/get-help)
+* [Getting additional help](http://projects.puppetlabs.com/projects/puppet/wiki/Getting_Help)
 
-* [Writing tests](https://docs.puppet.com/guides/module_guides/bgtm.html#step-three-module-testing)
+* [Writing tests](http://projects.puppetlabs.com/projects/puppet/wiki/Development_Writing_Tests)
+
+* [Patchwork](https://patchwork.puppetlabs.com)
+
+* [Contributor License Agreement](https://projects.puppetlabs.com/contributor_licenses/sign)
 
 * [General GitHub documentation](http://help.github.com/)
 

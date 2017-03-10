@@ -1,24 +1,23 @@
-class puphpet::mysql::params
- inherits puphpet::params
-{
+class puphpet::mysql::params {
 
-  include ::mysql::params
+  $mysql_server_55 = $::osfamily ? {
+    'debian' => 'mysql-server-5.5',
+    'redhat' => 'mysql-community-server',
+  }
 
-  $version = to_string($hiera['mysql']['settings']['version'])
+  $mysql_client_55 = $::osfamily ? {
+    'debian' => 'mysql-client-5.5',
+    'redhat' => 'mysql-community-client',
+  }
 
-  $server_package = $::osfamily ? {
+  $mysql_server_56 = $::osfamily ? {
     'debian' => 'mysql-server',
     'redhat' => 'mysql-community-server',
   }
 
-  $client_package = $::osfamily ? {
+  $mysql_client_56 = $::osfamily ? {
     'debian' => 'mysql-client',
     'redhat' => 'mysql-community-client',
-  }
-
-  $root_password = array_true($hiera['mysql']['settings'], 'root_password') ? {
-    true    => $hiera['mysql']['settings']['root_password'],
-    default => $::mysql::params::root_password
   }
 
 }

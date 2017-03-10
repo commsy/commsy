@@ -11,7 +11,6 @@ module Puppet::Parser::Functions
       "given (#{args.size} for 1)") if args.size != 1
 
     return '' if args[0].empty?
-    return args[0] if args[0] =~ /\*[A-F0-9]{40}$/
     '*' + Digest::SHA1.hexdigest(Digest::SHA1.digest(args[0])).upcase
   end
 end

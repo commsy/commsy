@@ -15,7 +15,6 @@ logfile /var/log/redis/redis.log
 EOF
 
 $expected_params_content = <<EOF
-bind 1.2.3.4
 port 26379
 dir /tmp
 daemonize yes
@@ -27,7 +26,6 @@ sentinel parallel-syncs cow 1
 sentinel failover-timeout cow 28000
 sentinel auth-pass cow password
 sentinel notification-script cow bar.sh
-sentinel client-reconfig-script cow foo.sh
 
 logfile /tmp/barn-sentinel.log
 EOF
@@ -57,7 +55,7 @@ describe 'redis::sentinel', :type => :class do
         'ensure'     => 'running',
         'enable'     => 'true',
         'hasrestart' => 'true',
-        'hasstatus'  => 'true',
+        'hasstatus'  => 'false'
       )
     }
 
@@ -66,14 +64,12 @@ describe 'redis::sentinel', :type => :class do
   describe 'with custom parameters' do
     let (:params) {
       {
-        :auth_pass              => 'password',
-        :sentinel_bind          => '1.2.3.4',
-        :master_name            => 'cow',
-        :down_after             => 6000,
-        :log_file               => '/tmp/barn-sentinel.log',
-        :failover_timeout       => 28000,
-        :notification_script    => 'bar.sh',
-        :client_reconfig_script => 'foo.sh'
+        :auth_pass           => 'password',
+        :master_name         => 'cow',
+        :down_after          => 6000,
+        :log_file            => '/tmp/barn-sentinel.log',
+        :failover_timeout    => 28000,
+        :notification_script => 'bar.sh'
       }
     }
 

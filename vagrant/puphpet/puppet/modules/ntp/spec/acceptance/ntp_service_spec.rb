@@ -19,11 +19,7 @@ shared_examples 'running' do
   describe service(servicename) do
     if !(fact('operatingsystem') == 'SLES' && fact('operatingsystemmajrelease') == '12')
       it { should be_running }
-      if (fact('operatingsystem') == 'Debian' && fact('operatingsystemmajrelease') == '8')
-        pending 'Should be enabled - Bug 760616 on Debian 8'
-      else
-        it { should be_enabled }
-      end
+      it { should be_enabled }
     else
       # hack until we either update SpecInfra or come up with alternative
       it {
@@ -77,11 +73,7 @@ describe 'service is unmanaged' do
   describe service(servicename) do
     if !(fact('operatingsystem') == 'SLES' && fact('operatingsystemmajrelease') == '12')
       it { should be_running }
-      if (fact('operatingsystem') == 'Debian' && fact('operatingsystemmajrelease') == '8')
-        pending 'Should be enabled - Bug 760616 on Debian 8'
-      else
-        it { should be_enabled }
-      end
+      it { should be_enabled }
     else
       # hack until we either update SpecInfra or come up with alternative
       output = shell('service ntpd status', :acceptable_exit_codes => [0, 3])

@@ -1,10 +1,11 @@
 HOSTS:
-  ubuntu-1404-x64:
+  ubuntu-server-12042-x64:
     roles:
-      - agent
-      - default
-    platform: ubuntu-14.04-amd64
-    hypervisor: vagrant
-    box: puppetlabs/ubuntu-14.04-64-nocm
+      - master
+    platform: ubuntu-server-12.04-amd64
+    box : ubuntu-server-12042-x64-vbox4210-nocm
+    box_url : http://puppet-vagrant-boxes.puppetlabs.com/ubuntu-server-12042-x64-vbox4210-nocm.box
+    hypervisor : vagrant
 CONFIG:
   type: foss
+  vagrant_ssh_port_random: true

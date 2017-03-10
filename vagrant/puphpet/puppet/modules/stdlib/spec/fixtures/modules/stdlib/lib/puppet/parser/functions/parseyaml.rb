@@ -16,10 +16,7 @@ be returned if the parsing of YAML string have failed.
 
     begin
       YAML::load(arguments[0]) || arguments[1]
-      # in ruby 1.9.3 Psych::SyntaxError is a RuntimeException
-      # this still needs to catch that and work also on rubies that
-      # do not have Psych available.
-    rescue StandardError, Psych::SyntaxError => e
+    rescue Exception => e
       if arguments[1]
         arguments[1]
       else

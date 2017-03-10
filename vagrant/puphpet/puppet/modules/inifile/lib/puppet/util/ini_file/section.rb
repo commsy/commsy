@@ -1,4 +1,6 @@
-class Puppet::Util::IniFile
+module Puppet
+module Util
+class IniFile
   class Section
     # Some implementation details:
     #
@@ -40,10 +42,6 @@ class Puppet::Util::IniFile
 
     def has_existing_setting?(setting_name)
       @existing_settings.has_key?(setting_name)
-    end
-
-    def empty?
-      start_line == end_line
     end
 
     def update_existing_setting(setting_name, value)
@@ -100,4 +98,6 @@ class Puppet::Util::IniFile
     end
 
   end
+end
+end
 end
