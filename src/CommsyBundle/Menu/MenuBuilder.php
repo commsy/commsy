@@ -228,6 +228,20 @@ class MenuBuilder
                 'class' => 'uk-button-danger',
             ])
             ->setExtra('translation_domain', 'menu');
+
+            $menu->addChild('room_navigation_space_2', array(
+                'label' => ' ',
+                'route' => 'commsy_room_home',
+                'routeParameters' => array('roomId' => $roomId),
+                'extras' => array('icon' => 'uk-icon-small')
+            ));
+            $menu->addChild('room', array(
+                'label' => 'Back to room',
+                'route' => 'commsy_room_home',
+                'routeParameters' => array('roomId' => $roomId),
+                'extras' => array('icon' => 'uk-icon-reply uk-icon-small uk-icon-justify')
+            ))
+            ->setExtra('translation_domain', 'menu');
         }
 
         return $menu;
@@ -449,7 +463,7 @@ class MenuBuilder
                         'routeParameters' => array('roomId' => $roomId),
                     ));
                 }
-                elseif (isset($route[2]) && !in_array($route[2], $accountSettings)) {
+                elseif (isset($route[2]) && (!in_array($route[2], $accountSettings) || $route[1]!='profile')) {
                     // home
                     $menu->addChild($roomItem->getTitle(), array(
                         'route' => 'commsy_room_home',
