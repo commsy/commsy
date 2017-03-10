@@ -170,7 +170,7 @@ class SettingsController extends Controller
                 'roomId' => $roomId,
             )),
             'themeBackgroundPlaceholder' => $this->generateUrl('getThemeBackground', array(
-                'theme' => 'THEME_NAME'
+                'theme' => 'THEME'
             )),
         ));
         
