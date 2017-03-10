@@ -290,6 +290,8 @@ class ProjectController extends Controller
         $old_room = $masterRoom;
         $new_room = $targetRoom;
 
+        $old_room_id = $old_room->getItemID();
+
         $environment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         /**/

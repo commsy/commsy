@@ -118,7 +118,10 @@ class DiscussionService
     
     public function getNewDiscussion()
     {
-        return $this->discussionManager->getNewItem();
+        $discussion = $this->discussionManager->getNewItem();
+        $discussion->setDiscussionType('threaded');
+
+        return $discussion;
     }
     
     public function getNewArticle()
@@ -126,7 +129,29 @@ class DiscussionService
         return $this->discussionArticleManager->getNewItem();
     }
     
-    public function showNoNotActivatedEntries(){
+    public function showNoNotActivatedEntries()
+    {
         $this->discussionManager->showNoNotActivatedEntries();
+    }
+
+    public function buildArticleTree($articleList, $root = null)
+    {
+        $tree = [];
+
+        $article = $articleList->getFirst();
+        while ($article) {
+
+            $base =& $tree;
+            $expLevel = explode('.', $article->getPosition());
+            foreach ($expLevel as $level) {
+                $base =& $base['children'][$level];
+            }
+
+            $base['item'] = $article;
+
+            $article = $articleList->getNext();
+        }
+
+        return $tree;
     }
 }

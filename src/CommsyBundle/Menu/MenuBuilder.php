@@ -319,25 +319,6 @@ class MenuBuilder
                 ->setExtra('translation_domain', 'menu');
             }
 
-
-            $roomItem = $this->roomService->getRoomItem($roomId);
-            if ($roomItem->isGroupRoom()) {
-                $menu->addChild('room_navigation_space_3', array(
-                    'label' => ' ',
-                    'route' => 'commsy_room_home',
-                    'routeParameters' => array('roomId' => $roomId),
-                    'extras' => array('icon' => 'uk-icon-small')
-                ));
-                $projectRoomItem = $roomItem->getLinkedProjectItem();
-                $menu->addChild('room', array(
-                    'label' => 'Back to room',
-                    'route' => 'commsy_room_home',
-                    'routeParameters' => array('roomId' => $projectRoomItem->getItemId()),
-                    'extras' => array('icon' => 'uk-icon-reply uk-icon-small uk-icon-justify')
-                ))
-                ->setExtra('translation_domain', 'menu');
-            }
-
             if (!$inPrivateRoom) {
                 if ($currentUser) {
                     if ($this->authorizationChecker->isGranted('MODERATOR')) {
@@ -458,7 +439,6 @@ class MenuBuilder
                     $menu->addChild($projectRoomItem->getTitle(), array(
                         'route' => 'commsy_room_home',
                         'routeParameters' => array('roomId' => $projectRoomItem->getItemId()),
-                        'attributes' => ['breadcrumb_grouproom_parent' => true],
                     ));
                 }
 
@@ -467,7 +447,6 @@ class MenuBuilder
                     $menu->addChild('Dashboard', array(
                         'route' => 'commsy_dashboard_overview',
                         'routeParameters' => array('roomId' => $roomId),
-                        'attributes' => ['breadcrumb_room' => true],
                     ));
                 }
                 elseif (isset($route[2]) && !in_array($route[2], $accountSettings)) {
@@ -475,7 +454,6 @@ class MenuBuilder
                     $menu->addChild($roomItem->getTitle(), array(
                         'route' => 'commsy_room_home',
                         'routeParameters' => array('roomId' => $roomId),
-                        'attributes' => ['breadcrumb_room' => true],
                     ));
                 }
 
@@ -494,11 +472,23 @@ class MenuBuilder
                         }
                     }
                     
-                    if (!$changeRubrikcLinkForDate) {
+                    if ($route[1] == 'context') {
+                        if ($roomItem->getType() == 'project') {
+                            $menu->addChild('group', array(
+                                'route' => 'commsy_group_list',
+                                'routeParameters' => array('roomId' => $roomId),
+                            ));
+                        }
+                        elseif ($roomItem->getType() == 'community') {
+                            $menu->addChild('project', array(
+                                'route' => 'commsy_project_list',
+                                'routeParameters' => array('roomId' => $roomId),
+                            ));
+                        }
+                    } elseif (!$changeRubrikcLinkForDate) {
                         $menu->addChild($route[1], array(
                             'route' => $tempRoute,
                             'routeParameters' => array('roomId' => $roomId),
-                            'attributes' => ['breadcrumb_rubric' => true],
                         ));
                     } else {
                         $menu->addChild($route[1]);
@@ -523,7 +513,6 @@ class MenuBuilder
                                     'roomId' => $roomId,
                                     'itemId' => $itemId
                                 ),
-                                'attributes' => ['breadcrumb_item' => true],
                             ));
                         }
                     }
@@ -533,7 +522,6 @@ class MenuBuilder
                     $menu->addChild('settings', array(
                         'route' => 'commsy_settings_general',
                         'routeParameters' => array('roomId' => $roomId),
-                        'attributes' => ['breadcrumb_room' => true],
                     ));
                 }
 
@@ -543,7 +531,6 @@ class MenuBuilder
                         $menu->addChild('Room profile', array(
                             'route' => 'commsy_profile_' . $route[2],
                             'routeParameters' => array('roomId' => $roomId, 'itemId' => $currentStack->attributes->get('itemId')),
-                            'attributes' => ['breadcrumb_room' => true],
                         ));
                     }
                     // account
@@ -551,7 +538,6 @@ class MenuBuilder
                         $menu->addChild('Account', array(
                             'route' => 'commsy_profile_' . $route[2],
                             'routeParameters' => array('roomId' => $roomId, 'itemId' => $currentStack->attributes->get('itemId')),
-                            'attributes' => ['breadcrumb_room' => false],
                         ));
                     }
                 }

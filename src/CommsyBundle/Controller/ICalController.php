@@ -14,6 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -71,6 +72,14 @@ class ICalController extends Controller
 
         $response = new Response($calendarExport->getStream());
         $response->headers->set('Content-Type', 'text/calendar');
+
+        if ($export) {
+            $disposition = $response->headers->makeDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                $contextId . '.ics'
+            );
+            $response->headers->set('Content-Disposition', $disposition);
+        }
 
         return $response;
     }

@@ -2,9 +2,13 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
-            <trans-unit id="1">
+            <trans-unit id="grouproom_description_text">
                 <source>grouproom description text</source>
-                <target>Dieser Raum kann nur von Mitgliedern der Gruppe betreten werden. Er dient dem Austausch der Gruppe.</target>
+                <target>Dieser Raum dient dem Austausch der Gruppe.</target>
+            </trans-unit>
+            <trans-unit id="grouproom_access">
+                <source>grouproom access</source>
+                <target>Er kann nur von Mitgliedern der Gruppe betreten werden.</target>
             </trans-unit>
             <trans-unit id="2">
                 <source>grouproom</source>

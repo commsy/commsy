@@ -152,7 +152,7 @@
                 {% if (item.tagsArray|length) < 4 %}
                     {% if (item.tagsArray|length) == 0 %}
                         {{ 'no linked items'|trans({}, "room")}}    
-                    {%else%}
+                    {% else %}
                         {% for tag in item.tagsArray %}
                             {{tag.title}}{% if count < item.tagsArray|length %}, {% endif %}
                             {% set count = count +1 %}

@@ -190,18 +190,18 @@
             
                     {# members #}
                     <div id="member{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe>
-                        {{ macrosGroup.members(group,members) }}
+                        {{ macrosGroup.members(group, members) }}
                     </div>
  
                     {# grouproom #}
-                    <div class="cs-toggle" data-uk-observe>
+                    <div id="member{{ group.itemId }}" class="cs-toggle" data-uk-observe>
                         <hr class="uk-width-9-10"/>
-                        {{ macrosGroup.grouproom(group,members) }}
+                        {{ macrosGroup.grouproom(group, roomId, userIsMember, memberStatus) }}
                     </div>
 
                     {# links #}
                     <div id="links{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': group.contextId, 'itemId': group.itemId}) }}' }">
-                        {{ macrosItem.links(group,showHashtags,showCategories,roomCategories) }}
+                        {{ macrosItem.links(group, showHashtags, showCategories, roomCategories) }}
                     </div>        
                 </article>
             </div>

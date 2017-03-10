@@ -324,6 +324,7 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
          $this->reset();
          $this->setContextLimit($discussion_item->getContextID());
          $this->setDiscussionLimit($discussion_item->getItemID());
+         $this->setSortPosition();
          if ($show_all == true) {
             $this->setDeleteLimit(false);
          }
