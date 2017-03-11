@@ -260,6 +260,11 @@ class cs_user_form extends cs_rubric_form {
             $this->_form->combine();
             $this->_form->addCheckbox('deletePicture',$this->_translator->getMessage('USER_DEL_PIC'),false,$this->_translator->getMessage('USER_DEL_PIC'),$this->_translator->getMessage('USER_DEL_PIC_BUTTON'),'');
          }
+
+          if ($this->_environment->inPortal()) {
+              $this->_form->addEmptyline();
+              $this->_form->addCheckbox('user_is_allowed_to_create_context','check',false,$this->_translator->getMessage('USER_IS_ALLOWED_TO_CREATE_CONTEXT'),'','');
+          }
       }
       $context_item = $this->_environment->getCurrentContextItem();
 
@@ -328,6 +333,10 @@ class cs_user_form extends cs_rubric_form {
 
        if (!$this->_item->isEmailVisible()) {
           $this->_values['email_visibility'] = 'checked';
+       }
+
+       if ($this->_environment->inPortal()) {
+           $this->_values['user_is_allowed_to_create_context'] = $this->_item->isAllowedToCreateContext();
        }
 
       } elseif (isset($this->_form_post)) {

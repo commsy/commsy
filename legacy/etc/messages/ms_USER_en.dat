@@ -253,4 +253,5 @@ $message["USER_USER_ID_ERROR_UMLAUT"]["en"] = "Please, use only digits and lette
 $message["USER_USER_ID_NOT_EXIST"]["en"] = "The account <span style=&quot;font-weight:bold;&quot;>%1</span> does not exist. Please check the entered information.";
 $message["USER_YAHOO"]["en"] = "Yahoo";
 $message["USER_ZIPCODE"]["en"] = "Zip code";
+$message["USER_IS_ALLOWED_TO_CREATE_CONTEXT"]["de"] = "May create new rooms";
 ?>

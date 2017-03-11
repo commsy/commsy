@@ -258,4 +258,5 @@ $message["USER_USER_ID_ERROR_UMLAUT"]["de"] = "Die Kennung darf nur aus Zahlen u
 $message["USER_USER_ID_NOT_EXIST"]["de"] = "Die Kennung <span style=&quot;font-weight:bold;&quot;>%1</span> existiert nicht. Bitte überprüfen Sie Ihre Eingabe.";
 $message["USER_YAHOO"]["de"] = "Yahoo";
 $message["USER_ZIPCODE"]["de"] = "Postleitzahl";
+$message["USER_IS_ALLOWED_TO_CREATE_CONTEXT"]["de"] = "Darf neue Räume anlegen";
 ?>

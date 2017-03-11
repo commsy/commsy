@@ -509,6 +509,16 @@ class cs_user_detail_view extends cs_detail_view {
       }
       $formal_data[] = $temp_array;
 
+       if ($this->_environment->inPortal()) {
+           $temp_array = array();
+           $temp_array[] = $this->_translator->getMessage('USER_IS_ALLOWED_TO_CREATE_CONTEXT');
+           if ($item->isAllowedToCreateContext()) {
+               $temp_array[] = $this->_translator->getMessage('COMMON_YES');
+           } else {
+               $temp_array[] = $this->_translator->getMessage('COMMON_NO');
+           }
+           $formal_data[] = $temp_array;
+       }
 
       if ( $item->isModerator() and !$this->_environment->inPrivateRoom() ) {
          $temp_array = array();

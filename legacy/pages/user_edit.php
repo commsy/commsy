@@ -503,6 +503,20 @@ if ($command != 'error') { // only if user is allowed to edit user
                }
             }
 
+             if (isset($_POST['user_is_allowed_to_create_context'])) {
+                 if ($_POST['user_is_allowed_to_create_context']) {
+                     $user_item->setIsAllowedToCreateContext(1);
+                     if ( isset($portal_user_item) ) {
+                         $portal_user_item->setIsAllowedToCreateContext(1);
+                     }
+                 }
+             } else {
+                 $user_item->setIsAllowedToCreateContext(-1);
+                 if ( isset($portal_user_item) ) {
+                     $portal_user_item->setIsAllowedToCreateContext(-1);
+                 }
+             }
+
             #########################################################
             # Gruppen können im Formular nicht mehr gesetzt werden
             #########################################################
@@ -616,7 +630,8 @@ if ($command != 'error') { // only if user is allowed to edit user
                  or isset($_POST['messenger_change_all'])
                  or isset($_POST['description_change_all'])
                  or isset($_POST['picture_change_all'])
-                 or $unsetHasToChangeEmail) {
+                 or $unsetHasToChangeEmail
+                 or isset($_POST['user_is_allowed_to_create_context'])) {
                // change firstname and lastname in all other user_items of this user
                $user_manager = $environment->getUserManager();
                $dummy_user = $user_manager->getNewItem();
@@ -756,6 +771,13 @@ if ($command != 'error') { // only if user is allowed to edit user
                      $value = -1;
                   }
                   $dummy_user->setPicture($value);
+               }
+               if (isset($_POST['user_is_allowed_to_create_context'])) {
+                   if ($_POST['user_is_allowed_to_create_context']) {
+                       $dummy_user->setIsAllowedToCreateContext(1);
+                   }
+               } else {
+                   $dummy_user->setIsAllowedToCreateContext(-1);
                }
                $user_item->changeRelatedUser($dummy_user);
             }
