@@ -133,13 +133,17 @@ class InstitutionController extends Controller
      */
     public function createAction($roomId, Request $request)
     {
-        $institutionService = $this->get('commsy_legacy.institution_service');
-        $institutionItem = $institutionService->getNewInstitution();
-        $institutionItem->setDraftStatus(1);
-        $institutionItem->setPrivateEditing(1);
-        $institutionItem->save();
-
-        return $this->redirectToRoute('commsy_institution_detail', array('roomId' => $roomId, 'itemId' => $institutionItem->getItemId()));
+        $currentUser = $this->get('commsy_legacy.environment')->getEnvironment()->getCurrentUser();
+        if ($currentUser->isAllowedToCreateContext()) {
+            $institutionService = $this->get('commsy_legacy.institution_service');
+            $institutionItem = $institutionService->getNewInstitution();
+            $institutionItem->setDraftStatus(1);
+            $institutionItem->setPrivateEditing(1);
+            $institutionItem->save();
+            return $this->redirectToRoute('commsy_institution_detail', array('roomId' => $roomId, 'itemId' => $institutionItem->getItemId()));
+        } else {
+            return $this->redirectToRoute('commsy_institution_list', array('roomId' => $roomId));
+        }
     }
 
     /**

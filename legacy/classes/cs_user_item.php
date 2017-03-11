@@ -1576,6 +1576,10 @@ class cs_user_item extends cs_item {
                }
                $user_item->setExternalID($value);
             }
+            $value = $dummy_item->getIsAllowedToCreateContext();
+            if (!empty($value)) {
+               $user_item->setIsAllowedToCreateContext($value);
+            }
 
             $current_user_item = $this->_environment->getCurrentUserItem();
             if ( !$current_user_item->isRoot()
@@ -2789,17 +2793,20 @@ class cs_user_item extends cs_item {
     }
 
     public function isAllowedToCreateContext () {
+       if ($this->isRoot() || ($this->getContextItem()->isPortal() && $this->isModerator())) {
+          return true;
+       }
        if ($this->getIsAllowedToCreateContext() != '') {
           if ($this->getIsAllowedToCreateContext() == -1) {
              return false;
           } else {
              return true;
           }
-      } else {
+       } else {
           $auth_source_manager = $this->_environment->getAuthSourceManager();
           $auth_source_item = $auth_source_manager->getItem($this->getAuthSource());
           return $auth_source_item->isUserAllowedToCreateContext();
-      }
+       }
    }
 }
 ?>

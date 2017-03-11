@@ -630,8 +630,7 @@ if ($command != 'error') { // only if user is allowed to edit user
                  or isset($_POST['messenger_change_all'])
                  or isset($_POST['description_change_all'])
                  or isset($_POST['picture_change_all'])
-                 or $unsetHasToChangeEmail
-                 or isset($_POST['user_is_allowed_to_create_context'])) {
+                 or $unsetHasToChangeEmail) {
                // change firstname and lastname in all other user_items of this user
                $user_manager = $environment->getUserManager();
                $dummy_user = $user_manager->getNewItem();
@@ -772,15 +771,19 @@ if ($command != 'error') { // only if user is allowed to edit user
                   }
                   $dummy_user->setPicture($value);
                }
-               if (isset($_POST['user_is_allowed_to_create_context'])) {
-                   if ($_POST['user_is_allowed_to_create_context']) {
-                       $dummy_user->setIsAllowedToCreateContext(1);
-                   }
-               } else {
-                   $dummy_user->setIsAllowedToCreateContext(-1);
-               }
                $user_item->changeRelatedUser($dummy_user);
             }
+
+            $user_manager = $environment->getUserManager();
+            $dummy_user = $user_manager->getNewItem();
+            if (isset($_POST['user_is_allowed_to_create_context'])) {
+                if ($_POST['user_is_allowed_to_create_context']) {
+                    $dummy_user->setIsAllowedToCreateContext(1);
+                }
+            } else {
+                $dummy_user->setIsAllowedToCreateContext(-1);
+            }
+            $user_item->changeRelatedUser($dummy_user);
 
             //Add modifier to all users who ever edited this item
             $manager = $environment->getLinkModifierItemManager();
