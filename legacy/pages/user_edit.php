@@ -504,16 +504,9 @@ if ($command != 'error') { // only if user is allowed to edit user
             }
 
              if (isset($_POST['user_is_allowed_to_create_context'])) {
-                 if ($_POST['user_is_allowed_to_create_context']) {
-                     $user_item->setIsAllowedToCreateContext(1);
-                     if ( isset($portal_user_item) ) {
-                         $portal_user_item->setIsAllowedToCreateContext(1);
-                     }
-                 }
-             } else {
-                 $user_item->setIsAllowedToCreateContext(-1);
+                 $user_item->setIsAllowedToCreateContext($_POST['user_is_allowed_to_create_context']);
                  if ( isset($portal_user_item) ) {
-                     $portal_user_item->setIsAllowedToCreateContext(-1);
+                     $portal_user_item->setIsAllowedToCreateContext($_POST['user_is_allowed_to_create_context']);
                  }
              }
 
@@ -777,11 +770,7 @@ if ($command != 'error') { // only if user is allowed to edit user
             $user_manager = $environment->getUserManager();
             $dummy_user = $user_manager->getNewItem();
             if (isset($_POST['user_is_allowed_to_create_context'])) {
-                if ($_POST['user_is_allowed_to_create_context']) {
-                    $dummy_user->setIsAllowedToCreateContext(1);
-                }
-            } else {
-                $dummy_user->setIsAllowedToCreateContext(-1);
+                $dummy_user->setIsAllowedToCreateContext($_POST['user_is_allowed_to_create_context']);
             }
             $user_item->changeRelatedUser($dummy_user);
 

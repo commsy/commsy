@@ -2785,7 +2785,7 @@ class cs_user_item extends cs_item {
     }
 
     function getIsAllowedToCreateContext () {
-        $retour = '';
+        $retour = 'standard';
         if ($this->_issetExtra('IS_ALLOWED_TO_CREATE_CONTEXT')) {
             $retour = $this->_getExtra('IS_ALLOWED_TO_CREATE_CONTEXT');
         }
@@ -2796,7 +2796,7 @@ class cs_user_item extends cs_item {
        if ($this->isRoot() || ($this->getContextItem()->isPortal() && $this->isModerator())) {
           return true;
        }
-       if ($this->getIsAllowedToCreateContext() != '') {
+       if ($this->getIsAllowedToCreateContext() != 'standard') {
           if ($this->getIsAllowedToCreateContext() == -1) {
              return false;
           } else {

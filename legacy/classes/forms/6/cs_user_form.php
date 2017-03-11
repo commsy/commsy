@@ -263,7 +263,34 @@ class cs_user_form extends cs_rubric_form {
 
           if ($this->_environment->inPortal()) {
               $this->_form->addEmptyline();
-              $this->_form->addCheckbox('user_is_allowed_to_create_context','check',false,$this->_translator->getMessage('USER_IS_ALLOWED_TO_CREATE_CONTEXT'),'','');
+
+              $auth_source_standard_setting = '';
+              if (isset($this->_item)) {
+                  $auth_source_manager = $this->_environment->getAuthSourceManager();
+                  $auth_source_item = $auth_source_manager->getItem($this->_item->getAuthSource());
+                  if ($auth_source_item->isUserAllowedToCreateContext()) {
+                      $auth_source_standard_setting .= $this->_translator->getMessage('COMMON_YES');
+                  } else {
+                      $auth_source_standard_setting .= $this->_translator->getMessage('COMMON_NO');
+                  }
+              }
+
+              $radio_values = array();
+              $radio_values[0]['text'] = $this->_translator->getMessage('USER_IS_ALLOWED_TO_CREATE_CONTEXT_AUTH_SOURCE_SETTING').' ('.$auth_source_standard_setting.')';
+              $radio_values[0]['value'] = 'standard';
+              $radio_values[1]['text'] = $this->_translator->getMessage('COMMON_YES');
+              $radio_values[1]['value'] = 1;
+              $radio_values[2]['text'] = $this->_translator->getMessage('COMMON_NO');
+              $radio_values[2]['value'] = -1;
+
+              $this->_form->addRadioGroup('user_is_allowed_to_create_context',
+                  $this->_translator->getMessage('USER_IS_ALLOWED_TO_CREATE_CONTEXT'),
+                  $this->_translator->getMessage('USER_IS_ALLOWED_TO_CREATE_CONTEXT'),
+                  $radio_values,
+                  '',
+                  true,
+                  false
+              );
           }
       }
       $context_item = $this->_environment->getCurrentContextItem();
@@ -336,7 +363,7 @@ class cs_user_form extends cs_rubric_form {
        }
 
        if ($this->_environment->inPortal()) {
-           $this->_values['user_is_allowed_to_create_context'] = $this->_item->isAllowedToCreateContext();
+           $this->_values['user_is_allowed_to_create_context'] = $this->_item->getIsAllowedToCreateContext();
        }
 
       } elseif (isset($this->_form_post)) {

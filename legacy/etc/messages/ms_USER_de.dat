@@ -259,4 +259,6 @@ $message["USER_USER_ID_NOT_EXIST"]["de"] = "Die Kennung <span style=&quot;font-w
 $message["USER_YAHOO"]["de"] = "Yahoo";
 $message["USER_ZIPCODE"]["de"] = "Postleitzahl";
 $message["USER_IS_ALLOWED_TO_CREATE_CONTEXT"]["de"] = "Darf neue Räume anlegen";
+$message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_AUTH_SOURCE_SETTING"]["de"] = "Standardeinstellung der Authentifizierungsquelle";
+$message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_AUTH_SOURCE_SETTING_SHORT"]["de"] = "Standardeinstellung";
 ?>

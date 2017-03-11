@@ -511,12 +511,33 @@ class cs_user_detail_view extends cs_detail_view {
 
        if ($this->_environment->inPortal()) {
            $temp_array = array();
+           $formal_data[] = $temp_array;
+
+           $temp_array = array();
            $temp_array[] = $this->_translator->getMessage('USER_IS_ALLOWED_TO_CREATE_CONTEXT');
-           if ($item->isAllowedToCreateContext()) {
+
+           if ($item->getIsAllowedToCreateContext() == 'standard') {
+               $temp_array[] = $this->_translator->getMessage('USER_IS_ALLOWED_TO_CREATE_CONTEXT_AUTH_SOURCE_SETTING_SHORT');
+           } else if ($item->getIsAllowedToCreateContext() == 1) {
                $temp_array[] = $this->_translator->getMessage('COMMON_YES');
            } else {
                $temp_array[] = $this->_translator->getMessage('COMMON_NO');
            }
+           $formal_data[] = $temp_array;
+
+           $temp_array = array();
+           $temp_array[] = $this->_translator->getMessage('USER_IS_ALLOWED_TO_CREATE_CONTEXT_AUTH_SOURCE_SETTING');
+
+           $auth_source_manager = $this->_environment->getAuthSourceManager();
+           $auth_source_item = $auth_source_manager->getItem($item->getAuthSource());
+           $auth_source_standard_setting = '';
+           if ($auth_source_item->isUserAllowedToCreateContext()) {
+               $auth_source_standard_setting .= $this->_translator->getMessage('COMMON_YES');
+           } else {
+               $auth_source_standard_setting .= $this->_translator->getMessage('COMMON_NO');
+           }
+           $temp_array[] = $auth_source_standard_setting;
+
            $formal_data[] = $temp_array;
        }
 
