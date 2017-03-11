@@ -90,6 +90,23 @@ class cs_home_member_form extends cs_rubric_form {
       } else {
          $this->_default_auth_source_entry = $current_portal->getAuthDefault();
       }
+
+      if (isset($_GET['invitation_auth_source']) && isset($_GET['invitation_auth_code'])) {
+          $auth_source_manager = $this->_environment->getAuthSourceManager();
+          $auth_source_item = $auth_source_manager->getItem($_GET['invitation_auth_source']);
+
+          if ($auth_source_item->confirmInvitationCode($_GET['invitation_auth_code'])) {
+              $this->_count_auth_source_list_add_account = 1;
+              $this->_count_auth_source_list_enabled = 1;
+              $this->_default_auth_source_entry = $auth_source_item->getItemId();
+
+              $temp_array = array();
+              $temp_array['value'] = $auth_source_item->getItemID();
+              $temp_array['text'] = $auth_source_item->getTitle();
+              $this->_auth_source_array[0] = $temp_array;
+
+          }
+      }
    }
 
    /** create the form, INTERNAL

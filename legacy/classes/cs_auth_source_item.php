@@ -644,5 +644,33 @@ class cs_auth_source_item extends cs_item {
    public function getContextId () {
        return $this->_data['context_id'];
    }
+
+   public function generateInvitationCode() {
+       $invitationCodes = array();
+       if ($this->_issetExtra('INVITATION_CODES')) {
+           $invitationCodes = $this->_getExtra('INVITATION_CODES');
+       }
+       $invitationCode = md5(rand().time().rand());
+       $invitationCodes[] = $invitationCode;
+       $this->_setExtra('INVITATION_CODES', $invitationCodes);
+       $this->save();
+       return $invitationCode;
+   }
+
+   public function confirmInvitationCode($invitationCode) {
+       if ($this->_issetExtra('INVITATION_CODES')) {
+           $invitationCodes = $this->_getExtra('INVITATION_CODES');
+           foreach ($invitationCodes as $key => $value) {
+               if ($value == $invitationCode) {
+                   unset($invitationCodes[$key]);
+                   $this->_setExtra('INVITATION_CODES', $invitationCodes);
+                   $this->save();
+                   return true;
+               }
+           }
+       } else {
+           return false;
+       }
+   }
 }
 ?>
