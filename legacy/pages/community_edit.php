@@ -22,6 +22,10 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('pages/configuration_preferences.php');
+global $environment;
+$current_user = $environment->getCurrentUser();
+if ($current_user->isAllowedToCreateContext()) {
+    include_once('pages/configuration_preferences.php');
+}
 
 ?>
