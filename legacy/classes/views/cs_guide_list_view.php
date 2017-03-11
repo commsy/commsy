@@ -505,10 +505,16 @@ class cs_guide_list_view extends cs_list_view_plain {
          $current_user = $this->_environment->getCurrentUserItem();
          $portal_item = $this->_environment->getCurrentContextItem();
          $room_opening_status = $portal_item->getProjectRoomCreationStatus();
+
+         $isAllowedToCreateRoom = true;
+         if (!$current_user->isGuest()) {
+             $isAllowedToCreateRoom = $current_user->isAllowedToCreateContext();
+         }
+
          if ( $current_user->isUser()
               and $this->_with_modifying_actions
               and $room_opening_status == 'portal'
-              and $current_user->isAllowedToCreateContext()
+              and $isAllowedToCreateRoom
             ) {
             // open a new project room
             $params = array();
@@ -525,7 +531,7 @@ class cs_guide_list_view extends cs_list_view_plain {
             } else {
                $html .='<span class="disabled">&gt;&nbsp;</span>'.'<span class="disabled" style="font-weight:normal">'.$this->_translator->getMessage('PORTAL_ENTER_COMMUNITY').'</span>';
             }
-         } elseif ( $this->_with_modifying_actions and $current_user->isAllowedToCreateContext() ) {
+         } elseif ( $this->_with_modifying_actions and $isAllowedToCreateRoom) {
             $community_room_opening = $portal_item->getCommunityRoomCreationStatus();
             if (  ( $community_room_opening == 'all' and $current_user->isUser() )
                   or $current_user->isModerator()
