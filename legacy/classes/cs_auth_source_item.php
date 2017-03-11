@@ -645,13 +645,13 @@ class cs_auth_source_item extends cs_item {
        return $this->_data['context_id'];
    }
 
-   public function generateInvitationCode() {
+   public function generateInvitationCode($contextId, $email) {
        $invitationCodes = array();
        if ($this->_issetExtra('INVITATION_CODES')) {
            $invitationCodes = $this->_getExtra('INVITATION_CODES');
        }
        $invitationCode = md5(rand().time().rand());
-       $invitationCodes[] = $invitationCode;
+       $invitationCodes[] = $invitationCode.'|'.$contextId.'|'.$email;
        $this->_setExtra('INVITATION_CODES', $invitationCodes);
        $this->save();
        return $invitationCode;
@@ -661,7 +661,8 @@ class cs_auth_source_item extends cs_item {
        if ($this->_issetExtra('INVITATION_CODES')) {
            $invitationCodes = $this->_getExtra('INVITATION_CODES');
            foreach ($invitationCodes as $key => $value) {
-               if ($value == $invitationCode) {
+               $valueArray = explode('|', $value);
+               if ($valueArray[0] == $invitationCode) {
                    unset($invitationCodes[$key]);
                    $this->_setExtra('INVITATION_CODES', $invitationCodes);
                    $this->save();
@@ -670,6 +671,22 @@ class cs_auth_source_item extends cs_item {
            }
        } else {
            return false;
+       }
+   }
+
+   public function getInvitedEmailAdressesByContextId ($contextId) {
+       if ($this->_issetExtra('INVITATION_CODES')) {
+           $result = array();
+           $invitationCodes = $this->_getExtra('INVITATION_CODES');
+           foreach ($invitationCodes as $key => $value) {
+               $valueArray = explode('|', $value);
+               if ($valueArray[1] == $contextId) {
+                   $result[] = $valueArray[2];
+               }
+           }
+           return $result;
+       } else {
+           return array();
        }
    }
 }

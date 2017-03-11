@@ -1,0 +1,26 @@
+{% extends 'CommsyBundle:Base:settings.html.twig' %}
+
+{% block content %}
+    <div class="uk-grid">
+        <div class="uk-width-medium-4-4">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div>{{ 'Invitations'|trans({}, 'settings') }}</div>
+                    </div>
+                </div>
+
+                <div>
+                    <b>{{ 'New invitation'|trans({}, 'settings') }}:</b><br/>
+                    Formular ...
+                    <br/>
+                    <br/>
+                    <b>{{ 'Pending invitations'|trans({}, 'settings') }}:</b><br/>
+                    {% for invitedEmailAdress in invitedEmailAdresses %}
+                        {{ invitedEmailAdress }}<br/>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

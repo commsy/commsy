@@ -315,4 +315,28 @@ class SettingsController extends Controller
             'form' => $form->createView(),
         ];
     }
+
+    /**
+     * @Route("/room/{roomId}/settings/invitations")
+     * @Template
+     * @Security("is_granted('MODERATOR')")
+     */
+    public function invitationsAction($roomId, Request $request)
+    {
+        // get room from RoomService
+        $roomService = $this->get('commsy_legacy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
+
+        if (!$roomItem) {
+            throw $this->createNotFoundException('No room found for id ' . $roomId);
+        }
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $portal = $legacyEnvironment->getCurrentPortalItem();
+        $authSourceItem = $portal->getDefaultAuthSourceItem();
+
+        return array(
+            'invitedEmailAdresses' => $authSourceItem->getInvitedEmailAdressesByContextId($roomId),
+        );
+    }
 }

@@ -213,6 +213,15 @@ class MenuBuilder
             ))
             ->setExtra('translation_domain', 'menu');
 
+            // invitations
+            $menu->addChild('Invitations', array(
+                'label' => 'invitations',
+                'route' => 'commsy_settings_invitations',
+                'routeParameters' => array('roomId' => $roomId),
+                'extras' => array('icon' => 'uk-icon-envelope uk-icon-small uk-icon-justify'),
+            ))
+                ->setExtra('translation_domain', 'menu');
+
             // delete
             $menu->addChild('Delete', [
                 'label' => 'delete',
