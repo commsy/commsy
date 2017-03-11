@@ -117,12 +117,19 @@ class InstitutionController extends Controller
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('institution');
         }
 
+        $currentUser = $this->get('commsy_legacy.environment')->getEnvironment()->getCurrentUser();
+        $createContext = true;
+        if (!$currentUser->isAllowedToCreateContext()) {
+            $createContext = false;
+        }
+
         return array(
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
             'module' => 'institution',
             'itemsCountArray' => $itemsCountArray,
             'usageInfo' => $usageInfo,
+            'createContext' => $createContext
         );
     }
 
