@@ -516,14 +516,19 @@ class cs_user_detail_view extends cs_detail_view {
            $temp_array = array();
            $temp_array[] = $this->_translator->getMessage('USER_IS_ALLOWED_TO_CREATE_CONTEXT');
 
-           if ($item->getIsAllowedToCreateContext() == 'standard') {
-               $temp_array[] = $this->_translator->getMessage('USER_IS_ALLOWED_TO_CREATE_CONTEXT_AUTH_SOURCE_SETTING_SHORT');
-           } else if ($item->getIsAllowedToCreateContext() == 1) {
-               $temp_array[] = $this->_translator->getMessage('COMMON_YES');
+           if (!$item->isModerator()) {
+               if ($item->getIsAllowedToCreateContext() == 'standard') {
+                   $temp_array[] = $this->_translator->getMessage('USER_IS_ALLOWED_TO_CREATE_CONTEXT_AUTH_SOURCE_SETTING_SHORT');
+               } else if ($item->getIsAllowedToCreateContext() == 1) {
+                   $temp_array[] = $this->_translator->getMessage('COMMON_YES');
+               } else {
+                   $temp_array[] = $this->_translator->getMessage('COMMON_NO');
+               }
+               $formal_data[] = $temp_array;
            } else {
-               $temp_array[] = $this->_translator->getMessage('COMMON_NO');
+               $temp_array[] = $this->_translator->getMessage('COMMON_YES').' ('.$this->_translator->getMessage('USER_IS_ALLOWED_TO_CREATE_CONTEXT_IS_PORTAL_MODERATOR').')';
+               $formal_data[] = $temp_array;
            }
-           $formal_data[] = $temp_array;
 
            $temp_array = array();
            $temp_array[] = $this->_translator->getMessage('USER_IS_ALLOWED_TO_CREATE_CONTEXT_AUTH_SOURCE_SETTING');
@@ -538,6 +543,9 @@ class cs_user_detail_view extends cs_detail_view {
            }
            $temp_array[] = $auth_source_standard_setting;
 
+           $formal_data[] = $temp_array;
+
+           $temp_array = array();
            $formal_data[] = $temp_array;
        }
 

@@ -261,4 +261,5 @@ $message["USER_ZIPCODE"]["de"] = "Postleitzahl";
 $message["USER_IS_ALLOWED_TO_CREATE_CONTEXT"]["de"] = "Darf neue Räume anlegen";
 $message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_AUTH_SOURCE_SETTING"]["de"] = "Standardeinstellung der Authentifizierungsquelle";
 $message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_AUTH_SOURCE_SETTING_SHORT"]["de"] = "Standardeinstellung";
+$message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_IS_PORTAL_MODERATOR"]["de"] = "Nutzer ist Portalmoderator";
 ?>
