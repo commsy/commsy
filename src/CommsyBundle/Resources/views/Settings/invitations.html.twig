@@ -12,13 +12,18 @@
 
                 <div>
                     <b>{{ 'New invitation'|trans({}, 'settings') }}:</b><br/>
-                    Formular ...
-                    <br/>
-                    <br/>
-                    <b>{{ 'Pending invitations'|trans({}, 'settings') }}:</b><br/>
-                    {% for invitedEmailAdress in invitedEmailAdresses %}
-                        {{ invitedEmailAdress }}<br/>
-                    {% endfor %}
+                    {{ form_start(form) }}
+                    <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                        <h1 class='uk-panel-title'>{{ 'Invitation'|trans({}, 'settings') }}</h1>
+                        <div style="margin-bottom: 25px;">{{ 'Invitation text'|trans({}, 'settings') }}</div>
+                        {{ form_widget(form.email) }}
+                    </div>
+                    <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                        <h1 class='uk-panel-title'>{{ 'Remove invitation'|trans({}, 'settings') }}</h1>
+                        <div style="margin-bottom: 25px;">{{ 'Remove invitation text'|trans({}, 'settings') }}</div>
+                        {{ form_widget(form.remove_invitees) }}
+                    </div>
+                    {{ form_end(form) }}
                 </div>
             </div>
         </div>

@@ -689,5 +689,20 @@ class cs_auth_source_item extends cs_item {
            return array();
        }
    }
+
+    public function removeInvitedEmailAdresses ($email) {
+        if ($this->_issetExtra('INVITATION_CODES')) {
+            $result = array();
+            $invitationCodes = $this->_getExtra('INVITATION_CODES');
+            foreach ($invitationCodes as $key => $value) {
+                $valueArray = explode('|', $value);
+                if ($valueArray[2] == $email) {
+                    unset($invitationCodes[$key]);
+                    $this->_setExtra('INVITATION_CODES', $invitationCodes);
+                    $this->save();
+                }
+            }
+        }
+    }
 }
 ?>

@@ -201,6 +201,12 @@ services:
         tags:
             - { name: form.type }
 
+    commsy.form.type.settings.invitations:
+        class: CommsyBundle\Form\Type\InvitationsSettingsType
+        arguments: ['@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
     commsy.form.type.material:
         class: CommsyBundle\Form\Type\MaterialType
         arguments: ['@commsy.etherpad_form_listener']

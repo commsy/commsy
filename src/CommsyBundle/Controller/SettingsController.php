@@ -15,6 +15,7 @@ use CommsyBundle\Form\Type\ModerationSettingsType;
 use CommsyBundle\Form\Type\AdditionalSettingsType;
 use CommsyBundle\Form\Type\AppearanceSettingsType;
 use CommsyBundle\Form\Type\ExtensionSettingsType;
+use CommsyBundle\Form\Type\InvitationsSettingsType;
 
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 
@@ -335,8 +336,34 @@ class SettingsController extends Controller
         $portal = $legacyEnvironment->getCurrentPortalItem();
         $authSourceItem = $portal->getDefaultAuthSourceItem();
 
+        $invitees = array();
+        foreach ($authSourceItem->getInvitedEmailAdressesByContextId($roomId) as $tempInvitee) {
+            $invitees[$tempInvitee] = $tempInvitee;
+        }
+
+        $form = $this->createForm(InvitationsSettingsType::class, array(), array(
+            'roomId' => $roomId,
+            'invitees' => $invitees,
+        ));
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $data = $form->getData();
+
+            // send invitation email
+            if (isset($data['email'])) {
+                $invitationCode = $authSourceItem->generateInvitationCode($roomId, $data['email']);
+            }
+
+            foreach ($data['remove_invitees'] as $removeInvitee) {
+                $authSourceItem->removeInvitedEmailAdresses($removeInvitee);
+            }
+
+            return $this->redirectToRoute('commsy_settings_invitations', ["roomId" => $roomId]);
+        }
+
         return array(
-            'invitedEmailAdresses' => $authSourceItem->getInvitedEmailAdressesByContextId($roomId),
+            'form' => $form->createView(),
         );
     }
 }
