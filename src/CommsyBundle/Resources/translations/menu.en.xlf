@@ -139,6 +139,10 @@
                 <source>overview</source>
                 <target>Overview</target>
             </trans-unit>
+            <trans-unit id="invitations">
+                <source>Invitations</source>
+                <target>Invitations</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

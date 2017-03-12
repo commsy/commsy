@@ -633,7 +633,7 @@
             </trans-unit>
             <trans-unit id="Remove invitation text">
                 <source>Remove invitation text</source>
-                <target>Wählen Sie die Einladungen aus, die Sie löschen möchten. Die aufgelisteten Einladungen sind noch nciht eingelöst worden.</target>
+                <target>Wählen Sie die Einladungen aus, die Sie löschen möchten. Die aufgelisteten Einladungen sind noch nicht eingelöst worden.</target>
             </trans-unit>
             <trans-unit id="Email-adrress of new invitee">
                 <source>Email-adrress of new invitee</source>

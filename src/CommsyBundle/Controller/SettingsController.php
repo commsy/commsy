@@ -353,6 +353,17 @@ class SettingsController extends Controller
             // send invitation email
             if (isset($data['email'])) {
                 $invitationCode = $authSourceItem->generateInvitationCode($roomId, $data['email']);
+                $mailer = $this->get('mailer');
+                $fromAddress = $this->getParameter('commsy.email.from');
+                $fromSender = $legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
+                $subject = 'TEST';
+                $body = $invitationCode;
+                $mailMessage = \Swift_Message::newInstance()
+                    ->setSubject($subject)
+                    ->setBody($body, 'text/plain')
+                    ->setFrom([$fromAddress => $fromSender])
+                    ->setTo([$data['email']]);
+                $mailer->send($mailMessage);
             }
 
             foreach ($data['remove_invitees'] as $removeInvitee) {
