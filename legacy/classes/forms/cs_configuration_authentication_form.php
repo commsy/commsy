@@ -1013,7 +1013,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
 
       // email regex
       if ( !empty($this->_form_post['email_regex'])
-         and (preg_match($this->_form_post['email_regex'], null) === false)
+         and (@preg_match($this->_form_post['email_regex'], null) === false)
         ) {
            $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_EMAIL_REGEX_WRONG_REGEX_ERROR',$this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_EMAIL_REGEX_WRONG_REGEX_ERROR'));
            $this->_form->setFailure('email_regex','');
