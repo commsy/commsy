@@ -615,6 +615,30 @@
                 <source>Delete</source>
                 <target>Löschen</target>
             </trans-unit>
+            <trans-unit id="Invitations">
+                <source>Invitations</source>
+                <target>Einladungen</target>
+            </trans-unit>
+            <trans-unit id="Invitation">
+                <source>New invitation</source>
+                <target>Neue Einladung</target>
+            </trans-unit>
+            <trans-unit id="New invitation text">
+                <source>New invitation text</source>
+                <target>Geben Sie hier die E-Mail Adresse für eine neue Einladung an. Der Empfänger erhält eine E-Mail mit einem einmalig nutzbaren Aktivierungscode.</target>
+            </trans-unit>
+            <trans-unit id="Remove invitation">
+                <source>Remove invitation</source>
+                <target>Einadungen löschen</target>
+            </trans-unit>
+            <trans-unit id="Remove invitation text">
+                <source>Remove invitation text</source>
+                <target>Wählen Sie die Einladungen aus, die Sie löschen möchten. Die aufgelisteten Einladungen sind noch nciht eingelöst worden.</target>
+            </trans-unit>
+            <trans-unit id="Email-adrress of new invitee">
+                <source>Email-adrress of new invitee</source>
+                <target>E-Mail Adresse</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -42,17 +42,17 @@ class InvitationsSettingsType extends AbstractType
                 ),
                 'required' => false,
             ))
-            ->add('send', SubmitType::class, array(
-                'position' => 'last',
-                'label' => 'Send invitation',
-                'attr' => array(
-                    'class' => 'uk-button-primary',
-                )
-            ))
             ->add('remove_invitees', ChoiceType::class, array(
                 'choices' => $options['invitees'],
                 'multiple' => true,
                 'expanded' => true
+            ))
+            ->add('send', SubmitType::class, array(
+                'position' => 'last',
+                'label' => 'Send',
+                'attr' => array(
+                    'class' => 'uk-button-primary',
+                )
             ))
             ;
         ;
