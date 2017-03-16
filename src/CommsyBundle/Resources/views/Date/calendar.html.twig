@@ -32,6 +32,28 @@
                             {% endblock %}
     
                             {% block editbox %}
+                                <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+                                    <button class="uk-button uk-button-mini cs-button-list">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
+                                    <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
+                                        <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+
+                                            {% if is_granted('ITEM_EDIT', 'NEW') %}
+                                            <li>
+                                                 <a href="{{ path('commsy_date_create', {'roomId': roomId, 'dateDescription' : "now"}) }}">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
+                                                </a>
+                                            </li>
+                                            {% endif %}
+
+                                            {# print #}
+                                            <li>
+                                                <a href="{{ path('commsy_date_printlist', {'roomId': roomId,'date_filter':app.request.query.get('date_filter')}) }}" target="_blank" id="print">
+                                                    <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             {% endblock %}
     
                             <div class="uk-float-right uk-margin-small-left">
