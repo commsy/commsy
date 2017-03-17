@@ -1,0 +1,22 @@
+{% if wo_breadcrumbs()|length %}
+    {%- spaceless -%}
+        <ul id="{{ listId }}" class="{{ listClass }}" itemscope itemtype="http://schema.org/BreadcrumbList">
+            {% for b in breadcrumbs %}
+                <li{% if itemClass is defined and itemClass|length %} class="{{ itemClass }} uk-display-inline"{% endif %} itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                    {% if b.url and not loop.last %}
+                        <a href="{{ b.url }}" itemprop="item"{% if linkRel is defined and linkRel|length %} rel="{{ linkRel }}"{% endif %}>
+                    {% endif %}
+                            <span itemprop="name">{{- b.text | trans(b.translationParameters, translation_domain, locale) -}}</span>
+                    {% if b.url and not loop.last %}
+                        </a>
+                    {% endif %}
+                    <meta itemprop="position" content="{{ loop.index }}" />
+
+                    {% if separator is not null and not loop.last %}
+                        <span class='{{ separatorClass }}'>{{ separator }}</span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {%- endspaceless -%}
+{% endif %}
