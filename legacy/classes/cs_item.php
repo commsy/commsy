@@ -2824,6 +2824,32 @@ function getExternalViewerArray(){
       $manager->updateLocking($this->getItemId());
    }
 
+   function unlock() {
+       $manager = $this->_environment->getManager($this->getItemType());
+       $manager->clearLocking($this->getItemId());
+   }
+
+   function isLocked() {
+      if ($this->getLockingDate() && $this->getLockingDate() != '') {
+         $editDate = new DateTime($this->getLockingDate());
+         $compareDate = new DateTime();
+         $compareDate->modify("-20 minutes");
+
+         if ($compareDate < $editDate) {
+            if ($this->getLockingUserId() == $this->_environment->getCurrentUser()->getItemId()) {
+               return false;
+            } else {
+                return true;
+            }
+         } else {
+            $this->unlock();
+            return false;
+         }
+      } else {
+         return false;
+      }
+   }
+
    protected function replaceElasticItem($objectPersister, $repository) {
         $object = $repository->findOneByItemId($this->getItemID());
 

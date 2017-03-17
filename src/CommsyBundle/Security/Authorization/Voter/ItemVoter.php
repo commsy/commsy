@@ -86,6 +86,12 @@ class ItemVoter extends Voter
             return false;
         }
 
+        if ($item->hasLocking()) {
+            if ($item->isLocked()) {
+                return false;
+            }
+        }
+
         if ($item->mayEdit($currentUser)) {
             return true;
         }
