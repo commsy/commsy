@@ -17,6 +17,8 @@ use CommsyBundle\Form\Type\DiscussionArticleType;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
+use CommsyBundle\Event\CommsyEditEvent;
+
 class DiscussionController extends Controller
 {
     // setup filter form default values
@@ -902,7 +904,10 @@ class DiscussionController extends Controller
             // $em->persist($room);
             // $em->flush();
         }
-        
+
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent($discussionItem));
+
         return array(
             'form' => $form->createView(),
             'showHashtags' => $current_context->withBuzzwords(),

@@ -158,6 +158,12 @@ services:
         tags:
             - { name: form.event_subscriber }
 
+    # EventSubscribers
+    commsy.subscriber.edit:
+        class: CommsyBundle\EventSubscriber\CommsyEditSubscriber
+        tags:
+          - { name: kernel.event_listener, event: commsy.edit, method: onCommsyEdit }
+
     # Search
     commsy.search.manager:
         class: CommsyBundle\Search\SearchManager

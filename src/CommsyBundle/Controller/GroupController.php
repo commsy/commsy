@@ -18,6 +18,8 @@ use CommsyBundle\Form\Type\AnnotationType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
+use CommsyBundle\Event\CommsyEditEvent;
+
 class GroupController extends Controller
 {
     // setup filter form default values
@@ -666,7 +668,10 @@ class GroupController extends Controller
             // $em->persist($room);
             // $em->flush();
         }
-        
+
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent($groupItem));
+
         return array(
             'form' => $form->createView(),
             'showHashtags' => $current_context->withBuzzwords(),

@@ -18,6 +18,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
+use CommsyBundle\Event\CommsyEditEvent;
+
 class TodoController extends Controller
 {
     // setup filter form default values
@@ -631,6 +633,9 @@ class TodoController extends Controller
             }
         }
 
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent($step));
+
         return [
             'form' => $form->createView(),
             'step' => $step,
@@ -706,7 +711,10 @@ class TodoController extends Controller
             }
             return $this->redirectToRoute('commsy_todo_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
-        
+
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent($todoItem));
+
         return array(
             'form' => $form->createView(),
             'showHashtags' => $current_context->withBuzzwords(),

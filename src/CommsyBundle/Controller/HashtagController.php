@@ -13,6 +13,8 @@ use CommsyBundle\Form\Type\HashtagEditType;
 use CommsyBundle\Form\Type\HashtagMergeType;
 use CommsyBundle\Entity\Labels;
 
+use CommsyBundle\Event\CommsyEditEvent;
+
 class HashtagController extends Controller
 {
     /**
@@ -191,7 +193,7 @@ class HashtagController extends Controller
             $buzzwordItemOne->save();
             $buzzwordItemTwo->delete();
 
-            
+
 
             return $this->redirectToRoute('commsy_hashtag_edit', [
                 'roomId' => $roomId,

@@ -17,6 +17,7 @@ use CommsyBundle\Form\Type\AnnouncementType;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
+use CommsyBundle\Event\CommsyEditEvent;
 
 class AnnouncementController extends Controller
 {
@@ -683,7 +684,10 @@ class AnnouncementController extends Controller
             }
             return $this->redirectToRoute('commsy_announcement_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
-        
+
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent($announcementItem));
+
         return array(
             'form' => $form->createView(),
             'showHashtags' => $current_context->withBuzzwords(),

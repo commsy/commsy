@@ -17,6 +17,8 @@ use CommsyBundle\Form\Type\AnnotationType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
+use CommsyBundle\Event\CommsyEditEvent;
+
 class TopicController extends Controller
 {
     // setup filter form default values
@@ -508,7 +510,10 @@ class TopicController extends Controller
             // $em->persist($room);
             // $em->flush();
         }
-        
+
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent($topicItem));
+
         return array(
             'form' => $form->createView(),
             'showHashtags' => $current_context->withBuzzwords(),

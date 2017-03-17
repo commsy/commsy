@@ -19,6 +19,8 @@ use CommsyBundle\Form\Type\MaterialSectionType;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
+use CommsyBundle\Event\CommsyEditEvent;
+
 class MaterialController extends Controller
 {
     // setup filter form default values
@@ -946,6 +948,9 @@ class MaterialController extends Controller
             // $em->persist($room);
             // $em->flush();
         }
+
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent($materialItem));
 
         return array(
             'isSaved' => $isSaved,

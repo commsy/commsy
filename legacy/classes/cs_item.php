@@ -2819,6 +2819,11 @@ function getExternalViewerArray(){
       ));
    }
 
+   function lock() {
+      $manager = $this->_environment->getManager($this->getItemType());
+      $manager->updateLocking($this->getItemId());
+   }
+
    protected function replaceElasticItem($objectPersister, $repository) {
         $object = $repository->findOneByItemId($this->getItemID());
 

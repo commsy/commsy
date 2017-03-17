@@ -22,6 +22,8 @@ use CommsyBundle\Filter\DateFilterType;
 use CommsyBundle\Validator\Constraints\EndDateConstraint;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+use CommsyBundle\Event\CommsyEditEvent;
+
 class DateController extends Controller
 {    
     private $defaultFilterValues = array(
@@ -894,7 +896,7 @@ class DateController extends Controller
 
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
-        
+
         $dateService = $this->get('commsy_legacy.date_service');
         $transformer = $this->get('commsy_legacy.transformer.date');
 
@@ -1004,7 +1006,10 @@ class DateController extends Controller
             // $em->persist($room);
             // $em->flush();
         }
-        
+
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent($dateItem));
+
         return array(
             'form' => $form->createView(),
             'showHashtags' => $current_context->withBuzzwords(),
