@@ -200,6 +200,9 @@ class HashtagController extends Controller
             ]);
         }
 
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent(null));
+
         return [
             'editForm' => $editForm->createView(),
             'roomId' => $roomId,
