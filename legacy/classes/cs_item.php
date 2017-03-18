@@ -2820,13 +2820,11 @@ function getExternalViewerArray(){
    }
 
    function lock() {
-      $manager = $this->_environment->getManager($this->getItemType());
-      $manager->updateLocking($this->getItemId());
+       $this->_environment->getManager($this->getItemType())->updateLocking($this->getItemId(), date("Y-m-d H:i:s"));
    }
 
    function unlock() {
-       $manager = $this->_environment->getManager($this->getItemType());
-       $manager->clearLocking($this->getItemId());
+       $this->_environment->getManager($this->getItemType())->clearLocking($this->getItemId());
    }
 
    function isLocked() {
