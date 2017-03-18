@@ -16,6 +16,22 @@ class CommsyEditSubscriber implements EventSubscriberInterface {
         }
     }
 
+    public function onCommsySave(CommsyEditEvent $event) {
+        if ($event->getItem()) {
+            if ($event->getItem()->hasLocking()) {
+                $event->getItem()->unlock();
+            }
+        }
+    }
+
+    public function onCommsyCancel(CommsyEditEvent $event) {
+        if ($event->getItem()) {
+            if ($event->getItem()->hasLocking()) {
+                $event->getItem()->unlock();
+            }
+        }
+    }
+
     public static function getSubscribedEvents() {
         return array(commsyEvents::EDIT => array('onCommsyEdit', 0));
     }

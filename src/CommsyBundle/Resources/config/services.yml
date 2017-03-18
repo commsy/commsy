@@ -163,6 +163,8 @@ services:
         class: CommsyBundle\EventSubscriber\CommsyEditSubscriber
         tags:
           - { name: kernel.event_listener, event: commsy.edit, method: onCommsyEdit }
+          - { name: kernel.event_listener, event: commsy.save, method: onCommsySave }
+          - { name: kernel.event_listener, event: commsy.cancel, method: onCommsyCancel }
 
     # Search
     commsy.search.manager:

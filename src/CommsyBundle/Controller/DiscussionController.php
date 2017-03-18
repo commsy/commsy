@@ -905,8 +905,7 @@ class DiscussionController extends Controller
             // $em->flush();
         }
 
-        $dispatcher = $this->get('event_dispatcher');
-        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent($discussionItem));
+        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($discussionItem));
 
         return array(
             'form' => $form->createView(),
@@ -989,7 +988,9 @@ class DiscussionController extends Controller
             
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
-        
+
+        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($typedItem));
+
         return array(
             'roomId' => $roomId,
             'item' => $typedItem,

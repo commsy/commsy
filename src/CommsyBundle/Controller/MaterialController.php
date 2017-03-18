@@ -939,7 +939,7 @@ class MaterialController extends Controller
                     $item->saveAsItem();
                 }
             } else if ($form->get('cancel')->isClicked()) {
-                // ToDo ...
+
             }
             return $this->redirectToRoute('commsy_material_save', array('roomId' => $roomId, 'itemId' => $itemId));
             
@@ -949,8 +949,7 @@ class MaterialController extends Controller
             // $em->flush();
         }
 
-        $dispatcher = $this->get('event_dispatcher');
-        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent($materialItem));
+        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($materialItem));
 
         return array(
             'isSaved' => $isSaved,
@@ -994,6 +993,9 @@ class MaterialController extends Controller
         }
         
         $infoArray = $this->getDetailInfo($roomId, $itemId);
+
+        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($tempItem));
+
         return array(
             'roomId' => $roomId,
             'item' => $tempItem,

@@ -712,8 +712,7 @@ class TodoController extends Controller
             return $this->redirectToRoute('commsy_todo_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
-        $dispatcher = $this->get('event_dispatcher');
-        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent($todoItem));
+        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($todoItem));
 
         return array(
             'form' => $form->createView(),
@@ -795,7 +794,9 @@ class TodoController extends Controller
             
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
-        
+
+        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($typedItem));
+
         return array(
             'roomId' => $roomId,
             'item' => $typedItem,

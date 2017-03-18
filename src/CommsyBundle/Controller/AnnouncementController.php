@@ -685,8 +685,7 @@ class AnnouncementController extends Controller
             return $this->redirectToRoute('commsy_announcement_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
-        $dispatcher = $this->get('event_dispatcher');
-        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent($announcementItem));
+        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($announcementItem));
 
         return array(
             'form' => $form->createView(),
@@ -722,6 +721,9 @@ class AnnouncementController extends Controller
         }
         
         $infoArray = $this->getDetailInfo($roomId, $itemId);
+
+        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($tempItem));
+
         return array(
             'roomId' => $roomId,
             'item' => $tempItem,

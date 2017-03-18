@@ -1007,8 +1007,7 @@ class DateController extends Controller
             // $em->flush();
         }
 
-        $dispatcher = $this->get('event_dispatcher');
-        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent($dateItem));
+        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($dateItem));
 
         return array(
             'form' => $form->createView(),
@@ -1125,7 +1124,9 @@ class DateController extends Controller
             
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
-        
+
+        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($date));
+
         return array(
             'roomId' => $roomId,
             'item' => $date,

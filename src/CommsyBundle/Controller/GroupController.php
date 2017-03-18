@@ -669,8 +669,7 @@ class GroupController extends Controller
             // $em->flush();
         }
 
-        $dispatcher = $this->get('event_dispatcher');
-        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent($groupItem));
+        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($groupItem));
 
         return array(
             'form' => $form->createView(),
@@ -749,7 +748,9 @@ class GroupController extends Controller
             
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
-        
+
+        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($group));
+
         return array(
             'roomId' => $roomId,
             'item' => $group,
