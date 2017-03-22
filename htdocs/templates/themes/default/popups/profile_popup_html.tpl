@@ -20,6 +20,7 @@
               <a href="user" class="pop_tab">___PROFILE_USER_DATA___</a>
               <a href="newsletter" class="pop_tab">___PROFILE_NEWSLETTER_DATA___</a>
               <a href="cs_bar" class="pop_tab">___PROFILE_COMMSY_BAR_DATA___</a>
+              <a href="cs_export" class="pop_tab">Export</a>
 
               <div class="clear"> </div>
             </div>
@@ -469,34 +470,6 @@
                       <input id="show_widget_view" type="checkbox" name="form_data[show_widget_view]" value="yes"{if $popup.form.cs_bar.show_widget_view == 'yes'} checked="checked"{/if} />___COMMON_SHOW_ON_CS_BAR___
                       <div class="clear"></div>
                     </div>
-                    {*
-                    <div class="input_row_180">
-                      <label for="widget_view">___PRIVATROOM_ROOMWIDE_SEARCH_BOX___:</label>
-                      <input disabled="disabled"  id="show_roomwide_search" type="checkbox" name="form_data[show_roomwide_search]" value="yes"{if $popup.form.cs_bar.show_roomwide_search == 'yes'} checked="checked"{/if} />___COMMON_SHOW___
-                      <div class="clear"></div>
-                    </div>
-                    <div class="input_row_180">
-                      <label for="widget_view">___COMMON_NEWEST_ENTRIES___:</label>
-                      <input disabled="disabled"  id="show_newest_entries" type="checkbox" name="form_data[show_newest_entries]" value="yes"{if $popup.form.cs_bar.show_newest_entries == 'yes'} checked="checked"{/if} />___COMMON_SHOW___
-                      <div class="clear"></div>
-                    </div>
-                    <div class="input_row_180">
-                      <label for="widget_view">___COMMON_ACTIV_ROOMS___:</label>
-                      <input disabled="disabled" id="show_active_rooms" type="checkbox" name="form_data[show_active_rooms]" value="yes"{if $popup.form.cs_bar.show_active_rooms == 'yes'} checked="checked"{/if} />___COMMON_SHOW___
-                      <div class="clear"></div>
-                    </div>
-                    <div class="input_row_180">
-                      <label for="widget_view">___COMMON_RSS_TICKER___:</label>
-                      <input disabled="disabled" id="rss_ticker" type="checkbox" name="form_data[rss_ticker]" value="yes"{if $popup.form.cs_bar.rss_ticker == 'yes'} checked="checked"{/if} />___COMMON_SHOW___
-                      <div class="clear"></div>
-                    </div>
-                    <div class="input_row_180">
-                      <label for="widget_view">___HOME_EXTRA_TOOLS___:</label>
-                      <input disabled="disabled" id="show_extensions" type="checkbox" name="form_data[show_newest_entries]" value="yes"{if $popup.form.cs_bar.show_newest_entries == 'yes'} checked="checked"{/if} />___COMMON_SHOW___
-                      ___CS_BAR_COMMING_SOON_2___
-                      <div class="clear"></div>
-                    </div>
-                    *}
                   </fieldset>
 
               	  <fieldset>
@@ -508,15 +481,6 @@
                       <input id="show_calendar_view" type="checkbox" name="form_data[show_calendar_view]" value="yes"{if $popup.form.cs_bar.show_calendar_view == 'yes'} checked="checked"{/if} />___COMMON_SHOW_ON_CS_BAR___
                       <div class="clear"></div>
                     </div>
-                    {*
-                    <div class="input_row_180">
-                      <label for="widget_view">___CS_BAR_COMMON_SHOW___:</label>
-                      <input id="show_dates" type="checkbox" name="form_data[show_dates]" value="yes"{if $popup.form.cs_bar.show_dates == 'yes'} checked="checked"{/if} />___DATE_INDEX___
-                      <input id="show_todos" type="checkbox" name="form_data[show_todos]" value="yes"{if $popup.form.cs_bar.show_todos == 'yes'} checked="checked"{/if} />___TODO_INDEX___
-                      <input id="show_restrictions" type="checkbox" name="form_data[show_restrictions]" value="yes"{if $popup.form.cs_bar.show_restrictions == 'yes'} checked="checked"{/if} />___COMMON_RESTRICTIONS_SHORT___
-                      <div class="clear"></div>
-                    </div>
-                    *}
                   </fieldset>
 
                   <fieldset>
@@ -574,12 +538,6 @@
                               <p>
                                  <strong>___CONFIGURATION_EXTRA_WORDPRESS___:</strong>
                               </p>
-                              <!--
-                              <div class="input_row_200">
-                                 <input type="checkbox" name="form_data[wordpress_active]" value="yes" {if $popup.external.wordpress.wordpress_active == 'yes'}checked="checked"{/if}/> ___CONFIGURATION_EXTRA_WORDPRESS___
-                                 <div class="clear"></div>
-                              </div>
-                               -->
                               <div class="input_row_100">
                          <label for="wordpresstitle">___COMMON_TITLE___<span class="required">*</span>:</label>
                          <input id="wordpresstitle" type="text" class="size_200" name="form_data[wordpresstitle]" value="{show var=$popup.external.wordpress.wordpresstitle}"/>
@@ -852,8 +810,23 @@
                   </div>
                   </div>
                 </div>
-              </div>
 
+                <div class="tab hidden" id="cs_export">
+                    <div id="content_row_three">
+                        <fieldset>
+                            <p>
+                                Export... Total wichtige Information
+                            </p>
+                        </fieldset>
+
+                        <div class="input_row">
+                            {if !is_null($own.id)}
+                                <a href="commsy.php?cid={$own.id}&mod=export&fct=export">Inhalte dieses Raums exportieren</a>
+                            {/if}
+                        </div>
+                    </div>
+                </div>
+              </div>
 
             </div>
           </div>

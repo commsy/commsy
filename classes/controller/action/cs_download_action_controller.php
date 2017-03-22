@@ -203,20 +203,6 @@
 			fwrite($fileHandle, $output);
 			fclose($fileHandle);
 			
-			
-			/*
-			var_dump($images);
-			
-			var_dump($output);
-			
-			
-			var_dump($linkedCSS);
-			var_dump($newLinkedCSS);
-			
-			
-			*/
-			
-			
 			/************************************************************************************
 			 * All files are ready now, create a ZIP archive and set headers for downloading
 			************************************************************************************/

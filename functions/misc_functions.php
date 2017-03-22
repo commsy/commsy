@@ -704,6 +704,9 @@ function isURLValid () {
          $module != 'download' and
          $module != 'limesurvey' and
          $module != 'export_privateroom' and
+
+         // export
+         $module != 'export' and
    		
    		// individual css
    		$module != 'individual'
