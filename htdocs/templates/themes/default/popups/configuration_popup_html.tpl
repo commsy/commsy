@@ -1046,7 +1046,12 @@
 								<div id="content_row_three">
 									<fieldset>
 										<p>
-											Export... Total wichtige Information
+											Der hier aufgeführte Export exportiert ausschließlich die angehängten Dateien aus diesem CommSy-Raum nach folgenden Schema:<br>
+											<br>
+											1. zip-Datei = Raumname<br>
+											2. Ordner 1. Ranges = Die Rubriken<br>
+											3. Ordner 2. Ranges = Titel der CommSy-Einträge<br>
+											4. Dateien im Ordner = angehängte Dateien zu dem jeweiligen CommSy-Eintrag
 										</p>
 									</fieldset>
 

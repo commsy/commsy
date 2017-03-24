@@ -815,13 +815,18 @@
                     <div id="content_row_three">
                         <fieldset>
                             <p>
-                                Export... Total wichtige Information
+                                Der hier aufgeführte Export exportiert ausschließlich die angehängten Dateien aus Ihrer CommSy-Leiste nach folgenden Schema:<br>
+                                <br>
+                                1. zip-Datei<br>
+                                2. Ordner 1. Ranges = Die Rubriken (Materialien, Termine, Diskussionen, Aufgaben)<br>
+                                3. Ordner 2. Ranges = Titel der CommSy-Einträge<br>
+                                4. Dateien im Ordner = angehängte Dateien zu dem jeweiligen CommSy-Eintrag aus Ihrer Ablage
                             </p>
                         </fieldset>
 
                         <div class="input_row">
                             {if !is_null($own.id)}
-                                <a href="commsy.php?cid={$own.id}&mod=export&fct=export">Inhalte dieses Raums exportieren</a>
+                                <a href="commsy.php?cid={$own.id}&mod=export&fct=export">Persönliche Inhalte exportieren</a>
                             {/if}
                         </div>
                     </div>
