@@ -27,7 +27,7 @@ $this->_flushHeadline('db: add column public to tag table');
 
 $success = true;
 
-if (!$this->_existsField("tag", "public")) {
+if (!$this->_existsField("zzz_tag", "public")) {
 	$sql = "
         ALTER TABLE
             `zzz_tag`
