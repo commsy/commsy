@@ -82,10 +82,6 @@ class cs_export_export_controller extends cs_base_controller
 
             $item = $itemList->getFirst();
             while ($item) {
-                // create a new item folder
-                $itemFolder = $rubricFolder . '/' . $item->getTitle();
-                mkdir($itemFolder);
-
                 // get related files
                 switch ($rubric) {
                     case 'material':
@@ -101,12 +97,18 @@ class cs_export_export_controller extends cs_base_controller
                         $fileList = $item->getFileList();
                 }
 
-                $file = $fileList->getFirst();
-                while ($file) {
-                    $filePath = $itemFolder . '/' . $file->getFileName();
-                    copy($file->getDiskFileName(), $filePath);
+                if (!$fileList->isEmpty()) {
+                    // create a new item folder
+                    $itemFolder = $rubricFolder . '/' . $item->getTitle();
+                    mkdir($itemFolder);
 
-                    $file = $fileList->getNext();
+                    $file = $fileList->getFirst();
+                    while ($file) {
+                        $filePath = $itemFolder . '/' . $file->getFileName();
+                        copy($file->getDiskFileName(), $filePath);
+
+                        $file = $fileList->getNext();
+                    }
                 }
 
                 $item = $itemList->getNext();
