@@ -73,6 +73,10 @@ class cs_export_export_controller extends cs_base_controller
             $rubricFolder = $exportFolder . '/' . $translatedRubric;
             mkdir($rubricFolder);
 
+            if ($rubric == 'date') {
+                $manager->setWithoutDateModeLimit();
+            }
+
             $manager->select();
             $itemList = $manager->get();
 
