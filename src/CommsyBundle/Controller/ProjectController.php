@@ -417,26 +417,34 @@ class ProjectController extends Controller
     {
         $status = 'closed';
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $current_user = $legacyEnvironment->getCurrentUserItem();
-        if ($current_user->isRoot()) {
-            $may_enter = true;
-        } elseif ( !empty($room_user) ) {
-            $may_enter = $item->mayEnter($room_user);
-        } else {
-            $may_enter = false;
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
+
+        $relatedUserArray = $currentUser->getRelatedUserList()->to_array();
+        $roomUser = null;
+        foreach ($relatedUserArray as $relatedUser) {
+            if ($relatedUser->getContextId() == $item->getItemId()) {
+                $roomUser = $relatedUser;
+            }
+        }
+
+        $mayEnter = false;
+        if ($currentUser->isRoot()) {
+            $mayEnter = true;
+        } elseif ( !empty($roomUser) ) {
+            $mayEnter = $item->mayEnter($roomUser);
         }
         
-        if ($may_enter) {
+        if ($mayEnter) {
             if ($item->isOpen()) {
                 $status = 'enter';
             } else {
                 $status = 'join';
             }
-        } elseif ( $item->isLocked() ) {
+        } elseif ($item->isLocked()) {
             $status = 'locked';
-        } elseif(!empty($room_user) and $room_user->isRequested()) {
+        } elseif(!empty($roomUser) and $roomUser->isRequested()) {
             $status = 'requested';
-        } elseif(!empty($room_user) and $room_user->isRejected()) {
+        } elseif(!empty($roomUser) and $roomUser->isRejected()) {
             $status = 'rejected';
         }
         return $status;
