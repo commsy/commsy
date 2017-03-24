@@ -603,11 +603,23 @@ class cs_page_view extends cs_view {
    			$days = 1;
    		}
    	
-   		$days_before_expiring_sendmail = $portal_item->getDaysBeforeExpiringPasswordSendMail();
-   		if(isset($days_before_expiring_sendmail) AND $days <= $days_before_expiring_sendmail){
+        $days_before_expiring_sendmail = $portal_item->getDaysBeforeExpiringPasswordSendMail();
+        
+        $checkMinutesAndHours = true;
+   	    if(isset($days_before_expiring_sendmail) AND $days == $days_before_expiring_sendmail){
+       	    if ($since_start->h > 0 || $since_start->m > 0) {
+           	    $checkMinutesAndHours = false;
+       	    }
+   	    } else if(!isset($days_before_expiring_sendmail) AND $days == 14){
+       	    if ($since_start->h > 0 || $since_start->m > 0) {
+           	    $checkMinutesAndHours = false;
+       	    }
+   	    }
+   	
+   		if(isset($days_before_expiring_sendmail) AND $days <= $days_before_expiring_sendmail AND $checkMinutesAndHours){
    			$to_javascript["translations"]["password_expire_soon_alert"] = $translator->getMessage("COMMON_PASSWORD_EXPIRE_ALERT", $days);
    			$to_javascript['environment']['password_expire_soon'] = true;
-   		} else if(!isset($days_before_expiring_sendmail) AND $days <= 14){
+   		} else if(!isset($days_before_expiring_sendmail) AND $days <= 14 AND $checkMinutesAndHours){
    			$to_javascript["translations"]["password_expire_soon_alert"] = $translator->getMessage("COMMON_PASSWORD_EXPIRE_ALERT", $days);
    			$to_javascript['environment']['password_expire_soon'] = true;
    		}
