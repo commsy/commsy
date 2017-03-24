@@ -3,7 +3,7 @@
 namespace CommsyBundle\EventListener;
 
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
@@ -22,7 +22,7 @@ class CommsyBreadcrumbListener
     private $breadcrumbs;
     private $router;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, ItemService $itemService, DataCollectorTranslator $translator, Router $router, Breadcrumbs $whiteOctoberBreadcrumbs)
+    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, ItemService $itemService, TranslatorInterface $translator, Router $router, Breadcrumbs $whiteOctoberBreadcrumbs)
     {
         $this->legacyEnvironment = $legacyEnvironment;
         $this->roomService = $roomService;
@@ -44,13 +44,36 @@ class CommsyBreadcrumbListener
         if (count($route) < 3) {
             return;
         }
+
         list($bundle, $controller, $action) = $route;
 
         $routeParameters = $request->get('_route_params');
 
         $roomItem = $this->roomService->getCurrentRoomItem();
 
+        // Portal / CommunityRoom / ProjectRooms / ProjectRoomName / ProjectRoom / Groups / GroupName / Grouproom / Rubric / Entry
+
         $this->addPortalCrumb($request);
+
+        if ($roomItem->isGroupRoom()) {
+            dump("GroupRoom");
+            $projectRoomItem = $roomItem->getLinkedProjectItem();
+
+            $this->addCommunityCrumbs($projectRoomItem);
+
+            $this->addRoomCrumb($projectRoomItem, true);
+            // TODO: add linked breadcrumbs to:
+            //      - group rubric of containing project room
+            $this->breadcrumbs->addItem($this->translator->trans('groups', [], 'menu'));
+        }
+        elseif ($roomItem->isProjectRoom()) {
+            dump("ProjectRoom");
+            $this->addCommunityCrumbs($roomItem);
+        }
+        elseif ($roomItem->isCommunityRoom()) {
+            dump("CommunityRoom");
+            # code...
+        }
 
         if($controller == 'profile'){
             $this->addProfileCrumbs($roomItem, $action);
@@ -77,19 +100,33 @@ class CommsyBreadcrumbListener
     {
         $portal = $this->legacyEnvironment->getEnvironment()->getCurrentPortalItem();
         if ($portal) {
-            $this->breadcrumbs->prependItem('Portal', $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId());
+            $this->breadcrumbs->prependItem($portal->getTitle(), $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId());
+        }
+    }
+
+    private function addCommunityCrumbs($roomItem)
+    {
+        dump($roomItem);
+        $communityRoomItem = $roomItem->getCommunityList()->getFirst();
+        if ($communityRoomItem) {
+            $this->addRoomCrumb($communityRoomItem, true);
+            $this->breadcrumbs->addRouteItem($this->translator->trans('project', [], 'menu'), "commsy_project_list", array('roomId' => $communityRoomItem->getItemId()));
+        }
+        else {
+            dump("No community room item found!");
         }
     }
 
     private function addRoomCrumb($roomItem, $asLink)
     {
-        if($asLink == true) {
-            $this->breadcrumbs->addRouteItem($roomItem->getTitle(), "commsy_room_home", [
+        $crumbText = $roomItem->isGroupRoom() ? $this->translator->trans('grouproom', [], 'group') : $roomItem->getTitle();
+        if ($asLink == true) {
+            $this->breadcrumbs->addRouteItem($crumbText, "commsy_room_home", [
                 'roomId' => $roomItem->getItemID(),
             ]);
         }
         else {
-            $this->breadcrumbs->addItem($roomItem->getTitle());
+            $this->breadcrumbs->addItem($crumbText);
         }
     }
 
