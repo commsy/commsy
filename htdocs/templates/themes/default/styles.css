@@ -5317,3 +5317,8 @@ div.carouselImages img.gallery_image {
 span.account_comment {
    padding-left: 4px;
 }
+
+.project_list_archived_room {
+    font-style: italic;
+    color: #aaaaaa;
+}

@@ -73,6 +73,8 @@ class cs_project_manager extends cs_room2_manager {
 
   var $_template_limit = NULL;
 
+  var $_community_room_archive_mixed_mode_limit = NULL;
+
   /** constructor: cs_project_manager
     * the only available constructor, initial values for internal variables
     *
@@ -94,6 +96,7 @@ class cs_project_manager extends cs_room2_manager {
      $this->_interval_limit = NULL;
      $this->_user_id_limit = NULL;
      $this->_community_room_limit = NULL;
+     $this->_community_room_archive_mixed_mode_limit = NULL;
      $this->_time_limit = NULL;
      $this->_template_limit = NULL;
   }
@@ -136,6 +139,10 @@ class cs_project_manager extends cs_room2_manager {
 
    function setCommunityroomLimit ($value) {
       $this->_community_room_limit = (int)$value;
+   }
+
+   function setCommunityroomArchiveMixedModeLimit () {
+      $this->_community_room_archive_mixed_mode_limit = true;
    }
 
   /** set time limit
@@ -217,8 +224,13 @@ class cs_project_manager extends cs_room2_manager {
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS user2 ON user2.context_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND user2.deletion_date IS NULL AND user2.is_contact="1"';
      }
      if ( isset($this->_community_room_limit) ) {
-        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l31.second_item_type="'.CS_COMMUNITY_TYPE.'"))) ';
-        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l32.first_item_type="'.CS_COMMUNITY_TYPE.'"))) ';
+         $temp_link_items_table = $this->addDatabasePrefix('link_items');
+         if ($this->_community_room_archive_mixed_mode_limit) {
+             global $c_db_backup_prefix;
+             $temp_link_items_table = str_ireplace($c_db_backup_prefix.'_', '', $temp_link_items_table);
+         }
+         $query .= ' LEFT JOIN '.$temp_link_items_table.' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l31.second_item_type="'.CS_COMMUNITY_TYPE.'"))) ';
+         $query .= ' LEFT JOIN '.$temp_link_items_table.' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l32.first_item_type="'.CS_COMMUNITY_TYPE.'"))) ';
      }
       if ( isset($this->_institution_limit) ) {
          $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l21.second_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
