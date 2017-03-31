@@ -51,42 +51,32 @@ class CommsyBreadcrumbListener
 
         $roomItem = $this->roomService->getCurrentRoomItem();
 
-        // Portal / CommunityRoom / ProjectRooms / ProjectRoomName / ProjectRoom / Groups / GroupName / Grouproom / Rubric / Entry
+        // Longest case:
+        // Portal / CommunityRoom / ProjectRooms / ProjectRoomName / Groups / GroupName / Grouproom / Rubric / Entry
 
         $this->addPortalCrumb($request);
 
-        if ($roomItem->isGroupRoom()) {
-            dump("GroupRoom");
-            $projectRoomItem = $roomItem->getLinkedProjectItem();
-
-            $this->addCommunityCrumbs($projectRoomItem);
-
-            $this->addRoomCrumb($projectRoomItem, true);
-            // TODO: add linked breadcrumbs to:
-            //      - group rubric of containing project room
-            $this->breadcrumbs->addItem($this->translator->trans('groups', [], 'menu'));
-        }
-        elseif ($roomItem->isProjectRoom()) {
-            dump("ProjectRoom");
-            $this->addCommunityCrumbs($roomItem);
-        }
-        elseif ($roomItem->isCommunityRoom()) {
-            dump("CommunityRoom");
-            # code...
+        if ($roomItem == null) {
+            return;
         }
 
         if($controller == 'profile'){
             $this->addProfileCrumbs($roomItem, $action);
         }
         elseif ($controller == 'room' && $action == 'home') {
-            $this->addRoomCrumb($roomItem, false);
+            $this->addRoom($roomItem, false);
         }
         else {
-            $this->addRoomCrumb($roomItem, true);
+            $this->addRoom($roomItem, true);
             // rubric & entry
             if(array_key_exists('itemId', $routeParameters)) {
+
+                // link to rubric
                 $route[2] = 'list';
+                unset($routeParameters['itemId']);
                 $this->breadcrumbs->addRouteItem($this->translator->trans($controller, [], 'menu'), implode("_", $route), $routeParameters);
+
+                // entry title
                 $item = $this->itemService->getTypedItem($request->get('itemId'));
                 $this->breadcrumbs->addItem($item->getTitle());
             }
@@ -104,23 +94,56 @@ class CommsyBreadcrumbListener
         }
     }
 
-    private function addCommunityCrumbs($roomItem)
+    private function addRoom($roomItem, $asLink)
     {
-        dump($roomItem);
-        $communityRoomItem = $roomItem->getCommunityList()->getFirst();
-        if ($communityRoomItem) {
-            $this->addRoomCrumb($communityRoomItem, true);
-            $this->breadcrumbs->addRouteItem($this->translator->trans('project', [], 'menu'), "commsy_project_list", array('roomId' => $communityRoomItem->getItemId()));
+        if ($roomItem->isGroupRoom()) {
+            $this->addGroupRoom($roomItem, $asLink);
+       }
+        elseif ($roomItem->isProjectRoom()) {
+            $this->addProjectRoom($roomItem, $asLink);
         }
-        else {
-            dump("No community room item found!");
+        elseif ($roomItem->isCommunityRoom()) {
+            $this->addCommunityRoom($roomItem, $asLink);
         }
     }
 
-    private function addRoomCrumb($roomItem, $asLink)
+    private function addCommunityRoom($roomItem, $asLink)
+    {
+        $this->addRoomCrumb($roomItem, $asLink);
+    }
+
+    private function addProjectRoom($roomItem, $asLink)
+    {
+        $communityRoomItem = $roomItem->getCommunityList()->getFirst();
+        if ($communityRoomItem) {
+            $this->addCommunityRoom($communityRoomItem, true);
+            $this->breadcrumbs->addRouteItem($this->translator->trans('project', [], 'menu'), "commsy_project_list", array('roomId' => $communityRoomItem->getItemId()));
+        }
+        else {
+            dump("No community room found for project room with ID " . $roomItem->getItemId());
+        }
+        $this->addRoomCrumb($roomItem, $asLink);
+    }
+
+    private function addGroupRoom($roomItem, $asLink)
+    {
+        $groupItem = $roomItem->getLinkedGroupItem();
+        $projectRoom = $roomItem->getLinkedProjectItem();
+
+        // ProjectRoom
+        $this->addProjectRoom($projectRoom, true);
+        // "Groups" rubric in project room
+        $this->breadcrumbs->addItem($this->translator->trans('groups', [], 'menu'));
+        // Group (with name)
+        $this->breadcrumbs->addRouteItem($groupItem->getTitle(), "commsy_group_detail", ['roomId' => $projectRoom->getItemId(), 'itemId' => $groupItem->getItemId()]);
+        // Grouproom
+        $this->addRoomCrumb($roomItem, $asLink);
+    }
+
+    private function addRoomCrumb($roomItem, $asZelda)
     {
         $crumbText = $roomItem->isGroupRoom() ? $this->translator->trans('grouproom', [], 'group') : $roomItem->getTitle();
-        if ($asLink == true) {
+        if ($asZelda == true) {
             $this->breadcrumbs->addRouteItem($crumbText, "commsy_room_home", [
                 'roomId' => $roomItem->getItemID(),
             ]);
@@ -137,16 +160,6 @@ class CommsyBreadcrumbListener
         }
         elseif ($action == 'general') {
 
-        }
-    }
-
-    private function addRubricCrumb($route, $asLink)
-    {
-        if($asLink) {
-            $this->breadcrumbs->addRouteItem($this->translator->trans($controller, [], 'menu'), implode("_", $route), $routeParameters);
-        }
-        else {
-            $this->breadcrumbs->addItem($this->translator->trans($controller, [], 'menu'));
         }
     }
 }
