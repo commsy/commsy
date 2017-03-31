@@ -66,8 +66,12 @@ class CommsyBreadcrumbListener
         elseif ($controller == 'room' && $action == 'home') {
             $this->addRoom($roomItem, false);
         }
+        elseif ($controller == 'dashboard' && $action == 'overview') {
+            $this->breadcrumbs->addItem($this->translator->trans($controller, [], 'menu'));
+        }
         else {
             $this->addRoom($roomItem, true);
+
             // rubric & entry
             if(array_key_exists('itemId', $routeParameters)) {
 
@@ -80,6 +84,8 @@ class CommsyBreadcrumbListener
                 $item = $this->itemService->getTypedItem($request->get('itemId'));
                 $this->breadcrumbs->addItem($item->getItemType() == 'user' ? $item->getFullName() : $item->getTitle());
             }
+
+            // rubric only
             else {
                 $this->breadcrumbs->addItem($this->translator->trans($controller, [], 'menu'));
             }
@@ -98,13 +104,21 @@ class CommsyBreadcrumbListener
     {
         if ($roomItem->isGroupRoom()) {
             $this->addGroupRoom($roomItem, $asLink);
-       }
+        }
         elseif ($roomItem->isProjectRoom()) {
             $this->addProjectRoom($roomItem, $asLink);
         }
         elseif ($roomItem->isCommunityRoom()) {
             $this->addCommunityRoom($roomItem, $asLink);
         }
+        elseif ($roomItem->isPrivateRoom()) {
+            $this->addDashboard($roomItem, $asLink);
+        }
+    }
+
+    private function addDashboard($roomItem, $asLink)
+    {
+        $this->breadcrumbs->addRouteItem($this->translator->trans('dashboard', [], 'menu'), "commsy_dashboard_overview", ["roomId" => $roomItem->getItemId()]);
     }
 
     private function addCommunityRoom($roomItem, $asLink)
