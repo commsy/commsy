@@ -61,7 +61,7 @@ class CommsyBreadcrumbListener
         }
 
         if($controller == 'profile'){
-            $this->addProfileCrumbs($roomItem, $action);
+            $this->addProfileCrumbs($roomItem, $routeParameters, $action);
         }
         elseif ($controller == 'room' && $action == 'home') {
             $this->addRoom($roomItem, false);
@@ -78,7 +78,7 @@ class CommsyBreadcrumbListener
 
                 // entry title
                 $item = $this->itemService->getTypedItem($request->get('itemId'));
-                $this->breadcrumbs->addItem($item->getTitle());
+                $this->breadcrumbs->addItem($item->getItemType() == 'user' ? $item->getFullName() : $item->getTitle());
             }
             else {
                 $this->breadcrumbs->addItem($this->translator->trans($controller, [], 'menu'));
@@ -119,9 +119,6 @@ class CommsyBreadcrumbListener
             $this->addCommunityRoom($communityRoomItem, true);
             $this->breadcrumbs->addRouteItem($this->translator->trans('project', [], 'menu'), "commsy_project_list", array('roomId' => $communityRoomItem->getItemId()));
         }
-        else {
-            dump("No community room found for project room with ID " . $roomItem->getItemId());
-        }
         $this->addRoomCrumb($roomItem, $asLink);
     }
 
@@ -133,7 +130,7 @@ class CommsyBreadcrumbListener
         // ProjectRoom
         $this->addProjectRoom($projectRoom, true);
         // "Groups" rubric in project room
-        $this->breadcrumbs->addItem($this->translator->trans('groups', [], 'menu'));
+        $this->breadcrumbs->addRouteItem(ucfirst($this->translator->trans('groups', [], 'menu')), "commsy_group_list", ['roomId' => $projectRoom->getItemId()]);
         // Group (with name)
         $this->breadcrumbs->addRouteItem($groupItem->getTitle(), "commsy_group_detail", ['roomId' => $projectRoom->getItemId(), 'itemId' => $groupItem->getItemId()]);
         // Grouproom
@@ -153,13 +150,14 @@ class CommsyBreadcrumbListener
         }
     }
 
-    private function addProfileCrumbs($roomItem, $action)
+    private function addProfileCrumbs($roomItem, $routeParameters, $action)
     {
         if($action == 'account') {
-
+            $this->breadcrumbs->addRouteItem($this->translator->trans('Account', [], 'profile'), "commsy_profile_account", $routeParameters);
         }
         elseif ($action == 'general') {
-
+            $this->addRoom($roomItem, true);
+            $this->breadcrumbs->addRouteItem($this->translator->trans('Room profile', [], 'profile'), "commsy_profile_general", $routeParameters);
         }
     }
 }
