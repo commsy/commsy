@@ -92,6 +92,48 @@
 			$project_manager->select();
 			$list = $project_manager->get();
 			$ids = $project_manager->getIDArray();
+
+			// Get data from archive database
+            $environment->toggleArchiveMode();
+            $archive_project_manager = $environment->getProjectManager();
+            $archive_project_manager->reset();
+            if ($environment->inCommunityRoom()) {
+                $archive_project_manager->setContextLimit($environment->getCurrentPortalID());
+                if ( !isset($c_cache_cr_pr) or $c_cache_cr_pr ) {
+                    $archive_project_manager->setCommunityroomLimit($environment->getCurrentContextID());
+                    $archive_project_manager->setCommunityroomArchiveMixedModeLimit();
+                } else {
+                    /**
+                     * use redundant infos in community room
+                     */
+                    $archive_project_manager->setIDArrayLimit($context_item->getInternalProjectIDArray());
+                }
+            } else {
+                $archive_project_manager->setContextLimit($environment->getCurrentContextID());
+            }
+            $count_all = $archive_project_manager->getCountAll();
+
+            if ( !empty($this->_list_parameter_arrray['sort']) ) {
+                $archive_project_manager->setOrder($this->_list_parameter_arrray['sort']);
+            }
+            if ( !empty($this->_list_parameter_arrray['search']) ) {
+                $archive_project_manager->setSearchLimit($this->_list_parameter_arrray['search']);
+            }
+            if ( $this->_list_parameter_arrray['interval'] > 0 ) {
+                $archive_project_manager->setIntervalLimit($this->_list_parameter_arrray['from']-1,$this->_list_parameter_arrray['interval']);
+            }
+            $archive_project_manager->select();
+            $listArchive = $archive_project_manager->get();
+            $itemArchive = $listArchive->getFirst();
+            while ($itemArchive){
+                $itemArchive->setArchiveStatus();
+                $itemArchive = $listArchive->getNext();
+            }
+            $idsArchive = $archive_project_manager->getIDArray();
+            $list->addList($listArchive);
+            $ids = array_merge($ids, $idsArchive);
+            $environment->toggleArchiveMode();
+
 			$count_all_shown = count($ids);
 			$this->_page_text_fragment_array['count_entries'] = $this->getCountEntriesText($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all, $count_all_shown);
             $this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all_shown);
@@ -167,7 +209,8 @@
 					'contacts'			=> $contact_array,
 					'members_count'		=> $item->getAllUsers(),
 					'may_enter'			=> $may_enter,
-					'activity'			=> $this->_getItemActivity ($item,$room_max_activity)
+					'activity'			=> $this->_getItemActivity ($item,$room_max_activity),
+                    'is_archived'       => $item->isArchived()
 				);
 				$item = $list->getNext();
 			}
