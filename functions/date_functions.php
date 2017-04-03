@@ -71,9 +71,13 @@ function getCurrentDateTimePlusMinutesInMySQL ( $minutes ) {
 }
 
 if (!function_exists('getCurrentDateTimePlusDaysInMySQL')) {
-    function getCurrentDateTimePlusDaysInMySQL ($days)
+    function getCurrentDateTimePlusDaysInMySQL ($days, $withoutTime = false)
     {
-        return date('Y-m-d H:i:s', mktime(date('H'), (date('i')), date('s'), date('m'), date('d')+$days, date('Y')));
+        if (!$withoutTime) {
+            return date('Y-m-d H:i:s', mktime(date('H'), (date('i')), date('s'), date('m'), date('d') + $days, date('Y')));
+        } else {
+            return date('Y-m-d 00:00:00', mktime(date('H'), (date('i')), date('s'), date('m'), date('d') + $days, date('Y')));
+        }
     }
 }
 

@@ -41,7 +41,7 @@ Bei Fragen wenden Sie sich bitte an Ihre CommSy-Portalmoderation.";
 $message["EMAIL_PASSWORD_EXPIRATION_SOON_BODY"]["de"] = "Ihr Passwort läuft in %1 Tagen ab. Bitte ändern Sie Ihr Passwort innerhalb dieser Zeit.
 
 %2";
-$message["EMAIL_PASSWORD_EXPIRATION_SOON_SUBJECT"]["de"] = "%1: Ihr Passwort l&auml;uft in %2 Tagen aus";
+$message["EMAIL_PASSWORD_EXPIRATION_SOON_SUBJECT"]["de"] = "%1: Ihr Passwort l&auml;uft in %2 Tagen ab";
 $message["EMAIL_PASSWORD_EXPIRATION_SUBJECT"]["de"] = "%1: Ihr Passwort ist abgelaufen";
 $message["EMAIL_TO_COMMSY_ACCOUNT"]["de"] = "Kennung";
 $message["EMAIL_TO_COMMSY_PASSWORD"]["de"] = "Upload-Kennwort";
