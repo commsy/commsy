@@ -789,7 +789,7 @@ class cs_server_item extends cs_guide_item
                                     if ($user->getPasswordExpireDate() > getCurrentDateTimeInMySQL()) {
                                         $start_date = new DateTime(getCurrentDateTimeInMySQL());
                                         $since_start = $start_date->diff(new DateTime($user->getPasswordExpireDate()));
-                                        $days = $since_start->days;
+                                        $days = $since_start->days + 1;
                                         if ($days == 0) {
                                             $days = 1;
                                         }

@@ -9,26 +9,44 @@
         return DateTesting::$dateTime ?: \date("Y-m-d H:i:s");
     }
 
-    function getCurrentDateTimeMinusDaysInMySQL($days)
+    function getCurrentDateTimeMinusDaysInMySQL($days, $withoutTime = false)
     {
         if (DateTesting::$dateTime == null) {
-            return date('Y-m-d H:i:s', mktime(date('H'), date('i'), date('s'), date('m'), (date('d')-$days), date('Y')));
+            if (!$withoutTime) {
+                return date('Y-m-d H:i:s', mktime(date('H'), date('i'), date('s'), date('m'), (date('d') - $days), date('Y')));
+            } else {
+                return date('Y-m-d 00:00:00', mktime(date('H'), date('i'), date('s'), date('m'), (date('d') - $days), date('Y')));
+            }
         }
 
         $date = new DateTime(DateTesting::$dateTime);
         $date->modify('-' . $days . ' day');
-        return $date->format('Y-m-d H:i:s');
+
+        if (!$withoutTime) {
+            return $date->format('Y-m-d H:i:s');
+        } else {
+            return $date->format('Y-m-d 00:00:00');
+        }
     }
 
-    function getCurrentDateTimePlusDaysInMySQL($days)
+    function getCurrentDateTimePlusDaysInMySQL($days, $withoutTime = false)
     {
         if (DateTesting::$dateTime == null) {
-            return date('Y-m-d H:i:s', mktime(date('H'), (date('i')), date('s'), date('m'), date('d')+$days, date('Y')));;
+            if (!$withoutTime) {
+                return date('Y-m-d H:i:s', mktime(date('H'), (date('i')), date('s'), date('m'), date('d') + $days, date('Y')));
+            } else {
+                return date('Y-m-d 00:00:00', mktime(date('H'), (date('i')), date('s'), date('m'), date('d') + $days, date('Y')));
+            }
         }
 
         $date = new DateTime(DateTesting::$dateTime);
         $date->modify('+' . $days . ' day');
-        return $date->format('Y-m-d H:i:s');
+
+        if (!$withoutTime) {
+            return $date->format('Y-m-d H:i:s');
+        } else {
+            return $date->format('Y-m-d 00:00:00');
+        }
     }
 
     class DateTesting
