@@ -51,7 +51,12 @@ class SettingsController extends Controller
         if ($form->isValid()) {
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
 
-            $roomItem->save();
+            if (!$roomItem->isGroupRoom()) {
+                $roomItem->save();
+            }
+            else {
+                $roomItem->save(false);
+            }
 
             // persist
             // $em = $this->getDoctrine()->getManager();

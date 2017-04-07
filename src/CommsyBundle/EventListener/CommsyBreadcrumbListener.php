@@ -153,14 +153,13 @@ class CommsyBreadcrumbListener
 
     private function addRoomCrumb($roomItem, $asZelda)
     {
-        $crumbText = $roomItem->isGroupRoom() ? $this->translator->trans('grouproom', [], 'group') : $roomItem->getTitle();
         if ($asZelda == true) {
-            $this->breadcrumbs->addRouteItem($crumbText, "commsy_room_home", [
+            $this->breadcrumbs->addRouteItem($roomItem->getTitle(), "commsy_room_home", [
                 'roomId' => $roomItem->getItemID(),
             ]);
         }
         else {
-            $this->breadcrumbs->addItem($crumbText);
+            $this->breadcrumbs->addItem($roomItem->getTitle());
         }
     }
 
