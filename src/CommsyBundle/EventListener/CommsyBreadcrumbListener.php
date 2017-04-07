@@ -144,7 +144,7 @@ class CommsyBreadcrumbListener
         // ProjectRoom
         $this->addProjectRoom($projectRoom, true);
         // "Groups" rubric in project room
-        $this->breadcrumbs->addRouteItem(ucfirst($this->translator->trans('groups', [], 'menu')), "commsy_group_list", ['roomId' => $projectRoom->getItemId()]);
+        $this->breadcrumbs->addRouteItem(ucfirst($this->translator->trans('group', [], 'menu')), "commsy_group_list", ['roomId' => $projectRoom->getItemId()]);
         // Group (with name)
         $this->breadcrumbs->addRouteItem($groupItem->getTitle(), "commsy_group_detail", ['roomId' => $projectRoom->getItemId(), 'itemId' => $groupItem->getItemId()]);
         // Grouproom
