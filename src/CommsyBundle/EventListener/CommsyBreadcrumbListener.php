@@ -5,6 +5,7 @@ namespace CommsyBundle\EventListener;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 use WhiteOctober\BreadcrumbsBundle\Model\Breadcrumbs;
@@ -78,7 +79,12 @@ class CommsyBreadcrumbListener
                 // link to rubric
                 $route[2] = 'list';
                 unset($routeParameters['itemId']);
-                $this->breadcrumbs->addRouteItem($this->translator->trans($controller, [], 'menu'), implode("_", $route), $routeParameters);
+                try {
+                    $this->breadcrumbs->addRouteItem($this->translator->trans($controller, [], 'menu'), implode("_", $route), $routeParameters);
+                }
+                catch (RouteNotFoundException $e) {
+                    // we don't need breadcrumbs for routes like commsy_item_editdetails etc. to ajax controller actions
+                }
 
                 // entry title
                 $item = $this->itemService->getTypedItem($request->get('itemId'));
