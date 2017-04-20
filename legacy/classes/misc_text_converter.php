@@ -3540,7 +3540,9 @@ class misc_text_converter {
 
     private function _constructHTMLPurifier()
     {
-        require_once '../vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
+        global $symfonyContainer;
+        $kernelDir = $symfonyContainer->getParameter('kernel.root_dir');
+        require_once $kernelDir . '/../vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
 
         // Allow Full HTML
         $configFullHTML = $this->_getFullHTMLPurifierConfig();
