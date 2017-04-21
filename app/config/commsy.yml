@@ -167,7 +167,7 @@ commsy:
     # mediawiki
     mediawiki:
         # set the following variable to activate mediawiki extension
-        enabled: true
-        url: http://mediawiki.vm
-        roomWikiUrl: http://[COMMSY_CONTEXT_ID].mediawiki.vm/index.php
-        apiPath: /api.php
+        enabled: '%extensions.mediawiki.enabled%'
+        url: '%extensions.mediawiki.url%'
+        roomWikiUrl: '%extensions.mediawiki.room_wiki_url%'
+        apiPath: '%extensions.mediawiki.api_path%'
