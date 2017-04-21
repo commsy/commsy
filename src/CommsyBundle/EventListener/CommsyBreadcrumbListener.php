@@ -80,7 +80,17 @@ class CommsyBreadcrumbListener
                 $route[2] = 'list';
                 unset($routeParameters['itemId']);
                 try {
-                    $this->breadcrumbs->addRouteItem($this->translator->trans($controller, [], 'menu'), implode("_", $route), $routeParameters);
+                    if ($controller == 'context' && $action == 'request') {
+                        if ($roomItem->isCommunityRoom()) {
+                            $this->addChildRoomListCrumb($roomItem, 'project');
+                        }
+                        elseif ($roomItem->isProjectRoom()) {
+                            $this->addChildRoomListCrumb($roomItem, 'group');
+                        }
+                    }
+                    else {
+                        $this->breadcrumbs->addRouteItem($this->translator->trans($controller, [], 'menu'), implode("_", $route), $routeParameters);
+                    }
                 }
                 catch (RouteNotFoundException $e) {
                     // we don't need breadcrumbs for routes like commsy_item_editdetails etc. to ajax controller actions
@@ -137,7 +147,7 @@ class CommsyBreadcrumbListener
         $communityRoomItem = $roomItem->getCommunityList()->getFirst();
         if ($communityRoomItem) {
             $this->addCommunityRoom($communityRoomItem, true);
-            $this->breadcrumbs->addRouteItem($this->translator->trans('project', [], 'menu'), "commsy_project_list", array('roomId' => $communityRoomItem->getItemId()));
+            $this->addChildRoomListCrumb($communityRoomItem, 'project');
         }
         $this->addRoomCrumb($roomItem, $asLink);
     }
@@ -150,7 +160,7 @@ class CommsyBreadcrumbListener
         // ProjectRoom
         $this->addProjectRoom($projectRoom, true);
         // "Groups" rubric in project room
-        $this->breadcrumbs->addRouteItem(ucfirst($this->translator->trans('group', [], 'menu')), "commsy_group_list", ['roomId' => $projectRoom->getItemId()]);
+        $this->addChildRoomListCrumb($projectRoom, 'group');
         // Group (with name)
         $this->breadcrumbs->addRouteItem($groupItem->getTitle(), "commsy_group_detail", ['roomId' => $projectRoom->getItemId(), 'itemId' => $groupItem->getItemId()]);
         // Grouproom
@@ -179,4 +189,11 @@ class CommsyBreadcrumbListener
             $this->breadcrumbs->addRouteItem($this->translator->trans('Room profile', [], 'profile'), "commsy_profile_general", $routeParameters);
         }
     }
+
+    private function addChildRoomListCrumb($roomItem, $childRoomClass)
+    {
+        if ($childRoomClass == 'project' || $childRoomClass == 'group') {
+            $this->breadcrumbs->addRouteItem(ucfirst($this->translator->trans($childRoomClass, [], 'menu')), "commsy_" . $childRoomClass . "_list", ['roomId' => $roomItem->getItemId()]);
+        }
+   }
 }

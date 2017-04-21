@@ -38,6 +38,14 @@
                 <source>activate grouproom</source>
                 <target>Gruppenraum aktivieren</target>
             </trans-unit>
+            <trans-unit id="getGroupRoomAccess">
+                <source>get grouproom access</source>
+                <target>Zugang zu Gruppenraum beantragen</target>
+            </trans-unit>
+            <trans-unit id="restrictedToGroupMembers">
+                <source>access restricted to group members</source>
+                <target>Der Zugang zum Gruppenraum ist auf Gruppenmitglieder beschränkt</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

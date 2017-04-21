@@ -195,6 +195,9 @@ class GroupController extends Controller
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
+        // contains member status of current user for each group and grouproom
+        $allGroupsMemberStatus = [];
+
         $readerList = array();
         $allowedActions = array();
         foreach ($groups as $item) {
@@ -204,6 +207,27 @@ class GroupController extends Controller
             } else {
                 $allowedActions[$item->getItemID()] = array('markread');
             }
+
+            // add groupMember and groupRoomMember status to each group!
+            $groupMemberStatus = [];
+
+            // group member status
+            $membersList = $item->getMemberItemList();
+            $members = $membersList->to_array();
+            $groupMemberStatus['groupMember'] = $membersList->inList($legacyEnvironment->getCurrentUserItem());
+
+            // grouproom member status
+            if($item->isGroupRoomActivated()) {
+                $userService = $this->get('commsy_legacy.user_service');
+                $groupMemberStatus['groupRoomMember'] = $userService->getMemberStatus(
+                    $item->getGroupRoomItem(),
+                    $legacyEnvironment->getCurrentUser()
+                );
+            }
+            else {
+                $groupMemberStatus['groupRoomMember'] = 'deactivated';
+            }
+            $allGroupsMemberStatus[$item->getItemID()] = $groupMemberStatus;
         }
 
         return array(
@@ -212,6 +236,7 @@ class GroupController extends Controller
             'readerList' => $readerList,
             'showRating' => false,
             'allowedActions' => $allowedActions,
+            'memberStatus' => $allGroupsMemberStatus,
        );
     }
 

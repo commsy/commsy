@@ -91,11 +91,11 @@
                                         {% endif %}
                                             <a href="#" data-cs-action-join="{
                                                 'url': '{{ path('commsy_group_join', {'roomId': roomId, 'itemId': group.itemId}) }}',
-                                                'successMessage': '<i class=\'uk-icon-medium uk-icon-sign-in\'></i> {{ 'Joined group %s'|trans|format(group.title) }}',
+                                                'successMessage': '<i class=\'uk-icon-medium uk-icon-user-plus\'></i> {{ 'Joined group %s'|trans|format(group.title) }}',
                                                 'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}',
                                                 'groupId': [ {{ group.itemId }} ]
                                             }">
-                                                <i class="uk-icon-small uk-icon-sign-in uk-icon-justify uk-visible-large"></i> {{ 'join'|trans({})|capitalize }}
+                                                <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'join'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
@@ -107,11 +107,11 @@
                                         {% endif %}
                                             <a href="#" data-cs-action-leave="{
                                                 'url': '{{ path('commsy_group_leave', {'roomId': roomId, 'itemId': group.itemId}) }}',
-                                                'successMessage': '<i class=\'uk-icon-medium uk-icon-sign-out\'></i> {{ 'Left group %s'|trans|format(group.title) }}',
+                                                'successMessage': '<i class=\'uk-icon-medium uk-icon-user-times\'></i> {{ 'Left group %s'|trans|format(group.title) }}',
                                                 'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}',
                                                 'groupId': [ {{ group.itemId }} ]
                                             }">
-                                                <i class="uk-icon-small uk-icon-sign-out uk-icon-justify uk-visible-large"></i> {{ 'leave'|trans({})|capitalize }}
+                                                <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
