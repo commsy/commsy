@@ -355,6 +355,7 @@
                 <h4 class="cs-detail-section-header">
                     {{- "articles"|trans({},'discussion') }}
                     ({{ articleList|length }})
+                    <a id="toggleDiscussionTree" href="#"><i class="uk-icon-expand"></i></a>
                 </h4>
             </div>
         </div>
@@ -363,7 +364,7 @@
         {% if not articleList is empty %}
             <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
 
-                <div class="uk-width-2-3" data-cs-tree='{"tree": {"checkbox": {"visible": false}}}'>
+                <div class="uk-width-2-3" data-cs-tree='{"tree": {"checkbox": {"visible": false}}, "custom": {"toggle": "toggleDiscussionTree"}}'>
                     <ul class="uk-list">
                         {{ _self.articleTree(articleTree.children, 0) }}
                     </ul>

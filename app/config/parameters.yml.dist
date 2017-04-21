@@ -44,3 +44,8 @@ parameters:
     extensions.etherpad.api_key: ~
     extensions.etherpad.api_url: ~
     extensions.etherpad.base_url: ~
+
+    extensions.mediawiki.enabled: false
+    extensions.mediawiki.url: ~
+    extensions.mediawiki.room_wiki_url: ~
+    extensions.mediawiki.api_path: /api.php
