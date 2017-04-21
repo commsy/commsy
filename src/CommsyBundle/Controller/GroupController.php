@@ -812,17 +812,36 @@ class GroupController extends Controller
                 'itemId' => $itemId,
             ))
         ));
-        
+
         $form->handleRequest($request);
         if ($form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
             if ($saveType == 'save') {
+
+                $originalGroupName = "";
+                if ($groupItem->getGroupRoomItem()) {
+                    $originalGroupName = $groupItem->getGroupRoomItem()->getTitle();
+                }
+
                 $groupItem = $transformer->applyTransformation($groupItem, $form->getData());
 
                 // update modifier
                 $groupItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
                 $groupItem->save(true);
+
+                $groupRoom = $groupItem->getGroupRoomItem();
+
+                // only initialize the name of the grouproom the first time it is created!
+                if ($originalGroupName == "") {
+                    $translator = $this->get('translator');
+                    $groupRoom->setTitle($groupItem->getTitle() . " (" . $translator->trans('grouproom', [], 'group') . ")");
+                }
+                else {
+                    $groupRoom->setTitle($originalGroupName);
+                }
+                $groupRoom->save(false);
+
             } else {
                 // ToDo ...
             }
