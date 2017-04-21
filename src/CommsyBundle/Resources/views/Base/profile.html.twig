@@ -5,8 +5,5 @@
 {% endblock %}
 
 {% block breadcrumb %}
-    {{ knp_menu_render('breadcrumb', {
-        'template': 'CommsyBundle:Menu:knp_menu_breadcrumb.html.twig',
-        'currentAsLink':false
-    }) }}
+    {{ wo_render_breadcrumbs({ viewTemplate: "CommsyBundle:Breadcrumbs:breadcrumbs.html.twig" }) }}
 {% endblock %}

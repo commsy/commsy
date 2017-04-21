@@ -156,3 +156,9 @@ knp_snappy:
 # RssAtomBundle
 debril_rss_atom:
     private: true
+
+# White october breadcrumbs
+white_october_breadcrumbs:
+    separator:      ''
+    listClass:      'uk-breadcrumb'
+    itemClass:      'uk-display-inline'

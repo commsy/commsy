@@ -29,6 +29,7 @@ class AppKernel extends Kernel
             new Debril\RssAtomBundle\DebrilRssAtomBundle(),
             new IDCI\Bundle\ColorSchemeBundle\IDCIColorSchemeBundle(),
             new Circle\RestClientBundle\CircleRestClientBundle(),
+            new WhiteOctober\BreadcrumbsBundle\WhiteOctoberBreadcrumbsBundle(),
            
             new CommsyBundle\CommsyBundle(),
             new Commsy\LegacyBundle\CommsyLegacyBundle(),
