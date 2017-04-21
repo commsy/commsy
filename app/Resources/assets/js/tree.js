@@ -82,6 +82,25 @@
                 })
                 // create the instance
                 .jstree(this.options.tree);
+
+            // expand / collapse all
+            if (this.options.custom && this.options.custom.toggle) {
+                let $toggle = $('#' + this.options.custom.toggle);
+
+                $toggle.click(function(event) {
+                    let $i = $(this).find('i');
+
+                    if ($i.hasClass('uk-icon-expand')) {
+                        $(element).jstree(true).open_all();
+                    } else {
+                        $(element).jstree(true).close_all();
+                    }
+
+                    $i.toggleClass('uk-icon-expand uk-icon-compress');
+
+                    event.preventDefault();
+                });
+            }
         }
     });
     
