@@ -293,7 +293,15 @@ class MaterialController extends Controller
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
-        
+
+        $alert = null;
+        if ($material->isLocked()) {
+            $translator = $this->get('translator');
+
+            $alert['type'] = 'warning';
+            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+        }
+
         return array(
             'roomId' => $roomId,
             'material' => $infoArray['material'],
@@ -337,7 +345,8 @@ class MaterialController extends Controller
                 '1_yellow' => $roomItem->getWorkflowTrafficLightTextYellow(),
                 '2_red' => $roomItem->getWorkflowTrafficLightTextRed(),
                 '3_none' => '',
-            ]
+            ],
+            'alert' => $alert,
        );
     }
 
