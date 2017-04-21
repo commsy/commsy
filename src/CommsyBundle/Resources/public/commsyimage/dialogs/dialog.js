@@ -127,6 +127,20 @@
                                     label: editor.lang.commsyimage.width,
                                     'default': '400',
 
+                                    onKeyUp: function() {
+                                        var dialog = this.getDialog();
+                                        var ratioInput = dialog.getContentElement('imageTab', 'keepRatios');
+
+                                        if (ratioInput.getValue()) {
+                                            var widthInput = dialog.getContentElement('imageTab', 'width');
+                                            var heightInput = dialog.getContentElement('imageTab', 'height');
+
+                                            var ratio = heightInput.getInitValue() / widthInput.getInitValue();
+
+                                            heightInput.setValue(widthInput.getValue() * ratio);
+                                        }
+                                    },
+
                                     commit: function (widget) {
                                         widget.setData('width', this.getValue());
                                     },
@@ -143,6 +157,20 @@
                                     label: editor.lang.commsyimage.height,
                                     'default': '300',
 
+                                    onKeyUp: function() {
+                                        var dialog = this.getDialog();
+                                        var ratioInput = dialog.getContentElement('imageTab', 'keepRatios');
+
+                                        if (ratioInput.getValue()) {
+                                            var widthInput = dialog.getContentElement('imageTab', 'width');
+                                            var heightInput = dialog.getContentElement('imageTab', 'height');
+
+                                            var ratio = widthInput.getInitValue() / heightInput.getInitValue();
+
+                                            widthInput.setValue(heightInput.getValue() * ratio);
+                                        }
+                                    },
+
                                     commit: function (widget) {
                                         widget.setData('height', this.getValue());
                                     },
@@ -154,6 +182,12 @@
                                     }
                                 }
                             ]
+                        },
+                        {
+                            id: 'keepRatios',
+                            type: 'checkbox',
+                            label: editor.lang.commsyimage.keepRatios,
+                            'default': 'checked'
                         }
                     ]
                 }

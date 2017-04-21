@@ -9,5 +9,6 @@ CKEDITOR.plugins.setLang('commsyimage', 'en', {
     url: 'From URL',
     emptyUrl: 'Please enter an URL',
     width: 'Width',
-    height: 'Height'
+    height: 'Height',
+    keepRatios: 'Keep ratios'
 });
