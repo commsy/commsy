@@ -66,18 +66,22 @@
                      */
                     $(element)
                         .on('changed.jstree', function(event, data) {
-                            // sync tree state with Checkboxes
-                            $('input[id*="filter_category_category"]').prop('checked', false);
-                            $('input[id*="filter_participant_participant"]').prop('checked', false);
-                            $('input[id*="itemLinks_categories"]').prop('checked', false);
+                            if (data.node.a_attr.href.length > 1) {
+                                window.location.hash = data.node.a_attr.href.substring(1);
+                            } else {
+                                // sync tree state with Checkboxes
+                                $('input[id*="filter_category_category"]').prop('checked', false);
+                                $('input[id*="filter_participant_participant"]').prop('checked', false);
+                                $('input[id*="itemLinks_categories"]').prop('checked', false);
 
-                            $.each(data.selected, function() {
-                                $('input[value="' + this.substring(4) + '"]')
-                                    .prop('checked', true);
+                                $.each(data.selected, function() {
+                                    $('input[value="' + this.substring(4) + '"]')
+                                        .prop('checked', true);
 
-                            });
+                                });
 
-                            $('div#room-category').parents('form').submit();
+                                $('div#room-category').parents('form').submit();
+                            }
                         });
                 })
                 // create the instance

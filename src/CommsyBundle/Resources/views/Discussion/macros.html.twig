@@ -328,7 +328,7 @@
 
     {% for child in articles %}
         <li id="article_{{ child.item.itemId }}" data-jstree='{"opened": {{ opened }}}'>
-            {{- child.item.title -}}
+            <a href="#discarticle{{ child.item.itemId }}">{{- child.item.title -}}</a>
 
         {% if child.children is defined %}
             <ul>
