@@ -257,4 +257,5 @@ $message["USER_IS_ALLOWED_TO_CREATE_CONTEXT"]["en"] = "May create new rooms";
 $message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_AUTH_SOURCE_SETTING"]["en"] = "Standard value of the authentication source";
 $message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_AUTH_SOURCE_SETTING_SHORT"]["en"] = "Standard value";
 $message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_IS_PORTAL_MODERATOR"]["en"] = "User is portalmoderator";
+$message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_FORM_ERROR"]["en"] = "You have no permission to create new rooms.";
 ?>
