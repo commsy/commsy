@@ -224,30 +224,35 @@
 		}
 
 
+        function _getItemActivity($item, $room_max_activity)
+        {
+            if ($room_max_activity != 0) {
+                if ($item->isArchived()) {
+                    $percentage = 0;
+                } else {
+                    $percentage = $item->getActivityPoints();
+                }
 
-		   function _getItemActivity ($item,$room_max_activity) {
-		      if ( $room_max_activity != 0 ) {
-		         $percentage = $item->getActivityPoints();
-		         if ( empty($percentage) ) {
-		            $percentage = 0;
-		         } else {
-		           $teiler = $room_max_activity/20;
-		            $percentage = log(($percentage/$teiler)+1);
-		          if ($percentage < 0) {
-		            $percentage = 0;
-		          }
-		          $max_activity = log(($room_max_activity/$teiler)+1);
-		            $percentage = round(($percentage / $max_activity) * 100,2);
-		         }
-		      } else {
-		         $percentage = 0;
-		      }
-		      $display_percentage = $percentage;
-		      $html = '         <div class="gauge" style="height:5px;">'.LF;
-		      $html .= '            <div class="gauge-bar" style="height:5px; width:'.$display_percentage.'%;">&nbsp;</div>'.LF;
-		      $html .= '         </div>'.LF;
-		      return $html;
-		   }
+                if (empty($percentage)) {
+                    $percentage = 0;
+                } else {
+                    $teiler = $room_max_activity / 20;
+                    $percentage = log(($percentage / $teiler) + 1);
+                    if ($percentage < 0) {
+                        $percentage = 0;
+                    }
+                    $max_activity = log(($room_max_activity / $teiler) + 1);
+                    $percentage = round(($percentage / $max_activity) * 100, 2);
+                }
+            } else {
+                $percentage = 0;
+            }
+            $display_percentage = $percentage;
+            $html = '         <div class="gauge" style="height:5px;">' . LF;
+            $html .= '            <div class="gauge-bar" style="height:5px; width:' . $display_percentage . '%;">&nbsp;</div>' . LF;
+            $html .= '         </div>' . LF;
+            return $html;
+        }
 
 
 		protected function getAdditionalActions(&$perms) {
