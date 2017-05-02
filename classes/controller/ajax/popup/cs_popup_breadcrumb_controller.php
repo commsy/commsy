@@ -96,7 +96,29 @@
 	
 			// community
 			if($this->_environment->inProjectRoom()) {
-				$community_list = $current_context->getCommunityList();
+			    if ($current_context->isArchived()) {
+			        $this->_environment->toggleArchiveMode();
+
+			        $communityManager = $this->_environment->getCommunityManager();
+
+			        $linkItems = $current_context->getLinkItemList(CS_COMMUNITY_TYPE);
+			        $linkItem = $linkItems->getFirst();
+
+			        if ($linkItem) {
+                        if ($linkItem->getSecondLinkedItemType() == CS_COMMUNITY_TYPE) {
+                            $communityRoomId = $linkItem->getSecondLinkedItemID();
+                            $communityRoom = $communityManager->getItem($communityRoomId);
+
+                            $community_list = new cs_list();
+                            $community_list->add($communityRoom);
+                        }
+                    }
+
+                    $this->_environment->toggleArchiveMode();
+                } else {
+                    $community_list = $current_context->getCommunityList();
+                }
+
 				$community_item = $community_list->getFirst();
 				if(!empty($community_item)) {
 					$return[] = array(
@@ -125,9 +147,14 @@
 			}
 	
 			// room
+            $title = $current_context->getTitle();
+			if ($current_context->isArchived()) {
+			    $title .= ' (' . $this->_environment->getTranslationObject()->getMessage('ROOM_CLOSED') . ')';
+            }
+
 			$return[] = array(
 					'id'	=> $current_context->getItemID(),
-					'title'	=> $current_context->getTitle()
+					'title'	=> $title
 			);
 	
 			return $return;
