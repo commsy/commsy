@@ -5148,7 +5148,7 @@ class cs_context_item extends cs_item {
     $this->_changes = array();
   }
 
-  function mayEdit ($user) {
+  function mayEdit (cs_user_item $user) {
     $value = false;
     if ( !empty($user) ) {
       if ( !$user->isOnlyReadUser() ) {

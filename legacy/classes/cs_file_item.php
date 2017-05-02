@@ -656,7 +656,7 @@ class cs_file_item extends cs_item {
       return (string) $this->_getExtra('SCRIBD_ACCESS_KEY');
    }
 
-   public function mayEdit ($user_item) {
+   public function mayEdit (cs_user_item $user_item) {
       $access = false;
       if ( !$user_item->isOnlyReadUser() ) {
          if ( $user_item->isRoot() or
