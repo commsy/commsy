@@ -691,9 +691,6 @@ class cs_connection_soap {
    }
 
    public function authenticate ($user_id, $password, $portal_id = 99, $auth_source_id = 0) {
-   	el('authenticate '. $user_id);
-      el('authenticate');
-      
       $user_id = $this->_encode_input($user_id);
       $password = $this->_encode_input($password);
       $portal_id = $this->_encode_input($portal_id);
@@ -705,33 +702,24 @@ class cs_connection_soap {
       $info = 'ERROR';
       $info_text = 'default-error';
       if ( empty($user_id) or empty($password) ) {
-         el('authenticate 1');
          $info = 'ERROR';
          $info_text = 'user_id or password lost';
       } else {
-         el('authenticate 2');
          if ( !isset($this->_environment) ) {
-            el('authenticate 3');
             $info = 'ERROR';
             $info_text = 'environment lost';
          } else {
-         	el('authenticate 4');
             $this->_environment->setCurrentContextID($portal_id);
             $authentication = $this->_environment->getAuthenticationObject();
             if ( isset($authentication) ) {
-               el('authenticate 5');
                if ($authentication->isAccountGranted($user_id,$password,$auth_source_id)) {
-                  el('authenticate 6');
                   if ($this->_isSessionActive($user_id,$portal_id)) {
-                  	el('authenticate 7');
                   	$result = $this->_getActiveSessionID($user_id,$portal_id);
                      if ( empty($result) ) {
-                        el('authenticate 8');
                         $info = 'ERROR';
                         $info_text = 'no session id from session manager -> database error';
                      }
                   } else {
-                     el('authenticate 9');
                      // make session
                      include_once('classes/cs_session_item.php');
                      $session = new cs_session_item();
@@ -913,9 +901,7 @@ class cs_connection_soap {
 
    private function _getActiveSessionID ($user_id, $portal_id) {
       $retour = '';
-      el('_getActiveSessionID '.$user_id);
       if ( !empty($this->_session_id_array[$portal_id][$user_id]) ) {
-      	el('_getActiveSessionID !empty');
          $retour = $this->_session_id_array[$portal_id][$user_id];
       } else {
          $session_manager = $this->_environment->getSessionManager();
@@ -925,7 +911,6 @@ class cs_connection_soap {
             $this->_updateSessionCreationDate($retour);
          }
       }
-      el('_getActiveSessionID $retour '.$retour);
       return $retour;
    }
 
@@ -2818,9 +2803,6 @@ class cs_connection_soap {
    // ----------------------------------------
 
    public function authenticateForApp ($user_id, $password, $portal_id = 99, $auth_source_id = 0) {
-      el('authenticate '. $user_id);
-      el('authenticate');
-      
       $user_id = $this->_encode_input($user_id);
       $password = $this->_encode_input($password);
       $portal_id = $this->_encode_input($portal_id);
@@ -2832,33 +2814,24 @@ class cs_connection_soap {
       $info = 'ERROR';
       $info_text = 'default-error';
       if ( empty($user_id) or empty($password) ) {
-         el('authenticate 1');
          $info = 'ERROR';
          $info_text = 'user_id or password lost';
       } else {
-         el('authenticate 2');
          if ( !isset($this->_environment) ) {
-            el('authenticate 3');
             $info = 'ERROR';
             $info_text = 'environment lost';
          } else {
-            el('authenticate 4');
             $this->_environment->setCurrentContextID($portal_id);
             $authentication = $this->_environment->getAuthenticationObject();
             if ( isset($authentication) ) {
-               el('authenticate 5');
                if ($authentication->isAccountGranted($user_id,$password,$auth_source_id)) {
-                  el('authenticate 6');
                   if ($this->_isSessionActiveForApp($user_id,$portal_id)) {
-                     el('authenticate 7');
                      $result = $this->_getActiveSessionIDForApp($user_id,$portal_id);
                      if ( empty($result) ) {
-                        el('authenticate 8');
                         $info = 'ERROR';
                         $info_text = 'no session id from session manager -> database error';
                      }
                   } else {
-                     el('authenticate 9');
                      // make session
                      include_once('classes/cs_session_item.php');
                      $session = new cs_session_item();
@@ -2892,9 +2865,7 @@ class cs_connection_soap {
             }
          }
       }
-      el('authenticate: $result '.$result);
-      el('authenticate: $info '.$info);
-      el('authenticate: $info_text '.$info_text);
+
       if ( empty($result) and !empty($info) ) {
          $result = new SoapFault($info,$info_text);
       } else {
@@ -2918,9 +2889,7 @@ class cs_connection_soap {
 
    private function _getActiveSessionIDForApp ($user_id, $portal_id) {
       $retour = '';
-      el('_getActiveSessionID '.$user_id);
       if ( !empty($this->_session_id_array[$portal_id][$user_id]) ) {
-         el('_getActiveSessionID !empty');
          $retour = $this->_session_id_array[$portal_id][$user_id];
       } else {
          $session_manager = $this->_environment->getSessionManager();
@@ -2930,7 +2899,7 @@ class cs_connection_soap {
             $this->_updateSessionCreationDate($retour);
          }
       }
-      el('_getActiveSessionID $retour '.$retour);
+
       return $retour;
    }
 
@@ -4358,7 +4327,6 @@ class cs_connection_soap {
    // Room
    
    public function getRoomReadCounter($session_id, $context_id){
-      el('getRoomReadCounter');
       if($this->_isSessionValid($session_id)) {
          $this->_environment->setSessionID($session_id);
          $session = $this->_environment->getSessionItem();

@@ -377,6 +377,9 @@
 				$progress = 1;
 				foreach($index_structure as $item_id => $version)
 				{
+				    // sort by version id
+                    ksort($version);
+
 					foreach($version as $version_id => $detail)
 					{
 						/*
