@@ -376,19 +376,24 @@ class cs_server_item extends cs_guide_item
                                 if (!$user->getMailSendBeforeDelete()) {
 
                                     if(!$user->getMailSendNextDelete()) {
-                                        $mail = $this->sendMailForUserInactivity("deleteNotify", $user, $portal_item, $daysTillLock);
-                                        if ($mail->send()) {
-                                            $user->setNotifyDeleteDate();
-                                            $user->save();
 
-                                            $cron_array['success'] = true;
-                                            $cron_array['success_text'] = 'send mail to '.$to;
-                                        } else {
-                                            $cron_array['success'] = false;
-                                            $cron_array['success_text'] = 'failed send mail to '.$to;
+                                        if (!$user->getNotifyDeleteDate()) {
+
+                                            $mail = $this->sendMailForUserInactivity("deleteNotify", $user, $portal_item, $daysTillLock);
+                                            if ($mail->send()) {
+                                                $user->setNotifyDeleteDate();
+                                                $user->save();
+
+                                                $cron_array['success'] = true;
+                                                $cron_array['success_text'] = 'send mail to '.$to;
+                                            } else {
+                                                $cron_array['success'] = false;
+                                                $cron_array['success_text'] = 'failed send mail to '.$to;
+                                            }
+                                            // step over
+                                            continue;
+
                                         }
-                                        // step over
-                                        continue;
                                     }
                                 }
                             }
