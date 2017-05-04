@@ -345,8 +345,9 @@ class cs_server_item extends cs_guide_item
                             }
 
                             // inform about next day deletion
+                            $userNotifyDeleteDate = $user->getNotifyDeleteDate();
                             if ($daysTillLock >= $inactivitySendMailDeleteDays - 1 &&
-                                    (!empty($user->getNotifyDeleteDate()) && $user->getMailSendLocked()
+                                    (!empty($userNotifyDeleteDate) && $user->getMailSendLocked()
                                         || (empty($inactivitySendMailLockDays) && empty($inactivityLockDays))
                                     ) && !empty($inactivityDeleteDays)) {
                                 if (!$user->getMailSendBeforeDelete()) {
