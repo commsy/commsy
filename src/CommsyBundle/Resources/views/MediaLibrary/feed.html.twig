@@ -1,0 +1,62 @@
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+
+{% for medium in media %}
+    {% set entryAllowedActions = '' %}
+    {% if allowedActions[medium.fileId] is defined %}
+        {% set entryAllowedActions = allowedActions[medium.fileId] %}
+    {% endif %}
+    <article class="uk-comment" data-allowed-actions="{{ entryAllowedActions|json_encode() }}">
+
+        {# item change information #}
+        {#{{ macros.statusColor(readerList, medium.fileId) }}#}
+
+        <header class="uk-comment-header uk-flex">
+            {#<div class="items-checkbox uk-margin-right uk-margin-top uk-hidden">#}
+                {#{% if is_granted('ITEM_EDIT', medium.fileId) %}#}
+                    {#<form class="uk-form">#}
+                        {#<input type="checkbox" value="{{ medium.fileId }}">#}
+                    {#</form>#}
+                {#{% else %}#}
+                    {#<i class="uk-icon-ban uk-icon-small red"></i>#}
+                {#{% endif %}#}
+            {#</div>#}
+
+            {# user icon and modification time #}
+            <div class="uk-margin-right uk-flex-item-none">
+                {% if medium.creator.isUser %}
+                    {{  macros.userIconLink(medium.creator) }}
+                {% else %}
+                    {{  macros.userIcon(medium.creator) }}
+                {% endif %}
+                <div class="uk-comment-meta">
+                    {% if medium.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                        {{ 'today'|trans({})|capitalize }}, {{medium.getModificationDate|date("H:i")}}
+                    {% else %}
+                        {{medium.getModificationDate|date("d.m.Y")}}
+                    {% endif %}
+                </div>
+            </div>
+
+            {# title and meta #}
+            <div class="uk-width-8-10">
+                {% if loop.index == 3 or loop.index == 4 %}
+                    <h4 class="uk-comment-title">
+                        Freie Datei
+                    </h4>
+                {% else %}
+                    <h4 class="uk-comment-title">
+                        {{ medium.title }}
+                        <a href="{{ path('commsy_announcement_detail', {'roomId': roomId, 'itemId': medium.fileId}) }}">Eintrag</a>
+                    </h4>
+                {% endif %}
+
+                <div class="uk-comment-meta">
+                    {{ 'by'|trans({})|capitalize }}: {{medium.modificatorItem.fullname}} ({{medium.getCreationDate|date("d.m.Y")}})
+                </div>
+            </div>
+
+        </header>
+    </article>
+{% else %}
+    {{ 'No more results found'|trans}}
+{% endfor %}

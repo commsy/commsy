@@ -25,6 +25,8 @@ class RoomService
         $roomItem = $this->getRoomItem($roomId);
         $homeConfiguration = $roomItem->getHomeConf();
 
+        $homeConfiguration .= ',medialibrary_show';
+
         $rubrics = array();
         if (!empty($homeConfiguration)) {
             $rubricConfigurations = explode(',', $homeConfiguration);
@@ -34,6 +36,7 @@ class RoomService
                 $rubrics[] = $rubricName;
             }
         }
+
         if ($includeModifier) {
             return $rubricConfigurations;
         } else {

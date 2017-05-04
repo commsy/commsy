@@ -405,6 +405,9 @@ class MenuBuilder
             case 'institution':
                 $class = "uk-icon-justify uk-icon-institution uk-icon-small";
                 break;
+            case 'medialibrary':
+                $class = "uk-icon-justify uk-icon-file-image-o uk-icon-small";
+                break;
             
             default:
                 $class = "uk-icon-justify uk-icon-home uk-icon-small";

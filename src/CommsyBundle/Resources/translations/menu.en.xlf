@@ -143,6 +143,10 @@
                 <source>Invitations</source>
                 <target>Invitations</target>
             </trans-unit>
+            <trans-unit id="menu_medialibrary">
+                <source>medialibrary</source>
+                <target>Media Library</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
