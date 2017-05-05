@@ -291,7 +291,7 @@ class cs_group_item extends cs_label_item {
      * for CommSy 9: only the moderators or groups creator may edit
      * the group item
      */
-    function mayEdit($user_item) {
+    function mayEdit(cs_user_item $user_item) {
         return ($user_item->getStatus() == '3' || $user_item->getItemId() == $this->getModificatorID());
     }
 }

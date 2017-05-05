@@ -1382,22 +1382,44 @@ class cs_user_item extends cs_item {
       return $access;
    }
 
-   function mayEdit ($user_item) {
-      $access = false;
-      if ( !$user_item->isOnlyReadUser() ) {
-         if ( $user_item->isRoot() or
-               ( $user_item->getContextID() == $this->getContextID()
-                 and ( $user_item->isUser()
-                        and ( $this->getUserID() == $user_item->getUserID() )
-                        and ( $this->getAuthSource() == $user_item->getAuthSource() )
-                     )
-               )
+    /**
+     * Checks whether the current user is editable by the given one
+     *
+     * @param cs_user_item $userItem the user object asking for permission
+     * @return bool
+     */
+
+    public function mayEdit(cs_user_item $userItem)
+    {
+        // readonly users aren't allowed to edit anyone
+        if ($userItem->isOnlyReadUser()) {
+            return false;
+        }
+
+        // root is always allowed to edit
+        if ($userItem->isRoot()) {
+            return true;
+        }
+
+        // if both live in the same context
+        if ($userItem->getContextID() == $this->getContextID()) {
+
+            // Moderators are only allowed to edit user in portal context
+            if ($userItem->isModerator() && $userItem->getContextItem()->isPortal()) {
+                return true;
+            }
+
+            // Allow users to edit themselves
+            if ($userItem->isUser() &&
+                $this->getUserID() == $userItem->getUserID() &&
+                $this->getAuthSource() == $userItem->getAuthSource()
             ) {
-            $access = true;
-         }
-      }
-      return $access;
-   }
+                return true;
+            }
+        }
+
+        return false;
+    }
 
    function mayEditRegular ($user_item) {
       $access = false;

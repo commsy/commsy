@@ -38,6 +38,14 @@
                 <source>activate grouproom</source>
                 <target>Activate grouproom</target>
             </trans-unit>
+            <trans-unit id="getGroupRoomAccess">
+                <source>get grouproom access</source>
+                <target>Get grouproom access</target>
+            </trans-unit>
+            <trans-unit id="restrictedToGroupMembers">
+                <source>access restricted to group members</source>
+                <target>Access is restricted to group members</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

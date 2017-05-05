@@ -197,6 +197,9 @@ class GroupController extends Controller
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
+        // contains member status of current user for each group and grouproom
+        $allGroupsMemberStatus = [];
+
         $readerList = array();
         $allowedActions = array();
         foreach ($groups as $item) {
@@ -206,6 +209,27 @@ class GroupController extends Controller
             } else {
                 $allowedActions[$item->getItemID()] = array('markread');
             }
+
+            // add groupMember and groupRoomMember status to each group!
+            $groupMemberStatus = [];
+
+            // group member status
+            $membersList = $item->getMemberItemList();
+            $members = $membersList->to_array();
+            $groupMemberStatus['groupMember'] = $membersList->inList($legacyEnvironment->getCurrentUserItem());
+
+            // grouproom member status
+            if($item->isGroupRoomActivated()) {
+                $userService = $this->get('commsy_legacy.user_service');
+                $groupMemberStatus['groupRoomMember'] = $userService->getMemberStatus(
+                    $item->getGroupRoomItem(),
+                    $legacyEnvironment->getCurrentUser()
+                );
+            }
+            else {
+                $groupMemberStatus['groupRoomMember'] = 'deactivated';
+            }
+            $allGroupsMemberStatus[$item->getItemID()] = $groupMemberStatus;
         }
 
         return array(
@@ -214,6 +238,7 @@ class GroupController extends Controller
             'readerList' => $readerList,
             'showRating' => false,
             'allowedActions' => $allowedActions,
+            'memberStatus' => $allGroupsMemberStatus,
        );
     }
 
@@ -793,17 +818,36 @@ class GroupController extends Controller
                 'itemId' => $itemId,
             ))
         ));
-        
+
         $form->handleRequest($request);
         if ($form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
             if ($saveType == 'save') {
+
+                $originalGroupName = "";
+                if ($groupItem->getGroupRoomItem()) {
+                    $originalGroupName = $groupItem->getGroupRoomItem()->getTitle();
+                }
+
                 $groupItem = $transformer->applyTransformation($groupItem, $form->getData());
 
                 // update modifier
                 $groupItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
                 $groupItem->save(true);
+
+                $groupRoom = $groupItem->getGroupRoomItem();
+
+                // only initialize the name of the grouproom the first time it is created!
+                if ($originalGroupName == "") {
+                    $translator = $this->get('translator');
+                    $groupRoom->setTitle($groupItem->getTitle() . " (" . $translator->trans('grouproom', [], 'group') . ")");
+                }
+                else {
+                    $groupRoom->setTitle($originalGroupName);
+                }
+                $groupRoom->save(false);
+
             } else {
                 // ToDo ...
             }

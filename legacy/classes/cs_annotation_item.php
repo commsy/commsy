@@ -236,7 +236,7 @@ class cs_annotation_item extends cs_item {
       }
    }
 
-   function mayEdit ($user_item) {
+   function mayEdit (cs_user_item $user_item) {
       $access = false;
       if ( !$user_item->isOnlyReadUser() ) {
          if (	$user_item->isRoot() ||

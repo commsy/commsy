@@ -9,5 +9,6 @@ CKEDITOR.plugins.setLang('commsyimage', 'de', {
     url: 'Aus URL einfügen',
     emptyUrl: 'Bitte eine URL hinzufügen',
     width: 'Breite',
-    height: 'Höhe'
+    height: 'Höhe',
+    keepRatios: 'Seitenverhältnisse beibehalten'
 });

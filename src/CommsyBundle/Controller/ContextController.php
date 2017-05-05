@@ -337,6 +337,7 @@ class ContextController extends Controller
         return [
             'form' => $form->createView(),
             'agbText' => $agbText,
+            'title' => $roomItem->getTitle(),
         ];
     }
     

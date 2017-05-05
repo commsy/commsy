@@ -26,6 +26,14 @@ global $environment;
 $current_user = $environment->getCurrentUser();
 if ($current_user->isAllowedToCreateContext()) {
     include_once('pages/configuration_preferences.php');
+} else {
+    $params = array();
+    $params['environment'] = $environment;
+    $params['with_modifying_actions'] = true;
+    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+    unset($params);
+    $errorbox->setText($translator->getMessage('USER_IS_ALLOWED_TO_CREATE_CONTEXT_FORM_ERROR'));
+    $page->add($errorbox);
 }
 
 ?>
