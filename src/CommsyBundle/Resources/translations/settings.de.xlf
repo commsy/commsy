@@ -332,6 +332,10 @@
                 <source>Configure color theme text</source>
                 <target>Hier können Sie zwischen verschiedenen Farbschemata für diesen Raum auswählen.</target>
             </trans-unit>
+            <trans-unit id="room_image_text">
+                <source>Room image text</source>
+                <target>Sie können entweder das Standardbild des aktuellen Themes verwenden oder ein eigenes Hintergrundbild für die Startseite des Raumes hochladen. Für eine optimale Anzeige sollte das Seitenverhältnis des Bildes höchstens 5:1 betragen und die horizontale Auflösung mindestens 1300 Pixeln sein.</target>
+            </trans-unit>
             <trans-unit id="theme_default">
                 <source>default</source>
                 <target>Standard</target>
