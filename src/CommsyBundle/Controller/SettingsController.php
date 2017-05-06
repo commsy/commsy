@@ -329,6 +329,8 @@ class SettingsController extends Controller
      */
     public function invitationsAction($roomId, Request $request)
     {
+        $invitationsService = $this->get('commsy.invitations_service');
+
         // get room from RoomService
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
@@ -340,9 +342,10 @@ class SettingsController extends Controller
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $portal = $legacyEnvironment->getCurrentPortalItem();
         $authSourceItem = $portal->getDefaultAuthSourceItem();
+        $user = $legacyEnvironment->getCurrentUserItem();
 
         $invitees = array();
-        foreach ($authSourceItem->getInvitedEmailAdressesByContextId($roomId) as $tempInvitee) {
+        foreach ($invitationsService->getInvitedEmailAdressesByContextId($authSourceItem, $roomId) as $tempInvitee) {
             $invitees[$tempInvitee] = $tempInvitee;
         }
 
@@ -357,12 +360,20 @@ class SettingsController extends Controller
 
             // send invitation email
             if (isset($data['email'])) {
-                $invitationCode = $authSourceItem->generateInvitationCode($roomId, $data['email']);
+                $invitationCode = $invitationsService->generateInvitationCode($authSourceItem, $roomId, $data['email']);
+
+                $invitationLink  = $request->getSchemeAndHttpHost();
+                $invitationLink .= '?cid='.$portal->getItemId().'&mod=home&fct=index&cs_modus=portalmember';
+                $invitationLink .= '&invitation_auth_source='.$authSourceItem->getItemId();
+                $invitationLink .= '&invitation_auth_code='.$invitationCode;
+
                 $mailer = $this->get('mailer');
                 $fromAddress = $this->getParameter('commsy.email.from');
                 $fromSender = $legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
-                $subject = 'TEST';
-                $body = $invitationCode;
+
+                $translator = $this->get('translator');
+                $subject = $translator->trans('invitation subject %portal%', array('%portal%' => $portal->getTitle()));
+                $body = $translator->trans('invitation body %portal% %link% %sender%', array('%portal%' => $portal->getTitle(), '%link%' => $invitationLink, '%sender%' => $user->getFullName()));
                 $mailMessage = \Swift_Message::newInstance()
                     ->setSubject($subject)
                     ->setBody($body, 'text/plain')
@@ -372,7 +383,7 @@ class SettingsController extends Controller
             }
 
             foreach ($data['remove_invitees'] as $removeInvitee) {
-                $authSourceItem->removeInvitedEmailAdresses($removeInvitee);
+                $invitationsService->removeInvitedEmailAdresses($authSourceItem, $removeInvitee);
             }
 
             return $this->redirectToRoute('commsy_settings_invitations', ["roomId" => $roomId]);
