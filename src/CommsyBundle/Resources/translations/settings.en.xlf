@@ -332,6 +332,10 @@
                 <source>Configure color theme text</source>
                 <target>Choose one of several available color themes for this room.</target>
             </trans-unit>
+            <trans-unit id="room_image_text">
+                <source>Room image text</source>
+                <target>You can either use the current themes default image or upload your own picture file to use as background for this rooms home page. To achieve optimal results the aspect ratio of the image should not be higher than 5:1 and the horizontal image resolution should be at least 1300 pixel.</target>
+            </trans-unit>
             <trans-unit id="theme_default">
                 <source>default</source>
                 <target>default</target>
