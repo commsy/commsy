@@ -403,6 +403,33 @@
                 <source>no email</source>
                 <target>No Email address provided</target>
             </trans-unit>
+
+            <trans-unit id="invitation subject">
+                <source>invitation subject</source>
+                <target>Invitation to CommSy</target>
+            </trans-unit>
+            <trans-unit id="invitation body">
+                <source>invitation body %link%</source>
+                <target>You have been invited to a CommSy-romm. PLease follow this link: %link%</target>
+            </trans-unit>
+
+            <trans-unit id="invitation subject">
+                <source>invitation subject %portal%</source>
+                <target>Invitation CommSy-Portal "%portal%"</target>
+            </trans-unit>
+            <trans-unit id="invitation body">
+                <source>invitation body %portal% %link% %sender%</source>
+                <target>
+                    You have been invited to join the CommSy-portal "%portal%". To redeem this invitation, please follow this link:
+
+                    %link%
+
+                    This link will expire in 14 days.
+
+                    Gruß ...
+                    %sender%
+                </target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

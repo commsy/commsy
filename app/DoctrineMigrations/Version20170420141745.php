@@ -24,6 +24,7 @@ class Version20170420141745 extends AbstractMigration
                 hash varchar(255) NOT NULL,
                 email varchar(255) NOT NULL,
                 authsource_id int(11) NOT NULL,
+                context_id int(11) NOT NULL,
                 creation_date datetime NOT NULL DEFAULT \'0000-00-00 00:00:00\',
                 expiration_date datetime DEFAULT NULL,
                 redeemed tinyint(11) NOT NULL DEFAULT \'0\',
