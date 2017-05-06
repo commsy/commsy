@@ -78,6 +78,10 @@
                 <source>All rooms</source>
                 <target>All rooms</target>
             </trans-unit>
+            <trans-unit id="room-my-rooms">
+                <source>My rooms</source>
+                <target>My rooms</target>
+            </trans-unit>
             <trans-unit id="room-filter-label-membership">
                 <source>Membership</source>
                 <target>Membership</target>

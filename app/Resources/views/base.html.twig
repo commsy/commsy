@@ -82,9 +82,7 @@
                         msgNoResults: '{{ 'No results found'|trans({}, 'search') }}'
                     }">
                         <a class="cs-link-highlight">
-                            {% block roomTitle %}
-                                {{ app.request.attributes.get('roomId')|roomTitle }}
-                            {% endblock %}
+                            {{ 'My rooms'|trans({}, 'room') }}
                             <i class="uk-icon-chevron-down"></i>
                         </a>
 

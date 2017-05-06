@@ -86,6 +86,10 @@
                 <source>All rooms</source>
                 <target>Alle Räume</target>
             </trans-unit>
+            <trans-unit id="room-my-rooms">
+                <source>My rooms</source>
+                <target>Meine Räume</target>
+            </trans-unit>
             <trans-unit id="room-filter-label-type">
                 <source>Type</source>
                 <target>Art</target>
