@@ -145,7 +145,30 @@ class cs_export_export_controller extends cs_base_controller
 
         header('Content-type: application/zip');
         header('Content-Disposition: attachment; filename="' . $currentContext->getTitle() . '.zip"');
-        readfile($zipFile);
+        $this->readChunks($zipFile);
+    }
+
+    /**
+     * Reads and delivers a file chunk-wise to keep
+     * memory footprint low
+     *
+     * @param $fileName Name of the file
+     */
+    private function readChunks($fileName)
+    {
+        if (is_file($fileName)) {
+            $chunkSize = 1024 * 1024;
+            $handle = fopen($fileName, 'rb');
+
+            while (!feof($handle)) {
+                $buffer = fread($handle, $chunkSize);
+                echo $buffer;
+                ob_flush();
+                flush();
+            }
+
+            fclose($handle);
+        }
     }
 
     private function deleteSub($directory) {
