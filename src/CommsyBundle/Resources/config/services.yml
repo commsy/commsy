@@ -522,3 +522,7 @@ services:
     commsy.copy_service:
         class: CommsyBundle\Services\CopyService
         arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.item_service']
+
+    commsy.invitations_service:
+        class: CommsyBundle\Services\InvitationsService
+        arguments: ['@doctrine.orm.entity_manager']
