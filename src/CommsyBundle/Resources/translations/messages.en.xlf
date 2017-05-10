@@ -405,15 +405,6 @@
             </trans-unit>
 
             <trans-unit id="invitation subject">
-                <source>invitation subject</source>
-                <target>Invitation to CommSy</target>
-            </trans-unit>
-            <trans-unit id="invitation body">
-                <source>invitation body %link%</source>
-                <target>You have been invited to a CommSy-romm. PLease follow this link: %link%</target>
-            </trans-unit>
-
-            <trans-unit id="invitation subject">
                 <source>invitation subject %portal%</source>
                 <target>Invitation CommSy-Portal "%portal%"</target>
             </trans-unit>
