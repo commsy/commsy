@@ -592,7 +592,7 @@ class cs_server_item extends cs_guide_item
                 $body .= "\n\n";
                 $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_NEXT_BODY', $user->getUserID(), $auth_source_item->getTitle(), $portal_item->getInactivitySendMailBeforeDeleteDays(), $link, $portal_item->getTitle());
                 $body .= "\n\n";
-                $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $fullnameFirstModUser, $auth_source_item->getTitle(), $portal_item->getTitle());
+                $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $fullnameFirstModUser, $portal_item->getTitle());
                 $body .= "\n\n";
                 $body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
                 break;
@@ -603,7 +603,7 @@ class cs_server_item extends cs_guide_item
                 $body .= "\n\n";
                 $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_TOMORROW_BODY', $user->getUserID(),$auth_source_item->getTitle(), $link, $portal_item->getTitle());
                 $body .= "\n\n";
-                $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $fullnameFirstModUser, $auth_source_item->getTitle(), $portal_item->getTitle());
+                $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $fullnameFirstModUser, $portal_item->getTitle());
                 $body .= "\n\n";
                 $body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
                 break;
