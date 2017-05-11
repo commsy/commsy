@@ -143,8 +143,13 @@ class cs_export_export_controller extends cs_base_controller
             }
         }
 
-        header('Content-type: application/zip');
-        header('Content-Disposition: attachment; filename="' . $currentContext->getTitle() . '.zip"');
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . basename($zipFile) . '"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($zipFile));
         $this->readChunks($zipFile);
     }
 
