@@ -1,6 +1,10 @@
 fos_elastica:
     clients:
-        default: { host: %elastic_host%, port: %elastic_port% }
+        default:
+            host: %elastic_host%
+            port: %elastic_port%
+            #username: %elastic_user%
+            #password: %elastic_password%
 
     indexes:
         commsy:
@@ -48,7 +52,7 @@ fos_elastica:
                             type: date
                             format: date_optional_time
                         title:
-                            type: string
+                            type: text
                             analyzer: autocomplete
                             search_analyzer: standard
                         description: ~
@@ -89,7 +93,7 @@ fos_elastica:
                             type: date
                             format: date_optional_time
                         title:
-                            type: string
+                            type: text
                             analyzer: autocomplete
                             search_analyzer: standard
                         description: ~
@@ -133,7 +137,7 @@ fos_elastica:
                             type: date
                             format: date_optional_time
                         title:
-                            type: string
+                            type: text
                             analyzer: autocomplete
                             search_analyzer: standard
                         discussionarticles:
@@ -208,7 +212,7 @@ fos_elastica:
                                 firstName: ~
                                 lastName: ~
                         title:
-                            type: string
+                            type: text
                             analyzer: autocomplete
                             search_analyzer: standard
                         contactPersons: ~
@@ -242,7 +246,7 @@ fos_elastica:
                                 firstName: ~
                                 lastName: ~
                         title:
-                            type: string
+                            type: text
                             analyzer: autocomplete
                             search_analyzer: standard
                         date:
@@ -298,7 +302,7 @@ fos_elastica:
                         contextId:
                             type: integer
                         title:
-                            type: string
+                            type: text
                             analyzer: autocomplete
                             search_analyzer: standard
                         description: ~
