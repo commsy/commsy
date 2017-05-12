@@ -41,7 +41,6 @@ RUN { \
 
 # copy configurations
 COPY conf/commsy.ini /usr/local/etc/php/conf.d/
-COPY conf/xdebug.ini /usr/local/etc/php/conf.d/
 COPY conf/commsy.pool.conf /usr/local/etc/php-fpm.d/
 
 # Install Node.js
