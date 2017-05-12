@@ -4,7 +4,8 @@ services:
   commsy_php:
     build: ./commsy_dev
     volumes:
-      - commsy-unison-sync:/var/www/commsy:rw
+      - commsy-unison-sync:/var/www/commsy:nocopy
+      - "./.data/debug:/tmp"
     links:
       - commsy_mailhog
 

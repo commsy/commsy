@@ -1,6 +1,6 @@
 FROM php:5.6-fpm
 
-# install PHP extensions
+# install additinal packages and PHP extensions
 RUN apt-get update && apt-get install -y \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
@@ -28,7 +28,7 @@ RUN pecl install xdebug \
 
 RUN { \
         echo 'xdebug.remote_host=10.254.254.254'; \
-        echo 'xdebug.remote_autostart=1'; \
+        echo 'xdebug.remote_autostart=0'; \
         echo 'xdebug.idekey=PHPSTORM'; \
         echo 'xdebug.default_enabled=0'; \
         echo 'xdebug.remote_enable=1'; \
@@ -41,6 +41,7 @@ RUN { \
 
 # copy configurations
 COPY conf/commsy.ini /usr/local/etc/php/conf.d/
+COPY conf/xdebug.ini /usr/local/etc/php/conf.d/
 COPY conf/commsy.pool.conf /usr/local/etc/php-fpm.d/
 
 # Install Node.js
