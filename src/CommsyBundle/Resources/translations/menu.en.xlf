@@ -109,22 +109,28 @@
                 <target>Account</target>
             </trans-unit>
 
-            <!-- profile -->
-            <trans-unit id="profile_account">
-                <source>profile</source>
-                <target>Account</target>
-            </trans-unit>
+            <!-- account -->
             <trans-unit id="profile_personal_data">
-                <source>personal_data</source>
+                <source>personal</source>
                 <target>Personal data</target>
+            </trans-unit>
+            <trans-unit id="profile_account">
+                <source>account</source>
+                <target>Account data</target>
             </trans-unit>
             <trans-unit id="profile_notifications">
                 <source>notifications</source>
                 <target>Notifications</target>
             </trans-unit>
             <trans-unit id="profile_additional">
-                <source>additional_functions</source>
+                <source>additional</source>
                 <target>Additional functions</target>
+            </trans-unit>
+
+            <!-- room profile -->
+            <trans-unit id="profile_general">
+                <source>general</source>
+                <target>General</target>
             </trans-unit>
             <trans-unit id="profile_address">
                 <source>address</source>

@@ -15,6 +15,7 @@ use CommsyBundle\Form\Type\RoomProfileContactType;
 use CommsyBundle\Form\Type\ProfileAccountType;
 use CommsyBundle\Form\Type\ProfileNotificationsType;
 use CommsyBundle\Form\Type\ProfileAdditionalType;
+use CommsyBundle\Form\Type\ProfilePersonalInformationType;
 
 class ProfileController extends Controller
 {
@@ -209,6 +210,40 @@ class ProfileController extends Controller
             $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
             $userItem->save();
             return $this->redirectToRoute('commsy_profile_contact', array('roomId' => $roomId, 'itemId' => $itemId));
+        }
+
+        return array(
+            'form' => $form->createView(),
+        );
+    }
+
+    /**
+    * @Route("/room/{roomId}/user/{itemId}/personal")
+    * @Template
+    * @Security("is_granted('ITEM_EDIT', itemId)")
+    */
+    public function personalAction($roomId, $itemId, Request $request)
+    {
+        $userTransformer = $this->get('commsy_legacy.transformer.user');
+        $userService = $this->get('commsy_legacy.user_service');
+        $userItem = $userService->getUser($itemId);
+        $userData = $userTransformer->transform($userItem);
+
+        $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
+        $privateRoomItem = $userItem->getOwnRoom();
+        $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
+
+        $userData = array_merge($userData, $privateRoomData);
+
+        $form = $this->createForm(ProfilePersonalInformationType::class, $userData, array(
+            'itemId' => $itemId,
+        ));
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
+            $userItem->save();
+            return $this->redirectToRoute('commsy_profile_personal', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         return array(

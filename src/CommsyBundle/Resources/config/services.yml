@@ -264,6 +264,12 @@ services:
         tags:
             - { name: form.type }
 
+    commsy.form.type.profile_personalinformation:
+        class: CommsyBundle\Form\Type\ProfilePersonalInformationType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
     commsy.form.type.profile_account:
         class: CommsyBundle\Form\Type\ProfileAccountType
         arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
