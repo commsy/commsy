@@ -178,6 +178,10 @@
                 <source>send mail</source>
                 <target>E-Mail senden</target>
             </trans-unit>
+            <trans-unit id="user comment">
+                <source>user comment</source>
+                <target>Teilnahmegrund</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
