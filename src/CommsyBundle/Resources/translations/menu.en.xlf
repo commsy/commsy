@@ -149,6 +149,15 @@
                 <source>Invitations</source>
                 <target>Invitations</target>
             </trans-unit>
+
+            <trans-unit id="delete_account">
+                <source>deleteAccount</source>
+                <target>Delete Account</target>
+            </trans-unit>
+            <trans-unit id="delete_room_profile">
+                <source>deleteRoomProfile</source>
+                <target>Cancel Membership</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

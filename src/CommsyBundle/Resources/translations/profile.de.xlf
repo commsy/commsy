@@ -212,7 +212,7 @@
             </trans-unit>
             <trans-unit id="account">
                 <source>Account</source>
-                <target>Zugang</target>
+                <target>Account</target>
             </trans-unit>
             <trans-unit id="roomProfile">
                 <source>Room profile</source>
@@ -230,6 +230,28 @@
                 <source>emailToCommsySecret</source>
                 <target>Persönliches Geheimnis</target>
             </trans-unit>
+            <trans-unit id="miscellaneous">
+                <source>miscellaneous</source>
+                <target>Sonstiges</target>
+            </trans-unit>
+
+            <!-- description texts general room profile settings -->
+            <trans-unit id="general_description">
+                <source>generalDescription</source>
+                <target>In diesem Bereich können allgemeine Einstellungen zu Ihrem Profil im Raum %s vorgenommen werden.</target>
+            </trans-unit>
+            <trans-unit id="profile_image_description">
+                <source>profileImageDescription</source>
+                <target>Ihr Profilbild wird neben Ihren Einträgen und Kommentaren im Raum %s angezeigt. Sie können für jeden Raum, in dem Sie Mitglied sind, ein eigenes Profilbild auswählen oder es über Option "in allen Räumen ändern" global konfigurieren.</target>
+            </trans-unit>
+            <trans-unit id="language_description">
+                <source>languageDescription</source>
+                <target>Falls der Moderator diesen Raum entsprechend konfiguriert hat, können Sie über die Option "Sprache" einstellen, ob die Menüs in Englisch oder Deutsch angezeigt werden sollen. Die Option "Browser" bewirkt, dass die Spracheinstellungen Ihres Browsers übernommen werden.</target>
+            </trans-unit>
+            <trans-unit id="auto_save_description">
+                <source>autoSaveDescription</source>
+                <target>Mit der Option "automatisches Speichern" können Sie einstellen, dass zur Bearbeitung geöffnete Einträge automatisch gespeichert werden, wenn Sie für eine längere Zeit inaktiv waren.</target>
+            </trans-unit>            
         </body>
     </file>
 </xliff>

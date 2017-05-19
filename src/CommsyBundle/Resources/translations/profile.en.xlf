@@ -230,6 +230,10 @@
                 <source>emailToCommsySecret</source>
                 <target>Personal secret</target>
             </trans-unit>
+            <trans-unit id="miscellaneous">
+                <source>miscellaneous</source>
+                <target>Miscellaneous</target>
+            </trans-unit>
          </body>
     </file>
 </xliff>

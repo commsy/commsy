@@ -106,7 +106,7 @@
             </trans-unit>
             <trans-unit id="breadcrumb_account">
                 <source>Account</source>
-                <target>Zugang</target>
+                <target>Account</target>
             </trans-unit>
 
             <!-- account -->
@@ -116,7 +116,7 @@
             </trans-unit>
             <trans-unit id="profile_account">
                 <source>account</source>
-                <target>Zugangsdaten</target>
+                <target>Account-Daten</target>
             </trans-unit>
             <trans-unit id="profile_notifications">
                 <source>notifications</source>
@@ -148,6 +148,15 @@
             <trans-unit id="invitations">
                 <source>Invitations</source>
                 <target>Einladungen</target>
+            </trans-unit>
+
+            <trans-unit id="delete_account">
+                <source>deleteAccount</source>
+                <target>Account löschen</target>
+            </trans-unit>
+            <trans-unit id="delete_room_profile">
+                <source>deleteRoomProfile</source>
+                <target>Teilnahme beenden</target>
             </trans-unit>
         </body>
     </file>

@@ -60,19 +60,19 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'menu');
 
-            $menu->addChild('account', [
-                //'label' => $currentUser->getFullname(),
-                'route' => 'commsy_profile_account',
+            $menu->addChild('mergeAccounts', [
+                'label' => 'combineAccount',
+                'route' => 'commsy_profile_mergeaccounts',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
                     'itemId' => $currentUser->getItemId(),
                 ],
                 'extras' => [
-                    'icon' => 'uk-icon-user-secret uk-icon-small uk-icon-justify',
+                    'icon' => 'uk-icon-sitemap uk-icon-small uk-icon-justify',
                     'user' => $currentUser,
                 ]
             ])
-            ->setExtra('translation_domain', 'menu');
+            ->setExtra('translation_domain', 'profile');
 
             $menu->addChild('notifications', [
                 'route' => 'commsy_profile_notifications',
@@ -97,6 +97,22 @@ class MenuBuilder
                     'icon' => 'uk-icon-plus-square uk-icon-small uk-icon-justify',
                     'user' => $currentUser,
                 ]
+            ])
+            ->setExtra('translation_domain', 'menu');
+
+            $menu->addChild('deleteAccount', [
+                'route' => 'commsy_profile_deleteaccount',
+                'routeParameters' => [
+                    'roomId' => $currentStack->attributes->get('roomId'),
+                    'itemId' => $currentUser->getItemId(),
+                ],
+                'extras' => [
+                    'icon' => 'uk-icon-trash uk-icon-small uk-icon-justify',
+                    'user' => $currentUser,
+                ]
+            ])
+            ->setAttributes([
+                'class' => 'uk-button-danger',
             ])
             ->setExtra('translation_domain', 'menu');
         }
@@ -156,6 +172,22 @@ class MenuBuilder
                     'icon' => 'uk-icon-at uk-icon-small uk-icon-justify',
                     'user' => $currentUser,
                 ]
+            ])
+            ->setExtra('translation_domain', 'menu');
+
+            $menu->addChild('deleteRoomProfile', [
+                'route' => 'commsy_profile_deleteroomprofile',
+                'routeParameters' => [
+                    'roomId' => $currentStack->attributes->get('roomId'),
+                    'itemId' => $currentUser->getItemId(),
+                ],
+                'extras' => [
+                    'icon' => 'uk-icon-trash uk-icon-small uk-icon-justify',
+                    'user' => $currentUser,
+                ]
+            ])
+            ->setAttributes([
+                'class' => 'uk-button-danger',
             ])
             ->setExtra('translation_domain', 'menu');
         }

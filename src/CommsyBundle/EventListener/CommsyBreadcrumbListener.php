@@ -181,7 +181,7 @@ class CommsyBreadcrumbListener
 
     private function addProfileCrumbs($roomItem, $routeParameters, $action)
     {
-        if($action == 'general' || $action == 'address' || $action == 'contact') {
+        if($action == 'general' || $action == 'address' || $action == 'contact' || $action == 'deleteroomprofile') {
             $this->addRoom($roomItem, true);
             $this->breadcrumbs->addRouteItem($this->translator->trans('Room profile', [], 'menu'), "commsy_profile_" . $action, $routeParameters);
         }

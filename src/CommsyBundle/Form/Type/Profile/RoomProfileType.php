@@ -1,5 +1,5 @@
 <?php
-namespace CommsyBundle\Form\Type;
+namespace CommsyBundle\Form\Type\Profile;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,7 +19,7 @@ use Doctrine\ORM\EntityManager;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
-class RoomProfileContactType extends AbstractType
+class RoomProfileType extends AbstractType
 {
     private $em;
     private $legacyEnvironment;
@@ -46,6 +46,52 @@ class RoomProfileContactType extends AbstractType
         $this->userItem = $userManager->getItem($options['itemId']);
 
         $builder
+            ->add('language', ChoiceType::class, array(
+                'placeholder' => false,
+                'choices'  => array(
+                    'browser' => 'browser',
+                    'de' => 'de',
+                    'en' => 'en'
+                ),
+                'label' => 'language',
+                'required' => false,
+            ))
+            ->add('autoSaveStatus', CheckboxType::class, array(
+                'label'    => 'autoSaveStatus',
+                'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+            ))
+            
+            ->add('title', TextType::class, array(
+                'label' => 'title',
+                'required' => false,
+            ))
+            ->add('titleChangeInAllContexts', CheckboxType::class, array(
+                'label'    => 'changeInAllContexts',
+                'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+            ))
+            ->add('image', FileType::class, array(
+                'attr' => array(
+                    'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
+                ),
+                'label'    => 'image',
+                'required' => false,
+            ))
+            ->add('image_data', HiddenType::class, array(
+            ))
+            ->add('imageChangeInAllContexts', CheckboxType::class, array(
+                'label'    => 'changeInAllContexts',
+                'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+            ))
+            
             ->add('email', TextType::class, array(
                 'label'    => 'email',
                 'required' => false,
@@ -96,6 +142,79 @@ class RoomProfileContactType extends AbstractType
                     'class' => 'uk-form-label',
                 ),
             ))
+            
+            ->add('street', TextType::class, array(
+                'label'    => 'street',
+                'required' => false,
+            ))
+            ->add('streetChangeInAllContexts', CheckboxType::class, array(
+                'label'    => 'changeInAllContexts',
+                'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+            ))
+            
+            ->add('zipcode', TextType::class, array(
+                'label'    => 'zipcode',
+                'required' => false,
+            ))
+            ->add('zipcodeChangeInAllContexts', CheckboxType::class, array(
+                'label'    => 'changeInAllContexts',
+                'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+            ))
+            
+            ->add('city', TextType::class, array(
+                'label'    => 'city',
+                'required' => false,
+            ))
+            ->add('cityChangeInAllContexts', CheckboxType::class, array(
+                'label'    => 'changeInAllContexts',
+                'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+            ))
+            
+            ->add('room', TextType::class, array(
+                'label'    => 'room',
+                'required' => false,
+            ))
+            ->add('roomChangeInAllContexts', CheckboxType::class, array(
+                'label'    => 'changeInAllContexts',
+                'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+            ))
+            
+            ->add('organisation', TextType::class, array(
+                'label'    => 'organisation',
+                'required' => false,
+            ))
+            ->add('organisationChangeInAllContexts', CheckboxType::class, array(
+                'label'    => 'changeInAllContexts',
+                'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+            ))
+            
+            ->add('position', TextType::class, array(
+                'label'    => 'position',
+                'required' => false,
+            ))
+            ->add('positionChangeInAllContexts', CheckboxType::class, array(
+                'label'    => 'changeInAllContexts',
+                'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+            ))
+            
             ->add('skype', TextType::class, array(
                 'label'    => 'skype',
                 'required' => false,
@@ -150,7 +269,7 @@ class RoomProfileContactType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['itemId'])
+            ->setRequired(['itemId', 'uploadUrl'])
             ->setDefaults(array('translation_domain' => 'profile'))
         ;
     }
@@ -164,7 +283,7 @@ class RoomProfileContactType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'room_profile_contact';
+        return 'room_profile';
     }
     
 }

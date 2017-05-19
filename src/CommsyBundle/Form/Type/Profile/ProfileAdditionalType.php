@@ -1,20 +1,19 @@
 <?php
-namespace CommsyBundle\Form\Type;
+namespace CommsyBundle\Form\Type\Profile;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
-use CommsyBundle\Form\Type\Custom\DateSelectType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 use Doctrine\ORM\EntityManager;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
-class ProfilePersonalInformationType extends AbstractType
+class ProfileAdditionalType extends AbstractType
 {
     private $em;
     private $legacyEnvironment;
@@ -41,37 +40,45 @@ class ProfilePersonalInformationType extends AbstractType
         $this->userItem = $userManager->getItem($options['itemId']);
 
         $builder
-            ->add('firstname', TextType::class, array(
-                'label' => 'firstname',
+            ->add('portfolioStatus', CheckboxType::class, [
+                'label'    => 'portfolioStatus',
                 'required' => false,
-            ))
-            ->add('lastname', TextType::class, array(
-                'label' => 'lastname',
-                'required' => false,
-            ))
-            ->add('dateOfBirth', DateSelectType::class, array(
-                'label'    => 'dateOfBirth',
-                'required' => false,
-            ))
-            ->add('dateOfBirthChangeInAllContexts', CheckboxType::class, array(
-                // 'label'    => 'changeInAllContexts',
-                'label'    => false,
+                'label_attr' => [
+                    'class' => 'uk-form-label',
+                ],
+            ]);
+
+        if ($options['emailToCommsy']) {
+            $builder
+                ->add('emailToCommsy', CheckboxType::class, [
+                    'label' => 'emailToCommsy',
+                    'required' => false,
+                    'label_attr' => [
+                        'class' => 'uk-form-label',
+                    ]
+                ])
+
+                ->add('emailToCommsySecret', TextType::class, [
+                    'label' => 'emailToCommsySecret',
+                    'required' => false,
+                ]);
+        }
+
+        $builder
+            ->add('autoSaveStatus', CheckboxType::class, array(
+                'label'    => 'autoSaveStatus',
                 'required' => false,
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
-                'data' => true,
-                'attr' => array(
-                    'style' => 'display: none'
-                ),
             ))
-            ->add('save', SubmitType::class, array(
+            ->add('save', SubmitType::class, [
                 'label' => 'save',
                 'translation_domain' => 'form',
-                'attr' => array(
+                'attr' => [
                     'class' => 'uk-button-primary',
-                )
-            ));
+                ]
+            ]);
     }
 
     /**
@@ -82,7 +89,7 @@ class ProfilePersonalInformationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['itemId'])
+            ->setRequired(['itemId', 'emailToCommsy'])
             ->setDefaults(array('translation_domain' => 'profile'))
         ;
     }
@@ -96,7 +103,7 @@ class ProfilePersonalInformationType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'personal_information';
+        return 'room_profile';
     }
     
 }

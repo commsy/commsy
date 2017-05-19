@@ -37,6 +37,18 @@ class UserTransformer implements DataTransformerInterface
                 $userData['dateOfBirth'] = array();
                 $userData['dateOfBirth']['date'] = new \DateTime($userItem->getBirthday());
             }
+
+            $session_item = $this->legacyEnvironment->getSessionItem();
+            $auth_source_id = $session_item->getValue('auth_source');
+            $auth_source_manager = $this->legacyEnvironment->getAuthSourceManager();
+            $auth_source_item = $auth_source_manager->getItem($auth_source_id);
+            $authentication = $this->legacyEnvironment->getAuthenticationObject();
+            $authManager = $authentication->getAuthManagerByAuthSourceItem($auth_source_item);
+            $authItem = $authManager->getItem($userItem->getUserId());
+            if($authItem && $authItem->getEmail() != '') {
+                $userData['authEmail'] = $authItem->getEmail();
+            }
+
             $userData['email'] = $userItem->getEmail();
             $userData['hideEmailInThisRoom'] = !$userItem->isEmailVisible();
             $userData['phone'] = $userItem->getTelephone();

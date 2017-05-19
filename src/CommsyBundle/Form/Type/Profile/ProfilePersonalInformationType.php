@@ -1,18 +1,21 @@
 <?php
-namespace CommsyBundle\Form\Type;
+namespace CommsyBundle\Form\Type\Profile;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
+
+use CommsyBundle\Form\Type\Custom\DateSelectType;
 
 use Doctrine\ORM\EntityManager;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
-class ProfileNotificationsType extends AbstractType
+class ProfilePersonalInformationType extends AbstractType
 {
     private $em;
     private $legacyEnvironment;
@@ -39,19 +42,41 @@ class ProfileNotificationsType extends AbstractType
         $this->userItem = $userManager->getItem($options['itemId']);
 
         $builder
-            ->add('newsletterStatus', ChoiceType::class, array(
-                'placeholder' => false,
-                'expanded' => true,
-                'multiple' => false,
-                'choices'  => array(
-                    'none' => '1',
-                    'weekly' => '2',
-                    'daily' => '3'
+            ->add('userId', TextType::class, array(
+                'constraints' => array(
+                    new NotBlank(),
                 ),
-                'label'    => 'newsletterStatus',
+                'label' => 'userId',
+                'required' => true,
+            ))
+            ->add('firstname', TextType::class, array(
+                'label' => 'firstname',
                 'required' => false,
             ))
-            
+            ->add('lastname', TextType::class, array(
+                'label' => 'lastname',
+                'required' => false,
+            ))
+            ->add('authEmail', TextType::class, array(
+                'label' => 'email',
+                'required' => true,
+            ))
+            ->add('dateOfBirth', DateSelectType::class, array(
+                'label'    => 'dateOfBirth',
+                'required' => false,
+            ))
+            ->add('dateOfBirthChangeInAllContexts', CheckboxType::class, array(
+                // 'label'    => 'changeInAllContexts',
+                'label'    => false,
+                'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+                'data' => true,
+                'attr' => array(
+                    'style' => 'display: none'
+                ),
+            ))
             ->add('save', SubmitType::class, array(
                 'label' => 'save',
                 'translation_domain' => 'form',
@@ -83,7 +108,7 @@ class ProfileNotificationsType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'room_profile';
+        return 'personal_information';
     }
     
 }

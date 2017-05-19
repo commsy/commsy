@@ -1,18 +1,25 @@
 <?php
-namespace CommsyBundle\Form\Type;
+namespace CommsyBundle\Form\Type\Profile;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Doctrine\ORM\EntityManager;
-
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+
+use CommsyBundle\Form\Type\Custom\DateSelectType;
+
+use Doctrine\ORM\EntityManager;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
-class ProfileAccountType extends AbstractType
+class RoomProfileGeneralType extends AbstractType
 {
     private $em;
     private $legacyEnvironment;
@@ -38,35 +45,35 @@ class ProfileAccountType extends AbstractType
         $userManager = $this->legacyEnvironment->getUserManager();
         $this->userItem = $userManager->getItem($options['itemId']);
 
-        $builder->add('userId', TextType::class, array(
-                'constraints' => array(
-                    new NotBlank(),
+        $builder
+            ->add('language', ChoiceType::class, array(
+                'placeholder' => false,
+                'choices'  => array(
+                    'browser' => 'browser',
+                    'de' => 'de',
+                    'en' => 'en'
                 ),
-                'label' => 'userId',
-                'required' => true,
-            ))
-            ->add('currentPassword', TextType::class, array(
-                'label' => 'currentPassword',
+                'label' => 'language',
                 'required' => false,
             ))
-            ->add('newPassword', TextType::class, array(
-                'label' => 'newPassword',
+            
+            ->add('image', FileType::class, array(
+                'attr' => array(
+                    'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
+                ),
+                'label'    => 'image',
                 'required' => false,
             ))
-            ->add('newPasswordConfirm', TextType::class, array(
-                'label' => 'newPasswordConfirm',
-                'required' => false,
+            ->add('image_data', HiddenType::class, array(
             ))
-            ->add('combineUserId', TextType::class, array(
-                'label' => 'combineUserId',
-                'translation_domain' => 'profile',
+            ->add('imageChangeInAllContexts', CheckboxType::class, array(
+                'label'    => 'changeInAllContexts',
                 'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
             ))
-            ->add('combinePassword', TextType::class, array(
-                'label' => 'combinePassword',
-                'translation_domain' => 'profile',
-                'required' => false,
-            ))
+            
             ->add('save', SubmitType::class, array(
                 'label' => 'save',
                 'translation_domain' => 'form',
@@ -84,7 +91,7 @@ class ProfileAccountType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['itemId'])
+            ->setRequired(['itemId', 'uploadUrl'])
             ->setDefaults(array('translation_domain' => 'profile'))
         ;
     }
@@ -98,7 +105,7 @@ class ProfileAccountType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'profile_account';
+        return 'room_profile_general';
     }
     
 }
