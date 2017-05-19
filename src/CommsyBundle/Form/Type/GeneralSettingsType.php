@@ -174,12 +174,16 @@ class GeneralSettingsType extends AbstractType
 
             // check if time intervals are active in portal
             $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
-            if ($portalItem->showTime()) {
+            if ($portalItem->showTime() &&
+                ($this->roomItem->isProjectRoom() || $this->roomItem->isGroupRoom()))
+            {
                 $form
-                    ->add('time_list', ChoiceType::class, array(
+                    ->add('time_pulses', ChoiceType::class, [
+                        'label' => 'Time context',
+                        'required' => false,
                         'choices' => $this->getTimeChoices(),
                         'multiple' => true,
-                    ))
+                    ])
                 ;
             }
         });
@@ -212,67 +216,28 @@ class GeneralSettingsType extends AbstractType
 
     private function getTimeChoices()
     {
-        return array();
+        $timeChoices = [];
 
-        // if($portal_item->showTime()) {
-        //         $current_time_title = $portal_item->getTitleOfCurrentTime();
+        $translator = $this->legacyEnvironment->getTranslationObject();
 
-        //         if(isset($current_context)) {
-        //             $time_list = $current_context->getTimeList();
+        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+        if ($portalItem->showTime()) {
+            $timeList = $portalItem->getTimeList();
+            if ($timeList->isNotEmpty()) {
+                $timeItem = $timeList->getFirst();
 
-        //             if($time_list->isNotEmpty()) {
-        //                 $time_item = $time_list->getFirst();
-        //                 $linked_time_title = $time_item->getTitle();
-        //             }
-        //         }
+                while ($timeItem) {
+                    $translatedTitle = $translator->getTimeMessage($timeItem->getTitle());
+                    $timeChoices[$translatedTitle] = $timeItem->getItemID();
 
-        //         if(!empty($linked_time_title) && $linked_time_title < $current_time_title) {
-        //             $start_time_title = $linked_time_title;
-        //         } else {
-        //             $start_time_title = $current_time_title;
-        //         }
-        //         $time_list = $portal_item->getTimeList();
+                    $timeItem = $timeList->getNext();
+                }
+            }
+        }
 
-        //         if($time_list->isNotEmpty()) {
-        //             $time_item = $time_list->getFirst();
+        $timeChoices['continous'] = 'cont';
 
-        //             $context_time_list = $current_context->getTimeList();
-
-        //             while($time_item) {
-        //                 // check if checked
-        //                 $checked = false;
-        //                 if($context_time_list->isNotEmpty()) {
-        //                     $context_time_item = $context_time_list->getFirst();
-
-        //                     while($context_time_item) {
-        //                         if($context_time_item->getItemID() === $time_item->getItemID()) {
-        //                             $checked = true;
-        //                             break;
-        //                         }
-
-        //                         $context_time_item = $context_time_list->getNext();
-        //                     }
-        //                 }
-
-        //                 if($time_item->getTitle() >= $start_time_title) {
-        //                     $this->_time_array[] = array(
-        //                         'text'      => $translator->getTimeMessage($time_item->getTitle()),
-        //                         'value'     => $time_item->getItemID(),
-        //                         'checked'   => $checked
-        //                     );
-        //                 }
-
-        //                 $time_item = $time_list->getNext();
-        //             }
-
-        //             // continuous
-        //             $this->_time_array[] = array(
-        //                 'text'      => $translator->getMessage('COMMON_CONTINUOUS'),
-        //                 'value'     => 'cont',
-        //                 'checked'   => $current_context->isContinuous()
-        //             );
-        //         }
-        //     }
+        return $timeChoices;
     }
 
     private function getAssignableCommunityRoom()

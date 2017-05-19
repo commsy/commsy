@@ -142,10 +142,16 @@ services:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
     commsy.listener.get_room_membership_filter:
-        class: CommsyBundle\EventListener\RoomMembershipFilterConditionListener
-        arguments: ['@commsy_legacy.user_service']
-        tags:
-            - { name: kernel.event_listener, event: lexik_form_filter.apply.orm.room_filter.membership , method: onGetFilterCondition }
+            class: CommsyBundle\EventListener\RoomMembershipFilterConditionListener
+            arguments: ['@commsy_legacy.user_service']
+            tags:
+                - { name: kernel.event_listener, event: lexik_form_filter.apply.orm.room_filter.membership , method: onGetFilterCondition }
+
+    commsy.listener.get_room_time_pulses_filter:
+            class: CommsyBundle\EventListener\RoomTimePulsesFilterConditionListener
+            arguments: ['@commsy_legacy.room_service']
+            tags:
+                - { name: kernel.event_listener, event: lexik_form_filter.apply.orm.room_filter.timePulses , method: onGetFilterCondition }
 
     commsy.listener.command_error:
         class: CommsyBundle\EventListener\ConsoleErrorListener

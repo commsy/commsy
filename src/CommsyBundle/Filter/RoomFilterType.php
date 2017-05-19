@@ -54,6 +54,19 @@ class RoomFilterType extends AbstractType
                 'placeholder' => 'All',
                 'translation_domain' => 'room',
             ]);
+
+        if ($options['showTime']) {
+            $builder
+                ->add('timePulses', Filters\ChoiceFilterType::class, [
+                    'label' => 'time pulses',
+                    'attr' => [
+                        'onchange' => 'this.form.submit()',
+                    ],
+                    'choices' => $options['timePulses'],
+                    'placeholder' => 'All',
+                    'translation_domain' => 'room',
+                ]);
+        }
     }
 
     /**
@@ -76,11 +89,12 @@ class RoomFilterType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setDefaults(array(
+            ->setRequired(['showTime', 'timePulses'])
+            ->setDefaults([
                 'csrf_protection'   => false,
-                'validation_groups' => array('filtering'), // avoid NotBlank() constraint-related message
+                'validation_groups' => ['filtering'], // avoid NotBlank() constraint-related message
                 'method'            => 'get',
-            ))
+            ])
         ;
     }
 }

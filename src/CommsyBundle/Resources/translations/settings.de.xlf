@@ -643,6 +643,18 @@
                 <source>Email-adrress of new invitee</source>
                 <target>E-Mail Adresse</target>
             </trans-unit>
+            <trans-unit id="settings_time_context">
+                <source>Time context</source>
+                <target>Zeitakte</target>
+            </trans-unit>
+            <trans-unit id="settings_time_context_description">
+                <source>Time context description</source>
+                <target>Wählen Sie die Zeitakte für Ihren Raum aus.</target>
+            </trans-unit>
+            <trans-unit id="settings_time_context_cont">
+                <source>continous</source>
+                <target>kontinuierlich</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

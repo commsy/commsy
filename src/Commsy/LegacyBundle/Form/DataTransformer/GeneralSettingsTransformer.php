@@ -68,6 +68,24 @@ class GeneralSettingsTransformer implements DataTransformerInterface
                 }
                 $roomData['community_rooms'] = $linkedCommunityRooms;
             }
+
+            // time contexts
+            if ($roomItem->isProjectRoom() || $roomItem->isGroupRoom()) {
+                if ($roomItem->isContinuous()) {
+                    $roomData['time_pulses'][] = 'cont';
+                }
+
+                $roomTimeList = $roomItem->getTimeList();
+
+                if (!$roomTimeList->isEmpty()) {
+                    $roomTimeItem = $roomTimeList->getFirst();
+                    while ($roomTimeItem) {
+                        $roomData['time_pulses'][] = $roomTimeItem->getItemID();
+
+                        $roomTimeItem = $roomTimeList->getNext();
+                    }
+                }
+            }
         }
         return $roomData;
     }
@@ -144,6 +162,18 @@ class GeneralSettingsTransformer implements DataTransformerInterface
                     break;
             }
         }
+
+        // time context
+        if (isset($roomData['time_pulses'])) {
+            if (in_array('cont', $roomData['time_pulses'])) {
+                $roomObject->setContinuous();
+                $roomObject->setTimeListByID([]);
+            } else {
+                $roomObject->setNotContinuous();
+                $roomObject->setTimeListByID($roomData['time_pulses']);
+            }
+        }
+
         return $roomObject;
     }
 }

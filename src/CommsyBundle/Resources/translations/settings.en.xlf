@@ -644,6 +644,18 @@
                 <source>Email-adrress of new invitee</source>
                 <target>Weitere eingeladene E-Mail Adresse</target>
             </trans-unit>
+            <trans-unit id="settings_time_context">
+                <source>Time context</source>
+                <target>Time context</target>
+            </trans-unit>
+            <trans-unit id="settings_time_context_description">
+                <source>Time context description</source>
+                <target>Choose the time context for your room.</target>
+            </trans-unit>
+            <trans-unit id="settings_time_context_cont">
+                <source>continous</source>
+                <target>continous</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
