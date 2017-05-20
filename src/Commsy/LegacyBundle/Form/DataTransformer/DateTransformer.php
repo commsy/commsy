@@ -78,6 +78,14 @@ class DateTransformer implements DataTransformerInterface
                     $dateData['hiddendate']['time'] = $datetime;
                 }
             }
+
+            // external viewer
+            if ($this->legacyEnvironment->getCurrentContextItem()->isPrivateRoom()) {
+                $dateData['external_viewer_enabled'] = true;
+                $dateData['external_viewer'] = $dateItem->getExternalViewerString();
+            } else {
+                $dateData['external_viewer_enabled'] = false;
+            }
         }
 
         return $dateData;
@@ -136,6 +144,16 @@ class DateTransformer implements DataTransformerInterface
             if($dateObject->isNotActivated()){
 	            $dateObject->setModificationDate(getCurrentDateTimeInMySQL());
 	        }
+        }
+
+        // external viewer
+        if ($this->legacyEnvironment->getCurrentContextItem()->isPrivateRoom()) {
+            if (!empty(trim($dateData['external_viewer']))) {
+                $userIds = explode(" ", $dateData['external_viewer']);
+                $dateObject->setExternalViewerAccounts($userIds);
+            } else {
+                $dateObject->unsetExternalViewerAccounts();
+            }
         }
 
         return $dateObject;

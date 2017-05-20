@@ -25,18 +25,6 @@ class MaterialTransformer implements DataTransformerInterface
 
         if ($materialItem) {
             $materialData['title'] = $materialItem->getTitle();
-            // $materialData['language'] = $materialItem->getLanguage();
-
-            // if ($materialItem->checkNewMembersAlways()) {
-            //     $materialData['access_check'] = 'always';
-            // } else if ($materialItem->checkNewMembersNever()) {
-            //     $materialData['access_check'] = 'never';
-            // } else if ($materialItem->checkNewMembersSometimes()) {
-            //     $materialData['access_check'] = 'sometimes';
-            // } else if ($materialItem->checkNewMembersWithCode()) {
-            //     $materialData['access_check'] = 'withcode';
-            // }
-
             $materialData['draft'] = $materialItem->isDraft();
             $materialData['description'] = $materialItem->getDescription();
             $materialData['permission'] = $materialItem->isPrivateEditing();
@@ -76,6 +64,14 @@ class MaterialTransformer implements DataTransformerInterface
                 $materialData['sections'] = array();
                 foreach($materialItem->getSectionList()->to_array() as $id => $item){
                     $materialData['sections'][$item->getItemID()] = $item->getTitle();
+                }
+
+                // external viewer
+                if ($this->legacyEnvironment->getCurrentContextItem()->isPrivateRoom()) {
+                    $materialData['external_viewer_enabled'] = true;
+                    $materialData['external_viewer'] = $materialItem->getExternalViewerString();
+                } else {
+                    $materialData['external_viewer_enabled'] = false;
                 }
             }
             
@@ -140,6 +136,16 @@ class MaterialTransformer implements DataTransformerInterface
                     }
                 } else {
                     $materialObject->setBibKind('none');
+                }
+            }
+
+            // external viewer
+            if ($this->legacyEnvironment->getCurrentContextItem()->isPrivateRoom()) {
+                if (!empty(trim($materialData['external_viewer']))) {
+                    $userIds = explode(" ", $materialData['external_viewer']);
+                    $materialObject->setExternalViewerAccounts($userIds);
+                } else {
+                    $materialObject->unsetExternalViewerAccounts();
                 }
             }
         }

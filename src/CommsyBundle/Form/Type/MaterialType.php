@@ -3,6 +3,8 @@ namespace CommsyBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -71,6 +73,16 @@ class MaterialType extends AbstractType
                 'required' => false,
             ))
             ->addEventSubscriber(new AddBibliographicFieldListener())
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+                $material = $event->getData();
+                $form = $event->getForm();
+
+                if ($material['external_viewer_enabled']) {
+                    $form->add('external_viewer', TextType::class, [
+                        'required' => false,
+                    ]);
+                }
+            })
             ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',

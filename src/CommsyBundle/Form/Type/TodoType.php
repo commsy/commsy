@@ -3,6 +3,8 @@ namespace CommsyBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -11,8 +13,6 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use CommsyBundle\Form\Type\Custom\DateTimeSelectType;
-
-use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
 
 class TodoType extends AbstractType
 {
@@ -83,6 +83,16 @@ class TodoType extends AbstractType
             ->add('hiddendate', DateTimeSelectType::class, array(
                 'label' => 'hidden until',
             ))
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+                $todo = $event->getData();
+                $form = $event->getForm();
+
+                if ($todo['external_viewer_enabled']) {
+                    $form->add('external_viewer', TextType::class, [
+                        'required' => false,
+                    ]);
+                }
+            })
             ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
