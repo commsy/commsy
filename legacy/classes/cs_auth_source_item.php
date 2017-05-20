@@ -145,6 +145,8 @@ class cs_auth_source_item extends cs_item {
       $value = $this->_getAllowAddAccount();
       if ($value == 1) {
           $retour = true;
+      } else if ($value == 2) {
+          return 2;
       }
       return $retour;
    }

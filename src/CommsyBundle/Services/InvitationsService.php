@@ -3,8 +3,8 @@
 namespace CommsyBundle\Services;
 
 use CommsyBundle\Entity\Invitations;
-
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 
 class InvitationsService
 {
@@ -14,9 +14,22 @@ class InvitationsService
      */
     private $em;
 
-    public function __construct(EntityManager $entityManager)
+    private $serviceContainer;
+
+    public function __construct(EntityManager $entityManager, Container $container)
     {
         $this->em = $entityManager;
+        $this->serviceContainer = $container;
+    }
+
+    public function invitationsEnabled () {
+        $legacyEnvironment = $this->serviceContainer->get('commsy_legacy.environment')->getEnvironment();
+        $portal = $legacyEnvironment->getCurrentPortalItem();
+        $authSourceItem = $portal->getDefaultAuthSourceItem();
+        if ($authSourceItem->allowAddAccount() == 2) {
+            return true;
+        }
+        return false;
     }
 
     public function generateInvitationCode($authSourceItem, $contextId, $email) {

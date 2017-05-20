@@ -515,7 +515,13 @@ class cs_configuration_authentication_form extends cs_rubric_form {
 	         $this->_form->addhidden('addAccount',2);
 	         $this->_form->addText('textaddAccount',$translator->getMessage('CONFIGURATION_AUTHENTICATION_ADD_ACCOUNT_TITLE'),$translator->getMessage('CONFIGURATION_AUTHENTICATION_NOT_IMPLEMENTED'));
 	      } else {
-	         $this->_form->addRadioGroup('addAccount',$translator->getMessage('CONFIGURATION_AUTHENTICATION_ADD_ACCOUNT_TITLE'),'',$this->_yes_no_array,'','',true,'','',$disabled);
+             $disable_add_user_options[0]['text'] = $this->_translator->getMessage('COMMON_YES');
+             $disable_add_user_options[0]['value'] = 1;
+             $disable_add_user_options[1]['text'] = $this->_translator->getMessage('COMMON_NO');
+             $disable_add_user_options[1]['value'] = 2;
+             $disable_add_user_options[2]['text'] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_INVITATION');
+             $disable_add_user_options[2]['value'] = 3;
+	         $this->_form->addRadioGroup('addAccount',$translator->getMessage('CONFIGURATION_AUTHENTICATION_ADD_ACCOUNT_TITLE'),'',$disable_add_user_options,'','',true,'','',$disabled);
 	      }
 	      if ( $this->_disable_delete_user) {
 	         $this->_form->addhidden('deleteAccount',2);
