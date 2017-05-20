@@ -112,6 +112,11 @@ class cs_popup_profile_controller implements cs_popup_controller {
 
 						$current_user->reject();
 						$current_user->save();
+                        // remove link from group room
+                        if($current_context->isGroupRoom()) {
+                            $group_item = $current_context->getLinkedGroupItem();
+                            $group_item->removeMember($current_user->getRelatedUserItemInContext($group_item->getContextID()));
+                        }
 
 						// set return
 						$this->_popup_controller->setSuccessfullItemIDReturn($current_user->getItemID());
