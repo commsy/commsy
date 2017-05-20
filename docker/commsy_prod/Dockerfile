@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
         g++ \
         git \
         zip \
+        sudo \
     && docker-php-ext-install -j$(nproc) iconv mcrypt \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
@@ -23,20 +24,10 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install -j$(nproc) imap
 
-# set recommended PHP.ini settings
-# see https://secure.php.net/manual/en/opcache.installation.php
-RUN { \
-        echo 'opcache.memory_consumption=128'; \
-        echo 'opcache.interned_strings_buffer=8'; \
-        echo 'opcache.max_accelerated_files=4000'; \
-        echo 'opcache.revalidate_freq=60'; \
-        echo 'opcache.fast_shutdown=1'; \
-        echo 'opcache.enable_cli=1'; \
-    } > /usr/local/etc/php/conf.d/opcache-recommended.ini
-
-RUN { \
-        echo 'date.timezone = Europe/Berlin'; \
-    } > /usr/local/etc/php/conf.d/commsy.ini
+# copy configurations
+COPY conf/commsy.ini /usr/local/etc/php/conf.d/
+COPY conf/opcache.ini /usr/local/etc/php/conf.d/
+COPY conf/commsy.pool.conf /usr/local/etc/php-fpm.d/
 
 # Install Node.js
 RUN curl -sL https://deb.nodesource.com/setup_7.x | bash -
