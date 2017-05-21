@@ -26,7 +26,7 @@ class InvitationsService
         $legacyEnvironment = $this->serviceContainer->get('commsy_legacy.environment')->getEnvironment();
         $portal = $legacyEnvironment->getCurrentPortalItem();
         $authSourceItem = $portal->getDefaultAuthSourceItem();
-        if ($authSourceItem->allowAddAccount() == 2) {
+        if ($authSourceItem->allowAddAccountInvitation()) {
             return true;
         }
         return false;

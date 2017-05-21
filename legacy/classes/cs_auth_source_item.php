@@ -141,14 +141,33 @@ class cs_auth_source_item extends cs_item {
    }
 
    function allowAddAccount () {
-      $retour = false;
-      $value = $this->_getAllowAddAccount();
-      if ($value == 1) {
-          $retour = true;
-      } else if ($value == 2) {
-          return 2;
-      }
-      return $retour;
+       $retour = false;
+       $value = $this->_getAllowAddAccount();
+       if ($value == 1) {
+           $retour = true;
+       }
+       return $retour;
+   }
+
+   function setAllowAddAccountInvitation () {
+      $this->_setAuthConfigurationElement('ADD_ACCOUNT_INVITATION',1);
+   }
+
+   function unsetAllowAddAccountInvitation () {
+       $this->_setAuthConfigurationElement('ADD_ACCOUNT_INVITATION',-1);
+   }
+
+   function _getAllowAddAccountInvitation () {
+      return $this->_getAuthConfigurationElement('ADD_ACCOUNT_INVITATION');
+   }
+
+   function allowAddAccountInvitation () {
+       $retour = false;
+       $value = $this->_getAllowAddAccountInvitation();
+       if ($value == 1) {
+           $retour = true;
+       }
+       return $retour;
    }
 
    function setAllowChangeUserID () {

@@ -757,7 +757,11 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          if ( $this->_item->allowAddAccount() ) {
             $this->_values['addAccount'] = 1;
          } else {
-            $this->_values['addAccount'] = 2;
+             if (!$this->_item->allowAddAccountInvitation()) {
+                 $this->_values['addAccount'] = 2;
+             } else {
+                 $this->_values['addAccount'] = 3;
+             }
          }
          if ( $this->_item->allowDeleteAccount() ) {
             $this->_values['deleteAccount'] = 1;
