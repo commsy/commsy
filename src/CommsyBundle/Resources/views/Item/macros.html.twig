@@ -133,6 +133,7 @@
 
 {% macro links(item,withTags,withCategories,roomCategories) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+    {% import _self as itemMacros %}
     
     {% set countEntries = item.tagsArray|length + item.buzzwordArray|length + item.AllLinkeditemIDArray|length %}
 
@@ -197,7 +198,7 @@
         <div class="uk-width-1-3">
             <strong>{{ 'categories'|trans({}, "room") }}:</strong>
             <div class="cs-tree-plain">
-                {{ _self.nestedTagList(item.tagsArray, roomCategories, 1) }}
+                {{ itemMacros.nestedTagList(item.tagsArray, roomCategories, 1) }}
             </div>
         </div>
         <div class="uk-width-1-3">
