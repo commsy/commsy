@@ -182,6 +182,10 @@ services:
         class: CommsyBundle\Search\SearchManager
         arguments: ['@fos_elastica.finder.commsy', '@commsy_legacy.user_service', '@commsy_legacy.item_service']
 
+    commsy.search.indexable_checker:
+        class: CommsyBundle\Search\IndexableChecker
+        arguments: ['@commsy_legacy.environment']
+
     # Validator
     commsy.validator.unique_label_name:
         class: CommsyBundle\Validator\Constraints\UniqueLabelNameValidator

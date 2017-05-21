@@ -40,7 +40,7 @@ fos_elastica:
             types:
                 # Announcements
                 announcement:
-                    indexable_callback: isIndexable
+                    indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
                     properties:
                         contextId:
                             type: integer
@@ -85,7 +85,7 @@ fos_elastica:
 
                 # dates
                 date:
-                    indexable_callback: isIndexable
+                    indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
                     properties:
                         contextId:
                             type: integer
@@ -133,7 +133,7 @@ fos_elastica:
 
                 # discussions:
                 discussion:
-                    indexable_callback: isIndexable
+                    indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
                     properties:
                         contextId:
                             type: integer
@@ -184,7 +184,7 @@ fos_elastica:
 
                 # labels: (groups, topics, institutions)
                 label:
-                    indexable_callback: isIndexable
+                    indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
                     properties:
                         contextId:
                             type: integer
@@ -215,7 +215,7 @@ fos_elastica:
 
                 # room:
                 room:
-                    indexable_callback: isIndexable
+                    indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
                     properties:
                         contextId:
                             type: integer
@@ -249,7 +249,7 @@ fos_elastica:
 
                 # todos:
                 todo:
-                    indexable_callback: isIndexable
+                    indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
                     properties:
                         contextId:
                             type: integer
@@ -302,7 +302,7 @@ fos_elastica:
                 
                 # User
                 user:
-                    indexable_callback: isIndexable
+                    indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
                     properties:
                         userId: ~
                         contextId:
@@ -319,7 +319,7 @@ fos_elastica:
 
                 # materials:
                 material:
-                    indexable_callback: 'isIndexable'
+                    indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
                     properties:
                         versionId:
                             type: integer
