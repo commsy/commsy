@@ -882,9 +882,8 @@ class MaterialController extends Controller
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
-        
-        $formData = array();
-        $materialItem = NULL;
+
+        $materialItem = null;
         $isMaterial = false;
         $isDraft = false;
         $isSaved = false;
@@ -925,7 +924,6 @@ class MaterialController extends Controller
         if ($form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $materialItem = $transformer->applyTransformation($materialItem, $form->getData());
-                $isSaved = true;
 
                 // update modifier
                 $materialItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
@@ -940,11 +938,6 @@ class MaterialController extends Controller
                 // ToDo ...
             }
             return $this->redirectToRoute('commsy_material_save', array('roomId' => $roomId, 'itemId' => $itemId));
-            
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
         }
 
         return array(
