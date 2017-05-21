@@ -1,3 +1,12 @@
+# Note on how hashtags and tags properties are generated:
+# Setting the property path to false will disable transformation of that value.
+# In this case the mapping will be created but no value will be populated while indexing.
+# The value is populated by listening to the POST_TRANSFORM event.
+#
+# This is done in @see CommsyBundle\EventListener\ElasticCustomPropertyListener
+#
+#
+
 fos_elastica:
     clients:
         default:
@@ -47,7 +56,6 @@ fos_elastica:
                                 userId: ~
                                 firstName: ~
                                 lastName: ~
-
                         creationDate:
                             type: date
                             format: date_optional_time
@@ -56,6 +64,10 @@ fos_elastica:
                             analyzer: autocomplete
                             search_analyzer: standard
                         description: ~
+                        hashtags:
+                            property_path: false
+                        tags:
+                            property_path: false
                         endDate:
                             type: date
                             format: date_optional_time
@@ -97,6 +109,10 @@ fos_elastica:
                             analyzer: autocomplete
                             search_analyzer: standard
                         description: ~
+                        hashtags:
+                            property_path: false
+                        tags:
+                            property_path: false
                         datetimeStart:
                             type: date
                             format: date_optional_time
@@ -140,6 +156,10 @@ fos_elastica:
                             type: text
                             analyzer: autocomplete
                             search_analyzer: standard
+                        hashtags:
+                            property_path: false
+                        tags:
+                            property_path: false
                         discussionarticles:
                             type: 'nested'
                             properties:
@@ -253,6 +273,10 @@ fos_elastica:
                             type: date
                             format: date_optional_time
                         description: ~
+                        hashtags:
+                            property_path: false
+                        tags:
+                            property_path: false
                         steps:
                             type: 'nested'
                             properties:
@@ -306,6 +330,10 @@ fos_elastica:
                             analyzer: autocomplete
                             search_analyzer: standard
                         description: ~
+                        hashtags:
+                            property_path: false
+                        tags:
+                            property_path: false
                         sections:
                             type: 'nested'
                             properties:

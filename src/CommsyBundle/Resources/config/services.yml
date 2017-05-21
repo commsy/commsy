@@ -171,6 +171,12 @@ services:
         tags:
             - { name: form.event_subscriber }
 
+    commsy.listener.elastic.custom_property:
+        class: CommsyBundle\EventListener\ElasticCustomPropertyListener
+        arguments: ['@commsy_legacy.environment']
+        tags:
+            - { name: kernel.event_subscriber }
+
     # Search
     commsy.search.manager:
         class: CommsyBundle\Search\SearchManager
