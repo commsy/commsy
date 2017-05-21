@@ -85,6 +85,19 @@ class InvitationsService
         return false;
     }
 
+    public function redeemInvitation($authSourceItem, $invitationCode, $email){
+        $repository = $this->em->getRepository('CommsyBundle:Invitations');
+        $query = $repository->createQueryBuilder('invitations')
+            ->update()
+            ->set('invitations.redeemed', true)
+            ->where('invitations.authSourceId = :authSourceId AND (invitations.hash = :hash OR invitations.email = :email)')
+            ->setParameter('authSourceId', $authSourceItem->getItemId())
+            ->setParameter('hash', $invitationCode)
+            ->setParameter('email', $email)
+            ->getQuery();
+        $query->getResult();
+    }
+
     public function getInvitedEmailAdressesByContextId ($authSourceItem, $contextId) {
         $result = array();
 
