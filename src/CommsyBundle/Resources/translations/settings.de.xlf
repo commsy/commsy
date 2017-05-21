@@ -643,6 +643,10 @@
                 <source>Email-adrress of new invitee</source>
                 <target>E-Mail Adresse</target>
             </trans-unit>
+            <trans-unit id="An invitation for this email-address already exists in this portal">
+                <source>An invitation for this email-address already exists in this portal</source>
+                <target>Eine Einladung für diese E-Mail Adresse existiert bereits in diesem Portal</target>
+            </trans-unit>
             <trans-unit id="settings_time_context">
                 <source>Time context</source>
                 <target>Zeitakte</target>

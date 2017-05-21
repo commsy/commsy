@@ -32,6 +32,23 @@ class InvitationsService
         return false;
     }
 
+    public function existsInvitationForEmailAddress ($authSourceItem, $email) {
+        $repository = $this->em->getRepository('CommsyBundle:Invitations');
+        $query = $repository->createQueryBuilder('invitations')
+            ->select()
+            ->where('invitations.authSourceId = :authSourceId AND invitations.email = :email')
+            ->setParameter('authSourceId', $authSourceItem->getItemId())
+            ->setParameter('email', $email)
+            ->getQuery();
+        $invitations = $query->getResult();
+
+        if (sizeof($invitations) > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function generateInvitationCode($authSourceItem, $contextId, $email) {
         $invitationCode = md5(rand().time().rand());
 
