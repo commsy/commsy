@@ -15,7 +15,8 @@
     </head>
     <body id="commsy" class="nav-collapsed">
 
-        <div id="commsy_navigation">
+        {# context navigation #}
+        <div id="commsy_navigation" class="uk-hidden-small">
 
             {# CommSy Logo #}
             {{ render(controller(
@@ -26,7 +27,13 @@
             {# Context Navigation #}
             {% block side_navigation %}
             {% endblock %}
+        </div>
 
+        {# Off-canvase context navigation for small devices #}
+        <div id="commsy_offnavigation" class="uk-offcanvas">
+            <div class="uk-offcanvas-bar" mode="slide">
+                {{ block('side_navigation') }}
+            </div>
         </div>
 
         <div id="content">
@@ -65,8 +72,8 @@
                     </div>
                 </div>
                 
-                {# toggle #}
-                <a href="" class="uk-navbar-toggle uk-visible-small"></a>
+                {# Off-canvas toggle #}
+                <a href="#commsy_offnavigation" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas></a>
 
                 {# left #}
                 <ul class="uk-navbar-nav">
