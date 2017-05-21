@@ -49,7 +49,7 @@
         "php-imap/php-imap": "^2.0",
         "jsvrcek/ics": "^0.5.1",
         "whiteoctober/breadcrumbs-bundle": "^1.2",
-        "friendsofsymfony/elastica-bundle": "^4.0"
+        "friendsofsymfony/elastica-bundle": "^5.0@dev"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",

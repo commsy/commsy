@@ -32,7 +32,7 @@ fos_elastica:
                 # Announcements
                 announcement:
                     indexable_callback: isIndexable
-                    mappings:
+                    properties:
                         contextId:
                             type: integer
                         creator:
@@ -74,7 +74,7 @@ fos_elastica:
                 # dates
                 date:
                     indexable_callback: isIndexable
-                    mappings:
+                    properties:
                         contextId:
                             type: integer
                         creator:
@@ -118,7 +118,7 @@ fos_elastica:
                 # discussions:
                 discussion:
                     indexable_callback: isIndexable
-                    mappings:
+                    properties:
                         contextId:
                             type: integer
                         creator:
@@ -165,7 +165,7 @@ fos_elastica:
                 # labels: (groups, topics, institutions)
                 label:
                     indexable_callback: isIndexable
-                    mappings:
+                    properties:
                         contextId:
                             type: integer
                         creator:
@@ -196,7 +196,7 @@ fos_elastica:
                 # room:
                 room:
                     indexable_callback: isIndexable
-                    mappings:
+                    properties:
                         contextId:
                             type: integer
                         creator:
@@ -230,7 +230,7 @@ fos_elastica:
                 # todos:
                 todo:
                     indexable_callback: isIndexable
-                    mappings:
+                    properties:
                         contextId:
                             type: integer
                         creator:
@@ -279,7 +279,7 @@ fos_elastica:
                 # User
                 user:
                     indexable_callback: isIndexable
-                    mappings:
+                    properties:
                         userId: ~
                         contextId:
                             type: integer
@@ -296,7 +296,7 @@ fos_elastica:
                 # materials:
                 material:
                     indexable_callback: 'isIndexable'
-                    mappings:
+                    properties:
                         versionId:
                             type: integer
                         contextId:
