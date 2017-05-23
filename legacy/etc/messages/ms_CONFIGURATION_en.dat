@@ -84,6 +84,7 @@ $message["CONFIGURATION_AUTHENTICATION_USER"]["en"] = "User name";
 $message["CONFIGURATION_AUTHENTICATION_USER_LOCK"]["en"] = "Account lock";
 $message["CONFIGURATION_AUTHENTICATION_USER_LOCK_INTERVAL"]["en"] = "Interval in seconds";
 $message["CONFIGURATION_AUTHENTICATION_USER_LOCK_TIME"]["en"] = "Lock time in minutes";
+$message["CONFIGURATION_AUTHENTICATION_INVITATION"]["en"] = "By invitation";
 $message["CONFIGURATION_AUTOACCOUNTS_ACCOUNT_NOT_CREATED"]["en"] = "Account not created";
 $message["CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_DID_NOT_GET_DATA"]["en"] = "Did not get any data from the authentification-source";
 $message["CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_NO_USER_ID"]["en"] = "No user_id for the authentification-source was given";

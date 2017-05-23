@@ -29,7 +29,7 @@ services:
     # Menu
     commsy.menu.builder:
         class: CommsyBundle\Menu\MenuBuilder
-        arguments: ['@knp_menu.factory', '@commsy_legacy.room_service', '@commsy_legacy.environment', '@commsy_legacy.user_service', '@security.authorization_checker']
+        arguments: ['@knp_menu.factory', '@commsy_legacy.room_service', '@commsy_legacy.environment', '@commsy_legacy.user_service', '@security.authorization_checker', '@commsy.invitations_service']
         # tags:
         #     - { name: knp_menu.menu_builder, method: createProfileMenu, alias: profile }
         #     - { name: knp_menu.menu_builder, method: createSettingsMenu, alias: settings }
@@ -142,10 +142,16 @@ services:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
     commsy.listener.get_room_membership_filter:
-        class: CommsyBundle\EventListener\RoomMembershipFilterConditionListener
-        arguments: ['@commsy_legacy.user_service']
-        tags:
-            - { name: kernel.event_listener, event: lexik_form_filter.apply.orm.room_filter.membership , method: onGetFilterCondition }
+            class: CommsyBundle\EventListener\RoomMembershipFilterConditionListener
+            arguments: ['@commsy_legacy.user_service']
+            tags:
+                - { name: kernel.event_listener, event: lexik_form_filter.apply.orm.room_filter.membership , method: onGetFilterCondition }
+
+    commsy.listener.get_room_time_pulses_filter:
+            class: CommsyBundle\EventListener\RoomTimePulsesFilterConditionListener
+            arguments: ['@commsy_legacy.room_service']
+            tags:
+                - { name: kernel.event_listener, event: lexik_form_filter.apply.orm.room_filter.timePulses , method: onGetFilterCondition }
 
     commsy.listener.command_error:
         class: CommsyBundle\EventListener\ConsoleErrorListener
@@ -165,18 +171,20 @@ services:
         tags:
             - { name: form.event_subscriber }
 
-    # EventSubscribers
-    commsy.subscriber.edit:
-        class: CommsyBundle\EventSubscriber\CommsyEditSubscriber
+    commsy.listener.elastic.custom_property:
+        class: CommsyBundle\EventListener\ElasticCustomPropertyListener
+        arguments: ['@commsy_legacy.environment']
         tags:
-          - { name: kernel.event_listener, event: commsy.edit, method: onCommsyEdit }
-          - { name: kernel.event_listener, event: commsy.save, method: onCommsySave }
-          - { name: kernel.event_listener, event: commsy.cancel, method: onCommsyCancel }
+            - { name: kernel.event_subscriber }
 
     # Search
     commsy.search.manager:
         class: CommsyBundle\Search\SearchManager
         arguments: ['@fos_elastica.finder.commsy', '@commsy_legacy.user_service', '@commsy_legacy.item_service']
+
+    commsy.search.indexable_checker:
+        class: CommsyBundle\Search\IndexableChecker
+        arguments: ['@commsy_legacy.environment']
 
     # Validator
     commsy.validator.unique_label_name:
@@ -533,4 +541,4 @@ services:
 
     commsy.invitations_service:
         class: CommsyBundle\Services\InvitationsService
-        arguments: ['@doctrine.orm.entity_manager']
+        arguments: ['@doctrine.orm.entity_manager', '@service_container']

@@ -374,6 +374,14 @@
                 <source>etherpadText</source>
                 <target><![CDATA[<span style='word-break: keep-all;'><div class='uk-margin-small-bottom'>]]>Etherpad ermöglicht das gleichzeitige Bearbeiten der Beschreibung durch mehrere Personen, bietet jedoch weniger Formatierungsoptionen als der Standard-Editor. <![CDATA[</div><br/><div class='uk-text-bold'>]]>Diese Option kann nicht nachträglich geändert werden!<![CDATA[</div></span>]]></target>
             </trans-unit>
+            <trans-unit id="form_external_viewer">
+                <source>External viewer</source>
+                <target>Zusätliche Freigaben</target>
+            </trans-unit>
+            <trans-unit id="form_external_viewer_desc">
+                <source>external_viewer_desc</source>
+                <target>Geben Sie weitere durch ein Leerzeichen getrennte Kennungen an, um Zugriff auf diesen Eintrag zu gewähren.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

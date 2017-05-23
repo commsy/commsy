@@ -69,6 +69,14 @@
                             {{ form_row(form.room_description) }}
                         </div>
 
+                        {% if form.time_pulses is defined %}
+                            <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                                <h1 class='uk-panel-title'>{{ 'Time context'|trans({}, 'settings') }}</h1>
+                                <div style="margin-bottom: 25px;">{{ 'Time context description'|trans({}, 'settings') }}</div>
+                                {{ form_row(form.time_pulses) }}
+                            </div>
+                        {% endif %}
+
                         {% if form.open_for_guest is defined or form.material_open_for_guest is defined %}
                             <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                                 <h1 class='uk-panel-title'>{{ 'Guest Access'|trans({}, 'settings') }}</h1>

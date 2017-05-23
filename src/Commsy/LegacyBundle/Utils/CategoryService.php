@@ -37,9 +37,6 @@ class CategoryService
 
     public function addTag($title, $roomId, $parentTagId = null)
     {
-        // if has access
-        // ...
-
         $environment = $this->legacyEnvironment->getEnvironment();
         $environment->setCurrentContextID($roomId);
 

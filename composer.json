@@ -33,12 +33,10 @@
         "liip/theme-bundle": "^1.4",
         "knplabs/knp-menu-bundle":"^2.1",
         "lexik/form-filter-bundle": "^5.0",
-        "friendsofsymfony/elastica-bundle": "^3.2",
         "egeloen/ordered-form-bundle": "^2.0",
         "craue/twigextensions-bundle": "^2.1",
         "knplabs/knp-snappy-bundle": "^1.4",
         "tomnomnom/etherpad-lite-client": "^0.1.2",
-        "ruflin/elastica": "3.2 as 2.99.0",
         "egeloen/ckeditor-bundle": "dev-master",
         "zendframework/zend-soap": "^2.6",
         "debril/rss-atom-bundle": "^3.0",
@@ -50,7 +48,8 @@
         "symfony/stopwatch": "^3.2",
         "php-imap/php-imap": "^2.0",
         "jsvrcek/ics": "^0.5.1",
-        "whiteoctober/breadcrumbs-bundle": "^1.2"
+        "whiteoctober/breadcrumbs-bundle": "^1.2",
+        "friendsofsymfony/elastica-bundle": "^5.0@dev"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",

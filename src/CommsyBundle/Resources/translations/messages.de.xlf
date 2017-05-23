@@ -403,7 +403,6 @@
                 <source>no email</source>
                 <target>Keine Email-Adresse angegeben</target>
             </trans-unit>
-
             <trans-unit id="invitation subject">
                 <source>invitation subject %portal%</source>
                 <target>Einladung CommSy-Portal "%portal%"</target>

@@ -184,9 +184,14 @@ else {
 	            }
 	            if ( $_POST['addAccount'] == 1 ) {
 	               $authItem->setAllowAddAccount();
+                   $authItem->unsetAllowAddAccountInvitation();
 	            } elseif ( $_POST['addAccount'] == 2 ) {
 	               $authItem->unsetAllowAddAccount();
-	            }
+                   $authItem->unsetAllowAddAccountInvitation();
+	            } elseif ( $_POST['addAccount'] == 3 ) {
+                   $authItem->unsetAllowAddAccount();
+                   $authItem->setAllowAddAccountInvitation();
+                }
 	            if ( $_POST['deleteAccount'] == 1 ) {
 	               $authItem->setAllowDeleteAccount();
 	            } elseif ( $_POST['deleteAccount'] == 2 ) {

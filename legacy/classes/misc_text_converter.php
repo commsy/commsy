@@ -3579,7 +3579,7 @@ class misc_text_converter {
         $config->set('HTML.Allowed', NULL);
 
         $config->set('HTML.SafeIframe', true);
-        $config->set('URI.SafeIframeRegexp', '%^(https?:)?//(www\.youtube(?:-nocookie)?\.com/embed/|www\.podcampus\.de/nodes/|de\.slideshare\.net/slideshow/embed_code/key/)%');
+        $config->set('URI.SafeIframeRegexp', '%^(https?:)?//(www\.youtube(?:-nocookie)?\.com/embed/|www\.podcampus\.de/nodes/|www\.slideshare\.net/slideshow/embed_code/)%');
 
         // allow target=
         $config->set('Attr.AllowedFrameTargets', '_blank,_self,_top,_parent');

@@ -187,6 +187,12 @@
                                             <td class="uk-text-bold">{{ 'account'|trans({})|capitalize }}</td>
                                             <td>{{ user.userId }}</td>
                                         </tr>
+                                        {% if user.status == 1 and user.userComment != "" %}
+                                            <tr>
+                                                <td class="uk-text-bold">{{ 'user comment'|trans({}, 'user')|capitalize }}</td>
+                                                <td>{{ user.userComment }}</td>
+                                            </tr>
+                                        {% endif %}
                                     </tbody>
                                 </table>
                             </div>

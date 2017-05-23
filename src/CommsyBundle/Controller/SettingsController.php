@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\FormError;
 
 use CommsyBundle\Entity\Room;
 use CommsyBundle\Form\Type\GeneralSettingsType;
@@ -330,6 +331,7 @@ class SettingsController extends Controller
     public function invitationsAction($roomId, Request $request)
     {
         $invitationsService = $this->get('commsy.invitations_service');
+        $translator = $this->get('translator');
 
         // get room from RoomService
         $roomService = $this->get('commsy_legacy.room_service');
@@ -355,23 +357,28 @@ class SettingsController extends Controller
         ));
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
-            $data = $form->getData();
 
+        $data = $form->getData();
+        if (isset($data['email'])) {
+            if ($invitationsService->existsInvitationForEmailAddress($authSourceItem, $data['email'])) {
+                $form->get('email')->addError(new FormError($translator->trans('An invitation for this email-address already exists in this portal', array())));
+            }
+        }
+
+        if ($form->isValid()) {
             // send invitation email
             if (isset($data['email'])) {
                 $invitationCode = $invitationsService->generateInvitationCode($authSourceItem, $roomId, $data['email']);
 
-                $invitationLink  = $request->getSchemeAndHttpHost();
-                $invitationLink .= '?cid='.$portal->getItemId().'&mod=home&fct=index&cs_modus=portalmember';
-                $invitationLink .= '&invitation_auth_source='.$authSourceItem->getItemId();
-                $invitationLink .= '&invitation_auth_code='.$invitationCode;
+                $invitationLink = $request->getSchemeAndHttpHost();
+                $invitationLink .= '?cid=' . $portal->getItemId() . '&mod=home&fct=index&cs_modus=portalmember';
+                $invitationLink .= '&invitation_auth_source=' . $authSourceItem->getItemId();
+                $invitationLink .= '&invitation_auth_code=' . $invitationCode;
 
                 $mailer = $this->get('mailer');
                 $fromAddress = $this->getParameter('commsy.email.from');
                 $fromSender = $legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
 
-                $translator = $this->get('translator');
                 $subject = $translator->trans('invitation subject %portal%', array('%portal%' => $portal->getTitle()));
                 $body = $translator->trans('invitation body %portal% %link% %sender%', array('%portal%' => $portal->getTitle(), '%link%' => $invitationLink, '%sender%' => $user->getFullName()));
                 $mailMessage = \Swift_Message::newInstance()

@@ -37,6 +37,14 @@ class DiscussionTransformer implements DataTransformerInterface
                     $discussionData['hiddendate']['time'] = $datetime;
                 }
             }
+
+            // external viewer
+            if ($this->legacyEnvironment->getCurrentContextItem()->isPrivateRoom()) {
+                $discussionData['external_viewer_enabled'] = true;
+                $discussionData['external_viewer'] = $discussionItem->getExternalViewerString();
+            } else {
+                $discussionData['external_viewer_enabled'] = false;
+            }
         }
 
         return $discussionData;
@@ -82,6 +90,16 @@ class DiscussionTransformer implements DataTransformerInterface
             if($discussionObject->isNotActivated()){
 	            $discussionObject->setModificationDate(getCurrentDateTimeInMySQL());
 	        }
+        }
+
+        // external viewer
+        if ($this->legacyEnvironment->getCurrentContextItem()->isPrivateRoom()) {
+            if (!empty(trim($discussionData['external_viewer']))) {
+                $userIds = explode(" ", $discussionData['external_viewer']);
+                $discussionObject->setExternalViewerAccounts($userIds);
+            } else {
+                $discussionObject->unsetExternalViewerAccounts();
+            }
         }
 
         return $discussionObject;

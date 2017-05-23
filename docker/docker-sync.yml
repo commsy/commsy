@@ -9,10 +9,9 @@ syncs:
   commsy-unison-sync:
 
     src: '../'
-    dest: '/var/www/commsy'
 
     # optional, default can be either rsync or unison See Strategies in the wiki for explanation
-    sync_strategy: 'unison'
+    sync_strategy: 'native_osx'
 
     # # optional, use this to map the files to a specific user on sync. Helps fixing permissions. You can use names and uids
     # sync_user: 33
@@ -29,7 +28,5 @@ syncs:
     #sync_groupid: '6000'
 
     #watch_excludes: ['.*/.git/', '.*/.idea/', '.*/node_modules/', '.*/var/cache/', '.*/vendor/bower_components/']
-
-    watch_args: '-v' # make watching verbose
 
     sync_excludes: ['.git', '.idea', 'docker', 'vagrant', 'node_modules', 'bower_components', 'cache']
