@@ -19,6 +19,7 @@ use CommsyBundle\Form\Type\MaterialSectionType;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use CommsyBundle\Event\CommsyEditEvent;
 
 class MaterialController extends Controller
@@ -930,7 +931,9 @@ class MaterialController extends Controller
                 'placeholderText' => '['.$translator->trans('insert title').']',
             ));
         }
-        
+
+        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($materialItem));
+
         $form->handleRequest($request);
         if ($form->isValid()) {
             if ($form->get('save')->isClicked()) {
@@ -945,13 +948,11 @@ class MaterialController extends Controller
                     $item->setDraftStatus(0);
                     $item->saveAsItem();
                 }
+                return $this->redirectToRoute('commsy_material_save', array('roomId' => $roomId, 'itemId' => $itemId));
             } else if ($form->get('cancel')->isClicked()) {
-
+                $this->get('event_dispatcher')->dispatch(CommsyEditEvent::CANCEL, new CommsyEditEvent($materialItem));
             }
-            return $this->redirectToRoute('commsy_material_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
-
-        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($materialItem));
 
         return array(
             'isSaved' => $isSaved,
@@ -996,7 +997,7 @@ class MaterialController extends Controller
         
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
-        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($tempItem));
+        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($tempItem));
 
         return array(
             'roomId' => $roomId,

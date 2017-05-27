@@ -6,6 +6,10 @@ use Symfony\Component\EventDispatcher\Event;
 
 class CommsyEditEvent extends Event {
 
+    const EDIT = 'commsy.edit';
+    const SAVE = 'commsy.save';
+    const CANCEL = 'commsy.cancel';
+
     protected $item;
 
     function __construct($item) {

@@ -33,6 +33,10 @@ class CommsyEditSubscriber implements EventSubscriberInterface {
     }
 
     public static function getSubscribedEvents() {
-        return array(commsyEvents::EDIT => array('onCommsyEdit', 0));
+        return array(
+            CommsyEditEvent::EDIT => array('onCommsyEdit', 0),
+            CommsyEditEvent::SAVE => array('onCommsySave', 0),
+            CommsyEditEvent::CANCEL => array('onCommsyCancel', 0)
+        );
     }
 }
