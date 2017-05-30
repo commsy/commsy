@@ -403,6 +403,23 @@
                 <source>no email</source>
                 <target>Keine Email-Adresse angegeben</target>
             </trans-unit>
+            <trans-unit id="invitation subject">
+                <source>invitation subject %portal%</source>
+                <target>Einladung CommSy-Portal "%portal%"</target>
+            </trans-unit>
+            <trans-unit id="invitation body">
+                <source>invitation body %portal% %link% %sender%</source>
+                <target>
+                    Sie wurden in das CommSy-Portal "%portal%" eingeladen. Wenn Sie die Einladung annehmen möchten, folgen Sie diesem Link:
+
+                    %link%
+
+                    Dieser Link ist 14 Tage gültig.
+
+                    Gruß ...
+                    %sender%
+                </target>
+            </trans-unit>
        </body>
     </file>
 </xliff>

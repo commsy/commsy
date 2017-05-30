@@ -230,32 +230,11 @@
 	   			$retour[] = $temp_array;
 	   			unset($community_list);
 	   		}
+
 	   		$portal_item = $this->_environment->getCurrentPortalItem();
 	   		if ($portal_item->showTime()) {
 	   			$project_list = $current_user->getRelatedProjectListSortByTimeForMyArea();
-	   			#         if ( $portal_item->showGrouproomConfig() ) {
-	   			include_once('classes/cs_list.php');
-	   			$new_project_list = new cs_list();
-	   			$grouproom_array = array();
-	   			$project_grouproom_array = array();
-	   			if ( $project_list->isNotEmpty() ) {
-	   				$room_item = $project_list->getFirst();
-	   				while ($room_item) {
-	   					if ( $room_item->isA(CS_GROUPROOM_TYPE) ) {
-	   						$grouproom_array[$room_item->getItemID()] = $room_item->getTitle();
-	   						$linked_project_item_id = $room_item->getLinkedProjectItemID();
-	   						$project_grouproom_array[$linked_project_item_id][] = $room_item->getItemID();
-	   					} else {
-	   						$new_project_list->add($room_item);
-	   					}
-	   					unset($room_item);
-	   					$room_item = $project_list->getNext();
-	   				}
-	   				unset($project_list);
-	   				$project_list = $new_project_list;
-	   				unset($new_project_list);
-	   			}
-	   			#         }
+
 	   			$future = true;
 	   			$future_array = array();
 	   			$no_time = false;
@@ -264,30 +243,30 @@
 	   			$with_title = false;
 	   		} else {
 	   			$project_list = $current_user->getRelatedProjectListForMyArea();
-	   			#         if ( $portal_item->showGrouproomConfig() ) {
-	   			include_once('classes/cs_list.php');
-	   			$new_project_list = new cs_list();
-	   			$grouproom_array = array();
-	   			$project_grouproom_array = array();
-	   			if ( $project_list->isNotEmpty() ) {
-	   				$room_item = $project_list->getFirst();
-	   				while ($room_item) {
-	   					if ( $room_item->isA(CS_GROUPROOM_TYPE) ) {
-	   						$grouproom_array[$room_item->getItemID()] = $room_item->getTitle();
-	   						$linked_project_item_id = $room_item->getLinkedProjectItemID();
-	   						$project_grouproom_array[$linked_project_item_id][] = $room_item->getItemID();
-	   					} else {
-	   						$new_project_list->add($room_item);
-	   					}
-	   					unset($room_item);
-	   					$room_item = $project_list->getNext();
-	   				}
-	   				unset($project_list);
-	   				$project_list = $new_project_list;
-	   				unset($new_project_list);
-	   			}
-	   			#         }
 	   		}
+
+            include_once('classes/cs_list.php');
+            $new_project_list = new cs_list();
+            $grouproom_array = array();
+            $project_grouproom_array = array();
+            if ( $project_list->isNotEmpty() ) {
+                $room_item = $project_list->getFirst();
+                while ($room_item) {
+                    if ( $room_item->isA(CS_GROUPROOM_TYPE) ) {
+                        $grouproom_array[$room_item->getItemID()] = $room_item->getTitle();
+                        $linked_project_item_id = $room_item->getLinkedProjectItemID();
+                        $project_grouproom_array[$linked_project_item_id][] = $room_item->getItemID();
+                    } else {
+                        $new_project_list->add($room_item);
+                    }
+                    unset($room_item);
+                    $room_item = $project_list->getNext();
+                }
+                unset($project_list);
+                $project_list = $new_project_list;
+                unset($new_project_list);
+            }
+
 	   		unset($current_user);
 	   		if ( $project_list->isNotEmpty() ) {
 	   			$temp_array['item_id'] = -1;
@@ -296,6 +275,7 @@
 	   			   $temp_array['title'] .= ' ('.$this->_translator->getMessage('COMMON_CLOSED').')';
 	   			}
 	   			$retour[] = $temp_array;
+
 	   			unset($temp_array);
 	   			$project_item = $project_list->getFirst();
 	   			while ($project_item) {
@@ -322,7 +302,6 @@
 	   					}
 	
 	   					// grouprooms
-	   					#               if ( $portal_item->showGrouproomConfig() ) {
 	   					if ( isset($project_grouproom_array[$project_item->getItemID()]) and !empty($project_grouproom_array[$project_item->getItemID()]) and $project_item->isGrouproomActive()) {
 	   						$group_result_array = array();
 	   						$project_grouproom_array[$project_item->getItemID()]= array_unique($project_grouproom_array[$project_item->getItemID()]);
@@ -349,7 +328,6 @@
 	   							unset($group_temp_array);
 	   						}
 	   					}
-	   					#               }
 	   				} else {
 	   					$with_title = true;
 	   					$temp_array['item_id'] = -2;
@@ -361,7 +339,6 @@
 	   						$no_time = true;
 	   					}
 	   					if (!empty($title) and $title == $current_time) {
-	   						// if (!empty($title) and !empty($current_time) and $title == $current_time) {
 	   						$future = false;
 	   					}
 	   				}
@@ -403,6 +380,7 @@
 	   				$project_item = $project_list->getNext();
 	   			}
 	   			unset($project_list);
+
 	   			if ($portal_item->showTime()) {
 	
 	   				// special case, if no room is linked to a time pulse

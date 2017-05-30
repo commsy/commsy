@@ -490,11 +490,10 @@ class UserController extends Controller
             'showCategories' => $infoArray['showCategories'],
             'currentUser' => $infoArray['currentUser'],
             'linkedGroups' => $infoArray['linkedGroups'],
-
+            'userComment' => $infoArray['comment'],
+            'status' => $infoArray['status'],
        );
     }
-
-     
 
 
     private function getDetailInfo ($roomId, $itemId) {
@@ -635,7 +634,7 @@ class UserController extends Controller
                 $groupList->removeElement($group);
             }
             $group = $groupList->getNext();
-        }       
+        }
         $infoArray['user'] = $user;
         $infoArray['readerList'] = $readerList;
         $infoArray['modifierList'] = $modifierList;
@@ -656,9 +655,9 @@ class UserController extends Controller
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
         $infoArray['linkedGroups'] = $groupList->to_array();;
+        $infoArray['comment'] = $user->getUserComment();
+        $infoArray['status'] = $user->getStatus();
 
-
-        
         return $infoArray;
     }
 

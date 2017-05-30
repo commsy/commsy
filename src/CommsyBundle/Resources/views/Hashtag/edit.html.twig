@@ -1,9 +1,10 @@
 {% extends 'CommsyBundle:Base:room.html.twig' %}
 
 {% form_theme editForm 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
+{% form_theme mergeForm 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
 
 {% block content %}
-    <div class="uk-grid">
+    <div class="uk-grid" data-uk-grid-margin>
 
         <div class="uk-width-1-1">
 
@@ -39,6 +40,10 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="uk-width-1-1">
+            {# combine hashtags #}
             <div class="uk-panel-box">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
@@ -47,9 +52,9 @@
                 </div>
                 <div class="uk-grid">
                     <div>
-                            {{ form_start(mergeForm) }}
-                            {{ form_widget(mergeForm) }}
-                            {{ form_end(mergeForm) }}
+                        {{ form_start(mergeForm) }}
+                        {{ form_widget(mergeForm) }}
+                        {{ form_end(mergeForm) }}
                     </div>
                 </div>
             </div>

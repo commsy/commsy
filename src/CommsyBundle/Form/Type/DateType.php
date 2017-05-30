@@ -3,6 +3,8 @@ namespace CommsyBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -13,7 +15,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use CommsyBundle\Form\Type\Custom\DateTimeSelectType;
 
 use CommsyBundle\Form\Type\Event\AddRecurringFieldListener;
-use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
 
 class DateType extends AbstractType
 {
@@ -95,6 +96,16 @@ class DateType extends AbstractType
                 'label_attr' => array('class' => 'uk-form-label'),
                 'translation_domain' => 'form',
             ))
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+                $date = $event->getData();
+                $form = $event->getForm();
+
+                if ($date['external_viewer_enabled']) {
+                    $form->add('external_viewer', TextType::class, [
+                        'required' => false,
+                    ]);
+                }
+            })
         ;
         
         if (!isset($options['attr']['unsetRecurrence'])) {

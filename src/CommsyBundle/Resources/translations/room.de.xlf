@@ -86,6 +86,10 @@
                 <source>All rooms</source>
                 <target>Alle Räume</target>
             </trans-unit>
+            <trans-unit id="room-my-rooms">
+                <source>My rooms</source>
+                <target>Meine Räume</target>
+            </trans-unit>
             <trans-unit id="room-filter-label-type">
                 <source>Type</source>
                 <target>Art</target>
@@ -177,6 +181,14 @@
             <trans-unit id="room_code">
                 <source>Code</source>
                 <target>Teilnahmecode</target>
+            </trans-unit>
+            <trans-unit id="room_time_pulses">
+                <source>time pulses</source>
+                <target>Zeitakte</target>
+            </trans-unit>
+            <trans-unit id="room_time_pulses_continuous">
+                <source>continuous</source>
+                <target>kontinuierlich</target>
             </trans-unit>
         </body>
     </file>

@@ -78,6 +78,10 @@
                 <source>All rooms</source>
                 <target>All rooms</target>
             </trans-unit>
+            <trans-unit id="room-my-rooms">
+                <source>My rooms</source>
+                <target>My rooms</target>
+            </trans-unit>
             <trans-unit id="room-filter-label-membership">
                 <source>Membership</source>
                 <target>Membership</target>
@@ -177,6 +181,14 @@
             <trans-unit id="room_code">
                 <source>Code</source>
                 <target>Code</target>
+            </trans-unit>
+            <trans-unit id="room_time_pulses">
+                <source>time pulses</source>
+                <target>Time Pulses</target>
+            </trans-unit>
+            <trans-unit id="room_time_pulses_continuous">
+                <source>continuous</source>
+                <target>continuous</target>
             </trans-unit>
         </body>
     </file>

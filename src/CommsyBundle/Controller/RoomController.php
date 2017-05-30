@@ -287,38 +287,64 @@ class RoomController extends Controller
     public function listAllAction($roomId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomService = $this->get('commsy_legacy.room_service');
+
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
-        $repository = $this->getDoctrine()->getRepository('CommsyBundle:Room');
+        $filterForm = $this->createForm(RoomFilterType::class, null, [
+            'showTime' => $portalItem->showTime(),
+            'timePulses' => $roomService->getTimePulses(),
+        ]);
 
+        $filterForm->handleRequest($request);
+
+        $count = 0;
+        $countAll = 0;
+
+        // ***** Active rooms *****
+        $repository = $this->getDoctrine()->getRepository('CommsyBundle:Room');
+        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
+        $activeRoomQueryBuilder->select($activeRoomQueryBuilder->expr()->count('r.itemId'));
+        $countAll += $activeRoomQueryBuilder->getQuery()->getSingleScalarResult();
+
+        // filtered rooms
+        if ($filterForm->isValid()) {
+            $this->get('lexik_form_filter.query_builder_updater')
+                ->addFilterConditions($filterForm, $activeRoomQueryBuilder);
+            $count += $activeRoomQueryBuilder->getQuery()->getSingleScalarResult();
+        }
+        else {
+            $count = $countAll;
+        }
+
+        // ***** Archived rooms *****
         // TODO: Refactoring needed
         // We need to change the repository when querying archived rooms.
         // This is not the best solution, but works for now. It would be better
         // to use the form validation below, instead of manually checking for a
         // specific value
+        $repository = $this->getDoctrine()->getRepository('CommsyBundle:ZzzRoom');
+        $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
+        $archivedRoomQueryBuilder->select($archivedRoomQueryBuilder->expr()->count('r.itemId'));
+        $countAll += $archivedRoomQueryBuilder->getQuery()->getSingleScalarResult();
+
         if ($request->query->has('room_filter')) {
             $roomFilter = $request->query->get('room_filter');
 
-            if (isset($roomFilter['archived']) && $roomFilter['archived'] === "1") {
-                $repository = $this->getDoctrine()->getRepository('CommsyBundle:ZzzRoom');
-                $legacyEnvironment->activateArchiveMode();
+            // "archived" not set or archived != 1 = include archived rooms in list 
+            if (!isset($roomFilter['archived']) || $roomFilter['archived'] != "1") {
+                if ($filterForm->isValid()) {
+                    $this->get('lexik_form_filter.query_builder_updater')
+                        ->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
+                    $count += $archivedRoomQueryBuilder->getQuery()->getSingleScalarResult();
+                }
             }
         }
-
-        $roomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
-        $roomQueryBuilder->select($roomQueryBuilder->expr()->count('r.itemId'));
-
-        $countAll = $roomQueryBuilder->getQuery()->getSingleScalarResult();
-        $count = $countAll;
-
-        $filterForm = $this->createForm(RoomFilterType::class);
-        $filterForm->handleRequest($request);
-
-        if ($filterForm->isValid()) {
+        // archived rooms have to be included if they aren't explicitely excluded!
+        else {
             $this->get('lexik_form_filter.query_builder_updater')
-                ->addFilterConditions($filterForm, $roomQueryBuilder);
-
-            $count = $roomQueryBuilder->getQuery()->getSingleScalarResult();
+                ->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
+            $count += $archivedRoomQueryBuilder->getQuery()->getSingleScalarResult();
         }
 
         if ($legacyEnvironment->isArchiveMode()) {
@@ -341,6 +367,11 @@ class RoomController extends Controller
      */
     public function feedAllAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomService = $this->get('commsy_legacy.room_service');
+
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
         $roomFilter = $request->get('roomFilter');
@@ -348,35 +379,47 @@ class RoomController extends Controller
             $roomFilter = $request->query->get('room_filter');
         }
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $portalItem = $legacyEnvironment->getCurrentPortalItem();
-
+        // ***** Active rooms *****
         $repository = $this->getDoctrine()->getRepository('CommsyBundle:Room');
-
-        // TODO: Refactoring needed
-        // see "listAllAction"-Method
-        if ($roomFilter) {
-            if (isset($roomFilter['archived']) && $roomFilter['archived'] === "1") {
-                $repository = $this->getDoctrine()->getRepository('CommsyBundle:ZzzRoom');
-                $legacyEnvironment->activateArchiveMode();
-            }
-        }
-
-        $roomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
-        $roomQueryBuilder->setMaxResults($max);
-        $roomQueryBuilder->setFirstResult($start);
+        $activeRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
+        $activeRoomQueryBuilder->setMaxResults($max);
+        $activeRoomQueryBuilder->setFirstResult($start);
 
         if ($roomFilter) {
-            $filterForm = $this->createForm(RoomFilterType::class, $roomFilter);
+            $filterForm = $this->createForm(RoomFilterType::class, $roomFilter, [
+                'showTime' => $portalItem->showTime(),
+                'timePulses' => $roomService->getTimePulses(),
+            ]);
 
             // manually bind values from the request
             $filterForm->submit($roomFilter);
 
             $this->get('lexik_form_filter.query_builder_updater')
-                    ->addFilterConditions($filterForm, $roomQueryBuilder);
+                    ->addFilterConditions($filterForm, $activeRoomQueryBuilder);
         }
 
-        $rooms = $roomQueryBuilder->getQuery()->getResult();
+        $rooms = $activeRoomQueryBuilder->getQuery()->getResult();
+
+        // ***** Archived rooms *****
+        if(!$roomFilter || !isset($roomFilter['archived']) || $roomFilter['archived'] != "1") {
+            $legacyEnvironment->activateArchiveMode();
+            $repository = $this->getDoctrine()->getRepository('CommsyBundle:ZzzRoom');
+            $archivedRoomQueryBuilder = $repository->getMainRoomQueryBuilder($portalItem->getItemId());
+            $archivedRoomQueryBuilder->setMaxResults($max);
+            $archivedRoomQueryBuilder->setFirstResult($start);
+
+            if ($roomFilter) {
+                $filterForm = $this->createForm(RoomFilterType::class, $roomFilter, [
+                    'showTime' => $portalItem->showTime(),
+                    'timePulses' => $roomService->getTimePulses(),
+                ]);
+                $filterForm->submit($roomFilter);
+                $this->get('lexik_form_filter.query_builder_updater')
+                        ->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
+            }
+
+            $rooms = array_merge($rooms, $archivedRoomQueryBuilder->getQuery()->getResult());
+        }
 
         if ($legacyEnvironment->isArchiveMode()) {
             $legacyEnvironment->deactivateArchiveMode();

@@ -14,10 +14,9 @@
                 template: '<div class="ckeditor-commsy-document"></div>',
 
                 allowedContent:
-                    'div[data-type](!ckeditor-commsy-video);' +
-                    'video[src,controls,width,height]{max-width,height};' +
+                    'div[data-type](!ckeditor-commsy-document);' +
                     'iframe[src,frameborder,width,height]',
-                requiredContent: 'div(ckeditor-commsy-document); video[src,controls];',
+                requiredContent: 'div(ckeditor-commsy-document);',
 
                 upcast: function (element) {
                     return element.name === 'div' && element.hasClass('ckeditor-commsy-document');
@@ -37,12 +36,12 @@
                     var type = '';
 
                     if (this.element.getChild(0)) {
-                        var videoElement = this.element.getChild(0);
+                        var documentElement = this.element.getChild(0);
 
-                        src = videoElement.getAttribute('src');
-                        width = videoElement.getAttribute('width');
-                        height = videoElement.getAttribute('height');
-                        type = videoElement.getAttribute('data-type');
+                        src = documentElement.getAttribute('src');
+                        width = documentElement.getAttribute('width');
+                        height = documentElement.getAttribute('height');
+                        type = documentElement.getAttribute('data-type');
                     }
 
                     if (src) {
@@ -69,14 +68,8 @@
                     if (this.data.src) {
 
                         switch (this.data.type) {
-                            case 'commsy':
-                                this.commsyData(this.element);
-                                break;
-                            case 'youtube':
-                                this.youtubeData(this.element);
-                                break;
-                            case 'podcampus':
-                                this.podcampusData(this.element);
+                            case 'slideshare':
+                                this.slideshareData(this.element);
                                 break;
                         }
 
@@ -94,21 +87,7 @@
                     }
                 },
 
-                commsyData: function (divElement) {
-                    if (!divElement.getChild(0)) {
-                        var videoElement = new CKEDITOR.dom.element('video');
-                        videoElement.setAttribute('controls', true);
-                        videoElement.addClass('video-js');
-                        videoElement.addClass('vjs-default-skin');
-
-                        divElement.append(videoElement);
-                    }
-
-                    var videoElement = divElement.getChild(0);
-                    videoElement.setAttribute('src', this.data.src);
-                },
-
-                youtubeData: function (divElement) {
+                slideshareData: function (divElement) {
                     if (!divElement.getChild(0)) {
                         var frameElement = new CKEDITOR.dom.element('iframe');
                         frameElement.setAttribute('allowfullscreen', true);
@@ -118,21 +97,8 @@
                     }
 
                     var frameElement = divElement.getChild(0);
-                    frameElement.setAttribute('src', 'https://www.youtube.com/embed/' + this.data.src);
+                    frameElement.setAttribute('src', 'https://www.slideshare.net/slideshow/embed_code/' + this.data.src);
                 },
-
-                podcampusData: function (divElement) {
-                    if (!divElement.getChild(0)) {
-                        var frameElement = new CKEDITOR.dom.element('iframe');
-                        frameElement.setAttribute('allowfullscreen', true);
-                        frameElement.setAttribute('frameborder', '0');
-
-                        divElement.append(frameElement);
-                    }
-
-                    var frameElement = divElement.getChild(0);
-                    frameElement.setAttribute('src', 'https://www.podcampus.de/nodes/' + this.data.src + '/embed');
-                }
             });
 
             // context menu support
@@ -145,12 +111,12 @@
                     group: 'csDocumentGroup'
                 });
 
-                // register the video context menu for each selected <video> element
+                // register the document context menu for each selected <div> element
                 editor.contextMenu.addListener(function (element) {
                     if (element &&
                         element.getChild(0) &&
                         element.getChild(0).hasClass &&
-                        element.getChild(0).hasClass('ckeditor-commsy-video')) {
+                        element.getChild(0).hasClass('ckeditor-commsy-document')) {
                         return { csDocumentItem: CKEDITOR.TRISTATE_OFF };
                     }
                 });

@@ -95,7 +95,10 @@ class cs_home_member_form extends cs_rubric_form {
           $auth_source_manager = $this->_environment->getAuthSourceManager();
           $auth_source_item = $auth_source_manager->getItem($_GET['invitation_auth_source']);
 
-          if ($auth_source_item->confirmInvitationCode($_GET['invitation_auth_code'])) {
+          global $symfonyContainer;
+          $invitationsService = $symfonyContainer->get('commsy.invitations_service');
+
+          if ($invitationsService->confirmInvitationCode($auth_source_item, $_GET['invitation_auth_code'])) {
               $this->_count_auth_source_list_add_account = 1;
               $this->_count_auth_source_list_enabled = 1;
               $this->_default_auth_source_entry = $auth_source_item->getItemId();

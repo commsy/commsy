@@ -9,6 +9,7 @@ use Symfony\Component\Translation\Translator;
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use Commsy\LegacyBundle\Utils\UserService;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
+use CommsyBundle\Services\InvitationsService;
 
 class MenuBuilder
 {
@@ -25,16 +26,19 @@ class MenuBuilder
 
     private $authorizationChecker;
 
+    private $invitationsService;
+
     /**
     * @param FactoryInterface $factory
     */
-    public function __construct(FactoryInterface $factory, RoomService $roomService, LegacyEnvironment $legacyEnvironment, UserService $userService, AuthorizationChecker $authorizationChecker )
+    public function __construct(FactoryInterface $factory, RoomService $roomService, LegacyEnvironment $legacyEnvironment, UserService $userService, AuthorizationChecker $authorizationChecker, InvitationsService $invitationsService )
     {
         $this->factory = $factory;
         $this->roomService = $roomService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->userService = $userService;
         $this->authorizationChecker = $authorizationChecker;
+        $this->invitationsService = $invitationsService;
     }
 
     public function createAccountMenu(RequestStack $requestStack)
@@ -213,14 +217,17 @@ class MenuBuilder
             ))
             ->setExtra('translation_domain', 'menu');
 
+
             // invitations
-            $menu->addChild('Invitations', array(
-                'label' => 'invitations',
-                'route' => 'commsy_settings_invitations',
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-envelope uk-icon-small uk-icon-justify'),
-            ))
-                ->setExtra('translation_domain', 'menu');
+            if ($this->invitationsService->invitationsEnabled()) {
+                $menu->addChild('Invitations', array(
+                    'label' => 'invitations',
+                    'route' => 'commsy_settings_invitations',
+                    'routeParameters' => array('roomId' => $roomId),
+                    'extras' => array('icon' => 'uk-icon-envelope uk-icon-small uk-icon-justify'),
+                ))
+                    ->setExtra('translation_domain', 'menu');
+            }
 
             // delete
             $menu->addChild('Delete', [

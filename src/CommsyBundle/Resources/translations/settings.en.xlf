@@ -332,6 +332,10 @@
                 <source>Configure color theme text</source>
                 <target>Choose one of several available color themes for this room.</target>
             </trans-unit>
+            <trans-unit id="room_image_text">
+                <source>Room image text</source>
+                <target>You can either use the current themes default image or upload your own picture file to use as background for this rooms home page. To achieve optimal results the aspect ratio of the image should not be higher than 5:1 and the horizontal image resolution should be at least 1300 pixel.</target>
+            </trans-unit>
             <trans-unit id="theme_default">
                 <source>default</source>
                 <target>default</target>
@@ -625,8 +629,8 @@
                 <target>New invitation</target>
             </trans-unit>
             <trans-unit id="New invitation text">
-                <source>Invitation text</source>
-                <target>Plase give the email-adress you want to send the invitation to. The invitee will reccive an email with a one time usable invitation code.</target>
+                <source>New invitation text</source>
+                <target>Plase give the email-adress you want to send the invitation to. The invitee will receive an email with a one time usable invitation code.</target>
             </trans-unit>
             <trans-unit id="Remove invitation">
                 <source>Remove invitation</source>
@@ -634,11 +638,27 @@
             </trans-unit>
             <trans-unit id="Remove invitation text">
                 <source>Remove invitation text</source>
-                <target>Select the invitations you want to revoke. Only the invitations not yet redeemed are listet.</target>
+                <target>Select the invitations you want to revoke. Only the invitations not yet redeemed are listed.</target>
             </trans-unit>
             <trans-unit id="Email-adrress of new invitee">
                 <source>Email-adrress of new invitee</source>
-                <target>Weitere eingeladene E-Mail Adresse</target>
+                <target>Email-adrress of new invitee</target>
+            </trans-unit>
+            <trans-unit id="An invitation for this email-address already exists in this portal">
+                <source>An invitation for this email-address already exists in this portal</source>
+                <target>An invitation for this email-address already exists in this portal</target>
+            </trans-unit>
+            <trans-unit id="settings_time_context">
+                <source>Time context</source>
+                <target>Time context</target>
+            </trans-unit>
+            <trans-unit id="settings_time_context_description">
+                <source>Time context description</source>
+                <target>Choose the time context for your room.</target>
+            </trans-unit>
+            <trans-unit id="settings_time_context_cont">
+                <source>continous</source>
+                <target>continous</target>
             </trans-unit>
         </body>
     </file>
