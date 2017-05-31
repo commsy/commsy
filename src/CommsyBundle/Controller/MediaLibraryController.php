@@ -31,10 +31,20 @@ class MediaLibraryController extends Controller
             ]),
         ]);
 
+        $repository = $this->getDoctrine()->getRepository('CommsyBundle:Files');
+
+        $query = $repository->createQueryBuilder('f')
+            ->select('count(f.filesId)')
+            ->where('f.deleterId IS NULL')
+            ->andWhere('f.deletionDate IS NULL')
+            ->andWhere('f.contextId = :contextId')
+            ->setParameter('contextId', $roomId)
+            ->getQuery();
+
         // TODO: implement
         $itemsCountArray = [
-            'count' => 11,
-            'countAll' => 22,
+            'count' => $query->getSingleScalarResult(),
+            'countAll' => $query->getSingleScalarResult(),
         ];
 
 
@@ -56,21 +66,22 @@ class MediaLibraryController extends Controller
      */
     public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
-        $readerService = $this->get('commsy_legacy.reader_service');
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $repository = $this->getDoctrine()->getRepository('CommsyBundle:Files');
 
-        $fileManager = $legacyEnvironment->getFileManager();
-        $file = $fileManager->getItem(1);
+        $query = $repository->createQueryBuilder('f')
+            ->where('f.deleterId IS NULL')
+            ->andWhere('f.deletionDate IS NULL')
+            ->andWhere('f.contextId = :contextId')
+            ->setParameter('contextId', $roomId)
+            ->setFirstResult($start)
+            ->setMaxResults($max)
+            ->getQuery();
 
-        $media = [];
-
-        for ($i = 0; $i < 20; $i++) {
-            $media[] = $file;
-        }
+        $files = $query->getResult();
 
         return [
             'roomId' => $roomId,
-            'media' => $media,
+            'files' => $files,
 //            'readerList' => $readerList,
 //            'showRating' => $current_context->isAssessmentActive(),
 //            'ratingList' => $ratingList,

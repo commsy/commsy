@@ -1,6 +1,10 @@
 {% extends 'CommsyBundle:Base:list.html.twig' %}
 
 {% block feed %}
+    <div id="upload-drop" class="uk-placeholder">
+        Drag & Drop oder <a class="uk-form-file">Datei auswählen<input id="upload-select" type="file"></a>.
+    </div>
+
     <ul id="medialibrary-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
         'CommsyBundle:MediaLibrary:feed', {

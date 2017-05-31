@@ -382,6 +382,10 @@
                 <source>external_viewer_desc</source>
                 <target>You can provide a white-space separated list of usernames to grant access on this entry.</target>
             </trans-unit>
+            <trans-unit id="form_filter_hide_unlinked_files">
+                <source>Hide-unlinked-files</source>
+                <target>Hide files without relationship</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

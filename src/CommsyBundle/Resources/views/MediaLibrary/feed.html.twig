@@ -1,20 +1,20 @@
 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
-{% for medium in media %}
+{% for file in files %}
     {% set entryAllowedActions = '' %}
-    {% if allowedActions[medium.fileId] is defined %}
-        {% set entryAllowedActions = allowedActions[medium.fileId] %}
+    {% if allowedActions[file.filesId] is defined %}
+        {% set entryAllowedActions = allowedActions[file.filesId] %}
     {% endif %}
     <article class="uk-comment" data-allowed-actions="{{ entryAllowedActions|json_encode() }}">
 
         {# item change information #}
-        {#{{ macros.statusColor(readerList, medium.fileId) }}#}
+        {#{{ macros.statusColor(readerList, file.filesId) }}#}
 
         <header class="uk-comment-header uk-flex">
             {#<div class="items-checkbox uk-margin-right uk-margin-top uk-hidden">#}
-                {#{% if is_granted('ITEM_EDIT', medium.fileId) %}#}
+                {#{% if is_granted('ITEM_EDIT', file.filesId) %}#}
                     {#<form class="uk-form">#}
-                        {#<input type="checkbox" value="{{ medium.fileId }}">#}
+                        {#<input type="checkbox" value="{{ file.filesId }}">#}
                     {#</form>#}
                 {#{% else %}#}
                     {#<i class="uk-icon-ban uk-icon-small red"></i>#}
@@ -23,16 +23,16 @@
 
             {# user icon and modification time #}
             <div class="uk-margin-right uk-flex-item-none">
-                {% if medium.creator.isUser %}
-                    {{  macros.userIconLink(medium.creator) }}
-                {% else %}
-                    {{  macros.userIcon(medium.creator) }}
-                {% endif %}
+                {#{% if file.creator.isUser %}#}
+                    {#{{  macros.userIconLink(file.creator) }}#}
+                {#{% else %}#}
+                    {#{{  macros.userIcon(file.creator) }}#}
+                {#{% endif %}#}
                 <div class="uk-comment-meta">
-                    {% if medium.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                        {{ 'today'|trans({})|capitalize }}, {{medium.getModificationDate|date("H:i")}}
+                    {% if file.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                        {{ 'today'|trans({})|capitalize }}, {{file.getModificationDate|date("H:i")}}
                     {% else %}
-                        {{medium.getModificationDate|date("d.m.Y")}}
+                        {{file.getModificationDate|date("d.m.Y")}}
                     {% endif %}
                 </div>
             </div>
@@ -45,13 +45,13 @@
                     </h4>
                 {% else %}
                     <h4 class="uk-comment-title">
-                        {{ medium.title }}
-                        <a href="{{ path('commsy_announcement_detail', {'roomId': roomId, 'itemId': medium.fileId}) }}">Eintrag</a>
+                        {{ file.filename }}
+                        <a href="{{ path('commsy_announcement_detail', {'roomId': roomId, 'itemId': file.filesId}) }}">Eintrag</a>
                     </h4>
                 {% endif %}
 
                 <div class="uk-comment-meta">
-                    {{ 'by'|trans({})|capitalize }}: {{medium.modificatorItem.fullname}} ({{medium.getCreationDate|date("d.m.Y")}})
+                    {#{{ 'by'|trans({})|capitalize }}: {{file.modificatorItem.fullname}} ({{file.getCreationDate|date("d.m.Y")}})#}
                 </div>
             </div>
 
