@@ -528,8 +528,8 @@ if ( isset($_GET['cid']) ) {
             } elseif ( strstr($item->getDateTime_start(),"00:00:00")
                        and strstr($item->getDateTime_end(),"00:00:00")
                      ) {
-               $starttime = $starttime + (24*3600);
-               $endtime = $endtime + (24*3600);
+               $starttime += (24*3600);
+               $endtime += (48*3600);
             }
 
             ### for thunderbird 3 and lightning 1.0b1 ###
