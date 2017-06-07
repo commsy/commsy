@@ -29,4 +29,4 @@ syncs:
 
     #watch_excludes: ['.*/.git/', '.*/.idea/', '.*/node_modules/', '.*/var/cache/', '.*/vendor/bower_components/']
 
-    sync_excludes: ['.git', '.idea', 'docker', 'vagrant', 'node_modules', 'bower_components', 'cache']
+    sync_excludes: ['.git', '.idea', 'docker/', 'vagrant/', 'node_modules/', 'bower_components/', 'var/cache/dev', 'var/cache/prod']
