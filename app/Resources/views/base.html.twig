@@ -7,9 +7,7 @@
 
         <title>{% block title %}CommSy{% endblock %}</title>
 
-        {% block stylesheets %}
-            <link rel="stylesheet" href="{{ absolute_url(asset('css/build/commsy.css'|asset_version)) }}" />
-        {% endblock %}
+        {% include '::stylesheets.html.twig' %}
 
         <link rel="icon" type="image/x-icon" href="{{ absolute_url(asset('favicon.ico')) }}" />
     </head>
