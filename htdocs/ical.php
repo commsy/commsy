@@ -245,8 +245,8 @@ if (isset($_GET['cid'])) {
             if ($startTime && $endTime) {
                 $vEvent = new \Eluceo\iCal\Component\Event();
 
-                // Dates with equal start and end time are all day events
-                if ($startTime == $endTime) {
+                // Dates with equal start and end date or no start and end time are all day events
+                if ($startTime == $endTime || (empty($item->getStartingTime()) && empty($item->getEndingTime()))) {
                     $vEvent->setNoTime(true);
                 }
 
