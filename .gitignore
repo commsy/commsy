@@ -97,3 +97,6 @@ htdocs/jsMath/*
 vagrant/*
 
 phpunit.xml
+
+docker/.data/*
+docker/debug/*
