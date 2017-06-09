@@ -34,14 +34,13 @@ RUN { \
         echo 'xdebug.remote_host=10.254.254.254'; \
         echo 'xdebug.remote_autostart=1'; \
         echo 'xdebug.idekey=PHPSTORM'; \
-        echo 'xdebug.default_enabled=1'; \
+        echo 'xdebug.default_enabled=0'; \
         echo 'xdebug.remote_enable=1'; \
         echo 'xdebug.remote_connect_back=0'; \
         echo 'xdebug.profiler_enabled=1'; \
         echo 'xdebug.profiler_enable_trigger=1'; \
         echo 'xdebug.profiler_output_name=xdebug.out.%t'; \
         echo 'xdebug.profiler_output_dir=/tmp'; \
-        echo 'xdebug.remote_port = 9000'; \
         echo 'xdebug.remote_log = /tmp/xdebug.log'; \
     } > /usr/local/etc/php/conf.d/xdebug.ini
 
