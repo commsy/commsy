@@ -8,4 +8,3 @@ npm install
 bower install --allow-root
 sudo -H -u www-data bash -c 'gulp'
 rm -r var/cache/dev/
-sudo -H -u www-data bash -c 'mkdir var/cache/htmlpurifier'
