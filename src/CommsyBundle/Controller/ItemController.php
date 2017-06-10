@@ -20,6 +20,9 @@ use CommsyBundle\Form\Type\ItemLinksType;
 use CommsyBundle\Form\Type\ItemWorkflowType;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use CommsyBundle\Event\CommsyEditEvent;
+
 class ItemController extends Controller
 {
     /**
@@ -1028,5 +1031,22 @@ class ItemController extends Controller
             $addCategory = false;
         }
         return $result;
+    }
+
+    /**
+     * @Route("/room/{roomId}/item/{itemId}/canceledit")
+     * @Template()
+     */
+    public function cancelEditAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getTypedItem($itemId);
+        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::CANCEL, new CommsyEditEvent($item));
+
+        return array(
+            'canceledEdit' => true,
+            'roomId' => $roomId,
+            'item' => $item,
+        );
     }
 }

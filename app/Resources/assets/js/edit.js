@@ -115,7 +115,6 @@
                 // cancel is not handled via ajax
                 if ($button.attr('name').includes('cancel')) {
                     event.preventDefault();
-
                     /*
                     // cancel editing a NEW entry => return to list view
                     if($("#breadcrumb-nav .current.last").text().trim() == "") {
@@ -132,15 +131,11 @@
                         window.location.reload(true);
                     }
                     */
-
                     // request backend to remove edit lock
-                    let formData = $(this).closest('form').serializeArray();
-                    formData.push({ name: this.name, value: this.value });
-
                     $.ajax({
-                        url: $this.options.editUrl,
+                        url: $this.options.cancelEditUrl,
                         type: "POST",
-                        data: formData
+                        data: null
                     })
                     .done(function(result, statusText, xhrObject) {
                         // cancel editing a NEW entry => return to list view
@@ -158,7 +153,6 @@
                             window.location.reload(true);
                         }
                     });
-
                 } else {
                     let form = $(this).closest('form');
                     if (form[0].checkValidity()) {

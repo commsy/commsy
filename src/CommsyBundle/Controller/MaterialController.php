@@ -949,8 +949,6 @@ class MaterialController extends Controller
                     $item->saveAsItem();
                 }
                 return $this->redirectToRoute('commsy_material_save', array('roomId' => $roomId, 'itemId' => $itemId));
-            } else if ($form->get('cancel')->isClicked()) {
-                $this->get('event_dispatcher')->dispatch(CommsyEditEvent::CANCEL, new CommsyEditEvent($materialItem));
             }
         }
 

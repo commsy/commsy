@@ -27,12 +27,12 @@
         </div>
         
         {# description #}
-        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
             {{ macrosItem.itemDescription('description', section, true, section.description) }}
         </div>
 
         {# files #}
-        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
             {{ macrosItem.files(section) }}
         </div>
     </article>
