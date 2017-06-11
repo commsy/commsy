@@ -59,7 +59,9 @@ class ItemController extends Controller
                 $withRecurrence = true;
             }
         }
-        
+
+        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($item));
+
         $form = $this->createForm(ItemDescriptionType::class, $formData, $formOptions);
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -83,7 +85,7 @@ class ItemController extends Controller
             } else {
                 throw new UnexpectedValueException("Value must be one of 'save', 'saveThisDate' and 'saveAllDates'.");
             }
-            
+
             return $this->redirectToRoute('commsy_item_savedescription', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
@@ -117,7 +119,9 @@ class ItemController extends Controller
         foreach ($itemArray as $tempItem) {
             $modifierList[$tempItem->getItemId()] = $itemService->getAdditionalEditorsForItem($tempItem);
         }
-        
+
+        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($item));
+
         return array(
             // etherpad subscriber (material save)
             // important: save and item->id parameter are needed
@@ -318,6 +322,8 @@ class ItemController extends Controller
 
         $translator = $this->get('translator');
 
+        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($item));
+
         $form = $this->createForm(ItemLinksType::class, $formData, [
             'filterRubric' => $optionsData['filterRubric'],
             'filterPublic' => $optionsData['filterPublic'],
@@ -388,7 +394,9 @@ class ItemController extends Controller
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
-        
+
+        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($item));
+
         return array(
             'roomId' => $roomId,
             'item' => $tempItem,

@@ -9,6 +9,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use CommsyBundle\Event\CommsyEditEvent;
+
 use CommsyBundle\Form\Type\UploadType;
 
 class UploadController extends Controller
@@ -176,6 +179,8 @@ class UploadController extends Controller
             $assignedFiles['files'][] = $formFile;
         }
 
+        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($item));
+
         $form = $this->createForm(UploadType::class, $assignedFiles, [
             'uploadUrl' => $this->generateUrl('commsy_upload_upload', [
                 'roomId' => $roomId,
@@ -234,7 +239,9 @@ class UploadController extends Controller
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $tempManager = $legacyEnvironment->getManager($item->getItemType());
         $tempItem = $tempManager->getItem($item->getItemId());
-        
+
+        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($item));
+
         return array(
             'roomId' => $roomId,
             'item' => $tempItem

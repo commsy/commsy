@@ -1190,6 +1190,7 @@ class MaterialController extends Controller
 
                 $section->save();
             }
+
             return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));
         }
     }
@@ -1260,6 +1261,8 @@ class MaterialController extends Controller
             )),
         );
 
+        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($material));
+
         $form = $this->createForm(MaterialSectionType::class, $formData, $formOptions);
 
         $form->handleRequest($request);
@@ -1308,6 +1311,8 @@ class MaterialController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.material');
 
         $material = $materialService->getMaterial($itemId);
+
+        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($item));
 
         return array(
             'roomId' => $roomId,

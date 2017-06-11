@@ -317,7 +317,15 @@ class AnnouncementController extends Controller
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
-        
+
+        $alert = null;
+        if ($infoArray['announcement']->isLocked()) {
+            $translator = $this->get('translator');
+
+            $alert['type'] = 'warning';
+            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+        }
+
         return array(
             'roomId' => $roomId,
             'announcement' => $infoArray['announcement'],
@@ -342,6 +350,7 @@ class AnnouncementController extends Controller
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
             'ratingArray' => $infoArray['ratingArray'],
+            'alert' => $alert,
        );
     }
     /**
