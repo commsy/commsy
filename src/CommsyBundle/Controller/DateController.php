@@ -498,6 +498,14 @@ class DateController extends Controller
             $categories = $this->getTagDetailArray($roomCategories, $dateCategories);
         }
 
+        $alert = null;
+        if ($dateService->getDate($itemId)->isLocked()) {
+            $translator = $this->get('translator');
+
+            $alert['type'] = 'warning';
+            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+        }
+
         return array(
             'roomId' => $roomId,
             'date' => $dateService->getDate($itemId),
@@ -514,6 +522,7 @@ class DateController extends Controller
             'roomCategories' => $categories,
             'isParticipating' => $date->isParticipant($legacyEnvironment->getCurrentUserItem()),
             'isRecurring' => ($date->getRecurrenceId() != ''),
+            'alert' => $alert,
         );
     }
     
