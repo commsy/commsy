@@ -252,6 +252,14 @@ class DiscussionController extends Controller
     {
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
+        $alert = null;
+        if ($infoArray['discussion']->isLocked()) {
+            $translator = $this->get('translator');
+
+            $alert['type'] = 'warning';
+            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+        }
+
         return [
             'roomId' => $roomId,
             'discussion' => $infoArray['discussion'],
@@ -276,6 +284,7 @@ class DiscussionController extends Controller
             'user' => $infoArray['user'],
             'ratingArray' => $infoArray['ratingArray'],
             'roomCategories' => $infoArray['roomCategories'],
+            'alert' => $alert,
         ];
     }
     
