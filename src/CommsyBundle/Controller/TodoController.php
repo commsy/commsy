@@ -477,6 +477,14 @@ class TodoController extends Controller
             $timeSpendSum += $step->getMinutes();
         }
 
+        $alert = null;
+        if ($todoService->getTodo($itemId)->isLocked()) {
+            $translator = $this->get('translator');
+
+            $alert['type'] = 'warning';
+            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+        }
+
         return array(
             'roomId' => $roomId,
             'todo' => $todoService->getTodo($itemId),
@@ -500,6 +508,7 @@ class TodoController extends Controller
                 'ratingOwnDetail' => $ratingOwnDetail,
             ] : [],
             'isParticipating' => $todo->isProcessor($legacyEnvironment->getCurrentUserItem()),
+            'alert' => $alert,
         );
     }
     
