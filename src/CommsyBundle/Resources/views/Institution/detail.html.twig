@@ -141,6 +141,10 @@
                     </div>
                 </div>
 
+                {% if alert %}
+                    {{ macros.showAlert(alert) }}
+                {%  endif %}
+
                 {# content #}
                 <article class="uk-article uk-position-relative" data-uk-observe>
                     {# title, etc. #}

@@ -468,7 +468,15 @@ class UserController extends Controller
     {
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
-        
+
+        $alert = null;
+        if ($infoArray['user']->isLocked()) {
+            $translator = $this->get('translator');
+
+            $alert['type'] = 'warning';
+            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+        }
+
         return array(
             'roomId' => $roomId,
             'user' => $infoArray['user'],
@@ -492,6 +500,7 @@ class UserController extends Controller
             'linkedGroups' => $infoArray['linkedGroups'],
             'userComment' => $infoArray['comment'],
             'status' => $infoArray['status'],
+            'alert' => $alert,
        );
     }
 
