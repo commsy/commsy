@@ -338,7 +338,15 @@ class GroupController extends Controller
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
-        
+
+        $alert = null;
+        if ($infoArray['group']->isLocked()) {
+            $translator = $this->get('translator');
+
+            $alert['type'] = 'warning';
+            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+        }
+
         return array(
             'roomId' => $roomId,
             'group' => $infoArray['group'],
@@ -365,6 +373,7 @@ class GroupController extends Controller
             'userIsMember' => $infoArray['userIsMember'],
             'memberStatus' => $memberStatus,
             'annotationForm' => $form->createView(),
+            'alert' => $alert,
        );
     }
 
@@ -853,7 +862,9 @@ class GroupController extends Controller
             }
             return $this->redirectToRoute('commsy_group_savegrouproom', array('roomId' => $roomId, 'itemId' => $itemId));
         }
-        
+
+        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($groupItem));
+
         return array(
             'form' => $form->createView(),
         );
