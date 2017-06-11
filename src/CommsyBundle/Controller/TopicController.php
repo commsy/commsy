@@ -238,7 +238,15 @@ class TopicController extends Controller
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
-        
+
+        $alert = null;
+        if ($infoArray['topic']->isLocked()) {
+            $translator = $this->get('translator');
+
+            $alert['type'] = 'warning';
+            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+        }
+
         return array(
             'roomId' => $roomId,
             'topic' => $infoArray['topic'],
@@ -261,6 +269,7 @@ class TopicController extends Controller
             'showCategories' => $infoArray['showCategories'],
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
+            'alert' => $alert,
        );
     }
 
