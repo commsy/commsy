@@ -604,6 +604,8 @@ class TodoController extends Controller
             'placeholderText' => '['.$translator->trans('insert title').']',
         ]);
 
+        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($step->getLinkedItem()));
+
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
             if ($form->get('save')->isClicked()) {
@@ -621,6 +623,8 @@ class TodoController extends Controller
                     $step->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
                     $step->save();
+
+                    $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($step->getLinkedItem()));
 
                     return $this->redirectToRoute('commsy_todo_detail', [
                         'roomId' => $roomId,
@@ -641,9 +645,6 @@ class TodoController extends Controller
                 }
             }
         }
-
-        $dispatcher = $this->get('event_dispatcher');
-        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent($step));
 
         return [
             'form' => $form->createView(),
@@ -721,7 +722,7 @@ class TodoController extends Controller
             return $this->redirectToRoute('commsy_todo_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
-        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($todoItem));
+        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($todoItem));
 
         return array(
             'form' => $form->createView(),
@@ -746,8 +747,12 @@ class TodoController extends Controller
         
         if ($item->getItemType() == 'todo') {
             $typedItem = $todoService->getTodo($itemId);
+
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($typedItem));
         } else if ($item->getItemType() == 'step') {
             $typedItem = $todoService->getStep($itemId);
+
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($typedItem->getLinkedItem()));
         }
         
         $itemArray = array($typedItem);
@@ -803,8 +808,6 @@ class TodoController extends Controller
             
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
-
-        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($typedItem));
 
         return array(
             'roomId' => $roomId,
