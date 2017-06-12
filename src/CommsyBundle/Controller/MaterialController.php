@@ -920,6 +920,8 @@ class MaterialController extends Controller
                 )),
                 'placeholderText' => '['.$translator->trans('insert title').']',
             ));
+
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($materialItem));
         } else if ($item->getItemType() == 'section') {
             // get section from MaterialService
             $materialItem = $materialService->getSection($itemId);
@@ -930,9 +932,9 @@ class MaterialController extends Controller
             $form = $this->createForm(SectionType::class, $formData, array(
                 'placeholderText' => '['.$translator->trans('insert title').']',
             ));
-        }
 
-        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($materialItem));
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($materialService->getMaterial($materialItem->getlinkedItemID())));
+        }
 
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -983,8 +985,12 @@ class MaterialController extends Controller
         
         if ($item->getItemType() == 'material') {
             $tempItem = $materialService->getMaterial($itemId);
+
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($tempItem));
         } else if ($item->getItemType() == 'section') {
-            $tempItem = $materialService->getSection($itemId); 
+            $tempItem = $materialService->getSection($itemId);
+
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($materialService->getMaterial($tempItem->getLinkedItemID())));
         }
         
         $itemArray = array($tempItem);
@@ -994,8 +1000,6 @@ class MaterialController extends Controller
         }
         
         $infoArray = $this->getDetailInfo($roomId, $itemId);
-
-        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($tempItem));
 
         return array(
             'roomId' => $roomId,
