@@ -56,6 +56,8 @@ class ModerationSettingsTransformer implements DataTransformerInterface
             $temp_array['title'] = $roomItem->getUsageInfoHeaderForRubric('home');
             $temp_array['text'] = $roomItem->getUsageInfoTextForRubricInForm('home');
             $array_info_text[] = $temp_array;
+            $roomData['usernotice']['title_home'] = $roomItem->getUsageInfoHeaderForRubric('home');
+            $roomData['usernotice']['description_home'] = $roomItem->getUsageInfoTextForRubricInForm('home');
             foreach ($roomItem->getAvailableRubrics() as $rubric) {
                  $temp_array = array();
                  switch ( mb_strtoupper($rubric, 'UTF-8') ){
@@ -150,7 +152,7 @@ class ModerationSettingsTransformer implements DataTransformerInterface
         }
 
         // Rubrics usage info
-        foreach($roomObject->getAvailableRubrics() as $rubric){
+        foreach(array_merge(['home'], $roomObject->getAvailableRubrics()) as $rubric){
             $roomObject->setUsageInfoHeaderForRubric($rubric, $roomData['usernotice']["title_" . $rubric]);
             $roomObject->setUsageInfoTextForRubric($rubric, $roomData['usernotice']["description_" . $rubric]);
         }
