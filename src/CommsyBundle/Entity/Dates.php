@@ -200,6 +200,12 @@ class Dates
      */
     private $files;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="calendar_id", type="integer", nullable=true)
+     */
+    private $calendarId;
 
     public function __construct()
     {
@@ -831,5 +837,29 @@ class Dates
     public function getModifier()
     {
         return $this->modifier;
+    }
+
+    /**
+     * Set calendarId
+     *
+     * @param integer $calendarId
+     *
+     * @return Dates
+     */
+    public function setCalendarId($calendarId)
+    {
+        $this->calendarId = $calendarId;
+
+        return $this;
+    }
+
+    /**
+     * Get calendarId
+     *
+     * @return integer
+     */
+    public function getCalendarId()
+    {
+        return $this->calendarId;
     }
 }
