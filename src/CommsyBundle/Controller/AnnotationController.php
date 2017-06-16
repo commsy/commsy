@@ -154,10 +154,10 @@ class AnnotationController extends Controller
                 $data = $form->getData();
 
                 // create new annotation
-                $annotationService->addAnnotation($roomId, $itemId, $data['description']);
+                $annotationId = $annotationService->addAnnotation($roomId, $itemId, $data['description']);
+                return $this->redirectToRoute('commsy_'.$itemType.'_detail', array('roomId' => $roomId, 'itemId' => $itemId, '_fragment' => 'description' . $annotationId));
             }
         }
-
         return $this->redirectToRoute('commsy_'.$itemType.'_detail', array('roomId' => $roomId, 'itemId' => $itemId));
     }
 
