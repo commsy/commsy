@@ -302,6 +302,10 @@
                 <source>abo dates</source>
                 <target>Termine abonnieren</target>
             </trans-unit>
+            <trans-unit id="calendars">
+                <source>calendars</source>
+                <target>Kalender</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
