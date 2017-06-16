@@ -112,6 +112,13 @@ services:
         tags:
             - { name: security.voter }
 
+    commsy.security.calendars_voter:
+        class: CommsyBundle\Security\Authorization\Voter\CalendarsVoter
+        arguments: ['@commsy_legacy.environment']
+        public: false
+        tags:
+            - { name: security.voter }
+
     # Exporter
     commsy.export.wordpress:
         class: CommsyBundle\Export\WordpressExporter
