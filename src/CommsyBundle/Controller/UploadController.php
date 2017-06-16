@@ -179,7 +179,11 @@ class UploadController extends Controller
             $assignedFiles['files'][] = $formFile;
         }
 
-        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($item));
+        if ($item->getItemType() === CS_SECTION_TYPE ||$item->getItemType() === CS_STEP_TYPE) {
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($item->getLinkedItem()));
+        } else {
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($item));
+        }
 
         $form = $this->createForm(UploadType::class, $assignedFiles, [
             'uploadUrl' => $this->generateUrl('commsy_upload_upload', [
@@ -240,7 +244,11 @@ class UploadController extends Controller
         $tempManager = $legacyEnvironment->getManager($item->getItemType());
         $tempItem = $tempManager->getItem($item->getItemId());
 
-        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($item));
+        if ($item->getItemType() === CS_SECTION_TYPE ||$item->getItemType() === CS_STEP_TYPE) {
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($item->getLinkedItem()));
+        } else {
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($item));
+        }
 
         return array(
             'roomId' => $roomId,
