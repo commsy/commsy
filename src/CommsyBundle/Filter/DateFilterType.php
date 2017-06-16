@@ -50,6 +50,9 @@ class DateFilterType extends AbstractType
             ->add('participant', ParticipantFilterType::class, array(
                 'label' => false,
             ))
+            ->add('calendar', CalendarFilterType::class, array(
+                'label' => false,
+            ))
         ;
         if ($options['hasCategories']) {
             $builder->add('category', CategoryFilterType::class, array(

@@ -26,6 +26,12 @@ services:
         tags:
             - { name: form.type }
 
+    commsy.filter.calendar:
+        class: CommsyBundle\Filter\CalendarFilterType
+        arguments: ['@request_stack', '@commsy.calendars_service']
+        tags:
+            - { name: form.type }
+
     # Menu
     commsy.menu.builder:
         class: CommsyBundle\Menu\MenuBuilder
@@ -396,6 +402,11 @@ services:
         tags:
             - { name: form.type }
 
+    commsy.form.type.calendar:
+        class: CommsyBundle\Form\Type\CalendarType
+        tags:
+            - { name: form.type }
+
     # Form type extension
     commsy.form.extension.image_type:
         class: CommsyBundle\Form\Extension\ImageTypeExtension
@@ -547,4 +558,8 @@ services:
 
     commsy.invitations_service:
         class: CommsyBundle\Services\InvitationsService
+        arguments: ['@doctrine.orm.entity_manager', '@service_container']
+
+    commsy.calendars_service:
+        class: CommsyBundle\Services\CalendarsService
         arguments: ['@doctrine.orm.entity_manager', '@service_container']
