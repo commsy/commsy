@@ -23,6 +23,20 @@ class CalendarsService
     }
 
     public function getListCalendars ($contextId) {
-        return [];
+        $result = array();
+
+        $repository = $this->em->getRepository('CommsyBundle:Calendars');
+        $query = $repository->createQueryBuilder('calendars')
+            ->select()
+            ->where('calendars.contextId = :contextId')
+            ->setParameter('contextId', $contextId)
+            ->getQuery();
+        $calendars = $query->getResult();
+
+        foreach ($calendars as $calendar) {
+            $result[] = $calendar;
+        }
+
+        return $result;
     }
 }

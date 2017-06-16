@@ -45,7 +45,7 @@ class CalendarFilterType extends AbstractType
 
                 $calendarsForm = [];
                 foreach ($calendars as $calendar) {
-                    $calendarsForm[$calendar->getTile()] = $calendar->getId();
+                    $calendarsForm[$calendar->getTitle()] = $calendar->getId();
                 }
 
                 $builder
