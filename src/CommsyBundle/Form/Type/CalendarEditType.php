@@ -30,6 +30,14 @@ class CalendarEditType extends AbstractType
                 'translation_domain' => 'calendar',
                 'required' => true,
             ])
+            ->add('color', Types\TextType::class, [
+                'constraints' => [
+                    new Constraints\NotBlank(),
+                ],
+                'label' => 'Color',
+                'translation_domain' => 'calendar',
+                'required' => true,
+            ])
 
             ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
                 $calendar = $event->getData();
