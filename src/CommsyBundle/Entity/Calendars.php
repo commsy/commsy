@@ -45,6 +45,13 @@ class Calendars
     private $color;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="external_url", type="string", length=255, nullable=true)
+     */
+    private $external_url;
+
+    /**
      * Get id
      *
      * @return integer
@@ -124,5 +131,29 @@ class Calendars
     public function getColor()
     {
         return $this->color;
+    }
+
+    /**
+     * Set external_url
+     *
+     * @param string $external_url
+     *
+     * @return Calendars
+     */
+    public function setExternalUrl($external_url)
+    {
+        $this->external_url = $external_url;
+
+        return $this;
+    }
+
+    /**
+     * Get external_url
+     *
+     * @return string
+     */
+    public function getExternalUrl()
+    {
+        return $this->external_url;
     }
 }
