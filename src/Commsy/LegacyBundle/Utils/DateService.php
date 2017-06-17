@@ -105,7 +105,18 @@ class DateService
                 }
             }
         }
-        
+
+        // calendars
+        if (isset($formData['calendar'])) {
+            if (isset($formData['calendar']['calendar'])) {
+                $calendars = $formData['calendar']['calendar'];
+
+                if (!empty($calendars)) {
+                    $this->dateManager->setCalendarArrayLimit($calendars);
+                }
+            }
+        }
+
         // hashtag
         if (isset($formData['hashtag'])) {
             if (isset($formData['hashtag']['hashtag'])) {

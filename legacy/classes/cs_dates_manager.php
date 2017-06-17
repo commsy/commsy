@@ -159,7 +159,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       $this->_color_limit = $limit;
    }
 
-   function setCalendarLimit ($limit) {
+   function setCalendarArrayLimit ($limit) {
       $this->_calendar_limit = $limit;
    }
 
@@ -386,10 +386,10 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
          $query .= ' AND '.$this->addDatabasePrefix('dates').'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
       }
       if (isset($this->_color_limit)) {
-         $query .= ' AND '.$this->addDatabasePrefix('dates').'.color = "'.encode(AS_DB,$this->_calendar_limit).'"';
+         $query .= ' AND '.$this->addDatabasePrefix('dates').'.color = "'.encode(AS_DB,$this->_color_limit).'"';
       }
       if (isset($this->_calendar_limit)) {
-         $query .= ' AND '.$this->addDatabasePrefix('dates').'.calendar_id = "'.encode(AS_DB,$this->_color_limit).'"';
+         $query .= ' AND '.$this->addDatabasePrefix('dates').'.calendar_id IN ('.implode(", ", $this->_calendar_limit).')';
       }
       if (isset($this->_recurrence_limit)) {
          $query .= ' AND '.$this->addDatabasePrefix('dates').'.recurrence_id = "'.encode(AS_DB,$this->_recurrence_limit).'"';
