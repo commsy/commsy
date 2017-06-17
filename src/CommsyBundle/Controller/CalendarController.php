@@ -43,7 +43,11 @@ class CalendarController extends Controller
 
         $editForm->handleRequest($request);
         if ($editForm->isValid()) {
-            // persist changes / delete hashtag
+            // tells Doctrine you want to (eventually) save the Product (no queries yet)
+            $em->persist($calendar);
+
+            // actually executes the queries (i.e. the INSERT query)
+            $em->flush();
 
             return $this->redirectToRoute('commsy_calendar_edit', [
                 'roomId' => $roomId,
