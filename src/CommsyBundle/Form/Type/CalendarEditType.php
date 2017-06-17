@@ -60,16 +60,18 @@ class CalendarEditType extends AbstractType
                             ),
                             'label' => 'Update calendar',
                             'translation_domain' => 'calendar',
-                        ])
-                        ->add('delete', Types\SubmitType::class, [
-                            'attr' => array(
-                                'class' => 'uk-button-danger',
-                            ),
-                            'label' => 'Delete calendar',
-                            'translation_domain' => 'calendar',
-                            'validation_groups' => false,   // disable validation
-                        ])
-                    ;
+                        ]);
+                    if (!$calendar->getDefault()) {
+                        $form
+                            ->add('delete', Types\SubmitType::class, [
+                                'attr' => array(
+                                    'class' => 'uk-button-danger',
+                                ),
+                                'label' => 'Delete calendar',
+                                'translation_domain' => 'calendar',
+                                'validation_groups' => false,   // disable validation
+                            ]);
+                    }
                 }
             });
         ;

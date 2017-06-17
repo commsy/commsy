@@ -914,7 +914,7 @@ class DateController extends Controller
         
         $formData = array();
         $materialItem = NULL;
-        
+
         // get date from DateService
         $dateItem = $dateService->getDate($itemId);
         if (!$dateItem) {
@@ -922,12 +922,24 @@ class DateController extends Controller
         }
 
         $formData = $transformer->transform($dateItem);
+
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('CommsyBundle:Calendars');
+        $calendars = $repository->findAll($roomId);
+        $calendarsOptions = [];
+        foreach ($calendars as $calendar) {
+            $calendarsOptions[$calendar->getTitle()] = $calendar->getId();
+        }
+        $formData['calendars'] = $calendarsOptions;
+        $formData['calendar'] = '1';
+
         $formOptions = array(
             'action' => $this->generateUrl('commsy_date_edit', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId,
             )),
             'placeholderText' => '['.$translator->trans('insert title').']',
+            'calendars' => $calendarsOptions,
         );
         if ($dateItem->getRecurrencePattern() != '') {
             $formOptions['attr']['unsetRecurrence'] = true;

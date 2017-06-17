@@ -66,6 +66,14 @@ class DateDetailsType extends AbstractType
                 'expanded' => true,
                 'multiple' => false
             ))
+            ->add('calendar', ChoiceType::class, array(
+                'placeholder' => false,
+                'choices' => $options['calendars'],
+                'label' => 'calendar',
+                'required' => true,
+                'expanded' => true,
+                'multiple' => false
+            ))
         ;
             
         if (!isset($options['attr']['unsetRecurrence'])) {

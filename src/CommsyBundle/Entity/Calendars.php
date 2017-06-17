@@ -52,6 +52,13 @@ class Calendars
     private $external_url;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="default", type="boolean", nullable=false)
+     */
+    private $default = '0';
+
+    /**
      * Get id
      *
      * @return integer
@@ -155,5 +162,29 @@ class Calendars
     public function getExternalUrl()
     {
         return $this->external_url;
+    }
+
+    /**
+     * Set default
+     *
+     * @param boolean $default
+     *
+     * @return Calendars
+     */
+    public function setDefault($default)
+    {
+        $this->default = $default;
+
+        return $this;
+    }
+
+    /**
+     * Get default
+     *
+     * @return boolean
+     */
+    public function getDefault()
+    {
+        return $this->default;
     }
 }

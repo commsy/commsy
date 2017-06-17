@@ -79,6 +79,14 @@ class DateType extends AbstractType
                 'expanded' => true,
                 'multiple' => false
             ))
+            ->add('calendar', ChoiceType::class, array(
+                'placeholder' => false,
+                'choices' => $options['calendars'],
+                'label' => 'calendar',
+                'required' => true,
+                'expanded' => true,
+                'multiple' => false
+            ))
             ->add('permission', CheckboxType::class, array(
                 'label' => 'permission',
                 'label_attr' => array('class' => 'uk-form-label'),
@@ -173,7 +181,7 @@ class DateType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(array('placeholderText'))
+            ->setRequired(array('placeholderText', 'calendars'))
             ->setDefaults(array('translation_domain' => 'date'))
         ;
     }

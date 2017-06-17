@@ -36,6 +36,15 @@
                         </span><span class="uk-margin-small-right">{{ form_widget(tempColor) }}</span>
                     {% endfor %}
                 </div>
+                <div class="uk-form-row">
+                    {{ form_label(form.calendar) }}
+                    {% for tempCalendar in form.calendar.iterator %}
+                        <span class="">
+                            <i class="uk-icon-medium uk-icon-circle"></i>
+                        </span>
+                        <span class="uk-margin-small-right">{{ form_widget(tempCalendar) }}</span>
+                    {% endfor %}
+                </div>
 
                 {% if form.recurring_select is defined %}
                 <div class="uk-form-row">
