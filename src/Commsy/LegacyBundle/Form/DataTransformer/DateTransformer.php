@@ -63,6 +63,8 @@ class DateTransformer implements DataTransformerInterface
                 $dateData['color'] = 'cs-date-color-no-color';
             }
 
+            $dateData['calendar'] = $dateItem->getCalendarId();
+
             if ($dateItem->getRecurrencePattern() != '') {
                 $dateData = array_merge($dateData, $dateItem->getRecurrencePattern());
                 $dateData['recurring_sub']['untilDate'] = new \DateTime($dateData['recurringEndDate']);
@@ -121,6 +123,8 @@ class DateTransformer implements DataTransformerInterface
         $dateObject->setDatetime_end($dateData['end']['date']->format('Y-m-d').' '.$dateData['end']['time']->format('H:i:s'));
 
         $dateObject->setColor($dateData['color']);
+
+        $dateObject->setCalendarId($dateData['calendar']);
 
         if (isset($dateData['hidden'])) {
             if ($dateData['hidden']) {

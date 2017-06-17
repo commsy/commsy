@@ -6112,5 +6112,10 @@ class cs_context_item extends cs_item {
   	}
   	return false;
   }
+
+
+  public function getDefaultCalendarId () {
+    return 1;
+  }
 }
 ?>

@@ -343,6 +343,28 @@ class cs_dates_item extends cs_item {
       return $this->_getValue('color');
    }
 
+    /** set calendar_id of a dates
+     * this method sets the calendar_id of the dates
+     *
+     * @param string value calendar_id of the dates
+     *
+     * @author CommSy Development Group
+     */
+    function setCalendarId($value) {
+        $this->_setValue('calendar_id', $value);
+    }
+
+    /** get calendar_id of a dates
+     * this method returns the calendar_id of the dates
+     *
+     * @return string calendar_id of a dates
+     *
+     * @author CommSy Development Group
+     */
+    function getCalendarId() {
+        return $this->_getValue('calendar_id');
+    }
+
    /** set recurrence_id of a date
     * this method sets the recurrence_id of the date
     *

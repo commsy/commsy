@@ -931,7 +931,6 @@ class DateController extends Controller
             $calendarsOptions[$calendar->getTitle()] = $calendar->getId();
         }
         $formData['calendars'] = $calendarsOptions;
-        $formData['calendar'] = '1';
 
         $formOptions = array(
             'action' => $this->generateUrl('commsy_date_edit', array(

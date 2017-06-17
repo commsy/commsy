@@ -58,6 +58,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
    var $_topic_limit = NULL;
    var $_sort_order = NULL;
    var $_color_limit = NULL;
+   var $_calendar_limit = NULL;
    var $_recurrence_limit = NULL;
 
    var $_month_limit = NULL;
@@ -109,6 +110,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       $this->_day_limit2 = NULL;
       $this->_year_limit = NULL;
       $this->_color_limit = NULL;
+      $this->_calendar_limit = NULL;
       $this->_recurrence_limit = NULL;
       $this->_date_mode_limit = 1;
       $this->_assignment_limit = false;
@@ -155,6 +157,10 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
 
    function setColorLimit ($limit) {
       $this->_color_limit = $limit;
+   }
+
+   function setCalendarLimit ($limit) {
+      $this->_calendar_limit = $limit;
    }
 
    function setAssignmentLimit ($array) {
@@ -380,7 +386,10 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
          $query .= ' AND '.$this->addDatabasePrefix('dates').'.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
       }
       if (isset($this->_color_limit)) {
-         $query .= ' AND '.$this->addDatabasePrefix('dates').'.color = "'.encode(AS_DB,$this->_color_limit).'"';
+         $query .= ' AND '.$this->addDatabasePrefix('dates').'.color = "'.encode(AS_DB,$this->_calendar_limit).'"';
+      }
+      if (isset($this->_calendar_limit)) {
+         $query .= ' AND '.$this->addDatabasePrefix('dates').'.calendar_id = "'.encode(AS_DB,$this->_color_limit).'"';
       }
       if (isset($this->_recurrence_limit)) {
          $query .= ' AND '.$this->addDatabasePrefix('dates').'.recurrence_id = "'.encode(AS_DB,$this->_recurrence_limit).'"';
@@ -764,6 +773,12 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       } else {
          $query .= ', color=NULL';
       }
+      $color = $item->getCalendarId();
+      if ( !empty($color) ) {
+         $query .= ', calendar_id="'.encode(AS_DB,$item->getCalendarId()).'"';
+      } else {
+         $query .= ', calendar_id="'.encode(AS_DB,$item->getContextItem()->getDefaultCalendarId()).'"';
+      }
       $rev_id = $item->getRecurrenceId();
       if ( !empty($rev_id) ) {
          $query .= ', recurrence_id="'.encode(AS_DB,$item->getRecurrenceId()).'"';
@@ -856,6 +871,12 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       $color = $item->getColor();
       if ( !empty($color) ) {
          $query .= ', color="'.encode(AS_DB,$item->getColor()).'"';
+      }
+      $color = $item->getCalendarId();
+      if ( !empty($color) ) {
+          $query .= ', calendar_id="'.encode(AS_DB,$item->getCalendarId()).'"';
+      } else {
+          $query .= ', calendar_id="'.encode(AS_DB,$item->getContextItem()->getDefaultCalendarId()).'"';
       }
       $rev_id = $item->getRecurrenceId();
       if ( !empty($rev_id) ) {
@@ -1022,6 +1043,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       $xml->addChildWithCDATA('public', $item->isPublic());
       $xml->addChildWithCDATA('date_mode', $item->getDateMode());
       $xml->addChildWithCDATA('color', $item->getColor());
+      $xml->addChildWithCDATA('calendar_id', $item->getCalendarId());
       $xml->addChildWithCDATA('recurrence_id', $item->getRecurrenceId());
       $recurrence_array = $item->getRecurrencePattern();
       $xmlRecurrence = $this->getArrayAsXML($xml, $recurrence_array, true, 'recurrence');
@@ -1061,6 +1083,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
          $item->setPublic((string)$xml->public[0]);
          $item->setDateMode((string)$xml->date_mode[0]);
          $item->setColor((string)$xml->color[0]);
+         $item->setCalendarId((string)$xml->calendar_id[0]);
          $item->setRecurrenceId((string)$xml->recurrence_id[0]);
          $recurrence_array = $this->getXMLAsArray($xml->recurrence);
          $item->setRecurrencePattern($recurrence_array['recurrence']);
