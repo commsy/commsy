@@ -365,6 +365,12 @@ class cs_dates_item extends cs_item {
         return $this->_getValue('calendar_id');
     }
 
+    function getCalendar() {
+        global $symfonyContainer;
+        $calendarsService = $symfonyContainer->get('commsy.calendars_service');
+        return $calendarsService->getCalendar($this->getCalendarId())[0];
+    }
+
    /** set recurrence_id of a date
     * this method sets the recurrence_id of the date
     *

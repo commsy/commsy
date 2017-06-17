@@ -39,4 +39,15 @@ class CalendarsService
 
         return $result;
     }
+
+    public function getCalendar ($calendarId) {
+        $repository = $this->em->getRepository('CommsyBundle:Calendars');
+        $query = $repository->createQueryBuilder('calendars')
+            ->select()
+            ->where('calendars.id = :calendarId')
+            ->setParameter('calendarId', $calendarId)
+            ->getQuery();
+
+        return $calendars = $query->getResult();;
+    }
 }
