@@ -927,10 +927,13 @@ class DateController extends Controller
         $repository = $em->getRepository('CommsyBundle:Calendars');
         $calendars = $repository->findAll($roomId);
         $calendarsOptions = [];
+        $calendarsOptionsAttr = [];
         foreach ($calendars as $calendar) {
             $calendarsOptions[$calendar->getTitle()] = $calendar->getId();
+            $calendarsOptionsAttr[$calendar->getTitle()] = ['title' => $calendar->getTitle(), 'color' => $calendar->getColor()];
         }
         $formData['calendars'] = $calendarsOptions;
+        $formData['calendarsAttr'] = $calendarsOptionsAttr;
 
         $formOptions = array(
             'action' => $this->generateUrl('commsy_date_edit', array(
@@ -939,6 +942,7 @@ class DateController extends Controller
             )),
             'placeholderText' => '['.$translator->trans('insert title').']',
             'calendars' => $calendarsOptions,
+            'calendarsAttr' => $calendarsOptionsAttr,
         );
         if ($dateItem->getRecurrencePattern() != '') {
             $formOptions['attr']['unsetRecurrence'] = true;

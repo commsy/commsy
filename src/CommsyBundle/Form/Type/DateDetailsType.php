@@ -69,6 +69,7 @@ class DateDetailsType extends AbstractType
             ->add('calendar', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => $options['calendars'],
+                'choice_attr' => $options['calendarsAttr'],
                 'label' => 'calendar',
                 'required' => true,
                 'expanded' => true,

@@ -82,6 +82,7 @@ class DateType extends AbstractType
             ->add('calendar', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices' => $options['calendars'],
+                'choice_attr' => $options['calendarsAttr'],
                 'label' => 'calendar',
                 'required' => true,
                 'expanded' => true,
@@ -181,7 +182,7 @@ class DateType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(array('placeholderText', 'calendars'))
+            ->setRequired(array('placeholderText', 'calendars', 'calendarsAttr'))
             ->setDefaults(array('translation_domain' => 'date'))
         ;
     }
