@@ -927,8 +927,10 @@ class DateController extends Controller
         $calendarsOptions = [];
         $calendarsOptionsAttr = [];
         foreach ($calendars as $calendar) {
-            $calendarsOptions[$calendar->getTitle()] = $calendar->getId();
-            $calendarsOptionsAttr[$calendar->getTitle()] = ['title' => $calendar->getTitle(), 'color' => $calendar->getColor()];
+            if (!$calendar->getExternalUrl()) {
+                $calendarsOptions[$calendar->getTitle()] = $calendar->getId();
+                $calendarsOptionsAttr[$calendar->getTitle()] = ['title' => $calendar->getTitle(), 'color' => $calendar->getColor()];
+            }
         }
         $formData['calendars'] = $calendarsOptions;
         $formData['calendarsAttr'] = $calendarsOptionsAttr;

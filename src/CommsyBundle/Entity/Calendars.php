@@ -28,7 +28,7 @@ class Calendars
      *
      * @ORM\Column(name="context_id", type="integer", nullable=false)
      */
-    private $contextId;
+    private $context_id;
 
     /**
      * @var string
@@ -77,7 +77,7 @@ class Calendars
      */
     public function setContextId($contextId)
     {
-        $this->contextId = $contextId;
+        $this->context_id = $contextId;
 
         return $this;
     }
@@ -89,7 +89,7 @@ class Calendars
      */
     public function getContextId()
     {
-        return $this->contextId;
+        return $this->context_id;
     }
 
     /**

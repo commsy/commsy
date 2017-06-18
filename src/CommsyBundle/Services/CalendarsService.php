@@ -28,8 +28,8 @@ class CalendarsService
         $repository = $this->em->getRepository('CommsyBundle:Calendars');
         $query = $repository->createQueryBuilder('calendars')
             ->select()
-            ->where('calendars.contextId = :contextId')
-            ->setParameter('contextId', $contextId)
+            ->where('calendars.context_id = :context_id')
+            ->setParameter('context_id', $contextId)
             ->getQuery();
         $calendars = $query->getResult();
 
@@ -55,8 +55,8 @@ class CalendarsService
         $repository = $this->em->getRepository('CommsyBundle:Calendars');
         $query = $repository->createQueryBuilder('calendars')
             ->select()
-            ->where('calendars.context_id = :contextId AND calendars.default = 1')
-            ->setParameter('contextId', $contextId)
+            ->where('calendars.context_id = :context_id AND calendars.default_calendar = 1')
+            ->setParameter('context_id', $contextId)
             ->getQuery();
 
         return $calendars = $query->getResult();
