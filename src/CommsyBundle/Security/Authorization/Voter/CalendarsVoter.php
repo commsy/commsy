@@ -63,6 +63,11 @@ class CalendarsVoter extends Voter
             return false;
         }
 
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+        if (!$currentRoom->usersCanEditCalendars() && !$currentUser->isModerator()) {
+            return false;
+        }
+
         return true;
     }
 }
