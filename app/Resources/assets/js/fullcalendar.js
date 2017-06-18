@@ -194,6 +194,9 @@
                 +'<td>Teilnehmer:</td>'
                 +'<td>'+calEvent.participants+'</td>'
                 +'</tr>'
+                +'<tr>'
+                +'<td>Kalender:</td>'
+                +'<td>'+calEvent.calendar+'</td>'
                 +'</tr>'
                 +'</table>'
                 +'</div>';

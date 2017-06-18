@@ -599,7 +599,7 @@ class DateController extends Controller
             if (!empty($participantsNameArray)) {
                 $participantsDisplay = implode(', ', $participantsNameArray);
             }
-            
+
             $color = $date->getCalendar()->getColor();
             
             $recurringDescription = '';
@@ -644,6 +644,7 @@ class DateController extends Controller
                               'start' => $start,
                               'end' => $end,
                               'color' => $color,
+                              'calendar' => $date->getCalendar()->getTitle(),
                               'editable' => $date->isPublic(),
                               'description' => $date->getDateDescription(),
                               'place' => $date->getPlace(),
