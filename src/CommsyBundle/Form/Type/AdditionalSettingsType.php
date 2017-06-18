@@ -80,6 +80,21 @@ class AdditionalSettingsType extends AbstractType
                             'value' => 'yes',
                     ))
                 )
+                ->add(
+                    $builder->create('calendars', FormType::class, array())
+                    ->add('edit', CheckboxType::class, array(
+                        'required' => false,
+                        'label_attr' => array('class' => 'uk-form-label'),
+                        'value' => 'yes',
+                        'label' => 'users_can_edit_calendars',
+                    ))
+                    ->add('external', CheckboxType::class, array(
+                        'required' => false,
+                        'label_attr' => array('class' => 'uk-form-label'),
+                        'value' => 'yes',
+                        'label' => 'users_can_set_external_calendars_url',
+                    ))
+                )
             )
             ->add(
                 $builder->create('tasks', FormType::class, array('required' => false, 'compound' => true))

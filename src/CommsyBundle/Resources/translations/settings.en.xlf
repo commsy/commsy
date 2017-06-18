@@ -664,6 +664,14 @@
                 <source>continous</source>
                 <target>continous</target>
             </trans-unit>
+            <trans-unit id="users_can_edit_calendars">
+                <source>users_can_edit_calendars</source>
+                <target>User can edit calendars</target>
+            </trans-unit>
+            <trans-unit id="users_can_set_external_calendars_url">
+                <source>users_can_set_external_calendars_url</source>
+                <target>User can set external urls on calendars</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

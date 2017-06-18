@@ -35,6 +35,9 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
             $roomData['structural_auxilaries']['categories']['mandatory'] = $roomItem->isTagMandatory();
             $roomData['structural_auxilaries']['categories']['edit'] = $roomItem->isTagEditedByAll();
 
+            $roomData['structural_auxilaries']['calendars']['edit'] = $roomItem->usersCanEditCalendars();
+            $roomData['structural_auxilaries']['calendars']['external'] = $roomItem->usersCanSetExternalCalendarsUrl();
+
             // tasks
             $roomData['tasks']['additional_status']  = $roomItem->getExtraToDoStatusArray();
 
@@ -83,6 +86,7 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
         /********* save buzzword and tag options ******/
         $buzzwords = $roomData['structural_auxilaries']['buzzwords'];
         $categories = $roomData['structural_auxilaries']['categories'];
+        $calendars = $roomData['structural_auxilaries']['calendars'];
 
         // buzzword options
         if ( isset($buzzwords['activate']) and !empty($buzzwords['activate']) and $buzzwords['activate'] == true) {
@@ -107,11 +111,22 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
         } else {
             $roomObject->unsetTagMandatory();
         }
-
         if ( isset($categories['edit']) and !empty($categories['edit']) and $categories['edit'] == true ) {
             $roomObject->setTagEditedByAll();
         } else {
             $roomObject->setTagEditedByModerator();
+        }
+
+        // calendar options
+        if ( isset($calendars['edit']) and !empty($calendars['edit']) and $calendars['edit'] == true ) {
+            $roomObject->setUsersCanEditCalendars();
+        } else {
+            $roomObject->unsetUsersCanEditCalendars();
+        }
+        if ( isset($calendars['external']) and !empty($calendars['external']) and $calendars['external'] == true ) {
+            $roomObject->setUsersCanSetExternalCalendarsUrl();
+        } else {
+            $roomObject->unsetUsersCanSetExternalCalendarsUrl();
         }
 
         /********* save template options ******/

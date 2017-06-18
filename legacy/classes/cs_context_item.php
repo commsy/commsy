@@ -6117,5 +6117,43 @@ class cs_context_item extends cs_item {
   public function getDefaultCalendarId () {
     return 1;
   }
+
+    function setUsersCanEditCalendars() {
+        $this->_addExtra('USERSCANEDITCALENDARS',1);
+    }
+
+    function unsetUsersCanEditCalendars() {
+        $this->_addExtra('USERSCANEDITCALENDARS',0);
+    }
+
+    function usersCanEditCalendars() {
+        $retour = false;
+        if ($this->_issetExtra('USERSCANEDITCALENDARS') ) {
+            $re = $this->_getExtra('USERSCANEDITCALENDARS');
+            if ($re == 1) {
+                $retour = true;
+            }
+        }
+        return $retour;
+    }
+
+    function setUsersCanSetExternalCalendarsUrl() {
+        $this->_addExtra('USERSCANSETEXTERNALCALENDARSURL',1);
+    }
+
+    function unsetUsersCanSetExternalCalendarsUrl() {
+        $this->_addExtra('USERSCANSETEXTERNALCALENDARSURL',0);
+    }
+
+    function usersCanSetExternalCalendarsUrl() {
+        $retour = false;
+        if ($this->_issetExtra('USERSCANSETEXTERNALCALENDARSURL') ) {
+            $re = $this->_getExtra('USERSCANSETEXTERNALCALENDARSURL');
+            if ($re == 1) {
+                $retour = true;
+            }
+        }
+        return $retour;
+    }
 }
 ?>
