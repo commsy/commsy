@@ -48,6 +48,17 @@ class CalendarsService
             ->setParameter('calendarId', $calendarId)
             ->getQuery();
 
-        return $calendars = $query->getResult();;
+        return $calendars = $query->getResult();
+    }
+
+    public function getDefaultCalendar ($contextId) {
+        $repository = $this->em->getRepository('CommsyBundle:Calendars');
+        $query = $repository->createQueryBuilder('calendars')
+            ->select()
+            ->where('calendars.context_id = :contextId AND calendars.default = 1')
+            ->setParameter('contextId', $contextId)
+            ->getQuery();
+
+        return $calendars = $query->getResult();
     }
 }
