@@ -69,7 +69,7 @@ class CalendarEditType extends AbstractType
                             'label' => 'Update calendar',
                             'translation_domain' => 'calendar',
                         ]);
-                    if (!$calendar->getDefault()) {
+                    if (!$calendar->getDefaultCalendar()) {
                         $form
                             ->add('delete', Types\SubmitType::class, [
                                 'attr' => array(

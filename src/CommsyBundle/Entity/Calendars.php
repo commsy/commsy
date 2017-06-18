@@ -19,7 +19,7 @@ class Calendars
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id = '0';
 
@@ -54,9 +54,9 @@ class Calendars
     /**
      * @var boolean
      *
-     * @ORM\Column(name="default", type="boolean", nullable=false)
+     * @ORM\Column(name="default_calendar", type="boolean", nullable=false)
      */
-    private $default = '0';
+    private $default_calendar = '0';
 
     /**
      * Get id
@@ -171,9 +171,9 @@ class Calendars
      *
      * @return Calendars
      */
-    public function setDefault($default)
+    public function setDefaultCalendar($default_calendar)
     {
-        $this->default = $default;
+        $this->default_calendar = $default_calendar;
 
         return $this;
     }
@@ -183,8 +183,8 @@ class Calendars
      *
      * @return boolean
      */
-    public function getDefault()
+    public function getDefaultCalendar()
     {
-        return $this->default;
+        return $this->default_calendar;
     }
 }

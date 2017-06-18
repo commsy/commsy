@@ -25,9 +25,9 @@ class Version20170616103508 extends AbstractMigration
                 title varchar(255) NOT NULL,
                 color varchar(255) NOT NULL,
                 external_url varchar(255) NULL,
-                default TINYINT NOT NULL DEFAULT 0,
+                default_calendar TINYINT NOT NULL DEFAULT 0,
                 PRIMARY KEY (id)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
         ');
 
         $this->addSql('
