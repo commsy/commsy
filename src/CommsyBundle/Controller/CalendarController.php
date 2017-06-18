@@ -38,7 +38,9 @@ class CalendarController extends Controller
             $calendar->setContextId($roomId);
         }
 
-        $editForm = $this->createForm(CalendarEditType::class, $calendar);
+        $editForm = $this->createForm(CalendarEditType::class, $calendar, [
+            'editExternalUrl' => ($roomItem->usersCanSetExternalCalendarsUrl() || $legacyEnvironment->getCurrentUser()->isModerator()),
+        ]);
 
 
         $editForm->handleRequest($request);

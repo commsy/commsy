@@ -37,9 +37,17 @@ class CalendarEditType extends AbstractType
                 'label' => 'Color',
                 'translation_domain' => 'calendar',
                 'required' => true,
-            ])
+            ]);
 
-            ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+        if ($options['editExternalUrl']) {
+            $builder->add('external_url', Types\TextType::class, [
+                'label' => 'External url',
+                'translation_domain' => 'calendar',
+                'required' => false,
+            ]);
+        }
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
                 $calendar = $event->getData();
                 $form = $event->getForm();
 
@@ -85,7 +93,7 @@ class CalendarEditType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired([])
+            ->setRequired(['editExternalUrl'])
         ;
     }
 
