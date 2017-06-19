@@ -40,7 +40,11 @@
                     {{ form_label(form.calendar) }}
                     {% for tempCalendar in form.calendar.iterator %}
                         <span class="tooltipster" style="color:{{ tempCalendar.vars.attr.color }}" title="{{ tempCalendar.vars.attr.title }}">
-                            <i class="uk-icon-medium uk-icon-circle"></i>
+                            {% if tempCalendar.vars.attr.color == '#ffffff' %}
+                                <i class="uk-icon-medium uk-icon-circle-thin"></i>
+                            {% else %}
+                                <i class="uk-icon-medium uk-icon-circle"></i>
+                            {% endif %}
                         </span>
                         <span class="uk-margin-small-right">{{ form_widget(tempCalendar) }}</span>
                     {% endfor %}
