@@ -2814,10 +2814,39 @@ function getExternalViewerArray(){
           CS_GROUP_TYPE,
           CS_TODO_TYPE,
           CS_TOPIC_TYPE,
-          // CS_STEP_TYPE,
+          CS_STEP_TYPE,
           CS_DISCARTICLE_TYPE,
-          // CS_SECTION_TYPE
+          CS_SECTION_TYPE,
       ));
+   }
+
+   function lock() {
+       $this->_environment->getManager($this->getItemType())->updateLocking($this->getItemId(), date("Y-m-d H:i:s"));
+   }
+
+   function unlock() {
+       $this->_environment->getManager($this->getItemType())->clearLocking($this->getItemId());
+   }
+
+   function isLocked() {
+      if ($this->getLockingDate() && $this->getLockingDate() != '') {
+         $editDate = new DateTime($this->getLockingDate());
+         $compareDate = new DateTime();
+         $compareDate->modify("-20 minutes");
+
+         if ($compareDate < $editDate) {
+            if ($this->getLockingUserId() == $this->_environment->getCurrentUser()->getItemId()) {
+               return false;
+            } else {
+                return true;
+            }
+         } else {
+            $this->unlock();
+            return false;
+         }
+      } else {
+         return false;
+      }
    }
 
    protected function replaceElasticItem($objectPersister, $repository) {

@@ -169,6 +169,15 @@ class InstitutionController extends Controller
         $form = $this->createForm(AnnotationType::class);
         // dump($infoArray);
         // die;
+
+        $alert = null;
+        if ($infoArray['institution']->isLocked()) {
+            $translator = $this->get('translator');
+
+            $alert['type'] = 'warning';
+            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+        }
+
         return array(
             'roomId' => $roomId,
             'institution' => $infoArray['institution'],
@@ -193,6 +202,7 @@ class InstitutionController extends Controller
             'members' => $infoArray['members'],
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
+            'alert' => $alert,
        );
     }
 

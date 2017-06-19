@@ -159,7 +159,11 @@
                         </div>
                     </div>
                 </div>
-                
+
+                {% if alert %}
+                    {{ macros.showAlert(alert) }}
+                {%  endif %}
+
                 {# content #}
                 <article class="uk-article uk-position-relative" data-uk-observe>
                     {# versions #}
@@ -202,23 +206,23 @@
                     </div>
             
                     {# description #}
-                    <div id="description{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                    <div id="description{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                         {{ macrosItem.itemDescription('description', material, true, material.description) }}
                     </div>
             
                     {# files #}
-                    <div id="files{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                    <div id="files{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                         {{ macrosItem.files(material) }}
                     </div>
         
                     {# links #}
-                    <div id="links{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                    <div id="links{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                         {{ macrosItem.links(material,showHashtags,showCategories,roomCategories) }}
                     </div>
         
                     {# workflow #}
                     {% if showWorkflow and (withTrafficLight or withResubmission or withValidity) %}
-                        <div id="workflow{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editworkflow', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                        <div id="workflow{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editworkflow', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                             {{ macrosItem.workflow(material, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate, workflowTitles, withTrafficLight, withResubmission, withValidity) }}
                         </div>
                     {% endif %}
@@ -226,7 +230,7 @@
                     {# sections #}
                     <div id="sections{{ material.itemId }}" class="cs-edit-section cs-toggle"
                     {% if sectionList|length > 0 %}
-                        data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editsections', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }"
+                        data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editsections', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }"
                     {% endif %}
                     >
                         {{ macrosMaterial.sections(material, sectionList) }}
@@ -308,12 +312,12 @@
                             </div>
                             
                             {# description #}
-                            <div id="description{{ section.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+                            <div id="description{{ section.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
                                 {{ macrosItem.itemDescription('description', section, true, section.description) }}
                             </div>
 
                             {# files #}
-                            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+                            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
                                 {{ macrosItem.files(section) }}
                             </div>
                         </article>

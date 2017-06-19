@@ -62,7 +62,7 @@ class AnnotationService
         if(empty($noticed) || $noticed['read_date'] < $annotationItem->getModificationDate()) {
             $noticedManager->markNoticed($annotationItem->getItemID(), 0);
         }
-
+        return $annotationItem->getItemID();
     }
 
     public function markAnnotationsReadedAndNoticed($annotationList) {

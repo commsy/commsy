@@ -114,7 +114,11 @@
                         </div>
                     </div>
                 </div>
-                
+
+                {% if alert %}
+                    {{ macros.showAlert(alert) }}
+                {%  endif %}
+
                 {# content #}
                 <article class="uk-article uk-position-relative" data-uk-observe>
                     {# title, details, etc. #}
@@ -123,17 +127,17 @@
                     </div>
             
                     {# description #}
-                    <div id="description{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }">
+                    <div id="description{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }">
                         {{ macrosItem.itemDescription('description', todo, true, todo.description) }}
                     </div>
             
                     {# files #}
-                    <div id="files{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }">
+                    <div id="files{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }">
                         {{ macrosItem.files(todo) }}
                     </div>
         
                     {# links #}
-                    <div id="links{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }">
+                    <div id="links{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }">
                         {{ macrosItem.links(todo,showHashtags,showCategories,roomCategories) }}
                     </div>
                     
@@ -218,12 +222,12 @@
                             </div>
                             
                             {# description #}
-                            <div id="description{{ step.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': step.contextId, 'itemId': step.itemId}) }}' }">
+                            <div id="description{{ step.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': step.contextId, 'itemId': step.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': step.contextId, 'itemId': step.itemId}) }}' }">
                                 {{ macrosItem.itemDescription('description', step, true, step.description) }}
                             </div>
 
                             {# files #}
-                            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': step.contextId, 'itemId': step.itemId}) }}' }">
+                            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': step.contextId, 'itemId': step.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': step.contextId, 'itemId': step.itemId}) }}' }">
                                 {{ macrosItem.files(step) }}
                             </div>
                         </article>

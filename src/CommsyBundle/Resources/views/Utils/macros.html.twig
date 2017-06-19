@@ -463,3 +463,9 @@
         {% endif %}
     {% endif %}
 {% endmacro %}
+
+{% macro showAlert(alert) %}
+    <div class="uk-alert-{{ alert.type }} uk-alert" uk-alert>
+        <p>{{ alert.content }}</p>
+    </div>
+{% endmacro %}

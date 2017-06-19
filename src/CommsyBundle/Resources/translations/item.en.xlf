@@ -86,6 +86,10 @@
                 <source>no entry selected</source>
                 <target>No entry selected</target>
             </trans-unit>
+            <trans-unit id="itemIsLocked">
+                <source>item is locked</source>
+                <target>This entry is currntlc edited by another user and is therefore locked for editing</target>
+            </trans-unit>
          </body>
     </file>
 </xliff>

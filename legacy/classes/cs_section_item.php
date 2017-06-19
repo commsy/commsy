@@ -313,5 +313,9 @@ class cs_section_item extends cs_item {
       $retour .= '</section_item>'.LF;
       return $retour;
    }
+
+    function isLocked() {
+        return $this->getLinkedItem()->isLocked();
+    }
 }
 ?>

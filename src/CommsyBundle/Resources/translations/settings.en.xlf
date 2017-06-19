@@ -96,6 +96,10 @@
                 <source>Community rooms</source>
                 <target>Community rooms</target>
             </trans-unit>
+            <trans-unit id="home">
+                <source>Home</source>
+                <target>Home</target>
+            </trans-unit>
             <trans-unit id="announcement">
                 <source>Announcement</source>
                 <target>Announcement</target>

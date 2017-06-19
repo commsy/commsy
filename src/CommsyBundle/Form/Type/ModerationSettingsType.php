@@ -44,7 +44,7 @@ class ModerationSettingsType extends AbstractType
     {
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $this->roomItem = $roomManager->getItem($options['roomId']);
-        $availableRubrics = $this->roomItem->getAvailableRubrics();
+        $availableRubrics = array_merge(['home'], $this->roomItem->getAvailableRubrics());
         $rubricOptions = array_combine(array_map("ucfirst", array_values($availableRubrics)), array_values($availableRubrics));
 
         $builder

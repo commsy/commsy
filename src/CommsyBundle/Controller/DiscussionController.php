@@ -17,6 +17,8 @@ use CommsyBundle\Form\Type\DiscussionArticleType;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
+use CommsyBundle\Event\CommsyEditEvent;
+
 class DiscussionController extends Controller
 {
     // setup filter form default values
@@ -250,6 +252,14 @@ class DiscussionController extends Controller
     {
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
+        $alert = null;
+        if ($infoArray['discussion']->isLocked()) {
+            $translator = $this->get('translator');
+
+            $alert['type'] = 'warning';
+            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+        }
+
         return [
             'roomId' => $roomId,
             'discussion' => $infoArray['discussion'],
@@ -274,6 +284,7 @@ class DiscussionController extends Controller
             'user' => $infoArray['user'],
             'ratingArray' => $infoArray['ratingArray'],
             'roomCategories' => $infoArray['roomCategories'],
+            'alert' => $alert,
         ];
     }
     
@@ -902,7 +913,9 @@ class DiscussionController extends Controller
             // $em->persist($room);
             // $em->flush();
         }
-        
+
+        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($discussionItem));
+
         return array(
             'form' => $form->createView(),
             'showHashtags' => $current_context->withBuzzwords(),
@@ -984,7 +997,9 @@ class DiscussionController extends Controller
             
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
-        
+
+        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($typedItem));
+
         return array(
             'roomId' => $roomId,
             'item' => $typedItem,

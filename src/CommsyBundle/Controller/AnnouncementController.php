@@ -17,6 +17,7 @@ use CommsyBundle\Form\Type\AnnouncementType;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
+use CommsyBundle\Event\CommsyEditEvent;
 
 class AnnouncementController extends Controller
 {
@@ -316,7 +317,15 @@ class AnnouncementController extends Controller
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
-        
+
+        $alert = null;
+        if ($infoArray['announcement']->isLocked()) {
+            $translator = $this->get('translator');
+
+            $alert['type'] = 'warning';
+            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+        }
+
         return array(
             'roomId' => $roomId,
             'announcement' => $infoArray['announcement'],
@@ -341,6 +350,7 @@ class AnnouncementController extends Controller
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
             'ratingArray' => $infoArray['ratingArray'],
+            'alert' => $alert,
        );
     }
     /**
@@ -683,7 +693,9 @@ class AnnouncementController extends Controller
             }
             return $this->redirectToRoute('commsy_announcement_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
-        
+
+        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($announcementItem));
+
         return array(
             'form' => $form->createView(),
             'showHashtags' => $current_context->withBuzzwords(),
@@ -718,6 +730,9 @@ class AnnouncementController extends Controller
         }
         
         $infoArray = $this->getDetailInfo($roomId, $itemId);
+
+        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($tempItem));
+
         return array(
             'roomId' => $roomId,
             'item' => $tempItem,

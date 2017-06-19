@@ -17,6 +17,8 @@ use CommsyBundle\Form\Type\AnnotationType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
+use CommsyBundle\Event\CommsyEditEvent;
+
 class TopicController extends Controller
 {
     // setup filter form default values
@@ -236,7 +238,15 @@ class TopicController extends Controller
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
-        
+
+        $alert = null;
+        if ($infoArray['topic']->isLocked()) {
+            $translator = $this->get('translator');
+
+            $alert['type'] = 'warning';
+            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+        }
+
         return array(
             'roomId' => $roomId,
             'topic' => $infoArray['topic'],
@@ -259,6 +269,7 @@ class TopicController extends Controller
             'showCategories' => $infoArray['showCategories'],
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
+            'alert' => $alert,
        );
     }
 
@@ -508,7 +519,9 @@ class TopicController extends Controller
             // $em->persist($room);
             // $em->flush();
         }
-        
+
+        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($topicItem));
+
         return array(
             'form' => $form->createView(),
             'showHashtags' => $current_context->withBuzzwords(),
@@ -586,7 +599,9 @@ class TopicController extends Controller
             
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
-        
+
+        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($topic));
+
         return array(
             'roomId' => $roomId,
             'item' => $topic,

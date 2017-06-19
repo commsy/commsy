@@ -22,6 +22,8 @@ use CommsyBundle\Filter\DateFilterType;
 use CommsyBundle\Validator\Constraints\EndDateConstraint;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+use CommsyBundle\Event\CommsyEditEvent;
+
 class DateController extends Controller
 {    
     private $defaultFilterValues = array(
@@ -496,6 +498,14 @@ class DateController extends Controller
             $categories = $this->getTagDetailArray($roomCategories, $dateCategories);
         }
 
+        $alert = null;
+        if ($dateService->getDate($itemId)->isLocked()) {
+            $translator = $this->get('translator');
+
+            $alert['type'] = 'warning';
+            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+        }
+
         return array(
             'roomId' => $roomId,
             'date' => $dateService->getDate($itemId),
@@ -512,6 +522,7 @@ class DateController extends Controller
             'roomCategories' => $categories,
             'isParticipating' => $date->isParticipant($legacyEnvironment->getCurrentUserItem()),
             'isRecurring' => ($date->getRecurrenceId() != ''),
+            'alert' => $alert,
         );
     }
     
@@ -894,7 +905,7 @@ class DateController extends Controller
 
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
-        
+
         $dateService = $this->get('commsy_legacy.date_service');
         $transformer = $this->get('commsy_legacy.transformer.date');
 
@@ -1004,7 +1015,9 @@ class DateController extends Controller
             // $em->persist($room);
             // $em->flush();
         }
-        
+
+        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($dateItem));
+
         return array(
             'form' => $form->createView(),
             'showHashtags' => $current_context->withBuzzwords(),
@@ -1120,7 +1133,9 @@ class DateController extends Controller
             
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
-        
+
+        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($date));
+
         return array(
             'roomId' => $roomId,
             'item' => $date,

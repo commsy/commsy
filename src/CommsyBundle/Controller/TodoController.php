@@ -18,6 +18,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
+use CommsyBundle\Event\CommsyEditEvent;
+
 class TodoController extends Controller
 {
     // setup filter form default values
@@ -475,6 +477,14 @@ class TodoController extends Controller
             $timeSpendSum += $step->getMinutes();
         }
 
+        $alert = null;
+        if ($todoService->getTodo($itemId)->isLocked()) {
+            $translator = $this->get('translator');
+
+            $alert['type'] = 'warning';
+            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+        }
+
         return array(
             'roomId' => $roomId,
             'todo' => $todoService->getTodo($itemId),
@@ -498,6 +508,7 @@ class TodoController extends Controller
                 'ratingOwnDetail' => $ratingOwnDetail,
             ] : [],
             'isParticipating' => $todo->isProcessor($legacyEnvironment->getCurrentUserItem()),
+            'alert' => $alert,
         );
     }
     
@@ -593,6 +604,8 @@ class TodoController extends Controller
             'placeholderText' => '['.$translator->trans('insert title').']',
         ]);
 
+        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($step->getLinkedItem()));
+
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
             if ($form->get('save')->isClicked()) {
@@ -610,6 +623,8 @@ class TodoController extends Controller
                     $step->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
                     $step->save();
+
+                    $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($step->getLinkedItem()));
 
                     return $this->redirectToRoute('commsy_todo_detail', [
                         'roomId' => $roomId,
@@ -706,7 +721,9 @@ class TodoController extends Controller
             }
             return $this->redirectToRoute('commsy_todo_save', array('roomId' => $roomId, 'itemId' => $itemId));
         }
-        
+
+        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($todoItem));
+
         return array(
             'form' => $form->createView(),
             'showHashtags' => $current_context->withBuzzwords(),
@@ -730,8 +747,12 @@ class TodoController extends Controller
         
         if ($item->getItemType() == 'todo') {
             $typedItem = $todoService->getTodo($itemId);
+
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($typedItem));
         } else if ($item->getItemType() == 'step') {
             $typedItem = $todoService->getStep($itemId);
+
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($typedItem->getLinkedItem()));
         }
         
         $itemArray = array($typedItem);
@@ -787,7 +808,7 @@ class TodoController extends Controller
             
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
-        
+
         return array(
             'roomId' => $roomId,
             'item' => $typedItem,

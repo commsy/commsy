@@ -18,6 +18,8 @@ use CommsyBundle\Form\Type\AnnotationType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
+use CommsyBundle\Event\CommsyEditEvent;
+
 class GroupController extends Controller
 {
     // setup filter form default values
@@ -336,7 +338,15 @@ class GroupController extends Controller
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
-        
+
+        $alert = null;
+        if ($infoArray['group']->isLocked()) {
+            $translator = $this->get('translator');
+
+            $alert['type'] = 'warning';
+            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+        }
+
         return array(
             'roomId' => $roomId,
             'group' => $infoArray['group'],
@@ -363,6 +373,7 @@ class GroupController extends Controller
             'userIsMember' => $infoArray['userIsMember'],
             'memberStatus' => $memberStatus,
             'annotationForm' => $form->createView(),
+            'alert' => $alert,
        );
     }
 
@@ -691,7 +702,9 @@ class GroupController extends Controller
             // $em->persist($room);
             // $em->flush();
         }
-        
+
+        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($groupItem));
+
         return array(
             'form' => $form->createView(),
             'showHashtags' => $current_context->withBuzzwords(),
@@ -769,7 +782,9 @@ class GroupController extends Controller
             
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
-        
+
+        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($group));
+
         return array(
             'roomId' => $roomId,
             'item' => $group,
@@ -847,7 +862,9 @@ class GroupController extends Controller
             }
             return $this->redirectToRoute('commsy_group_savegrouproom', array('roomId' => $roomId, 'itemId' => $itemId));
         }
-        
+
+        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($groupItem));
+
         return array(
             'form' => $form->createView(),
         );

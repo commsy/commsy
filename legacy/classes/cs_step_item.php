@@ -277,5 +277,9 @@ class cs_step_item extends cs_item {
       $retour .= '</step_item>'.LF;
       return $retour;
    }
+
+    function isLocked() {
+        return $this->getLinkedItem()->isLocked();
+    }
 }
 ?>
