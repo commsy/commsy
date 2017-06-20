@@ -704,11 +704,8 @@ class DateController extends Controller
             if (!empty($participantsNameArray)) {
                 $participantsDisplay = implode(', ', $participantsNameArray);
             }
-            
-            $color = '';
-            if ($date->getColor() != '') {
-                $color = $this->container->getParameter('commsy.themes.'.str_ireplace('-', '_', $date->getColor()));
-            }
+
+            $color = $date->getCalendar()->getColor();
             
             $recurringDescription = '';
             if ($date->getRecurrencePattern() != '') {
