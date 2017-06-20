@@ -600,9 +600,31 @@ class DateController extends Controller
                 $participantsDisplay = implode(', ', $participantsNameArray);
             }
             
-            $color = '';
-            if ($date->getColor() != '') {
+            $color = 'cs-date-color-no-color';
+            if ($date->getColor() != '' && !stristr($date->getColor(), '#')) {
                 $color = $this->container->getParameter('commsy.themes.'.str_ireplace('-', '_', $date->getColor()));
+            } else if ($date->getColor() != '') {
+                if ($date->getColor() == '#999999') {
+                    $color = 'cs-date-color-01';
+                } else if ($date->getColor() == '#CC0000') {
+                    $color = 'cs-date-color-02';
+                } else if ($date->getColor() == '#FF6600') {
+                    $color = 'cs-date-color-03';
+                } else if ($date->getColor() == '#FFCC00') {
+                    $color = 'cs-date-color-04';
+                } else if ($date->getColor() == '#FFFF66') {
+                    $color = 'cs-date-color-05';
+                } else if ($date->getColor() == '#33CC00') {
+                    $color = 'cs-date-color-06';
+                } else if ($date->getColor() == '#00CCCC') {
+                    $color = 'cs-date-color-07';
+                } else if ($date->getColor() == '#3366FF') {
+                    $color = 'cs-date-color-08';
+                } else if ($date->getColor() == '#6633FF') {
+                    $color = 'cs-date-color-09';
+                } else if ($date->getColor() == '#CC33CC') {
+                    $color = 'cs-date-color-10';
+                }
             }
             
             $recurringDescription = '';
@@ -706,10 +728,32 @@ class DateController extends Controller
             if (!empty($participantsNameArray)) {
                 $participantsDisplay = implode(', ', $participantsNameArray);
             }
-            
-            $color = '';
-            if ($date->getColor() != '') {
+
+            $color = 'cs-date-color-no-color';
+            if ($date->getColor() != '' && !stristr($date->getColor(), '#')) {
                 $color = $this->container->getParameter('commsy.themes.'.str_ireplace('-', '_', $date->getColor()));
+            } else if ($date->getColor() != '') {
+                if ($date->getColor() == '#999999') {
+                    $color = 'cs-date-color-01';
+                } else if ($date->getColor() == '#CC0000') {
+                    $color = 'cs-date-color-02';
+                } else if ($date->getColor() == '#FF6600') {
+                    $color = 'cs-date-color-03';
+                } else if ($date->getColor() == '#FFCC00') {
+                    $color = 'cs-date-color-04';
+                } else if ($date->getColor() == '#FFFF66') {
+                    $color = 'cs-date-color-05';
+                } else if ($date->getColor() == '#33CC00') {
+                    $color = 'cs-date-color-06';
+                } else if ($date->getColor() == '#00CCCC') {
+                    $color = 'cs-date-color-07';
+                } else if ($date->getColor() == '#3366FF') {
+                    $color = 'cs-date-color-08';
+                } else if ($date->getColor() == '#6633FF') {
+                    $color = 'cs-date-color-09';
+                } else if ($date->getColor() == '#CC33CC') {
+                    $color = 'cs-date-color-10';
+                }
             }
             
             $recurringDescription = '';
