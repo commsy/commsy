@@ -91,11 +91,11 @@ class Version20170616103508 extends AbstractMigration
             ->from($dTable, 'r');
         $rooms = $qb->execute();
 
+        $this->write('adding dates to new calendars for table '.$dTable);
+
         // Add calendars for each room -> one default + one for each color
         foreach ($rooms as $room) {
-            // default calendar
-
-            $this->write('updating calendars for room '.$room['item_id']);
+            $queryBuilderDates = $this->connection->createQueryBuilder();
 
             $queryBuilder
                 ->insert('calendars')
@@ -118,19 +118,34 @@ class Version20170616103508 extends AbstractMigration
                 ->execute();
             ;
 
+            $calendarId = $this->connection->lastInsertId();
+
+            $dates = $queryBuilderDates
+                ->select('d.item_id, d.color')
+                ->from('dates', 'd')
+                ->where('d.context_id = :context_id')
+                ->setParameter('context_id', $room['item_id'])
+                ->execute();
+
+            foreach ($dates as $date) {
+                if (!$date['color'] || $date['color'] == 'cs-date-color-no-color') {
+                    $this->addDateToCalendar($date['item_id'], $calendarId);
+                }
+            }
+
             $colorArray = [
-                            '#999999' => 'Grey',
-                            '#CC0000' => 'Red',
-                            '#FF6600' => 'Orange',
-                            '#FFCC00' => 'Gold',
-                            '#FFFF66' => 'Yellow',
-                            '#33CC00' => 'Green',
-                            '#00CCCC' => 'Turquoise',
-                            '#3366FF' => 'Blue',
-                            '#6633FF' => 'Purple',
-                            '#CC33CC' => 'Magenta'
+                            'Grey'      => ['#999999', 'cs-date-color-01'],
+                            'Red'       => ['#CC0000', 'cs-date-color-02'],
+                            'Orange'    => ['#FF6600', 'cs-date-color-03'],
+                            'Gold'      => ['#FFCC00', 'cs-date-color-04'],
+                            'Yellow'    => ['#FFFF66', 'cs-date-color-05'],
+                            'Green'     => ['#33CC00', 'cs-date-color-06'],
+                            'Turquoise' => ['#00CCCC', 'cs-date-color-07'],
+                            'Blue'      => ['#3366FF', 'cs-date-color-08'],
+                            'Purple'    => ['#6633FF', 'cs-date-color-09'],
+                            'Magenta'   => ['#CC33CC', 'cs-date-color-10']
                           ];
-            foreach ($colorArray as $color => $name) {
+            foreach ($colorArray as $name => $colors) {
                 $queryBuilder
                     ->insert('calendars')
                     ->values(
@@ -146,12 +161,37 @@ class Version20170616103508 extends AbstractMigration
                     ->setParameter(0, '')
                     ->setParameter(1, $room['item_id'])
                     ->setParameter(2, $name)
-                    ->setParameter(3, $color)
+                    ->setParameter(3, $colors[0])
                     ->setParameter(4, '')
                     ->setParameter(5, '0')
                     ->execute();
                 ;
+
+                $calendarId = $this->connection->lastInsertId();
+
+                $dates = $queryBuilderDates
+                    ->select('d.item_id, d.color')
+                    ->from('dates', 'd')
+                    ->where('d.context_id = :context_id')
+                    ->setParameter('context_id', $room['item_id'])
+                    ->execute();
+
+                foreach ($dates as $date) {
+                    if (in_array($date['color'], $colors)) {
+                        $this->addDateToCalendar($date['item_id'], $calendarId);
+                    }
+                }
             }
         }
+    }
+
+    private function addDateToCalendar ($itemId, $calendarId) {
+        $queryBuilderUpdate = $this->connection->createQueryBuilder();
+        $queryBuilderUpdate->update('dates', 'd')
+            ->set("d.calendar_id", ":calendarId")
+            ->where("d.item_id = :itemId")
+            ->setParameter("calendarId", $calendarId)
+            ->setParameter("itemId", $itemId)
+            ->execute();
     }
 }
