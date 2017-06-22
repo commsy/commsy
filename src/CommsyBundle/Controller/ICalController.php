@@ -272,9 +272,9 @@ class ICalController extends Controller
             $datesManager->setContextArrayLimit($myRooms);
         }
 
-//        if (!$export) {
+        if (!$export) {
             $datesManager->setNotOlderThanMonthLimit(3);
-//        }
+        }
 
         $datesManager->select();
         $dateList = $datesManager->get();
