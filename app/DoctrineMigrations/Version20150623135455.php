@@ -28,6 +28,8 @@ class Version20150623135455 extends AbstractMigration implements ContainerAwareI
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
+        $schemaManager = $this->connection->getSchemaManager();
+
         $tables = [
             'annotations',
             'announcement',
@@ -70,8 +72,19 @@ class Version20150623135455 extends AbstractMigration implements ContainerAwareI
         ];
 
         foreach ($tables as $table) {
-            $this->addSql('ALTER TABLE ' . table . ' MODIFY creator_id INT(11) NULL');
-            $this->addSql('ALTER TABLE ' . table . ' MODIFY modifier_id INT(11) NULL');
+            $columns = $schemaManager->listTableColumns($table);
+
+            if (array_filter($columns, function($column) {
+                return $column->getName() === 'creator_id';
+            })) {
+                $this->addSql('ALTER TABLE ' . $table . ' MODIFY creator_id INT(11) NULL');
+            }
+
+            if (array_filter($columns, function($column) {
+                return $column->getName() === 'modifier_id';
+            })) {
+                $this->addSql('ALTER TABLE ' . $table . ' MODIFY modifier_id INT(11) NULL');
+            }
         }
 
         $columns = [
@@ -86,7 +99,6 @@ class Version20150623135455 extends AbstractMigration implements ContainerAwareI
             }
         }
 
-        $schemaManager = $this->connection->getSchemaManager();
         $roomColumns = $schemaManager->listTableColumns('room');
 
         if (array_filter($roomColumns, function($column) {
