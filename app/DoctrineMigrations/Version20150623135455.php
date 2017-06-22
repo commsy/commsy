@@ -70,7 +70,8 @@ class Version20150623135455 extends AbstractMigration implements ContainerAwareI
         ];
 
         foreach ($tables as $table) {
-            $this->allowNullCreator($table);
+            $this->addSql('ALTER TABLE ' . table . ' MODIFY creator_id INT(11) NULL');
+            $this->addSql('ALTER TABLE ' . table . ' MODIFY modifier_id INT(11) NULL');
         }
 
         $columns = [
@@ -130,10 +131,6 @@ class Version20150623135455 extends AbstractMigration implements ContainerAwareI
         })) {
             $this->addSql('UPDATE ' . $tableName . ' LEFT JOIN ' . $userTable . ' ON ' . $tableName . '.' . $columnName . ' = ' . $userTable . '.item_id SET ' . $tableName . '.' . $columnName . ' = NULL WHERE ' . $userTable . '.item_id IS NULL');
         }
-    }
-
-    private function allowNullCreator($tableName) {
-        $this->addSql('ALTER TABLE ' . $tableName . ' MODIFY creator_id INT(11) NULL');
     }
 
     private function updateRoomConfiguration($table) {
