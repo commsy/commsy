@@ -13,6 +13,9 @@ ivory_ck_editor:
         bidi:
             path:     "/bundles/commsy/bidi/"
             filename: "plugin.js"
+        commsyhelp:
+            path:     "/bundles/commsy/commsyhelp/"
+            filename: "plugin.js"
         commsyimage:
             path:     "/bundles/commsy/commsyimage/"
             filename: "plugin.js"
@@ -58,12 +61,12 @@ ivory_ck_editor:
             style: [ "TextColor", "BGColor", "RemoveFormat" ]
             content: [ "Link", "Unlink", "Table", "HorizontalRule" ]
             language: [ "Language", "BidiLtr", "BidiRtl" ]
-            commsy: [ "Commsyimage", "Commsyvideo", "Commsyaudio", "Commsydocument" ]
+            commsy: [ "Commsyimage", "Commsyvideo", "Commsyaudio", "Commsydocument", "Commsyhelp" ]
 
     configs:
         cs_item_config:
             toolbar: "fullToolbar"
-            extraPlugins: "sourcedialog,lineutils,widgetselection,sharedspace,widget,menubutton,language,bidi,tabletools,commsyvideo,commsyimage,commsyaudio,commsydocument"
+            extraPlugins: "sourcedialog,lineutils,widgetselection,sharedspace,widget,menubutton,language,bidi,tabletools,commsyvideo,commsyimage,commsyaudio,commsydocument,commsyhelp"
             language_list: ['de:German', 'en:English']
             removePlugins: 'floatingspace,maximize,resize'
             sharedSpaces:

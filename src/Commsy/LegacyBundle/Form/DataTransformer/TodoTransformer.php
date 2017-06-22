@@ -64,6 +64,14 @@ class TodoTransformer implements DataTransformerInterface
                 $todoData['time_spend']['hour'] = (int) ($minutes / 60);
                 $todoData['time_spend']['minute'] = $minutes % 60;
             }
+
+            // external viewer
+            if ($this->legacyEnvironment->getCurrentContextItem()->isPrivateRoom()) {
+                $todoData['external_viewer_enabled'] = true;
+                $todoData['external_viewer'] = $todoItem->getExternalViewerString();
+            } else {
+                $todoData['external_viewer_enabled'] = false;
+            }
         }
 
         return $todoData;
@@ -143,6 +151,16 @@ class TodoTransformer implements DataTransformerInterface
             $hours = is_numeric($todoData['time_spend']['hour']) ? $todoData['time_spend']['hour'] : 0;
             $minutes = is_numeric($todoData['time_spend']['minute']) ? $todoData['time_spend']['minute'] : 0;
             $todoObject->setMinutes($hours * 60 + $minutes);
+        }
+
+        // external viewer
+        if ($this->legacyEnvironment->getCurrentContextItem()->isPrivateRoom()) {
+            if (!empty(trim($todoData['external_viewer']))) {
+                $userIds = explode(" ", $todoData['external_viewer']);
+                $todoObject->setExternalViewerAccounts($userIds);
+            } else {
+                $todoObject->unsetExternalViewerAccounts();
+            }
         }
 
         return $todoObject;

@@ -3,8 +3,8 @@
 namespace CommsyBundle\Services;
 
 use CommsyBundle\Entity\Invitations;
-
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 
 class InvitationsService
 {
@@ -14,9 +14,39 @@ class InvitationsService
      */
     private $em;
 
-    public function __construct(EntityManager $entityManager)
+    private $serviceContainer;
+
+    public function __construct(EntityManager $entityManager, Container $container)
     {
         $this->em = $entityManager;
+        $this->serviceContainer = $container;
+    }
+
+    public function invitationsEnabled () {
+        $legacyEnvironment = $this->serviceContainer->get('commsy_legacy.environment')->getEnvironment();
+        $portal = $legacyEnvironment->getCurrentPortalItem();
+        $authSourceItem = $portal->getDefaultAuthSourceItem();
+        if ($authSourceItem->allowAddAccountInvitation()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function existsInvitationForEmailAddress ($authSourceItem, $email) {
+        $repository = $this->em->getRepository('CommsyBundle:Invitations');
+        $query = $repository->createQueryBuilder('invitations')
+            ->select()
+            ->where('invitations.authSourceId = :authSourceId AND invitations.email = :email')
+            ->setParameter('authSourceId', $authSourceItem->getItemId())
+            ->setParameter('email', $email)
+            ->getQuery();
+        $invitations = $query->getResult();
+
+        if (sizeof($invitations) > 0) {
+            return true;
+        }
+
+        return false;
     }
 
     public function generateInvitationCode($authSourceItem, $contextId, $email) {
@@ -53,6 +83,19 @@ class InvitationsService
         }
 
         return false;
+    }
+
+    public function redeemInvitation($authSourceItem, $invitationCode, $email){
+        $repository = $this->em->getRepository('CommsyBundle:Invitations');
+        $query = $repository->createQueryBuilder('invitations')
+            ->update()
+            ->set('invitations.redeemed', true)
+            ->where('invitations.authSourceId = :authSourceId AND (invitations.hash = :hash OR invitations.email = :email)')
+            ->setParameter('authSourceId', $authSourceItem->getItemId())
+            ->setParameter('hash', $invitationCode)
+            ->setParameter('email', $email)
+            ->getQuery();
+        $query->getResult();
     }
 
     public function getInvitedEmailAdressesByContextId ($authSourceItem, $contextId) {

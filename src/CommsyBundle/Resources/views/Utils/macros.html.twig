@@ -227,6 +227,7 @@
 {% endmacro %}
 
 {% macro editContent(title, item, edit, content, preview, shortPreview, displayCount, count) %}
+    {% import _self as utilsMacros %}
     <hr class="uk-width-9-10"/>
 
     <article class="uk-article uk-margin-left uk-margin-right">
@@ -244,7 +245,7 @@
                 </h4>
             </div>
 
-            {{ _self.actionIcons(title, item, edit) }}
+            {{ utilsMacros.actionIcons(title, item, edit) }}
         </div>
 
         {# content #}
@@ -461,4 +462,10 @@
             <a href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}">{{ 'become member'|trans({}, 'room') }}</a>
         {% endif %}
     {% endif %}
+{% endmacro %}
+
+{% macro showAlert(alert) %}
+    <div class="uk-alert-{{ alert.type }} uk-alert" uk-alert>
+        <p>{{ alert.content }}</p>
+    </div>
 {% endmacro %}

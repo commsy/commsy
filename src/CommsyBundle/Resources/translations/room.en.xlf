@@ -182,6 +182,14 @@
                 <source>Code</source>
                 <target>Code</target>
             </trans-unit>
+            <trans-unit id="room_time_pulses">
+                <source>time pulses</source>
+                <target>Time Pulses</target>
+            </trans-unit>
+            <trans-unit id="room_time_pulses_continuous">
+                <source>continuous</source>
+                <target>continuous</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

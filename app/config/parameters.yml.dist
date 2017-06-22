@@ -38,6 +38,8 @@ parameters:
     # elasticsearch
     elastic_host: localhost
     elastic_port: 9200
+    elastic_user: ~
+    elastic_password: ~
 
     # extensions
     extensions.etherpad.enabled: false

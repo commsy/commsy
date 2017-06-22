@@ -1,6 +1,19 @@
+# Note on how hashtags and tags properties are generated:
+# Setting the property path to false will disable transformation of that value.
+# In this case the mapping will be created but no value will be populated while indexing.
+# The value is populated by listening to the POST_TRANSFORM event.
+#
+# This is done in @see CommsyBundle\EventListener\ElasticCustomPropertyListener
+#
+#
+
 fos_elastica:
     clients:
-        default: { host: %elastic_host%, port: %elastic_port% }
+        default:
+            host: %elastic_host%
+            port: %elastic_port%
+            #username: %elastic_user%
+            #password: %elastic_password%
 
     indexes:
         commsy:
@@ -27,8 +40,8 @@ fos_elastica:
             types:
                 # Announcements
                 announcement:
-                    indexable_callback: isIndexable
-                    mappings:
+                    indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+                    properties:
                         contextId:
                             type: integer
                         creator:
@@ -43,15 +56,18 @@ fos_elastica:
                                 userId: ~
                                 firstName: ~
                                 lastName: ~
-
                         creationDate:
                             type: date
                             format: date_optional_time
                         title:
-                            type: string
+                            type: text
                             analyzer: autocomplete
                             search_analyzer: standard
                         description: ~
+                        hashtags:
+                            property_path: false
+                        tags:
+                            property_path: false
                         endDate:
                             type: date
                             format: date_optional_time
@@ -69,8 +85,8 @@ fos_elastica:
 
                 # dates
                 date:
-                    indexable_callback: isIndexable
-                    mappings:
+                    indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+                    properties:
                         contextId:
                             type: integer
                         creator:
@@ -89,10 +105,14 @@ fos_elastica:
                             type: date
                             format: date_optional_time
                         title:
-                            type: string
+                            type: text
                             analyzer: autocomplete
                             search_analyzer: standard
                         description: ~
+                        hashtags:
+                            property_path: false
+                        tags:
+                            property_path: false
                         datetimeStart:
                             type: date
                             format: date_optional_time
@@ -113,8 +133,8 @@ fos_elastica:
 
                 # discussions:
                 discussion:
-                    indexable_callback: isIndexable
-                    mappings:
+                    indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+                    properties:
                         contextId:
                             type: integer
                         creator:
@@ -133,9 +153,13 @@ fos_elastica:
                             type: date
                             format: date_optional_time
                         title:
-                            type: string
+                            type: text
                             analyzer: autocomplete
                             search_analyzer: standard
+                        hashtags:
+                            property_path: false
+                        tags:
+                            property_path: false
                         discussionarticles:
                             type: 'nested'
                             properties:
@@ -160,8 +184,8 @@ fos_elastica:
 
                 # labels: (groups, topics, institutions)
                 label:
-                    indexable_callback: isIndexable
-                    mappings:
+                    indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+                    properties:
                         contextId:
                             type: integer
                         creator:
@@ -191,8 +215,8 @@ fos_elastica:
 
                 # room:
                 room:
-                    indexable_callback: isIndexable
-                    mappings:
+                    indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+                    properties:
                         contextId:
                             type: integer
                         creator:
@@ -208,7 +232,7 @@ fos_elastica:
                                 firstName: ~
                                 lastName: ~
                         title:
-                            type: string
+                            type: text
                             analyzer: autocomplete
                             search_analyzer: standard
                         contactPersons: ~
@@ -225,8 +249,8 @@ fos_elastica:
 
                 # todos:
                 todo:
-                    indexable_callback: isIndexable
-                    mappings:
+                    indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+                    properties:
                         contextId:
                             type: integer
                         creator:
@@ -242,13 +266,17 @@ fos_elastica:
                                 firstName: ~
                                 lastName: ~
                         title:
-                            type: string
+                            type: text
                             analyzer: autocomplete
                             search_analyzer: standard
                         date:
                             type: date
                             format: date_optional_time
                         description: ~
+                        hashtags:
+                            property_path: false
+                        tags:
+                            property_path: false
                         steps:
                             type: 'nested'
                             properties:
@@ -274,8 +302,8 @@ fos_elastica:
                 
                 # User
                 user:
-                    indexable_callback: isIndexable
-                    mappings:
+                    indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+                    properties:
                         userId: ~
                         contextId:
                             type: integer
@@ -291,17 +319,21 @@ fos_elastica:
 
                 # materials:
                 material:
-                    indexable_callback: 'isIndexable'
-                    mappings:
+                    indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+                    properties:
                         versionId:
                             type: integer
                         contextId:
                             type: integer
                         title:
-                            type: string
+                            type: text
                             analyzer: autocomplete
                             search_analyzer: standard
                         description: ~
+                        hashtags:
+                            property_path: false
+                        tags:
+                            property_path: false
                         sections:
                             type: 'nested'
                             properties:

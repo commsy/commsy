@@ -86,6 +86,10 @@
                 <source>no entry selected</source>
                 <target>Kein Eintrag ausgewählt</target>
             </trans-unit>
+            <trans-unit id="itemIsLocked">
+                <source>item is locked</source>
+                <target>Dieser Eintrag wird gerade von einem anderen Nutzer bearbeitet und ist daher gesperrt</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

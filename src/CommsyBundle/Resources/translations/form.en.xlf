@@ -378,6 +378,14 @@
                 <source>etherpadText</source>
                 <target><![CDATA[<span style='word-break: keep-all;'><div class='uk-margin-small-bottom'>]]>Etherpad allows multiple users to work concurrently on the same material but provides fewer options than the default editor. <![CDATA[</div><br/><div class='uk-text-bold'>]]>This option cannot be changed afterwards!<![CDATA[</div>]]></target>
             </trans-unit>
+            <trans-unit id="form_external_viewer">
+                <source>External viewer</source>
+                <target>External viewer</target>
+            </trans-unit>
+            <trans-unit id="form_external_viewer_desc">
+                <source>external_viewer_desc</source>
+                <target>You can provide a white-space separated list of usernames to grant access on this entry.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

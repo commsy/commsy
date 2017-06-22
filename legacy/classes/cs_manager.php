@@ -2045,13 +2045,13 @@ class cs_manager {
        }
     }
 
-    public function updateLocking($itemId) {
+    public function updateLocking($itemId, $date) {
       $userItem = $this->_environment->getCurrentUserItem();
       $query = "
           UPDATE
               " . $this->addDatabasePrefix($this->_db_table) . " AS t
           SET
-              t.locking_date = NOW(),
+              t.locking_date = '".$date."',
               t.locking_user_id = " . encode(AS_DB, $userItem->getItemId()) . "
           WHERE
               t.item_id = '" . encode(AS_DB, $itemId) . "'

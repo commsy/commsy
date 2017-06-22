@@ -96,6 +96,10 @@
                 <source>Community rooms</source>
                 <target>Zuordnung</target>
             </trans-unit>
+            <trans-unit id="home">
+                <source>Home</source>
+                <target>Einstiegsseite</target>
+            </trans-unit>
             <trans-unit id="announcement">
                 <source>Announcement</source>
                 <target>Ankündigungen</target>
@@ -642,6 +646,22 @@
             <trans-unit id="Email-adrress of new invitee">
                 <source>Email-adrress of new invitee</source>
                 <target>E-Mail Adresse</target>
+            </trans-unit>
+            <trans-unit id="An invitation for this email-address already exists in this portal">
+                <source>An invitation for this email-address already exists in this portal</source>
+                <target>Eine Einladung für diese E-Mail Adresse existiert bereits in diesem Portal</target>
+            </trans-unit>
+            <trans-unit id="settings_time_context">
+                <source>Time context</source>
+                <target>Zeitakte</target>
+            </trans-unit>
+            <trans-unit id="settings_time_context_description">
+                <source>Time context description</source>
+                <target>Wählen Sie die Zeitakte für Ihren Raum aus.</target>
+            </trans-unit>
+            <trans-unit id="settings_time_context_cont">
+                <source>continous</source>
+                <target>kontinuierlich</target>
             </trans-unit>
         </body>
     </file>

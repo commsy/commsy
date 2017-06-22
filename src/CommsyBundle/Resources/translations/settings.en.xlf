@@ -96,6 +96,10 @@
                 <source>Community rooms</source>
                 <target>Community rooms</target>
             </trans-unit>
+            <trans-unit id="home">
+                <source>Home</source>
+                <target>Home</target>
+            </trans-unit>
             <trans-unit id="announcement">
                 <source>Announcement</source>
                 <target>Announcement</target>
@@ -629,8 +633,8 @@
                 <target>New invitation</target>
             </trans-unit>
             <trans-unit id="New invitation text">
-                <source>Invitation text</source>
-                <target>Plase give the email-adress you want to send the invitation to. The invitee will reccive an email with a one time usable invitation code.</target>
+                <source>New invitation text</source>
+                <target>Plase give the email-adress you want to send the invitation to. The invitee will receive an email with a one time usable invitation code.</target>
             </trans-unit>
             <trans-unit id="Remove invitation">
                 <source>Remove invitation</source>
@@ -638,11 +642,27 @@
             </trans-unit>
             <trans-unit id="Remove invitation text">
                 <source>Remove invitation text</source>
-                <target>Select the invitations you want to revoke. Only the invitations not yet redeemed are listet.</target>
+                <target>Select the invitations you want to revoke. Only the invitations not yet redeemed are listed.</target>
             </trans-unit>
             <trans-unit id="Email-adrress of new invitee">
                 <source>Email-adrress of new invitee</source>
-                <target>Weitere eingeladene E-Mail Adresse</target>
+                <target>Email-adrress of new invitee</target>
+            </trans-unit>
+            <trans-unit id="An invitation for this email-address already exists in this portal">
+                <source>An invitation for this email-address already exists in this portal</source>
+                <target>An invitation for this email-address already exists in this portal</target>
+            </trans-unit>
+            <trans-unit id="settings_time_context">
+                <source>Time context</source>
+                <target>Time context</target>
+            </trans-unit>
+            <trans-unit id="settings_time_context_description">
+                <source>Time context description</source>
+                <target>Choose the time context for your room.</target>
+            </trans-unit>
+            <trans-unit id="settings_time_context_cont">
+                <source>continous</source>
+                <target>continous</target>
             </trans-unit>
         </body>
     </file>

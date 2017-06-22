@@ -287,9 +287,15 @@ class RoomController extends Controller
     public function listAllAction($roomId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomService = $this->get('commsy_legacy.room_service');
+
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
-        $filterForm = $this->createForm(RoomFilterType::class);
+        $filterForm = $this->createForm(RoomFilterType::class, null, [
+            'showTime' => $portalItem->showTime(),
+            'timePulses' => $roomService->getTimePulses(),
+        ]);
+
         $filterForm->handleRequest($request);
 
         $count = 0;
@@ -362,6 +368,8 @@ class RoomController extends Controller
     public function feedAllAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomService = $this->get('commsy_legacy.room_service');
+
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
         // extract current filter from parameter bag (embedded controller call)
@@ -378,7 +386,10 @@ class RoomController extends Controller
         $activeRoomQueryBuilder->setFirstResult($start);
 
         if ($roomFilter) {
-            $filterForm = $this->createForm(RoomFilterType::class, $roomFilter);
+            $filterForm = $this->createForm(RoomFilterType::class, $roomFilter, [
+                'showTime' => $portalItem->showTime(),
+                'timePulses' => $roomService->getTimePulses(),
+            ]);
 
             // manually bind values from the request
             $filterForm->submit($roomFilter);
@@ -398,7 +409,10 @@ class RoomController extends Controller
             $archivedRoomQueryBuilder->setFirstResult($start);
 
             if ($roomFilter) {
-                $filterForm = $this->createForm(RoomFilterType::class, $roomFilter);
+                $filterForm = $this->createForm(RoomFilterType::class, $roomFilter, [
+                    'showTime' => $portalItem->showTime(),
+                    'timePulses' => $roomService->getTimePulses(),
+                ]);
                 $filterForm->submit($roomFilter);
                 $this->get('lexik_form_filter.query_builder_updater')
                         ->addFilterConditions($filterForm, $archivedRoomQueryBuilder);

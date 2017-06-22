@@ -32,6 +32,8 @@ include_once('classes/cs_list.php');
  */
 include_once('classes/cs_manager.php');
 
+include_once('classes/interfaces/cs_export_import_interface.php');
+
 /** date functions are needed for method _newVersion()
  */
 include_once('functions/date_functions.php');

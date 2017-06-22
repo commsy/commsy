@@ -494,12 +494,19 @@ class cs_label_item extends cs_item {
       $label_manager = $this->_environment->getLabelManager();
       $this->_save($label_manager);
 
-      global $symfonyContainer;
-      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.label');
-      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('CommsyBundle:Labels');
+      // prevent indexing of label types like buzzwords
+      if (in_array($this->getLabelType(), [
+          'groups',
+          'topics',
+          'institutions'
+      ])) {
+          global $symfonyContainer;
+           $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.label');
+           $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+           $repository = $em->getRepository('CommsyBundle:Labels');
 
-      $this->replaceElasticItem($objectPersister, $repository);
+           $this->replaceElasticItem($objectPersister, $repository);
+      }
    }
 
    /** delete label item

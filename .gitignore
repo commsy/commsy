@@ -37,27 +37,23 @@ Icon
 /vendor/
 /web/bundles/
 
-var/*
-!var/cache
-var/cache/*
+/var/*
+!/var/cache
+/var/cache/*
 !var/cache/.gitkeep
-!var/cache/htmlpurifier
-var/cache/htmlpurifier/*
+!/var/cache/htmlpurifier
+/var/cache/htmlpurifier/*
 !var/cache/htmlpurifier/.gitkeep
-!var/logs
-var/logs/*
+!/var/logs
+/var/logs/*
 !var/logs/.gitkeep
-!var/sessions
-var/sessions/*
+!/var/sessions
+/var/sessions/*
 !var/sessions/.gitkeep
-!var/temp
-var/temp/*
-!var/temp/.gitkeep
 !var/SymfonyRequirements.php
-
-!var/test
-var/test/*
-!var/test/.gitkeep
+!/var/temp
+/var/temp/*
+!var/temp/.gitkeep
 
 ######################
 # Eclipse related    #

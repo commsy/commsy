@@ -102,4 +102,40 @@ class RoomService
         $roomDir = implode( "/", array_filter(explode("\r\n", chunk_split(strval($roomId), "4")), 'strlen') );
         return $this->legacyEnvironment->getCurrentPortalID() . "/" . $roomDir . "_";
     }
+
+    public function getRoomsInTimePulse($timeId)
+    {
+        $projectManager = $this->legacyEnvironment->getProjectManager();
+        $projectManager->resetLimits();
+        $projectManager->setTimeLimit($timeId);
+        $projectManager->unsetContextLimit();
+        $projectManager->select();
+
+        return $projectManager->getIDArray();
+
+    }
+
+    public function getTimePulses()
+    {
+        $timePulses = [];
+
+        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+        $translator = $this->legacyEnvironment->getTranslationObject();
+
+        if ($portalItem->showTime()) {
+            $timeList = $portalItem->getTimeList();
+
+            $timeItem = $timeList->getFirst();
+            while ($timeItem) {
+                $translatedTitle = $translator->getTimeMessage($timeItem->getTitle());
+                $timePulses[$translatedTitle] = $timeItem->getItemID();
+
+                $timeItem = $timeList->getNext();
+            }
+
+            $timePulses['continuous'] = 'cont';
+        }
+
+        return $timePulses;
+    }
 }

@@ -115,7 +115,7 @@
                 // cancel is not handled via ajax
                 if ($button.attr('name').includes('cancel')) {
                     event.preventDefault();
-
+                    /*
                     // cancel editing a NEW entry => return to list view
                     if($("#breadcrumb-nav .current.last").text().trim() == "") {
                         let pathParts = window.location.pathname.split("/");
@@ -130,6 +130,29 @@
                         // there is an anchor currently set
                         window.location.reload(true);
                     }
+                    */
+                    // request backend to remove edit lock
+                    $.ajax({
+                        url: $this.options.cancelEditUrl,
+                        type: "POST",
+                        data: null
+                    })
+                    .complete(function(result, statusText, xhrObject) {
+                        // cancel editing a NEW entry => return to list view
+                        if($("#breadcrumb-nav .current.last").text().trim() == "") {
+                            let pathParts = window.location.pathname.split("/");
+                            pathParts.pop();
+                            window.location.href = pathParts.join("/");
+                        }
+                        // cancel editing an EXISTING entry => return to detail view of the entry
+                        else {
+                            // trigger reload of the current URL
+                            // We are using the Location.reload() method, since
+                            // setting window.location.href might not result in a reload, if
+                            // there is an anchor currently set
+                            window.location.reload(true);
+                        }
+                    });
                 } else {
                     let form = $(this).closest('form');
                     if (form[0].checkValidity()) {

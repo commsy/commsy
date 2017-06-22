@@ -70,6 +70,14 @@ class CommsyBreadcrumbListener
         elseif ($controller == 'dashboard' && $action == 'overview') {
             $this->breadcrumbs->addItem($this->translator->trans($controller, [], 'menu'));
         }
+        elseif ($controller == 'category') {
+            $this->addRoom($roomItem, true);
+            $this->breadcrumbs->addItem($this->translator->trans('Categories', [], 'category'));
+        }
+        elseif ($controller == 'hashtag') {
+            $this->addRoom($roomItem, true);
+            $this->breadcrumbs->addItem($this->translator->trans('hashtags', [], 'room'));
+        }
         else {
             $this->addRoom($roomItem, true);
 

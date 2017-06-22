@@ -19,6 +19,9 @@ use CommsyBundle\Form\Type\MaterialSectionType;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use CommsyBundle\Event\CommsyEditEvent;
+
 class MaterialController extends Controller
 {
     // setup filter form default values
@@ -291,7 +294,15 @@ class MaterialController extends Controller
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
-        
+
+        $alert = null;
+        if ($material->isLocked()) {
+            $translator = $this->get('translator');
+
+            $alert['type'] = 'warning';
+            $alert['content'] = $translator->trans('item is locked', array(), 'item');
+        }
+
         return array(
             'roomId' => $roomId,
             'material' => $infoArray['material'],
@@ -335,7 +346,8 @@ class MaterialController extends Controller
                 '1_yellow' => $roomItem->getWorkflowTrafficLightTextYellow(),
                 '2_red' => $roomItem->getWorkflowTrafficLightTextRed(),
                 '3_none' => '',
-            ]
+            ],
+            'alert' => $alert,
        );
     }
 
@@ -882,9 +894,8 @@ class MaterialController extends Controller
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
-        
-        $formData = array();
-        $materialItem = NULL;
+
+        $materialItem = null;
         $isMaterial = false;
         $isDraft = false;
         $isSaved = false;
@@ -909,6 +920,8 @@ class MaterialController extends Controller
                 )),
                 'placeholderText' => '['.$translator->trans('insert title').']',
             ));
+
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($materialItem));
         } else if ($item->getItemType() == 'section') {
             // get section from MaterialService
             $materialItem = $materialService->getSection($itemId);
@@ -919,13 +932,14 @@ class MaterialController extends Controller
             $form = $this->createForm(SectionType::class, $formData, array(
                 'placeholderText' => '['.$translator->trans('insert title').']',
             ));
+
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($materialService->getMaterial($materialItem->getlinkedItemID())));
         }
-        
+
         $form->handleRequest($request);
         if ($form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $materialItem = $transformer->applyTransformation($materialItem, $form->getData());
-                $isSaved = true;
 
                 // update modifier
                 $materialItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
@@ -936,15 +950,8 @@ class MaterialController extends Controller
                     $item->setDraftStatus(0);
                     $item->saveAsItem();
                 }
-            } else if ($form->get('cancel')->isClicked()) {
-                // ToDo ...
+                return $this->redirectToRoute('commsy_material_save', array('roomId' => $roomId, 'itemId' => $itemId));
             }
-            return $this->redirectToRoute('commsy_material_save', array('roomId' => $roomId, 'itemId' => $itemId));
-            
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
         }
 
         return array(
@@ -978,8 +985,12 @@ class MaterialController extends Controller
         
         if ($item->getItemType() == 'material') {
             $tempItem = $materialService->getMaterial($itemId);
+
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($tempItem));
         } else if ($item->getItemType() == 'section') {
-            $tempItem = $materialService->getSection($itemId); 
+            $tempItem = $materialService->getSection($itemId);
+
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($materialService->getMaterial($tempItem->getLinkedItemID())));
         }
         
         $itemArray = array($tempItem);
@@ -989,6 +1000,7 @@ class MaterialController extends Controller
         }
         
         $infoArray = $this->getDetailInfo($roomId, $itemId);
+
         return array(
             'roomId' => $roomId,
             'item' => $tempItem,
@@ -1182,6 +1194,7 @@ class MaterialController extends Controller
 
                 $section->save();
             }
+
             return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));
         }
     }
@@ -1252,6 +1265,8 @@ class MaterialController extends Controller
             )),
         );
 
+        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($material));
+
         $form = $this->createForm(MaterialSectionType::class, $formData, $formOptions);
 
         $form->handleRequest($request);
@@ -1300,6 +1315,8 @@ class MaterialController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.material');
 
         $material = $materialService->getMaterial($itemId);
+
+        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($item));
 
         return array(
             'roomId' => $roomId,

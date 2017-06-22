@@ -20,6 +20,9 @@ use CommsyBundle\Form\Type\ItemLinksType;
 use CommsyBundle\Form\Type\ItemWorkflowType;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use CommsyBundle\Event\CommsyEditEvent;
+
 class ItemController extends Controller
 {
     /**
@@ -56,7 +59,13 @@ class ItemController extends Controller
                 $withRecurrence = true;
             }
         }
-        
+
+        if ($item->getItemType() === CS_SECTION_TYPE ||$item->getItemType() === CS_STEP_TYPE) {
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($item->getLinkedItem()));
+        } else {
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($item));
+        }
+
         $form = $this->createForm(ItemDescriptionType::class, $formData, $formOptions);
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -80,7 +89,7 @@ class ItemController extends Controller
             } else {
                 throw new UnexpectedValueException("Value must be one of 'save', 'saveThisDate' and 'saveAllDates'.");
             }
-            
+
             return $this->redirectToRoute('commsy_item_savedescription', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
@@ -114,7 +123,13 @@ class ItemController extends Controller
         foreach ($itemArray as $tempItem) {
             $modifierList[$tempItem->getItemId()] = $itemService->getAdditionalEditorsForItem($tempItem);
         }
-        
+
+        if ($item->getItemType() === CS_SECTION_TYPE ||$item->getItemType() === CS_STEP_TYPE) {
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($item->getLinkedItem()));
+        } else {
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($item));
+        }
+
         return array(
             // etherpad subscriber (material save)
             // important: save and item->id parameter are needed
@@ -315,6 +330,8 @@ class ItemController extends Controller
 
         $translator = $this->get('translator');
 
+        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($item));
+
         $form = $this->createForm(ItemLinksType::class, $formData, [
             'filterRubric' => $optionsData['filterRubric'],
             'filterPublic' => $optionsData['filterPublic'],
@@ -385,7 +402,9 @@ class ItemController extends Controller
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
-        
+
+        $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($item));
+
         return array(
             'roomId' => $roomId,
             'item' => $tempItem,
@@ -1028,5 +1047,27 @@ class ItemController extends Controller
             $addCategory = false;
         }
         return $result;
+    }
+
+    /**
+     * @Route("/room/{roomId}/item/{itemId}/canceledit")
+     * @Template()
+     */
+    public function cancelEditAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getTypedItem($itemId);
+        
+        if ($item->getItemType() === CS_SECTION_TYPE ||$item->getItemType() === CS_STEP_TYPE) {
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::CANCEL, new CommsyEditEvent($item->getLinkedItem()));
+        } else {
+            $this->get('event_dispatcher')->dispatch(CommsyEditEvent::CANCEL, new CommsyEditEvent($item));
+        }
+
+        return array(
+            'canceledEdit' => true,
+            'roomId' => $roomId,
+            'item' => $item,
+        );
     }
 }

@@ -175,7 +175,11 @@
 
                     </div>
                 </div>
-                
+
+                {% if alert %}
+                    {{ macros.showAlert(alert) }}
+                {%  endif %}
+
                 {# content #}
                 <article class="uk-article uk-position-relative" data-uk-observe>
                     {# title, etc. #}
@@ -184,7 +188,7 @@
                     </div>
             
                     {# description #}
-                    <div id="description{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': group.contextId, 'itemId': group.itemId}) }}' }">
+                    <div id="description{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': group.contextId, 'itemId': group.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': group.contextId, 'itemId': group.itemId}) }}' }">
                         {{ macrosItem.itemDescription('description', group, true, group.description) }}
                     </div>
             
@@ -200,7 +204,7 @@
                     </div>
 
                     {# links #}
-                    <div id="links{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': group.contextId, 'itemId': group.itemId}) }}' }">
+                    <div id="links{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': group.contextId, 'itemId': group.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': group.contextId, 'itemId': group.itemId}) }}' }">
                         {{ macrosItem.links(group, showHashtags, showCategories, roomCategories) }}
                     </div>        
                 </article>
