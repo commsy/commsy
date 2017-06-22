@@ -12,7 +12,7 @@ use CommsyBundle\Entity\User;
 use CommsyBundle\Form\Type\Profile\RoomProfileGeneralType;
 use CommsyBundle\Form\Type\Profile\RoomProfileAddressType;
 use CommsyBundle\Form\Type\Profile\RoomProfileContactType;
-use CommsyBundle\Form\Type\Profile\DeleteRoomProfileType;
+use CommsyBundle\Form\Type\Profile\DeleteType;
 use CommsyBundle\Form\Type\Profile\ProfileAccountType;
 use CommsyBundle\Form\Type\Profile\ProfileMergeAccountsType;
 use CommsyBundle\Form\Type\Profile\ProfileNotificationsType;
@@ -420,7 +420,7 @@ class ProfileController extends Controller
     */
     public function deleteAccountAction($roomId, Request $request)
     {
-        $form = $this->createForm(DeleteRoomProfileType::class, [], []);
+        $form = $this->createForm(DeleteType::class, [], []);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -455,7 +455,7 @@ class ProfileController extends Controller
     */
     public function deleteRoomProfileAction($roomId, Request $request)
     {
-        $form = $this->createForm(DeleteRoomProfileType::class, [], []);
+        $form = $this->createForm(DeleteType::class, [], []);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

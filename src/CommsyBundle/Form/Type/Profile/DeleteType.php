@@ -8,7 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class DeleteRoomProfileType extends AbstractType
+class DeleteType extends AbstractType
 {
     /**
      * Builds the form.
@@ -21,7 +21,20 @@ class DeleteRoomProfileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('confirm', TextType::class, [
+            ->add('confirmDisable', TextType::class, [
+                'label' => 'Confirm',
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\IdenticalTo([
+                        'value' => 'DISABLE',
+                        'message' => 'The input does not match {{ compared_value }}'
+                    ]),
+                ],
+                'required' => true,
+                'translation_domain' => 'settings',
+            ])
+            ->add('confirmDelete', TextType::class, [
+                'label' => 'Confirm',
                 'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\IdenticalTo([
@@ -30,12 +43,19 @@ class DeleteRoomProfileType extends AbstractType
                     ]),
                 ],
                 'required' => true,
+                'translation_domain' => 'settings',
             ])
-            ->add('delete', SubmitType::class, [
-                'label' => 'Delete',
+            ->add('end', SubmitType::class, [
+                'label' => 'disable',
                 'attr' => [
                     'class' => 'uk-button-danger',
-                ]
+                ],
+            ])
+            ->add('delete', SubmitType::class, [
+                'label' => 'delete',
+                'attr' => [
+                    'class' => 'uk-button-danger',
+                ],
             ])
         ;
     }
@@ -49,7 +69,7 @@ class DeleteRoomProfileType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'translation_domain' => 'settings'
+                'translation_domain' => 'profile'
             ])
         ;
     }
@@ -63,6 +83,6 @@ class DeleteRoomProfileType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'profile_deleteroomprofile';
+        return 'profile_delete';
     }
 }

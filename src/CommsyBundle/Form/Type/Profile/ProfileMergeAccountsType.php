@@ -40,12 +40,10 @@ class ProfileMergeAccountsType extends AbstractType
         $builder
             ->add('combineUserId', TextType::class, array(
                 'label' => 'combineUserId',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('combinePassword', TextType::class, array(
                 'label' => 'combinePassword',
-                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('save', SubmitType::class, array(

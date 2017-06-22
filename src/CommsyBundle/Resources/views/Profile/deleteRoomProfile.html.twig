@@ -9,27 +9,53 @@
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-danger">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div>{{ 'deleteAccount'|trans({}, 'settings') }}</div>
+                        <div>{{ 'deleteRoomMembership'|trans({}, 'profile') }}</div>
                     </div>
                 </div>
 
                 <div class="uk-alert uk-alert-danger">
-                    <p class="uk-text-uppercase uk-text-bold">
-                        {{ 'Delete intro'|trans({}, 'settings') }}
-                    </p>
 
-                    <div class="uk-margin">
-                        {{ 'Delete explanation start'|trans({}, 'settings') }}
-                        <span class="uk-text-bold">DELETE</span>
-                        {{ 'Delete explanation end'|trans({}, 'settings') }}
-                    </div>
                     <div class="uk-margin">
                         {{ form_start(form) }}
 
+                        <p class="uk-text-uppercase uk-text-bold">
+                            {{ 'disableRoomMembership'|trans({}, 'profile') }}
+                        </p>
+                        {{ 'disableRoomMembershipText'|trans({}, 'profile') }}
+
+                        <div class="uk-margin">
+                            {{ 'Delete explanation start'|trans({}, 'settings') }}
+                            <span class="uk-text-uppercase uk-text-bold">{{ 'disable'|trans({}, 'profile') }}</span>
+                            {{ 'Delete explanation end'|trans({}, 'settings') }}
+                        </div>
+
                         <div class="uk-form-row">
-                            {{ form_errors(form.confirm) }}
-                            {{ form_label(form.confirm) }}
-                            {{ form_widget(form.confirm) }}
+                            {{ form_errors(form.confirmDisable) }}
+                            {{ form_label(form.confirmDisable) }}
+                            {{ form_widget(form.confirmDisable) }}
+                        </div>
+
+                        <div class="uk-form-row">
+                            {{ form_widget(form.end) }}
+                        </div>
+
+                        <p class="uk-text-uppercase uk-text-bold">
+                            {{ 'deleteRoomMembership'|trans({}, 'profile') }}
+                        </p>
+                        {{ 'deleteRoomMembershipText'|trans({}, 'profile') }}
+                        <br/>
+                        <span class="uk-text-uppercase uk-text-bold">{{ 'warning'|trans({}, 'menu') }}</span> {{ 'irreversibleMessage'|trans({}, 'menu') }}
+
+                        <div class="uk-margin">
+                            {{ 'Delete explanation start'|trans({}, 'settings') }}
+                            <span class="uk-text-uppercase uk-text-bold">{{ 'delete'|trans({}, 'profile') }}</span>
+                            {{ 'Delete explanation end'|trans({}, 'settings') }}
+                        </div>
+
+                        <div class="uk-form-row">
+                            {{ form_errors(form.confirmDelete) }}
+                            {{ form_label(form.confirmDelete) }}
+                            {{ form_widget(form.confirmDelete) }}
                         </div>
 
                         <div class="uk-form-row">

@@ -113,12 +113,12 @@ class MenuBuilder
                 'extras' => [
                     'icon' => 'uk-icon-trash uk-icon-small uk-icon-justify',
                     'user' => $currentUser,
-                ]
+                ],
             ])
             ->setAttributes([
                 'class' => 'uk-button-danger',
             ])
-            ->setExtra('translation_domain', 'menu');
+            ->setExtra('translation_domain', 'profile');
         }
 
         return $menu;
@@ -179,7 +179,7 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'menu');
 
-            $menu->addChild('deleteRoomProfile', [
+            $menu->addChild('cancelMembership', [
                 'route' => 'commsy_profile_deleteroomprofile',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
@@ -193,7 +193,7 @@ class MenuBuilder
             ->setAttributes([
                 'class' => 'uk-button-danger',
             ])
-            ->setExtra('translation_domain', 'menu');
+            ->setExtra('translation_domain', 'profile');
         }
 
         return $menu;

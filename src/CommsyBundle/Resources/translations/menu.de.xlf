@@ -150,13 +150,13 @@
                 <target>Einladungen</target>
             </trans-unit>
 
-            <trans-unit id="delete_account">
-                <source>deleteAccount</source>
-                <target>Account löschen</target>
+            <trans-unit id="warning">
+                <source>warning</source>
+                <target>Achtung:</target>
             </trans-unit>
-            <trans-unit id="delete_room_profile">
-                <source>deleteRoomProfile</source>
-                <target>Teilnahme beenden</target>
+            <trans-unit id="irreversible_message">
+                <source>irreversibleMessage</source>
+                <target>Dies kann nicht rückgängig gemacht werden!</target>
             </trans-unit>
         </body>
     </file>
