@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\FormError;
 
 use CommsyBundle\Entity\User;
 use CommsyBundle\Form\Type\Profile\RoomProfileGeneralType;
@@ -312,6 +313,80 @@ class ProfileController extends Controller
         $form->handleRequest($request);
         if ($form->isValid()) {
             // TODO: merge accounts
+            // ############
+
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $authentication = $legacyEnvironment->getAuthenticationObject();
+
+            global $c_annonymous_account_array;
+
+            $currentUser = $legacyEnvironment->getCurrentUserItem();
+            if ( !empty($c_annonymous_account_array[mb_strtolower($currentUser->getUserID(), 'UTF-8') . '_' . $currentUser->getAuthSource()]) && $currentUser->isOnlyReadUser() )
+            {
+                // TODO: replace with CommSy9 error message
+                //$this->_popup_controller->setErrorReturn("1014", "anonymous account");
+                $form->get('combineUserId')->addError(new Error("1014: anonymous account"));
+                exit;
+            }
+            else
+            {
+                if ( $currentUser->getUserID() == $form_data['merge_user_id'] && ( empty($form_data['auth_source']) || $currentUser->getAuthSource() == $form_data['auth_source'] ) )
+                {
+                    // TODO: replace with CommSy9 error message
+                    //$this->_popup_controller->setErrorReturn("1015", "invalid account");
+                    $form->get('combineUserId')->addError(new Error("1015: invalid account"));
+                }
+                else
+                {
+                    $user_manager = $legacyEnvironment->getUserManager();
+                    $user_manager->setUserIDLimitBinary($form_data['merge_user_id']);
+
+                    $user_manager->select();
+                    $user = $user_manager->get();
+                    $first_user = $user->getFirst();
+
+                    $current_user = $legacyEnvironment->getCurrentUserItem();
+
+                    if(!empty($first_user)){
+                        if(empty($form_data['auth_source'])){
+                            $authManager = $authentication->getAuthManager($current_user->getAuthSource());
+                        } else {
+                            $authManager = $authentication->getAuthManager($form_data['auth_source']);
+                        }
+                        if ( !$authManager->checkAccount($form_data['merge_user_id'], $form_data['merge_user_password']) )
+                        {
+                            // TODO: replace with CommSy9 error message
+                            //$this->_popup_controller->setErrorReturn("1016", "authentication error");
+                            $form->get('combineUserId')->addError(new Error("1016: authentication error"));
+                            exit;
+                        }
+                    } else {
+                        // TODO: replace with CommSy9 error message
+                        //$this->_popup_controller->setErrorReturn("1015", "invalid account");
+                        $form->get('combineUserId')->addError(new Error("1015: invalid account"));
+                        exit;
+                    }
+                }
+            }
+
+            $currentUser = $legacyEnvironment->getCurrentUserItem();
+
+            if ( isset($form_data['auth_source']) )
+            {
+                $authSourceOld = $form_data['auth_source'];
+            }
+            else
+            {
+                $authSourceOld = $legacyEnvironment->getCurrentPortalItem()->getAuthDefault();
+            }
+
+            ini_set('display_errors', 'on');
+            error_reporting(E_ALL);
+
+            $authentication->mergeAccount($currentUser->getUserID(), $currentUser->getAuthSource(), $form_data['merge_user_id'], $authSourceOld);
+            // ############
+
+
             return $this->redirectToRoute('commsy_profile_mergeaccounts', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 

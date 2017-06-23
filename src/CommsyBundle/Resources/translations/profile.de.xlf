@@ -265,9 +265,13 @@
                 <target>Mit der Option "automatisches Speichern" können Sie einstellen, dass zur Bearbeitung geöffnete Einträge automatisch gespeichert werden, wenn Sie für eine längere Zeit inaktiv waren.</target>
             </trans-unit>
 
-            <trans-unit id="merge_accounts_text">
-                <source>mergeAccountsText</source>
-                <target>Hier können Sie Kennungen auf diesem Portal zusammenlegen. Bitte geben Sie hier die Zugangsdaten des Accounts ein, mit dem Ihr Account verbunden werden soll.</target>
+            <trans-unit id="merge_accounts_text_1">
+                <source>mergeAccountsTextFirstLine</source>
+                <target>Hier können Sie Kennungen auf diesem Portal zusammenlegen.</target>
+            </trans-unit>
+            <trans-unit id="merge_accounts_text_2">
+                <source>mergeAccountsTextSecondLine</source>
+                <target>Bitte geben Sie hier die Zugangsdaten des Accounts ein, mit dem Ihr Account verbunden werden soll.</target>
             </trans-unit>
             <trans-unit id="newsletter_text">
                 <source>newsletterText</source>

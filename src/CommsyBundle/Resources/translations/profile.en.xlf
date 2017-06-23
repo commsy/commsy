@@ -265,9 +265,13 @@
                 <target>When the option "automatic saving" is activated, any entry you are working on will be saved automatically if you have been idle for some time.</target>
             </trans-unit>
 
-            <trans-unit id="merge_accounts_text">
-                <source>mergeAccountsText</source>
-                <target>Here you can combine your account with another account on this portal. Please enter the login data of the account you want to combine your current account with.</target>
+            <trans-unit id="merge_accounts_text_1">
+                <source>mergeAccountsTextFirstLine</source>
+                <target>Here you can combine your account with another account on this portal.</target>
+            </trans-unit>
+            <trans-unit id="merge_accounts_text_2">
+                <source>mergeAccountsTextSecondLine</source>
+                <target>Please enter the login data of the account you want to combine your current account with.</target>
             </trans-unit>
             <trans-unit id="newsletter_text">
                 <source>newsletterText</source>
