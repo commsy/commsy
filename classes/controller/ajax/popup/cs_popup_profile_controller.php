@@ -53,8 +53,13 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							}
 							else
 							{
-								if ( $currentUser->getUserID() == $form_data['merge_user_id'] && ( empty($form_data['auth_source']) || $currentUser->getAuthSource() == $form_data['auth_source'] ) )
-								{
+								if (
+                                    strtolower($currentUser->getUserID()) == strtolower($form_data['merge_user_id']) &&
+                                    (
+                                        empty($form_data['auth_source']) ||
+                                        $currentUser->getAuthSource() == $form_data['auth_source']
+                                    )
+                                ) {
 									$this->_popup_controller->setErrorReturn("1015", "invalid account");
 								}
 								else

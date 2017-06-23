@@ -250,9 +250,9 @@ if (isset($_GET['cid'])) {
                     $vEvent->setNoTime(true);
                 }
 
-                // Ending dates ending not at the starting day and without an exact ending time are considered to
+                // Ending dates ending not at the starting day, with starting time and without an exact ending time are considered to
                 // span the whole day
-                if ($startTime != $endTime && empty($item->getEndingTime())) {
+                if ($startTime != $endTime && !empty($item->getStartingTime()) && empty($item->getEndingTime())) {
                     $endTime->add(new \DateInterval('P1D'));
                 }
 
