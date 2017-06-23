@@ -4,7 +4,6 @@ namespace CommsyBundle\Controller;
 
 use Eluceo\iCal\Component\Calendar;
 use Eluceo\iCal\Component\Event;
-use Eluceo\iCal\Property\Event\Attendees;
 use Eluceo\iCal\Property\Event\Organizer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -62,17 +61,15 @@ class ICalController extends Controller
 
         $calendar = $this->createCalendar($currentContextItem, $export);
 
+        // prepare response
         $response = new Response($calendar->render());
         $response->headers->set('Content-Type', 'text/calendar');
         $response->setCharset('utf-8');
-
-        if ($export) {
-            $disposition = $response->headers->makeDisposition(
-                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                $contextId . '.ics'
-            );
-            $response->headers->set('Content-Disposition', $disposition);
-        }
+        $disposition = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $contextId . '.ics'
+        );
+        $response->headers->set('Content-Disposition', $disposition);
 
         return $response;
     }
