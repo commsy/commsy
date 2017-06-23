@@ -234,9 +234,9 @@
                 <source>miscellaneous</source>
                 <target>Miscellaneous</target>
             </trans-unit>
-            <trans-unit id="disable">
-                <source>disable</source>
-                <target>Disable</target>
+            <trans-unit id="lock">
+                <source>lock</source>
+                <target>Lock</target>
             </trans-unit>
             <trans-unit id="delete">
                 <source>delete</source>
@@ -274,18 +274,18 @@
                 <target>Here you can configure how often you want to receive the Newsletter of this room.</target>
             </trans-unit>
 
-            <!-- delete / disable account / room profile -->
-            <trans-unit id="disable_room_membership_title">
-                <source>disableRoomMembership</source>
-                <target>Disable room membership</target>
+            <!-- delete / lock account / room profile -->
+            <trans-unit id="lock_room_membership_title">
+                <source>lockRoomMembership</source>
+                <target>Lock room membership</target>
             </trans-unit>
             <trans-unit id="delete_room_membership_title">
                 <source>deleteRoomMembership</source>
                 <target>Delete room membership</target>
             </trans-unit>
 
-            <trans-unit id="disable_room_membership_text">
-                <source>disableRoomMembershipText</source>
+            <trans-unit id="lock_room_membership_text">
+                <source>lockRoomMembershipText</source>
                 <target>Use this option to cancel your membership in this room. This will remove your access to this room, though your posts will remain intact. If you want to delete specific posts, please do so before deactivating your membership. Your room membership can be reactivated in the future.</target>
             </trans-unit>
             <trans-unit id="delete_room_membership_text">
@@ -293,17 +293,17 @@
                 <target>Use this option to delete your room membership and all of your posts and comments in this room. This will remove your access to this room.</target>
             </trans-unit>
 
-            <trans-unit id="disable_account_title">
-                <source>disableAccount</source>
-                <target>Disable account</target>
+            <trans-unit id="lock_account_title">
+                <source>lockAccount</source>
+                <target>Lock account</target>
             </trans-unit>
             <trans-unit id="delete_account_title">
                 <source>deleteAccount</source>
                 <target>Delete account</target>
             </trans-unit>
 
-            <trans-unit id="disable_account_text">
-                <source>disableAccountText</source>
+            <trans-unit id="lock_account_text">
+                <source>lockAccountText</source>
                 <target>Use this option to to deavtivate your account in this portal. This will remove your access to all rooms in this portal, though your posts will remain intact. If you want to delete specific posts, please do so before deactivating your account. Your account can be reactivated in the future.</target>
             </trans-unit>
             <trans-unit id="delete_account_text">

@@ -617,7 +617,7 @@
             </trans-unit>
             <trans-unit id="settings_delete_confirm_label">
                 <source>Confirm</source>
-                <target>Bestätigung</target>
+                <target>Bestätigen</target>
             </trans-unit>
             <trans-unit id="settings_delete_button">
                 <source>Delete</source>

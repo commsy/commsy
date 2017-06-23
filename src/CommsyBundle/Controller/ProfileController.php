@@ -420,32 +420,54 @@ class ProfileController extends Controller
     */
     public function deleteAccountAction($roomId, Request $request)
     {
-        $form = $this->createForm(DeleteType::class, [], []);
+        $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('lock', [], 'profile')], [])->getForm();
+        $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], [])->getForm();
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // get room from RoomService
-            $roomService = $this->get('commsy_legacy.room_service');
-            $roomItem = $roomService->getRoomItem($roomId);
+        $userService = $this->get('commsy_legacy.user_service');
+        $currentUser = $userService->getCurrentUserItem();
+        $portalUser = $currentUser->getRelatedCommSyUserItem();
 
-            if (!$roomItem) {
-                throw $this->createNotFoundException('No room found for id ' . $roomId);
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $portal = $legacyEnvironment->getCurrentPortalItem();
+
+        $sessionManager = $legacyEnvironment->getSessionManager();
+        $sessionItem = $legacyEnvironment->getSessionItem();
+
+        $portalUrl = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
+
+        // Lock account
+        if ($request->request->has('lock_form')) {
+            $lockForm->handleRequest($request);
+            if ($lockForm->isSubmitted() && $lockForm->isValid()) {
+                // lock account
+                $portalUser->reject();
+                $portalUser->save();
+                // delete session
+                $sessionManager->delete($sessionItem->getSessionID());
+                $legacyEnvironment->setSessionItem(null);
+
+                return $this->redirect($portalUrl);
             }
+        }
 
-            $roomItem->delete();
-            $roomItem->save();
+        // Delete account
+        elseif ($request->request->has('delete_form')) {
+            $deleteForm->handleRequest($request);
+            if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
+                // delete account
+                $authentication = $legacyEnvironment->getAuthenticationObject();
+                $authentication->delete($portalUser->getItemID());
+                // delete session
+                $sessionManager->delete($sessionItem->getSessionID());
+                $legacyEnvironment->setSessionItem(null);
 
-            // redirect back to portal
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $portal = $legacyEnvironment->getCurrentPortalItem();
-
-            $url = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
-
-            return $this->redirect($url);
+                return $this->redirect($portalUrl);
+            }
         }
 
         return [
-            'form' => $form->createView(),
+            'form_lock' => $lockForm->createView(),
+            'form_delete' => $deleteForm->createView()
         ];
     }
 
@@ -455,32 +477,56 @@ class ProfileController extends Controller
     */
     public function deleteRoomProfileAction($roomId, Request $request)
     {
-        $form = $this->createForm(DeleteType::class, [], []);
+        $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('lock', [], 'profile')], [])->getForm();
+        $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], [])->getForm();
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // get room from RoomService
-            $roomService = $this->get('commsy_legacy.room_service');
-            $roomItem = $roomService->getRoomItem($roomId);
+        $userService = $this->get('commsy_legacy.user_service');
+        $currentUser = $userService->getCurrentUserItem();
 
-            if (!$roomItem) {
-                throw $this->createNotFoundException('No room found for id ' . $roomId);
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $portal = $legacyEnvironment->getCurrentPortalItem();
+
+        $portalUrl = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
+
+        // Lock room profile
+        if ($request->request->has('lock_form')) {
+            $lockForm->handleRequest($request);
+            if ($lockForm->isSubmitted() && $lockForm->isValid()) {
+
+                $currentUser->reject();
+                $currentUser->save();
+
+                return $this->redirect($portalUrl);
             }
+        }
 
-            $roomItem->delete();
-            $roomItem->save();
+        // Delete room profile
+        elseif ($request->request->has('delete_form')) {
+            $deleteForm->handleRequest($request);
+            if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
 
-            // redirect back to portal
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $portal = $legacyEnvironment->getCurrentPortalItem();
+                $currentUser->delete();
 
-            $url = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
+                // get room from RoomService
+                $roomService = $this->get('commsy_legacy.room_service');
+                $roomItem = $roomService->getRoomItem($roomId);
 
-            return $this->redirect($url);
+                if (!$roomItem) {
+                    throw $this->createNotFoundException('No room found for id ' . $roomId);
+                }
+
+                if ($roomItem->isGroupRoom()) {
+                    $group_item = $roomItem->getLinkedGroupItem();
+                    $group_item->removeMember($currentUser->getRelatedUserItemInContext($group_item->getContextID()));
+                }
+
+                return $this->redirect($portalUrl);
+            }
         }
 
         return [
-            'form' => $form->createView(),
+            'form_lock' => $lockForm->createView(),
+            'form_delete' => $deleteForm->createView()
         ];
     }
 }

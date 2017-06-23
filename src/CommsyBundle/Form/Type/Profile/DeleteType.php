@@ -21,41 +21,22 @@ class DeleteType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('confirmDisable', TextType::class, [
-                'label' => 'Confirm',
+            ->add('confirm_field', TextType::class, [
+                'label' => false,
                 'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\IdenticalTo([
-                        'value' => 'DISABLE',
+                        'value' => strtoupper($options['data']['confirm_string']),
                         'message' => 'The input does not match {{ compared_value }}'
                     ]),
                 ],
                 'required' => true,
-                'translation_domain' => 'settings',
             ])
-            ->add('confirmDelete', TextType::class, [
+            ->add('confirm_button', SubmitType::class, [
                 'label' => 'Confirm',
-                'constraints' => [
-                    new Assert\NotBlank(),
-                    new Assert\IdenticalTo([
-                        'value' => 'DELETE',
-                        'message' => 'The input does not match {{ compared_value }}'
-                    ]),
-                ],
-                'required' => true,
-                'translation_domain' => 'settings',
-            ])
-            ->add('end', SubmitType::class, [
-                'label' => 'disable',
                 'attr' => [
                     'class' => 'uk-button-danger',
-                ],
-            ])
-            ->add('delete', SubmitType::class, [
-                'label' => 'delete',
-                'attr' => [
-                    'class' => 'uk-button-danger',
-                ],
+                ]
             ])
         ;
     }
@@ -69,7 +50,7 @@ class DeleteType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'translation_domain' => 'profile'
+                'translation_domain' => 'settings'
             ])
         ;
     }

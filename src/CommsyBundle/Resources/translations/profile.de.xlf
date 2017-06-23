@@ -234,8 +234,8 @@
                 <source>miscellaneous</source>
                 <target>Sonstiges</target>
             </trans-unit>
-            <trans-unit id="disable">
-                <source>disable</source>
+            <trans-unit id="lock">
+                <source>lock</source>
                 <target>Sperren</target>
             </trans-unit>
             <trans-unit id="delete">
@@ -274,9 +274,9 @@
                 <target>Hier können Sie auswählen, in welchen Zeitabständen Sie den Newsletter empfangen möchten.</target>
             </trans-unit>
 
-            <!-- delete / disable account / room profile -->
-            <trans-unit id="disable_room_membership_title">
-                <source>disableRoomMembership</source>
+            <!-- delete / lock account / room profile -->
+            <trans-unit id="lock_room_membership_title">
+                <source>lockRoomMembership</source>
                 <target>Raummitgliedschaft sperren</target>
             </trans-unit>
             <trans-unit id="delete_room_membership_title">
@@ -284,17 +284,17 @@
                 <target>Raummitgliedschaft löschen</target>
             </trans-unit>
 
-            <trans-unit id="disable_room_membership_text">
-                <source>disableRoomMembershipText</source>
-                <target>Wählen Sie diese Option, um Ihre Mitgliedschaft in diesem Raum zu sperren. Sie haben dann keinen Zutritt mehr zu diesem Raum. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihre Teilnahme beenden. Ihre Mitgliedschaft kann bei Bedarf wieder freigeschaltet werden.</target>
+            <trans-unit id="lock_room_membership_text">
+                <source>lockRoomMembershipText</source>
+                <target>Wählen Sie diese Option, um Ihre Mitgliedschaft in diesem Raum zu sperren. Sie haben dann keinen Zutritt mehr zu diesem Raum. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihren Zugang sperren. Ihre Mitgliedschaft kann bei Bedarf wieder freigeschaltet werden.</target>
             </trans-unit>
             <trans-unit id="delete_room_membership_text">
                 <source>deleteRoomMembershipText</source>
                 <target>Wählen Sie diese Option, um Ihre Mitgliedschaft und sämtlichen Beiträge in diesem Raum zu löschen. Sie können diesen Raum danach nicht mehr betreten.</target>
             </trans-unit>
 
-            <trans-unit id="disable_account_title">
-                <source>disableAccount</source>
+            <trans-unit id="lock_account_title">
+                <source>lockAccount</source>
                 <target>Account sperren</target>
             </trans-unit>
             <trans-unit id="delete_account_title">
@@ -302,9 +302,9 @@
                 <target>Account löschen</target>
             </trans-unit>
 
-            <trans-unit id="disable_account_text">
-                <source>disableAccountText</source>
-                <target>Wählen Sie diese Option, um Ihren Account in diesem Portal zu sperren. Sie haben dann keinen Zutritt mehr zu den Räumen in diesem Portal. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihre Teilnahme beenden. Ihr Account kann bei Bedarf wieder freigeschaltet werden.</target>
+            <trans-unit id="lock_account_text">
+                <source>lockAccountText</source>
+                <target>Wählen Sie diese Option, um Ihren Account in diesem Portal zu sperren. Sie haben dann keinen Zutritt mehr zu den Räumen in diesem Portal. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihren Zugang sperren. Ihr Account kann bei Bedarf wieder freigeschaltet werden.</target>
             </trans-unit>
             <trans-unit id="delete_account_text">
                 <source>deleteAccountText</source>

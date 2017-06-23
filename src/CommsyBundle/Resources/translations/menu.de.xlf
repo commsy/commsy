@@ -156,7 +156,7 @@
             </trans-unit>
             <trans-unit id="irreversible_message">
                 <source>irreversibleMessage</source>
-                <target>Dies kann nicht rückgängig gemacht werden!</target>
+                <target>Diese Aktion kann nicht rückgängig gemacht werden!</target>
             </trans-unit>
         </body>
     </file>
