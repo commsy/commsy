@@ -47,9 +47,9 @@
         "ezyang/htmlpurifier": "^4.8",
         "symfony/stopwatch": "^3.2",
         "php-imap/php-imap": "^2.0",
-        "jsvrcek/ics": "^0.5.1",
         "whiteoctober/breadcrumbs-bundle": "^1.2",
-        "friendsofsymfony/elastica-bundle": "^5.0@dev"
+        "friendsofsymfony/elastica-bundle": "^5.0@dev",
+        "eluceo/ical": "^0.11.3"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
