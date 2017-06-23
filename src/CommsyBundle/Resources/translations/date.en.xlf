@@ -306,6 +306,50 @@
                 <source>calendars</source>
                 <target>Calendars</target>
             </trans-unit>
+            <trans-unit id="Calendar">
+                <source>Calendar</source>
+                <target>Calendar</target>
+            </trans-unit>
+            <trans-unit id="Grey">
+                <source>Grey</source>
+                <target>Grey</target>
+            </trans-unit>
+            <trans-unit id="Red">
+                <source>Red</source>
+                <target>Red</target>
+            </trans-unit>
+            <trans-unit id="Orange">
+                <source>Orange</source>
+                <target>Orange</target>
+            </trans-unit>
+            <trans-unit id="Gold">
+                <source>Gold</source>
+                <target>Gold</target>
+            </trans-unit>
+            <trans-unit id="Yellow">
+                <source>Yellow</source>
+                <target>Yellow</target>
+            </trans-unit>
+            <trans-unit id="Green">
+                <source>Green</source>
+                <target>Green</target>
+            </trans-unit>
+            <trans-unit id="Turquoise">
+                <source>Turquoise</source>
+                <target>Turquoise</target>
+            </trans-unit>
+            <trans-unit id="Blue">
+                <source>Blue</source>
+                <target>Blue</target>
+            </trans-unit>
+            <trans-unit id="Purple">
+                <source>Purple</source>
+                <target>Purple</target>
+            </trans-unit>
+            <trans-unit id="Magenta">
+                <source>Magenta</source>
+                <target>Magenta</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

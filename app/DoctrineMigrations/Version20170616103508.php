@@ -5,11 +5,21 @@ namespace Application\Migrations;
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20170616103508 extends AbstractMigration
+class Version20170616103508 extends AbstractMigration implements ContainerAwareInterface
 {
+    private $container;
+
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
+
     /**
      * @param Schema $schema
      */
@@ -83,11 +93,13 @@ class Version20170616103508 extends AbstractMigration
     }
 
     private function migrateColorsToCalendars ($dTable) {
+        $translator = $this->container->get('translator');
+
         $queryBuilder = $this->connection->createQueryBuilder();
 
         // find all rooms
         $qb = $queryBuilder
-            ->select('r.item_id')
+            ->select('r.item_id, r.extras')
             ->from($dTable, 'r');
         $rooms = $qb->execute();
 
@@ -96,6 +108,13 @@ class Version20170616103508 extends AbstractMigration
         // Add calendars for each room -> one default + one for each color
         foreach ($rooms as $room) {
             $queryBuilderDates = $this->connection->createQueryBuilder();
+
+            $extras = unserialize($room['extras']);
+            $language = 'de';
+            if (isset($extras['LANGUAGE'])) {
+                $language = $extras['LANGUAGE'];
+            }
+            $translator->setLocale($language);
 
             $queryBuilder
                 ->insert('calendars')
@@ -111,7 +130,7 @@ class Version20170616103508 extends AbstractMigration
                 )
                 ->setParameter(0, '')
                 ->setParameter(1, $room['item_id'])
-                ->setParameter(2, 'Calendar')
+                ->setParameter(2, $translator->trans('Calendar', array(), 'date'))
                 ->setParameter(3, '#ffffff')
                 ->setParameter(4, '')
                 ->setParameter(5, '1')
@@ -160,7 +179,7 @@ class Version20170616103508 extends AbstractMigration
                     )
                     ->setParameter(0, '')
                     ->setParameter(1, $room['item_id'])
-                    ->setParameter(2, $name)
+                    ->setParameter(2, $translator->trans($name, array(), 'date'))
                     ->setParameter(3, $colors[0])
                     ->setParameter(4, '')
                     ->setParameter(5, '0')
