@@ -9,12 +9,16 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
 use CommsyBundle\Entity\User;
-use CommsyBundle\Form\Type\RoomProfileType;
-use CommsyBundle\Form\Type\RoomProfileAddressType;
-use CommsyBundle\Form\Type\RoomProfileContactType;
-use CommsyBundle\Form\Type\ProfileAccountType;
-use CommsyBundle\Form\Type\ProfileNotificationsType;
-use CommsyBundle\Form\Type\ProfileAdditionalType;
+use CommsyBundle\Form\Type\Profile\RoomProfileGeneralType;
+use CommsyBundle\Form\Type\Profile\RoomProfileAddressType;
+use CommsyBundle\Form\Type\Profile\RoomProfileContactType;
+use CommsyBundle\Form\Type\Profile\DeleteType;
+use CommsyBundle\Form\Type\Profile\ProfileAccountType;
+use CommsyBundle\Form\Type\Profile\ProfileMergeAccountsType;
+use CommsyBundle\Form\Type\Profile\ProfileNotificationsType;
+use CommsyBundle\Form\Type\Profile\ProfileAdditionalType;
+use CommsyBundle\Form\Type\Profile\ProfilePersonalInformationType;
+
 
 class ProfileController extends Controller
 {
@@ -36,13 +40,7 @@ class ProfileController extends Controller
         $userTransformer = $this->get('commsy_legacy.transformer.user');
         $userData = $userTransformer->transform($userItem);
 
-        $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
-        $privateRoomItem = $userItem->getOwnRoom();
-        $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
-
-        $userData = array_merge($userData, $privateRoomData);
-
-        $form = $this->createForm(RoomProfileType::class, $userData, array(
+        $form = $this->createForm(RoomProfileGeneralType::class, $userData, array(
             'itemId' => $itemId,
             'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
                 'roomId' => $roomId,
@@ -74,12 +72,6 @@ class ProfileController extends Controller
             $userList = $userItem->getRelatedUserList();
             $tempUserItem = $userList->getFirst();
             while ($tempUserItem) {
-                if ($formData['titleChangeInAllContexts']) {
-                    $tempUserItem->setTitle($formData['title']);
-                }
-                if ($formData['dateOfBirthChangeInAllContexts'] && $formData['dateOfBirth']['date']) {
-                    $tempUserItem->setBirthday($formData['dateOfBirth']['date']->format('Y-m-d'));
-                }
                 if ($formData['imageChangeInAllContexts']) {
                     $discService = $this->get('commsy_legacy.disc_service');
                     $tempFilename = $discService->copyImageFromRoomToRoom($userItem->getPicture(), $tempUserItem->getContextId());
@@ -87,56 +79,9 @@ class ProfileController extends Controller
                         $tempUserItem->setPicture($tempFilename);
                     }
                 }
-                if ($formData['emailChangeInAllContexts']) {
-                    $tempUserItem->setEmail($formData['email']);
-                }
-                if ($formData['hideEmailInAllContexts']) {
-                    if ($formData['hideEmailInThisRoom']) {
-                        $tempUserItem->setEmailNotVisible();
-                    } else {
-                        $tempUserItem->setEmailVisible();
-                    }
-                }
-                if ($formData['phoneChangeInAllContexts']) {
-                    $tempUserItem->setTelephone($formData['phone']);
-                }
-                if ($formData['mobileChangeInAllContexts']) {
-                    $tempUserItem->setCellularphone($formData['mobile']);
-                }
-                if ($formData['streetChangeInAllContexts']) {
-                    $tempUserItem->setStreet($formData['street']);
-                }
-                if ($formData['zipcodeChangeInAllContexts']) {
-                    $tempUserItem->setZipcode($formData['zipcode']);
-                }
-                if ($formData['cityChangeInAllContexts']) {
-                    $tempUserItem->setCity($formData['city']);
-                }
-                if ($formData['roomChangeInAllContexts']) {
-                    $tempUserItem->setRoom($formData['room']);
-                }
-                if ($formData['organisationChangeInAllContexts']) {
-                    $tempUserItem->setOrganisation($formData['organisation']);
-                }
-                if ($formData['positionChangeInAllContexts']) {
-                    $tempUserItem->setPosition($formData['position']);
-                }
-                if ($formData['skypeChangeInAllContexts']) {
-                    $tempUserItem->setSkype($formData['skype']);
-                }
-                if ($formData['homepageChangeInAllContexts']) {
-                    $tempUserItem->setHomepage($formData['homepage']);
-                }
-                if ($formData['descriptionChangeInAllContexts']) {
-                    $tempUserItem->setDescription($formData['description']);
-                }
                 $tempUserItem->save();
                 $tempUserItem = $userList->getNext();    
             }
-
-            $privateRoomItem = $privateRoomTransformer->applyTransformation($privateRoomItem, $form->getData());
-            
-            $privateRoomItem->save();
             
             return $this->redirectToRoute('commsy_profile_general', array('roomId' => $roomId, 'itemId' => $itemId));
         }
@@ -172,8 +117,38 @@ class ProfileController extends Controller
 
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
+            $formData = $form->getData();
+            $userItem = $userTransformer->applyTransformation($userItem, $formData);
             $userItem->save();
+
+            $userList = $userItem->getRelatedUserList();
+            $tempUserItem = $userList->getFirst();
+            while ($tempUserItem) {
+                if ($formData['titleChangeInAllContexts']) {
+                    $tempUserItem->setTitle($formData['title']);
+                }
+                if ($formData['streetChangeInAllContexts']) {
+                    $tempUserItem->setStreet($formData['street']);
+                }
+                if ($formData['zipcodeChangeInAllContexts']) {
+                    $tempUserItem->setZipcode($formData['zipcode']);
+                }
+                if ($formData['cityChangeInAllContexts']) {
+                    $tempUserItem->setCity($formData['city']);
+                }
+                if ($formData['roomChangeInAllContexts']) {
+                    $tempUserItem->setRoom($formData['room']);
+                }
+                if ($formData['organisationChangeInAllContexts']) {
+                    $tempUserItem->setOrganisation($formData['organisation']);
+                }
+                if ($formData['positionChangeInAllContexts']) {
+                    $tempUserItem->setPosition($formData['position']);
+                }
+                $tempUserItem->save();
+                $tempUserItem = $userList->getNext();
+            }
+
             return $this->redirectToRoute('commsy_profile_address', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
@@ -206,9 +181,77 @@ class ProfileController extends Controller
 
         $form->handleRequest($request);
         if ($form->isValid()) {
+            $formData = $form->getData();
+            $userItem = $userTransformer->applyTransformation($userItem, $formData);
+            $userItem->save();
+
+            $userList = $userItem->getRelatedUserList();
+            $tempUserItem = $userList->getFirst();
+            while ($tempUserItem) {
+                if ($formData['emailChangeInAllContexts']) {
+                    $tempUserItem->setEmail($formData['email']);
+                }
+                if ($formData['hideEmailInAllContexts']) {
+                    if ($formData['hideEmailInThisRoom']) {
+                        $tempUserItem->setEmailNotVisible();
+                    } else {
+                        $tempUserItem->setEmailVisible();
+                    }
+                }
+                if ($formData['phoneChangeInAllContexts']) {
+                    $tempUserItem->setTelephone($formData['phone']);
+                }
+                if ($formData['mobileChangeInAllContexts']) {
+                    $tempUserItem->setCellularphone($formData['mobile']);
+                }
+                if ($formData['skypeChangeInAllContexts']) {
+                    $tempUserItem->setSkype($formData['skype']);
+                }
+                if ($formData['homepageChangeInAllContexts']) {
+                    $tempUserItem->setHomepage($formData['homepage']);
+                }
+                if ($formData['descriptionChangeInAllContexts']) {
+                    $tempUserItem->setDescription($formData['description']);
+                }
+                $tempUserItem->save();
+                $tempUserItem = $userList->getNext();
+            }
+
+            return $this->redirectToRoute('commsy_profile_contact', array('roomId' => $roomId, 'itemId' => $itemId));
+        }
+
+        return array(
+            'form' => $form->createView(),
+        );
+    }
+
+    /**
+    * @Route("/room/{roomId}/user/{itemId}/personal")
+    * @Template
+    * @Security("is_granted('ITEM_EDIT', itemId)")
+    */
+    public function personalAction($roomId, $itemId, Request $request)
+    {
+        $userTransformer = $this->get('commsy_legacy.transformer.user');
+        $userService = $this->get('commsy_legacy.user_service');
+        $userItem = $userService->getUser($itemId);
+        $userData = $userTransformer->transform($userItem);
+
+        $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
+        $privateRoomItem = $userItem->getOwnRoom();
+        $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
+
+        $userData = array_merge($userData, $privateRoomData);
+
+        $form = $this->createForm(ProfilePersonalInformationType::class, $userData, array(
+            'itemId' => $itemId,
+        ));
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
             $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
             $userItem->save();
-            return $this->redirectToRoute('commsy_profile_contact', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('commsy_profile_personal', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         return array(
@@ -247,6 +290,33 @@ class ProfileController extends Controller
 
         return array(
             'form' => $form->createView(),
+        );
+    }
+
+    /**
+    * @Route("/room/{roomId}/user/{itemId}/mergeaccounts")
+    * @Template
+    * @Security("is_granted('ITEM_EDIT', itemId)")
+    */
+    public function mergeAccountsAction($roomId, $itemId, Request $request)
+    {
+        $userTransformer = $this->get('commsy_legacy.transformer.user');
+        $userService = $this->get('commsy_legacy.user_service');
+        $userItem = $userService->getUser($itemId);
+        $userData = $userTransformer->transform($userItem);
+
+        $form = $this->createForm(ProfileMergeAccountsType::class, $userData, array(
+            'itemId' => $itemId,
+        ));
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            // TODO: merge accounts
+            return $this->redirectToRoute('commsy_profile_mergeaccounts', array('roomId' => $roomId, 'itemId' => $itemId));
+        }
+
+        return array(
+            'form' => $form->createView()
         );
     }
 
@@ -344,4 +414,119 @@ class ProfileController extends Controller
         ];
     }
 
+    /**
+    * @Route("/room/{roomId}/user/{itemId}/deleteaccount")
+    * @Template
+    */
+    public function deleteAccountAction($roomId, Request $request)
+    {
+        $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('lock', [], 'profile')], [])->getForm();
+        $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], [])->getForm();
+
+        $userService = $this->get('commsy_legacy.user_service');
+        $currentUser = $userService->getCurrentUserItem();
+        $portalUser = $currentUser->getRelatedCommSyUserItem();
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $portal = $legacyEnvironment->getCurrentPortalItem();
+
+        $sessionManager = $legacyEnvironment->getSessionManager();
+        $sessionItem = $legacyEnvironment->getSessionItem();
+
+        $portalUrl = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
+
+        // Lock account
+        if ($request->request->has('lock_form')) {
+            $lockForm->handleRequest($request);
+            if ($lockForm->isSubmitted() && $lockForm->isValid()) {
+                // lock account
+                $portalUser->reject();
+                $portalUser->save();
+                // delete session
+                $sessionManager->delete($sessionItem->getSessionID());
+                $legacyEnvironment->setSessionItem(null);
+
+                return $this->redirect($portalUrl);
+            }
+        }
+
+        // Delete account
+        elseif ($request->request->has('delete_form')) {
+            $deleteForm->handleRequest($request);
+            if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
+                // delete account
+                $authentication = $legacyEnvironment->getAuthenticationObject();
+                $authentication->delete($portalUser->getItemID());
+                // delete session
+                $sessionManager->delete($sessionItem->getSessionID());
+                $legacyEnvironment->setSessionItem(null);
+
+                return $this->redirect($portalUrl);
+            }
+        }
+
+        return [
+            'form_lock' => $lockForm->createView(),
+            'form_delete' => $deleteForm->createView()
+        ];
+    }
+
+    /**
+    * @Route("/room/{roomId}/user/{itemId}/deleteroomprofile")
+    * @Template
+    */
+    public function deleteRoomProfileAction($roomId, Request $request)
+    {
+        $lockForm = $this->get('form.factory')->createNamedBuilder('lock_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('lock', [], 'profile')], [])->getForm();
+        $deleteForm = $this->get('form.factory')->createNamedBuilder('delete_form', DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], [])->getForm();
+
+        $userService = $this->get('commsy_legacy.user_service');
+        $currentUser = $userService->getCurrentUserItem();
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $portal = $legacyEnvironment->getCurrentPortalItem();
+
+        $portalUrl = $request->getSchemeAndHttpHost() . '?cid=' . $portal->getItemId();
+
+        // Lock room profile
+        if ($request->request->has('lock_form')) {
+            $lockForm->handleRequest($request);
+            if ($lockForm->isSubmitted() && $lockForm->isValid()) {
+
+                $currentUser->reject();
+                $currentUser->save();
+
+                return $this->redirect($portalUrl);
+            }
+        }
+
+        // Delete room profile
+        elseif ($request->request->has('delete_form')) {
+            $deleteForm->handleRequest($request);
+            if ($deleteForm->isSubmitted() && $deleteForm->isValid()) {
+
+                $currentUser->delete();
+
+                // get room from RoomService
+                $roomService = $this->get('commsy_legacy.room_service');
+                $roomItem = $roomService->getRoomItem($roomId);
+
+                if (!$roomItem) {
+                    throw $this->createNotFoundException('No room found for id ' . $roomId);
+                }
+
+                if ($roomItem->isGroupRoom()) {
+                    $group_item = $roomItem->getLinkedGroupItem();
+                    $group_item->removeMember($currentUser->getRelatedUserItemInContext($group_item->getContextID()));
+                }
+
+                return $this->redirect($portalUrl);
+            }
+        }
+
+        return [
+            'form_lock' => $lockForm->createView(),
+            'form_delete' => $deleteForm->createView()
+        ];
+    }
 }

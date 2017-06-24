@@ -22,6 +22,10 @@
                 <source>Hide-past-dates</source>
                 <target>Hide past dates</target>
             </trans-unit>
+            <trans-unit id="form-filter-no-member-groups">
+                <source>Hide-groups-without-membership</source>
+                <target>Hide groups without membership</target>
+            </trans-unit>
              <trans-unit id="form-save">
                 <source>save</source>
                 <target>Save</target>

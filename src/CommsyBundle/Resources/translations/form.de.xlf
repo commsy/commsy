@@ -22,6 +22,10 @@
                 <source>Hide-past-dates</source>
                 <target>Vergangene Termine ausblenden</target>
             </trans-unit>
+            <trans-unit id="form-filter-no-member-groups">
+                <source>Hide-groups-without-membership</source>
+                <target>Gruppen ohne Mitgliedschaft ausblenden</target>
+            </trans-unit>
             <trans-unit id="form-save">
                 <source>save</source>
                 <target>Speichern</target>

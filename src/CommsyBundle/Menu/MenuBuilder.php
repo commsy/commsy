@@ -51,23 +51,34 @@ class MenuBuilder
 
         if ($currentUser->getItemId() != '') {
 
-            $menu->addChild('account', [
-                //'label' => $currentUser->getFullname(),
-                'label' => 'profile',
-                'route' => 'commsy_profile_account',
+            $menu->addChild('personal', [
+                'route' => 'commsy_profile_personal',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
                     'itemId' => $currentUser->getItemId(),
                 ],
                 'extras' => [
-                    'icon' => 'uk-icon-user-secret uk-icon-small uk-icon-justify',
+                    'icon' => 'uk-icon-user uk-icon-small uk-icon-justify',
                     'user' => $currentUser,
                 ]
             ])
             ->setExtra('translation_domain', 'menu');
 
+            $menu->addChild('mergeAccounts', [
+                'label' => 'combineAccount',
+                'route' => 'commsy_profile_mergeaccounts',
+                'routeParameters' => [
+                    'roomId' => $currentStack->attributes->get('roomId'),
+                    'itemId' => $currentUser->getItemId(),
+                ],
+                'extras' => [
+                    'icon' => 'uk-icon-sitemap uk-icon-small uk-icon-justify',
+                    'user' => $currentUser,
+                ]
+            ])
+            ->setExtra('translation_domain', 'profile');
+
             $menu->addChild('notifications', [
-                'label' => 'notifications',
                 'route' => 'commsy_profile_notifications',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
@@ -81,7 +92,6 @@ class MenuBuilder
             ->setExtra('translation_domain', 'menu');
 
             $menu->addChild('additional', [
-                'label' => 'additional_functions',
                 'route' => 'commsy_profile_additional',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
@@ -93,6 +103,22 @@ class MenuBuilder
                 ]
             ])
             ->setExtra('translation_domain', 'menu');
+
+            $menu->addChild('deleteAccount', [
+                'route' => 'commsy_profile_deleteaccount',
+                'routeParameters' => [
+                    'roomId' => $currentStack->attributes->get('roomId'),
+                    'itemId' => $currentUser->getItemId(),
+                ],
+                'extras' => [
+                    'icon' => 'uk-icon-trash uk-icon-small uk-icon-justify',
+                    'user' => $currentUser,
+                ],
+            ])
+            ->setAttributes([
+                'class' => 'uk-button-danger',
+            ])
+            ->setExtra('translation_domain', 'profile');
         }
 
         return $menu;
@@ -114,23 +140,20 @@ class MenuBuilder
 
         if ($currentUser->getItemId() != '') {
 
-            $menu->addChild('personal', [
-                'label' => 'personal_data',
+            $menu->addChild('general', [
                 'route' => 'commsy_profile_general',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
                     'itemId' => $currentUser->getItemId(),
                 ],
                 'extras' => [
-                    'icon' => 'uk-icon-user uk-icon-small uk-icon-justify',
+                    'icon' => 'uk-icon-building-o uk-icon-small uk-icon-justify',
                     'user' => $currentUser,
                 ]
             ])
             ->setExtra('translation_domain', 'menu');
 
-
             $menu->addChild('address', [
-                'label' => 'address',
                 'route' => 'commsy_profile_address',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
@@ -143,9 +166,7 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'menu');
 
-
             $menu->addChild('contact', [
-                'label' => 'contact',
                 'route' => 'commsy_profile_contact',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
@@ -157,6 +178,22 @@ class MenuBuilder
                 ]
             ])
             ->setExtra('translation_domain', 'menu');
+
+            $menu->addChild('cancelMembership', [
+                'route' => 'commsy_profile_deleteroomprofile',
+                'routeParameters' => [
+                    'roomId' => $currentStack->attributes->get('roomId'),
+                    'itemId' => $currentUser->getItemId(),
+                ],
+                'extras' => [
+                    'icon' => 'uk-icon-trash uk-icon-small uk-icon-justify',
+                    'user' => $currentUser,
+                ]
+            ])
+            ->setAttributes([
+                'class' => 'uk-button-danger',
+            ])
+            ->setExtra('translation_domain', 'profile');
         }
 
         return $menu;

@@ -282,37 +282,61 @@ services:
             - { name: form.type }
 
     commsy.form.type.room_profile:
-        class: CommsyBundle\Form\Type\RoomProfileType
+        class: CommsyBundle\Form\Type\Profile\RoomProfileType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.room_profile_general:
+        class: CommsyBundle\Form\Type\Profile\RoomProfileGeneralType
         arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
         tags:
             - { name: form.type }
 
     commsy.form.type.room_profile_address:
-        class: CommsyBundle\Form\Type\RoomProfileAddressType
+        class: CommsyBundle\Form\Type\Profile\RoomProfileAddressType
         arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
         tags:
             - { name: form.type }
 
     commsy.form.type.room_profile_contact:
-        class: CommsyBundle\Form\Type\RoomProfileContactType
+        class: CommsyBundle\Form\Type\Profile\RoomProfileContactType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.profile_personalinformation:
+        class: CommsyBundle\Form\Type\Profile\ProfilePersonalInformationType
         arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
         tags:
             - { name: form.type }
 
     commsy.form.type.profile_account:
-        class: CommsyBundle\Form\Type\ProfileAccountType
+        class: CommsyBundle\Form\Type\Profile\ProfileAccountType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.profile_mergeaccounts:
+        class: CommsyBundle\Form\Type\Profile\ProfileMergeAccountsType
         arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
         tags:
             - { name: form.type }
 
     commsy.form.type.profile_notifications:
-        class: CommsyBundle\Form\Type\ProfileNotificationsType
+        class: CommsyBundle\Form\Type\Profile\ProfileNotificationsType
         arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
         tags:
             - { name: form.type }
 
     commsy.form.type.profile_additional:
-        class: CommsyBundle\Form\Type\ProfileAdditionalType
+        class: CommsyBundle\Form\Type\Profile\ProfileAdditionalType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.profile_deleteroomprofile:
+        class: CommsyBundle\Form\Type\Profile\DeleteRoomProfileType
         arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
         tags:
             - { name: form.type }

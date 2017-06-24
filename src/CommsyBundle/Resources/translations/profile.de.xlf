@@ -20,7 +20,7 @@
             </trans-unit>
             <trans-unit id="userId">
                 <source>userId</source>
-                <target>Kennung</target>
+                <target>Benutzername</target>
             </trans-unit>
             <trans-unit id="currentPassword">
                 <source>currentPassword</source>
@@ -44,11 +44,11 @@
             </trans-unit>
             <trans-unit id="combineAccount">
                 <source>combineAccount</source>
-                <target>Kennungen verbinden</target>
+                <target>Accounts verbinden</target>
             </trans-unit>
             <trans-unit id="combineUserId">
                 <source>combineUserId</source>
-                <target>Kennung</target>
+                <target>Benutzername</target>
             </trans-unit>
             <trans-unit id="combinePassword">
                 <source>combinePassword</source>
@@ -212,7 +212,7 @@
             </trans-unit>
             <trans-unit id="account">
                 <source>Account</source>
-                <target>Zugang</target>
+                <target>Account</target>
             </trans-unit>
             <trans-unit id="roomProfile">
                 <source>Room profile</source>
@@ -229,6 +229,86 @@
             <trans-unit id="profile_label_emailToCommsySecret">
                 <source>emailToCommsySecret</source>
                 <target>Persönliches Geheimnis</target>
+            </trans-unit>
+            <trans-unit id="miscellaneous">
+                <source>miscellaneous</source>
+                <target>Sonstiges</target>
+            </trans-unit>
+            <trans-unit id="lock">
+                <source>lock</source>
+                <target>Sperren</target>
+            </trans-unit>
+            <trans-unit id="delete">
+                <source>delete</source>
+                <target>Löschen</target>
+            </trans-unit>
+            <trans-unit id="cancel_membership">
+                <source>cancelMembership</source>
+                <target>Teilnahme beenden</target>
+            </trans-unit>
+
+            <!-- description texts general room profile settings -->
+            <trans-unit id="general_description">
+                <source>generalDescription</source>
+                <target>In diesem Bereich können allgemeine Einstellungen zu Ihrem Profil im Raum %s vorgenommen werden.</target>
+            </trans-unit>
+            <trans-unit id="profile_image_description">
+                <source>profileImageDescription</source>
+                <target>Ihr Profilbild wird neben Ihren Einträgen und Kommentaren im Raum %s angezeigt. Sie können für jeden Raum, in dem Sie Mitglied sind, ein eigenes Profilbild auswählen oder es über Option "in allen Räumen ändern" global konfigurieren.</target>
+            </trans-unit>
+            <trans-unit id="language_description">
+                <source>languageDescription</source>
+                <target>Falls der Moderator diesen Raum entsprechend konfiguriert hat, können Sie über die Option "Sprache" einstellen, ob die Menüs in Englisch oder Deutsch angezeigt werden sollen. Die Option "Browser" bewirkt, dass die Spracheinstellungen Ihres Browsers übernommen werden.</target>
+            </trans-unit>
+            <trans-unit id="auto_save_description">
+                <source>autoSaveDescription</source>
+                <target>Mit der Option "automatisches Speichern" können Sie einstellen, dass zur Bearbeitung geöffnete Einträge automatisch gespeichert werden, wenn Sie für eine längere Zeit inaktiv waren.</target>
+            </trans-unit>
+
+            <trans-unit id="merge_accounts_text">
+                <source>mergeAccountsText</source>
+                <target>Hier können Sie Kennungen auf diesem Portal zusammenlegen. Bitte geben Sie hier die Zugangsdaten des Accounts ein, mit dem Ihr Account verbunden werden soll.</target>
+            </trans-unit>
+            <trans-unit id="newsletter_text">
+                <source>newsletterText</source>
+                <target>Hier können Sie auswählen, in welchen Zeitabständen Sie den Newsletter empfangen möchten.</target>
+            </trans-unit>
+
+            <!-- delete / lock account / room profile -->
+            <trans-unit id="lock_room_membership_title">
+                <source>lockRoomMembership</source>
+                <target>Raummitgliedschaft sperren</target>
+            </trans-unit>
+            <trans-unit id="delete_room_membership_title">
+                <source>deleteRoomMembership</source>
+                <target>Raummitgliedschaft löschen</target>
+            </trans-unit>
+
+            <trans-unit id="lock_room_membership_text">
+                <source>lockRoomMembershipText</source>
+                <target>Wählen Sie diese Option, um Ihre Mitgliedschaft in diesem Raum zu sperren. Sie haben dann keinen Zutritt mehr zu diesem Raum. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihren Zugang sperren. Ihre Mitgliedschaft kann bei Bedarf wieder freigeschaltet werden.</target>
+            </trans-unit>
+            <trans-unit id="delete_room_membership_text">
+                <source>deleteRoomMembershipText</source>
+                <target>Wählen Sie diese Option, um Ihre Mitgliedschaft und sämtlichen Beiträge in diesem Raum zu löschen. Sie können diesen Raum danach nicht mehr betreten.</target>
+            </trans-unit>
+
+            <trans-unit id="lock_account_title">
+                <source>lockAccount</source>
+                <target>Account sperren</target>
+            </trans-unit>
+            <trans-unit id="delete_account_title">
+                <source>deleteAccount</source>
+                <target>Account löschen</target>
+            </trans-unit>
+
+            <trans-unit id="lock_account_text">
+                <source>lockAccountText</source>
+                <target>Wählen Sie diese Option, um Ihren Account in diesem Portal zu sperren. Sie haben dann keinen Zutritt mehr zu den Räumen in diesem Portal. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihren Zugang sperren. Ihr Account kann bei Bedarf wieder freigeschaltet werden.</target>
+            </trans-unit>
+            <trans-unit id="delete_account_text">
+                <source>deleteAccountText</source>
+                <target>Wählen Sie diese Option, um Ihren Account und sämtliche Beiträge in allen Räumen diesen Portals zu löschen. Um CommSy wieder verwenden zu können, müssen Sie sich erneut registrieren.</target>
             </trans-unit>
         </body>
     </file>

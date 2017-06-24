@@ -1,5 +1,5 @@
 <?php
-namespace CommsyBundle\Form\Type;
+namespace CommsyBundle\Form\Type\Profile;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -46,14 +46,6 @@ class RoomProfileType extends AbstractType
         $this->userItem = $userManager->getItem($options['itemId']);
 
         $builder
-            ->add('firstname', TextType::class, array(
-                'label' => 'firstname',
-                'required' => false,
-            ))
-            ->add('lastname', TextType::class, array(
-                'label' => 'lastname',
-                'required' => false,
-            ))
             ->add('language', ChoiceType::class, array(
                 'placeholder' => false,
                 'choices'  => array(
@@ -83,24 +75,6 @@ class RoomProfileType extends AbstractType
                     'class' => 'uk-form-label',
                 ),
             ))
-            
-            ->add('dateOfBirth', DateSelectType::class, array(
-                'label'    => 'dateOfBirth',
-                'required' => false,
-            ))
-            ->add('dateOfBirthChangeInAllContexts', CheckboxType::class, array(
-                // 'label'    => 'changeInAllContexts',
-                'label'    => false,
-                'required' => false,
-                'label_attr' => array(
-                    'class' => 'uk-form-label',
-                ),
-                'data' => true,
-                'attr' => array(
-                    'style' => 'display: none'
-                ),
-            ))
-            
             ->add('image', FileType::class, array(
                 'attr' => array(
                     'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',

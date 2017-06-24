@@ -1,19 +1,17 @@
 <?php
-namespace CommsyBundle\Form\Type;
+namespace CommsyBundle\Form\Type\Profile;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-
 use Doctrine\ORM\EntityManager;
+
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
-class ProfileAdditionalType extends AbstractType
+class ProfileMergeAccountsType extends AbstractType
 {
     private $em;
     private $legacyEnvironment;
@@ -40,38 +38,21 @@ class ProfileAdditionalType extends AbstractType
         $this->userItem = $userManager->getItem($options['itemId']);
 
         $builder
-            ->add('portfolioStatus', CheckboxType::class, [
-                'label'    => 'portfolioStatus',
+            ->add('combineUserId', TextType::class, array(
+                'label' => 'combineUserId',
                 'required' => false,
-                'label_attr' => [
-                    'class' => 'uk-form-label',
-                ],
-            ]);
-
-        if ($options['emailToCommsy']) {
-            $builder
-                ->add('emailToCommsy', CheckboxType::class, [
-                    'label' => 'emailToCommsy',
-                    'required' => false,
-                    'label_attr' => [
-                        'class' => 'uk-form-label',
-                    ]
-                ])
-
-                ->add('emailToCommsySecret', TextType::class, [
-                    'label' => 'emailToCommsySecret',
-                    'required' => false,
-                ]);
-        }
-
-        $builder
-            ->add('save', SubmitType::class, [
+            ))
+            ->add('combinePassword', TextType::class, array(
+                'label' => 'combinePassword',
+                'required' => false,
+            ))
+            ->add('save', SubmitType::class, array(
                 'label' => 'save',
                 'translation_domain' => 'form',
-                'attr' => [
+                'attr' => array(
                     'class' => 'uk-button-primary',
-                ]
-            ]);
+                )
+            ));
     }
 
     /**
@@ -82,7 +63,7 @@ class ProfileAdditionalType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['itemId', 'emailToCommsy'])
+            ->setRequired(['itemId'])
             ->setDefaults(array('translation_domain' => 'profile'))
         ;
     }
@@ -96,7 +77,7 @@ class ProfileAdditionalType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'room_profile';
+        return 'profile_mergeaccounts';
     }
     
 }

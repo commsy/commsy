@@ -15,29 +15,29 @@
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div class="uk-text-large">{{ 'notifications'|trans({}, 'menu') }}</div>
+                        <div class="uk-text-large">{{ 'combineAccount'|trans({}, 'profile') }}</div>
                     </div>
                 </div>
                 <div class="uk-margin-left uk-margin-right">
                     {{ form_start(form) }}
                         {{ form_errors(form) }}
-    
                         <div class="uk-panel uk-margin-large-bottom">
+
                             <table class="uk-table">
                                 <tr>
                                     <td>
-                                        <h1 class="uk-panel-title">{{ 'newsletterStatus'|trans({},'profile') }}</h1>
+                                        {{ 'mergeAccountsText'|trans({},'profile') }}
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>{{ 'newsletterText'|trans({},'profile')|raw }}</td>
+                                    <td>{{ form_row(form.combineUserId) }}</td>
                                 </tr>
                                 <tr>
-                                    <td>{{ form_widget(form.newsletterStatus) }}</td>
+                                    <td>{{ form_row(form.combinePassword) }}</td>
                                 </tr>
                             </table>
+
                         </div>
-    
                         <div class="uk-panel uk-margin-large-bottom">
                             <table class="uk-table">
                                 <tr>
@@ -45,6 +45,7 @@
                                 </tr>
                             </table>
                         </div>
+                        {{ form_row(form._token) }}
                     {{ form_end(form) }}
                 </div>
             </div>

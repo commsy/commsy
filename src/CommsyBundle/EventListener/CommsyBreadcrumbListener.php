@@ -189,13 +189,14 @@ class CommsyBreadcrumbListener
 
     private function addProfileCrumbs($roomItem, $routeParameters, $action)
     {
-        if($action == 'account') {
-            $this->breadcrumbs->addRouteItem($this->translator->trans('Account', [], 'profile'), "commsy_profile_account", $routeParameters);
-        }
-        elseif ($action == 'general') {
+        if($action == 'general' || $action == 'address' || $action == 'contact' || $action == 'deleteroomprofile') {
             $this->addRoom($roomItem, true);
-            $this->breadcrumbs->addRouteItem($this->translator->trans('Room profile', [], 'profile'), "commsy_profile_general", $routeParameters);
+            $this->breadcrumbs->addRouteItem($this->translator->trans('Room profile', [], 'menu'), "commsy_profile_" . $action, $routeParameters);
         }
+        else {
+            $this->breadcrumbs->addRouteItem($this->translator->trans('Account', [], 'menu'), "commsy_profile_" . $action, $routeParameters);
+        }
+        
     }
 
     private function addChildRoomListCrumb($roomItem, $childRoomClass)

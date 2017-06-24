@@ -1,5 +1,5 @@
 <?php
-namespace CommsyBundle\Form\Type;
+namespace CommsyBundle\Form\Type\Profile;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,7 +19,7 @@ use Doctrine\ORM\EntityManager;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
-class RoomProfileContactType extends AbstractType
+class RoomProfileAddressType extends AbstractType
 {
     private $em;
     private $legacyEnvironment;
@@ -46,11 +46,23 @@ class RoomProfileContactType extends AbstractType
         $this->userItem = $userManager->getItem($options['itemId']);
 
         $builder
-            ->add('email', TextType::class, array(
-                'label'    => 'email',
+            ->add('title', TextType::class, array(
+                'label' => 'title',
                 'required' => false,
             ))
-            ->add('emailChangeInAllContexts', CheckboxType::class, array(
+            ->add('titleChangeInAllContexts', CheckboxType::class, array(
+                'label'    => 'changeInAllContexts',
+                'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+            ))
+   
+            ->add('street', TextType::class, array(
+                'label'    => 'street',
+                'required' => false,
+            ))
+            ->add('streetChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
                 'required' => false,
                 'label_attr' => array(
@@ -58,14 +70,11 @@ class RoomProfileContactType extends AbstractType
                 ),
             ))
             
-            ->add('hideEmailInThisRoom', CheckboxType::class, array(
-                'label'    => 'isEmailVisible',
+            ->add('zipcode', TextType::class, array(
+                'label'    => 'zipcode',
                 'required' => false,
-                'label_attr' => array(
-                    'class' => 'uk-form-label',
-                ),
             ))
-            ->add('hideEmailInAllContexts', CheckboxType::class, array(
+            ->add('zipcodeChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
                 'required' => false,
                 'label_attr' => array(
@@ -73,11 +82,11 @@ class RoomProfileContactType extends AbstractType
                 ),
             ))
             
-            ->add('phone', TextType::class, array(
-                'label'    => 'phone',
+            ->add('city', TextType::class, array(
+                'label'    => 'city',
                 'required' => false,
             ))
-            ->add('phoneChangeInAllContexts', CheckboxType::class, array(
+            ->add('cityChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
                 'required' => false,
                 'label_attr' => array(
@@ -85,22 +94,11 @@ class RoomProfileContactType extends AbstractType
                 ),
             ))
             
-            ->add('mobile', TextType::class, array(
-                'label'    => 'mobile',
+            ->add('room', TextType::class, array(
+                'label'    => 'room',
                 'required' => false,
             ))
-            ->add('mobileChangeInAllContexts', CheckboxType::class, array(
-                'label'    => 'changeInAllContexts',
-                'required' => false,
-                'label_attr' => array(
-                    'class' => 'uk-form-label',
-                ),
-            ))
-            ->add('skype', TextType::class, array(
-                'label'    => 'skype',
-                'required' => false,
-            ))
-            ->add('skypeChangeInAllContexts', CheckboxType::class, array(
+            ->add('roomChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
                 'required' => false,
                 'label_attr' => array(
@@ -108,11 +106,11 @@ class RoomProfileContactType extends AbstractType
                 ),
             ))
             
-            ->add('homepage', TextType::class, array(
-                'label'    => 'homepage',
+            ->add('organisation', TextType::class, array(
+                'label'    => 'organisation',
                 'required' => false,
             ))
-            ->add('homepageChangeInAllContexts', CheckboxType::class, array(
+            ->add('organisationChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
                 'required' => false,
                 'label_attr' => array(
@@ -120,13 +118,12 @@ class RoomProfileContactType extends AbstractType
                 ),
             ))
             
-            ->add('description', TextareaType::class, array(
-                'attr' => array('cols' => '80', 'rows' => '10'),
-                'label'    => 'description',
+            ->add('position', TextType::class, array(
+                'label'    => 'position',
                 'required' => false,
             ))
-            ->add('descriptionChangeInAllContexts', CheckboxType::class, array(
-                'label'    => 'descriptionChangeInAllContexts',
+            ->add('positionChangeInAllContexts', CheckboxType::class, array(
+                'label'    => 'changeInAllContexts',
                 'required' => false,
                 'label_attr' => array(
                     'class' => 'uk-form-label',
@@ -164,7 +161,7 @@ class RoomProfileContactType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'room_profile_contact';
+        return 'room_profile_address';
     }
     
 }

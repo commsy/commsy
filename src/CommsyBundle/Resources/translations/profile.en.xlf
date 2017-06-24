@@ -230,6 +230,86 @@
                 <source>emailToCommsySecret</source>
                 <target>Personal secret</target>
             </trans-unit>
+            <trans-unit id="miscellaneous">
+                <source>miscellaneous</source>
+                <target>Miscellaneous</target>
+            </trans-unit>
+            <trans-unit id="lock">
+                <source>lock</source>
+                <target>Lock</target>
+            </trans-unit>
+            <trans-unit id="delete">
+                <source>delete</source>
+                <target>Delete</target>
+            </trans-unit>
+            <trans-unit id="cancel_membership">
+                <source>cancelMembership</source>
+                <target>Cancel membership</target>
+            </trans-unit>
+
+            <!-- description texts general room profile settings -->
+            <trans-unit id="general_description">
+                <source>generalDescription</source>
+                <target>General settings about your profile in room %s can be configured here.</target>
+            </trans-unit>
+            <trans-unit id="profile_image_description">
+                <source>profileImageDescription</source>
+                <target>Your profile picture is displayed next to your comments in room %s. For every room that are a member of you can choose an individual profile picture. Alternatively, you can use the "change in all rooms" option to set your profile picture globally.</target>
+            </trans-unit>
+            <trans-unit id="language_description">
+                <source>languageDescription</source>
+                <target>With this option you can set the language in which the menus in this room will be displayed, given the moderator of this room has activated this option. Choosing the option "Browser" will configure the language according to your browser settings.</target>
+            </trans-unit>
+            <trans-unit id="auto_save_description">
+                <source>autoSaveDescription</source>
+                <target>When the option "automatic saving" is activated, any entry you are working on will be saved automatically if you have been idle for some time.</target>
+            </trans-unit>
+
+            <trans-unit id="merge_accounts_text">
+                <source>mergeAccountsText</source>
+                <target>Here you can combine your account with another account on this portal. Please enter the login data of the account you want to combine your current account with.</target>
+            </trans-unit>
+            <trans-unit id="newsletter_text">
+                <source>newsletterText</source>
+                <target>Here you can configure how often you want to receive the Newsletter of this room.</target>
+            </trans-unit>
+
+            <!-- delete / lock account / room profile -->
+            <trans-unit id="lock_room_membership_title">
+                <source>lockRoomMembership</source>
+                <target>Lock room membership</target>
+            </trans-unit>
+            <trans-unit id="delete_room_membership_title">
+                <source>deleteRoomMembership</source>
+                <target>Delete room membership</target>
+            </trans-unit>
+
+            <trans-unit id="lock_room_membership_text">
+                <source>lockRoomMembershipText</source>
+                <target>Use this option to cancel your membership in this room. This will remove your access to this room, though your posts will remain intact. If you want to delete specific posts, please do so before deactivating your membership. Your room membership can be reactivated in the future.</target>
+            </trans-unit>
+            <trans-unit id="delete_room_membership_text">
+                <source>deleteRoomMembershipText</source>
+                <target>Use this option to delete your room membership and all of your posts and comments in this room. This will remove your access to this room.</target>
+            </trans-unit>
+
+            <trans-unit id="lock_account_title">
+                <source>lockAccount</source>
+                <target>Lock account</target>
+            </trans-unit>
+            <trans-unit id="delete_account_title">
+                <source>deleteAccount</source>
+                <target>Delete account</target>
+            </trans-unit>
+
+            <trans-unit id="lock_account_text">
+                <source>lockAccountText</source>
+                <target>Use this option to to deavtivate your account in this portal. This will remove your access to all rooms in this portal, though your posts will remain intact. If you want to delete specific posts, please do so before deactivating your account. Your account can be reactivated in the future.</target>
+            </trans-unit>
+            <trans-unit id="delete_account_text">
+                <source>deleteAccountText</source>
+                <target>Use this option to delete your account and all of your posts and comments in every room in this portal. To be able to use this portal again, you will have to registrate again.</target>
+            </trans-unit>
          </body>
     </file>
 </xliff>
