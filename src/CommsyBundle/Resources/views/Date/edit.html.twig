@@ -26,16 +26,20 @@
                 </div>
                 <div class="uk-form-row">
                     {{ form_label(form.calendar) }}
+                    <div style="float:left">
                     {% for tempCalendar in form.calendar.iterator %}
+                        <span class="uk-margin-small-right">{{ form_widget(tempCalendar) }}</span>
                         <span class="tooltipster" style="color:{{ tempCalendar.vars.attr.color }}" title="{{ tempCalendar.vars.attr.title }}">
                             {% if tempCalendar.vars.attr.color == '#ffffff' %}
-                                <i class="uk-icon-medium uk-icon-circle-thin" style="color:#000000"></i>
+                                <i class="uk-icon uk-icon-circle-thin" style="color:#000000"></i>
                             {% else %}
-                                <i class="uk-icon-medium uk-icon-circle"></i>
+                                <i class="uk-icon uk-icon-circle"></i>
                             {% endif %}
                         </span>
-                        <span class="uk-margin-small-right">{{ form_widget(tempCalendar) }}</span>
+                        {{ tempCalendar.vars.attr.title }}
+                        <br/>
                     {% endfor %}
+                    </div>
                 </div>
 
                 {% if form.recurring_select is defined %}
