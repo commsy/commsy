@@ -920,7 +920,7 @@ class DateController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('CommsyBundle:Calendars');
-        $calendars = $repository->findAll($roomId);
+        $calendars = $repository->findBy(array('context_id' => $roomId));
         $calendarsOptions = [];
         $calendarsOptionsAttr = [];
         foreach ($calendars as $calendar) {

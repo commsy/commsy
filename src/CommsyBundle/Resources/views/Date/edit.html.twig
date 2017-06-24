@@ -29,7 +29,7 @@
                     {% for tempCalendar in form.calendar.iterator %}
                         <span class="tooltipster" style="color:{{ tempCalendar.vars.attr.color }}" title="{{ tempCalendar.vars.attr.title }}">
                             {% if tempCalendar.vars.attr.color == '#ffffff' %}
-                                <i class="uk-icon-medium uk-icon-circle-thin"></i>
+                                <i class="uk-icon-medium uk-icon-circle-thin" style="color:#000000"></i>
                             {% else %}
                                 <i class="uk-icon-medium uk-icon-circle"></i>
                             {% endif %}
