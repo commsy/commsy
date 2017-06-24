@@ -46,6 +46,7 @@ twig:
         - CommsyBundle:Form:uikit_layout.html.twig
         - LexikFormFilterBundle:Form:form_div_layout.html.twig
         - CommsyBundle:Form:ckeditor_widget.html.twig
+        - XmonColorPickerTypeBundle:Form:fields.html.twig
 
 # Doctrine Configuration
 doctrine:
@@ -162,3 +163,9 @@ white_october_breadcrumbs:
     separator:      ''
     listClass:      'uk-breadcrumb'
     itemClass:      'uk-display-inline'
+
+assetic:
+    debug:          '%kernel.debug%'
+    use_controller: '%kernel.debug%'
+    filters:
+        cssrewrite: ~

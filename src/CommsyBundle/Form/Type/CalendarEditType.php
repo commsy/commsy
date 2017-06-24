@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type as Types;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Xmon\ColorPickerTypeBundle\Form\Type\ColorPickerType;
 
 class CalendarEditType extends AbstractType
 {
@@ -30,10 +31,7 @@ class CalendarEditType extends AbstractType
                 'translation_domain' => 'calendar',
                 'required' => true,
             ])
-            ->add('color', Types\TextType::class, [
-                'constraints' => [
-                    new Constraints\NotBlank(),
-                ],
+            ->add('color', ColorPickerType::class, [
                 'label' => 'Color',
                 'translation_domain' => 'calendar',
                 'required' => true,

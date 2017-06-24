@@ -15,6 +15,7 @@ class AppKernel extends Kernel
             new Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
+            new Symfony\Bundle\AsseticBundle\AsseticBundle(),
             
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new Liip\ThemeBundle\LiipThemeBundle(),
@@ -30,7 +31,8 @@ class AppKernel extends Kernel
             new IDCI\Bundle\ColorSchemeBundle\IDCIColorSchemeBundle(),
             new Circle\RestClientBundle\CircleRestClientBundle(),
             new WhiteOctober\BreadcrumbsBundle\WhiteOctoberBreadcrumbsBundle(),
-           
+            new Xmon\ColorPickerTypeBundle\XmonColorPickerTypeBundle(),
+
             new CommsyBundle\CommsyBundle(),
             new Commsy\LegacyBundle\CommsyLegacyBundle(),
             new EtherpadBundle\EtherpadBundle(),
