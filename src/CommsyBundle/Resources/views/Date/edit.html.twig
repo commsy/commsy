@@ -25,18 +25,6 @@
                     {{ form_widget(form.place) }}
                 </div>
                 <div class="uk-form-row">
-                    {{ form_label(form.color) }}
-                    {% for tempColor in form.color.iterator %}
-                        <span class="{{ tempColor.vars['value'] }}">
-                        {% if tempColor.vars['value'] == 'cs-date-color-no-color' %}
-                            <i class="uk-icon-medium uk-icon-circle-thin"></i>
-                        {% else %}
-                            <i class="uk-icon-medium uk-icon-circle"></i>
-                        {% endif %}
-                        </span><span class="uk-margin-small-right">{{ form_widget(tempColor) }}</span>
-                    {% endfor %}
-                </div>
-                <div class="uk-form-row">
                     {{ form_label(form.calendar) }}
                     {% for tempCalendar in form.calendar.iterator %}
                         <span class="tooltipster" style="color:{{ tempCalendar.vars.attr.color }}" title="{{ tempCalendar.vars.attr.title }}">

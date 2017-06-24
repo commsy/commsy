@@ -36,32 +36,6 @@ class DateTransformer implements DataTransformerInterface
             $datetimeEnd = new \DateTime($dateItem->getDateTime_end());
             $dateData['end']['date'] = $datetimeEnd;
             $dateData['end']['time'] = $datetimeEnd;
-            
-            $dateData['color'] = $dateItem->getColor();
-            if ($dateData['color'] == '#999999') {
-                $dateData['color'] = 'cs-date-color-01';
-            } else if ($dateData['color'] == '#CC0000') {
-                $dateData['color'] = 'cs-date-color-02';
-            } else if ($dateData['color'] == '#FF6600') {
-                $dateData['color'] = 'cs-date-color-03';
-            } else if ($dateData['color'] == '#FFCC00') {
-                $dateData['color'] = 'cs-date-color-04';
-            } else if ($dateData['color'] == '#FFFF66') {
-                $dateData['color'] = 'cs-date-color-05';
-            } else if ($dateData['color'] == '#33CC00') {
-                $dateData['color'] = 'cs-date-color-06';
-            } else if ($dateData['color'] == '#00CCCC') {
-                $dateData['color'] = 'cs-date-color-07';
-            } else if ($dateData['color'] == '#3366FF') {
-                $dateData['color'] = 'cs-date-color-08';
-            } else if ($dateData['color'] == '#6633FF') {
-                $dateData['color'] = 'cs-date-color-09';
-            } else if ($dateData['color'] == '#CC33CC') {
-                $dateData['color'] = 'cs-date-color-10';
-            }
-            if ($dateData['color'] == '') {
-                $dateData['color'] = 'cs-date-color-no-color';
-            }
 
             $dateData['calendar'] = $dateItem->getCalendarId();
 
@@ -121,8 +95,6 @@ class DateTransformer implements DataTransformerInterface
         $dateObject->setEndingDay($dateData['end']['date']->format('Y-m-d'));
         $dateObject->setEndingTime($dateData['end']['time']->format('H:i'));
         $dateObject->setDatetime_end($dateData['end']['date']->format('Y-m-d').' '.$dateData['end']['time']->format('H:i:s'));
-
-        $dateObject->setColor($dateData['color']);
 
         $dateObject->setCalendarId($dateData['calendar']);
 
