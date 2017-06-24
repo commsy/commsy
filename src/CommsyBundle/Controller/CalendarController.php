@@ -56,7 +56,7 @@ class CalendarController extends Controller
             ]);
         }
 
-        $calendars = $repository->findAll($roomId);
+        $calendars = $repository->findBy(array('context_id' => $roomId));
 
         $dispatcher = $this->get('event_dispatcher');
         $dispatcher->dispatch('commsy.edit', new CommsyEditEvent(null));

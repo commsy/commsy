@@ -25,6 +25,13 @@
                             {% for calendar in calendars %}
                                 <span>
                                      <a class="uk-button uk-margin-small-bottom uk-margin-small-right{% if calendarId == calendar.id %} uk-button-primary{% endif %}" href="{{ path('commsy_calendar_edit', { 'roomId': roomId, 'calendarId': calendar.id }) }}">
+                                        <span class="tooltipster" style="color:{{ calendar.color }}">
+                                            {% if calendar.color == '#ffffff' %}
+                                                <i class="uk-icon uk-icon-circle-thin" style="color:#000000"></i>
+                                            {% else %}
+                                                <i class="uk-icon uk-icon-circle"></i>
+                                            {% endif %}
+                                        </span>
                                         {{- calendar.title -}}
                                     </a>
                                 </span>
