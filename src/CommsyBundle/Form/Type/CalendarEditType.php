@@ -80,6 +80,13 @@ class CalendarEditType extends AbstractType
                                 'validation_groups' => false,   // disable validation
                             ]);
                     }
+                    $form
+                        ->add('cancel', Types\SubmitType::class, [
+                            'attr' => array(
+                                'class' => 'uk-button-secondary',
+                            ),
+                            'label' => 'Cancel',
+                        ]);
                 }
             });
         ;
