@@ -5,7 +5,6 @@ namespace CommsyBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Jsvrcek\ICS\Model\Calendar;
 use Nette\Utils\Strings;
-use Xmon\ColorPickerTypeBundle\Validator\Constraints as XmonAssertColor;
 
 /**
  * Invitations
@@ -42,7 +41,6 @@ class Calendars
      * @var string
      *
      * @ORM\Column(name="color", type="string", length=255, nullable=false)
-     * @XmonAssertColor\HexColor()
      */
     private $color;
 

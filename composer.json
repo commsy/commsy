@@ -49,9 +49,7 @@
         "php-imap/php-imap": "^2.0",
         "whiteoctober/breadcrumbs-bundle": "^1.2",
         "friendsofsymfony/elastica-bundle": "^5.0@dev",
-        "eluceo/ical": "^0.11.3",
-        "xmon/color-picker-type-bundle": "^1.0.6",
-        "symfony/assetic-bundle": "^2.8"
+        "eluceo/ical": "^0.11.3"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
