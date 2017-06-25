@@ -90,6 +90,8 @@ class Version20170616103508 extends AbstractMigration implements ContainerAwareI
         $this->migrateColorsToCalendars('room');
 
         $this->migrateColorsToCalendars('zzz_room');
+
+        $this->migrateColorsToCalendars('room_privat');
     }
 
     private function migrateColorsToCalendars ($dTable) {
