@@ -73,13 +73,17 @@ class ExternalCalendarsCommand extends ContainerAwareCommand
                     }
 
                     $start = '';
+                    $startDatetime = '';
                     if ($event->DTSTART) {
-                        $start = $event->DTSTART->getDateTime();
+                        $start = $event->DTSTART->getValue();
+                        $startDatetime = $event->DTSTART->getDateTime();
                     }
 
                     $end = '';
+                    $endDatetime = '';
                     if ($event->DTEND) {
-                        $end = $event->DTEND->getDateTime();
+                        $end = $event->DTEND->getValue();
+                        $endDatetime = $event->DTEND->getDateTime();
                     }
 
                     $location = '';
@@ -99,14 +103,12 @@ class ExternalCalendarsCommand extends ContainerAwareCommand
                     $date = $dateService->getNewDate();
                     $date->setContextId($context->getItemId());
                     $date->setTitle($title);
-
-                    $date->setDateTime_start($start->format('d-m-Y H:i:s'));
-                    $date->setStartingDay($start->format('d-m-Y'));
-                    $date->setStartingTime($start->format('H:i:s'));
-
-                    $date->setDateTime_end($end->format('d-m-Y H:i:s'));
-                    $date->setEndingDay($end->format('d-m-Y'));
-                    $date->setEndingTime($end->format('H:i:s'));
+                    $date->setDateTime_start($start);
+                    $date->setStartingDay($startDatetime->format('d-m-Y'));
+                    $date->setStartingTime($startDatetime->format('H:i:s'));
+                    $date->setDateTime_end($end);
+                    $date->setEndingDay($endDatetime->format('d-m-Y'));
+                    $date->setEndingTime($endDatetime->format('H:i:s'));
                     $date->setCalendarId($calendar->getId());
                     $date->setPlace($location);
                     $date->setDescription($attendee);
