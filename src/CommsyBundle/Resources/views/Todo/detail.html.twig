@@ -292,7 +292,7 @@
                                 <ul class="uk-nav-sub">                      
                                     {% for step in stepList %}
                                         <li>
-                                            <a href="#step{{ step.itemId }}">{{ loop.index }}. {{ step.title|raw|truncate(20) }}</a>
+                                            <a href="#step{{ step.itemId }}">{{ loop.index }}. {{ step.title|decodeHtmlEntity|truncate(20) }}</a>
                                         </li>
                                     {% endfor %}
                                 </ul>

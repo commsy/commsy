@@ -155,7 +155,7 @@
                         {{ 'no linked items'|trans({}, "room")}}    
                     {% else %}
                         {% for tag in item.tagsArray %}
-                            {{tag.title}}{% if count < item.tagsArray|length %}, {% endif %}
+                            {{tag.title|decodeHtmlEntity}}{% if count < item.tagsArray|length %}, {% endif %}
                             {% set count = count +1 %}
                         {% endfor %}
                     {% endif %}
@@ -206,7 +206,7 @@
             {% set tagArray = item.buzzwordList.to_array() %} 
             {% if (tagArray|length) > 0 %}
                 {% for tag in tagArray %}
-                    <button class="uk-button uk-margin-small-bottom">{{tag.title}}</button>
+                    <button class="uk-button uk-margin-small-bottom">{{tag.title|decodeHtmlEntity}}</button>
                 {% endfor %}
             {% else %}
                 {{ 'no linked items'|trans({}, "room")}}    
@@ -286,7 +286,7 @@
                 <strong>{{ 'workflow marked as read by groups'|trans({}, "material") }}:</strong><br/>
                 {% set counter = 1 %}
                 {% for workflowGroup in workflowGroupArray %}
-                    <a href="{{ path('commsy_group_detail', {'roomId': item.contextId, 'itemId': workflowGroup.iid}) }}">{{workflowGroup.title}}</a> ({{workflowGroup.userCount}} {{ 'of'|trans({}, "room") }} {{workflowGroup.userCountComplete}})
+                    <a href="{{ path('commsy_group_detail', {'roomId': item.contextId, 'itemId': workflowGroup.iid}) }}">{{workflowGroup.title|decodeHtmlEntity}}</a> ({{workflowGroup.userCount}} {{ 'of'|trans({}, "room") }} {{workflowGroup.userCountComplete}})
                     {% if counter != workflowGroupArray|length %}, {% endif %}
                     {% set counter = counter + 1 %}
                 {% endfor %}
@@ -368,23 +368,23 @@
     {% for child in roomTags %}
     
         {% set childTitle %}
-            <div><span class="uk-text-muted">{{ child.title }}</span></div>
+            <div><span class="uk-text-muted">{{ child.title|decodeHtmlEntity }}</span></div>
         {% endset %}
         {% for tag in tags %}
             {% if tag.id == child.item_id %}
                 {% set childTitle %}
-                    <div><span class="uk-text-bold">{{ child.title }}</span></div>
+                    <div><span class="uk-text-bold">{{ child.title|decodeHtmlEntity }}</span></div>
                 {% endset %}
             {% endif %}
         {% endfor %}
     
         {% if child.children is defined and not child.children is empty %}
-            <li id="tag_{{ child.title }}" data-jstree='{"opened": {{ opened }}}'>
+            <li id="tag_{{ child.title|decodeHtmlEntity }}" data-jstree='{"opened": {{ opened }}}'>
                 {{ childTitle }}
                 {{ _self.nestedTagList(tags, child.children, level+1) }}
             </li>
         {% else %}
-            <li id="tag_{{ child.title }}" data-jstree='{"opened": {{ opened }}}'>
+            <li id="tag_{{ child.title|decodeHtmlEntity }}" data-jstree='{"opened": {{ opened }}}'>
                 {{ childTitle }}
             </li>
         {% endif %}
