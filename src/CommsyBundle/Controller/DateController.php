@@ -656,8 +656,7 @@ class DateController extends Controller
                               'recurringDescription' => $recurringDescription,
                              );
         }
-        
-        /*
+
         // get events from external calendars
 
         $em = $this->getDoctrine()->getManager();
@@ -717,8 +716,6 @@ class DateController extends Controller
                 }
             }
         }
-
-        */
 
         return new JsonResponse($events);
     }
