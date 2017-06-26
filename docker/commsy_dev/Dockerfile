@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
         git \
         zip \
         sudo \
+        apt-transport-https \
     && docker-php-ext-install -j$(nproc) iconv mcrypt \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
@@ -23,6 +24,18 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install -j$(nproc) pdo_mysql \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install -j$(nproc) imap
+
+# Install Node.js
+RUN curl -sL https://deb.nodesource.com/setup_7.x | bash -
+RUN apt-get install -yqq nodejs
+
+# yarn
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+RUN apt-get update && sudo apt-get install -y yarn
+
+# install gulp
+RUN yarn global add gulp
 
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug
@@ -43,12 +56,5 @@ RUN { \
 # copy configurations
 COPY conf/commsy.ini /usr/local/etc/php/conf.d/
 COPY conf/commsy.pool.conf /usr/local/etc/php-fpm.d/
-
-# Install Node.js
-RUN curl -sL https://deb.nodesource.com/setup_7.x | bash -
-RUN apt-get install -yqq nodejs
-
-# Install global Node.js packages
-RUN npm -g install bower gulp
 
 CMD ["php-fpm"]
