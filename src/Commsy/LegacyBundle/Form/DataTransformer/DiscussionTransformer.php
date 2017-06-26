@@ -24,7 +24,7 @@ class DiscussionTransformer implements DataTransformerInterface
         $discussionData = array();
 
         if ($discussionItem) {
-            $discussionData['title'] = $discussionItem->getTitle();
+            $discussionData['title'] = html_entity_decode($discussionItem->getTitle());
             $discussionData['permission'] = $discussionItem->isPrivateEditing();
             
             if ($discussionItem->isNotActivated()) {

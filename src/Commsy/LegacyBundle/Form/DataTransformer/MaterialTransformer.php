@@ -24,7 +24,7 @@ class MaterialTransformer implements DataTransformerInterface
         $materialData = array();
 
         if ($materialItem) {
-            $materialData['title'] = $materialItem->getTitle();
+            $materialData['title'] = html_entity_decode($materialItem->getTitle());
             $materialData['draft'] = $materialItem->isDraft();
             $materialData['description'] = $materialItem->getDescription();
             $materialData['permission'] = $materialItem->isPrivateEditing();

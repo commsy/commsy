@@ -24,7 +24,7 @@ class AnnouncementTransformer implements DataTransformerInterface
         $announcementData = array();
 
         if ($announcementItem) {
-            $announcementData['title'] = $announcementItem->getTitle();
+            $announcementData['title'] = html_entity_decode($announcementItem->getTitle());
             $announcementData['description'] = $announcementItem->getDescription();
 
             $announcementData['permission'] = $announcementItem->isPrivateEditing();
