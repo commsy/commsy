@@ -199,7 +199,7 @@ class cs_manager {
      $this->_tag_limit = NULL;
      $this->_buzzword_limit = NULL;
      $this->reset_search_limit();
-     $this->delete_limit = true;
+     $this->_delete_limit = true;
      $this->_update_with_changing_modification_information = true;
      $this->_output_limit = '';
      $this->_only_files_limit = NULL;
