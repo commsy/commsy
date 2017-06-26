@@ -24,8 +24,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use CommsyBundle\Event\CommsyEditEvent;
 
-use Sabre\VObject;
-
 class DateController extends Controller
 {    
     private $defaultFilterValues = array(
@@ -655,66 +653,6 @@ class DateController extends Controller
                               'contextTitle' => '',
                               'recurringDescription' => $recurringDescription,
                              );
-        }
-
-        // get events from external calendars
-
-        $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('CommsyBundle:Calendars');
-        $calendars = $repository->findBy(array('context_id' => $roomId));
-
-        foreach ($calendars as $calendar) {
-            if ($calendar->getExternalUrl()) {
-                $externalCalendar = VObject\Reader::read(
-                    fopen(str_ireplace('webcal://', 'http://', $calendar->getExternalUrl()),'r')
-                );
-
-                foreach ($externalCalendar->VEVENT as $event) {
-                    $title = '';
-                    if ($event->SUMMARY) {
-                        $title = $event->SUMMARY->getValue();
-                    }
-
-                    $start = '';
-                    if ($event->DTSTART) {
-                        $start = $event->DTSTART->getValue();
-                    }
-
-                    $end = '';
-                    if ($event->DTEND) {
-                        $end = $event->DTEND->getValue();
-                    }
-
-                    $location = '';
-                    if ($event->LOCATION) {
-                        $location = $event->LOCATION->getValue();
-                    }
-
-                    $attendee = '';
-                    if ($event->ATTENDEE) {
-                        $attendeeArray = array();
-                        foreach ($event->ATTENDEE as $tempAttendee) {
-                            $attendeeArray[] = $event->ATTENDEE->getValue();
-                        }
-                        $attendee = implode(', ', $attendeeArray);
-                    }
-
-                    $events[] = array('itemId' => 'noId',
-                        'title' => $title,
-                        'start' => $start,
-                        'end' => $end,
-                        'color' => $calendar->getColor(),
-                        'calendar' => $calendar->getTitle(),
-                        'editable' => false,
-                        'description' => '',
-                        'place' => $location,
-                        'participants' => $attendee,
-                        'contextId' => '',
-                        'contextTitle' => '',
-                        'recurringDescription' => '',
-                    );
-                }
-            }
         }
 
         return new JsonResponse($events);

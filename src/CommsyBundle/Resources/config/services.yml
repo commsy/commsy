@@ -502,6 +502,11 @@ services:
         tags:
             - { name: console.command }
 
+    commsy.command.external_calendars:
+        class: CommsyBundle\Command\ExternalCalendarsCommand
+        tags:
+            - { name: console.command }
+
     # API
     commsy.api.soap:
         class: CommsyBundle\Services\SoapService
