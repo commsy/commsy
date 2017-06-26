@@ -914,7 +914,12 @@ class DiscussionController extends Controller
             // $em->flush();
         }
 
-        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($discussionItem));
+        if ($item->getItemType() == 'discussion') {
+            $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($discussionItem));
+        } else {
+            $discussionItem = $discussionService->getDiscussion($discussionArticleItem->getDiscussionID());
+            $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($discussionItem));
+        }
 
         return array(
             'form' => $form->createView(),
@@ -981,8 +986,6 @@ class DiscussionController extends Controller
             }
 		    $current_user = $user_list->getNext();
 		}
-        $read_percentage = round(($read_count/$all_user_count) * 100);
-        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
         $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
@@ -998,7 +1001,12 @@ class DiscussionController extends Controller
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
 
-        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($typedItem));
+        if ($item->getItemType() == 'discussion') {
+            $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($typedItem));
+        } else {
+            $discussionItem = $discussionService->getDiscussion($typedItem->getDiscussionID());
+            $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($discussionItem));
+        }
 
         return array(
             'roomId' => $roomId,
