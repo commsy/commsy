@@ -884,7 +884,29 @@ class cs_dates_item extends cs_item {
         return $datetime;
     }
 
+    /** asks if item is a date in an external calendar
+     *
+     * @param value
+     *
+     * @author CommSy Development Group
+     */
+    function isExternal() {
+        if ($this->_getValue('external')== 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
+    /** sets if item is a date in an external calendar
+     *
+     * @param value
+     *
+     * @author CommSy Development Group
+     */
+    function setExternal ($value) {
+        $this->_setValue('external', $value);
+    }
 
 }
 ?>

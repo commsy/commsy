@@ -59,6 +59,13 @@ class Calendars
     private $default_calendar = '0';
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="creator_id", type="integer", nullable=true)
+     */
+    private $creator_id;
+
+    /**
      * Get id
      *
      * @return integer
@@ -186,5 +193,29 @@ class Calendars
     public function getDefaultCalendar()
     {
         return $this->default_calendar;
+    }
+
+    /**
+     * Set creatorId
+     *
+     * @param integer $creatorId
+     *
+     * @return Calendars
+     */
+    public function setCreatorId($creatorId)
+    {
+        $this->creator_id = $creatorId;
+
+        return $this;
+    }
+
+    /**
+     * Get creatorId
+     *
+     * @return integer
+     */
+    public function getCreatorId()
+    {
+        return $this->creator_id;
     }
 }

@@ -36,6 +36,7 @@ class CalendarController extends Controller
         } else {
             $calendar = new Calendars();
             $calendar->setContextId($roomId);
+            $calendar->setCreatorId($legacyEnvironment->getCurrentUserId());
         }
 
         $editForm = $this->createForm(CalendarEditType::class, $calendar, [

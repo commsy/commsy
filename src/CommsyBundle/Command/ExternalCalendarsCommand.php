@@ -112,8 +112,18 @@ class ExternalCalendarsCommand extends ContainerAwareCommand
                     $date->setCalendarId($calendar->getId());
                     $date->setPlace($location);
                     $date->setDescription($attendee);
-                    $date->setCreatorId(98);
-                    $date->setModifierId(98);
+                    if ($calendar->getCreatorId()) {
+                        $date->setCreatorId($calendar->getCreatorId());
+                        $date->setModifierId($calendar->getCreatorId());
+                    } else {
+                        $legacyEnvironment = $container->get('commsy_legacy.environment')->getEnvironment();
+                        $date->setCreatorId($legacyEnvironment->getRootUserItemID());
+                        $date->setModifierId($legacyEnvironment->getRootUserItemID());
+                    }
+                    $date->setCreationDate($start);
+                    $date->setModificationDate($start);
+                    $date->setChangeModificationOnSave(false);
+                    $date->setExternal(true);
                     $date->save();
                 }
             }

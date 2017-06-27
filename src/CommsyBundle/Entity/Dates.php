@@ -201,6 +201,13 @@ class Dates
     private $files;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="external", type="boolean", nullable=false)
+     */
+    private $external = '0';
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="calendar_id", type="integer", nullable=true)
@@ -861,5 +868,29 @@ class Dates
     public function getCalendarId()
     {
         return $this->calendarId;
+    }
+
+    /**
+     * Set external
+     *
+     * @param boolean $external
+     *
+     * @return Dates
+     */
+    public function setExternal($external)
+    {
+        $this->external = $external;
+
+        return $this;
+    }
+
+    /**
+     * Get external
+     *
+     * @return boolean
+     */
+    public function getExternal()
+    {
+        return $this->external;
     }
 }
