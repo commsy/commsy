@@ -350,6 +350,10 @@
                 <source>Magenta</source>
                 <target>Magenta</target>
             </trans-unit>
+            <trans-unit id="dateIsExternal">
+                <source>date is external</source>
+                <target>This entry is part of an external calendar and can therefore not be edited</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

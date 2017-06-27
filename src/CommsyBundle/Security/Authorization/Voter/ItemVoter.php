@@ -92,6 +92,12 @@ class ItemVoter extends Voter
             }
         }
 
+        if ($item->getType = CS_DATE_TYPE) {
+            if ($item->isExternal()) {
+                return false;
+            }
+        }
+
         if ($item->mayEdit($currentUser)) {
             return true;
         }

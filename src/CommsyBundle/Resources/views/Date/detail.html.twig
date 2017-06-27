@@ -148,40 +148,44 @@
 
             {# annotations #}
             {% if item.itemType != 'discussion' %}
-                <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
-                    <div class="uk-grid">
-                        <div class="uk-width-3-5 uk-text-large ">
-                            {{ 'annotations'|trans({})|capitalize }}
+                {% if not date.isExternal %}
+                    <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
+                        <div class="uk-grid">
+                            <div class="uk-width-3-5 uk-text-large ">
+                                {{ 'annotations'|trans({})|capitalize }}
+                            </div>
                         </div>
                     </div>
-                </div>              
-                
-                <div id="annotations{{ date.itemId }}" class="uk-panel uk-panel-box uk-margin-bottom uk-panel-box-primary ">
 
-                    {% if is_granted('ITEM_EDIT', 'NEW') %}
-                        <article class="uk-comment">
-                            <header class="uk-comment-header uk-flex">
-                                <div class="uk-margin-right uk-flex-item-none">
-                                    {{  macros.userIconLink(user) }}
-                                </div>
-                                <div class="uk-width-8-10">
-                                    {{ form_start(annotationForm, {'action': path('commsy_annotation_create', {'roomId': date.contextId, 'itemId': date.itemId}), 'method': 'POST'}) }}
-                                        <p>
-                                            {{ form_label(annotationForm.description) }}
-                                        </p>
-                                        {{ form_widget(annotationForm.description) }}
-                                    {{ form_end(annotationForm) }}
-                                </div>
-                            </header>
-                        </article>
-                    {% endif %}
+                    <div id="annotations{{ date.itemId }}" class="uk-panel uk-panel-box uk-margin-bottom uk-panel-box-primary ">
 
-                    {{ render(controller(
-                        'CommsyBundle:Annotation:feed',
-                        { 'roomId': roomId, 'linkedItemId': item.itemId }
-                    ))}}
+                        {% if is_granted('ITEM_EDIT', 'NEW') %}
+                            <article class="uk-comment">
+                                <header class="uk-comment-header uk-flex">
+                                    <div class="uk-margin-right uk-flex-item-none">
+                                        {{  macros.userIconLink(user) }}
+                                    </div>
+                                    <div class="uk-width-8-10">
+                                        {{ form_start(annotationForm, {'action': path('commsy_annotation_create', {'roomId': date.contextId, 'itemId': date.itemId}), 'method': 'POST'}) }}
+                                            <p>
+                                                {{ form_label(annotationForm.description) }}
+                                            </p>
+                                            {{ form_widget(annotationForm.description) }}
+                                        {{ form_end(annotationForm) }}
+                                    </div>
+                                </header>
+                            </article>
+                        {% endif %}
 
-                </div>
+                        {{ render(controller(
+                            'CommsyBundle:Annotation:feed',
+                            { 'roomId': roomId, 'linkedItemId': item.itemId }
+                        ))}}
+
+                    </div>
+                {% else %}
+                    <div class="uk-margin-bottom"></div>
+                {% endif %}
 
             {% endif %}
         </div>

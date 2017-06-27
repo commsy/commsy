@@ -501,9 +501,12 @@ class DateController extends Controller
         $alert = null;
         if ($dateService->getDate($itemId)->isLocked()) {
             $translator = $this->get('translator');
-
             $alert['type'] = 'warning';
             $alert['content'] = $translator->trans('item is locked', array(), 'item');
+        } else if ($date->isExternal()) {
+            $translator = $this->get('translator');
+            $alert['type'] = 'warning';
+            $alert['content'] = $translator->trans('date is external', array(), 'date');
         }
 
         return array(
