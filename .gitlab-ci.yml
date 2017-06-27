@@ -78,8 +78,7 @@ build:
     - cp app/config/parameters.yml.dist app/config/parameters.yml
     - 'sed -i "s/database_host:     127.0.0.1/database_host:     mariadb/" app/config/parameters.yml'
     - php composer.phar install --no-interaction
-    - npm install
-    - bower --allow-root --config.analytics=false install
+    - yarn install
     - gulp --prod
   artifacts:
     expire_in: 1 week
