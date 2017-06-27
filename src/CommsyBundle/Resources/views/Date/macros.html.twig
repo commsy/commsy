@@ -180,9 +180,12 @@
                                         <strong>{{ "calendar"|trans({},'date') }}</strong>
                                     </td>
                                     <td class="uk-text-top">
-                                        <span style="color:{{ item.calendar.color }}">
-                                            <i class="uk-icon uk-icon-circle"></i>
-                                        </span>
+                                        {% if item.calendar.color == '#ffffff' %}
+                                            <span class="uk-icon uk-icon-circle-thin" style="color:#000000"></span>
+                                        {% else %}
+                                            <span class="uk-icon uk-icon-circle" style="color:{{item.calendar.color}}"></span>
+                                        {% endif %}
+
                                         {{ item.calendar.title }}
                                     </td>
                                 </tr>
