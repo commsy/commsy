@@ -17,7 +17,7 @@
                 <div class="uk-width-9-10 uk-margin-small-bottom" >        
                     <div class="uk-grid">
                         <div class="uk-width-1-1">
-                            <h1 class="uk-article-title">{{ item.title|raw }} {{ item.fullname|raw }}</h1>
+                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }} {{ item.fullname|decodeHtmlEntity }}</h1>
                         </div>
                     </div>
                 </div>        
@@ -323,7 +323,7 @@
             <div class="uk-width-9-10 uk-margin-small-bottom" >        
                 <div class="uk-grid">
                     <div class="uk-width-1-1">
-                        <h1 class="uk-article-title">{{ item.title|raw }} {{ item.fullname|raw }}</h1>
+                        <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }} {{ item.fullname|decodeHtmlEntity }}</h1>
                     </div>
                 </div>
             </div>        

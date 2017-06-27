@@ -25,7 +25,7 @@
                     <div class="uk-grid">
                         <div class="uk-width-3-4 uk-text-truncate">
                            <span class="uk-text-large uk-text-middle">
-                               <a href="{{ path('commsy_group_detail', {'roomId': roomId, 'itemId': group.itemId}) }}">{{ group.title }} </a>
+                               <a href="{{ path('commsy_group_detail', {'roomId': roomId, 'itemId': group.itemId}) }}">{{ group.title|decodeHtmlEntity }} </a>
                            </span>
                         </div>
                         {% if group.isGroupRoomActivated %}

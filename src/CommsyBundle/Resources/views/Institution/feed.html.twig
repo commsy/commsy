@@ -36,7 +36,7 @@
             </div>
             <div>
                 <h4 class="uk-comment-title">
-                    <a href="{{ path('commsy_institution_detail', {'roomId': roomId, 'itemId': institution.itemId}) }}">{{ institution.title }}</a>
+                    <a href="{{ path('commsy_institution_detail', {'roomId': roomId, 'itemId': institution.itemId}) }}">{{ institution.title|decodeHtmlEntity }}</a>
                 </h4>
 
                 <div class="uk-comment-meta">

@@ -32,7 +32,7 @@
             </div>
             <div>
                 <h4 class="uk-comment-title">
-                    <a href="{{ path('commsy_project_detail', {'roomId': roomId, 'itemId': project.itemId}) }}">{{ project.title }}</a>
+                    <a href="{{ path('commsy_project_detail', {'roomId': roomId, 'itemId': project.itemId}) }}">{{ project.title|decodeHtmlEntity }}</a>
                 </h4>
                 
                 <div class="uk-comment-meta">

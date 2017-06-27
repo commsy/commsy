@@ -386,7 +386,7 @@
                                 <ul class="uk-nav-sub">                      
                                     {% for section in sectionList %}
                                         <li>
-                                            <a href="#section{{ section.itemId }}">{{ loop.index }}. {{ section.title|raw|truncate(20) }}</a>
+                                            <a href="#section{{ section.itemId }}">{{ loop.index }}. {{ section.title|decodeHtmlEntity|truncate(20) }}</a>
                                         </li>
                                     {% endfor %}
                                 </ul>

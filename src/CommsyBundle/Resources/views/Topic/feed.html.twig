@@ -25,7 +25,7 @@
                     <div class="uk-grid uk-text-truncate">
                         <div>
                            <span class="uk-text-large">
-                               <a href="{{ path('commsy_topic_detail', {'roomId': roomId, 'itemId': topic.itemId}) }}">{{ topic.title }} </a>
+                               <a href="{{ path('commsy_topic_detail', {'roomId': roomId, 'itemId': topic.itemId}) }}">{{ topic.title|decodeHtmlEntity }} </a>
                            </span>
                         </div>
                     </div>

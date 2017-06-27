@@ -34,7 +34,7 @@
                         {% endif %}
                         <a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/{{ feedItemTpe }}/{{ feedItem.itemID }}">
                         {% if feedItem.itemType != 'user' %}
-                            {{ feedItem.title }}
+                            {{ feedItem.title|decodeHtmlEntity }}
                         {% else %}
                             {{ feedItem.getFullName }}
                         {% endif %}

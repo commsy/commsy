@@ -137,7 +137,7 @@
                         type: "POST",
                         data: null
                     })
-                    .complete(function(result, statusText, xhrObject) {
+                    .always(function(result, statusText, xhrObject) {
                         // cancel editing a NEW entry => return to list view
                         if($("#breadcrumb-nav .current.last").text().trim() == "") {
                             let pathParts = window.location.pathname.split("/");

@@ -42,16 +42,21 @@ before_script:
 
   # Install Node.js
   - curl -sL https://deb.nodesource.com/setup_7.x | bash -
-  - apt-get install -yqq nodejs
+  - apt-get update -yqq && apt-get install -yqq nodejs
+
+  # Install yarn
+  - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+  - echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+  - apt-get update -yqq && apt-get install -yqq yarn
 
   # Install global Node.js packages
-  - npm -g install bower gulp
+  - yarn global add gulp
 
 services:
   - mariadb:latest
 
 variables:
-  # Configure myariadb service (https://hub.docker.com/_/mariadb/)
+  # Configure mariadb service (https://hub.docker.com/_/mariadb/)
   MYSQL_DATABASE: commsy
   MYSQL_ROOT_PASSWORD: root
   MYSQL_USER: commsy
@@ -73,8 +78,7 @@ build:
     - cp app/config/parameters.yml.dist app/config/parameters.yml
     - 'sed -i "s/database_host:     127.0.0.1/database_host:     mariadb/" app/config/parameters.yml'
     - php composer.phar install --no-interaction
-    - npm install
-    - bower --allow-root --config.analytics=false install
+    - yarn install
     - gulp --prod
   artifacts:
     expire_in: 1 week

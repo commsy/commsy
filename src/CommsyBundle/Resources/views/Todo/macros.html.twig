@@ -17,7 +17,7 @@
                 <div class="uk-width-9-10 uk-margin-small-bottom" >        
                     <div class="uk-grid">
                         <div class="uk-width-8-10">
-                            <h1 class="uk-article-title">{{ item.title|raw }}</h1>
+                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
                         </div>
                         {%if showRating %}
                             <div class="uk-width-2-10  uk-text-right uk-padding-remove">
@@ -237,7 +237,7 @@
                 <div class="uk-width-9-10 uk-margin-small-bottom" >        
                     <div class="uk-grid">
                         <div class="uk-width-8-10">
-                            <h1 class="uk-article-title">{{ item.title|raw }}</h1>
+                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
                         </div>
                         {%if showRating %}
                             <div class="uk-width-2-10  uk-text-right uk-padding-remove">
@@ -482,8 +482,8 @@
                     <ul id="step-list" class="uk-list uk-list-striped uk-width-2-3">
                         {% for step in stepList %}
                             <li>
-                                <a href="#step{{ step.itemId }}" data-uk-tooltip title="{{ step.title|raw }}">
-                                    {{ loop.index }}. {{ step.title|raw }}
+                                <a href="#step{{ step.itemId }}" data-uk-tooltip title="{{ step.title|decodeHtmlEntity }}">
+                                    {{ loop.index }}. {{ step.title|decodeHtmlEntity }}
                                 </a>
 
                                 {{ macrosUtils.fileListShort(step) }}

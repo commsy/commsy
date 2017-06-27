@@ -457,6 +457,12 @@ services:
         tags:
             - { name: twig.extension }
 
+    twig.extension.decode_html_entity:
+        class: CommsyBundle\Twig\Extension\DecodeHtmlEntityExtension
+        public: false
+        tags:
+            - { name: twig.extension }
+
     twig.extension.commsy_markup:
         class: CommsyBundle\Twig\Extension\MarkupExtension
         tags:

@@ -12,7 +12,7 @@
                 <div class="uk-width-9-10 uk-margin-small-bottom" >        
                     <div class="uk-grid">
                         <div class="uk-width-1-1">
-                            <h1 class="uk-article-title">{{ item.title|raw }}</h1>
+                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
                         </div>
                     </div>
                 </div>        
@@ -212,7 +212,7 @@
                 <div class="uk-width-9-10 uk-margin-small-bottom" >        
                     <div class="uk-grid">
                         <div class="uk-width-8-10">
-                            <h1 class="uk-article-title">{{ item.title|raw }}</h1>
+                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
                         </div>
                     </div>
                 </div>        
@@ -448,8 +448,8 @@
                     <ul class="uk-list uk-list-striped uk-width-2-3">          
                         {% for section in sectionList %}
                             <li>
-                                <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">
-                                    {{ loop.index }}. {{ section.title|raw }}
+                                <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|decodeHtmlEntity }}">
+                                    {{ loop.index }}. {{ section.title|decodeHtmlEntity }}
                                 </a>
 
                                 {{ macrosUtils.fileListShort(section) }}

@@ -24,7 +24,7 @@ class TodoTransformer implements DataTransformerInterface
         $todoData = array();
 
         if ($todoItem) {
-            $todoData['title'] = $todoItem->getTitle();
+            $todoData['title'] = html_entity_decode($todoItem->getTitle());
             $todoData['description'] = $todoItem->getDescription();
             $todoData['permission'] = $todoItem->isPrivateEditing();
             

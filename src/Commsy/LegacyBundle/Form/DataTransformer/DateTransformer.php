@@ -24,7 +24,7 @@ class DateTransformer implements DataTransformerInterface
         $dateData = array();
 
         if ($dateItem) {
-            $dateData['title'] = $dateItem->getTitle();
+            $dateData['title'] = html_entity_decode($dateItem->getTitle());
             $dateData['description'] = $dateItem->getDescription();
             $dateData['permission'] = !($dateItem->isPublic());
             $dateData['place'] = $dateItem->getPlace();

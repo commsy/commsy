@@ -24,7 +24,7 @@ class SectionTransformer implements DataTransformerInterface
         $sectionData = array();
 
         if ($sectionItem) {
-            $sectionData['title'] = $sectionItem->getTitle();
+            $sectionData['title'] = html_entity_decode($sectionItem->getTitle());
             $sectionData['description'] = $sectionItem->getDescription();
             $sectionData['permission'] = $sectionItem->isPrivateEditing();
         }

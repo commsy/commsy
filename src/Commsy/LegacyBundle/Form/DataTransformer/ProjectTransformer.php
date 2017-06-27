@@ -24,7 +24,7 @@ class ProjectTransformer implements DataTransformerInterface
         $projectData = [];
 
         if ($projectItem) {
-            $projectData['title'] = $projectItem->getTitle();
+            $projectData['title'] = html_entity_decode($projectItem->getTitle());
             $projectData['description'] = $projectItem->getDescription();
         }
 

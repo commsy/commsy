@@ -18,7 +18,7 @@
                     <div class="uk-grid">
                     {% if item.itemType != 'section' %}
                         <div class="uk-width-8-10 uk-text-truncate">
-                            <h1 class="uk-article-title uk-text-break">{{ item.title|raw }}</h1>
+                            <h1 class="uk-article-title uk-text-break">{{ item.title|decodeHtmlEntity }}</h1>
                             {% if item.itemType == 'material' %}
                                 {% set material = item %}
                                 {% include 'CommsyBundle:Material:biblio.html.twig' %}
@@ -36,7 +36,7 @@
                         {% endif %}
                     {% else %}
                         <div class="uk-width-1-1">
-                            <h1 class="uk-article-title">{{ item.title|raw }}</h1>
+                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
                         </div>
                     {% endif %}
                     </div>
@@ -185,7 +185,7 @@
                     <div class="uk-grid">
                     {% if item.itemType != 'section' %}
                         <div class="uk-width-8-10">
-                            <h1 class="uk-article-title">{{ item.title|raw }}</h1>
+                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
                             {% if item.itemType == 'material' %}
                                 {% set material = item %}
                                 {% include 'CommsyBundle:Material:biblio.html.twig' %}
@@ -203,7 +203,7 @@
                         {% endif %}
                     {% else %}
                         <div class="uk-width-1-1">
-                            <h1 class="uk-article-title">{{ item.title|raw }}</h1>
+                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
                         </div>
                     {% endif %}
                 </div>
@@ -387,8 +387,8 @@
                     <ul id="section-list" class="uk-list uk-list-striped uk-width-2-3">
                         {% for section in sectionList %}
                             <li>
-                                <a href="#section{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">
-                                    {{ loop.index }}. {{ section.title|raw }}
+                                <a href="#section{{ section.itemId }}" data-uk-tooltip title="{{ section.title|decodeHtmlEntity }}">
+                                    {{ loop.index }}. {{ section.title|decodeHtmlEntity }}
                                 </a>
 
                                 {{ macrosUtils.fileListShort(section) }}
