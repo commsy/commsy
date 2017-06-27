@@ -109,9 +109,9 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
         }
 
         if ( isset($categories['edit']) and !empty($categories['edit']) and $categories['edit'] == true ) {
-            $roomObject->setTagEditedByAll();
-        } else {
             $roomObject->setTagEditedByModerator();
+        } else {
+            $roomObject->setTagEditedByAll();
         }
 
         /********* save template options ******/
