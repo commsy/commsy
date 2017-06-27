@@ -47,6 +47,11 @@ class CalendarController extends Controller
         $editForm->handleRequest($request);
         if ($editForm->isValid()) {
             // tells Doctrine you want to (eventually) save the Product (no queries yet)
+            if ($calendar->getExternalUrl()) {
+                $calendar->setExternalUrl(str_ireplace('webcals://', 'https://', $calendar->getExternalUrl()));
+                $calendar->setExternalUrl(str_ireplace('webcal://', 'http://', $calendar->getExternalUrl()));
+            }
+
             $em->persist($calendar);
 
             // actually executes the queries (i.e. the INSERT query)
