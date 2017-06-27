@@ -24,7 +24,7 @@ class TopicTransformer implements DataTransformerInterface
         $topicData = array();
 
         if ($topicItem) {
-            $topicData['title'] = $topicItem->getTitle();
+            $topicData['title'] = html_entity_decode($topicItem->getTitle());
             $topicData['description'] = $topicItem->getDescription();
             $topicData['permission'] = $topicItem->isPrivateEditing();
             

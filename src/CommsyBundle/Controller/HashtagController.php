@@ -123,6 +123,7 @@ class HashtagController extends Controller
 
         if ($labelId) {
             $hashtag = $repository->findOneByItemId($labelId);
+            $hashtag->setName(html_entity_decode($hashtag->getName()));
         } else {
             $hashtag = new Labels();
             $hashtag->setContextId($roomId);

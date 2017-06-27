@@ -640,7 +640,7 @@ class DateController extends Controller
             }
 
             $events[] = array('itemId' => $date->getItemId(),
-                              'title' => $date->getTitle(),
+                              'title' => html_entity_decode($date->getTitle()),
                               'start' => $start,
                               'end' => $end,
                               'color' => $color,

@@ -2,27 +2,27 @@
  * Global Require
  * ****************************************************************************
  */
-var gulp = require('gulp');
-var plugins = require('gulp-load-plugins')();
-var path = require('path');
-var del = require('del');
-var fs = require('fs');
-var Promise = require('promise');
-var merge = require('merge');
-var mergeStream = require('merge-stream');
-var gulpSequence = require('gulp-sequence');
+let gulp = require('gulp');
+let plugins = require('gulp-load-plugins')();
+let path = require('path');
+let del = require('del');
+let fs = require('fs');
+let Promise = require('promise');
+let merge = require('merge');
+let mergeStream = require('merge-stream');
+let gulpSequence = require('gulp-sequence');
 
 /**
  * Configuration
  * ****************************************************************************
  */
-var config = {
+let config = {
     assetsDir: 'app/Resources/assets',
     themesDir: 'app/Resources/themes',
     lessPattern: '**/*.less',
     production: !!plugins.util.env.prod,
     sourceMaps: !plugins.util.env.prod,
-    bowerDir: 'vendor/bower_components',
+    nodeDir: 'node_modules/',
     revManifestDir: 'app/Resources/assets/manifests/'
 };
 
@@ -30,17 +30,17 @@ var config = {
  * Application
  * ****************************************************************************
  */
-var app = {};
+let app = {};
 
 app.getThemes = function() {
-    var list = [];
+    let list = [];
 
     if (!fs.existsSync(config.themesDir)) {
         return;
     }
 
     fs.readdirSync(config.themesDir).forEach(function(theme) {
-        var path = config.themesDir + '/' + theme;
+        let path = config.themesDir + '/' + theme;
 
         if (!fs.lstatSync(path).isDirectory()) {
             return;
@@ -56,7 +56,7 @@ app.getThemes = function() {
 };
 
 app.addStyle = function(paths, outputFilename) {
-    var lessFilter = plugins.filter(['**/*.less'], {
+    let lessFilter = plugins.filter(['**/*.less'], {
         restore: true
     });
 
@@ -67,7 +67,7 @@ app.addStyle = function(paths, outputFilename) {
         .pipe(lessFilter)
         .pipe(plugins.less({
             paths: [
-                config.bowerDir + '/uikit/less',
+                config.nodeDir + '/uikit/dist/less',
                 config.assetsDir + '/uikit-commsy'
             ]
         }))
@@ -129,12 +129,12 @@ gulp.task('clean', function(done) {
 
 gulp.task('less', function() {
     return app.addStyle([
-        config.bowerDir + '/jstree/dist/themes/default/style.css',
-        config.bowerDir + '/nprogress/nprogress.css',
-        config.bowerDir + '/fullcalendar/dist/fullcalendar.css',
-        config.bowerDir + '/tooltipster/dist/css/tooltipster.bundle.min.css',
+        config.nodeDir + '/jstree/dist/themes/default/style.css',
+        config.nodeDir + '/nprogress/nprogress.css',
+        config.nodeDir + '/fullcalendar/dist/fullcalendar.css',
+        config.nodeDir + '/tooltipster/dist/css/tooltipster.bundle.min.css',
         
-        config.bowerDir + '/video.js/dist/video-js.css',
+        config.nodeDir + '/video.js/dist/video-js.css',
         
         config.assetsDir + '/uikit-commsy/commsy.less'
     ], 'commsy.css');
@@ -142,37 +142,37 @@ gulp.task('less', function() {
 
 gulp.task('js', function() {
     return app.addScript([
-        config.bowerDir + '/jquery/dist/jquery.js',
+        config.nodeDir + '/jquery/dist/jquery.js',
 
-        config.bowerDir + '/jstree/dist/jstree.js',
+        config.nodeDir + '/jstree/dist/jstree.js',
 
-        config.bowerDir + '/nprogress/nprogress.js',
+        config.nodeDir + '/nprogress/nprogress.js',
 
-        config.bowerDir + '/moment/moment.js',
-        config.bowerDir + '/fullcalendar/dist/fullcalendar.js',
-        config.bowerDir + '/fullcalendar/dist/locale-all.js',
+        config.nodeDir + '/moment/moment.js',
+        config.nodeDir + '/fullcalendar/dist/fullcalendar.js',
+        config.nodeDir + '/fullcalendar/dist/locale-all.js',
         
-        config.bowerDir + '/tooltipster/dist/js/tooltipster.bundle.min.js',
+        config.nodeDir + '/tooltipster/dist/js/tooltipster.bundle.min.js',
 
-        config.bowerDir + '/uikit/js/uikit.js',
-        config.bowerDir + '/uikit/js/components/autocomplete.js',
-        config.bowerDir + '/uikit/js/components/search.js',
-        config.bowerDir + '/uikit/js/components/nestable.js',
-        config.bowerDir + '/uikit/js/components/tooltip.js',
-        config.bowerDir + '/uikit/js/components/grid.js',
-        config.bowerDir + '/uikit/js/components/accordion.js',
-        config.bowerDir + '/uikit/js/components/upload.js',
-        config.bowerDir + '/uikit/js/components/sticky.js',
-        config.bowerDir + '/uikit/js/components/slider.js',
-        config.bowerDir + '/uikit/js/components/lightbox.js',
-        config.bowerDir + '/uikit/js/components/sortable.js',
-        config.bowerDir + '/uikit/js/components/notify.js',
-        config.bowerDir + '/uikit/js/components/parallax.js',
-        config.bowerDir + '/uikit/js/components/datepicker.js',
-        config.bowerDir + '/uikit/js/components/timepicker.js',
-        config.bowerDir + '/uikit/js/components/form-select.js',
+        config.nodeDir + '/uikit/dist/js/uikit.js',
+        config.nodeDir + '/uikit/dist/js/components/autocomplete.js',
+        config.nodeDir + '/uikit/dist/js/components/search.js',
+        config.nodeDir + '/uikit/dist/js/components/nestable.js',
+        config.nodeDir + '/uikit/dist/js/components/tooltip.js',
+        config.nodeDir + '/uikit/dist/js/components/grid.js',
+        config.nodeDir + '/uikit/dist/js/components/accordion.js',
+        config.nodeDir + '/uikit/dist/js/components/upload.js',
+        config.nodeDir + '/uikit/dist/js/components/sticky.js',
+        config.nodeDir + '/uikit/dist/js/components/slider.js',
+        config.nodeDir + '/uikit/dist/js/components/lightbox.js',
+        config.nodeDir + '/uikit/dist/js/components/sortable.js',
+        config.nodeDir + '/uikit/dist/js/components/notify.js',
+        config.nodeDir + '/uikit/dist/js/components/parallax.js',
+        config.nodeDir + '/uikit/dist/js/components/datepicker.js',
+        config.nodeDir + '/uikit/dist/js/components/timepicker.js',
+        config.nodeDir + '/uikit/dist/js/components/form-select.js',
         
-        config.bowerDir + '/video.js/dist/video.js',
+        config.nodeDir + '/video.js/dist/video.js',
 
         config.assetsDir + '/js/**/*.js'
     ], 'commsy.js');
@@ -181,36 +181,36 @@ gulp.task('js', function() {
 gulp.task('fonts', function() {
     return app.copy([
             config.assetsDir + '/fonts/*',
-            config.bowerDir + '/uikit/fonts/*'
+            config.nodeDir + '/uikit/dist/fonts/*'
     ],'web/fonts');
 });
 
 gulp.task('images', function() {
-    var assetImages = app.copy(
+    let assetImages = app.copy(
         config.assetsDir + '/img/*',
         'web/img'
     );
 
-    var bowerImages = app.copy([
-        config.bowerDir + '/jstree/dist/themes/default/*.png',
-        config.bowerDir + '/jstree/dist/themes/default/*.gif'
+    let bowerImages = app.copy([
+        config.nodeDir + '/jstree/dist/themes/default/*.png',
+        config.nodeDir + '/jstree/dist/themes/default/*.gif'
     ], 'web/css/build');
 
     return mergeStream(assetImages, bowerImages);
 });
 
 gulp.task('staticThemes', function(done) {
-    var promises = [];
+    let promises = [];
 
     app.getThemes().forEach(function(theme) {
         promises.push(new Promise(function(resolve) {
             app.addStyle([
-                config.bowerDir + '/jstree/dist/themes/default/style.css',
-                config.bowerDir + '/nprogress/nprogress.css',
-                config.bowerDir + '/fullcalendar/dist/fullcalendar.css',
-                config.bowerDir + '/tooltipster/dist/css/tooltipster.bundle.min.css',
+                config.nodeDir + '/jstree/dist/themes/default/style.css',
+                config.nodeDir + '/nprogress/nprogress.css',
+                config.nodeDir + '/fullcalendar/dist/fullcalendar.css',
+                config.nodeDir + '/tooltipster/dist/css/tooltipster.bundle.min.css',
                 
-                config.bowerDir + '/video.js/dist/video-js.css',
+                config.nodeDir + '/video.js/dist/video-js.css',
                 
                 config.assetsDir + '/uikit-commsy/commsy.less',
                 theme.path + '/theme.less'
@@ -228,10 +228,10 @@ gulp.task('staticThemes', function(done) {
 gulp.task('manifest', function() {
     return gulp.src(config.revManifestDir + '*.json')
         .pipe(plugins.jsoncombine('rev-manifest.json', function(data) {
-            var result = {};
+            let result = {};
 
             Object.keys(data).forEach(function(key) {
-                var value = data[key];
+                let value = data[key];
                 result = merge(result, value);
             });
 

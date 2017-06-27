@@ -14,7 +14,7 @@
             {% endif %}
 
             <li id="tag_{{ child.value }}" data-jstree='{"opened": {{ opened }}}'>
-            {{ child.label }}
+            {{ child.label|decodeHtmlEntity }}
         {% endif %}
     {% endfor %}
 {% endmacro %}
