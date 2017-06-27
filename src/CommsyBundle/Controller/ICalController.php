@@ -146,7 +146,9 @@ class ICalController extends Controller
             $email = $creatorItem->getEmail();
 
             if (!empty($fullName) && !empty($email)) {
-                $event->setOrganizer(new Organizer($item->getCreatorItem()->getEmail()));
+                $event->setOrganizer(new Organizer("MAILTO:$email", [
+                    'CN' => $fullName,
+                ]));
             }
 
             // attendee
@@ -155,8 +157,9 @@ class ICalController extends Controller
                 $userItem = $userList->getFirst();
                 while ($userItem) {
                     if ($userItem->getItemID() == $userId) {
-
-                        $event->addAttendee($userItem->getEmail());
+                        $event->addAttendee("MAILTO:$userItem->getEmail()", [
+                            'CN' => $userItem->getFullName(),
+                        ]);
                     }
 
                     $userItem = $userList->getNext();
@@ -206,7 +209,7 @@ class ICalController extends Controller
                     ->setDtEnd($endTime)
                     ->setDescription(html_entity_decode(strip_tags($item->getDescription()), ENT_NOQUOTES, 'UTF-8'))
                     ->setStatus(Event::STATUS_CONFIRMED)
-                    ->setUseTimezone(true);
+                    ->setUseUtc(false);
             }
 
             $calendar->addComponent($event);
