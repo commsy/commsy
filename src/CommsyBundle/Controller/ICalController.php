@@ -157,9 +157,14 @@ class ICalController extends Controller
                 $userItem = $userList->getFirst();
                 while ($userItem) {
                     if ($userItem->getItemID() == $userId) {
-                        $event->addAttendee("MAILTO:$userItem->getEmail()", [
-                            'CN' => $userItem->getFullName(),
-                        ]);
+                        $email = $userItem->getEmail();
+                        $fullName = $userItem->getFullName();
+
+                        if (!empty($email) && !empty($fullName)) {
+                            $event->addAttendee("MAILTO:$email", [
+                                'CN' => $fullName,
+                            ]);
+                        }
                     }
 
                     $userItem = $userList->getNext();
