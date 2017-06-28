@@ -9,9 +9,21 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 use CommsyBundle\Form\Type\CheckedFileType;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class UploadType extends AbstractType
 {
+    /**
+     * The Symfony translator
+     * @var TranslatorInterface $translator
+     */
+    private $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     /**
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
@@ -22,6 +34,8 @@ class UploadType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $uploadErrorMessage = $this->translator->trans('upload error', [], 'error');
+
         $builder
             ->add('files', CollectionType::class, [
                 'allow_add' => true,
@@ -32,7 +46,7 @@ class UploadType extends AbstractType
             ->add('upload', FileType::class, array(
                 'label' => 'upload',
                 'attr' => array(
-                     'data-uk-csupload' => '{"path": "' . $options['uploadUrl'] . '"}',
+                     'data-uk-csupload' => '{"path": "' . $options['uploadUrl'] . '", "errorMessage": "' . $uploadErrorMessage . '"}',
                 ),
                 'required' => false,
                 'translation_domain' => 'material',

@@ -6,6 +6,8 @@
     let sort = 'date';
     let sortOrder = '';
 
+    let lastRequest = '';
+
     // listen to "inview.uk.scrollspy" event on "feed-load-more" classes
     $('.feed-load-more').on('inview.uk.scrollspy', function() {
         let el = $(this);
@@ -15,6 +17,11 @@
 
         // build up the url
         let url = el.data('feed').url  + feedStart + '/' + sort + sortOrder + queryString;
+
+        if (lastRequest == url) {
+            return;
+        }
+        lastRequest = url;
 
         // send ajax request to get more items
         $.ajax({
@@ -66,6 +73,11 @@
 
         // build up the url
         let url = el.data('feed').url  + feedStart + queryString;
+
+        if (lastRequest == url) {
+            return;
+        }
+        lastRequest = url;
 
         // send ajax request to get more items
         $.ajax({
@@ -188,11 +200,20 @@
             el = $('.feed-load-more-grid');
         }
 
+        // re-enable spinner - otherwise feeds reaching their end before changing sort order will not
+        // be able to load more entries
+        el.css('display', 'block');
+
         // get current query string
         let queryString = document.location.search;
 
         // build up the url
         let url = el.data('feed').url  + feedStart + '/' + sort + sortOrder + queryString;
+
+        if (lastRequest == url) {
+            return;
+        }
+        lastRequest = url;
 
         // send ajax request to get more items
         $.ajax({

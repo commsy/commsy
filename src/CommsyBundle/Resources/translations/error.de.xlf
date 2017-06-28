@@ -6,6 +6,10 @@
                 <source>common error</source>
                 <target>Allgemeiner Fehler</target>
             </trans-unit>
+            <trans-unit id="error-upload">
+                <source>upload error</source>
+                <target>Upload fehlgeschlagen, bitte prüfen Sie die erlaubte Dateigröße.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
