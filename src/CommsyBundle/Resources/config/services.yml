@@ -343,6 +343,7 @@ services:
 
     commsy.form.type.upload:
         class: CommsyBundle\Form\Type\UploadType
+        arguments: ['@translator']
         tags:
             - { name: form.type }
 
