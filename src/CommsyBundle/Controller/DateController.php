@@ -353,7 +353,10 @@ class DateController extends Controller
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
-        $filterForm = $this->createForm(DateFilterType::class, $this->defaultFilterValues, array(
+        $filterValues = $this->defaultFilterValues;
+        unset($filterValues['hide-past-dates']);
+
+        $filterForm = $this->createForm(DateFilterType::class, $filterValues, array(
             'action' => $this->generateUrl('commsy_date_calendar', array('roomId' => $roomId)),
             'hasHashtags' => $roomItem->withBuzzwords(),
             'hasCategories' => $roomItem->withTags(),
