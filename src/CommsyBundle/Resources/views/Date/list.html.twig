@@ -85,7 +85,7 @@
                                         {% else %}
                                             <i class="uk-icon uk-icon-circle uk-icon-justify uk-visible-large" style="color:{{ calendar.color }}"></i>
                                         {% endif %}
-                                        {{ calendar.title }}
+                                        {{ calendar.title|trans({}, 'date') }}
                                     </a>
                                 </li>
                             {% endfor %}
@@ -106,7 +106,7 @@
                                         {% else %}
                                             <i class="uk-icon uk-icon-circle uk-icon-justify uk-visible-large" style="color:{{ calendar.color }}"></i>
                                         {% endif %}
-                                        {{ calendar.title }}
+                                        {{ calendar.title|trans({}, 'date') }}
                                     </a>
                                 </li>
                             {% endfor %}
