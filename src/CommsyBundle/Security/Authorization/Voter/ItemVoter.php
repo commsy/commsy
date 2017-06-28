@@ -92,7 +92,7 @@ class ItemVoter extends Voter
             }
         }
 
-        if ($item->getType = CS_DATE_TYPE) {
+        if ($item->getItemType() == CS_DATE_TYPE) {
             if ($item->isExternal()) {
                 return false;
             }
