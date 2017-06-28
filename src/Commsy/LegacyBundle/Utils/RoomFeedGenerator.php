@@ -141,6 +141,12 @@ class RoomFeedGenerator
 
         // post-filter for disabled entries
         $feedList = array_filter($feedList, function($feedItem) {
+            if ($feedItem->getItemType() == CS_DATE_TYPE) {
+                if ($feedItem->isExternal()) {
+                    return true;
+                }
+            }
+
             $modifcationDate = new \DateTime($feedItem->getModificationDate());
 
             return $modifcationDate <= new \DateTime();
