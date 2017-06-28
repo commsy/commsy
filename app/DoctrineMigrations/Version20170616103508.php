@@ -169,11 +169,16 @@ class Version20170616103508 extends AbstractMigration implements ContainerAwareI
                 ->setParameter('context_id', $room['item_id'])
                 ->execute();
 
+            $colorsInContext = [];
             foreach ($dates as $date) {
                 if (!$date['color'] || $date['color'] == 'cs-date-color-no-color') {
                     $this->addDateToCalendar($date['item_id'], $calendarId);
                 }
+                if ($date['color'] && $date['color'] != 'cs-date-color-no-color') {
+                    $colorsInContext[] = $date['color'];
+                }
             }
+            $colorsInContext = array_unique($colorsInContext);
 
             $colorArray = [
                             'Grey'      => ['#999999', 'cs-date-color-01'],
@@ -187,7 +192,17 @@ class Version20170616103508 extends AbstractMigration implements ContainerAwareI
                             'Purple'    => ['#6633FF', 'cs-date-color-09'],
                             'Magenta'   => ['#CC33CC', 'cs-date-color-10']
                           ];
-            foreach ($colorArray as $name => $colors) {
+
+            foreach ($colorsInContext as $colorInContext) {
+                $currentColorName = '';
+                $currentColors = [];
+                foreach ($colorArray as $name => $colors) {
+                    if (in_array($colorInContext, $colors)) {
+                        $currentColorName = $name;
+                        $currentColors = $colors;
+                    }
+                }
+                
                 $queryBuilder
                     ->insert('calendars')
                     ->values(
@@ -202,8 +217,8 @@ class Version20170616103508 extends AbstractMigration implements ContainerAwareI
                     )
                     ->setParameter(0, '')
                     ->setParameter(1, $room['item_id'])
-                    ->setParameter(2, $translator->trans($name, array(), 'date'))
-                    ->setParameter(3, $colors[0])
+                    ->setParameter(2, $translator->trans($currentColorName, array(), 'date'))
+                    ->setParameter(3, $currentColors[0])
                     ->setParameter(4, '')
                     ->setParameter(5, '0')
                     ->execute();
@@ -219,7 +234,7 @@ class Version20170616103508 extends AbstractMigration implements ContainerAwareI
                     ->execute();
 
                 foreach ($dates as $date) {
-                    if (in_array($date['color'], $colors)) {
+                    if (in_array($date['color'], $currentColors)) {
                         $this->addDateToCalendar($date['item_id'], $calendarId);
                     }
                 }
