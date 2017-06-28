@@ -61,10 +61,6 @@ class CommsyFeedContentProvider implements FeedContentProviderInterface
             $items = $this->getItems($currentContextItem);
 
             foreach ($items as $item) {
-                if ($item->isNotActivated()) {
-                    continue;
-                }
-
                 $feedItem = $this->feedCreatorFactory->createItem($item);
                 if ($feedItem) {
                     $feed->add($feedItem);
