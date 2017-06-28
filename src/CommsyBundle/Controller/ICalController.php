@@ -197,6 +197,9 @@ class ICalController extends Controller
             $startTime = new \DateTime($item->getDateTime_start());
             $endTime = new \DateTime($item->getDateTime_end());
 
+            $startTime->setTimezone(new \DateTimeZone('UTC'));
+            $endTime->setTimezone(new \DateTimeZone('UTC'));
+
             if ($startTime && $endTime) {
                 // Dates with equal start and end date or no start and end time are all day events
                 if ($startTime == $endTime || (empty($item->getStartingTime()) && empty($item->getEndingTime()))) {
@@ -213,8 +216,7 @@ class ICalController extends Controller
                     ->setDtStart($startTime)
                     ->setDtEnd($endTime)
                     ->setDescription(html_entity_decode(strip_tags($item->getDescription()), ENT_NOQUOTES, 'UTF-8'))
-                    ->setStatus(Event::STATUS_CONFIRMED)
-                    ->setUseUtc(false);
+                    ->setStatus(Event::STATUS_CONFIRMED);
             }
 
             $calendar->addComponent($event);
