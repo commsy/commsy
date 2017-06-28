@@ -36,6 +36,7 @@ class Version20170616103508 extends AbstractMigration implements ContainerAwareI
                 color varchar(255) NOT NULL,
                 external_url varchar(255) NULL,
                 default_calendar TINYINT NOT NULL DEFAULT 0,
+                creator_id int(11) NULL,
                 PRIMARY KEY (id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8
         ');
@@ -58,8 +59,18 @@ class Version20170616103508 extends AbstractMigration implements ContainerAwareI
         ');
 
         $this->addSql('
+            ALTER TABLE dates
+            ADD external TINYINT NOT NULL DEFAULT 0;
+        ');
+
+        $this->addSql('
             ALTER TABLE zzz_dates
             ADD calendar_id int(11) NULL;
+        ');
+
+        $this->addSql('
+            ALTER TABLE zzz_dates
+            ADD external TINYINT NOT NULL DEFAULT 0;
         ');
     }
 
@@ -81,8 +92,18 @@ class Version20170616103508 extends AbstractMigration implements ContainerAwareI
         ');
 
         $this->addSql('
+            ALTER TABLE dates
+            DROP external;
+        ');
+
+        $this->addSql('
             ALTER TABLE zzz_dates
             DROP calendar_id;
+        ');
+
+        $this->addSql('
+            ALTER TABLE zzz_dates
+            DROP external;
         ');
     }
 
