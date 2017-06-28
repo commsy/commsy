@@ -200,12 +200,18 @@ if (isset($_GET['cid'])) {
 
         $item = $item_list->getFirst();
         while ($item) {
-            $fullname = $item->getCreatorItem()->getFullName();
-            $email = $item->getCreatorItem()->getEmail();
-            if (empty($fullname) or empty($email)) {
-                $organizer = array();
-            } else {
-                $organizer = (array)array($item->getCreatorItem()->getFullName(), $item->getCreatorItem()->getEmail());
+            $vEvent = new \Eluceo\iCal\Component\Event();
+
+            // organizer
+            $creator = $item->getCreatorItem();
+            $creatorFullname = $creator->getFullName();
+            $creatorEmail = $creator->getEmail();
+            if (!empty($creatorFullname) && !empty($creatorEmail)) {
+                $vEvent->setOrganizer(new \Eluceo\iCal\Property\Event\Organizer(
+                    "MAILTO:$creatorEmail", [
+                        'CN' => $creatorFullname,
+                    ]
+                ));
             }
 
             $categories = array('CommSy .' . $translator->getMessage('COMMON_DATES'));
@@ -216,10 +222,15 @@ if (isset($_GET['cid'])) {
                 $temp_user_item = $user_list->getFirst();
                 while ($temp_user_item) {
                     if ($temp_user_item->getItemID() == $user_id) {
-                        $temp_array['name'] = $temp_user_item->getFullName();
-                        $temp_array['email'] = $temp_user_item->getEmail();
-                        $temp_array['role'] = '0';
-                        $attendee_array[] = $temp_array;
+
+                        $email = $userItem->getEmail();
+                        $fullName = $userItem->getFullName();
+
+                        if (!empty($email) && !empty($fullName)) {
+                            $vEvent->addAttendee("MAILTO:$email", [
+                                'CN' => $fullName,
+                            ]);
+                        }
                     }
                     $temp_user_item = $user_list->getNext();
                 }
@@ -227,6 +238,9 @@ if (isset($_GET['cid'])) {
 
             $startTime = new \DateTime($item->getDateTime_start());
             $endTime = new \DateTime($item->getDateTime_end());
+
+            $startTime->setTimezone(new \DateTimeZone('UTC'));
+            $endTime->setTimezone(new \DateTimeZone('UTC'));
 
             $language = $environment->getSelectedLanguage();
             $translator = $environment->getTranslationObject();
@@ -243,8 +257,6 @@ if (isset($_GET['cid'])) {
             }
 
             if ($startTime && $endTime) {
-                $vEvent = new \Eluceo\iCal\Component\Event();
-
                 // Dates with equal start and end date or no start and end time are all day events
                 if ($startTime == $endTime || (empty($item->getStartingTime()) && empty($item->getEndingTime()))) {
                     $vEvent->setNoTime(true);
@@ -257,7 +269,6 @@ if (isset($_GET['cid'])) {
                 }
 
                 $vEvent
-                    ->setOrganizer(new \Eluceo\iCal\Property\Event\Organizer($organizer))
                     ->setDtStart($startTime)
                     ->setDtEnd($endTime)
                     ->setLocation($item->getPlace())
@@ -266,14 +277,7 @@ if (isset($_GET['cid'])) {
                     ->setSummary($title)
                     ->setUrl($path . $c_single_entry_point . '?cid=' . $_GET['cid'] . '&mod=date&fct=detail&iid=' . $item->getItemID())
                     ->setUniqueId($item->getItemID())
-                    ->setStatus(\Eluceo\iCal\Component\Event::STATUS_CONFIRMED)
-                    ->setUseTimezone(true);
-
-                if (!empty($attendee_array)) {
-                    foreach ($attendee_array as $attendee) {
-                        $vEvent->addAttendee($attendee['email']);
-                    }
-                }
+                    ->setStatus(\Eluceo\iCal\Component\Event::STATUS_CONFIRMED);
 
                 $vCalender->addComponent($vEvent);
             }
