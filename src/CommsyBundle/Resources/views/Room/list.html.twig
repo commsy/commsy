@@ -2,14 +2,36 @@
 {% if not feedList is empty %}
     {% for feedItem in feedList %}
         <article class="uk-comment">
-            {{ macros.statusColor(readerList, feedItem.itemId) }}
+            {% if feedItem.type != 'date' %}
+                {{ macros.statusColor(readerList, feedItem.itemId) }}
+            {% else %}
+                {% if not feedItem.isExternal %}
+                    {{ macros.statusColor(readerList, feedItem.itemId) }}
+                {% endif %}
+            {% endif %}
             <header class="uk-comment-header uk-flex">
                 <div class="uk-margin-right uk-flex-item-none">
                     {% if feedItem.itemType != 'user' %}
-                        {% if feedItem.modificatorItem.isUser %}
-                            {{  macros.userIconLink(feedItem.modificatorItem) }}
+                        {% if feedItem.type != 'date' %}
+                            {% if feedItem.modificatorItem.isUser %}
+                                {{  macros.userIconLink(feedItem.modificatorItem) }}
+                            {% else %}
+                                {{  macros.userIcon(feedItem.modificatorItem) }}
+                            {% endif %}
                         {% else %}
-                            {{  macros.userIcon(feedItem.modificatorItem) }}
+                            {% if not feedItem.isExternal %}
+                                {% if feedItem.modificatorItem.isUser %}
+                                    {{  macros.userIconLink(feedItem.modificatorItem) }}
+                                {% else %}
+                                    {{  macros.userIcon(feedItem.modificatorItem) }}
+                                {% endif %}
+                            {% else %}
+                                <div class="uk-comment-avatar uk-thumbnail uk-border-circle cs-comment-thumbnail" style="height:42px; width:42px;" data-uk-tooltip title="{{ feedItem.calendar.title }}">
+                                    <div class="uk-container-center uk-margin-small-top" style="width:24px; height:24px;">
+                                        <i class="uk-icon-medium uk-icon-calendar" style="color:{{ feedItem.calendar.color }}; width:24px; height:24px;"></i>
+                                    </div>
+                                </div>
+                            {% endif %}
                         {% endif %}
                     {% else %}
                         {% if feedItem.isUser %}
