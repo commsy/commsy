@@ -23,10 +23,18 @@
                 
             </div>
             <div class="uk-margin-right uk-flex-item-none">
-                    {% if date.creator.isUser %}
-                        {{  macros.userIconLink(date.modificatorItem) }}
+                    {% if not date.isExternal %}
+                        {% if date.creator.isUser %}
+                            {{  macros.userIconLink(date.modificatorItem) }}
+                        {% else %}
+                            {{  macros.userIcon(date.modificatorItem) }}
+                        {% endif %}
                     {% else %}
-                        {{  macros.userIcon(date.modificatorItem) }}
+                        <div class="uk-comment-avatar uk-thumbnail uk-border-circle cs-comment-thumbnail" style="height:42px; width:42px;" data-uk-tooltip title="{{ date.calendar.title }}">
+                            <div class="uk-container-center uk-margin-small-top" style="width:24px; height:24px;">
+                                <i class="uk-icon-medium uk-icon-calendar" style="color:{{ date.calendar.color }}; width:24px; height:24px;"></i>
+                            </div>
+                        </div>
                     {% endif %}
                     <div class="uk-comment-meta">
                         {% if date.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
