@@ -35,7 +35,7 @@
     <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
         <button class="uk-button uk-button-mini cs-button-list">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
         <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
-            <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+            <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left uk-nav-parent-icon" data-uk-nav>
 
                 {% if is_granted('ITEM_EDIT', 'NEW') %}
                 <li>
@@ -72,17 +72,45 @@
 
                 {% if iCal.show %}
                     {# date export #}
-                    <li>
-                        <a href="{{ iCal.exportUrl }}" target="_blank">
+                    <li class="uk-parent">
+                        <a href="#">
                             <i class="uk-icon-small uk-icon-calendar-o uk-icon-justify uk-visible-large"></i> {{ 'export dates'|trans({}, 'date') }}
                         </a>
+                        <ul class="uk-nav-sub uk-list-striped uk-text-left">
+                            {% for calendar in calendars  %}
+                                <li>
+                                    <a href="{{ iCal.exportUrl }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
+                                        {% if calendar.color == '#ffffff' %}
+                                            <i class="uk-icon uk-icon-circle-thin uk-icon-justify uk-visible-large" style="color:#444"></i>
+                                        {% else %}
+                                            <i class="uk-icon uk-icon-circle uk-icon-justify uk-visible-large" style="color:{{ calendar.color }}"></i>
+                                        {% endif %}
+                                        {{ calendar.title }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </li>
 
                     {# date abo#}
-                    <li>
-                        <a href="{{ iCal.aboUrl|replace({"http:" : "webcal:", "https:" : "webcal:"}) }}" target="_blank">
+                    <li class="uk-parent">
+                        <a href="#">
                             <i class="uk-icon-small uk-icon-calendar-plus-o uk-icon-justify uk-visible-large"></i> {{ 'abo dates'|trans({}, 'date') }}
                         </a>
+                        <ul class="uk-nav-sub uk-list-striped uk-text-left">
+                            {% for calendar in calendars  %}
+                                <li>
+                                    <a href="{{ iCal.aboUrl|replace({"http:" : "webcal:", "https:" : "webcal:"}) }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
+                                        {% if calendar.color == '#ffffff' %}
+                                            <i class="uk-icon uk-icon-circle-thin uk-icon-justify uk-visible-large" style="color:#444"></i>
+                                        {% else %}
+                                            <i class="uk-icon uk-icon-circle uk-icon-justify uk-visible-large" style="color:{{ calendar.color }}"></i>
+                                        {% endif %}
+                                        {{ calendar.title }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </li>
                 {% endif %}
 

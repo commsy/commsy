@@ -280,6 +280,10 @@ class DateController extends Controller
             }
         }
 
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('CommsyBundle:Calendars');
+        $calendars = $repository->findBy(array('context_id' => $roomId));
+
         return [
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
@@ -287,6 +291,7 @@ class DateController extends Controller
             'itemsCountArray' => $itemsCountArray,
             'usageInfo' => $usageInfo,
             'iCal' => $iCal,
+            'calendars' => $calendars,
         ];
     }
 
