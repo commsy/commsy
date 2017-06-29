@@ -470,14 +470,22 @@
     </div>
 {% endmacro %}
 
-{% macro calendarIcon(calendar, size) %}
+{% macro calendarIcon(calendar, feed, size) %}
     {% if size is empty %}
         {% set size = 10 %}
     {% endif %}
 
     {% if calendar.hasLightColor %}
-        <span class="uk-vertical-align-middle uk-margin-right tooltipster uk-border-circle" style="background-color:{{calendar.color}}; border: 1px solid #444; width:{{ size-2 }}px; height:{{ size-2 }}px;" title="{{calendar.title}}"></span>
+        {% if feed %}
+            <span class="uk-vertical-align-middle uk-margin-right tooltipster uk-border-circle" style="background-color:{{calendar.color}}; border: 1px solid #444; width:{{ size-2 }}px; height:{{ size-2 }}px;" title="{{calendar.title}}"></span>
+        {% else %}
+            <span class="uk-vertical-align-middle tooltipster uk-border-circle" style="background-color:{{calendar.color}}; border: 1px solid #444; width:{{ size-2 }}px; height:{{ size-2 }}px;" title="{{calendar.title}}"></span>
+        {% endif %}
     {% else %}
-        <span class="uk-vertical-align-middle uk-margin-right tooltipster uk-border-circle" style="background-color:{{calendar.color}}; width:{{ size }}px; height:{{ size }}px;" title="{{calendar.title}}"></span>
+        {% if feed %}
+            <span class="uk-vertical-align-middle uk-margin-right tooltipster uk-border-circle" style="background-color:{{calendar.color}}; width:{{ size }}px; height:{{ size }}px;" title="{{calendar.title}}"></span>
+        {% else %}
+            <span class="uk-vertical-align-middle tooltipster uk-border-circle" style="background-color:{{calendar.color}}; width:{{ size }}px; height:{{ size }}px;" title="{{calendar.title}}"></span>
+        {% endif %}
     {% endif %}
 {% endmacro %}
