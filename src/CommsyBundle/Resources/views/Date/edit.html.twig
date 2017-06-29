@@ -38,7 +38,7 @@
                             {% endif %}
                         </span>
                         <span class="uk-vertical-align-middle">
-                            {{ tempCalendar.vars.attr.title }}
+                            {{ tempCalendar.vars.attr.title|trans({},'date') }}
                         </span>
                         <br/>
                     {% endfor %}

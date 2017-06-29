@@ -27,7 +27,7 @@
                                      <a class="uk-button uk-margin-small-bottom uk-margin-small-right{% if calendarId == calendar.id %} uk-button-primary{% endif %}" href="{{ path('commsy_calendar_edit', { 'roomId': roomId, 'calendarId': calendar.id }) }}">
                                         {{ macros.calendarIcon(calendar) }}
                                         <span class="uk-vertical-align-middle">
-                                            {{- calendar.title -}}
+                                            {{- calendar.title|trans({},'date') -}}
                                         </span>
                                     </a>
                                 </span>

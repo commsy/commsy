@@ -182,7 +182,7 @@
                                     <td class="uk-text-top">
                                         {{ macros.calendarIcon(item.calendar) }}
                                         <span class="uk-vertical-align-middle">
-                                            {{ item.calendar.title }}
+                                            {{ item.calendar.title|trans({},'date') }}
                                         </span>
                                     </td>
                                 </tr>
