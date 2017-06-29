@@ -2,6 +2,8 @@
 
 {% form_theme editForm 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
 
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+
 {% block content %}
     <div class="uk-grid" data-uk-grid-margin>
         <div class="uk-width-1-1">
@@ -25,14 +27,10 @@
                             {% for calendar in calendars %}
                                 <span>
                                      <a class="uk-button uk-margin-small-bottom uk-margin-small-right{% if calendarId == calendar.id %} uk-button-primary{% endif %}" href="{{ path('commsy_calendar_edit', { 'roomId': roomId, 'calendarId': calendar.id }) }}">
-                                        <span class="tooltipster" style="color:{{ calendar.color }}">
-                                            {% if calendar.color == '#ffffff' %}
-                                                <i class="uk-icon uk-icon-circle-thin" style="color:#000000"></i>
-                                            {% else %}
-                                                <i class="uk-icon uk-icon-circle"></i>
-                                            {% endif %}
+                                        {{ macros.calendarIcon(calendar) }}
+                                        <span class="uk-vertical-align-middle">
+                                            {{- calendar.title -}}
                                         </span>
-                                        {{- calendar.title -}}
                                     </a>
                                 </span>
                             {% endfor %}
