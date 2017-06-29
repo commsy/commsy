@@ -1,5 +1,6 @@
 {% extends 'CommsyBundle:Base:list.html.twig' %}
 {% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
 {% block feed %}
     <ul id="dates-feed" class="uk-comment-list" data-uk-observe>
@@ -80,12 +81,10 @@
                             {% for calendar in calendars  %}
                                 <li>
                                     <a href="{{ iCal.exportUrl }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
-                                        {% if calendar.color == '#ffffff' %}
-                                            <i class="uk-icon uk-icon-circle-thin uk-icon-justify uk-visible-large" style="color:#444"></i>
-                                        {% else %}
-                                            <i class="uk-icon uk-icon-circle uk-icon-justify uk-visible-large" style="color:{{ calendar.color }}"></i>
-                                        {% endif %}
-                                        {{ calendar.title|trans({}, 'date') }}
+                                        {{ macros.calendarIcon(calendar) }}
+                                        <span class="uk-vertical-align-middle">
+                                            {{ calendar.title|trans({}, 'date') }}
+                                        </span>
                                     </a>
                                 </li>
                             {% endfor %}
@@ -101,12 +100,10 @@
                             {% for calendar in calendars  %}
                                 <li>
                                     <a href="{{ iCal.aboUrl|replace({"http:" : "webcal:", "https:" : "webcal:"}) }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
-                                        {% if calendar.color == '#ffffff' %}
-                                            <i class="uk-icon uk-icon-circle-thin uk-icon-justify uk-visible-large" style="color:#444"></i>
-                                        {% else %}
-                                            <i class="uk-icon uk-icon-circle uk-icon-justify uk-visible-large" style="color:{{ calendar.color }}"></i>
-                                        {% endif %}
-                                        {{ calendar.title|trans({}, 'date') }}
+                                        {{ macros.calendarIcon(calendar) }}
+                                        <span class="uk-vertical-align-middle">
+                                            {{ calendar.title|trans({}, 'date') }}
+                                        </span>
                                     </a>
                                 </li>
                             {% endfor %}
