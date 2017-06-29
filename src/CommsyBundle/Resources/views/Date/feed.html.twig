@@ -56,7 +56,7 @@
                 </div>
             </div>
             <div class="uk-width-2-10 uk-text-right uk-text-muted uk-vertical-align">
-                {% if date.calendar.color == '#ffffff' %}
+                {% if date.calendar.hasLightColor %}
                     <span class="uk-vertical-align-middle uk-margin-right uk-icon-circle-thin tooltipster" style="color:#000000" title="{{date.calendar.title}}"></span>
                 {% else %}
                     <span class="uk-vertical-align-middle uk-margin-right uk-icon-circle tooltipster" style="color:{{date.calendar.color}}" title="{{date.calendar.title}}"></span>

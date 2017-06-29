@@ -218,4 +218,24 @@ class Calendars
     {
         return $this->creator_id;
     }
+
+    public function hasLightColor(){
+        $hexColor = str_ireplace('#', '', $this->getColor());
+
+        $r = hexdec(substr($hexColor,0,2));
+        $g = hexdec(substr($hexColor,2,2));
+        $b = hexdec(substr($hexColor,4,2));
+
+        $squared_contrast = (
+            $r * $r * .299 +
+            $g * $g * .587 +
+            $b * $b * .114
+        );
+
+        if($squared_contrast > pow(220, 2)){ // 220 -> 75% max
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
