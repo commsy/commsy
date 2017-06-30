@@ -22,7 +22,9 @@
     {#</li>#}
 {% endmacro %}
 
-{% macro dashboardCalendar(roomItem) %}
+{% macro dashboardCalendar(roomItem, calendars, iCal) %}
+    {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+
     {#<li id="dashboard-calendar" class="uk-grid-margin">#}
         <div class="uk-panel uk-panel-box uk-panel-box-primary">
             <div class="uk-panel-teaser cs-panel-teaser-primary">
@@ -35,6 +37,45 @@
             'CommsyBundle:Date:calendardashboard',
             { 'roomId': roomItem.itemId }
             ))}}
+
+            <div class="uk-flex uk-flex-right uk-margin-top uk-margin-right">
+                <div class="uk-button-dropdown uk-margin-right" data-uk-dropdown>
+                    <button class="uk-button">Export...</button>
+                    <div class="uk-dropdown uk-dropdown-small">
+                        <ul class="uk-nav uk-nav-dropdown">
+                            {% for calendar in calendars  %}
+                                <li>
+                                    <a href="{{ iCal.exportUrl }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
+                                        {{ macros.calendarIcon(calendar) }}
+                                        <span class="uk-vertical-align-middle">
+                                            {{ calendar.title|trans({}, 'date') }}
+                                        </span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="uk-button-dropdown" data-uk-dropdown>
+                    <button class="uk-button">Abo...</button>
+                    <div class="uk-dropdown uk-dropdown-small">
+                        <ul class="uk-nav uk-nav-dropdown">
+                            {% for calendar in calendars  %}
+                                <li>
+                                    <a href="{{ iCal.aboUrl|replace({"http:" : "webcal:", "https:" : "webcal:"}) }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
+                                        {{ macros.calendarIcon(calendar) }}
+                                        <span class="uk-vertical-align-middle">
+                                            {{ calendar.title|trans({}, 'date') }}
+                                        </span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
         </div>
     {#</li>#}
 {% endmacro %}

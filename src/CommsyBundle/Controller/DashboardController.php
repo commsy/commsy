@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use Commsy\LegacyBundle\Services\UserService;
 use Commsy\LegacyBundle\Services\ReaderService;
@@ -33,9 +34,64 @@ class DashboardController extends Controller
         
         $roomFeedGenerator = $this->get('commsy_legacy.dashboard_feed_generator');
 
+        // iCal
+        $iCal = [
+            'show' => false,
+            'aboUrl' => $this->generateUrl('commsy_ical_getcontent', [
+                'contextId' => $roomId,
+            ], UrlGeneratorInterface::ABSOLUTE_URL),
+            'exportUrl' => $this->generateUrl('commsy_ical_getcontent', [
+                'contextId' => $roomId,
+                'export' => true,
+            ], UrlGeneratorInterface::ABSOLUTE_URL),
+        ];
+
+        if ($roomItem->isOpenForGuests()) {
+            $iCal['show'] = true;
+        } else {
+            $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+
+            if ($currentUserItem->isUser()) {
+                $iCal['show'] = true;
+
+                $hashManager = $legacyEnvironment->getHashManager();
+                $iCalHash = $hashManager->getICalHashForUser($currentUserItem->getItemID());
+
+                $iCal['aboUrl'] = $this->generateUrl('commsy_ical_getcontent', [
+                    'contextId' => $roomId,
+                    'hid' => $iCalHash,
+                ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+                $iCal['exportUrl'] = $this->generateUrl('commsy_ical_getcontent', [
+                    'contextId' => $roomId,
+                    'hid' => $iCalHash,
+                    'export' => true,
+                ], UrlGeneratorInterface::ABSOLUTE_URL);
+            }
+        }
+
+        $user = $legacyEnvironment->getCurrentUserItem();
+        $userList = $user->getRelatedUserList()->to_array();
+        $contextIds = array();
+        foreach ($userList as $user) {
+            $contextIds[] = $user->getContextId();
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('CommsyBundle:Calendars');
+        $calendars = $repository->findBy(array('context_id' => $contextIds, 'external_url' => array('', NULL)));
+
+        $itemService = $this->get('commsy_legacy.item_service');
+        foreach ($calendars as $index => $calendar) {
+            $roomItemCalendar = $itemService->getTypedItem($calendar->getContextId());
+            $calendars[$index]->setTitle($calendar->getTitle().' ('.$roomItemCalendar->getTitle().')');
+        }
+
         return array(
             'roomItem' => $roomItem,
             'dashboardLayout' => $roomItem->getDashboardLayout(),
+            'iCal' => $iCal,
+            'calendars' => $calendars
         );
     }
 
