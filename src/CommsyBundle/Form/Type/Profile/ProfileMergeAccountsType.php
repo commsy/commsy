@@ -7,6 +7,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityManager;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
@@ -40,11 +41,11 @@ class ProfileMergeAccountsType extends AbstractType
         $builder
             ->add('combineUserId', TextType::class, array(
                 'label' => 'combineUserId',
-                'required' => false,
+                'required' => true,
             ))
-            ->add('combinePassword', TextType::class, array(
+            ->add('combinePassword', PasswordType::class, array(
                 'label' => 'combinePassword',
-                'required' => false,
+                'required' => true,
             ))
             ->add('save', SubmitType::class, array(
                 'label' => 'save',

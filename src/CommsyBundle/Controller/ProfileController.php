@@ -312,8 +312,6 @@ class ProfileController extends Controller
 
         $form->handleRequest($request);
         if ($form->isValid()) {
-            // TODO: merge accounts
-            // ############
 
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             $authentication = $legacyEnvironment->getAuthenticationObject();
@@ -377,8 +375,6 @@ class ProfileController extends Controller
             error_reporting(E_ALL);
 
             $authentication->mergeAccount($currentUser->getUserID(), $currentUser->getAuthSource(), $formData['combineUserId'], $authSourceOld);
-            // ############
-
 
             return $this->redirectToRoute('commsy_profile_mergeaccounts', array('roomId' => $roomId, 'itemId' => $itemId));
         }
