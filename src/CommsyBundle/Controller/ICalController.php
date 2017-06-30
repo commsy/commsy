@@ -59,7 +59,10 @@ class ICalController extends Controller
         // export
         $export = $request->query->has('export');
 
-        $calendar = $this->createCalendar($currentContextItem, $export);
+        // export
+        $calendarId = $request->query->has('calendar_id');
+
+        $calendar = $this->createCalendar($currentContextItem, $export, $calendarId);
 
         // prepare response
         $response = new Response($calendar->render());
@@ -74,7 +77,7 @@ class ICalController extends Controller
         return $response;
     }
 
-    private function createCalendar($currentContextItem, $export)
+    private function createCalendar($currentContextItem, $export, $calendarId)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $translator = $legacyEnvironment->getTranslationObject();
@@ -82,7 +85,7 @@ class ICalController extends Controller
         // setup calendar
         $calendar = new Calendar('www.commsy.net');
 
-        $dateList = $this->getDateList($currentContextItem, $export);
+        $dateList = $this->getDateList($currentContextItem, $export, $calendarId);
 
         // get ids auf all items
         $itemIdArray = [];
@@ -227,7 +230,7 @@ class ICalController extends Controller
         return $calendar;
     }
 
-    private function getDateList($currentContextItem, $export)
+    private function getDateList($currentContextItem, $export, $calendarId)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $datesManager = $legacyEnvironment->getDatesManager();
@@ -277,6 +280,8 @@ class ICalController extends Controller
             $myRooms[] = $currentContextItem->getItemID();
 
             $datesManager->setContextArrayLimit($myRooms);
+
+            $datesManager->setCalendarIdLimit([$calendarId]);
         }
 
         if (!$export) {
