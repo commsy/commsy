@@ -262,29 +262,18 @@ class SettingsController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.extension_settings');
         $roomData = $transformer->transform($roomItem);
 
-        // get the configured LiipThemeBundle themes
-        $mediaWikiUrl = $this->container->getParameter('commsy.mediawiki.url');
-
-        $form = $this->createForm(ExtensionSettingsType::class, $roomData, array(
+        $form = $this->createForm(ExtensionSettingsType::class, $roomData, [
             'roomId' => $roomId,
-        ));
+        ]);
         
         $form->handleRequest($request);
         if ($form->isValid()) {
-
-            $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
-            //$roomItem->save();
-
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
-            //return $this->redirectToRoute('commsy_settings_extensions', ["roomId" => $roomId]);            
+            $transformer->applyTransformation($roomItem, $form->getData());
         }
 
-        return array(
-            'form' => $form->createView()
-        );
+        return [
+            'form' => $form->createView(),
+        ];
     }
 
     /**

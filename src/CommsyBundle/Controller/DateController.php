@@ -34,7 +34,7 @@ class DateController extends Controller
      * @Route("/room/{roomId}/date/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date_rev', Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'time', Request $request)
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
@@ -86,12 +86,12 @@ class DateController extends Controller
             }
         }
 
-        return array(
+        return [
             'roomId' => $roomId,
             'dates' => $dates,
             'readerList' => $readerList,
             'allowedActions' => $allowedActions,
-        );
+        ];
     }
 
     /**
@@ -353,7 +353,10 @@ class DateController extends Controller
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
-        $filterForm = $this->createForm(DateFilterType::class, $this->defaultFilterValues, array(
+        $filterValues = $this->defaultFilterValues;
+        unset($filterValues['hide-past-dates']);
+
+        $filterForm = $this->createForm(DateFilterType::class, $filterValues, array(
             'action' => $this->generateUrl('commsy_date_calendar', array('roomId' => $roomId)),
             'hasHashtags' => $roomItem->withBuzzwords(),
             'hasCategories' => $roomItem->withTags(),
@@ -665,7 +668,7 @@ class DateController extends Controller
             }
             
             $events[] = array('itemId' => $date->getItemId(),
-                              'title' => $date->getTitle(),
+                              'title' => html_entity_decode($date->getTitle()),
                               'start' => $start,
                               'end' => $end,
                               'color' => $color,

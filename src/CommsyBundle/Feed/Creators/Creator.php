@@ -17,7 +17,7 @@ abstract class Creator
     public function createItem($item)
     {
         if ($item->isDeleted() || $item->isNotActivated()) {
-            throw new \RuntimeException("item is deleted or not active");
+            return null;
         }
 
         $feedItem = new Item();

@@ -26,6 +26,11 @@ case "$1" in
         echo "Please close your terminal session and execute ./dev.sh start"
         ;;
 
+    build)
+        echo "Building CommSy container";
+        docker-compose -f docker-compose.yml -f docker-compose-dev.yml build
+        ;;
+
     start)
         if ! gem list docker-sync -i > /dev/null ; then
             echo "Installing docker-sync gem"

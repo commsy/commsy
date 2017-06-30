@@ -179,6 +179,10 @@ class CommsyFeedContentProvider implements FeedContentProviderInterface
         $itemManager->resetLimits();
 
         $itemManager->setIntervalLimit(10);
+
+        // Using the activated entries filter here seems not sufficient, since future modification dates
+        // are only stored in their corresponding type tables.
+        // This will require later filtering for now.
         $itemManager->showNoNotActivatedEntries();
 
         if ($contextItem->isPrivateRoom()) {

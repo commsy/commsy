@@ -308,7 +308,7 @@
 
                 {# preview #}
                 <div>
-                    {{ content|raw }}
+                    {{ content|decodeHtmlEntity }}
                 </div>
 
             </div>
@@ -343,7 +343,7 @@
                     <div>
                     {% if item.itemType != 'section' %}
                         <div>
-                            <h1 class="uk-article-title">{{ item.title|raw }}</h1>
+                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
                             {% if item.itemType == 'material' %}
                                 {% set material = item %}
                                 <div top-padding=0>
@@ -364,7 +364,7 @@
                        
                     {% else %}
                         <div>
-                            <h1 class="uk-article-title">{{ item.title|raw }}</h1>
+                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
                         </div>
                 {% endif %}
                 </div>
@@ -483,23 +483,23 @@
     {% for child in roomTags %}
     
         {% set childTitle %}
-            <div><span class="uk-text-muted">{{ child.title }}</span></div>
+            <div><span class="uk-text-muted">{{ child.title|decodeHtmlEntity }}</span></div>
         {% endset %}
         {% for tag in tags %}
             {% if tag.id == child.item_id %}
                 {% set childTitle %}
-                    <div><span class="uk-text-bold">{{ child.title }}</span></div>
+                    <div><span class="uk-text-bold">{{ child.title|decodeHtmlEntity }}</span></div>
                 {% endset %}
             {% endif %}
         {% endfor %}
     
         {% if child.children is defined and not child.children is empty %}
-            <li id="tag_{{ child.title }}" data-jstree='{"opened": {{ opened }}}'>
+            <li id="tag_{{ child.title|decodeHtmlEntity }}" data-jstree='{"opened": {{ opened }}}'>
                 {{ childTitle }}
                 {{ _self.nestedTagList(tags, child.children, level+1) }}
             </li>
         {% else %}
-            <li id="tag_{{ child.title }}" data-jstree='{"opened": {{ opened }}}'>
+            <li id="tag_{{ child.title|decodeHtmlEntity }}" data-jstree='{"opened": {{ opened }}}'>
                 {{ childTitle }}
             </li>
         {% endif %}
@@ -535,7 +535,7 @@
 
                 {# full content #}
                 <div>
-                    {{ content|raw }}
+                    {{ content|decodeHtmlEntity }}
                 </div>
 
             </div>
@@ -544,7 +544,7 @@
                 
                 {% if not content is empty %}
                     <div>
-                        {{ content|raw }}
+                        {{ content|decodeHtmlEntity }}
                     </div>
                 {% else %}
                     <div>
@@ -647,7 +647,7 @@
                         </div>
                     </div>
 
-                    {{ content|raw }}
+                    {{ content|decodeHtmlEntity }}
                 </div>
 
             </div>
@@ -755,7 +755,7 @@
                 <div >        
                     <div class="uk-grid">
                         <div class="uk-width-1-1">
-                            <h1 class="uk-article-title">{{ item.title|raw }} {{ item.fullname|raw }}</h1>
+                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }} {{ item.fullname|decodeHtmlEntity }}</h1>
                         </div>
                     </div>
                 </div>        

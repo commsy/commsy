@@ -8,7 +8,8 @@
             path: '',
             settings: {
                 allow: '*.*'
-            }
+            },
+            errorMessage: '',
         },
 
         boot: function() {
@@ -44,45 +45,63 @@
                     $bar.css("width", percent+"%").text(percent+"%");
                 },
 
-                allcomplete: function(response) {
+                allcomplete: function(response, xhr) {
+                    if (xhr.status != 200) {
+                        this.onError();
+                    } else {
+                        $bar.css("width", "100%").text("100%");
+
+                        setTimeout(function(){
+                            $progressbar.addClass("uk-hidden");
+                        }, 250);
+
+                        let responseData = JSON.parse(response);
+
+                        if (responseData['userImage']) {
+                            $('#profile_form_user_image').attr('src', responseData['userImage'] + '?' + Math.random());
+                        } else if (responseData['fileIds']) {
+                            let prototypeNode = $('form[name="upload"] div[data-prototype]');
+                            let prototype = prototypeNode.data('prototype');
+
+                            let index = prototypeNode.find(':input[type="checkbox"]').length;
+
+                            for (let key in responseData['fileIds']) {
+
+                                let indexedPrototype = prototype.replace(/__name__/g, index);
+
+                                let prototypeInputNode = $(indexedPrototype).find(':input');
+                                prototypeInputNode.attr('checked', 'checked');
+                                prototypeInputNode.val(key);
+
+                                let labelNode = $('<label class="uk-form-label"></label>')
+                                    .attr('for', 'upload_files_' + index + '_checked')
+                                    .html(responseData['fileIds'][key]);
+
+                                index++;
+
+                                let formControlNode = $('<div class="uk-form-controls"></div>')
+                                    .append(prototypeInputNode);
+
+                                prototypeNode
+                                    .append(formControlNode)
+                                    .append(labelNode);
+                            }
+                        }
+                    }
+                },
+
+                error: function(event) {
+                    this.onError();
+                },
+
+                onError: function() {
                     $bar.css("width", "100%").text("100%");
 
                     setTimeout(function(){
                         $progressbar.addClass("uk-hidden");
                     }, 250);
                     
-                    let responseData = JSON.parse(response);
-
-                    if (responseData['userImage']) {
-                        $('#profile_form_user_image').attr('src', responseData['userImage'] + '?' + Math.random());
-                    } else if (responseData['fileIds']) {
-                        let prototypeNode = $('form[name="upload"] div[data-prototype]');
-                        let prototype = prototypeNode.data('prototype');
-
-                        let index = prototypeNode.find(':input[type="checkbox"]').length;
-
-                        for (let key in responseData['fileIds']) {
-
-                            let indexedPrototype = prototype.replace(/__name__/g, index);
-
-                            let prototypeInputNode = $(indexedPrototype).find(':input');
-                            prototypeInputNode.attr('checked', 'checked');
-                            prototypeInputNode.val(key);
-
-                            let labelNode = $('<label class="uk-form-label"></label>')
-                                .attr('for', 'upload_files_' + index + '_checked')
-                                .html(responseData['fileIds'][key]);
-
-                            index++;
-
-                            let formControlNode = $('<div class="uk-form-controls"></div>')
-                                .append(prototypeInputNode);
-
-                            prototypeNode
-                                .append(formControlNode)
-                                .append(labelNode);
-                        }
-                    }
+                    UIkit.notify($this.options.errorMessage, 'danger');
                 }
             };
 

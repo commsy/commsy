@@ -68,7 +68,7 @@
                                 </div>
                                 <div class="uk-width-2-5 uk-text-left uk-margin-right">
                                 {% if item.isGroupRoomActivated %}
-                                    <span class="uk-text-bold">{{item.groupRoomItem.Title}}</span><br/>
+                                    <span class="uk-text-bold">{{item.groupRoomItem.title|decodeHtmlEntity}}</span><br/>
                                     <p>
                                     {{'grouproom description text'|trans({},'group') }}    
                                     </p>

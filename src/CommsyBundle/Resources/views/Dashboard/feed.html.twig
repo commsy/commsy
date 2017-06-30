@@ -28,11 +28,11 @@
                     </div>
                 </div>
                 <div>
-                    <div class="uk-comment-meta"><a href="{{ app.request.baseURL }}/room/{{ feedItem.contextItem.itemId }}">{{feedItem.contextItem.title}}</a></div>
+                    <div class="uk-comment-meta"><a href="{{ app.request.baseURL }}/room/{{ feedItem.contextItem.itemId }}">{{feedItem.contextItem.title|decodeHtmlEntity}}</a></div>
                     <h4 class="uk-comment-title">
                         <a href="{{ app.request.baseURL }}/room/{{ feedItem.contextItem.itemId }}/{{ feedItem.type }}/{{ feedItem.itemID }}">
                         {% if feedItem.itemType != 'user' %}
-                            {{ feedItem.title }}
+                            {{ feedItem.title|decodeHtmlEntity }}
                         {% else %}
                             {{ feedItem.getFullName }}
                         {% endif %}

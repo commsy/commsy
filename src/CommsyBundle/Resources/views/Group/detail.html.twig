@@ -45,9 +45,9 @@
                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
                                        {% for tempGroup in groupList %}
                                             {% if tempGroup.itemId != group.itemId %}
-                                                <li><a href="{{ path('commsy_group_detail', {'roomId': roomId, 'itemId': tempGroup.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempGroup.title|raw }}">{{ tempGroup.title|raw|truncate(25) }}</a></li>
+                                                <li><a href="{{ path('commsy_group_detail', {'roomId': roomId, 'itemId': tempGroup.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempGroup.title|decodeHtmlEntity }}">{{ tempGroup.title|decodeHtmlEntity|truncate(25) }}</a></li>
                                             {% else %}
-                                                <li><a href="#" data-uk-tooltip="{delay:'250'}" title="{{ tempGroup.title|raw }}" class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempGroup.title|raw|truncate(20)  }}</a></li>
+                                                <li><a href="#" data-uk-tooltip="{delay:'250'}" title="{{ tempGroup.title|decodeHtmlEntity }}" class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempGroup.title|decodeHtmlEntity|truncate(20)  }}</a></li>
                                             {% endif %}
                                         {% endfor %}
                                     </ul>
@@ -91,7 +91,7 @@
                                         {% endif %}
                                             <a href="#" data-cs-action-join="{
                                                 'url': '{{ path('commsy_group_join', {'roomId': roomId, 'itemId': group.itemId}) }}',
-                                                'successMessage': '<i class=\'uk-icon-medium uk-icon-user-plus\'></i> {{ 'Joined group %s'|trans|format(group.title) }}',
+                                                'successMessage': '<i class=\'uk-icon-medium uk-icon-user-plus\'></i> {{ 'Joined group %s'|trans|format(group.title|decodeHtmlEntity) }}',
                                                 'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}',
                                                 'groupId': [ {{ group.itemId }} ]
                                             }">
@@ -107,7 +107,7 @@
                                         {% endif %}
                                             <a href="#" data-cs-action-leave="{
                                                 'url': '{{ path('commsy_group_leave', {'roomId': roomId, 'itemId': group.itemId}) }}',
-                                                'successMessage': '<i class=\'uk-icon-medium uk-icon-user-times\'></i> {{ 'Left group %s'|trans|format(group.title) }}',
+                                                'successMessage': '<i class=\'uk-icon-medium uk-icon-user-times\'></i> {{ 'Left group %s'|trans|format(group.title|decodeHtmlEntity) }}',
                                                 'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}',
                                                 'groupId': [ {{ group.itemId }} ]
                                             }">

@@ -106,6 +106,7 @@ class CategoryController extends Controller
         $category = new Tag();
         if ($categoryId) {
             $category = $repository->findOneByItemId($categoryId);
+            $category->setTitle(html_entity_decode($category->getTitle()));
         }
 
         $createNewForm = $this->createForm(Types\CategoryNewType::class, $category);

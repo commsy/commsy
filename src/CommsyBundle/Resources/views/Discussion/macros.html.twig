@@ -18,7 +18,7 @@
                     <div class="uk-grid">
                     {% if item.itemType != 'discarticle' %}
                        <div class="uk-width-8-10">
-                            <h1 class="uk-article-title">{{ item.title|raw }}</h1>
+                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
                             {% if item.itemType == 'discussion' %}
                                 {% set discussion = item %}
                             {% endif %}
@@ -30,7 +30,7 @@
                         {% endif %}
                     {% else %}
                         <div class="uk-width-1-1">
-                            <h1 class="uk-article-title">{{ item.title|raw }}</h1>
+                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
                         </div>
                     {% endif %}
                     </div>
@@ -178,7 +178,7 @@
                 <div class="uk-width-9-10 uk-margin-small-bottom" >        
                     <div class="uk-grid">
                         <div class="uk-width-8-10">
-                            <h1 class="uk-article-title">{{ item.title|raw }}</h1>
+                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
                         </div>
                         {%if showRating %}
                             <div class="uk-width-2-10  uk-text-right uk-padding-remove">
@@ -328,7 +328,7 @@
 
     {% for child in articles %}
         <li id="article_{{ child.item.itemId }}" data-jstree='{"opened": {{ opened }}}'>
-            <a href="#discarticle{{ child.item.itemId }}">{{- child.item.title -}}</a>
+            <a href="#discarticle{{ child.item.itemId }}">{{- child.item.title|decodeHtmlEntity -}}</a>
 
         {% if child.children is defined %}
             <ul>

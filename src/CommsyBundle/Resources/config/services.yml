@@ -330,6 +330,7 @@ services:
 
     commsy.form.type.upload:
         class: CommsyBundle\Form\Type\UploadType
+        arguments: ['@translator']
         tags:
             - { name: form.type }
 
@@ -435,6 +436,12 @@ services:
 
     twig.extension.log:
         class: CommsyBundle\Twig\Extension\LogarithmExtension
+        public: false
+        tags:
+            - { name: twig.extension }
+
+    twig.extension.decode_html_entity:
+        class: CommsyBundle\Twig\Extension\DecodeHtmlEntityExtension
         public: false
         tags:
             - { name: twig.extension }

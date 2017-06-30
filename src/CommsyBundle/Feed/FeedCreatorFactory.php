@@ -46,6 +46,10 @@ class FeedCreatorFactory
         $type = $item['type'];
         $commsyItem = $this->itemService->getTypedItem($item['item_id']);
 
+        if (!$commsyItem) {
+            return;
+        }
+
         if ($commsyItem->getType() === 'label') {
             $type = $commsyItem->getLabelType();
             if (in_array($type, ['buzzword'])) {

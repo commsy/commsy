@@ -37,7 +37,7 @@
                 <h4 class="uk-comment-title">
                     <a href="{{ path(result.routeName, {'roomId': entity.contextId, 'itemId': entity.itemId}) }}">
                         {% if entity.title is defined %}
-                            {{ entity.title }}
+                            {{ entity.title|decodeHtmlEntity }}
                         {% endif %}
 
                         {% if entity.firstname is defined and entity.lastname is defined %}

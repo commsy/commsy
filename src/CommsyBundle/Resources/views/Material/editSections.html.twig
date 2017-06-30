@@ -29,7 +29,7 @@
                             {% set counter = 0 %}
                             {% for sectionId, sectionName in form.sections %}
                                 <li class="uk-panel uk-panel-box uk-sortable-handle" id="section_{{sectionId}}">
-                                    <a href="#section{{ sectionId }}" data-uk-tooltip title="{{ sectionName.vars.data|raw }}">{{ sectionName.vars.data|raw }}</a> {{ macros.fileListShort(sectionList[sectionList|keys[counter]]) }}
+                                    <a href="#section{{ sectionId }}" data-uk-tooltip title="{{ sectionName.vars.data|decodeHtmlEntity }}">{{ sectionName.vars.data|raw }}</a> {{ macros.fileListShort(sectionList[sectionList|keys[counter]]) }}
                                 </li>
                                 {% set counter = counter + 1  %}
                             {% endfor %}

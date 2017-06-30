@@ -4,7 +4,6 @@ namespace CommsyBundle\Controller;
 
 use Eluceo\iCal\Component\Calendar;
 use Eluceo\iCal\Component\Event;
-use Eluceo\iCal\Property\Event\Attendees;
 use Eluceo\iCal\Property\Event\Organizer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -62,17 +61,15 @@ class ICalController extends Controller
 
         $calendar = $this->createCalendar($currentContextItem, $export);
 
+        // prepare response
         $response = new Response($calendar->render());
         $response->headers->set('Content-Type', 'text/calendar');
         $response->setCharset('utf-8');
-
-        if ($export) {
-            $disposition = $response->headers->makeDisposition(
-                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                $contextId . '.ics'
-            );
-            $response->headers->set('Content-Disposition', $disposition);
-        }
+        $disposition = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $contextId . '.ics'
+        );
+        $response->headers->set('Content-Disposition', $disposition);
 
         return $response;
     }
@@ -149,7 +146,9 @@ class ICalController extends Controller
             $email = $creatorItem->getEmail();
 
             if (!empty($fullName) && !empty($email)) {
-                $event->setOrganizer(new Organizer($item->getCreatorItem()->getEmail()));
+                $event->setOrganizer(new Organizer("MAILTO:$email", [
+                    'CN' => $fullName,
+                ]));
             }
 
             // attendee
@@ -158,8 +157,14 @@ class ICalController extends Controller
                 $userItem = $userList->getFirst();
                 while ($userItem) {
                     if ($userItem->getItemID() == $userId) {
+                        $email = $userItem->getEmail();
+                        $fullName = $userItem->getFullName();
 
-                        $event->addAttendee($userItem->getEmail());
+                        if (!empty($email) && !empty($fullName)) {
+                            $event->addAttendee("MAILTO:$email", [
+                                'CN' => $fullName,
+                            ]);
+                        }
                     }
 
                     $userItem = $userList->getNext();
@@ -192,6 +197,9 @@ class ICalController extends Controller
             $startTime = new \DateTime($item->getDateTime_start());
             $endTime = new \DateTime($item->getDateTime_end());
 
+            $startTime->setTimezone(new \DateTimeZone('UTC'));
+            $endTime->setTimezone(new \DateTimeZone('UTC'));
+
             if ($startTime && $endTime) {
                 // Dates with equal start and end date or no start and end time are all day events
                 if ($startTime == $endTime || (empty($item->getStartingTime()) && empty($item->getEndingTime()))) {
@@ -208,8 +216,7 @@ class ICalController extends Controller
                     ->setDtStart($startTime)
                     ->setDtEnd($endTime)
                     ->setDescription(html_entity_decode(strip_tags($item->getDescription()), ENT_NOQUOTES, 'UTF-8'))
-                    ->setStatus(Event::STATUS_CONFIRMED)
-                    ->setUseTimezone(true);
+                    ->setStatus(Event::STATUS_CONFIRMED);
             }
 
             $calendar->addComponent($event);

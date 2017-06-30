@@ -56,7 +56,7 @@
                                    {% for group in linkedGroups %}
 
                                    <div>
-                                       <a>{{ group.title }} </a>
+                                       <a>{{ group.title|decodeHtmlEntity }} </a>
                                        ({{group.getCountMemberItemList}} &nbsp{{'members'|trans({}) }})
                                     </div>
                                     <br>

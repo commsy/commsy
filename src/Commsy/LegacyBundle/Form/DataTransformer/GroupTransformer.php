@@ -24,7 +24,7 @@ class GroupTransformer implements DataTransformerInterface
         $groupData = array();
 
         if ($groupItem) {
-            $groupData['title'] = $groupItem->getTitle();
+            $groupData['title'] = html_entity_decode($groupItem->getTitle());
             $groupData['description'] = $groupItem->getDescription();
             $groupData['permission'] = $groupItem->isPrivateEditing();
             $groupData['activate'] = $groupItem->isGroupRoomActivated();

@@ -170,7 +170,9 @@ class cs_log_manager extends cs_manager {
          $query .= ' AND request LIKE "%'.encode(AS_DB,$this->_limit_request).'%"';
       }
 
-      $query .= ' ORDER BY timestamp ASC';
+      if ($mode != 'count' && $mode != 'count_user_distinction') {
+          $query .= ' ORDER BY timestamp ASC';
+      }
 
       if (isset($this->_limit_from) and isset($this->_limit_range)) {
          if ( empty($this->_limit_form) ) {
