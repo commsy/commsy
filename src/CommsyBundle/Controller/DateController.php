@@ -282,7 +282,7 @@ class DateController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('CommsyBundle:Calendars');
-        $calendars = $repository->findBy(array('context_id' => $roomId, 'external_url' => ''));
+        $calendars = $repository->findBy(array('context_id' => $roomId, 'external_url' => array('', NULL)));
 
         return [
             'roomId' => $roomId,
