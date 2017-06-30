@@ -320,26 +320,25 @@ class ProfileController extends Controller
 
             global $c_annonymous_account_array;
 
+            $formData = $form->getData();
+
             $currentUser = $legacyEnvironment->getCurrentUserItem();
-            if ( !empty($c_annonymous_account_array[mb_strtolower($currentUser->getUserID(), 'UTF-8') . '_' . $currentUser->getAuthSource()]) && $currentUser->isOnlyReadUser() )
+            if ( isset($c_annonymous_account_array) && !empty($c_annonymous_account_array[mb_strtolower($currentUser->getUserID(), 'UTF-8') . '_' . $currentUser->getAuthSource()]) && $currentUser->isOnlyReadUser() )
             {
-                // TODO: replace with CommSy9 error message
-                //$this->_popup_controller->setErrorReturn("1014", "anonymous account");
-                $form->get('combineUserId')->addError(new Error("1014: anonymous account"));
-                exit;
+                throw new \Exception("1014: anonymous account");
             }
             else
             {
-                if ( $currentUser->getUserID() == $form_data['merge_user_id'] && ( empty($form_data['auth_source']) || $currentUser->getAuthSource() == $form_data['auth_source'] ) )
+                if ( $currentUser->getUserID() == $formData['combineUserId'] && 
+                     isset($formData['auth_source']) &&
+                     (empty($formData['auth_source']) || $currentUser->getAuthSource() == $formData['auth_source'] ) )
                 {
-                    // TODO: replace with CommSy9 error message
-                    //$this->_popup_controller->setErrorReturn("1015", "invalid account");
-                    $form->get('combineUserId')->addError(new Error("1015: invalid account"));
+                    throw new \Exception("1015: invalid account");
                 }
                 else
                 {
                     $user_manager = $legacyEnvironment->getUserManager();
-                    $user_manager->setUserIDLimitBinary($form_data['merge_user_id']);
+                    $user_manager->setUserIDLimitBinary($formData['combineUserId']);
 
                     $user_manager->select();
                     $user = $user_manager->get();
@@ -348,32 +347,26 @@ class ProfileController extends Controller
                     $current_user = $legacyEnvironment->getCurrentUserItem();
 
                     if(!empty($first_user)){
-                        if(empty($form_data['auth_source'])){
+                        if(!isset($formData['auth_source']) || empty($formData['auth_source'])) {
                             $authManager = $authentication->getAuthManager($current_user->getAuthSource());
                         } else {
-                            $authManager = $authentication->getAuthManager($form_data['auth_source']);
+                            $authManager = $authentication->getAuthManager($formData['auth_source']);
                         }
-                        if ( !$authManager->checkAccount($form_data['merge_user_id'], $form_data['merge_user_password']) )
+                        if ( !$authManager->checkAccount($formData['combineUserId'], $formData['combinePassword']) )
                         {
-                            // TODO: replace with CommSy9 error message
-                            //$this->_popup_controller->setErrorReturn("1016", "authentication error");
-                            $form->get('combineUserId')->addError(new Error("1016: authentication error"));
-                            exit;
+                            throw new \Exception("1016: authentication error");
                         }
                     } else {
-                        // TODO: replace with CommSy9 error message
-                        //$this->_popup_controller->setErrorReturn("1015", "invalid account");
-                        $form->get('combineUserId')->addError(new Error("1015: invalid account"));
-                        exit;
+                        throw new \Exception("1015: invalid account");
                     }
                 }
             }
 
             $currentUser = $legacyEnvironment->getCurrentUserItem();
 
-            if ( isset($form_data['auth_source']) )
+            if ( isset($formData['auth_source']) )
             {
-                $authSourceOld = $form_data['auth_source'];
+                $authSourceOld = $formData['auth_source'];
             }
             else
             {
@@ -383,7 +376,7 @@ class ProfileController extends Controller
             ini_set('display_errors', 'on');
             error_reporting(E_ALL);
 
-            $authentication->mergeAccount($currentUser->getUserID(), $currentUser->getAuthSource(), $form_data['merge_user_id'], $authSourceOld);
+            $authentication->mergeAccount($currentUser->getUserID(), $currentUser->getAuthSource(), $formData['combineUserId'], $authSourceOld);
             // ############
 
 
