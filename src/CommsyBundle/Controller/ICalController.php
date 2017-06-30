@@ -60,7 +60,7 @@ class ICalController extends Controller
         $export = $request->query->has('export');
 
         // export
-        $calendarId = $request->query->has('calendar_id');
+        $calendarId = $request->query->get('calendar_id');
 
         $calendar = $this->createCalendar($currentContextItem, $export, $calendarId);
 
@@ -239,6 +239,8 @@ class ICalController extends Controller
 
         if (!$legacyEnvironment->inPrivateRoom()) {
             $datesManager->setContextLimit($currentContextItem->getItemID());
+
+            $datesManager->setCalendarArrayLimit([$calendarId]);
         } else {
             $dateSelStatus = $currentContextItem->getRubrikSelection('date', 'status');
             if (!empty($dateSelStatus)) {
@@ -281,7 +283,7 @@ class ICalController extends Controller
 
             $datesManager->setContextArrayLimit($myRooms);
 
-            $datesManager->setCalendarIdLimit([$calendarId]);
+            $datesManager->setCalendarArrayLimit([$calendarId]);
         }
 
         if (!$export) {
