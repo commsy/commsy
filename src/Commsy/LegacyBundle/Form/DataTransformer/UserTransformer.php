@@ -21,6 +21,14 @@ class UserTransformer implements DataTransformerInterface
      */
     public function transform($userItem)
     {
+
+        // get portal user if in room context
+        if ( !$this->legacyEnvironment->inPortal() ) {
+            $portalUser = $this->legacyEnvironment->getPortalUserItem();
+        } else {
+            $portalUser = $this->legacyEnvironment->getCurrentUserItem();
+        }
+
         $userData = array();
         if ($userItem) {
             $userData['userId'] = $userItem->getUserId();
@@ -50,6 +58,8 @@ class UserTransformer implements DataTransformerInterface
             }
 
             $userData['email'] = $userItem->getEmail();
+            $userData['emailAccount'] = $portalUser->getEmail();
+            $userData['emailChoice'] = $userItem->getEmail() == '' ? 'account' : 'roomProfile';
             $userData['hideEmailInThisRoom'] = !$userItem->isEmailVisible();
             $userData['phone'] = $userItem->getTelephone();
             $userData['mobile'] = $userItem->getCellularphone();

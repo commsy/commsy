@@ -50,6 +50,17 @@ class RoomProfileContactType extends AbstractType
                 'label'    => 'email',
                 'required' => true,
             ))
+            ->add('emailAccount', HiddenType::class)
+            ->add('emailRoom', HiddenType::class)
+            ->add('emailChoice', ChoiceType::class, array(
+                'label'    => false,
+                'expanded' => true,
+                'multiple' => false,
+                'choices'  => [
+                    'Account'      => 'account',
+                    'Room profile' => 'roomProfile',
+                ]
+            ))
             ->add('emailChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
                 'required' => false,
