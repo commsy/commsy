@@ -82,16 +82,18 @@ class DashboardController extends Controller
         $calendars = $repository->findBy(array('context_id' => $contextIds, 'external_url' => array('', NULL)));
 
         $itemService = $this->get('commsy_legacy.item_service');
+        $contextArray = [];
         foreach ($calendars as $index => $calendar) {
             $roomItemCalendar = $itemService->getTypedItem($calendar->getContextId());
-            $calendars[$index]->setTitle($calendar->getTitle().' ('.$roomItemCalendar->getTitle().')');
+            $contextArray[$calendar->getContextId()][] = $roomItemCalendar->getTitle();
         }
 
         return array(
             'roomItem' => $roomItem,
             'dashboardLayout' => $roomItem->getDashboardLayout(),
             'iCal' => $iCal,
-            'calendars' => $calendars
+            'calendars' => $calendars,
+            'contextArray' => $contextArray
         );
     }
 

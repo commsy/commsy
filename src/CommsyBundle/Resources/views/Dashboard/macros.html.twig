@@ -22,7 +22,7 @@
     {#</li>#}
 {% endmacro %}
 
-{% macro dashboardCalendar(roomItem, calendars, iCal) %}
+{% macro dashboardCalendar(roomItem, calendars, iCal, contextArray) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
     {#<li id="dashboard-calendar" class="uk-grid-margin">#}
@@ -43,15 +43,20 @@
                     <button class="uk-button">Export...</button>
                     <div class="uk-dropdown uk-dropdown-small">
                         <ul class="uk-nav uk-nav-dropdown">
-                            {% for calendar in calendars  %}
-                                <li>
-                                    <a href="{{ iCal.exportUrl }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
-                                        {{ macros.calendarIcon(calendar) }}
-                                        <span class="uk-vertical-align-middle">
-                                            {{ calendar.title|trans({}, 'date') }}
-                                        </span>
-                                    </a>
-                                </li>
+                            {% for key, context in contextArray  %}
+                                <span>{{ context[0] }}</span>
+                                {% for calendar in calendars  %}
+                                    {% if key == calendar.contextId %}
+                                        <li>
+                                            <a href="{{ iCal.exportUrl }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
+                                                {{ macros.calendarIcon(calendar) }}
+                                                <span class="uk-vertical-align-middle">
+                                                    {{ calendar.title|trans({}, 'date') }}
+                                                </span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
                             {% endfor %}
                         </ul>
                     </div>
@@ -61,19 +66,23 @@
                     <button class="uk-button">Abo...</button>
                     <div class="uk-dropdown uk-dropdown-small">
                         <ul class="uk-nav uk-nav-dropdown">
-                            {% for calendar in calendars  %}
-                                <li>
-                                    <a href="{{ iCal.aboUrl|replace({"http:" : "webcal:", "https:" : "webcal:"}) }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
-                                        {{ macros.calendarIcon(calendar) }}
-                                        <span class="uk-vertical-align-middle">
-                                            {{ calendar.title|trans({}, 'date') }}
-                                        </span>
-                                    </a>
-                                </li>
+                            {% for key, context in contextArray  %}
+                                <span>{{ context[0] }}</span>
+                                {% for calendar in calendars  %}
+                                    {% if key == calendar.contextId %}
+                                        <li>
+                                            <a href="{{ iCal.aboUrl|replace({"http:" : "webcal:", "https:" : "webcal:"}) }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
+                                                {{ macros.calendarIcon(calendar) }}
+                                                <span class="uk-vertical-align-middle">
+                                                    {{ calendar.title|trans({}, 'date') }}
+                                                </span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
                             {% endfor %}
                         </ul>
                     </div>
-
                 </div>
             </div>
         </div>
