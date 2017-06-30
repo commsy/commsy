@@ -27,6 +27,10 @@ class CalendarController extends Controller
 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
+        if (!$roomItem) {
+            $privateRoomManager = $legacyEnvironment->getPrivateRoomManager();
+            $roomItem = $privateRoomManager->getItem($roomId);
+        }
 
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('CommsyBundle:Calendars');

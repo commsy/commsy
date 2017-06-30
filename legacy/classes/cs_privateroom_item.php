@@ -2039,5 +2039,9 @@ class cs_privateroom_item extends cs_room_item {
       }
       return $retour;
    }
+
+   function usersCanSetExternalCalendarsUrl () {
+       return true;
+   }
 }
 ?>
