@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\FormError;
 
 use CommsyBundle\Entity\User;
 use CommsyBundle\Form\Type\Profile\RoomProfileGeneralType;
@@ -311,7 +312,70 @@ class ProfileController extends Controller
 
         $form->handleRequest($request);
         if ($form->isValid()) {
-            // TODO: merge accounts
+
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $authentication = $legacyEnvironment->getAuthenticationObject();
+
+            global $c_annonymous_account_array;
+
+            $formData = $form->getData();
+
+            $currentUser = $legacyEnvironment->getCurrentUserItem();
+            if ( isset($c_annonymous_account_array) && !empty($c_annonymous_account_array[mb_strtolower($currentUser->getUserID(), 'UTF-8') . '_' . $currentUser->getAuthSource()]) && $currentUser->isOnlyReadUser() )
+            {
+                throw new \Exception("1014: anonymous account");
+            }
+            else
+            {
+                if ( $currentUser->getUserID() == $formData['combineUserId'] && 
+                     isset($formData['auth_source']) &&
+                     (empty($formData['auth_source']) || $currentUser->getAuthSource() == $formData['auth_source'] ) )
+                {
+                    throw new \Exception("1015: invalid account");
+                }
+                else
+                {
+                    $user_manager = $legacyEnvironment->getUserManager();
+                    $user_manager->setUserIDLimitBinary($formData['combineUserId']);
+
+                    $user_manager->select();
+                    $user = $user_manager->get();
+                    $first_user = $user->getFirst();
+
+                    $current_user = $legacyEnvironment->getCurrentUserItem();
+
+                    if(!empty($first_user)){
+                        if(!isset($formData['auth_source']) || empty($formData['auth_source'])) {
+                            $authManager = $authentication->getAuthManager($current_user->getAuthSource());
+                        } else {
+                            $authManager = $authentication->getAuthManager($formData['auth_source']);
+                        }
+                        if ( !$authManager->checkAccount($formData['combineUserId'], $formData['combinePassword']) )
+                        {
+                            throw new \Exception("1016: authentication error");
+                        }
+                    } else {
+                        throw new \Exception("1015: invalid account");
+                    }
+                }
+            }
+
+            $currentUser = $legacyEnvironment->getCurrentUserItem();
+
+            if ( isset($formData['auth_source']) )
+            {
+                $authSourceOld = $formData['auth_source'];
+            }
+            else
+            {
+                $authSourceOld = $legacyEnvironment->getCurrentPortalItem()->getAuthDefault();
+            }
+
+            ini_set('display_errors', 'on');
+            error_reporting(E_ALL);
+
+            $authentication->mergeAccount($currentUser->getUserID(), $currentUser->getAuthSource(), $formData['combineUserId'], $authSourceOld);
+
             return $this->redirectToRoute('commsy_profile_mergeaccounts', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
