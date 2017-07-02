@@ -28,8 +28,65 @@
     {#<li id="dashboard-calendar" class="uk-grid-margin">#}
         <div class="uk-panel uk-panel-box uk-panel-box-primary">
             <div class="uk-panel-teaser cs-panel-teaser-primary">
-                <div class="uk-flex uk-flex-middle">
+                <div class="uk-flex uk-flex-middle uk-flex-space-between">
                     <div class="uk-text-large">{{ 'calendar'|trans({}, "date") }}</div>
+                    <div>
+                        <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+                            <button class="uk-button uk-button-mini cs-button-list">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
+                            <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
+                                <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left uk-nav-parent-icon" data-uk-nav>
+                                    {% if iCal.show %}
+                                        {# date export #}
+                                        <li class="uk-parent">
+                                            <a href="#">
+                                                <i class="uk-icon-small uk-icon-calendar-o uk-icon-justify uk-visible-large"></i> {{ 'export dates'|trans({}, 'date') }}
+                                            </a>
+                                            <ul class="uk-nav-sub uk-list-striped uk-text-left">
+                                                {% for key, context in contextArray  %}
+                                                    <span>{{ context[0] }}</span>
+                                                    {% for calendar in calendars  %}
+                                                        {% if key == calendar.contextId %}
+                                                            <li>
+                                                                <a href="{{ iCal.exportUrl }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
+                                                                    {{ macros.calendarIcon(calendar) }}
+                                                                    <span class="uk-vertical-align-middle">
+                                                                        {{ calendar.title|trans({}, 'date') }}
+                                                                    </span>
+                                                                </a>
+                                                            </li>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                        {# date abo#}
+                                        <li class="uk-parent">
+                                            <a href="#">
+                                                <i class="uk-icon-small uk-icon-calendar-plus-o uk-icon-justify uk-visible-large"></i> {{ 'abo dates'|trans({}, 'date') }}
+                                            </a>
+                                            <ul class="uk-nav-sub uk-list-striped uk-text-left">
+                                                {% for key, context in contextArray  %}
+                                                    <span>{{ context[0] }}</span>
+                                                    {% for calendar in calendars  %}
+                                                        {% if key == calendar.contextId %}
+                                                            <li>
+                                                                <a href="{{ iCal.aboUrl|replace({"http:" : "webcal:", "https:" : "webcal:"}) }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
+                                                                    {{ macros.calendarIcon(calendar) }}
+                                                                    <span class="uk-vertical-align-middle">
+                                                                        {{ calendar.title|trans({}, 'date') }}
+                                                                    </span>
+                                                                </a>
+                                                            </li>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                  </div>
             </div>
 
@@ -37,54 +94,6 @@
             'CommsyBundle:Date:calendardashboard',
             { 'roomId': roomItem.itemId }
             ))}}
-
-            <div class="uk-flex uk-flex-right uk-margin-top uk-margin-right">
-                <div class="uk-button-dropdown uk-margin-right" data-uk-dropdown>
-                    <button class="uk-button">Export...</button>
-                    <div class="uk-dropdown uk-dropdown-small">
-                        <ul class="uk-nav uk-nav-dropdown">
-                            {% for key, context in contextArray  %}
-                                <span>{{ context[0] }}</span>
-                                {% for calendar in calendars  %}
-                                    {% if key == calendar.contextId %}
-                                        <li>
-                                            <a href="{{ iCal.exportUrl }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
-                                                {{ macros.calendarIcon(calendar) }}
-                                                <span class="uk-vertical-align-middle">
-                                                    {{ calendar.title|trans({}, 'date') }}
-                                                </span>
-                                            </a>
-                                        </li>
-                                    {% endif %}
-                                {% endfor %}
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="uk-button-dropdown" data-uk-dropdown>
-                    <button class="uk-button">Abo...</button>
-                    <div class="uk-dropdown uk-dropdown-small">
-                        <ul class="uk-nav uk-nav-dropdown">
-                            {% for key, context in contextArray  %}
-                                <span>{{ context[0] }}</span>
-                                {% for calendar in calendars  %}
-                                    {% if key == calendar.contextId %}
-                                        <li>
-                                            <a href="{{ iCal.aboUrl|replace({"http:" : "webcal:", "https:" : "webcal:"}) }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
-                                                {{ macros.calendarIcon(calendar) }}
-                                                <span class="uk-vertical-align-middle">
-                                                    {{ calendar.title|trans({}, 'date') }}
-                                                </span>
-                                            </a>
-                                        </li>
-                                    {% endif %}
-                                {% endfor %}
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-            </div>
         </div>
     {#</li>#}
 {% endmacro %}
