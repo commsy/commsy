@@ -120,11 +120,11 @@ class ExternalCalendarsCommand extends ContainerAwareCommand
                     $date->setContextId($context->getItemId());
                     $date->setTitle($title);
                     $date->setDateTime_start($startDatetime->format('Ymd').'T'.$startDatetime->format('His'));
-                    $date->setStartingDay($startDatetime->format('d-m-Y'));
-                    $date->setStartingTime($startDatetime->format('H:i:s'));
+                    $date->setStartingDay($startDatetime->format('Y-m-d'));
+                    $date->setStartingTime($startDatetime->format('H:i'));
                     $date->setDateTime_end($endDatetime->format('Ymd').'T'.$endDatetime->format('His'));
-                    $date->setEndingDay($endDatetime->format('d-m-Y'));
-                    $date->setEndingTime($endDatetime->format('H:i:s'));
+                    $date->setEndingDay($endDatetime->format('Y-m-d'));
+                    $date->setEndingTime($endDatetime->format('H:i'));
                     $date->setCalendarId($calendar->getId());
                     $date->setPlace($location);
                     $date->setDescription($attendee);
