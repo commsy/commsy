@@ -92,17 +92,13 @@ class ExternalCalendarsCommand extends ContainerAwareCommand
                         $title = $event->SUMMARY->getValue();
                     }
 
-                    $start = '';
                     $startDatetime = '';
                     if ($event->DTSTART) {
-                        $start = $event->DTSTART->getValue();
                         $startDatetime = $event->DTSTART->getDateTime();
                     }
 
-                    $end = '';
                     $endDatetime = '';
                     if ($event->DTEND) {
-                        $end = $event->DTEND->getValue();
                         $endDatetime = $event->DTEND->getDateTime();
                     }
 
@@ -123,10 +119,10 @@ class ExternalCalendarsCommand extends ContainerAwareCommand
                     $date = $dateService->getNewDate();
                     $date->setContextId($context->getItemId());
                     $date->setTitle($title);
-                    $date->setDateTime_start($start);
+                    $date->setDateTime_start($startDatetime->format('Ymd').'T'.$startDatetime->format('His'));
                     $date->setStartingDay($startDatetime->format('d-m-Y'));
                     $date->setStartingTime($startDatetime->format('H:i:s'));
-                    $date->setDateTime_end($end);
+                    $date->setDateTime_end($endDatetime->format('Ymd').'T'.$endDatetime->format('His'));
                     $date->setEndingDay($endDatetime->format('d-m-Y'));
                     $date->setEndingTime($endDatetime->format('H:i:s'));
                     $date->setCalendarId($calendar->getId());
@@ -140,8 +136,8 @@ class ExternalCalendarsCommand extends ContainerAwareCommand
                         $date->setCreatorId($legacyEnvironment->getRootUserItemID());
                         $date->setModifierId($legacyEnvironment->getRootUserItemID());
                     }
-                    $date->setCreationDate($start);
-                    $date->setModificationDate($start);
+                    $date->setCreationDate($startDatetime->format('Ymd').'T'.$startDatetime->format('His'));
+                    $date->setModificationDate($startDatetime->format('Ymd').'T'.$startDatetime->format('His'));
                     $date->setChangeModificationOnSave(false);
                     $date->setExternal(true);
                     $date->save();
