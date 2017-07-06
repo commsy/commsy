@@ -107,13 +107,18 @@ class ExternalCalendarsCommand extends ContainerAwareCommand
                         $location = $event->LOCATION->getValue();
                     }
 
+                    $description = '';
+                    if ($event->DESCRIPTION) {
+                        $description = $event->DESCRIPTION->getValue();
+                    }
+
                     $attendee = '';
                     if ($event->ATTENDEE) {
                         $attendeeArray = array();
                         foreach ($event->ATTENDEE as $tempAttendee) {
-                            $attendeeArray[] = $event->ATTENDEE->getValue();
+                            $attendeeArray[] = str_ireplace('MAILTO:', '', $tempAttendee->getValue());
                         }
-                        $attendee = implode(', ', $attendeeArray);
+                        $attendee = implode("\n", $attendeeArray);
                     }
 
                     $date = $dateService->getNewDate();
@@ -127,7 +132,7 @@ class ExternalCalendarsCommand extends ContainerAwareCommand
                     $date->setEndingTime($endDatetime->format('H:i'));
                     $date->setCalendarId($calendar->getId());
                     $date->setPlace($location);
-                    $date->setDescription($attendee);
+                    $date->setDescription($description."\n\n".$attendee);
                     if ($calendar->getCreatorId()) {
                         $date->setCreatorId($calendar->getCreatorId());
                         $date->setModifierId($calendar->getCreatorId());
