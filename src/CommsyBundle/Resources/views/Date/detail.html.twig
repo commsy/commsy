@@ -133,16 +133,18 @@
                     <div id="description{{ date.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': date.contextId, 'itemId': date.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': date.contextId, 'itemId': date.itemId}) }}' }">
                         {{ macrosItem.itemDescription('description', date, true, date.description) }}
                     </div>
-            
-                    {# files #}
-                    <div id="files{{ date.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': date.contextId, 'itemId': date.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': date.contextId, 'itemId': date.itemId}) }}' }">
-                        {{ macrosItem.files(date) }}
-                    </div>
-        
-                    {# links #}
-                    <div id="links{{ date.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': date.contextId, 'itemId': date.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': date.contextId, 'itemId': date.itemId}) }}' }">
-                        {{ macrosItem.links(date,showHashtags,showCategories,roomCategories) }}
-                    </div>
+
+                    {% if not date.isExternal %}
+                        {# files #}
+                        <div id="files{{ date.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': date.contextId, 'itemId': date.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': date.contextId, 'itemId': date.itemId}) }}' }">
+                            {{ macrosItem.files(date) }}
+                        </div>
+
+                        {# links #}
+                        <div id="links{{ date.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': date.contextId, 'itemId': date.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': date.contextId, 'itemId': date.itemId}) }}' }">
+                            {{ macrosItem.links(date,showHashtags,showCategories,roomCategories) }}
+                        </div>
+                    {% endif %}
                 </article>
             </div>
 
@@ -199,9 +201,11 @@
                 <div id="cs-nav-quick" class="cs-nav-quick">
                     <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ date.itemId }}\']'}" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
                         <li><a href="#description{{ date.itemId }}">{{ 'entry description'|trans({})}}</a></li>
-                        <li><a href="#files{{ date.itemId }}">{{ 'files'|trans({})}}</a></li>
-                        <li><a href="#links{{ date.itemId }}">{{ 'links'|trans({})}}</a></li>
-                        <li><a href="#annotations{{ date.itemId }}">{{ 'annotations'|trans({})|capitalize }}</a></li>
+                        {% if not date.isExternal %}
+                            <li><a href="#files{{ date.itemId }}">{{ 'files'|trans({})}}</a></li>
+                            <li><a href="#links{{ date.itemId }}">{{ 'links'|trans({})}}</a></li>
+                            <li><a href="#annotations{{ date.itemId }}">{{ 'annotations'|trans({})|capitalize }}</a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
