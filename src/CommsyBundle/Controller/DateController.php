@@ -355,6 +355,7 @@ class DateController extends Controller
      */
     public function calendarAction($roomId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
@@ -385,11 +386,53 @@ class DateController extends Controller
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('date');
         }
 
+        // iCal
+        $iCal = [
+            'show' => false,
+            'aboUrl' => $this->generateUrl('commsy_ical_getcontent', [
+                'contextId' => $roomId,
+            ], UrlGeneratorInterface::ABSOLUTE_URL),
+            'exportUrl' => $this->generateUrl('commsy_ical_getcontent', [
+                'contextId' => $roomId,
+                'export' => true,
+            ], UrlGeneratorInterface::ABSOLUTE_URL),
+        ];
+
+        if ($roomItem->isOpenForGuests()) {
+            $iCal['show'] = true;
+        } else {
+            $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+
+            if ($currentUserItem->isUser()) {
+                $iCal['show'] = true;
+
+                $hashManager = $legacyEnvironment->getHashManager();
+                $iCalHash = $hashManager->getICalHashForUser($currentUserItem->getItemID());
+
+                $iCal['aboUrl'] = $this->generateUrl('commsy_ical_getcontent', [
+                    'contextId' => $roomId,
+                    'hid' => $iCalHash,
+                ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+                $iCal['exportUrl'] = $this->generateUrl('commsy_ical_getcontent', [
+                    'contextId' => $roomId,
+                    'hid' => $iCalHash,
+                    'export' => true,
+                ], UrlGeneratorInterface::ABSOLUTE_URL);
+            }
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('CommsyBundle:Calendars');
+        $calendars = $repository->findBy(array('context_id' => $roomId, 'external_url' => array('', NULL)));
+
         return [
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
             'module' => 'date',
             'usageInfo' => $usageInfo,
+            'iCal' => $iCal,
+            'calendars' => $calendars,
         ];
     }
     

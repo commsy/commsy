@@ -1,5 +1,6 @@
 {% extends 'CommsyBundle:Base:list.html.twig' %}
 {% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
 {% block content %}
 
@@ -35,7 +36,7 @@
                                 <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
                                     <button class="uk-button uk-button-mini cs-button-list">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
                                     <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
-                                        <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+                                        <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left uk-nav-parent-icon" data-uk-nav>
 
                                             {% if is_granted('ITEM_EDIT', 'NEW') %}
                                             <li>
@@ -51,6 +52,47 @@
                                                     <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                                                 </a>
                                             </li>
+
+                                            {% if iCal.show %}
+                                                {# date export #}
+                                                <li class="uk-parent">
+                                                    <a href="#">
+                                                        <i class="uk-icon-small uk-icon-calendar-o uk-icon-justify uk-visible-large"></i> {{ 'export dates'|trans({}, 'date') }}
+                                                    </a>
+                                                    <ul class="uk-nav-sub uk-list-striped uk-text-left">
+                                                        {% for calendar in calendars  %}
+                                                            <li>
+                                                                <a href="{{ iCal.exportUrl }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
+                                                                    {{ macros.calendarIcon(calendar) }}
+                                                                    <span class="uk-vertical-align-middle">
+                                                                        {{ calendar.title|trans({}, 'date') }}
+                                                                    </span>
+                                                                </a>
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </li>
+
+                                                {# date abo#}
+                                                <li class="uk-parent">
+                                                    <a href="#">
+                                                        <i class="uk-icon-small uk-icon-calendar-plus-o uk-icon-justify uk-visible-large"></i> {{ 'abo dates'|trans({}, 'date') }}
+                                                    </a>
+                                                    <ul class="uk-nav-sub uk-list-striped uk-text-left">
+                                                        {% for calendar in calendars  %}
+                                                            <li>
+                                                                <a href="{{ iCal.aboUrl|replace({"http:" : "webcal:", "https:" : "webcal:"}) }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
+                                                                    {{ macros.calendarIcon(calendar) }}
+                                                                    <span class="uk-vertical-align-middle">
+                                                                        {{ calendar.title|trans({}, 'date') }}
+                                                                    </span>
+                                                                </a>
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </li>
+                                            {% endif %}
+
                                         </ul>
                                     </div>
                                 </div>
