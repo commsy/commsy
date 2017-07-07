@@ -950,6 +950,12 @@ class MaterialController extends Controller
                     $item->setDraftStatus(0);
                     $item->saveAsItem();
                 }
+
+                if ($materialItem->getItemType() == CS_SECTION_TYPE) {
+                    $linkedMaterialItem = $materialService->getMaterial($materialItem->getlinkedItemID());
+                    $linkedMaterialItem->save();
+                }
+
                 return $this->redirectToRoute('commsy_material_save', array('roomId' => $roomId, 'itemId' => $itemId));
             }
         }
@@ -1194,6 +1200,9 @@ class MaterialController extends Controller
 
                 $section->save();
             }
+
+            $material = $materialService->getMaterial($section->getLinkedItemID());
+            $material->save();
 
             return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));
         }

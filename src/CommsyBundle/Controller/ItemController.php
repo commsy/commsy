@@ -75,6 +75,10 @@ class ItemController extends Controller
                 $item = $transformer->applyTransformation($item, $form->getData());
                 $item->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                 $item->save();
+                if ($item->getItemType() == CS_SECTION_TYPE) {
+                    $linkedMaterialItem = $itemService->getTypedItem($item->getlinkedItemID());
+                    $linkedMaterialItem->save();
+                }
             } else if ($saveType == 'saveAllDates') {
                 $dateService = $this->get('commsy_legacy.date_service');
                 $datesArray = $dateService->getRecurringDates($item->getContextId(), $item->getRecurrenceId());
