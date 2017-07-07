@@ -61,6 +61,9 @@ class ICalController extends Controller
 
         // export
         $calendarId = $request->query->get('calendar_id');
+        if (!$calendarId) {
+            $calendarId = $currentContextItem->getDefaultCalendarId();
+        }
 
         $calendar = $this->createCalendar($currentContextItem, $export, $calendarId);
 
