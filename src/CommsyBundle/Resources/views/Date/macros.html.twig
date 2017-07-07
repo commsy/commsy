@@ -186,14 +186,16 @@
                                         </span>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td class="uk-text-top">
-                                        <strong>{{ "participants"|trans({},'date') }}</strong>
-                                    </td>
-                                    <td class="uk-text-top">
-                                        {{ dateMacros.participants(item, item.participantsItemList.to_array) }}
-                                    </td>
-                                </tr>
+                                {% if not item.isExternal %}
+                                    <tr>
+                                        <td class="uk-text-top">
+                                            <strong>{{ "participants"|trans({},'date') }}</strong>
+                                        </td>
+                                        <td class="uk-text-top">
+                                            {{ dateMacros.participants(item, item.participantsItemList.to_array) }}
+                                        </td>
+                                    </tr>
+                                {% endif %}
                             </table>
                         </div>
 
