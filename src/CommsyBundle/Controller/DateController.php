@@ -367,6 +367,7 @@ class DateController extends Controller
         $roomItem = $roomService->getRoomItem($roomId);
 
         $filterValues = $this->defaultFilterValues;
+        unset($filterValues['hide-deactivated-entries']);
         unset($filterValues['hide-past-dates']);
 
         $filterForm = $this->createForm(DateFilterType::class, $filterValues, array(
@@ -384,7 +385,6 @@ class DateController extends Controller
             $dateService->setFilterConditions($filterForm);
         } else {
             $dateService->setPastFilter(false);
-            $dateService->hideDeactivatedEntries();
         }
 
         $usageInfo = false;
@@ -630,7 +630,6 @@ class DateController extends Controller
             }
         } else {
             $dateService->setPastFilter(true);
-            $dateService->hideDeactivatedEntries();
         }
 
         $listDates = $dateService->getCalendarEvents($roomId, $startDate, $endDate);
