@@ -65,7 +65,14 @@ class DateController extends Controller
             $dateService->hideDeactivatedEntries();
         }
 
-        // get material list from manager service 
+        // Correct sort from "date" to "time". Applies only in date rubric.
+        if ($sort == 'date') {
+            $sort = 'time';
+        } else if ($sort == 'date_rev') {
+            $sort = 'time_rev';
+        }
+
+        // get material list from manager service
         $dates = $dateService->getListDates($roomId, $max, $start, $sort);
 
         $readerService = $this->get('commsy_legacy.reader_service');
