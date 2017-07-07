@@ -622,7 +622,7 @@ class DateController extends Controller
                 $endDate = DateTime::createFromFormat('d.m.Y', $dateFilter['date-until']['date'])->format('Y-m-d 23:59:59');
             }
         } else {
-            $dateService->setPastFilter(false);
+            $dateService->setPastFilter(true);
             $dateService->hideDeactivatedEntries();
         }
 
