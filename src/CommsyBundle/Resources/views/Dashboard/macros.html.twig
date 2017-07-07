@@ -43,11 +43,11 @@
                                             </a>
                                             <ul class="uk-nav-sub uk-list-striped uk-text-left">
                                                 {% for key, context in contextArray  %}
-                                                    <span>{{ context[0] }}</span>
+                                                    <li><span class="uk-text-bold">{{ context[0] }}</span></li>
                                                     {% for calendar in calendars  %}
                                                         {% if key == calendar.contextId %}
                                                             <li>
-                                                                <a href="{{ iCal.exportUrl }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
+                                                                <a class="uk-margin-left" href="{{ iCal.exportUrl }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
                                                                     {{ macros.calendarIcon(calendar) }}
                                                                     <span class="uk-vertical-align-middle">
                                                                         {{ calendar.title|trans({}, 'date') }}
@@ -66,11 +66,11 @@
                                             </a>
                                             <ul class="uk-nav-sub uk-list-striped uk-text-left">
                                                 {% for key, context in contextArray  %}
-                                                    <span>{{ context[0] }}</span>
+                                                    <li><span class="uk-text-bold">{{ context[0] }}</span></li>
                                                     {% for calendar in calendars  %}
                                                         {% if key == calendar.contextId %}
                                                             <li>
-                                                                <a href="{{ iCal.aboUrl|replace({"http:" : "webcal:", "https:" : "webcal:"}) }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
+                                                                <a class="uk-margin-left" href="{{ iCal.aboUrl|replace({"http:" : "webcal:", "https:" : "webcal:"}) }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
                                                                     {{ macros.calendarIcon(calendar) }}
                                                                     <span class="uk-vertical-align-middle">
                                                                         {{ calendar.title|trans({}, 'date') }}
