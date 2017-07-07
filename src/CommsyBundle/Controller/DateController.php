@@ -662,6 +662,16 @@ class DateController extends Controller
             }
 
             $color = $date->getCalendar()->getColor();
+
+            $textColor = '#ffffff';
+            if ($date->getCalendar()->hasLightColor()) {
+                $textColor = '#444444';
+            }
+
+            $borderColor = $date->getCalendar()->getColor();
+            if ($date->getCalendar()->hasLightColor()) {
+                $borderColor = '#888888';
+            }
             
             $recurringDescription = '';
             if ($date->getRecurrencePattern() != '') {
@@ -713,6 +723,8 @@ class DateController extends Controller
                               'contextId' => '',
                               'contextTitle' => '',
                               'recurringDescription' => $recurringDescription,
+                              'textColor' => $textColor,
+                              'borderColor' => $borderColor,
                              );
         }
 
@@ -767,7 +779,17 @@ class DateController extends Controller
             }
 
             $color = $date->getCalendar()->getColor();
-            
+
+            $textColor = '#ffffff';
+            if ($date->getCalendar()->hasLightColor()) {
+                $textColor = '#444444';
+            }
+
+            $borderColor = $date->getCalendar()->getColor();
+            if ($date->getCalendar()->hasLightColor()) {
+                $borderColor = '#888888';
+            }
+
             $recurringDescription = '';
             if ($date->getRecurrencePattern() != '') {
                 $translator = $this->get('translator');
@@ -812,6 +834,7 @@ class DateController extends Controller
                               'start' => $start,
                               'end' => $end,
                               'color' => $color,
+                              'calendar' => $date->getCalendar()->getTitle(),
                               'editable' => $date->isPublic(),
                               'description' => $date->getDateDescription(),
                               'place' => $date->getPlace(),
@@ -819,6 +842,8 @@ class DateController extends Controller
                               'contextId' => $context->getItemId(),
                               'contextTitle' => $context->getTitle(),
                               'recurringDescription' => $recurringDescription,
+                              'textColor' => $textColor,
+                              'borderColor' => $borderColor,
                              );
         }
 
