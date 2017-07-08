@@ -8,7 +8,7 @@
             </trans-unit>
             <trans-unit id="error-upload">
                 <source>upload error</source>
-                <target>Upload fehlgeschlagen, bitte prüfen Sie die erlaubte Dateigröße.</target>
+                <target>Upload fehlgeschlagen, bitte verwenden Sie eine kleinere Datei.</target>
             </trans-unit>
         </body>
     </file>

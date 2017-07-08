@@ -8,7 +8,7 @@
             </trans-unit>
             <trans-unit id="error-upload">
                 <source>upload error</source>
-                <target>Upload failed, please check max upload file size.</target>
+                <target>Upload failed, please upload a smaller file.</target>
             </trans-unit>
         </body>
     </file>
