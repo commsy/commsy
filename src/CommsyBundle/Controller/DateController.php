@@ -1100,6 +1100,7 @@ class DateController extends Controller
                     $tempDate->setPublic((int)$dateItem->isPublic());
                     $tempDate->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                     $tempDate->setColor($dateItem->getColor());
+                    $tempDate->setCalendarId($dateItem->getCalendarId());
                     $tempDate->save();
                 }
             } else {
