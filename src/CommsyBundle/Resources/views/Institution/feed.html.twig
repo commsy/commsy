@@ -10,15 +10,9 @@
             {{ macros.statusColor(readerList, institution.itemId) }}
         <header class="uk-comment-header uk-flex">
             <div class="items-checkbox uk-margin-right uk-margin-top uk-hidden">
-
-                {% if is_granted('ITEM_EDIT', institution.itemId) %}
-                    <form class="uk-form">
-                        <input type="checkbox" value="{{ institution.itemId }}">
-                    </form>
-                {% else %}
-                    <i class="uk-icon-ban uk-icon-small red" data-itemid="{{ institution.itemId }}"></i>
-                {% endif %}
-                
+                <form class="uk-form">
+                    <input type="checkbox" value="{{ institution.itemId }}">
+                </form>
             </div>
             <div class="uk-margin-right uk-flex-item-none">
                     {% if institution.creator.isUser %}
