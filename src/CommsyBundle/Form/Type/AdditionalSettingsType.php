@@ -117,6 +117,17 @@ class AdditionalSettingsType extends AbstractType
                 ))
             )
             ->add(
+                $builder->create('rss', FormType::class, array('required' => false))
+                    ->add('status', ChoiceType::class, array(
+                        'expanded' => true,
+                        'multiple' => false,
+                        'choices' => array(
+                            'rss_enabled' => '1',
+                            'rss_disabled' => '2',
+                        ),
+                    ))
+            )
+            ->add(
                 $builder->create('template', FormType::class, array())
                 ->add('status', CheckboxType::class, array(
                     'required' => false,

@@ -154,29 +154,31 @@
                         }
                     });
                 } else {
-                    let form = $(this).closest('form');
-                    if (form[0].checkValidity()) {
-                        event.preventDefault();
+                    if (!$button.attr('name').includes('newHashtagAdd')) {
+                        let form = $(this).closest('form');
+                        if (form[0].checkValidity()) {
+                            event.preventDefault();
 
-                        let formData = form.serializeArray();
-                        formData.push({ name: this.name, value: this.value });
+                            let formData = form.serializeArray();
+                            formData.push({name: this.name, value: this.value});
 
-                        // submit the form manually
-                        $.ajax({
-                            url: $this.options.editUrl,
-                            type: "POST",
-                            data: formData
-                        })
-                        .done(function(result, statusText, xhrObject) {
-                            let $result = $(result);
+                            // submit the form manually
+                            $.ajax({
+                                url: $this.options.editUrl,
+                                type: "POST",
+                                data: formData
+                            })
+                                .done(function (result, statusText, xhrObject) {
+                                    let $result = $(result);
 
-                            if ($result.find('ul.form-errors').length) {
-                                article.html($result);
-                                $this.handleFormSubmit(article);
-                            } else {
-                                window.location.reload(true);
-                            }
-                        });
+                                    if ($result.find('ul.form-errors').length) {
+                                        article.html($result);
+                                        $this.handleFormSubmit(article);
+                                    } else {
+                                        window.location.reload(true);
+                                    }
+                                });
+                        }
                     }
                 }
             });

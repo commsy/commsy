@@ -672,6 +672,14 @@
                 <source>users_can_set_external_calendars_url</source>
                 <target>User can set external urls on calendars</target>
             </trans-unit>
+            <trans-unit id="rss_enabled">
+                <source>rss_enabled</source>
+                <target>switch on</target>
+            </trans-unit>
+            <trans-unit id="rss_disabled">
+                <source>rss_disabled</source>
+                <target>switch off</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

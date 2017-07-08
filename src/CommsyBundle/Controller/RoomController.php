@@ -110,7 +110,9 @@ class RoomController extends Controller
         if (!$roomItem->isLocked() && !$roomItem->isClosed()) {
             $currentUserItem = $legacyEnvironment->getCurrentUserItem();
 
-            $rss['show'] = true;
+            if ($roomItem->isRSSOn()) {
+                $rss['show'] = true;
+            }
 
             if ($roomItem->isWikiEnabled()) {
                 $wiki['show'] = true;

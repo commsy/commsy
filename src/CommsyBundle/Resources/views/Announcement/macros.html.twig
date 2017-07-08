@@ -55,7 +55,11 @@
                                                 {% endif %}
                                             </div>
                                             <div class="uk-margin-right">
-                                                {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                {% if not '9999-00-00' in item.getModificationDate %}
+                                                    {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                {% else %}
+                                                    {{ 'last changed'|trans({})|capitalize }}: {{item.creationDate|date("d.m.Y H:i")}}<br/>
+                                                {% endif %}
                                                 {{ 'changed by'|trans({})|capitalize }}: {{item.modificatorItem.Fullname}}<br/>
                                                 {{ 'valid until'|trans({}) }}: {{item.secondDateTime|date("d.m.Y H:i")}}
                                             </div>

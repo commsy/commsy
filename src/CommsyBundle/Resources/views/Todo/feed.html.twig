@@ -32,7 +32,11 @@
                     {% if todo.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                         {{ 'today'|trans({})|capitalize }}, {{todo.getModificationDate|date("H:i")}}
                     {% else %}
-                        {{todo.getModificationDate|date("d.m.Y")}}
+                        {% if not '9999-00-00' in todo.getModificationDate %}
+                            {{todo.getModificationDate|date("d.m.Y")}}
+                        {% else %}
+                            {{todo.getCreationDate|date("d.m.Y")}}
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>

@@ -215,6 +215,11 @@ class UploadController extends Controller
                 $item->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                 $item->save();
 
+                if ($item->getItemType() == CS_SECTION_TYPE) {
+                    $linkedMaterialItem = $itemService->getTypedItem($item->getlinkedItemID());
+                    $linkedMaterialItem->save();
+                }
+
                 // delete unchecked files
                 foreach ($uncheckedFileIds as $uncheckedFileId) {
                     $tempFile = $fileService->getFile($uncheckedFileId);

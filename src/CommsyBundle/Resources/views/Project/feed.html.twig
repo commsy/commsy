@@ -26,7 +26,11 @@
                         {% if project.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                             {{ 'today'|trans({})|capitalize }}, {{project.getModificationDate|date("H:i")}}
                         {% else %}
-                            {{project.getModificationDate|date("d.m.Y")}}
+                            {% if not '9999-00-00' in project.getModificationDate %}
+                                {{project.getModificationDate|date("d.m.Y")}}
+                            {% else %}
+                                {{project.getCreationDate|date("d.m.Y")}}
+                            {% endif %}
                         {% endif %}
                     </div>
             </div>

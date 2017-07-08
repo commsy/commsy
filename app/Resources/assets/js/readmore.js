@@ -27,7 +27,11 @@
                 event.preventDefault();
 
                 // trigger the normal toggle mechanism by faking a click
-                $this.element.closest('article').find('a[data-uk-toggle]')[0].click();
+                if ($this.element.closest('article').find('a[data-uk-toggle]')[0]) {
+                    $this.element.closest('article').find('a[data-uk-toggle]')[0].click();
+                } else if ($($($this.element).data('cs-toggle-link'))[0]) {
+                    $($($this.element).data('cs-toggle-link'))[0].click();
+                }
             });
         }
     });

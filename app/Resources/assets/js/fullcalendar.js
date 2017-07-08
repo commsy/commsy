@@ -165,7 +165,7 @@
     function renderEvent(calEvent) {
         let titleDisplay = '';
         if (calEvent.contextTitle != '') {
-            titleDisplay = ' ('+calEvent.contextTitle+')';
+            titleDisplay = ' / '+calEvent.contextTitle;
         }
         
         let recurringDescription = '';
@@ -179,7 +179,7 @@
         return '<div>'
                 +'<table>'
                 +'<tr>'
-                +'<td colspan="2"><b>'+calEvent.title+'</b>'+titleDisplay+'</td>'
+                +'<td colspan="2"><b>'+calEvent.title+'</b></td>'
                 +'</tr>'
                 +'<tr>'
                 +'<td>Datum:</td>'
@@ -196,7 +196,7 @@
                 +'</tr>'
                 +'<tr>'
                 +'<td>Kalender:</td>'
-                +'<td>'+calEvent.calendar+'</td>'
+                +'<td>'+calEvent.calendar+titleDisplay+'</td>'
                 +'</tr>'
                 +'</table>'
                 +'</div>';

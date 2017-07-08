@@ -26,9 +26,9 @@ class FileController extends Controller
         $response = new Response($content, Response::HTTP_OK, array('content-type' => $file->getMime()));
         
         if ($disposition == 'inline') {
-            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,$file->getFileName());
+            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,$file->getFileName(), mb_convert_encoding ($file->getFileName(), 'US-ASCII', 'UTF-8'));
         } else {
-            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$file->getFileName());   
+            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$file->getFileName(), mb_convert_encoding ($file->getFileName(), 'US-ASCII', 'UTF-8'));
         }
         $response->headers->set('Content-Disposition', $contentDisposition);
         

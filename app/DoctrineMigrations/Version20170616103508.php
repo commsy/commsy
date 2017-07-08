@@ -195,12 +195,16 @@ class Version20170616103508 extends AbstractMigration implements ContainerAwareI
 
             foreach ($colorsInContext as $colorInContext) {
                 $currentColorName = '';
+                $currentColor = '#ffffff';
                 $currentColors = [];
                 foreach ($colorArray as $name => $colors) {
                     if (in_array($colorInContext, $colors)) {
                         $currentColorName = $name;
                         $currentColors = $colors;
                     }
+                }
+                if (isset($currentColors[0])) {
+                    $currentColor = $currentColors[0];
                 }
                 
                 $queryBuilder
@@ -218,7 +222,7 @@ class Version20170616103508 extends AbstractMigration implements ContainerAwareI
                     ->setParameter(0, '')
                     ->setParameter(1, $room['item_id'])
                     ->setParameter(2, $translator->trans($currentColorName, array(), 'date'))
-                    ->setParameter(3, $currentColors[0])
+                    ->setParameter(3, $currentColor)
                     ->setParameter(4, '')
                     ->setParameter(5, '0')
                     ->execute();

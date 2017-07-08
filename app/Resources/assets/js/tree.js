@@ -57,6 +57,7 @@
 
                     $('input[id*="filter_category_category"]').each(selectNode);
                     $('input[id*="filter_participant_participant"]').each(selectNode);
+                    $('input[id*="filter_calendar_calendar"]').each(selectNode);
                     $('input[id*="itemLinks_categories"]').each(selectNode);
 
                     /**
@@ -72,6 +73,7 @@
                                 // sync tree state with Checkboxes
                                 $('input[id*="filter_category_category"]').prop('checked', false);
                                 $('input[id*="filter_participant_participant"]').prop('checked', false);
+                                $('input[id*="filter_calendar_calendar"]').prop('checked', false);
                                 $('input[id*="itemLinks_categories"]').prop('checked', false);
 
                                 $.each(data.selected, function() {
