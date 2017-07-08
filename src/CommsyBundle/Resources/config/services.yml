@@ -239,13 +239,16 @@ services:
             
     commsy.form.type.settings.extension:
         class: CommsyBundle\Form\Type\ExtensionSettingsType
-        arguments: ['@commsy_legacy.environment']
+        arguments:
+          - '@commsy_legacy.environment'
+          - '%commsy.mediawiki.enabled%'
         tags:
             - { name: form.type }
 
     commsy.form.type.settings.invitations:
         class: CommsyBundle\Form\Type\InvitationsSettingsType
-        arguments: ['@commsy_legacy.environment']
+        arguments:
+          - '@commsy_legacy.environment'
         tags:
             - { name: form.type }
 

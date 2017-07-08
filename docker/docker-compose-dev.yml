@@ -25,6 +25,6 @@ services:
     environment:
       XPACK_SECURITY_ENABLED: "false"
 
-volumes:
-  commsy-unison-sync:
-    external: true
+  commsy_elastic:
+      environment:
+        cluster.routing.allocation.disk.threshold_enabled: "false"
