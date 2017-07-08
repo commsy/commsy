@@ -11,15 +11,20 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
 class ExtensionSettingsType extends AbstractType
 {
     private $legacyEnvironment;
+    private $mediaWikiEnabled;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
+    public function __construct(LegacyEnvironment $legacyEnvironment, $mediaWikiEnabled)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->mediaWikiEnabled = $mediaWikiEnabled;
     }
 
     /**
@@ -32,9 +37,6 @@ class ExtensionSettingsType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $roomManager = $this->legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($options['roomId']);
-
         $builder
             ->add('assessment', CheckboxType::class, array(
                 'required' => false,
@@ -100,17 +102,23 @@ class ExtensionSettingsType extends AbstractType
                     ),
                 ))
             )
-            ->add('wikiEnabled', CheckboxType::class, array(
-                'required' => false,
-                'label_attr' => array('class' => 'uk-form-label'),
-            ))
             ->add('save', SubmitType::class, array(
                 'position' => 'last',
                 'label' => 'Save',
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 )                
-            ));
+            ))
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+                $form = $event->getForm();
+
+                if ($this->mediaWikiEnabled) {
+                    $form->add('wikiEnabled', CheckboxType::class, array(
+                        'required' => false,
+                        'label_attr' => array('class' => 'uk-form-label'),
+                    ));
+                }
+            });
         ;
     }
 
