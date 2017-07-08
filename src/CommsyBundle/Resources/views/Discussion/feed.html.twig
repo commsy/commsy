@@ -32,7 +32,11 @@
                     {% if discussion.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                         {{ 'today'|trans({})|capitalize }}, {{discussion.getModificationDate|date("H:i")}}
                     {% else %}
-                        {{discussion.getModificationDate|date("d.m.Y")}}
+                        {% if not '9999-00-00' in discussion.getModificationDate %}
+                            {{discussion.getModificationDate|date("d.m.Y")}}
+                        {% else %}
+                            {{discussion.getCreationDate|date("d.m.Y")}}
+                        {% endif %}
                     {% endif %}
                 </div>
              </div>

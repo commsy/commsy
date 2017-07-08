@@ -32,7 +32,11 @@
                     {% if announcement.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                         {{ 'today'|trans({})|capitalize }}, {{announcement.getModificationDate|date("H:i")}}
                     {% else %}
-                        {{announcement.getModificationDate|date("d.m.Y")}}
+                        {% if not '9999-00-00' in announcement.getModificationDate %}
+                            {{announcement.getModificationDate|date("d.m.Y")}}
+                        {% else %}
+                            {{announcement.getCreationDate|date("d.m.Y")}}
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>

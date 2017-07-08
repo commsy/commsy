@@ -32,7 +32,11 @@
                     {% if material.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                         {{ 'today'|trans({})|capitalize }}, {{material.getModificationDate|date("H:i")}}
                     {% else %}
-                        {{material.getModificationDate|date("d.m.Y")}}
+                        {% if not '9999-00-00' in material.getModificationDate %}
+                            {{material.getModificationDate|date("d.m.Y")}}
+                        {% else %}
+                            {{material.getCreationDate|date("d.m.Y")}}
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>
