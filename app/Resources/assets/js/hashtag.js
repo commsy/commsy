@@ -63,7 +63,7 @@
                 );
 
                 // clear user input
-                $('#itemLinks_newHashtag').val();
+                $('#itemLinks_newHashtag').val('');
             });
         }
     });
