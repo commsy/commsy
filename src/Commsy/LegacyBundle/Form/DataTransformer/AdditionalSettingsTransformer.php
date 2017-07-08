@@ -51,6 +51,13 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
                 $roomData['template']['template_availability'] = $roomItem->getTemplateAvailability();
             }
 
+            // rss
+            if ($roomItem->isRSSOn()) {
+                $roomData['rss']['status'] = '1';
+            } else {
+                $roomData['rss']['status'] = '2';
+            }
+
             // archived
             $roomData['archived']['active'] = !$roomItem->isOpen();
 
@@ -154,6 +161,17 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
         }
         if ( isset($template['template_description'])){
             $roomObject->setTemplateDescription($template['template_description']);
+        }
+
+        /********* rss options ******/
+        if (isset($roomData['rss']['status'])) {
+            if ($roomData['rss']['status'] === '1') {
+                $roomObject->turnRSSOn();
+            } else if ($roomData['rss']['status'] === '2') {
+                $roomObject->turnRSSOff();
+            }
+        } else {
+            $roomObject->turnRSSOff();
         }
 
         /********* save archive options ******/

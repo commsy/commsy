@@ -36,6 +36,12 @@
                             </ul>
                         </div>
 
+                        {# rss #}
+                        <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                            <h1 class='uk-panel-title'>{{ 'RSS-Feed'|trans({}, 'settings') }}</h1>
+                            {{ form_widget(form.rss) }}
+                        </div>
+
                         {# template #}
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Template'|trans({}, 'settings') }}</h1> 
