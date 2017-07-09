@@ -36,6 +36,8 @@ class CalDAVController extends Controller
 
         // Backends
         $authBackend = new PDO($commsyPdo, $this->container, $portalId);
+        $authBackend->setRealm('CommSy');
+
         $principalBackend = new DAVACL\PrincipalBackend\PDO($pdo);
         $calendarBackend = new CalDAV\Backend\PDO($pdo);
 
