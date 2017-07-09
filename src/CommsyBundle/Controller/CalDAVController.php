@@ -18,10 +18,10 @@ use
 class CalDAVController extends Controller
 {
     /**
-     * @Route("/caldav")
+     * @Route("/{portalId}/caldav")
      * @Template()
      */
-    public function caldavAction(Request $request) {
+    public function caldavAction($portalId, Request $request) {
 
         //$pdo = new \PDO('sqlite:data/db.sqlite');
         //$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
@@ -35,7 +35,7 @@ class CalDAVController extends Controller
         //require_once '../../../vendor/autoload.php';
 
         // Backends
-        $authBackend = new PDO($commsyPdo);
+        $authBackend = new PDO($commsyPdo, $this->container, $portalId);
         $principalBackend = new DAVACL\PrincipalBackend\PDO($pdo);
         $calendarBackend = new CalDAV\Backend\PDO($pdo);
 
@@ -52,7 +52,7 @@ class CalDAVController extends Controller
         // You are highly encouraged to set your WebDAV server base url. Without it,
         // SabreDAV will guess, but the guess is not always correct. Putting the
         // server on the root of the domain will improve compatibility.
-        $server->setBaseUri('/app_dev.php/caldav/');
+        $server->setBaseUri('/app_dev.php/'.$portalId.'/caldav/');
 
         // Authentication plugin
         $authPlugin = new DAV\Auth\Plugin($authBackend,'SabreDAV');

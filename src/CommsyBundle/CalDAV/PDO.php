@@ -2,8 +2,12 @@
 
 namespace CommsyBundle\CalDAV;
 
+use Sabre\DAV;
 use Sabre\HTTP\RequestInterface;
 use Sabre\HTTP\ResponseInterface;
+
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
 * This is an authentication backend that uses a database to manage passwords.
@@ -13,6 +17,9 @@ use Sabre\HTTP\ResponseInterface;
 * @license http://sabre.io/license/ Modified BSD License
 */
 class PDO extends \Sabre\DAV\Auth\Backend\AbstractDigest {
+
+    private $container;
+    private $portalId;
 
     /**
     * Reference to PDO connection
@@ -26,7 +33,7 @@ class PDO extends \Sabre\DAV\Auth\Backend\AbstractDigest {
     *
     * @var string
     */
-    public $tableName = 'auth';
+    public $tableName = 'hash';
 
 
     /**
@@ -36,10 +43,10 @@ class PDO extends \Sabre\DAV\Auth\Backend\AbstractDigest {
     *
     * @param \PDO $pdo
     */
-    function __construct(\PDO $pdo) {
-
-    $this->pdo = $pdo;
-
+    function __construct(\PDO $pdo, ContainerInterface $container, $portalId) {
+        $this->pdo = $pdo;
+        $this->container = $container;
+        $this->portalId = $portalId;
     }
 
     /**
@@ -50,9 +57,28 @@ class PDO extends \Sabre\DAV\Auth\Backend\AbstractDigest {
     * @return string|null
     */
     function getDigestHash($realm, $userId) {
-        $stmt = $this->pdo->prepare('SELECT password_md5 FROM ' . $this->tableName . ' WHERE user_id = ?');
-        $stmt->execute([$userId]);
-        return $stmt->fetchColumn() ?: null;
+        $userService = $this->container->get("commsy_legacy.user_service");
+        $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment->setCurrentContextId($this->portalId);
+        $legacyEnvironment->setCurrentPortalId($this->portalId);
+
+        $userManager = $legacyEnvironment->getUserManager();
+        $userManager->setPortalIDLimit($this->portalId);
+        $userManager->setUserIDLimit($userId);
+        $userManager->select();
+        $userList = $userManager->get();
+        $userItem = $userList->getFirst();
+        $legacyEnvironment->setCurrentUser($userItem);
+
+        if ($userItem) {
+            $portalUser = $userItem->getRelatedPrivateRoomUserItem();
+
+            $stmt = $this->pdo->prepare('SELECT caldav FROM ' . $this->tableName . ' WHERE user_item_id = ?');
+            $stmt->execute([$portalUser->getItemId()]);
+            return $stmt->fetchColumn() ?: null;
+        }
+
+        return null;
     }
 
     /**

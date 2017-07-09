@@ -35,6 +35,12 @@ class Hash
      */
     private $ical;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="caldav", type="string", length=32, nullable=true)
+     */
+    private $caldav;
 
 }
 
