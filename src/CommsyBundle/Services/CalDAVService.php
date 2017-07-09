@@ -24,28 +24,28 @@ class CalDAVService
 
     public function setCalDAVHash ($userId, $password, $realm) {
         $legacyEnvironment = $this->serviceContainer->get('commsy_legacy.environment')->getEnvironment();
-        #$legacyEnvironment->setCurrentContextId($portalId);
-        #$legacyEnvironment->setCurrentPortalId($portalId);
 
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setPortalIDLimit($legacyEnvironment>-getCurrentPortalId());
-        $userManager->setUserIDLimit($userId);
-        $userManager->select();
-        $userList = $userManager->get();
-        $userItem = $userList->getFirst();
-        #$legacyEnvironment->setCurrentUser($userItem);
+        $repository = $this->em->getRepository('CommsyBundle:User');
+        $query = $repository->createQueryBuilder('user')
+            ->select()
+            ->where('user.contextId = :portalId AND user.userId = :userId')
+            ->setParameter('portalId', $legacyEnvironment->getCurrentPortalId())
+            ->setParameter('userId', $userId)
+            ->getQuery();
 
-        if ($userItem) {
-            $portalUser = $userItem->getRelatedPrivateRoomUserItem();
+        $users = $query->getResult();
 
-            $repository = $this->em->getRepository('CommsyBundle:Hash');
-            $repository->createQueryBuilder('hash')
-                ->update('hash', 'h')
-                ->set('h.caldav', md5($userId . ':' . $realm . ':' . $password))
-                ->where('h.user_item_id = :user_item_id')
-                ->setParameter('user_item_id', $portalUser->getItemId())
-                ->getQuery()
-                ->execute();
+        if (isset($users[0])) {
+            $userService = $this->serviceContainer->get("commsy_legacy.user_service");
+            $legacyUserItem = $userService->getUser($users[0]->getItemId());
+            $privateRoomUser = $legacyUserItem->getRelatedPrivateRoomUserItem();
+
+            $hash = md5($userId . ':' . $realm . ':' . $password);
+
+            $this->em->createQuery('UPDATE CommsyBundle:Hash hash SET hash.caldav = :hash WHERE hash.userItemId = :itemId')
+                ->setParameter('hash', $hash)
+                ->setParameter('itemId', $privateRoomUser->getItemId())
+                ->getResult();
         }
     }
 }

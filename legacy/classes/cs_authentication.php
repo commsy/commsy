@@ -495,6 +495,14 @@ class cs_authentication {
          include_once('functions/error_functions.php');
          trigger_error('need auth source to check account '.$uid,E_USER_ERROR);
       }
+
+      if ($allowed) {
+          // add ValDAV Hash
+          global $symfonyContainer;
+          $caldavService = $symfonyContainer->get('commsy.caldav_service');
+          $caldavService->setCalDAVHash($uid, $password, 'CommSy');
+      }
+
       return $allowed;
    }
 
