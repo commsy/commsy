@@ -15,6 +15,7 @@ use CommsyBundle\Form\Type\Profile\RoomProfileAddressType;
 use CommsyBundle\Form\Type\Profile\RoomProfileContactType;
 use CommsyBundle\Form\Type\Profile\DeleteType;
 use CommsyBundle\Form\Type\Profile\ProfileAccountType;
+use CommsyBundle\Form\Type\Profile\ProfileChangePasswordType;
 use CommsyBundle\Form\Type\Profile\ProfileMergeAccountsType;
 use CommsyBundle\Form\Type\Profile\ProfileNotificationsType;
 use CommsyBundle\Form\Type\Profile\ProfileAdditionalType;
@@ -534,6 +535,51 @@ class ProfileController extends Controller
             'form_delete' => $deleteForm->createView()
         ];
     }
+
+
+    /**
+    * @Route("/room/{roomId}/user/{itemId}/changepassword")
+    * @Template
+    */
+    public function changePasswordAction($roomId, $itemId, Request $request)
+    {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        if ( !$legacyEnvironment->inPortal() ) {
+            $portalUser = $legacyEnvironment->getPortalUserItem();
+        }
+        else {
+            $portalUser = $legacyEnvironment->getCurrentUserItem();
+        }
+
+        $form = $this->createForm(ProfileChangePasswordType::class);
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {                 // checks old password and new password criteria constraints
+
+            $form_data = $form->getData();
+
+            $current_portal_item = $legacyEnvironment->getCurrentPortalItem();
+            $authentication = $legacyEnvironment->getAuthenticationObject();
+            $currentUser = $legacyEnvironment->getCurrentUserItem();
+            $auth_manager = $authentication->getAuthManager($currentUser->getAuthSource());
+
+            $portalUser->setPasswordExpireDate($current_portal_item->getPasswordExpiration());
+            $portalUser->save();
+            $auth_manager->changePassword($currentUser->getUserID(), $form_data['new_password']);
+
+            $error_number = $auth_manager->getErrorNumber();
+
+            if(empty($error_number)) {
+                $portalUser->setNewGenerationPassword($form_data['old_password']);
+            }
+        }
+
+        return array(
+            'form' => $form->createView(),
+        );
+    }
+
 
     /**
     * @Route("/room/{roomId}/user/{itemId}/deleteroomprofile")
