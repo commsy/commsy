@@ -57,7 +57,6 @@ class PDO extends \Sabre\DAV\Auth\Backend\AbstractDigest {
     * @return string|null
     */
     function getDigestHash($realm, $userId) {
-        $userService = $this->container->get("commsy_legacy.user_service");
         $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
         $legacyEnvironment->setCurrentContextId($this->portalId);
         $legacyEnvironment->setCurrentPortalId($this->portalId);
