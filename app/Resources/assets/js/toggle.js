@@ -4,10 +4,9 @@
 
     UIkit.on('beforeready.uk.dom', function() {
 
-        var ref = UI.components.toggle.prototype.toggle;
-
+        var toggleRef = UI.components.toggle.prototype.toggle;
         UI.components.toggle.prototype.toggle = function() {
-            var ret = ref.apply(this, arguments);
+            var ret = toggleRef.apply(this, arguments);
 
             this.element.first().find('i').each(function() {
                 if ($(this).hasClass('uk-icon-chevron-up')) {
@@ -30,6 +29,25 @@
             }
             if ($($(this.element).data('cs-toggle-link-moreless')).find('.cs-readmoreless')) {
                 $($(this.element).data('cs-toggle-link-moreless')).find('.cs-readmoreless').toggleClass('uk-hidden');
+            }
+
+            return ret;
+        };
+
+        var initRef = UI.components.toggle.prototype.init;
+        UI.components.toggle.prototype.init = function() {
+            var ret = initRef.apply(this, arguments);
+
+            this.getToggles();
+
+            if(!this.totoggle.length) return;
+
+            // check if the target has the "uk-hidden-small" class and is currently not visible
+            if (this.totoggle.hasClass('uk-hidden-small') && !this.totoggle.is(':visible')) {
+                // On small devices we initially hide some content like sidebar panels.
+                // To reflect the correct state, we need to toggle once and remove the uk-hidden-small class
+                this.toggle();
+                this.totoggle.removeClass('uk-hidden-small');
             }
 
             return ret;
