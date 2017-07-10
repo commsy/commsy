@@ -68,7 +68,7 @@ class PasswordCriteriaConstraintValidator extends ConstraintValidator
             if($auth_source_item->getPasswordSecureSpecialchar() == 1){
                 if(!preg_match('~[^a-zA-Z0-9]+~u', $password)){
                     $this->context->buildViolation($constraint->message)
-                        ->setParameter('{{ critiera }}', $translator->getMessage('PASSWORD_INFO_SPECIAL'))
+                        ->setParameter('{{ criteria }}', $translator->getMessage('PASSWORD_INFO_SPECIAL'))
                         ->addViolation();
                 }
             }
