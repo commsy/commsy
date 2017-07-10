@@ -44,6 +44,16 @@ class Hash
 
 
     /**
+     * Get iCal
+     *
+     * @return String
+     */
+    public function getICal()
+    {
+        return $this->iCal;
+    }
+
+    /**
      * Set caldav
      *
      * @param integer $caldav

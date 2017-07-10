@@ -31,6 +31,12 @@ class Version20170709123535 extends AbstractMigration
         $this->addSql('CREATE INDEX caldav ON zzz_hash(caldav)');
     }
 
+    public function postUp(Schema $schema) {
+        $this->generateCalDAVHashes('hash');
+
+        $this->generateCalDAVHashes('zzz_hash');
+    }
+
     /**
      * @param Schema $schema
      */
@@ -42,14 +48,14 @@ class Version20170709123535 extends AbstractMigration
             DROP caldav;
         ');
 
-        $this->removeIndex('caldav', 'hash');
+        //$this->removeIndex('caldav', 'hash');
 
         $this->addSql('
             ALTER TABLE zzz_hash
             DROP caldav;
         ');
 
-        $this->removeIndex('caldav', 'zzz_hash');
+        //$this->removeIndex('caldav', 'zzz_hash');
     }
 
     /**
@@ -69,6 +75,32 @@ class Version20170709123535 extends AbstractMigration
 
         if (!empty($filteredIndexes)) {
             $this->addSql('DROP INDEX ' . $indexName . ' ON ' . $tableName);
+        }
+    }
+
+    private function generateCalDAVHashes ($dTable) {
+        // get all hashes
+        $queryBuilderHash = $this->connection->createQueryBuilder('CommsyBundle:Hash');
+        $hashes = $queryBuilderHash->select('*')
+            ->from($dTable)
+            ->execute();
+
+        $queryBuilderUser = $this->connection->createQueryBuilder('CommsyBundle:User');
+        foreach ($hashes as $hash) {
+            $users = $queryBuilderUser->select('*')
+                ->from('user', 'u')
+                ->where('u.item_id = :item_id')
+                ->setParameter('item_id', $hash['user_item_id'])
+                ->execute();
+
+            foreach ($users as $user) {
+                $queryBuilderHash->update('hash', 'h')
+                    ->set("h.caldav", ":hash")
+                    ->where("h.user_item_id = :itemId")
+                    ->setParameter("hash", md5($user['user_id'].':CommSy:'.$hash['ical']))
+                    ->setParameter("itemId", $user['item_id'])
+                    ->execute();
+            }
         }
     }
 }
