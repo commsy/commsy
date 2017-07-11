@@ -34,12 +34,23 @@
                                 </tr>
                                 {% if form.emailToCommsy is defined %}
                                     <tr>
+                                        <td><hr/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h1 class="uk-panel-title">{{ 'emailToCommsy'|trans({},'profile')|capitalize }}</h1>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td>{{ form_row(form.emailToCommsy) }}</td>
                                     </tr>
                                     <tr>
                                         <td>{{ form_row(form.emailToCommsySecret) }}</td>
                                     </tr>
                                 {% endif %}
+                                <tr>
+                                    <td><hr/></td>
+                                </tr>
                                 <tr>
                                     <td>
                                         <h1 class="uk-panel-title">{{ 'miscellaneous'|trans({},'profile')|capitalize }}</h1>
