@@ -1841,23 +1841,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 		$this->_popup_controller->assign('popup', 'moderation', $this->getModerationInformation());
 		$this->_popup_controller->assign('popup', 'addon', $this->getAddonInformation());
 		$this->_popup_controller->assign('popup', 'external', $this->getExternalInformation());
-		$this->_popup_controller->assign('popup', 'export', $this->getExportInformation());
 	}
-
-	private function getExportInformation()
-    {
-        $return = [
-            'enabled' => false,
-        ];
-
-        $currentContextItem = $this->_environment->getCurrentContextItem();
-
-        if ($currentContextItem->isArchived()) {
-            $return['enabled'] = true;
-        }
-
-        return $return;
-    }
 
 	private function getModerationInformation() {
 		$return = array();

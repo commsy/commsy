@@ -27,9 +27,7 @@
 							<a href="addon_configuration" class="pop_tab">___HOME_EXTRA_TOOLS___</a>
 							<a href="external_configuration" class="pop_tab">___COMMON_EXTERNAL_SYSTEMS___</a>
 
-                            {if $popup.export.enabled }
 							<a href="export_configuration" class="pop_tab">Export</a>
-							{/if}
 
 							<div class="clear"> </div>
 						</div>
@@ -1041,7 +1039,6 @@
 
 							</div>
 
-							{if $popup.export.enabled }
 							<div class="tab hidden" id="export_configuration">
 								<div id="content_row_three">
 									<fieldset>
@@ -1060,7 +1057,6 @@
 									</div>
 								</div>
 							</div>
-                            {/if}
 						</div>
 					</div>
 				</div>

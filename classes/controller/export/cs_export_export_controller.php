@@ -32,7 +32,7 @@ class cs_export_export_controller extends cs_base_controller
             $access = true;
         }
 
-        if ($currentContext->isArchived() && $currentUser->isModerator()) {
+        if ($currentUser->isModerator()) {
             $access = true;
         }
 
