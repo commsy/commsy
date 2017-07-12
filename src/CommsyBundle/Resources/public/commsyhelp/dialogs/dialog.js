@@ -33,7 +33,6 @@
                                         '<span style="font-weight: bold;">Links:</span><br>' +
                                         '<span style="font-weight: bold;">Externe Links:</span> (:link ZIEL text=TEXT:)<br>' +
                                         '<span style="font-weight: bold;">Interne Links:</span> (:item ID text=TEXT:)<br>' +
-                                        '<span style="font-weight: bold;">Dateien:</span> (:file NAME text=TEXT:)' +
                                         '<br><br>' +
                                         'Argumente:' +
                                         '<ul>' +
@@ -42,7 +41,7 @@
                                             '<li><span style="font-weight: bold;">text=\'LANGER TEXT\'</span> Lange Beschriftung</li>' +
                                         '</ul>' +
                                         '<br>' +
-                                        'Beispiel: (:file file.pdf text=\'My File\' newwin:)' +
+                                        'Beispiel: (:item 12345 text=\'My File\' newwin:)' +
                                         '<br><br>' +
                                         '<span style="font-weight: bold;">Medien:</span><br>' +
                                         'Für die Einbettung von Medien können Sie die eingebauten Dialoge des Editors verwenden.' +

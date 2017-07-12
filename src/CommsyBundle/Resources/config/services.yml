@@ -489,6 +489,9 @@ services:
         class: CommsyBundle\Twig\Extension\MarkupExtension
         tags:
             - { name: twig.extension }
+        arguments:
+            - '@router'
+            - '@commsy_legacy.item_service'
 
     # Controller
     commsy.item_controller:
