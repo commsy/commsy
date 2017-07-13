@@ -51,13 +51,13 @@ class ProfileAdditionalType extends AbstractType
         if ($options['emailToCommsy']) {
             $builder
                 ->add('emailToCommsy', CheckboxType::class, [
-                    'label' => 'emailToCommsy',
+                    'label' => 'Activate',
                     'required' => false,
                     'label_attr' => [
                         'class' => 'uk-form-label',
-                    ]
+                    ],
+                    'translation_domain' => 'settings',
                 ])
-
                 ->add('emailToCommsySecret', TextType::class, [
                     'label' => 'emailToCommsySecret',
                     'required' => false,

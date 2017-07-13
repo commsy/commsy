@@ -64,6 +64,19 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'menu');
 
+            $menu->addChild('changePassword', [
+                'route' => 'commsy_profile_changepassword',
+                'routeParameters' => [
+                    'roomId' => $currentStack->attributes->get('roomId'),
+                    'itemId' => $currentUser->getItemId(),
+                ],
+                'extras' => [
+                    'icon' => 'uk-icon-lock uk-icon-small uk-icon-justify',
+                    'user' => $currentUser,
+                ]
+            ])
+            ->setExtra('translation_domain', 'profile');
+
             $menu->addChild('mergeAccounts', [
                 'label' => 'combineAccount',
                 'route' => 'commsy_profile_mergeaccounts',

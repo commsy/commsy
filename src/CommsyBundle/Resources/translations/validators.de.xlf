@@ -18,6 +18,18 @@
                 <source>Your access code is invalid.</source>
                 <target>Ihr Zugangscode ist inkorrekt.</target>
             </trans-unit>
+            <trans-unit id="validators_password_criteria">
+                <source>The password does not fulfill the following criteria: {{ criteria }}.</source>
+                <target>Das gewählte Passwort erfüllt die folgende Anforderung nicht: {{ criteria }}.</target>
+            </trans-unit>
+            <trans-unit id="validators_password_incorrect">
+                <source>Password incorrect.</source>
+                <target>Das eingegebene Passwort ist nicht korrekt.</target>
+            </trans-unit>
+            <trans-unit id="validators_passwords_dont_match">
+                <source>Passwords do not match</source>
+                <target>Die eingegebenen Passwörter stimmen nicht überein.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

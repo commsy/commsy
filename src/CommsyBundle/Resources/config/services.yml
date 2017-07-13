@@ -212,6 +212,18 @@ services:
         tags:
             - { name: validator.constraint_validator, alias: alias_name }
 
+    commsy.validator.password_criteria_constraint:
+        class: CommsyBundle\Validator\Constraints\PasswordCriteriaConstraintValidator
+        arguments: ['@commsy_legacy.environment']
+        tags:
+            - { name: validator.constraint_validator, alias: alias_name }
+
+    commsy.validator.user_password_constraint:
+        class: CommsyBundle\Validator\Constraints\UserPasswordConstraintValidator
+        arguments: ['@commsy_legacy.environment']
+        tags:
+            - { name: validator.constraint_validator, alias: alias_name }
+
     # Form types
     commsy.form.type.general_settings:
         class: CommsyBundle\Form\Type\GeneralSettingsType
@@ -317,6 +329,12 @@ services:
     commsy.form.type.profile_account:
         class: CommsyBundle\Form\Type\Profile\ProfileAccountType
         arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
+    commsy.form.type.profile_changepassword:
+        class: CommsyBundle\Form\Type\Profile\ProfileChangePasswordType
+        arguments: ['@commsy_legacy.environment']
         tags:
             - { name: form.type }
 
@@ -471,6 +489,9 @@ services:
         class: CommsyBundle\Twig\Extension\MarkupExtension
         tags:
             - { name: twig.extension }
+        arguments:
+            - '@router'
+            - '@commsy_legacy.item_service'
 
     # Controller
     commsy.item_controller:

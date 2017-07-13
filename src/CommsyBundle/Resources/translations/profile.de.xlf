@@ -22,6 +22,10 @@
                 <source>userId</source>
                 <target>Benutzername</target>
             </trans-unit>
+            <trans-unit id="changePassword">
+                <source>changePassword</source>
+                <target>Passwort ändern</target>
+            </trans-unit>
             <trans-unit id="currentPassword">
                 <source>currentPassword</source>
                 <target>aktuelles Passwort</target>
