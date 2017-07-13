@@ -14,13 +14,9 @@
                     {{ macros.statusColor(readerList, topic.itemId, 'grid') }}
  
                     <div class="items-checkbox uk-float-left uk-margin-small-right uk-hidden">
-                        {% if is_granted('ITEM_EDIT', topic.itemId) %}
-                            <form class="uk-form">
-                                <input type="checkbox" value="{{ topic.itemId }}">
-                            </form>
-                        {% else %}
-                            <i class="uk-icon-ban uk-icon-small red"></i>
-                        {% endif %}
+                        <form class="uk-form">
+                            <input type="checkbox" value="{{ topic.itemId }}">
+                        </form>
                     </div>
                     <div class="uk-grid uk-text-truncate">
                         <div>

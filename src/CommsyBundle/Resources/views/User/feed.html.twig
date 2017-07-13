@@ -12,13 +12,9 @@
                 {{ macros.statusColor(readerList, user.itemId, 'grid') }}
 
                 <div class="items-checkbox uk-float-left uk-margin-right uk-hidden">
-                    {#% if is_granted('ITEM_EDIT', user.itemId) %#}
-                        <form class="uk-form">
-                            <input type="checkbox" value="{{ user.itemId }}">
-                        </form>
-                    {#% else %#}
-                        <!-- <i class="uk-icon-ban uk-icon-small red"></i> -->
-                    {#% endif %#}
+                    <form class="uk-form">
+                        <input type="checkbox" value="{{ user.itemId }}">
+                    </form>
                 </div>
                 <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">
                     <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
