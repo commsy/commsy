@@ -221,10 +221,14 @@ class GroupController extends Controller
             // grouproom member status
             if($item->isGroupRoomActivated()) {
                 $userService = $this->get('commsy_legacy.user_service');
-                $groupMemberStatus['groupRoomMember'] = $userService->getMemberStatus(
-                    $item->getGroupRoomItem(),
-                    $legacyEnvironment->getCurrentUser()
-                );
+                if ($item->getGroupRoomItem()) {
+                    $groupMemberStatus['groupRoomMember'] = $userService->getMemberStatus(
+                        $item->getGroupRoomItem(),
+                        $legacyEnvironment->getCurrentUser()
+                    );
+                } else {
+                    $groupMemberStatus['groupRoomMember'] = 'deactivated';
+                }
             }
             else {
                 $groupMemberStatus['groupRoomMember'] = 'deactivated';
@@ -330,10 +334,14 @@ class GroupController extends Controller
         if($infoArray['group']->isGroupRoomActivated()) {
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             $userService = $this->get('commsy_legacy.user_service');
-            $memberStatus = $userService->getMemberStatus(
-                $infoArray['group']->getGroupRoomItem(),
-                $legacyEnvironment->getCurrentUser()
-            );
+            if ($infoArray['group']->getGroupRoomItem()) {
+                $memberStatus = $userService->getMemberStatus(
+                    $infoArray['group']->getGroupRoomItem(),
+                    $legacyEnvironment->getCurrentUser()
+                );
+            } else {
+                $memberStatus = 'deactivated';
+            }
         }
 
         // annotation form
