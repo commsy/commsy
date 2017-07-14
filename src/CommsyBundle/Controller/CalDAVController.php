@@ -101,10 +101,12 @@ class CalDAVController extends Controller
             $principalBackend = new PrincipalPDO($commsyPdo, $this->container, $portalId);
             $calendarBackend = new CalendarPDO($commsyPdo, $this->container, $portalId);
         } else {
-            $authBackend = new DAV\Auth\Backend\PDO($pdo);
+            //$authBackend = new DAV\Auth\Backend\PDO($pdo);
+            $authBackend = new AuthPDO($commsyPdo, $this->container, $portalId);
             $authBackend->setRealm('CommSy');
             $principalBackend = new DAVACL\PrincipalBackend\PDO($pdo);
-            $calendarBackend = new CalDAV\Backend\PDO($pdo);
+            //$calendarBackend = new CalDAV\Backend\PDO($pdo);
+            $calendarBackend = new CalendarPDO($commsyPdo, $this->container, $portalId);
         }
 
         // Directory tree
