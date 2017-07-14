@@ -57,7 +57,7 @@ class ProfilePersonalInformationType extends AbstractType
                 'label' => 'lastname',
                 'required' => false,
             ))
-            ->add('authEmail', TextType::class, array(
+            ->add('emailAccount', TextType::class, array(
                 'label' => 'email',
                 'required' => true,
             ))
