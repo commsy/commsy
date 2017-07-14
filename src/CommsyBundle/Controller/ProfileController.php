@@ -554,6 +554,8 @@ class ProfileController extends Controller
 
         $form = $this->createForm(ProfileChangePasswordType::class);
 
+        $changed = false;
+
         $form->handleRequest($request);
         if ($form->isValid()) {                 // checks old password and new password criteria constraints
 
@@ -568,6 +570,8 @@ class ProfileController extends Controller
             $portalUser->save();
             $auth_manager->changePassword($currentUser->getUserID(), $form_data['new_password']);
 
+            $changed = true;
+
             $error_number = $auth_manager->getErrorNumber();
 
             if(empty($error_number)) {
@@ -577,6 +581,7 @@ class ProfileController extends Controller
 
         return array(
             'form' => $form->createView(),
+            'passwordChanged' => $changed,
         );
     }
 
