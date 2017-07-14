@@ -57,6 +57,9 @@ class ProfileController extends Controller
             // save profile picture if given
             if($formData['image_data']) {
                 $saveDir = implode("/", array($this->getParameter('files_directory'), $roomService->getRoomFileDirectory($userItem->getContextID())));
+                if(!file_exists($saveDir)){
+                    mkdir($saveDir, 0777, true);
+                }
                 $data = $formData['image_data'];
                 list($fileName, $type, $data) = explode(";", $data);
                 list(, $data) = explode(",", $data);
