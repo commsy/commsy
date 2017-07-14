@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 * @author Evert Pot (http://evertpot.com/)
 * @license http://sabre.io/license/ Modified BSD License
 */
-class PDO extends \Sabre\DAV\Auth\Backend\AbstractDigest {
+class AuthPDO extends \Sabre\DAV\Auth\Backend\AbstractDigest {
 
     private $container;
     private $portalId;
@@ -24,7 +24,7 @@ class PDO extends \Sabre\DAV\Auth\Backend\AbstractDigest {
     /**
     * Reference to PDO connection
     *
-    * @var PDO
+    * @var AuthPDO
     */
     protected $pdo;
 

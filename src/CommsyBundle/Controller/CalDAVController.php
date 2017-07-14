@@ -6,8 +6,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-use CommsyBundle\CalDAV\PDO;
+use CommsyBundle\CalDAV\AuthPDO;
+use CommsyBundle\CalDAV\PrincipalPDO;
+use CommsyBundle\CalDAV\CalendarPDO;
 
 use
     Sabre\DAV,
@@ -23,6 +26,8 @@ class CalDAVController extends Controller
      */
     public function caldavAction($portalId, Request $request) {
         $this->caldavServer($portalId)->exec();
+
+        return new Response();
     }
 
     /**
@@ -31,6 +36,38 @@ class CalDAVController extends Controller
      */
     public function caldavPrincipalAction($portalId, $userId, Request $request) {
         $this->caldavServer($portalId)->exec();
+
+        return new Response();
+    }
+
+    /**
+     * @Route("/{portalId}/caldav/calendars/{userId}/")
+     * @Template()
+     */
+    public function caldavCalendarsAction($portalId, $userId, Request $request) {
+        $this->caldavServer($portalId)->exec();
+
+        return new Response();
+    }
+
+    /**
+     * @Route("/{portalId}/caldav/calendars/{userId}/{calendarId}/")
+     * @Template()
+     */
+    public function caldavCalendarAction($portalId, $userId, $calendarId, Request $request) {
+        $this->caldavServer($portalId)->exec();
+
+        return new Response();
+    }
+
+    /**
+     * @Route("/{portalId}/caldav/principals/{userId}/")
+     * @Template()
+     */
+    public function caldavPrincipalsAction($portalId, $userId, Request $request) {
+        $this->caldavServer($portalId)->exec();
+
+        return new Response();
     }
 
     //Mapping PHP errors to exceptions
@@ -48,11 +85,17 @@ class CalDAVController extends Controller
         //require_once '../../../vendor/autoload.php';
 
         // Backends
-        $authBackend = new PDO($commsyPdo, $this->container, $portalId);
-        $authBackend->setRealm('CommSy');
-
-        $principalBackend = new DAVACL\PrincipalBackend\PDO($pdo);
-        $calendarBackend = new CalDAV\Backend\PDO($pdo);
+        if (false) {
+            $authBackend = new AuthPDO($commsyPdo, $this->container, $portalId);
+            $authBackend->setRealm('CommSy');
+            $principalBackend = new PrincipalPDO($commsyPdo, $this->container, $portalId);
+            $calendarBackend = new CalendarPDO($commsyPdo, $this->container, $portalId);
+        } else {
+            $authBackend = new DAV\Auth\Backend\PDO($pdo);
+            $authBackend->setRealm('CommSy');
+            $principalBackend = new DAVACL\PrincipalBackend\PDO($pdo);
+            $calendarBackend = new CalDAV\Backend\PDO($pdo);
+        }
 
         // Directory tree
         $tree = array(
@@ -93,25 +136,5 @@ class CalDAVController extends Controller
         //$server->exec();
 
         return $server;
-    }
-
-
-
-    // --- Methods used for Browser access --- //
-
-    /**
-     * @Route("/{portalId}/caldav/calendars/")
-     * @Template()
-     */
-    public function caldavCalendarsAction($portalId, Request $request) {
-        $this->caldavServer($portalId)->exec();
-    }
-
-    /**
-     * @Route("/{portalId}/caldav/principals/")
-     * @Template()
-     */
-    public function caldavPrincipalsAction($portalId, Request $request) {
-        $this->caldavServer($portalId)->exec();
     }
 }
