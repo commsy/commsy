@@ -57,6 +57,9 @@ class ProfileController extends Controller
             // save profile picture if given
             if($formData['image_data']) {
                 $saveDir = implode("/", array($this->getParameter('files_directory'), $roomService->getRoomFileDirectory($userItem->getContextID())));
+                if(!file_exists($saveDir)){
+                    mkdir($saveDir, 0777, true);
+                }
                 $data = $formData['image_data'];
                 list($fileName, $type, $data) = explode(";", $data);
                 list(, $data) = explode(",", $data);
@@ -554,6 +557,8 @@ class ProfileController extends Controller
 
         $form = $this->createForm(ProfileChangePasswordType::class);
 
+        $changed = false;
+
         $form->handleRequest($request);
         if ($form->isValid()) {                 // checks old password and new password criteria constraints
 
@@ -568,6 +573,8 @@ class ProfileController extends Controller
             $portalUser->save();
             $auth_manager->changePassword($currentUser->getUserID(), $form_data['new_password']);
 
+            $changed = true;
+
             $error_number = $auth_manager->getErrorNumber();
 
             if(empty($error_number)) {
@@ -577,6 +584,7 @@ class ProfileController extends Controller
 
         return array(
             'form' => $form->createView(),
+            'passwordChanged' => $changed,
         );
     }
 

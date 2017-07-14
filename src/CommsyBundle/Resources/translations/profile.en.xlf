@@ -38,6 +38,10 @@
                 <source>newPasswordConfirm</source>
                 <target>confirm new password</target>
             </trans-unit>
+            <trans-unit id="passwordChanged">
+                <source>passwordChanged</source>
+                <target>Password changed successfully!</target>
+            </trans-unit>
             <trans-unit id="language">
                 <source>language</source>
                 <target>language</target>
