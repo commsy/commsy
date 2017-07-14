@@ -1175,6 +1175,7 @@ class cs_user_manager extends cs_manager {
      $query .= 'city="'.encode(AS_DB,$user_item->getCity()).'",';
      $query .= 'visible="'.encode(AS_DB,$user_item->getVisible()).'",';
      $query .= 'description="'.encode(AS_DB,$user_item->getDescription()).'",';
+     $query .= 'use_portal_email="'.encode(AS_DB,$user_item->getUsePortalEmail()).'",';
      // Datenschutz
      $expire_date = $user_item->getPasswordExpireDate();
      

@@ -20,7 +20,7 @@
                         <div class="uk-panel uk-margin-large-bottom">
                             <table class="uk-table">
                                 <tr>
-                                    <td>{{ form_row(form.email) }}</td>
+                                    <td>{{ form_row(form.email) }} {{ form_row(form.emailRoom) }} {{ form_row(form.emailAccount) }}</td>
                                     <td>{{ form_row(form.emailChangeInAllContexts) }}</td>
                                 </tr>
                                 <tr>
@@ -84,13 +84,14 @@
         function toggleEmailChoice(choiceElement) {
             let emailChoice = choiceElement.querySelector('input:checked').value;
             let contactEmail = document.getElementById('room_profile_contact_email');
+            let roomEmail = document.getElementById('room_profile_contact_emailRoom');
             let accountEmail = document.getElementById('room_profile_contact_emailAccount');
             let changeInAllContexts = document.getElementById('room_profile_contact_emailChangeInAllContexts');
             if (emailChoice === 'account') {
                 contactEmail.value = accountEmail.value;
                 contactEmail.disabled = changeInAllContexts.disabled = true;
             } else if (emailChoice === 'roomProfile') {
-                contactEmail.value = "";
+                contactEmail.value = roomEmail.value;
                 contactEmail.disabled = changeInAllContexts.disabled = false;
             }
         }

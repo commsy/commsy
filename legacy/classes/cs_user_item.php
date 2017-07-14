@@ -2814,6 +2814,14 @@ class cs_user_item extends cs_item {
         return $retour;
     }
 
+    public function getUsePortalEmail() {
+        return ($this->_getValue('use_portal_email') == 1);
+    }
+
+    public function setUsePortalEmail($value) {
+        $this->_setValue('use_portal_email', $value);
+    }
+
     public function isAllowedToCreateContext () {
        if ($this->isRoot() || ($this->getContextItem()->isPortal() && $this->isModerator())) {
           return true;
