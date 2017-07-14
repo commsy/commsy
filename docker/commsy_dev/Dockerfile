@@ -42,7 +42,7 @@ RUN pecl install xdebug \
 
 RUN { \
         echo 'xdebug.remote_host=10.254.254.254'; \
-        echo 'xdebug.remote_autostart=0'; \
+        echo 'xdebug.remote_autostart=1'; \
         echo 'xdebug.idekey=PHPSTORM'; \
         echo 'xdebug.default_enabled=0'; \
         echo 'xdebug.remote_enable=1'; \
