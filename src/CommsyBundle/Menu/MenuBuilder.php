@@ -46,6 +46,8 @@ class MenuBuilder
        // create profile
         $currentStack = $requestStack->getCurrentRequest();
         $currentUser = $this->legacyEnvironment->getCurrentUser();
+        $currentPortal = $this->legacyEnvironment->getCurrentPortalItem();
+        $authSourceItem = $currentPortal->getAuthSource($currentUser->getAuthSource());
 
         $menu = $this->factory->createItem('root');
 
@@ -64,18 +66,20 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'menu');
 
-            $menu->addChild('changePassword', [
-                'route' => 'commsy_profile_changepassword',
-                'routeParameters' => [
-                    'roomId' => $currentStack->attributes->get('roomId'),
-                    'itemId' => $currentUser->getItemId(),
-                ],
-                'extras' => [
-                    'icon' => 'uk-icon-lock uk-icon-small uk-icon-justify',
-                    'user' => $currentUser,
-                ]
-            ])
-            ->setExtra('translation_domain', 'profile');
+            if((isset($authSourceItem) && $authSourceItem->allowChangePassword()) || $currentUser->isRoot()) {
+                $menu->addChild('changePassword', [
+                    'route' => 'commsy_profile_changepassword',
+                    'routeParameters' => [
+                        'roomId' => $currentStack->attributes->get('roomId'),
+                        'itemId' => $currentUser->getItemId(),
+                    ],
+                    'extras' => [
+                        'icon' => 'uk-icon-lock uk-icon-small uk-icon-justify',
+                        'user' => $currentUser,
+                    ]
+                ])
+                ->setExtra('translation_domain', 'profile');
+            }
 
             $menu->addChild('mergeAccounts', [
                 'label' => 'combineAccount',
