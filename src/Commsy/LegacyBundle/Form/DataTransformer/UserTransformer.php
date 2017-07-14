@@ -21,6 +21,14 @@ class UserTransformer implements DataTransformerInterface
      */
     public function transform($userItem)
     {
+
+        // get portal user if in room context
+        if ( !$this->legacyEnvironment->inPortal() ) {
+            $portalUser = $this->legacyEnvironment->getPortalUserItem();
+        } else {
+            $portalUser = $this->legacyEnvironment->getCurrentUserItem();
+        }
+
         $userData = array();
         if ($userItem) {
             $userData['userId'] = $userItem->getUserId();
@@ -37,19 +45,9 @@ class UserTransformer implements DataTransformerInterface
                 $userData['dateOfBirth'] = array();
                 $userData['dateOfBirth']['date'] = new \DateTime($userItem->getBirthday());
             }
-
-            $session_item = $this->legacyEnvironment->getSessionItem();
-            $auth_source_id = $session_item->getValue('auth_source');
-            $auth_source_manager = $this->legacyEnvironment->getAuthSourceManager();
-            $auth_source_item = $auth_source_manager->getItem($auth_source_id);
-            $authentication = $this->legacyEnvironment->getAuthenticationObject();
-            $authManager = $authentication->getAuthManagerByAuthSourceItem($auth_source_item);
-            $authItem = $authManager->getItem($userItem->getUserId());
-            if($authItem && $authItem->getEmail() != '') {
-                $userData['authEmail'] = $authItem->getEmail();
-            }
-
-            $userData['email'] = $userItem->getEmail();
+            $userData['emailRoom'] = $userItem->getEmail();
+            $userData['emailAccount'] = $portalUser->getEmail();
+            $userData['emailChoice'] = $userItem->getUsePortalEmail() ? 'account' : 'roomProfile';
             $userData['hideEmailInThisRoom'] = !$userItem->isEmailVisible();
             $userData['phone'] = $userItem->getTelephone();
             $userData['mobile'] = $userItem->getCellularphone();
@@ -93,7 +91,6 @@ class UserTransformer implements DataTransformerInterface
             {
                 $portalUser = $this->legacyEnvironment->getCurrentUserItem();
             }
-
             $authentication = $userObject->_environment->getAuthenticationObject();
             if($authentication->changeUserID($userData['userId'], $portalUser)) {
                 $session_manager = $this->legacyEnvironment->getSessionManager();
@@ -127,7 +124,13 @@ class UserTransformer implements DataTransformerInterface
                 $userObject->setBirthday("");
             }
 
-            $userObject->setEmail($userData['email']);
+            if ($userData['emailChoice'] === 'account') {
+                $userObject->setUsePortalEmail(1);
+            }
+            else {
+                $userObject->setUsePortalEmail(0);
+                $userObject->setEmail($userData['emailRoom']);
+            }
             if ($userData['hideEmailInThisRoom']) {
                 $userObject->setEmailNotVisible();
             } else {
