@@ -26,7 +26,7 @@ class DeleteType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\IdenticalTo([
-                        'value' => strtoupper($options['data']['confirm_string']),
+                        'value' => mb_strtoupper($options['data']['confirm_string']),
                         'message' => 'The input does not match {{ compared_value }}'
                     ]),
                 ],
