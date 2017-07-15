@@ -1916,7 +1916,7 @@ class cs_environment {
       } else {
          $current_user = $this->getCurrentUserItem();
 
-         if ( $current_user->isUser() ) {
+         if ( $current_user && $current_user->isUser() ) {
             $retour = $current_user->getLanguage();
             if ($retour == 'browser') {
                $retour = $this->getBrowserLanguage();

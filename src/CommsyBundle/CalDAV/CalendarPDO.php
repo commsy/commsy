@@ -70,43 +70,135 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\PDO {
         $userId = str_ireplace('principals/', '', $principalUri);
 
         $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
+        $calendarsService = $this->container->get('commsy.calendars_service');
 
         $userManager = $legacyEnvironment->getUserManager();
         $userArray = $userManager->getAllUserItemArray($userId);
 
-        $contextArray = array();
+        $contextTitlesArray = array();
+        $calendarsArray = array();
         foreach ($userArray as $user) {
-            $contextArray[] = $user->getContextItem();
+            $contextTitlesArray[$user->getContextId()] = $user->getContextItem()->getTitle();
+            $calendarsArray = array_merge($calendarsArray, $calendarsService->getListCalendars($user->getContextItem()->getItemId()));
         }
 
+
+        /*
+
+        Structure of calendars
+
+        1) sabre/dav demo
+        Array
+        (
+            [0] => Array
+                (
+                    [id] => Array
+                        (
+                            [0] => 1
+                            [1] => 1
+                        )
+
+                    [uri] => calendarAdmin
+                    [principaluri] => principals/admin
+                    [{http://calendarserver.org/ns/}getctag] => http://sabre.io/ns/sync/1
+                    [{http://sabredav.org/ns}sync-token] => 1
+                    [{urn:ietf:params:xml:ns:caldav}supported-calendar-component-set] => Sabre\CalDAV\Xml\Property\SupportedCalendarComponentSet Object
+                        (
+                            [components:protected] => Array
+                                (
+                                    [0] => VEVENT
+                                    [1] => VTODO
+                                )
+
+                        )
+
+                    [{urn:ietf:params:xml:ns:caldav}schedule-calendar-transp] => Sabre\CalDAV\Xml\Property\ScheduleCalendarTransp Object
+                        (
+                            [value:protected] => opaque
+                        )
+
+                    [share-resource-uri] => /ns/share/1
+                    [share-access] => 1
+                    [{DAV:}displayname] => calendarAdmin
+                    [{urn:ietf:params:xml:ns:caldav}calendar-description] =>
+                    [{urn:ietf:params:xml:ns:caldav}calendar-timezone] =>
+                    [{http://apple.com/ns/ical/}calendar-order] => 0
+                    [{http://apple.com/ns/ical/}calendar-color] =>
+                )
+
+            2) current CommSy
+            Array
+                (
+                    [id] => Array
+                        (
+                            [0] => 110
+                            [1] => 110
+                        )
+
+                    [uri] => 110
+                    [principaluri] => principals/solth
+                    [{http://calendarserver.org/ns/}getctag] => http://sabre.io/ns/sync/1
+                    [{http://sabredav.org/ns}sync-token] => 1
+                    [{urn:ietf:params:xml:ns:caldav}supported-calendar-component-set] => Sabre\CalDAV\Xml\Property\SupportedCalendarComponentSet Object
+                        (
+                            [components:protected] => Array
+                                (
+                                    [0] => VEVENT
+                                )
+
+                        )
+
+                    [{urn:ietf:params:xml:ns:caldav}schedule-calendar-transp] => Sabre\CalDAV\Xml\Property\ScheduleCalendarTransp Object
+                        (
+                            [value:protected] => opaque
+                        )
+
+                    [share-resource-uri] => /ns/share/110
+                    [share-access] => 1
+                    [{DAV:}displayname] => Mein persönlicher Raum-110-Kalender
+                    [{urn:ietf:params:xml:ns:caldav}calendar-description] =>
+                    [{urn:ietf:params:xml:ns:caldav}calendar-timezone] =>
+                    [{http://apple.com/ns/ical/}calendar-order] => 1
+                    [{http://apple.com/ns/ical/}calendar-color] =>
+                )
+
+        )
+        */
+
+
         $calendars = [];
-        foreach ($contextArray as $context) {
+        foreach ($calendarsArray as $calendar) {
 
-            $components = [];
+            if (!$calendar->getExternalUrl()) {
 
-            $calendar = [
-                'id'                                                                 => [(int)$context->getItemId(), (int)$context->getItemId()],
-                'uri'                                                                => $context->getTitle(),
-                'principaluri'                                                       => $principalUri,
-                '{' . \Sabre\CalDAV\Plugin::NS_CALENDARSERVER . '}getctag'                  => 'http://sabre.io/ns/sync/0',
-                '{http://sabredav.org/ns}sync-token'                                 => '0',
-                '{' . \Sabre\CalDAV\Plugin::NS_CALDAV . '}supported-calendar-component-set' => new \Sabre\CalDAV\Xml\Property\SupportedCalendarComponentSet($components),
-                '{' . \Sabre\CalDAV\Plugin::NS_CALDAV . '}schedule-calendar-transp'         => new \Sabre\CalDAV\Xml\Property\ScheduleCalendarTransp('opaque'),
-                'share-resource-uri'                                                 => '/ns/share/' . $context->getItemId(),
-            ];
+                $components = [
+                    'VEVENT'
+                ];
 
-            $calendar['share-access'] = 1;
+                $tempCalendar = [
+                    'id' => [(int)$calendar->getId(), (int)$calendar->getId()],
+                    'uri' => $calendar->getId(),
+                    'principaluri' => $principalUri,
+                    '{' . \Sabre\CalDAV\Plugin::NS_CALENDARSERVER . '}getctag' => 'http://sabre.io/ns/sync/1', // Allow sync
+                    '{http://sabredav.org/ns}sync-token' => '1', // Allow sync
+                    '{' . \Sabre\CalDAV\Plugin::NS_CALDAV . '}supported-calendar-component-set' => new \Sabre\CalDAV\Xml\Property\SupportedCalendarComponentSet($components),
+                    '{' . \Sabre\CalDAV\Plugin::NS_CALDAV . '}schedule-calendar-transp' => new \Sabre\CalDAV\Xml\Property\ScheduleCalendarTransp('opaque'),
+                    'share-resource-uri' => '/ns/share/' . $calendar->getId(),
+                ];
 
-            $calendar['{DAV:}displayname']                                   = $context->getTitle();
-            $calendar['{urn:ietf:params:xml:ns:caldav}calendar-description'] = $context->getTitle();
-            $calendar['{urn:ietf:params:xml:ns:caldav}calendar-timezone']    = 'Hamburg';
-            $calendar['{http://apple.com/ns/ical/}calendar-order']           = '1';
-            $calendar['{http://apple.com/ns/ical/}calendar-color']           = '';
+                $tempCalendar['share-access'] = 1;
 
-            foreach ($this->propertyMap as $xmlName => $dbName) {
+                $tempCalendar['{DAV:}displayname'] = $contextTitlesArray[$calendar->getContextId()].'-'.$calendar->getId().'-'.$calendar->getTitle();
+                $tempCalendar['{urn:ietf:params:xml:ns:caldav}calendar-description'] = '';
+                $tempCalendar['{urn:ietf:params:xml:ns:caldav}calendar-timezone'] = '';
+                $tempCalendar['{http://apple.com/ns/ical/}calendar-order'] = '1';
+                $tempCalendar['{http://apple.com/ns/ical/}calendar-color'] = '';
+
+                foreach ($this->propertyMap as $xmlName => $dbName) {
+                }
+
+                $calendars[] = $tempCalendar;
             }
-
-            $calendars[] = $calendar;
         }
 
         return $calendars;

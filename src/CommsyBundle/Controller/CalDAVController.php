@@ -21,7 +21,7 @@ use
 class CalDAVController extends Controller
 {
     /**
-     * @Route("/{portalId}/caldav/")
+     * @Route("/{portalId}/")
      * @Template()
      */
     public function caldavAction($portalId, Request $request) {
@@ -31,51 +31,54 @@ class CalDAVController extends Controller
     }
 
     /**
-     * @Route("/{portalId}/caldav/{userId}/")
-     * @Template()
+     * @ Route("/{portalId}/caldav/{userId}/", requirements={
+     *     "userId": "^((?!calendars).)*$"
+     * }))
+     *
+     * @ Template()
      */
-    public function caldavPrincipalAction($portalId, $userId, Request $request) {
-        $this->caldavServer($portalId)->exec();
+    /*public function caldavBaseAction($portalId, $userId, Request $request) {
+        $this->caldavServer($portalId, $userId)->exec();
 
         return new Response();
-    }
+    } */
 
     /**
-     * @Route("/{portalId}/caldav/calendars/{userId}/")
+     * @Route("/{portalId}/calendars/{userId}/")
      * @Template()
      */
     public function caldavCalendarsAction($portalId, $userId, Request $request) {
-        $this->caldavServer($portalId)->exec();
+        $this->caldavServer($portalId, $userId)->exec();
 
         return new Response();
     }
 
     /**
-     * @Route("/{portalId}/caldav/calendars/{userId}/{calendarId}/")
+     * @Route("/{portalId}/calendars/{userId}/{calendarId}/")
      * @Template()
      */
     public function caldavCalendarAction($portalId, $userId, $calendarId, Request $request) {
-        $this->caldavServer($portalId)->exec();
+        $this->caldavServer($portalId, $userId)->exec();
 
         return new Response();
     }
 
     /**
-     * @Route("/{portalId}/caldav/calendars/{userId}/{calendarId}/{object}/")
+     * @Route("/{portalId}/calendars/{userId}/{calendarId}/{object}/")
      * @Template()
      */
     public function caldavCalendarObjectAction($portalId, $userId, $calendarId, $object, Request $request) {
-        $this->caldavServer($portalId)->exec();
+        $this->caldavServer($portalId, $userId)->exec();
 
         return new Response();
     }
 
     /**
-     * @Route("/{portalId}/caldav/principals/{userId}/")
+     * @Route("/{portalId}/principals/{userId}/")
      * @Template()
      */
     public function caldavPrincipalsAction($portalId, $userId, Request $request) {
-        $this->caldavServer($portalId)->exec();
+        $this->caldavServer($portalId, $userId)->exec();
 
         return new Response();
     }
@@ -85,7 +88,7 @@ class CalDAVController extends Controller
         throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
     }
 
-    private function caldavServer ($portalId) {
+    private function caldavServer ($portalId, $userId = '') {
         $commsyPdo = new \PDO('mysql:dbname=commsy;host=commsy_db', 'commsy', 'commsy');
         $pdo = new \PDO('mysql:dbname=caldav;host=commsy_db', 'commsy', 'commsy');
 
@@ -95,18 +98,19 @@ class CalDAVController extends Controller
         //require_once '../../../vendor/autoload.php';
 
         // Backends
-        if (false) {
+        if ($userId != 'admin') {
             $authBackend = new AuthPDO($commsyPdo, $this->container, $portalId);
             $authBackend->setRealm('CommSy');
-            $principalBackend = new PrincipalPDO($commsyPdo, $this->container, $portalId);
+            //$principalBackend = new PrincipalPDO($commsyPdo, $this->container, $portalId);
+            $principalBackend = new DAVACL\PrincipalBackend\PDO($pdo);
             $calendarBackend = new CalendarPDO($commsyPdo, $this->container, $portalId);
         } else {
-            //$authBackend = new DAV\Auth\Backend\PDO($pdo);
-            $authBackend = new AuthPDO($commsyPdo, $this->container, $portalId);
-            $authBackend->setRealm('CommSy');
+            $authBackend = new DAV\Auth\Backend\PDO($pdo);
+            //$authBackend = new AuthPDO($commsyPdo, $this->container, $portalId);
+            //$authBackend->setRealm('CommSy');
             $principalBackend = new DAVACL\PrincipalBackend\PDO($pdo);
-            //$calendarBackend = new CalDAV\Backend\PDO($pdo);
-            $calendarBackend = new CalendarPDO($commsyPdo, $this->container, $portalId);
+            $calendarBackend = new CalDAV\Backend\PDO($pdo);
+            //$calendarBackend = new CalendarPDO($commsyPdo, $this->container, $portalId);
         }
 
         // Directory tree
@@ -122,7 +126,7 @@ class CalDAVController extends Controller
         // You are highly encouraged to set your WebDAV server base url. Without it,
         // SabreDAV will guess, but the guess is not always correct. Putting the
         // server on the root of the domain will improve compatibility.
-        $server->setBaseUri('/app_dev.php/'.$portalId.'/caldav/');
+        $server->setBaseUri('/app_dev.php/'.$portalId.'/');
 
         // Authentication plugin
         $authPlugin = new DAV\Auth\Plugin($authBackend,'SabreDAV');
@@ -137,8 +141,8 @@ class CalDAVController extends Controller
         #$server->addPlugin($carddavPlugin);
 
         // ACL plugin
-        #$aclPlugin = new DAVACL\Plugin();
-        #$server->addPlugin($aclPlugin);
+        $aclPlugin = new DAVACL\Plugin();
+        $server->addPlugin($aclPlugin);
 
         // Support for html frontend
         $browser = new DAV\Browser\Plugin();
