@@ -72,6 +72,10 @@
                 <source>Room image</source>
                 <target>Room image</target>
             </trans-unit>
+            <trans-unit id="room_logo">
+                <source>Room logo</source>
+                <target>Room logo</target>
+            </trans-unit>
             <trans-unit id="13">
                 <source>Access check</source>
                 <target>Access check</target>
@@ -338,7 +342,19 @@
             </trans-unit>
             <trans-unit id="room_image_text">
                 <source>Room image text</source>
-                <target>You can either use the current themes default image or upload your own picture file to use as background for this rooms home page. To achieve optimal results the aspect ratio of the image should not be higher than 5:1 and the horizontal image resolution should be at least 1300 pixel.</target>
+                <target>You can either use the current themes default image or upload your own picture file to use as background for this rooms home page.</target>
+            </trans-unit>
+            <trans-unit id="room_image_tip">
+                <source>Room image tip</source>
+                <target>To achieve optimal results the aspect ratio of the image should not be higher than 5:1 and the horizontal image resolution should be at least 1300 pixel.</target>
+            </trans-unit>
+            <trans-unit id="room_logo_text">
+                <source>Room logo text</source>
+                <target>The room logo is superimposed over the room background image on the start page.</target>
+            </trans-unit>
+            <trans-unit id="room_logo_tip">
+                <source>Room logo tip</source>
+                <target>Images with transparent background are especially well suited as room logo.</target>
             </trans-unit>
             <trans-unit id="theme_default">
                 <source>default</source>
