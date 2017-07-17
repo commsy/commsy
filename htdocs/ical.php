@@ -223,8 +223,8 @@ if (isset($_GET['cid'])) {
                 while ($temp_user_item) {
                     if ($temp_user_item->getItemID() == $user_id) {
 
-                        $email = $userItem->getEmail();
-                        $fullName = $userItem->getFullName();
+                        $email = $temp_user_item->getEmail();
+                        $fullName = $temp_user_item->getFullName();
 
                         if (!empty($email) && !empty($fullName)) {
                             $vEvent->addAttendee("MAILTO:$email", [
