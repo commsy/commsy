@@ -35,6 +35,34 @@ class FileController extends Controller
         return $response;
     }
 
+
+    /**
+     * @Route("/room/{roomId}/logo", name="getLogo")
+     */
+    public function getLogoAction($roomId)
+    {
+        $roomService = $this->get('commsy_legacy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
+
+        $fileName = $roomItem->getLogoFilename();
+        $filePath = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId) . "/" . $fileName;
+
+        if(file_exists($filePath)) {
+            $content = file_get_contents($filePath);
+
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mimeType = finfo_file($finfo, $filePath);
+
+            $response = new Response($content, Response::HTTP_OK, array('content-type' => $mimeType));
+            $response->headers->set('Content-Disposition', $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,$fileName));
+        }
+        else {
+            $response = new Response("Logo image not found!", Response::HTTP_NOT_FOUND);
+        }
+
+        return $response;
+    }
+
     /**
     * @Route(
             "/room/{roomId}/{imageType}/background/", 

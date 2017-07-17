@@ -225,6 +225,28 @@ class SettingsController extends Controller
                 $roomItem->setBGImageFilename('');
             }
 
+            $room_logo_data = $form['room_logo']->getData();
+
+            if(!is_null($room_logo_data['room_logo_data'])){
+                $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
+                if(!is_dir($saveDir)){
+                    mkdir($saveDir, 0777, true);
+                }
+                $fileName = "";
+                $data = $room_logo_data['room_logo_data'];
+                list($fileName, $type, $date) = explode(";", $data);
+                list(, $data) = explode(",", $data);
+                list(, $extension) = explode("/", $type);
+                $data = base64_decode($data);
+                $fileName = "cid" . $roomId . "_logo_" . $fileName;
+                $absoluteFilepath = $saveDir . "/" . $fileName;
+                file_put_contents($absoluteFilepath, $data);
+                $roomItem->setLogoFilename($fileName);
+            }
+            else {
+                $roomItem->setLogoFilename('');
+            }
+
             $roomItem->save();
 
             // persist
@@ -236,11 +258,13 @@ class SettingsController extends Controller
 
         $backgroundImageCustom = $this->generateUrl("getBackground", array('roomId' => $roomId, 'imageType' => 'custom'));
         $backgroundImageTheme = $this->generateUrl("getBackground", array('roomId' => $roomId, 'imageType' => 'theme'));
+        $logoImage = $this->generateUrl("getLogo", array('roomId' => $roomId));
 
         return array(
             'form' => $form->createView(),
             'bgImageFilepathCustom' => $backgroundImageCustom,
             'bgImageFilepathTheme' => $backgroundImageTheme,
+            'logoImageFilepath' => $logoImage,
         );
     }
     

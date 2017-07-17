@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
@@ -90,6 +91,19 @@ class AppearanceSettingsType extends AbstractType
                 //     'label_attr' => array('class' => 'uk-form-label'),
                 //     'value' => 'delete_bg_image',
                 // ))
+            )
+            ->add(
+                $builder->create('room_logo', FormType::class, array('required' => false))
+                ->add('activate', CheckboxType::class, [
+                     'label_attr' => array('class' => 'uk-form-label'),
+                ])
+                ->add('room_logo_upload', FileType::class, array(
+                    'attr' => array(
+                        'required' => false,
+                        'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
+                    ),
+                ))
+                ->add('room_logo_data', HiddenType::class, [])
             )
             ->add('save', SubmitType::class, array(
                 'position' => 'last',

@@ -5,7 +5,11 @@
 {% block cover %}
     <div id="cover" class="uk-cover-background uk-position-relative cs-cover-background" aria-hidden="false">
         {% if bgImageFilepath is not empty %}
-            <img src="{{ bgImageFilepath }}">
+            <img id="room_image" src="{{ bgImageFilepath }}">
+        {% endif %}
+
+        {% if logoImageFilepath is not empty %}
+            <img id="room_logo" src="{{ logoImageFilepath }}" style="left: 20px; top: 20px; position: absolute;">
         {% endif %}
 
         <div class="uk-position-cover uk-grid cs-cover-grid">
@@ -215,12 +219,12 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-    $("#cover img").on('load', function(){
+    $("#room_image").on('load', function(){
         var cover_width = $("#cover").width();
         var cover_height = $("#cover").height();
 
-        var img_width = $("#cover img").width();
-        var img_height = $("#cover img").height();
+        var img_width = $("#room_image").width();
+        var img_height = $("#room_image").height();
 
         // determines image height as imgHeight = coverHeight * heightFactor;
         var heightFactor = 1.2;
@@ -247,30 +251,30 @@
         img_width = parseInt(img_width);
         img_height = parseInt(img_height);
 
-        $("#cover img").css({'width' : img_width, 'height' : img_height, 'max-width' : 'none'});
+        $("#room_image").css({'width' : img_width, 'height' : img_height, 'max-width' : 'none'});
 
         var marginOffset = -1*(Math.abs(img_height - cover_height)/2);
-        $("#cover img").css(marginSelect, marginOffset);
+        $("#room_image").css(marginSelect, marginOffset);
 
         // horizontically center image if its wider than the cover area
         if(img_width > cover_width){
-            $("#cover img").css('margin-left', -1*(Math.abs(img_width - cover_width)/2));
+            $("#room_image").css('margin-left', -1*(Math.abs(img_width - cover_width)/2));
         }
 
         // activate parallax scrolling
         if(window.innerHeight > img_height){
-            $("#cover img").attr("data-uk-parallax", "{y: '"+(transDir * Math.abs(img_height - cover_height))+"'}");
+            $("#room_image").attr("data-uk-parallax", "{y: '"+(transDir * Math.abs(img_height - cover_height))+"'}");
         }
 
         window.onresize = function(e){
-            var activated = typeof($("#cover img").attr('data-uk-parallax'));
+            var activated = typeof($("#room_image").attr('data-uk-parallax'));
             var heightDiff = this.innerHeight - img_height;
             if(heightDiff < 0 && activated !== 'undefined'){
                 // FIXME: this does not seem to deactive the parallax scrolling effect!
-                $("#cover img").removeAttr("data-uk-parallax");
+                $("#room_image").removeAttr("data-uk-parallax");
             }
             else if(heightDiff >= 0 && activated === 'undefined'){
-                $("#cover img").attr("data-uk-parallax", "{y: '"+(transDir * Math.abs(img_height - cover_height))+"'}");
+                $("#room_image").attr("data-uk-parallax", "{y: '"+(transDir * Math.abs(img_height - cover_height))+"'}");
             }
         }
     });

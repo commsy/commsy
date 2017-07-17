@@ -80,6 +80,11 @@ class RoomController extends Controller
         else
             $backgroundImage = $this->generateUrl("getBackground", array('roomId' => $roomId, 'imageType' => 'theme'));
 
+        $logoImage = null;
+        if($roomItem->getLogoFilename()) {
+            $logoImage = $this->generateUrl("getLogo", array('roomId' => $roomId));
+        }
+
         // TODO: calculate parallax-scrolling range for home.html.twig depending on image dimensions!
         $roomService = $this->get('commsy_legacy.room_service');
         $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
@@ -153,6 +158,7 @@ class RoomController extends Controller
             'showCategories' => $roomItem->withTags(),
             'countAnnouncements' => $countAnnouncements,
             'bgImageFilepath' => $backgroundImage,
+            'logoImageFilepath' => $logoImage,
             'serviceContact' => $serviceContact,
             'rss' => $rss,
             'wiki' => $wiki,

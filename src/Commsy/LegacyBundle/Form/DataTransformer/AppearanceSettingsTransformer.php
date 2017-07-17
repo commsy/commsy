@@ -30,13 +30,13 @@ class AppearanceSettingsTransformer implements DataTransformerInterface
             $roomData['dates_status'] = $roomItem->getDatesPresentationStatus();
             $roomData['theme'] = $roomItem->getColorArray()['schema'];
             // room image
-            $backgroundImageFilename = $roomItem->getBGImageFilename();
-            if($backgroundImageFilename){
+            if($roomItem->getBGImageFilename()){
                 $roomData['room_image']['choice'] = 'custom_image';
             }
             else{
                 $roomData['room_image']['choice'] = 'default_image';
             }
+            $roomData['room_logo']['activate'] = !empty($roomItem->getLogoFilename());
         }
         
         return $roomData;

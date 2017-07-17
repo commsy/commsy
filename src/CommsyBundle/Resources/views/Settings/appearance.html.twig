@@ -15,20 +15,25 @@
 
                 <div>
                     {{ form_start(form) }}
+                        <!-- Events -->
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Configure events'|trans({}, 'settings') }}</h1>
                             <div style="margin-bottom: 25px;">{{ 'Configure events text'|trans({}, 'settings') }}</div>
                             {{ form_row(form.dates_status) }}
                         </div>
+
+                        <!-- Theme -->
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Configure color theme'|trans({}, 'settings') }}</h1>
                             <div style="margin-bottom: 25px;">{{ 'Configure color theme text'|trans({}, 'settings') }}</div>
                             {{ form_row(form.theme) }}
                         </div>
 
+                        <!-- Room image -->
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Room image'|trans({}, 'settings') }}</h1>
-                            <div style="margin-bottom: 25px;">{{ 'Room image text'|trans({}, 'settings') }}</div>
+                            <div>{{ 'Room image text'|trans({}, 'settings') }}</div>
+                            <div style="margin-bottom: 25px;"><em>{{ 'tip'| trans({}, 'messages') }}:</em> {{ 'Room image tip'|trans({}, 'settings') }}</div>
 
                             {{ form_widget(form.room_image.choice) }}
 
@@ -70,6 +75,25 @@
                             {{ form_row(form.room_image.room_image_data) }}
                         </div>
 
+                        <!-- Room logo -->
+                        <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                            <h1 class='uk-panel-title'>{{ 'Room logo'|trans({}, 'settings') }}</h1>
+                            <div>{{ 'Room logo text'|trans({}, 'settings') }}</div>
+                            <div style="margin-bottom: 25px;"><em>{{ 'tip'|trans({}, 'messages')}}:</em> {{ 'Room logo tip'|trans({}, 'settings') }}</div>
+                            {{ form_row(form.room_logo.activate) }}
+                            <div id="logo_preview" class="uk-form-controls uk-cover-background uk-position-relative">
+                                {% if logoImageFilepath is not empty %}
+                                    <img id="logoImage" style="width: 200px; height: 200px;" src="{{logoImageFilepath}}" />
+                                {% else %}
+                                    <img id="logoImage" style="width: 200px; height: 200px;" src="" />
+                                {% endif %}
+                                <div class="uk-position-cover" style="width: 200px; height: 200px; opacity: 0.7;">
+                                    {{ form_widget(form.room_logo.room_logo_upload) }}
+                                </div>
+                            </div>
+                        </div>
+                        {{ form_row(form.room_image.room_image_data) }}
+
                     {{ form_end(form) }}
                 </div>
                 
@@ -97,12 +121,13 @@
         spinner.className = "uk-icon-refresh uk-icon-spin uk-icon-medium uk-margin-small-left";
         spinner.style = "display: none;";
 
-        let positionCover = document.getElementsByClassName('uk-position-cover');
-        let coverFormControls = positionCover[0].getElementsByClassName('uk-form-controls')[0];
+        let positionCovers = document.getElementsByClassName('uk-position-cover');
+        for(var i = 0; i < positionCovers.length; i++) {
+            let coverFormControls = positionCovers[i].getElementsByClassName('uk-form-controls')[0];
+            coverFormControls.style.marginLeft = "0px";
+        }
         var themeSelect = document.getElementById("appearance_settings_theme");
         themeSelect.parentElement.appendChild(spinner);
-
-        coverFormControls.style.marginLeft = "0px";
 
         // let deleteRow = document.getElementById('appearance_settings_room_image_delete_custom_image').parentElement.parentElement;
         // let repeatRow = document.getElementById('appearance_settings_room_image_repeat_x').parentElement.parentElement;
@@ -116,6 +141,10 @@
             // toggleUploadListener(this, deleteRow, scrollRow, repeatRow);
             // toggleUploadListener(this, deleteRow, repeatRow);
             toggleUploadListener(this);
+        }
+
+        document.getElementById('appearance_settings_room_logo_activate').onchange = function(event) {
+            toggleLogoUploadListener(this.checked);
         }
 
         themeSelect.onchange = function(event) {
@@ -142,35 +171,104 @@
         // toggleUploadListener(document.getElementById('appearance_settings_room_image_choice'), deleteRow, scrollRow, repeatRow);
         // toggleUploadListener(document.getElementById('appearance_settings_room_image_choice'), deleteRow, repeatRow);
         toggleUploadListener(document.getElementById('appearance_settings_room_image_choice'));
+        toggleLogoUploadListener(document.getElementById('appearance_settings_room_logo_activate').checked);
     };
 
-    function setBackgroundImage(f, previewImage){
+    function setImageData(f, previewImage, dataElementId){
         // TODO: set threshold to sensible value (e.g. the real upload size limit of the server)!
         if(f.size > 2000000){
             alert("File size too large ("+(f.size / 1000) +" KB)! \n This service accepts image files up to 500 KB only!");
             return false;
         }
         else if(f.type.substring(0, 5) != 'image'){
-            alert("Files of type '"+f.type+"' can not be used as background images!");
+            alert("'"+f.type+"' is not a valid image type!");
             return false;
         }
         let reader = new FileReader();
-        reader.onload = function(event){
+        reader.onload = function(event) {
             previewImage.src = event.target.result;
-            document.getElementById('appearance_settings_room_image_room_image_data').value = f.name + ";" + event.target.result;
-
-            // document.getElementById("imageInfo").innerHTML = 
-            //         '<li>Name: '+f.name+
-            //         '</li><li>Type: '+f.type+
-            //         '</li><li>Size: '+f.size+' bytes'+
-            //         '</li><li>width: '+previewImage.width+
-            //         '</li><li>height: '+previewImage.height+
-            //         '</li><li>naturalWidth: '+previewImage.naturalWidth+
-            //         '</li><li>naturalHeight: '+previewImage.naturalHeight+
-            //         '</li><li>aspect ratio: '+(previewImage.naturalWidth / previewImage.naturalHeight)+
-            //         '</li><li>Data: '+event.target.result.substring(0,50)+'...</li>';
+            document.getElementById(dataElementId).value = f.name + ";" + event.target.result;
         }
         reader.readAsDataURL(f);
+    }
+
+    function toggleLogoUploadListener(activateUpload) {
+        let logoPreview = document.getElementById("logo_preview");
+
+        logoPreview.querySelector('input[type="file"]').disabled = !activateUpload;
+        logoPreview.style.display = activateUpload ? 'block' : 'none';
+
+        if (activateUpload) {
+            logoPreview.onmouseover = function(e){
+                e.preventDefault();
+                this.querySelector(".uk-position-cover").style.opacity = "0.9";
+                return false;
+            };
+
+            logoPreview.onmouseleave = function(e){
+                e.preventDefault();
+                this.querySelector(".uk-position-cover").style.opacity = "0.7";
+                return false;
+            };
+
+            logoPreview.ondragover = function(e){
+                e.preventDefault();
+                this.querySelector(".uk-position-cover").style.opacity = "0.9";
+                return false;
+            };
+
+            logoPreview.ondragleave = function(e){
+                e.preventDefault();
+                this.querySelector(".uk-position-cover").style.opacity = "0.7";
+                return false;
+            };
+
+            logoPreview.ondragend = function(e){
+                e.preventDefault();
+                return false;
+            };
+            logoPreview.ondrop = function(e){
+                e.preventDefault();
+                this.querySelector(".uk-position-cover").style.opacity = "0.7";
+                setImageData(e.dataTransfer.files[0], logoPreview.querySelector('img'), 'appearance_settings_room_logo_room_logo_data');
+            };
+
+            logoPreview.querySelector('input[type="file"]').onchange = function(e){
+                setImageData(e.target.files[0], logoPreview.querySelector('img'), 'appearance_settings_room_logo_room_logo_data');
+            };
+        }
+        else {
+            logoPreview.onmouseover = function(e){
+                e.preventDefault();
+                return false;
+            };
+
+            logoPreview.onmouseleave = function(e){
+                e.preventDefault();
+                return false;
+            };
+
+            logoPreview.ondragover = function(e){
+                e.preventDefault();
+                return false;
+            };
+            logoPreview.ondragleave = function(e){
+                e.preventDefault();
+                return false;
+            };
+            logoPreview.ondragend = function(e){
+                e.preventDefault();
+                return false;
+            };
+            logoPreview.ondrop = function(e){
+                e.preventDefault();
+                return false;
+            };
+            logoPreview.querySelector('input[type="file"]').onchange = function(e){
+                e.preventDefault();
+                return false;
+            };
+        }
     }
 
     // function toggleUploadListener(containerElement, deleteRow, scrollRow, repeatRow){
@@ -263,11 +361,11 @@
             bgPreview.ondrop = function(e){
                 e.preventDefault();
                 this.querySelector(".uk-position-cover").style.opacity = "0.7";
-                setBackgroundImage(e.dataTransfer.files[0], bgPreview.querySelector('img'));
+                setImageData(e.dataTransfer.files[0], bgPreview.querySelector('img'), 'appearance_settings_room_image_room_image_data');
             };
 
             bgPreview.querySelector('input[type="file"]').onchange = function(e){
-                setBackgroundImage(e.target.files[0], bgPreview.querySelector('img'));
+                setImageData(e.target.files[0], bgPreview.querySelector('img'), 'appearance_settings_room_image_room_image_data');
             };
         }
     }
