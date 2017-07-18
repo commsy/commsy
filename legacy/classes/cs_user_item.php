@@ -596,11 +596,34 @@ class cs_user_item extends cs_item {
    }
 
    /** get email of the user
-    * this method returns the email of the user
+    * this method returns either the room email
+    * of the user or the account email of the
+    * user, depending on whether the correponding
+    * flag in the database is set or not.
     *
     * @return string email of the user
     */
    function getEmail () {
+      if($this->getUsePortalEmail()) {
+        $portalUser = null;
+        if( !$this->_environment->inPortal() ) {
+          $portalUser = $this->_environment->getPortalUserItem();
+        }
+        else {
+          $portalUser = $this->_environment->getCurrentUserItem();
+        }
+        return $portalUser->getRoomEmail();
+      }
+      else {
+        return $this->_getValue('email');
+      }
+   }
+
+   /** get room email of the user
+    *
+    * @return string room email of user
+    */
+   function getRoomEmail() {
       return $this->_getValue('email');
    }
 
