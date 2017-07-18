@@ -238,6 +238,10 @@
                 <source>Mandatory</source>
                 <target>mandatory assignment</target>
             </trans-unit>
+            <trans-unit id="ShowExpanded">
+                <source>Show expanded</source>
+                <target>show expanded</target>
+            </trans-unit>
             <trans-unit id="access">
                 <source>Edit</source>
                 <target>Access to categories management for moderator/s only</target>
