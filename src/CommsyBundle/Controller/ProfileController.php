@@ -189,12 +189,11 @@ class ProfileController extends Controller
             $formData = $form->getData();
             $userItem = $userTransformer->applyTransformation($userItem, $formData);
             $userItem->save();
-
             $userList = $userItem->getRelatedUserList();
             $tempUserItem = $userList->getFirst();
             while ($tempUserItem) {
                 if ($formData['emailChangeInAllContexts']) {
-                    $tempUserItem->setEmail($formData['email']);
+                    $tempUserItem->setEmail($formData['emailRoom']);
                 }
                 if ($formData['hideEmailInAllContexts']) {
                     if ($formData['hideEmailInThisRoom']) {

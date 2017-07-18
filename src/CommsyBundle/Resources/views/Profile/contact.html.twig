@@ -19,20 +19,36 @@
                         {{ form_errors(form) }}
                         <div class="uk-panel uk-margin-large-bottom">
                             <table class="uk-table">
+                                <h1 class='uk-panel-title'>{{ 'email'|trans({}, 'profile') }}</h1>
+                                <div style="margin-bottom: 10px;">{{ 'Email choice text'|trans({}, 'profile') }}</div>
                                 <tr>
-                                    <td>{{ form_row(form.email) }} {{ form_row(form.emailRoom) }} {{ form_row(form.emailAccount) }}</td>
-                                    <td>{{ form_row(form.emailChangeInAllContexts) }}</td>
+                                    <td>
+                                        <label class="uk-form-label">
+                                            {{ form_widget(form.emailChoice.0) }} {{ form_label(form.emailChoice.0) }}:
+                                        </label>
+                                        <div class="uk-form-controls" style="margin-top: 5px;">
+                                            {{ form.emailAccount.vars.value }}
+                                        </div>
+                                    </td>
+                                    <td rowspan="2" style="vertical-align: middle;">{{ form_row(form.emailChangeInAllContexts) }}</td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <div id="room_profile_contact_emailChoice" class="uk-form-controls">
-                                            {{ form_label(form.emailChoice.0) }} {{ form_widget(form.emailChoice.0) }} {{ form_label(form.emailChoice.1) }} {{ form_widget(form.emailChoice.1) }}
-                                        </div>
+                                        <label class="uk-form-label">
+                                            {{ form_widget(form.emailChoice.1) }} {{ form_label(form.emailChoice.1) }}:
+                                        </label>
+                                        {{ form_widget(form.emailRoom) }}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>{{ form_row(form.hideEmailInThisRoom) }}</td>
                                     <td>{{ form_row(form.hideEmailInAllContexts) }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><hr/></td>
+                                </tr>
+                                <tr>
+                                    <td><h1 class='uk-panel-title'>{{ 'phone'|trans({}, 'profile') }}</h1></td>
                                 </tr>
                                 <tr>
                                     <td>{{ form_row(form.phone) }}</td>
@@ -41,6 +57,12 @@
                                 <tr>
                                     <td>{{ form_row(form.mobile) }}</td>
                                     <td>{{ form_row(form.mobileChangeInAllContexts) }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><hr/></td>
+                                </tr>
+                                <tr>
+                                    <td><h1 class='uk-panel-title'>{{ 'Additional'|trans({}, 'menu') }}</h1></td>
                                 </tr>
                                 <tr>
                                     <td>{{ form_row(form.skype) }}</td>
@@ -73,28 +95,4 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript">
-        window.onload = function() {
-            toggleEmailChoice(document.getElementById('room_profile_contact_emailChoice'));
-            document.getElementById('room_profile_contact_emailChoice').onchange = function(event) {
-                toggleEmailChoice(this);
-            }
-        }
-
-        function toggleEmailChoice(choiceElement) {
-            let emailChoice = choiceElement.querySelector('input:checked').value;
-            let contactEmail = document.getElementById('room_profile_contact_email');
-            let roomEmail = document.getElementById('room_profile_contact_emailRoom');
-            let accountEmail = document.getElementById('room_profile_contact_emailAccount');
-            let changeInAllContexts = document.getElementById('room_profile_contact_emailChangeInAllContexts');
-            if (emailChoice === 'account') {
-                contactEmail.value = accountEmail.value;
-                contactEmail.disabled = changeInAllContexts.disabled = true;
-            } else if (emailChoice === 'roomProfile') {
-                contactEmail.value = roomEmail.value;
-                contactEmail.disabled = changeInAllContexts.disabled = false;
-            }
-        }
-
-    </script>
 {% endblock content %}

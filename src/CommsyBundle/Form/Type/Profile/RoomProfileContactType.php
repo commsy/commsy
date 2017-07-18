@@ -46,12 +46,11 @@ class RoomProfileContactType extends AbstractType
         $this->userItem = $userManager->getItem($options['itemId']);
 
         $builder
-            ->add('email', TextType::class, array(
+            ->add('emailRoom', TextType::class, array(
                 'label'    => 'email',
                 'required' => true,
             ))
             ->add('emailAccount', HiddenType::class)
-            ->add('emailRoom', HiddenType::class)
             ->add('emailChoice', ChoiceType::class, array(
                 'label'    => false,
                 'expanded' => true,
