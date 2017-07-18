@@ -2003,9 +2003,9 @@ class cs_page_guide_view extends cs_page_view {
    							<span id="tm_user">
    		';
    		
-   		if ( !$currentUser->isReallyGuest() )
+   		if ( !$currentUser->isReallyGuest() && !$currentUser->isRoot() )
    		{
-   			$html .= 			$translator->getMessage("COMMON_WELCOME") . ", " . mb_substr($currentUser->getFullName(), 0, 20);
+   			$html .= 			'<a id="tm_user" href="/room/'.$currentUser->getOwnRoom()->getItemId().'/user/'.$currentUser->getRelatedPrivateRoomUserItem()->getItemId().'/personal">'.$translator->getMessage("COMMON_WELCOME") . ", " . mb_substr($currentUser->getFullName(), 0, 20).'</a>';
    		}
    		else
    		{
