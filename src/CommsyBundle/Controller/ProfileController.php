@@ -91,8 +91,12 @@ class ProfileController extends Controller
             return $this->redirectToRoute('commsy_profile_general', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
+        $roomService = $this->get('commsy_legacy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
+
         return array(
             'roomId' => $roomId,
+            'roomTitle' => $roomItem->getTitle(),
             'user' => $userItem,
             'form' => $form->createView(),
         );

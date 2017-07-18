@@ -262,7 +262,7 @@
             </trans-unit>
             <trans-unit id="profile_image_description">
                 <source>profileImageDescription</source>
-                <target>Ihr Profilbild wird neben Ihren Einträgen und Kommentaren im Raum %s angezeigt. Sie können für jeden Raum, in dem Sie Mitglied sind, ein eigenes Profilbild auswählen oder es über Option "in allen Räumen ändern" global konfigurieren.</target>
+                <target>Ihr Profilbild wird neben Ihren Einträgen und Kommentaren im Raum "%s" angezeigt. Sie können für jeden Raum, in dem Sie Mitglied sind, ein eigenes Profilbild auswählen oder es über Option "in allen Räumen ändern" global konfigurieren.</target>
             </trans-unit>
             <trans-unit id="language_description">
                 <source>languageDescription</source>
