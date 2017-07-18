@@ -719,13 +719,18 @@ class cs_material_item extends cs_item {
       $this->_version_id_changed = false;
       $this->_changed = array();
 
-      global $symfonyContainer;
-      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.material');
-      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('CommsyBundle:Materials');
-
-      $this->replaceElasticItem($objectPersister, $repository);
+      $this->updateElastic();
    }
+
+    public function updateElastic()
+    {
+        global $symfonyContainer;
+        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.material');
+        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+        $repository = $em->getRepository('CommsyBundle:Materials');
+
+        $this->replaceElasticItem($objectPersister, $repository);
+    }
 
    function _saveBuzzwords() {
       if ( !isset($this->_setBuzzwordsByIDs) ) {

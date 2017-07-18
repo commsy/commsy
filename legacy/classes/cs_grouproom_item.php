@@ -184,13 +184,18 @@ class cs_grouproom_item extends cs_room_item {
          $this->initTagRootItem();
       }
 
-      global $symfonyContainer;
-      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.room');
-      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('CommsyBundle:Room');
-
-      $this->replaceElasticItem($objectPersister, $repository);
+      $this->updateElastic();
    }
+
+    public function updateElastic()
+    {
+        global $symfonyContainer;
+        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.room');
+        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+        $repository = $em->getRepository('CommsyBundle:Room');
+
+        $this->replaceElasticItem($objectPersister, $repository);
+    }
 
    /** save news item
     * this methode save the news item into the database

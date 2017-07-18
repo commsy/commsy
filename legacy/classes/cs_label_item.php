@@ -500,14 +500,19 @@ class cs_label_item extends cs_item {
           'topics',
           'institutions'
       ])) {
-          global $symfonyContainer;
-           $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.label');
-           $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-           $repository = $em->getRepository('CommsyBundle:Labels');
-
-           $this->replaceElasticItem($objectPersister, $repository);
+            $this->updateElastic();
       }
    }
+
+    public function updateElastic()
+    {
+        global $symfonyContainer;
+        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.label');
+        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+        $repository = $em->getRepository('CommsyBundle:Labels');
+
+        $this->replaceElasticItem($objectPersister, $repository);
+    }
 
    /** delete label item
     * this methode delete the label item

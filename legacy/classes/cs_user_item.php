@@ -1237,13 +1237,18 @@ class cs_user_item extends cs_item {
         //$this->updateWikiRemoveUser();
       }
 
-      global $symfonyContainer;
-      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.user');
-      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('CommsyBundle:User');
-
-      $this->replaceElasticItem($objectPersister, $repository);
+      $this->updateElastic();
    }
+
+    public function updateElastic()
+    {
+        global $symfonyContainer;
+        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.user');
+        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+        $repository = $em->getRepository('CommsyBundle:User');
+
+        $this->replaceElasticItem($objectPersister, $repository);
+    }
 
    /**
     * This method only updates the LastLogin Of the User.
