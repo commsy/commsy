@@ -5,8 +5,12 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\Form\FormInterface;
 
 use Doctrine\ORM\EntityRepository;
+
+use Commsy\LegacyBundle\Utils\RoomService;
 
 use CommsyBundle\Form\Type\HashtagType;
 
@@ -14,9 +18,12 @@ class HashTagFilterType extends AbstractType
 {
     private $requestStack;
 
-    public function __construct(RequestStack $requestStack)
+    private $roomService;
+
+    public function __construct(RequestStack $requestStack, RoomService $roomService)
     {
         $this->requestStack = $requestStack;
+        $this->roomService = $roomService;
     }
 
     /**
@@ -82,5 +89,19 @@ class HashTagFilterType extends AbstractType
             'csrf_protection'   => false,
             'validation_groups' => array('filtering') // avoid NotBlank() constraint-related message
         ));
+    }
+
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        $showExpanded = false;
+        $currentRequest = $this->requestStack->getCurrentRequest();
+        if ($currentRequest) {
+            $attributes = $currentRequest->attributes;
+            if ($attributes->has('roomId')) {
+                $roomItem = $this->roomService->getRoomItem($attributes->getInt('roomId'));
+                $showExpanded = $roomItem->isBuzzwordShowExpanded();
+            }
+        }
+        $view->vars['showExpanded'] = $showExpanded;
     }
 }
