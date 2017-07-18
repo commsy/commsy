@@ -56,6 +56,11 @@ class AdditionalSettingsType extends AbstractType
                         'label_attr' => array('class' => 'uk-form-label'),
                         'value' => 'yes',
                     ))
+                    ->add('show_expanded', CheckboxType::class, array(
+                        'required' => false,
+                        'label_attr' => array('class' => 'uk-form-label'),
+                        'value' => 'yes',
+                    ))
                     ->add('mandatory', CheckboxType::class, array(
                         'required' => false,
                         'label_attr' => array('class' => 'uk-form-label'),
@@ -68,6 +73,11 @@ class AdditionalSettingsType extends AbstractType
                             'required' => false,
                             'label_attr' => array('class' => 'uk-form-label'),
                             'value' => 'yes',
+                    ))
+                    ->add('show_expanded', CheckboxType::class, array(
+                        'required' => false,
+                        'label_attr' => array('class' => 'uk-form-label'),
+                        'value' => 'yes',
                     ))
                     ->add('mandatory', CheckboxType::class, array(
                             'required' => false,

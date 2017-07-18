@@ -322,6 +322,11 @@
                 <source>deleteAccountText</source>
                 <target>Wählen Sie diese Option, um Ihren Account und sämtliche Beiträge in allen Räumen diesen Portals zu löschen. Um CommSy wieder verwenden zu können, müssen Sie sich erneut registrieren.</target>
             </trans-unit>
+
+            <trans-unit id="email_choice_text">
+                <source>Email choice text</source>
+                <target>Wählen Sie hier aus, ob Sie in diesem Raum über Ihre Account-Email-Adresse oder über eine Raum-spezifische Email-Adresse kontaktiert werden möchten.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

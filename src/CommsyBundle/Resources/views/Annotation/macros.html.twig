@@ -17,7 +17,7 @@
                         </div>
                     </div>
 
-                    {{ content|decodeHtmlEntity }}
+                    {{ content|commsyMarkup|raw }}
                 </div>
 
                 <a class="uk-invisible" href="#" data-cs-unhide-collapsed="{src: '.toggle-{{ title }}-{{ item.itemId }}'}" data-cs-readmore>

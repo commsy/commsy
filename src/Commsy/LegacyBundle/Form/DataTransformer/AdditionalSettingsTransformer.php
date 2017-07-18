@@ -29,9 +29,11 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
         if ($roomItem) {
             // structural auxilaries
             $roomData['structural_auxilaries']['buzzwords']['activate'] = $roomItem->withBuzzwords();
+            $roomData['structural_auxilaries']['buzzwords']['show_expanded'] = $roomItem->isBuzzwordShowExpanded();
             $roomData['structural_auxilaries']['buzzwords']['mandatory'] = $roomItem->isBuzzwordMandatory();
 
             $roomData['structural_auxilaries']['categories']['activate'] = $roomItem->withTags();
+            $roomData['structural_auxilaries']['categories']['show_expanded'] = $roomItem->isTagsShowExpanded();
             $roomData['structural_auxilaries']['categories']['mandatory'] = $roomItem->isTagMandatory();
             $roomData['structural_auxilaries']['categories']['edit'] = $roomItem->isTagEditedByAll();
 
@@ -101,6 +103,11 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
         } else {
             $roomObject->setWithoutBuzzwords();
         }
+        if ( isset($buzzwords['show_expanded']) and !empty($buzzwords['show_expanded']) and $buzzwords['show_expanded'] == true) {
+            $roomObject->setBuzzwordShowExpanded();
+        } else {
+            $roomObject->unsetBuzzwordShowExpanded();
+        }
         if ( isset($buzzwords['mandatory']) and !empty($buzzwords['mandatory']) and $buzzwords['mandatory'] == true ) {
             $roomObject->setBuzzwordMandatory();
         } else {
@@ -112,6 +119,11 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
             $roomObject->setWithTags();
         } else {
             $roomObject->setWithoutTags();
+        }
+        if ( isset($categories['show_expanded']) and !empty($categories['show_expanded']) and $categories['show_expanded'] == true) {
+            $roomObject->setTagsShowExpanded();
+        } else {
+            $roomObject->unsetTagsShowExpanded();
         }
         if ( isset($categories['mandatory']) and !empty($categories['mandatory']) and $categories['mandatory'] == true ) {
             $roomObject->setTagMandatory();

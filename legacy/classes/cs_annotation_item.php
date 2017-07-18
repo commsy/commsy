@@ -208,15 +208,20 @@ class cs_annotation_item extends cs_item {
    }
 
 
-   /**
-   save
-   */
-   function save() {
-      $annotation_manager = $this->_environment->getAnnotationManager();
-      $this->_save($annotation_manager);
-      $this->_saveFiles();     // this must be done before saveFileLinks
-      $this->_saveFileLinks(); // this must be done after saving item so we can be sure to have an item id
-   }
+    /**
+    save
+    */
+    public function save()
+    {
+        $annotation_manager = $this->_environment->getAnnotationManager();
+        $this->_save($annotation_manager);
+        $this->_saveFiles();     // this must be done before saveFileLinks
+        $this->_saveFileLinks(); // this must be done after saving item so we can be sure to have an item id
+
+        // update linked item in elastic
+        $linkedItem = $this->getLinkedItem();
+        $linkedItem->updateElastic();
+    }
 
    function delete() {
       $annotation_manager = $this->_environment->getAnnotationManager();

@@ -489,13 +489,18 @@ class cs_dates_item extends cs_item {
       $this->_saveFiles();     // this must be done before saveFileLinks
       $this->_saveFileLinks(); // this must be done after saving so we can be sure to have an item id
 
-      global $symfonyContainer;
-      $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.date');
-      $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('CommsyBundle:Dates');
-
-      $this->replaceElasticItem($objectPersister, $repository);
+      $this->updateElastic();
    }
+
+    public function updateElastic()
+    {
+        global $symfonyContainer;
+        $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.date');
+        $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+        $repository = $em->getRepository('CommsyBundle:Dates');
+
+        $this->replaceElasticItem($objectPersister, $repository);
+    }
 
    function delete() {
       $date_manager = $this->_environment->getDatesManager();

@@ -238,6 +238,10 @@
                 <source>Mandatory</source>
                 <target>zwingende Zuordnung</target>
             </trans-unit>
+            <trans-unit id="ShowExpanded">
+                <source>Show expanded</source>
+                <target>ausgeklappte Darstellung</target>
+            </trans-unit>
             <trans-unit id="access">
                 <source>Edit</source>
                 <target>Nur durch ModeratorInnen bearbeitbar</target>

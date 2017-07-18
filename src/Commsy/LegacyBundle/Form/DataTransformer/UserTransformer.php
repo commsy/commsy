@@ -45,7 +45,7 @@ class UserTransformer implements DataTransformerInterface
                 $userData['dateOfBirth'] = array();
                 $userData['dateOfBirth']['date'] = new \DateTime($userItem->getBirthday());
             }
-            $userData['emailRoom'] = $userItem->getEmail();
+            $userData['emailRoom'] = $userItem->getRoomEmail();
             $userData['emailAccount'] = $portalUser->getEmail();
             $userData['emailChoice'] = $userItem->getUsePortalEmail() ? 'account' : 'roomProfile';
             $userData['hideEmailInThisRoom'] = !$userItem->isEmailVisible();

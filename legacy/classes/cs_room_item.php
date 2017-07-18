@@ -1503,6 +1503,11 @@ class cs_room_item extends cs_context_item {
         $this->saveLastlogin();
 
         // add room to elastic index
+        $this->updateElastic();
+    }
+
+    public function updateElastic()
+    {
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.room');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
