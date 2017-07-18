@@ -322,6 +322,11 @@
                 <source>deleteAccountText</source>
                 <target>Use this option to delete your account and all of your posts and comments in every room in this portal. To be able to use this portal again, you will have to registrate again.</target>
             </trans-unit>
+
+            <trans-unit id="email_choice_text">
+                <source>Email choice text</source>
+                <target>Here you can choose the email address for communication in this room. You can either use your account email address or configure a new email address specifically for this room.</target>
+            </trans-unit>
          </body>
     </file>
 </xliff>

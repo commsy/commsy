@@ -16,63 +16,93 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function addHashtagsProperty(TransformEvent $event)
+    public static function getSubscribedEvents()
+    {
+        return [
+            TransformEvent::POST_TRANSFORM => 'addCustomProperty'
+        ];
+    }
+
+    public function addCustomProperty(TransformEvent $event)
     {
         $fields = $event->getFields();
 
         if (isset($fields['hashtags'])) {
-            $buzzwordManager = $this->legacyEnvironment->getBuzzwordManager();
-            $buzzwordManager->resetLimits();
-            $buzzwordManager->setContextLimit($event->getObject()->getContextId());
-            $buzzwordManager->setTypeLimit('buzzword');
-            $buzzwordManager->select();
-
-            $buzzwordList = $buzzwordManager->get();
-            if ($buzzwordList->isNotEmpty()) {
-                $objectHashtags = [];
-
-                $buzzword = $buzzwordList->getFirst();
-                while ($buzzword) {
-                    $linkedIds = $buzzword->getAllLinkedItemIDArrayLabelVersion();
-                    if (in_array($event->getObject()->getItemId(), $linkedIds)) {
-                        $objectHashtags[] = $buzzword->getName();
-                    }
-
-                    $buzzword = $buzzwordList->getNext();
-                }
-
-                if (!empty($objectHashtags)) {
-                    $event->getDocument()->set('hashtags', $objectHashtags);
-                }
-            }
+            $this->addHashtags($event);
         }
 
         if (isset($fields['tags'])) {
-            $itemManager = $this->legacyEnvironment->getItemManager();
-            $item = $itemManager->getItem($event->getObject()->getItemId());
+            $this->addTags($event);
+        }
 
-            $tagList = $item->getTagList();
-            if ($tagList->isNotEmpty()) {
-                $objectTags = [];
+        if (isset($fields['annotations'])) {
+            $this->addAnnotations($event);
+        }
+    }
 
-                $tag = $tagList->getFirst();
-                while ($tag) {
-                    $objectTags[] = $tag->getTitle();
+    private function addHashtags(TransformEvent $event)
+    {
+        $itemManager = $this->legacyEnvironment->getItemManager();
+        $item = $itemManager->getItem($event->getObject()->getItemId());
 
-                    $tag = $tagList->getNext();
-                }
+        $hashtags = $item->getBuzzwordList();
+        if ($hashtags->isNotEmpty()) {
+            $objectHashtags = [];
 
-                if (!empty($objectTags)) {
-                    $event->getDocument()->set('tags', $objectTags);
-                }
+            $hashtag = $hashtags->getFirst();
+            while ($hashtag) {
+                $objectHashtags[] = $hashtag->getName();
+
+                $hashtag = $hashtags->getNext();
+            }
+
+            if (!empty($objectHashtags)) {
+                $event->getDocument()->set('hashtags', $objectHashtags);
             }
         }
     }
 
-    public static function getSubscribedEvents()
+    private function addTags(TransformEvent $event)
     {
-        return [
-            TransformEvent::POST_TRANSFORM => 'addHashtagsProperty'
-        ];
+        $itemManager = $this->legacyEnvironment->getItemManager();
+        $item = $itemManager->getItem($event->getObject()->getItemId());
+
+        $tags = $item->getTagList();
+        if ($tags->isNotEmpty()) {
+            $objectTags = [];
+
+            $tag = $tags->getFirst();
+            while ($tag) {
+                $objectTags[] = $tag->getTitle();
+
+                $tag = $tags->getNext();
+            }
+
+            if (!empty($objectTags)) {
+                $event->getDocument()->set('tags', $objectTags);
+            }
+        }
+    }
+
+    private function addAnnotations(TransformEvent $event)
+    {
+        $itemManager = $this->legacyEnvironment->getItemManager();
+        $item = $itemManager->getItem($event->getObject()->getItemId());
+
+        $annotations = $item->getAnnotationList();
+        if ($annotations->isNotEmpty()) {
+            $objectTags = [];
+
+            $annotation = $annotations->getFirst();
+            while ($annotation) {
+                $objectTags[] = $annotation->getDescription();
+
+                $annotation = $annotations->getNext();
+            }
+
+            if (!empty($objectTags)) {
+                $event->getDocument()->set('annotations', $objectTags);
+            }
+        }
     }
 }
