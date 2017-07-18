@@ -37,7 +37,7 @@
 
                             {{ form_widget(form.room_image.choice) }}
 
-                            <div id="bgPreview" class="uk-form-controls uk-cover-background uk-position-relative">
+                            <div id="bgPreview" class="uk-form-controls uk-cover-background uk-position-relative uk-hidden">
                                 {% if bgImageFilepathCustom is not empty %}
                                     {# <img id="customBackgroundImage" style="display: none; width: 100%; height: 180px;" src="{{bgImageFilepathCustom}}" /> #}
                                     <img id="customBackgroundImage" style="display: none; width: 856px; height: 180px;" src="{{bgImageFilepathCustom}}" />
@@ -81,7 +81,7 @@
                             <div>{{ 'Room logo text'|trans({}, 'settings') }}</div>
                             <div style="margin-bottom: 25px;"><em>{{ 'tip'|trans({}, 'messages')}}:</em> {{ 'Room logo tip'|trans({}, 'settings') }}</div>
                             {{ form_row(form.room_logo.activate) }}
-                            <div id="logo_preview" class="uk-form-controls uk-cover-background uk-position-relative">
+                            <div id="logo_preview" class="uk-form-controls uk-cover-background uk-position-relative uk-hidden">
                                 {% if logoImageFilepath is not empty %}
                                     <img id="logoImage" style="width: 200px; height: 200px;" src="{{logoImageFilepath}}" />
                                 {% else %}
@@ -135,6 +135,9 @@
         // deleteRow.className += " uk-form-controls";
         // repeatRow.className += " uk-form-controls";
         // scrollRow.className += " uk-form-controls";
+
+        document.getElementById('logo_preview').classList.remove('uk-hidden');
+        document.getElementById('bgPreview').classList.remove('uk-hidden');
 
         document.getElementById('appearance_settings_room_image_choice').onchange = function(event){
             // toggleUploadListener(this, deleteRow, scrollRow, repeatRow);
