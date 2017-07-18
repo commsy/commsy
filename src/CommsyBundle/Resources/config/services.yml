@@ -10,13 +10,13 @@ services:
 
     commsy.filter.hashtag:
         class: CommsyBundle\Filter\HashTagFilterType
-        arguments: ['@request_stack']
+        arguments: ['@request_stack', '@commsy_legacy.room_service']
         tags:
             - { name: form.type }
 
     commsy.filter.category:
         class: CommsyBundle\Filter\CategoryFilterType
-        arguments: ['@request_stack', '@commsy_legacy.category_service']
+        arguments: ['@request_stack', '@commsy_legacy.category_service', '@commsy_legacy.room_service']
         tags:
             - { name: form.type }
             
