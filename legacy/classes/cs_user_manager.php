@@ -1171,7 +1171,7 @@ class cs_user_manager extends cs_manager {
      $query .= 'auth_source="'.$user_item->getAuthSource().'",';
      $query .= 'firstname="'.encode(AS_DB,$user_item->getFirstname()).'",';
      $query .= 'lastname="'.encode(AS_DB,$user_item->getLastname()).'",';
-     $query .= 'email="'.encode(AS_DB,$user_item->getEmail()).'",';
+     $query .= 'email="'.encode(AS_DB,$user_item->getRoomEmail()).'",';
      $query .= 'city="'.encode(AS_DB,$user_item->getCity()).'",';
      $query .= 'visible="'.encode(AS_DB,$user_item->getVisible()).'",';
      $query .= 'description="'.encode(AS_DB,$user_item->getDescription()).'",';
