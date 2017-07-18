@@ -48,6 +48,10 @@ class FileController extends Controller
         $filePath = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId) . "/" . $fileName;
 
         if(file_exists($filePath)) {
+            if(!$fileName){
+                $fileName = "customBgPlaceholder.png";
+                $filePath = $this->getParameter("themes_directory") . "/" . $fileName;
+            }
             $content = file_get_contents($filePath);
 
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
