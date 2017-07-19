@@ -205,6 +205,7 @@ class SettingsController extends Controller
                             $extension = "bin";
                         }
                         $fileName = "cid" . $roomId . "_bgimage_" . $file->getClientOriginalName();
+                        $fileName = filter_var($fileName, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
                         $file->move($saveDir, $fileName);
                     }
                     // case 2: file was send as base64 string via hidden "room_image_data" text field
@@ -215,6 +216,7 @@ class SettingsController extends Controller
                         list(, $extension) = explode("/", $type);
                         $data = base64_decode($data);
                         $fileName = "cid" . $roomId . "_bgimage_" . $fileName;
+                        $fileName = filter_var($fileName, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
                         $absoluteFilepath = $saveDir . "/" . $fileName;
                         file_put_contents($absoluteFilepath, $data);
                     }
@@ -235,6 +237,7 @@ class SettingsController extends Controller
                 $fileName = "";
                 $data = $room_logo_data['room_logo_data'];
                 list($fileName, $type, $date) = explode(";", $data);
+                $fileName = filter_var($fileName, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
                 list(, $data) = explode(",", $data);
                 list(, $extension) = explode("/", $type);
                 $data = base64_decode($data);

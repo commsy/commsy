@@ -242,17 +242,13 @@ class cs_page_room_view extends cs_page_view {
         $current_context = $this->_environment->getCurrentContextItem();
         if (
             ( $current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink() )
-            or ( $current_context->showChatLink() ))
+            or ( $current_context->showChatLink() )
             ){
 
          $current_context = $this->_environment->getCurrentContextItem();
          if ( $current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink() ) {
             global $c_pmwiki_path_url;
-            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/pmwiki_home.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WIKI_LINK').'"/>';
-            } else {
-               $image = '<img src="images/pmwiki_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WIKI_LINK').'"/>';
-            }
+            $image = '<img src="images/pmwiki_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WIKI_LINK').'"/>';
             $title = $this->_translator->getMessage('COMMON_WIKI_LINK').': '.$current_context->getWikiTitle();
             $url_session_id = '';
             if ( $current_context->withWikiUseCommSyLogin() ) {
@@ -302,7 +298,7 @@ class cs_page_room_view extends cs_page_view {
       $current_context = $this->_environment->getCurrentContextItem();
         if (
             ( $current_context->showWordpressLink() and $current_context->existWordpress() and $current_context->issetWordpressHomeLink() )
-            or ( $current_context->showChatLink() ))
+            or ( $current_context->showChatLink() )
             ){
 
          $current_context = $this->_environment->getCurrentContextItem();

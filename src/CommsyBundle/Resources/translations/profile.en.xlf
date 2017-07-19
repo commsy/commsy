@@ -262,7 +262,7 @@
             </trans-unit>
             <trans-unit id="profile_image_description">
                 <source>profileImageDescription</source>
-                <target>Your profile picture is displayed next to your comments in room %s. For every room that are a member of you can choose an individual profile picture. Alternatively, you can use the "change in all rooms" option to set your profile picture globally.</target>
+                <target>Your profile picture is displayed next to your comments in room "%s". For every room that are a member of you can choose an individual profile picture. Alternatively, you can use the "change in all rooms" option to set your profile picture globally.</target>
             </trans-unit>
             <trans-unit id="language_description">
                 <source>languageDescription</source>
