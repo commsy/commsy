@@ -64,10 +64,10 @@ class CalDAVController extends Controller
     }
 
     /**
-     * @Route("/{portalId}/calendars/{userId}/{calendarId}/{object}/")
+     * @Route("/{portalId}/calendars/{userId}/{calendarId}/{objectId}/")
      * @Template()
      */
-    public function caldavCalendarObjectAction($portalId, $userId, $calendarId, $object, Request $request) {
+    public function caldavCalendarObjectAction($portalId, $userId, $calendarId, $objectId, Request $request) {
         $this->caldavServer($portalId, $userId)->exec();
 
         return new Response();

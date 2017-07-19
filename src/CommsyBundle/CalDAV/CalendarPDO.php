@@ -177,7 +177,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\PDO {
 
                 $tempCalendar = [
                     'id' => [(int)$calendar->getId(), (int)$calendar->getId()],
-                    'uri' => $calendar->getId(),
+                    'uri' => urlencode($contextTitlesArray[$calendar->getContextId()].$calendar->getTitle()),
                     'principaluri' => $principalUri,
                     '{' . \Sabre\CalDAV\Plugin::NS_CALENDARSERVER . '}getctag' => 'http://sabre.io/ns/sync/1', // Allow sync
                     '{http://sabredav.org/ns}sync-token' => '1', // Allow sync
@@ -188,7 +188,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\PDO {
 
                 $tempCalendar['share-access'] = 1;
 
-                $tempCalendar['{DAV:}displayname'] = $contextTitlesArray[$calendar->getContextId()].'-'.$calendar->getId().'-'.$calendar->getTitle();
+                $tempCalendar['{DAV:}displayname'] = $contextTitlesArray[$calendar->getContextId()].' / '.$calendar->getTitle();
                 $tempCalendar['{urn:ietf:params:xml:ns:caldav}calendar-description'] = '';
                 $tempCalendar['{urn:ietf:params:xml:ns:caldav}calendar-timezone'] = '';
                 $tempCalendar['{http://apple.com/ns/ical/}calendar-order'] = '1';
@@ -238,26 +238,69 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\PDO {
      */
     function getCalendarObjects($calendarId) {
         $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
-        $datesManager = $legacyEnvironment->getDatesManager();
-        $datesManager->setContextArrayLimit([$calendarId]);
-        $datesManager->setWithoutDateModeLimit();
-        $datesManager->select();
-        $datesArray = $datesManager->get()->to_array();
+        $calendarsService = $this->container->get('commsy.calendars_service');
 
-        $result = [];
-        foreach ($datesArray as $date) {
-            $result[] = [
-                'id'           => $date->getItemId(),
-                'uri'          => $date->getItemId(),
-                'lastmodified' => 1,
-                'etag'         => '"' . $date->getTitle() . '"',
-                'size'         => 1,
-                'component'    => strtolower(''),
-            ];
+        $calendars = $calendarsService->getCalendar($calendarId[0]);
+
+        if ($calendars[0]) {
+            $datesManager = $legacyEnvironment->getDatesManager();
+            $datesManager->setContextArrayLimit([$calendars[0]->getcontextId()]);
+            $datesManager->setWithoutDateModeLimit();
+            $datesManager->select();
+            $datesArray = $datesManager->get()->to_array();
+
+            $result = [];
+            foreach ($datesArray as $date) {
+                $result[] = [
+                    'id' => $date->getItemId(),
+                    'uri' => $date->getItemId(),
+                    'lastmodified' => 1,
+                    'etag' => '"' . $date->getTitle() . '"',
+                    'size' => 1,
+                    'component' => strtolower(''),
+                ];
+            }
+
+            return $result;
         }
 
-        return $result;
+        return [];
+    }
 
+    /**
+     * Returns information from a single calendar object, based on it's object
+     * uri.
+     *
+     * The object uri is only the basename, or filename and not a full path.
+     *
+     * The returned array must have the same keys as getCalendarObjects. The
+     * 'calendardata' object is required here though, while it's not required
+     * for getCalendarObjects.
+     *
+     * This method must return null if the object did not exist.
+     *
+     * @param mixed $calendarId
+     * @param string $objectUri
+     * @return array|null
+     */
+    function getCalendarObject($calendarId, $objectUri) {
+        if (!is_array($calendarId)) {
+            throw new \InvalidArgumentException('The value passed to $calendarId is expected to be an array with a calendarId and an instanceId');
+        }
+
+        $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
+        $datesManager = $legacyEnvironment->getDatesManager();
+        $date = $datesManager->getItem($objectUri);
+
+        return [
+            'id'           => $date->getItemId(),
+            'uri'          => $date->getItemId(),
+            'lastmodified' => 1,
+            'etag'         => '"' . $date->getItemId() . '"',
+            'size'         => 1,
+            'calendardata' => [],
+            'component'    => 'vevent',
+        ];
     }
 
 }
