@@ -5,6 +5,7 @@ namespace CommsyBundle\CalDAV;
 use Sabre\DAV;
 use Sabre\HTTP\RequestInterface;
 use Sabre\HTTP\ResponseInterface;
+use Sabre\VObject;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -250,17 +251,17 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\PDO {
             $datesArray = $datesManager->get()->to_array();
 
             $result = [];
-            foreach ($datesArray as $date) {
-                $dateTime = new \DateTime($date->getModificationDate());
+            foreach ($datesArray as $dateItem) {
+                $dateTime = new \DateTime($dateItem->getModificationDate());
 
-                $calendarObjectId = $legacyEnvironment->getCurrentPortalId().'-'.$date->getContextId().'-'.$date->getItemId();
+                $calendarObjectId = $legacyEnvironment->getCurrentPortalId().'-'.$dateItem->getContextId().'-'.$dateItem->getItemId();
 
                 $result[] = [
                     'id' => $calendarObjectId,
                     'uri' => $calendarObjectId.'.ics',
                     'lastmodified' => $dateTime->getTimestamp(),
                     'etag' => '"' . $calendarObjectId.'-'.$dateTime->getTimestamp() . '"',
-                    'size' => 1,
+                    'size' => $this->getCalendarDataSize($dateItem),
                     'component' => strtolower('VEVENT'),
                 ];
             }
@@ -323,21 +324,36 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\PDO {
         $datesManager = $legacyEnvironment->getDatesManager();
 
         $objectUriArray = explode('-', $objectUri);
-        $date = $datesManager->getItem($objectUriArray[2]);
+        $dateItem = $datesManager->getItem($objectUriArray[2]);
 
-        $dateTime = new \DateTime($date->getModificationDate());
+        $dateTime = new \DateTime($dateItem->getModificationDate());
 
-        $calendarObjectId = $legacyEnvironment->getCurrentPortalId().'-'.$date->getContextId().'-'.$date->getItemId();
+        $calendarObjectId = $legacyEnvironment->getCurrentPortalId().'-'.$dateItem->getContextId().'-'.$dateItem->getItemId();
 
         return [
             'id'           => $calendarObjectId,
             'uri'          => $calendarObjectId.'.ics',
             'lastmodified' => $dateTime->getTimestamp(),
             'etag'         => '"' . $calendarObjectId.'-'.$dateTime->getTimestamp() . '"',
-            'size'         => 1,
-            'calendardata' => [''],
+            'size'         => $this->getCalendarDataSize($dateItem),
+            'calendardata' => $this->getCalendarData($dateItem),
             'component'    => strtolower('VEVENT'),
         ];
+    }
+
+    private function getCalendarData ($dateItem) {
+        $vDateItem = new VObject\Component\VCalendar([
+            'VEVENT' => [
+                'SUMMARY' => $dateItem->getTitle(),
+                'DTSTART' => new \DateTime($dateItem->getDateTime_start()),
+                'DTEND'   => new \DateTime($dateItem->getDateTime_end())
+            ]
+        ]);
+        return $vDateItem->serialize();
+    }
+
+    private function getCalendarDataSize ($dateItem) {
+        return strlen($this->getCalendarData($dateItem));
     }
 
 }

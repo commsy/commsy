@@ -74,10 +74,20 @@ class CalDAVController extends Controller
     }
 
     /**
+     * @Route("/{portalId}/principals/")
+     * @Template()
+     */
+    public function caldavPrincipalsAction($portalId, Request $request) {
+        $this->caldavServer($portalId)->exec();
+
+        return new Response();
+    }
+
+    /**
      * @Route("/{portalId}/principals/{userId}/")
      * @Template()
      */
-    public function caldavPrincipalsAction($portalId, $userId, Request $request) {
+    public function caldavPrincipalAction($portalId, $userId, Request $request) {
         $this->caldavServer($portalId, $userId)->exec();
 
         return new Response();
