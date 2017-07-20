@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 * @author Evert Pot (http://evertpot.com/)
 * @license http://sabre.io/license/ Modified BSD License
 */
-class CalendarPDO extends \Sabre\CalDAV\Backend\PDO {
+class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
 
     private $container;
     private $portalId;
@@ -28,7 +28,6 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\PDO {
     * @var AuthPDO
     */
     protected $pdo;
-
 
     /**
     * Creates the backend object.
@@ -195,9 +194,6 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\PDO {
                 $tempCalendar['{http://apple.com/ns/ical/}calendar-order'] = '1';
                 $tempCalendar['{http://apple.com/ns/ical/}calendar-color'] = '';
 
-                foreach ($this->propertyMap as $xmlName => $dbName) {
-                }
-
                 $calendars[] = $tempCalendar;
             }
         }
@@ -261,7 +257,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\PDO {
                     'uri' => $calendarObjectId.'.ics',
                     'lastmodified' => $dateTime->getTimestamp(),
                     'etag' => '"' . $calendarObjectId.'-'.$dateTime->getTimestamp() . '"',
-                    'size' => $this->getCalendarDataSize($dateItem),
+                    'size' => $this->getCalendarDataSize($dateItem, $calendarObjectId),
                     'component' => strtolower('VEVENT'),
                 ];
             }
@@ -334,26 +330,138 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\PDO {
             'id'           => $calendarObjectId,
             'uri'          => $calendarObjectId.'.ics',
             'lastmodified' => $dateTime->getTimestamp(),
-            'etag'         => '"' . $calendarObjectId.'-'.$dateTime->getTimestamp() . '"',
-            'size'         => $this->getCalendarDataSize($dateItem),
-            'calendardata' => $this->getCalendarData($dateItem),
+            'etag'         => '"' . $calendarObjectId.'-'.$dateTime->getTimestamp() . '1"',
+            'size'         => $this->getCalendarDataSize($dateItem, $objectUri),
+            'calendardata' => $this->getCalendarData($dateItem, $objectUri),
             'component'    => strtolower('VEVENT'),
         ];
     }
 
-    private function getCalendarData ($dateItem) {
+
+    // --- calendars ---
+
+    /**
+     * Creates a new calendar for a principal.
+     *
+     * If the creation was a success, an id must be returned that can be used
+     * to reference this calendar in other methods, such as updateCalendar.
+     *
+     * @param string $principalUri
+     * @param string $calendarUri
+     * @param array $properties
+     * @return string
+     */
+    function createCalendar($principalUri, $calendarUri, array $properties) {
+
+    }
+
+    /**
+     * Updates properties for a calendar.
+     *
+     * The list of mutations is stored in a Sabre\DAV\PropPatch object.
+     * To do the actual updates, you must tell this object which properties
+     * you're going to process with the handle() method.
+     *
+     * Calling the handle method is like telling the PropPatch object "I
+     * promise I can handle updating this property".
+     *
+     * Read the PropPatch documentation for more info and examples.
+     *
+     * @param mixed $calendarId
+     * @param \Sabre\DAV\PropPatch $propPatch
+     * @return void
+     */
+    function updateCalendar($calendarId, \Sabre\DAV\PropPatch $propPatch) {
+
+    }
+
+    /**
+     * Delete a calendar and all it's objects
+     *
+     * @param mixed $calendarId
+     * @return void
+     */
+    function deleteCalendar($calendarId) {
+
+    }
+
+
+    // --- calendar objects ---
+
+    /**
+     * Creates a new calendar object.
+     *
+     * The object uri is only the basename, or filename and not a full path.
+     *
+     * It is possible return an etag from this function, which will be used in
+     * the response to this PUT request. Note that the ETag must be surrounded
+     * by double-quotes.
+     *
+     * However, you should only really return this ETag if you don't mangle the
+     * calendar-data. If the result of a subsequent GET to this object is not
+     * the exact same as this request body, you should omit the ETag.
+     *
+     * @param mixed $calendarId
+     * @param string $objectUri
+     * @param string $calendarData
+     * @return string|null
+     */
+    function createCalendarObject($calendarId, $objectUri, $calendarData) {
+
+    }
+
+    /**
+     * Updates an existing calendarobject, based on it's uri.
+     *
+     * The object uri is only the basename, or filename and not a full path.
+     *
+     * It is possible return an etag from this function, which will be used in
+     * the response to this PUT request. Note that the ETag must be surrounded
+     * by double-quotes.
+     *
+     * However, you should only really return this ETag if you don't mangle the
+     * calendar-data. If the result of a subsequent GET to this object is not
+     * the exact same as this request body, you should omit the ETag.
+     *
+     * @param mixed $calendarId
+     * @param string $objectUri
+     * @param string $calendarData
+     * @return string|null
+     */
+    function updateCalendarObject($calendarId, $objectUri, $calendarData) {
+
+    }
+
+    /**
+     * Deletes an existing calendar object.
+     *
+     * The object uri is only the basename, or filename and not a full path.
+     *
+     * @param mixed $calendarId
+     * @param string $objectUri
+     * @return void
+     */
+    function deleteCalendarObject($calendarId, $objectUri) {
+
+    }
+
+    // ---- helper methods ---
+
+    private function getCalendarData ($dateItem, $objectUri) {
         $vDateItem = new VObject\Component\VCalendar([
             'VEVENT' => [
                 'SUMMARY' => $dateItem->getTitle(),
                 'DTSTART' => new \DateTime($dateItem->getDateTime_start()),
-                'DTEND'   => new \DateTime($dateItem->getDateTime_end())
+                'DTEND'   => new \DateTime($dateItem->getDateTime_end()),
+                'UID'     => str_ireplace('.ics', '', $objectUri),
             ]
         ]);
-        return $vDateItem->serialize();
+        //return $vDateItem->serialize();
+        return 'BEGIN:VCALENDAR PRODID:-//Mozilla.org/NONSGML Mozilla Calendar V1.1//EN VERSION:2.0 BEGIN:VTIMEZONE TZID:Europe/Berlin BEGIN:DAYLIGHT TZOFFSETFROM:+0100 TZOFFSETTO:+0200 TZNAME:CEST DTSTART:19700329T020000 RRULE:FREQ=YEARLY;BYDAY=-1SU;BYMONTH=3 END:DAYLIGHT BEGIN:STANDARD TZOFFSETFROM:+0200 TZOFFSETTO:+0100 TZNAME:CET DTSTART:19701025T030000 RRULE:FREQ=YEARLY;BYDAY=-1SU;BYMONTH=10 END:STANDARD END:VTIMEZONE BEGIN:VEVENT CREATED:20170717T185816Z LAST-MODIFIED:20170717T185833Z DTSTAMP:20170717T185833Z UID:101-2024-14828 SUMMARY:Neuer Termin DTSTART;TZID=Europe/Berlin:20170717T103000 DTEND;TZID=Europe/Berlin:20170717T113000 TRANSP:OPAQUE CLASS:PRIVATE END:VEVENT END:VCALENDAR';
     }
 
-    private function getCalendarDataSize ($dateItem) {
-        return strlen($this->getCalendarData($dateItem));
+    private function getCalendarDataSize ($dateItem, $objectUri) {
+        return strlen($this->getCalendarData($dateItem, $objectUri));
     }
 
 }
