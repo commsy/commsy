@@ -251,15 +251,46 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\PDO {
 
             $result = [];
             foreach ($datesArray as $date) {
+                $dateTime = new \DateTime($date->getModificationDate());
+
+                $calendarObjectId = $legacyEnvironment->getCurrentPortalId().'-'.$date->getContextId().'-'.$date->getItemId();
+
                 $result[] = [
-                    'id' => $date->getItemId(),
-                    'uri' => $date->getItemId(),
-                    'lastmodified' => 1,
-                    'etag' => '"' . $date->getTitle() . '"',
+                    'id' => $calendarObjectId,
+                    'uri' => $calendarObjectId.'.ics',
+                    'lastmodified' => $dateTime->getTimestamp(),
+                    'etag' => '"' . $calendarObjectId.'-'.$dateTime->getTimestamp() . '"',
                     'size' => 1,
-                    'component' => strtolower(''),
+                    'component' => strtolower('VEVENT'),
                 ];
             }
+
+            /*
+
+            Entry in result should hold this information:
+
+            - sabre/dav
+            (
+                [id] => 1
+                [uri] => 79b60720-7b23-5b4d-b8be-67ed7e8e29ac.ics
+                [lastmodified] => 1500119848
+                [etag] => "460e0690b3095cfbf9bef5d20873b379"
+                [size] => 733
+                [component] => vevent
+            )
+
+            - CommSy
+            Array
+            (
+                [id] => 14829
+                [uri] => 101-2024-14828.ics
+                [lastmodified] => 1508356800
+                [etag] => "101-2024-14828-1508356800"
+                [size] => ToDo
+                [component] => vevent
+            )
+
+            */
 
             return $result;
         }
