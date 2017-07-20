@@ -321,16 +321,22 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\PDO {
 
         $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
         $datesManager = $legacyEnvironment->getDatesManager();
-        $date = $datesManager->getItem($objectUri);
+
+        $objectUriArray = explode('-', $objectUri);
+        $date = $datesManager->getItem($objectUriArray[2]);
+
+        $dateTime = new \DateTime($date->getModificationDate());
+
+        $calendarObjectId = $legacyEnvironment->getCurrentPortalId().'-'.$date->getContextId().'-'.$date->getItemId();
 
         return [
-            'id'           => $date->getItemId(),
-            'uri'          => $date->getItemId(),
-            'lastmodified' => 1,
-            'etag'         => '"' . $date->getItemId() . '"',
+            'id'           => $calendarObjectId,
+            'uri'          => $calendarObjectId.'.ics',
+            'lastmodified' => $dateTime->getTimestamp(),
+            'etag'         => '"' . $calendarObjectId.'-'.$dateTime->getTimestamp() . '"',
             'size'         => 1,
-            'calendardata' => [],
-            'component'    => 'vevent',
+            'calendardata' => [''],
+            'component'    => strtolower('VEVENT'),
         ];
     }
 
