@@ -154,6 +154,8 @@ gulp.task('js', function() {
         
         config.nodeDir + '/tooltipster/dist/js/tooltipster.bundle.min.js',
 
+        config.nodeDir + '/urijs/src/URI.js',
+
         config.nodeDir + '/uikit/dist/js/uikit.js',
         config.nodeDir + '/uikit/dist/js/components/autocomplete.js',
         config.nodeDir + '/uikit/dist/js/components/search.js',

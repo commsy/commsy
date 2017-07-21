@@ -12,100 +12,14 @@
     $('.feed-load-more').on('inview.uk.scrollspy', function() {
         let el = $(this);
 
-        // get current query string
-        let queryString = document.location.search;
-
-        // build up the url
-        let url = el.data('feed').url  + feedStart + '/' + sort + sortOrder + queryString;
-
-        if (lastRequest == url) {
-            return;
-        }
-        lastRequest = url;
-
-        // send ajax request to get more items
-        $.ajax({
-          url: url
-        })
-        .done(function(result) {
-            try {
-                let foundArticles = false;
-                if ($(result).filter('article').length) {
-                    foundArticles = true;
-                } else if ($(result).find('article').length) {
-                    foundArticles = true
-                }
-                
-                if (foundArticles) {
-                    // append the data
-                    let target = el.data('feed').target;
-                    $(target).append(result);
-        
-                    let event = new CustomEvent(
-                    	'feedDidLoad', 
-                    	{
-                    		detail: {
-                    			feedStart: feedStart,
-                    		},
-                    		bubbles: true,
-                    		cancelable: true
-                    	}
-                    );
-                    window.dispatchEvent(event);
-        
-                    // increase for next run
-                    feedStart += 10;
-                } else {
-                    $('.feed-load-more').css('display', 'none');
-                }
-            } catch (error) {
-                $('.feed-load-more').css('display', 'none');
-            }
-        });
+        loadMore(el);
     });
 
     // listen to "inview.uk.scrollspy" event on "feed-load-more-grid" classes
     $('.feed-load-more-grid').on('inview.uk.scrollspy', function() {
         let el = $(this);
 
-        // get current query string
-        let queryString = document.location.search;
-
-        // build up the url
-        let url = el.data('feed').url  + feedStart + queryString;
-
-        if (lastRequest == url) {
-            return;
-        }
-        lastRequest = url;
-
-        // send ajax request to get more items
-        $.ajax({
-          url: url
-        })
-        .done(function(result) {
-            try {
-                let foundArticles = false;
-                if ($(result).filter('article').length) {
-                    foundArticles = true;
-                } else if ($(result).find('article').length) {
-                    foundArticles = true
-                }
-                
-                if (foundArticles) {
-                    // append the data
-                    let target = el.data('feed').target;
-                    $(target).append(result);
-        
-                    // increase for next run
-                    feedStart += 10;
-                } else {
-                    $('.feed-load-more-grid').css('display', 'none');
-                }
-            } catch (error) {
-                $('.feed-load-more-grid').css('display', 'none');
-            }
-        });
+        loadMore(el);
     });
 
     $('#commsy-sort-title').on('click', function(event) {
@@ -156,7 +70,72 @@
         reloadCurrent('email', false);
     });
 
-    function reloadCurrent (newSort, invert) {
+    function loadMore(spinner)
+    {
+        let path = spinner.data('feed').url  + feedStart + '/' + sort + sortOrder;
+        let uri = new URI(path);
+
+        // adopt current query parameter
+        uri.search(new URI().search(true));
+
+        if (spinner.data('feed').query) {
+            // augment additional data
+            uri.search(function(data) {
+                $.extend(data, spinner.data('feed').query);
+            });
+        }
+
+        // build up the url
+        let url = uri.toString();
+
+        if (lastRequest == url) {
+            return;
+        }
+        lastRequest = url;
+
+        // send ajax request to get more items
+        $.ajax({
+            url: url
+        })
+        .done(function(result) {
+            try {
+                let foundArticles = false;
+                if ($(result).filter('article').length) {
+                    foundArticles = true;
+                } else if ($(result).find('article').length) {
+                    foundArticles = true
+                }
+
+                if (foundArticles) {
+                    // append the data
+                    let target = spinner.data('feed').target;
+                    $(target).append(result);
+
+                    let event = new CustomEvent(
+                        'feedDidLoad',
+                        {
+                            detail: {
+                                feedStart: feedStart,
+                            },
+                            bubbles: true,
+                            cancelable: true
+                        }
+                    );
+                    window.dispatchEvent(event);
+
+                    // increase for next run
+                    feedStart += 10;
+                } else {
+                    $('.feed-load-more').css('display', 'none');
+                }
+            } catch (error) {
+                $('.feed-load-more').css('display', 'none');
+            }
+        });
+    }
+
+    function reloadCurrent(newSort, invert)
+    {
         feedStart = 0;
 
         sort = $(".cs-sort-active").attr("id").split("-")[$(".cs-sort-active").attr("id").split("-").length-1];
@@ -164,8 +143,9 @@
         let chevronDown = $('#commsy-sort-'+sort+'-chevron').attr('class').endsWith("down");
         sortOrder = (chevronDown && !invert) || (!chevronDown && invert) ? '_rev' : '';
 
-        $('#commsy-sort-'+sort+'-chevron').removeClass('uk-icon-chevron-up');
-        $('#commsy-sort-'+sort+'-chevron').removeClass('uk-icon-chevron-down');
+        $('#commsy-sort-'+sort+'-chevron')
+            .removeClass('uk-icon-chevron-up')
+            .removeClass('uk-icon-chevron-down');
         if (newSort == sort) {
             if (sortOrder == '') {
                 sortOrder = '_rev';
@@ -195,7 +175,6 @@
         sort = newSort;
         
         let el = $('.feed-load-more');
-
         if(el.length < 1){
             el = $('.feed-load-more-grid');
         }
@@ -204,55 +183,7 @@
         // be able to load more entries
         el.css('display', 'block');
 
-        // get current query string
-        let queryString = document.location.search;
-
-        // build up the url
-        let url = el.data('feed').url  + feedStart + '/' + sort + sortOrder + queryString;
-
-        if (lastRequest == url) {
-            return;
-        }
-        lastRequest = url;
-
-        // send ajax request to get more items
-        $.ajax({
-          url: url
-        })
-        .done(function(result) {
-            try {
-                let foundArticles = false;
-                if ($(result).filter('article').length) {
-                    foundArticles = true;
-                } else if ($(result).find('article').length) {
-                    foundArticles = true
-                }
-                
-                if (foundArticles) {
-                    // append the data
-                    let target = el.data('feed').target;
-                    //$(target).append(result);
-                    $(target).html($(result));
-                    
-                    let event = new CustomEvent(
-                    	'feedDidReload', 
-                    	{
-                    		detail: {},
-                    		bubbles: true,
-                    		cancelable: true
-                    	}
-                    );
-                    window.dispatchEvent(event);
-                } else {
-                    $('.feed-load-more').css('display', 'none');
-                }
-            } catch (error) {
-                $('.feed-load-more').css('display', 'none');
-            }
-            
-            // increase for next run
-            feedStart += 10;
-        });
+        loadMore(el);
     }
 
 })(UIkit);
