@@ -283,7 +283,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
                 [uri] => 101-2024-14828.ics
                 [lastmodified] => 1508356800
                 [etag] => "101-2024-14828-1508356800"
-                [size] => ToDo
+                [size] => 1
                 [component] => vevent
             )
 
