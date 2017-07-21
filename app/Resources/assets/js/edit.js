@@ -56,10 +56,16 @@
 
             // show articles as selected, when mouseover the edit icon
             $(element).find('div.cs-edit')
-                .mouseover(function() {
+                .mouseenter(function() {
+                    if (!$(this).closest('article').find('.cs-readmoreless:first').parent("a").hasClass('uk-invisible')) {
+                        $(this).parents(".cs-edit-section").find(".fade-preview").toggleClass("uk-hidden", true);
+                    }
                     $(this).parents('.cs-edit-section').toggleClass('cs-selected', true);
                 })
-                .mouseout(function() {
+                .mouseleave(function() {
+                    if (!$(this).closest('article').find('.cs-readmoreless:first').parent("a").hasClass('uk-invisible')) {
+                        $(this).parents(".cs-edit-section").find(".fade-preview").toggleClass("uk-hidden", false);
+                    }
                     $(this).parents('.cs-edit-section').toggleClass('cs-selected', false);
                 });
 

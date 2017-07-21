@@ -53,6 +53,19 @@
   background: #F5F5F5;
 }
 
+.fade-preview {
+    position: absolute;
+    height: 100px;
+    left: 10px;
+    right: 10px;
+    background-image: linear-gradient(rgba(255,255,255,0) 50%, rgba(255, 255, 255, 1));
+    pointer-events: none;
+}
+
+.uk-comment:nth-of-type(even) .fade-preview {
+    background-image: linear-gradient(rgba(241,241,241,0) 50%, rgba(245, 245, 245, 1));
+}
+
 article.uk-comment {
     > i:first-child {
         position: absolute;
