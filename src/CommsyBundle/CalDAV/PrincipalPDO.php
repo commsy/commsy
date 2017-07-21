@@ -64,7 +64,11 @@ class PrincipalPDO extends \Sabre\DAVACL\PrincipalBackend\AbstractBackend {
         $userItems = $this->getUserListFromPortal();
 
         foreach ($userItems as $userItem) {
-            $result[] = ['uri' => 'principals/'.$userItem->getUserId()];
+            $result[] = [
+                    'uri' => 'principals/'.$userItem->getUserId(),
+                    '{DAV:}displayname' => $userItem->getFullname(),
+                    '{http://sabredav.org/ns}email-address ' => $userItem->getEmail(),
+                ];
         }
 
         return $result;
@@ -171,6 +175,14 @@ class PrincipalPDO extends \Sabre\DAVACL\PrincipalBackend\AbstractBackend {
     function findByUri($uri, $principalPrefix) {
         $path = null;
 
+        $userItems = $this->getUserListFromPortal();
+
+        foreach ($userItems as $userItem) {
+            if ($userItem->getEmail() == $uri) {
+                $path = 'principals/'.$userItem->getUserId();
+            }
+        }
+
         return $path;
     }
 
@@ -211,6 +223,8 @@ class PrincipalPDO extends \Sabre\DAVACL\PrincipalBackend\AbstractBackend {
 
     }
 
+
+    // --- Helper ---
 
     private function getUserListFromPortal () {
         $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
