@@ -66,6 +66,13 @@ class Calendars
     private $creator_id;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="synctoken", type="integer", nullable=true)
+     */
+    private $synctoken;
+
+    /**
      * Get id
      *
      * @return integer
@@ -237,5 +244,29 @@ class Calendars
         }else{
             return false;
         }
+    }
+
+    /**
+     * Set synctoken
+     *
+     * @param int $synctoken
+     *
+     * @return Calendars
+     */
+    public function setSynctoken($synctoken)
+    {
+        $this->synctoken = $synctoken;
+
+        return $this;
+    }
+
+    /**
+     * Get synctoken
+     *
+     * @return int
+     */
+    public function getSynctoken()
+    {
+        return $this->synctoken;
     }
 }

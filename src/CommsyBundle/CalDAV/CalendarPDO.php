@@ -526,6 +526,32 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
         return [];
     }
 
+
+    /**
+     * Adds a change record to the calendarchanges table.
+     *
+     * @param mixed $calendarId
+     * @param string $objectUri
+     * @param int $operation 1 = add, 2 = modify, 3 = delete.
+     * @return void
+     */
+    protected function addChange($calendarId, $objectUri, $operation) {
+
+        $stmt = $this->pdo->prepare('INSERT INTO ' . $this->calendarChangesTableName . ' (uri, synctoken, calendarid, operation) SELECT ?, synctoken, ?, ? FROM ' . $this->calendarTableName . ' WHERE id = ?');
+        $stmt->execute([
+            $objectUri,
+            $calendarId,
+            $operation,
+            $calendarId
+        ]);
+        $stmt = $this->pdo->prepare('UPDATE ' . $this->calendarTableName . ' SET synctoken = synctoken + 1 WHERE id = ?');
+        $stmt->execute([
+            $calendarId
+        ]);
+
+    }
+
+
     // ---- helper methods ---
 
     private function getCalendarData ($dateItem, $objectUri) {
