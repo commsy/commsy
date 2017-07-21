@@ -35,6 +35,7 @@
                     $this.element
                         .removeClass('uk-hidden')
                         .removeClass('uk-invisible');
+                    $this.element.siblings(".fade-preview:first").removeClass('uk-hidden');
                 }
             } else {
                 console.log('missing source:');

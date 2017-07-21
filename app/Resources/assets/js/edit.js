@@ -57,9 +57,11 @@
             // show articles as selected, when mouseover the edit icon
             $(element).find('div.cs-edit')
                 .mouseover(function() {
+                    $(this).parents(".cs-edit-section").find(".fade-preview").toggleClass("uk-hidden", true);
                     $(this).parents('.cs-edit-section').toggleClass('cs-selected', true);
                 })
                 .mouseout(function() {
+                    $(this).parents(".cs-edit-section").find(".fade-preview").toggleClass("uk-hidden", false);
                     $(this).parents('.cs-edit-section').toggleClass('cs-selected', false);
                 });
 
