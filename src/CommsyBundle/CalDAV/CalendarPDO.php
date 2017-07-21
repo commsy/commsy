@@ -190,7 +190,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
 
                 $tempCalendar['{DAV:}displayname'] = $contextTitlesArray[$calendar->getContextId()].' / '.$calendar->getTitle();
                 $tempCalendar['{urn:ietf:params:xml:ns:caldav}calendar-description'] = '';
-                $tempCalendar['{urn:ietf:params:xml:ns:caldav}calendar-timezone'] = '';
+                $tempCalendar['{urn:ietf:params:xml:ns:caldav}calendar-timezone'] = 'BEGIN:VCALENDAR VERSION:2.0 PRODID:-//Apple Inc.//Mac OS X 10.12.5//EN CALSCALE:GREGORIAN BEGIN:VTIMEZONE TZID:Europe/Berlin BEGIN:DAYLIGHT TZOFFSETFROM:+0100 RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU DTSTART:19810329T020000 TZNAME:MESZ TZOFFSETTO:+0200 END:DAYLIGHT BEGIN:STANDARD TZOFFSETFROM:+0200 RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU DTSTART:19961027T030000 TZNAME:MEZ TZOFFSETTO:+0100 END:STANDARD END:VTIMEZONE END:VCALENDAR';
                 $tempCalendar['{http://apple.com/ns/ical/}calendar-order'] = '1';
                 $tempCalendar['{http://apple.com/ns/ical/}calendar-color'] = '';
 
@@ -445,6 +445,87 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
 
     }
 
+
+    // --- calendar query ---
+
+    /**
+     * Performs a calendar-query on the contents of this calendar.
+     *
+     * The calendar-query is defined in RFC4791 : CalDAV. Using the
+     * calendar-query it is possible for a client to request a specific set of
+     * object, based on contents of iCalendar properties, date-ranges and
+     * iCalendar component types (VTODO, VEVENT).
+     *
+     * This method should just return a list of (relative) urls that match this
+     * query.
+     *
+     * The list of filters are specified as an array. The exact array is
+     * documented by \Sabre\CalDAV\CalendarQueryParser.
+     *
+     * Note that it is extremely likely that getCalendarObject for every path
+     * returned from this method will be called almost immediately after. You
+     * may want to anticipate this to speed up these requests.
+     *
+     * This method provides a default implementation, which parses *all* the
+     * iCalendar objects in the specified calendar.
+     *
+     * This default may well be good enough for personal use, and calendars
+     * that aren't very large. But if you anticipate high usage, big calendars
+     * or high loads, you are strongly adviced to optimize certain paths.
+     *
+     * The best way to do so is override this method and to optimize
+     * specifically for 'common filters'.
+     *
+     * Requests that are extremely common are:
+     *   * requests for just VEVENTS
+     *   * requests for just VTODO
+     *   * requests with a time-range-filter on a VEVENT.
+     *
+     * ..and combinations of these requests. It may not be worth it to try to
+     * handle every possible situation and just rely on the (relatively
+     * easy to use) CalendarQueryValidator to handle the rest.
+     *
+     * Note that especially time-range-filters may be difficult to parse. A
+     * time-range filter specified on a VEVENT must for instance also handle
+     * recurrence rules correctly.
+     * A good example of how to interpret all these filters can also simply
+     * be found in \Sabre\CalDAV\CalendarQueryFilter. This class is as correct
+     * as possible, so it gives you a good idea on what type of stuff you need
+     * to think of.
+     *
+     * This specific implementation (for the PDO) backend optimizes filters on
+     * specific components, and VEVENT time-ranges.
+     *
+     * @param mixed $calendarId
+     * @param array $filters
+     * @return array
+     */
+    function calendarQuery($calendarId, array $filters) {
+        $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
+        $calendarsService = $this->container->get('commsy.calendars_service');
+
+        $calendars = $calendarsService->getCalendar($calendarId[0]);
+
+        if ($calendars[0]) {
+            $datesManager = $legacyEnvironment->getDatesManager();
+            $datesManager->setContextArrayLimit([$calendars[0]->getcontextId()]);
+            $datesManager->setWithoutDateModeLimit();
+            $datesManager->select();
+            $datesArray = $datesManager->get()->to_array();
+
+            $result = [];
+            foreach ($datesArray as $dateItem) {
+                $calendarObjectId = $legacyEnvironment->getCurrentPortalId().'-'.$dateItem->getContextId().'-'.$dateItem->getItemId();
+
+                $result[] = $calendarObjectId.'.ics';
+            }
+
+            return $result;
+        }
+
+        return [];
+    }
+
     // ---- helper methods ---
 
     private function getCalendarData ($dateItem, $objectUri) {
@@ -456,8 +537,8 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
                 'UID'     => str_ireplace('.ics', '', $objectUri),
             ]
         ]);
-        //return $vDateItem->serialize();
-        return 'BEGIN:VCALENDAR PRODID:-//Mozilla.org/NONSGML Mozilla Calendar V1.1//EN VERSION:2.0 BEGIN:VTIMEZONE TZID:Europe/Berlin BEGIN:DAYLIGHT TZOFFSETFROM:+0100 TZOFFSETTO:+0200 TZNAME:CEST DTSTART:19700329T020000 RRULE:FREQ=YEARLY;BYDAY=-1SU;BYMONTH=3 END:DAYLIGHT BEGIN:STANDARD TZOFFSETFROM:+0200 TZOFFSETTO:+0100 TZNAME:CET DTSTART:19701025T030000 RRULE:FREQ=YEARLY;BYDAY=-1SU;BYMONTH=10 END:STANDARD END:VTIMEZONE BEGIN:VEVENT CREATED:20170717T185816Z LAST-MODIFIED:20170717T185833Z DTSTAMP:20170717T185833Z UID:101-2024-14828 SUMMARY:Neuer Termin DTSTART;TZID=Europe/Berlin:20170717T103000 DTEND;TZID=Europe/Berlin:20170717T113000 TRANSP:OPAQUE CLASS:PRIVATE END:VEVENT END:VCALENDAR';
+        return $vDateItem->serialize();
+        //return 'BEGIN:VCALENDAR PRODID:-//Mozilla.org/NONSGML Mozilla Calendar V1.1//EN VERSION:2.0 BEGIN:VTIMEZONE TZID:Europe/Berlin BEGIN:DAYLIGHT TZOFFSETFROM:+0100 TZOFFSETTO:+0200 TZNAME:CEST DTSTART:19700329T020000 RRULE:FREQ=YEARLY;BYDAY=-1SU;BYMONTH=3 END:DAYLIGHT BEGIN:STANDARD TZOFFSETFROM:+0200 TZOFFSETTO:+0100 TZNAME:CET DTSTART:19701025T030000 RRULE:FREQ=YEARLY;BYDAY=-1SU;BYMONTH=10 END:STANDARD END:VTIMEZONE BEGIN:VEVENT CREATED:20170717T185816Z LAST-MODIFIED:20170717T185833Z DTSTAMP:20170717T185833Z UID:101-2024-14828 SUMMARY:Neuer Termin DTSTART;TZID=Europe/Berlin:20170717T103000 DTEND;TZID=Europe/Berlin:20170717T113000 TRANSP:OPAQUE CLASS:PRIVATE END:VEVENT END:VCALENDAR';
     }
 
     private function getCalendarDataSize ($dateItem, $objectUri) {
