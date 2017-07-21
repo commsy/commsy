@@ -545,10 +545,11 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
     private function getCalendarData ($dateItem, $objectUri) {
         $vDateItem = new VObject\Component\VCalendar([
             'VEVENT' => [
-                'SUMMARY' => $dateItem->getTitle(),
-                'DTSTART' => new \DateTime($dateItem->getDateTime_start()),
-                'DTEND'   => new \DateTime($dateItem->getDateTime_end()),
-                'UID'     => str_ireplace('.ics', '', $objectUri),
+                'SUMMARY'   => $dateItem->getTitle(),
+                'DTSTART'   => new \DateTime($dateItem->getDateTime_start()),
+                'DTEND'     => new \DateTime($dateItem->getDateTime_end()),
+                'UID'       => str_ireplace('.ics', '', $objectUri),
+                'LOCATION'  => $dateItem->getPlace(),
             ]
         ]);
         return $vDateItem->serialize();
