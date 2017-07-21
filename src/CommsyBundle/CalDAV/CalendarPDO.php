@@ -179,8 +179,8 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
                     'id' => [(int)$calendar->getId(), (int)$calendar->getId()],
                     'uri' => urlencode($contextTitlesArray[$calendar->getContextId()].$calendar->getTitle()),
                     'principaluri' => $principalUri,
-                    '{' . \Sabre\CalDAV\Plugin::NS_CALENDARSERVER . '}getctag' => 'http://sabre.io/ns/sync/1', // Allow sync
-                    '{http://sabredav.org/ns}sync-token' => '1', // Allow sync
+                    '{' . \Sabre\CalDAV\Plugin::NS_CALENDARSERVER . '}getctag' => 'http://sabre.io/ns/sync/'.$calendar->getSynctoken(),
+                    '{http://sabredav.org/ns}sync-token' => $calendar->getSynctoken(),
                     '{' . \Sabre\CalDAV\Plugin::NS_CALDAV . '}supported-calendar-component-set' => new \Sabre\CalDAV\Xml\Property\SupportedCalendarComponentSet($components),
                     '{' . \Sabre\CalDAV\Plugin::NS_CALDAV . '}schedule-calendar-transp' => new \Sabre\CalDAV\Xml\Property\ScheduleCalendarTransp('opaque'),
                     'share-resource-uri' => '/ns/share/' . $calendar->getId(),
@@ -536,19 +536,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
      * @return void
      */
     protected function addChange($calendarId, $objectUri, $operation) {
-
-        $stmt = $this->pdo->prepare('INSERT INTO ' . $this->calendarChangesTableName . ' (uri, synctoken, calendarid, operation) SELECT ?, synctoken, ?, ? FROM ' . $this->calendarTableName . ' WHERE id = ?');
-        $stmt->execute([
-            $objectUri,
-            $calendarId,
-            $operation,
-            $calendarId
-        ]);
-        $stmt = $this->pdo->prepare('UPDATE ' . $this->calendarTableName . ' SET synctoken = synctoken + 1 WHERE id = ?');
-        $stmt->execute([
-            $calendarId
-        ]);
-
+        $this->container->get('commsy.calendars_service')->updateSynctoken($calendarId);
     }
 
 

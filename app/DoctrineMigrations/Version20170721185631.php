@@ -18,7 +18,7 @@ class Version20170721185631 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('
             ALTER TABLE calendars
-            ADD synctoken char(32) NULL;
+            ADD synctoken INT(11) NOT NULL DEFAULT 0;
         ');
     }
 

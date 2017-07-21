@@ -193,6 +193,7 @@ services:
     # EventSubscribers
     commsy.subscriber.edit:
         class: CommsyBundle\EventSubscriber\CommsyEditSubscriber
+        arguments: ["@service_container"]
         tags:
           - { name: kernel.event_subscriber }
 

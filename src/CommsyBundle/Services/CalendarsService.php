@@ -61,4 +61,19 @@ class CalendarsService
 
         return $calendars = $query->getResult();
     }
+
+    public function updateSynctoken ($calendarId) {
+        $calendar = $this->getCalendar($calendarId);
+
+        if (isset($calendar[0])) {
+            $repository = $this->em->getRepository('CommsyBundle:Calendars');
+            $query = $repository->createQueryBuilder('calendars')
+                ->update()
+                ->set('calendars.synctoken', ($calendar[0]->getSynctoken() + 1))
+                ->where('calendars.id = :calendarId')
+                ->setParameter('calendarId', $calendarId)
+                ->getQuery();
+            $query->getResult();
+        }
+    }
 }
