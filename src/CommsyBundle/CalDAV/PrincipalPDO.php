@@ -61,7 +61,11 @@ class PrincipalPDO extends \Sabre\DAVACL\PrincipalBackend\AbstractBackend {
     function getPrincipalsByPrefix($prefixPath) {
         $result = [];
 
-        $result[] = ['uri' => 'principals/solth']; // ToDo: get users from commsy.
+        $userItems = $this->getUserListFromPortal();
+
+        foreach ($userItems as $userItem) {
+            $result[] = ['uri' => 'principals/'.$userItem->getUserId()];
+        }
 
         return $result;
     }
