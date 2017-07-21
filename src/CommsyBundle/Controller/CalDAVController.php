@@ -121,8 +121,8 @@ class CalDAVController extends Controller
         if ($userId != 'admin') {
             $authBackend = new AuthPDO($commsyPdo, $this->container, $portalId);
             $authBackend->setRealm('CommSy');
-            //$principalBackend = new PrincipalPDO($commsyPdo, $this->container, $portalId);
-            $principalBackend = new DAVACL\PrincipalBackend\PDO($pdo);
+            $principalBackend = new PrincipalPDO($commsyPdo, $this->container, $portalId);
+            //$principalBackend = new DAVACL\PrincipalBackend\PDO($pdo);
             $calendarBackend = new CalendarPDO($commsyPdo, $this->container, $portalId);
         } else {
             $authBackend = new DAV\Auth\Backend\PDO($pdo);
