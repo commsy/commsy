@@ -108,6 +108,10 @@
                 <source>Account</source>
                 <target>Account</target>
             </trans-unit>
+            <trans-unit id="breadcrumb_search">
+                <source>search</source>
+                <target>Search</target>
+            </trans-unit>
 
             <!-- account -->
             <trans-unit id="profile_personal_data">

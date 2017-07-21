@@ -104,7 +104,7 @@ class cs_auth_manager {
    }
 
    //TBD: ARGUMENTE
-   public function changePassword () {
+   public function changePassword ($user_id, $password) {
       include_once('functions/error_functions.php');
       trigger_error('Must be overwritten in subclass if used!',E_USER_ERROR);
    }
