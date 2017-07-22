@@ -451,7 +451,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
             $dateItem = $this->transformVeventToDateItem($calendarId, $calendarData, $this->getDateItemFromObjectUri($objectUri));
             $dateItem->save();
 
-            $this->addChange($calendarId, $objectUri, 1);
+            $this->addChange($calendarId, $objectUri, 2);
         }
 
         return $result;
@@ -467,7 +467,11 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
      * @return void
      */
     function deleteCalendarObject($calendarId, $objectUri) {
-
+        $dateItem = $this->getDateItemFromObjectUri($objectUri);
+        if ($dateItem) {
+            $dateItem->delete();
+            $this->addChange($calendarId, $objectUri, 3);
+        }
     }
 
 
