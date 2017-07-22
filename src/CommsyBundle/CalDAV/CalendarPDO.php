@@ -318,31 +318,23 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
             throw new \InvalidArgumentException('The value passed to $calendarId is expected to be an array with a calendarId and an instanceId');
         }
 
-        $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
-        $datesManager = $legacyEnvironment->getDatesManager();
+        $dateItem = $this->getDateItemFromObjectUri($objectUri);
 
-        $objectUriArray = explode('-', $objectUri);
+        if ($dateItem) {
+            $dateTime = new \DateTime($dateItem->getModificationDate());
 
-        if ($datesManager->existsItem($objectUriArray[2])) {
-            $dateItem = $datesManager->getItem($objectUriArray[2]);
+            $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
+            $calendarObjectId = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getItemId();
 
-            if ($dateItem) {
-                $dateTime = new \DateTime($dateItem->getModificationDate());
-
-                $calendarObjectId = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getItemId();
-
-                return [
-                    'id' => $calendarObjectId,
-                    'uri' => $calendarObjectId . '.ics',
-                    'lastmodified' => $dateTime->getTimestamp(),
-                    'etag' => '"' . $calendarObjectId . '-' . $dateTime->getTimestamp() . '1"',
-                    'size' => $this->getCalendarDataSize($dateItem, $objectUri),
-                    'calendardata' => $this->getCalendarData($dateItem, $objectUri),
-                    'component' => strtolower('VEVENT'),
-                ];
-            }
-        } else {
-            error_log(print_r($objectUri, true));
+            return [
+                'id' => $calendarObjectId,
+                'uri' => $calendarObjectId . '.ics',
+                'lastmodified' => $dateTime->getTimestamp(),
+                'etag' => '"' . $calendarObjectId . '-' . $dateTime->getTimestamp() . '1"',
+                'size' => $this->getCalendarDataSize($dateItem, $objectUri),
+                'calendardata' => $this->getCalendarData($dateItem, $objectUri),
+                'component' => strtolower('VEVENT'),
+            ];
         }
 
         return [];
@@ -423,91 +415,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
         if ($calendarId[0]) {
             $calendarId = $calendarId[0];
 
-            $calendarsService = $this->container->get('commsy.calendars_service');
-            $dateService = $this->container->get('commsy_legacy.date_service');
+            $dateItem = $this->transformVeventToDateItem($calendarId, $calendarData, null);
+            $dateItem->save();
 
-            $calendarRead = VObject\Reader::read($calendarData);
-
-            // insert new data into database
-            if ($calendarRead->VEVENT) {
-                foreach ($calendarRead->VEVENT as $event) {
-
-                    $title = '';
-                    if ($event->SUMMARY) {
-                        $title = $event->SUMMARY->getValue();
-                    }
-
-                    $startDatetime = '';
-                    if ($event->DTSTART) {
-                        $startDatetime = $event->DTSTART->getDateTime();
-                    }
-
-                    $endDatetime = '';
-                    if ($event->DTEND) {
-                        $endDatetime = $event->DTEND->getDateTime();
-                    }
-
-                    $location = '';
-                    if ($event->LOCATION) {
-                        $location = $event->LOCATION->getValue();
-                    }
-
-                    $description = '';
-                    if ($event->DESCRIPTION) {
-                        $description = $event->DESCRIPTION->getValue();
-                    }
-
-                    $attendee = '';
-                    $attendeeArray = array();
-                    if ($event->ORGANIZER) {
-                        $tempOrganizerString = '';
-                        if (isset($event->ORGANIZER['CN'])) {
-                            $tempOrganizerString .= $event->ORGANIZER['CN'];
-                        }
-                        $attendeeArray[] = $tempOrganizerString . ' (<a href="' . $event->ORGANIZER->getValue() . '">' . str_ireplace('MAILTO:', '', $event->ORGANIZER->getValue()) . '</a>)';
-                    }
-                    if ($event->ATTENDEE) {
-                        foreach ($event->ATTENDEE as $tempAttendee) {
-                            $tempAttendeeString = '';
-                            if (isset($tempAttendee['CN'])) {
-                                $tempAttendeeString .= $tempAttendee['CN'];
-                            }
-                            $attendeeArray[] = $tempAttendeeString . ' (<a href="' . $tempAttendee->getValue() . '">' . str_ireplace('MAILTO:', '', $tempAttendee->getValue()) . '</a>)';
-                        }
-                    }
-                    if (!empty($attendeeArray)) {
-                        $attendee = implode("<br/>", array_unique($attendeeArray));
-                    }
-
-                    $calendar = $calendarsService->getCalendar($calendarId)[0];
-                    if ($calendar) {
-                        $date = $dateService->getNewDate();
-                        $date->setContextId($calendar->getContextId());
-                        $date->setTitle($title);
-                        $date->setDateTime_start($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
-                        $date->setStartingDay($startDatetime->format('Y-m-d'));
-                        $date->setStartingTime($startDatetime->format('H:i'));
-                        $date->setDateTime_end($endDatetime->format('Ymd') . 'T' . $endDatetime->format('His'));
-                        $date->setEndingDay($endDatetime->format('Y-m-d'));
-                        $date->setEndingTime($endDatetime->format('H:i'));
-                        $date->setCalendarId($calendar->getId());
-                        $date->setPlace($location);
-                        $date->setDescription($description . "<br/><br/>" . $attendee);
-
-                        $userItem = $this->getUserFromPortal($this->userId, $calendar->getContextId());
-                        $date->setCreatorId($userItem->getItemId());
-                        $date->setModifierId($userItem->getItemId());
-
-                        $date->setCreationDate($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
-                        $date->setModificationDate($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
-                        $date->setChangeModificationOnSave(false);
-                        $date->setExternal(false);
-                        $date->save();
-
-                        $this->addChange($calendarId, $objectUri, 1);
-                    }
-                }
-            }
+            $this->addChange($calendarId, $objectUri, 1);
         }
 
         return $result;
@@ -532,7 +443,18 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
      * @return string|null
      */
     function updateCalendarObject($calendarId, $objectUri, $calendarData) {
+        $result = null;
 
+        if ($calendarId[0]) {
+            $calendarId = $calendarId[0];
+
+            $dateItem = $this->transformVeventToDateItem($calendarId, $calendarData, $this->getDateItemFromObjectUri($objectUri));
+            $dateItem->save();
+
+            $this->addChange($calendarId, $objectUri, 1);
+        }
+
+        return $result;
     }
 
     /**
@@ -676,4 +598,108 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
         $userList = $userManager->get();
         return $userList->getFirst();
     }
+
+    private function getDateItemFromObjectUri ($objectUri) {
+        $objectUriArray = explode('-', $objectUri);
+
+        $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
+        $datesManager = $legacyEnvironment->getDatesManager();
+
+        if ($datesManager->existsItem($objectUriArray[2])) {
+            return $datesManager->getItem($objectUriArray[2]);
+        }
+
+        return null;
+    }
+
+    private function transformVeventToDateItem ($calendarId, $calendarData, $dateItem = null) {
+        $calendarsService = $this->container->get('commsy.calendars_service');
+        $dateService = $this->container->get('commsy_legacy.date_service');
+
+        $calendarRead = VObject\Reader::read($calendarData);
+
+        // insert new data into database
+        if ($calendarRead->VEVENT) {
+            foreach ($calendarRead->VEVENT as $event) {
+
+                $title = '';
+                if ($event->SUMMARY) {
+                    $title = $event->SUMMARY->getValue();
+                }
+
+                $startDatetime = '';
+                if ($event->DTSTART) {
+                    $startDatetime = $event->DTSTART->getDateTime();
+                }
+
+                $endDatetime = '';
+                if ($event->DTEND) {
+                    $endDatetime = $event->DTEND->getDateTime();
+                }
+
+                $location = '';
+                if ($event->LOCATION) {
+                    $location = $event->LOCATION->getValue();
+                }
+
+                $description = '';
+                if ($event->DESCRIPTION) {
+                    $description = $event->DESCRIPTION->getValue();
+                }
+
+                $attendee = '';
+                $attendeeArray = array();
+                if ($event->ORGANIZER) {
+                    $tempOrganizerString = '';
+                    if (isset($event->ORGANIZER['CN'])) {
+                        $tempOrganizerString .= $event->ORGANIZER['CN'];
+                    }
+                    $attendeeArray[] = $tempOrganizerString . ' (<a href="' . $event->ORGANIZER->getValue() . '">' . str_ireplace('MAILTO:', '', $event->ORGANIZER->getValue()) . '</a>)';
+                }
+                if ($event->ATTENDEE) {
+                    foreach ($event->ATTENDEE as $tempAttendee) {
+                        $tempAttendeeString = '';
+                        if (isset($tempAttendee['CN'])) {
+                            $tempAttendeeString .= $tempAttendee['CN'];
+                        }
+                        $attendeeArray[] = $tempAttendeeString . ' (<a href="' . $tempAttendee->getValue() . '">' . str_ireplace('MAILTO:', '', $tempAttendee->getValue()) . '</a>)';
+                    }
+                }
+                if (!empty($attendeeArray)) {
+                    $attendee = implode("<br/>", array_unique($attendeeArray));
+                }
+
+                $calendar = $calendarsService->getCalendar($calendarId)[0];
+                if ($calendar) {
+                    if (!$dateItem) {
+                        $dateItem = $dateService->getNewDate();
+                    }
+                    $dateItem->setContextId($calendar->getContextId());
+                    $dateItem->setTitle($title);
+                    $dateItem->setDateTime_start($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
+                    $dateItem->setStartingDay($startDatetime->format('Y-m-d'));
+                    $dateItem->setStartingTime($startDatetime->format('H:i'));
+                    $dateItem->setDateTime_end($endDatetime->format('Ymd') . 'T' . $endDatetime->format('His'));
+                    $dateItem->setEndingDay($endDatetime->format('Y-m-d'));
+                    $dateItem->setEndingTime($endDatetime->format('H:i'));
+                    $dateItem->setCalendarId($calendar->getId());
+                    $dateItem->setPlace($location);
+                    $dateItem->setDescription($description . "<br/><br/>" . $attendee);
+
+                    $userItem = $this->getUserFromPortal($this->userId, $calendar->getContextId());
+                    $dateItem->setCreatorId($userItem->getItemId());
+                    $dateItem->setModifierId($userItem->getItemId());
+
+                    $dateItem->setCreationDate($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
+                    $dateItem->setModificationDate($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
+                    $dateItem->setChangeModificationOnSave(false);
+                    $dateItem->setExternal(false);
+                }
+            }
+        }
+
+        return $dateItem;
+    }
+
+
 }
