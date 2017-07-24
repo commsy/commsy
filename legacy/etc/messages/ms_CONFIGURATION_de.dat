@@ -442,11 +442,8 @@ $message["CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO"]["de"] = "Darstellung";
 $message["CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO_DESC"]["de"] = "Hinweis anzeigen";
 $message["CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO_DESC_GLOBAL"]["de"] = "Alle Hinweise raumweit ausblenden";
 $message["CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO_GLOBAL"]["de"] = "Einstellung";
-
 $message["CONFIGURATION_CALDAV_SHORT_TITLE"]["de"] = "CalDAV";
 $message["CONFIGURATION_CALDAV_DISABLE"]["de"] = "Sperren";
 $message["CONFIGURATION_CALDAV_ENABLE_BY_USER_ID"]["de"] = "Pro Nutzer einstellen";
 $message["CONFIGURATION_CALDAV_ENABLE"]["de"] = "Freigeben";
-
-
 ?>

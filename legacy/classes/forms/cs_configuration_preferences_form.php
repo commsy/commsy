@@ -832,9 +832,8 @@ class cs_configuration_preferences_form extends cs_rubric_form {
           if ( $this->_environment->inPortal() and $this->_type == CS_PORTAL_TYPE ) {
               $this->_form->addSelect('caldav_select',
                   [
-                      ['text' => $this->_translator->getMessage('CONFIGURATION_CALDAV_DISABLE'), 'value' => 'CONFIGURATION_CALDAV_ENABLE'],
-                      ['text' => $this->_translator->getMessage('CONFIGURATION_CALDAV_ENABLE_BY_USER_ID'), 'value' => 'CONFIGURATION_CALDAV_DISABLE'],
-                      ['text' => $this->_translator->getMessage('CONFIGURATION_CALDAV_ENABLE'), 'value' => 'CONFIGURATION_CALDAV_ENABLE_BY_USER_ID'],
+                      ['text' => $this->_translator->getMessage('CONFIGURATION_CALDAV_DISABLE'), 'value' => 'CONFIGURATION_CALDAV_DISABLE'],
+                      ['text' => $this->_translator->getMessage('CONFIGURATION_CALDAV_ENABLE'), 'value' => 'CONFIGURATION_CALDAV_ENABLE'],
                   ],
                   '',
                   $this->_translator->getMessage('CONFIGURATION_CALDAV_SHORT_TITLE'),
