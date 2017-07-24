@@ -129,8 +129,6 @@ class UserService
         }
     }
 
-
-
     public function getUser($userId)
     {
         $user = $this->userManager->getItem($userId);

@@ -158,6 +158,10 @@
                 <source>is contact</source>
                 <target>Contact person</target>
             </trans-unit>
+            <trans-unit id="no contact">
+                <source>no contact</source>
+                <target>No contact person</target>
+            </trans-unit>
             <trans-unit id="is applying">
                 <source>is applying</source>
                 <target>is applying</target>
@@ -181,6 +185,42 @@
             <trans-unit id="user comment">
                 <source>user comment</source>
                 <target>User comment</target>
+            </trans-unit>
+            <trans-unit id="change_status">
+                <source>Change status</source>
+                <target>Change status</target>
+            </trans-unit>
+            <trans-unit id="change_status_intro">
+                <source>change_status_intro</source>
+                <target>The following members are affected:</target>
+            </trans-unit>
+            <trans-unit id="change_status_inform">
+                <source>Inform user</source>
+                <target>Inform user about status change</target>
+            </trans-unit>
+            <trans-unit id="user_status_0">
+                <source>status_0</source>
+                <target>Locked</target>
+            </trans-unit>
+            <trans-unit id="user_status_1">
+                <source>status_1</source>
+                <target>Applying</target>
+            </trans-unit>
+            <trans-unit id="user_status_2">
+                <source>status_2</source>
+                <target>User</target>
+            </trans-unit>
+            <trans-unit id="user_status_3">
+                <source>status_3</source>
+                <target>Moderator</target>
+            </trans-unit>
+            <trans-unit id="user_status_4">
+                <source>status_4</source>
+                <target>Read only</target>
+            </trans-unit>
+            <trans-unit id="user_status_new">
+                <source>New status</source>
+                <target>New status</target>
             </trans-unit>
         </body>
     </file>

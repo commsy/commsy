@@ -2,10 +2,12 @@
 
 namespace CommsyBundle\Controller;
 
+use CommsyBundle\Form\Type\UserStatusChangeType;
 use CommsyBundle\Utils\AccountMail;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -267,6 +269,117 @@ class UserController extends Controller
     }
 
     /**
+     * @Route("/room/{roomId}/user/changeStatus")
+     * @Template()
+     * @Security("is_granted('MODERATOR')")
+     */
+    public function changeStatusAction($roomId, Request $request)
+    {
+        $formData = [];
+
+        // first call will pass query parameter
+        if ($request->query->has('status')) {
+            $formData['status'] = $request->query->get('status');
+        }
+
+        if ($request->query->has('userIds')) {
+            $formData['userIds'] = $request->query->get('userIds');
+        }
+
+        $form = $this->createForm(UserStatusChangeType::class, $formData);
+        $form->handleRequest($request);
+
+        // get all affected user
+        $userService = $this->get('commsy_legacy.user_service');
+        $users = [];
+        foreach ($formData['userIds'] as $userId) {
+            $user = $userService->getUser($userId);
+            if ($user) {
+                $users[] = $user;
+            }
+        }
+
+        if ($form->isSubmitted()) {
+            $formData = $form->getData();
+
+            // manual validation - moderator count check
+            if (in_array($formData['status'], ['user-block', 'user-status-reading-user', 'user-status-user'])) {
+                if (!$this->contextHasModerators($roomId, $formData['userIds'])) {
+                    $translator = $this->get('translator');
+                    $form->addError(new FormError($translator->trans('no moderators left', [], 'user')));
+                }
+            }
+
+            if ($form->isValid()) {
+                switch ($formData['status']) {
+                    case 'user-block':
+                        foreach ($users as $user) {
+                            $user->setStatus(0);
+                            $user->save();
+                        }
+                        break;
+
+                    case 'user-confirm':
+                        foreach ($users as $user) {
+                            $user->setStatus(2);
+                            $user->save();
+                        }
+                        break;
+
+                    case 'user-status-reading-user':
+                        foreach ($users as $user) {
+                            $user->setStatus(4);
+                            $user->save();
+                        }
+                        break;
+
+                    case 'user-status-user':
+                        foreach ($users as $user) {
+                            $user->setStatus(2);
+                            $user->save();
+                        }
+                        break;
+
+                    case 'user-status-moderator':
+                        foreach ($users as $user) {
+                            $user->setStatus(3);
+                            $user->save();
+                        }
+                        break;
+
+                    case 'user-contact':
+                        foreach ($users as $user) {
+                            $user->makeContactPerson();
+                            $user->save();
+                        }
+                        break;
+
+                    case 'user-contact-remove':
+                        foreach ($users as $user) {
+                            $user->makeNoContactPerson();
+                            $user->save();
+                        }
+                        break;
+                }
+
+                if ($formData['inform_user']) {
+                    $this->sendUserInfoMail($formData['userIds'], $formData['status']);
+                }
+
+                return $this->redirectToRoute('commsy_user_list', [
+                    'roomId' => $roomId,
+                ]);
+            }
+        }
+
+        return [
+            'users' => $users,
+            'form' => $form->createView(),
+            'status' => $formData['status'],
+        ];
+    }
+
+    /**
      * @Route("/room/{roomId}/user/feedaction")
      */
     public function feedActionAction($roomId, Request $request)
@@ -330,67 +443,6 @@ class UserController extends Controller
             } else {
                 $noModeratorsError = true;
             }
-        } else if ($action == 'user-block') {
-            if ($this->contextHasModerators($roomId, $selectedIds)) {
-                foreach ($selectedIds as $id) {
-                    $item = $userService->getUser($id);
-                    $item->setStatus(0);
-                    $item->save();
-                }
-                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to blocked',count($selectedIds), array('%count%' => count($selectedIds)));
-            } else {
-                $noModeratorsError = true;
-            }
-        } else if ($action == 'user-confirm') {
-            foreach ($selectedIds as $id) {
-                $item = $userService->getUser($id);
-                $item->setStatus(2);
-                $item->save();
-            }
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('confirmed %count% users',count($selectedIds), array('%count%' => count($selectedIds)));
-        } else if ($action == 'user-status-reading-user') {
-            if ($this->contextHasModerators($roomId, $selectedIds)) {
-                foreach ($selectedIds as $id) {
-                    $item = $userService->getUser($id);
-                    $item->setStatus(4);
-                    $item->save();
-                }
-                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to reading user',count($selectedIds), array('%count%' => count($selectedIds)));
-            } else {
-                $noModeratorsError = true;
-            }
-        } else if ($action == 'user-status-user') {
-            if ($this->contextHasModerators($roomId, $selectedIds)) {
-                foreach ($selectedIds as $id) {
-                    $item = $userService->getUser($id);
-                    $item->setStatus(2);
-                    $item->save();
-                }
-                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to user',count($selectedIds), array('%count%' => count($selectedIds)));
-            } else {
-                $noModeratorsError = true;
-            }
-        } else if ($action == 'user-status-moderator') {
-            foreach ($selectedIds as $id) {
-                $item = $userService->getUser($id);
-                $item->setStatus(3);
-                $item->save();
-            }
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to moderator',count($selectedIds), array('%count%' => count($selectedIds)));
-        } else if ($action == 'user-contact') {
-            foreach ($selectedIds as $id) {
-                $item = $userService->getUser($id);
-                $item->makeContactPerson();
-                $item->save();
-            }
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('set status of %count% users to contact',count($selectedIds), array('%count%' => count($selectedIds)));
-        } else if ($action == 'user-contact-remove') {
-            foreach ($selectedIds as $id) {
-                $item = $userService->getUser($id);
-                $item->makeNoContactPerson();
-                $item->save();
-            }
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('removed contact status of %count% users',count($selectedIds), array('%count%' => count($selectedIds)));
         } else {
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ToDo: '.$action;
         }
@@ -400,32 +452,10 @@ class UserController extends Controller
         }
 
         // inform user about account action
-        if (in_array($action, [
-            'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user',
-            'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'])) {
+        if (in_array($action, ['user-delete'])) {
 
             if (!$noModeratorsError) {
-                $accountMail = $this->get('commsy.utils.mail_account');
-                $mailer = $this->get('mailer');
-
-                $fromAddress = $this->getParameter('commsy.email.from');
-                $fromSender = $legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
-
-                foreach ($selectedIds as $userId) {
-                    $user = $userService->getUser($userId);
-
-                    $subject = $accountMail->generateSubject($action);
-                    $body = $accountMail->generateBody($user, $action);
-
-                    $mailMessage = \Swift_Message::newInstance()
-                        ->setSubject($subject)
-                        ->setBody($body, 'text/plain')
-                        ->setFrom([$fromAddress => $fromSender])
-                        ->setTo([$user->getEmail()]);
-
-                    // send mail
-                    $mailer->send($mailMessage);
-                }
+                $this->sendUserInfoMail($selectedIds, $action);
             }
         }
         
@@ -437,7 +467,7 @@ class UserController extends Controller
         ]);
     }
 
-    function contextHasModerators($roomId, $selectedIds) {
+    private function contextHasModerators($roomId, $selectedIds) {
         $userService = $this->get('commsy_legacy.user_service');
         $moderators = $userService->getModeratorsForContext($roomId);
         
@@ -527,8 +557,6 @@ class UserController extends Controller
         if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
-
-        
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
@@ -1177,4 +1205,34 @@ class UserController extends Controller
         return $this->get('commsy.print_service')->printDetail($html);
     }
 
+    private function sendUserInfoMail($userIds, $action)
+    {
+        $accountMail = $this->get('commsy.utils.mail_account');
+        $mailer = $this->get('mailer');
+
+        $fromAddress = $this->getParameter('commsy.email.from');
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $fromSender = $legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
+
+        $userService = $this->get('commsy_legacy.user_service');
+
+        foreach ($userIds as $userId) {
+            $user = $userService->getUser($userId);
+
+            $email = $user->getEmail();
+            if (!empty($email)) {
+                $subject = $accountMail->generateSubject($action);
+                $body = $accountMail->generateBody($user, $action);
+
+                $mailMessage = \Swift_Message::newInstance()
+                    ->setSubject($subject)
+                    ->setBody($body, 'text/plain')
+                    ->setFrom([$fromAddress => $fromSender])
+                    ->setTo([$email]);
+
+                // send mail
+                $mailer->send($mailMessage);
+            }
+        }
+    }
 }

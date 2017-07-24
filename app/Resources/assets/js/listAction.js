@@ -116,7 +116,8 @@
         reloadFeed (new Array('', 0, 0), true);
     }
 
-    function startEdit (el) {
+    function startEdit(el)
+    {
         element = el;
 
         actionUrl = element.data('commsy-list-action').actionUrl;
@@ -393,6 +394,23 @@
                 case 'sendmail':
                     // forward user to mailing form, providing user ids as query param
                     window.location.replace(actionUrl + '?' + $.param({ userIds: entries }));
+
+                    break;
+
+                case 'user-block':
+                case 'user-confirm':
+                case 'user-status-reading-user':
+                case 'user-status-user':
+                case 'user-status-moderator':
+                case 'user-contact':
+                case 'user-contact-remove':
+                    // forward user to user status change form, providing ids as query param
+                    let uri = new URI(actionUrl);
+
+                    // add ids
+                    uri.setSearch('userIds[]', entries);
+
+                    window.location.replace(uri.toString());
 
                     break;
 

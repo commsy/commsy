@@ -158,6 +158,10 @@
                 <source>is contact</source>
                 <target>AnsprechpartnerIn</target>
             </trans-unit>
+            <trans-unit id="no contact">
+                <source>no contact</source>
+                <target>KeinE AnsprechpartnerIn</target>
+            </trans-unit>
             <trans-unit id="is applying">
                 <source>is applying</source>
                 <target>in Beantragung</target>
@@ -181,6 +185,42 @@
             <trans-unit id="user comment">
                 <source>user comment</source>
                 <target>Teilnahmegrund</target>
+            </trans-unit>
+            <trans-unit id="change_status">
+                <source>Change status</source>
+                <target>Status ändern</target>
+            </trans-unit>
+            <trans-unit id="change_status_intro">
+                <source>change_status_intro</source>
+                <target>Änderung des Status für folgende Nutzer:</target>
+            </trans-unit>
+            <trans-unit id="change_status_inform">
+                <source>Inform user</source>
+                <target>Benutzer über Statuswechsel informieren</target>
+            </trans-unit>
+            <trans-unit id="user_status_0">
+                <source>status_0</source>
+                <target>Gesperrt</target>
+            </trans-unit>
+            <trans-unit id="user_status_1">
+                <source>status_1</source>
+                <target>In Beantragung</target>
+            </trans-unit>
+            <trans-unit id="user_status_2">
+                <source>status_2</source>
+                <target>BenutzerIn</target>
+            </trans-unit>
+            <trans-unit id="user_status_3">
+                <source>status_3</source>
+                <target>ModeratorIn</target>
+            </trans-unit>
+            <trans-unit id="user_status_4">
+                <source>status_4</source>
+                <target>LesendeR BenutzerIn</target>
+            </trans-unit>
+            <trans-unit id="user_status_new">
+                <source>New status</source>
+                <target>Neuer Status</target>
             </trans-unit>
         </body>
     </file>
