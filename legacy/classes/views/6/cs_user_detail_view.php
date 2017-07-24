@@ -556,9 +556,9 @@ class cs_user_detail_view extends cs_detail_view {
            $temp_array = array();
            $temp_array[] = $this->_translator->getMessage('USER_IS_ALLOWED_TO_USE_CALDAV');
 
-           if ($item->getIsAllowedToCreateContext() == 'standard') {
+           if ($item->getIsAllowedToUseCalDAV() == 'standard') {
                $temp_array[] = $this->_translator->getMessage('USER_IS_ALLOWED_TO_USE_CALDAV_PORTAL_SETTING_SHORT');
-           } else if ($item->getIsAllowedToCreateContext() == 1) {
+           } else if ($item->getIsAllowedToUseCalDAV() == 1) {
                $temp_array[] = $this->_translator->getMessage('COMMON_YES');
            } else {
                $temp_array[] = $this->_translator->getMessage('COMMON_NO');
