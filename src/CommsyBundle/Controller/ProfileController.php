@@ -650,4 +650,14 @@ class ProfileController extends Controller
             'form_delete' => $deleteForm->createView()
         ];
     }
+
+    /**
+     * @Route("/room/{roomId}/user/{itemId}/calendars")
+     * @Template
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function calendarsAction($roomId, $itemId, Request $request)
+    {
+        return [];
+    }
 }

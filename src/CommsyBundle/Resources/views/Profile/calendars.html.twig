@@ -1,0 +1,51 @@
+{% extends 'CommsyBundle:Base:profile.html.twig' %}
+
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+
+{% block side_navigation %}
+    {{ knp_menu_render('account') }}
+{% endblock %}
+
+{% block content %}
+    <div class="uk-grid">
+
+        <div class="uk-width-medium-4-4">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div class="uk-text-large">{{ 'calendars'|trans({}, 'menu') }}</div>
+                    </div>
+                </div>
+                <div class="uk-margin-left uk-margin-right">
+                    start
+                        errors
+    
+                        <div class="uk-panel uk-margin-large-bottom">
+                            <table class="uk-table">
+                                <tr>
+                                    <td>
+                                        <h1 class="uk-panel-title">{{ 'calendarsStatus'|trans({},'profile') }}</h1>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+    
+                        <div class="uk-panel uk-margin-large-bottom">
+                            <table class="uk-table">
+                                <tr>
+                                    <td>save</td>
+                                </tr>
+                            </table>
+                        </div>
+                    end
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

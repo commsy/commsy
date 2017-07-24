@@ -126,6 +126,10 @@
                 <source>notifications</source>
                 <target>Notifications</target>
             </trans-unit>
+            <trans-unit id="profile_calendars">
+                <source>calendars</source>
+                <target>Calendars</target>
+            </trans-unit>
             <trans-unit id="profile_additional">
                 <source>additional</source>
                 <target>Additional functions</target>
