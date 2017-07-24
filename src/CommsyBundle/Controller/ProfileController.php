@@ -710,9 +710,23 @@ class ProfileController extends Controller
             $privateRoomItem->save();
         }
 
+        $protocoll = 'https://';
+        if ($_SERVER['HTTPS'] == 'off') {
+            $protocoll = 'http://';
+        }
+        $caldavUrl = $protocoll . $_SERVER['HTTP_HOST'];
+
+        $caldavPath = $this->generateUrl('commsy_caldav_caldavprincipal', array(
+            'portalId' => $legacyEnvironment->getCurrentPortalId(),
+            'userId' => $legacyEnvironment->getCurrentUser()->getUserId(),
+        ));
+
         return array(
             'form' => $form->createView(),
             'roomTitles' => $roomTitles,
+            'user' => $userItem,
+            'caldavUrl' => $caldavUrl,
+            'caldavPath' => $caldavPath,
         );
     }
 }

@@ -24,9 +24,26 @@
     
                         <div class="uk-panel uk-margin-large-bottom">
                             <table class="uk-table">
-                                <tr>
+                                <tr class="uk-margin-bottom">
                                     <td>
-                                        <h1 class="uk-panel-title">{{ 'calendarsStatus'|trans({},'profile') }}</h1>
+                                        <table>
+                                            <tr>
+                                                <td><strong>{{ 'caldav_server'|trans({},'profile') }}:</strong></td>
+                                                <td>{{ caldavUrl }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ 'caldav_path'|trans({},'profile') }}:</strong></td>
+                                                <td>{{ caldavPath }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ 'caldav_user'|trans({},'profile') }}:</strong></td>
+                                                <td>{{ user.userId }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ 'caldav_password'|trans({},'profile') }}:</strong></td>
+                                                <td>{{ 'caldav_password_description'|trans({},'profile') }}</td>
+                                            </tr>
+                                        </table>
                                     </td>
                                 </tr>
                                 <tr>
