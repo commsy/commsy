@@ -19,9 +19,6 @@
                     </div>
                 </div>
                 <div class="uk-margin-left uk-margin-right">
-                    {{ form_start(form) }}
-                        {{ form_errors(form) }}
-    
                         <div class="uk-panel uk-margin-large-bottom">
                             <table class="uk-table">
                                 <tr class="uk-margin-bottom">
@@ -66,13 +63,36 @@
                                 <tr>
                                     <td class="uk-grid">
                                         <div class="uk-width-1-10">
+                                            <div class="cs-user-calendars-settings">
+                                                <div class="uk-form-controls">
+                                                    <input type="checkbox" id="calendars_check_all_dashboard" class="calendars_check_all" name="" value="" {{ allNoneDashboard ? 'checked' : ''  }} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="uk-width-1-10">
+                                            <div class="cs-user-calendars-settings">
+                                                <div class="uk-form-controls">
+                                                    <input type="checkbox" id="calendars_check_all_caldav" class="calendars_check_all" name="" value="" {{ allNoneCaldav? 'checked' : ''  }} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="uk-width-8-10">
+                                            {{ 'all_none'|trans({}, 'profile') }}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    {{ form_start(form) }}
+                                    {{ form_errors(form) }}
+                                    <td class="uk-grid">
+                                        <div class="uk-width-1-10 calendars_checkboxes_dashboard">
                                             {% for child in form.calendarsDashboard %}
                                                 <div class="cs-user-calendars-settings">
                                                     {{ form_widget(child) }}
                                                 </div>
                                             {% endfor %}
                                         </div>
-                                        <div class="uk-width-1-10">
+                                        <div class="uk-width-1-10 calendars_checkboxes_caldav">
                                             {% for child in form.calendarsCalDAV %}
                                                 <div class="cs-user-calendars-settings">
                                                     {{ form_widget(child) }}

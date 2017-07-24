@@ -724,12 +724,24 @@ class ProfileController extends Controller
             'userId' => $legacyEnvironment->getCurrentUser()->getUserId(),
         ));
 
+        $allNoneDashboard = false;
+        if (isset($options['calendarsDashboard'])) {
+            $allNoneDashboard = sizeof($calendars) == sizeof($options['calendarsDashboard']);
+        }
+
+        $allNoneCaldav = false;
+        if (isset($options['calendarsCalDAV'])) {
+            $allNoneCaldav = sizeof($calendars) == sizeof($options['calendarsCalDAV']);
+        }
+
         return array(
             'form' => $form->createView(),
             'roomTitles' => $roomTitles,
             'user' => $userItem,
             'caldavUrl' => $caldavUrl,
             'caldavPath' => $caldavPath,
+            'allNoneDashboard' => $allNoneDashboard,
+            'allNoneCaldav' => $allNoneCaldav,
         );
     }
 }

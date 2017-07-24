@@ -358,6 +358,10 @@
                 <source>caldav_password_description</source>
                 <target>Ihr gewohntes CommSy-Passwort</target>
             </trans-unit>
+            <trans-unit id="all_none">
+                <source>all_none</source>
+                <target>alle / keine</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
