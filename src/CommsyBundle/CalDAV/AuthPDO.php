@@ -58,18 +58,12 @@ class AuthPDO extends \Sabre\DAV\Auth\Backend\AbstractDigest {
     */
     function getDigestHash($realm, $userId) {
         $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
-        $legacyEnvironment->setCurrentContextId($this->portalId);
-        $legacyEnvironment->setCurrentPortalId($this->portalId);
 
-        $userManager = $legacyEnvironment->getUserManager();
-        $userManager->setPortalIDLimit($this->portalId);
-        $userManager->setUserIDLimit($userId);
-        $userManager->select();
-        $userList = $userManager->get();
-        $userItem = $userList->getFirst();
-        $legacyEnvironment->setCurrentUser($userItem);
+        $userItem = $this->getUserFromPortal($userId);
 
         if ($userItem) {
+            $legacyEnvironment->setCurrentUser($userItem);
+
             $portalUser = $userItem->getRelatedPrivateRoomUserItem();
 
             $stmt = $this->pdo->prepare('SELECT caldav FROM ' . $this->tableName . ' WHERE user_item_id = ?');
@@ -124,6 +118,11 @@ class AuthPDO extends \Sabre\DAV\Auth\Backend\AbstractDigest {
             return [false, "No 'Authorization: Digest' header found. Either the client didn't send one, or the server is misconfigured"];
         }
 
+        $userItem = $this->getUserFromPortal($username);
+        if (!$userItem->isAllowedToUseCalDAV()) {
+            return [false, "User is not allowed to use CalDAV"];
+        }
+
         $hash = $this->getDigestHash($this->realm, $username);
         // If this was false, the user account didn't exist
         if ($hash === false || is_null($hash)) {
@@ -140,5 +139,20 @@ class AuthPDO extends \Sabre\DAV\Auth\Backend\AbstractDigest {
 
         return [true, $this->principalPrefix . $username];
 
+    }
+
+    // --- Helper ---
+
+    private function getUserFromPortal ($userId) {
+        $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
+        $legacyEnvironment->setCurrentContextId($this->portalId);
+        $legacyEnvironment->setCurrentPortalId($this->portalId);
+
+        $userManager = $legacyEnvironment->getUserManager();
+        $userManager->setPortalIDLimit($this->portalId);
+        $userManager->setUserIDLimit($userId);
+        $userManager->select();
+        $userList = $userManager->get();
+        return $userList->getFirst();
     }
 }
