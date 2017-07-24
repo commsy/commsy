@@ -583,6 +583,9 @@ class ProfileController extends Controller
 
             if(empty($error_number)) {
                 $portalUser->setNewGenerationPassword($form_data['old_password']);
+
+                $caldavService = $this->get('commsy.caldav_service');
+                $caldavService->setCalDAVHash($portalUser->getUserId(), $form_data['new_password'], 'CommSy');
             }
         }
 
