@@ -79,9 +79,16 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
 
         $contextTitlesArray = array();
         $calendarsArray = array();
+
+        $calendarSelection = false;
+
         foreach ($userArray as $user) {
             $contextTitlesArray[$user->getContextId()] = $user->getContextItem()->getTitle();
             $calendarsArray = array_merge($calendarsArray, $calendarsService->getListCalendars($user->getContextItem()->getItemId()));
+
+            if ($calendarSelection === false) {
+                $calendarSelection = $user->getOwnRoom()->getCalendarSelection();
+            }
         }
 
 
@@ -170,33 +177,33 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
 
         $calendars = [];
         foreach ($calendarsArray as $calendar) {
+            if (in_array($calendar->getId(), $calendarSelection['calendarsCalDAV'])) {
+                if (!$calendar->getExternalUrl()) {
+                    $components = [
+                        'VEVENT'
+                    ];
 
-            if (!$calendar->getExternalUrl()) {
+                    $tempCalendar = [
+                        'id' => [(int)$calendar->getId(), (int)$calendar->getId()],
+                        'uri' => urlencode($contextTitlesArray[$calendar->getContextId()] . $calendar->getTitle()),
+                        'principaluri' => $principalUri,
+                        '{' . \Sabre\CalDAV\Plugin::NS_CALENDARSERVER . '}getctag' => 'http://sabre.io/ns/sync/' . $calendar->getSynctoken(),
+                        '{http://sabredav.org/ns}sync-token' => $calendar->getSynctoken(),
+                        '{' . \Sabre\CalDAV\Plugin::NS_CALDAV . '}supported-calendar-component-set' => new \Sabre\CalDAV\Xml\Property\SupportedCalendarComponentSet($components),
+                        '{' . \Sabre\CalDAV\Plugin::NS_CALDAV . '}schedule-calendar-transp' => new \Sabre\CalDAV\Xml\Property\ScheduleCalendarTransp('opaque'),
+                        'share-resource-uri' => '/ns/share/' . $calendar->getId(),
+                    ];
 
-                $components = [
-                    'VEVENT'
-                ];
+                    $tempCalendar['share-access'] = 1;
 
-                $tempCalendar = [
-                    'id' => [(int)$calendar->getId(), (int)$calendar->getId()],
-                    'uri' => urlencode($contextTitlesArray[$calendar->getContextId()].$calendar->getTitle()),
-                    'principaluri' => $principalUri,
-                    '{' . \Sabre\CalDAV\Plugin::NS_CALENDARSERVER . '}getctag' => 'http://sabre.io/ns/sync/'.$calendar->getSynctoken(),
-                    '{http://sabredav.org/ns}sync-token' => $calendar->getSynctoken(),
-                    '{' . \Sabre\CalDAV\Plugin::NS_CALDAV . '}supported-calendar-component-set' => new \Sabre\CalDAV\Xml\Property\SupportedCalendarComponentSet($components),
-                    '{' . \Sabre\CalDAV\Plugin::NS_CALDAV . '}schedule-calendar-transp' => new \Sabre\CalDAV\Xml\Property\ScheduleCalendarTransp('opaque'),
-                    'share-resource-uri' => '/ns/share/' . $calendar->getId(),
-                ];
+                    $tempCalendar['{DAV:}displayname'] = $contextTitlesArray[$calendar->getContextId()] . ' / ' . $calendar->getTitle();
+                    $tempCalendar['{urn:ietf:params:xml:ns:caldav}calendar-description'] = '';
+                    $tempCalendar['{urn:ietf:params:xml:ns:caldav}calendar-timezone'] = 'BEGIN:VCALENDAR VERSION:2.0 PRODID:-//Apple Inc.//Mac OS X 10.12.5//EN CALSCALE:GREGORIAN BEGIN:VTIMEZONE TZID:Europe/Berlin BEGIN:DAYLIGHT TZOFFSETFROM:+0100 RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU DTSTART:19810329T020000 TZNAME:MESZ TZOFFSETTO:+0200 END:DAYLIGHT BEGIN:STANDARD TZOFFSETFROM:+0200 RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU DTSTART:19961027T030000 TZNAME:MEZ TZOFFSETTO:+0100 END:STANDARD END:VTIMEZONE END:VCALENDAR';
+                    $tempCalendar['{http://apple.com/ns/ical/}calendar-order'] = '1';
+                    $tempCalendar['{http://apple.com/ns/ical/}calendar-color'] = '';
 
-                $tempCalendar['share-access'] = 1;
-
-                $tempCalendar['{DAV:}displayname'] = $contextTitlesArray[$calendar->getContextId()].' / '.$calendar->getTitle();
-                $tempCalendar['{urn:ietf:params:xml:ns:caldav}calendar-description'] = '';
-                $tempCalendar['{urn:ietf:params:xml:ns:caldav}calendar-timezone'] = 'BEGIN:VCALENDAR VERSION:2.0 PRODID:-//Apple Inc.//Mac OS X 10.12.5//EN CALSCALE:GREGORIAN BEGIN:VTIMEZONE TZID:Europe/Berlin BEGIN:DAYLIGHT TZOFFSETFROM:+0100 RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU DTSTART:19810329T020000 TZNAME:MESZ TZOFFSETTO:+0200 END:DAYLIGHT BEGIN:STANDARD TZOFFSETFROM:+0200 RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU DTSTART:19961027T030000 TZNAME:MEZ TZOFFSETTO:+0100 END:STANDARD END:VTIMEZONE END:VCALENDAR';
-                $tempCalendar['{http://apple.com/ns/ical/}calendar-order'] = '1';
-                $tempCalendar['{http://apple.com/ns/ical/}calendar-color'] = '';
-
-                $calendars[] = $tempCalendar;
+                    $calendars[] = $tempCalendar;
+                }
             }
         }
 
