@@ -351,6 +351,12 @@ services:
         tags:
             - { name: form.type }
 
+    commsy.form.type.profile_calendars:
+        class: CommsyBundle\Form\Type\Profile\ProfileCalendarsType
+        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
     commsy.form.type.profile_additional:
         class: CommsyBundle\Form\Type\Profile\ProfileAdditionalType
         arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']

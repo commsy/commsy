@@ -18,6 +18,7 @@ use CommsyBundle\Form\Type\Profile\ProfileAccountType;
 use CommsyBundle\Form\Type\Profile\ProfileChangePasswordType;
 use CommsyBundle\Form\Type\Profile\ProfileMergeAccountsType;
 use CommsyBundle\Form\Type\Profile\ProfileNotificationsType;
+use CommsyBundle\Form\Type\Profile\ProfileCalendarsType;
 use CommsyBundle\Form\Type\Profile\ProfileAdditionalType;
 use CommsyBundle\Form\Type\Profile\ProfilePersonalInformationType;
 
@@ -658,6 +659,54 @@ class ProfileController extends Controller
      */
     public function calendarsAction($roomId, $itemId, Request $request)
     {
-        return [];
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $itemService = $this->get('commsy_legacy.item_service');
+        $userItem = $legacyEnvironment->getCurrentUserItem();
+
+        $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
+        $privateRoomItem = $userItem->getOwnRoom();
+        $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
+
+        $options = [];
+
+
+        $userList = $userItem->getRelatedUserList()->to_array();
+        $contextIds = array();
+        foreach ($userList as $user) {
+            $contextIds[] = $user->getContextId();
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('CommsyBundle:Calendars');
+        $calendars = $repository->findBy(array('context_id' => $contextIds, 'external_url' => array('', NULL)));
+
+        $dashboard = [];
+        $caldav = [];
+        $roomTitles = [];
+
+        foreach ($calendars as $calendar) {
+            $roomItemCalendar = $itemService->getTypedItem($calendar->getContextId());
+            $contextArray[$calendar->getContextId()][] = $roomItemCalendar->getTitle();
+
+            $dashboard[] = $calendar->getId();
+            $caldav[] = $calendar->getId();
+            $roomTitles[] = $roomItemCalendar->getTitle().' / '.$calendar->getTitle();
+        }
+
+        $form = $this->createForm(ProfileCalendarsType::class, $options, array(
+            'itemId' => $itemId,
+            'dashboard' => $dashboard,
+            'caldav' => $caldav,
+        ));
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+
+        }
+
+        return array(
+            'form' => $form->createView(),
+            'roomTitles' => $roomTitles,
+        );
     }
 }

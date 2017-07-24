@@ -327,6 +327,19 @@
                 <source>Email choice text</source>
                 <target>Here you can choose the email address for communication in this room. You can either use your account email address or configure a new email address specifically for this room.</target>
             </trans-unit>
+
+            <trans-unit id="calendarsStatus">
+                <source>calendarsStatus</source>
+                <target>Angezeigte Kalender</target>
+            </trans-unit>
+            <trans-unit id="dashboard">
+                <source>dashboard</source>
+                <target>Dashboard</target>
+            </trans-unit>
+            <trans-unit id="caldav">
+                <source>caldav</source>
+                <target>CalDAV</target>
+            </trans-unit>
          </body>
     </file>
 </xliff>

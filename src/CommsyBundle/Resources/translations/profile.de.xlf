@@ -327,6 +327,19 @@
                 <source>Email choice text</source>
                 <target>Wählen Sie hier aus, ob Sie in diesem Raum über Ihre Account-Email-Adresse oder über eine Raum-spezifische Email-Adresse kontaktiert werden möchten.</target>
             </trans-unit>
+
+            <trans-unit id="calendarsStatus">
+                <source>calendarsStatus</source>
+                <target>Angezeigte Kalender</target>
+            </trans-unit>
+            <trans-unit id="dashboard">
+                <source>dashboard</source>
+                <target>Dashboard</target>
+            </trans-unit>
+            <trans-unit id="caldav">
+                <source>caldav</source>
+                <target>CalDAV</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
