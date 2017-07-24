@@ -14,9 +14,17 @@ class RoomExtension extends \Twig_Extension
 
     public function getFilters()
     {
-        return array(
-            new \Twig_SimpleFilter('roomTitle', array($this, 'roomTitle')),
-        );
+        return [
+            new \Twig_SimpleFilter('roomTitle', [$this, 'roomTitle']),
+        ];
+    }
+
+    public function getFunctions()
+    {
+        return [
+            new \Twig_SimpleFunction('roomExpandedHashtags', [$this, 'roomExpandedHashtags']),
+            new \Twig_SimpleFunction('roomExpandedCategories', [$this, 'roomExpandedCategories']),
+        ];
     }
 
     public function roomTitle($roomId)
@@ -33,6 +41,30 @@ class RoomExtension extends \Twig_Extension
         $roomItem = $roomManager->getItem($roomId);
 
         return $roomItem->getTitle();
+    }
+
+    public function roomExpandedHashtags($roomId)
+    {
+        $roomManager = $this->legacyEnvironment->getEnvironment()->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        if ($roomItem) {
+            return $roomItem->isBuzzwordShowExpanded();
+        }
+
+        return false;
+    }
+
+    public function roomExpandedCategories($roomId)
+    {
+        $roomManager = $this->legacyEnvironment->getEnvironment()->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        if ($roomItem) {
+            return $roomItem->isTagsShowExpanded();
+        }
+
+        return false;
     }
 
     public function getName()
