@@ -295,18 +295,44 @@ class DiscussionController extends Controller
         $itemService = $this->get('commsy_legacy.item_service');
 
         $discussion = $discussionService->getDiscussion($itemId);
-        
         $articleList = $discussion->getAllArticles();
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $readerManager = $legacyEnvironment->getReaderManager();
+        $noticedManager = $legacyEnvironment->getNoticedManager();
+
+        // mark discussion as read / noticed
+        $latestReader = $readerManager->getLatestReader($discussion->getItemID());
+        if (empty($latestReader) || $latestReader['read_date'] < $discussion->getModificationDate()) {
+            $readerManager->markRead($discussion->getItemID(), $discussion->getVersionID());
+        }
+
+        $latestNoticed = $noticedManager->getLatestNoticed($discussion->getItemID());
+        if (empty($latestNoticed) || $latestNoticed['read_date'] < $discussion->getModificationDate()) {
+            $noticedManager->markNoticed($discussion->getItemID(), $discussion->getVersionID());
+        }
+
+        // mark discussion articles as read / noticed
+        $article = $articleList->getFirst();
+        while ($article) {
+            $latestReader = $readerManager->getLatestReader($article->getItemID());
+            if (empty($latestReader) || $latestReader['read_date'] < $article->getModificationDate()) {
+                $readerManager->markRead($article->getItemID(), 0);
+            }
+
+            $latestNoticed = $noticedManager->getLatestNoticed($article->getItemID());
+            if (empty($latestNoticed) || $latestNoticed['read_date'] < $article->getModificationDate()) {
+                $noticedManager->markNoticed($article->getItemID(), 0);
+            }
+
+            $article = $articleList->getNext();
+        }
 
         $itemArray = array_merge([$discussion], $articleList->to_array());
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
- 
-        $roomService = $this->get('commsy_legacy.room_service');
+
         $readerManager = $legacyEnvironment->getReaderManager();
-        $roomItem = $roomService->getRoomItem($discussion->getContextId());
-        $numTotalMember = $roomItem->getAllUsers();
 
         $userManager = $legacyEnvironment->getUserManager();
         $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
