@@ -663,13 +663,6 @@ class ProfileController extends Controller
         $itemService = $this->get('commsy_legacy.item_service');
         $userItem = $legacyEnvironment->getCurrentUserItem();
 
-        $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
-        $privateRoomItem = $userItem->getOwnRoom();
-        $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
-
-        $options = [];
-
-
         $userList = $userItem->getRelatedUserList()->to_array();
         $contextIds = array();
         foreach ($userList as $user) {
@@ -684,6 +677,14 @@ class ProfileController extends Controller
         $caldav = [];
         $roomTitles = [];
 
+        $privateRoomItem = $userItem->getOwnRoom();
+        $calendarSelection = $privateRoomItem->getCalendarSelection();
+
+        $options = [];
+        if ($calendarSelection) {
+            $options = $calendarSelection;
+        }
+
         foreach ($calendars as $calendar) {
             $roomItemCalendar = $itemService->getTypedItem($calendar->getContextId());
             $contextArray[$calendar->getContextId()][] = $roomItemCalendar->getTitle();
@@ -691,6 +692,10 @@ class ProfileController extends Controller
             $dashboard[] = $calendar->getId();
             $caldav[] = $calendar->getId();
             $roomTitles[] = $roomItemCalendar->getTitle().' / '.$calendar->getTitle();
+            if ($calendarSelection === false) {
+                $options['calendarsDashboard'][] = $calendar->getId();
+                $options['calendarsCalDAV'][] = $calendar->getId();
+            }
         }
 
         $form = $this->createForm(ProfileCalendarsType::class, $options, array(
@@ -701,7 +706,8 @@ class ProfileController extends Controller
 
         $form->handleRequest($request);
         if ($form->isValid()) {
-
+            $privateRoomItem->setCalendarSelection($form->getData());
+            $privateRoomItem->save();
         }
 
         return array(

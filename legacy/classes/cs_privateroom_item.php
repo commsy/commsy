@@ -2043,5 +2043,17 @@ class cs_privateroom_item extends cs_room_item {
    function usersCanSetExternalCalendarsUrl () {
        return true;
    }
+
+    function setCalendarSelection ($data) {
+        $this->_addExtra('CALENDAR_SELECTION',$data);
+    }
+
+    function getCalendarSelection () {
+        $retour = false;
+        if ($this->_issetExtra('CALENDAR_SELECTION')) {
+            return $this->_getExtra('CALENDAR_SELECTION');
+        }
+        return $retour;
+    }
 }
 ?>
