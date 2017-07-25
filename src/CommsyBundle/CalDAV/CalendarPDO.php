@@ -586,7 +586,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
                 'DTEND'     => new \DateTime($dateItem->getDateTime_end()),
                 'UID'       => str_ireplace('.ics', '', $objectUri),
                 'LOCATION'  => $dateItem->getPlace(),
-                'CLASS'     => 'PRIVATE',
+                'CLASS'     => ($dateItem->isPublic() ? 'PUBLIC' : 'PRIVATE'),
             ]
         ]);
         return $vDateItem->serialize();
