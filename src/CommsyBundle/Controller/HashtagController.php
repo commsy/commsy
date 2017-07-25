@@ -168,6 +168,9 @@ class HashtagController extends Controller
         }
 
         $hashtags = $repository->findRoomHashtags($roomId);
+        foreach ($hashtags as $hashtag) {
+            $hashtag->setName(html_entity_decode($hashtag->getName()));
+        }
 
         $mergeForm = $this->createForm(HashtagMergeType::class, null, ['roomId'=>$roomId]);
 
@@ -193,8 +196,6 @@ class HashtagController extends Controller
             $buzzwordItemOne->setModificationDate(getCurrentDateTimeInMySQL());
             $buzzwordItemOne->save();
             $buzzwordItemTwo->delete();
-
-
 
             return $this->redirectToRoute('commsy_hashtag_edit', [
                 'roomId' => $roomId,
