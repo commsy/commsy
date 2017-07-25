@@ -591,6 +591,11 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
                 'CLASS'       => ($dateItem->isPublic() ? 'PUBLIC' : 'PRIVATE'),
             ]
         ]);
+
+        foreach ($dateItem->getParticipantsItemList()->to_array() as $attendee) {
+            $vDateItem->add('ATTENDEE', 'mailto:'.$attendee->getEmail());
+        }
+
         return $vDateItem->serialize();
     }
 
