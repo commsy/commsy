@@ -110,10 +110,11 @@ class CalDAVController extends Controller
 
     private function caldavServer ($portalId, $userId = '') {
         $dbHost = $this->container->getParameter('database_host');
+        $dbName = $this->container->getParameter('database_name');
         $dbUser = $this->container->getParameter('database_user');
         $dbPassword = $this->container->getParameter('database_password');
 
-        $commsyPdo = new \PDO('mysql:dbname=commsy;host='.$dbHost, $dbUser, $dbPassword);
+        $commsyPdo = new \PDO('mysql:dbname='.$dbName.';host='.$dbHost, $dbUser, $dbPassword);
         //$pdo = new \PDO('mysql:dbname=caldav;host=commsy_db', 'commsy', 'commsy');
 
         set_error_handler(array($this, "exception_error_handler"));
