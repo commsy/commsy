@@ -688,7 +688,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
                     } else {
                         $user = $this->getUserFromPortal($this->userId, $dateItem->getContextId());
                         if ($user->getContextId() == $dateItem->getContextId()) {
-                            if (!$dateItem->mayEdit()) {
+                            if (!$dateItem->mayEdit($user)) {
                                 throw new Exception\Forbidden('Permission denied to edit date');
                             }
                         }
