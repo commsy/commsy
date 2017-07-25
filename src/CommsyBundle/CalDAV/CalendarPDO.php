@@ -6,6 +6,7 @@ use Sabre\DAV;
 use Sabre\HTTP\RequestInterface;
 use Sabre\HTTP\ResponseInterface;
 use Sabre\VObject;
+use Sabre\DAV\Exception;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -684,6 +685,13 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
                 if ($calendar) {
                     if (!$dateItem) {
                         $dateItem = $dateService->getNewDate();
+                    } else {
+                        $user = $this->getUserFromPortal($this->userId, $dateItem->getContextId());
+                        if ($user->getContextId() == $dateItem->getContextId()) {
+                            if (!$dateItem->mayEdit()) {
+                                throw new Exception\Forbidden('Permission denied to edit date');
+                            }
+                        }
                     }
                     $dateItem->setContextId($calendar->getContextId());
                     $dateItem->setTitle($title);
