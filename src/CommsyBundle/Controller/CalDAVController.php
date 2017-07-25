@@ -151,7 +151,12 @@ class CalDAVController extends Controller
         // You are highly encouraged to set your WebDAV server base url. Without it,
         // SabreDAV will guess, but the guess is not always correct. Putting the
         // server on the root of the domain will improve compatibility.
-        $server->setBaseUri('/'.$portalId.'/');
+        $prefix = '';
+        if ($_SERVER['SCRIPT_NAME'] == '/app_dev.php') {
+            $prefix = '/app_dev.php';
+        }
+
+        $server->setBaseUri($prefix.'/'.$portalId.'/');
 
         // Authentication plugin
         $authPlugin = new DAV\Auth\Plugin($authBackend,'SabreDAV');
