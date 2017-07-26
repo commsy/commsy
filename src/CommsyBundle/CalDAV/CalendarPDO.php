@@ -6,6 +6,7 @@ use Sabre\DAV;
 use Sabre\HTTP\RequestInterface;
 use Sabre\HTTP\ResponseInterface;
 use Sabre\VObject;
+use Sabre\DAV\Exception;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -581,16 +582,21 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
     private function getCalendarData ($dateItem, $objectUri) {
         $vDateItem = new VObject\Component\VCalendar([
             'VEVENT' => [
-                'SUMMARY'   => $dateItem->getTitle(),
-                'DTSTART'   => new \DateTime($dateItem->getDateTime_start()),
-                'DTEND'     => new \DateTime($dateItem->getDateTime_end()),
-                'UID'       => str_ireplace('.ics', '', $objectUri),
-                'LOCATION'  => $dateItem->getPlace(),
-                'CLASS'     => 'PRIVATE',
+                'SUMMARY'     => $dateItem->getTitle(),
+                'DTSTART'     => new \DateTime($dateItem->getDateTime_start()),
+                'DTEND'       => new \DateTime($dateItem->getDateTime_end()),
+                'UID'         => str_ireplace('.ics', '', $objectUri),
+                'LOCATION'    => $dateItem->getPlace(),
+                'DESCRIPTION' => $dateItem->getDescription(),
+                'CLASS'       => ($dateItem->isPublic() ? 'PUBLIC' : 'PRIVATE'),
             ]
         ]);
+
+        foreach ($dateItem->getParticipantsItemList()->to_array() as $attendee) {
+            $vDateItem->add('ATTENDEE', 'mailto:'.$attendee->getEmail());
+        }
+
         return $vDateItem->serialize();
-        //return 'BEGIN:VCALENDAR PRODID:-//Mozilla.org/NONSGML Mozilla Calendar V1.1//EN VERSION:2.0 BEGIN:VTIMEZONE TZID:Europe/Berlin BEGIN:DAYLIGHT TZOFFSETFROM:+0100 TZOFFSETTO:+0200 TZNAME:CEST DTSTART:19700329T020000 RRULE:FREQ=YEARLY;BYDAY=-1SU;BYMONTH=3 END:DAYLIGHT BEGIN:STANDARD TZOFFSETFROM:+0200 TZOFFSETTO:+0100 TZNAME:CET DTSTART:19701025T030000 RRULE:FREQ=YEARLY;BYDAY=-1SU;BYMONTH=10 END:STANDARD END:VTIMEZONE BEGIN:VEVENT CREATED:20170717T185816Z LAST-MODIFIED:20170717T185833Z DTSTAMP:20170717T185833Z UID:101-2024-14828 SUMMARY:Neuer Termin DTSTART;TZID=Europe/Berlin:20170717T103000 DTEND;TZID=Europe/Berlin:20170717T113000 TRANSP:OPAQUE CLASS:PRIVATE END:VEVENT END:VCALENDAR';
     }
 
     private function getCalendarDataSize ($dateItem, $objectUri) {
@@ -677,13 +683,20 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
                     }
                 }
                 if (!empty($attendeeArray)) {
-                    $attendee = implode("<br/>", array_unique($attendeeArray));
+                    $attendee = implode(", ", array_unique($attendeeArray));
                 }
 
                 $calendar = $calendarsService->getCalendar($calendarId)[0];
                 if ($calendar) {
                     if (!$dateItem) {
                         $dateItem = $dateService->getNewDate();
+                    } else {
+                        $user = $this->getUserFromPortal($this->userId, $dateItem->getContextId());
+                        if ($user->getContextId() == $dateItem->getContextId()) {
+                            if (!$dateItem->mayEdit($user)) {
+                                throw new Exception\Forbidden('Permission denied to edit date');
+                            }
+                        }
                     }
                     $dateItem->setContextId($calendar->getContextId());
                     $dateItem->setTitle($title);
@@ -695,15 +708,15 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
                     $dateItem->setEndingTime($endDatetime->format('H:i'));
                     $dateItem->setCalendarId($calendar->getId());
                     $dateItem->setPlace($location);
-                    $dateItem->setDescription($description . "<br/><br/>" . $attendee);
+                    $dateItem->setDescription($description);
 
                     $userItem = $this->getUserFromPortal($this->userId, $calendar->getContextId());
                     $dateItem->setCreatorId($userItem->getItemId());
                     $dateItem->setModifierId($userItem->getItemId());
 
-                    $dateItem->setCreationDate($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
-                    $dateItem->setModificationDate($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
-                    $dateItem->setChangeModificationOnSave(false);
+                    //$dateItem->setCreationDate($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
+                    //$dateItem->setModificationDate($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
+                    //$dateItem->setChangeModificationOnSave(false);
                     $dateItem->setExternal(false);
                 }
             }

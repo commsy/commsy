@@ -109,8 +109,13 @@ class CalDAVController extends Controller
     }
 
     private function caldavServer ($portalId, $userId = '') {
-        $commsyPdo = new \PDO('mysql:dbname=commsy;host=commsy_db', 'commsy', 'commsy');
-        $pdo = new \PDO('mysql:dbname=caldav;host=commsy_db', 'commsy', 'commsy');
+        $dbHost = $this->container->getParameter('database_host');
+        $dbName = $this->container->getParameter('database_name');
+        $dbUser = $this->container->getParameter('database_user');
+        $dbPassword = $this->container->getParameter('database_password');
+
+        $commsyPdo = new \PDO('mysql:dbname='.$dbName.';host='.$dbHost, $dbUser, $dbPassword);
+        //$pdo = new \PDO('mysql:dbname=caldav;host=commsy_db', 'commsy', 'commsy');
 
         set_error_handler(array($this, "exception_error_handler"));
 
@@ -118,20 +123,20 @@ class CalDAVController extends Controller
         //require_once '../../../vendor/autoload.php';
 
         // Backends
-        if ($userId != 'admin') {
+        //if ($userId != 'admin') {
             $authBackend = new AuthPDO($commsyPdo, $this->container, $portalId);
             $authBackend->setRealm('CommSy');
             $principalBackend = new PrincipalPDO($commsyPdo, $this->container, $portalId);
             //$principalBackend = new DAVACL\PrincipalBackend\PDO($pdo);
             $calendarBackend = new CalendarPDO($commsyPdo, $this->container, $portalId, $userId);
-        } else {
-            $authBackend = new DAV\Auth\Backend\PDO($pdo);
-            //$authBackend = new AuthPDO($commsyPdo, $this->container, $portalId);
-            //$authBackend->setRealm('CommSy');
-            $principalBackend = new DAVACL\PrincipalBackend\PDO($pdo);
-            $calendarBackend = new CalDAV\Backend\PDO($pdo);
-            //$calendarBackend = new CalendarPDO($commsyPdo, $this->container, $portalId);
-        }
+        //} else {
+        //    $authBackend = new DAV\Auth\Backend\PDO($pdo);
+        //    //$authBackend = new AuthPDO($commsyPdo, $this->container, $portalId);
+        //    //$authBackend->setRealm('CommSy');
+        //    $principalBackend = new DAVACL\PrincipalBackend\PDO($pdo);
+        //    $calendarBackend = new CalDAV\Backend\PDO($pdo);
+        //    //$calendarBackend = new CalendarPDO($commsyPdo, $this->container, $portalId);
+        //}
 
         // Directory tree
         $tree = array(
@@ -146,7 +151,12 @@ class CalDAVController extends Controller
         // You are highly encouraged to set your WebDAV server base url. Without it,
         // SabreDAV will guess, but the guess is not always correct. Putting the
         // server on the root of the domain will improve compatibility.
-        $server->setBaseUri('/app_dev.php/'.$portalId.'/');
+        $prefix = '';
+        if ($_SERVER['SCRIPT_NAME'] == '/app_dev.php') {
+            $prefix = '/app_dev.php';
+        }
+
+        $server->setBaseUri($prefix.'/'.$portalId.'/');
 
         // Authentication plugin
         $authPlugin = new DAV\Auth\Plugin($authBackend,'SabreDAV');

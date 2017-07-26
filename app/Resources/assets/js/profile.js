@@ -19,9 +19,25 @@
 
     function setCheckboxes (target, checked) {
         if (checked) {
-            $(target).find('input[type=checkbox]').attr('checked', true);
+            $(target).find('input[type=checkbox]').prop('checked', true);
         } else {
-            $(target).find('input[type=checkbox]').attr('checked', false);
+            $(target).find('input[type=checkbox]').prop('checked', false);
+        }
+    }
+
+    $('.calendars_checkboxes_dashboard input[type=checkbox]').on('change', function(){
+        setAllNoneCheckbox('#calendars_check_all_dashboard', '.calendars_checkboxes_dashboard');
+    });
+
+    $('.calendars_checkboxes_caldav input[type=checkbox]').on('change', function(){
+        setAllNoneCheckbox('#calendars_check_all_caldav', '.calendars_checkboxes_caldav');
+    });
+
+    function setAllNoneCheckbox (target, checkboxes) {
+        if ($(checkboxes+' input[type=checkbox]:checked').length == $(checkboxes+' input[type=checkbox]').length) {
+            $(target).prop('checked', true);
+        } else {
+            $(target).prop('checked', false);
         }
     }
 
