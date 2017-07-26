@@ -128,7 +128,7 @@ class SoapController extends Controller
 
         $response->headers->set('Content-Type', 'text/xml');
         $response->setStatusCode(Response::HTTP_OK);
-        $response->setCharset('UTF-8'); //ISO-8859-1
+        $response->setCharset('UTF-8');
 
         ob_start();
         $soapServer->handle();

@@ -48,7 +48,7 @@ class SoapService
     /**
      * Authenticates a user
      *
-     * @param int $userId
+     * @param string $userId
      * @param string $password
      * @param int $portalId
      * @param int $authSourceId
@@ -90,7 +90,7 @@ class SoapService
                 $sessionItem->setValue('user_id', $userId);
                 $sessionItem->setValue('commsy_id', $portalId);
 
-                if ($authSourceId === 0) {
+                if (!$authSourceId) {
                     $authSourceId = $authentication->getAuthSourceItemID();
                 }
 
@@ -112,8 +112,8 @@ class SoapService
     /**
      * Creates a new wiki
      * 
-     * @param  int $sessionId
-     * @param  int $contextId
+     * @param  string $sessionId
+     * @param  string $contextId
      * 
      * @return bool success
      */
@@ -160,8 +160,8 @@ class SoapService
     /**
      * Deletes a wiki
      * 
-     * @param  int $sessionId
-     * @param  int $contextId
+     * @param  string $sessionId
+     * @param  string $contextId
      * 
      * @return bool success
      */
@@ -196,13 +196,70 @@ class SoapService
         return false;
     }
 
+    /**
+     * Returns a userId
+     *
+     * @param string $sessionId
+     *
+     * @return string user_id
+     */
+    public function getUserIdBySessionId($sessionId)
+    {
+        if ($this->isSessionValid($sessionId)) {
+            $sessionManager = $this->legacyEnvironment->getSessionManager();
+            $sessionItem = $sessionManager->get($sessionId);
+
+            return $sessionItem->getValue('user_id');
+        }
+        return false;
+    }
+
+    /**
+     * Returns information about an the user identified by the session id
+     *
+     * @param string $sessionId The session id
+     * @param int $contextId The context id
+     *
+     * @throws SoapFault
+     *
+     * @return string | null
+     */
+    public function getUserInfo($sessionId, $contextId)
+    {
+        if (!$this->isSessionValid($sessionId)) {
+            return new \SoapFault('ERROR', 'given session id is invalid!');
+        }
+
+        // grep the session
+        $sessionManager = $this->legacyEnvironment->getSessionManager();
+        $sessionItem = $sessionManager->get($sessionId);
+
+        // extract information from session object
+        $userId = $sessionItem->getValue('user_id');
+        $authSource = $sessionItem->getValue('auth_source');
+
+        // get the user object
+        $userManager = $this->legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($contextId);
+        $userManager->setUserIDLimit($userId);
+        $userManager->setAuthSourceLimit($authSource);
+        $userManager->select();
+
+        $userList = $userManager->get();
+        if ($userList->getCount() == 1) {
+            return $userList->getFirst()->getDataAsXML();
+        }
+
+        return new \SoapFault('ERROR', 'no user found!');
+    }
+
     private function isSessionActive($userId, $portalId)
     {
-        if (!empty($this->sessionIdArray[$portalId][$user_id])) {
+        if (!empty($this->sessionIdArray[$portalId][$userId])) {
             return true;
         } else {
             $sessionId = $this->getActiveSessionId($userId, $portalId);
-            if (!$sessionId) {
+            if ($sessionId) {
                 return true;
             }
         }
@@ -233,23 +290,5 @@ class SoapService
     {
         $sessionManager = $this->legacyEnvironment->getSessionManager();
         $sessionManager->updateSessionCreationDate($sessionId);
-    }
-
-
-    /**
-     * Returns a userId
-     *
-     * @param  string $sessionId
-     *
-     * @return string user_id
-     */
-    public function getUserIdBySessionId($sessionId)
-    {
-        if ($this->isSessionValid($sessionId)) {
-            $sessionManager = $this->legacyEnvironment->getSessionManager();
-            $sessionItem = $sessionManager->get($sessionId);
-            return $sessionItem->getValue('user_id');
-        }
-        return false;
     }
 }
