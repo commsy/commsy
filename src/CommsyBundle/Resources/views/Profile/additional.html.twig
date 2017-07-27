@@ -42,10 +42,28 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>{{ form_row(form.emailToCommsy) }}</td>
+                                        <td>
+                                            {{ form_row(form.emailToCommsy) }}
+                                            <div class="uk-form-controls">
+                                                {{ 'emailToCommsyText'|trans({},'profile') }}
+                                            </div>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>{{ form_row(form.emailToCommsySecret) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="uk-form-controls">
+                                                <span>{{ 'emailToCommsyTextPassword'|trans({}, 'profile') }}</span>
+                                                <br/>
+                                                <span class="uk-text-bold">{{ 'emailToCommsyTextPasswordTemplate'|trans({}, 'profile') }}</span>
+                                                <br/>
+                                                <span>{{ 'emailToCommsyTextAccounts'|trans({}, 'profile') }}</span>
+                                                <br/>
+                                                <span class="uk-text-bold">{{ 'emailToCommsyTextAccountsTemplate'|trans({}, 'profile') }}</span>
+                                            </div>
+                                        </td>
                                     </tr>
                                 {% endif %}
                                 <tr>
@@ -69,7 +87,8 @@
                                 </tr>
                             </table>
                         </div>
-                    {{ form_end(form) }}
+                        {{ form_row(form._token) }}
+                    {{ form_end(form, {'render_rest': false}) }}
                 </div>
             </div>
         </div>
