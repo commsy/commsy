@@ -26,7 +26,9 @@
             // toggle show more / show less
             if (this.element.closest('article').find('span.cs-readmoreless')) {
                 this.element.closest('article').find('span.cs-readmoreless').toggleClass('uk-hidden');
-                this.element.closest('article').find(".fade-preview").toggleClass("uk-hidden");
+                if(!this.element.closest('article').find('span.cs-readmoreless').parent('a').hasClass('uk-invisible')) {
+                    this.element.closest('article').find(".fade-preview").toggleClass("uk-hidden");
+                }
             }
             if ($($(this.element).data('cs-toggle-link-moreless')).find('.cs-readmoreless')) {
                 $($(this.element).data('cs-toggle-link-moreless')).find('.cs-readmoreless').toggleClass('uk-hidden');
