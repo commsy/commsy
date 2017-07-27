@@ -32,7 +32,7 @@
                         <!-- Room image -->
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Room image'|trans({}, 'settings') }}</h1>
-                            <div>{{ 'Room image text'|trans({}, 'settings') }}</div>
+                            <div class="uk-margin-small-bottom">{{ 'Room image text'|trans({}, 'settings') }}</div>
                             <div style="margin-bottom: 25px;"><em>{{ 'tip'| trans({}, 'messages') }}:</em> {{ 'Room image tip'|trans({}, 'settings') }}</div>
 
                             {{ form_widget(form.room_image.choice) }}
@@ -78,7 +78,7 @@
                         <!-- Room logo -->
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Room logo'|trans({}, 'settings') }}</h1>
-                            <div>{{ 'Room logo text'|trans({}, 'settings') }}</div>
+                            <div class="uk-margin-small-bottom">{{ 'Room logo text'|trans({}, 'settings') }}</div>
                             <div style="margin-bottom: 25px;"><em>{{ 'tip'|trans({}, 'messages')}}:</em> {{ 'Room logo tip'|trans({}, 'settings') }}</div>
                             {{ form_row(form.room_logo.activate) }}
                             <div id="logo_preview" class="uk-form-controls uk-cover-background uk-position-relative uk-hidden">
