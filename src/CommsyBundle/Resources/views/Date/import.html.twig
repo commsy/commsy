@@ -1,0 +1,18 @@
+{% extends 'CommsyBundle:Base:room.html.twig' %}
+
+{% block content %}
+
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+
+    {{ form_widget(form.calendarfile) }}
+
+    {{ form_widget(form.calendar) }}
+
+    {{ form_widget(form.calendartitle) }}
+
+    {{ form_row(form.save) }}
+
+    {{ form_end(form) }}
+
+{% endblock %}
