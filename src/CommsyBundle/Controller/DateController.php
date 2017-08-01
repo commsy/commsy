@@ -1630,7 +1630,7 @@ class DateController extends Controller
             )),
             'calendars' => $calendarsOptions,
             'calendarsAttr' => $calendarsOptionsAttr,
-            'uploadUrl' => $this->generateUrl('commsy_upload_upload', [
+            'uploadUrl' => $this->generateUrl('commsy_date_importupload', [
                 'roomId' => $roomId,
                 'itemId' => null
             ]),
@@ -1647,5 +1647,25 @@ class DateController extends Controller
         return array(
             'form' => $form->createView(),
         );
+    }
+
+    /**
+     * @Route("/room/{roomId}/date/importupload")
+     * @Template()
+     */
+    public function importUploadAction($roomId, Request $request)
+    {
+        $response = new JsonResponse();
+
+        $files = $request->files->all();
+
+        $responseData = array();
+        foreach ($files['files'] as $file) {
+            $responseData[$file->getPathname()] = $file->getPathname();
+        }
+
+        return $response->setData([
+            'fileIds' => $responseData,
+        ]);
     }
 }
