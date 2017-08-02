@@ -111,6 +111,11 @@ class CalendarsService
                     $description = $event->DESCRIPTION->getValue();
                 }
 
+                $uid = '';
+                if ($event->UID) {
+                    $uid = $event->UID->getValue();
+                }
+
                 $attendee = '';
                 $attendeeArray = array();
                 if ($event->ORGANIZER) {
@@ -137,6 +142,7 @@ class CalendarsService
                     $date = $dateService->getNewDate();
                 } else {
                     // Check if date with the same uid exists. If so, update date item.
+                    $date = $dateService->getNewDate();
                 }
                 $date->setContextId($calendar->getContextId());
                 $date->setTitle($title);
@@ -149,6 +155,7 @@ class CalendarsService
                 $date->setCalendarId($calendar->getId());
                 $date->setPlace($location);
                 $date->setDescription($description . "<br/><br/>" . $attendee);
+                $date->setUid($uid);
                 if ($calendar->getCreatorId()) {
                     $date->setCreatorId($calendar->getCreatorId());
                     $date->setModifierId($calendar->getCreatorId());
