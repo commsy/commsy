@@ -913,5 +913,13 @@ class cs_dates_item extends cs_item {
         $this->_setValue('external', $value);
     }
 
+
+    function getUid() {
+        return $this->_getValue('uid');
+    }
+
+    function setUid ($value) {
+        $this->_setValue('uid', $value);
+    }
 }
 ?>

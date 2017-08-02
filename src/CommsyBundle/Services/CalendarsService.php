@@ -83,7 +83,7 @@ class CalendarsService
 
         $ical = VObject\Reader::read($icalData);
 
-        // insert new data into database
+        $uids = [];
         if ($ical->VEVENT) {
             foreach ($ical->VEVENT as $event) {
                 $title = '';
@@ -133,7 +133,11 @@ class CalendarsService
                     $attendee = implode("<br/>", array_unique($attendeeArray));
                 }
 
-                $date = $dateService->getNewDate();
+                if ($external) {
+                    $date = $dateService->getNewDate();
+                } else {
+                    // Check if date with the same uid exists. If so, update date item.
+                }
                 $date->setContextId($calendar->getContextId());
                 $date->setTitle($title);
                 $date->setDateTime_start($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
@@ -161,6 +165,10 @@ class CalendarsService
                 }
                 $date->save();
             }
+        }
+
+        if (!$external) {
+            // check for dates with uid not in imported ical. Delete those.
         }
     }
 }
