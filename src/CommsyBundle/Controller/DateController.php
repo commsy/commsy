@@ -1657,11 +1657,16 @@ class DateController extends Controller
     {
         $response = new JsonResponse();
 
+        $kernelRootDir = $this->getParameter('kernel.root_dir');
+
         $files = $request->files->all();
 
         $responseData = array();
         foreach ($files['files'] as $file) {
-            $responseData[$file->getPathname()] = $file->getPathname();
+            $filename = $roomId.'_'.date('Ymdhis').'_'.$file->getClientOriginalName();
+            if ($file->move($kernelRootDir.'/../var/temp/', $filename)) {
+                $responseData[] = $filename;
+            }
         }
 
         return $response->setData([
