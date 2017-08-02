@@ -1623,6 +1623,7 @@ class DateController extends Controller
         }
         $formData['calendars'] = $calendarsOptions;
         $formData['calendarsAttr'] = $calendarsOptionsAttr;
+        $formData['files'] = [];
 
         $formOptions = array(
             'action' => $this->generateUrl('commsy_date_import', array(
@@ -1641,7 +1642,16 @@ class DateController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            $formData = $form->getData();
+            $files = $formData['files'];
 
+            // get calendar object or create new
+
+            foreach ($files as $file) {
+
+                // add events to calendar
+
+            }
         }
 
         return array(
@@ -1665,7 +1675,7 @@ class DateController extends Controller
         foreach ($files['files'] as $file) {
             $filename = $roomId.'_'.date('Ymdhis').'_'.$file->getClientOriginalName();
             if ($file->move($kernelRootDir.'/../var/temp/', $filename)) {
-                $responseData[] = $filename;
+                $responseData[$filename] = $file->getClientOriginalName();
             }
         }
 

@@ -8,18 +8,25 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class DateImportType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('calendarfile', FileType::class, array(
+            ->add('files', CollectionType::class, [
+                'allow_add' => true,
+                'entry_type' => CheckedFileType::class,
+                'entry_options' => [
+                ],
+            ])
+            ->add('upload', FileType::class, array(
                 'label' => 'upload',
                 'attr' => array(
                     'data-uk-csupload' => '{"path": "' . $options['uploadUrl'] . '", "errorMessage": ""}',
                 ),
-                'required' => true,
+                'required' => false,
                 'translation_domain' => 'date',
                 'multiple' => false,
             ))
@@ -38,6 +45,7 @@ class DateImportType extends AbstractType
                     'class' => 'uk-form-width-medium cs-form-title',
                 ),
                 'translation_domain' => 'date',
+                'required' => false,
             ))
             ->add('save', SubmitType::class, array(
                 'attr' => array(
@@ -69,6 +77,6 @@ class DateImportType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'dateimport';
+        return 'upload';
     }
 }
