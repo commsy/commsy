@@ -5,6 +5,7 @@ namespace CommsyBundle\Services;
 use CommsyBundle\Entity\Invitations;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
+use Sabre\VObject;
 
 class CalendarsService
 {
@@ -74,6 +75,92 @@ class CalendarsService
                 ->setParameter('calendarId', $calendarId)
                 ->getQuery();
             $query->getResult();
+        }
+    }
+
+    public function importEvents ($icalData, $calendar, $external = false) {
+        $dateService = $this->serviceContainer->get('commsy_legacy.date_service');
+
+        $ical = VObject\Reader::read($icalData);
+
+        // insert new data into database
+        if ($ical->VEVENT) {
+            foreach ($ical->VEVENT as $event) {
+                $title = '';
+                if ($event->SUMMARY) {
+                    $title = $event->SUMMARY->getValue();
+                }
+
+                $startDatetime = '';
+                if ($event->DTSTART) {
+                    $startDatetime = $event->DTSTART->getDateTime();
+                }
+
+                $endDatetime = '';
+                if ($event->DTEND) {
+                    $endDatetime = $event->DTEND->getDateTime();
+                }
+
+                $location = '';
+                if ($event->LOCATION) {
+                    $location = $event->LOCATION->getValue();
+                }
+
+                $description = '';
+                if ($event->DESCRIPTION) {
+                    $description = $event->DESCRIPTION->getValue();
+                }
+
+                $attendee = '';
+                $attendeeArray = array();
+                if ($event->ORGANIZER) {
+                    $tempOrganizerString = '';
+                    if (isset($event->ORGANIZER['CN'])) {
+                        $tempOrganizerString .= $event->ORGANIZER['CN'];
+                    }
+                    $attendeeArray[] = $tempOrganizerString.' (<a href="'.$event->ORGANIZER->getValue().'">'.str_ireplace('MAILTO:', '', $event->ORGANIZER->getValue()).'</a>)';
+                }
+                if ($event->ATTENDEE) {
+                    foreach ($event->ATTENDEE as $tempAttendee) {
+                        $tempAttendeeString = '';
+                        if (isset($tempAttendee['CN'])) {
+                            $tempAttendeeString .= $tempAttendee['CN'];
+                        }
+                        $attendeeArray[] = $tempAttendeeString.' (<a href="'.$tempAttendee->getValue().'">'.str_ireplace('MAILTO:', '', $tempAttendee->getValue()).'</a>)';
+                    }
+                }
+                if (!empty($attendeeArray)) {
+                    $attendee = implode("<br/>", array_unique($attendeeArray));
+                }
+
+                $date = $dateService->getNewDate();
+                $date->setContextId($calendar->getContextId());
+                $date->setTitle($title);
+                $date->setDateTime_start($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
+                $date->setStartingDay($startDatetime->format('Y-m-d'));
+                $date->setStartingTime($startDatetime->format('H:i'));
+                $date->setDateTime_end($endDatetime->format('Ymd') . 'T' . $endDatetime->format('His'));
+                $date->setEndingDay($endDatetime->format('Y-m-d'));
+                $date->setEndingTime($endDatetime->format('H:i'));
+                $date->setCalendarId($calendar->getId());
+                $date->setPlace($location);
+                $date->setDescription($description . "<br/><br/>" . $attendee);
+                if ($calendar->getCreatorId()) {
+                    $date->setCreatorId($calendar->getCreatorId());
+                    $date->setModifierId($calendar->getCreatorId());
+                } else {
+                    $legacyEnvironment = $container->get('commsy_legacy.environment')->getEnvironment();
+                    $date->setCreatorId($legacyEnvironment->getRootUserItemID());
+                    $date->setModifierId($legacyEnvironment->getRootUserItemID());
+                }
+                $date->setCreationDate($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
+                $date->setModificationDate($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
+                $date->setChangeModificationOnSave(false);
+                if ($external) {
+                    $date->setExternal(true);
+                }
+                $date->save();
+            }
         }
     }
 }

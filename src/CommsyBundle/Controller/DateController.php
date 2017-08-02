@@ -24,6 +24,7 @@ use CommsyBundle\Validator\Constraints\EndDateConstraint;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use CommsyBundle\Event\CommsyEditEvent;
+use CommsyBundle\Entity\Calendars;
 
 class DateController extends Controller
 {    
@@ -1646,12 +1647,29 @@ class DateController extends Controller
             $files = $formData['files'];
 
             // get calendar object or create new
-
-            foreach ($files as $file) {
-
-                // add events to calendar
-
+            $calendarsService = $this->get('commsy.calendars_service');
+            if ($formData['calendar'] != 'new') {
+                $calendars = $calendarsService->getCalendar($formData['calendar']);
+                if (isset($calendars[0])) {
+                    $calendar = $calendars[0];
+                }
+            } else {
+                $calendar = new Calendars();
+                $calendar->setTitle($formData['calendartitle']);
+                $calendar->setContextId($roomId);
+                $calendar->setCreatorId($legacyEnvironment->getCurrentUserId());
+                $calendar->setColor('#ffffff');
+                $calendar->setSynctoken(0);
+                $em->persist($calendar);
+                $em->flush();
             }
+
+            $kernelRootDir = $this->getParameter('kernel.root_dir');
+            foreach ($files as $file) {
+                $calendarsService->importEvents(fopen($kernelRootDir.'/../var/temp/'.$file->getFileId(), 'r'), $calendar);
+            }
+
+            return $this->redirectToRoute('commsy_date_list', array('roomId' => $roomId));
         }
 
         return array(
