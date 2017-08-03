@@ -71,7 +71,7 @@ class DateImportType extends AbstractType
                     'class' => 'uk-button-primary',
                 ),
                 'label' => 'import dates',
-                'translation_domain' => 'form',
+                'translation_domain' => 'date',
             ));
     }
 

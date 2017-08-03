@@ -1614,7 +1614,7 @@ class DateController extends Controller
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('CommsyBundle:Calendars');
         $calendars = $repository->findBy(array('context_id' => $roomId));
-        $calendarsOptions = [$translator->trans('new calendar') => 'new'];
+        $calendarsOptions = [$translator->trans('new calendar', [], 'date') => 'new'];
         $calendarsOptionsAttr = [['title' => $translator->trans('new calendar'), 'color' => '#ffffff', 'hasLightColor' => true]];
         foreach ($calendars as $calendar) {
             if (!$calendar->getExternalUrl()) {

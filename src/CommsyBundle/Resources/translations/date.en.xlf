@@ -354,6 +354,32 @@
                 <source>date is external</source>
                 <target>This entry is part of an external calendar and can therefore not be edited</target>
             </trans-unit>
+
+            <trans-unit id="import dates">
+                <source>import dates</source>
+                <target>Import dates</target>
+            </trans-unit>
+            <trans-unit id="import dates description">
+                <source>import dates description</source>
+                <target>Please select one or more .ics-files and upload them. The contained dates will be added o the selected calendar. Dates in the calendar that can be assigned (via UID) to previously imported dates will be updated. Dates in the calendar that can no longe be assigned t dates from the .ics-files will be deleted.</target>
+            </trans-unit>
+            <trans-unit id="import dates into clendar">
+                <source>import dates into clendar</source>
+                <target>Calendar</target>
+            </trans-unit>
+            <trans-unit id="new calendar">
+                <source>new calendar</source>
+                <target>... create a new calendar (please give title and color)</target>
+            </trans-unit>
+            <trans-unit id="import dates new calendar name">
+                <source>import dates new calendar name</source>
+                <target>Name of new calendar</target>
+            </trans-unit>
+            <trans-unit id="import dates new calendar color">
+                <source>import dates new calendar color</source>
+                <target>Color of new calendar</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

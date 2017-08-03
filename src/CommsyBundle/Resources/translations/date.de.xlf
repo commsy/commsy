@@ -354,6 +354,30 @@
                 <source>date is external</source>
                 <target>Dieser Eintrag gehört zu einem externen Kalender und kann daher nicht bearbeitet werden</target>
             </trans-unit>
+            <trans-unit id="import dates">
+                <source>import dates</source>
+                <target>Termine importieren</target>
+            </trans-unit>
+            <trans-unit id="import dates description">
+                <source>import dates description</source>
+                <target>Bitte wählen Sie eine oder mehrere .ics-Dateien aus, und laden Sie diese hoch. Die enthaltenen Termine werden dem ausgewählten Kalender hinzugefügt. Termine dieses Kalenders die über eine UID eindeutig zuvor schon importierten Terminen zugeordnet werden können, werden aktualisiert. In der .isc-Datei nicht mehr enthaltete Termine des Kalenders werden gelöscht.</target>
+            </trans-unit>
+            <trans-unit id="import dates into clendar">
+                <source>import dates into clendar</source>
+                <target>Kalender</target>
+            </trans-unit>
+            <trans-unit id="new calendar">
+                <source>new calendar</source>
+                <target>... einen neuen Kalender anlegen (bitte Titel und Farbe angeben)</target>
+            </trans-unit>
+            <trans-unit id="import dates new calendar name">
+                <source>import dates new calendar name</source>
+                <target>Name des neuen Kalenders</target>
+            </trans-unit>
+            <trans-unit id="import dates new calendar color">
+                <source>import dates new calendar color</source>
+                <target>Farbe des neuen Kalenders</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
