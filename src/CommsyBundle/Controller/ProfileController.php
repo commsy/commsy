@@ -460,6 +460,7 @@ class ProfileController extends Controller
 
         return array(
             'form' => $form->createView(),
+            'uploadEmail' => $this->getParameter('email.upload.account'),
         );
     }
 

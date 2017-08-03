@@ -240,7 +240,7 @@
             </trans-unit>
             <trans-unit id="profile_text_label_emailToCommsy">
                 <source>emailToCommsyText</source>
-                <target>E-Mails an diese Adresse schicken: upload@schulcommy.de</target>
+                <target>E-Mails an diese Adresse schicken:</target>
             </trans-unit>
             <trans-unit id="profile_text_label_emailToCommsySecret">
                 <source>emailToCommsyTextSecret</source>
