@@ -1646,30 +1646,44 @@ class DateController extends Controller
             $formData = $form->getData();
             $files = $formData['files'];
 
-            // get calendar object or create new
-            $calendarsService = $this->get('commsy.calendars_service');
-            if ($formData['calendar'] != 'new') {
-                $calendars = $calendarsService->getCalendar($formData['calendar']);
-                if (isset($calendars[0])) {
-                    $calendar = $calendars[0];
+            if (!empty($files)) {
+                // get calendar object or create new
+                $calendarsService = $this->get('commsy.calendars_service');
+                if ($formData['calendar'] != 'new') {
+                    $calendars = $calendarsService->getCalendar($formData['calendar']);
+                    if (isset($calendars[0])) {
+                        $calendar = $calendars[0];
+                    }
+                } else {
+                    $calendar = new Calendars();
+
+                    $calendarTitle = $formData['calendartitle'];
+                    if ($calendarTitle == '') {
+                        $calendarTitle = $translator->trans('new calendar');
+                    }
+                    $calendar->setTitle($calendarTitle);
+
+                    $calendar->setContextId($roomId);
+                    $calendar->setCreatorId($legacyEnvironment->getCurrentUserId());
+
+                    $calendarColor = $formData['calendarcolor'];
+                    if ($calendarColor == '') {
+                        $calendarColor = '#ffffff';
+                    }
+                    $calendar->setColor($calendarColor);
+
+                    $calendar->setSynctoken(0);
+                    $em->persist($calendar);
+                    $em->flush();
                 }
-            } else {
-                $calendar = new Calendars();
-                $calendar->setTitle($formData['calendartitle']);
-                $calendar->setContextId($roomId);
-                $calendar->setCreatorId($legacyEnvironment->getCurrentUserId());
-                $calendar->setColor('#ffffff');
-                $calendar->setSynctoken(0);
-                $em->persist($calendar);
-                $em->flush();
-            }
 
-            $kernelRootDir = $this->getParameter('kernel.root_dir');
-            foreach ($files as $file) {
-                $calendarsService->importEvents(fopen($kernelRootDir.'/../var/temp/'.$file->getFileId(), 'r'), $calendar);
-            }
+                $kernelRootDir = $this->getParameter('kernel.root_dir');
+                foreach ($files as $file) {
+                    $calendarsService->importEvents(fopen($kernelRootDir . '/../var/temp/' . $file->getFileId(), 'r'), $calendar);
+                }
 
-            return $this->redirectToRoute('commsy_date_list', array('roomId' => $roomId));
+                return $this->redirectToRoute('commsy_date_list', array('roomId' => $roomId));
+            }
         }
 
         return array(

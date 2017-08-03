@@ -57,18 +57,20 @@ class DateImportType extends AbstractType
                 'multiple' => false
             ))
             ->add('calendartitle', TextType::class, array(
-                'label' => 'title',
-                'attr' => array(
-                    'class' => 'uk-form-width-medium cs-form-title',
-                ),
-                'translation_domain' => 'date',
+                'label' => 'Title',
+                'translation_domain' => 'calendar',
                 'required' => false,
             ))
+            ->add('calendarcolor', TextType::class, [
+                'label' => 'Color',
+                'translation_domain' => 'calendar',
+                'required' => false,
+            ])
             ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 ),
-                'label' => 'save',
+                'label' => 'import dates',
                 'translation_domain' => 'form',
             ));
     }
