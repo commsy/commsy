@@ -10,10 +10,26 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
+use Symfony\Component\Translation\TranslatorInterface;
+
 class DateImportType extends AbstractType
 {
+    /**
+     * The Symfony translator
+     * @var TranslatorInterface $translator
+     */
+    private $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $uploadErrorMessage = $this->translator->trans('upload error', [], 'error');
+        $noFileIdsMessage = $this->translator->trans('wrong file type error', [], 'error');
+
         $builder
             ->add('files', CollectionType::class, [
                 'allow_add' => true,
@@ -24,7 +40,7 @@ class DateImportType extends AbstractType
             ->add('upload', FileType::class, array(
                 'label' => 'upload',
                 'attr' => array(
-                    'data-uk-csupload' => '{"path": "' . $options['uploadUrl'] . '", "errorMessage": ""}',
+                    'data-uk-csupload' => '{"path": "' . $options['uploadUrl'] . '", "errorMessage": "'.$uploadErrorMessage.'", "noFileIdsMessage": "'.$noFileIdsMessage.'"}',
                     "accept" => "text/calendar",
                 ),
                 'required' => false,

@@ -10,6 +10,7 @@
                 allow: '*.*'
             },
             errorMessage: '',
+            noFileIdsMessage: '',
         },
 
         boot: function() {
@@ -85,6 +86,10 @@
                                 prototypeNode
                                     .append(formControlNode)
                                     .append(labelNode);
+                            }
+
+                            if (responseData['fileIds'].length == 0) {
+                                UIkit.notify($this.options.noFileIdsMessage, 'danger');
                             }
                         }
                     }
