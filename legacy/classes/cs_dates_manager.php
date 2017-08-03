@@ -59,6 +59,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
    var $_sort_order = NULL;
    var $_color_limit = NULL;
    var $_calendar_limit = NULL;
+   var $_uid_limit = NULL;
    var $_recurrence_limit = NULL;
 
    var $_month_limit = NULL;
@@ -111,6 +112,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       $this->_year_limit = NULL;
       $this->_color_limit = NULL;
       $this->_calendar_limit = NULL;
+      $this->_uid_limit = NULL;
       $this->_recurrence_limit = NULL;
       $this->_date_mode_limit = 1;
       $this->_assignment_limit = false;
@@ -162,6 +164,10 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
    function setCalendarArrayLimit ($limit) {
       $this->_calendar_limit = $limit;
    }
+
+    function setUidArrayLimit ($limit) {
+        $this->_uid_limit = $limit;
+    }
 
    function setAssignmentLimit ($array) {
       $this->_assignment_limit = true;
@@ -390,6 +396,9 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       }
       if (isset($this->_calendar_limit)) {
          $query .= ' AND '.$this->addDatabasePrefix('dates').'.calendar_id IN ('.implode(", ", $this->_calendar_limit).')';
+      }
+      if (isset($this->_uid_limit)) {
+         $query .= ' AND '.$this->addDatabasePrefix('dates').'.uid IN ('.implode(", ", $this->_uid_limit).')';
       }
       if (isset($this->_recurrence_limit)) {
          $query .= ' AND '.$this->addDatabasePrefix('dates').'.recurrence_id = "'.encode(AS_DB,$this->_recurrence_limit).'"';

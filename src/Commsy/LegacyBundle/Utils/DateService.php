@@ -190,4 +190,17 @@ class DateService
     {
         $this->dateManager->showNoNotActivatedEntries();
     }
+
+    public function getDateByUid($uid)
+    {
+        $this->dateManager->reset();
+        $this->dateManager->setUidArrayLimit(['"'.$uid.'"']);
+        $this->dateManager->setWithoutDateModeLimit();
+        $this->dateManager->select();
+        $dateList = $this->dateManager->get();
+        if (isset($dateList->to_array()[0])) {
+            return $dateList->to_array()[0];
+        }
+        return false;
+    }
 }

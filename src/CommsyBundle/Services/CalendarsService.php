@@ -114,6 +114,7 @@ class CalendarsService
                 $uid = '';
                 if ($event->UID) {
                     $uid = $event->UID->getValue();
+                    $uids[] = $uid;
                 }
 
                 $attendee = '';
@@ -141,8 +142,9 @@ class CalendarsService
                 if ($external) {
                     $date = $dateService->getNewDate();
                 } else {
-                    // Check if date with the same uid exists. If so, update date item.
-                    $date = $dateService->getNewDate();
+                    if (!$date = $dateService->getDateByUid($uid)) {
+                        $date = $dateService->getNewDate();
+                    }
                 }
                 $date->setContextId($calendar->getContextId());
                 $date->setTitle($title);
