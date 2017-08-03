@@ -229,22 +229,24 @@ class SettingsController extends Controller
 
             $room_logo_data = $form['room_logo']->getData();
 
-            if(!is_null($room_logo_data['room_logo_data'])){
-                $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
-                if(!is_dir($saveDir)){
-                    mkdir($saveDir, 0777, true);
+            if(isset($room_logo_data['activate']) && !empty($room_logo_data['activate']) && $room_logo_data['activate'] == true) {
+                if(!is_null($room_logo_data['room_logo_data'])){
+                    $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
+                    if(!is_dir($saveDir)){
+                        mkdir($saveDir, 0777, true);
+                    }
+                    $fileName = "";
+                    $data = $room_logo_data['room_logo_data'];
+                    list($fileName, $type, $date) = explode(";", $data);
+                    $fileName = filter_var($fileName, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
+                    list(, $data) = explode(",", $data);
+                    list(, $extension) = explode("/", $type);
+                    $data = base64_decode($data);
+                    $fileName = "cid" . $roomId . "_logo_" . $fileName;
+                    $absoluteFilepath = $saveDir . "/" . $fileName;
+                    file_put_contents($absoluteFilepath, $data);
+                    $roomItem->setLogoFilename($fileName);
                 }
-                $fileName = "";
-                $data = $room_logo_data['room_logo_data'];
-                list($fileName, $type, $date) = explode(";", $data);
-                $fileName = filter_var($fileName, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
-                list(, $data) = explode(",", $data);
-                list(, $extension) = explode("/", $type);
-                $data = base64_decode($data);
-                $fileName = "cid" . $roomId . "_logo_" . $fileName;
-                $absoluteFilepath = $saveDir . "/" . $fileName;
-                file_put_contents($absoluteFilepath, $data);
-                $roomItem->setLogoFilename($fileName);
             }
             else {
                 $roomItem->setLogoFilename('');
