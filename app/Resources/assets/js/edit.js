@@ -63,7 +63,8 @@
                     $(this).parents('.cs-edit-section').toggleClass('cs-selected', true);
                 })
                 .mouseleave(function() {
-                    if (!$(this).closest('article').find('.cs-readmoreless:first').parent("a").hasClass('uk-invisible')) {
+                    if (!$(this).closest('article').find('.cs-readmoreless:first').parent("a").hasClass('uk-invisible') &&
+                        !$(this).closest('article').find('.cs-toggle-preview-small').hasClass('cs-toggle-full')) {
                         $(this).parents(".cs-edit-section").find(".fade-preview").toggleClass("uk-hidden", false);
                     }
                     $(this).parents('.cs-edit-section').toggleClass('cs-selected', false);
