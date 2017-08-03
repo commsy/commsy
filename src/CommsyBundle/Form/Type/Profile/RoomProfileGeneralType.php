@@ -8,7 +8,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -46,17 +45,6 @@ class RoomProfileGeneralType extends AbstractType
         $this->userItem = $userManager->getItem($options['itemId']);
 
         $builder
-            ->add('language', ChoiceType::class, array(
-                'placeholder' => false,
-                'choices'  => array(
-                    'browser' => 'browser',
-                    'de' => 'de',
-                    'en' => 'en'
-                ),
-                'label' => 'language',
-                'required' => false,
-            ))
-            
             ->add('image', FileType::class, array(
                 'attr' => array(
                     'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
