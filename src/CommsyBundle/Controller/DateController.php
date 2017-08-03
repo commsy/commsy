@@ -1691,9 +1691,11 @@ class DateController extends Controller
 
         $responseData = array();
         foreach ($files['files'] as $file) {
-            $filename = $roomId.'_'.date('Ymdhis').'_'.$file->getClientOriginalName();
-            if ($file->move($kernelRootDir.'/../var/temp/', $filename)) {
-                $responseData[$filename] = $file->getClientOriginalName();
+            if (stristr($file->getMimeType(), 'text/calendar')) {
+                $filename = $roomId . '_' . date('Ymdhis') . '_' . $file->getClientOriginalName();
+                if ($file->move($kernelRootDir . '/../var/temp/', $filename)) {
+                    $responseData[$filename] = $file->getClientOriginalName();
+                }
             }
         }
 

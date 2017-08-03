@@ -10,7 +10,7 @@
         <div class="uk-grid uk-margin-small-bottom">
             <div class="uk-width-9-10">
                 <h4 class="cs-detail-section-header">
-                <span class="cs-detail-section-header-background">{{ 'edit files'|trans({},'form')}}
+                <span class="cs-detail-section-header-background">{{ 'import dates'|trans({},'form')}}
                  </span>
                 </h4>
             </div>
@@ -20,6 +20,11 @@
             {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
 
             {{ form_start(form) }}
+            <div class="uk-flex uk-margin-small-top">
+                <div class="uk-width-9-10 cs-upload-form">
+                    {{ form_widget(form.upload) }}
+                </div>
+            </div>
             <div class="uk-flex">
                 {% do form.files.setRendered %}
 
@@ -32,11 +37,6 @@
                             {{- file.vars.value.filename }} ({{ file.vars.value.creationDate|craue_datetime }})
                         </label>
                     {% endfor %}
-                </div>
-            </div>
-            <div class="uk-flex uk-margin-small-top">
-                <div class="uk-width-9-10 cs-upload-form">
-                    {{ form_widget(form.upload) }}
                 </div>
             </div>
             <div class="uk-flex uk-margin-small-top">

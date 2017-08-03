@@ -25,6 +25,7 @@ class DateImportType extends AbstractType
                 'label' => 'upload',
                 'attr' => array(
                     'data-uk-csupload' => '{"path": "' . $options['uploadUrl'] . '", "errorMessage": ""}',
+                    "accept" => "text/calendar",
                 ),
                 'required' => false,
                 'translation_domain' => 'date',
