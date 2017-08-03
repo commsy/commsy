@@ -32,6 +32,22 @@
                                 <tr>
                                     <td>{{ form_row(form.portfolioStatus) }}</td>
                                 </tr>
+                                <tr>
+                                    <td><hr/></td>
+                                </tr>
+                                <tr>
+                                    <td><h1 class="uk-panel-title">{{ 'language'|trans({},'profile')|capitalize }}</h1></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div>{{ 'languageDescription'|trans({}, "profile") }}</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        {{ form_widget(form.language) }}
+                                    </td>
+                                </tr>
                                 {% if form.emailToCommsy is defined %}
                                     <tr>
                                         <td><hr/></td>
