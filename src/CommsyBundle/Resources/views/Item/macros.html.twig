@@ -11,24 +11,24 @@
 
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">
-            <div class="uk-width-9-10">
+            <div class="uk-width-8-10">
                 <h4 class="cs-detail-section-header">
                     {{- "files"|trans({}) }}
                     ({{ fileArray|length }})
                 </h4>
             </div>
 
-            <div class="uk-width-1-10 uk-flex uk-text-right">
+            <div class="uk-width-2-10 uk-flex uk-flex-right">
                 {# edit action #}
                 {% if is_granted('ITEM_EDIT', item.itemId) %}
-                    <div class="cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
+                    <div class="uk-display-inline cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
                         <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                     </div>
                 {% endif %}
 
                 {# toggle action #}
                 {% if not fileArray is empty %}
-                    <div class="cs-toggle-icon uk-margin-left uk-width-1-1">
+                    <div class="uk-display-inline cs-toggle-icon uk-margin-left">
                         <a class="cs-toggle" data-uk-toggle="{target:'.toggle-files-{{ item.itemId }}'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
                     </div>
                 {% endif %}
@@ -318,24 +318,24 @@
 
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">
-            <div class="uk-width-9-10">
+            <div class="uk-width-8-10">
                 <h4 class="cs-detail-section-header">
                     {{- title|trans({}) -}}
                 </h4>
             </div>
 
-            <div class="uk-width-1-10 uk-flex uk-text-right">
+            <div class="uk-width-2-10 uk-flex uk-flex-right">
 
                 {# edit action #}
                 {% if edit and is_granted('ITEM_EDIT', item.itemId) %}
-                    <div class="cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
+                    <div class="uk-display-inline cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
                         <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                     </div>
                 {% endif %}
 
                 {# toggle action #}
                 {% if not content is empty %}
-                    <div class="cs-toggle-icon uk-margin-left uk-width-1-1 uk-invisible" data-cs-unhide-collapsed="{src: '.toggle-{{ title }}-{{ item.itemId }}'}">
+                    <div class="uk-display-inline cs-toggle-icon uk-margin-left uk-invisible" data-cs-unhide-collapsed="{src: '.toggle-{{ title }}-{{ item.itemId }}'}">
                         <a class="cs-toggle" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}', cls: 'cs-toggle-full'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}">
                             <i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i>
                         </a>

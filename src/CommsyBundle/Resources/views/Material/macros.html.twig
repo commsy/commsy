@@ -14,7 +14,7 @@
     <div id="section{{ item.itemId }}" class="cs-edit-section cs-toggle" data-cs-edit="{editUrl: '{{ path(pathName, {'roomId': item.contextId, 'itemId': item.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': item.contextId, 'itemId': item.itemId}) }}', draft: '{{ draft }}'}">
         <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
             <div class="uk-grid uk-margin-small-bottom">
-                <div class="uk-width-9-10 uk-margin-small-bottom" >        
+                <div class="uk-width-8-10 uk-margin-small-bottom" >
                     <div class="uk-grid">
                     {% if item.itemType != 'section' %}
                         <div class="uk-width-8-10 uk-text-truncate">
@@ -24,12 +24,12 @@
                                 {% include 'CommsyBundle:Material:biblio.html.twig' %}
                             {% endif %}
                         </div>
-                       {%if showRating or showWorkflow%}
-                            <div class="uk-width-2-10  uk-text-right uk-padding-remove">
-                             {%if showRating%}
+                        {% if showRating or showWorkflow %}
+                            <div class="uk-width-2-10 uk-text-right uk-padding-remove">
+                            {% if showRating %}
                                 {{  macros.ratingStatusDetail(material, ratingArray) }}
                             {% endif %}
-                            {%if showWorkflow%}
+                            {% if showWorkflow %}
                                 {{  macros.workflowTrafficLight(material, workflowTitles) }}
                             {% endif %}
                             </div>
@@ -41,8 +41,7 @@
                     {% endif %}
                     </div>
                 </div>        
-                <div class="uk-width-1-10  uk-text-right">
-                    <!-- <i class="uk-icon-small uk-icon-hover uk-icon-edit"></i> -->
+                <div class="uk-width-2-10">
                     {# edit #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                         {{ macros.actionIcons('title', item, true) }}
@@ -185,7 +184,7 @@
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
     <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
             <div class="uk-grid uk-margin-small-bottom">
-                <div class="uk-width-9-10 uk-margin-small-bottom" >        
+                <div class="uk-width-8-10 uk-margin-small-bottom" >
                     <div class="uk-grid">
                     {% if item.itemType != 'section' %}
                         <div class="uk-width-8-10">
@@ -212,8 +211,7 @@
                     {% endif %}
                 </div>
                 </div>        
-                <div class="uk-width-1-10  uk-text-right">
-                    <!-- <i class="uk-icon-small uk-icon-hover uk-icon-edit"></i> -->
+                <div class="uk-width-2-10 uk-text-right">
                     {# edit #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                         {{ macros.actionIcons('title', item, true) }}
@@ -358,24 +356,24 @@
 
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">
-            <div class="uk-width-9-10">
+            <div class="uk-width-8-10">
                 <h4 class="cs-detail-section-header">
                     {{- "sections"|trans({}) }}
                     ({{ sectionList|length }})
                 </h4>
             </div>
 
-            <div class="uk-width-1-10 uk-flex uk-text-right">
+            <div class="uk-width-2-10 uk-flex uk-flex-right">
                 {# edit action #}
                 {% if is_granted('ITEM_EDIT', item.itemId) %}
-                    <div class="cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
+                    <div class="uk-display-inline cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
                         <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                     </div>
                 {% endif %}
 
                 {# toggle action #}
                 {% if not sectionList is empty %}
-                    <div class="cs-toggle-icon uk-margin-left uk-width-1-1 uk-invisible" data-cs-unhide-collapsed="{src: '.toggle-sections-{{ item.itemId }}'}">
+                    <div class="uk-display-inline cs-toggle-icon uk-margin-left uk-invisible" data-cs-unhide-collapsed="{src: '.toggle-sections-{{ item.itemId }}'}">
                         <a class="cs-toggle" data-uk-toggle="{target:'.toggle-sections-{{ item.itemId }}', cls: 'cs-toggle-full'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
                     </div>
                 {% endif %}

@@ -159,15 +159,14 @@
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
     <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
             <div class="uk-grid uk-margin-small-bottom">
-                <div class="uk-width-9-10 uk-margin-small-bottom" >
+                <div class="uk-width-8-10 uk-margin-small-bottom" >
                     <div class="uk-grid">
                         <div class="uk-width-8-10">
                             <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
                         </div>
                     </div>
                 </div>
-                <div class="uk-width-1-10  uk-text-right">
-                    <!-- <i class="uk-icon-small uk-icon-hover uk-icon-edit"></i> -->
+                <div class="uk-width-2-10 uk-text-right">
                     {# edit #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                         {{ macros.actionIcons('title', item, true) }}

@@ -3,7 +3,7 @@
 
         {# content #}
         {% if not content is empty %}
-            <div class="uk-width-9-10">
+            <div class="uk-width-8-10">
 
                 <div class="fade-preview uk-hidden">&nbsp;</div>
 
@@ -33,19 +33,19 @@
         {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
 
         {# title row #}
-        <div class="uk-width-1-10 uk-grid uk-margin-small-bottom">
+        <div class="uk-width-2-10 uk-margin-small-bottom">
 
-            <div class="uk-width-1-10 uk-flex uk-text-right">
+            <div class="uk-flex uk-flex-right">
 
                 {# edit action #}
                 {% if is_granted('ITEM_EDIT', item.itemId) %}
-                    <div class="cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
+                    <div class="uk-display-inline cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
                         <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit" data-uk-tooltip title="{{ 'edit'|trans({}) }}"></a>
                     </div>
                 {% endif %}
 
                 {# toggle action #}
-                <div class="cs-toggle-icon uk-margin-left uk-width-1-1 uk-invisible" data-cs-unhide-collapsed="{src: '.toggle-{{ title }}-{{ item.itemId }}', limit: 70}">
+                <div class="uk-display-inline cs-toggle-icon uk-margin-left uk-invisible" data-cs-unhide-collapsed="{src: '.toggle-{{ title }}-{{ item.itemId }}', limit: 70}">
                     <a class="cs-toggle" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}', cls: 'cs-toggle-full'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}">
                         <i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i>
                     </a>
