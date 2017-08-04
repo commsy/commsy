@@ -59,7 +59,7 @@ class ExtensionSettingsTransformer implements DataTransformerInterface
             if($roomItem->getWorkflowTrafficLightTextRed() != ''){
                $traffic_light['red_text'] = $roomItem->getWorkflowTrafficLightTextRed();
             } else {
-               $traffic_light['red_text'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAUL');
+               $traffic_light['red_text'] = $translator->getMessage('COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_RED_DEFAULT');
             }
 
             $roomData['workflow']['traffic_light'] = $traffic_light;

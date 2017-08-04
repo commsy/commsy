@@ -91,7 +91,7 @@ class KernelSubscriber implements EventSubscriberInterface
             $currentRequest = $event->getRequest();
             $requestUri = $currentRequest->getRequestUri();
 
-            if (preg_match('/(soap|rss|_profiler|_wdt)/', $requestUri, $matches)) {
+            if (preg_match('/(soap|rss|_profiler|_wdt|room\/\d+\/user\/\d+\/image)/', $requestUri, $matches)) {
                 $isAuthenticated = true;
             } else {
                 $isAuthenticated = $this->legacyAuthentication->authenticate();

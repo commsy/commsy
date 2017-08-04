@@ -11,10 +11,10 @@
                 </form>
             </div>
             <div class="uk-margin-right uk-flex-item-none">
-                    {% if project.creator.isUser %}
-                        {{  macros.userIconLink(project.creator) }}
+                    {% if project.modificatorItem.isUser %}
+                        {{  macros.userIconLink(project.modificatorItem) }}
                     {% else %}
-                        {{  macros.userIcon(project.creator) }}
+                        {{  macros.userIcon(project.modificatorItem) }}
                     {% endif %}
                     <div class="uk-comment-meta">
                         {% if project.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
