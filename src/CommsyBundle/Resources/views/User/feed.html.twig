@@ -19,7 +19,7 @@
                 <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">
                     <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
                 </a>
-                <span class="uk-text-large uk-text-middle uk-text-truncate">
+                <div class="uk-text-large uk-text-middle uk-text-truncate uk-link">
                     <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">{{ user.title }} {{user.fullname}}</a>
                     <div class="uk-align-right {% if not user.isUser %}cs-moderation-warning{% endif %} uk-text-muted">
                         {% if user.isContact %}
@@ -37,7 +37,7 @@
                             <i class="uk-icon-user-secret"></i>
                         {% endif %}
                     </div>
-                </span>
+                </div>
             </div>
             <span>
                 {% if user.email %}
