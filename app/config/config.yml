@@ -109,6 +109,7 @@ liip_theme:
         - darkblue
         - red
         - redgrey
+        - uhh
     active_theme: 'default'
     assetic_integration: false
 

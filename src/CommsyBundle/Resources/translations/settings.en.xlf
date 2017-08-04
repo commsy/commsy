@@ -404,6 +404,10 @@
                 <source>redgrey</source>
                 <target>redgrey</target>
             </trans-unit>
+            <trans-unit id="theme_uhh">
+                <source>uhh</source>
+                <target>UHH</target>
+            </trans-unit>
 
             <!-- Moderation settings -->
             <trans-unit id="moderation_configuration">
