@@ -91,18 +91,23 @@ class AdditionalSettingsType extends AbstractType
                     ))
                 )
                 ->add(
-                    $builder->create('calendars', FormType::class, array())
+                    $builder->create('calendars', FormType::class, array(
+                        'label' => 'calendars',
+                        'translation_domain' => 'date',
+                    ))
                     ->add('edit', CheckboxType::class, array(
                         'required' => false,
                         'label_attr' => array('class' => 'uk-form-label'),
                         'value' => 'yes',
                         'label' => 'users_can_edit_calendars',
+                        'translation_domain' => 'settings',
                     ))
                     ->add('external', CheckboxType::class, array(
                         'required' => false,
                         'label_attr' => array('class' => 'uk-form-label'),
                         'value' => 'yes',
                         'label' => 'users_can_set_external_calendars_url',
+                        'translation_domain' => 'settings',
                     ))
                 )
             )

@@ -236,7 +236,31 @@
             </trans-unit>
             <trans-unit id="profile_label_emailToCommsySecret">
                 <source>emailToCommsySecret</source>
-                <target>Personal secret</target>
+                <target>Upload password</target>
+            </trans-unit>
+            <trans-unit id="profile_text_label_emailToCommsy">
+                <source>emailToCommsyText</source>
+                <target>Send e-mails to the following address:</target>
+            </trans-unit>
+            <trans-unit id="profile_text_label_emailToCommsySecret">
+                <source>emailToCommsyTextSecret</source>
+                <target>Please specify a password to be used with the upload via e-mail.</target>
+            </trans-unit>
+            <trans-unit id="profile_text_password_emailToCommsySecret">
+                <source>emailToCommsyTextPassword</source>
+                <target>Please specify an upload-password. This has to be stated in one single line in the body of the e-mail:</target>
+            </trans-unit>
+            <trans-unit id="profile_text_password_template_emailToCommsySecret">
+                <source>emailToCommsyTextPasswordTemplate</source>
+                <target>upload account: YOUR_UPLOAD_PASSWORT</target>
+            </trans-unit>
+            <trans-unit id="profile_text_accounts_emailToCommsySecret">
+                <source>emailToCommsyTextAccounts</source>
+                <target>If you have more than one account using the same e-mail-address, the new material will be created in the repositories of all these accounts. If the material should only be created in the repository of one particular account, please state the account in one single line in the body of the e-mail:</target>
+            </trans-unit>
+            <trans-unit id="profile_text_accounts_template_emailToCommsySecret">
+                <source>emailToCommsyTextAccountsTemplate</source>
+                <target>Account: YOUR_ACCOUNT</target>
             </trans-unit>
             <trans-unit id="miscellaneous">
                 <source>miscellaneous</source>
@@ -363,6 +387,10 @@
             <trans-unit id="all_none">
                 <source>all_none</source>
                 <target>all / none</target>
+            </trans-unit>
+            <trans-unit id="profile_image_tip">
+                <source>Profile image tip</source>
+                <target>For best results, chose an image with side ratio of approximately 1:1 and a resolution of at least 300x300 pixel!</target>
             </trans-unit>
          </body>
     </file>

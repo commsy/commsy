@@ -236,7 +236,31 @@
             </trans-unit>
             <trans-unit id="profile_label_emailToCommsySecret">
                 <source>emailToCommsySecret</source>
-                <target>Persönliches Geheimnis</target>
+                <target>Upload-Kennwort</target>
+            </trans-unit>
+            <trans-unit id="profile_text_label_emailToCommsy">
+                <source>emailToCommsyText</source>
+                <target>E-Mails an diese Adresse schicken:</target>
+            </trans-unit>
+            <trans-unit id="profile_text_label_emailToCommsySecret">
+                <source>emailToCommsyTextSecret</source>
+                <target>Bitte geben Sie eine Kennwort für den E-Mail-Upload an.</target>
+            </trans-unit>
+            <trans-unit id="profile_text_password_emailToCommsySecret">
+                <source>emailToCommsyTextPassword</source>
+                <target>Bitte ein Upload-Kennwort angeben. Dieses muss im Text der E-Mail in einer Zeile stehen:</target>
+            </trans-unit>
+            <trans-unit id="profile_text_password_template_emailToCommsySecret">
+                <source>emailToCommsyTextPasswordTemplate</source>
+                <target>Upload-Kennwort: IHR_UPLOAD_KENNWORT</target>
+            </trans-unit>
+            <trans-unit id="profile_text_accounts_emailToCommsySecret">
+                <source>emailToCommsyTextAccounts</source>
+                <target>Wenn Sie mehrere Kennungen mit derselben E-Mail-Adresse benutzen, wird das Material in sämtlichen Ablagen abgelegt. Wenn Sie das Material hingegen nur in der Ablage einer bestimmten Kennung anlegen möchten, können Sie diese Angabe in einer einzelnen Zeile im Text der E-Mail verwenden:</target>
+            </trans-unit>
+            <trans-unit id="profile_text_accounts_template_emailToCommsySecret">
+                <source>emailToCommsyTextAccountsTemplate</source>
+                <target>Kennung: IHRE_KENNUNG</target>
             </trans-unit>
             <trans-unit id="miscellaneous">
                 <source>miscellaneous</source>
@@ -361,6 +385,10 @@
             <trans-unit id="all_none">
                 <source>all_none</source>
                 <target>alle / keine</target>
+            </trans-unit>
+            <trans-unit id="profile_image_tip">
+                <source>Profile image tip</source>
+                <target>Wählen Sie ein ungefähr quadratisches Bild mit einer Mindesauflösung von 300x300 Pixeln!</target>
             </trans-unit>
         </body>
     </file>

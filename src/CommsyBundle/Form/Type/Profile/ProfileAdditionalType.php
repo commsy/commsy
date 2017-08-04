@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use Doctrine\ORM\EntityManager;
 
@@ -46,23 +47,32 @@ class ProfileAdditionalType extends AbstractType
                 'label_attr' => [
                     'class' => 'uk-form-label',
                 ],
-            ]);
-
-        if ($options['emailToCommsy']) {
-            $builder
-                ->add('emailToCommsy', CheckboxType::class, [
-                    'label' => 'Activate',
-                    'required' => false,
-                    'label_attr' => [
-                        'class' => 'uk-form-label',
-                    ],
-                    'translation_domain' => 'settings',
-                ])
-                ->add('emailToCommsySecret', TextType::class, [
-                    'label' => 'emailToCommsySecret',
-                    'required' => false,
-                ]);
-        }
+            ])
+            ->add('language', ChoiceType::class, array(
+                'placeholder' => false,
+                'choices'  => array(
+                    'browser' => 'browser',
+                    'de' => 'de',
+                    'en' => 'en'
+                ),
+                'label' => 'language',
+                'required' => false,
+            ));
+            if ($options['emailToCommsy']) {
+                $builder
+                    ->add('emailToCommsy', CheckboxType::class, [
+                        'label' => 'Activate',
+                        'required' => false,
+                        'label_attr' => [
+                            'class' => 'uk-form-label',
+                        ],
+                        'translation_domain' => 'settings',
+                    ])
+                    ->add('emailToCommsySecret', TextType::class, [
+                        'label' => 'emailToCommsySecret',
+                        'required' => false,
+                    ]);
+            }
 
         $builder
             ->add('autoSaveStatus', CheckboxType::class, array(

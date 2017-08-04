@@ -26,8 +26,11 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <div>
+                                        <div class="uk-margin-small-bottom">
                                             {{ 'profileImageDescription'|trans({}, "profile")|format(roomTitle) }}
+                                        </div>
+                                        <div>
+                                            <em>{{ 'tip'| trans({}, 'messages') }}:</em> {{ 'Profile image tip'|trans({}, 'profile') }}
                                         </div>
                                     </td>
                                 </tr>
@@ -42,15 +45,6 @@
                                         <div class="uk-float-right uk-clearfix" style="margin-top: 220px; float: none; margin-top: 240px; width: 200px; text-aling: center;">
                                             {{ form_row(form.imageChangeInAllContexts) }}
                                         </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><h1 class="uk-panel-title">{{ 'language'|trans({},'profile')|capitalize }}</h1></td>
-                                    <td rowspan="2" style="vertical-align: middle; align: center;">{{ form_widget(form.language) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="uk-margin-large-bottom">{{ 'languageDescription'|trans({}, "profile") }}</div>
                                     </td>
                                 </tr>
                             </table>

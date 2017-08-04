@@ -208,6 +208,13 @@ class Dates
     private $external = '0';
 
     /**
+     * @var uid
+     *
+     * @ORM\Column(name="uid", type="string", length=255, nullable=true)
+     */
+    private $uid;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="calendar_id", type="integer", nullable=true)
@@ -892,5 +899,29 @@ class Dates
     public function getExternal()
     {
         return $this->external;
+    }
+
+    /**
+     * Set uid
+     *
+     * @param string $uid
+     *
+     * @return Dates
+     */
+    public function setUid($uid)
+    {
+        $this->uid = $uid;
+
+        return $this;
+    }
+
+    /**
+     * Get uid
+     *
+     * @return string
+     */
+    public function getUid()
+    {
+        return $this->uid;
     }
 }

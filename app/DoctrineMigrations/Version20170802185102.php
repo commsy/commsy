@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20170714122834 extends AbstractMigration
+class Version20170802185102 extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -16,11 +16,14 @@ class Version20170714122834 extends AbstractMigration
     public function up(Schema $schema)
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->addSql('
+            ALTER TABLE dates
+            ADD uid VARCHAR(255) NULL DEFAULT NULL;
+        ');
 
         $this->addSql('
-            ALTER TABLE user
-            ADD use_portal_email BOOLEAN NOT NULL DEFAULT 0;
+            ALTER TABLE zzz_dates
+            ADD uid VARCHAR(255) NULL DEFAULT NULL;
         ');
     }
 
@@ -30,11 +33,14 @@ class Version20170714122834 extends AbstractMigration
     public function down(Schema $schema)
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->addSql('
+            ALTER TABLE dates
+            DROP uid;
+        ');
 
         $this->addSql('
-            ALTER TABLE user
-            DROP use_portal_email;
+            ALTER TABLE zzz_dates
+            DROP uid;
         ');
     }
 }

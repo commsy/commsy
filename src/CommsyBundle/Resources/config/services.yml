@@ -421,7 +421,13 @@ services:
         class: CommsyBundle\Form\Type\DateDetailsType
         tags:
             - { name: form.type }
-            
+
+    commsy.form.type.dateimport:
+        class: CommsyBundle\Form\Type\DateImportType
+        arguments: ['@translator']
+        tags:
+            - { name: form.type }
+
     commsy.form.type.group:
         class: CommsyBundle\Form\Type\GroupType
         tags:

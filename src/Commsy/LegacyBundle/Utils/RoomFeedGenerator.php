@@ -70,7 +70,7 @@ class RoomFeedGenerator
                     case 'user':
                         $userManager = $this->legacyEnvironment->getUserManager();
                         $userItem = $userManager->getItem($item->getItemId());
-                        if ($userItem) {
+                        if ($userItem and $userItem->getStatus() != 1) {
                             $feedList[] = $userItem;
                         }
                         

@@ -116,6 +116,15 @@
                         <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
                     </a>
                 </li>
+
+                {% if is_granted('MODERATOR') %}
+                    {# import iCal #}
+                    <li>
+                        <a href="{{ path('commsy_date_import', {'roomId': roomId}) }}" >
+                            <i class="uk-icon-justify uk-icon-small uk-icon-download uk-visible-large"></i> {{ 'import dates'|trans({},'date') }}
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>

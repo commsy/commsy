@@ -32,20 +32,54 @@
                                 <tr>
                                     <td>{{ form_row(form.portfolioStatus) }}</td>
                                 </tr>
+                                <tr>
+                                    <td><hr/></td>
+                                </tr>
+                                <tr>
+                                    <td><h1 class="uk-panel-title">{{ 'language'|trans({},'profile')|capitalize }}</h1></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div>{{ 'languageDescription'|trans({}, "profile") }}</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        {{ form_widget(form.language) }}
+                                    </td>
+                                </tr>
                                 {% if form.emailToCommsy is defined %}
                                     <tr>
                                         <td><hr/></td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <h1 class="uk-panel-title">{{ 'emailToCommsy'|trans({},'profile')|capitalize }}</h1>
+                                            <h1 class="uk-panel-title">{{ 'emailToCommsy'|trans({},'profile') }}</h1>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>{{ form_row(form.emailToCommsy) }}</td>
+                                        <td>
+                                            {{ form_row(form.emailToCommsy) }}
+                                            <div class="uk-form-controls">
+                                                {{ 'emailToCommsyText'|trans({},'profile') }} {{ uploadEmail }}
+                                            </div>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>{{ form_row(form.emailToCommsySecret) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="uk-form-controls">
+                                                <span>{{ 'emailToCommsyTextPassword'|trans({}, 'profile') }}</span>
+                                                <br/>
+                                                <span class="uk-text-bold">{{ 'emailToCommsyTextPasswordTemplate'|trans({}, 'profile') }}</span>
+                                                <br/>
+                                                <span>{{ 'emailToCommsyTextAccounts'|trans({}, 'profile') }}</span>
+                                                <br/>
+                                                <span class="uk-text-bold">{{ 'emailToCommsyTextAccountsTemplate'|trans({}, 'profile') }}</span>
+                                            </div>
+                                        </td>
                                     </tr>
                                 {% endif %}
                                 <tr>
@@ -69,7 +103,8 @@
                                 </tr>
                             </table>
                         </div>
-                    {{ form_end(form) }}
+                        {{ form_row(form._token) }}
+                    {{ form_end(form, {'render_rest': false}) }}
                 </div>
             </div>
         </div>

@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Form\Type\DateType;
 use CommsyBundle\Form\Type\AnnotationType;
+use CommsyBundle\Form\Type\DateImportType;
 
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -23,6 +24,7 @@ use CommsyBundle\Validator\Constraints\EndDateConstraint;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use CommsyBundle\Event\CommsyEditEvent;
+use CommsyBundle\Entity\Calendars;
 
 class DateController extends Controller
 {    
@@ -1596,5 +1598,123 @@ class DateController extends Controller
         }
 
         return $this->redirectToRoute('commsy_date_detail', array('roomId' => $roomId, 'itemId' => $itemId));
+    }
+
+    /**
+     * @Route("/room/{roomId}/date/import")
+     * @Template()
+     */
+    public function importAction($roomId, Request $request)
+    {
+        $dateService = $this->get('commsy_legacy.date_service');
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $translator = $this->get('translator');
+
+        $formData = [];
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('CommsyBundle:Calendars');
+        $calendars = $repository->findBy(array('context_id' => $roomId));
+        $calendarsOptions = [$translator->trans('new calendar', [], 'date') => 'new'];
+        $calendarsOptionsAttr = [['title' => $translator->trans('new calendar'), 'color' => '#ffffff', 'hasLightColor' => true]];
+        foreach ($calendars as $calendar) {
+            if (!$calendar->getExternalUrl()) {
+                $calendarsOptions[$calendar->getTitle()] = $calendar->getId();
+                $calendarsOptionsAttr[$calendar->getTitle()] = ['title' => $calendar->getTitle(), 'color' => $calendar->getColor(), 'hasLightColor' => $calendar->hasLightColor()];
+            }
+        }
+        $formData['calendars'] = $calendarsOptions;
+        $formData['calendarsAttr'] = $calendarsOptionsAttr;
+        $formData['files'] = [];
+
+        $formOptions = array(
+            'action' => $this->generateUrl('commsy_date_import', array(
+                'roomId' => $roomId,
+            )),
+            'calendars' => $calendarsOptions,
+            'calendarsAttr' => $calendarsOptionsAttr,
+            'uploadUrl' => $this->generateUrl('commsy_date_importupload', [
+                'roomId' => $roomId,
+                'itemId' => null
+            ]),
+        );
+
+        $form = $this->createForm(DateImportType::class, $formData, $formOptions);
+
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $formData = $form->getData();
+            $files = $formData['files'];
+
+            if (!empty($files)) {
+                // get calendar object or create new
+                $calendarsService = $this->get('commsy.calendars_service');
+                if ($formData['calendar'] != 'new') {
+                    $calendars = $calendarsService->getCalendar($formData['calendar']);
+                    if (isset($calendars[0])) {
+                        $calendar = $calendars[0];
+                    }
+                } else {
+                    $calendar = new Calendars();
+
+                    $calendarTitle = $formData['calendartitle'];
+                    if ($calendarTitle == '') {
+                        $calendarTitle = $translator->trans('new calendar');
+                    }
+                    $calendar->setTitle($calendarTitle);
+
+                    $calendar->setContextId($roomId);
+                    $calendar->setCreatorId($legacyEnvironment->getCurrentUserId());
+
+                    $calendarColor = $formData['calendarcolor'];
+                    if ($calendarColor == '') {
+                        $calendarColor = '#ffffff';
+                    }
+                    $calendar->setColor($calendarColor);
+
+                    $calendar->setSynctoken(0);
+                    $em->persist($calendar);
+                    $em->flush();
+                }
+
+                $kernelRootDir = $this->getParameter('kernel.root_dir');
+                foreach ($files as $file) {
+                    $calendarsService->importEvents(fopen($kernelRootDir . '/../var/temp/' . $file->getFileId(), 'r'), $calendar);
+                }
+
+                return $this->redirectToRoute('commsy_date_list', array('roomId' => $roomId));
+            }
+        }
+
+        return array(
+            'form' => $form->createView(),
+        );
+    }
+
+    /**
+     * @Route("/room/{roomId}/date/importupload")
+     * @Template()
+     */
+    public function importUploadAction($roomId, Request $request)
+    {
+        $response = new JsonResponse();
+
+        $kernelRootDir = $this->getParameter('kernel.root_dir');
+
+        $files = $request->files->all();
+
+        $responseData = array();
+        foreach ($files['files'] as $file) {
+            if (stristr($file->getMimeType(), 'text/calendar')) {
+                $filename = $roomId . '_' . date('Ymdhis') . '_' . $file->getClientOriginalName();
+                if ($file->move($kernelRootDir . '/../var/temp/', $filename)) {
+                    $responseData[$filename] = $file->getClientOriginalName();
+                }
+            }
+        }
+
+        return $response->setData([
+            'fileIds' => $responseData,
+        ]);
     }
 }

@@ -59,6 +59,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
    var $_sort_order = NULL;
    var $_color_limit = NULL;
    var $_calendar_limit = NULL;
+   var $_uid_limit = NULL;
    var $_recurrence_limit = NULL;
 
    var $_month_limit = NULL;
@@ -111,6 +112,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       $this->_year_limit = NULL;
       $this->_color_limit = NULL;
       $this->_calendar_limit = NULL;
+      $this->_uid_limit = NULL;
       $this->_recurrence_limit = NULL;
       $this->_date_mode_limit = 1;
       $this->_assignment_limit = false;
@@ -162,6 +164,10 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
    function setCalendarArrayLimit ($limit) {
       $this->_calendar_limit = $limit;
    }
+
+    function setUidArrayLimit ($limit) {
+        $this->_uid_limit = $limit;
+    }
 
    function setAssignmentLimit ($array) {
       $this->_assignment_limit = true;
@@ -390,6 +396,9 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       }
       if (isset($this->_calendar_limit)) {
          $query .= ' AND '.$this->addDatabasePrefix('dates').'.calendar_id IN ('.implode(", ", $this->_calendar_limit).')';
+      }
+      if (isset($this->_uid_limit)) {
+         $query .= ' AND '.$this->addDatabasePrefix('dates').'.uid IN ('.implode(", ", $this->_uid_limit).')';
       }
       if (isset($this->_recurrence_limit)) {
          $query .= ' AND '.$this->addDatabasePrefix('dates').'.recurrence_id = "'.encode(AS_DB,$this->_recurrence_limit).'"';
@@ -792,6 +801,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
          $query .= ', recurrence_pattern=NULL';
       }
       $query .= ', external="'.encode(AS_DB,$item->isExternal()).'"';
+      $query .= ', uid="'.encode(AS_DB,$item->getUid()).'"';
       $query .= ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
 
       $result = $this->_db_connector->performQuery($query);
@@ -896,6 +906,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
          $query .= ', recurrence_pattern="'.encode(AS_DB,serialize($item->getRecurrencePattern())).'"';
       }
       $query .= ', external="'.encode(AS_DB,$item->isExternal()).'"';
+      $query .= ', uid="'.encode(AS_DB,$item->getUid()).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');
@@ -1056,6 +1067,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       $xml->addChildWithCDATA('calendar_id', $item->getCalendarId());
       $xml->addChildWithCDATA('recurrence_id', $item->getRecurrenceId());
       $xml->addChildWithCDATA('external', $item->isExternal());
+      $xml->addChildWithCDATA('uid', $item->getUid());
       $recurrence_array = $item->getRecurrencePattern();
       $xmlRecurrence = $this->getArrayAsXML($xml, $recurrence_array, true, 'recurrence');
       $this->simplexml_import_simplexml($xml, $xmlRecurrence);
@@ -1097,6 +1109,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
          $item->setCalendarId((string)$xml->calendar_id[0]);
          $item->setRecurrenceId((string)$xml->recurrence_id[0]);
          $item->setExternal((string)$xml->external[0]);
+         $item->setUid((string)$xml->uid[0]);
          $recurrence_array = $this->getXMLAsArray($xml->recurrence);
          $item->setRecurrencePattern($recurrence_array['recurrence']);
          $item->save();
