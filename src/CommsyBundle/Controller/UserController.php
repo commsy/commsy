@@ -1030,13 +1030,13 @@ class UserController extends Controller
     /**
      * @Route("/room/{roomId}/user/{itemId}/image")
      */
-    public function imageAction($roomId, $itemId)
+    public function imageAction($roomId, $itemId, Request $request)
     {
         $userService = $this->get('commsy_legacy.user_service');
         $user = $userService->getUser($itemId);
 
         $file = $user->getPicture();
-        
+
         $foundUserImage = true;
         
         if ($file != '') {
@@ -1078,7 +1078,7 @@ class UserController extends Controller
             $file = 'user_unknown.gif';
         }
         
-        if (!$foundUserImage) {
+        if (!$foundUserImage || !preg_match("/room\/".$roomId."/", $request->headers->get('referer'))) {
             $avatarService = $this->get('commsy.avatar_service');
             
             $content = $avatarService->getAvatar($itemId);
