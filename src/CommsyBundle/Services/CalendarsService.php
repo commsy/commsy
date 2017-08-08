@@ -176,6 +176,14 @@ class CalendarsService
             }
         }
 
+        foreach ($dateService->getListDates($calendar->getContextId(), null, null, null) as $date) {
+            if ($date->getCalendarId() == $calendar->getId()) {
+                if (!in_array($date->getUid(), $uids)) {
+                    $date->delete();
+                }
+            }
+        }
+
         if (!$external) {
             // check for dates with uid not in imported ical. Delete those.
         }
