@@ -332,6 +332,7 @@ class MaterialController extends Controller
             'withTrafficLight' => $roomItem->withWorkflowTrafficLight(),
             'withResubmission' => $roomItem->withWorkflowResubmission(),
             'withValidity' => $roomItem->withWorkflowValidity(),
+            'withReader' => $roomItem->withWorkflowReader(),
             'showHashtags' => $infoArray['showHashtags'],
             'showCategories' => $infoArray['showCategories'],
             'user' => $infoArray['user'],
