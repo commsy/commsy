@@ -166,9 +166,14 @@ class CalendarsService
                     $date->setCreatorId($legacyEnvironment->getRootUserItemID());
                     $date->setModifierId($legacyEnvironment->getRootUserItemID());
                 }
-                $date->setCreationDate($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
-                $date->setModificationDate($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
-                $date->setChangeModificationOnSave(false);
+
+                $eventDateTime = new \DateTime($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
+                $nowDateTime = new \DateTime();
+                if ($eventDateTime < $nowDateTime) {
+                    $date->setModificationDate($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
+                    $date->setChangeModificationOnSave(false);
+                }
+
                 if ($external) {
                     $date->setExternal(true);
                 }
