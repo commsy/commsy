@@ -65,6 +65,9 @@ class DateImportType extends AbstractType
                 'label' => 'Color',
                 'translation_domain' => 'calendar',
                 'required' => false,
+                'attr' => array(
+                    'class' => 'jscolor {hash:true}',
+                ),
             ])
             ->add('save', SubmitType::class, array(
                 'attr' => array(

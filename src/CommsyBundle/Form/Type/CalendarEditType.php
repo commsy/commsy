@@ -37,6 +37,9 @@ class CalendarEditType extends AbstractType
                 'label' => 'Color',
                 'translation_domain' => 'calendar',
                 'required' => true,
+                'attr' => array(
+                    'class' => 'jscolor {hash:true}',
+                ),
             ]);
 
         if ($options['editExternalUrl']) {
