@@ -30,9 +30,9 @@
                         {% elseif user.status == 1 %}
                             <i class="uk-text-small uk-icon-sign-in uk-text-success" data-uk-tooltip title="{{'is applying'|trans({}, 'user') }}"></i> <i class="uk-icon-user uk-text-success" data-uk-tooltip title="{{'user'|trans({}, 'user') }}"></i>
                         {% elseif user.status == 2 %}
-                            <i class="uk-icon-user" data-uk-tooltip title="{{'user'|trans({}, 'user') }}"></i>
+                            <!-- <i class="uk-icon-user" data-uk-tooltip title="{{'user'|trans({}, 'user') }}"></i> -->
                         {% elseif user.status == 3 %}
-                            <i class="uk-text-small uk-icon-wrench" data-uk-tooltip title="{{'moderator'|trans({}, 'user') }}"></i> <i class="uk-icon-user" data-uk-tooltip title="{{'user'|trans({}, 'user') }}"></i>
+                            <i class="uk-text-small uk-icon-wrench" data-uk-tooltip title="{{'moderator'|trans({}, 'user') }}"></i> <!-- <i class="uk-icon-user" data-uk-tooltip title="{{'user'|trans({}, 'user') }}"></i> -->
                         {% elseif user.status == 4 %}
                             <i class="uk-icon-user-secret"></i>
                         {% endif %}
