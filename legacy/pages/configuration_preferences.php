@@ -1077,6 +1077,12 @@ if ($current_user->isGuest()) {
                   redirect($environment->getCurrentContextID(), $environment->getCurrentModule(),$environment->getCurrentFunction(), $params);
                }
 
+               if ($item->isProjectRoom() || $item->isCommunityRoom() || $item->isPrivateRoom()) {
+                   global $symfonyContainer;
+                   $calendarsService = $symfonyContainer->get('commsy.calendars_service');
+                   $calendarsService->createCalendar($item);
+               }
+
                // Redirect
                if (!$new_flag or !empty($_GET['type'])) {
                   if ( $environment->getCurrentModule() == CS_PROJECT_TYPE

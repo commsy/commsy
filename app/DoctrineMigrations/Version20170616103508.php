@@ -153,7 +153,7 @@ class Version20170616103508 extends AbstractMigration implements ContainerAwareI
                 )
                 ->setParameter(0, '')
                 ->setParameter(1, $room['item_id'])
-                ->setParameter(2, $translator->trans('Calendar', array(), 'date'))
+                ->setParameter(2, $translator->trans('Standard', array(), 'date'))
                 ->setParameter(3, '#ffffff')
                 ->setParameter(4, '')
                 ->setParameter(5, '1')

@@ -310,6 +310,10 @@
                 <source>Calendar</source>
                 <target>Kalender</target>
             </trans-unit>
+            <trans-unit id="Standard">
+                <source>Standard</source>
+                <target>Standard</target>
+            </trans-unit>
             <trans-unit id="Grey">
                 <source>Grey</source>
                 <target>Grau</target>

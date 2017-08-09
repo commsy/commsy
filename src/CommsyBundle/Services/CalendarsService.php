@@ -2,7 +2,7 @@
 
 namespace CommsyBundle\Services;
 
-use CommsyBundle\Entity\Invitations;
+use CommsyBundle\Entity\Calendars;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 use Sabre\VObject;
@@ -192,5 +192,28 @@ class CalendarsService
         if (!$external) {
             // check for dates with uid not in imported ical. Delete those.
         }
+    }
+
+    public function createCalendar($roomItem, $title = null, $color = null) {
+        $translator =  $this->serviceContainer->get('translator');
+
+        $calendar = new Calendars();
+
+        if (!$title) {
+            $title = $translator->trans('Standard', array(), 'date');
+        }
+        $calendar->setTitle($title);
+
+        $calendar->setContextId($roomItem->getItemId());
+        $calendar->setCreatorId($roomItem->getCreatorItem()->getItemId());
+
+        if (!$color) {
+            $color = '#ffffff';
+        }
+        $calendar->setColor($color);
+
+        $calendar->setSynctoken(0);
+        $this->em->persist($calendar);
+        $this->em->flush();
     }
 }
