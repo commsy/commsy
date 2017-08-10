@@ -179,6 +179,9 @@
             el = $('.feed-load-more-grid');
         }
 
+        let target = el.data('feed').target;
+        $(target).empty();
+
         // re-enable spinner - otherwise feeds reaching their end before changing sort order will not
         // be able to load more entries
         el.css('display', 'block');
