@@ -51,6 +51,11 @@ class DateType extends AbstractType
                 ),
                 'required' => false,
             ))
+            ->add('whole_day', CheckboxType::class, array(
+                'required' => false,
+                'label_attr' => array('class' => 'uk-form-label'),
+                'value' => 'yes',
+            ))
             ->add('place', TextType::class, array(
                 'label' => 'place',
                 'attr' => array(
