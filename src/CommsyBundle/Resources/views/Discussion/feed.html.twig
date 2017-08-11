@@ -19,16 +19,16 @@
             
             {# user icon and modification time #}
             <div class="uk-margin-right uk-flex-item-none">
-                {% if discussion.creator.isUser %}
-                    {{  macros.userIconLink(discussion.creator) }}
+                {% if discussion.modificatorItem.isUser %}
+                    {{  macros.userIconLink(discussion.modificatorItem) }}
                 {% else %}
-                    {{  macros.userIcon(discussion.creator) }}
+                    {{  macros.userIcon(discussion.modificatorItem) }}
                 {% endif %}
                 <div class="uk-comment-meta">
                     {% if discussion.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                         {{ 'today'|trans({})|capitalize }}, {{discussion.getModificationDate|date("H:i")}}
                     {% else %}
-                        {% if not '9999-00-00' in discussion.getModificationDate %}
+                        {% if '9999-00-00' not in discussion.getModificationDate %}
                             {{discussion.getModificationDate|date("d.m.Y")}}
                         {% else %}
                             {{discussion.getCreationDate|date("d.m.Y")}}

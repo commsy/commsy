@@ -19,7 +19,7 @@
             </div>
             <div class="uk-margin-right uk-flex-item-none">
                     {% if not date.isExternal %}
-                        {% if date.creator.isUser %}
+                        {% if date.modificatorItem.isUser %}
                             {{  macros.userIconLink(date.modificatorItem) }}
                         {% else %}
                             {{  macros.userIcon(date.modificatorItem) }}
@@ -35,7 +35,7 @@
                         {% if date.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                             {{ 'today'|trans({})|capitalize }}, {{date.getModificationDate|date("H:i")}}
                         {% else %}
-                            {% if not '9999-00-00' in date.getModificationDate %}
+                            {% if '9999-00-00' not in date.getModificationDate %}
                                 {{date.getModificationDate|date("d.m.Y")}}
                             {% else %}
                                 {{date.getCreationDate|date("d.m.Y")}}

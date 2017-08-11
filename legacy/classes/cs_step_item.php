@@ -94,6 +94,10 @@ class cs_step_item extends cs_item {
      return $retour;
    }
 
+    function getLinkedItemId () {
+        return $this->getLinkedItem()->getItemId();
+    }
+
    /** set id of a linked material
    *
    *

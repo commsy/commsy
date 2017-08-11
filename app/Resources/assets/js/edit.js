@@ -146,7 +146,7 @@
                     })
                     .always(function(result, statusText, xhrObject) {
                         // cancel editing a NEW entry => return to list view
-                        if($("#breadcrumb-nav .current.last").text().trim() == "") {
+                        if($('#wo-breadcrumbs li').last().text().trim() == "") {
                             let pathParts = window.location.pathname.split("/");
                             pathParts.pop();
                             window.location.href = pathParts.join("/");
