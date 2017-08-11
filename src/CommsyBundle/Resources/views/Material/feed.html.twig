@@ -28,7 +28,7 @@
                     {% if material.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                         {{ 'today'|trans({})|capitalize }}, {{material.getModificationDate|date("H:i")}}
                     {% else %}
-                        {% if not '9999-00-00' in material.getModificationDate %}
+                        {% if '9999-00-00' not in material.getModificationDate %}
                             {{material.getModificationDate|date("d.m.Y")}}
                         {% else %}
                             {{material.getCreationDate|date("d.m.Y")}}

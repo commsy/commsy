@@ -28,7 +28,7 @@
                     {% if todo.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                         {{ 'today'|trans({})|capitalize }}, {{todo.getModificationDate|date("H:i")}}
                     {% else %}
-                        {% if not '9999-00-00' in todo.getModificationDate %}
+                        {% if '9999-00-00' not in todo.getModificationDate %}
                             {{todo.getModificationDate|date("d.m.Y")}}
                         {% else %}
                             {{todo.getCreationDate|date("d.m.Y")}}

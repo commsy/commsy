@@ -215,9 +215,10 @@ class UploadController extends Controller
                 $item->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                 $item->save();
 
-                if ($item->getItemType() == CS_SECTION_TYPE) {
-                    $linkedMaterialItem = $itemService->getTypedItem($item->getlinkedItemID());
-                    $linkedMaterialItem->save();
+                if (($item->getItemType() == CS_SECTION_TYPE) || ($item->getItemType() == CS_STEP_TYPE)) {
+                    $linkedItem = $itemService->getTypedItem($item->getlinkedItemID());
+                    $linkedItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                    $linkedItem->save();
                 }
 
                 // delete unchecked files
@@ -243,13 +244,13 @@ class UploadController extends Controller
     public function uploadSaveAction($roomId, $itemId, Request $request)
     {
         $itemService = $this->get('commsy_legacy.item_service');
-        $item = $itemService->getItem($itemId);
+        $item = $itemService->getTypedItem($itemId);
         
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $tempManager = $legacyEnvironment->getManager($item->getItemType());
         $tempItem = $tempManager->getItem($item->getItemId());
 
-        if ($item->getItemType() === CS_SECTION_TYPE ||$item->getItemType() === CS_STEP_TYPE) {
+        if (($item->getItemType() === CS_SECTION_TYPE) || ($item->getItemType() === CS_STEP_TYPE)) {
             $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($item->getLinkedItem()));
         } else {
             $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($item));

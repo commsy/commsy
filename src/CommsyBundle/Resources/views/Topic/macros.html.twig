@@ -49,7 +49,7 @@
                                                 {% endif %}
                                             </div>
                                             <div class="uk-margin-right">
-                                                {% if not '9999-00-00' in item.getModificationDate %}
+                                                {% if '9999-00-00' not in item.getModificationDate %}
                                                     {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
                                                 {% else %}
                                                     {{ 'last changed'|trans({})|capitalize }}: {{item.creationDate|date("d.m.Y H:i")}}<br/>
