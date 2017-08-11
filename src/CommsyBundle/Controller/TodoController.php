@@ -624,6 +624,10 @@ class TodoController extends Controller
 
                     $step->save();
 
+                    $step->getLinkedItem()->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                    $step->getLinkedItem()->save();
+
                     $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($step->getLinkedItem()));
 
                     return $this->redirectToRoute('commsy_todo_detail', [

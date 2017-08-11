@@ -20,7 +20,7 @@
                         {% if project.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                             {{ 'today'|trans({})|capitalize }}, {{project.getModificationDate|date("H:i")}}
                         {% else %}
-                            {% if not '9999-00-00' in project.getModificationDate %}
+                            {% if '9999-00-00' not in project.getModificationDate %}
                                 {{project.getModificationDate|date("d.m.Y")}}
                             {% else %}
                                 {{project.getCreationDate|date("d.m.Y")}}

@@ -176,7 +176,11 @@ services:
     commsy_legacy.transformer.todo:
         class: Commsy\LegacyBundle\Form\DataTransformer\TodoTransformer
         arguments: ['@commsy_legacy.environment']
-        
+
+    commsy_legacy.transformer.step:
+        class: Commsy\LegacyBundle\Form\DataTransformer\StepTransformer
+        arguments: ['@commsy_legacy.environment']
+
     commsy_legacy.transformer.discussion:
         class: Commsy\LegacyBundle\Form\DataTransformer\DiscussionTransformer
         arguments: ['@commsy_legacy.environment']

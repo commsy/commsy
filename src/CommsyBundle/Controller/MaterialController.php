@@ -1194,6 +1194,10 @@ class MaterialController extends Controller
                 $section->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
                 $section->save();
+
+                $section->getLinkedItem()->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                $section->getLinkedItem()->save();
                 
             } else if ($form->get('cancel')->isClicked()) {
                 // remove not saved item
