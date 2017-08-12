@@ -83,6 +83,7 @@ div.cs-toggle-preview-small {
 
 div.cs-toggle-full {
     max-height: 100%;
+    overflow: auto !important;
 
     .uk-margin-bottom-remove;
 
@@ -330,4 +331,17 @@ a.cs-link-highlight {
   .uk-invisible {
     visibility: visible !important;
   }
+
+  .cs-toggle .cs-toggle-icon {
+    visibility: visible !important;
+  }
+
+  .cs-comment-thumbnail{
+    height: 45px !important;
+    width: 45px !important;
+  }
+}
+
+.uk-dropdown, .uk-dropdown-blank {
+  z-index: 1000;
 }

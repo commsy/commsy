@@ -180,6 +180,7 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
         $query = 'SELECT '.$this->addDatabasePrefix('discussionarticles').'.*';
      }
      $query .= ' FROM '.$this->addDatabasePrefix('discussionarticles');
+     $query .= ' INNER JOIN ' . $this->addDatabasePrefix('items') . ' ON '.$this->addDatabasePrefix('items').'.item_id = '.$this->addDatabasePrefix('discussionarticles').'.item_id AND '.$this->addDatabasePrefix('items').'.draft != "1"';
 
      $query .= ' WHERE 1';
 
@@ -371,7 +372,8 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
      $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
               'context_id="'.encode(AS_DB,$discussionarticle_item->getContextID()).'",'.
               'modification_date="'.getCurrentDateTimeInMySQL().'",'.
-              'type="'.CS_DISCARTICLE_TYPE.'"';
+              'type="'.CS_DISCARTICLE_TYPE.'",'.
+              'draft="'.encode(AS_DB,$discussionarticle_item->isDraft()).'"';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
         include_once('functions/error_functions.php');trigger_error('Problems creating discussionarticle item.',E_USER_WARNING);

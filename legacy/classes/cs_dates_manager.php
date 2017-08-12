@@ -830,7 +830,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
               'modification_date="'.$current_datetime.'",'.
               'type="date",'.
-              'draft="'.encode(AS_DB,$item->isDraft()).'"';
+      'draft="'.encode(AS_DB,$item->isDraft()).'"';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
         include_once('functions/error_functions.php');
