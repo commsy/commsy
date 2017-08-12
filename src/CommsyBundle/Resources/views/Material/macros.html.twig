@@ -83,8 +83,8 @@
                         </div>
                         <div class="toggle-title-{{ item.itemId }} uk-hidden">
                             <div class="uk-panel">
-                                <div class="uk-grid">
-                                    <div class="uk-width-2-5">
+                                <ul class="uk-grid" data-uk-grid-margin>
+                                    <li class="uk-grid-width-4-10">
                                         <div class="uk-flex">
                                             <div class="uk-margin-right">
                                                 {% if item.modificatorItem.isUser %}
@@ -99,8 +99,8 @@
                                                 {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="uk-width-1-5">
+                                    </li>
+                                    <li class="uk-grid-width-2-10">
                                         <div class="uk-clearfix">
                                             <div class="uk-margin-remove">
                                                 {% if item.creator.isUser %}
@@ -111,10 +111,10 @@
                                             </div>
                                         </div>
                                         <div class="uk-clearfix">
-                                            {{ 'creator'|trans({})}} 
+                                            {{ 'creator'|trans({})}}
                                         </div>
-                                    </div>
-                                    <div class="uk-width-2-5">                           
+                                    </li>
+                                    <li class="uk-width-4-10">
                                         <div class="uk-clearfix">
                                             <div class="uk-margin-remove">
                                                 {% if modifierList[item.itemId] is defined %}
@@ -133,16 +133,16 @@
                                                     {% endif %}
                                                 {% endif %}
                                             </div>
-                                        </div>                           
+                                        </div>
                                         {% if modifierList[item.itemId] is defined %}
                                         {% if not modifierList[item.itemId] is empty %}
                                         <div class="uk-clearfix">
-                                            {{ 'editors'|trans({})}} 
+                                            {{ 'editors'|trans({})}}
                                         </div>
                                         {% endif %}
                                         {% endif %}
-                                    </div>                            
-                                </div>                        
+                                    </li>
+                                </ul>
                             </div>
                             <div class="uk-panel uk-margin-top">
                                 <div class="uk-grid">
