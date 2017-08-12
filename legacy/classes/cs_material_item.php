@@ -1731,5 +1731,12 @@ function _copySectionList ($copy_id) {
 
    //------------- study.log ------------------
    //------------------------------------------
+
+   function isLocked() {
+       if ($this->getEtherpadEditor()) {
+           return false;
+       }
+       return parent::isLocked();
+   }
 }
 ?>
