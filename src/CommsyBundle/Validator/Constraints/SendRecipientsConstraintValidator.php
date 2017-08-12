@@ -17,8 +17,27 @@ class SendRecipientsConstraintValidator extends ConstraintValidator
 
     public function validate($additional_recipients, Constraint $constraint)
     {
-        $this->context->buildViolation($constraint->message)
-            ->setParameter('parameter', 'value')
-            ->addViolation();
+        $values = $this->context->getRoot()->getData();
+
+        $foundRecipient = false;
+        if (isset($values['additional_recipients'][0])) {
+            $foundRecipient = true;
+        }
+        if (isset($values['send_to_groups'][0])) {
+            $foundRecipient = true;
+        }
+        if ($values['send_to_group_all']) {
+            $foundRecipient = true;
+        }
+        if ($values['send_to_all']) {
+            $foundRecipient = true;
+        }
+        if ($values['copy_to_sender']) {
+            $foundRecipient = true;
+        }
+
+        if (!$foundRecipient) {
+            $this->context->buildViolation($constraint->message)->setParameter('parameter', 'value')->addViolation();
+        }
     }
 }

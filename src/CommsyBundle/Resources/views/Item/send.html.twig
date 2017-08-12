@@ -16,7 +16,12 @@
 
                 <div>
                     {{ form_start(form) }}
-                    {{ form_errors(form) }}
+
+                    {% if form.vars.errors is not empty %}
+                        <div class="uk-alert-danger uk-alert" uk-alert>
+                            <p>{{ form_errors(form) }}</p>
+                        </div>
+                    {% endif %}
 
                         {{ form_row(form.subject) }}
                         {{ form_row(form.message) }}
