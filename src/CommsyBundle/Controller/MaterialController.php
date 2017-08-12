@@ -683,7 +683,7 @@ class MaterialController extends Controller
 
         $versions = array();
         $versionList = $materialService->getVersionList($material->getItemId())->to_array();
-        
+
         if (sizeof($versionList > 1)) {
             $minTimestamp = time();
             $maxTimestamp = -1;
