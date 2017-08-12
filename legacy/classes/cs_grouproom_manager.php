@@ -59,6 +59,8 @@ class cs_grouproom_manager extends cs_room2_manager {
 
   var $_time_limit = NULL;
 
+  var $_template_limit = NULL;
+
   private $_project_room_limit = NULL;
 
   /** constructor
@@ -80,6 +82,7 @@ class cs_grouproom_manager extends cs_room2_manager {
      $this->_age_limit = NULL;
      $this->_user_id_limit = NULL;
      $this->_time_limit = NULL;
+     $this->_template_limit = NULL;
      $this->_project_room_limit = NULL;
   }
 
@@ -119,6 +122,18 @@ class cs_grouproom_manager extends cs_room2_manager {
     */
   public function setTimeLimit ($limit) {
      $this->_time_limit = $limit;
+  }
+
+  function setTemplateLimit () {
+     $this->_template_limit = 1;
+  }
+
+  function setNotTemplateLimit () {
+     $this->_template_limit = -1;
+  }
+
+  function unsetTemplateLimit () {
+     $this->_template_limit = NULL;
   }
 
   /** select group rooms limited by limits
