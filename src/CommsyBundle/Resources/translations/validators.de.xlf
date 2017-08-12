@@ -30,6 +30,10 @@
                 <source>Passwords do not match</source>
                 <target>Die eingegebenen Passwörter stimmen nicht überein.</target>
             </trans-unit>
+            <trans-unit id="There are no recipients selected">
+                <source>There are no recipients selected</source>
+                <target>Es sind keine Empfänger ausgewählt.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
