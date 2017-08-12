@@ -148,11 +148,13 @@
                                         </li>
                                         
                                         {# new version #}
-                                         <li>
-                                            <a class="newVersion" href="{{ path('commsy_material_createversion', {'roomId': roomId, 'itemId': material.itemId, 'versionId': material.versionId}) }}" id="newVersion">
-                                                <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new version'|trans({}) }}
-                                            </a>
-                                        </li>
+                                        {% if material.isCurrentVersion %}
+                                             <li>
+                                                <a class="newVersion" href="{{ path('commsy_material_createversion', {'roomId': roomId, 'itemId': material.itemId, 'versionId': material.versionId}) }}" id="newVersion">
+                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new version'|trans({}) }}
+                                                </a>
+                                            </li>
+                                        {% endif %}
                                     </ul>
                                 </div>
                             </div>

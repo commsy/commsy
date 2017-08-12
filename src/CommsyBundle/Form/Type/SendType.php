@@ -17,6 +17,8 @@ use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 
 use CommsyBundle\Utils\MailAssistant;
 
+use CommsyBundle\Validator\Constraints\SendRecipientsConstraint;
+
 class SendType extends AbstractType
 {
     private $mailAssistant;
@@ -196,6 +198,9 @@ class SendType extends AbstractType
                 'prototype' => true,
                 'required' => false,
                 'translation_domain' => 'mail',
+                'constraints' => array(
+                    new SendRecipientsConstraint(),
+                ),
             ])
             ->add('save', SubmitType::class, [
                 'attr' => [

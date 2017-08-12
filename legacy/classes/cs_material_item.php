@@ -455,6 +455,20 @@ class cs_material_item extends cs_item {
       return $this->_getValue('version_id');
    }
 
+   public function isCurrentVersion () {
+       $material_manager = $this->_environment->getMaterialManager();
+       $version_list = $material_manager->getVersionList($this->getItemId())->to_array();
+       $max_version = 0;
+       foreach ($version_list as $version_list_entry) {
+           if ($version_list_entry->getVersionId() > $max_version) {
+               $max_version = $version_list_entry->getVersionId();
+           }
+       }
+       if ($this->getVersionId() == $max_version) {
+           return true;
+       }
+       return false;
+   }
 
    /** get title of a material
     * this method returns the title of the material
@@ -1717,5 +1731,12 @@ function _copySectionList ($copy_id) {
 
    //------------- study.log ------------------
    //------------------------------------------
+
+   function isLocked() {
+       if ($this->getEtherpadEditor()) {
+           return false;
+       }
+       return parent::isLocked();
+   }
 }
 ?>
