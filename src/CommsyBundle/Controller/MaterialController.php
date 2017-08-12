@@ -1140,6 +1140,7 @@ class MaterialController extends Controller
 
         $section = $materialService->getNewSection();
         $section->setLinkedItemId($itemId);
+        $section->setVersionId($material->getVersionId());
         $section->setNumber($countSections+1);
         $section->save();
 
