@@ -171,7 +171,13 @@ class TodoController extends Controller
         $readerList = array();
         $allowedActions = array();
         foreach ($todos as $item) {
-            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+            $reader = $readerService->getLatestReader($item->getItemId());
+            if ( empty($reader) ) {
+                $readerList[$item->getItemId()] = 'new';
+            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
+                $readerList[$item->getItemId()] = 'changed';
+            }
+
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
                 $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete', 'markpending', 'markinprogress', 'markdone');
                 
