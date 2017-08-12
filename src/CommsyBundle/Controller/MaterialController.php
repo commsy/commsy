@@ -260,7 +260,7 @@ class MaterialController extends Controller
         $roomItem = $roomService->getRoomItem($roomId);
         
         $materialService = $this->get('commsy_legacy.material_service');
-        if (!$versionId) {
+        if ($versionId === null) {
             $material = $materialService->getMaterial($itemId);
         } else {
             $material = $materialService->getMaterialByVersion($itemId, $versionId);
@@ -422,7 +422,7 @@ class MaterialController extends Controller
 
         $annotationService = $this->get('commsy_legacy.annotation_service');
         
-        if (!$versionId) {
+        if ($versionId === null) {
             $material = $materialService->getMaterial($itemId);
         } else {
             $material = $materialService->getMaterialByVersion($itemId, $versionId);
@@ -696,7 +696,7 @@ class MaterialController extends Controller
                 $tempDateTime->setTime($tempParsedDate['hour'], $tempParsedDate['minute'], $tempParsedDate['second']);
                 $tempTimeStamp = $tempDateTime->getTimeStamp();
                 $current = false;
-                if ($versionId) {
+                if ($versionId !== null) {
                     if ($versionId == $versionItem->getVersionId()) {
                         $current = true;
                     }
@@ -706,7 +706,7 @@ class MaterialController extends Controller
                         $first = false;
                     }
                 }
-                $versions[$tempTimeStamp] = array('item' => $versionItem, 'date' => date('d.m.Y H:s', $tempTimeStamp), 'current' => $current);
+                $versions[$tempTimeStamp] = array('item' => $versionItem, 'date' => date('d.m.Y H:i', $tempTimeStamp), 'current' => $current);
                 if ($tempTimeStamp > $maxTimestamp) {
                     $maxTimestamp = $tempTimeStamp;
                 }
