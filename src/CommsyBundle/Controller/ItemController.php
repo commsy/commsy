@@ -323,7 +323,7 @@ class ItemController extends Controller
             'itemsLinked' => array_flip($optionsData['itemsLinked']),
             'itemsLatest' => array_flip($optionsData['itemsLatest']),
             'categories' => $optionsData['categories'],
-            'hashtags' => array_flip($optionsData['hashtags']),
+            'hashtags' => $optionsData['hashtags'],
             'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId]),
             'placeholderText' => $translator->trans('Hashtag', [], 'hashtag'),
         ]);

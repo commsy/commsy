@@ -958,6 +958,15 @@ class MaterialController extends Controller
                 // update modifier
                 $materialItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
+                // set linked hashtags and categories
+                $formData = $form->getData();
+                if ($showCategories) {
+                    $materialItem->setTagListByID($formData['categories']);
+                }
+                if ($showHashtags) {
+                    $materialItem->setBuzzwordListByID($formData['hashtags']);
+                }
+
                 $materialItem->save();
                 
                 if ($item->isDraft()) {
