@@ -225,6 +225,8 @@ class ICalController extends Controller
                     ->setStatus(Event::STATUS_CONFIRMED);
             }
 
+            $event->setNoTime($item->isWholeDay());
+
             $calendar->addComponent($event);
 
             $item = $dateList->getNext();

@@ -37,6 +37,8 @@ class DateTransformer implements DataTransformerInterface
             $dateData['end']['date'] = $datetimeEnd;
             $dateData['end']['time'] = $datetimeEnd;
 
+            $dateData['whole_day'] = $dateItem->isWholeDay();
+
             $dateData['calendar'] = $dateItem->getCalendarId();
 
             if ($dateItem->getRecurrencePattern() != '') {
@@ -95,6 +97,8 @@ class DateTransformer implements DataTransformerInterface
         $dateObject->setEndingDay($dateData['end']['date']->format('Y-m-d'));
         $dateObject->setEndingTime($dateData['end']['time']->format('H:i'));
         $dateObject->setDatetime_end($dateData['end']['date']->format('Y-m-d').' '.$dateData['end']['time']->format('H:i:s'));
+
+        $dateObject->setWholeDay($dateData['whole_day']);
 
         $dateObject->setCalendarId($dateData['calendar']);
 

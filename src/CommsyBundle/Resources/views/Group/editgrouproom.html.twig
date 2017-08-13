@@ -18,10 +18,16 @@
     <div class="uk-form-horizontal">
         {{ form_start(form) }}
         {{ form_errors(form) }}
-        <div class="">
+        <div class="uk-flex">
             <div class="">
                 {{ form_label(form.activate) }}
                 {{ form_widget(form.activate) }}
+            </div>
+        </div>
+        <div class="uk-flex">
+            <div class="">
+                {{ form_label(form.master_template) }}
+                {{ form_widget(form.master_template) }}
             </div>
         </div>
         <div class="uk-flex uk-margin-small-top">

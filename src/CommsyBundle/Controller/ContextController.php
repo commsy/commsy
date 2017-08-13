@@ -223,7 +223,11 @@ class ContextController extends Controller
                         } else {
                             $userId = $newUser->getUserID();
                         }
-                        $body .= $translator->getMessage('USER_JOIN_CONTEXT_MAIL_BODY', $newUser->getFullname(), $userId, $newUser->getEmail(), $roomItem->getTitle());
+                        if (!$roomItem->isGroupRoom()) {
+                            $body .= $translator->getMessage('USER_JOIN_CONTEXT_MAIL_BODY', $newUser->getFullname(), $userId, $newUser->getEmail(), $roomItem->getTitle());
+                        } else {
+                            $body .= $translator->getMessage('GROUPROOM_USER_JOIN_CONTEXT_MAIL_BODY', $newUser->getFullname(), $userId, $newUser->getEmail(), $roomItem->getTitle());
+                        }
                         $body .= "\n\n";
 
                         if ($isRequest) {
@@ -296,7 +300,13 @@ class ContextController extends Controller
                     $body .= "\n\n";
                     $body .= $translator->getEmailMessage('MAIL_BODY_HELLO', $newUser->getFullname());
                     $body .= "\n\n";
-                    $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER', $userId, $roomItem->getTitle());
+                    if ($roomItem->isCommunityRoom()) {
+                        $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_GR', $userId, $roomItem->getTitle());
+                    } else if ($roomItem->isProjectRoom()) {
+                        $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_PR', $userId, $roomItem->getTitle());
+                    } else if ($roomItem->isGroupRoom()) {
+                        $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_GP', $userId, $roomItem->getTitle());
+                    }
                     $body .= "\n\n";
                     $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $contactModerator->getFullname(), $roomItem->getTitle());
                     $body .= "\n\n";

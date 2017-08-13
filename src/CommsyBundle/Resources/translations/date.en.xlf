@@ -58,6 +58,10 @@
                 <source>enddate</source>
                 <target>End</target>
             </trans-unit>
+            <trans-unit id="wholeday">
+                <source>Whole day</source>
+                <target>Whole day</target>
+            </trans-unit>
             <trans-unit id="recurring date">
                 <source>recurring date</source>
                 <target>Recurring date</target>
