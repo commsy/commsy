@@ -1164,48 +1164,47 @@ class GroupController extends Controller
 
     private function getAvailableTemplates()
     {
-        $templates = [];
-
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
-        $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+        $templates = [];
 
-        $groupRoomManager = $legacyEnvironment->getGroupRoomManager();
-        $groupRoomManager->setContextLimit($legacyEnvironment->getCurrentPortalItem()->getItemID());
-        $groupRoomManager->setTemplateLimit();
-        $groupRoomManager->select();
+        $currentPortal = $legacyEnvironment->getCurrentPortalItem();
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomManager->setContextLimit($currentPortal->getItemID());
+        $roomManager->setOnlyGrouproom();
+        $roomManager->setTemplateLimit();
+        $roomManager->select();
+        $roomList = $roomManager->get();
 
-        $templateList = $groupRoomManager->get();
-        if ($templateList->isNotEmpty()) {
-            $template = $templateList->getFirst();
-            while ($template) {
-                $availability = $template->getTemplateAvailability();
-
-                $add = false;
-
-                // free for all?
-                if (!$add && $availability == '0') {
-                    $add = true;
-                }
-
-                // only for members
-                if (!$add && $availability == '1' && $template->mayEnter($currentUserItem)) {
-                    $add = true;
-                }
-
-                // only mods
-                if (!$add && $availability == '2' && $template->mayEnter($currentUserItem)) {
-                    if ($template->isModeratorByUserID($currentUserItem->getUserID(), $currentUserItem->getAuthSource())) {
-                        $add = true;
+        $defaultId = $legacyEnvironment->getCurrentPortalItem()->getDefaultProjectTemplateID();
+        if ($roomList->isNotEmpty() or $defaultId != '-1' ) {
+            $currentUser = $legacyEnvironment->getCurrentUser();
+            if ( $defaultId != '-1' ) {
+                $defaultItem = $roomManager->getItem($defaultId);
+                if ( isset($defaultItem) ) {
+                    $template_availability = $defaultItem->getTemplateAvailability();
+                    if ( $template_availability == '0' ) {
+                        $templates[$defaultItem->getTitle()] = $defaultItem->getItemID();
                     }
                 }
-
-                if ($add) {
-                    $templates[$template->getTitle()] = $template->getItemID();
-                }
-
-                $template = $templateList->getNext();
             }
+            $item = $roomList->getFirst();
+            while ($item) {
+                $templateAvailability = $item->getTemplateAvailability();
+
+                if( ($templateAvailability == '0') OR
+                    ($legacyEnvironment->inCommunityRoom() and $templateAvailability == '3') OR
+                    ($templateAvailability == '1' and $item->mayEnter($currentUser)) OR
+                    ($templateAvailability == '2' and $item->mayEnter($currentUser) and ($item->isModeratorByUserID($currentUser->getUserID(),$currentUser->getAuthSource())))
+                ){
+                    if ($item->getItemID() != $defaultId or $item->getTemplateAvailability() != '0'){
+                        $templates[$item->getTitle()] = $item->getItemID();
+                    }
+
+                }
+                $item = $roomList->getNext();
+            }
+            unset($currentUser);
         }
 
         return $templates;
