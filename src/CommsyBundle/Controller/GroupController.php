@@ -1151,7 +1151,7 @@ class GroupController extends Controller
         require_once('include/inc_room_copy_config.php');
 
         // save new room
-        $new_room->save();
+        $new_room->save(false);
 
         // copy data
         require_once('include/inc_room_copy_data.php');
