@@ -721,4 +721,14 @@ class TopicController extends Controller
 
         return $this->get('commsy.print_service')->printList($html);
     }
+
+    /**
+     * @Route("/room/{roomId}/topic/{itemId}/editpath")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function editPathAction($roomId, $itemId, Request $request)
+    {
+        return [];
+    }
 }
