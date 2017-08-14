@@ -1764,7 +1764,8 @@
 	            }else{
 	               $activated_text = $this->_environment->getTranslationObject()->getMessage('COMMON_ACTIVATING_DATE').' '.$this->_environment->getTranslationObject()->getDateInLang($item->getActivatingDate());
 	            }
-			   	$item_array[] = array(
+
+			   	$itemInfoArray = array(
 					'iid'				=> $item->getItemID(),
 					'title'				=> $item->getTitle(),
 					'date'				=> $date,
@@ -1777,9 +1778,15 @@
 					'attachment_count'	=> $file_count,
 					'attachment_infos'	=> $attachment_infos,
 					'activated_text'	=> $activated_text,
-					'creator_id'		=> $item->getCreatorItem()->getItemID(),
 					'activated'			=> !$item->isNotActivated()
 				);
+
+                $creator = $item->getCreatorItem();
+                if ($creator != NULL) {
+                    $itemInfoArray['creator_id'] = $creator->getItemID();
+                }
+
+                $item_array[] = $itemInfoArray;
 
 			   	$item = $list->getNext();
 			   }

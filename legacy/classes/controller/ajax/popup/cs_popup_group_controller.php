@@ -238,6 +238,8 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
         						$itemBackup = $item;
         						$item = $item->getGroupRoomItem();
         						include_once('include/inc_room_copy.php');
+        						$item->setLinkedGroupItemID($itemBackup->getItemId());
+        						$item->save();
         						$item = $itemBackup;
         					}
         					
@@ -306,7 +308,8 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
         $room_list = $room_manager->get();
 
         
-        $default_id = $this->_environment->getCurrentPortalItem()->getDefaultProjectTemplateID();
+        //$default_id = $this->_environment->getCurrentPortalItem()->getDefaultProjectTemplateID();
+        $default_id = '-1'; // -> #3187
         if ($room_list->isNotEmpty() or $default_id != '-1' ) {
         	$current_user = $this->_environment->getCurrentUser();
         	if ( $default_id != '-1' ) {
@@ -351,7 +354,17 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
         }
         
         // show group room templates if item is new or item has no grouproom
-        if(!empty($template_array) && $itemObject === null){
+
+        $showTemplateSelect = false;
+        if (!$itemObject) {
+            $showTemplateSelect = true;
+        } else {
+            if (!$itemObject->isGroupRoomActivated()) {
+                $showTemplateSelect = true;
+            }
+        }
+
+        if(!empty($template_array) && $showTemplateSelect){
         	$this->_popup_controller->assign('popup', 'withTemplate', '1');
         	$this->_popup_controller->assign('popup', 'template', $template_array);
         } else {

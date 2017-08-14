@@ -12,22 +12,15 @@
 	
 {/block}
 
-{block name=room_detail_content}
 
+{block name=room_detail_content}
 	<div id="main_navigation_print" style="border:1px solid #676767;"><h1>{$detail.content.title}</h1></div>
 	<div class="item_body_print"> <!-- Start item body -->
 
 		<!-- Start fade_in_ground -->
-		<div class="fade_in_ground_actions hidden">
-			{* TODO: add missing actions *}
-			{if $detail.actions.edit}
-				<a id ="action_edit" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_EDIT_ITEM___</a> |
-			{/if}
-			{if $detail.actions.delete}
-				<a class="open_popup" data-custom="iid: {$detail.content.item_id}, module: 'delete', delType: 'topic'" href="#"">___COMMON_DELETE_ITEM___</a> |
-			{/if}
-		</div>
 		<!-- Ende fade_in_ground -->
+		
+		{include file="include/detail_linked_print.tpl"}
 		
 		<div style="background-color:#E3E3E3;border-left:1px solid #676767;border-right:1px solid #676767;">
 			<div style="font-size:10px;padding: 0px 10px;">
