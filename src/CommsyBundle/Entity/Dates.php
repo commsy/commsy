@@ -208,6 +208,13 @@ class Dates
     private $external = '0';
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="whole_day", type="boolean", nullable=false)
+     */
+    private $wholeDay = '0';
+
+    /**
      * @var uid
      *
      * @ORM\Column(name="uid", type="string", length=255, nullable=true)
@@ -923,5 +930,29 @@ class Dates
     public function getUid()
     {
         return $this->uid;
+    }
+
+    /**
+     * Set whole day
+     *
+     * @param boolean $wholeDay
+     *
+     * @return Dates
+     */
+    public function setWholeDay($wholeDay)
+    {
+        $this->wholeDay = $wholeDay;
+
+        return $this;
+    }
+
+    /**
+     * Get whole day
+     *
+     * @return boolean
+     */
+    public function getWholeDay()
+    {
+        return $this->wholeDay;
     }
 }

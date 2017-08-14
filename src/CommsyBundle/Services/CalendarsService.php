@@ -117,6 +117,13 @@ class CalendarsService
                     $uids[] = $uid;
                 }
 
+                $wholeDay = false;
+                if ($event->{'X-MICROSOFT-CDO-ALLDAYEVENT'}) {
+                    if($event->{'X-MICROSOFT-CDO-ALLDAYEVENT'}->getValue() == 'TRUE') {
+                        $wholeDay = true;
+                    }
+                }
+
                 $attendee = '';
                 $attendeeArray = array();
                 if ($event->ORGANIZER) {
@@ -142,7 +149,7 @@ class CalendarsService
                 if ($external) {
                     $date = $dateService->getNewDate();
                 } else {
-                    if (!$date = $dateService->getDateByUid($uid)) {
+                    if (!$date = $dateService->getDateByUid($uid, $calendar->getId())) {
                         $date = $dateService->getNewDate();
                     }
                 }
@@ -154,6 +161,7 @@ class CalendarsService
                 $date->setDateTime_end($endDatetime->format('Ymd') . 'T' . $endDatetime->format('His'));
                 $date->setEndingDay($endDatetime->format('Y-m-d'));
                 $date->setEndingTime($endDatetime->format('H:i'));
+                $date->setWholeDay($wholeDay);
                 $date->setCalendarId($calendar->getId());
                 $date->setPlace($location);
                 $date->setDescription($description . "<br/><br/>" . $attendee);

@@ -225,6 +225,12 @@ services:
         tags:
             - { name: validator.constraint_validator, alias: alias_name }
 
+    commsy.validator.send_recipients_constraint:
+        class: CommsyBundle\Validator\Constraints\SendRecipientsConstraintValidator
+        arguments: ['@commsy_legacy.environment']
+        tags:
+            - { name: validator.constraint_validator, alias: alias_name }
+
     # Form types
     commsy.form.type.general_settings:
         class: CommsyBundle\Form\Type\GeneralSettingsType

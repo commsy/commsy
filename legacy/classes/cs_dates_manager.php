@@ -802,6 +802,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       }
       $query .= ', external="'.encode(AS_DB,$item->isExternal()).'"';
       $query .= ', uid="'.encode(AS_DB,$item->getUid()).'"';
+      $query .= ', whole_day="'.encode(AS_DB,$item->isWholeDay()).'"';
       $query .= ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
 
       $result = $this->_db_connector->performQuery($query);
@@ -829,7 +830,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
               'modification_date="'.$current_datetime.'",'.
               'type="date",'.
-              'draft="'.encode(AS_DB,$item->isDraft()).'"';
+      'draft="'.encode(AS_DB,$item->isDraft()).'"';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
         include_once('functions/error_functions.php');
@@ -907,6 +908,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       }
       $query .= ', external="'.encode(AS_DB,$item->isExternal()).'"';
       $query .= ', uid="'.encode(AS_DB,$item->getUid()).'"';
+      $query .= ', whole_day="'.encode(AS_DB,$item->isWholeDay()).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');

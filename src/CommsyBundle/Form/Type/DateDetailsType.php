@@ -38,6 +38,11 @@ class DateDetailsType extends AbstractType
                     'class' => 'uk-form-width-medium',
                 ),
             ))
+            ->add('whole_day', CheckboxType::class, array(
+                'required' => false,
+                'label_attr' => array('class' => 'uk-form-label'),
+                'value' => 'yes',
+            ))
             ->add('place', TextType::class, array(
                 'label' => 'place',
                 'attr' => array(
@@ -45,26 +50,6 @@ class DateDetailsType extends AbstractType
                     'class' => 'uk-form-width-medium',
                 ),
                 'required' => false,
-            ))
-            ->add('color', ChoiceType::class, array(
-                'placeholder' => false,
-                'choices' => array(
-                    'cs-date-color-no-color' => 'cs-date-color-no-color',
-                    'cs-date-color-01' => 'cs-date-color-01',
-                    'cs-date-color-02' => 'cs-date-color-02',
-                    'cs-date-color-03' => 'cs-date-color-03',
-                    'cs-date-color-04' => 'cs-date-color-04',
-                    'cs-date-color-05' => 'cs-date-color-05',
-                    'cs-date-color-06' => 'cs-date-color-06',
-                    'cs-date-color-07' => 'cs-date-color-07',
-                    'cs-date-color-08' => 'cs-date-color-08',
-                    'cs-date-color-09' => 'cs-date-color-09',
-                    'cs-date-color-10' => 'cs-date-color-10',
-                ),
-                'label' => 'color',
-                'required' => false,
-                'expanded' => true,
-                'multiple' => false
             ))
             ->add('calendar', ChoiceType::class, array(
                 'placeholder' => false,

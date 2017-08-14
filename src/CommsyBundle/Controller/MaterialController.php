@@ -260,7 +260,7 @@ class MaterialController extends Controller
         $roomItem = $roomService->getRoomItem($roomId);
         
         $materialService = $this->get('commsy_legacy.material_service');
-        if (!$versionId) {
+        if ($versionId === null) {
             $material = $materialService->getMaterial($itemId);
         } else {
             $material = $materialService->getMaterialByVersion($itemId, $versionId);
@@ -422,7 +422,7 @@ class MaterialController extends Controller
 
         $annotationService = $this->get('commsy_legacy.annotation_service');
         
-        if (!$versionId) {
+        if ($versionId === null) {
             $material = $materialService->getMaterial($itemId);
         } else {
             $material = $materialService->getMaterialByVersion($itemId, $versionId);
@@ -683,7 +683,7 @@ class MaterialController extends Controller
 
         $versions = array();
         $versionList = $materialService->getVersionList($material->getItemId())->to_array();
-        
+
         if (sizeof($versionList > 1)) {
             $minTimestamp = time();
             $maxTimestamp = -1;
@@ -696,7 +696,7 @@ class MaterialController extends Controller
                 $tempDateTime->setTime($tempParsedDate['hour'], $tempParsedDate['minute'], $tempParsedDate['second']);
                 $tempTimeStamp = $tempDateTime->getTimeStamp();
                 $current = false;
-                if ($versionId) {
+                if ($versionId !== null) {
                     if ($versionId == $versionItem->getVersionId()) {
                         $current = true;
                     }
@@ -706,7 +706,7 @@ class MaterialController extends Controller
                         $first = false;
                     }
                 }
-                $versions[$tempTimeStamp] = array('item' => $versionItem, 'date' => date('d.m.Y H:s', $tempTimeStamp), 'current' => $current);
+                $versions[$tempTimeStamp] = array('item' => $versionItem, 'date' => date('d.m.Y H:i', $tempTimeStamp), 'current' => $current);
                 if ($tempTimeStamp > $maxTimestamp) {
                     $maxTimestamp = $tempTimeStamp;
                 }
@@ -1140,6 +1140,7 @@ class MaterialController extends Controller
 
         $section = $materialService->getNewSection();
         $section->setLinkedItemId($itemId);
+        $section->setVersionId($material->getVersionId());
         $section->setNumber($countSections+1);
         $section->save();
 
@@ -1194,6 +1195,10 @@ class MaterialController extends Controller
                 $section->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
                 $section->save();
+
+                $section->getLinkedItem()->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                $section->getLinkedItem()->save();
                 
             } else if ($form->get('cancel')->isClicked()) {
                 // remove not saved item

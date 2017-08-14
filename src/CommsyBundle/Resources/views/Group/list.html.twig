@@ -1,10 +1,6 @@
 {% extends 'CommsyBundle:Base:list.html.twig' %}
 {% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
 
-{% block contentwidth %}
-    <div class="uk-width-medium-2-3">
-{% endblock %}    
-
 {% block feed %}
     <div id="group-feed" class="uk-grid">
         {{ render(controller(

@@ -921,5 +921,29 @@ class cs_dates_item extends cs_item {
     function setUid ($value) {
         $this->_setValue('uid', $value);
     }
+
+    /** asks if item is a date is a whole day date.
+     *
+     * @param value
+     *
+     * @author CommSy Development Group
+     */
+    function isWholeDay() {
+        if ($this->_getValue('whole_day')== 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /** sets if item is a whole day date
+     *
+     * @param value
+     *
+     * @author CommSy Development Group
+     */
+    function setWholeDay ($value) {
+        $this->_setValue('whole_day', $value);
+    }
 }
 ?>

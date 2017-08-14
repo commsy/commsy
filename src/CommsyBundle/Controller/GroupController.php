@@ -833,7 +833,8 @@ class GroupController extends Controller
             'action' => $this->generateUrl('commsy_group_editgrouproom', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId,
-            ))
+            )),
+            'templates' => $this->getAvailableTemplates(),
         ));
 
         $form->handleRequest($request);
@@ -864,6 +865,16 @@ class GroupController extends Controller
                     $groupRoom->setTitle($originalGroupName);
                 }
                 $groupRoom->save(false);
+
+                // take values from a template?
+                if ($form->has('master_template')) {
+                    $masterTemplate = $form->get('master_template')->getData();
+
+                    $masterRoom = $this->get('commsy_legacy.room_service')->getRoomItem($masterTemplate);
+                    if ($masterRoom) {
+                        $groupRoom = $this->copySettings($masterRoom, $groupRoom);
+                    }
+                }
 
             } else {
                 // ToDo ...
@@ -1102,4 +1113,100 @@ class GroupController extends Controller
         ];
     }
 
+    private function copySettings($masterRoom, $targetRoom)
+    {
+        $old_room = $masterRoom;
+        $new_room = $targetRoom;
+
+        $old_room_id = $old_room->getItemID();
+
+        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        /**/
+        $user_manager = $environment->getUserManager();
+        $creator_item = $user_manager->getItem($new_room->getCreatorID());
+        if ($creator_item->getContextID() == $new_room->getItemID()) {
+            $creator_id = $creator_item->getItemID();
+        } else {
+            $user_manager->resetLimits();
+            $user_manager->setContextLimit($new_room->getItemID());
+            $user_manager->setUserIDLimit($creator_item->getUserID());
+            $user_manager->setAuthSourceLimit($creator_item->getAuthSource());
+            $user_manager->setModeratorLimit();
+            $user_manager->select();
+            $user_list = $user_manager->get();
+            if ($user_list->isNotEmpty() and $user_list->getCount() == 1) {
+                $creator_item = $user_list->getFirst();
+                $creator_id = $creator_item->getItemID();
+            } else {
+                throw new \Exception('can not get creator of new room');
+            }
+        }
+        $creator_item->setAccountWantMail('yes');
+        $creator_item->setOpenRoomWantMail('yes');
+        $creator_item->setPublishMaterialWantMail('yes');
+        $creator_item->save();
+
+        // copy room settings
+        require_once('include/inc_room_copy_config.php');
+
+        // save new room
+        $new_room->save(false);
+
+        // copy data
+        require_once('include/inc_room_copy_data.php');
+        /**/
+
+        $targetRoom = $new_room;
+
+        return $targetRoom;
+    }
+
+    private function getAvailableTemplates()
+    {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $templates = [];
+
+        $currentPortal = $legacyEnvironment->getCurrentPortalItem();
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomManager->setContextLimit($currentPortal->getItemID());
+        $roomManager->setOnlyGrouproom();
+        $roomManager->setTemplateLimit();
+        $roomManager->select();
+        $roomList = $roomManager->get();
+
+        $defaultId = $legacyEnvironment->getCurrentPortalItem()->getDefaultProjectTemplateID();
+        if ($roomList->isNotEmpty() or $defaultId != '-1' ) {
+            $currentUser = $legacyEnvironment->getCurrentUser();
+            if ( $defaultId != '-1' ) {
+                $defaultItem = $roomManager->getItem($defaultId);
+                if ( isset($defaultItem) ) {
+                    $template_availability = $defaultItem->getTemplateAvailability();
+                    if ( $template_availability == '0' ) {
+                        $templates[$defaultItem->getTitle()] = $defaultItem->getItemID();
+                    }
+                }
+            }
+            $item = $roomList->getFirst();
+            while ($item) {
+                $templateAvailability = $item->getTemplateAvailability();
+
+                if( ($templateAvailability == '0') OR
+                    ($legacyEnvironment->inCommunityRoom() and $templateAvailability == '3') OR
+                    ($templateAvailability == '1' and $item->mayEnter($currentUser)) OR
+                    ($templateAvailability == '2' and $item->mayEnter($currentUser) and ($item->isModeratorByUserID($currentUser->getUserID(),$currentUser->getAuthSource())))
+                ){
+                    if ($item->getItemID() != $defaultId or $item->getTemplateAvailability() != '0'){
+                        $templates[$item->getTitle()] = $item->getItemID();
+                    }
+
+                }
+                $item = $roomList->getNext();
+            }
+            unset($currentUser);
+        }
+
+        return $templates;
+    }
 }

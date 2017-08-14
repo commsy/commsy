@@ -75,9 +75,10 @@ class ItemController extends Controller
                 $item = $transformer->applyTransformation($item, $form->getData());
                 $item->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                 $item->save();
-                if ($item->getItemType() == CS_SECTION_TYPE) {
-                    $linkedMaterialItem = $itemService->getTypedItem($item->getlinkedItemID());
-                    $linkedMaterialItem->save();
+                if (($item->getItemType() == CS_SECTION_TYPE) || ($item->getItemType() == CS_STEP_TYPE)) {
+                    $linkedItem = $itemService->getTypedItem($item->getlinkedItemID());
+                    $linkedItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                    $linkedItem->save();
                 }
             } else if ($saveType == 'saveAllDates') {
                 $dateService = $this->get('commsy_legacy.date_service');
@@ -270,7 +271,7 @@ class ItemController extends Controller
         while ($tempItem) {
             $tempTypedItem = $itemService->getTypedItem($tempItem->getItemId());
             // skip already linked items
-            if ($tempTypedItem && !array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) {
+            if ($tempTypedItem && (!array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) && ($tempTypedItem->getItemId() != $itemId)) {
                 $optionsData['items'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
                 $items[$tempTypedItem->getItemId()] = $tempTypedItem;
             }
@@ -293,7 +294,7 @@ class ItemController extends Controller
         $latestItem = $latestItemList->getFirst();
         while ($latestItem && $i < 5) {
             $tempTypedItem = $itemService->getTypedItem($latestItem->getItemId());
-            if ($tempTypedItem && !array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) {
+            if ($tempTypedItem && (!array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) && ($tempTypedItem->getItemId() != $itemId)) {
                 $optionsData['itemsLatest'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
                 $i++;
             }

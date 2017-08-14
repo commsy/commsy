@@ -24,6 +24,13 @@ class GrouproomType extends AbstractType
                 'required' => false,
                 'translation_domain' => 'group',
             ))
+            ->add('master_template', ChoiceType::class, [
+                'choices' => $options['templates'],
+                'placeholder' => 'Choose a template',
+                'required' => false,
+                'mapped' => false,
+                'label' => 'Template',
+            ])
             ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
@@ -50,7 +57,9 @@ class GrouproomType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired([])
+            ->setRequired([
+                'templates'
+            ])
         ;
     }
 
