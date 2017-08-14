@@ -734,11 +734,28 @@ class TopicController extends Controller
         $item = $itemService->getItem($itemId);
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomService = $this->get('commsy_legacy.room_service');
+
+        $rubricInformation = $roomService->getRubricInformation($roomId);
 
         $formData = array();
 
         $pathElements = [];
         $pathElementsAttr = [];
+
+        $itemManager = $legacyEnvironment->getItemManager();
+        $itemManager->reset();
+        $itemManager->setContextLimit($roomId);
+        //$itemManager->setTypeArrayLimit($rubricInformation);
+
+        // get all linked items
+        $linkedItemArray = $itemManager->getItemList($item->getAllLinkedItemIDArray())->to_array();
+
+        foreach ($linkedItemArray as $linkedItem) {
+            $typedLinkedItem = $itemService->getTypedItem($linkedItem->getItemId());
+            $pathElements[$typedLinkedItem->getTitle()] = $typedLinkedItem->getItemId();
+            $pathElementsAttr[$typedLinkedItem->getTitle()] = ['title' => $typedLinkedItem->getTitle(), 'type' => $typedLinkedItem->getItemType()];
+        }
 
         $formData['pathElements'] = $pathElements;
         $formData['pathElementsAttr'] = $pathElementsAttr;
@@ -779,18 +796,10 @@ class TopicController extends Controller
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-
         $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($item));
 
-        return array(
-            'form' => $form->createView(),
-            'showHashtags' => $current_context->withBuzzwords(),
-            'showCategories' => $current_context->withTags(),
-            'currentUser' => $legacyEnvironment->getCurrentUserItem(),
-        );
-
-        return [];
+        return [
+            'topic' => $itemService->getTypedItem($itemId),
+        ];
     }
 }

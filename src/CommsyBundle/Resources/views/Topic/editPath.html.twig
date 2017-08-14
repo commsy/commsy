@@ -18,7 +18,16 @@
             {{ form_errors(form) }}
             <div class="uk-flex">
                 <div class="uk-width-9-10">
-                    {{ form_widget(form.path) }}
+                    <div class="uk-sortable uk-margin" data-uk-sortable="{}" style="">
+                        {% for pathElement in form.path.iterator %}
+                            <div class="uk-margin" style="">
+                                <div class="uk-flex uk-flex-middle cs-sort-box">
+                                    <div class="uk-margin-right">{{ form_widget(pathElement) }}</div>
+                                    <div>{{ pathElement.vars.attr.title }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
             <div class="uk-flex uk-margin-small-top">
