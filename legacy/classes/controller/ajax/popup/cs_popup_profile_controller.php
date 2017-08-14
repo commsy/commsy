@@ -53,8 +53,13 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							}
 							else
 							{
-								if ( $currentUser->getUserID() == $form_data['merge_user_id'] && ( empty($form_data['auth_source']) || $currentUser->getAuthSource() == $form_data['auth_source'] ) )
-								{
+								if (
+                                    strtolower($currentUser->getUserID()) == strtolower($form_data['merge_user_id']) &&
+                                    (
+                                        empty($form_data['auth_source']) ||
+                                        $currentUser->getAuthSource() == $form_data['auth_source']
+                                    )
+                                ) {
 									$this->_popup_controller->setErrorReturn("1015", "invalid account");
 								}
 								else
@@ -112,6 +117,11 @@ class cs_popup_profile_controller implements cs_popup_controller {
 
 						$current_user->reject();
 						$current_user->save();
+                        // remove link from group room
+                        if($current_context->isGroupRoom()) {
+                            $group_item = $current_context->getLinkedGroupItem();
+                            $group_item->removeMember($current_user->getRelatedUserItemInContext($group_item->getContextID()));
+                        }
 
 						// set return
 						$this->_popup_controller->setSuccessfullItemIDReturn($current_user->getItemID());
@@ -662,6 +672,10 @@ class cs_popup_profile_controller implements cs_popup_controller {
 
 						if ( $this->_popup_controller->checkFormData('user') )
 						{
+						    $tempPortalUser = null;
+                            if ($currentContext->isPortal()) {
+                                $tempPortalUser = $portalUser;
+                            }
 
 							function setValue($currentUser, $portalUser_item, $method, $value) {
 								if(isset($value)) {
@@ -676,11 +690,11 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								}
 							}
 
-							setValue($currentUser, $portalUser, 'setTitle', $text_converter->sanitizeHTML($form_data['title']));
-							setValue($currentUser, $portalUser, 'setBirthday', $text_converter->sanitizeHTML($form_data['birthday']));
+							setValue($currentUser, $tempPortalUser, 'setTitle', $text_converter->sanitizeHTML($form_data['title']));
+							setValue($currentUser, $tempPortalUser, 'setBirthday', $text_converter->sanitizeHTML($form_data['birthday']));
 
 							$email_old = $portalUser->getEmail();
-							setValue($currentUser, $portalUser, 'setEmail', $text_converter->sanitizeHTML($form_data['mail']));
+							setValue($currentUser, $tempPortalUser, 'setEmail', $text_converter->sanitizeHTML($form_data['mail']));
 							if ( $portalUser->hasToChangeEmail()
 								  and $email_old != $form_data['mail']
 								) {
@@ -741,21 +755,21 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							// im portal nur default wert
 							// im raum default wert und raum wert?
 
-							setValue($currentUser, $portalUser, 'setTelephone', $text_converter->sanitizeHTML($form_data['telephone']));
-							setValue($currentUser, $portalUser, 'setCellularphone', $text_converter->sanitizeHTML($form_data['cellularphone']));
-							setValue($currentUser, $portalUser, 'setStreet', $text_converter->sanitizeHTML($form_data['street']));
-							setValue($currentUser, $portalUser, 'setZipcode', $text_converter->sanitizeHTML($form_data['zipcode']));
-							setValue($currentUser, $portalUser, 'setCity', $text_converter->sanitizeHTML($form_data['city']));
-							setValue($currentUser, $portalUser, 'setRoom', $text_converter->sanitizeHTML($form_data['room']));
-							setValue($currentUser, $portalUser, 'setOrganisation', $text_converter->sanitizeHTML($form_data['organisation']));
-							setValue($currentUser, $portalUser, 'setPosition', $text_converter->sanitizeHTML($form_data['position']));
-							setValue($currentUser, $portalUser, 'setICQ', $text_converter->sanitizeHTML($form_data['icq']));
-							setValue($currentUser, $portalUser, 'setMSN', $text_converter->sanitizeHTML($form_data['msn']));
-							setValue($currentUser, $portalUser, 'setSkype', $text_converter->sanitizeHTML($form_data['skype']));
-							setValue($currentUser, $portalUser, 'setYahoo', $text_converter->sanitizeHTML($form_data['yahoo']));
-							setValue($currentUser, $portalUser, 'setJabber', $text_converter->sanitizeHTML($form_data['jabber']));
-							setValue($currentUser, $portalUser, 'setHomepage', $text_converter->sanitizeHTML($form_data['homepage']));
-							setValue($currentUser, $portalUser, 'setDescription', $form_data['description']);
+							setValue($currentUser, $tempPortalUser, 'setTelephone', $text_converter->sanitizeHTML($form_data['telephone']));
+							setValue($currentUser, $tempPortalUser, 'setCellularphone', $text_converter->sanitizeHTML($form_data['cellularphone']));
+							setValue($currentUser, $tempPortalUser, 'setStreet', $text_converter->sanitizeHTML($form_data['street']));
+							setValue($currentUser, $tempPortalUser, 'setZipcode', $text_converter->sanitizeHTML($form_data['zipcode']));
+							setValue($currentUser, $tempPortalUser, 'setCity', $text_converter->sanitizeHTML($form_data['city']));
+							setValue($currentUser, $tempPortalUser, 'setRoom', $text_converter->sanitizeHTML($form_data['room']));
+							setValue($currentUser, $tempPortalUser, 'setOrganisation', $text_converter->sanitizeHTML($form_data['organisation']));
+							setValue($currentUser, $tempPortalUser, 'setPosition', $text_converter->sanitizeHTML($form_data['position']));
+							setValue($currentUser, $tempPortalUser, 'setICQ', $text_converter->sanitizeHTML($form_data['icq']));
+							setValue($currentUser, $tempPortalUser, 'setMSN', $text_converter->sanitizeHTML($form_data['msn']));
+							setValue($currentUser, $tempPortalUser, 'setSkype', $text_converter->sanitizeHTML($form_data['skype']));
+							setValue($currentUser, $tempPortalUser, 'setYahoo', $text_converter->sanitizeHTML($form_data['yahoo']));
+							setValue($currentUser, $tempPortalUser, 'setJabber', $text_converter->sanitizeHTML($form_data['jabber']));
+							setValue($currentUser, $tempPortalUser, 'setHomepage', $text_converter->sanitizeHTML($form_data['homepage']));
+							setValue($currentUser, $tempPortalUser, 'setDescription', $form_data['description']);
 
 							// delete picture handling
 							if(isset($form_data['delete_picture']) && $currentUser->getPicture()) {

@@ -40,8 +40,10 @@ Bitte ändern Sie Ihr Passwort über den Passwort vergessen Link.
 Bei Fragen wenden Sie sich bitte an Ihre CommSy-Portalmoderation.";
 $message["EMAIL_PASSWORD_EXPIRATION_SOON_BODY"]["de"] = "Ihr Passwort läuft in %1 Tagen ab. Bitte ändern Sie Ihr Passwort innerhalb dieser Zeit.
 
-%2";
-$message["EMAIL_PASSWORD_EXPIRATION_SOON_SUBJECT"]["de"] = "%1: Ihr Passwort l&auml;uft in %2 Tagen aus";
+%2
+
+Falls Sie diesen Link nicht aus der Mail heraus aufrufen möchten, können Sie alternativ die CommSy-Anmeldeseite im Browser aufrufen, sich anmelden und anschließend Ihr Passwort in Ihren Profileinstellungen ändern. Bitte denke Sie daran, dass Sie diesen Vorgang ggf. für jede CommSy-Instanz, in der Sie eine Kennung nutzen, getrennt durchführen müssen. Ebenso, falls Sie nicht eine, sondern mehrere Kennungen verwenden.";
+$message["EMAIL_PASSWORD_EXPIRATION_SOON_SUBJECT"]["de"] = "%1: Ihr Passwort l&auml;uft in %2 Tagen ab";
 $message["EMAIL_PASSWORD_EXPIRATION_SUBJECT"]["de"] = "%1: Ihr Passwort ist abgelaufen";
 $message["EMAIL_TO_COMMSY_ACCOUNT"]["de"] = "Kennung";
 $message["EMAIL_TO_COMMSY_PASSWORD"]["de"] = "Upload-Kennwort";

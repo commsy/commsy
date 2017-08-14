@@ -512,15 +512,17 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 			$current_user = $this->_environment->getCurrentUser();
 			$mail['from_name'] = $current_user->getFullName();
 			$mail['from_email'] = $current_user->getEmail();
+			$mail["reply_to_name"] = $current_user->getFullName();
+			$mail["reply_to_email"] = $current_user->getEmail();
 			$mail['to'] = implode(", ", $recipients);
 			$mail['subject'] = $this->_data["subject"];
 			$mail['message'] = $this->_data["body"];
 
 			$email = new cs_mail();
-			//$email->set_from_email($mail['from_email']);
-			//$email->set_from_name($mail['from_name']);
 			$email->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
             $email->set_from_name($this->_environment->getCurrentPortalItem()->getTitle());
+            $email->set_reply_to_name($mail["reply_to_name"]);
+			$email->set_reply_to_email($mail["reply_to_email"]);
 			$email->set_to($mail['to']);
 			$email->set_subject($mail['subject']);
 			$email->set_message($mail['message']);

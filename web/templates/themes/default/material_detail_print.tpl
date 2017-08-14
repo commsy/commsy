@@ -263,7 +263,7 @@
 							{/if}
 
 							<div class="editor_content" style="background-color: #FFFFFF;padding: 5px 10px;">
-								{$section.description}
+								{embed param1=$section.description}
 							</div>
 					</div>
 			</div>
