@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use CommsyBundle\Filter\TopicFilterType;
 use CommsyBundle\Form\Type\TopicType;
 use CommsyBundle\Form\Type\AnnotationType;
+use CommsyBundle\Form\Type\TopicPathType;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -729,6 +730,67 @@ class TopicController extends Controller
      */
     public function editPathAction($roomId, $itemId, Request $request)
     {
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($itemId);
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $formData = array();
+
+        $pathElements = [];
+        $pathElementsAttr = [];
+
+        $formData['pathElements'] = $pathElements;
+        $formData['pathElementsAttr'] = $pathElementsAttr;
+
+        $form = $this->createForm(TopicPathType::class, $formData, array(
+            'action' => $this->generateUrl('commsy_topic_editpath', array(
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            )),
+            'pathElements' => $pathElements,
+            'pathElementsAttr' => $pathElementsAttr,
+        ));
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            if ($form->get('save')->isClicked()) {
+
+            } else if ($form->get('cancel')->isClicked()) {
+                // ToDo ...
+            }
+            return $this->redirectToRoute('commsy_topic_savepath', array('roomId' => $roomId, 'itemId' => $itemId));
+        }
+
+        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($item));
+
+        return array(
+            'form' => $form->createView(),
+        );
+    }
+
+    /**
+     * @Route("/room/{roomId}/topic/{itemId}/savepath")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function savePathAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($itemId);
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+
+        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($item));
+
+        return array(
+            'form' => $form->createView(),
+            'showHashtags' => $current_context->withBuzzwords(),
+            'showCategories' => $current_context->withTags(),
+            'currentUser' => $legacyEnvironment->getCurrentUserItem(),
+        );
+
         return [];
     }
 }

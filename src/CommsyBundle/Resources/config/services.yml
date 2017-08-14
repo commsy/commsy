@@ -443,7 +443,12 @@ services:
         class: CommsyBundle\Form\Type\TopicType
         tags:
             - { name: form.type }
-            
+
+    commsy.form.type.topicpath:
+        class: CommsyBundle\Form\Type\TopicPathType
+        tags:
+            - { name: form.type }
+
     commsy.form.type.discussion:
         class: CommsyBundle\Form\Type\DiscussionType
         tags:
