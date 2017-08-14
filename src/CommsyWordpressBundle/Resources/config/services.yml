@@ -1,0 +1,4 @@
+services:
+    commsy_wordpress.wordpress:
+        class: CommsyWordpressBundle\Services\WordpressService
+        arguments: ['@service_container', '@commsy_legacy.environment']

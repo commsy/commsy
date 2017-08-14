@@ -51,3 +51,6 @@ parameters:
     extensions.mediawiki.url: ~
     extensions.mediawiki.room_wiki_url: ~
     extensions.mediawiki.api_path: /api.php
+
+    extensions.wordpress.enabled: false
+    extensions.wordpress.url: ~

@@ -35,6 +35,7 @@ class AppKernel extends Kernel
             new Commsy\LegacyBundle\CommsyLegacyBundle(),
             new EtherpadBundle\EtherpadBundle(),
             new CommsyMediawikiBundle\CommsyMediawikiBundle(),
+            new CommsyWordpressBundle\CommsyWordpressBundle(),
         ];
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {

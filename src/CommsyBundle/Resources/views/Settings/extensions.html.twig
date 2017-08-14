@@ -112,6 +112,14 @@
                                 {{ form_row(form.wikiEnabled) }}
                             </div>
                         {% endif %}
+
+                        {% if form.wordpress is defined %}
+                            <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                                <h1 class='uk-panel-title'>{{ 'wordpress'|trans({}, 'settings') }}</h1>
+                                <div style="margin-bottom: 25px;">{{ 'wordpress text'|trans({}, 'settings') }}</div>
+                                {{ form_row(form.wordpressEnabled) }}
+                            </div>
+                        {% endif %}
                     {{ form_end(form) }}
                 </div>
             </div>

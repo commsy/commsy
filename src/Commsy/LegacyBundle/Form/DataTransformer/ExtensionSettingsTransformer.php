@@ -7,22 +7,25 @@ use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use Commsy\LegacyBundle\Form\DataTransformer\DataTransformerInterface;
 
 use CommsyMediawikiBundle\Services\MediawikiService;
+use CommsyWordpressBundle\Services\WordpressService;
 
 class ExtensionSettingsTransformer implements DataTransformerInterface
 {
     private $legacyEnvironment;
     private $roomService;
     private $mediaWiki;
-
     private $mediaWikiEnabled = false;
+    private $wordpress;
+    private $wordpressEnabled = false;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, MediawikiService $mediawiki, $mediawikiEnabled)
+    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, MediaWikiService $mediawiki, $mediawikiEnabled, WordpressService $wordpress, $wordpressEnabled)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->roomService = $roomService;
         $this->mediaWiki = $mediawiki;
-
         $this->mediaWikiEnabled = $mediawikiEnabled;
+        $this->wordpress = $wordpress;
+        $this->wordpressEnabled = $wordpressEnabled;
     }
 
     /**
@@ -71,6 +74,8 @@ class ExtensionSettingsTransformer implements DataTransformerInterface
             $roomData['workflow']['resubmission_show_to'] = $roomItem->getWorkflowReaderShowTo();
 
             $roomData['wikiEnabled'] = $roomItem->isWikiEnabled();
+
+            $roomData['wordpressEnabled'] = $roomItem->isWordpressActive();
         }
 
         return $roomData;
@@ -179,6 +184,26 @@ class ExtensionSettingsTransformer implements DataTransformerInterface
                     $roomObject->setWikiEnabled(false);
                 } else {
                     $roomObject->setWikiEnabled(true);
+                }
+            }
+        }
+
+        if ($this->wordpressEnabled) {
+            if ($roomData['wordpressEnabled']) {
+                if ($this->wordpress->enableWordpress($roomObject->getItemID())) {
+                    $roomObject->setWordpressActive(true);
+                } else if ($this->wordpress->isWordpressActive($roomObject->getItemID())) {
+                    $roomObject->setWordpressActive(true);
+                } else {
+                    $roomObject->setWordpressActive(false);
+                }
+            } else {
+                if ($this->wordpress->disableWordpress($roomObject->getItemID())) {
+                    $roomObject->setWordpressActive(false);
+                } else if (!$this->wordpress->isWordpressActive($roomObject->getItemID())) {
+                    $roomObject->setWordpressActive(false);
+                } else {
+                    $roomObject->setWordpressActive(true);
                 }
             }
         }

@@ -140,6 +140,8 @@ services:
           - '@commsy_legacy.room_service'
           - '@commsy_mediawiki.mediawiki'
           - '%commsy.mediawiki.enabled%'
+          - '@commsy_wordpress.wordpress'
+          - '%commsy.wordpress.enabled%'
 
     commsy_legacy.transformer.material:
         class: Commsy\LegacyBundle\Form\DataTransformer\MaterialTransformer

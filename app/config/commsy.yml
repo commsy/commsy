@@ -150,7 +150,8 @@ commsy:
     # Wordpress
     wordpress:
         # for activating wordpress please set the following variable on true
-        enabled: false
+        enabled: '%extensions.wordpress.enabled%'
+        url: '%extensions.wordpress.url%'
 
     # Limesurvey
     limesurvey:

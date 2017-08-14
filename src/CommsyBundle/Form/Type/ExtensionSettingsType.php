@@ -20,11 +20,13 @@ class ExtensionSettingsType extends AbstractType
 {
     private $legacyEnvironment;
     private $mediaWikiEnabled;
+    private $wordpressEnabled;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, $mediaWikiEnabled)
+    public function __construct(LegacyEnvironment $legacyEnvironment, $mediaWikiEnabled, $wordpressEnabled)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->mediaWikiEnabled = $mediaWikiEnabled;
+        $this->wordpressEnabled = $wordpressEnabled;
     }
 
     /**
@@ -114,6 +116,16 @@ class ExtensionSettingsType extends AbstractType
 
                 if ($this->mediaWikiEnabled) {
                     $form->add('wikiEnabled', CheckboxType::class, array(
+                        'required' => false,
+                        'label_attr' => array('class' => 'uk-form-label'),
+                    ));
+                }
+            })
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+                $form = $event->getForm();
+
+                if ($this->wordpressEnabled) {
+                    $form->add('wordpressEnabled', CheckboxType::class, array(
                         'required' => false,
                         'label_attr' => array('class' => 'uk-form-label'),
                     ));

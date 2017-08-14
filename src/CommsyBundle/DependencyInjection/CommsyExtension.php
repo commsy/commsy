@@ -88,6 +88,7 @@ class CommsyExtension extends Extension
 
         // wordpress
         $container->setParameter('commsy.wordpress.enabled', $config['wordpress']['enabled']);
+        $container->setParameter('commsy.wordpress.url', $config['wordpress']['url']);
 
         // limesurvey
         $container->setParameter('commsy.limesurvey.enabled', $config['limesurvey']['enabled']);

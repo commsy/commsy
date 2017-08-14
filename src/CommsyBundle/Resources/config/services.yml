@@ -261,6 +261,7 @@ services:
         arguments:
           - '@commsy_legacy.environment'
           - '%commsy.mediawiki.enabled%'
+          - '%commsy.wordpress.enabled%'
         tags:
             - { name: form.type }
 
