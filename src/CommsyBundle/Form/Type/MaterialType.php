@@ -15,6 +15,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 
 use CommsyBundle\Form\Type\Custom\DateTimeSelectType;
+use CommsyBundle\Form\Type\Custom\MandatoryCategoryMappingType;
+use CommsyBundle\Form\Type\Custom\MandatoryHashtagMappingType;
 
 use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
 use CommsyBundle\Form\Type\Event\AddEtherpadFormListener;
@@ -88,44 +90,10 @@ class MaterialType extends AbstractType
 
                 if ($material['draft']) {
                     if ($material['showHashtags']) {
-                        $form->add('hashtags', ChoiceType::class, array(
-                            'placeholder' => false,
-                            'choices' => $formOptions['hashtags'],
-                            'label' => 'hashtags',
-                            'required' => true,
-                            'expanded' => true,
-                            'multiple' => true,
-                            'constraints' => array(
-                                new Count(array('min' => 1)),
-                            ),
-                        ))
-                        ->add('newHashtag', TextType::class, array(
-                            'attr' => array(
-                                'placeholder' => $formOptions['hashTagPlaceholderText'],
-                            ),
-                            'label' => 'newHashtag',
-                            'required' => false
-                        ))
-                        ->add('newHashtagAdd', ButtonType::class, array(
-                            'attr' => array(
-                                'id' => 'addNewHashtag',
-                                'data-cs-add-hashtag' => $formOptions['hashtagEditUrl'],
-                            ),
-                            'label' => 'addNewHashtag',
-                            'translation_domain' => 'form',
-                        ));
+                        $form->add('hashtag_mapping', MandatoryHashtagMappingType::class, $formOptions);
                     }
                     if ($material['showCategories']) {
-                        $form->add('categories', TreeChoiceType::class, array(
-                            'placeholder' => false,
-                            'choices' => $formOptions['categories'],
-                            'required' => true,
-                            'expanded' => true,
-                            'multiple' => true,
-                            'constraints' => array(
-                                new Count(array('min' => 1)),
-                            ),
-                        ));
+                        $form->add('category_mapping', MandatoryCategoryMappingType::class, $formOptions);
                     }
                 }
             })

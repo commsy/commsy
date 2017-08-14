@@ -494,6 +494,12 @@
 
 {% macro mandatoryLinks(showHashtags, showCategories, form) %}
     <div class="uk-form-row">
+        {% if form.category_mapping.categories is defined %}
+            {{ form_errors(form.category_mapping.categories) }}
+        {% endif %}
+        {% if form.hashtag_mapping.hashtags is defined %}
+            {{ form_errors(form.hashtag_mapping.hashtags) }}
+        {% endif %}
         <div class="uk-form-label">{{ 'links'|trans({}, "messages")|capitalize }}</div>
         <div class="uk-form-controls">
             <ul id="mandatoryLinkFormTabs" class="uk-tab" data-uk-tab="{connect:'#mandatoryLinksForm'}">
@@ -507,15 +513,14 @@
             <ul id="mandatoryLinksForm" class="uk-switcher uk-margin">
                 {% if showCategories %}
                     <li>
-                        {{ form_widget(form.categories) }}
+                        {{ form_widget(form.category_mapping.categories) }}
                     </li>
                 {% endif %}
                 {% if showHashtags %}
                     <li>
                         <div class="uk-grid-width-small-1-4 hashtag-form" data-uk-grid data-uk-check-display>
-                            {% for hashtag in form.hashtags %}
+                            {% for hashtag in form.hashtag_mapping.hashtags %}
                                 <div>
-                                {# FIXME: rendering the hashtag widgets (checkboxes) causes the page to reload after a failed validation instead of displaying the validation errors #}
                                 {{ form_widget(hashtag) }}
                                 {{ form_label(hashtag) }}
                                 </div>
@@ -523,10 +528,10 @@
                         </div>
                         <div class="uk-margin-top uk-flex">
                             <div class="uk-margin-small-left">
-                                {{ form_widget(form.newHashtag) }}
+                                {{ form_widget(form.hashtag_mapping.newHashtag) }}
                             </div>
                             <div class="uk-margin-small-left">
-                                {{ form_widget(form.newHashtagAdd) }}
+                                {{ form_widget(form.hashtag_mapping.newHashtagAdd) }}
                             </div>
                         </div>
                     </li>

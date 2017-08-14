@@ -921,8 +921,8 @@ class MaterialController extends Controller
             $formData = $transformer->transform($materialItem);
             $formData['showCategories'] = $showCategories;
             $formData['showHashtags'] = $showHashtags;
-            $formData['categories'] = $itemController->getLinkedCategories($item);
-            $formData['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+            $formData['hashtag_mapping']['categories'] = $itemController->getLinkedCategories($item);
+            $formData['category_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
             $form = $this->createForm(MaterialType::class, $formData, array(
                 'action' => $this->generateUrl('commsy_material_edit', array(
                     'roomId' => $roomId,
@@ -961,10 +961,10 @@ class MaterialController extends Controller
                 // set linked hashtags and categories
                 $formData = $form->getData();
                 if ($showCategories) {
-                    $materialItem->setTagListByID($formData['categories']);
+                    $materialItem->setTagListByID($formData['category_mapping']['categories']);
                 }
                 if ($showHashtags) {
-                    $materialItem->setBuzzwordListByID($formData['hashtags']);
+                    $materialItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
                 }
 
                 $materialItem->save();
