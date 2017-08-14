@@ -3,14 +3,6 @@
 
 {block name=room_site_actions}
 
-	<a id="abo_entries" href="webcal://{$todo.ical_adress}" title="___TODO_ABBO___" target="_blank">
-		<img src="{$basic.tpl_path}img/btn_remember.gif" alt="___TODO_ABBO___" />
-	</a>
-
-	<a id="export_entries" href="http://{$todo.ical_adress}" title="___TODO_EXPORT___" target="_blank">
-		<img src="{$basic.tpl_path}img/btn_export_todisk.gif" alt="___TODO_EXPORT___" />
-	</a>
-
 	<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&mode=print{params params=$print.params_array}" title="___COMMON_LIST_PRINTVIEW___" target="_blank">
 		<img src="{$basic.tpl_path}img/btn_print.gif" alt="___COMMON_LIST_PRINTVIEW___" />
 	</a>

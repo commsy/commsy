@@ -45,8 +45,9 @@
                         <label for="user_id">___USER_USER_ID___:</label>
                         <input id="user_id" type="text" class="size_200 mandatory" name="form_data[user_id]" value="{show var=$popup.form.account.user_id}"/>
                       {else}
-                      	<label for="user_id">___USER_USER_ID___:</label>
+                        <label for="user_id">___USER_USER_ID___:</label>
                         {show var=$popup.form.account.user_id}
+                        <input id="user_id" type="hidden" name="form_data[user_id]" value="{show var=$popup.form.account.user_id}"/>
                       {/if}
                     </div>
 

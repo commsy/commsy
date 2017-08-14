@@ -58,7 +58,6 @@ $copy_array['rss'] = true;
 $copy_array['language'] = true;
 $copy_array['visibilitydefaults'] = true;
 
-
 // now adaption for special rooms
 if ( $old_room->isProjectRoom() ) {
    $copy_array['grouproomfct'] = true;

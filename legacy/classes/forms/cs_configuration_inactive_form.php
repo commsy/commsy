@@ -55,9 +55,7 @@ class cs_configuration_inactive_form extends cs_rubric_form {
    	$context_item = $this->_environment->getCurrentContextItem();
    	
    	$this->_headline = $this->_translator->getMessage('CONFIGURATION_INACTIVITY');
-   	
-   	
-   	
+
    	// portal option choice
    	$this->_array_portal[0]['text']  = '*'.$this->_translator->getMessage('CONFIGURATION_EXTRA_CHOOSE_NO_PORTAL');
    	$this->_array_portal[0]['value'] = -1;
@@ -101,56 +99,42 @@ class cs_configuration_inactive_form extends cs_rubric_form {
    /** create the form, INTERNAL
     * this methods creates the form with the form definitions
     */
-   function _createForm () {
-      $translator = $this->_environment->getTranslationObject();
-//       if (isset($this->_form_post['extra']) and $this->_form_post['extra'] != -1) {
-      	$disabled = false;
-//       } else {
-//       	$disabled = true;
-//       }
-    
+    function _createForm()
+    {
+        $translator = $this->_environment->getTranslationObject();
 
-      $this->setHeadline($this->_headline);
-      
-      $context_item = $this->_environment->getCurrentContextItem();
-      if($context_item->isPortal()){
-      //$this->_form->addText('Text', $translator->getMessage('CONFIGURATION_LOG_DATA'), '');
-      // Zeitraum zur Löschung alter Log Daten
-      $this->_form->addRadioGroup('overwrite_content', $translator->getMessage('CONFIGURATION_INACTIVITY_OVERWRITE'), '', $this->_yes_no_array);
-      $this->_form->addEmptyline();
-      $this->_form->addTextfield('lock_user','',$translator->getMessage('CONFIGURATION_INACTIVITY_LOCK'),'',3,10,false,'','','','','','',false);
-      $this->_form->addTextfield('email_before_lock','',$translator->getMessage('CONFIGURATION_INACTIVITY_EMAIL_LOCK'),'',3,10,false,'','','','','','',false);
-      $this->_form->addTextfield('delete_user','',$translator->getMessage('CONFIGURATION_INACTIVITY_DELETE'),'',3,10,false,'','','','','','',false);
-      $this->_form->addTextfield('email_before_delete','',$translator->getMessage('CONFIGURATION_INACTIVITY_EMAIL_DELETE'),'',3,10,false,'','','','','','',false);
-      }
+        $this->setHeadline($this->_headline);
 
-      // buttons
-      $this->_form->addButtonBar('option',$translator->getMessage('PREFERENCES_SAVE_BUTTON'),'','','','','','');
-   }
+        $context_item = $this->_environment->getCurrentContextItem();
+        if($context_item->isPortal()){
+            $this->_form->addText('overwrite_content_info', '', $translator->getMessage('CONFIGURATION_INACTIVITY_OVERWRITE_INFO'));
+            $this->_form->addEmptyline();
+            $this->_form->addTextfield('lock_user','',$translator->getMessage('CONFIGURATION_INACTIVITY_LOCK'),'',3,10,false,'','','','','','',false);
+            $this->_form->addTextfield('email_before_lock','',$translator->getMessage('CONFIGURATION_INACTIVITY_EMAIL_LOCK'),'',3,10,false,'','','','','','',false);
+            $this->_form->addTextfield('delete_user','',$translator->getMessage('CONFIGURATION_INACTIVITY_DELETE'),'',3,10,false,'','','','','','',false);
+            $this->_form->addTextfield('email_before_delete','',$translator->getMessage('CONFIGURATION_INACTIVITY_EMAIL_DELETE'),'',3,10,false,'','','','','','',false);
+        }
 
-   /** loads the selected and given values to the form
+        // buttons
+        $this->_form->addButtonBar('option',$translator->getMessage('PREFERENCES_SAVE_BUTTON'),'','','','','','');
+    }
+
+    /** loads the selected and given values to the form
     * this methods loads the selected and given values to the form from the material item or the form_post data
     */
-   function _prepareValues () {
-      $this->_values = array();
-      if ( !empty($this->_form_post) ) {
-         $this->_values = $this->_form_post;
-         
-      } elseif ( !empty($this->_item) ) {
-         
-			$this->_values['overwrite_content'] = $this->_item->isInactivityOverwriteContent();
-         $this->_values['lock_user'] = $this->_item->getInactivityLockDays();
-         $this->_values['email_before_lock'] = $this->_item->getInactivitySendMailBeforeLockDays();
-         $this->_values['delete_user'] = $this->_item->getInactivityDeleteDays();
-         $this->_values['email_before_delete'] = $this->_item->getInactivitySendMailBeforeDeleteDays();
+    function _prepareValues()
+    {
+        $this->_values = array();
 
-         if($this->_values['overwrite_content']){
-         	$this->_values['overwrite_content'] = 1;
-         } else {
-         	$this->_values['overwrite_content'] = 2;
-         }
-   	}
-   }
+        if (!empty($this->_form_post)) {
+            $this->_values = $this->_form_post;
+        } elseif (!empty($this->_item)) {
+            $this->_values['lock_user'] = $this->_item->getInactivityLockDays();
+            $this->_values['email_before_lock'] = $this->_item->getInactivitySendMailBeforeLockDays();
+            $this->_values['delete_user'] = $this->_item->getInactivityDeleteDays();
+            $this->_values['email_before_delete'] = $this->_item->getInactivitySendMailBeforeDeleteDays();
+        }
+    }
 
    /** specific check the values of the form
     * this methods check the entered values

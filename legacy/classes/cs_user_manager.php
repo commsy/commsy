@@ -1405,7 +1405,10 @@ class cs_user_manager extends cs_manager {
       $hash_manager->deleteHashesForUser($item_id);
       unset($hash_manager);
 
+      // delete all related items
       $user_item->deleteAllEntriesOfUser();
+
+      // delete the user item itself
       $current_datetime = getCurrentDateTimeInMySQL();
       $current_user = $this->_environment->getCurrentUserItem();
       $user_id = $current_user->getItemID();
@@ -1530,7 +1533,7 @@ class cs_user_manager extends cs_manager {
          }
          if ( !empty($row['deleter_id']) and !$roomMover->isUserInRoom($row['deleter_id'],$roomMover->getRoomId())) {
             $deleter = $this->_environment->getCurrentUser();
-            $deleter_id = $creator->getItemId();
+            $deleter_id = $deleter->getItemId();
             unset($deleter);
          }
 
@@ -1867,11 +1870,12 @@ class cs_user_manager extends cs_manager {
 		$retour = 0;
 		$days_before_expiring_sendmail = $portal_item->getDaysBeforeExpiringPasswordSendMail();
 		if(isset($days_before_expiring_sendmail)){
-			$date = getCurrentDateTimePlusDaysInMySQL($days_before_expiring_sendmail);
+			$date = getCurrentDateTimePlusDaysInMySQL($days_before_expiring_sendmail, true);
 		} else {
-			$date = getCurrentDateTimePlusDaysInMySQL('14');
+			$date = getCurrentDateTimePlusDaysInMySQL('14', true);
 		}
-		$query = "SELECT count(DISTINCT ".$this->addDatabasePrefix("user").".item_id) as number FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".expire_date IS NOT NULL AND deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".context_id = '".encode(AS_DB,$cid)."' AND ".$this->addDatabasePrefix("user").".expire_date BETWEEN now() AND '".encode(AS_DB,$date)."'";
+		$now = getCurrentDateTimeInMySQL();
+		$query = "SELECT count(DISTINCT ".$this->addDatabasePrefix("user").".item_id) as number FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".expire_date IS NOT NULL AND deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".context_id = '".encode(AS_DB,$cid)."' AND ".$this->addDatabasePrefix("user").".expire_date BETWEEN '".encode(AS_DB,$now)."' AND '".encode(AS_DB,$date)."'";
 		$result = $this->_db_connector->performQuery($query);
 		if ( !isset($result) ) {
 			include_once('functions/error_functions.php');
@@ -1893,8 +1897,9 @@ class cs_user_manager extends cs_manager {
 		} else {
 			$date = getCurrentDateTimePlusDaysInMySQL('14');
 		}
+        $now = getCurrentDateTimeInMySQL();
 		$user = NULL;
-		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".expire_date IS NOT NULL AND ".$this->addDatabasePrefix("user").".context_id = '".encode(AS_DB,$cid)."' AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".expire_date BETWEEN now() AND '".encode(AS_DB,$date)."'";
+		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".expire_date IS NOT NULL AND ".$this->addDatabasePrefix("user").".context_id = '".encode(AS_DB,$cid)."' AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".expire_date BETWEEN '".encode(AS_DB,$now)."' AND '".encode(AS_DB,$date)."'";
 		$result = $this->_db_connector->performQuery($query);
 		if ( !isset($result) ) {
 			include_once('functions/error_functions.php');

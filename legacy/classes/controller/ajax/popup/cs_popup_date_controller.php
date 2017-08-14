@@ -374,9 +374,22 @@ class cs_popup_date_controller extends cs_rubric_popup_main_controller {
                     $converted_time_end = convertTimeFromInput($form_data['timeEnd']);
                     if ($converted_time_end['conforms'] == TRUE) {
 
-                    	if ($converted_time_end["timestamp"] < $converted_time_start["timestamp"]) {
-                    		$converted_time_end["datetime"] = $converted_time_start["datetime"];
-                    	}
+                        if ($converted_time_end["timestamp"] < $converted_time_start["timestamp"]) {
+                            $adjust = true;
+
+                            if (!empty($form_data['dayEnd'])) {
+                                $converted_day_end = convertDateFromInput($form_data['dayEnd'],$environment->getSelectedLanguage());
+                                if ($converted_day_start['conforms'] == TRUE && $converted_day_end['conforms'] == TRUE) {
+                                    if ($converted_day_end['timestamp'] > $converted_day_start['timestamp']) {
+                                        $adjust = false;
+                                    }
+                                }
+                            }
+
+                            if ($adjust) {
+                                $converted_time_end["datetime"] = $converted_time_start["datetime"];
+                            }
+                        }
 
                         $date_item->setEndingTime($converted_time_end['datetime']);
                         $dt_end_time = $converted_time_end['datetime'];
