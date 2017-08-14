@@ -772,6 +772,7 @@ class TopicController extends Controller
         $form->handleRequest($request);
         if ($form->isValid()) {
             if ($form->get('save')->isClicked()) {
+                $formData = $form->getData();
 
             } else if ($form->get('cancel')->isClicked()) {
                 // ToDo ...

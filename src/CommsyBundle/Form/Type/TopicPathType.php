@@ -3,16 +3,10 @@ namespace CommsyBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-
-use CommsyBundle\Form\Type\Custom\DateTimeSelectType;
-
-use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 class TopicPathType extends AbstractType
 {
@@ -26,6 +20,9 @@ class TopicPathType extends AbstractType
                 'required' => true,
                 'expanded' => true,
                 'multiple' => true
+            ))
+            ->add('pathOrder', HiddenType::class, array(
+
             ))
             ->add('save', SubmitType::class, array(
                 'attr' => array(
