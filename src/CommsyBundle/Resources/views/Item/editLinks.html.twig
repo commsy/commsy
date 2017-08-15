@@ -9,12 +9,7 @@
             <h4>{{ 'links'|trans({})}}</h4>
         </div>
     </div>
-    <div>
-        {#{ render(controller(
-        'CommsyBundle:Search:searchForm',
-        { 'roomId': app.request.attributes.get('roomId'), 'linkSearch': itemId }
-        ))}#}
-    </div>
+
     {{ form_start(form) }}
     {{ form_errors(form) }}
     <div class="uk-grid uk-margin-top-remove">
@@ -48,33 +43,19 @@
                 <li>
                     <div class="uk-grid">
                         <div class="uk-width-1-1">
+
                             <ul class="uk-tab uk-tab-bottom" data-uk-switcher="{connect:'#linked-entry-switcher'}">
                                 <li><a href="">Suche</a></li>
                                 <li><a href="">Zuletzt bearbeitet</a></li>
                             </ul>
+
                             <ul id="linked-entry-switcher" class="uk-switcher uk-margin-bottom uk-margin-top">
                                 <li>
                                     {# search entries #}
-                                    <div class="uk-autocomplete uk-form"
-                                            data-uk-autocomplete="{source:'{{ path('commsy_search_instant', {'roomId': roomId, 'linkSearch': itemId}) }}'}"
-                                            data-cs-link-search='{"source": "{{ path('commsy_item_singlearticle', {'roomId': roomId, 'itemId': -1}) }}"}'
-                                    >
-                                        <input type="text">
-                                        <script type="text/autocomplete">
-                                            {% verbatim %}
-                                                <ul class="uk-nav uk-nav-autocomplete uk-autocomplete-results">
-                                                    {{~items}}
-                                                    <li data-value="{{ $item.value }}">
-                                                        <a>
-                                                            {{ $item.title|decodeHtmlEntity }}
-                                                            <div>{{{ $item.text }}}</div>
-                                                        </a>
-                                                    </li>
-                                                    {{/items}}
-                                                </ul>
-                                            {% endverbatim %}
-                                        </script>
-                                    </div>
+                                    {{ render(controller(
+                                    'CommsyBundle:Search:itemSearchForm',
+                                    { 'roomId': app.request.attributes.get('roomId'), 'linkSearch': itemId }
+                                    )) }}
                                 </li>
                                 <li>
                                     <div id="linksSubTab">
