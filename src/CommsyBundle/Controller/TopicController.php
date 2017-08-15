@@ -749,7 +749,22 @@ class TopicController extends Controller
         //$itemManager->setTypeArrayLimit($rubricInformation);
 
         // get all linked items
-        $linkedItemArray = $itemManager->getItemList($item->getAllLinkedItemIDArray())->to_array();
+        foreach ($item->getPathItemList()->to_array() as $pathElement) {
+            $formData['path'][] = $pathElement->getItemId();
+            $linkedItemArray[] = $pathElement;
+        }
+        foreach ($itemManager->getItemList($item->getAllLinkedItemIDArray())->to_array() as $linkedItem) {
+            $inPath = false;
+            foreach ($linkedItemArray as $linkedItemPath) {
+                if ($linkedItemPath->getItemId() == $linkedItem->getItemId()) {
+                    $inPath = true;
+                    break;
+                }
+            }
+            if (!$inPath) {
+                $linkedItemArray[] = $linkedItem;
+            }
+        }
 
         foreach ($linkedItemArray as $linkedItem) {
             $typedLinkedItem = $itemService->getTypedItem($linkedItem->getItemId());
@@ -757,8 +772,7 @@ class TopicController extends Controller
             $pathElementsAttr[$typedLinkedItem->getTitle()] = ['title' => $typedLinkedItem->getTitle(), 'type' => $typedLinkedItem->getItemType()];
         }
 
-        $formData['pathElements'] = $pathElements;
-        $formData['pathElementsAttr'] = $pathElementsAttr;
+
 
         $form = $this->createForm(TopicPathType::class, $formData, array(
             'action' => $this->generateUrl('commsy_topic_editpath', array(
