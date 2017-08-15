@@ -731,7 +731,7 @@ class TopicController extends Controller
     public function editPathAction($roomId, $itemId, Request $request)
     {
         $itemService = $this->get('commsy_legacy.item_service');
-        $item = $itemService->getItem($itemId);
+        $item = $itemService->getTypedItem($itemId);
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $roomService = $this->get('commsy_legacy.room_service');
@@ -772,7 +772,43 @@ class TopicController extends Controller
         $form->handleRequest($request);
         if ($form->isValid()) {
             if ($form->get('save')->isClicked()) {
+                $linkManager = $legacyEnvironment->getLinkItemManager();
+
                 $formData = $form->getData();
+
+                $formDataPath = [];
+                if (isset($formData['path'])) {
+                    $formDataPath = $formData['path'];
+                }
+                if (!empty($formDataPath)) {
+                    $sortingPlace = 0;
+                    if (isset($formData['pathOrder'])) {
+                        foreach (explode(',', $formData['pathOrder']) as $orderItemId) {
+                            if ($linkItem = $linkManager->getItemByFirstAndSecondID($item->getItemId(), $orderItemId)) {
+                                if (in_array($orderItemId, $formDataPath)) {
+                                    $linkItem->setSortingPlace($sortingPlace);
+                                    $linkItem->save();
+                                    $sortingPlace++;
+                                }
+                            }
+                        }
+                    }
+                    $item->activatePath();
+                    $item->save();
+                } else {
+                    $item->deactivatePath();
+                    $item->save();
+                }
+
+                if (isset($formData['pathOrder'])) {
+                    foreach (explode(',', $formData['pathOrder']) as $orderItemId) {
+                        if ($linkItem = $linkManager->getItemByFirstAndSecondID($item->getItemId(), $orderItemId)) {
+                            if (!in_array($orderItemId, $formDataPath)) {
+                                $linkManager->cleanSortingPlaces($itemService->getTypedItem($orderItemId));
+                            }
+                        }
+                    }
+                }
 
             } else if ($form->get('cancel')->isClicked()) {
                 // ToDo ...
