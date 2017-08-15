@@ -148,6 +148,7 @@ class DateService
     {
         $this->dateManager->setContextLimit($roomId);
         $this->dateManager->setWithoutDateModeLimit();
+        $this->dateManager->setBetweenLimit($start, $end);
         $this->dateManager->select();
         $dateList = $this->dateManager->get();
 
