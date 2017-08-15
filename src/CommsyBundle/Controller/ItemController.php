@@ -18,6 +18,7 @@ use CommsyBundle\Form\Type\SendListType;
 use CommsyBundle\Form\Type\ItemDescriptionType;
 use CommsyBundle\Form\Type\ItemLinksType;
 use CommsyBundle\Form\Type\ItemWorkflowType;
+use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -222,7 +223,10 @@ class ItemController extends Controller
         $item = $itemService->getTypedItem($itemId);
 
         $roomItem = $roomService->getRoomItem($roomId);
-        
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+
         $formData = array();
         $optionsData = array();
         $items = array();
@@ -307,10 +311,13 @@ class ItemController extends Controller
         // get all categories -> tree
         $optionsData['categories'] = $this->getCategories($roomId, $this->get('commsy_legacy.category_service'));
         $formData['categories'] = $this->getLinkedCategories($item);
+        $categoryConstraints = ($current_context->withTags() && $current_context->isTagMandatory()) ? [new Count(array('min' => 1))] : array();
 
         // get all hashtags -> list
         $optionsData['hashtags'] = $this->getHashtags($roomId, $environment);
         $formData['hashtags'] = $this->getLinkedHashtags($itemId, $roomId, $environment);
+        $hashtagConstraints = ($current_context->withBuzzwords() && $current_context->isBuzzwordMandatory()) ? [new Count(array('min' => 1))] : [];
+
 
         $translator = $this->get('translator');
 
@@ -323,7 +330,9 @@ class ItemController extends Controller
             'itemsLinked' => array_flip($optionsData['itemsLinked']),
             'itemsLatest' => array_flip($optionsData['itemsLatest']),
             'categories' => $optionsData['categories'],
+            'categoryConstraints' => $categoryConstraints,
             'hashtags' => $optionsData['hashtags'],
+            'hashtagConstraints' => $hashtagConstraints,
             'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId]),
             'placeholderText' => $translator->trans('Hashtag', [], 'hashtag'),
         ]);

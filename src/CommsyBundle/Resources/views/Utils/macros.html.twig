@@ -494,12 +494,20 @@
 
 {% macro mandatoryLinks(showHashtags, showCategories, form) %}
     <div class="uk-form-row">
+
+        <ul class='form-errors'>
         {% if form.category_mapping.categories is defined %}
-            {{ form_errors(form.category_mapping.categories) }}
+            {% if form.category_mapping.categories.vars.errors|length %}
+                <li>{{ 'categories'|trans({})|capitalize }}: {{ form.category_mapping.categories.vars.errors[0].message }}</li>
+            {% endif %}
         {% endif %}
         {% if form.hashtag_mapping.hashtags is defined %}
-            {{ form_errors(form.hashtag_mapping.hashtags) }}
+            {% if form.hashtag_mapping.hashtags.vars.errors|length %}
+                <li>{{ 'hashtags'|trans({}, 'room')|capitalize }}: {{ form.hashtag_mapping.hashtags.vars.errors[0].message }}</li>
+            {% endif %}
         {% endif %}
+        </ul>
+
         <div class="uk-form-label">{{ 'links'|trans({}, "messages")|capitalize }}</div>
         <div class="uk-form-controls">
             <ul id="mandatoryLinkFormTabs" class="uk-tab" data-uk-tab="{connect:'#mandatoryLinksForm'}">

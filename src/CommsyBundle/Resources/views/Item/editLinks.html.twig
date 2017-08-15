@@ -21,6 +21,19 @@
         <div class="uk-width-9-10">
             {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
 
+            <ul class='form-errors'>
+            {% if form.categories is defined %}
+                {% if form.categories.vars.errors|length %}
+                    <li>{{ 'categories'|trans({})|capitalize }}: {{ form.categories.vars.errors[0].message }}</li>
+                {% endif %}
+            {% endif %}
+            {% if form.hashtags is defined %}
+                {% if form.hashtags.vars.errors|length %}
+                    <li>{{ 'hashtags'|trans({}, 'room')|capitalize }}: {{ form.hashtags.vars.errors[0].message }}</li>
+                {% endif %}
+            {% endif %}
+            </ul>
+
             <ul id="linksFormTabs" class="uk-tab" data-uk-tab="{connect:'#linksForm'}">
                 <li><a href="">{{ 'linkedEntries'|trans({}) }}</a></li>
                 {% if showCategories %}
