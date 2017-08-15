@@ -708,6 +708,9 @@ class cs_user_detail_view extends cs_detail_view {
             } else {
                $temp_string .= BRLF;
             }
+            if ($room_item->getRoomType() == 'grouproom') {
+               $temp_string .= '- ';
+            }
             $temp_string .= $room_item->getTitle();
             // room status
                 if ($room_item->isLocked()) {

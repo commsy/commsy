@@ -12,6 +12,11 @@
         <link rel="icon" type="image/x-icon" href="{{ absolute_url(asset('favicon.ico')) }}" />
     </head>
     <body id="commsy" class="nav-collapsed">
+        {# modal message #}
+        {{ render(controller(
+        'CommsyBundle:Room:modalMessage',
+        { 'roomId': app.request.attributes.get('roomId') }
+        ))}}
 
         {# context navigation #}
         <div id="commsy_navigation" class="uk-hidden-small">

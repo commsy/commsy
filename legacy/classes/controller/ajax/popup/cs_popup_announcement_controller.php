@@ -258,6 +258,10 @@ class cs_popup_announcement_controller extends cs_rubric_popup_main_controller i
 	                        $announcement_item->setModificationDate(getCurrentDateTimeInMySQL());
 	                    }
 	                }
+                } else {
+                    if (isset($form_data['public'])) {
+	                    $announcement_item->setPublic($form_data['public']);
+	                }
                 }
 
                 // buzzwords

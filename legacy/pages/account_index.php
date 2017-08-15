@@ -644,18 +644,20 @@ if (!isset($error) or !$error) {
         unset($params);
         $errorbox->setText($error_text);
         $page->add($errorbox);
+    } else {
+        // Add list view to page
+        if (isset($_GET['select']) and $_GET['select'] == 'all') {
+            $item = $list->getFirst();
+            while ($item) {
+                if (!in_array($item->getItemID(), $selected_ids)) {
+                    $selected_ids[] = $item->getItemID();
+                }
+                $item = $list->getNext();
+            }
+        } 
     }
 
-    // Add list view to page
-    if (isset($_GET['select']) and $_GET['select'] == 'all') {
-        $item = $list->getFirst();
-        while ($item) {
-            if (!in_array($item->getItemID(), $selected_ids)) {
-                $selected_ids[] = $item->getItemID();
-            }
-            $item = $list->getNext();
-        }
-    }
+    
     if (true) {
         // in future needed, when merging account, contact and user
         $view->setCheckedIDs($selected_ids);

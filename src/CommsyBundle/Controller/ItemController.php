@@ -271,7 +271,7 @@ class ItemController extends Controller
         while ($tempItem) {
             $tempTypedItem = $itemService->getTypedItem($tempItem->getItemId());
             // skip already linked items
-            if ($tempTypedItem && !array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) {
+            if ($tempTypedItem && (!array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) && ($tempTypedItem->getItemId() != $itemId)) {
                 $optionsData['items'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
                 $items[$tempTypedItem->getItemId()] = $tempTypedItem;
             }
@@ -294,7 +294,7 @@ class ItemController extends Controller
         $latestItem = $latestItemList->getFirst();
         while ($latestItem && $i < 5) {
             $tempTypedItem = $itemService->getTypedItem($latestItem->getItemId());
-            if ($tempTypedItem && !array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) {
+            if ($tempTypedItem && (!array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) && ($tempTypedItem->getItemId() != $itemId)) {
                 $optionsData['itemsLatest'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
                 $i++;
             }

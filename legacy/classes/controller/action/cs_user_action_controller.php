@@ -530,8 +530,6 @@
             if ( ( isset($post_array['with_mail']) and $post_array['with_mail'] == '1') ) {
                include_once('classes/cs_mail.php');
                $mail = new cs_mail();
-               //$mail->set_from_email($admin->getEmail());
-               //$mail->set_from_name($admin->getFullname());
                $mail->set_from_email($environment->getServerItem()->getDefaultSenderAddress());
                $mail->set_from_name($environment->getCurrentPortalItem()->getTitle());
                $mail->set_reply_to_email($admin->getEmail());

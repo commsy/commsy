@@ -46,19 +46,6 @@
 			// get list content
 			$list_content = $this->getListContent();
 
-		    $current_context = $this->_environment->getCurrentContextItem();
-		    $current_user = $this->_environment->getCurrentUserItem();
-		    $hash_manager = $this->_environment->getHashManager();
-		    $params = $this->_environment->getCurrentParameterArray();
-			$translator = $this->_environment->getTranslationObject();
-		    $ical_url = '';
-		    $ical_url .= $_SERVER['HTTP_HOST'];
-		    global $c_single_entry_point;
-		    $ical_url .= str_replace($c_single_entry_point,'ical.php',$_SERVER['PHP_SELF']);
-		    $ical_url .= '?cid='.$_GET['cid'].'&amp;mod=todo&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).LF;
-			$this->assign('todo','ical_adress', $ical_url);
-
-
 			// assign to template
 			$this->assign('todo','list_parameters', $this->_list_parameter_arrray);
 			$this->assign('list','perspective_rubric_entries', $this->_perspective_rubric_array);
