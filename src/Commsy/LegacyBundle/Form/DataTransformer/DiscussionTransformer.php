@@ -25,6 +25,8 @@ class DiscussionTransformer implements DataTransformerInterface
 
         if ($discussionItem) {
             $discussionData['title'] = html_entity_decode($discussionItem->getTitle());
+            // FIXME: 'isDraft' never seems to be true for discussion items!
+            $discussionData['draft'] = $discussionItem->isDraft();
             $discussionData['permission'] = $discussionItem->isPrivateEditing();
             
             if ($discussionItem->isNotActivated()) {
@@ -46,7 +48,6 @@ class DiscussionTransformer implements DataTransformerInterface
                 $discussionData['external_viewer_enabled'] = false;
             }
         }
-
         return $discussionData;
     }
 

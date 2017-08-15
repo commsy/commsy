@@ -686,6 +686,11 @@ class TodoController extends Controller
         $formData = array();
         $todoItem = NULL;
 
+        $isDraft = $item->isDraft();
+
+        $showHashtags = $current_context->withTags() && $current_context->isTagMandatory();
+        $showCategories = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
+
         $statusChoices = array(
             $translator->trans('pending', [], 'todo') => '1',
             $translator->trans('in progress', [], 'todo') => '2',
@@ -695,7 +700,9 @@ class TodoController extends Controller
         foreach ($roomItem->getExtraToDoStatusArray() as $key => $value) {
             $statusChoices[$value] = $key;
         }
-        
+
+        $itemController = $this->get('commsy.item_controller');
+
         $formOptions = array(
             'action' => $this->generateUrl('commsy_todo_edit', array(
                 'roomId' => $roomId,
@@ -703,13 +710,28 @@ class TodoController extends Controller
             )),
             'statusChoices' => $statusChoices,
             'placeholderText' => '['.$translator->trans('insert title').']',
+            'categoryMappingOptions' => [
+                'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service'))
+            ],
+            'hashtagMappingOptions' => [
+                'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
+                'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId])
+            ],
         );
 
         $todoItem = $todoService->getTodo($itemId);
         if (!$todoItem) {
             throw $this->createNotFoundException('No todo found for id ' . $itemId);
         }
+
         $formData = $transformer->transform($todoItem);
+        $formData['showCategories'] = $showCategories;
+        $formData['showHashtags'] = $showHashtags;
+        $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
+        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+        $formData['draft'] = $isDraft;
+
         $form = $this->createForm(TodoType::class, $formData, $formOptions);
         
         $form->handleRequest($request);
@@ -719,6 +741,15 @@ class TodoController extends Controller
 
                 // update modifier
                 $todoItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                // set linked hashtags and categories
+                $formData = $form->getData();
+                if ($showCategories) {
+                    $todoItem->setTagListByID($formData['category_mapping']['categories']);
+                }
+                if ($showHashtags) {
+                    $todoItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                }
 
                 $todoItem->save();
                 
@@ -736,8 +767,9 @@ class TodoController extends Controller
 
         return array(
             'form' => $form->createView(),
-            'showHashtags' => $current_context->withBuzzwords(),
-            'showCategories' => $current_context->withTags(),
+            'isDraft' => $isDraft,
+            'showHashtags' => $showHashtags,
+            'showCategories' => $showCategories,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
         );
     }

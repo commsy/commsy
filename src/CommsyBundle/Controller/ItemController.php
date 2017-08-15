@@ -18,6 +18,7 @@ use CommsyBundle\Form\Type\SendListType;
 use CommsyBundle\Form\Type\ItemDescriptionType;
 use CommsyBundle\Form\Type\ItemLinksType;
 use CommsyBundle\Form\Type\ItemWorkflowType;
+use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -222,7 +223,10 @@ class ItemController extends Controller
         $item = $itemService->getTypedItem($itemId);
 
         $roomItem = $roomService->getRoomItem($roomId);
-        
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+
         $formData = array();
         $optionsData = array();
         $items = array();
@@ -305,33 +309,15 @@ class ItemController extends Controller
         }
         
         // get all categories -> tree
-        $categoryService = $this->get('commsy_legacy.category_service');
-        $categories = $categoryService->getTags($roomId);
-        $optionsData['categories'] = $this->transformTagArray($categories);
-        
-        $categoriesList = $item->getTagList();
-        $categoryItem = $categoriesList->getFirst();
-        while ($categoryItem) {
-            $formData['categories'][] = $categoryItem->getItemId();
-            $categoryItem = $categoriesList->getNext();
-        }
+        $optionsData['categories'] = $this->getCategories($roomId, $this->get('commsy_legacy.category_service'));
+        $formData['categories'] = $this->getLinkedCategories($item);
+        $categoryConstraints = ($current_context->withTags() && $current_context->isTagMandatory()) ? [new Count(array('min' => 1))] : array();
 
         // get all hashtags -> list
-        $optionsData['hashtags'] = [];
-        $buzzwordManager = $environment->getBuzzwordManager();
-        $buzzwordManager->setContextLimit($roomId);
-        $buzzwordManager->setTypeLimit('buzzword');
-        $buzzwordManager->select();
-        $buzzwordList = $buzzwordManager->get();
-        $buzzwordItem = $buzzwordList->getFirst();
-        while ($buzzwordItem) {
-            $optionsData['hashtags'][$buzzwordItem->getItemId()] = $buzzwordItem->getTitle();
-            $selected_ids = $buzzwordItem->getAllLinkedItemIDArrayLabelVersion();
-            if (in_array($itemId, $selected_ids)) {
-                $formData['hashtags'][] = $buzzwordItem->getItemId();
-            }
-            $buzzwordItem = $buzzwordList->getNext();
-        }
+        $optionsData['hashtags'] = $this->getHashtags($roomId, $environment);
+        $formData['hashtags'] = $this->getLinkedHashtags($itemId, $roomId, $environment);
+        $hashtagConstraints = ($current_context->withBuzzwords() && $current_context->isBuzzwordMandatory()) ? [new Count(array('min' => 1))] : [];
+
 
         $translator = $this->get('translator');
 
@@ -344,12 +330,12 @@ class ItemController extends Controller
             'itemsLinked' => array_flip($optionsData['itemsLinked']),
             'itemsLatest' => array_flip($optionsData['itemsLatest']),
             'categories' => $optionsData['categories'],
-            'hashtags' => array_flip($optionsData['hashtags']),
+            'categoryConstraints' => $categoryConstraints,
+            'hashtags' => $optionsData['hashtags'],
+            'hashtagConstraints' => $hashtagConstraints,
             'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId]),
             'placeholderText' => $translator->trans('Hashtag', [], 'hashtag'),
         ]);
-
-        //dump($form); exit;
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -1052,6 +1038,55 @@ class ItemController extends Controller
             $addCategory = false;
         }
         return $result;
+    }
+
+    public function getCategories($roomId, $categoryService) {
+        $categories = $categoryService->getTags($roomId);
+        return $this->transformTagArray($categories);
+    }
+
+    public function getLinkedCategories($item) {
+        $linkedCategories = [];
+        $categoriesList = $item->getTagList();
+        $categoryItem = $categoriesList->getFirst();
+        while ($categoryItem) {
+            $linkedCategories[] = $categoryItem->getItemId();
+            $categoryItem = $categoriesList->getNext();
+        }
+        return $linkedCategories;
+    }
+
+    public function getHashtags($roomId, $legacyEnvironment) {
+        $hashtags = [];
+        $buzzwordManager = $legacyEnvironment->getBuzzwordManager();
+        $buzzwordManager->setContextLimit($roomId);
+        $buzzwordManager->setTypeLimit('buzzword');
+        $buzzwordManager->select();
+        $buzzwordList = $buzzwordManager->get();
+        $buzzwordItem = $buzzwordList->getFirst();
+        while ($buzzwordItem) {
+            $hashtags[$buzzwordItem->getItemId()] = $buzzwordItem->getTitle();
+            $buzzwordItem = $buzzwordList->getNext();
+        }
+        return array_flip($hashtags);
+    }
+
+    public function getLinkedHashtags($itemId, $roomId, $legacyEnvironment) {
+        $linkedHashtags = [];
+        $buzzwordManager = $legacyEnvironment->getBuzzwordManager();
+        $buzzwordManager->setContextLimit($roomId);
+        $buzzwordManager->setTypeLimit('buzzword');
+        $buzzwordManager->select();
+        $buzzwordList = $buzzwordManager->get();
+        $buzzwordItem = $buzzwordList->getFirst();
+        while ($buzzwordItem) {
+            $selected_ids = $buzzwordItem->getAllLinkedItemIDArrayLabelVersion();
+            if (in_array($itemId, $selected_ids)) {
+                $linkedHashtags[] = $buzzwordItem->getItemId();
+            }
+            $buzzwordItem = $buzzwordList->getNext();
+        }
+        return $linkedHashtags;
     }
 
     /**
