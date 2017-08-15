@@ -478,14 +478,24 @@ class TopicController extends Controller
         $current_context = $legacyEnvironment->getCurrentContextItem();
         
         $formData = array();
-        $topicItem = NULL;
-        
+
+        $isDraft = $item->isDraft();
+
+        $showHashtags = $current_context->withTags() && $current_context->isTagMandatory();
+        $showCategories = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
+
         // get date from DateService
         $topicItem = $topicService->getTopic($itemId);
         if (!$topicItem) {
             throw $this->createNotFoundException('No topic found for id ' . $itemId);
         }
+        $itemController = $this->get('commsy.item_controller');
         $formData = $transformer->transform($topicItem);
+        $formData['showCategories'] = $showCategories;
+        $formData['showHashtags'] = $showHashtags;
+        $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
+        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+        $formData['draft'] = $isDraft;
         $translator = $this->get('translator');
         $form = $this->createForm(TopicType::class, $formData, array(
             'action' => $this->generateUrl('commsy_date_edit', array(
@@ -493,6 +503,14 @@ class TopicController extends Controller
                 'itemId' => $itemId,
             )),
             'placeholderText' => '['.$translator->trans('insert title').']',
+            'categoryMappingOptions' => [
+                'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service'))
+            ],
+            'hashtagMappingOptions' => [
+                'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
+                'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId])
+            ],
         ));
         
         $form->handleRequest($request);
@@ -502,6 +520,15 @@ class TopicController extends Controller
 
                 // update modifier
                 $topicItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                // set linked hashtags and categories
+                $formData = $form->getData();
+                if ($showCategories) {
+                    $topicItem->setTagListByID($formData['category_mapping']['categories']);
+                }
+                if ($showHashtags) {
+                    $topicItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                }
 
                 $topicItem->save();
                 
@@ -524,8 +551,9 @@ class TopicController extends Controller
 
         return array(
             'form' => $form->createView(),
-            'showHashtags' => $current_context->withBuzzwords(),
-            'showCategories' => $current_context->withTags(),
+            'isDraft' => $isDraft,
+            'showHashtags' => $showHashtags,
+            'showCategories' => $showCategories,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
         );
     }

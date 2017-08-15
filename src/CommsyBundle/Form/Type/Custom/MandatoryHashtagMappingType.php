@@ -52,7 +52,7 @@ class MandatoryHashtagMappingType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['placeholderText', 'hashTagPlaceholderText', 'categories', 'hashtags', 'hashtagEditUrl'])
+            ->setRequired(['hashTagPlaceholderText', 'hashtags', 'hashtagEditUrl'])
             ->setDefaults(array('translation_domain' => 'form'))
         ;
     }

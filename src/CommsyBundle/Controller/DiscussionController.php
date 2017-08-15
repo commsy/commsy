@@ -874,7 +874,12 @@ class DiscussionController extends Controller
         $current_context = $legacyEnvironment->getCurrentContextItem();
         
         $formData = array();
-        $materialItem = NULL;
+        $discussionItem = NULL;
+
+        $isDraft = $item->isDraft();
+
+        $showHashtags = $current_context->withTags() && $current_context->isTagMandatory();
+        $showCategories = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
 
         $transformer = NULL;
 
@@ -885,22 +890,36 @@ class DiscussionController extends Controller
         }
 
         if ($item->getItemType() == 'discussion') {
-            // get material from MaterialService
+            // get discussion from DiscussionService
             $discussionItem = $discussionService->getDiscussion($itemId);
             if (!$discussionItem) {
                 throw $this->createNotFoundException('No discussion found for id ' . $itemId);
             }
-
+            $itemController = $this->get('commsy.item_controller');
             $formData = $transformer->transform($discussionItem);
+            $formData['showCategories'] = $showCategories;
+            $formData['showHashtags'] = $showHashtags;
+            $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
+            $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+            $formData['draft'] = $isDraft;
             $form = $this->createForm(DiscussionType::class, $formData, array(
                 'action' => $this->generateUrl('commsy_discussion_edit', array(
                     'roomId' => $roomId,
                     'itemId' => $itemId,
                 )),
                 'placeholderText' => '['.$translator->trans('insert title').']',
+                'categoryMappingOptions' => [
+                    'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service'))
+                ],
+                'hashtagMappingOptions' => [
+                    'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
+                    'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                    'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId])
+                ],
+
             ));
         } else if ($item->getItemType() == 'discarticle') {
-            // get section from MaterialService
+            // get section from DiscussionService
             $discussionArticleItem = $discussionService->getArticle($itemId);
             if (!$discussionArticleItem) {
                 throw $this->createNotFoundException('No discussion article found for id ' . $itemId);
@@ -908,6 +927,10 @@ class DiscussionController extends Controller
             $formData = $transformer->transform($discussionArticleItem);
             $form = $this->createForm(DiscussionArticleType::class, $formData, array(
                 'placeholderText' => '['.$translator->trans('insert title').']',
+                'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service')),
+                'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
+                'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId]),
             ));
         }
         
@@ -918,6 +941,16 @@ class DiscussionController extends Controller
                     $discussionItem = $transformer->applyTransformation($discussionItem, $form->getData());
                     // update modifier
                     $discussionItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                    // set linked hashtags and categories
+                    $formData = $form->getData();
+                    if ($showCategories) {
+                        $discussionItem->setTagListByID($formData['category_mapping']['categories']);
+                    }
+                    if ($showHashtags) {
+                        $discussionItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                }
+
                     $discussionItem->save();                
                 } else if ($item->getItemType() == 'discarticle') {
                     $discussionArticleItem = $transformer->applyTransformation($discussionArticleItem, $form->getData());
@@ -947,11 +980,11 @@ class DiscussionController extends Controller
             $discussionItem = $discussionService->getDiscussion($discussionArticleItem->getDiscussionID());
             $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($discussionItem));
         }
-
         return array(
             'form' => $form->createView(),
-            'showHashtags' => $current_context->withBuzzwords(),
-            'showCategories' => $current_context->withTags(),
+            'isDraft' => $isDraft,
+            'showHashtags' => $showHashtags,
+            'showCategories' => $showCategories,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
         );
     }

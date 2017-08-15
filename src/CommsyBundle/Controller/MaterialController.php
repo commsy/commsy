@@ -929,10 +929,14 @@ class MaterialController extends Controller
                     'itemId' => $itemId,
                 )),
                 'placeholderText' => '['.$translator->trans('insert title').']',
-                'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service')),
-                'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
-                'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
-                'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId]),
+                'categoryMappingOptions' => [
+                    'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service'))
+                ],
+                'hashtagMappingOptions' => [
+                    'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
+                    'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                    'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId])
+                ],
             ));
 
             $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($materialItem));

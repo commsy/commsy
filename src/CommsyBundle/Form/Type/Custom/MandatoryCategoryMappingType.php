@@ -35,7 +35,7 @@ class MandatoryCategoryMappingType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['placeholderText', 'hashTagPlaceholderText', 'categories', 'hashtags', 'hashtagEditUrl'])
+            ->setRequired(['categories'])
             ->setDefaults(array('translation_domain' => 'form'))
         ;
     }

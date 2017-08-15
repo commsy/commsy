@@ -89,11 +89,11 @@ class MaterialType extends AbstractType
                 }
 
                 if ($material['draft']) {
-                    if ($material['showHashtags']) {
-                        $form->add('hashtag_mapping', MandatoryHashtagMappingType::class, $formOptions);
+                    if ($material['showHashtags'] && $formOptions['hashtagMappingOptions']) {
+                        $form->add('hashtag_mapping', MandatoryHashtagMappingType::class, $formOptions['hashtagMappingOptions']);
                     }
-                    if ($material['showCategories']) {
-                        $form->add('category_mapping', MandatoryCategoryMappingType::class, $formOptions);
+                    if ($material['showCategories'] && $formOptions['categoryMappingOptions']) {
+                        $form->add('category_mapping', MandatoryCategoryMappingType::class, $formOptions['categoryMappingOptions']);
                     }
                 }
             })
@@ -121,7 +121,7 @@ class MaterialType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['placeholderText', 'hashTagPlaceholderText', 'categories', 'hashtags', 'hashtagEditUrl'])
+            ->setRequired(['placeholderText', 'hashtagMappingOptions', 'categoryMappingOptions'])
             ->setDefaults(array('translation_domain' => 'form'))
         ;
     }

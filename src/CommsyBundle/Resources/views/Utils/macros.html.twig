@@ -511,12 +511,12 @@
                 {% endif %}
             </ul>
             <ul id="mandatoryLinksForm" class="uk-switcher uk-margin">
-                {% if showCategories %}
+                {% if showCategories and form.category_mapping.categories is defined %}
                     <li>
                         {{ form_widget(form.category_mapping.categories) }}
                     </li>
                 {% endif %}
-                {% if showHashtags %}
+                {% if showHashtags and form.hashtag_mapping.hashtags is defined %}
                     <li>
                         <div class="uk-grid-width-small-1-4 hashtag-form" data-uk-grid data-uk-check-display>
                             {% for hashtag in form.hashtag_mapping.hashtags %}
