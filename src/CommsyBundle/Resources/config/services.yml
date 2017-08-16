@@ -565,7 +565,7 @@ services:
     # API
     commsy.api.soap:
         class: CommsyBundle\Services\SoapService
-        arguments: ['@commsy_legacy.environment']
+        arguments: ['@commsy_legacy.environment', '@service_container']
 
     # Feed
     debril.provider.default:
