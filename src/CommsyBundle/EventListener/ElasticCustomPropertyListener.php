@@ -61,21 +61,23 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         $itemManager = $this->legacyEnvironment->getItemManager();
         $item = $itemManager->getItem($event->getObject()->getItemId());
 
-        $hashtags = $item->getBuzzwordList();
-        if ($hashtags->isNotEmpty()) {
-            $objectHashtags = [];
+        if ($item) {
+            $hashtags = $item->getBuzzwordList();
+            if ($hashtags->isNotEmpty()) {
+                $objectHashtags = [];
 
-            $hashtag = $hashtags->getFirst();
-            while ($hashtag) {
-                if (!$hashtag->isDeleted()) {
-                    $objectHashtags[] = $hashtag->getName();
+                $hashtag = $hashtags->getFirst();
+                while ($hashtag) {
+                    if (!$hashtag->isDeleted()) {
+                        $objectHashtags[] = $hashtag->getName();
+                    }
+
+                    $hashtag = $hashtags->getNext();
                 }
 
-                $hashtag = $hashtags->getNext();
-            }
-
-            if (!empty($objectHashtags)) {
-                $event->getDocument()->set('hashtags', $objectHashtags);
+                if (!empty($objectHashtags)) {
+                    $event->getDocument()->set('hashtags', $objectHashtags);
+                }
             }
         }
     }
@@ -85,21 +87,23 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         $itemManager = $this->legacyEnvironment->getItemManager();
         $item = $itemManager->getItem($event->getObject()->getItemId());
 
-        $tags = $item->getTagList();
-        if ($tags->isNotEmpty()) {
-            $objectTags = [];
+        if ($item) {
+            $tags = $item->getTagList();
+            if ($tags->isNotEmpty()) {
+                $objectTags = [];
 
-            $tag = $tags->getFirst();
-            while ($tag) {
-                if (!$tag->isDeleted()) {
-                    $objectTags[] = $tag->getTitle();
+                $tag = $tags->getFirst();
+                while ($tag) {
+                    if (!$tag->isDeleted()) {
+                        $objectTags[] = $tag->getTitle();
+                    }
+
+                    $tag = $tags->getNext();
                 }
 
-                $tag = $tags->getNext();
-            }
-
-            if (!empty($objectTags)) {
-                $event->getDocument()->set('tags', $objectTags);
+                if (!empty($objectTags)) {
+                    $event->getDocument()->set('tags', $objectTags);
+                }
             }
         }
     }
@@ -109,21 +113,23 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         $itemManager = $this->legacyEnvironment->getItemManager();
         $item = $itemManager->getItem($event->getObject()->getItemId());
 
-        $annotations = $item->getAnnotationList();
-        if ($annotations->isNotEmpty()) {
-            $objectTags = [];
+        if ($item) {
+            $annotations = $item->getAnnotationList();
+            if ($annotations->isNotEmpty()) {
+                $objectTags = [];
 
-            $annotation = $annotations->getFirst();
-            while ($annotation) {
-                if (!$annotation->isDeleted()) {
-                    $objectTags[] = $annotation->getDescription();
+                $annotation = $annotations->getFirst();
+                while ($annotation) {
+                    if (!$annotation->isDeleted()) {
+                        $objectTags[] = $annotation->getDescription();
+                    }
+
+                    $annotation = $annotations->getNext();
                 }
 
-                $annotation = $annotations->getNext();
-            }
-
-            if (!empty($objectTags)) {
-                $event->getDocument()->set('annotations', $objectTags);
+                if (!empty($objectTags)) {
+                    $event->getDocument()->set('annotations', $objectTags);
+                }
             }
         }
     }
@@ -133,24 +139,26 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         $itemManager = $this->legacyEnvironment->getItemManager();
         $item = $itemManager->getItem($event->getObject()->getItemId());
 
-        $files = $item->getFileList();
-        if ($files->isNotEmpty()) {
-            $fileContents = [];
+        if ($item) {
+            $files = $item->getFileList();
+            if ($files->isNotEmpty()) {
+                $fileContents = [];
 
-            $file = $files->getFirst();
-            while ($file) {
-                if (!$file->isDeleted()) {
-                    $content = $file->getContentBase64();
-                    if (!empty($content)) {
-                        $fileContents[] = $content;
+                $file = $files->getFirst();
+                while ($file) {
+                    if (!$file->isDeleted()) {
+                        $content = $file->getContentBase64();
+                        if (!empty($content)) {
+                            $fileContents[] = $content;
+                        }
                     }
+
+                    $file = $files->getNext();
                 }
 
-                $file = $files->getNext();
-            }
-
-            if (!empty($fileContents)) {
-                $event->getDocument()->set('files', $fileContents);
+                if (!empty($fileContents)) {
+                    $event->getDocument()->set('files', $fileContents);
+                }
             }
         }
     }
@@ -160,24 +168,26 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         $discussionManager = $this->legacyEnvironment->getDiscussionManager();
         $discussion = $discussionManager->getItem($event->getObject()->getItemId());
 
-        $articles = $discussion->getAllArticles();
-        if ($articles->isNotEmpty()) {
-            $articleContents = [];
+        if ($discussion) {
+            $articles = $discussion->getAllArticles();
+            if ($articles->isNotEmpty()) {
+                $articleContents = [];
 
-            $article = $articles->getFirst();
-            while ($article) {
-                if (!$article->isDeleted() && !$article->isDraft()) {
-                    $articleContents[] = [
-                        'subject' => $article->getSubject(),
-                        'description' => $article->getDescription(),
-                    ];
+                $article = $articles->getFirst();
+                while ($article) {
+                    if (!$article->isDeleted() && !$article->isDraft()) {
+                        $articleContents[] = [
+                            'subject' => $article->getSubject(),
+                            'description' => $article->getDescription(),
+                        ];
+                    }
+
+                    $article = $articles->getNext();
                 }
 
-                $article = $articles->getNext();
-            }
-
-            if (!empty($articleContents)) {
-                $event->getDocument()->set('discussionarticles', $articleContents);
+                if (!empty($articleContents)) {
+                    $event->getDocument()->set('discussionarticles', $articleContents);
+                }
             }
         }
     }
@@ -187,24 +197,26 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         $todoManager = $this->legacyEnvironment->getTodoManager();
         $todo = $todoManager->getItem($event->getObject()->getItemId());
 
-        $steps = $todo->getStepItemList();
-        if ($steps->isNotEmpty()) {
-            $stepContents = [];
+        if ($todo) {
+            $steps = $todo->getStepItemList();
+            if ($steps->isNotEmpty()) {
+                $stepContents = [];
 
-            $step = $steps->getFirst();
-            while ($step) {
-                if (!$step->isDeleted() && !$step->isDraft()) {
-                    $stepContents[] = [
-                        'title' => $step->getTitle(),
-                        'description' => $step->getDescription(),
-                    ];
+                $step = $steps->getFirst();
+                while ($step) {
+                    if (!$step->isDeleted() && !$step->isDraft()) {
+                        $stepContents[] = [
+                            'title' => $step->getTitle(),
+                            'description' => $step->getDescription(),
+                        ];
+                    }
+
+                    $step = $steps->getNext();
                 }
 
-                $step = $steps->getNext();
-            }
-
-            if (!empty($stepContents)) {
-                $event->getDocument()->set('steps', $stepContents);
+                if (!empty($stepContents)) {
+                    $event->getDocument()->set('steps', $stepContents);
+                }
             }
         }
     }
@@ -214,24 +226,26 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         $materialManager = $this->legacyEnvironment->getMaterialManager();
         $material = $materialManager->getItem($event->getObject()->getItemId());
 
-        $sections = $material->getSectionList();
-        if ($sections->isNotEmpty()) {
-            $sectionContents = [];
+        if ($material) {
+            $sections = $material->getSectionList();
+            if ($sections->isNotEmpty()) {
+                $sectionContents = [];
 
-            $section = $sections->getFirst();
-            while ($section) {
-                if (!$section->isDeleted() && !$section->isDraft()) {
-                    $sectionContents[] = [
-                        'title' => $section->getTitle(),
-                        'description' => $section->getDescription(),
-                    ];
+                $section = $sections->getFirst();
+                while ($section) {
+                    if (!$section->isDeleted() && !$section->isDraft()) {
+                        $sectionContents[] = [
+                            'title' => $section->getTitle(),
+                            'description' => $section->getDescription(),
+                        ];
+                    }
+
+                    $section = $sections->getNext();
                 }
 
-                $section = $sections->getNext();
-            }
-
-            if (!empty($sectionContents)) {
-                $event->getDocument()->set('steps', $sectionContents);
+                if (!empty($sectionContents)) {
+                    $event->getDocument()->set('steps', $sectionContents);
+                }
             }
         }
     }
