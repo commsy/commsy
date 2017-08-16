@@ -670,13 +670,24 @@ class GroupController extends Controller
         
         $formData = array();
         $groupItem = NULL;
-        
+
+        $isDraft = $item->isDraft();
+
+        $showHashtags = $current_context->withTags() && $current_context->isTagMandatory();
+        $showCategories = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
+
         // get date from DateService
         $groupItem = $groupService->getGroup($itemId);
         if (!$groupItem) {
             throw $this->createNotFoundException('No group found for id ' . $itemId);
         }
+        $itemController = $this->get('commsy.item_controller');
         $formData = $transformer->transform($groupItem);
+        $formData['showCategories'] = $showCategories;
+        $formData['showHashtags'] = $showHashtags;
+        $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
+        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+        $formData['draft'] = $isDraft;
         $translator = $this->get('translator');
         $form = $this->createForm(GroupType::class, $formData, array(
             'action' => $this->generateUrl('commsy_group_edit', array(
@@ -684,7 +695,15 @@ class GroupController extends Controller
                 'itemId' => $itemId,
             )),
             'placeholderText' => '['.$translator->trans('insert title').']',
-        ));
+            'categoryMappingOptions' => [
+                'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service'))
+            ],
+            'hashtagMappingOptions' => [
+                'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
+                'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId])
+            ],
+    ));
         
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -693,6 +712,15 @@ class GroupController extends Controller
 
                 // update modifier
                 $groupItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                // set linked hashtags and categories
+                $formData = $form->getData();
+                if ($showCategories) {
+                    $groupItem->setTagListByID($formData['category_mapping']['categories']);
+                }
+                if ($showHashtags) {
+                    $groupItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                }
 
                 $groupItem->save();
                 
@@ -715,8 +743,9 @@ class GroupController extends Controller
 
         return array(
             'form' => $form->createView(),
-            'showHashtags' => $current_context->withBuzzwords(),
-            'showCategories' => $current_context->withTags(),
+            'isDraft' => $isDraft,
+            'showHashtags' => $showHashtags,
+            'showCategories' => $showCategories,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
         );
     }

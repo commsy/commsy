@@ -6,7 +6,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type as Types;
 
-class SearchType extends AbstractType
+class SearchItemType extends AbstractType
 {
     /**
      * Builds the form.
@@ -27,13 +27,19 @@ class SearchType extends AbstractType
                 'required' => false,
                 'translation_domain' => 'search',
             ])
-            ->add('submit', Types\SubmitType::class, [
-                'attr' => [
-                    'class' => 'uk-button-primary',
-                ],
-                'label' => 'Search',
-                'translation_domain' => 'search',
-            ])
+//            ->add('type', Types\ChoiceType::class, [
+//                'choices' => [
+//                    'a' => 'Rubrik A',
+//                    'b' => 'Rubrik B',
+//                ]
+//            ])
+//            ->add('submit', Types\SubmitType::class, [
+//                'attr' => [
+//                    'class' => 'uk-button-primary',
+//                ],
+//                'label' => 'Search',
+//                'translation_domain' => 'search',
+//            ])
         ;
     }
 
@@ -58,6 +64,6 @@ class SearchType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'search';
+        return 'search_item';
     }
 }

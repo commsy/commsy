@@ -26,6 +26,7 @@ class AnnouncementTransformer implements DataTransformerInterface
         if ($announcementItem) {
             $announcementData['title'] = html_entity_decode($announcementItem->getTitle());
             $announcementData['description'] = $announcementItem->getDescription();
+            $announcementData['draft'] = $announcementItem->isDraft();
 
             $announcementData['permission'] = $announcementItem->isPrivateEditing();
 
@@ -44,7 +45,6 @@ class AnnouncementTransformer implements DataTransformerInterface
                 }
             }
         }
-
         return $announcementData;
     }
 

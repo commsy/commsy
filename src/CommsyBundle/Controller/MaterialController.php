@@ -901,6 +901,9 @@ class MaterialController extends Controller
         $isDraft = false;
         $isSaved = false;
         
+        $showCategories = $current_context->withTags() && $current_context->isTagMandatory();
+        $showHashtags = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
+
         if ($item->getItemType() == 'material') {
             $isMaterial = true;
             if ($item->isDraft()) {
@@ -913,13 +916,27 @@ class MaterialController extends Controller
             if (!$materialItem) {
                 throw $this->createNotFoundException('No material found for id ' . $roomId);
             }
+
+            $itemController = $this->get('commsy.item_controller');
             $formData = $transformer->transform($materialItem);
+            $formData['showCategories'] = $showCategories;
+            $formData['showHashtags'] = $showHashtags;
+            $formData['hashtag_mapping']['categories'] = $itemController->getLinkedCategories($item);
+            $formData['category_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
             $form = $this->createForm(MaterialType::class, $formData, array(
                 'action' => $this->generateUrl('commsy_material_edit', array(
                     'roomId' => $roomId,
                     'itemId' => $itemId,
                 )),
                 'placeholderText' => '['.$translator->trans('insert title').']',
+                'categoryMappingOptions' => [
+                    'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service'))
+                ],
+                'hashtagMappingOptions' => [
+                    'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
+                    'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                    'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId])
+                ],
             ));
 
             $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($materialItem));
@@ -945,6 +962,15 @@ class MaterialController extends Controller
                 // update modifier
                 $materialItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
+                // set linked hashtags and categories
+                $formData = $form->getData();
+                if ($showCategories) {
+                    $materialItem->setTagListByID($formData['category_mapping']['categories']);
+                }
+                if ($showHashtags) {
+                    $materialItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                }
+
                 $materialItem->save();
                 
                 if ($item->isDraft()) {
@@ -966,8 +992,8 @@ class MaterialController extends Controller
             'isDraft' => $isDraft,
             'isMaterial' => $isMaterial,
             'form' => $form->createView(),
-            'showHashtags' => $current_context->withBuzzwords(),
-            'showCategories' => $current_context->withTags(),
+            'showHashtags' => $showHashtags,
+            'showCategories' => $showCategories,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
         );
     }

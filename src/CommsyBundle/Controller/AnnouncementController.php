@@ -651,6 +651,11 @@ class AnnouncementController extends Controller
         
         $formData = array();
         $announcementItem = NULL;
+
+        $isDraft = $item->isDraft();
+
+        $showHashtags = $current_context->withTags() && $current_context->isTagMandatory();
+        $showCategories = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
         
         if ($item->getItemType() == 'announcement') {
             // get announcement from announcementService
@@ -659,7 +664,12 @@ class AnnouncementController extends Controller
             if (!$announcementItem) {
                 throw $this->createNotFoundException('No announcement found for id ' . $roomId);
             }
+            $itemController = $this->get('commsy.item_controller');
             $formData = $transformer->transform($announcementItem);
+            $formData['showCategories'] = $showCategories;
+            $formData['showHashtags'] = $showHashtags;
+            $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
+            $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
             $translator = $this->get('translator');
             $form = $this->createForm(AnnouncementType::class, $formData, array(
                 'action' => $this->generateUrl('commsy_announcement_edit', array(
@@ -667,6 +677,14 @@ class AnnouncementController extends Controller
                     'itemId' => $itemId,
                 )),
                 'placeholderText' => '['.$translator->trans('insert title').']',
+                'categoryMappingOptions' => [
+                    'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service')),
+                ],
+                'hashtagMappingOptions' => [
+                    'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
+                    'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                    'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId]),
+                ],
             ));
         } 
         
@@ -681,6 +699,15 @@ class AnnouncementController extends Controller
 
                 // update modifier
                 $announcementItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                // set linked hashtags and categories
+                $formData = $form->getData();
+                if ($showCategories) {
+                    $announcementItem->setTagListByID($formData['category_mapping']['categories']);
+                }
+                if ($showHashtags) {
+                    $announcementItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                }
 
                 $announcementItem->save();
                 
@@ -698,8 +725,9 @@ class AnnouncementController extends Controller
 
         return array(
             'form' => $form->createView(),
-            'showHashtags' => $current_context->withBuzzwords(),
-            'showCategories' => $current_context->withTags(),
+            'isDraft' => $isDraft,
+            'showHashtags' => $showHashtags,
+            'showCategories' => $showCategories,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
         );
     }

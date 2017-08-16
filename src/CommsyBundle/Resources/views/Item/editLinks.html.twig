@@ -9,17 +9,25 @@
             <h4>{{ 'links'|trans({})}}</h4>
         </div>
     </div>
-    <div>
-        {#{ render(controller(
-        'CommsyBundle:Search:searchForm',
-        { 'roomId': app.request.attributes.get('roomId'), 'linkSearch': itemId }
-        ))}#}
-    </div>
+
     {{ form_start(form) }}
     {{ form_errors(form) }}
     <div class="uk-grid uk-margin-top-remove">
         <div class="uk-width-9-10">
             {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
+
+            <ul class='form-errors'>
+            {% if form.categories is defined %}
+                {% if form.categories.vars.errors|length %}
+                    <li>{{ 'categories'|trans({})|capitalize }}: {{ form.categories.vars.errors[0].message }}</li>
+                {% endif %}
+            {% endif %}
+            {% if form.hashtags is defined %}
+                {% if form.hashtags.vars.errors|length %}
+                    <li>{{ 'hashtags'|trans({}, 'room')|capitalize }}: {{ form.hashtags.vars.errors[0].message }}</li>
+                {% endif %}
+            {% endif %}
+            </ul>
 
             <ul id="linksFormTabs" class="uk-tab" data-uk-tab="{connect:'#linksForm'}">
                 <li><a href="">{{ 'linkedEntries'|trans({}) }}</a></li>
@@ -35,33 +43,19 @@
                 <li>
                     <div class="uk-grid">
                         <div class="uk-width-1-1">
+
                             <ul class="uk-tab uk-tab-bottom" data-uk-switcher="{connect:'#linked-entry-switcher'}">
                                 <li><a href="">Suche</a></li>
                                 <li><a href="">Zuletzt bearbeitet</a></li>
                             </ul>
+
                             <ul id="linked-entry-switcher" class="uk-switcher uk-margin-bottom uk-margin-top">
                                 <li>
                                     {# search entries #}
-                                    <div class="uk-autocomplete uk-form"
-                                            data-uk-autocomplete="{source:'{{ path('commsy_search_instant', {'roomId': roomId, 'linkSearch': itemId}) }}'}"
-                                            data-cs-link-search='{"source": "{{ path('commsy_item_singlearticle', {'roomId': roomId, 'itemId': -1}) }}"}'
-                                    >
-                                        <input type="text">
-                                        <script type="text/autocomplete">
-                                            {% verbatim %}
-                                                <ul class="uk-nav uk-nav-autocomplete uk-autocomplete-results">
-                                                    {{~items}}
-                                                    <li data-value="{{ $item.value }}">
-                                                        <a>
-                                                            {{ $item.title|decodeHtmlEntity }}
-                                                            <div>{{{ $item.text }}}</div>
-                                                        </a>
-                                                    </li>
-                                                    {{/items}}
-                                                </ul>
-                                            {% endverbatim %}
-                                        </script>
-                                    </div>
+                                    {{ render(controller(
+                                    'CommsyBundle:Search:itemSearchForm',
+                                    { 'roomId': app.request.attributes.get('roomId'), 'linkSearch': itemId }
+                                    )) }}
                                 </li>
                                 <li>
                                     <div id="linksSubTab">
@@ -117,46 +111,49 @@
                                 <ul id="itemsLinkedList" class="uk-comment-list">
 
                                     {% for entry in form.itemsLinked %}
-                                        {% set currentItem = items[entry.vars.name] %}
-                                        <article class="uk-comment selectable uk-comment-primary" data-cs-linked-items>
-                                            <header class="uk-comment-header uk-flex">
-                                                <div class="items-checkbox uk-margin-right uk-margin-top">
-                                                    {{ form_widget(entry) }}
-                                                </div>
-                                                <div class="uk-margin-right uk-flex-item-none">
-                                                    {% if currentItem.modificatorItem.isUser %}
-                                                        {{  macros.userIconLink(currentItem.modificatorItem) }}
-                                                    {% else %}
-                                                        {{  macros.userIcon(currentItem.modificatorItem) }}
-                                                    {% endif %}
-                                                    <div class="uk-comment-meta">
-                                                        {% if currentItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                                                            {{ 'today'|trans({})|capitalize }}, {{currentItem.getModificationDate|date("H:i")}}
+                                        {% if items[entry.vars.name] is defined %}
+
+                                            {% set currentItem = items[entry.vars.name] %}
+                                            <article class="uk-comment selectable uk-comment-primary" data-cs-linked-items>
+                                                <header class="uk-comment-header uk-flex">
+                                                    <div class="items-checkbox uk-margin-right uk-margin-top">
+                                                        {{ form_widget(entry) }}
+                                                    </div>
+                                                    <div class="uk-margin-right uk-flex-item-none">
+                                                        {% if currentItem.modificatorItem.isUser %}
+                                                            {{  macros.userIconLink(currentItem.modificatorItem) }}
                                                         {% else %}
-                                                            {{currentItem.getModificationDate|date("d.m.Y")}}
+                                                            {{  macros.userIcon(currentItem.modificatorItem) }}
                                                         {% endif %}
+                                                        <div class="uk-comment-meta">
+                                                            {% if currentItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                                                                {{ 'today'|trans({})|capitalize }}, {{currentItem.getModificationDate|date("H:i")}}
+                                                            {% else %}
+                                                                {{currentItem.getModificationDate|date("d.m.Y")}}
+                                                            {% endif %}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="uk-width-8-10">
-                                                    <h4 class="uk-comment-title">
-                                                        <a href="">{{ currentItem.title|decodeHtmlEntity }}</a>
-                                                    </h4>
-                                                    <div class="uk-comment-meta">
-                                                        {% if currentItem.author is defined and currentItem.author != '' %}
-                                                            {{ 'by'|trans({})|capitalize }}: {{currentItem.author}} ({{currentItem.publishingdate}})
-                                                        {% else %}
-                                                            {{ 'by'|trans({})|capitalize }}: {{currentItem.modificatorItem.fullname}} ({{currentItem.getCreationDate|date("d.m.Y")}})
-                                                        {% endif %}
+                                                    <div class="uk-width-8-10">
+                                                        <h4 class="uk-comment-title">
+                                                            <a href="">{{ currentItem.title|decodeHtmlEntity }}</a>
+                                                        </h4>
+                                                        <div class="uk-comment-meta">
+                                                            {% if currentItem.author is defined and currentItem.author != '' %}
+                                                                {{ 'by'|trans({})|capitalize }}: {{currentItem.author}} ({{currentItem.publishingdate}})
+                                                            {% else %}
+                                                                {{ 'by'|trans({})|capitalize }}: {{currentItem.modificatorItem.fullname}} ({{currentItem.getCreationDate|date("d.m.Y")}})
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="uk-comment-meta">
+                                                            {{  macros.fileListShort(currentItem) }}
+                                                        </div>
                                                     </div>
-                                                    <div class="uk-comment-meta">
-                                                        {{  macros.fileListShort(currentItem) }}
+                                                    <div class="uk-width-2-10 uk-text-right">
+                                                        <i class="{{ macros.iconClassForItemType(currentItem.itemType) }} uk-icon-small"></i>
                                                     </div>
-                                                </div>
-                                                <div class="uk-width-2-10 uk-text-right">
-                                                    <i class="{{ macros.iconClassForItemType(currentItem.itemType) }} uk-icon-small"></i>
-                                                </div>
-                                            </header>
-                                        </article>
+                                                </header>
+                                            </article>
+                                        {% endif %}
                                     {% endfor %}
 
                                 </ul>

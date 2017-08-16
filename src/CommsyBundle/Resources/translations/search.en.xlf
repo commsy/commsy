@@ -2,17 +2,21 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
+            <trans-unit id="search">
+                <source>Search</source>
+                <target>Search</target>
+            </trans-unit>
             <trans-unit id="search-form-placeholder">
-                <source>Search...</source>
-                <target>Search...</target>
+                <source>Search in room...</source>
+                <target>Search in room...</target>
             </trans-unit>
             <trans-unit id="search-no-results-room">
                 <source>no rooms found</source>
                 <target>No rooms found</target>
             </trans-unit>
             <trans-unit id="search-instant-header">
-                <source>title search</source>
-                <target>Best title matches</target>
+                <source>best matches</source>
+                <target>Best matches</target>
             </trans-unit>
             <trans-unit id="search-more-results">
                 <source>more results</source>
@@ -23,8 +27,8 @@
                 <target>No results found</target>
             </trans-unit>
             <trans-unit id="search-results-title">
-                <source>Search Results (%totalHits% Hits)</source>
-                <target>Search Results (%totalHits% Hits)</target>
+                <source>Search for "%query%" (%totalHits% Hits)</source>
+                <target>Search for "%query%" (%totalHits% Hits)</target>
             </trans-unit>
             <trans-unit id="search-results-restrict">
                 <source>Restrict Results</source>
@@ -33,6 +37,10 @@
             <trans-unit id="search-results-top50">
                 <source>Top 50 matches</source>
                 <target>Top 50 matches</target>
+            </trans-unit>
+            <trans-unit id="search-filter-all-my-rooms">
+                <source>Search in all my rooms</source>
+                <target>Search in all my rooms</target>
             </trans-unit>
         </body>
     </file>

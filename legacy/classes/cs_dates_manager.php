@@ -599,6 +599,11 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       				)
       				OR
       				(
+      					" . $this->addDatabasePrefix($this->_db_table) . ".datetime_start <= '" . $this->_between_limit["start"] . "' AND
+      					" . $this->addDatabasePrefix($this->_db_table) . ".datetime_end >= '" . $this->_between_limit["start"] . "'
+      				)
+      				OR
+      				(
       					" . $this->addDatabasePrefix($this->_db_table) . ".datetime_start >= '" . $this->_between_limit["start"] . "' AND
       					" . $this->addDatabasePrefix($this->_db_table) . ".datetime_end <= '" . $this->_between_limit["end"] . "'
       				)

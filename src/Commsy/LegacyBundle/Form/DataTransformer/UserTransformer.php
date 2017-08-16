@@ -131,6 +131,11 @@ class UserTransformer implements DataTransformerInterface
                 $userObject->setUsePortalEmail(0);
                 $userObject->setEmail($userData['emailRoom']);
             }
+            if (isset($userData['emailAccount'])) {
+                $portalUser->setEmail($userData['emailAccount']);
+                $portalUser->save();
+            }
+
             if ($userData['hideEmailInThisRoom']) {
                 $userObject->setEmailNotVisible();
             } else {
