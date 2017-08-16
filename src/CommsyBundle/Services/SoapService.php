@@ -5,7 +5,6 @@ namespace CommsyBundle\Services;
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
 require_once('../legacy/classes/cs_session_item.php');
-require_once('../legacy/classes/cs_session_item.php');
 
 class SoapService
 {
@@ -253,180 +252,28 @@ class SoapService
         return new \SoapFault('ERROR', 'no user found!');
     }
 
-    private function isSessionActive($userId, $portalId)
+    /**
+     * Creates a new user
+     *
+     * @param string $sessionId The session id
+     * @param int $portalId portal id
+     * @param string $firstname first name
+     * @param string $lastname last name
+     * @param string $mail email
+     * @param string $userId user id
+     * @param string $userPassword $password
+     * @param bool $agb agb accepted
+     * @param bool $sendMail send mail to user
+     *
+     * @throws SoapFault
+     *
+     * @return bool
+     */
+    public function createUser($sessionId, $portalId, $firstname, $lastname, $mail, $userId, $userPassword, $agb = false, $sendMail = true)
     {
-        if (!empty($this->sessionIdArray[$portalId][$userId])) {
-            return true;
-        } else {
-            $sessionId = $this->getActiveSessionId($userId, $portalId);
-            if ($sessionId) {
-                return true;
-            }
-        }
-
-        return false;
+        
     }
 
-    private function getActiveSessionId($userId, $portalId)
-    {
-        if (!empty($this->sessionIdArray[$portalId][$userId])) {
-            return $this->sessionIdArray[$portalId][$userId];
-        } else {
-            $sessionManager = $this->legacyEnvironment->getSessionManager();
-            $sessionId = $sessionManager->getActiveSOAPSessionID($userId, $portalId);
-
-            if (!empty($sessionId)) {
-                $this->sessionIdArray[$portalId][$userId] = $sessionId;
-                $this->updateSessionCreationDate($sessionId);
-
-                return $sessionId;
-            }
-        }
-
-        return null;
-    }
-
-    private function updateSessionCreationDate($sessionId)
-    {
-        $sessionManager = $this->legacyEnvironment->getSessionManager();
-        $sessionManager->updateSessionCreationDate($sessionId);
-    }
-}
-
-/**
- * TODO
- */
-
-//class cs_connection_soap {
-//    private $_environment = null;
-//
-//    private $_session_id_array = array();
-//
-//    private $_valid_session_id_array = array();
-//
-//    private $_material_limit_array = array();
-//
-//    private $_soap_fault = null;
-//
-//    public function __construct ($environment) {
-//        $this->_environment = $environment;
-//    }
-//
-//    private function _encode_input ($value) {
-//        return $value;
-//    }
-//
-//    private function _encode_output ($value) {
-//        return $value;
-//    }
-//
-//    private function _htmlTextareaSecurity ( $value ) {
-//        if ( strlen($value) != strlen(strip_tags($value)) ) {
-//            $value = preg_replace('~<!-- KFC TEXT -->~u','',$value);
-//            $value = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$value);
-//            if ( strlen($value) != strlen(strip_tags($value)) ) {
-//                $text_converter = $this->_environment->getTextConverter();
-//                if ( isset($text_converter) ) {
-//                    $value = $text_converter->cleanBadCode($value);
-//                }
-//            }
-//            include_once('functions/security_functions.php');
-//            $fck_text = '<!-- KFC TEXT '.getSecurityHash($value).' -->';
-//            $value = $fck_text.$value.$fck_text;
-//        }
-//        return $value;
-//    }
-//
-//    public function getGuestSession($portal_id) {
-//        if ( empty($portal_id) ) {
-//            return new SoapFault('ERROR','portal_id is empty!');
-//        } else {
-//            $portal_id = $this->_encode_input($portal_id);
-//            $this->_environment->setCurrentContextID($portal_id);
-//            // make session
-//            include_once('classes/cs_session_item.php');
-//            $session = new cs_session_item();
-//            $session->createSessionID('guest');
-//            $session->setValue('portal_id',$portal_id);
-//            $session->setSoapSession();
-//            $session_manager = $this->_environment->getSessionManager();
-//            $session_manager->save($session);
-//            $retour = $session->getSessionID();
-//            return $this->_encode_output($retour);
-//        }
-//    }
-//
-//    public function getCountUser($session_id, $portal_id) {
-//        $portal_id = $this->_encode_input($portal_id);
-//        $session_id = $this->_encode_input($session_id);
-//        $user_count =-1;
-//
-//        if($this->_isSessionValid($session_id)) {
-//            if ($this->_isSessionActive('guest',$portal_id)) {
-//                $portal_manager = $this->_environment->getPortalManager();
-//                $portal_item = $portal_manager->getItem($portal_id);
-//                $user_count = $portal_item->getCountMembers();
-//            } else {
-//                return new SoapFault('ERROR','Session not active on portal '.$portal_id.'!');
-//            }
-//        } else {
-//            return new SoapFault('ERROR','Session not valid!');
-//        }
-//
-//        return $this->_encode_output($user_count);
-//    }
-//
-//    //public function getCountRooms($session_id, $portal_id) {
-//    public function getCountRooms($session_id, $portal_id) {
-//        $portal_id = $this->_encode_input($portal_id);
-//        $session_id = $this->_encode_input($session_id);
-//        $room_count =-1;
-//
-//        if($this->_isSessionValid($session_id)) {
-//            if ($this->_isSessionActive('guest',$portal_id)) {
-//                $portal_manager = $this->_environment->getPortalManager();
-//                $portal_item = $portal_manager->getItem($portal_id);
-//                $date_current = date("Y-m-d H:i:s");
-//                $room_count = $portal_item->getCountRooms('',$date_current);
-//            } else {
-//                return new SoapFault('ERROR','Session not active on portal '.$portal_id.'!');
-//            }
-//        } else {
-//            return new SoapFault('ERROR','Session not valid!');
-//        }
-//        return $this->_encode_output($room_count);
-//    }
-//
-//    public function getActiveRoomList($session_id, $portal_id, $count) {
-//        if($this->_isSessionValid($session_id)) {
-//            if ($this->_isSessionActive('guest',$portal_id)) {
-//                $room_manager = $this->_environment->getRoomManager();
-//                $room_manager->setContextLimit($portal_id);
-//                $room_manager->setRoomTypeLimit(CS_PROJECT_TYPE);
-//                $room_manager->setOrder('activity_rev');
-//                $room_manager->setIntervalLimit(0,$count);
-//                $room_manager->select();
-//                $test = $room_manager->getLastQuery();
-//                $room_list = $room_manager->get();
-//
-//
-//                $room_item = $room_list->getFirst();
-//                $xml = "<room_list>\n";
-//                while($room_item) {
-//                    $xml .= $room_item->getXMLData();
-//                    $room_item = $room_list->getNext();
-//                }
-//                $xml .= "</room_list>";
-//                $xml = $this->_encode_output($xml);
-//            } else {
-//                return new SoapFault('ERROR','Session not active on portal '.$portal_id.'!');
-//            }
-//        } else {
-//            return new SoapFault('ERROR','Session not valid!');
-//        }
-//        return $xml;
-//    }
-//
 //    public function createUser ($session_id,$portal_id,$firstname,$lastname,$mail,$user_id,$user_pwd,$agb = false,$send_email = true) {
 //        $session_id = $this->_encode_input($session_id);
 //        $portal_id = $this->_encode_input($portal_id);
@@ -699,6 +546,185 @@ class SoapService
 //            return new SoapFault('ERROR','createUser: session id ('.$session_id.') is not set. - '.__FILE__.' - '.__LINE__);
 //        }
 //    }
+
+
+
+
+
+    private function isSessionActive($userId, $portalId)
+    {
+        if (!empty($this->sessionIdArray[$portalId][$userId])) {
+            return true;
+        } else {
+            $sessionId = $this->getActiveSessionId($userId, $portalId);
+            if ($sessionId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function getActiveSessionId($userId, $portalId)
+    {
+        if (!empty($this->sessionIdArray[$portalId][$userId])) {
+            return $this->sessionIdArray[$portalId][$userId];
+        } else {
+            $sessionManager = $this->legacyEnvironment->getSessionManager();
+            $sessionId = $sessionManager->getActiveSOAPSessionID($userId, $portalId);
+
+            if (!empty($sessionId)) {
+                $this->sessionIdArray[$portalId][$userId] = $sessionId;
+                $this->updateSessionCreationDate($sessionId);
+
+                return $sessionId;
+            }
+        }
+
+        return null;
+    }
+
+    private function updateSessionCreationDate($sessionId)
+    {
+        $sessionManager = $this->legacyEnvironment->getSessionManager();
+        $sessionManager->updateSessionCreationDate($sessionId);
+    }
+}
+
+/**
+ * TODO
+ */
+
+//class cs_connection_soap {
+//    private $_environment = null;
+//
+//    private $_session_id_array = array();
+//
+//    private $_valid_session_id_array = array();
+//
+//    private $_material_limit_array = array();
+//
+//    private $_soap_fault = null;
+//
+//    public function __construct ($environment) {
+//        $this->_environment = $environment;
+//    }
+//
+//    private function _encode_input ($value) {
+//        return $value;
+//    }
+//
+//    private function _encode_output ($value) {
+//        return $value;
+//    }
+//
+//    private function _htmlTextareaSecurity ( $value ) {
+//        if ( strlen($value) != strlen(strip_tags($value)) ) {
+//            $value = preg_replace('~<!-- KFC TEXT -->~u','',$value);
+//            $value = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$value);
+//            if ( strlen($value) != strlen(strip_tags($value)) ) {
+//                $text_converter = $this->_environment->getTextConverter();
+//                if ( isset($text_converter) ) {
+//                    $value = $text_converter->cleanBadCode($value);
+//                }
+//            }
+//            include_once('functions/security_functions.php');
+//            $fck_text = '<!-- KFC TEXT '.getSecurityHash($value).' -->';
+//            $value = $fck_text.$value.$fck_text;
+//        }
+//        return $value;
+//    }
+//
+//    public function getGuestSession($portal_id) {
+//        if ( empty($portal_id) ) {
+//            return new SoapFault('ERROR','portal_id is empty!');
+//        } else {
+//            $portal_id = $this->_encode_input($portal_id);
+//            $this->_environment->setCurrentContextID($portal_id);
+//            // make session
+//            include_once('classes/cs_session_item.php');
+//            $session = new cs_session_item();
+//            $session->createSessionID('guest');
+//            $session->setValue('portal_id',$portal_id);
+//            $session->setSoapSession();
+//            $session_manager = $this->_environment->getSessionManager();
+//            $session_manager->save($session);
+//            $retour = $session->getSessionID();
+//            return $this->_encode_output($retour);
+//        }
+//    }
+//
+//    public function getCountUser($session_id, $portal_id) {
+//        $portal_id = $this->_encode_input($portal_id);
+//        $session_id = $this->_encode_input($session_id);
+//        $user_count =-1;
+//
+//        if($this->_isSessionValid($session_id)) {
+//            if ($this->_isSessionActive('guest',$portal_id)) {
+//                $portal_manager = $this->_environment->getPortalManager();
+//                $portal_item = $portal_manager->getItem($portal_id);
+//                $user_count = $portal_item->getCountMembers();
+//            } else {
+//                return new SoapFault('ERROR','Session not active on portal '.$portal_id.'!');
+//            }
+//        } else {
+//            return new SoapFault('ERROR','Session not valid!');
+//        }
+//
+//        return $this->_encode_output($user_count);
+//    }
+//
+//    //public function getCountRooms($session_id, $portal_id) {
+//    public function getCountRooms($session_id, $portal_id) {
+//        $portal_id = $this->_encode_input($portal_id);
+//        $session_id = $this->_encode_input($session_id);
+//        $room_count =-1;
+//
+//        if($this->_isSessionValid($session_id)) {
+//            if ($this->_isSessionActive('guest',$portal_id)) {
+//                $portal_manager = $this->_environment->getPortalManager();
+//                $portal_item = $portal_manager->getItem($portal_id);
+//                $date_current = date("Y-m-d H:i:s");
+//                $room_count = $portal_item->getCountRooms('',$date_current);
+//            } else {
+//                return new SoapFault('ERROR','Session not active on portal '.$portal_id.'!');
+//            }
+//        } else {
+//            return new SoapFault('ERROR','Session not valid!');
+//        }
+//        return $this->_encode_output($room_count);
+//    }
+//
+//    public function getActiveRoomList($session_id, $portal_id, $count) {
+//        if($this->_isSessionValid($session_id)) {
+//            if ($this->_isSessionActive('guest',$portal_id)) {
+//                $room_manager = $this->_environment->getRoomManager();
+//                $room_manager->setContextLimit($portal_id);
+//                $room_manager->setRoomTypeLimit(CS_PROJECT_TYPE);
+//                $room_manager->setOrder('activity_rev');
+//                $room_manager->setIntervalLimit(0,$count);
+//                $room_manager->select();
+//                $test = $room_manager->getLastQuery();
+//                $room_list = $room_manager->get();
+//
+//
+//                $room_item = $room_list->getFirst();
+//                $xml = "<room_list>\n";
+//                while($room_item) {
+//                    $xml .= $room_item->getXMLData();
+//                    $room_item = $room_list->getNext();
+//                }
+//                $xml .= "</room_list>";
+//                $xml = $this->_encode_output($xml);
+//            } else {
+//                return new SoapFault('ERROR','Session not active on portal '.$portal_id.'!');
+//            }
+//        } else {
+//            return new SoapFault('ERROR','Session not valid!');
+//        }
+//        return $xml;
+//    }
+//
 //
 //    public function createMembershipBySession ( $session_id, $context_id, $agb = false ) {
 //        $session_id = $this->_encode_input($session_id);
