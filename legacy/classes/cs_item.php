@@ -2862,5 +2862,13 @@ function getExternalViewerArray(){
 
         $objectPersister->deleteOne($object);
    }
+
+   public function getPath () {
+      $result = null;
+
+
+
+      return $result;
+   }
 }
 ?>

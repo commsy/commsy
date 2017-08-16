@@ -450,7 +450,7 @@
                     <div class="uk-flex">
                         {% for linkedItem in item.pathItemList.to_array %}
                             <div>
-                                <a href="{{ path('commsy_'~linkedItem.itemType~'_detail', {'roomId': linkedItem.contextId, 'itemId': linkedItem.itemId}) }}">
+                                <a href="{{ path('commsy_'~linkedItem.itemType~'_detail', {'roomId': linkedItem.contextId, 'itemId': linkedItem.itemId}) }}?path={{ item.itemId }}">
                                     <i class="{{ macros.iconClassForItemType(linkedItem.itemType) }} uk-margin-small-right" data-uk-tooltip title="{{ linkedItem.title|decodeHtmlEntity }}"></i>
                                 </a>
                             </div>
@@ -469,8 +469,8 @@
                     <div class="uk-grid">
                         {% for linkedItem in item.pathItemList.to_array %}
                             <div class="uk-width-1-1">
-                                <a href="{{ path('commsy_'~linkedItem.itemType~'_detail', {'roomId': linkedItem.contextId, 'itemId': linkedItem.itemId}) }}">
-                                    <i class="{{ macros.iconClassForItemType(linkedItem.itemType) }} uk-icon uk-margin-small-right" data-uk-tooltip title="{{ linkedItem.title|decodeHtmlEntity }}"></i>
+                                <a href="{{ path('commsy_'~linkedItem.itemType~'_detail', {'roomId': linkedItem.contextId, 'itemId': linkedItem.itemId}) }}?path={{ item.itemId }}">
+                                    <i class="{{ macros.iconClassForItemType(linkedItem.itemType) }} uk-icon uk-margin-small-right"></i>
                                     {{ linkedItem.title|decodeHtmlEntity }}
                                 </a>
                             </div>

@@ -548,3 +548,31 @@
         </div>
     </div>
 {% endmacro %}
+
+{% macro showPath(pathTopicItem, item) %}
+    {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+    <div class="uk-alert" uk-alert>
+        <div class="uk-flex">
+            <div class="uk-margin-right">
+                {{ 'Path'|trans({}, 'topic') }}:
+            </div>
+            {% for linkedItem in pathTopicItem.pathItemList.to_array %}
+                <div>
+                    {% if linkedItem.itemId != item.itemId %}
+                        <a class="uk-text-muted" href="{{ path('commsy_'~linkedItem.itemType~'_detail', {'roomId': linkedItem.contextId, 'itemId': linkedItem.itemId}) }}?path={{ pathTopicItem.itemId }}">
+                            <i class="{{ macros.iconClassForItemType(linkedItem.itemType) }} uk-margin-small-right" data-uk-tooltip title="{{ linkedItem.title|decodeHtmlEntity }}"></i>
+                        </a>
+                    {% else  %}
+                        <i class="{{ macros.iconClassForItemType(linkedItem.itemType) }} uk-margin-small-right" data-uk-tooltip title="{{ linkedItem.title|decodeHtmlEntity }}"></i>
+                    {% endif %}
+                </div>
+
+                {% if not loop.last %}
+                    <div>
+                        <i class="uk-icon uk-icon-arrow-right uk-margin-small-right uk-text-muted uk-text-small"></i>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endmacro %}

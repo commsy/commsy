@@ -102,6 +102,10 @@
                     {{ macros.showAlert(alert) }}
                 {%  endif %}
 
+                {% if pathTopicItem %}
+                    {{ macros.showPath(pathTopicItem, user) }}
+                {%  endif %}
+
                 {# content #}
                 <article class="uk-article uk-position-relative" data-uk-observe>
 

@@ -119,6 +119,10 @@
                     {{ macros.showAlert(alert) }}
                 {%  endif %}
 
+                {% if pathTopicItem %}
+                    {{ macros.showPath(pathTopicItem, todo) }}
+                {%  endif %}
+
                 {# content #}
                 <article class="uk-article uk-position-relative" data-uk-observe>
                     {# title, details, etc. #}

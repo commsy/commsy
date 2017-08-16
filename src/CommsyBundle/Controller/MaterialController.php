@@ -303,6 +303,12 @@ class MaterialController extends Controller
             $alert['content'] = $translator->trans('item is locked', array(), 'item');
         }
 
+        $pathTopicItem = null;
+        if ($request->query->get('path')) {
+            $topicService = $this->get('commsy_legacy.topic_service');
+            $pathTopicItem = $topicService->getTopic($request->query->get('path'));
+        }
+
         return array(
             'roomId' => $roomId,
             'material' => $infoArray['material'],
@@ -349,6 +355,7 @@ class MaterialController extends Controller
                 '3_none' => '',
             ],
             'alert' => $alert,
+            'pathTopicItem' => $pathTopicItem,
        );
     }
 

@@ -355,6 +355,12 @@ class GroupController extends Controller
             $alert['content'] = $translator->trans('item is locked', array(), 'item');
         }
 
+        $pathTopicItem = null;
+        if ($request->query->get('path')) {
+            $topicService = $this->get('commsy_legacy.topic_service');
+            $pathTopicItem = $topicService->getTopic($request->query->get('path'));
+        }
+
         return array(
             'roomId' => $roomId,
             'group' => $infoArray['group'],
@@ -382,6 +388,7 @@ class GroupController extends Controller
             'memberStatus' => $memberStatus,
             'annotationForm' => $form->createView(),
             'alert' => $alert,
+            'pathTopicItem' => $pathTopicItem,
        );
     }
 

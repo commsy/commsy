@@ -260,6 +260,12 @@ class DiscussionController extends Controller
             $alert['content'] = $translator->trans('item is locked', array(), 'item');
         }
 
+        $pathTopicItem = null;
+        if ($request->query->get('path')) {
+            $topicService = $this->get('commsy_legacy.topic_service');
+            $pathTopicItem = $topicService->getTopic($request->query->get('path'));
+        }
+
         return [
             'roomId' => $roomId,
             'discussion' => $infoArray['discussion'],
@@ -285,6 +291,7 @@ class DiscussionController extends Controller
             'ratingArray' => $infoArray['ratingArray'],
             'roomCategories' => $infoArray['roomCategories'],
             'alert' => $alert,
+            'pathTopicItem' => $pathTopicItem,
         ];
     }
     

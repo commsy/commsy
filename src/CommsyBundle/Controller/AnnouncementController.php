@@ -326,6 +326,12 @@ class AnnouncementController extends Controller
             $alert['content'] = $translator->trans('item is locked', array(), 'item');
         }
 
+        $pathTopicItem = null;
+        if ($request->query->get('path')) {
+            $topicService = $this->get('commsy_legacy.topic_service');
+            $pathTopicItem = $topicService->getTopic($request->query->get('path'));
+        }
+
         return array(
             'roomId' => $roomId,
             'announcement' => $infoArray['announcement'],
@@ -351,6 +357,7 @@ class AnnouncementController extends Controller
             'annotationForm' => $form->createView(),
             'ratingArray' => $infoArray['ratingArray'],
             'alert' => $alert,
+            'pathTopicItem' => $pathTopicItem,
        );
     }
     /**

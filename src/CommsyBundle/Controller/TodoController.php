@@ -491,6 +491,12 @@ class TodoController extends Controller
             $alert['content'] = $translator->trans('item is locked', array(), 'item');
         }
 
+        $pathTopicItem = null;
+        if ($request->query->get('path')) {
+            $topicService = $this->get('commsy_legacy.topic_service');
+            $pathTopicItem = $topicService->getTopic($request->query->get('path'));
+        }
+
         return array(
             'roomId' => $roomId,
             'todo' => $todoService->getTodo($itemId),
@@ -515,6 +521,7 @@ class TodoController extends Controller
             ] : [],
             'isParticipating' => $todo->isProcessor($legacyEnvironment->getCurrentUserItem()),
             'alert' => $alert,
+            'pathTopicItem' => $pathTopicItem,
         );
     }
     

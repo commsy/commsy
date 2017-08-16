@@ -569,6 +569,12 @@ class DateController extends Controller
             $alert['content'] = $translator->trans('date is external', array(), 'date');
         }
 
+        $pathTopicItem = null;
+        if ($request->query->get('path')) {
+            $topicService = $this->get('commsy_legacy.topic_service');
+            $pathTopicItem = $topicService->getTopic($request->query->get('path'));
+        }
+
         return array(
             'roomId' => $roomId,
             'date' => $dateService->getDate($itemId),
@@ -586,6 +592,7 @@ class DateController extends Controller
             'isParticipating' => $date->isParticipant($legacyEnvironment->getCurrentUserItem()),
             'isRecurring' => ($date->getRecurrenceId() != ''),
             'alert' => $alert,
+            'pathTopicItem' => $pathTopicItem,
         );
     }
     
