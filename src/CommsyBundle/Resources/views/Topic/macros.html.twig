@@ -405,6 +405,7 @@
 {% endmacro %}
 
 {% macro path(item, edit) %}
+    {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
     <hr class="uk-width-9-10"/>
 
@@ -446,16 +447,41 @@
 
                 {# preview #}
                 <div class="toggle-path-{{ item.itemId }} cs-toggle-preview">
-                    {% for linkedItem in item.pathItemList.to_array %}
-                        {{ linkedItem.title }}<br/>
-                    {% endfor %}
+                    <div class="uk-flex">
+                        {% for linkedItem in item.pathItemList.to_array %}
+                            <div>
+                                <a href="{{ path('commsy_'~linkedItem.itemType~'_detail', {'roomId': linkedItem.contextId, 'itemId': linkedItem.itemId}) }}">
+                                    <i class="{{ macros.iconClassForItemType(linkedItem.itemType) }} uk-margin-small-right" data-uk-tooltip title="{{ linkedItem.title|decodeHtmlEntity }}"></i>
+                                </a>
+                            </div>
+
+                            {% if not loop.last %}
+                                <div>
+                                    <i class="uk-icon uk-icon-arrows-h uk-margin-small-right"></i>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
 
                 {# full content #}
                 <div class="toggle-path-{{ item.itemId }} cs-toggle-content uk-hidden">
-                    {% for linkedItem in item.pathItemList.to_array %}
-                        {{ linkedItem.title }}<br/>
-                    {% endfor %}
+                    <div class="uk-grid">
+                        {% for linkedItem in item.pathItemList.to_array %}
+                            <div class="grid-width-1-1">
+                                <a href="{{ path('commsy_'~linkedItem.itemType~'_detail', {'roomId': linkedItem.contextId, 'itemId': linkedItem.itemId}) }}">
+                                    <i class="{{ macros.iconClassForItemType(linkedItem.itemType) }} uk-icon-small uk-margin-right" data-uk-tooltip title="{{ linkedItem.title|decodeHtmlEntity }}"></i><br/>
+                                    {{ linkedItem.title|decodeHtmlEntity }}
+                                </a>
+                            </div>
+
+                            {% if not loop.last %}
+                                <div class="grid-width-1-1">
+                                    <i class="uk-icon-small uk-icon-arrows-v uk-margin-right"></i>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
 
             </div>
