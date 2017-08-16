@@ -119,7 +119,7 @@ class InstitutionController extends Controller
 
         $currentUser = $this->get('commsy_legacy.environment')->getEnvironment()->getCurrentUser();
         $createContext = true;
-        if (!$currentUser->isAllowedToCreateContext()) {
+        if ($currentUser->getStatus() == "" || !$currentUser->isAllowedToCreateContext()) {
             $createContext = false;
         }
 

@@ -163,4 +163,8 @@ class AvatarService
         
         return $colors;
     }
+
+    function getUnknownUserImage() {
+        return file_get_contents($this->kernelRootDir.'/Resources/assets/img/user_unknown.gif');
+    }
 }
