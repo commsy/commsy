@@ -823,7 +823,7 @@ class TopicController extends Controller
                     $formDataPath = $formData['path'];
                 }
                 if (!empty($formDataPath)) {
-                    $sortingPlace = 0;
+                    $sortingPlace = 1;
                     if (isset($formData['pathOrder'])) {
                         foreach (explode(',', $formData['pathOrder']) as $orderItemId) {
                             if ($linkItem = $linkManager->getItemByFirstAndSecondID($item->getItemId(), $orderItemId)) {
