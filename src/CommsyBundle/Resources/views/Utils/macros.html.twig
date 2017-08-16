@@ -194,13 +194,16 @@
 
 {% macro userIcon(user, size, showTooltip) %}
     {% set showTooltip = showTooltip ?? true %}
-
-    {% if size == 'small' %}
-        <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
-    {% elseif size matches '/^\\d+$/' %}
-        <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:{{ size }}px; width:{{ size }}px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
+    {% if user.itemId != "" %}
+        {% if size == 'small' %}
+            <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
+        {% elseif size matches '/^\\d+$/' %}
+            <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:{{ size }}px; width:{{ size }}px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
+        {% else %}
+            <img class="uk-comment-avatar uk-thumbnail uk-border-circle cs-comment-thumbnail" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
+        {% endif %}
     {% else %}
-        <img class="uk-comment-avatar uk-thumbnail uk-border-circle cs-comment-thumbnail" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
+        <img class="uk-comment-avatar uk-thumbnail uk-border-circle cs-comment-thumbnail" src="{{ path('commsy_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "guest"|trans({}, 'messages')}}" style="width: 30px; height: 30px;">
     {% endif %}
 {% endmacro %}
 
