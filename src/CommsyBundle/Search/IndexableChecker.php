@@ -23,7 +23,7 @@ class IndexableChecker
         // Check if this is a draft
         $itemManager = $this->legacyEnvironment->getItemManager();
         $item = $itemManager->getItem($object->getItemId());
-        if ($item->isDraft()) {
+        if ($item && $item->isDraft()) {
             return false;
         }
 

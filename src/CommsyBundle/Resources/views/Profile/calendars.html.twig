@@ -45,11 +45,11 @@
                                 </tr>
                                 <tr>
                                     <td class="uk-grid">
-                                        <div class="uk-width-1-10">
+                                        <!-- <div class="uk-width-1-10">
                                             <div>
                                                 {{ 'dashboard'|trans({}, 'profile') }}
                                             </div>
-                                        </div>
+                                        </div> -->
                                         <div class="uk-width-1-10">
                                             <div>
                                                 {{ 'caldav'|trans({}, 'profile') }}
@@ -62,13 +62,13 @@
                                 </tr>
                                 <tr>
                                     <td class="uk-grid">
-                                        <div class="uk-width-1-10">
+                                        <!-- <div class="uk-width-1-10">
                                             <div class="cs-user-calendars-settings">
                                                 <div class="uk-form-controls">
                                                     <input type="checkbox" id="calendars_check_all_dashboard" class="calendars_check_all" name="" value="" {{ allNoneDashboard ? 'checked' : ''  }} />
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> -->
                                         <div class="uk-width-1-10">
                                             <div class="cs-user-calendars-settings">
                                                 <div class="uk-form-controls">
@@ -85,13 +85,13 @@
                                     {{ form_start(form) }}
                                     {{ form_errors(form) }}
                                     <td class="uk-grid">
-                                        <div class="uk-width-1-10 calendars_checkboxes_dashboard">
+                                        <!-- <div class="uk-width-1-10 calendars_checkboxes_dashboard">
                                             {% for child in form.calendarsDashboard %}
                                                 <div class="cs-user-calendars-settings">
                                                     {{ form_widget(child) }}
                                                 </div>
                                             {% endfor %}
-                                        </div>
+                                        </div> -->
                                         <div class="uk-width-1-10 calendars_checkboxes_caldav">
                                             {% for child in form.calendarsCalDAV %}
                                                 <div class="cs-user-calendars-settings">

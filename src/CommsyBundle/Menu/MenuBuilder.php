@@ -108,18 +108,20 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'menu');
 
-            $menu->addChild('calendars', [
-                'route' => 'commsy_profile_calendars',
-                'routeParameters' => [
-                    'roomId' => $currentStack->attributes->get('roomId'),
-                    'itemId' => $currentUser->getItemId(),
-                ],
-                'extras' => [
-                    'icon' => 'uk-icon-calendar uk-icon-small uk-icon-justify',
-                    'user' => $currentUser,
-                ]
-            ])
-                ->setExtra('translation_domain', 'menu');
+            if ($currentUser->getRelatedPortalUserItem()->isAllowedToUseCalDAV()) {
+                $menu->addChild('calendars', [
+                    'route' => 'commsy_profile_calendars',
+                    'routeParameters' => [
+                        'roomId' => $currentStack->attributes->get('roomId'),
+                        'itemId' => $currentUser->getItemId(),
+                    ],
+                    'extras' => [
+                        'icon' => 'uk-icon-calendar uk-icon-small uk-icon-justify',
+                        'user' => $currentUser,
+                    ]
+                ])
+                    ->setExtra('translation_domain', 'menu');
+            }
 
             $menu->addChild('additional', [
                 'route' => 'commsy_profile_additional',
