@@ -143,7 +143,6 @@ class Version20170616103508 extends AbstractMigration implements ContainerAwareI
                 ->insert('calendars')
                 ->values(
                     array(
-                        'id' => '?',
                         'context_id' => '?',
                         'title' => '?',
                         'color' => '?',
@@ -151,12 +150,11 @@ class Version20170616103508 extends AbstractMigration implements ContainerAwareI
                         'default_calendar' => '?'
                     )
                 )
-                ->setParameter(0, '')
-                ->setParameter(1, $room['item_id'])
-                ->setParameter(2, $translator->trans('Standard', array(), 'date'))
-                ->setParameter(3, '#ffffff')
-                ->setParameter(4, '')
-                ->setParameter(5, '1')
+                ->setParameter(0, $room['item_id'])
+                ->setParameter(1, $translator->trans('Standard', array(), 'date'))
+                ->setParameter(2, '#ffffff')
+                ->setParameter(3, '')
+                ->setParameter(4, '1')
                 ->execute();
             ;
 
