@@ -29,8 +29,8 @@ class RoomController extends Controller
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
-        // fall back to default theme if rooms set theme is not supported
-        if (!in_array($roomItem->getColorArray()['schema'], $themeArray)) {
+        // fall back on default theme if rooms theme is not supported anymore
+        if (!in_array($roomItem->getColorArray()['schema'], $this->container->getParameter('liip_theme.themes'))) {
             $roomItem->setColorArray(array('schema' => 'default'));
             $roomItem->save();
         }
