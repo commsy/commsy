@@ -105,10 +105,10 @@ class DateType extends AbstractType
                 }
 
                 if ($date['draft']) {
-                    if ($date['showHashtags'] && $formOptions['hashtagMappingOptions']) {
+                    if ($date['hashtagsMandatory'] && $formOptions['hashtagMappingOptions']) {
                         $form->add('hashtag_mapping', MandatoryHashtagMappingType::class, $formOptions['hashtagMappingOptions']);
                     }
-                    if ($date['showCategories'] && $formOptions['hashtagMappingOptions']) {
+                    if ($date['categoriesMandatory'] && $formOptions['hashtagMappingOptions']) {
                         $form->add('category_mapping', MandatoryCategoryMappingType::class, $formOptions['categoryMappingOptions']);
                     }
                 }

@@ -48,10 +48,10 @@ class DiscussionType extends AbstractType
                 $form = $event->getForm();
                 $formOptions = $form->getConfig()->getOptions();
                 if ($discussion['draft']) {
-                    if ($discussion['showHashtags'] && $formOptions['hashtagMappingOptions']) {
+                    if ($discussion['hashtagsMandatory'] && $formOptions['hashtagMappingOptions']) {
                         $form->add('hashtag_mapping', MandatoryHashtagMappingType::class, $formOptions['hashtagMappingOptions']);
                     }
-                    if ($discussion['showCategories'] && $formOptions['categoryMappingOptions']) {
+                    if ($discussion['categoriesMandatory'] && $formOptions['categoryMappingOptions']) {
                         $form->add('category_mapping', MandatoryCategoryMappingType::class, $formOptions['categoryMappingOptions']);
                     }
                 }

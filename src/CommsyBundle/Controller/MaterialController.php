@@ -908,8 +908,8 @@ class MaterialController extends Controller
         $isDraft = false;
         $isSaved = false;
         
-        $showCategories = $current_context->withTags() && $current_context->isTagMandatory();
-        $showHashtags = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
+        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
+        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
 
         if ($item->getItemType() == 'material') {
             $isMaterial = true;
@@ -926,8 +926,8 @@ class MaterialController extends Controller
 
             $itemController = $this->get('commsy.item_controller');
             $formData = $transformer->transform($materialItem);
-            $formData['showCategories'] = $showCategories;
-            $formData['showHashtags'] = $showHashtags;
+            $formData['categoriesMandatory'] = $categoriesMandatory;
+            $formData['hashtagsMandatory'] = $hashtagsMandatory;
             $formData['hashtag_mapping']['categories'] = $itemController->getLinkedCategories($item);
             $formData['category_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
             $form = $this->createForm(MaterialType::class, $formData, array(
@@ -971,10 +971,10 @@ class MaterialController extends Controller
 
                 // set linked hashtags and categories
                 $formData = $form->getData();
-                if ($showCategories) {
+                if ($categoriesMandatory) {
                     $materialItem->setTagListByID($formData['category_mapping']['categories']);
                 }
-                if ($showHashtags) {
+                if ($hashtagsMandatory) {
                     $materialItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
                 }
 
@@ -999,8 +999,8 @@ class MaterialController extends Controller
             'isDraft' => $isDraft,
             'isMaterial' => $isMaterial,
             'form' => $form->createView(),
-            'showHashtags' => $showHashtags,
-            'showCategories' => $showCategories,
+            'showHashtags' => $hashtagsMandatory,
+            'showCategories' => $categoriesMandatory,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
         );
     }

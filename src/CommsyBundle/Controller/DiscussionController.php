@@ -885,8 +885,8 @@ class DiscussionController extends Controller
 
         $isDraft = $item->isDraft();
 
-        $showHashtags = $current_context->withTags() && $current_context->isTagMandatory();
-        $showCategories = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
+        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
+        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
 
         $transformer = NULL;
 
@@ -904,8 +904,8 @@ class DiscussionController extends Controller
             }
             $itemController = $this->get('commsy.item_controller');
             $formData = $transformer->transform($discussionItem);
-            $formData['showCategories'] = $showCategories;
-            $formData['showHashtags'] = $showHashtags;
+            $formData['categoriesMandatory'] = $categoriesMandatory;
+            $formData['hashtagsMandatory'] = $hashtagsMandatory;
             $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
             $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
             $formData['draft'] = $isDraft;
@@ -951,10 +951,10 @@ class DiscussionController extends Controller
 
                     // set linked hashtags and categories
                     $formData = $form->getData();
-                    if ($showCategories) {
+                    if ($categoriesMandatory) {
                         $discussionItem->setTagListByID($formData['category_mapping']['categories']);
                     }
-                    if ($showHashtags) {
+                    if ($hashtagsMandatory) {
                         $discussionItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
                 }
 
@@ -990,8 +990,8 @@ class DiscussionController extends Controller
         return array(
             'form' => $form->createView(),
             'isDraft' => $isDraft,
-            'showHashtags' => $showHashtags,
-            'showCategories' => $showCategories,
+            'showHashtags' => $hashtagsMandatory,
+            'showCategories' => $categoriesMandatory,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
         );
     }
