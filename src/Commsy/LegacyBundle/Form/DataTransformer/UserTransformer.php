@@ -111,6 +111,19 @@ class UserTransformer implements DataTransformerInterface
             $userObject->setFirstname($userData['firstname']);
             $userObject->setLastname($userData['lastname']);
             $userObject->setLanguage($userData['language']);
+
+            // since name and language are now configured in the account settings,
+            // they always have to be changed for the list of related users as well
+            $userList = $userObject->getRelatedUserList();
+            $tempUserItem = $userList->getFirst();
+            while ($tempUserItem) {
+                $tempUserItem->setFirstname($userData['firstname']);
+                $tempUserItem->setLastname($userData['lastname']);
+                $tempUserItem->setLanguage($userData['language']);
+                $tempUserItem->save();
+                $tempUserItem = $userList->getNext();
+            }
+
             if ($userData['autoSaveStatus']) {
                 $userObject->turnAutoSaveOn();
             } else {
