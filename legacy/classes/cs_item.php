@@ -2608,8 +2608,14 @@ function getExternalViewerArray(){
 
    /** get draft status
     */
-   function isDraft () {
-      return $this->_getValue('draft');
+   function isDraft() {
+      $isDraft = $this->_getValue('draft');
+
+      if (empty($isDraft)) {
+         return 0;
+      }
+
+      return $isDraft;
    }
 
    /** set set draft
