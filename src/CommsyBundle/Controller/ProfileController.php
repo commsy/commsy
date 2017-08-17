@@ -246,6 +246,8 @@ class ProfileController extends Controller
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
 
+        $request->setLocale($userItem->getLanguage());
+
         $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
         $privateRoomItem = $userItem->getOwnRoom();
         $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
@@ -280,6 +282,8 @@ class ProfileController extends Controller
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
 
+        $request->setLocale($userItem->getLanguage());
+
         $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
         $privateRoomItem = $userItem->getOwnRoom();
         $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
@@ -313,6 +317,8 @@ class ProfileController extends Controller
         $userService = $this->get('commsy_legacy.user_service');
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
+
+        $request->setLocale($userItem->getLanguage());
 
         $form = $this->createForm(ProfileMergeAccountsType::class, $userData, array(
             'itemId' => $itemId,
@@ -404,6 +410,8 @@ class ProfileController extends Controller
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
 
+        $request->setLocale($userItem->getLanguage());
+
         $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
         $privateRoomItem = $userItem->getOwnRoom();
         $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
@@ -438,6 +446,8 @@ class ProfileController extends Controller
         $userService = $this->get('commsy_legacy.user_service');
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
+
+        $request->setLocale($userItem->getLanguage());
 
         $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
         $privateRoomItem = $userItem->getOwnRoom();
@@ -500,6 +510,8 @@ class ProfileController extends Controller
         $currentUser = $userService->getCurrentUserItem();
         $portalUser = $currentUser->getRelatedCommSyUserItem();
 
+        $request->setLocale($currentUser->getLanguage());
+
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $portal = $legacyEnvironment->getCurrentPortalItem();
 
@@ -559,6 +571,8 @@ class ProfileController extends Controller
         else {
             $portalUser = $legacyEnvironment->getCurrentUserItem();
         }
+
+        $request->setLocale($portalUser->getLanguage());
 
         $form = $this->createForm(ProfileChangePasswordType::class);
 
@@ -666,6 +680,8 @@ class ProfileController extends Controller
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $itemService = $this->get('commsy_legacy.item_service');
         $userItem = $legacyEnvironment->getCurrentUserItem();
+
+        $request->setLocale($userItem->getLanguage());
 
         $userList = $userItem->getRelatedUserList()->to_array();
         $contextIds = array();
