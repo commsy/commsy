@@ -51,10 +51,10 @@ class TopicType extends AbstractType
                 $formOptions = $form->getConfig()->getOptions();
 
                 if ($topic['draft']) {
-                    if ($topic['showHashtags'] && $formOptions['hashtagMappingOptions']) {
+                    if ($topic['hashtagsMandatory'] && $formOptions['hashtagMappingOptions']) {
                         $form->add('hashtag_mapping', MandatoryHashtagMappingType::class, $formOptions['hashtagMappingOptions']);
                     }
-                    if ($topic['showCategories'] && $formOptions['hashtagMappingOptions']) {
+                    if ($topic['categoriesMandatory'] && $formOptions['hashtagMappingOptions']) {
                         $form->add('category_mapping', MandatoryCategoryMappingType::class, $formOptions['categoryMappingOptions']);
                     }
                 }

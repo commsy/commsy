@@ -89,10 +89,10 @@ class MaterialType extends AbstractType
                 }
 
                 if ($material['draft']) {
-                    if ($material['showHashtags'] && $formOptions['hashtagMappingOptions']) {
+                    if ($material['hashtagsMandatory'] && $formOptions['hashtagMappingOptions']) {
                         $form->add('hashtag_mapping', MandatoryHashtagMappingType::class, $formOptions['hashtagMappingOptions']);
                     }
-                    if ($material['showCategories'] && $formOptions['categoryMappingOptions']) {
+                    if ($material['categoriesMandatory'] && $formOptions['categoryMappingOptions']) {
                         $form->add('category_mapping', MandatoryCategoryMappingType::class, $formOptions['categoryMappingOptions']);
                     }
                 }

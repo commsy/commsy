@@ -51,10 +51,10 @@ class GroupType extends AbstractType
                 $form = $event->getForm();
                 $formOptions = $form->getConfig()->getOptions();
                 if ($group['draft']) {
-                    if ($group['showHashtags'] && $formOptions['hashtagMappingOptions']) {
+                    if ($group['hashtagsMandatory'] && $formOptions['hashtagMappingOptions']) {
                         $form->add('hashtag_mapping', MandatoryHashtagMappingType::class, $formOptions['hashtagMappingOptions']);
                     }
-                    if ($group['showCategories'] && $formOptions['categoryMappingOptions']) {
+                    if ($group['categoriesMandatory'] && $formOptions['categoryMappingOptions']) {
                         $form->add('category_mapping', MandatoryCategoryMappingType::class, $formOptions['categoryMappingOptions']);
                     }
                 }

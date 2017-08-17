@@ -695,8 +695,8 @@ class TodoController extends Controller
 
         $isDraft = $item->isDraft();
 
-        $showHashtags = $current_context->withTags() && $current_context->isTagMandatory();
-        $showCategories = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
+        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
+        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
 
         $statusChoices = array(
             $translator->trans('pending', [], 'todo') => '1',
@@ -733,8 +733,8 @@ class TodoController extends Controller
         }
 
         $formData = $transformer->transform($todoItem);
-        $formData['showCategories'] = $showCategories;
-        $formData['showHashtags'] = $showHashtags;
+        $formData['categoriesMandatory'] = $categoriesMandatory;
+        $formData['hashtagsMandatory'] = $hashtagsMandatory;
         $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
         $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
         $formData['draft'] = $isDraft;
@@ -751,10 +751,10 @@ class TodoController extends Controller
 
                 // set linked hashtags and categories
                 $formData = $form->getData();
-                if ($showCategories) {
+                if ($categoriesMandatory) {
                     $todoItem->setTagListByID($formData['category_mapping']['categories']);
                 }
-                if ($showHashtags) {
+                if ($hashtagsMandatory) {
                     $todoItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
                 }
 
@@ -775,8 +775,8 @@ class TodoController extends Controller
         return array(
             'form' => $form->createView(),
             'isDraft' => $isDraft,
-            'showHashtags' => $showHashtags,
-            'showCategories' => $showCategories,
+            'showHashtags' => $hashtagsMandatory,
+            'showCategories' => $categoriesMandatory,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
         );
     }

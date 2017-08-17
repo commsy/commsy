@@ -61,10 +61,10 @@ class AnnouncementType extends AbstractType
                 $form = $event->getForm();
                 $formOptions = $form->getConfig()->getOptions();
                 if ($announcement['draft']) {
-                    if ($announcement['showHashtags'] && $formOptions['hashtagMappingOptions']) {
+                    if ($announcement['hashtagsMandatory'] && $formOptions['hashtagMappingOptions']) {
                         $form->add('hashtag_mapping', MandatoryHashtagMappingType::class, $formOptions['hashtagMappingOptions']);
                     }
-                    if ($announcement['showCategories'] && $formOptions['categoryMappingOptions']) {
+                    if ($announcement['categoriesMandatory'] && $formOptions['categoryMappingOptions']) {
                         $form->add('category_mapping', MandatoryCategoryMappingType::class, $formOptions['categoryMappingOptions']);
                     }
                 }

@@ -97,10 +97,10 @@ class TodoType extends AbstractType
                 }
 
                 if ($todo['draft']) {
-                    if ($todo['showHashtags'] && $formOptions['hashtagMappingOptions']) {
+                    if ($todo['hashtagsMandatory'] && $formOptions['hashtagMappingOptions']) {
                         $form->add('hashtag_mapping', MandatoryHashtagMappingType::class, $formOptions['hashtagMappingOptions']);
                     }
-                    if ($todo['showCategories'] && $formOptions['hashtagMappingOptions']) {
+                    if ($todo['categoriesMandatory'] && $formOptions['hashtagMappingOptions']) {
                         $form->add('category_mapping', MandatoryCategoryMappingType::class, $formOptions['categoryMappingOptions']);
                     }
                 }
