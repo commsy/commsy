@@ -202,7 +202,7 @@ class CalendarsService
         }
     }
 
-    public function createCalendar($roomItem, $title = null, $color = null) {
+    public function createCalendar($roomItem, $title = null, $color = null, $default = null) {
         $translator =  $this->serviceContainer->get('translator');
 
         $calendar = new Calendars();
@@ -219,6 +219,10 @@ class CalendarsService
             $color = '#ffffff';
         }
         $calendar->setColor($color);
+
+        if ($default) {
+            $calendar->setDefaultCalendar(true);
+        }
 
         $calendar->setSynctoken(0);
         $this->em->persist($calendar);
