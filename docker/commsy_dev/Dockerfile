@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
         libicu-dev \
         libc-client-dev \
         libkrb5-dev \
+        libxml2-dev \
         g++ \
         git \
         zip \
@@ -23,7 +24,8 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install -j$(nproc) mcrypt \
     && docker-php-ext-install -j$(nproc) pdo_mysql \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
-    && docker-php-ext-install -j$(nproc) imap
+    && docker-php-ext-install -j$(nproc) imap \
+    && docker-php-ext-install -j$(nproc) soap
 
 # Install Node.js
 RUN curl -sL https://deb.nodesource.com/setup_7.x | bash -
