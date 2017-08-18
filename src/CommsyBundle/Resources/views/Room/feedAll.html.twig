@@ -29,7 +29,7 @@
             {# title and meta #}
             <div class="uk-width-6-10">
                 <h4 class="uk-comment-title">
-                    <a href="{{ path('commsy_room_home', {'roomId': room.itemId}) }}">{{ room.title|decodeHtmlEntity }}</a>
+                    <a href="{{ path('commsy_room_detail', {'roomId': roomId, 'itemId': room.itemId}) }}">{{ room.title|decodeHtmlEntity }}</a>
                 </h4>
 
                 <div class="uk-comment-meta">
