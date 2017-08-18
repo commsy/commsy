@@ -24,7 +24,7 @@ class MandatoryHashtagMappingType extends AbstractType
                 'expanded' => true,
                 'multiple' => true,
                 'constraints' => array(
-                    new Count(array('min' => 1)),
+                    new Count(array('min' => 1, 'minMessage' => "Please select at least one hashtag")),
                 ),
             ))
             ->add('newHashtag', TextType::class, array(
@@ -40,7 +40,6 @@ class MandatoryHashtagMappingType extends AbstractType
                     'data-cs-add-hashtag' => $options['hashtagEditUrl'],
                 ),
                 'label' => 'addNewHashtag',
-                'translation_domain' => 'form',
             ));
     }
 

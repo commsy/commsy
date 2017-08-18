@@ -22,7 +22,7 @@ class MandatoryCategoryMappingType extends AbstractType
                 'expanded' => true,
                 'multiple' => true,
                 'constraints' => array(
-                    new Count(array('min' => 1)),
+                    new Count(array('min' => 1, 'minMessage' => "Please select at least one category")),
                 ),
             ));
     }
