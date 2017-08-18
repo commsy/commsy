@@ -126,10 +126,10 @@
                     // increase for next run
                     feedStart += 10;
                 } else {
-                    $('.feed-load-more').css('display', 'none');
+                    $('.feed-load-more, .feed-load-more-grid').css('display', 'none');
                 }
             } catch (error) {
-                $('.feed-load-more').css('display', 'none');
+                $('.feed-load-more, .feed-load-more-grid').css('display', 'none');
             }
         });
     }
