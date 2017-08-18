@@ -453,24 +453,8 @@ if ( isset($session) ) {
 }
 
 // redirect
-if ( !empty($_POST['login_redirect']) ) {
-   $cid = $environment->getCurrentContextID();
-   if ( !empty($_POST['login_redirect']['cid']) ) {
-      $cid = $_POST['login_redirect']['cid'];
-   }
-   $mod = 'home';
-   if ( !empty($_POST['login_redirect']['mod']) ) {
-      $mod = $_POST['login_redirect']['mod'];
-   }
-   $fct = 'index';
-   if ( !empty($_POST['login_redirect']['fct']) ) {
-      $fct = $_POST['login_redirect']['fct'];
-   }
-   $params = $_POST['login_redirect'];
-   unset($params['cid']);
-   unset($params['mod']);
-   unset($params['fct']);
-   redirect($cid,$mod,$fct,$params);
+if (!empty($_POST['login_redirect'])) {
+    redirect_with_url($_POST['login_redirect']);
 } elseif ( !empty($_GET['target_cid']) ) {
    $mod = 'home';
    $fct = 'index';
