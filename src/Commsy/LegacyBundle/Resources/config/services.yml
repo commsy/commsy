@@ -26,7 +26,7 @@ services:
 
     commsy_legacy.room_feed_generator:
         class: Commsy\LegacyBundle\Utils\RoomFeedGenerator
-        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service']
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.date_service']
 
     commsy_legacy.category_service:
         class: Commsy\LegacyBundle\Utils\CategoryService
