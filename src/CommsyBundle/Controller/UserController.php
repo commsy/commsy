@@ -395,9 +395,10 @@ class UserController extends Controller
         
         $selectAll = $request->request->get('selectAll');
         $selectAllStart = $request->request->get('selectAllStart');
+        $sort = $request->request->get('sort');
         
         if ($selectAll == 'true') {
-            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $request);
+            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $sort, $request);
             foreach ($entries['materials'] as $key => $value) {
                 $selectedIds[] = $value->getItemId();
             }
