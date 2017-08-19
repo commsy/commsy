@@ -442,10 +442,17 @@ class RoomController extends Controller
             $legacyEnvironment->deactivateArchiveMode();
         }
 
+        // get material list from manager service
+        $projectsMemberStatus = array();
+        foreach ($rooms as $room) {
+            $projectsMemberStatus[$room->getItemId()] = $this->memberStatus($room);
+        }
+
         return [
             'roomId' => $roomId,
             'portal' => $portalItem,
             'rooms' => $rooms,
+            'projectsMemberStatus' => $projectsMemberStatus,
         ];
     }
 
@@ -1058,34 +1065,38 @@ class RoomController extends Controller
         $status = 'closed';
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $currentUser = $legacyEnvironment->getCurrentUserItem();
+        $roomService = $this->get('commsy_legacy.room_service');
+        $item = $roomService->getRoomItem($item->getItemId());
 
-        $relatedUserArray = $currentUser->getRelatedUserList()->to_array();
-        $roomUser = null;
-        foreach ($relatedUserArray as $relatedUser) {
-            if ($relatedUser->getContextId() == $item->getItemId()) {
-                $roomUser = $relatedUser;
+        if ($item) {
+            $relatedUserArray = $currentUser->getRelatedUserList()->to_array();
+            $roomUser = null;
+            foreach ($relatedUserArray as $relatedUser) {
+                if ($relatedUser->getContextId() == $item->getItemId()) {
+                    $roomUser = $relatedUser;
+                }
             }
-        }
 
-        $mayEnter = false;
-        if ($currentUser->isRoot()) {
-            $mayEnter = true;
-        } elseif ( !empty($roomUser) ) {
-            $mayEnter = $item->mayEnter($roomUser);
-        }
-
-        if ($mayEnter) {
-            if ($item->isOpen()) {
-                $status = 'enter';
-            } else {
-                $status = 'join';
+            $mayEnter = false;
+            if ($currentUser->isRoot()) {
+                $mayEnter = true;
+            } elseif (!empty($roomUser)) {
+                $mayEnter = $item->mayEnter($roomUser);
             }
-        } elseif ($item->isLocked()) {
-            $status = 'locked';
-        } elseif(!empty($roomUser) and $roomUser->isRequested()) {
-            $status = 'requested';
-        } elseif(!empty($roomUser) and $roomUser->isRejected()) {
-            $status = 'rejected';
+
+            if ($mayEnter) {
+                if ($item->isOpen()) {
+                    $status = 'enter';
+                } else {
+                    $status = 'join';
+                }
+            } elseif ($item->isLocked()) {
+                $status = 'locked';
+            } elseif (!empty($roomUser) and $roomUser->isRequested()) {
+                $status = 'requested';
+            } elseif (!empty($roomUser) and $roomUser->isRejected()) {
+                $status = 'rejected';
+            }
         }
         return $status;
     }

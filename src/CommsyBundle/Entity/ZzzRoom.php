@@ -31,7 +31,7 @@ class ZzzRoom
     /**
      * @var integer
      *
-     * @ORM\ManyToOne(targetEntity="ZzzUser")
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="creator_id", referencedColumnName="item_id")
      */
     private $creator;
@@ -39,7 +39,7 @@ class ZzzRoom
     /**
      * @var integer
      *
-     * @ORM\ManyToOne(targetEntity="ZzzUser")
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="modifier_id", referencedColumnName="item_id")
      */
     private $modifier;
@@ -47,7 +47,7 @@ class ZzzRoom
     /**
      * @var integer
      *
-     * @ORM\ManyToOne(targetEntity="ZzzUser")
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="deleter_id", referencedColumnName="item_id", nullable=true)
      */
     private $deleter;
@@ -83,7 +83,7 @@ class ZzzRoom
     /**
      * @var string
      *
-     * @ORM\Column(name="extras", type="text", length=16777215, nullable=true)
+     * @ORM\Column(name="extras", type="mbarray", nullable=true)
      */
     private $extras;
 
@@ -120,7 +120,7 @@ class ZzzRoom
      *
      * @ORM\Column(name="is_open_for_guests", type="boolean", nullable=false)
      */
-    private $isOpenForGuests = '0';
+    private $openForGuests = '0';
 
     /**
      * @var boolean
@@ -158,6 +158,150 @@ class ZzzRoom
     private $lastlogin;
 
     /**
+     * @ORM\ManyToMany(targetEntity="Room")
+     * @ORM\JoinTable(name="link_items",
+     *     joinColumns={
+     *         @ORM\JoinColumn(name="first_item_id", referencedColumnName="item_id")
+     *     },
+     *     inverseJoinColumns={
+     *         @ORM\JoinColumn(name="second_item_id", referencedColumnName="item_id")
+     *     }
+     * )
+     */
+    private $communityRooms;
+
+    public function __construct() {
+        $this->communityRooms = new ArrayCollection();
+    }
+
+    public function isIndexable()
+    {
+        return ($this->deleter == null && $this->deletionDate == null);
+    }
+
+    public function getLanguage()
+    {
+        $extras = $this->getExtras();
+
+        if (isset($extras['LANGUAGE'])) {
+            return $extras['LANGUAGE'];
+        }
+
+        return 'user';
+    }
+
+    public function setLanguage($language)
+    {
+        $extras = $this->getExtras();
+        $extras['LANGUAGE'] = $language;
+        $this->setExtras($extras);
+
+        return $this;
+    }
+
+    public function getLogo()
+    {
+        return '';
+    }
+
+    public function getAccessCheck()
+    {
+        $extras = $this->getExtras();
+
+        if (isset($extras['CHECKNEWMEMBERS'])) {
+            $checkNewMembers = $extras['CHECKNEWMEMBERS'];
+
+            $mapping = array(
+                -1 => 'never',
+                2 => 'sometimes',
+                3 => 'code',
+            );
+
+            if (isset($mapping[$checkNewMembers])) {
+                return $mapping[$checkNewMembers];
+            }
+        }
+
+        return 'always';
+    }
+
+    public function setAccessCheck($access)
+    {
+        $mapping = array(
+            'never' => -1,
+            'sometimes' => 2,
+            'code' => 3,
+        );
+
+        $extras = $this->getExtras();
+        $extras['CHECKNEWMEMBERS'] = $mapping[$access];
+        $this->setExtras($extras);
+
+        return $this;
+    }
+
+    public function isProjectRoom()
+    {
+        return $this->type === 'project';
+    }
+
+    public function isCommunityRoom()
+    {
+        return $this->type === 'community';
+    }
+
+    public function isMaterialOpenForGuests()
+    {
+        $extras = $this->getExtras();
+        if (isset($extras['MATERIAL_GUESTS'])) {
+            $materialOpenForGuests = $extras['MATERIAL_GUESTS'];
+
+            return $materialOpenForGuests === 1;
+        }
+
+        return false;
+    }
+
+    public function setIsMaterialOpenForGuests($open)
+    {
+        $extras = $this->getExtras();
+        $extras['MATERIAL_GUESTS'] = $open;
+        $this->setExtras($extras);
+
+        return $this;
+    }
+
+    public function getCommunityRooms()
+    {
+        return $this->communityRooms;
+    }
+
+    public function isAssignmentRestricted()
+    {
+        $extras = $this->getExtras();
+        if (isset($extras['ROOMASSOCIATION'])) {
+            $roomAssociation = $extras['ROOMASSOCIATION'];
+
+            return $roomAssociation === 'onlymembers';
+        }
+
+        return false;
+    }
+
+    public function setAssignmentRestricted($isRestricted)
+    {
+        $roomAssociation = 'forall';
+
+        if ($isRestricted) {
+            $roomAssociation = 'onlymembers';
+        }
+
+        $extras = $this->getExtras();
+        $extras['ROOMASSOCIATION'] = $roomAssociation;
+        $this->setExtras($extras);
+    }
+
+    /**
      * Get itemId
      *
      * @return integer
@@ -165,6 +309,102 @@ class ZzzRoom
     public function getItemId()
     {
         return $this->itemId;
+    }
+
+    /**
+     * Set contextId
+     *
+     * @param integer $contextId
+     *
+     * @return Room
+     */
+    public function setContextId($contextId)
+    {
+        $this->contextId = $contextId;
+
+        return $this;
+    }
+
+    /**
+     * Get contextId
+     *
+     * @return integer
+     */
+    public function getContextId()
+    {
+        return $this->contextId;
+    }
+
+    /**
+     * Set creationDate
+     *
+     * @param \DateTime $creationDate
+     *
+     * @return Room
+     */
+    public function setCreationDate($creationDate)
+    {
+        $this->creationDate = $creationDate;
+
+        return $this;
+    }
+
+    /**
+     * Get creationDate
+     *
+     * @return \DateTime
+     */
+    public function getCreationDate()
+    {
+        return $this->creationDate;
+    }
+
+    /**
+     * Set modificationDate
+     *
+     * @param \DateTime $modificationDate
+     *
+     * @return Room
+     */
+    public function setModificationDate($modificationDate)
+    {
+        $this->modificationDate = $modificationDate;
+
+        return $this;
+    }
+
+    /**
+     * Get modificationDate
+     *
+     * @return \DateTime
+     */
+    public function getModificationDate()
+    {
+        return $this->modificationDate;
+    }
+
+    /**
+     * Set deletionDate
+     *
+     * @param \DateTime $deletionDate
+     *
+     * @return Room
+     */
+    public function setDeletionDate($deletionDate)
+    {
+        $this->deletionDate = $deletionDate;
+
+        return $this;
+    }
+
+    /**
+     * Get deletionDate
+     *
+     * @return \DateTime
+     */
+    public function getDeletionDate()
+    {
+        return $this->deletionDate;
     }
 
     /**
@@ -192,6 +432,54 @@ class ZzzRoom
     }
 
     /**
+     * Set extras
+     *
+     * @param mbarray $extras
+     *
+     * @return Room
+     */
+    public function setExtras($extras)
+    {
+        $this->extras = $extras;
+
+        return $this;
+    }
+
+    /**
+     * Get extras
+     *
+     * @return mbarray
+     */
+    public function getExtras()
+    {
+        return $this->extras;
+    }
+
+    /**
+     * Set status
+     *
+     * @param string $status
+     *
+     * @return Room
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
      * Set activity
      *
      * @param integer $activity
@@ -216,6 +504,126 @@ class ZzzRoom
     }
 
     /**
+     * Set type
+     *
+     * @param string $type
+     *
+     * @return Room
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set public
+     *
+     * @param boolean $public
+     *
+     * @return Room
+     */
+    public function setPublic($public)
+    {
+        $this->public = $public;
+
+        return $this;
+    }
+
+    /**
+     * Get public
+     *
+     * @return boolean
+     */
+    public function getPublic()
+    {
+        return $this->public;
+    }
+
+    /**
+     * Set openForGuests
+     *
+     * @param boolean $openForGuests
+     *
+     * @return Room
+     */
+    public function setOpenForGuests($openForGuests)
+    {
+        $this->openForGuests = $openForGuests;
+
+        return $this;
+    }
+
+    /**
+     * Get openForGuests
+     *
+     * @return boolean
+     */
+    public function getOpenForGuests()
+    {
+        return $this->openForGuests;
+    }
+
+    /**
+     * Set continuous
+     *
+     * @param boolean $continuous
+     *
+     * @return Room
+     */
+    public function setContinuous($continuous)
+    {
+        $this->continuous = $continuous;
+
+        return $this;
+    }
+
+    /**
+     * Get continuous
+     *
+     * @return boolean
+     */
+    public function getContinuous()
+    {
+        return $this->continuous;
+    }
+
+    /**
+     * Set template
+     *
+     * @param boolean $template
+     *
+     * @return Room
+     */
+    public function setTemplate($template)
+    {
+        $this->template = $template;
+
+        return $this;
+    }
+
+    /**
+     * Get template
+     *
+     * @return boolean
+     */
+    public function getTemplate()
+    {
+        return $this->template;
+    }
+
+    /**
      * Set contactPersons
      *
      * @param string $contactPersons
@@ -237,5 +645,149 @@ class ZzzRoom
     public function getContactPersons()
     {
         return $this->contactPersons;
+    }
+
+    /**
+     * Set roomDescription
+     *
+     * @param string $roomDescription
+     *
+     * @return Room
+     */
+    public function setRoomDescription($roomDescription)
+    {
+        $this->roomDescription = $roomDescription;
+
+        return $this;
+    }
+
+    /**
+     * Get roomDescription
+     *
+     * @return string
+     */
+    public function getRoomDescription()
+    {
+        return $this->roomDescription;
+    }
+
+    /**
+     * Set lastlogin
+     *
+     * @param \DateTime $lastlogin
+     *
+     * @return Room
+     */
+    public function setLastlogin($lastlogin)
+    {
+        $this->lastlogin = $lastlogin;
+
+        return $this;
+    }
+
+    /**
+     * Get lastlogin
+     *
+     * @return \DateTime
+     */
+    public function getLastlogin()
+    {
+        return $this->lastlogin;
+    }
+
+    /**
+     * Set creator
+     *
+     * @param \CommsyBundle\Entity\User $creator
+     *
+     * @return Room
+     */
+    public function setCreator(\CommsyBundle\Entity\User $creator = null)
+    {
+        $this->creator = $creator;
+
+        return $this;
+    }
+
+    /**
+     * Get creator
+     *
+     * @return \CommsyBundle\Entity\User
+     */
+    public function getCreator()
+    {
+        return $this->creator;
+    }
+
+    /**
+     * Set modifier
+     *
+     * @param \CommsyBundle\Entity\User $modifier
+     *
+     * @return Room
+     */
+    public function setModifier(\CommsyBundle\Entity\User $modifier = null)
+    {
+        $this->modifier = $modifier;
+
+        return $this;
+    }
+
+    /**
+     * Get modifier
+     *
+     * @return \CommsyBundle\Entity\User
+     */
+    public function getModifier()
+    {
+        return $this->modifier;
+    }
+
+    /**
+     * Set deleter
+     *
+     * @param \CommsyBundle\Entity\User $deleter
+     *
+     * @return Room
+     */
+    public function setDeleter(\CommsyBundle\Entity\User $deleter = null)
+    {
+        $this->deleter = $deleter;
+
+        return $this;
+    }
+
+    /**
+     * Get deleter
+     *
+     * @return \CommsyBundle\Entity\User
+     */
+    public function getDeleter()
+    {
+        return $this->deleter;
+    }
+
+    /**
+     * Add communityRoom
+     *
+     * @param \CommsyBundle\Entity\Room $communityRoom
+     *
+     * @return Room
+     */
+    public function addCommunityRoom(\CommsyBundle\Entity\Room $communityRoom)
+    {
+        $this->communityRooms[] = $communityRoom;
+
+        return $this;
+    }
+
+    /**
+     * Remove communityRoom
+     *
+     * @param \CommsyBundle\Entity\Room $communityRoom
+     */
+    public function removeCommunityRoom(\CommsyBundle\Entity\Room $communityRoom)
+    {
+        $this->communityRooms->removeElement($communityRoom);
     }
 }

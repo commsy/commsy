@@ -469,6 +469,24 @@
     {% endif %}
 {% endmacro %}
 
+{% macro contextLinkIcon(roomId, context, contextMemberStatus) %}
+    {% if contextMemberStatus == 'enter' %}
+        <a href="{{ path('commsy_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon-medium" style="width:24px; height:24px;"></i></a>
+    {% else %}
+        {% if contextMemberStatus == 'join' %}
+            <a href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon-user-plus uk-icon-medium uk-text-muted" style="width:24px; height:24px;"></i></a>
+        {% elseif contextMemberStatus == 'locked' %}
+            <i class="uk-icon-lock uk-icon-medium uk-text-muted" style="width:24px; height:24px;"></i>
+        {% elseif contextMemberStatus == 'requested' %}
+            <i class="uk-icon-spinner uk-icon-medium uk-text-muted" style="width:24px; height:24px;"></i>
+        {% elseif contextMemberStatus == 'rejected' %}
+            <i class="uk-icon-lock uk-icon-medium uk-text-muted" style="width:24px; height:24px;"></i>
+        {% else %}
+            <a href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon-user-plus uk-icon-medium uk-text-muted" style="width:24px; height:24px;"></i></a>
+        {% endif %}
+    {% endif %}
+{% endmacro %}
+
 {% macro showAlert(alert) %}
     <div class="uk-alert-{{ alert.type }} uk-alert" uk-alert>
         <p>{{ alert.content }}</p>
