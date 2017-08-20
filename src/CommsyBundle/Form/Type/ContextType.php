@@ -30,7 +30,8 @@ class ContextType extends AbstractType
                 'label' => 'context type',
                 'required' => true,
                 'expanded' => true,
-                'multiple' => false
+                'multiple' => false,
+                'translation_domain' => 'room',
             ))
             ->addEventSubscriber(new AddContextFieldListener())
             ->add('language', ChoiceType::class, array(
@@ -39,7 +40,8 @@ class ContextType extends AbstractType
                 'label' => 'language',
                 'required' => true,
                 'expanded' => false,
-                'multiple' => false
+                'multiple' => false,
+                'translation_domain' => 'room',
             ))
             ->add('room_description', TextareaType::class, [
                 'attr' => [
@@ -48,6 +50,7 @@ class ContextType extends AbstractType
                     'placeholder' => 'Room description...',
                 ],
                 'required' => false,
+                'translation_domain' => 'room',
             ])
             ->add('save', SubmitType::class, [
                 'attr' => [

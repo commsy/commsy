@@ -29,20 +29,23 @@ class ProjectType extends AbstractType
                 'mapped' => false,
                 'label' => 'Template',
             ])
-            ->add('semester', ChoiceType::class, [
+            ->add('time_interval', ChoiceType::class, [
                 'choices' => ['2017' => '1', '2017' => '2'],
                 'required' => false,
                 'mapped' => false,
                 'expanded' => true,
-                'label' => 'Semester',
+                'multiple' => true,
+                'label' => 'Time interval',
+                'translation_domain' => 'room',
             ])
-            ->add('linked_community', ChoiceType::class, [
+            ->add('community_rooms', ChoiceType::class, [
                 'choices' => ['GR1' => '1', 'GR2' => '2'],
                 'required' => false,
                 'mapped' => false,
                 'multiple' => true,
                 'expanded' => false,
-                'label' => 'Template',
+                'label' => 'Community rooms',
+                'translation_domain' => 'settings',
             ])
         ;
     }
