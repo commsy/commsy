@@ -10,6 +10,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
+use CommsyBundle\Form\Type\Event\AddContextFieldListener;
+
 use CommsyBundle\Entity\Room;
 
 class ContextType extends AbstractType
@@ -30,6 +32,7 @@ class ContextType extends AbstractType
                 'expanded' => false,
                 'multiple' => false
             ))
+            ->addEventSubscriber(new AddContextFieldListener())
             ->add('master_template', ChoiceType::class, [
                 'choices' => $options['templates'],
                 'preferred_choices' => $options['preferredChoices'],

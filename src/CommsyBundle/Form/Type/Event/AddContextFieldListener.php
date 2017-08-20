@@ -22,7 +22,7 @@ use CommsyBundle\Form\Type\Bibliographic\BiblioNoneType;
 /**
 * 
 */
-class AddProjectRoomFieldListener implements EventSubscriberInterface
+class AddContextFieldListener implements EventSubscriberInterface
 {
 
     public static function getSubscribedEvents()
@@ -45,8 +45,7 @@ class AddProjectRoomFieldListener implements EventSubscriberInterface
         $form = $event->getForm();
 
         if (isset($data['type_select']) && $data['type_select'] == 'project') {
-            $class = 'CommsyBundle\Form\Type\Bibliographic'.'\\'.$data['type_select'];
-            $form->add('type_sub', $class);
+            $form->add('type_sub', 'CommsyBundle\Form\Type\Context\ProjectType');
         }
     }
 
@@ -56,8 +55,7 @@ class AddProjectRoomFieldListener implements EventSubscriberInterface
         $form = $event->getForm();
 
         if (isset($data['type_select']) && $data['type_select'] == 'project') {
-            $class = 'CommsyBundle\Form\Type\Bibliographic'.'\\'.$data['type_select'];
-            $form->add('type_sub', $class);
+            $form->add('type_sub', 'CommsyBundle\Form\Type\Context\ProjectType');
         }
     }
 }

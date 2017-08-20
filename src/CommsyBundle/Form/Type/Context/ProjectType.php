@@ -1,5 +1,5 @@
 <?php
-namespace CommsyBundle\Form\Type\Bibliographic;
+namespace CommsyBundle\Form\Type\Context;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
