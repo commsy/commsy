@@ -22,12 +22,12 @@ class ContextType extends AbstractType
                     'class' => 'uk-form-width-large',
                 ],
             ])
-            ->add('type', ChoiceType::class, array(
+            ->add('type_select', ChoiceType::class, array(
                 'placeholder' => false,
-                'choices' => ['project' => 'project', 'community' => 'community'],
+                'choices' => ['community' => 'community', 'project' => 'project'],
                 'label' => 'context type',
                 'required' => true,
-                'expanded' => true,
+                'expanded' => false,
                 'multiple' => false
             ))
             ->add('master_template', ChoiceType::class, [
@@ -68,7 +68,6 @@ class ContextType extends AbstractType
                 'preferredChoices',
             ])
             ->setDefaults([
-                'data_class' => Room::class,
                 'translation_domain' => 'project',
             ]);
     }
@@ -82,6 +81,6 @@ class ContextType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'project';
+        return 'context';
     }
 }

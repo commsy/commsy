@@ -923,8 +923,8 @@ class RoomController extends Controller
         $defaultId = $legacyEnvironment->getCurrentPortalItem()->getDefaultProjectTemplateID();
         $defaultId = ($defaultId === '-1') ? [] : $defaultId;
 
-        $room = new Room();
-        $form = $this->createForm(ContextType::class, $room, [
+        $formData = [];
+        $form = $this->createForm(ContextType::class, $formData, [
             'templates' => $this->getAvailableTemplates(),
             'preferredChoices' => $defaultId,
         ]);
