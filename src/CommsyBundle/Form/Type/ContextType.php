@@ -26,21 +26,21 @@ class ContextType extends AbstractType
             ])
             ->add('type_select', ChoiceType::class, array(
                 'placeholder' => false,
-                'choices' => ['community' => 'community', 'project' => 'project'],
+                'choices' => ['project' => 'project', 'community' => 'community'],
                 'label' => 'context type',
+                'required' => true,
+                'expanded' => true,
+                'multiple' => false
+            ))
+            ->addEventSubscriber(new AddContextFieldListener())
+            ->add('language', ChoiceType::class, array(
+                'placeholder' => false,
+                'choices' => ['de' => 'de', 'en' => 'en'],
+                'label' => 'language',
                 'required' => true,
                 'expanded' => false,
                 'multiple' => false
             ))
-            ->addEventSubscriber(new AddContextFieldListener())
-            ->add('master_template', ChoiceType::class, [
-                'choices' => $options['templates'],
-                'preferred_choices' => $options['preferredChoices'],
-                'placeholder' => 'Choose a template',
-                'required' => false,
-                'mapped' => false,
-                'label' => 'Template',
-            ])
             ->add('room_description', TextareaType::class, [
                 'attr' => [
                     'rows' => 10,

@@ -2,7 +2,7 @@
 
     "use strict";
 
-    var $type = $('#context_type_select');
+    var $type = $('#context_type_select > input');
     // When sport gets selected ...
     $type.change(function() {
         // ... retrieve the corresponding form.

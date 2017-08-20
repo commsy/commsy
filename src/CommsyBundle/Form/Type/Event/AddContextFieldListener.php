@@ -43,9 +43,12 @@ class AddContextFieldListener implements EventSubscriberInterface
     {
         $data = $event->getData();
         $form = $event->getForm();
+        $formOptions = $form->getConfig()->getOptions();
 
         if (isset($data['type_select']) && $data['type_select'] == 'project') {
-            $form->add('type_sub', 'CommsyBundle\Form\Type\Context\ProjectType');
+            $form->add('type_sub', 'CommsyBundle\Form\Type\Context\ProjectType', $formOptions);
+        } else if (isset($data['type_select']) && $data['type_select'] == 'community') {
+            $form->add('type_sub', 'CommsyBundle\Form\Type\Context\CommunityType', $formOptions);
         }
     }
 
@@ -53,9 +56,12 @@ class AddContextFieldListener implements EventSubscriberInterface
     {
         $data = $event->getData();
         $form = $event->getForm();
+        $formOptions = $form->getConfig()->getOptions();
 
         if (isset($data['type_select']) && $data['type_select'] == 'project') {
-            $form->add('type_sub', 'CommsyBundle\Form\Type\Context\ProjectType');
+            $form->add('type_sub', 'CommsyBundle\Form\Type\Context\ProjectType', $formOptions);
+        } else if (isset($data['type_select']) && $data['type_select'] == 'community') {
+            $form->add('type_sub', 'CommsyBundle\Form\Type\Context\CommunityType', $formOptions);
         }
     }
 }
