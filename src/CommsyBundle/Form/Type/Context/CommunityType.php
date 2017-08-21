@@ -40,7 +40,7 @@ class CommunityType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['templates', 'preferredChoices'])
+            ->setRequired(['templates', 'preferredChoices', 'times', 'communities'])
             ->setDefaults(array('translation_domain' => 'form'))
         ;
     }

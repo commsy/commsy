@@ -30,7 +30,7 @@ class ProjectType extends AbstractType
                 'label' => 'Template',
             ])
             ->add('time_interval', ChoiceType::class, [
-                'choices' => ['2017' => '1', '2017' => '2'],
+                'choices' => $options['times'],
                 'required' => false,
                 'mapped' => false,
                 'expanded' => true,
@@ -39,7 +39,7 @@ class ProjectType extends AbstractType
                 'translation_domain' => 'room',
             ])
             ->add('community_rooms', ChoiceType::class, [
-                'choices' => ['GR1' => '1', 'GR2' => '2'],
+                'choices' => $options['communities'],
                 'required' => false,
                 'mapped' => false,
                 'multiple' => true,
@@ -58,7 +58,7 @@ class ProjectType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['templates', 'preferredChoices'])
+            ->setRequired(['templates', 'preferredChoices', 'times', 'communities'])
             ->setDefaults(array('translation_domain' => 'form'))
         ;
     }

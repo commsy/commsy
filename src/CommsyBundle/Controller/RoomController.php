@@ -923,19 +923,49 @@ class RoomController extends Controller
         $defaultId = $legacyEnvironment->getCurrentPortalItem()->getDefaultProjectTemplateID();
         $defaultId = ($defaultId === '-1') ? [] : $defaultId;
 
+        $type = null;
+        $context = $request->get('context');
+        if ($context) {
+            if (isset($context['type_select'])) {
+                $type = $context['type_select'];
+            }
+        }
+
+        $times = [];
+        foreach ($legacyEnvironment->getCurrentPortalItem()->getTimeList()->to_array() as $timeItem) {
+            $times[$timeItem->getName()] = $timeItem->getItemId();
+        }
+
+        $current_portal = $legacyEnvironment->getCurrentPortalItem();
+        $current_user = $legacyEnvironment->getCurrentUserItem();
+        $community_list = $current_portal->getCommunityList();
+        $community_room_array = array();
+        unset($temp_array);
+        if ($community_list->isNotEmpty()) {
+            $community_item = $community_list->getFirst();
+            while ($community_item) {
+                if ($community_item->isAssignmentOnlyOpenForRoomMembers() ){
+                    if ( $community_item->isUser($current_user)) {
+                        $community_room_array[$community_item->getTitle()] = $community_item->getItemID();
+                    }
+                }else{
+                    $community_room_array[$community_item->getTitle()] = $community_item->getItemID();
+                }
+                $community_item = $community_list->getNext();
+            }
+        }
+
         $formData = [];
         $form = $this->createForm(ContextType::class, $formData, [
-            'templates' => $this->getAvailableTemplates(),
+            'templates' => $this->getAvailableTemplates($type),
             'preferredChoices' => $defaultId,
+            'times' => $times,
+            'communities' => $community_room_array,
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // create a new room using the legacy code
-            $roomService = $this->get('commsy_legacy.room_service');
-            $communityRoom = $roomService->getRoomItem($roomId);
-
             $projectManager = $legacyEnvironment->getProjectManager();
             $legacyRoom = $projectManager->getNewItem();
 
@@ -945,21 +975,33 @@ class RoomController extends Controller
             $legacyRoom->setModificatorItem($currentUser);
             $legacyRoom->setContextID($legacyEnvironment->getCurrentPortalID());
             $legacyRoom->open();
-            $legacyRoom->setRoomContext($communityRoom->getRoomContext());
-            $legacyRoom->setCommunityListByID([$roomId]);
+
+            if (isset($context['type_sub']['community_rooms'])) {
+                $legacyRoom->setCommunityListByID($context['type_sub']['community_rooms']);
+            }
 
             // fill in form values from the new entity object
-            $legacyRoom->setTitle($room->getTitle());
-            $legacyRoom->setDescription($room->getRoomDescription());
+            $legacyRoom->setTitle($context['title']);
+            $legacyRoom->setDescription($context['room_description']);
+            $legacyRoom->setLanguage($context['language']);
+
+            if (!isset($context['type_sub']['time_interval'])) {
+                $legacyRoom->setContinuous();
+                $legacyRoom->setTimeListByID([]);
+            } else {
+                $legacyRoom->setNotContinuous();
+                $legacyRoom->setTimeListByID($context['type_sub']['time_interval']);
+            }
 
             // persist with legacy code
             $legacyRoom->save();
 
-            // take values from a template?
-            if ($form->has('master_template')) {
-                $masterTemplate = $form->get('master_template')->getData();
+            $calendarsService = $this->get('commsy.calendars_service');
+            $calendarsService->createCalendar($legacyRoom, null, null, true);
 
-                $masterRoom = $this->get('commsy_legacy.room_service')->getRoomItem($masterTemplate);
+            // take values from a template?
+            if (isset($context['type_sub']['master_template'])) {
+                $masterRoom = $this->get('commsy_legacy.room_service')->getRoomItem($context['type_sub']['master_template']);
                 if ($masterRoom) {
                     $legacyRoom = $this->copySettings($masterRoom, $legacyRoom);
                 }
@@ -981,7 +1023,7 @@ class RoomController extends Controller
         ];
     }
 
-    private function getAvailableTemplates()
+    private function getAvailableTemplates($type)
     {
         $templates = [];
 
@@ -1049,6 +1091,10 @@ class RoomController extends Controller
                     }
                 }
 
+                if ($type != $template->getItemType()) {
+                    $add = false;
+                }
+
                 if ($add) {
                     $templates[$template->getTitle()] = $template->getItemID();
                 }
@@ -1099,5 +1145,54 @@ class RoomController extends Controller
             }
         }
         return $status;
+    }
+
+    private function copySettings($masterRoom, $targetRoom)
+    {
+        $old_room = $masterRoom;
+        $new_room = $targetRoom;
+
+        $old_room_id = $old_room->getItemID();
+
+        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        /**/
+        $user_manager = $environment->getUserManager();
+        $creator_item = $user_manager->getItem($new_room->getCreatorID());
+        if ($creator_item->getContextID() == $new_room->getItemID()) {
+            $creator_id = $creator_item->getItemID();
+        } else {
+            $user_manager->resetLimits();
+            $user_manager->setContextLimit($new_room->getItemID());
+            $user_manager->setUserIDLimit($creator_item->getUserID());
+            $user_manager->setAuthSourceLimit($creator_item->getAuthSource());
+            $user_manager->setModeratorLimit();
+            $user_manager->select();
+            $user_list = $user_manager->get();
+            if ($user_list->isNotEmpty() and $user_list->getCount() == 1) {
+                $creator_item = $user_list->getFirst();
+                $creator_id = $creator_item->getItemID();
+            } else {
+                throw new \Exception('can not get creator of new room');
+            }
+        }
+        $creator_item->setAccountWantMail('yes');
+        $creator_item->setOpenRoomWantMail('yes');
+        $creator_item->setPublishMaterialWantMail('yes');
+        $creator_item->save();
+
+        // copy room settings
+        require_once('include/inc_room_copy_config.php');
+
+        // save new room
+        $new_room->save();
+
+        // copy data
+        require_once('include/inc_room_copy_data.php');
+        /**/
+
+        $targetRoom = $new_room;
+
+        return $targetRoom;
     }
 }

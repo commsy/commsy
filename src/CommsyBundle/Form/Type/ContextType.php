@@ -72,6 +72,8 @@ class ContextType extends AbstractType
             ->setRequired([
                 'templates',
                 'preferredChoices',
+                'times',
+                'communities',
             ])
             ->setDefaults([
                 'translation_domain' => 'project',
