@@ -194,6 +194,14 @@
                 <source>of</source>
                 <target>von</target>
             </trans-unit>
+            <trans-unit id="confirm">
+                <source>confirm</source>
+                <target>Zustimmen</target>
+            </trans-unit>
+            <trans-unit id="reject">
+                <source>reject</source>
+                <target>Ablehnen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
