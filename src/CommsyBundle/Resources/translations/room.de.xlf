@@ -225,6 +225,13 @@
             <trans-unit id="Create new context">
                 <source>Create new context</source>
                 <target>Neuen Raum anlegen</target>
+            <trans-unit id="confirm">
+                <source>confirm</source>
+                <target>Zustimmen</target>
+            </trans-unit>
+            <trans-unit id="reject">
+                <source>reject</source>
+                <target>Ablehnen</target>
             </trans-unit>
         </body>
     </file>

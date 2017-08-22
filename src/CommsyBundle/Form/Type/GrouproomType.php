@@ -30,6 +30,7 @@ class GrouproomType extends AbstractType
                 'required' => false,
                 'mapped' => false,
                 'label' => 'Template',
+                'translation_domain' => 'group',
             ])
             ->add('save', SubmitType::class, array(
                 'attr' => array(

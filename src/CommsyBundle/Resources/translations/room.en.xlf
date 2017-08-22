@@ -172,7 +172,7 @@
             </trans-unit>
             <trans-unit id="room_agb">
                 <source>AGB</source>
-                <target>AGB</target>
+                <target>Terms of use</target>
             </trans-unit>
             <trans-unit id="room_agb_accept">
                 <source>Accept</source>
@@ -225,6 +225,13 @@
             <trans-unit id="Create new context">
                 <source>Create new context</source>
                 <target>Create new room</target>
+            <trans-unit id="confirm">
+                <source>confirm</source>
+                <target>Confirm</target>
+            </trans-unit>
+            <trans-unit id="reject">
+                <source>reject</source>
+                <target>Reject</target>
             </trans-unit>
         </body>
     </file>
