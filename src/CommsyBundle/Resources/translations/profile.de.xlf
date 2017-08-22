@@ -386,6 +386,10 @@
                 <source>all_none</source>
                 <target>alle / keine</target>
             </trans-unit>
+            <trans-unit id="authentication_source">
+                <source>authSource</source>
+                <target>Authentifizierungsquelle</target>
+            </trans-unit>
             <trans-unit id="profile_image_tip">
                 <source>Profile image tip</source>
                 <target>Wählen Sie ein ungefähr quadratisches Bild mit einer Mindesauflösung von 300x300 Pixeln!</target>

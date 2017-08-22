@@ -388,6 +388,10 @@
                 <source>all_none</source>
                 <target>all / none</target>
             </trans-unit>
+            <trans-unit id="authentication_source">
+                <source>authSource</source>
+                <target>Authentification source</target>
+            </trans-unit>
             <trans-unit id="profile_image_tip">
                 <source>Profile image tip</source>
                 <target>For best results, chose an image with side ratio of approximately 1:1 and a resolution of at least 300x300 pixel!</target>

@@ -313,6 +313,7 @@ class ProfileController extends Controller
     */
     public function mergeAccountsAction($roomId, $itemId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $userTransformer = $this->get('commsy_legacy.transformer.user');
         $userService = $this->get('commsy_legacy.user_service');
         $userItem = $userService->getUser($itemId);
@@ -320,14 +321,30 @@ class ProfileController extends Controller
 
         $request->setLocale($userItem->getLanguage());
 
+        // external auth sources
+        $current_portal_item = $legacyEnvironment->getCurrentPortalItem();
+        if(!isset($current_portal_item)) $current_portal_item = $legacyEnvironment->getServerItem();
+        $auth_sources = [];
+        $auth_source_list = $current_portal_item->getAuthSourceListEnabled();
+        if(isset($auth_source_list) && !$auth_source_list->isEmpty()) {
+            $auth_source_item = $auth_source_list->getFirst();
+
+            while($auth_source_item) {
+                $auth_sources[$auth_source_item->getTitle()] = $auth_source_item->getItemID();
+                $auth_source_item = $auth_source_list->getNext();
+            }
+        }
+        // TODO: this should probably depend on something else apart from just the number of available auth sources!
+        $show_auth_source = count($auth_sources) > 1;
         $form = $this->createForm(ProfileMergeAccountsType::class, $userData, array(
             'itemId' => $itemId,
+            'auth_source_array' => $auth_sources,
+            'show_auth_source' => $show_auth_source,
         ));
 
         $form->handleRequest($request);
         if ($form->isValid()) {
 
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             $authentication = $legacyEnvironment->getAuthenticationObject();
 
             global $c_annonymous_account_array;
@@ -394,7 +411,8 @@ class ProfileController extends Controller
         }
 
         return array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'show_auth_source' => $show_auth_source,
         );
     }
 
