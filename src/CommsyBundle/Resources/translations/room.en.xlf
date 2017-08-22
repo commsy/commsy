@@ -225,6 +225,7 @@
             <trans-unit id="Create new context">
                 <source>Create new context</source>
                 <target>Create new room</target>
+            </trans-unit>
             <trans-unit id="confirm">
                 <source>confirm</source>
                 <target>Confirm</target>
