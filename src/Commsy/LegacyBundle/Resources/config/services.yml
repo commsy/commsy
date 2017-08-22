@@ -116,6 +116,10 @@ services:
         class: Commsy\LegacyBundle\Utils\ProjectService
         arguments: ['@commsy_legacy.environment']
 
+    # Markup
+    commsy_legacy.markup:
+        class: Commsy\LegacyBundle\Services\LegacyMarkup
+
     # Transformer
     commsy_legacy.transformer.general_settings:
         class: Commsy\LegacyBundle\Form\DataTransformer\GeneralSettingsTransformer
