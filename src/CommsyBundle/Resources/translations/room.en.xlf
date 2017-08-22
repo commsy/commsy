@@ -222,6 +222,10 @@
                 <source>Time interval</source>
                 <target>Time interval</target>
             </trans-unit>
+            <trans-unit id="Create new context">
+                <source>Create new context</source>
+                <target>Create new room</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

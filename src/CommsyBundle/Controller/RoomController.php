@@ -966,56 +966,62 @@ class RoomController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $projectManager = $legacyEnvironment->getProjectManager();
-            $legacyRoom = $projectManager->getNewItem();
+            if ($form->get('save')->isClicked()) {
+                $projectManager = $legacyEnvironment->getProjectManager();
+                $legacyRoom = $projectManager->getNewItem();
 
-            $currentUser = $legacyEnvironment->getCurrentUserItem();
-            $legacyRoom->setCreatorItem($currentUser);
-            $legacyRoom->setCreationDate(getCurrentDateTimeInMySQL());
-            $legacyRoom->setModificatorItem($currentUser);
-            $legacyRoom->setContextID($legacyEnvironment->getCurrentPortalID());
-            $legacyRoom->open();
+                $currentUser = $legacyEnvironment->getCurrentUserItem();
+                $legacyRoom->setCreatorItem($currentUser);
+                $legacyRoom->setCreationDate(getCurrentDateTimeInMySQL());
+                $legacyRoom->setModificatorItem($currentUser);
+                $legacyRoom->setContextID($legacyEnvironment->getCurrentPortalID());
+                $legacyRoom->open();
 
-            if (isset($context['type_sub']['community_rooms'])) {
-                $legacyRoom->setCommunityListByID($context['type_sub']['community_rooms']);
-            }
-
-            // fill in form values from the new entity object
-            $legacyRoom->setTitle($context['title']);
-            $legacyRoom->setDescription($context['room_description']);
-            $legacyRoom->setLanguage($context['language']);
-
-            if (!isset($context['type_sub']['time_interval'])) {
-                $legacyRoom->setContinuous();
-                $legacyRoom->setTimeListByID([]);
-            } else {
-                $legacyRoom->setNotContinuous();
-                $legacyRoom->setTimeListByID($context['type_sub']['time_interval']);
-            }
-
-            // persist with legacy code
-            $legacyRoom->save();
-
-            $calendarsService = $this->get('commsy.calendars_service');
-            $calendarsService->createCalendar($legacyRoom, null, null, true);
-
-            // take values from a template?
-            if (isset($context['type_sub']['master_template'])) {
-                $masterRoom = $this->get('commsy_legacy.room_service')->getRoomItem($context['type_sub']['master_template']);
-                if ($masterRoom) {
-                    $legacyRoom = $this->copySettings($masterRoom, $legacyRoom);
+                if (isset($context['type_sub']['community_rooms'])) {
+                    $legacyRoom->setCommunityListByID($context['type_sub']['community_rooms']);
                 }
+
+                // fill in form values from the new entity object
+                $legacyRoom->setTitle($context['title']);
+                $legacyRoom->setDescription($context['room_description']);
+                $legacyRoom->setLanguage($context['language']);
+
+                if (!isset($context['type_sub']['time_interval'])) {
+                    $legacyRoom->setContinuous();
+                    $legacyRoom->setTimeListByID([]);
+                } else {
+                    $legacyRoom->setNotContinuous();
+                    $legacyRoom->setTimeListByID($context['type_sub']['time_interval']);
+                }
+
+                // persist with legacy code
+                $legacyRoom->save();
+
+                $calendarsService = $this->get('commsy.calendars_service');
+                $calendarsService->createCalendar($legacyRoom, null, null, true);
+
+                // take values from a template?
+                if (isset($context['type_sub']['master_template'])) {
+                    $masterRoom = $this->get('commsy_legacy.room_service')->getRoomItem($context['type_sub']['master_template']);
+                    if ($masterRoom) {
+                        $legacyRoom = $this->copySettings($masterRoom, $legacyRoom);
+                    }
+                }
+
+                // mark the room as edited
+                $linkModifierItemManager = $legacyEnvironment->getLinkModifierItemManager();
+                $linkModifierItemManager->markEdited($legacyRoom->getItemID());
+
+                // redirect to the project detail page
+                return $this->redirectToRoute('commsy_project_detail', [
+                    'roomId' => $roomId,
+                    'itemId' => $legacyRoom->getItemId(),
+                ]);
+            } else {
+                return $this->redirectToRoute('commsy_room_listall', [
+                    'roomId' => $roomId,
+                ]);
             }
-
-            // mark the room as edited
-            $linkModifierItemManager = $legacyEnvironment->getLinkModifierItemManager();
-            $linkModifierItemManager->markEdited($legacyRoom->getItemID());
-
-            // redirect to the project detail page
-            return $this->redirectToRoute('commsy_project_detail', [
-                'roomId' => $roomId,
-                'itemId' => $legacyRoom->getItemId(),
-            ]);
         }
 
         return [
