@@ -1054,7 +1054,7 @@ class RoomController extends Controller
                 $linkModifierItemManager->markEdited($legacyRoom->getItemID());
 
                 // redirect to the project detail page
-                return $this->redirectToRoute('commsy_project_detail', [
+                return $this->redirectToRoute('commsy_room_detail', [
                     'roomId' => $roomId,
                     'itemId' => $legacyRoom->getItemId(),
                 ]);
