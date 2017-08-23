@@ -194,6 +194,38 @@
                 <source>of</source>
                 <target>von</target>
             </trans-unit>
+            <trans-unit id="context type">
+                <source>context type</source>
+                <target>Raumtyp</target>
+            </trans-unit>
+            <trans-unit id="Room description">
+                <source>Room description</source>
+                <target>Beschreibung</target>
+            </trans-unit>
+            <trans-unit id="community">
+                <source>community</source>
+                <target>Gemeinschaftsraum</target>
+            </trans-unit>
+            <trans-unit id="language">
+                <source>language</source>
+                <target>Sprache</target>
+            </trans-unit>
+            <trans-unit id="de">
+                <source>de</source>
+                <target>Deutsch</target>
+            </trans-unit>
+            <trans-unit id="en">
+                <source>en</source>
+                <target>Englisch</target>
+            </trans-unit>
+            <trans-unit id="Time interval">
+                <source>Time interval</source>
+                <target>Zeittakte</target>
+            </trans-unit>
+            <trans-unit id="Create new context">
+                <source>Create new context</source>
+                <target>Neuen Raum anlegen</target>
+            </trans-unit>
             <trans-unit id="confirm">
                 <source>confirm</source>
                 <target>Zustimmen</target>
@@ -201,6 +233,14 @@
             <trans-unit id="reject">
                 <source>reject</source>
                 <target>Ablehnen</target>
+            </trans-unit>
+            <trans-unit id="Room description...">
+                <source>Room description...</source>
+                <target>Beschreibung...</target>
+            </trans-unit>
+            <trans-unit id="moderation actions">
+                <source>moderation actions</source>
+                <target>Moderationsaktionen</target>
             </trans-unit>
         </body>
     </file>
