@@ -26,7 +26,7 @@ class ContextType extends AbstractType
             ])
             ->add('type_select', ChoiceType::class, array(
                 'placeholder' => false,
-                'choices' => ['project' => 'project', 'community' => 'community'],
+                'choices' => $options['types'],
                 'label' => 'context type',
                 'required' => true,
                 'expanded' => true,
@@ -77,6 +77,7 @@ class ContextType extends AbstractType
     {
         $resolver
             ->setRequired([
+                'types',
                 'templates',
                 'preferredChoices',
                 'times',

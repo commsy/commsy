@@ -966,8 +966,29 @@ class RoomController extends Controller
             }
         }
 
+        $types = [];
+        $portalUser = $current_user->getRelatedPortalUserItem();
+
+        if ($portalUser->isModerator()) {
+            $types = ['project' => 'project', 'community' => 'community'];
+        } else {
+            $roomService = $this->get('commsy_legacy.room_service');
+            $roomItem = $roomService->getRoomItem($roomId);
+            
+            if ($current_portal->getProjectRoomCreationStatus() == 'portal') {
+                $types['project'] = 'project';
+            } else if ($roomItem->getType() == CS_COMMUNITY_TYPE) {
+                $types['project'] = 'project';
+            }
+
+            if ($current_portal->getCommunityRoomCreationStatus() == 'all') {
+                $types['community'] = 'community';
+            }
+        }
+
         $formData = [];
         $form = $this->createForm(ContextType::class, $formData, [
+            'types' => $types,
             'templates' => $this->getAvailableTemplates($type),
             'preferredChoices' => $defaultId,
             'times' => $times,
