@@ -368,6 +368,16 @@ class RoomController extends Controller
             $legacyEnvironment->deactivateArchiveMode();
         }
 
+        $userMayCreateContext = false;
+        $currentUser = $legacyEnvironment->getCurrentUser();
+        $portalUser = $currentUser->getRelatedPortalUserItem();
+
+        if ($portalUser->isModerator()) {
+            $userMayCreateContext = true;
+        } else if ($portalItem->getCommunityRoomCreationStatus() == 'all' || $portalItem->getProjectRoomCreationStatus() == 'portal') {
+            $userMayCreateContext = $currentUser->isAllowedToCreateContext();
+        }
+
         return [
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
@@ -375,7 +385,7 @@ class RoomController extends Controller
                 'count' => $count,
                 'countAll' => $countAll,
             ],
-            'user' => $legacyEnvironment->getCurrentUserItem(),
+            'userMayCreateContext' => $userMayCreateContext,
         ];
     }
 
