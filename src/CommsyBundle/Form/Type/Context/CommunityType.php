@@ -25,7 +25,7 @@ class CommunityType extends AbstractType
                 'choices' => $options['templates'],
                 'preferred_choices' => $options['preferredChoices'],
                 'placeholder' => 'Choose a template',
-                'required' => false,
+                'required' => $options['linkCommunitiesMandantory'],
                 'mapped' => false,
                 'label' => 'Template',
             ])
@@ -40,7 +40,7 @@ class CommunityType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['types', 'templates', 'preferredChoices', 'times', 'communities'])
+            ->setRequired(['types', 'templates', 'preferredChoices', 'times', 'communities', 'linkCommunitiesMandantory'])
             ->setDefaults(array('translation_domain' => 'form'))
         ;
     }

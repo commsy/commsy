@@ -974,7 +974,7 @@ class RoomController extends Controller
         } else {
             $roomService = $this->get('commsy_legacy.room_service');
             $roomItem = $roomService->getRoomItem($roomId);
-            
+
             if ($current_portal->getProjectRoomCreationStatus() == 'portal') {
                 $types['project'] = 'project';
             } else if ($roomItem->getType() == CS_COMMUNITY_TYPE) {
@@ -986,6 +986,11 @@ class RoomController extends Controller
             }
         }
 
+        $linkCommunitiesMandantory = true;
+        if ($current_portal->getProjectRoomLinkStatus() == 'optional') {
+            $linkCommunitiesMandantory = false;
+        }
+
         $formData = [];
         $form = $this->createForm(ContextType::class, $formData, [
             'types' => $types,
@@ -993,6 +998,7 @@ class RoomController extends Controller
             'preferredChoices' => $defaultId,
             'times' => $times,
             'communities' => $community_room_array,
+            'linkCommunitiesMandantory' => $linkCommunitiesMandantory,
         ]);
 
         $form->handleRequest($request);

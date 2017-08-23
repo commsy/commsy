@@ -20,16 +20,16 @@ class ProjectType extends AbstractType
     {
         $translationDomain = 'form';
 
-        $builder
-            ->add('master_template', ChoiceType::class, [
+        $builder->add('master_template', ChoiceType::class, [
                 'choices' => $options['templates'],
                 'preferred_choices' => $options['preferredChoices'],
                 'placeholder' => 'Choose a template',
                 'required' => false,
                 'mapped' => false,
                 'label' => 'Template',
-            ])
-            ->add('time_interval', ChoiceType::class, [
+            ]);
+        if (!empty($options['times'])) {
+            $builder->add('time_interval', ChoiceType::class, [
                 'choices' => $options['times'],
                 'required' => false,
                 'mapped' => false,
@@ -37,10 +37,11 @@ class ProjectType extends AbstractType
                 'multiple' => true,
                 'label' => 'Time interval',
                 'translation_domain' => 'room',
-            ])
-            ->add('community_rooms', ChoiceType::class, [
+            ]);
+        }
+        $builder->add('community_rooms', ChoiceType::class, [
                 'choices' => $options['communities'],
-                'required' => false,
+                'required' => $options['linkCommunitiesMandantory'],
                 'mapped' => false,
                 'multiple' => true,
                 'expanded' => false,
@@ -58,7 +59,7 @@ class ProjectType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['types', 'templates', 'preferredChoices', 'times', 'communities'])
+            ->setRequired(['types', 'templates', 'preferredChoices', 'times', 'communities', 'linkCommunitiesMandantory'])
             ->setDefaults(array('translation_domain' => 'form'))
         ;
     }
