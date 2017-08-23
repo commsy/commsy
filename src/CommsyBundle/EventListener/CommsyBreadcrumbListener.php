@@ -106,7 +106,9 @@ class CommsyBreadcrumbListener
 
                 // entry title
                 $item = $this->itemService->getTypedItem($request->get('itemId'));
-                $this->breadcrumbs->addItem($item->getItemType() == 'user' ? $item->getFullName() : $item->getTitle());
+                if ($item) {
+                    $this->breadcrumbs->addItem($item->getItemType() == 'user' ? $item->getFullName() : $item->getTitle());
+                }
             }
 
             // rubric only
