@@ -234,6 +234,10 @@
                 <source>reject</source>
                 <target>Ablehnen</target>
             </trans-unit>
+            <trans-unit id="Room description...">
+                <source>Room description...</source>
+                <target>Beschreibung...</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
