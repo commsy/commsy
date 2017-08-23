@@ -375,6 +375,7 @@ class RoomController extends Controller
                 'count' => $count,
                 'countAll' => $countAll,
             ],
+            'user' => $legacyEnvironment->getCurrentUserItem(),
         ];
     }
 
