@@ -32,9 +32,9 @@
                                                 </a>
                                             </li>
                                         {% endif %}
-                                        {% if currentUser.relatedPortalUserItem.isModerator %}
+                                        {% if userMayCreateContext %}
                                             <li>
-                                                <a href="/?cid={{ currentUser.relatedPortalUserItem.contextId }}&mod=home&fct=index&room_id={{ item.itemId }}">
+                                                <a href="/?cid={{ portalId }}&mod=home&fct=index&room_id={{ item.itemId }}">
                                                     <i class="uk-icon-justify uk-icon-small uk-icon-wrench"></i> {{ 'moderation actions'|trans({}, 'room')}}
                                                 </a>
                                             </li>
