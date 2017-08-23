@@ -10,6 +10,10 @@
                 <source>upload error</source>
                 <target>Upload failed, please upload a smaller file.</target>
             </trans-unit>
+            <trans-unit id="error-deprecated-markup">
+                <source>deprecated markup</source>
+                <target>The markup %markup% is no longer supported, please embed media content directly in the editor.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

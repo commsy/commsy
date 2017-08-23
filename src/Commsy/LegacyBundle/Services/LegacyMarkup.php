@@ -9,6 +9,7 @@
 namespace Commsy\LegacyBundle\Services;
 
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class LegacyMarkup
 {
@@ -16,12 +17,15 @@ class LegacyMarkup
 
     private $router;
 
+    private $translator;
+
     private $files;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, Router $router)
+    public function __construct(LegacyEnvironment $legacyEnvironment, Router $router, TranslatorInterface $translator)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->router = $router;
+        $this->translator = $translator;
     }
 
     public function setFiles($files)
@@ -41,6 +45,19 @@ class LegacyMarkup
         $regExpArray['(:image'] = '~\\(:image\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
         $regExpArray['(:item'] = '~\\(:item\\s([0-9]*?)(\\s.*?)?\\s*?:\\)~eu';
         $regExpArray['(:link'] = '~\\(:link\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+
+        $regExpArray['(:quicktime'] = '~\\(:quicktime\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $regExpArray['(:wmplayer'] = '~\\(:wmplayer\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $regExpArray['(:youtube'] = '~\\(:youtube\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $regExpArray['(:podcampus'] = '~\\(:podcampus\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $regExpArray['(:googlevideo'] = '~\\(:googlevideo\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $regExpArray['(:vimeo'] = '~\\(:vimeo\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $regExpArray['(:mp3'] = '~\\(:mp3\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $regExpArray['(:lecture2go'] = '~\\(:lecture2go\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $regExpArray['(:slideshare'] = '~\\(:slideshare\\s(.*?):\\)~eu';
+        $regExpArray['[slideshare'] = '~\[slideshare\\s(.*?)\]~eu';
+        $regExpArray['(:flickr'] = '~\\(:flickr\\s(.*?):\\)~eu';
+        $regExpArray['(:mdo'] = '~\\(:mdo\\s(.*?):\\)~eu';
 
         $matches = [];
 
@@ -70,7 +87,7 @@ class LegacyMarkup
                         }
 
                         if ($check) {
-                            $valueNew = $this->getSubText($text, $value);
+                            $value = $this->getSubText($text, $value);
 
                             # delete HTML-tags and string conversion #########
                             $valueNew = strip_tags($value);
@@ -81,7 +98,7 @@ class LegacyMarkup
                         }
 
                         if ($markup == '(:file' && mb_stristr($valueNew, '(:file')) {
-//                            $valueNew = $this->formatFile($valueNew, $args);
+                            $valueNew = $this->formatFile($valueNew, $args);
                             break;
                         }
 
@@ -103,6 +120,62 @@ class LegacyMarkup
 //                            $valueNew = $this->formatMDO($valueNew, $args);
 //                            break;
 //                        }
+
+                        if ($markup == '(:wmplayer' && mb_stristr($valueNew, '(:wmplayer')) {
+                            $valueNew = $this->formatDeprecated($valueNew, $args);
+
+                            break;
+                        }
+
+                        if ($markup == '(:quicktime' && mb_stristr($valueNew, '(:quicktime')) {
+                            $valueNew = $this->formatDeprecated($valueNew, $args);
+                            break;
+                        }
+
+                        if ($markup == '(:youtube' && mb_stristr($valueNew, '(:youtube')) {
+                            $valueNew = $this->formatYoutube($valueNew, $args);
+                            break;
+                        }
+
+                        if ($markup == '(:googlevideo' && mb_stristr($valueNew, '(:googlevideo')) {
+                            $valueNew = $this->formatDeprecated($valueNew, $args);
+                            break;
+                        }
+
+                        if ($markup == '(:podcampus' && mb_stristr($valueNew, '(:podcampus')) {
+                            $valueNew = $this->formatDeprecated($valueNew, $args);
+                            break;
+                        }
+
+                        if ($markup == '(:vimeo' && mb_stristr($valueNew, '(:vimeo')) {
+                            $valueNew = $this->formatDeprecated($valueNew, $args);
+                            break;
+                        }
+
+                        if ($markup == '(:mp3' && mb_stristr($valueNew, '(:mp3')) {
+                            $valueNew = $this->formatDeprecated($valueNew, $args);
+                            break;
+                        }
+//
+//                        if ($markup == '(:lecture2go' && mb_stristr($valueNew, '(:lecture2go')) {
+//                            $valueNew = $this->formatLecture2Go($valueNew, $args);
+//                            break;
+//                        }
+//
+//                        if ($markup == '(:slideshare' && mb_stristr($valueNew, '(:slideshare')) {
+//                            $valueNew = $this->formatSlideshare($valueNew, $args);
+//                            break;
+//                        }
+//
+//                        if ($markup == '[slideshare' && mb_stristr($valueNew, '[slideshare')) {
+//                            $valueNew = $this->formatSlideshare($valueNew, $args);
+//                            break;
+//                        }
+
+                        if ($markup == '(:flickr' && mb_stristr($valueNew, '(:flickr')) {
+                            $valueNew = $this->formatDeprecated($valueNew, $args);
+                            break;
+                        }
                     }
 
                     $text = str_replace($value, $valueNew, $text);
@@ -354,8 +427,8 @@ class LegacyMarkup
         return $text;
     }
 
-//    private function formatFile($text, $array)
-//    {
+    private function formatFile($text, $array)
+    {
 //        $file_name_array = $this->itemService->getItemFileList(123);
 //
 //
@@ -421,6 +494,48 @@ class LegacyMarkup
 //            $text = str_replace($array[0],$image_text,$text);
 //        }
 //
-//        return $text;
-//    }
+        return $text;
+    }
+
+    private function formatDeprecated($text, $array)
+    {
+        $return = '';
+
+        $return .= '<div class="uk-alert" data-uk-alert><a href="" class="uk-alert-close uk-close"></a><p>';
+        $return .= $this->translator->trans('deprecated markup', [
+            '%markup%' => $array[0],
+        ], 'error');
+        $return .= '</p></div>';
+
+
+        return $return;
+    }
+
+    private function formatYoutube($text, $array)
+    {
+        if (empty($array[1])) {
+            return $text;
+        }
+
+        $src = 'https://www.youtube.com/embed/' . $array[1];
+
+        $args = [];
+        if (!empty($array[2])) {
+            $args = $this->parseArgs($array[2]);
+        }
+
+        $youTubeHTML = '<div class="ckeditor-commsy-video"><iframe allowfullscreen frameborder="0" src="' . $src . '"';
+
+        if (isset($args['width']) && is_numeric($args['width'])) {
+            $youTubeHTML .= ' width="' . $args['width'] . '"';
+        }
+
+        if (isset($args['height']) && is_numeric($args['height'])) {
+            $youTubeHTML .= ' height="' . $args['height'] . '"';
+        }
+
+        $youTubeHTML .= '></iframe></div>';
+
+        return $youTubeHTML;
+    }
 }

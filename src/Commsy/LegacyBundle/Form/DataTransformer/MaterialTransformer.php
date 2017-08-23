@@ -9,12 +9,9 @@ class MaterialTransformer implements DataTransformerInterface
 {
     private $legacyEnvironment;
 
-    private $legacyMarkup;
-
-    public function __construct(LegacyEnvironment $legacyEnvironment, LegacyMarkup $legacyMarkup)
+    public function __construct(LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->legacyMarkup = $legacyMarkup;
     }
 
     /**
@@ -30,7 +27,7 @@ class MaterialTransformer implements DataTransformerInterface
         if ($materialItem) {
             $materialData['title'] = html_entity_decode($materialItem->getTitle());
             $materialData['draft'] = $materialItem->isDraft();
-            $materialData['description'] = $this->legacyMarkup->convertToHTML($materialItem->getDescription());
+            $materialData['description'] = $materialItem->getDescription();
             $materialData['permission'] = $materialItem->isPrivateEditing();
 
             if (get_class($materialItem) != 'cs_section_item') {
