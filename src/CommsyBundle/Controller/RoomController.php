@@ -567,6 +567,7 @@ class RoomController extends Controller
 
         $userMayCreateContext = false;
         $currentUser = $legacyEnvironment->getCurrentUser();
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
         if (!$currentUser->isRoot()) {
             $portalUser = $currentUser->getRelatedPortalUserItem();
 
