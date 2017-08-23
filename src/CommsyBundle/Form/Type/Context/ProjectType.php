@@ -35,7 +35,7 @@ class ProjectType extends AbstractType
                 'mapped' => false,
                 'expanded' => true,
                 'multiple' => true,
-                'label' => 'Time interval',
+                'label' => $options['timesDisplay'],
                 'translation_domain' => 'room',
             ]);
         }
@@ -59,7 +59,7 @@ class ProjectType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['types', 'templates', 'preferredChoices', 'times', 'communities', 'linkCommunitiesMandantory'])
+            ->setRequired(['types', 'templates', 'preferredChoices', 'timesDisplay', 'times', 'communities', 'linkCommunitiesMandantory'])
             ->setDefaults(array('translation_domain' => 'form'))
         ;
     }

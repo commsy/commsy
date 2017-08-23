@@ -80,6 +80,7 @@ class ContextType extends AbstractType
                 'types',
                 'templates',
                 'preferredChoices',
+                'timesDisplay',
                 'times',
                 'communities',
                 'linkCommunitiesMandantory',

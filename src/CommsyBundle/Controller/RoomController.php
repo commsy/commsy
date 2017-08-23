@@ -942,12 +942,14 @@ class RoomController extends Controller
             }
         }
 
+        $current_portal = $legacyEnvironment->getCurrentPortalItem();
+
+        $timesDisplay = $current_portal->getTimeNameArray()[strtoupper($legacyEnvironment->getSelectedLanguage())];
         $times = [];
         foreach ($legacyEnvironment->getCurrentPortalItem()->getTimeList()->to_array() as $timeItem) {
             $times[$timeItem->getName()] = $timeItem->getItemId();
         }
 
-        $current_portal = $legacyEnvironment->getCurrentPortalItem();
         $current_user = $legacyEnvironment->getCurrentUserItem();
         $community_list = $current_portal->getCommunityList();
         $community_room_array = array();
@@ -996,6 +998,7 @@ class RoomController extends Controller
             'types' => $types,
             'templates' => $this->getAvailableTemplates($type),
             'preferredChoices' => $defaultId,
+            'timesDisplay' => $timesDisplay,
             'times' => $times,
             'communities' => $community_room_array,
             'linkCommunitiesMandantory' => $linkCommunitiesMandantory,
