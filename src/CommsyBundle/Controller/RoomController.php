@@ -370,12 +370,16 @@ class RoomController extends Controller
 
         $userMayCreateContext = false;
         $currentUser = $legacyEnvironment->getCurrentUser();
-        $portalUser = $currentUser->getRelatedPortalUserItem();
+        if (!$currentUser->isRoot()) {
+            $portalUser = $currentUser->getRelatedPortalUserItem();
 
-        if ($portalUser->isModerator()) {
+            if ($portalUser->isModerator()) {
+                $userMayCreateContext = true;
+            } else if ($portalItem->getCommunityRoomCreationStatus() == 'all' || $portalItem->getProjectRoomCreationStatus() == 'portal') {
+                $userMayCreateContext = $currentUser->isAllowedToCreateContext();
+            }
+        } else {
             $userMayCreateContext = true;
-        } else if ($portalItem->getCommunityRoomCreationStatus() == 'all' || $portalItem->getProjectRoomCreationStatus() == 'portal') {
-            $userMayCreateContext = $currentUser->isAllowedToCreateContext();
         }
 
         return [
@@ -561,6 +565,20 @@ class RoomController extends Controller
 
         $memberStatus = $userService->getMemberStatus($roomItem, $currentUser);
 
+        $userMayCreateContext = false;
+        $currentUser = $legacyEnvironment->getCurrentUser();
+        if (!$currentUser->isRoot()) {
+            $portalUser = $currentUser->getRelatedPortalUserItem();
+
+            if ($portalUser->isModerator()) {
+                $userMayCreateContext = true;
+            } else if ($portalItem->getCommunityRoomCreationStatus() == 'all' || $portalItem->getProjectRoomCreationStatus() == 'portal') {
+                $userMayCreateContext = $currentUser->isAllowedToCreateContext();
+            }
+        } else {
+            $userMayCreateContext = true;
+        }
+
         return [
             'roomId' => $roomId,
             'item' => $roomItem,
@@ -570,6 +588,8 @@ class RoomController extends Controller
             'readCount' => $infoArray['readCount'],
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'memberStatus' => $memberStatus,
+            'userMayCreateContext' => $userMayCreateContext,
+            'portalId' => $legacyEnvironment->getCurrentPortalItem()->getItemId(),
         ];
     }
 
@@ -944,7 +964,13 @@ class RoomController extends Controller
 
         $current_portal = $legacyEnvironment->getCurrentPortalItem();
 
-        $timesDisplay = $current_portal->getTimeNameArray()[strtoupper($legacyEnvironment->getSelectedLanguage())];
+        $timesDisplay = '';
+        if ($current_portal->getTimeNameArray() && !empty($current_portal->getTimeNameArray())) {
+            if (isset($current_portal->getTimeNameArray()[strtoupper($legacyEnvironment->getSelectedLanguage())])) {
+                $timesDisplay = $current_portal->getTimeNameArray()[strtoupper($legacyEnvironment->getSelectedLanguage())];
+            }
+        }
+
         $times = [];
         foreach ($legacyEnvironment->getCurrentPortalItem()->getTimeList()->to_array() as $timeItem) {
             $times[$timeItem->getName()] = $timeItem->getItemId();
