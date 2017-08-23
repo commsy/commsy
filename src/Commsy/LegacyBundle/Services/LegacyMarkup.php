@@ -8,9 +8,27 @@
 
 namespace Commsy\LegacyBundle\Services;
 
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 class LegacyMarkup
 {
+    private $legacyEnvironment;
+
+    private $router;
+
+    private $files;
+
+    public function __construct(LegacyEnvironment $legacyEnvironment, Router $router)
+    {
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->router = $router;
+    }
+
+    public function setFiles($files)
+    {
+        $this->files = $files;
+    }
+
     public function convertToHTML($text)
     {
         $regExpFatherArray = [
@@ -202,11 +220,59 @@ class LegacyMarkup
 
     private function formatImage($text, $array)
     {
+        if (!isset($this->files)) {
+            return $text;
+        }
 
-        $imageHTML = '<div class="ckeditor-commsy-image"></div>';
-        //<div class="ckeditor-commsy-image"><img height="300" src="/app_dev.php/file/433126" width="400" alt="433126"></div>
+        $args = [];
+        if (isset($array[3])) {
+            $args = $this->parseArgs($array[3]);
+        }
 
-        return $text;
+        $src = $array[1] . $array[2];
+        if (empty($array[1])) {
+            if (!empty($array[2])) {
+                $lookupFileName = htmlentities($array[2], ENT_NOQUOTES, 'UTF-8');
+                if (!isset($this->files[$lookupFileName])) {
+                    $lookupFileName = $array[2];
+                }
+
+                $file = $this->files[$lookupFileName];
+
+                if ($file) {
+                    $lowerFilename = mb_strtolower($file->getFilename(), 'UTF-8');
+                    if (    mb_stristr($lowerFilename, 'png') ||
+                            mb_stristr($lowerFilename, 'jpg') ||
+                            mb_stristr($lowerFilename, 'jpeg') ||
+                            mb_stristr($lowerFilename, 'gif')) {
+
+                        $src = $this->router->generate('commsy_file_getfile', [
+                            'fileId' => $file->getFileID(),
+                            'disposition' => 'inline',
+                        ]);
+                    }
+                }
+
+            }
+        }
+
+        $imageHTML = '<div class="ckeditor-commsy-image"><img src="' . $src . '"';
+
+        if (isset($args['width']) && is_numeric($args['width'])) {
+            $imageHTML .= ' width="' . $args['width'] . '"';
+        }
+
+        if (isset($args['height']) && is_numeric($args['height'])) {
+            $imageHTML .= ' height="' . $args['height'] . '"';
+        }
+
+        if (isset($args['alt'])) {
+            $imageHTML .= ' alt="' . $args['alt'] . '"';
+        }
+
+        $imageHTML .= '/></div>';
+
+        return $imageHTML;
     }
 
     private function formatItem($text, $array)

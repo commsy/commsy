@@ -3,14 +3,18 @@ namespace Commsy\LegacyBundle\Form\DataTransformer;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use Commsy\LegacyBundle\Form\DataTransformer\DataTransformerInterface;
+use Commsy\LegacyBundle\Services\LegacyMarkup;
 
 class MaterialTransformer implements DataTransformerInterface
 {
     private $legacyEnvironment;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
+    private $legacyMarkup;
+
+    public function __construct(LegacyEnvironment $legacyEnvironment, LegacyMarkup $legacyMarkup)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->legacyMarkup = $legacyMarkup;
     }
 
     /**
@@ -26,7 +30,7 @@ class MaterialTransformer implements DataTransformerInterface
         if ($materialItem) {
             $materialData['title'] = html_entity_decode($materialItem->getTitle());
             $materialData['draft'] = $materialItem->isDraft();
-            $materialData['description'] = $materialItem->getDescription();
+            $materialData['description'] = $this->legacyMarkup->convertToHTML($materialItem->getDescription());
             $materialData['permission'] = $materialItem->isPrivateEditing();
 
             if (get_class($materialItem) != 'cs_section_item') {

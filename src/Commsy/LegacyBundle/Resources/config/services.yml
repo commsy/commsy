@@ -119,6 +119,9 @@ services:
     # Markup
     commsy_legacy.markup:
         class: Commsy\LegacyBundle\Services\LegacyMarkup
+        arguments:
+            - '@commsy_legacy.environment'
+            - '@router'
 
     # Transformer
     commsy_legacy.transformer.general_settings:
@@ -147,7 +150,9 @@ services:
 
     commsy_legacy.transformer.material:
         class: Commsy\LegacyBundle\Form\DataTransformer\MaterialTransformer
-        arguments: ['@commsy_legacy.environment']
+        arguments:
+            - '@commsy_legacy.environment'
+            - '@commsy_legacy.markup'
         
     commsy_legacy.transformer.section:
         class: Commsy\LegacyBundle\Form\DataTransformer\SectionTransformer
