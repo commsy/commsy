@@ -751,24 +751,33 @@ class cs_privateroom_item extends cs_room_item
                 // send email
                 $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
 
-                $message = \Swift_Message::newInstance()
-                    ->setSubject($subject)
-                    ->setBody($body, 'text/html')
-                    ->setFrom([$emailFrom => $from])
-                    ->setTo($mail_array);
-
-                if ($symfonyContainer->get('mailer')->send($message, $failures)) {
-                    $retour['success'] = true;
-                    $retour['success_text'] = 'send newsletter to ' . $to;
-                    $this->_send_newsletter = true;
+                $emailHasCorrectFormat = true;
+                foreach ($mail_array as $temp_mail) {
+                    if (!filter_var($temp_mail, FILTER_VALIDATE_EMAIL)) {
+                        $emailHasCorrectFormat = false;
+                    }
                 }
 
-                // flush queue manually
-                $mailer = $symfonyContainer->get('mailer');
-                $transport = $symfonyContainer->get('swiftmailer.transport.real');
+                if ($emailHasCorrectFormat) {
+                    $message = \Swift_Message::newInstance()
+                        ->setSubject($subject)
+                        ->setBody($body, 'text/html')
+                        ->setFrom([$emailFrom => $from])
+                        ->setTo($mail_array);
 
-                $spool = $mailer->getTransport()->getSpool();
-                $spool->flushQueue($transport);
+                    if ($symfonyContainer->get('mailer')->send($message, $failures)) {
+                        $retour['success'] = true;
+                        $retour['success_text'] = 'send newsletter to ' . $to;
+                        $this->_send_newsletter = true;
+                    }
+
+                    // flush queue manually
+                    $mailer = $symfonyContainer->get('mailer');
+                    $transport = $symfonyContainer->get('swiftmailer.transport.real');
+
+                    $spool = $mailer->getTransport()->getSpool();
+                    $spool->flushQueue($transport);
+                }
             } else {
                 $retour['success'] = true;
                 $retour['success_text'] = 'no user in room want the newsletter';
