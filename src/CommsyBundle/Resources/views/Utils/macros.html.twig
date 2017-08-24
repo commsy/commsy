@@ -463,6 +463,8 @@
             {{ 'Your request has not been processed yet.'|trans({}, 'room') }}
         {% elseif contextMemberStatus == 'rejected' %}
             {{ 'Your request has been rejected.'|trans({}, 'room') }}
+        {% elseif contextMemberStatus == 'closed' %}
+            {{ 'Archived room'|trans({}, 'room') }}
         {% else %}
             <a href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}">{{ 'become member'|trans({}, 'room') }}</a>
         {% endif %}
@@ -481,6 +483,8 @@
             <i class="uk-icon-spinner uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'Your request has not been processed yet.'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
         {% elseif contextMemberStatus == 'rejected' %}
             <i class="uk-icon-lock uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'Your request has been rejected.'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
+        {% elseif contextMemberStatus == 'closed' %}
+            <i class="uk-icon-file-archive-o uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'Archived room'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
         {% else %}
             <a href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon-user-plus uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'become member'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i></a>
         {% endif %}

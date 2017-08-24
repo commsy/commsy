@@ -242,6 +242,10 @@
                 <source>moderation actions</source>
                 <target>Moderationsaktionen</target>
             </trans-unit>
+            <trans-unit id="Archived room">
+                <source>Archived room</source>
+                <target>Archivierter Raum</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
