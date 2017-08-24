@@ -2771,13 +2771,9 @@ class cs_context_item extends cs_item {
    * @return boolean
    */
   function isWordpressActive () {
-    $retour = false;
-    $active = $this->_getExtra('WORDPRESSLINK');
-    if ($active == 1) {
-      $retour = true;
-      $retour = $retour and $this->withWordpressFunctions();
-    }
-    return $retour;
+    global $symfonyContainer;
+    $wordpressService = $symfonyContainer->get('commsy_wordpress.wordpress');
+    return $wordpressService->isWordpressEnabled($this->getItemId());
   }
 
   /** set activity of the wordpress link, INTERNAL

@@ -626,6 +626,29 @@ class SoapService
         $sessionManager = $this->legacyEnvironment->getSessionManager();
         $sessionManager->updateSessionCreationDate($sessionId);
     }
+
+    public function authenticateViaSession($session_id) {
+        $session_id = $this->_encode_input($session_id);
+        if ($this->_isSessionValid($session_id)) {
+            $this->_updateSessionCreationDate($session_id);
+            $session_manager = $this->legacyEnvironment->getSessionManager();
+            $session_item = $session_manager->get($session_id);
+            return $session_item->getValue('user_id');
+        } else {
+            return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+        }
+    }
+
+    private function _isSessionValid ($session_id) {
+        $retour = false;
+        $session_manager = $this->legacyEnvironment->getSessionManager();
+        $session_item = $session_manager->get($session_id);
+        if ( isset($session_item) and $session_item->issetValue('user_id') ) {
+            $this->_valid_session_id_array[$session_id] = $session_id;
+            $retour = true;
+        }
+        return $retour;
+    }
 }
 
 /**

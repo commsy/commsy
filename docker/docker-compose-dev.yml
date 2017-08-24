@@ -8,6 +8,7 @@ services:
       - "./.data/debug:/tmp"
     links:
       - commsy_mailhog
+      - commsy_wordpress
 
   commsy_mailhog:
     image: mailhog/mailhog:latest
@@ -28,6 +29,24 @@ services:
   commsy_elastic:
     environment:
       cluster.routing.allocation.disk.threshold_enabled: "false"
+
+  commsy_wordpress:
+    image: wordpress
+    container_name: commsy_wordpress
+    links:
+     - commsy_wordpress_mysql
+    environment:
+     - WORDPRESS_DB_PASSWORD=password
+     - WORDPRESS_DB_HOST=commsy_wordpress_mysql
+    ports:
+     - "8081:80"
+
+  commsy_wordpress_mysql:
+    image: mysql:5.7
+    container_name: commsy_wordpress_mysql
+    environment:
+     - MYSQL_ROOT_PASSWORD=password
+     - MYSQL_DATABASE=wordpress
 
 volumes:
   commsy-unison-sync:
