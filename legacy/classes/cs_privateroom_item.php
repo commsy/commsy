@@ -749,6 +749,7 @@ class cs_privateroom_item extends cs_room_item
                 }
 
                 // send email
+                global $symfonyContainer;
                 $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
 
                 $emailHasCorrectFormat = true;
