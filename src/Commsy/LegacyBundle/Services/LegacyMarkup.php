@@ -183,6 +183,19 @@ class LegacyMarkup
             }
         }
 
+        // CS8-Video
+        $cs8VideoRegex = '~<div\sclass="commsyPlayer">.*?<source\ssrc=".*?iid=(\d*?)".*?<\/div>~us';
+        $cs8VideoFound = preg_match_all($cs8VideoRegex, $text, $cs8VideoMatches, PREG_SET_ORDER);
+
+        if ($cs8VideoFound) {
+            foreach ($cs8VideoMatches as $cs8VideoMatch) {
+                $cs8VideoHTML = $cs8VideoMatch[0];
+                $cs8VideoReplace = $this->formatCS8Video($cs8VideoHTML, $cs8VideoMatch[1]);
+
+                $text = str_replace($cs8VideoHTML, $cs8VideoReplace, $text);
+            }
+        }
+
         return $text;
     }
 
@@ -537,5 +550,19 @@ class LegacyMarkup
         $youTubeHTML .= '></iframe></div>';
 
         return $youTubeHTML;
+    }
+
+    private function formatCS8Video($text, $fileId)
+    {
+        $src = $this->router->generate('commsy_file_getfile', [
+            'fileId' => $fileId,
+            'disposition' => 'inline',
+        ]);
+
+        $videoHTML = '<div class="ckeditor-commsy-video" data-type="commsy"><video class="video-js vjs-default-skin" controls src="' . $src . '"';
+
+        $videoHTML .= '></video></div>';
+
+        return $videoHTML;
     }
 }
