@@ -910,6 +910,7 @@ class GroupController extends Controller
                     if ($masterRoom) {
                         $groupRoom = $this->copySettings($masterRoom, $groupRoom);
                     }
+                    $groupItem->save(true);
                 }
 
             } else {
