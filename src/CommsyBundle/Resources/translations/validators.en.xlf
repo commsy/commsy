@@ -34,6 +34,14 @@
                 <source>There are no recipients selected</source>
                 <target>There are no recipients selected.</target>
             </trans-unit>
+            <trans-unit id="min_1_category">
+                <source>Please select at least one category</source>
+                <target>Please select at least one category!</target>
+            </trans-unit>
+            <trans-unit id="min_1_hashtag">
+                <source>Please select at least one hashtag</source>
+                <target>Please select at least one hashtag!</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -6,19 +6,22 @@ use Symfony\Component\Form\Form;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use Commsy\LegacyBundle\Utils\RoomService;
+use Commsy\LegacyBundle\Utils\DateService;
 
 class RoomFeedGenerator
 {
     private $legacyEnvironment;
     private $roomService;
+    private $dateService;
 
     private $itemManager;
     private $limits = array();
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService)
+    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, DateService $dateService)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->roomService = $roomService;
+        $this->dateService = $dateService;
 
         $this->itemManager = $this->legacyEnvironment->getItemManager();
         $this->itemManager->reset();
@@ -56,6 +59,8 @@ class RoomFeedGenerator
         $this->itemManager->select();
         $itemList = $this->itemManager->get();
 
+        $recurringDates = [];
+
         // TODO: group by rubric and get items chunkwise
 
         // iterate items and build up feed list
@@ -88,7 +93,15 @@ class RoomFeedGenerator
                         $datesManager = $this->legacyEnvironment->getDatesManager();
                         $dateItem = $datesManager->getItem($item->getItemId());
                         if ($dateItem) {
-                            $feedList[] = $dateItem;
+                            if ($dateItem->getRecurrencePattern() == '') {
+                                $feedList[] = $dateItem;
+                            }
+                            else {
+                                $recurringDates[] = $this->dateService->getRecurringDates($dateItem->getContextId(), $dateItem->getRecurrenceId());
+                                if (count($recurringDates) && !in_array($dateItem, $recurringDates[0])) {
+                                    $feedList[] = $dateItem;
+                                }
+                            }
                         }
                         break;
     

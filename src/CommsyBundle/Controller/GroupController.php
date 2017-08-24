@@ -152,7 +152,7 @@ class GroupController extends Controller
      * @Route("/room/{roomId}/group/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'title', Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
@@ -355,6 +355,12 @@ class GroupController extends Controller
             $alert['content'] = $translator->trans('item is locked', array(), 'item');
         }
 
+        $pathTopicItem = null;
+        if ($request->query->get('path')) {
+            $topicService = $this->get('commsy_legacy.topic_service');
+            $pathTopicItem = $topicService->getTopic($request->query->get('path'));
+        }
+
         return array(
             'roomId' => $roomId,
             'group' => $infoArray['group'],
@@ -382,6 +388,7 @@ class GroupController extends Controller
             'memberStatus' => $memberStatus,
             'annotationForm' => $form->createView(),
             'alert' => $alert,
+            'pathTopicItem' => $pathTopicItem,
        );
     }
 
@@ -670,13 +677,24 @@ class GroupController extends Controller
         
         $formData = array();
         $groupItem = NULL;
-        
+
+        $isDraft = $item->isDraft();
+
+        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
+        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
+
         // get date from DateService
         $groupItem = $groupService->getGroup($itemId);
         if (!$groupItem) {
             throw $this->createNotFoundException('No group found for id ' . $itemId);
         }
+        $itemController = $this->get('commsy.item_controller');
         $formData = $transformer->transform($groupItem);
+        $formData['categoriesMandatory'] = $categoriesMandatory;
+        $formData['hashtagsMandatory'] = $hashtagsMandatory;
+        $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
+        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+        $formData['draft'] = $isDraft;
         $translator = $this->get('translator');
         $form = $this->createForm(GroupType::class, $formData, array(
             'action' => $this->generateUrl('commsy_group_edit', array(
@@ -684,7 +702,15 @@ class GroupController extends Controller
                 'itemId' => $itemId,
             )),
             'placeholderText' => '['.$translator->trans('insert title').']',
-        ));
+            'categoryMappingOptions' => [
+                'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service'))
+            ],
+            'hashtagMappingOptions' => [
+                'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
+                'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId])
+            ],
+    ));
         
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -693,6 +719,15 @@ class GroupController extends Controller
 
                 // update modifier
                 $groupItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                // set linked hashtags and categories
+                $formData = $form->getData();
+                if ($categoriesMandatory) {
+                    $groupItem->setTagListByID($formData['category_mapping']['categories']);
+                }
+                if ($hashtagsMandatory) {
+                    $groupItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                }
 
                 $groupItem->save();
                 
@@ -715,8 +750,9 @@ class GroupController extends Controller
 
         return array(
             'form' => $form->createView(),
-            'showHashtags' => $current_context->withBuzzwords(),
-            'showCategories' => $current_context->withTags(),
+            'isDraft' => $isDraft,
+            'showHashtags' => $hashtagsMandatory,
+            'showCategories' => $categoriesMandatory,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
         );
     }
@@ -874,6 +910,7 @@ class GroupController extends Controller
                     if ($masterRoom) {
                         $groupRoom = $this->copySettings($masterRoom, $groupRoom);
                     }
+                    $groupItem->save(true);
                 }
 
             } else {

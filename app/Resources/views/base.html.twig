@@ -47,8 +47,10 @@
                     <div class="uk-navbar-content">
                         {# global search #}
                         {{ render(controller(
-                            'CommsyBundle:Search:searchForm',
-                            { 'roomId': app.request.attributes.get('roomId') }
+                            'CommsyBundle:Search:searchForm', {
+                                'roomId': app.request.attributes.get('roomId'),
+                                'postData': app.request.request.get('search')
+                            }
                         ))}}
                     </div>
                     
@@ -153,7 +155,7 @@
         </div>
         
         {% block javascripts %}
-            <script src="{{ absolute_url(asset('js/build/commsy.js'|asset_version) )}}"></script>
+            <script src="{{ absolute_url(asset('js/build/commsy.js') )}}"></script>
         {% endblock %}
     </body>
 </html>

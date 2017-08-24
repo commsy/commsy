@@ -62,6 +62,7 @@ class ItemLinksType extends AbstractType
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true,
+                'constraints' => $options['categoryConstraints'],
             ))
             ->add('hashtags', ChoiceType::class, array(
                 'placeholder' => false,
@@ -69,7 +70,8 @@ class ItemLinksType extends AbstractType
                 'label' => 'hashtags',
                 'required' => false,
                 'expanded' => true,
-                'multiple' => true
+                'multiple' => true,
+                'constraints' => $options['hashtagConstraints'],
             ))
             ->add('newHashtag', TextType::class, array(
                 'attr' => array(
@@ -121,7 +123,9 @@ class ItemLinksType extends AbstractType
                 'itemsLinked',
                 'itemsLatest',
                 'categories',
+                'categoryConstraints',
                 'hashtags',
+                'hashtagConstraints',
                 'hashtagEditUrl',
                 'placeholderText',
             ])

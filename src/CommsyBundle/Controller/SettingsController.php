@@ -312,7 +312,7 @@ class SettingsController extends Controller
      */
     public function deleteAction($roomId, Request $request)
     {
-        $form = $this->createForm(DeleteType::class, [], []);
+        $form = $this->createForm(DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], []);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

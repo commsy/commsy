@@ -154,6 +154,11 @@
                     </div>
                 {%  endif %}
             </div>
+
+            {% if isDraft and (showHashtags or showCategories) %}
+                {{ macros.mandatoryLinks(showHashtags, showCategories, form) }}
+            {% endif %}
+
             <div class="uk-flex uk-margin-small-top">
                 {% if not withRecurrence %}
                 <div class="uk-margin-small-left">

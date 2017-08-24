@@ -87,6 +87,8 @@ if ( !empty($_POST['password']) ) {
 
 $count = 0;
 
+$redirectAfterLogin = false;
+
 if (!$shib_direct_login){
 	//Shibboleth
 	// Über das Portal überprüfen, ob Shibboleth als Auth eingestellt ist
@@ -231,6 +233,25 @@ if (!$shib_direct_login){
 	         $auth_source = $authentication->getAuthSourceItemID();
 	      }
 	      $session->setValue('auth_source',$auth_source);
+
+           if(isset($auth_item) && !empty($auth_item)) {
+               $userManager = $environment->getUserManager();
+               $userExists = $userManager->exists($user_id);
+
+               if($userExists){
+                   $userItem = $authentication->_getPortalUserItem($user_id,$authentication->_auth_source_granted);
+                   if(isset($userItem)) {
+                       global $symfonyContainer;
+                       $router = $symfonyContainer->get('router');
+
+                       $dashboardUrl = $router->generate('commsy_dashboard_overview', [
+                           'roomId' => $userItem->getOwnRoom()->getItemId(),
+                       ]);
+
+                       $redirectAfterLogin = $dashboardUrl;
+                   }
+               }
+           }
 	
 	   } else {
 	   	  // user access is not granted 
@@ -432,24 +453,8 @@ if ( isset($session) ) {
 }
 
 // redirect
-if ( !empty($_POST['login_redirect']) ) {
-   $cid = $environment->getCurrentContextID();
-   if ( !empty($_POST['login_redirect']['cid']) ) {
-      $cid = $_POST['login_redirect']['cid'];
-   }
-   $mod = 'home';
-   if ( !empty($_POST['login_redirect']['mod']) ) {
-      $mod = $_POST['login_redirect']['mod'];
-   }
-   $fct = 'index';
-   if ( !empty($_POST['login_redirect']['fct']) ) {
-      $fct = $_POST['login_redirect']['fct'];
-   }
-   $params = $_POST['login_redirect'];
-   unset($params['cid']);
-   unset($params['mod']);
-   unset($params['fct']);
-   redirect($cid,$mod,$fct,$params);
+if (!empty($_POST['login_redirect'])) {
+    redirect_with_url($_POST['login_redirect']);
 } elseif ( !empty($_GET['target_cid']) ) {
    $mod = 'home';
    $fct = 'index';
@@ -485,12 +490,15 @@ if ( !empty($_POST['login_redirect']) ) {
          $params['auth_source'] = $auth_source;
       }
    }
-   if ( $mod == 'context'
-        and $fct == 'login'
-      ) {
+   if ($mod == 'context' && $fct == 'login') {
       $mod = 'home';
       $fct = 'index';
+
+      if ($redirectAfterLogin) {
+          redirect_with_url($redirectAfterLogin);
+	  }
    }
+
    redirect($cid,$mod,$fct,$params,'','',$back_file);
 }
 ?>

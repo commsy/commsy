@@ -56,7 +56,7 @@
                         {% endif %}
                         <a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/{{ feedItemTpe }}/{{ feedItem.itemID }}">
                         {% if feedItem.itemType != 'user' %}
-                            {{ feedItem.title|decodeHtmlEntity }}
+                            {{ feedItem.title|decodeHtmlEntity }} {% if feedItem.itemType == 'date' and feedItem.getRecurrencePattern != '' %} ({{ 'recurring date'|trans({}, 'date') }}) {% endif %}
                         {% else %}
                             {{ feedItem.getFullName }}
                         {% endif %}

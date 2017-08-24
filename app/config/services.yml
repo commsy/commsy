@@ -24,9 +24,3 @@ services:
         class: Twig_Extensions_Extension_Text
         tags:
             - { name: twig.extension }
-
-    twig.extension.asset_version:
-        class: CommsyBundle\Twig\Extension\AssetVersionExtension
-        arguments: [%kernel.root_dir%]
-        tags:
-            - { name: twig.extension }

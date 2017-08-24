@@ -35,7 +35,8 @@ framework:
         handler_id: ~
     fragments:       ~
     http_method_override: true
-    assets: ~
+    assets:
+        json_manifest_path: '%kernel.root_dir%/Resources/assets/manifests/rev-manifest.json'
 
 # Twig Configuration
 twig:

@@ -569,6 +569,12 @@ class DateController extends Controller
             $alert['content'] = $translator->trans('date is external', array(), 'date');
         }
 
+        $pathTopicItem = null;
+        if ($request->query->get('path')) {
+            $topicService = $this->get('commsy_legacy.topic_service');
+            $pathTopicItem = $topicService->getTopic($request->query->get('path'));
+        }
+
         return array(
             'roomId' => $roomId,
             'date' => $dateService->getDate($itemId),
@@ -586,6 +592,7 @@ class DateController extends Controller
             'isParticipating' => $date->isParticipant($legacyEnvironment->getCurrentUserItem()),
             'isRecurring' => ($date->getRecurrenceId() != ''),
             'alert' => $alert,
+            'pathTopicItem' => $pathTopicItem,
         );
     }
     
@@ -995,7 +1002,11 @@ class DateController extends Controller
         $current_context = $legacyEnvironment->getCurrentContextItem();
         
         $formData = array();
-        $materialItem = NULL;
+
+        $isDraft = $item->isDraft();
+
+        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
+        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
 
         // get date from DateService
         $dateItem = $dateService->getDate($itemId);
@@ -1003,7 +1014,13 @@ class DateController extends Controller
             throw $this->createNotFoundException('No date found for id ' . $itemId);
         }
 
+        $itemController = $this->get('commsy.item_controller');
         $formData = $transformer->transform($dateItem);
+        $formData['categoriesMandatory'] = $categoriesMandatory;
+        $formData['hashtagsMandatory'] = $hashtagsMandatory;
+        $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
+        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+        $formData['draft'] = $isDraft;
 
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('CommsyBundle:Calendars');
@@ -1027,6 +1044,14 @@ class DateController extends Controller
             'placeholderText' => '['.$translator->trans('insert title').']',
             'calendars' => $calendarsOptions,
             'calendarsAttr' => $calendarsOptionsAttr,
+            'categoryMappingOptions' => [
+                'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service'))
+            ],
+            'hashtagMappingOptions' => [
+                'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
+                'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId])
+            ],
         );
         if ($dateItem->getRecurrencePattern() != '') {
             $formOptions['attr']['unsetRecurrence'] = true;
@@ -1049,6 +1074,14 @@ class DateController extends Controller
 
                 // update modifier
                 $dateItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                // set linked hashtags and categories
+                $formData = $form->getData();
+                if ($categoriesMandatory) {
+                    $dateItem->setTagListByID($formData['category_mapping']['categories']);
+                }
+                if ($hashtagsMandatory) {
+                    $dateItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                }
 
                 $valuesToChange = array();
                 if($valuesBeforeChange['startingTime'] != $dateItem->getStartingTime()){
@@ -1120,8 +1153,9 @@ class DateController extends Controller
 
         return array(
             'form' => $form->createView(),
-            'showHashtags' => $current_context->withBuzzwords(),
-            'showCategories' => $current_context->withTags(),
+            'isDraft' => $isDraft,
+            'showHashtags' => $hashtagsMandatory,
+            'showCategories' => $categoriesMandatory,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
             'withRecurrence' => $dateItem->getRecurrencePattern() != '',
             'date' => $dateItem,

@@ -444,7 +444,12 @@ services:
         class: CommsyBundle\Form\Type\TopicType
         tags:
             - { name: form.type }
-            
+
+    commsy.form.type.topicpath:
+        class: CommsyBundle\Form\Type\TopicPathType
+        tags:
+            - { name: form.type }
+
     commsy.form.type.discussion:
         class: CommsyBundle\Form\Type\DiscussionType
         tags:
@@ -561,7 +566,7 @@ services:
     # API
     commsy.api.soap:
         class: CommsyBundle\Services\SoapService
-        arguments: ['@commsy_legacy.environment']
+        arguments: ['@commsy_legacy.environment', '@service_container']
 
     # Feed
     debril.provider.default:

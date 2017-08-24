@@ -103,6 +103,8 @@ class UserTransformer implements DataTransformerInterface
 
                 $session_manager->save($session);
                 unset($session_manager);
+
+                $portalUser->setUserId($userData['userId']); // Important, as this object is savd again later!
             }
             else{
                 die("ERROR: changing User ID not successful");
@@ -111,6 +113,19 @@ class UserTransformer implements DataTransformerInterface
             $userObject->setFirstname($userData['firstname']);
             $userObject->setLastname($userData['lastname']);
             $userObject->setLanguage($userData['language']);
+
+            // since name and language are now configured in the account settings,
+            // they always have to be changed for the list of related users as well
+            $userList = $userObject->getRelatedUserList();
+            $tempUserItem = $userList->getFirst();
+            while ($tempUserItem) {
+                $tempUserItem->setFirstname($userData['firstname']);
+                $tempUserItem->setLastname($userData['lastname']);
+                $tempUserItem->setLanguage($userData['language']);
+                $tempUserItem->save();
+                $tempUserItem = $userList->getNext();
+            }
+
             if ($userData['autoSaveStatus']) {
                 $userObject->turnAutoSaveOn();
             } else {
@@ -131,6 +146,11 @@ class UserTransformer implements DataTransformerInterface
                 $userObject->setUsePortalEmail(0);
                 $userObject->setEmail($userData['emailRoom']);
             }
+            if (isset($userData['emailAccount'])) {
+                $portalUser->setEmail($userData['emailAccount']);
+                $portalUser->save();
+            }
+
             if ($userData['hideEmailInThisRoom']) {
                 $userObject->setEmailNotVisible();
             } else {

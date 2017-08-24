@@ -22,16 +22,17 @@ class SearchFilterType extends AbstractType
     {
         $builder
             ->add('query', Types\HiddenType::class, [
+                'label' => false,
             ])
-            ->add('rooms', Filters\ChoiceFilterType::class, [
-                'choices' => [
-                    'Raum A' => 1,
-                    'Raum B' => 2,
+            ->add('all_rooms', Filters\CheckboxFilterType::class, [
+                'attr' => [
+                    'onchange' => 'this.form.submit()',
                 ],
-                'expanded' => true,
-                'multiple' => true,
-            ])
-            ->add('submit', Types\SubmitType::class, [
+                'label' => 'Search in all my rooms',
+                'translation_domain' => 'search',
+                'label_attr' => [
+                    'class' => 'uk-form-label',
+                ],
             ])
         ;
     }

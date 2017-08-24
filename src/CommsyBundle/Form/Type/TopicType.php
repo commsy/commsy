@@ -3,6 +3,8 @@ namespace CommsyBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -11,6 +13,8 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use CommsyBundle\Form\Type\Custom\DateTimeSelectType;
+use CommsyBundle\Form\Type\Custom\MandatoryCategoryMappingType;
+use CommsyBundle\Form\Type\Custom\MandatoryHashtagMappingType;
 
 use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
 
@@ -41,6 +45,22 @@ class TopicType extends AbstractType
             ->add('hiddendate', DateTimeSelectType::class, array(
                 'label' => 'hidden until',
             ))
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+                $topic= $event->getData();
+                $form = $event->getForm();
+                $formOptions = $form->getConfig()->getOptions();
+
+                if ($topic['draft']) {
+                    if ($topic['hashtagsMandatory'] && $formOptions['hashtagMappingOptions']) {
+                        $form->add('hashtag_mapping', MandatoryHashtagMappingType::class, $formOptions['hashtagMappingOptions']);
+                    }
+                    if ($topic['categoriesMandatory'] && $formOptions['hashtagMappingOptions']) {
+                        $form->add('category_mapping', MandatoryCategoryMappingType::class, $formOptions['categoryMappingOptions']);
+                    }
+                }
+
+            })
+
             ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
@@ -65,7 +85,7 @@ class TopicType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['placeholderText'])
+            ->setRequired(['placeholderText', 'hashtagMappingOptions', 'categoryMappingOptions'])
             ->setDefaults(array('translation_domain' => 'form'))
         ;
     }

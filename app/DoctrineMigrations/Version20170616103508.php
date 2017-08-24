@@ -132,7 +132,7 @@ class Version20170616103508 extends AbstractMigration implements ContainerAwareI
         foreach ($rooms as $room) {
             $queryBuilderDates = $this->connection->createQueryBuilder();
 
-            $extras = unserialize($room['extras']);
+            $extras = $this->convertToPHPValue($room['extras']);
             $language = 'de';
             if (isset($extras['LANGUAGE'])) {
                 $language = $extras['LANGUAGE'];
@@ -143,7 +143,6 @@ class Version20170616103508 extends AbstractMigration implements ContainerAwareI
                 ->insert('calendars')
                 ->values(
                     array(
-                        'id' => '?',
                         'context_id' => '?',
                         'title' => '?',
                         'color' => '?',
@@ -151,12 +150,11 @@ class Version20170616103508 extends AbstractMigration implements ContainerAwareI
                         'default_calendar' => '?'
                     )
                 )
-                ->setParameter(0, '')
-                ->setParameter(1, $room['item_id'])
-                ->setParameter(2, $translator->trans('Standard', array(), 'date'))
-                ->setParameter(3, '#ffffff')
-                ->setParameter(4, '')
-                ->setParameter(5, '1')
+                ->setParameter(0, $room['item_id'])
+                ->setParameter(1, $translator->trans('Standard', array(), 'date'))
+                ->setParameter(2, '#ffffff')
+                ->setParameter(3, '')
+                ->setParameter(4, '1')
                 ->execute();
             ;
 
@@ -211,7 +209,6 @@ class Version20170616103508 extends AbstractMigration implements ContainerAwareI
                     ->insert('calendars')
                     ->values(
                         array(
-                            'id' => '?',
                             'context_id' => '?',
                             'title' => '?',
                             'color' => '?',
@@ -219,12 +216,11 @@ class Version20170616103508 extends AbstractMigration implements ContainerAwareI
                             'default_calendar' => '?'
                         )
                     )
-                    ->setParameter(0, '')
-                    ->setParameter(1, $room['item_id'])
-                    ->setParameter(2, $translator->trans($currentColorName, array(), 'date'))
-                    ->setParameter(3, $currentColor)
-                    ->setParameter(4, '')
-                    ->setParameter(5, '0')
+                    ->setParameter(0, $room['item_id'])
+                    ->setParameter(1, $translator->trans($currentColorName, array(), 'date'))
+                    ->setParameter(2, $currentColor)
+                    ->setParameter(3, '')
+                    ->setParameter(4, '0')
                     ->execute();
                 ;
 
@@ -254,5 +250,35 @@ class Version20170616103508 extends AbstractMigration implements ContainerAwareI
             ->setParameter("calendarId", $calendarId)
             ->setParameter("itemId", $itemId)
             ->execute();
+    }
+
+    private function convertToPHPValue($value)
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $value = (is_resource($value)) ? stream_get_contents($value) : $value;
+
+        if (empty($value)) {
+            return array();
+        }
+
+        $value = preg_replace_callback('/s:(\d+):"(.*?)";(?=\}|i|s|a)/s', function($match) {
+            $length = strlen($match[2]);
+            $data = $match[2];
+
+            return "s:$length:\"$data\";";
+        }, $value );
+
+        $val = @unserialize($value);
+        if ($val === false && $value != 'b:0;') {
+            // TODO: this is temporary, we need to fix db entries
+            return array();
+
+            //throw ConversionException::conversionFailed($value, $this->getName());
+        }
+
+        return $val;
     }
 }

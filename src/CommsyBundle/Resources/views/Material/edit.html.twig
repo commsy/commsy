@@ -1,3 +1,5 @@
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+
 <div class="uk-margin-right uk-margin-bottom uk-position-relative uk-padding-remove">
     {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
     <div class="uk-form-horizontal">
@@ -5,128 +7,92 @@
         {{ form_errors(form) }}
         <div class="uk-flex">
             <div class="uk-width-9-10">
-                    {{ form_widget(form.title) }}
+                {{ form_widget(form.title) }}
+                {{ form_errors(form.title) }}
             </div>
         </div>
-        {% if not form.biblio_sub is defined %}
-            {% if form.vars.name != "section"  %}
-                <div class="uk-margin-top">
-                    {% if form.editor_switch is defined %}
-                        <div class="uk-form-row">
-                            {{ form_label(form.editor_switch) }}
-                            <div class="uk-margin-left">
-                                {{ form_widget(form.editor_switch) }}
-                                <i class="uk-icon-question-circle uk-icon-justify uk-icon-small uk-icon-bottom" data-uk-tooltip="{pos:'right'}" title="{{ 'etherpadText' | trans({}, 'form') }}"></i>
-                            </div>
-                        </div>
-                    {% endif %}
+        {% if form.vars.name != "section"  %}
+            <div class="uk-margin-top">
+                {% if form.editor_switch is defined %}
                     <div class="uk-form-row">
-                        <label class="uk-form-label">
-                            {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
-                        </label>
-                        <div class="uk-margin-left">
-                            {{ form_widget(form.permission) }}
-                        </div>
-                    </div>
-                    <div class="uk-form-row">
-                        <label class="uk-form-label">{{ 'hidden'|trans({}, "form")|capitalize }}</label>
-                        <div class="uk-margin-left">
-                            {{ form_widget(form.hidden) }}
-                        </div>
-                    </div>
-                    <div class="uk-form-row">
-                        <label class="uk-form-label">{{ 'hidden until'|trans({}, "form")|capitalize }}</label>
-                        <div class="uk-margin-left">
-                            {{ form_widget(form.hiddendate) }}
-                        </div>
-                    </div>
-
-                    {% if form.external_viewer is defined %}
-                        <div class="uk-form-row">
-                            {{ form_row(form.external_viewer) }}
-                            <i class="uk-icon-question-circle uk-icon-justify uk-icon-small uk-icon-bottom" data-uk-tooltip="{pos:'right'}" title="{{ 'external_viewer_desc' | trans({}, 'form') }}"></i>
-                        </div>
-                    {%  endif %}
-
-                    <div class="uk-form-row">
-                        {{ form_label(form.biblio_select) }}
-                        {{ form_widget(form.biblio_select) }}
-                    </div>
-                </div>
-            {% endif %}
-
-            <div class="uk-flex uk-margin-small-top">
-                <div class="uk-margin-small-left">
-                    {{ form_row(form.save) }}
-                </div>
-                <div class="uk-margin-small-left">
-                    {{ form_row(form.cancel) }}
-                </div>
-            </div>
-        {% else %}
-            {% if isDraft %}
-                <div>
-                    <label class="uk-form-label">
                         {{ form_label(form.editor_switch) }}
+                        <div class="uk-margin-left">
+                            {{ form_widget(form.editor_switch) }}
+                            <i class="uk-icon-question-circle uk-icon-justify uk-icon-small uk-icon-bottom" data-uk-tooltip="{pos:'right'}" title="{{ 'etherpadText' | trans({}, 'form') }}"></i>
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="uk-form-row">
+                    <label class="uk-form-label">
+                        {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
                     </label>
                     <div class="uk-margin-left">
-                        {{ form_widget(form.editor_switch) }}  
+                        {{ form_widget(form.permission) }}
                     </div>
                 </div>
-            {% endif %}
-            <div class="uk-flex">
-                <label class="uk-form-label">
-                    {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
-                </label>
-                <div>
-                    {{ form_widget(form.permission) }}  
+                <div class="uk-form-row">
+                    <label class="uk-form-label">{{ 'hidden'|trans({}, "form")|capitalize }}</label>
+                    <div class="uk-margin-left">
+                        {{ form_widget(form.hidden) }}
+                    </div>
                 </div>
-            </div>
-            <div class="uk-flex">
-                <label class="uk-form-label">{{ 'hidden'|trans({}, "form") }}</label>
-                <div class="uk-flex uk-margin-small-top">
-                    {{ form_widget(form.hidden) }}
+                <div class="uk-form-row">
+                    <label class="uk-form-label">{{ 'hidden until'|trans({}, "form")|capitalize }}</label>
+                    <div class="uk-margin-left">
+                        {{ form_widget(form.hiddendate) }}
+                    </div>
                 </div>
-            </div>
-            <div class="uk-flex">
-                <label class="uk-form-label">{{ 'hidden until'|trans({}, "form") }}</label>
-                <div class="uk-flex uk-margin-small-top">
-                    {{ form_widget(form.hiddendate) }}
-                </div>
-            </div>
 
-            <div class="uk-flex uk-margin-small-top">
-                <div>
+                {% if form.external_viewer is defined %}
+                    <div class="uk-form-row">
+                        {{ form_row(form.external_viewer) }}
+                        <i class="uk-icon-question-circle uk-icon-justify uk-icon-small uk-icon-bottom" data-uk-tooltip="{pos:'right'}" title="{{ 'external_viewer_desc' | trans({}, 'form') }}"></i>
+                    </div>
+                {%  endif %}
+
+                {% if isDraft and (showHashtags or showCategories) %}
+                    {{ macros.mandatoryLinks(showHashtags, showCategories, form) }}
+                {% endif %}
+
+                <div class="uk-form-row">
                     {{ form_label(form.biblio_select) }}
                     {{ form_widget(form.biblio_select) }}
                 </div>
-            </div>
-            <div class="uk-flex uk-margin-small-top">
-                <div id="material_biblio_sub">
-                    {% for subField in form.biblio_sub %}
-                        <div class="uk-flex uk-margin-small-top">
-                            <div>
-                                {{ form_row(subField) }}
-                            </div>
+                {% if form.biblio_sub is defined %}
+                    <div class="uk-flex uk-margin-small-top">
+                        <div id="material_biblio_sub">
+                            {% for subField in form.biblio_sub %}
+                                <div class="uk-flex uk-margin-small-top">
+                                    <div>
+                                        {{ form_row(subField) }}
+                                    </div>
+                                </div>
+                            {% endfor %}
                         </div>
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="uk-flex uk-margin-small-top">
-                <div>
-                    {{ form_row(form.save) }}
-                </div>
-                <div class="uk-margin-small-left">
-                    {{ form_row(form.cancel) }}
-                </div>
+                    </div>
+                {% endif %}
             </div>
         {% endif %}
-        
+
+        <div class="uk-flex uk-margin-small-top">
+            <div class="uk-margin-small-left">
+                {{ form_row(form.save) }}
+            </div>
+            <div class="uk-margin-small-left">
+                {{ form_row(form.cancel) }}
+            </div>
+        </div>
         {{ form_end(form) }}
     </div>
 </div>
 
 <script>
+window.onload = function(){
+    var linkLabels = document.querySelectorAll('#mandatoryLinksForm .uk-form-label');
+    for (i = 0; i < linkLabels.length; i++) {
+        linkLabels[i].classList.add('uk-text-truncate');
+    }
+}
 var $biblio = $('#material_biblio_select');
 // When sport gets selected ...
 $biblio.change(function() {

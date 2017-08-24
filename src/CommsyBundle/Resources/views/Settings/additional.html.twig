@@ -89,6 +89,15 @@
             addRemoveLink(statusInputFields[i]);
         }
 
+        var categoryCheckboxes = document.getElementById('additional_settings_structural_auxilaries_categories').querySelectorAll('input');
+        var hashtagCheckboxes = document.getElementById('additional_settings_structural_auxilaries_buzzwords').querySelectorAll('input');
+
+        toggleFieldsetState(categoryCheckboxes);
+        toggleFieldsetState(hashtagCheckboxes);
+
+        categoryCheckboxes[0].onchange = function() { toggleFieldsetState(categoryCheckboxes); }
+        hashtagCheckboxes[0].onchange = function() {toggleFieldsetState(hashtagCheckboxes); }
+
         var statusCount = statusInputFields.length + 3;      // "+3" for three default status ('done', 'in progress', 'pending')
 
         var maxFieldNumber = Math.max.apply(null, $.map(statusInputFields, function(element){  return( parseInt(element.name.match(/\d+/)) );  }  ));
@@ -111,6 +120,12 @@
         }
         newStatusTextField.oninput = function(){
             newStatusButton.disabled = newStatusTextField.value.length < 1;
+        }
+    }
+
+    function toggleFieldsetState(fieldSet) {
+        for (i = 1; i < fieldSet.length; i++) {
+            fieldSet[i].disabled = !fieldSet[0].checked;
         }
     }
 

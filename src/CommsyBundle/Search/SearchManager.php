@@ -36,6 +36,11 @@ class SearchManager
         $this->rubric = $rubric;
     }
 
+    public function setContext($context)
+    {
+        $this->context = $context;
+    }
+
     public function getResults()
     {
         // create our basic query
@@ -44,11 +49,9 @@ class SearchManager
         $boolQuery = new Queries\BoolQuery();
 
         // query context
-        $matchQuery = new Queries\Match();
-        $matchQuery->setFieldQuery('_all', $this->query);
-        $matchQuery->setFieldOperator('_all', 'and');
+        $contextQuery = $this->createContextQuery();
 
-        $boolQuery->addMust($matchQuery);
+        $boolQuery->addMust($contextQuery);
 
         // filter context
         $contextFilter = $this->createContextFilter();
@@ -65,29 +68,32 @@ class SearchManager
         $termsAggregation->setField('contextId');
         $filterAggregation->addAggregation($termsAggregation);
 
-        $query->addAggregation($filterAggregation);
+        //$query->addAggregation($filterAggregation);
 
         return $this->commsyFinder->createPaginatorAdapter($query);
     }
 
-    public function getInstantResults()
+    public function getLinkedItemResults()
     {
+        // create our basic query
+        $query = new \Elastica\Query();
+
         $boolQuery = new Queries\BoolQuery();
 
         // query context
-        $multiMatchQuery = new Queries\MultiMatch();
-        $multiMatchQuery->setQuery($this->query);
-        $multiMatchQuery->setFields(['title', 'firstName', 'lastName']);
-        $multiMatchQuery->setOperator('and');
+        $contextQuery = $this->createContextQuery();
+        $contextQuery->setFields(['id', 'title', 'firstName', 'lastName']);
 
-        $boolQuery->addMust($multiMatchQuery);
+        $boolQuery->addMust($contextQuery);
 
         // filter context
         $contextFilter = $this->createContextFilter();
 
         $boolQuery->addFilter($contextFilter);
 
-        return $this->commsyFinder->findHybrid($boolQuery, 10);
+        $query->setQuery($boolQuery);
+
+        return $this->commsyFinder->createPaginatorAdapter($query);
     }
 
     public function getRoomResults()
@@ -138,34 +144,6 @@ class SearchManager
         return $this->commsyFinder->find($boolQuery, 50);
     }
 
-    public function getLinkedItemResults($roomId, $itemId)
-    {
-        $boolQuery = new Queries\BoolQuery();
-
-        // query context
-        $multiMatchQuery = new Queries\MultiMatch();
-        $multiMatchQuery->setQuery($this->query);
-        $multiMatchQuery->setFields(['title', 'firstName', 'lastName']);
-        $multiMatchQuery->setOperator('and');
-
-        $boolQuery->addMust($multiMatchQuery);
-
-        // filter context
-        // we are only interested in entries for the current room
-        $contextFilter = new Queries\Terms();
-        $contextFilter->setTerms('contextId', [$roomId]);
-
-        $boolQuery->addFilter($contextFilter);
-
-        // results must not match already linked entries or the item itself
-        $excludeFilter = $this->createExcludeFilter($itemId);
-
-        $boolQuery->addMustNot($excludeFilter);
-
-        return $this->commsyFinder->findHybrid($boolQuery, 10);
-    }
-
-
     public function createExcludeFilter($itemId)
     {
         $linkedItems = $this->itemService->getLinkedItemIdArray($itemId);
@@ -185,17 +163,62 @@ class SearchManager
      */
     private function createContextFilter()
     {
-        $searchableRooms = $this->userService->getSearchableRooms($this->userService->getCurrentUserItem());
+        $contextFilter = new Queries\Terms();
 
-        $contextIds = [];
+        if ($this->context) {
+            $contextFilter->setTerms('contextId', [$this->context]);
+        } else {
+            $searchableRooms = $this->userService->getSearchableRooms($this->userService->getCurrentUserItem());
 
-        foreach ($searchableRooms as $searchableRoom) {
-            $contextIds[] = $searchableRoom->getItemId();
+            $contextIds = [];
+            foreach ($searchableRooms as $searchableRoom) {
+                $contextIds[] = $searchableRoom->getItemId();
+            }
+
+            $contextFilter->setTerms('contextId', $contextIds);
         }
 
-        $contextFilter = new Queries\Terms();
-        $contextFilter->setTerms('contextId', $contextIds);
-
         return $contextFilter;
+    }
+
+    private function createContextQuery()
+    {
+        if (empty(trim($this->query))) {
+            return new Queries\MatchAll();
+        }
+
+        $matchQuery = new Queries\MultiMatch();
+        $matchQuery->setQuery($this->query);
+        $matchQuery->setType('best_fields');
+        $matchQuery->setTieBreaker(0.3);
+        $matchQuery->setMinimumShouldMatch('80%');
+        $matchQuery->setFields([
+            'title^1.3',
+            'discussionarticles.subject',
+            'steps.title',
+            'sections.title',
+            'description',
+            'discussionarticles.description',
+            'steps.description',
+            'sections.description',
+            'fullName^1.1',
+            'userId',
+//            'creationDate',
+//            'endDate',
+//            'datetimeStart',
+//            'datetimeEnd',
+//            'date',
+            'hashtags',
+            'tags',
+            'annotations',
+            'files.content',
+//            'discussionarticles.files.content',
+//            'steps.files.content',
+//            'sections.files.content',
+            'contactPersons',
+            'roomDescription',
+        ]);
+
+        return $matchQuery;
     }
 }

@@ -395,9 +395,10 @@ class UserController extends Controller
         
         $selectAll = $request->request->get('selectAll');
         $selectAllStart = $request->request->get('selectAllStart');
+        $sort = $request->request->get('sort');
         
         if ($selectAll == 'true') {
-            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $request);
+            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $sort, $request);
             foreach ($entries['materials'] as $key => $value) {
                 $selectedIds[] = $value->getItemId();
             }
@@ -507,6 +508,12 @@ class UserController extends Controller
             $alert['content'] = $translator->trans('item is locked', array(), 'item');
         }
 
+        $pathTopicItem = null;
+        if ($request->query->get('path')) {
+            $topicService = $this->get('commsy_legacy.topic_service');
+            $pathTopicItem = $topicService->getTopic($request->query->get('path'));
+        }
+
         return array(
             'roomId' => $roomId,
             'user' => $infoArray['user'],
@@ -531,6 +538,7 @@ class UserController extends Controller
             'userComment' => $infoArray['comment'],
             'status' => $infoArray['status'],
             'alert' => $alert,
+            'pathTopicItem' => $pathTopicItem,
        );
     }
 
@@ -1026,7 +1034,20 @@ class UserController extends Controller
             'title' => $item->getFullname(),
         ];
     }
-    
+
+    /**
+     * @Route("/room/user/guestimage")
+     */
+    public function guestimageAction()
+    {
+        $avatarService = $this->get('commsy.avatar_service');
+        $content = $avatarService->getUnknownUserImage();
+        $response = new Response($content, Response::HTTP_OK, array('content-type' => 'image'));
+        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, \Nette\Utils\Strings::webalize('user_unknown.gif'));
+        $response->headers->set('Content-Disposition', $contentDisposition);
+        return $response;
+    }
+
     /**
      * @Route("/room/{roomId}/user/{itemId}/image")
      */

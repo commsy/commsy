@@ -1654,11 +1654,9 @@ class cs_page_view extends cs_view {
 		            // login redirect
 		            $session_item = $this->_environment->getSessionItem();
 		            if ($session_item->issetValue('login_redirect')) {
-		               $params = $session_item->getValue('login_redirect');
-		               foreach ( $params as $key => $value ) {
-		                  $html .= '<input type="hidden" name="login_redirect['.$key.']" value="'.$value.'"/>'.LF;
-		               }
-		               $session_item->unsetValue('login_redirect');
+		                $redirectUrl = $session_item->getValue('login_redirect');
+		                $html .= '<input type="hidden" name="login_redirect" value="' . $redirectUrl . '"/>' . LF;
+		                $session_item->unsetValue('login_redirect');
 		            }
 		
 		            // login form

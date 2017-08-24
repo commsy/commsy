@@ -7,12 +7,15 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use CommsyBundle\Form\Type\Custom\DateTimeSelectType;
+use CommsyBundle\Form\Type\Custom\MandatoryCategoryMappingType;
+use CommsyBundle\Form\Type\Custom\MandatoryHashtagMappingType;
 
 use CommsyBundle\Form\Type\Event\AddRecurringFieldListener;
 
@@ -93,12 +96,23 @@ class DateType extends AbstractType
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 $date = $event->getData();
                 $form = $event->getForm();
+                $formOptions = $form->getConfig()->getOptions();
 
                 if ($date['external_viewer_enabled']) {
                     $form->add('external_viewer', TextType::class, [
                         'required' => false,
                     ]);
                 }
+
+                if ($date['draft']) {
+                    if ($date['hashtagsMandatory'] && $formOptions['hashtagMappingOptions']) {
+                        $form->add('hashtag_mapping', MandatoryHashtagMappingType::class, $formOptions['hashtagMappingOptions']);
+                    }
+                    if ($date['categoriesMandatory'] && $formOptions['hashtagMappingOptions']) {
+                        $form->add('category_mapping', MandatoryCategoryMappingType::class, $formOptions['categoryMappingOptions']);
+                    }
+                }
+
             })
         ;
         
@@ -167,7 +181,7 @@ class DateType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(array('placeholderText', 'calendars', 'calendarsAttr'))
+            ->setRequired(array('placeholderText', 'calendars', 'calendarsAttr', 'hashtagMappingOptions', 'categoryMappingOptions'))
             ->setDefaults(array('translation_domain' => 'date'))
         ;
     }

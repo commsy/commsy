@@ -106,7 +106,9 @@ class CommsyBreadcrumbListener
 
                 // entry title
                 $item = $this->itemService->getTypedItem($request->get('itemId'));
-                $this->breadcrumbs->addItem($item->getItemType() == 'user' ? $item->getFullName() : $item->getTitle());
+                if ($item) {
+                    $this->breadcrumbs->addItem($item->getItemType() == 'user' ? $item->getFullName() : $item->getTitle());
+                }
             }
 
             // rubric only
@@ -163,16 +165,19 @@ class CommsyBreadcrumbListener
     private function addGroupRoom($roomItem, $asLink)
     {
         $groupItem = $roomItem->getLinkedGroupItem();
-        $projectRoom = $roomItem->getLinkedProjectItem();
-
-        // ProjectRoom
-        $this->addProjectRoom($projectRoom, true);
-        // "Groups" rubric in project room
-        $this->addChildRoomListCrumb($projectRoom, 'group');
-        // Group (with name)
-        $this->breadcrumbs->addRouteItem($groupItem->getTitle(), "commsy_group_detail", ['roomId' => $projectRoom->getItemId(), 'itemId' => $groupItem->getItemId()]);
-        // Grouproom
-        $this->addRoomCrumb($roomItem, $asLink);
+        if ($groupItem) {
+            $projectRoom = $roomItem->getLinkedProjectItem();
+            if ($projectRoom) {
+                // ProjectRoom
+                $this->addProjectRoom($projectRoom, true);
+                // "Groups" rubric in project room
+                $this->addChildRoomListCrumb($projectRoom, 'group');
+                // Group (with name)
+                $this->breadcrumbs->addRouteItem($groupItem->getTitle(), "commsy_group_detail", ['roomId' => $projectRoom->getItemId(), 'itemId' => $groupItem->getItemId()]);
+                // Grouproom
+                $this->addRoomCrumb($roomItem, $asLink);
+            }
+        }
     }
 
     private function addRoomCrumb($roomItem, $asZelda)

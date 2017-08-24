@@ -34,6 +34,8 @@
                     .done(function (result) {
                         // prepend html response to list
                         $(result).prependTo($('#itemsLinkedList'));
+
+                        $('#itemsLinkedList').children().first().addClass("uk-comment-primary");
                     });
             }
         }

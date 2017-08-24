@@ -13,6 +13,8 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use CommsyBundle\Form\Type\Custom\DateTimeSelectType;
+use CommsyBundle\Form\Type\Custom\MandatoryCategoryMappingType;
+use CommsyBundle\Form\Type\Custom\MandatoryHashtagMappingType;
 
 class TodoType extends AbstractType
 {
@@ -86,12 +88,23 @@ class TodoType extends AbstractType
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 $todo = $event->getData();
                 $form = $event->getForm();
+                $formOptions = $form->getConfig()->getOptions();
 
                 if ($todo['external_viewer_enabled']) {
                     $form->add('external_viewer', TextType::class, [
                         'required' => false,
                     ]);
                 }
+
+                if ($todo['draft']) {
+                    if ($todo['hashtagsMandatory'] && $formOptions['hashtagMappingOptions']) {
+                        $form->add('hashtag_mapping', MandatoryHashtagMappingType::class, $formOptions['hashtagMappingOptions']);
+                    }
+                    if ($todo['categoriesMandatory'] && $formOptions['hashtagMappingOptions']) {
+                        $form->add('category_mapping', MandatoryCategoryMappingType::class, $formOptions['categoryMappingOptions']);
+                    }
+                }
+
             })
             ->add('save', SubmitType::class, array(
                 'attr' => array(
@@ -117,7 +130,7 @@ class TodoType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['placeholderText', 'statusChoices',])
+            ->setRequired(['placeholderText', 'statusChoices', 'hashtagMappingOptions', 'categoryMappingOptions'])
             ->setDefaults(array('translation_domain' => 'form'))
         ;
     }

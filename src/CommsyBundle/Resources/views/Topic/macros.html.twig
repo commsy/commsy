@@ -403,3 +403,94 @@
     {% endif %}
     {{ macros.editContent('members', item, false, content, preview, true, true, members|length) }}
 {% endmacro %}
+
+{% macro path(item, edit) %}
+    {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+
+    <hr class="uk-width-9-10"/>
+
+    <article class="uk-article uk-margin-left uk-margin-right">
+        <a name="description"></a>
+        {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
+
+        {# title row #}
+        <div class="uk-grid uk-margin-small-bottom">
+            <div class="uk-width-8-10">
+                <h4 class="cs-detail-section-header">
+                    {{- 'Path'|trans({}, "topic") -}}
+                </h4>
+            </div>
+
+            <div class="uk-width-2-10 uk-flex uk-flex-right">
+
+                {# edit action #}
+                {% if edit and is_granted('ITEM_EDIT', item.itemId) %}
+                    <div class="uk-display-inline cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
+                        <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+                    </div>
+                {% endif %}
+
+                {# toggle action #}
+                {% if item.isPathActive %}
+                    <div class="uk-display-inline cs-toggle-icon uk-margin-left">
+                        <a class="cs-toggle" data-uk-toggle="{target:'.toggle-path-{{ item.itemId }}'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}">
+                            <i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {# content #}
+        {% if item.isPathActive %}
+            <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
+
+                {# preview #}
+                <div class="toggle-path-{{ item.itemId }} cs-toggle-preview">
+                    <div class="uk-flex">
+                        {% for linkedItem in item.pathItemList.to_array %}
+                            <div>
+                                <a href="{{ path('commsy_'~linkedItem.itemType~'_detail', {'roomId': linkedItem.contextId, 'itemId': linkedItem.itemId}) }}?path={{ item.itemId }}">
+                                    <i class="{{ macros.iconClassForItemType(linkedItem.itemType) }} uk-margin-small-right" data-uk-tooltip title="{{ linkedItem.title|decodeHtmlEntity }}"></i>
+                                </a>
+                            </div>
+
+                            {% if not loop.last %}
+                                <div>
+                                    <i class="uk-icon uk-icon-arrow-right uk-margin-small-right uk-text-muted uk-text-small"></i>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {# full content #}
+                <div class="toggle-path-{{ item.itemId }} cs-toggle-content uk-hidden">
+                    <div class="uk-grid">
+                        {% for linkedItem in item.pathItemList.to_array %}
+                            <div class="uk-width-1-1">
+                                <a href="{{ path('commsy_'~linkedItem.itemType~'_detail', {'roomId': linkedItem.contextId, 'itemId': linkedItem.itemId}) }}?path={{ item.itemId }}">
+                                    <i class="{{ macros.iconClassForItemType(linkedItem.itemType) }} uk-icon uk-margin-small-right"></i>
+                                    {{ linkedItem.title|decodeHtmlEntity }}
+                                </a>
+                            </div>
+
+                            {% if not loop.last %}
+                                <div class="uk-width-1-1">
+                                    <i class="uk-icon uk-icon-arrow-down uk-text-muted uk-text-small"></i>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+        {% else %}
+            <div class="uk-width-9-10 uk-margin-top-remove">
+                <div class="toggle-path-{{ item.itemId }} cs-toggle-empty">
+                    <span class="uk-text-muted">{{ 'no path'|trans({}, "topic") }}</span>
+                </div>
+            </div>
+        {% endif %}
+
+{% endmacro %}

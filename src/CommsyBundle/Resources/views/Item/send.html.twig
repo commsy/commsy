@@ -39,7 +39,14 @@
                         {% endif %}
 
                         {% if form.send_to_groups is defined %}
-                            {{ form_row(form.send_to_groups) }}
+                            <div class="uk-margin-top uk-margin-bottom">
+                                {{ form_label(form.send_to_groups) }}
+                                <div style="margin-left:150px;">
+                                {% for tempGroup in form.send_to_groups.iterator %}
+                                    <div class="uk-margin-small-bottom"><span class="uk-margin-right">{{ form_widget(tempGroup) }}</span>{{ tempGroup.vars.label }}</div>
+                                {% endfor %}
+                                </div>
+                            </div>
                         {% endif %}
 
                         {% if form.send_to_institutions is defined %}

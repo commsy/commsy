@@ -21,10 +21,17 @@ class SearchType extends AbstractType
         $builder
             ->add('phrase', Types\SearchType::class, [
                 'attr' => [
-                    'placeholder' => 'Search...',
+                    'placeholder' => 'Search in room...',
                     'class' => 'uk-search-field',
                 ],
                 'required' => false,
+                'translation_domain' => 'search',
+            ])
+            ->add('submit', Types\SubmitType::class, [
+                'attr' => [
+                    'class' => 'uk-button-primary',
+                ],
+                'label' => 'Search',
                 'translation_domain' => 'search',
             ])
         ;

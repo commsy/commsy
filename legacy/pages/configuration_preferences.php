@@ -1080,7 +1080,7 @@ if ($current_user->isGuest()) {
                if ($item->isProjectRoom() || $item->isCommunityRoom() || $item->isPrivateRoom()) {
                    global $symfonyContainer;
                    $calendarsService = $symfonyContainer->get('commsy.calendars_service');
-                   $calendarsService->createCalendar($item);
+                   $calendarsService->createCalendar($item, null, null, true);
                }
 
                // Redirect

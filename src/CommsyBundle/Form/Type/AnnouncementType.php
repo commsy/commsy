@@ -3,6 +3,8 @@ namespace CommsyBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -11,6 +13,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 use CommsyBundle\Form\Type\Custom\DateTimeSelectType;
+use CommsyBundle\Form\Type\Custom\MandatoryCategoryMappingType;
+use CommsyBundle\Form\Type\Custom\MandatoryHashtagMappingType;
 
 class AnnouncementType extends AbstractType
 {
@@ -52,6 +56,19 @@ class AnnouncementType extends AbstractType
             ->add('hiddendate', DateTimeSelectType::class, array(
                 'label' => 'hidden until',
             ))
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+                $announcement = $event->getData();
+                $form = $event->getForm();
+                $formOptions = $form->getConfig()->getOptions();
+                if ($announcement['draft']) {
+                    if ($announcement['hashtagsMandatory'] && $formOptions['hashtagMappingOptions']) {
+                        $form->add('hashtag_mapping', MandatoryHashtagMappingType::class, $formOptions['hashtagMappingOptions']);
+                    }
+                    if ($announcement['categoriesMandatory'] && $formOptions['categoryMappingOptions']) {
+                        $form->add('category_mapping', MandatoryCategoryMappingType::class, $formOptions['categoryMappingOptions']);
+                    }
+                }
+            })
             ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
@@ -75,7 +92,7 @@ class AnnouncementType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(array('placeholderText'))
+            ->setRequired(['placeholderText', 'hashtagMappingOptions', 'categoryMappingOptions'])
             ->setDefaults(array('translation_domain' => 'form'))
         ;
     }

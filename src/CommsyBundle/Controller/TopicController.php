@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use CommsyBundle\Filter\TopicFilterType;
 use CommsyBundle\Form\Type\TopicType;
 use CommsyBundle\Form\Type\AnnotationType;
+use CommsyBundle\Form\Type\TopicPathType;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -247,6 +248,12 @@ class TopicController extends Controller
             $alert['content'] = $translator->trans('item is locked', array(), 'item');
         }
 
+        $pathTopicItem = null;
+        if ($request->query->get('path')) {
+            $topicService = $this->get('commsy_legacy.topic_service');
+            $pathTopicItem = $topicService->getTopic($request->query->get('path'));
+        }
+
         return array(
             'roomId' => $roomId,
             'topic' => $infoArray['topic'],
@@ -270,6 +277,7 @@ class TopicController extends Controller
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
             'alert' => $alert,
+            'pathTopicItem' => $pathTopicItem,
        );
     }
 
@@ -478,14 +486,24 @@ class TopicController extends Controller
         $current_context = $legacyEnvironment->getCurrentContextItem();
         
         $formData = array();
-        $topicItem = NULL;
-        
+
+        $isDraft = $item->isDraft();
+
+        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
+        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
+
         // get date from DateService
         $topicItem = $topicService->getTopic($itemId);
         if (!$topicItem) {
             throw $this->createNotFoundException('No topic found for id ' . $itemId);
         }
+        $itemController = $this->get('commsy.item_controller');
         $formData = $transformer->transform($topicItem);
+        $formData['categoriesMandatory'] = $categoriesMandatory;
+        $formData['hashtagsMandatory'] = $hashtagsMandatory;
+        $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
+        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+        $formData['draft'] = $isDraft;
         $translator = $this->get('translator');
         $form = $this->createForm(TopicType::class, $formData, array(
             'action' => $this->generateUrl('commsy_date_edit', array(
@@ -493,6 +511,14 @@ class TopicController extends Controller
                 'itemId' => $itemId,
             )),
             'placeholderText' => '['.$translator->trans('insert title').']',
+            'categoryMappingOptions' => [
+                'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service'))
+            ],
+            'hashtagMappingOptions' => [
+                'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
+                'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId])
+            ],
         ));
         
         $form->handleRequest($request);
@@ -502,6 +528,15 @@ class TopicController extends Controller
 
                 // update modifier
                 $topicItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                // set linked hashtags and categories
+                $formData = $form->getData();
+                if ($categoriesMandatory) {
+                    $topicItem->setTagListByID($formData['category_mapping']['categories']);
+                }
+                if ($hashtagsMandatory) {
+                    $topicItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                }
 
                 $topicItem->save();
                 
@@ -524,8 +559,9 @@ class TopicController extends Controller
 
         return array(
             'form' => $form->createView(),
-            'showHashtags' => $current_context->withBuzzwords(),
-            'showCategories' => $current_context->withTags(),
+            'isDraft' => $isDraft,
+            'showHashtags' => $hashtagsMandatory,
+            'showCategories' => $categoriesMandatory,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
         );
     }
@@ -720,5 +756,136 @@ class TopicController extends Controller
         ]);
 
         return $this->get('commsy.print_service')->printList($html);
+    }
+
+    /**
+     * @Route("/room/{roomId}/topic/{itemId}/editpath")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function editPathAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getTypedItem($itemId);
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomService = $this->get('commsy_legacy.room_service');
+
+        $rubricInformation = $roomService->getRubricInformation($roomId);
+
+        $formData = array();
+
+        $pathElements = [];
+        $pathElementsAttr = [];
+
+        $itemManager = $legacyEnvironment->getItemManager();
+        $itemManager->reset();
+        $itemManager->setContextLimit($roomId);
+        //$itemManager->setTypeArrayLimit($rubricInformation);
+
+        // get all linked items
+        foreach ($item->getPathItemList()->to_array() as $pathElement) {
+            $formData['path'][] = $pathElement->getItemId();
+            $linkedItemArray[] = $pathElement;
+        }
+        foreach ($itemManager->getItemList($item->getAllLinkedItemIDArray())->to_array() as $linkedItem) {
+            $inPath = false;
+            foreach ($linkedItemArray as $linkedItemPath) {
+                if ($linkedItemPath->getItemId() == $linkedItem->getItemId()) {
+                    $inPath = true;
+                    break;
+                }
+            }
+            if (!$inPath) {
+                $linkedItemArray[] = $linkedItem;
+            }
+        }
+
+        foreach ($linkedItemArray as $linkedItem) {
+            $typedLinkedItem = $itemService->getTypedItem($linkedItem->getItemId());
+            $pathElements[$typedLinkedItem->getTitle()] = $typedLinkedItem->getItemId();
+            $pathElementsAttr[$typedLinkedItem->getTitle()] = ['title' => $typedLinkedItem->getTitle(), 'type' => $typedLinkedItem->getItemType()];
+        }
+
+
+
+        $form = $this->createForm(TopicPathType::class, $formData, array(
+            'action' => $this->generateUrl('commsy_topic_editpath', array(
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            )),
+            'pathElements' => $pathElements,
+            'pathElementsAttr' => $pathElementsAttr,
+        ));
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            if ($form->get('save')->isClicked()) {
+                $linkManager = $legacyEnvironment->getLinkItemManager();
+
+                $formData = $form->getData();
+
+                $formDataPath = [];
+                if (isset($formData['path'])) {
+                    $formDataPath = $formData['path'];
+                }
+                if (!empty($formDataPath)) {
+                    $sortingPlace = 1;
+                    if (isset($formData['pathOrder'])) {
+                        foreach (explode(',', $formData['pathOrder']) as $orderItemId) {
+                            if ($linkItem = $linkManager->getItemByFirstAndSecondID($item->getItemId(), $orderItemId)) {
+                                if (in_array($orderItemId, $formDataPath)) {
+                                    $linkItem->setSortingPlace($sortingPlace);
+                                    $linkItem->save();
+                                    $sortingPlace++;
+                                }
+                            }
+                        }
+                    }
+                    $item->activatePath();
+                    $item->save();
+                } else {
+                    $item->deactivatePath();
+                    $item->save();
+                }
+
+                if (isset($formData['pathOrder'])) {
+                    foreach (explode(',', $formData['pathOrder']) as $orderItemId) {
+                        if ($linkItem = $linkManager->getItemByFirstAndSecondID($item->getItemId(), $orderItemId)) {
+                            if (!in_array($orderItemId, $formDataPath)) {
+                                $linkManager->cleanSortingPlaces($itemService->getTypedItem($orderItemId));
+                            }
+                        }
+                    }
+                }
+
+            } else if ($form->get('cancel')->isClicked()) {
+                // ToDo ...
+            }
+            return $this->redirectToRoute('commsy_topic_savepath', array('roomId' => $roomId, 'itemId' => $itemId));
+        }
+
+        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($item));
+
+        return array(
+            'form' => $form->createView(),
+        );
+    }
+
+    /**
+     * @Route("/room/{roomId}/topic/{itemId}/savepath")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function savePathAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($itemId);
+
+        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($item));
+
+        return [
+            'topic' => $itemService->getTypedItem($itemId),
+        ];
     }
 }

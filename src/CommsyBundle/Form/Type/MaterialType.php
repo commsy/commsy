@@ -6,13 +6,17 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 
 use CommsyBundle\Form\Type\Custom\DateTimeSelectType;
+use CommsyBundle\Form\Type\Custom\MandatoryCategoryMappingType;
+use CommsyBundle\Form\Type\Custom\MandatoryHashtagMappingType;
 
 use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
 use CommsyBundle\Form\Type\Event\AddEtherpadFormListener;
@@ -76,11 +80,21 @@ class MaterialType extends AbstractType
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
                 $material = $event->getData();
                 $form = $event->getForm();
+                $formOptions = $form->getConfig()->getOptions();
 
                 if ($material['external_viewer_enabled']) {
                     $form->add('external_viewer', TextType::class, [
                         'required' => false,
                     ]);
+                }
+
+                if ($material['draft']) {
+                    if ($material['hashtagsMandatory'] && $formOptions['hashtagMappingOptions']) {
+                        $form->add('hashtag_mapping', MandatoryHashtagMappingType::class, $formOptions['hashtagMappingOptions']);
+                    }
+                    if ($material['categoriesMandatory'] && $formOptions['categoryMappingOptions']) {
+                        $form->add('category_mapping', MandatoryCategoryMappingType::class, $formOptions['categoryMappingOptions']);
+                    }
                 }
             })
             ->add('save', SubmitType::class, array(
@@ -107,7 +121,7 @@ class MaterialType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['placeholderText'])
+            ->setRequired(['placeholderText', 'hashtagMappingOptions', 'categoryMappingOptions'])
             ->setDefaults(array('translation_domain' => 'form'))
         ;
     }

@@ -19,15 +19,23 @@
         {{ form_start(form) }}
         {{ form_errors(form) }}
         <div class="uk-flex">
-            <div class="">
-                {{ form_label(form.activate) }}
-                {{ form_widget(form.activate) }}
+            <div class="uk-grid">
+                <div class="uk-width-2-10">
+                    {{ form_label(form.activate) }}
+                </div>
+                <div class="uk-width-8-10">
+                    {{ form_widget(form.activate) }}
+                </div>
             </div>
         </div>
         <div class="uk-flex">
-            <div class="">
-                {{ form_label(form.master_template) }}
-                {{ form_widget(form.master_template) }}
+            <div class="uk-grid">
+                <div class="uk-width-1-10">
+                    {{ form_label(form.master_template) }}
+                </div>
+                <div class="uk-width-9-10">
+                    {{ form_widget(form.master_template) }}
+                </div>
             </div>
         </div>
         <div class="uk-flex uk-margin-small-top">

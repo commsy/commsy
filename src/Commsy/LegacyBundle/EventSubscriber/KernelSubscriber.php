@@ -103,9 +103,25 @@ class KernelSubscriber implements EventSubscriberInterface
                 $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
 
                 if ($portalItem) {
+                    $sessionManager = $this->legacyEnvironment->getSessionManager();
+
+                    $userSessionItem = $this->legacyEnvironment->getSessionItem();
+                    if (!$userSessionItem) {
+                        // if we have no session yet, create one
+                        require_once('classes/cs_session_item.php');
+                        $userSessionItem = new \cs_session_item();
+                        $userSessionItem->createSessionID('guest');
+                        $userSessionItem->setValue('commsy_id', $portalItem->getItemID());
+                    }
+
+                    // persist the requested url in session, so we can redirect the user after login
+                    $userSessionItem->setValue('login_redirect', $requestUri);
+
+                    $sessionManager->save($userSessionItem);
+
                     $url = $event->getRequest()->getBaseUrl() . '?cid=' . $portalItem->getItemID();
 
-                    // if this is an room url, send us to room detail view on portal
+                    // if this is a room url, send us to room detail view on portal
                     if (preg_match('/room\/([0-9]+)/', $requestUri, $roomIdMatch)) {
                         $url .= '&mod=home&fct=index&room_id=' . $roomIdMatch[1];
                     }

@@ -2,6 +2,8 @@
 
 namespace CommsyBundle\Controller;
 
+use CommsyBundle\Form\Type\SearchItemType;
+use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -18,12 +20,39 @@ class SearchController extends Controller
     /**
      * Generates the search form and search field for embedding them into
      * a template.
+     * Post data needs to be passed directly, since we can not handle data
+     * from the main request here.
      *
      * @Template
      */
-    public function searchFormAction($roomId, $linkSearch = false)
+    public function searchFormAction($roomId, $postData)
     {
-        $form = $this->createForm(SearchType::class, [], [
+        $globalSearch = new GlobalSearch();
+
+        $form = $this->createForm(SearchType::class, $globalSearch, [
+            'action' => $this->generateUrl('commsy_search_results', [
+                'roomId' => $roomId
+            ])
+        ]);
+
+//        // manually submit the form
+//        if (isset($postData)) {
+//            $form->submit($postData);
+//        }
+
+        return [
+            'form' => $form->createView(),
+            'roomId' => $roomId,
+        ];
+    }
+
+    /**
+     * @param $roomId int The id of the containing context
+     * @Template
+     */
+    public function itemSearchFormAction($roomId)
+    {
+        $form = $this->createForm(SearchItemType::class, [], [
             'action' => $this->generateUrl('commsy_search_results', [
                 'roomId' => $roomId
             ])
@@ -32,8 +61,53 @@ class SearchController extends Controller
         return [
             'form' => $form->createView(),
             'roomId' => $roomId,
-            'linkSearch' => $linkSearch
         ];
+    }
+
+    /**
+     * @Route("/room/{roomId}/search/itemresults")
+     * @param $roomId
+     * @param Request $request
+     */
+    public function itemSearchResultsAction($roomId, Request $request)
+    {
+        $query = $request->get('search', '');
+        $searchManager = $this->get('commsy.search.manager');
+        $searchManager->setQuery($query);
+        $searchManager->setContext($roomId);
+
+        $searchResults = $searchManager->getLinkedItemResults();
+        $results = $this->prepareResults($searchResults, 0, true);
+
+        $response = new JsonResponse();
+
+        $response->setData($results);
+
+        return $response;
+    }
+
+    /**
+     * @Route("/room/{roomId}/search/instantresults")
+     * @param $roomId int The context id
+     */
+    public function instantResultsAction($roomId, Request $request)
+    {
+        $query = $request->get('search', '');
+
+        $searchManager = $this->get('commsy.search.manager');
+        $searchManager->setQuery($query);
+        $searchManager->setContext($roomId);
+
+        $searchResults = $searchManager->getResults();
+        $results = $this->prepareResults($searchResults, 0, true);
+
+        $response = new JsonResponse();
+
+        $response->setData([
+            'results' => $results,
+        ]);
+
+        return $response;
     }
 
     /**
@@ -46,194 +120,69 @@ class SearchController extends Controller
     {
         $globalSearch = new GlobalSearch();
 
-        $query = '';
-        $filterData = [];
+        $filterData = [
+            'all_rooms' => false,
+            'query' => '',
+        ];
 
         $topForm = $this->createForm(SearchType::class, $globalSearch, [
             'action' => $this->generateUrl('commsy_search_results', [
-                'roomId' => $roomId
+                'roomId' => $roomId,
             ])
         ]);
-
         $topForm->handleRequest($request);
         if ($topForm->isSubmitted() && $topForm->isValid()) {
             $globalSearch = $topForm->getData();
-            $query = $globalSearch->getPhrase();
-
-            $filterData['query'] = $query;
+            $filterData['query'] = $globalSearch->getPhrase();
         }
 
-        // $filterForm = $this->createForm(SearchFilterType::class, $filterData, [
-        // ]);
+        $filterForm = $this->createForm(SearchFilterType::class, $filterData, []);
+        $filterForm->handleRequest($request);
+        if ($filterForm->isSubmitted()) {
+            $filterData = $filterForm->getData();
+        }
 
-        // $filterForm->handleRequest($request);
-        // if ($filterForm->isSubmitted() && $filterForm->isValid()) {
-        //     $filterFormData = $filterForm->getData();
-        //     $query = $filterFormData['query'];
-        // }
-
-        $searchManager = $this->get('commsy.search.manager');
-        $searchManager->setQuery($query);
+        $searchManager = $this->getSearchManager($roomId, $filterData);
 
         $searchResults = $searchManager->getResults();
-
         $totalHits = $searchResults->getTotalHits();
-        $aggregations = $searchResults->getAggregations()['filterContext'];
-
-        $contextBuckets = $aggregations['contexts']['buckets'];
-
-        $results = [];
-        foreach ($searchResults->getResults(0, 10)->toArray() as $searchResult) {
-
-            $reflection = new \ReflectionClass($searchResult);
-            $type = strtolower(rtrim($reflection->getShortName(), 's'));
-
-            if ($type === 'label') {
-                $type = strtolower(rtrim($searchResult->getType(), 's'));
-            }
-
-            $results[] = [
-                'entity' => $searchResult,
-                'routeName' => 'commsy_' . $type . '_detail',
-            ];
-        }
+        $results = $this->prepareResults($searchResults);
 
         return [
-//            'filterForm' => $filterForm->createView(),
+            'filterForm' => $filterForm->createView(),
             'roomId' => $roomId,
             'totalHits' => $totalHits,
             'results' => $results,
-//            'aggregations' => $aggregations,
-            'query' => $query,
+            'query' => $filterData['query'],
         ];
     }
 
     /**
      * Returns more search results
      * 
-     * @Route("/room/{roomId}/searchmore/{query}/{start}/{sort}")
+     * @Route("/room/{roomId}/searchmore/{start}/{sort}")
      * @Template
      */
-    public function moreResultsAction($roomId, $query, $start = 0, $sort = 'date', Request $request)
+    public function moreResultsAction($roomId, $start = 0, $sort = 'date', Request $request)
     {
-        $globalSearch = new GlobalSearch();
+        $filterData = [
+            'query' => $request->query->get('search', ''),
+        ];
+        $filterForm = $this->createForm(SearchFilterType::class, [], []);
+        $filterForm->handleRequest($request);
+        if ($filterForm->isSubmitted()) {
+            $filterData = $filterForm->getData();
+        }
 
-        $searchManager = $this->get('commsy.search.manager');
-        $searchManager->setQuery($query);
+        $searchManager = $this->getSearchManager($roomId, $filterData);
 
         $searchResults = $searchManager->getResults();
-
-        $totalHits = $searchResults->getTotalHits();
-        $aggregations = $searchResults->getAggregations()['filterContext'];
-
-        $contextBuckets = $aggregations['contexts']['buckets'];
-
-        $results = [];
-        foreach ($searchResults->getResults($start, 10)->toArray() as $searchResult) {
-            $reflection = new \ReflectionClass($searchResult);
-            $type = strtolower(rtrim($reflection->getShortName(), 's'));
-
-            if ($type === 'label') {
-                $type = strtolower(rtrim($searchResult->getType(), 's'));
-            }
-
-            $results[] = [
-                'entity' => $searchResult,
-                'routeName' => 'commsy_' . $type . '_detail',
-            ];
-        }
+        $results = $this->prepareResults($searchResults, $start);
 
         return [
             'roomId' => $roomId,
             'results' => $results,
         ];
-    }
-
-    /**
-     * Serves JSON results for instant search aka search-as-you-type
-     * 
-     * @Route("/room/{roomId}/search/instant/{linkSearch}")
-     */
-    public function instantAction($roomId, $linkSearch = false, Request $request)
-    {
-        $results = [];
-
-        $query = $request->get('search', null);
-
-        if ($query) {
-            $translator = $this->get('translator');
-            $router = $this->container->get('router');
-
-            $searchManager = $this->get('commsy.search.manager');
-            $searchManager->setQuery($query);
-
-            // get every linked item id and add it to the query
-            // to exclude this items from the resultlist
-            if ($linkSearch) {
-                $instantResults = $searchManager->getLinkedItemResults($roomId, $linkSearch);
-            } else {
-                $instantResults = $searchManager->getInstantResults();
-            }
-
-            foreach ($instantResults as $hybridResult) {
-                $transformed = $hybridResult->getTransformed();
-
-                $title = '';
-
-                if (method_exists($transformed, 'getTitle')) {
-                    $title = $transformed->getTitle();
-                } else if (method_exists($transformed, 'getName')) {
-                    $title = $transformed->getName();
-                } else if (method_exists($transformed, 'getFirstname')) {
-                    $title = $transformed->getFirstname() . ' ' . $transformed->getLastname();
-                }
-
-                // get type from hybrid results and trim trailing 's'
-                $type = $hybridResult->getResult()->getType();
-                $type = rtrim($type, 's');
-
-                // construct target url
-                $url = '#';
-
-                $routeName = 'commsy_' . $type . '_detail';
-                if ($router->getRouteCollection()->get($routeName)) {
-                    $url = $this->generateUrl($routeName, [
-                        'roomId' => $transformed->getContextId(),
-                        'itemId' => $transformed->getItemId(),
-                    ]);
-                }
-
-                $results[] = [
-                    'title' => $title,
-                    'text' => $translator->transChoice(ucfirst($type), 0, [], 'rubric'),
-                    'url' => $url,
-                    'value' => $transformed->getItemId(),
-                ];
-            }
-        }
-
-        $response = $this->autocompleteJsonStructure($results, $linkSearch);
-
-        return $response;
-    }
-
-    /**
-     * Serves JSON results with a specific structure for autocompletion
-     * 
-     */
-    private function autocompleteJsonStructure($results, $linkSearch = false)
-    {
-        $response = new JsonResponse();
-        // set json structure for uikit autocomplete
-        if ($linkSearch) {
-            $response->setData($results);
-        } else {
-            $response->setData([
-                'results' => $results,
-            ]);
-        }
-
-        return $response;
     }
 
     /**
@@ -312,5 +261,74 @@ class SearchController extends Controller
         ]);
 
         return $response;
+    }
+
+    private function prepareResults(TransformedPaginatorAdapter $searchResults, $offset = 0, $json = false)
+    {
+        $results = [];
+        foreach ($searchResults->getResults($offset, 10)->toArray() as $searchResult) {
+
+            $reflection = new \ReflectionClass($searchResult);
+            $type = strtolower(rtrim($reflection->getShortName(), 's'));
+
+            if ($type === 'label') {
+                $type = strtolower(rtrim($searchResult->getType(), 's'));
+            }
+
+            if ($json) {
+                $translator = $this->get('translator');
+                $router = $this->container->get('router');
+
+                // construct target url
+                $url = '#';
+
+                $routeName = 'commsy_' . $type . '_detail';
+                if ($router->getRouteCollection()->get($routeName)) {
+                    $url = $this->generateUrl($routeName, [
+                        'roomId' => $searchResult->getContextId(),
+                        'itemId' => $searchResult->getItemId(),
+                    ]);
+                }
+
+                $title = '';
+
+                if (method_exists($searchResult, 'getTitle')) {
+                    $title = $searchResult->getTitle();
+                } else if (method_exists($searchResult, 'getName')) {
+                    $title = $searchResult->getName();
+                } else if (method_exists($searchResult, 'getFirstname')) {
+                    $title = $searchResult->getFirstname() . ' ' . $searchResult->getLastname();
+                }
+
+                $results[] = [
+                    'title' => $title,
+                    'text' => $translator->transChoice(ucfirst($type), 0, [], 'rubric'),
+                    'url' => $url,
+                    'value' => $searchResult->getItemId(),
+                ];
+            } else {
+                $results[] = [
+                    'entity' => $searchResult,
+                    'routeName' => 'commsy_' . $type . '_detail',
+                ];
+            }
+        }
+
+        return $results;
+    }
+
+    private function getSearchManager($roomId, $filterData)
+    {
+        $searchManager = $this->get('commsy.search.manager');
+
+        if (isset($filterData['query'])) {
+            $searchManager->setQuery($filterData['query']);
+        }
+
+        if (!isset($filterData['all_rooms']) || !$filterData['all_rooms']) {
+            $searchManager->setContext($roomId);
+        }
+
+        return $searchManager;
     }
 }

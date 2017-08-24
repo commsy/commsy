@@ -72,7 +72,7 @@
 
             // send ajax requests on click to load the form
             $(element).find('div.cs-edit').click(function(event) {
-                event.preventDefault();
+                event.preventDefault ? event.preventDefault() : (event.returnValue = false);
 
                 // reset article selection class and remove event handling
                 $(this).parents('.cs-edit-section').toggleClass('cs-selected', false);
@@ -117,11 +117,12 @@
 
             // override form submit behaviour
             article.find('button').click(function (event) {
+                event.preventDefault ? event.preventDefault() : (event.returnValue = false);
+
                 let $button = $(this);
 
                 // cancel is not handled via ajax
-                if ($button.attr('name').includes('cancel')) {
-                    event.preventDefault();
+                if ($button.attr('name').indexOf('cancel') > -1) {
                     /*
                     // cancel editing a NEW entry => return to list view
                     if($("#breadcrumb-nav .current.last").text().trim() == "") {
@@ -161,10 +162,9 @@
                         }
                     });
                 } else {
-                    if (!$button.attr('name').includes('newHashtagAdd')) {
+                    if (!$button.attr('name').indexOf('newHashtagAdd') > -1) {
                         let form = $(this).closest('form');
                         if (form[0].checkValidity()) {
-                            event.preventDefault();
 
                             let formData = form.serializeArray();
                             formData.push({name: this.name, value: this.value});

@@ -1,3 +1,5 @@
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+
 <div class="uk-margin-right uk-margin-bottom uk-position-relative uk-padding-remove">
     {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
     <div class="uk-form-horizontal">
@@ -34,6 +36,11 @@
                 {{ form_widget(form.hiddendate) }}
             </div>
         </div>
+
+        {% if isDraft and (showHashtags or showCategories) %}
+            {{ macros.mandatoryLinks(showHashtags, showCategories, form) }}
+        {% endif %}
+
         <div class="uk-flex uk-margin-small-top">
             <div>
                 {{ form_row(form.save) }}

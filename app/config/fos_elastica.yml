@@ -3,7 +3,7 @@
 # In this case the mapping will be created but no value will be populated while indexing.
 # The value is populated by listening to the POST_TRANSFORM event.
 #
-# This is done in @see CommsyBundle\EventListener\ElasticCustomPropertyListener
+# This is done in CommsyBundle\EventListener\ElasticCustomPropertyListener
 #
 #
 
@@ -23,58 +23,110 @@ fos_elastica:
 
             settings:
                 analysis:
-                    filter:
-                        autocomplete_filter:
-                            type: edge_ngram
-                            min_gram: 1
-                            max_gram: 20
-
                     analyzer:
-                        autocomplete:
+                        commsy_analyzer:
                             type: custom
                             tokenizer: standard
                             filter:
+                                - standard
                                 - lowercase
-                                - autocomplete_filter
+                                - stop_de_filter
+                                - stop_en_filter
+                                - ngrams_filter
+                            char_filter:
+                                - html_strip
+
+                        html_strip_analyzer:
+                            type: custom
+                            tokenizer: standard
+                            filter:
+                                - standard
+                                - lowercase
+                                - stop_de_filter
+                                - stop_en_filter
+                            char_filter:
+                                - html_strip
+
+                    filter:
+                        ngrams_filter:
+                            type: ngram
+                            min_gram: 4
+                            max_gram: 4
+                            token_chars:
+                                - letter
+                                - digit
+
+                        stop_de_filter:
+                            type: stop
+                            stopword: _german_
+
+                        stop_en_filter:
+                            type: stop
+                            stopword: _english_
 
             types:
                 # Announcements
                 announcement:
                     indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+                    _all:
+                        enabled: false
                     properties:
                         contextId:
                             type: integer
                         creator:
                             type: object
                             properties:
-                                userId: ~
-                                firstName: ~
-                                lastName: ~
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
                         modifier:
                             type: object
                             properties:
-                                userId: ~
-                                firstName: ~
-                                lastName: ~
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
                         creationDate:
                             type: date
                             format: date_optional_time
                         title:
                             type: text
-                            analyzer: autocomplete
-                            search_analyzer: standard
-                        description: ~
-                        hashtags:
-                            property_path: false
-                        tags:
-                            property_path: false
+                            analyzer: commsy_analyzer
+                            search_analyzer: commsy_analyzer
+                        description:
+                            type: text
+                            analyzer: html_strip_analyzer
+                            search_analyzer: html_strip_analyzer
                         endDate:
                             type: date
                             format: date_optional_time
+                        hashtags:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: keyword
+                        tags:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: keyword
+                        annotations:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: text
+                            analyzer: html_strip_analyzer
+                            search_analyzer: html_strip_analyzer
                         files:
-                            type: 'nested'
-                            properties:
-                                filename: ~
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: 'attachment'
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Announcement
@@ -83,46 +135,71 @@ fos_elastica:
                         provider: ~
                         listener: ~
 
-                # dates
+                # Dates
                 date:
                     indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+                    _all:
+                        enabled: false
                     properties:
                         contextId:
                             type: integer
                         creator:
                             type: object
                             properties:
-                                userId: ~
-                                firstName: ~
-                                lastName: ~
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
                         modifier:
                             type: object
                             properties:
-                                userId: ~
-                                firstName: ~
-                                lastName: ~
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
                         creationDate:
                             type: date
                             format: date_optional_time
                         title:
                             type: text
-                            analyzer: autocomplete
-                            search_analyzer: standard
-                        description: ~
-                        hashtags:
-                            property_path: false
-                        tags:
-                            property_path: false
+                            analyzer: commsy_analyzer
+                            search_analyzer: commsy_analyzer
+                        description:
+                            type: text
+                            analyzer: html_strip_analyzer
+                            search_analyzer: html_strip_analyzer
                         datetimeStart:
                             type: date
                             format: date_optional_time
                         datetimeEnd:
                             type: date
                             format: date_optional_time
+                        hashtags:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: keyword
+                        tags:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: keyword
+                        annotations:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: text
+                            analyzer: html_strip_analyzer
+                            search_analyzer: html_strip_analyzer
                         files:
-                            type: 'nested'
-                            properties:
-                                filename: ~
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: 'attachment'
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Dates
@@ -131,48 +208,78 @@ fos_elastica:
                         provider: ~
                         listener: ~
 
-                # discussions:
+                # Discussions
                 discussion:
                     indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+                    _all:
+                        enabled: false
                     properties:
                         contextId:
                             type: integer
                         creator:
                             type: object
                             properties:
-                                userId: ~
-                                firstName: ~
-                                lastName: ~
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
                         modifier:
                             type: object
                             properties:
-                                userId: ~
-                                firstName: ~
-                                lastName: ~
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
                         creationDate:
                             type: date
                             format: date_optional_time
                         title:
                             type: text
-                            analyzer: autocomplete
-                            search_analyzer: standard
-                        hashtags:
-                            property_path: false
-                        tags:
-                            property_path: false
+                            analyzer: commsy_analyzer
+                            search_analyzer: commsy_analyzer
                         discussionarticles:
-                            type: 'nested'
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: object
                             properties:
-                                subject: ~
-                                description: ~
-                                files:
-                                    type: 'nested'
-                                    properties:
-                                        filename: ~
+                                subject:
+                                    type: text
+                                    analyzer: commsy_analyzer
+                                    search_analyzer: commsy_analyzer
+                                description:
+                                    type: text
+                                    analyzer: html_strip_analyzer
+                                    search_analyzer: html_strip_analyzer
+#                                files:
+#                                    # resolved by FOSElastica using POST_TRANSFORM
+#                                    property_path: false
+#                                    type: 'attachment'
+                        hashtags:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: keyword
+                        tags:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: keyword
+                        annotations:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: text
+                            analyzer: html_strip_analyzer
+                            search_analyzer: html_strip_analyzer
                         files:
-                            type: 'nested'
-                            properties:
-                                filename: ~
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: 'attachment'
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Discussions
@@ -182,29 +289,46 @@ fos_elastica:
                         listener: ~
 
 
-                # labels: (groups, topics, institutions)
+                # Labels (Groups, Topics, Institutions)
                 label:
                     indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+                    _all:
+                        enabled: false
                     properties:
                         contextId:
                             type: integer
                         creator:
                             type: object
                             properties:
-                                userId: ~
-                                firstName: ~
-                                lastName: ~
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
                         modifier:
                             type: object
                             properties:
-                                userId: ~
-                                firstName: ~
-                                lastName: ~
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
                         creationDate:
                             type: date
                             format: date_optional_time
-                        name: ~
-                        type: ~
+                        name:
+                            type: text
+                            copy_to: title
+                        title:
+                            type: text
+                            analyzer: commsy_analyzer
+                            search_analyzer: commsy_analyzer
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Labels
@@ -213,31 +337,33 @@ fos_elastica:
                         provider: ~
                         listener: ~
 
-                # room:
+                # Rooms
                 room:
                     indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+                    _all:
+                        enabled: false
                     properties:
                         contextId:
                             type: integer
                         creator:
                             type: object
                             properties:
-                                userId: ~
-                                firstName: ~
-                                lastName: ~
-                        modifier:
-                            type: object
-                            properties:
-                                userId: ~
-                                firstName: ~
-                                lastName: ~
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
                         title:
                             type: text
-                            analyzer: autocomplete
-                            search_analyzer: standard
-                        contactPersons: ~
-                        roomDescription: ~
-                        type: ~
+                            analyzer: commsy_analyzer
+                            search_analyzer: commsy_analyzer
+                        contactPersons:
+                            type: text
+                        roomDescription:
+                            type: text
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Room
@@ -246,50 +372,82 @@ fos_elastica:
                         provider: ~
                         listener: ~
 
-
-                # todos:
+                # Todos
                 todo:
                     indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+                    _all:
+                        enabled: false
                     properties:
                         contextId:
                             type: integer
                         creator:
                             type: object
                             properties:
-                                userId: ~
-                                firstName: ~
-                                lastName: ~
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
                         modifier:
                             type: object
                             properties:
-                                userId: ~
-                                firstName: ~
-                                lastName: ~
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
                         title:
                             type: text
-                            analyzer: autocomplete
-                            search_analyzer: standard
+                            analyzer: commsy_analyzer
+                            search_analyzer: commsy_analyzer
                         date:
                             type: date
                             format: date_optional_time
-                        description: ~
-                        hashtags:
-                            property_path: false
-                        tags:
-                            property_path: false
+                        description:
+                            type: text
+                            analyzer: html_strip_analyzer
+                            search_analyzer: html_strip_analyzer
                         steps:
-                            type: 'nested'
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: object
                             properties:
-                                title: ~
-                                description: ~
-                                files:
-                                    type: 'nested'
-                                    properties:
-                                        filename: ~
+                                title:
+                                    type: text
+                                    analyzer: commsy_analyzer
+                                    search_analyzer: commsy_analyzer
+                                description:
+                                    type: text
+                                    analyzer: html_strip_analyzer
+                                    search_analyzer: html_strip_analyzer
+#                                files:
+#                                    # resolved by FOSElastica using POST_TRANSFORM
+#                                    property_path: false
+#                                    type: 'attachment'
+                        hashtags:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: keyword
+                        tags:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: keyword
+                        annotations:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: text
+                            analyzer: html_strip_analyzer
+                            search_analyzer: html_strip_analyzer
                         files:
-                            type: 'nested'
-                            properties:
-                                filename: ~
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: 'attachment'
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Todos
@@ -298,17 +456,24 @@ fos_elastica:
                         provider: ~
                         listener: ~
 
-
-                
                 # User
                 user:
                     indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+                    _all:
+                        enabled: false
                     properties:
-                        userId: ~
+                        userId:
+                            type: text
                         contextId:
                             type: integer
-                        firstName: ~
-                        lastName: ~
+                        firstName:
+                            type: text
+                            copy_to: fullName
+                        lastName:
+                            type: text
+                            copy_to: fullName
+                        fullName:
+                            type: text
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\User
@@ -317,55 +482,84 @@ fos_elastica:
                         provider: ~
                         listener: ~
 
-                # materials:
+                # Materials
                 material:
                     indexable_callback: ['@commsy.search.indexable_checker', 'isIndexable']
+                    _all:
+                        enabled: false
                     properties:
                         versionId:
                             type: integer
                         contextId:
                             type: integer
+                        creator:
+                            type: object
+                            properties:
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
+                        modifier:
+                            type: object
+                            properties:
+                                firstName:
+                                    type: text
+                                    copy_to: fullName
+                                lastName:
+                                    type: text
+                                    copy_to: fullName
+                                fullName:
+                                    type: text
+                        creationDate:
+                            type: date
+                            format: date_optional_time
                         title:
                             type: text
-                            analyzer: autocomplete
-                            search_analyzer: standard
-                        description: ~
-                        hashtags:
-                            property_path: false
-                        tags:
-                            property_path: false
+                            analyzer: commsy_analyzer
+                            search_analyzer: commsy_analyzer
+                        description:
+                            type: text
+                            analyzer: html_strip_analyzer
+                            search_analyzer: html_strip_analyzer
                         sections:
-                            type: 'nested'
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: object
                             properties:
-                                title: ~
-                                description: ~
-                                files:
-                                    type: 'nested'
-                                    properties:
-                                        filename: ~
-                        creator:
-                            type: 'object'
-                            properties:
-                                userId: ~
-                                status: ~
-                                firstname: ~
-                                lastname: ~
-                                city: ~
-                        modifier:
-                            type: 'object'
-                            properties:
-                                userId: ~
-                                status: ~
-                                firstname: ~
-                                lastname: ~
-                                city: ~
+                                title:
+                                    type: text
+                                    analyzer: commsy_analyzer
+                                    search_analyzer: commsy_analyzer
+                                description:
+                                    type: text
+                                    analyzer: html_strip_analyzer
+                                    search_analyzer: html_strip_analyzer
+#                                files:
+#                                    # resolved by FOSElastica using POST_TRANSFORM
+#                                    property_path: false
+#                                    type: 'attachment'
+                        hashtags:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: keyword
+                        tags:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: keyword
+                        annotations:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: text
+                            analyzer: html_strip_analyzer
+                            search_analyzer: html_strip_analyzer
                         files:
-                            type: 'nested'
-                            properties:
-                                filename: ~
-                                content:
-                                    type: attachment
-
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: 'attachment'
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Materials

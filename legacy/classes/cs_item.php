@@ -2608,8 +2608,14 @@ function getExternalViewerArray(){
 
    /** get draft status
     */
-   function isDraft () {
-      return $this->_getValue('draft');
+   function isDraft() {
+      $isDraft = $this->_getValue('draft');
+
+      if (empty($isDraft)) {
+         return 0;
+      }
+
+      return $isDraft;
    }
 
    /** set set draft
@@ -2852,7 +2858,7 @@ function getExternalViewerArray(){
    protected function replaceElasticItem($objectPersister, $repository) {
         $object = $repository->findOneByItemId($this->getItemID());
 
-        if ($object) {
+        if ($object && $object->isIndexable() && !$this->isDraft()) {
             $objectPersister->replaceOne($object);
         }
    }
@@ -2861,6 +2867,14 @@ function getExternalViewerArray(){
         $object = $repository->findOneByItemId($this->getItemID());
 
         $objectPersister->deleteOne($object);
+   }
+
+   public function getPath () {
+      $result = null;
+
+
+
+      return $result;
    }
 }
 ?>

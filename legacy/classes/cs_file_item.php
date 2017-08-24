@@ -719,5 +719,26 @@ class cs_file_item extends cs_item {
    function getWordpressPostId() {
       return (string) $this->_getExtra('WORDPRESS_POST_ID');
    }
+
+    /**
+     * Get file content base64 encoded
+     *
+     * @return string (base64)
+     */
+    public function getContentBase64()
+    {
+        global $symfonyContainer;
+        $projectDir = $symfonyContainer->get('kernel')->getProjectDir();
+
+        $filePath = $projectDir . '/' . $this->getFilepath();
+
+        if (file_exists($filePath)) {
+            return base64_encode(file_get_contents(
+                $filePath,
+                'r'
+            ));
+        } else {
+            return null;
+        }
+    }
 }
-?>

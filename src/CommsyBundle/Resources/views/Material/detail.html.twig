@@ -166,6 +166,10 @@
                     {{ macros.showAlert(alert) }}
                 {%  endif %}
 
+                {% if pathTopicItem %}
+                    {{ macros.showPath(pathTopicItem, material) }}
+                {%  endif %}
+
                 {# content #}
                 <article class="uk-article uk-position-relative" data-uk-observe>
                     {# versions #}

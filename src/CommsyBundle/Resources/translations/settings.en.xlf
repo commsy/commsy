@@ -634,7 +634,7 @@
             </trans-unit>
             <trans-unit id="settings_delete_explanation_start">
                 <source>Delete explanation start</source>
-                <target>To progress, please enter</target>
+                <target>To proceed, please enter</target>
             </trans-unit>
             <trans-unit id="settings_delete_explanation_end">
                 <source>Delete explanation end</source>

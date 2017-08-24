@@ -326,6 +326,12 @@ class AnnouncementController extends Controller
             $alert['content'] = $translator->trans('item is locked', array(), 'item');
         }
 
+        $pathTopicItem = null;
+        if ($request->query->get('path')) {
+            $topicService = $this->get('commsy_legacy.topic_service');
+            $pathTopicItem = $topicService->getTopic($request->query->get('path'));
+        }
+
         return array(
             'roomId' => $roomId,
             'announcement' => $infoArray['announcement'],
@@ -351,6 +357,7 @@ class AnnouncementController extends Controller
             'annotationForm' => $form->createView(),
             'ratingArray' => $infoArray['ratingArray'],
             'alert' => $alert,
+            'pathTopicItem' => $pathTopicItem,
        );
     }
     /**
@@ -651,6 +658,11 @@ class AnnouncementController extends Controller
         
         $formData = array();
         $announcementItem = NULL;
+
+        $isDraft = $item->isDraft();
+
+        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
+        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
         
         if ($item->getItemType() == 'announcement') {
             // get announcement from announcementService
@@ -659,7 +671,12 @@ class AnnouncementController extends Controller
             if (!$announcementItem) {
                 throw $this->createNotFoundException('No announcement found for id ' . $roomId);
             }
+            $itemController = $this->get('commsy.item_controller');
             $formData = $transformer->transform($announcementItem);
+            $formData['categoriesMandatory'] = $categoriesMandatory;
+            $formData['hashtagsMandatory'] = $hashtagsMandatory;
+            $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
+            $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
             $translator = $this->get('translator');
             $form = $this->createForm(AnnouncementType::class, $formData, array(
                 'action' => $this->generateUrl('commsy_announcement_edit', array(
@@ -667,6 +684,14 @@ class AnnouncementController extends Controller
                     'itemId' => $itemId,
                 )),
                 'placeholderText' => '['.$translator->trans('insert title').']',
+                'categoryMappingOptions' => [
+                    'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service')),
+                ],
+                'hashtagMappingOptions' => [
+                    'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
+                    'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                    'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId]),
+                ],
             ));
         } 
         
@@ -681,6 +706,15 @@ class AnnouncementController extends Controller
 
                 // update modifier
                 $announcementItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                // set linked hashtags and categories
+                $formData = $form->getData();
+                if ($categoriesMandatory) {
+                    $announcementItem->setTagListByID($formData['category_mapping']['categories']);
+                }
+                if ($hashtagsMandatory) {
+                    $announcementItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                }
 
                 $announcementItem->save();
                 
@@ -698,8 +732,9 @@ class AnnouncementController extends Controller
 
         return array(
             'form' => $form->createView(),
-            'showHashtags' => $current_context->withBuzzwords(),
-            'showCategories' => $current_context->withTags(),
+            'isDraft' => $isDraft,
+            'showHashtags' => $hashtagsMandatory,
+            'showCategories' => $categoriesMandatory,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
         );
     }
