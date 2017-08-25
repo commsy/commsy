@@ -54,7 +54,7 @@ class WordpressService
         $c_proxy_ip = $this->container->getParameter('commsy.settings.proxy_ip');
         $c_proxy_port = $this->container->getParameter('commsy.settings.proxy_port');
 
-        $options = ['cache_wsdl' => WSDL_CACHE_NONE];
+        $options = ['cache_wsdl' => 0];
         if ($c_proxy_ip) {
             $options['proxy_host'] = $c_proxy_ip;
         }
