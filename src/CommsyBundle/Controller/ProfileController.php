@@ -473,6 +473,7 @@ class ProfileController extends Controller
             $userItem->save();
             $privateRoomItem = $privateRoomTransformer->applyTransformation($privateRoomItem, $form->getData());
             $privateRoomItem->save();
+            return $this->redirect($request->getUri());
         }
 
         return [
