@@ -99,7 +99,7 @@ commsy:
         # default = false
         # do nothing = true
         # set flag = flag
-        privacy_disable_overwriting: false
+        privacy_disable_overwriting: '%security.privacy_disable_overwriting%'
 
         # allows all moderators to take over another user by default
         allow_moderator_takeover: true
