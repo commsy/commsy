@@ -89,16 +89,25 @@ class DateTransformer implements DataTransformerInterface
         }
 
         $dateObject->setPlace($dateData['place']);
-        
-        $dateObject->setStartingDay($dateData['start']['date']->format('Y-m-d'));
-        $dateObject->setStartingTime($dateData['start']['time']->format('H:i'));
-        $dateObject->setDatetime_start($dateData['start']['date']->format('Y-m-d').' '.$dateData['start']['time']->format('H:i:s'));
-        
-        $dateObject->setEndingDay($dateData['end']['date']->format('Y-m-d'));
-        $dateObject->setEndingTime($dateData['end']['time']->format('H:i'));
-        $dateObject->setDatetime_end($dateData['end']['date']->format('Y-m-d').' '.$dateData['end']['time']->format('H:i:s'));
 
         $dateObject->setWholeDay($dateData['whole_day']);
+        if ($dateObject->isWholeDay()) {
+            $dateObject->setStartingDay($dateData['start']['date']->format('Y-m-d'));
+            $dateObject->setStartingTime($dateData['start']['time']->format('00:00'));
+            $dateObject->setDatetime_start($dateData['start']['date']->format('Y-m-d') . ' ' . $dateData['start']['time']->format('00:00:00'));
+
+            $dateObject->setEndingDay($dateData['end']['date']->format('Y-m-d'));
+            $dateObject->setEndingTime($dateData['end']['time']->format('23:59'));
+            $dateObject->setDatetime_end($dateData['end']['date']->format('Y-m-d') . ' ' . $dateData['end']['time']->format('23:59:59'));
+        } else {
+            $dateObject->setStartingDay($dateData['start']['date']->format('Y-m-d'));
+            $dateObject->setStartingTime($dateData['start']['time']->format('H:i'));
+            $dateObject->setDatetime_start($dateData['start']['date']->format('Y-m-d') . ' ' . $dateData['start']['time']->format('H:i:s'));
+
+            $dateObject->setEndingDay($dateData['end']['date']->format('Y-m-d'));
+            $dateObject->setEndingTime($dateData['end']['time']->format('H:i'));
+            $dateObject->setDatetime_end($dateData['end']['date']->format('Y-m-d') . ' ' . $dateData['end']['time']->format('H:i:s'));
+        }
 
         $dateObject->setCalendarId($dateData['calendar']);
 

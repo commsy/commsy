@@ -645,17 +645,24 @@ class DateController extends Controller
 
         $events = array();
         foreach ($listDates as $date) {
-            $start = $date->getStartingDay();
-            if ($date->getStartingTime() != '') {
-                $start .= 'T'.$date->getStartingTime().'Z';
+            if (!$date->isWholeDay()) {
+                $start = $date->getStartingDay();
+                if ($date->getStartingTime() != '') {
+                    $start .= ' ' . $date->getStartingTime();
+                }
+                $end = $date->getEndingDay();
+                if ($end == '') {
+                    $end = $date->getStartingDay();
+                }
+                if ($date->getEndingTime() != '') {
+                    $end .= ' ' . $date->getEndingTime();
+                }
+            } else {
+                $start = $date->getStartingDay().' 00:00:00';
+                $endDateTime = new DateTime($date->getEndingDay().' 00:00:00');
+                $endDateTime->modify('+1 day');
+                $end = $endDateTime->format('Y-m-d H:i:s');
             }
-            $end = $date->getEndingDay();
-            if ($end == '') {
-                $end = $date->getStartingDay();
-            }
-            if ($date->getEndingTime() != '') {
-                $end .= 'T'.$date->getEndingTime().'Z';
-            } 
             
             $participantsList = $date->getParticipantsItemList();
             $participantItem = $participantsList->getFirst();
@@ -763,17 +770,24 @@ class DateController extends Controller
 
         $events = array();
         foreach ($listDates as $date) {
-            $start = $date->getStartingDay();
-            if ($date->getStartingTime() != '') {
-                $start .= 'T'.$date->getStartingTime().'Z';
+            if (!$date->isWholeDay()) {
+                $start = $date->getStartingDay();
+                if ($date->getStartingTime() != '') {
+                    $start .= ' ' . $date->getStartingTime();
+                }
+                $end = $date->getEndingDay();
+                if ($end == '') {
+                    $end = $date->getStartingDay();
+                }
+                if ($date->getEndingTime() != '') {
+                    $end .= ' ' . $date->getEndingTime();
+                }
+            } else {
+                $start = $date->getStartingDay().' 00:00:00';
+                $endDateTime = new DateTime($date->getEndingDay().' 00:00:00');
+                $endDateTime->modify('+1 day');
+                $end = $endDateTime->format('Y-m-d H:i:s');
             }
-            $end = $date->getEndingDay();
-            if ($end == '') {
-                $end = $date->getStartingDay();
-            }
-            if ($date->getEndingTime() != '') {
-                $end .= 'T'.$date->getEndingTime().'Z';
-            } 
             
             $participantsList = $date->getParticipantsItemList();
             $participantItem = $participantsList->getFirst();
@@ -929,28 +943,42 @@ class DateController extends Controller
         $endTimeArray = explode('T', $requestContent->event->end);
         
         $date->setStartingDay($startTimeArray[0]);
-        
+
         if (isset($startTimeArray[1])) {
             $date->setStartingTime($startTimeArray[1]);
         } else {
             $date->setStartingTime('');
         }
-        
-        if (isset($endTimeArray[0])) {
-            $date->setEndingDay($endTimeArray[0]);
-        } else {
-            $date->setEndingDay('');
-        }
-        
-        if (isset($endTimeArray[1])) {
-            $date->setEndingTime($endTimeArray[1]);
-        } else {
-            $date->setEndingTime('');
-        }
-        
+
         $date->setDateTime_start(str_ireplace('T', ' ', $requestContent->event->start));
-        if ($requestContent->event->end != '') {
-            $date->setDateTime_end(str_ireplace('T', ' ', $requestContent->event->end));    
+
+        if (!$requestContent->event->allDay) {
+            if (isset($endTimeArray[0])) {
+                $date->setEndingDay($endTimeArray[0]);
+            } else {
+                $date->setEndingDay('');
+            }
+
+            if (isset($endTimeArray[1])) {
+                $date->setEndingTime($endTimeArray[1]);
+            } else {
+                $date->setEndingTime('');
+            }
+
+            if ($requestContent->event->end != '') {
+                $date->setDateTime_end(str_ireplace('T', ' ', $requestContent->event->end));
+            }
+        } else {
+            $endDateTime = new \DateTime($requestContent->event->end);
+            $endDateTime->modify('-1 day');
+
+            $date->setEndingDay($endDateTime->format('Y-m-d'));
+
+            $date->setEndingTime($endDateTime->format('H:i:s'));
+
+            if ($requestContent->event->end != '') {
+                $date->setDateTime_end($endDateTime->format('Y-m-d H:i:s'));
+            }
         }
         
         $date->save();
