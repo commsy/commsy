@@ -809,14 +809,14 @@ class cs_dates_item extends cs_item {
 				$date_print .= ' (' . getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']) . ' ' . $translator->getMessage('DATES_DAYS') . ')';
 			}
 
-			if($start_time_print !== '' && $end_time_print === '') {
+			if($start_time_print !== '' && $end_time_print === '' && !$this->isWholeDay()) {
 				// only start time given
 				$time_print = $start_time_print;
 
 				if($parse_time_start['conforms'] === true) {
 					$time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
 				}
-			} elseif($start_time_print === '' && $end_time_print !== '') {
+			} elseif($start_time_print === '' && $end_time_print !== '' && !$this->isWholeDay()) {
 				// only end time given
 				$time_print = $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
 
@@ -825,17 +825,21 @@ class cs_dates_item extends cs_item {
 				}
 			} elseif($start_time_print !== '' && $end_time_print !== '') {
 				// all times given
-				if($parse_time_end['conforms'] === true) {
-					$end_time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
-				}
+                if (!$this->isWholeDay()) {
+                    if ($parse_time_end['conforms'] === true) {
+                        $end_time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
+                    }
 
-				if($parse_time_start['conforms'] === true) {
-					$start_time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
-				}
+                    if ($parse_time_start['conforms'] === true) {
+                        $start_time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
+                    }
 
-				$date_print =	$start_day_print . ', ' . $start_time_print . ' ' .
-								$translator->getMessage('DATES_TILL') . ' ' . $end_day_print . ', ' . $end_time_print;
-
+                    $date_print = $start_day_print . ', ' . $start_time_print . ' ' .
+                                  $translator->getMessage('DATES_TILL') . ' ' . $end_day_print . ', ' . $end_time_print;
+                } else {
+                    $date_print = $start_day_print . ' ' .
+                                  $translator->getMessage('DATES_TILL') . ' ' . $end_day_print;
+                }
 				if($parse_day_start['conforms'] && $parse_day_end['conforms']) {
 					$date_print .= ' (' . getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']) . ' ' . $translator->getMessage('DATES_DAYS') . ')';
 				}
@@ -844,21 +848,21 @@ class cs_dates_item extends cs_item {
 			// without ending day
 			$date_print = $start_day_print;
 
-			if($start_time_print !== '' && $end_time_print == '') {
+			if($start_time_print !== '' && $end_time_print == '' && !$this->isWholeDay()) {
 				// starting time given
 				$time_print = $start_time_print;
 
 				if($parse_time_start['conforms'] === true) {
 					$time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
 				}
-			} elseif($start_time_print === '' && $end_time_print !== '') {
+			} elseif($start_time_print === '' && $end_time_print !== '' && !$this->isWholeDay()) {
 				// end time given
 				$time_print = $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
 
 				if($parse_time_end['conforms'] === true) {
 					$time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
 				}
-			} elseif($start_time_print !== '' && $end_time_print !== '') {
+			} elseif($start_time_print !== '' && $end_time_print !== '' && !$this->isWholeDay()) {
 				// all times given
 				if($parse_time_end['conforms'] === true) {
 					$end_time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
@@ -875,16 +879,18 @@ class cs_dates_item extends cs_item {
 		if($parse_day_start['timestamp'] === $parse_day_end['timestamp'] && $parse_day_start['conforms'] && $parse_day_end['conforms']) {
 			$date_print = $translator->getMessage('DATES_ON_DAY') . ' ' . $start_day_print;
 
-			if($start_time_print !== '' && $end_time_print === '') {
-				// starting time given
-				$time_print = $start_time_print;
-			} elseif($start_time_print === '' && $end_time_print !== '') {
-				// endtime given
-				$time_print = $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
-			} elseif($start_time_print !== '' && $end_time_print !== '') {
-				// all times given
-				$time_print = $translator->getMessage('DATES_FROM_TIME_LOWER') . ' ' . $start_time_print . ' ' . $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
-			}
+            if (!$this->isWholeDay()) {
+                if ($start_time_print !== '' && $end_time_print === '') {
+                    // starting time given
+                    $time_print = $start_time_print;
+                } elseif ($start_time_print === '' && $end_time_print !== '') {
+                    // endtime given
+                    $time_print = $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
+                } elseif ($start_time_print !== '' && $end_time_print !== '') {
+                    // all times given
+                    $time_print = $translator->getMessage('DATES_FROM_TIME_LOWER') . ' ' . $start_time_print . ' ' . $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
+                }
+            }
 		}
 
 		// date and time
