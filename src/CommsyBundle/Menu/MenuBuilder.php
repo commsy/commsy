@@ -81,19 +81,21 @@ class MenuBuilder
                 ->setExtra('translation_domain', 'profile');
             }
 
-            $menu->addChild('mergeAccounts', [
-                'label' => 'combineAccount',
-                'route' => 'commsy_profile_mergeaccounts',
-                'routeParameters' => [
-                    'roomId' => $currentStack->attributes->get('roomId'),
-                    'itemId' => $currentUser->getItemId(),
-                ],
-                'extras' => [
-                    'icon' => 'uk-icon-sitemap uk-icon-small uk-icon-justify',
-                    'user' => $currentUser,
-                ]
-            ])
-            ->setExtra('translation_domain', 'profile');
+            if(!$currentUser->isRoot()) {
+                $menu->addChild('mergeAccounts', [
+                    'label' => 'combineAccount',
+                    'route' => 'commsy_profile_mergeaccounts',
+                    'routeParameters' => [
+                        'roomId' => $currentStack->attributes->get('roomId'),
+                        'itemId' => $currentUser->getItemId(),
+                    ],
+                    'extras' => [
+                        'icon' => 'uk-icon-sitemap uk-icon-small uk-icon-justify',
+                        'user' => $currentUser,
+                    ]
+                ])
+                ->setExtra('translation_domain', 'profile');
+            }
 
             $menu->addChild('notifications', [
                 'route' => 'commsy_profile_notifications',

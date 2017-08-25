@@ -3,11 +3,14 @@ namespace CommsyBundle\Form\Type\Profile;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityManager;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
@@ -47,6 +50,18 @@ class ProfileMergeAccountsType extends AbstractType
                 'label' => 'combinePassword',
                 'required' => true,
             ))
+            ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+                $form = $event->getForm();
+                $formOptions = $form->getConfig()->getOptions();
+                if($formOptions['show_auth_source']) {
+                    $form->add('auth_source', ChoiceType::class, array(
+                            'choices' => $formOptions['auth_source_array'],
+                            'label' => 'authSource',
+                            'multiple' => false,
+                            'expanded' => false,
+                    ));
+                }
+            })
             ->add('save', SubmitType::class, array(
                 'label' => 'save',
                 'translation_domain' => 'form',
@@ -64,7 +79,7 @@ class ProfileMergeAccountsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['itemId'])
+            ->setRequired(['itemId', 'auth_source_array', 'show_auth_source'])
             ->setDefaults(array('translation_domain' => 'profile'))
         ;
     }

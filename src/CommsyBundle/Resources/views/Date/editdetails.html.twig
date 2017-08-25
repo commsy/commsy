@@ -28,12 +28,10 @@
                 {{ form_label(form.end) }}
                 {{ form_widget(form.end) }}
             </div>
-            <!--
             <div class="">
                 {{ form_label(form.whole_day) }}
                 {{ form_widget(form.whole_day) }}
             </div>
-            -->
             <div class="">
                 {{ form_label(form.place) }}
                 {{ form_widget(form.place) }}
@@ -163,6 +161,22 @@ $('#date_start_date, #date_start_time, #date_end_date, #date_end_time').change(f
         }
     }
 })
+
+$('#date_whole_day').change(function(){
+    if($(this).is(":checked")) {
+        $('#date_start_time').prop('disabled', true);
+        $('#date_end_time').prop('disabled', true);
+    } else {
+        $('#date_start_time').prop('disabled', false);
+        $('#date_end_time').prop('disabled', false);
+    }
+});
+if ($('#date_whole_day').length > 0) {
+    if ($('#date_whole_day').is(":checked")) {
+        $('#date_start_time').prop('disabled', true);
+        $('#date_end_time').prop('disabled', true);
+    }
+}
 
 var $recurring = $('#date_recurring_select');
 // When sport gets selected ...

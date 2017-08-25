@@ -154,7 +154,9 @@ class cs_room2_manager extends cs_context_manager {
          $public = '0';
       }
 
-      $query .= 'title="'.encode(AS_DB,$item->getTitle()).'",'.
+      $title = str_ireplace("'", '"', $item->getTitle());
+
+      $query .= 'title="'.encode(AS_DB,$title).'",'.
                 "extras='".encode(AS_DB,serialize($item->getExtraInformation()))."',".
                 "status='".encode(AS_DB,$item->getStatus())."',".
                 "activity='".encode(AS_DB,$activity)."',".
