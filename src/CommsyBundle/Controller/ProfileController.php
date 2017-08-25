@@ -313,68 +313,76 @@ class ProfileController extends Controller
     */
     public function mergeAccountsAction($roomId, $itemId, Request $request)
     {
-        $userTransformer = $this->get('commsy_legacy.transformer.user');
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $userService = $this->get('commsy_legacy.user_service');
-        $userItem = $userService->getUser($itemId);
-        $userData = $userTransformer->transform($userItem);
 
+        // account administration page => set language to user preferences
+        $userTransformer = $this->get('commsy_legacy.transformer.user');
+        $userItem = $userService->getUser($itemId);
         $request->setLocale($userItem->getLanguage());
 
-        $form = $this->createForm(ProfileMergeAccountsType::class, $userData, array(
+        // external auth sources
+        $current_portal_item = $legacyEnvironment->getCurrentPortalItem();
+        if(!isset($current_portal_item)) $current_portal_item = $legacyEnvironment->getServerItem();
+        $auth_sources = [];
+        $auth_source_list = $current_portal_item->getAuthSourceListEnabled();
+        if(isset($auth_source_list) && !$auth_source_list->isEmpty()) {
+            $auth_source_item = $auth_source_list->getFirst();
+
+            while($auth_source_item) {
+                $auth_sources[$auth_source_item->getTitle()] = $auth_source_item->getItemID();
+                $auth_source_item = $auth_source_list->getNext();
+            }
+        }
+
+        // TODO: default auth source!
+
+        // only show auth source list if more than one auth source is configured
+        $show_auth_source = count($auth_sources) > 1;
+        $form = $this->createForm(ProfileMergeAccountsType::class, [], array(
             'itemId' => $itemId,
+            'auth_source_array' => $auth_sources,
+            'show_auth_source' => $show_auth_source,
         ));
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
 
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        if ($form->isSubmitted()) {
+
             $authentication = $legacyEnvironment->getAuthenticationObject();
-
-            global $c_annonymous_account_array;
 
             $formData = $form->getData();
 
             $currentUser = $legacyEnvironment->getCurrentUserItem();
-            if ( isset($c_annonymous_account_array) && !empty($c_annonymous_account_array[mb_strtolower($currentUser->getUserID(), 'UTF-8') . '_' . $currentUser->getAuthSource()]) && $currentUser->isOnlyReadUser() )
+            if ( strtolower($currentUser->getUserID()) == strtolower($formData['combineUserId']) &&
+                 isset($formData['auth_source']) &&
+                 (empty($formData['auth_source']) || $currentUser->getAuthSource() == $formData['auth_source'] ) )
             {
-                throw new \Exception("1014: anonymous account");
+                $form->get('combineUserId')->addError(new FormError('Invalid user'));
             }
             else
             {
-                if ( $currentUser->getUserID() == $formData['combineUserId'] && 
-                     isset($formData['auth_source']) &&
-                     (empty($formData['auth_source']) || $currentUser->getAuthSource() == $formData['auth_source'] ) )
-                {
-                    throw new \Exception("1015: invalid account");
-                }
-                else
-                {
-                    $user_manager = $legacyEnvironment->getUserManager();
-                    $user_manager->setUserIDLimitBinary($formData['combineUserId']);
+                $user_manager = $legacyEnvironment->getUserManager();
+                $user_manager->setUserIDLimitBinary($formData['combineUserId']);
 
-                    $user_manager->select();
-                    $user = $user_manager->get();
-                    $first_user = $user->getFirst();
+                $user_manager->select();
+                $user = $user_manager->get();
+                $first_user = $user->getFirst();
 
-                    $current_user = $legacyEnvironment->getCurrentUserItem();
-
-                    if(!empty($first_user)){
-                        if(!isset($formData['auth_source']) || empty($formData['auth_source'])) {
-                            $authManager = $authentication->getAuthManager($current_user->getAuthSource());
-                        } else {
-                            $authManager = $authentication->getAuthManager($formData['auth_source']);
-                        }
-                        if ( !$authManager->checkAccount($formData['combineUserId'], $formData['combinePassword']) )
-                        {
-                            throw new \Exception("1016: authentication error");
-                        }
+                if(!empty($first_user)){
+                    if(!isset($formData['auth_source']) || empty($formData['auth_source'])) {
+                        $authManager = $authentication->getAuthManager($currentUser->getAuthSource());
                     } else {
-                        throw new \Exception("1015: invalid account");
+                        $authManager = $authentication->getAuthManager($formData['auth_source']);
                     }
+                    if ( !$authManager->checkAccount($formData['combineUserId'], $formData['combinePassword']) )
+                    {
+                        $form->get('combineUserId')->addError(new FormError('Authentication error'));
+                    }
+                } else {
+                    $form->get('combineUserId')->addError(new FormError('User not found'));
                 }
             }
-
-            $currentUser = $legacyEnvironment->getCurrentUserItem();
 
             if ( isset($formData['auth_source']) )
             {
@@ -384,17 +392,16 @@ class ProfileController extends Controller
             {
                 $authSourceOld = $legacyEnvironment->getCurrentPortalItem()->getAuthDefault();
             }
+            if($form->isValid()) {
+                $authentication->mergeAccount($currentUser->getUserID(), $currentUser->getAuthSource(), $formData['combineUserId'], $authSourceOld);
 
-            ini_set('display_errors', 'on');
-            error_reporting(E_ALL);
-
-            $authentication->mergeAccount($currentUser->getUserID(), $currentUser->getAuthSource(), $formData['combineUserId'], $authSourceOld);
-
-            return $this->redirectToRoute('commsy_profile_mergeaccounts', array('roomId' => $roomId, 'itemId' => $itemId));
+                return $this->redirectToRoute('commsy_profile_mergeaccounts', array('roomId' => $roomId, 'itemId' => $itemId));
+            }
         }
 
         return array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'show_auth_source' => $show_auth_source,
         );
     }
 
