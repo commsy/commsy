@@ -36,9 +36,11 @@
             $(element)
                 .mouseover(function() {
                     $(this).find('div.cs-edit').toggleClass('uk-invisible', false);
+                    $(this).find('div.cs-delete').toggleClass('uk-invisible', false);
                 })
                 .mouseout(function() {
                     $(this).find('div.cs-edit').toggleClass('uk-invisible', true);
+                    $(this).find('div.cs-delete').toggleClass('uk-invisible', true);
                 });
 
             $this.registerArticleEvents(element);
@@ -197,6 +199,30 @@
                 }
             });
         }
+    });
+
+    $('.cs-delete').on('click', function(e){
+        e.preventDefault();
+
+        let $delete = $(this);
+
+        UIkit.modal.confirm($delete.data('delete-confirm'), function() {
+            $.ajax({
+                url: $delete.data('delete-url'),
+            }).done(function(data, textStatus, jqXHR) {
+                if (data.deleted) {
+                    window.location.reload(true);
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.log('fail')
+            });
+        }, function () {
+        }, {
+            labels: {
+                Cancel: $delete.data('confirm-delete-cancel'),
+                Ok: $delete.data('confirm-delete-confirm')
+            }
+        });
     });
 
 })(UIkit);
