@@ -172,7 +172,7 @@
             </trans-unit>
             <trans-unit id="room_agb">
                 <source>AGB</source>
-                <target>AGB</target>
+                <target>Terms of use</target>
             </trans-unit>
             <trans-unit id="room_agb_accept">
                 <source>Accept</source>
@@ -193,6 +193,58 @@
             <trans-unit id="of">
                 <source>of</source>
                 <target>von</target>
+            </trans-unit>
+            <trans-unit id="context type">
+                <source>context type</source>
+                <target>Room type</target>
+            </trans-unit>
+            <trans-unit id="Room description">
+                <source>Room description</source>
+                <target>Description</target>
+            </trans-unit>
+            <trans-unit id="community">
+                <source>community</source>
+                <target>Communityroom</target>
+            </trans-unit>
+            <trans-unit id="language">
+                <source>language</source>
+                <target>Language</target>
+            </trans-unit>
+            <trans-unit id="de">
+                <source>de</source>
+                <target>German</target>
+            </trans-unit>
+            <trans-unit id="en">
+                <source>en</source>
+                <target>English</target>
+            </trans-unit>
+            <trans-unit id="Time interval">
+                <source>Time interval</source>
+                <target>Time interval</target>
+            </trans-unit>
+            <trans-unit id="Create new context">
+                <source>Create new context</source>
+                <target>Create new room</target>
+            </trans-unit>
+            <trans-unit id="confirm">
+                <source>confirm</source>
+                <target>Confirm</target>
+            </trans-unit>
+            <trans-unit id="reject">
+                <source>reject</source>
+                <target>Reject</target>
+            </trans-unit>
+            <trans-unit id="Room description...">
+                <source>Room description...</source>
+                <target>Room description...</target>
+            </trans-unit>
+            <trans-unit id="moderation actions">
+                <source>moderation actions</source>
+                <target>Moderationsaktionen</target>
+            </trans-unit>
+            <trans-unit id="Archived room">
+                <source>Archived room</source>
+                <target>Archivierter Raum</target>
             </trans-unit>
         </body>
     </file>

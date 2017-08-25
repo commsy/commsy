@@ -103,6 +103,8 @@ class UserTransformer implements DataTransformerInterface
 
                 $session_manager->save($session);
                 unset($session_manager);
+
+                $portalUser->setUserId($userData['userId']); // Important, as this object is savd again later!
             }
             else{
                 die("ERROR: changing User ID not successful");

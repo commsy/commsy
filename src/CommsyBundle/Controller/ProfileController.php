@@ -475,10 +475,10 @@ class ProfileController extends Controller
             $privateRoomItem->save();
         }
 
-        return array(
+        return [
             'form' => $form->createView(),
             'uploadEmail' => $this->getParameter('email.upload.account'),
-        );
+        ];
     }
 
     /**

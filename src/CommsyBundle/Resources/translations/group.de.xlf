@@ -46,6 +46,14 @@
                 <source>access restricted to group members</source>
                 <target>Der Zugang zum Gruppenraum ist auf Gruppenmitglieder beschränkt</target>
             </trans-unit>
+            <trans-unit id="Template">
+                <source>Template</source>
+                <target>Vorlage</target>
+            </trans-unit>
+            <trans-unit id="Choose a template">
+                <source>Choose a template</source>
+                <target>Vorlage auswählen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

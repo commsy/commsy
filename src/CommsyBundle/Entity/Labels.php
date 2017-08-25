@@ -486,4 +486,14 @@ class Labels
     {
         return $this->deleter;
     }
+
+    /**
+     * Get title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->getName();
+    }
 }
