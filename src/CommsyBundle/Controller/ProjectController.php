@@ -196,6 +196,9 @@ class ProjectController extends Controller
             // persist with legacy code
             $legacyRoom->save();
 
+            $calendarsService = $this->get('commsy.calendars_service');
+            $calendarsService->createCalendar($legacyRoom, null, null, true);
+
             // take values from a template?
             if ($form->has('master_template')) {
                 $masterTemplate = $form->get('master_template')->getData();
