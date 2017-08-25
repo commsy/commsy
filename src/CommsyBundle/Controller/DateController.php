@@ -974,10 +974,10 @@ class DateController extends Controller
 
             $date->setEndingDay($endDateTime->format('Y-m-d'));
 
-            $date->setEndingTime($endDateTime->format('H:i:s'));
+            $date->setEndingTime($endDateTime->format('23:59:59'));
 
             if ($requestContent->event->end != '') {
-                $date->setDateTime_end($endDateTime->format('Y-m-d H:i:s'));
+                $date->setDateTime_end($endDateTime->format('Y-m-d 23:59:59'));
             }
         }
         
