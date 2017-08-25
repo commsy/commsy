@@ -1138,6 +1138,7 @@ class DateController extends Controller
                     $tempDate->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                     $tempDate->setColor($dateItem->getColor());
                     $tempDate->setCalendarId($dateItem->getCalendarId());
+                    $tempDate->setWholeDay($dateItem->isWholeDay());
                     $tempDate->save();
                 }
             } else {
