@@ -32,7 +32,10 @@ services:
 
   commsy_wordpress:
     image: wordpress
+    #build: ./commsy_wordpress
     container_name: commsy_wordpress
+    volumes:
+     - "./.data/wordpress:/var/www/html"
     links:
      - commsy_wordpress_mysql
     environment:
@@ -47,6 +50,8 @@ services:
     environment:
      - MYSQL_ROOT_PASSWORD=password
      - MYSQL_DATABASE=wordpress
+    volumes:
+     - "./.data/db_wordpress:/var/lib/mysql"
 
 volumes:
   commsy-unison-sync:
