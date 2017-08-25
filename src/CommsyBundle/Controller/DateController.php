@@ -733,6 +733,7 @@ class DateController extends Controller
                               'recurringDescription' => $recurringDescription,
                               'textColor' => $textColor,
                               'borderColor' => $borderColor,
+                              'allDay' => $date->isWholeDay(),
                              );
         }
 
