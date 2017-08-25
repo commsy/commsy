@@ -166,6 +166,13 @@
                         let form = $(this).closest('form');
                         if (form[0].checkValidity()) {
 
+                            if($('#date_start_time').length > 0){
+                                $('#date_start_time').prop('disabled', false);
+                            }
+                            if($('#date_end_time').length > 0){
+                                $('#date_end_time').prop('disabled', false);
+                            }
+
                             let formData = form.serializeArray();
                             formData.push({name: this.name, value: this.value});
 
