@@ -373,10 +373,12 @@ class RoomController extends Controller
         if (!$currentUser->isRoot()) {
             $portalUser = $currentUser->getRelatedPortalUserItem();
 
-            if ($portalUser->isModerator()) {
-                $userMayCreateContext = true;
-            } else if ($portalItem->getCommunityRoomCreationStatus() == 'all' || $portalItem->getProjectRoomCreationStatus() == 'portal') {
-                $userMayCreateContext = $currentUser->isAllowedToCreateContext();
+            if ($portalUser) {
+                if ($portalUser->isModerator()) {
+                    $userMayCreateContext = true;
+                } else if ($portalItem->getCommunityRoomCreationStatus() == 'all' || $portalItem->getProjectRoomCreationStatus() == 'portal') {
+                    $userMayCreateContext = $currentUser->isAllowedToCreateContext();
+                }
             }
         } else {
             $userMayCreateContext = true;
@@ -571,10 +573,12 @@ class RoomController extends Controller
         if (!$currentUser->isRoot()) {
             $portalUser = $currentUser->getRelatedPortalUserItem();
 
-            if ($portalUser->isModerator()) {
-                $userMayCreateContext = true;
-            } else if ($portalItem->getCommunityRoomCreationStatus() == 'all' || $portalItem->getProjectRoomCreationStatus() == 'portal') {
-                $userMayCreateContext = $currentUser->isAllowedToCreateContext();
+            if ($portalUser) {
+                if ($portalUser->isModerator()) {
+                    $userMayCreateContext = true;
+                } else if ($portalItem->getCommunityRoomCreationStatus() == 'all' || $portalItem->getProjectRoomCreationStatus() == 'portal') {
+                    $userMayCreateContext = $currentUser->isAllowedToCreateContext();
+                }
             }
         } else {
             $userMayCreateContext = true;
@@ -1217,6 +1221,8 @@ class RoomController extends Controller
             } elseif (!empty($roomUser) and $roomUser->isRejected()) {
                 $status = 'rejected';
             }
+        } else {
+            $status = 'archived';
         }
         return $status;
     }
