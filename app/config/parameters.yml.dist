@@ -41,6 +41,9 @@ parameters:
     elastic_user: ~
     elastic_password: ~
 
+    # security
+    security.privacy_disable_overwriting: false
+
     # extensions
     extensions.etherpad.enabled: false
     extensions.etherpad.api_key: ~
@@ -54,3 +57,6 @@ parameters:
 
     extensions.wordpress.enabled: false
     extensions.wordpress.url: ~
+
+    #dates
+    dates.timezone: ~

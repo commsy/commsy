@@ -99,7 +99,7 @@ commsy:
         # default = false
         # do nothing = true
         # set flag = flag
-        privacy_disable_overwriting: false
+        privacy_disable_overwriting: '%security.privacy_disable_overwriting%'
 
         # allows all moderators to take over another user by default
         allow_moderator_takeover: true
@@ -172,3 +172,7 @@ commsy:
         url: '%extensions.mediawiki.url%'
         roomWikiUrl: '%extensions.mediawiki.room_wiki_url%'
         apiPath: '%extensions.mediawiki.api_path%'
+
+    # dates
+    dates:
+        timezone: '%dates.timezone%'

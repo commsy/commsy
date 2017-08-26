@@ -291,4 +291,21 @@ class UserService
 
         return 'join';
     }
+
+    public function getUsersByGroupIds($roomId, $groupIds)
+    {
+        $this->userManager->setContextLimit($roomId);
+        if (!is_array($groupIds)) {
+            $this->userManager->setGroupArrayLimit([$groupIds]);
+        } else {
+            $this->userManager->setGroupArrayLimit($groupIds);
+        }
+        $this->userManager->setOrder('name');
+        $this->userManager->select();
+        $userList = $this->userManager->get();
+
+        $user_array = $userList->to_array();
+
+        return $user_array;
+    }
 }

@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Form\Type\AnnotationType;
 
@@ -189,4 +190,25 @@ class AnnotationController extends Controller
 
     //     return $this->redirectToRoute('commsy_'.$itemType.'_detail', array('roomId' => $roomId, 'itemId' => $linkedItem->getItemId()));
     // }
+
+    /**
+     * @Route("/room/{roomId}/annotation/{itemId}/delete")
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function deleteAction($roomId, $itemId, Request $request)
+    {
+
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getTypedItem($itemId);
+
+        $item->delete();
+
+        $response = new JsonResponse();
+
+        $response->setData([
+            'deleted' => true,
+        ]);
+
+        return $response;
+    }
 }

@@ -105,6 +105,9 @@ class CommsyExtension extends Extension
         $container->setParameter('commsy.etherpad.api_url', $config['etherpad']['api_url']);
         $container->setParameter('commsy.etherpad.base_url', $config['etherpad']['base_url']);
 
+        // dates
+        $container->setParameter('commsy.dates.timezone', $config['dates']['timezone']);
+
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
     }

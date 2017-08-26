@@ -247,6 +247,12 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->arrayNode('dates')
+                    ->children()
+                        ->scalarNode('timezone')
+                        ->defaultValue('UTC')
+                    ->end()
+                ->end()
             ->end()
         ;
 

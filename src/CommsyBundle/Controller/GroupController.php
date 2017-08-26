@@ -14,6 +14,7 @@ use CommsyBundle\Filter\GroupFilterType;
 use CommsyBundle\Form\Type\GroupType;
 use CommsyBundle\Form\Type\GrouproomType;
 use CommsyBundle\Form\Type\AnnotationType;
+use CommsyBundle\Form\Type\GroupSendType;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -205,9 +206,9 @@ class GroupController extends Controller
         foreach ($groups as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
-                $allowedActions[$item->getItemID()] = array('markread', 'delete');
+                $allowedActions[$item->getItemID()] = array('markread', 'sendmail', 'delete');
             } else {
-                $allowedActions[$item->getItemID()] = array('markread');
+                $allowedActions[$item->getItemID()] = array('markread', 'sendmail');
             }
 
             // add groupMember and groupRoomMember status to each group!
@@ -1147,6 +1148,83 @@ class GroupController extends Controller
             'roomId' => $roomId,
             'userIsMember' => $membersList->inList($legacyEnvironment->getCurrentUserItem()),
             'memberStatus' => $memberStatus,
+        ];
+    }
+
+    /**
+     * @Route("/room/{roomId}/group/sendMultiple")
+     * @Template()
+     */
+    public function sendMultipleAction($roomId, Request $request)
+    {
+        if (!$request->query->has('userIds')) {
+            throw $this->createNotFoundException('no user ids found');
+        }
+
+        $groupIds = $request->query->get('userIds'); // Important: get parameter is 'userIds'!
+
+        $userService = $this->get('commsy_legacy.user_service');
+
+        $formData = [
+            'message' => '',
+            'copy_to_sender' => false,
+        ];
+
+        $form = $this->createForm(GroupSendType::class, $formData, []);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $formData = $form->getData();
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+            $portalItem = $legacyEnvironment->getCurrentPortalItem();
+            $currentUser = $legacyEnvironment->getCurrentUserItem();
+
+            $from = $this->getParameter('commsy.email.from');
+
+            $to = [];
+            foreach ($userService->getUsersByGroupIds($roomId, $groupIds) as $user) {
+                if (filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) {
+                    $to[$user->getEmail()] = $user->getFullName();
+                }
+            }
+
+            $message = \Swift_Message::newInstance()
+                ->setSubject($formData['subject'])
+                ->setBody($formData['message'], 'text/html')
+                ->setFrom([$from => $portalItem->getTitle()])
+                ->setReplyTo([$currentUser->getEmail() => $currentUser->getFullName()])
+                ->setTo($to);
+
+            // form option: copy_to_sender
+            if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
+                $message->setCc($message->getReplyTo());
+            }
+
+            // send mail
+            $this->get('mailer')->send($message);
+
+            // redirect to success page
+            return $this->redirectToRoute('commsy_group_sendmultiplesuccess', [
+                'roomId' => $roomId,
+            ]);
+        }
+
+        return [
+            'form' => $form->createView()
+        ];
+    }
+
+    /**
+     * @Route("/room/{roomId}/group/sendMultiple/success")
+     * @Template()
+     **/
+    public function sendMultipleSuccessAction($roomId)
+    {
+        return [
+            'link' => $this->generateUrl('commsy_group_list', [
+                'roomId' => $roomId,
+            ]),
         ];
     }
 

@@ -36,9 +36,11 @@
             $(element)
                 .mouseover(function() {
                     $(this).find('div.cs-edit').toggleClass('uk-invisible', false);
+                    $(this).find('div.cs-delete').toggleClass('uk-invisible', false);
                 })
                 .mouseout(function() {
                     $(this).find('div.cs-edit').toggleClass('uk-invisible', true);
+                    $(this).find('div.cs-delete').toggleClass('uk-invisible', true);
                 });
 
             $this.registerArticleEvents(element);
@@ -166,6 +168,13 @@
                         let form = $(this).closest('form');
                         if (form[0].checkValidity()) {
 
+                            if($('#date_start_time').length > 0){
+                                $('#date_start_time').prop('disabled', false);
+                            }
+                            if($('#date_end_time').length > 0){
+                                $('#date_end_time').prop('disabled', false);
+                            }
+
                             let formData = form.serializeArray();
                             formData.push({name: this.name, value: this.value});
 
@@ -190,6 +199,30 @@
                 }
             });
         }
+    });
+
+    $('.cs-delete').on('click', function(e){
+        e.preventDefault();
+
+        let $delete = $(this);
+
+        UIkit.modal.confirm($delete.data('delete-confirm'), function() {
+            $.ajax({
+                url: $delete.data('delete-url'),
+            }).done(function(data, textStatus, jqXHR) {
+                if (data.deleted) {
+                    window.location.reload(true);
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.log('fail')
+            });
+        }, function () {
+        }, {
+            labels: {
+                Cancel: $delete.data('confirm-delete-cancel'),
+                Ok: $delete.data('confirm-delete-confirm')
+            }
+        });
     });
 
 })(UIkit);

@@ -25,7 +25,7 @@ class CommunityType extends AbstractType
                 'choices' => $options['templates'],
                 'preferred_choices' => $options['preferredChoices'],
                 'placeholder' => 'Choose a template',
-                'required' => $options['linkCommunitiesMandantory'],
+                'required' => false,
                 'mapped' => false,
                 'label' => 'Template',
             ])
