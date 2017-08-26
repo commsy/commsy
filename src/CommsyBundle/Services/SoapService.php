@@ -627,6 +627,15 @@ class SoapService
         $sessionManager->updateSessionCreationDate($sessionId);
     }
 
+    /**
+     * Authenticate via session id.
+     *
+     * @param string $sessionId The session id
+     *
+     * @throws SoapFault
+     *
+     * @return string
+     */
     public function authenticateViaSession($session_id) {
         $session_id = $this->_encode_input($session_id);
         if ($this->_isSessionValid($session_id)) {
@@ -635,7 +644,7 @@ class SoapService
             $session_item = $session_manager->get($session_id);
             return $session_item->getValue('user_id');
         } else {
-            return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+            return new \SoapFault('ERROR','Session ('.$session_id.') not valid!');
         }
     }
 
@@ -649,7 +658,13 @@ class SoapService
         }
         return $retour;
     }
+
+    private function _updateSessionCreationDate ($session_id) {
+        $session_manager = $this->legacyEnvironment->getSessionManager();
+        $session_manager->updateSessionCreationDate($session_id);
+    }
 }
+
 
 /**
  * TODO
