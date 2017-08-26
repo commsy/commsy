@@ -52,6 +52,8 @@ services:
      - MYSQL_DATABASE=wordpress
     volumes:
      - "./.data/db_wordpress:/var/lib/mysql"
+    ports:
+     - "3307:3306"
 
 volumes:
   commsy-unison-sync:
