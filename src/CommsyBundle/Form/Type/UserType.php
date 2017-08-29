@@ -32,7 +32,7 @@ class UserType extends AbstractType
                 'translation_domain' => 'user',
                 'required' => false,
             ))
-            ->add('email', TextType::class, array(
+            ->add('emailRoom', TextType::class, array(
                 'constraints' => array(
                     new NotBlank(),
                 ),
