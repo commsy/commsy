@@ -500,6 +500,13 @@ else {
          $room_item = $room_list->getNext();
       }
 
+      // unlock changes get overwritten in loop from subsequent items
+      // resave until manager refactoring
+      if (isset($item)) {
+         $item->unlockForMove();
+         $item->save();
+      }
+
       // send email to users
       $current_portal = $environment->getCurrentPortalItem();
       foreach ($user_array_all as $user_item) {
