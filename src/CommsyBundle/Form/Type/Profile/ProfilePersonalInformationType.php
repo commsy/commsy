@@ -3,13 +3,12 @@ namespace CommsyBundle\Form\Type\Profile;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
-
-use CommsyBundle\Form\Type\Custom\DateSelectType;
 
 use Doctrine\ORM\EntityManager;
 
@@ -61,9 +60,14 @@ class ProfilePersonalInformationType extends AbstractType
                 'label' => 'email',
                 'required' => true,
             ))
-            ->add('dateOfBirth', DateSelectType::class, array(
+            ->add('dateOfBirth', DateType::class, array(
                 'label'    => 'dateOfBirth',
                 'required' => false,
+                'format' => 'dd.MM.yyyy',
+                'attr' => array(
+                    'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
+                ),
+                'widget' => 'single_text',
             ))
             ->add('dateOfBirthChangeInAllContexts', CheckboxType::class, array(
                 // 'label'    => 'changeInAllContexts',

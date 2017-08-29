@@ -42,8 +42,7 @@ class UserTransformer implements DataTransformerInterface
             }
             $userData['title'] = $userItem->getTitle();
             if($userItem->getBirthday()){
-                $userData['dateOfBirth'] = array();
-                $userData['dateOfBirth']['date'] = new \DateTime($userItem->getBirthday());
+                $userData['dateOfBirth'] = new \DateTime($userItem->getBirthday());
             }
             $userData['emailRoom'] = $userItem->getRoomEmail();
             $userData['emailAccount'] = $portalUser->getEmail();
@@ -132,8 +131,8 @@ class UserTransformer implements DataTransformerInterface
                 $userObject->turnAutoSaveOff();
             }
             $userObject->setTitle($userData['title']);
-            if(array_key_exists('dateOfBirth', $userData) && $userData['dateOfBirth'] && $userData['dateOfBirth']['date']){
-                $userObject->setBirthday($userData['dateOfBirth']['date']->format('Y-m-d'));
+            if(array_key_exists('dateOfBirth', $userData) && $userData['dateOfBirth']){
+                $userObject->setBirthday($userData['dateOfBirth']->format('Y-m-d'));
             }
             else{
                 $userObject->setBirthday("");
