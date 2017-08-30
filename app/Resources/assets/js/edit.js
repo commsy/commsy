@@ -93,7 +93,6 @@
 
         onClickEdit: function(el) {
             draftFormCount++;
-            console.log(draftFormCount);
 
             let $this = this;
             let article = $(el).parents('.cs-edit-section');
@@ -130,8 +129,6 @@
             // override form submit behaviour
             article.find('button').click(function (event) {
                 event.preventDefault ? event.preventDefault() : (event.returnValue = false);
-
-                console.log('button clicked');
 
                 let $button = $(this);
 
@@ -205,7 +202,6 @@
                                     } else {
                                         article.html($result);
                                         draftFormCount--;
-                                        console.log(draftFormCount);
                                         if (draftFormCount == 0) {
                                             window.location.reload(true);
                                         }
@@ -247,7 +243,6 @@
         $(this).parents('article').find('form').each(function(){
             let button = $(this).find('.uk-button-primary');
             if (button.length) {
-                console.log(button);
                 button.click();
             }
         });
