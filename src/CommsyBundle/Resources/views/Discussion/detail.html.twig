@@ -114,7 +114,7 @@
                 {%  endif %}
 
                 {# content #}
-                <article class="uk-article uk-position-relative" data-uk-observe>
+                <article class="uk-article uk-position-relative {% if draft %}cs-edit-draft{% endif %}" data-uk-observe>
                     {# title, etc. #}
                     <div class="cs-toggle" data-uk-observe>
                         {{ macrosDiscussion.title(discussion, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, ratingArray) }}
@@ -122,14 +122,26 @@
         
                     {# links #}
                     <div id="links{{ discussion.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': discussion.contextId, 'itemId': discussion.itemId}) }}' }">
-                        {{ macrosItem.links(discussion,showHashtags,showCategories,roomCategories) }}
+                        {{ macrosItem.links(discussion,showHashtags,showCategories,roomCategories, draft) }}
                     </div>
-                    
-                    {# articles #}
-                    <div id="articles{{ discussion.itemId }}" class="cs-edit-section cs-toggle">
-                        {{ macrosDiscussion.articles(discussion, articleList, articleTree) }}
-                    </div>
-                    
+
+                    {% if not draft %}
+                        {# articles #}
+                        <div id="articles{{ discussion.itemId }}" class="cs-edit-section cs-toggle">
+                            {{ macrosDiscussion.articles(discussion, articleList, articleTree) }}
+                        </div>
+                    {% endif %}
+
+                    {% if draft %}
+                        <div id="draft-buttons-wrapper">
+                            <a id="draft-save-combine-link" href="" class="uk-button uk-button-primary">
+                                {{ 'create entry'|trans({}, "form") }}
+                            </a>
+                            <a id="draft-cancel-link" href="" class="uk-button uk-button-secondary">
+                                {{ 'cancel'|trans({}, "form") }}
+                            </a>
+                        </div>
+                    {% endif %}
                 </article>
             </div>
             

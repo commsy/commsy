@@ -247,10 +247,10 @@
                     {% if draft %}
                         <div id="draft-buttons-wrapper">
                             <a id="draft-save-combine-link" href="" class="uk-button uk-button-primary">
-                                Eintrag anlegen
+                                {{ 'create entry'|trans({}, "form") }}
                             </a>
                             <a id="draft-cancel-link" href="" class="uk-button uk-button-secondary">
-                                Abbrechen
+                                {{ 'cancel'|trans({}, "form") }}
                             </a>
                         </div>
                     {% endif %}
