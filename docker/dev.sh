@@ -32,22 +32,13 @@ case "$1" in
         ;;
 
     start)
-        if ! gem list docker-sync -i > /dev/null ; then
-            echo "Installing docker-sync gem"
-            gem install docker-sync
-        fi
-
         if [ ! -e "../legacy/etc/cs_config.php" ]; then
             echo "Legacy cs_config.php seems not to be present, copying..."
             cp -p ../legacy/etc/cs_config.php-dist ../legacy/etc/cs_config.php
         fi
 
-        docker-sync-stack start
+        docker-compose -f docker-compose.yml -f docker-compose-dev.yml up
 
-        ;;
-
-    clean)
-        docker-sync-stack clean
         ;;
 
     *)

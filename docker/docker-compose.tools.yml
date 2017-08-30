@@ -1,11 +1,7 @@
-version: '2'
+version: "3"
 
 services:
   commsy_php:
-    build: ./commsy_dev
-    volumes:
-      - commsy-unison-sync:/var/www/commsy:nocopy
-      - "./.data/debug:/tmp"
     links:
       - commsy_mailhog
 
@@ -25,10 +21,10 @@ services:
     environment:
       XPACK_SECURITY_ENABLED: "false"
 
-  commsy_elastic:
-    environment:
-      cluster.routing.allocation.disk.threshold_enabled: "false"
-
-volumes:
-  commsy-unison-sync:
-    external: true
+#  commsy_head:
+#    image: mobz/elasticsearch-head:5
+#    container_name: commsy_head
+#    ports:
+#      - "5601:9100"
+#    links:
+#      - commsy_elastic
