@@ -733,7 +733,7 @@ class cs_material_item extends cs_item {
       $this->_version_id_changed = false;
       $this->_changed = array();
 
-      $this->updateElastic();
+      //$this->updateElastic();
    }
 
     public function updateElastic()

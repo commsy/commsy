@@ -214,11 +214,11 @@
     </a>
 {% endmacro %}
 
-{% macro actionIcons(title, item, edit) %}
+{% macro actionIcons(title, item, edit, draft) %}
     <div class="uk-flex uk-flex-right">
         {% if edit %}
             {% if is_granted('ITEM_EDIT', item.itemId) %}
-                <div class="uk-display-inline cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
+                <div class="uk-display-inline cs-edit uk-invisible {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
                     <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                 </div>
             {% endif %}        
@@ -229,7 +229,7 @@
    </div>
 {% endmacro %}
 
-{% macro editContent(title, item, edit, content, preview, shortPreview, displayCount, count) %}
+{% macro editContent(title, item, edit, content, preview, shortPreview, displayCount, count, draft) %}
     {% import _self as utilsMacros %}
     <hr class="uk-width-9-10"/>
 
@@ -249,7 +249,7 @@
             </div>
 
             <div class="uk-width-2-10">
-                {{ utilsMacros.actionIcons(title, item, edit) }}
+                {{ utilsMacros.actionIcons(title, item, edit, draft) }}
             </div>
         </div>
 
