@@ -173,10 +173,12 @@
                         {{ macrosItem.files(topic, draft) }}
                     </div>
 
-                    {# links #}
-                    <div id="links{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
-                        {{ macrosItem.links(topic,showHashtags,showCategories,roomCategories, draft) }}
-                    </div>
+                    {% if not draft %}
+                        {# links #}
+                        <div id="links{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
+                            {{ macrosItem.links(topic,showHashtags,showCategories,roomCategories, draft) }}
+                        </div>
+                    {% endif %}
 
                     {% if draft %}
                         <div id="draft-buttons-wrapper">

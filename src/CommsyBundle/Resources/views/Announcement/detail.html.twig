@@ -121,11 +121,13 @@
                     <div id="files{{ announcement.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}' }">
                         {{ macrosItem.files(announcement, draft) }}
                     </div>
-        
-                    {# links #}
-                    <div id="links{{ announcement.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}' }">
-                        {{ macrosItem.links(announcement,showHashtags,showCategories,roomCategories, draft) }}
-                    </div>
+
+                    {% if not draft %}
+                        {# links #}
+                        <div id="links{{ announcement.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': announcement.contextId, 'itemId': announcement.itemId}) }}' }">
+                            {{ macrosItem.links(announcement,showHashtags,showCategories,roomCategories) }}
+                        </div>
+                    {% endif %}
 
                     {% if draft %}
                         <div id="draft-buttons-wrapper">
