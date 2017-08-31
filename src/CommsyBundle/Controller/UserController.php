@@ -1041,8 +1041,18 @@ class UserController extends Controller
     public function guestimageAction()
     {
         $avatarService = $this->get('commsy.avatar_service');
-        $content = $avatarService->getUnknownUserImage();
-        $response = new Response($content, Response::HTTP_OK, array('content-type' => 'image'));
+        $response = new Response($avatarService->getUnknownUserImage(), Response::HTTP_OK, array('content-type' => 'image'));
+        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, \Nette\Utils\Strings::webalize('user_unknown.gif'));
+        $response->headers->set('Content-Disposition', $contentDisposition);
+        return $response;
+    }
+
+    /**
+     * @Route("/room/{roomId}/user/{itemId}/initials")
+     */
+    public function initialsAction($roomId, $itemId, Request $request) {
+        $avatarService = $this->get('commsy.avatar_service');
+        $response = new Response($avatarService->getAvatar($itemId), Response::HTTP_OK, array('content-type' => 'image'));
         $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, \Nette\Utils\Strings::webalize('user_unknown.gif'));
         $response->headers->set('Content-Disposition', $contentDisposition);
         return $response;
