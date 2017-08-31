@@ -1109,7 +1109,9 @@ class UserController extends Controller
             $file = 'user_unknown.gif';
         }
         
-        if (!$foundUserImage || !preg_match("/room\/".$roomId."/", $request->headers->get('referer'))) {
+        $referer = $request->headers->get('referer');
+
+        if (!$foundUserImage || (!preg_match("/room\/".$roomId."/", $referer) && !preg_match("/dashboard/", $referer) ) ) {
             $avatarService = $this->get('commsy.avatar_service');
             
             $content = $avatarService->getAvatar($itemId);
