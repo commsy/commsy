@@ -234,11 +234,23 @@ class TopicController extends Controller
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+
+        $topicService = $this->get('commsy_legacy.topic_service');
+        $topic = $topicService->getTopic($itemId);
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
+
+        $categories = array();
+        if ($current_context->withTags()) {
+            $roomCategories = $this->get('commsy_legacy.category_service')->getTags($roomId);
+            $topicCategories = $topic->getTagsArray();
+            $categories = $this->getTagDetailArray($roomCategories, $topicCategories);
+        }
 
         $alert = null;
         if ($infoArray['topic']->isLocked()) {
@@ -274,6 +286,7 @@ class TopicController extends Controller
             'showWorkflow' => $infoArray['showWorkflow'],
             'showHashtags' => $infoArray['showHashtags'],
             'showCategories' => $infoArray['showCategories'],
+            'roomCategories' => $categories,
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
             'alert' => $alert,
@@ -887,5 +900,39 @@ class TopicController extends Controller
         return [
             'topic' => $itemService->getTypedItem($itemId),
         ];
+    }
+
+    private function getTagDetailArray ($baseCategories, $itemCategories) {
+        $result = array();
+        $tempResult = array();
+        $addCategory = false;
+        foreach ($baseCategories as $baseCategory) {
+            if (!empty($baseCategory['children'])) {
+                $tempResult = $this->getTagDetailArray($baseCategory['children'], $itemCategories);
+            }
+            if (!empty($tempResult)) {
+                $addCategory = true;
+            }
+            $tempArray = array();
+            $foundCategory = false;
+            foreach ($itemCategories as $itemCategory) {
+                if ($baseCategory['item_id'] == $itemCategory['id']) {
+                    if ($addCategory) {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                    } else {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
+                    }
+                    $foundCategory = true;
+                }
+            }
+            if (!$foundCategory) {
+                if ($addCategory) {
+                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                }
+            }
+            $tempResult = array();
+            $addCategory = false;
+        }
+        return $result;
     }
 }

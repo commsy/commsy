@@ -1,4 +1,4 @@
-{% macro files(item) %}
+{% macro files(item, draft) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macrosUtils %}
 
     {% set fileArray = item.fileList.to_array %}
@@ -21,7 +21,7 @@
             <div class="uk-width-2-10 uk-flex uk-flex-right">
                 {# edit action #}
                 {% if is_granted('ITEM_EDIT', item.itemId) %}
-                    <div class="uk-display-inline cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
+                    <div class="uk-display-inline cs-edit uk-invisible {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
                         <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                     </div>
                 {% endif %}
@@ -131,7 +131,7 @@
     </article>
 {% endmacro %}
 
-{% macro links(item,withTags,withCategories,roomCategories) %}
+{% macro links(item,withTags,withCategories,roomCategories, draft) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
     {% import _self as itemMacros %}
     
@@ -219,7 +219,7 @@
     </div>
     {% endset %}
     
-    {{ macros.editContent('links', item, true, content, preview, true, true, countEntries) }}
+    {{ macros.editContent('links', item, true, content, preview, true, true, countEntries, draft) }}
 {% endmacro %}
 
 {% macro workflow(item, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate, workflowTitles, withTrafficLight, withValidity, withResubmission) %}
@@ -313,7 +313,7 @@
     {{ macros.editContent('workflow', item, true, content, preview, true, false, 0) }}
 {% endmacro %}
 
-{% macro itemDescription(title, item, edit, content) %}
+{% macro itemDescription(title, item, edit, content, draft) %}
     <hr class="uk-width-9-10"/>
 
     <article class="uk-article uk-margin-left uk-margin-right">
@@ -332,7 +332,7 @@
 
                 {# edit action #}
                 {% if edit and is_granted('ITEM_EDIT', item.itemId) %}
-                    <div class="uk-display-inline cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
+                    <div class="uk-display-inline cs-edit uk-invisible {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
                         <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                     </div>
                 {% endif %}

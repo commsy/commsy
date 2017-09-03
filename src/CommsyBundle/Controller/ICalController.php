@@ -146,6 +146,8 @@ class ICalController extends Controller
             // create new calendar event
             $event = new Event();
 
+            $event->setUseTimezone(true);
+
             // setup organizer
             $creatorItem = $item->getCreator();
             $fullName = $creatorItem->getFullName();

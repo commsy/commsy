@@ -171,7 +171,7 @@
                 {%  endif %}
 
                 {# content #}
-                <article class="uk-article uk-position-relative" data-uk-observe>
+                <article class="uk-article uk-position-relative {% if draft %}cs-edit-draft{% endif %}" data-uk-observe>
                     {# versions #}
                 
                     {% if versions|length > 1 %}
@@ -213,34 +213,47 @@
             
                     {# description #}
                     <div id="description{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                        {{ macrosItem.itemDescription('description', material, true, material.description) }}
+                        {{ macrosItem.itemDescription('description', material, true, material.description, draft) }}
                     </div>
             
                     {# files #}
                     <div id="files{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                        {{ macrosItem.files(material) }}
+                        {{ macrosItem.files(material, draft) }}
                     </div>
-        
-                    {# links #}
-                    <div id="links{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                        {{ macrosItem.links(material,showHashtags,showCategories,roomCategories) }}
-                    </div>
-        
-                    {# workflow #}
-                    {% if showWorkflow and (withTrafficLight or withResubmission or withValidity or withReader) %}
-                        <div id="workflow{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editworkflow', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                            {{ macrosItem.workflow(material, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate, workflowTitles, withTrafficLight, withResubmission, withValidity) }}
+
+                    {% if not draft %}
+                        {# links #}
+                        <div id="links{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                            {{ macrosItem.links(material,showHashtags,showCategories,roomCategories, draft) }}
+                        </div>
+
+                        {# workflow #}
+                        {% if showWorkflow and (withTrafficLight or withResubmission or withValidity or withReader) %}
+                            <div id="workflow{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editworkflow', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                                {{ macrosItem.workflow(material, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate, workflowTitles, withTrafficLight, withResubmission, withValidity) }}
+                            </div>
+                        {% endif %}
+
+                        {# sections #}
+                        <div id="sections{{ material.itemId }}" class="cs-edit-section cs-toggle"
+                        {% if sectionList|length > 0 %}
+                            data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editsections', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }"
+                        {% endif %}
+                        >
+                            {{ macrosMaterial.sections(material, sectionList) }}
                         </div>
                     {% endif %}
-        
-                    {# sections #}
-                    <div id="sections{{ material.itemId }}" class="cs-edit-section cs-toggle"
-                    {% if sectionList|length > 0 %}
-                        data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editsections', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }"
+
+                    {% if draft %}
+                        <div id="draft-buttons-wrapper">
+                            <a id="draft-save-combine-link" href="" class="uk-button uk-button-primary">
+                                {{ 'create entry'|trans({}, "form") }}
+                            </a>
+                            <a id="draft-cancel-link" href="" class="uk-button uk-button-secondary">
+                                {{ 'cancel'|trans({}, "form") }}
+                            </a>
+                        </div>
                     {% endif %}
-                    >
-                        {{ macrosMaterial.sections(material, sectionList) }}
-                    </div>
                 </article>
             </div>
             

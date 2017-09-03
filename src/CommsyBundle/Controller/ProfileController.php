@@ -32,6 +32,8 @@ class ProfileController extends Controller
     */
     public function generalAction($roomId, $itemId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $discManager = $legacyEnvironment->getDiscManager();
         $userService = $this->get('commsy_legacy.user_service');
         $roomService = $this->get('commsy_legacy.room_service');
         $userItem = $userService->getUser($itemId);
@@ -42,6 +44,7 @@ class ProfileController extends Controller
 
         $userTransformer = $this->get('commsy_legacy.transformer.user');
         $userData = $userTransformer->transform($userItem);
+        $userData['useProfileImage'] = $userItem->getPicture() != "";
 
         $form = $this->createForm(RoomProfileGeneralType::class, $userData, array(
             'itemId' => $itemId,
@@ -55,38 +58,57 @@ class ProfileController extends Controller
         if ($form->isValid()) {
             $formData = $form->getData();
 
-            // save profile picture if given
-            if($formData['image_data']) {
-                $saveDir = implode("/", array($this->getParameter('files_directory'), $roomService->getRoomFileDirectory($userItem->getContextID())));
-                if(!file_exists($saveDir)){
-                    mkdir($saveDir, 0777, true);
+            // use custom profile picture if given
+            if($formData['useProfileImage']) {
+                if($formData['image_data']) {
+                    $saveDir = implode("/", array($this->getParameter('files_directory'), $roomService->getRoomFileDirectory($userItem->getContextID())));
+                    if(!file_exists($saveDir)){
+                        mkdir($saveDir, 0777, true);
+                    }
+                    $data = $formData['image_data'];
+                    list($fileName, $type, $data) = explode(";", $data);
+                    list(, $data) = explode(",", $data);
+                    list(, $extension) = explode("/", $type);
+                    $data = base64_decode($data);
+                    $fileName = implode("_", array('cid'.$userItem->getContextID(), $userItem->getUserID(), $fileName));
+                    $absoluteFilepath = implode("/", array($saveDir, $fileName));
+                    file_put_contents($absoluteFilepath, $data);
+                    $userItem->setPicture($fileName);
+
+                    $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
+                    $userItem->save();
                 }
-                $data = $formData['image_data'];
-                list($fileName, $type, $data) = explode(";", $data);
-                list(, $data) = explode(",", $data);
-                list(, $extension) = explode("/", $type);
-                $data = base64_decode($data);
-                $fileName = implode("_", array('cid'.$userItem->getContextID(), $userItem->getUserID(), $fileName));
-                $absoluteFilepath = implode("/", array($saveDir, $fileName));
-                file_put_contents($absoluteFilepath, $data);
-                $userItem->setPicture($fileName);
+            }
+            // use user initials else
+            else {
+                if($discManager->existsFile($userItem->getPicture())) {
+                    $discManager->unlinkFile($userItem->getPicture());
+                }
+                $userItem->setPicture("");
+                $userItem->save();
             }
 
-            $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
-            $userItem->save();
-
-            $userList = $userItem->getRelatedUserList();
-            $tempUserItem = $userList->getFirst();
-            while ($tempUserItem) {
-                if ($formData['imageChangeInAllContexts']) {
-                    $discService = $this->get('commsy_legacy.disc_service');
-                    $tempFilename = $discService->copyImageFromRoomToRoom($userItem->getPicture(), $tempUserItem->getContextId());
-                    if ($tempFilename) {
-                        $tempUserItem->setPicture($tempFilename);
+            if ($formData['imageChangeInAllContexts']) {
+                $userList = $userItem->getRelatedUserList();
+                $tempUserItem = $userList->getFirst();
+                $discService = $this->get('commsy_legacy.disc_service');
+                while ($tempUserItem) {
+                    if($formData['useProfileImage']) {
+                        $tempFilename = $discService->copyImageFromRoomToRoom($userItem->getPicture(), $tempUserItem->getContextId());
+                        if ($tempFilename) {
+                            $tempUserItem->setPicture($tempFilename);
+                        }
                     }
+                    else {
+                        if($discManager->existsFile($tempUserItem->getPicture())) {
+                            $discManager->unlinkFile($tempUserItem->getPicture());
+                        }
+                        $tempUserItem->setPicture("");
+
+                    }
+                    $tempUserItem->save();
+                    $tempUserItem = $userList->getNext();
                 }
-                $tempUserItem->save();
-                $tempUserItem = $userList->getNext();    
             }
             
             return $this->redirectToRoute('commsy_profile_general', array('roomId' => $roomId, 'itemId' => $itemId));

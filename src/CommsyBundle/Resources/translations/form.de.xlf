@@ -386,6 +386,10 @@
                 <source>external_viewer_desc</source>
                 <target>Geben Sie weitere durch ein Leerzeichen getrennte Kennungen an, um Zugriff auf diesen Eintrag zu gewähren.</target>
             </trans-unit>
+            <trans-unit id="create entry">
+                <source>create entry</source>
+                <target>Eintrag anlegen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

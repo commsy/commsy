@@ -8,6 +8,8 @@
         'discussion': 'discarticle'
     };
 
+    var draftFormCount = 0;
+
     UI.component('edit', {
 
         defaults: {
@@ -82,9 +84,16 @@
 
                 $this.onClickEdit(this);
             });
+
+            // active form if item is draft
+            $(element).find('div.cs-edit-draft').each(function() {
+                $this.onClickEdit(this);
+            });
         },
 
         onClickEdit: function(el) {
+            draftFormCount++;
+
             let $this = this;
             let article = $(el).parents('.cs-edit-section');
 
@@ -191,7 +200,11 @@
                                         article.html($result);
                                         $this.handleFormSubmit(article);
                                     } else {
-                                        window.location.reload(true);
+                                        article.html($result);
+                                        draftFormCount--;
+                                        if (draftFormCount == 0) {
+                                            window.location.reload(true);
+                                        }
                                     }
                                 });
                         }
@@ -223,6 +236,23 @@
                 Ok: $delete.data('confirm-delete-confirm')
             }
         });
+    });
+
+    $('#draft-save-combine-link').on('click', function(e){
+        e.preventDefault();
+        $(this).parents('article').find('form').each(function(){
+            let button = $(this).find('.uk-button-primary');
+            if (button.length) {
+                button.click();
+            }
+        });
+    });
+
+    $('#draft-cancel-link').on('click', function(e){
+        e.preventDefault();
+        let pathParts = window.location.pathname.split("/");
+        pathParts.pop();
+        window.location.href = pathParts.join("/");
     });
 
 })(UIkit);

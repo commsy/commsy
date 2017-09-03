@@ -150,7 +150,7 @@
                 {%  endif %}
 
                 {# content #}
-                <article class="uk-article uk-position-relative" data-uk-observe>
+                <article class="uk-article uk-position-relative {% if draft %}cs-edit-draft{% endif %}" data-uk-observe>
                     {# title, etc. #}
                     <div class="cs-toggle" data-uk-observe>
                         {{ macrosTopic.title(topic, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) }}
@@ -158,24 +158,38 @@
             
                     {# description #}
                     <div id="description{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
-                        {{ macrosItem.itemDescription('description', topic, true, topic.description) }}
+                        {{ macrosItem.itemDescription('description', topic, true, topic.description, draft) }}
                     </div>
 
-                    {# path #}
-                    <div id="path{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_topic_editpath', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
-                        {{ macrosTopic.path(topic, true) }}
-                    </div>
+                    {% if not draft %}
+                        {# path #}
+                        <div id="path{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_topic_editpath', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
+                            {{ macrosTopic.path(topic, true) }}
+                        </div>
+                    {% endif %}
             
                     {# files #}
                     <div id="files{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
-                        {{ macrosItem.files(topic) }}
+                        {{ macrosItem.files(topic, draft) }}
                     </div>
 
-                    {# links #}
-                    <div id="links{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
-                        {{ macrosItem.links(topic,showHashtags,showCategories) }}
-                    </div>
-        
+                    {% if not draft %}
+                        {# links #}
+                        <div id="links{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
+                            {{ macrosItem.links(topic,showHashtags,showCategories,roomCategories, draft) }}
+                        </div>
+                    {% endif %}
+
+                    {% if draft %}
+                        <div id="draft-buttons-wrapper">
+                            <a id="draft-save-combine-link" href="" class="uk-button uk-button-primary">
+                                {{ 'create entry'|trans({}, "form") }}
+                            </a>
+                            <a id="draft-cancel-link" href="" class="uk-button uk-button-secondary">
+                                {{ 'cancel'|trans({}, "form") }}
+                            </a>
+                        </div>
+                    {% endif %}
                 </article>
             </div>
                     </div>
