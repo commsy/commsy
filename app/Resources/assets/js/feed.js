@@ -140,7 +140,7 @@
 
         sort = $(".cs-sort-active").attr("id").split("-")[$(".cs-sort-active").attr("id").split("-").length-1];
         // current sort order depends on state of chevron
-        let chevronDown = $('#commsy-sort-'+sort+'-chevron').attr('class').endsWith("down");
+        let chevronDown = $('#commsy-sort-'+sort+'-chevron').attr('class').slice(-4) === 'down';
         sortOrder = (chevronDown && !invert) || (!chevronDown && invert) ? '_rev' : '';
 
         $('#commsy-sort-'+sort+'-chevron')
