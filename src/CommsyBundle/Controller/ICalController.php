@@ -4,7 +4,10 @@ namespace CommsyBundle\Controller;
 
 use Eluceo\iCal\Component\Calendar;
 use Eluceo\iCal\Component\Event;
+use Eluceo\iCal\Component\Timezone;
+use Eluceo\iCal\Component\TimezoneRule;
 use Eluceo\iCal\Property\Event\Organizer;
+use Eluceo\iCal\Property\Event\RecurrenceRule;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -146,8 +149,6 @@ class ICalController extends Controller
             // create new calendar event
             $event = new Event();
 
-            $event->setUseTimezone(true);
-
             // setup organizer
             $creatorItem = $item->getCreator();
             $fullName = $creatorItem->getFullName();
@@ -205,8 +206,41 @@ class ICalController extends Controller
             $startTime = new \DateTime($item->getDateTime_start());
             $endTime = new \DateTime($item->getDateTime_end());
 
-            $startTime->setTimezone(new \DateTimeZone($this->getParameter('commsy.dates.timezone')));
-            $endTime->setTimezone(new \DateTimeZone($this->getParameter('commsy.dates.timezone')));
+            // time zone
+            $dtz = new \DateTimeZone($this->getParameter('commsy.dates.timezone'));
+
+            $timezoneRuleDst = new TimezoneRule(TimezoneRule::TYPE_DAYLIGHT);
+            $timezoneRuleDst->setTzName('CEST');
+            $timezoneRuleDst->setDtStart(new \DateTime('1981-03-29 02:00:00', $dtz));
+            $timezoneRuleDst->setTzOffsetFrom('+0100');
+            $timezoneRuleDst->setTzOffsetTo('+0200');
+
+            $dstRecurrenceRule = new RecurrenceRule();
+            $dstRecurrenceRule->setFreq(RecurrenceRule::FREQ_YEARLY);
+            $dstRecurrenceRule->setByMonth(3);
+            $dstRecurrenceRule->setByDay('-1SU');
+            $timezoneRuleDst->setRecurrenceRule($dstRecurrenceRule);
+
+            $timezoneRuleStd = new TimezoneRule(TimezoneRule::TYPE_STANDARD);
+            $timezoneRuleStd->setTzName('CET');
+            $timezoneRuleStd->setDtStart(new \DateTime('1996-10-27 03:00:00', $dtz));
+            $timezoneRuleStd->setTzOffsetFrom('+0200');
+            $timezoneRuleStd->setTzOffsetTo('+0100');
+
+            $stdRecurrenceRule = new RecurrenceRule();
+            $stdRecurrenceRule->setFreq(RecurrenceRule::FREQ_YEARLY);
+            $stdRecurrenceRule->setByMonth(10);
+            $stdRecurrenceRule->setByDay('-1SU');
+            $timezoneRuleStd->setRecurrenceRule($stdRecurrenceRule);
+
+            $timezone = new Timezone($this->getParameter('commsy.dates.timezone'));
+            $timezone->addComponent($timezoneRuleDst);
+            $timezone->addComponent($timezoneRuleStd);
+
+            $calendar->setTimezone($timezone);
+
+            $startTime->setTimezone($dtz);
+            $endTime->setTimezone($dtz);
 
             if ($startTime && $endTime) {
                 // Dates with equal start and end date or no start and end time are all day events
@@ -224,7 +258,9 @@ class ICalController extends Controller
                     ->setDtStart($startTime)
                     ->setDtEnd($endTime)
                     ->setDescription(html_entity_decode(strip_tags($item->getDescription()), ENT_NOQUOTES, 'UTF-8'))
-                    ->setStatus(Event::STATUS_CONFIRMED);
+                    ->setStatus(Event::STATUS_CONFIRMED)
+                    ->setUseTimezone(true)
+                    ->setUseUtc(true);
             }
 
             $event->setNoTime($item->isWholeDay());
