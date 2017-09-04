@@ -283,6 +283,9 @@ class LinkItemStrategy extends AbstractStrategy implements MigrationStrategy
         return false;
     }
 
+    /**
+     * TODO: migrated links contain wrong item ids
+     */
     public function migrate($connection, array $item, array $newPortalPrivateRoom)
     {
         $linkItem = $this->findById($connection, 'link_items', $item['item_id']);
