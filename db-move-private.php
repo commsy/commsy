@@ -201,7 +201,7 @@ class AbstractStrategy
                 echo "ok\n";
             }
 
-            echo "copying file";
+            echo "copying file\n";
 
             // old file information
             $fileId = $file['files_id'];
@@ -230,7 +230,8 @@ class AbstractStrategy
                     throw new Exception("copying file failed");
                 }
             } else {
-                throw new Exception("file does not exist");
+                //throw new Exception("file does not exist");
+                echo "file $oldFilePath does not exist\n";
             }
 
             return true;
