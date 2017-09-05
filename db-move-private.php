@@ -20,7 +20,10 @@ class MigrationFactory
 
     public static function registerMigration($migrationClassName)
     {
-        self::$migrations[$migrationClassName::getType()] = $migrationClassName;
+        $types = $migrationClassName::getType();
+        foreach ($types as $type) {
+            self::$migrations[$type] = $migrationClassName;
+        }
     }
 
     public static function findMigration($type)
@@ -43,7 +46,7 @@ interface MigrationStrategy
 {
     public static function getType();
     public function ignore($connection, array $item);
-    public function migrate($connection, array $item, array $newPortalPrivateRoom, $oldPortalPrivateRoom);
+    public function migrate($connection, array $item, array $newPortalPrivateRoom, array $oldPortalPrivateRoom);
 }
 
 class AbstractStrategy
@@ -152,7 +155,7 @@ class AbstractStrategy
     }
 
     /**
-     * TODO consider material versions of files
+     * TODO: consider material versions of files
      */
     protected function copyFiles($connection, array $item, $newPortalPrivateRoom, $oldPortalPrivateRoom) {
 
@@ -246,11 +249,11 @@ class AbstractStrategy
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-class UserStrategy implements MigrationStrategy
+class IgnoreStrategy implements MigrationStrategy
 {
     public static function getType()
     {
-        return 'user';
+        return ['user', 'project', ['community']];
     }
 
     public function ignore($connection, array $item)
@@ -258,41 +261,7 @@ class UserStrategy implements MigrationStrategy
         return true;
     }
 
-    public function migrate($connection, array $item, array $newPortalPrivateRoom, $oldPortalPrivateRoom)
-    {
-    }
-}
-
-class ProjectStrategy implements MigrationStrategy
-{
-    public static function getType()
-    {
-        return 'project';
-    }
-
-    public function ignore($connection, array $item)
-    {
-        return true;
-    }
-
-    public function migrate($connection, array $item, array $newPortalPrivateRoom, $oldPortalPrivateRoom)
-    {
-    }
-}
-
-class CommunityStrategy implements MigrationStrategy
-{
-    public static function getType()
-    {
-        return 'community';
-    }
-
-    public function ignore($connection, array $item)
-    {
-        return true;
-    }
-
-    public function migrate($connection, array $item, array $newPortalPrivateRoom, $oldPortalPrivateRoom)
+    public function migrate($connection, array $item, array $newPortalPrivateRoom, array $oldPortalPrivateRoom)
     {
     }
 }
@@ -325,7 +294,7 @@ class TagStrategy extends AbstractStrategy implements MigrationStrategy
     /**
      * TODO: tag2tag is missing
      */
-    public function migrate($connection, array $item, array $newPortalPrivateRoom, $oldPortalPrivateRoom)
+    public function migrate($connection, array $item, array $newPortalPrivateRoom, array $oldPortalPrivateRoom)
     {
         $tag = $this->findById($connection, 'tag', $item['item_id']);
         if ($tag) {
@@ -376,7 +345,7 @@ class LinkItemStrategy extends AbstractStrategy implements MigrationStrategy
     /**
      * TODO: migrated links contain wrong item ids
      */
-    public function migrate($connection, array $item, array $newPortalPrivateRoom, $oldPortalPrivateRoom)
+    public function migrate($connection, array $item, array $newPortalPrivateRoom, array $oldPortalPrivateRoom)
     {
         $linkItem = $this->findById($connection, 'link_items', $item['item_id']);
         if ($linkItem) {
@@ -430,7 +399,7 @@ class MaterialStrategy extends AbstractStrategy implements MigrationStrategy
         return false;
     }
 
-    public function migrate($connection, array $item, array $newPortalPrivateRoom, $oldPortalPrivateRoom)
+    public function migrate($connection, array $item, array $newPortalPrivateRoom, array $oldPortalPrivateRoom)
     {
         $materials = $this->findById($connection, 'materials', $item['item_id'], true);
         if ($materials) {
@@ -487,7 +456,7 @@ class LabelStrategy extends AbstractStrategy implements MigrationStrategy
     /**
      * TODO: links are missing
      */
-    public function migrate($connection, array $item, array $newPortalPrivateRoom, $oldPortalPrivateRoom)
+    public function migrate($connection, array $item, array $newPortalPrivateRoom, array $oldPortalPrivateRoom)
     {
         $label = $this->findById($connection, 'label', $item['item_id']);
         if ($label) {
@@ -510,7 +479,7 @@ class DiscussionStrategy extends AbstractStrategy implements MigrationStrategy
         return false;
     }
 
-    public function migrate($connection, array $item, array $newPortalPrivateRoom, $oldPortalPrivateRoom)
+    public function migrate($connection, array $item, array $newPortalPrivateRoom, array $oldPortalPrivateRoom)
     {
         $discussion = $this->findById($connection, 'discussions', $item['item_id']);
         if ($discussion) {
@@ -560,7 +529,7 @@ class DiscussionArticleStrategy extends AbstractStrategy implements MigrationStr
         return false;
     }
 
-    public function migrate($connection, array $item, array $newPortalPrivateRoom, $oldPortalPrivateRoom)
+    public function migrate($connection, array $item, array $newPortalPrivateRoom, array $oldPortalPrivateRoom)
     {
         $discussionArticle = $this->findById($connection, 'discussionarticles', $item['item_id']);
         if ($discussionArticle) {
@@ -614,7 +583,7 @@ class DateStrategy extends AbstractStrategy implements MigrationStrategy
         return false;
     }
 
-    public function migrate($connection, array $item, array $newPortalPrivateRoom, $oldPortalPrivateRoom)
+    public function migrate($connection, array $item, array $newPortalPrivateRoom, array $oldPortalPrivateRoom)
     {
         $date = $this->findById($connection, 'dates', $item['item_id']);
         if ($date) {
@@ -678,7 +647,7 @@ class SectionStrategy extends AbstractStrategy implements MigrationStrategy
         return false;
     }
 
-    public function migrate($connection, array $item, array $newPortalPrivateRoom, $oldPortalPrivateRoom)
+    public function migrate($connection, array $item, array $newPortalPrivateRoom, array $oldPortalPrivateRoom)
     {
         $sections = $this->findById($connection, 'section', $item['item_id'], true);
         if ($sections) {
@@ -734,7 +703,7 @@ class AnnotationStrategy extends AbstractStrategy implements MigrationStrategy
         return false;
     }
 
-    public function migrate($connection, array $item, array $newPortalPrivateRoom, $oldPortalPrivateRoom)
+    public function migrate($connection, array $item, array $newPortalPrivateRoom, array $oldPortalPrivateRoom)
     {
         $annotation = $this->findById($connection, 'annotations', $item['item_id']);
         if ($annotation) {
@@ -786,7 +755,7 @@ class AnnouncementStrategy extends AbstractStrategy implements MigrationStrategy
         return false;
     }
 
-    public function migrate($connection, array $item, array $newPortalPrivateRoom, $oldPortalPrivateRoom)
+    public function migrate($connection, array $item, array $newPortalPrivateRoom, array $oldPortalPrivateRoom)
     {
         $announcement = $this->findById($connection, 'announcement', $item['item_id']);
         if ($announcement) {
@@ -844,7 +813,7 @@ class PortfolioStrategy extends AbstractStrategy implements MigrationStrategy
      * TODO: template_portfolio is missing
      * TODO: user_portfolio is missing
      */
-    public function migrate($connection, array $item, array $newPortalPrivateRoom, $oldPortalPrivateRoom)
+    public function migrate($connection, array $item, array $newPortalPrivateRoom, array $oldPortalPrivateRoom)
     {
         $portfolio = $this->findById($connection, 'portfolio', $item['item_id']);
         if ($portfolio) {
@@ -894,7 +863,7 @@ class TodoStrategy extends AbstractStrategy implements MigrationStrategy
         return false;
     }
 
-    public function migrate($connection, array $item, array $newPortalPrivateRoom, $oldPortalPrivateRoom)
+    public function migrate($connection, array $item, array $newPortalPrivateRoom, array $oldPortalPrivateRoom)
     {
         $todo = $this->findById($connection, 'todos', $item['item_id']);
         if ($todo) {
@@ -949,7 +918,7 @@ class StepStrategy extends AbstractStrategy implements MigrationStrategy
         return false;
     }
 
-    public function migrate($connection, array $item, array $newPortalPrivateRoom, $oldPortalPrivateRoom)
+    public function migrate($connection, array $item, array $newPortalPrivateRoom, array $oldPortalPrivateRoom)
     {
         $step = $this->findById($connection, 'step', $item['item_id']);
         if ($step) {
@@ -1002,7 +971,7 @@ $password = 'commsy';
 
 $connection = new PDO($dsn, $user, $password);
 
-MigrationFactory::registerMigration( UserStrategy::class);
+MigrationFactory::registerMigration(IgnoreStrategy::class);
 MigrationFactory::registerMigration(TagStrategy::class);
 MigrationFactory::registerMigration(LinkItemStrategy::class);
 MigrationFactory::registerMigration(MaterialStrategy::class);
@@ -1014,8 +983,6 @@ MigrationFactory::registerMigration(SectionStrategy::class);
 MigrationFactory::registerMigration(AnnotationStrategy::class);
 MigrationFactory::registerMigration(TodoStrategy::class);
 MigrationFactory::registerMigration(AnnouncementStrategy::class);
-MigrationFactory::registerMigration(ProjectStrategy::class);
-MigrationFactory::registerMigration(CommunityStrategy::class);
 MigrationFactory::registerMigration(StepStrategy::class);
 MigrationFactory::registerMigration(PortfolioStrategy::class);
 
