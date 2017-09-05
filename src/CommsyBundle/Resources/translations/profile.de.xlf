@@ -392,7 +392,7 @@
             </trans-unit>
             <trans-unit id="profile_image_tip">
                 <source>Profile image tip</source>
-                <target>Wählen Sie ein ungefähr quadratisches Bild mit einer Mindesauflösung von 300x300 Pixeln!</target>
+                <target>Wählen Sie ein ungefähr quadratisches Bild mit einer Mindesauflösung von 200x200 Pixeln!</target>
             </trans-unit>
             <trans-unit id="use_profile_image">
                 <source>Use profile image</source>
