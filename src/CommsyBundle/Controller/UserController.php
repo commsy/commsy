@@ -232,6 +232,7 @@ class UserController extends Controller
 
         // get the user manager service
         $userService = $this->get('commsy_legacy.user_service');
+        $numAllUsers = $userService->getCountArray($roomId)['countAll'];
 
         $userService->resetLimits();
         // apply filter
@@ -245,13 +246,13 @@ class UserController extends Controller
 
         // get user list from manager service
         if ($sort != "none") {
-            $users = $userService->getListUsers($roomId, $userService->getCountArray($roomId)['countAll'], 0, $sort);
+            $users = $userService->getListUsers($roomId, $numAllUsers, 0, $sort);
         }
         elseif ($this->get('session')->get('sortUsers')) {
-            $users = $userService->getListUsers($roomId, $userService->getCountArray($roomId)['countAll'], 0, $this->get('session')->get('sortUsers'));
+            $users = $userService->getListUsers($roomId, $numAllUsers, 0, $this->get('session')->get('sortUsers'));
         }
         else {
-            $users = $userService->getListUsers($roomId, $userService->getCountArray($roomId)['countAll'], 0, 'date');
+            $users = $userService->getListUsers($roomId, $numAllUsers, 0, 'date');
         }
 
         $readerService = $this->get('commsy_legacy.reader_service');

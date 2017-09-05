@@ -649,6 +649,7 @@ class InstitutionController extends Controller
         ));
 
         $institutionService = $this->get('commsy_legacy.institution_service');
+        $numAllInstitutions = $institutionService->getCountArray($roomId)['countAll'];
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -659,13 +660,13 @@ class InstitutionController extends Controller
 
         // get institution list from manager service
         if ($sort != "none") {
-            $institutions = $institutionService->getListInstitutions($roomId, $institutionService->getCountArray($roomId)['countAll'], 0, $sort);
+            $institutions = $institutionService->getListInstitutions($roomId, $numAllInstitutions, 0, $sort);
         }
         elseif ($this->get('session')->get('sortInstitutions')) {
-            $institutions = $institutionService->getListInstitutions($roomId, $institutionService->getCountArray($roomId)['countAll'], 0, $this->get('session')->get('sortInstitutions'));
+            $institutions = $institutionService->getListInstitutions($roomId, $numAllInstitutions, 0, $this->get('session')->get('sortInstitutions'));
         }
         else {
-            $institutions = $institutionService->getListInstitutions($roomId, $institutionService->getCountArray($roomId)['countAll'], 0, 'date');
+            $institutions = $institutionService->getListInstitutions($roomId, $numAllInstitutions, 0, 'date');
         }
 
         $readerService = $this->get('commsy_legacy.reader_service');

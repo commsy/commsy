@@ -322,6 +322,7 @@ class DateController extends Controller
 
         // get the date manager service
         $dateService = $this->get('commsy_legacy.date_service');
+        $numAllDates = $dateService->getCountArray($roomId)['countAll'];
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -334,13 +335,13 @@ class DateController extends Controller
 
         // get date list from manager service
         if ($sort != "none") {
-            $dates = $dateService->getListDates($roomId, $dateService->getCountArray($roomId)['countAll'], 0, $sort);
+            $dates = $dateService->getListDates($roomId, $numAllDates, 0, $sort);
         }
         elseif ($this->get('session')->get('sortDates')) {
-            $dates = $dateService->getListDates($roomId, $dateService->getCountArray($roomId)['countAll'], 0, $this->get('session')->get('sortDates'));
+            $dates = $dateService->getListDates($roomId, $numAllDates, 0, $this->get('session')->get('sortDates'));
         }
         else {
-            $dates = $dateService->getListDates($roomId, $dateService->getCountArray($roomId)['countAll'], 0, 'date');
+            $dates = $dateService->getListDates($roomId, $numAllDates, 0, 'date');
         }
 
         $readerService = $this->get('commsy_legacy.reader_service');

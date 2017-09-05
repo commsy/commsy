@@ -199,6 +199,7 @@ class MaterialController extends Controller
 
         // get the material manager service
         $materialService = $this->get('commsy_legacy.material_service');
+        $numAllMaterials = $materialService->getCountArray($roomId)['countAll'];
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -209,13 +210,13 @@ class MaterialController extends Controller
 
         // get material list from manager service 
         if ($sort != "none") {
-            $materials = $materialService->getListMaterials($roomId, $materialService->getCountArray($roomId)['countAll'], 0, $sort);
+            $materials = $materialService->getListMaterials($roomId, $numAllMaterials, 0, $sort);
         }
         elseif ($this->get('session')->get('sortMaterials')) {
-            $materials = $materialService->getListMaterials($roomId, $materialService->getCountArray($roomId)['countAll'], 0, $this->get('session')->get('sortMaterials'));
+            $materials = $materialService->getListMaterials($roomId, $numAllMaterials, 0, $this->get('session')->get('sortMaterials'));
         }
         else {
-            $materials = $materialService->getListMaterials($roomId, $materialService->getCountArray($roomId)['countAll'], 0, 'date');
+            $materials = $materialService->getListMaterials($roomId, $numAllMaterials, 0, 'date');
         }
 
         $readerService = $this->get('commsy_legacy.reader_service');

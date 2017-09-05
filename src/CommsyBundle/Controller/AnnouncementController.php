@@ -251,6 +251,7 @@ class AnnouncementController extends Controller
 
         // get the announcement manager service
         $announcementService = $this->get('commsy_legacy.announcement_service');
+        $numAllAnnouncements = $announcementService->getCountArray($roomId)['countAll'];
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -262,20 +263,17 @@ class AnnouncementController extends Controller
             $announcementService->hideInvalidEntries();
         }
 
-        $announcementService->hideDeactivatedEntries();
-        $announcementService->hideInvalidEntries();
-
         // get announcement list from manager service 
         if ($sort != "none") {
-            $announcements = $announcementService->getListAnnouncements($roomId, $announcementService->getCountArray($roomId)['countAll'], 0, $sort);
+            $announcements = $announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, $sort);
         }
         elseif ($this->get('session')->get('sortAnnouncements')) {
-            $announcements = $announcementService->getListAnnouncements($roomId, $announcementService->getCountArray($roomId)['countAll'], 0, $this->get('session')->get('sortAnnouncements'));
+            $announcements = $announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, $this->get('session')->get('sortAnnouncements'));
         }
         else {
-            $announcements = $announcementService->getListAnnouncements($roomId, $announcementService->getCountArray($roomId)['countAll'], 0, 'date');
+            $announcements = $announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, 'date');
         }
-
+error_log("Found " . count($announcements) . " announcements.");
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();

@@ -193,6 +193,7 @@ class DiscussionController extends Controller
 
         // get the material manager service
         $discussionService = $this->get('commsy_legacy.discussion_service');
+        $numAllDiscussions = $discussionService->getCountArray($roomId)['countAll'];
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -203,13 +204,13 @@ class DiscussionController extends Controller
 
         // get discussion list from manager service
         if ($sort != "none") {
-            $discussions = $discussionService->getListDiscussions($roomId, $discussionService->getCountArray($roomId)['countAll'], 0, $sort);
+            $discussions = $discussionService->getListDiscussions($roomId, $numAllDiscussions, 0, $sort);
         }
         elseif ($this->get('session')->get('sortDates')) {
-            $discussions = $discussionService->getListDiscussions($roomId, $discussionService->getCountArray($roomId)['countAll'], 0, $this->get('session')->get('sortDiscussions'));
+            $discussions = $discussionService->getListDiscussions($roomId, $numAllDiscussions, 0, $this->get('session')->get('sortDiscussions'));
         }
         else {
-            $discussions = $discussionService->getListDiscussions($roomId, $discussionService->getCountArray($roomId)['countAll'], 0, 'date');
+            $discussions = $discussionService->getListDiscussions($roomId, $numAllDiscussions, 0, 'date');
         }
 
         $readerService = $this->get('commsy_legacy.reader_service');

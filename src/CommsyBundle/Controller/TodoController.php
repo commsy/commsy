@@ -963,6 +963,7 @@ class TodoController extends Controller
 
         // get the announcement manager service
         $todoService = $this->get('commsy_legacy.todo_service');
+        $numAllTodos = $todoService->getCountArray($roomId)['countAll'];
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -973,13 +974,13 @@ class TodoController extends Controller
 
         // get todo list from manager service
         if ($sort != "none") {
-            $todos = $todoService->getListTodos($roomId, $todoService->getCountArray($roomId)['countAll'], 0, $sort);
+            $todos = $todoService->getListTodos($roomId, $numAllTodos, 0, $sort);
         }
         elseif ($this->get('session')->get('sortTodos')) {
-            $todos = $todoService->getListTodos($roomId, $todoService->getCountArray($roomId)['countAll'], 0, $this->get('session')->get('sortTodos'));
+            $todos = $todoService->getListTodos($roomId, $numAllTodos, 0, $this->get('session')->get('sortTodos'));
         }
         else {
-            $todos = $todoService->getListTodos($roomId, $todoService->getCountArray($roomId)['countAll'], 0, 'date');
+            $todos = $todoService->getListTodos($roomId, $numAllTodos, 0, 'date');
         }
 
         $readerService = $this->get('commsy_legacy.reader_service');

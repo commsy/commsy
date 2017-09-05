@@ -107,6 +107,7 @@ class GroupController extends Controller
 
         // get the group manager service
         $groupService = $this->get('commsy_legacy.group_service');
+        $numAllGroups = $groupService->getCountArray($roomId)['countAll'];
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -120,13 +121,13 @@ class GroupController extends Controller
 
         // get group list from manager service 
         if ($sort != "none") {
-            $groups = $groupService->getListGroups($roomId, $groupService->getCountArray($roomId)['countAll'], 0, $sort);
+            $groups = $groupService->getListGroups($roomId, $numAllGroups, 0, $sort);
         }
         elseif ($this->get('session')->get('sortGroups')) {
-            $groups = $groupService->getListGroups($roomId, $groupService->getCountArray($roomId)['countAll'], 0, $this->get('session')->get('sortGroups'));
+            $groups = $groupService->getListGroups($roomId, $numAllGroups, 0, $this->get('session')->get('sortGroups'));
         }
         else {
-            $groups = $groupService->getListGroups($roomId, $groupService->getCountArray($roomId)['countAll'], 0, 'date');
+            $groups = $groupService->getListGroups($roomId, $numAllGroups, 0, 'date');
         }
 
         $readerService = $this->get('commsy_legacy.reader_service');
