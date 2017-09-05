@@ -86,7 +86,7 @@ class AbstractStrategy
      * TODO: Setting creator and modifier to the new private room user is not correct in all cases.
      * TODO: e.g. annotations created in portfolios
      */
-    protected function insert($connection, $table, array $item, $newPortalPrivateRoom, $noContextId = false)
+    protected function move($connection, $table, array $item, $newPortalPrivateRoom, $noContextId = false)
     {
         // change context to new private room
         $item['context_id'] = $newPortalPrivateRoom['item_id'];
@@ -99,24 +99,20 @@ class AbstractStrategy
             $item['modifier_id'] = $newPortalPrivateRoom['userItemId'];
         }
 
-        // insert into items table
-        echo "Insert dataset into items table: ";
-        $insertSQL = '
-            INSERT INTO items(
-                context_id,
-                type,
-                modification_date
-            ) VALUES (
-                :contextId,
-                :type,
-                :modificationDate
-            )
+        // modify item table
+        echo "Updating entry in items table: ";
+        $updateItemsSQL = '
+            UPDATE
+            items AS i
+            SET
+            i.context_id = :contextId
+            WHERE
+            i.item_id = :itemId
         ';
-        $stmt = $connection->prepare($insertSQL);
+        $stmt = $connection->prepare($updateItemsSQL);
         if (!$stmt->execute([
+            ':itemId' => $item['item_id'],
             ':contextId' => $item['context_id'],
-            ':type' => $this->getType(),
-            ':modificationDate' => $item['modification_date']
         ])) {
             var_dump($stmt->errorInfo());
             return false;
@@ -124,34 +120,32 @@ class AbstractStrategy
             echo "ok\n";
         }
 
-        $lastInsertId = $connection->lastInsertId();
-
-        if (!$lastInsertId) {
-            throw new Exception("unexpected last insert id");
-        }
-
-        // set item id - primary index
-        $item['item_id'] = $lastInsertId;
-
         if ($noContextId) {
             unset($item['context_id']);
         }
 
-        echo "Insert dataset into $table table: ";
-        $fields = '`'.implode('`, `', array_keys($item)).'`';
-        $placeholder = substr(str_repeat('?,', sizeof($item)), 0, -1);
-        $insertSQL = '
-            INSERT INTO ' . $table . '(' . $fields . ') VALUES(' . $placeholder . ');
+        // modify concrete table
+        echo "Updating entry in " . $table . " table: ";
+        $updateTableSQL = '
+            UPDATE
+            ' . $table . ' as t
+            SET
+            t.context_id = :contextId
+            WHERE
+            t.item_id = :itemId
         ';
-        $stmt = $connection->prepare($insertSQL);
-        if (!$stmt->execute(array_values($item))) {
+        $stmt = $connection->prepare($updateTableSQL);
+        if (!$stmt->execute([
+            ':itemId' => $item['item_id'],
+            ':contextId' => $item['context_id'],
+        ])) {
             var_dump($stmt->errorInfo());
             return false;
         } else {
             echo "ok\n";
         }
 
-        return $stmt->rowCount() == 1;
+        return true;
     }
 
     /**
@@ -253,7 +247,7 @@ class IgnoreStrategy implements MigrationStrategy
 {
     public static function getType()
     {
-        return ['user', 'project', ['community']];
+        return ['user', 'project', 'community'];
     }
 
     public function ignore($connection, array $item)
@@ -271,7 +265,7 @@ class TagStrategy extends AbstractStrategy implements MigrationStrategy
 {
     public static function getType()
     {
-        return 'tag';
+        return ['tag'];
     }
 
     public function ignore($connection, array $item)
@@ -291,38 +285,13 @@ class TagStrategy extends AbstractStrategy implements MigrationStrategy
         return true;
     }
 
-    /**
-     * TODO: tag2tag is missing
-     */
     public function migrate($connection, array $item, array $newPortalPrivateRoom, array $oldPortalPrivateRoom)
     {
         $tag = $this->findById($connection, 'tag', $item['item_id']);
         if ($tag) {
-            echo "Identifying possible duplicates: ";
-            $sql = '
-                    SELECT
-                    t.*
-                    FROM
-                    tag AS t
-                    WHERE
-                    t.context_id = :contextId AND
-                    t.deletion_date IS NULL AND 
-                    t.title = :title
-                ';
-            $stmt = $connection->prepare($sql);
-            $stmt->execute([
-                ':contextId' => $newPortalPrivateRoom['item_id'],
-                ':title' => $tag['title'],
-            ]);
-            $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (sizeof($items) == 0) {
-                echo "non found - copying dataset\n";
-
-                if (!$this->insert($connection, 'tag', $tag, $newPortalPrivateRoom)) {
-                    throw new Exception("insert failed");
-                }
-            } else {
-                echo "found suspicious entry - skipping\n";
+            echo "Moving tag from " . $oldPortalPrivateRoom['item_id'] . " to " . $newPortalPrivateRoom['item_id'] . "\n";
+            if (!$this->move($connection, 'tag', $tag, $newPortalPrivateRoom)) {
+                throw new Exception("move failed");
             }
         } else {
             echo "no tag found - skipping\n";
@@ -334,7 +303,7 @@ class LinkItemStrategy extends AbstractStrategy implements MigrationStrategy
 {
     public static function getType()
     {
-        return 'link_item';
+        return ['link_item'];
     }
 
     public function ignore($connection, array $item)
@@ -343,46 +312,18 @@ class LinkItemStrategy extends AbstractStrategy implements MigrationStrategy
     }
 
     /**
-     * TODO: migrated links contain wrong item ids
+     * TODO: what about links to users?
      */
     public function migrate($connection, array $item, array $newPortalPrivateRoom, array $oldPortalPrivateRoom)
     {
         $linkItem = $this->findById($connection, 'link_items', $item['item_id']);
         if ($linkItem) {
-            echo "Identifying possible duplicates: ";
-            $sql = '
-                    SELECT
-                    l.*
-                    FROM
-                    link_items AS l
-                    WHERE
-                    l.context_id = :contextId AND
-                    l.deletion_date IS NULL AND 
-                    l.first_item_id = :firstItemId AND
-                    l.first_item_type = :firstItemType AND
-                    l.second_item_id = :secondItemId AND
-                    l.second_item_type = :secondItemType
-                ';
-            $stmt = $connection->prepare($sql);
-            $stmt->execute([
-                ':contextId' => $newPortalPrivateRoom['item_id'],
-                ':firstItemId' => $linkItem['first_item_id'],
-                ':firstItemType' => $linkItem['first_item_type'],
-                ':secondItemId' => $linkItem['second_item_id'],
-                ':secondItemType' => $linkItem['second_item_type'],
-            ]);
-            $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (sizeof($items) == 0) {
-                echo "non found - copying dataset\n";
-
-                if (!$this->insert($connection, 'link_items', $linkItem, $newPortalPrivateRoom)) {
-                    throw new Exception("insert failed");
-                }
-            } else {
-                echo "found suspicious entry - skipping\n";
+            echo "Moving link item from " . $oldPortalPrivateRoom['item_id'] . " to " . $newPortalPrivateRoom['item_id'] . "\n";
+            if (!$this->move($connection, 'link_items', $linkItem, $newPortalPrivateRoom)) {
+                throw new Exception("move failed");
             }
         } else {
-            echo "No link items found - skipping\n";
+            echo "no link items found - skipping\n";
         }
     }
 }
@@ -391,7 +332,7 @@ class MaterialStrategy extends AbstractStrategy implements MigrationStrategy
 {
     public static function getType()
     {
-        return 'material';
+        return ['material'];
     }
 
     public function ignore($connection, array $item)
@@ -404,39 +345,15 @@ class MaterialStrategy extends AbstractStrategy implements MigrationStrategy
         $materials = $this->findById($connection, 'materials', $item['item_id'], true);
         if ($materials) {
             foreach ($materials as $material) {
-                echo "Identifying possible duplicates: ";
-                $sql = '
-                    SELECT
-                    m.*
-                    FROM
-                    materials AS m
-                    WHERE
-                    m.context_id = :contextId AND
-                    m.deletion_date IS NULL AND
-                    m.version_id = :versionId AND 
-                    m.title = :title AND
-                    m.description = :description
-                ';
-                $stmt = $connection->prepare($sql);
-                $stmt->execute([
-                    ':contextId' => $newPortalPrivateRoom['item_id'],
-                    ':versionId' => $material['version_id'],
-                    ':title' => $material['title'],
-                    ':description' => $material['description'],
-                ]);
-                $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                if (sizeof($items) == 0) {
-                    echo "non found - copying dataset\n";
-
-                    if (!$this->insert($connection, 'materials', $material, $newPortalPrivateRoom)) {
-                        throw new Exception("insert failed");
-                    }
+                echo "Moving material from " . $oldPortalPrivateRoom['item_id'] . " to " . $newPortalPrivateRoom['item_id'] . "\n";
+                if (!$this->move($connection, 'materials', $material, $newPortalPrivateRoom)) {
+                    throw new Exception("move failed");
                 } else {
-                    echo "found suspicious entry - skipping\n";
+                    echo "ok\n";
                 }
             }
         } else {
-            echo "No materials found - skipping\n";
+            echo "no materials found - skipping\n";
         }
     }
 }
@@ -445,7 +362,7 @@ class LabelStrategy extends AbstractStrategy implements MigrationStrategy
 {
     public static function getType()
     {
-        return 'label';
+        return ['label'];
     }
 
     public function ignore($connection, array $item)
@@ -453,14 +370,14 @@ class LabelStrategy extends AbstractStrategy implements MigrationStrategy
         return false;
     }
 
-    /**
-     * TODO: links are missing
-     */
     public function migrate($connection, array $item, array $newPortalPrivateRoom, array $oldPortalPrivateRoom)
     {
         $label = $this->findById($connection, 'label', $item['item_id']);
         if ($label) {
-            throw new Exception("missing implementation");
+            echo "Moving label from " . $oldPortalPrivateRoom['item_id'] . " to " . $newPortalPrivateRoom['item_id'] . "\n";
+            if (!$this->move($connection, 'labels', $label, $newPortalPrivateRoom)) {
+                throw new Exception("move failed");
+            }
         } else {
             echo "no label found - skipping\n";
         }
@@ -471,7 +388,7 @@ class DiscussionStrategy extends AbstractStrategy implements MigrationStrategy
 {
     public static function getType()
     {
-        return 'discussion';
+        return ['discussion'];
     }
 
     public function ignore($connection, array $item)
@@ -483,33 +400,9 @@ class DiscussionStrategy extends AbstractStrategy implements MigrationStrategy
     {
         $discussion = $this->findById($connection, 'discussions', $item['item_id']);
         if ($discussion) {
-            echo "Identifying possible duplicates: ";
-            $sql = '
-                    SELECT
-                    d.*
-                    FROM
-                    discussions AS d
-                    WHERE
-                    d.context_id = :contextId AND
-                    d.deletion_date IS NULL AND 
-                    d.title = :title AND
-                    d.description = :description
-                ';
-            $stmt = $connection->prepare($sql);
-            $stmt->execute([
-                ':contextId' => $newPortalPrivateRoom['item_id'],
-                ':title' => $discussion['title'],
-                ':description' => $discussion['description'],
-            ]);
-            $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (sizeof($items) == 0) {
-                echo "non found - copying dataset\n";
-
-                if (!$this->insert($connection, 'discussions', $discussion, $newPortalPrivateRoom)) {
-                    throw new Exception("insert failed");
-                }
-            } else {
-                echo "found suspicious entry - skipping\n";
+            echo "Moving discussion from " . $oldPortalPrivateRoom['item_id'] . " to " . $newPortalPrivateRoom['item_id'] . "\n";
+            if (!$this->move($connection, 'discussions', $discussion, $newPortalPrivateRoom)) {
+                throw new Exception("move failed");
             }
         } else {
             echo "no discussion found - skipping\n";
@@ -521,7 +414,7 @@ class DiscussionArticleStrategy extends AbstractStrategy implements MigrationStr
 {
     public static function getType()
     {
-        return 'discarticle';
+        return ['discarticle'];
     }
 
     public function ignore($connection, array $item)
@@ -533,37 +426,9 @@ class DiscussionArticleStrategy extends AbstractStrategy implements MigrationStr
     {
         $discussionArticle = $this->findById($connection, 'discussionarticles', $item['item_id']);
         if ($discussionArticle) {
-            echo "Identifying possible duplicates: ";
-            $sql = '
-                    SELECT
-                    d.*
-                    FROM
-                    discussionarticles AS d
-                    WHERE
-                    d.context_id = :contextId AND
-                    d.discussion_id = :discussionId AND
-                    d.deletion_date IS NULL AND 
-                    d.subject = :subject AND
-                    d.description = :description AND
-                    d.position = :position
-                ';
-            $stmt = $connection->prepare($sql);
-            $stmt->execute([
-                ':contextId' => $newPortalPrivateRoom['item_id'],
-                ':discussionId' => $discussionArticle['discussion_id'],
-                ':subject' => $discussionArticle['subject'],
-                ':description' => $discussionArticle['description'],
-                ':position' => $discussionArticle['position'],
-            ]);
-            $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (sizeof($items) == 0) {
-                echo "non found - copying dataset\n";
-
-                if (!$this->insert($connection, 'discussionarticles', $discussionArticle, $newPortalPrivateRoom)) {
-                    throw new Exception("insert failed");
-                }
-            } else {
-                echo "found suspicious entry - skipping\n";
+            echo "Moving discussion article from " . $oldPortalPrivateRoom['item_id'] . " to " . $newPortalPrivateRoom['item_id'] . "\n";
+            if (!$this->move($connection, 'discussionarticles', $discussionArticle, $newPortalPrivateRoom)) {
+                throw new Exception("move failed");
             }
         } else {
             echo "no discussion article found - skipping\n";
@@ -575,7 +440,7 @@ class DateStrategy extends AbstractStrategy implements MigrationStrategy
 {
     public static function getType()
     {
-        return 'date';
+        return ['date'];
     }
 
     public function ignore($connection, array $item)
@@ -587,47 +452,9 @@ class DateStrategy extends AbstractStrategy implements MigrationStrategy
     {
         $date = $this->findById($connection, 'dates', $item['item_id']);
         if ($date) {
-            echo "Identifying possible duplicates: ";
-            $sql = '
-                    SELECT
-                    d.*
-                    FROM
-                    dates AS d
-                    WHERE
-                    d.context_id = :contextId AND
-                    d.deletion_date IS NULL AND 
-                    d.title = :title AND
-                    d.description = :description AND
-                    d.start_time = :startTime AND
-                    d.end_time = :endTime AND
-                    d.start_day = :startDay AND
-                    d.end_day = :endDay AND
-                    d.place = :place AND
-                    d.datetime_start = :datetimeStart AND
-                    d.datetime_end = :datetimeEnd
-                ';
-            $stmt = $connection->prepare($sql);
-            $stmt->execute([
-                ':contextId' => $newPortalPrivateRoom['item_id'],
-                ':title' => $date['title'],
-                ':description' => $date['description'],
-                ':startTime' => $date['start_time'],
-                ':endTime' => $date['end_time'],
-                ':startDay' => $date['start_day'],
-                ':endDay' => $date['end_day'],
-                ':place' => $date['place'],
-                ':datetimeStart' => $date['datetime_start'],
-                ':datetimeEnd' => $date['datetime_end'],
-            ]);
-            $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (sizeof($items) == 0) {
-                echo "non found - copying dataset\n";
-
-                if (!$this->insert($connection, 'dates', $date, $newPortalPrivateRoom)) {
-                    throw new Exception("insert failed");
-                }
-            } else {
-                echo "found suspicious entry - skipping\n";
+            echo "Moving date from " . $oldPortalPrivateRoom['item_id'] . " to " . $newPortalPrivateRoom['item_id'] . "\n";
+            if (!$this->move($connection, 'dates', $date, $newPortalPrivateRoom)) {
+                throw new Exception("move failed");
             }
         } else {
             echo "no date found - skipping\n";
@@ -639,7 +466,7 @@ class SectionStrategy extends AbstractStrategy implements MigrationStrategy
 {
     public static function getType()
     {
-        return 'section';
+        return ['section'];
     }
 
     public function ignore($connection, array $item)
@@ -652,37 +479,9 @@ class SectionStrategy extends AbstractStrategy implements MigrationStrategy
         $sections = $this->findById($connection, 'section', $item['item_id'], true);
         if ($sections) {
             foreach ($sections as $section) {
-                echo "Identifying possible duplicates: ";
-                $sql = '
-                    SELECT
-                    s.*
-                    FROM
-                    section AS s
-                    WHERE
-                    s.version_id = :versionId AND
-                    s.context_id = :contextId AND
-                    s.deletion_date IS NULL AND 
-                    s.title = :title AND
-                    s.description = :description AND
-                    s.material_item_id = :materialItemId
-                ';
-                $stmt = $connection->prepare($sql);
-                $stmt->execute([
-                    ':versionId' => $section['version_id'],
-                    ':contextId' => $newPortalPrivateRoom['item_id'],
-                    ':title' => $section['title'],
-                    ':description' => $section['description'],
-                    ':materialItemId' => $section['material_item_id'],
-                ]);
-                $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                if (sizeof($items) == 0) {
-                    echo "non found - copying dataset\n";
-
-                    if (!$this->insert($connection, 'section', $section, $newPortalPrivateRoom)) {
-                        throw new Exception("insert failed");
-                    }
-                } else {
-                    echo "found suspicious entry - skipping\n";
+                echo "Moving section from " . $oldPortalPrivateRoom['item_id'] . " to " . $newPortalPrivateRoom['item_id'] . "\n";
+                if (!$this->move($connection, 'section', $section, $newPortalPrivateRoom)) {
+                    throw new Exception("move failed");
                 }
             }
         } else {
@@ -695,7 +494,7 @@ class AnnotationStrategy extends AbstractStrategy implements MigrationStrategy
 {
     public static function getType()
     {
-        return 'annotation';
+        return ['annotation'];
     }
 
     public function ignore($connection, array $item)
@@ -707,35 +506,9 @@ class AnnotationStrategy extends AbstractStrategy implements MigrationStrategy
     {
         $annotation = $this->findById($connection, 'annotations', $item['item_id']);
         if ($annotation) {
-            echo "Identifying possible duplicates: ";
-            $sql = '
-                    SELECT
-                    a.*
-                    FROM
-                    annotations AS a
-                    WHERE
-                    d.context_id = :contextId AND
-                    d.deletion_date IS NULL AND 
-                    d.title = :title AND
-                    d.description = :description AND
-                    d.linked_item_id = :linkedItemId
-                ';
-            $stmt = $connection->prepare($sql);
-            $stmt->execute([
-                ':contextId' => $newPortalPrivateRoom['item_id'],
-                ':title' => $annotation['title'],
-                ':description' => $annotation['description'],
-                ':linkedItemId' => $annotation['linked_item_id'],
-            ]);
-            $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (sizeof($items) == 0) {
-                echo "non found - copying dataset\n";
-
-                if (!$this->insert($connection, 'annotations', $annotation, $newPortalPrivateRoom)) {
-                    throw new Exception("insert failed");
-                }
-            } else {
-                echo "found suspicious entry - skipping\n";
+            echo "Moving annotation from " . $oldPortalPrivateRoom['item_id'] . " to " . $newPortalPrivateRoom['item_id'] . "\n";
+            if (!$this->move($connection, 'annotations', $annotation, $newPortalPrivateRoom)) {
+                throw new Exception("move failed");
             }
         } else {
             echo "no annotation found - skipping\n";
@@ -747,7 +520,7 @@ class AnnouncementStrategy extends AbstractStrategy implements MigrationStrategy
 {
     public static function getType()
     {
-        return 'announcement';
+        return ['announcement'];
     }
 
     public function ignore($connection, array $item)
@@ -759,35 +532,9 @@ class AnnouncementStrategy extends AbstractStrategy implements MigrationStrategy
     {
         $announcement = $this->findById($connection, 'announcement', $item['item_id']);
         if ($announcement) {
-            echo "Identifying possible duplicates: ";
-            $sql = '
-                    SELECT
-                    a.*
-                    FROM
-                    announcement AS a
-                    WHERE
-                    d.context_id = :contextId AND
-                    d.deletion_date IS NULL AND 
-                    d.title = :title AND
-                    d.description = :description AND
-                    d.enddate = :endDate
-                ';
-            $stmt = $connection->prepare($sql);
-            $stmt->execute([
-                ':contextId' => $newPortalPrivateRoom['item_id'],
-                ':title' => $announcement['title'],
-                ':description' => $announcement['description'],
-                ':endDate' => $announcement['enddate'],
-            ]);
-            $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (sizeof($items) == 0) {
-                echo "non found - copying dataset\n";
-
-                if (!$this->insert($connection, 'announcement', $announcement, $newPortalPrivateRoom)) {
-                    throw new Exception("insert failed");
-                }
-            } else {
-                echo "found suspicious entry - skipping\n";
+            echo "Moving announcement from " . $oldPortalPrivateRoom['item_id'] . " to " . $newPortalPrivateRoom['item_id'] . "\n";
+            if (!$this->move($connection, 'announcement', $announcement, $newPortalPrivateRoom)) {
+                throw new Exception("move failed");
             }
         } else {
             echo "no announcement found - skipping\n";
@@ -799,7 +546,7 @@ class PortfolioStrategy extends AbstractStrategy implements MigrationStrategy
 {
     public static function getType()
     {
-        return 'portfolio';
+        return ['portfolio'];
     }
 
     public function ignore($connection, array $item)
@@ -807,43 +554,13 @@ class PortfolioStrategy extends AbstractStrategy implements MigrationStrategy
         return false;
     }
 
-    /**
-     * TODO: tag_portfolio is missing
-     * TODO: annotation_portfolio is missing
-     * TODO: template_portfolio is missing
-     * TODO: user_portfolio is missing
-     */
     public function migrate($connection, array $item, array $newPortalPrivateRoom, array $oldPortalPrivateRoom)
     {
         $portfolio = $this->findById($connection, 'portfolio', $item['item_id']);
         if ($portfolio) {
-            echo "Identifying possible duplicates: ";
-            $sql = '
-                    SELECT
-                    p.*
-                    FROM
-                    portfolio AS p
-                    WHERE
-                    p.deletion_date IS NULL AND 
-                    p.title = :title AND
-                    p.description = :description
-                ';
-            $stmt = $connection->prepare($sql);
-            $stmt->execute([
-                ':contextId' => $newPortalPrivateRoom['item_id'],
-                ':title' => $portfolio['title'],
-                ':description' => $portfolio['description'],
-                ':endDate' => $portfolio['enddate'],
-            ]);
-            $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (sizeof($items) == 0) {
-                echo "non found - copying dataset\n";
-
-                if (!$this->insert($connection, 'portfolio', $portfolio, $newPortalPrivateRoom, true)) {
-                    throw new Exception("insert failed");
-                }
-            } else {
-                echo "found suspicious entry - skipping\n";
+            echo "Moving portfolio from " . $oldPortalPrivateRoom['item_id'] . " to " . $newPortalPrivateRoom['item_id'] . "\n";
+            if (!$this->move($connection, 'portfolio', $portfolio, $newPortalPrivateRoom)) {
+                throw new Exception("move failed");
             }
         } else {
             echo "no portfolio found - skipping\n";
@@ -855,7 +572,7 @@ class TodoStrategy extends AbstractStrategy implements MigrationStrategy
 {
     public static function getType()
     {
-        return 'todo';
+        return ['todo'];
     }
 
     public function ignore($connection, array $item)
@@ -867,38 +584,9 @@ class TodoStrategy extends AbstractStrategy implements MigrationStrategy
     {
         $todo = $this->findById($connection, 'todos', $item['item_id']);
         if ($todo) {
-            echo "Identifying possible duplicates: ";
-            $sql = '
-                    SELECT
-                    t.*
-                    FROM
-                    todos AS t
-                    WHERE
-                    p.deletion_date IS NULL AND 
-                    p.title = :title AND
-                    p.description = :description AND
-                    p.date = :date AND
-                    p.status = :status AND
-                    p.minutes = :minutes
-                ';
-            $stmt = $connection->prepare($sql);
-            $stmt->execute([
-                ':contextId' => $newPortalPrivateRoom['item_id'],
-                ':title' => $todo['title'],
-                ':description' => $todo['description'],
-                ':date' => $todo['date'],
-                ':status' => $todo['status'],
-                ':minutes' => $todo['minutes'],
-            ]);
-            $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (sizeof($items) == 0) {
-                echo "non found - copying dataset\n";
-
-                if (!$this->insert($connection, 'todos', $todo, $newPortalPrivateRoom, true)) {
-                    throw new Exception("insert failed");
-                }
-            } else {
-                echo "found suspicious entry - skipping\n";
+            echo "Moving todo from " . $oldPortalPrivateRoom['item_id'] . " to " . $newPortalPrivateRoom['item_id'] . "\n";
+            if (!$this->move($connection, 'todos', $todo, $newPortalPrivateRoom)) {
+                throw new Exception("move failed");
             }
         } else {
             echo "no todo found - skipping\n";
@@ -910,7 +598,7 @@ class StepStrategy extends AbstractStrategy implements MigrationStrategy
 {
     public static function getType()
     {
-        return 'step';
+        return ['step'];
     }
 
     public function ignore($connection, array $item)
@@ -922,41 +610,12 @@ class StepStrategy extends AbstractStrategy implements MigrationStrategy
     {
         $step = $this->findById($connection, 'step', $item['item_id']);
         if ($step) {
-            echo "Identifying possible duplicates: ";
-            $sql = '
-                    SELECT
-                    s.*
-                    FROM
-                    step AS s
-                    WHERE
-                    s.deletion_date IS NULL AND 
-                    s.title = :title AND
-                    s.description = :description AND
-                    s.minutes = :minutes AND
-                    s.time_type = :timeType AND
-                    s.todo_item_id = :todoItemId
-                ';
-            $stmt = $connection->prepare($sql);
-            $stmt->execute([
-                ':contextId' => $newPortalPrivateRoom['item_id'],
-                ':title' => $step['title'],
-                ':description' => $step['description'],
-                ':minutes' => $step['minutes'],
-                ':timeType' => $step['time_type'],
-                ':todoItemId' => $step['todo_item_id'],
-            ]);
-            $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (sizeof($items) == 0) {
-                echo "non found - copying dataset\n";
-
-                if (!$this->insert($connection, 'step', $step, $newPortalPrivateRoom, true)) {
-                    throw new Exception("insert failed");
-                }
-            } else {
-                echo "found suspicious entry - skipping\n";
+            echo "Moving step from " . $oldPortalPrivateRoom['item_id'] . " to " . $newPortalPrivateRoom['item_id'] . "\n";
+            if (!$this->move($connection, 'step', $step, $newPortalPrivateRoom)) {
+                throw new Exception("move failed");
             }
         } else {
-            echo "no todo found - skipping\n";
+            echo "no step found - skipping\n";
         }
     }
 }
@@ -1017,6 +676,7 @@ function processPrivateRoom($connection, $oldPortalPrivateRoom, array $newPortal
             } else {
                 echo "Item with id " . $oldItem['item_id'] . " of type " . $oldItem['type'] . " is ignored - skipping\n";
             }
+            echo "\n";
         }
     }
 
