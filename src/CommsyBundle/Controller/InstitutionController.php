@@ -55,6 +55,8 @@ class InstitutionController extends Controller
         // get institution list from institution service 
         $institutions = $institutionService->getListInstitutions($roomId, $max, $start, $sort);
 
+        $this->get('session')->set('sortInstitutions', $sort);
+
         $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();
@@ -625,9 +627,9 @@ class InstitutionController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/institution/print")
+     * @Route("/room/{roomId}/institution/print/{sort}", defaults={"sort" = "none"})
      */
-    public function printlistAction($roomId, Request $request)
+    public function printlistAction($roomId, Request $request, $sort)
     {
          $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -656,7 +658,16 @@ class InstitutionController extends Controller
         }
 
         // get institution list from manager service
-        $institutions = $institutionService->getListInstitutions($roomId);
+        if ($sort != "none") {
+            $institutions = $institutionService->getListInstitutions($roomId, $institutionService->getCountArray($roomId)['countAll'], 0, $sort);
+        }
+        elseif ($this->get('session')->get('sortInstitutions')) {
+            $institutions = $institutionService->getListInstitutions($roomId, $institutionService->getCountArray($roomId)['countAll'], 0, $this->get('session')->get('sortInstitutions'));
+        }
+        else {
+            $institutions = $institutionService->getListInstitutions($roomId, $institutionService->getCountArray($roomId)['countAll'], 0, 'date');
+        }
+
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();

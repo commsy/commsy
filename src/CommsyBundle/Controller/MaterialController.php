@@ -74,6 +74,8 @@ class MaterialController extends Controller
         // get material list from manager service 
         $materials = $materialService->getListMaterials($roomId, $max, $start, $sort);
 
+        $this->get('session')->set('sortMaterials', $sort);
+
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
@@ -174,9 +176,9 @@ class MaterialController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/material/print")
+     * @Route("/room/{roomId}/material/print/{sort}", defaults={"sort" = "none"})
      */
-    public function printlistAction($roomId, Request $request)
+    public function printlistAction($roomId, Request $request, $sort)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -206,7 +208,15 @@ class MaterialController extends Controller
         }
 
         // get material list from manager service 
-        $materials = $materialService->getListMaterials($roomId);
+        if ($sort != "none") {
+            $materials = $materialService->getListMaterials($roomId, $materialService->getCountArray($roomId)['countAll'], 0, $sort);
+        }
+        elseif ($this->get('session')->get('sortMaterials')) {
+            $materials = $materialService->getListMaterials($roomId, $materialService->getCountArray($roomId)['countAll'], 0, $this->get('session')->get('sortMaterials'));
+        }
+        else {
+            $materials = $materialService->getListMaterials($roomId, $materialService->getCountArray($roomId)['countAll'], 0, 'date');
+        }
 
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();

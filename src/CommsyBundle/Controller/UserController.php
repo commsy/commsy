@@ -77,6 +77,9 @@ class UserController extends Controller
 
         // get user list from manager service 
         $users = $userService->getListUsers($roomId, $max, $start, $currentUser->isModerator(), $sort);
+
+        $this->get('session')->set('sortUsers', $sort);
+
         $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = [];
@@ -200,9 +203,9 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/user/print")
+     * @Route("/room/{roomId}/user/print/{sort}", defaults={"sort" = "none"})
      */
-    public function printlistAction($roomId, Request $request)
+    public function printlistAction($roomId, Request $request, $sort)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $currentUser = $legacyEnvironment->getCurrentUserItem();
@@ -238,8 +241,19 @@ class UserController extends Controller
             $userService->setFilterConditions($filterForm);
         }
 
-        // get user list from manager service 
         $users = $userService->getListUsers($roomId);
+
+        // get user list from manager service
+        if ($sort != "none") {
+            $users = $userService->getListUsers($roomId, $userService->getCountArray($roomId)['countAll'], 0, $sort);
+        }
+        elseif ($this->get('session')->get('sortUsers')) {
+            $users = $userService->getListUsers($roomId, $userService->getCountArray($roomId)['countAll'], 0, $this->get('session')->get('sortUsers'));
+        }
+        else {
+            $users = $userService->getListUsers($roomId, $userService->getCountArray($roomId)['countAll'], 0, 'date');
+        }
+
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();

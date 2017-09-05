@@ -84,9 +84,9 @@ class GroupController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/group/print")
+     * @Route("/room/{roomId}/group/print/{sort}", defaults={"sort" = "none"})
      */
-    public function printlistAction($roomId, Request $request)
+    public function printlistAction($roomId, Request $request, $sort)
     {
          $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -119,7 +119,16 @@ class GroupController extends Controller
         }
 
         // get group list from manager service 
-        $groups = $groupService->getListGroups($roomId);
+        if ($sort != "none") {
+            $groups = $groupService->getListGroups($roomId, $groupService->getCountArray($roomId)['countAll'], 0, $sort);
+        }
+        elseif ($this->get('session')->get('sortGroups')) {
+            $groups = $groupService->getListGroups($roomId, $groupService->getCountArray($roomId)['countAll'], 0, $this->get('session')->get('sortGroups'));
+        }
+        else {
+            $groups = $groupService->getListGroups($roomId, $groupService->getCountArray($roomId)['countAll'], 0, 'date');
+        }
+
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
@@ -194,6 +203,9 @@ class GroupController extends Controller
 
         // get group list from manager service 
         $groups = $groupService->getListGroups($roomId, $max, $start, $sort);
+
+        $this->get('session')->set('sortGroups', $sort);
+
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();

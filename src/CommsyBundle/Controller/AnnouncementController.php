@@ -71,6 +71,8 @@ class AnnouncementController extends Controller
         // get announcement list from manager service 
         $announcements = $announcementService->getListAnnouncements($roomId, $max, $start, $sort);
 
+        $this->get('session')->set('sortAnnouncements', $sort);
+
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
@@ -228,9 +230,9 @@ class AnnouncementController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/announcement/print")
+     * @Route("/room/{roomId}/announcement/print/{sort}", defaults={"sort" = "none"})
      */
-    public function printlistAction($roomId, Request $request)
+    public function printlistAction($roomId, Request $request, $sort)
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
@@ -260,8 +262,19 @@ class AnnouncementController extends Controller
             $announcementService->hideInvalidEntries();
         }
 
+        $announcementService->hideDeactivatedEntries();
+        $announcementService->hideInvalidEntries();
+
         // get announcement list from manager service 
-        $announcements = $announcementService->getListAnnouncements($roomId);
+        if ($sort != "none") {
+            $announcements = $announcementService->getListAnnouncements($roomId, $announcementService->getCountArray($roomId)['countAll'], 0, $sort);
+        }
+        elseif ($this->get('session')->get('sortAnnouncements')) {
+            $announcements = $announcementService->getListAnnouncements($roomId, $announcementService->getCountArray($roomId)['countAll'], 0, $this->get('session')->get('sortAnnouncements'));
+        }
+        else {
+            $announcements = $announcementService->getListAnnouncements($roomId, $announcementService->getCountArray($roomId)['countAll'], 0, 'date');
+        }
 
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();

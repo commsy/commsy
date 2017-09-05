@@ -77,6 +77,8 @@ class DateController extends Controller
         // get material list from manager service
         $dates = $dateService->getListDates($roomId, $max, $start, $sort);
 
+        $this->get('session')->set('sortDates', $sort);
+
         $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();
@@ -305,9 +307,9 @@ class DateController extends Controller
     }
 
        /**
-     * @Route("/room/{roomId}/date/print")
+     * @Route("/room/{roomId}/date/print/{sort}", defaults={"sort" = "none"})
      */
-    public function printlistAction($roomId, Request $request)
+    public function printlistAction($roomId, Request $request, $sort)
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
@@ -331,7 +333,15 @@ class DateController extends Controller
         }
 
         // get date list from manager service
-        $dates = $dateService->getListDates($roomId, $max = null, $start = 0, $sort = 'date');
+        if ($sort != "none") {
+            $dates = $dateService->getListDates($roomId, $dateService->getCountArray($roomId)['countAll'], 0, $sort);
+        }
+        elseif ($this->get('session')->get('sortDates')) {
+            $dates = $dateService->getListDates($roomId, $dateService->getCountArray($roomId)['countAll'], 0, $this->get('session')->get('sortDates'));
+        }
+        else {
+            $dates = $dateService->getListDates($roomId, $dateService->getCountArray($roomId)['countAll'], 0, 'date');
+        }
 
         $readerService = $this->get('commsy_legacy.reader_service');
 

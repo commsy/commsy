@@ -72,6 +72,8 @@ class DiscussionController extends Controller
         // get discussion list from manager service
         $discussions = $discussionService->getListDiscussions($roomId, $max, $start, $sort);
 
+        $this->get('session')->set('sortDiscussions', $sort);
+
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
@@ -167,10 +169,10 @@ class DiscussionController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/discussion/print")
+     * @Route("/room/{roomId}/discussion/print/{sort}", defaults={"sort" = "none"})
      * @Template()
      */
-    public function printlistAction($roomId, Request $request)
+    public function printlistAction($roomId, Request $request, $sort)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         
@@ -199,8 +201,16 @@ class DiscussionController extends Controller
             $discussionService->setFilterConditions($filterForm);
         }
 
-        // get material list from manager service 
-        $discussions = $discussionService->getListDiscussions($roomId);
+        // get discussion list from manager service
+        if ($sort != "none") {
+            $discussions = $discussionService->getListDiscussions($roomId, $discussionService->getCountArray($roomId)['countAll'], 0, $sort);
+        }
+        elseif ($this->get('session')->get('sortDates')) {
+            $discussions = $discussionService->getListDiscussions($roomId, $discussionService->getCountArray($roomId)['countAll'], 0, $this->get('session')->get('sortDiscussions'));
+        }
+        else {
+            $discussions = $discussionService->getListDiscussions($roomId, $discussionService->getCountArray($roomId)['countAll'], 0, 'date');
+        }
 
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
