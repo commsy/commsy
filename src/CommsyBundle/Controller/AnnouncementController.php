@@ -273,7 +273,7 @@ class AnnouncementController extends Controller
         else {
             $announcements = $announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, 'date');
         }
-error_log("Found " . count($announcements) . " announcements.");
+
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
