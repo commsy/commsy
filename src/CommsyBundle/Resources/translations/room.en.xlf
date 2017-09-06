@@ -146,9 +146,13 @@
                 <source>hide-rooms-without-membership</source>
                 <target>Hide rooms without membership</target>
             </trans-unit>
-            <trans-unit id="search-title-moderator-description">
-                <source>search-title-moderator-description</source>
-                <target>Search (title, moderator, description)</target>
+            <trans-unit id="search-filter">
+                <source>search-filter</source>
+                <target>Search</target>
+            </trans-unit>
+            <trans-unit id="search-filter-placeholder">
+                <source>search-filter-placeholder</source>
+                <target>title, moderator, description</target>
             </trans-unit>
             <trans-unit id="room_support_label">
                 <source>Support:</source>

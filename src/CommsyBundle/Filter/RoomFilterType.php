@@ -22,13 +22,14 @@ class RoomFilterType extends AbstractType
     {
         $builder
             ->add('title', Filters\TextFilterType::class, [
-                'label' => 'search-title-moderator-description',
+                'label' => 'search-filter',
                 'translation_domain' => 'room',
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
                 'attr' => [
-                    'onchange' => 'this.form.submit()',
+                    'placeholder' => 'search-filter-placeholder',
+                    'class' => 'cs-form-horizontal-full-width',
                 ],
                 'apply_filter' => function (QueryInterface $filterQuery, $field, $values) {
                     if (empty($values['value'])) {
@@ -53,9 +54,6 @@ class RoomFilterType extends AbstractType
             ])
             ->add('membership', Filters\CheckboxFilterType::class, [
                 'label' => 'hide-rooms-without-membership',
-                'attr' => [
-                    'onchange' => 'this.form.submit()',
-                ],
                 'mapped' => false,
                 'translation_domain' => 'room',
                 'label_attr' => array(
@@ -65,9 +63,6 @@ class RoomFilterType extends AbstractType
             ->add('archived', Filters\CheckboxFilterType::class, [
                 'label' => 'hide-archived-rooms',
                 'apply_filter' => false, // disable filter
-                'attr' => [
-                    'onchange' => 'this.form.submit()',
-                ],
                 'mapped' => false,
                 'translation_domain' => 'room',
                 'label_attr' => array(
@@ -75,35 +70,30 @@ class RoomFilterType extends AbstractType
                 ),
             ])
             ->add('type', Filters\ChoiceFilterType::class, [
-                'attr' => [
-                    'onchange' => 'this.form.submit()',
-                ],
                 'choices' => [
                     'Project Rooms' => 'project',
                     'Community Rooms' => 'community',
                 ],
                 'placeholder' => 'All',
                 'translation_domain' => 'room',
-            ])
+            ]);
+
+        if ($options['showTime']) {
+            $builder
+                ->add('timePulses', Filters\ChoiceFilterType::class, [
+                    'label' => 'time pulses',
+                    'choices' => $options['timePulses'],
+                    'placeholder' => 'All',
+                    'translation_domain' => 'room',
+                ]);
+        }
+        $builder
             ->add('submit', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 ),
                 'label' => 'Suchen',
             ));
-
-        if ($options['showTime']) {
-            $builder
-                ->add('timePulses', Filters\ChoiceFilterType::class, [
-                    'label' => 'time pulses',
-                    'attr' => [
-                        'onchange' => 'this.form.submit()',
-                    ],
-                    'choices' => $options['timePulses'],
-                    'placeholder' => 'All',
-                    'translation_domain' => 'room',
-                ]);
-        }
     }
 
     /**
