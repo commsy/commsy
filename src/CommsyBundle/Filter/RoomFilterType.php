@@ -4,8 +4,9 @@ namespace CommsyBundle\Filter;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
 use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
+use Lexik\Bundle\FormFilterBundle\Filter\Query\QueryInterface;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class RoomFilterType extends AbstractType
 {
@@ -20,6 +21,36 @@ class RoomFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('title', Filters\TextFilterType::class, [
+                'label' => 'search-title-moderator-description',
+                'translation_domain' => 'room',
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+                'attr' => [
+                    'onchange' => 'this.form.submit()',
+                ],
+                'apply_filter' => function (QueryInterface $filterQuery, $field, $values) {
+                    if (empty($values['value'])) {
+                        return null;
+                    }
+
+                    $expr = $filterQuery->getExpr();
+
+                    return $filterQuery->getQueryBuilder()
+                        ->andWhere(
+                            $expr->orX(
+                                $expr->like('r.title', ':title'),
+                                $expr->like('r.contactPersons', ':contactPersons'),
+                                $expr->like('r.roomDescription', ':roomDescription')
+                            )
+                        )
+                        ->setParameter('title', '%'.$values['value'].'%')
+                        ->setParameter('contactPersons', '%'.$values['value'].'%')
+                        ->setParameter('roomDescription', '%'.$values['value'].'%')
+                    ;
+                },
+            ])
             ->add('membership', Filters\CheckboxFilterType::class, [
                 'label' => 'hide-rooms-without-membership',
                 'attr' => [
@@ -53,7 +84,13 @@ class RoomFilterType extends AbstractType
                 ],
                 'placeholder' => 'All',
                 'translation_domain' => 'room',
-            ]);
+            ])
+            ->add('submit', SubmitType::class, array(
+                'attr' => array(
+                    'class' => 'uk-button-primary',
+                ),
+                'label' => 'Suchen',
+            ));
 
         if ($options['showTime']) {
             $builder

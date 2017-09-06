@@ -146,6 +146,10 @@
                 <source>hide-rooms-without-membership</source>
                 <target>Räume ohne Mitgliedschaft ausblenden</target>
             </trans-unit>
+            <trans-unit id="search-title-moderator-description">
+                <source>search-title-moderator-description</source>
+                <target>Suche (Titel, Moderator, Beschreibung)</target>
+            </trans-unit>
             <trans-unit id="room_support_label">
                 <source>Support:</source>
                 <target>Support:</target>
