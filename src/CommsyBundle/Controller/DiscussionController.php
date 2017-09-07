@@ -1141,6 +1141,9 @@ class DiscussionController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.discussion');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($itemId);
+
         $translator = $this->get('translator');
 
         // get section
@@ -1158,6 +1161,11 @@ class DiscussionController extends Controller
             if ($form->get('save')->isClicked()) {
                 // update title
                 $article->setTitle($form->getData()['title']);
+
+                if ($item->isDraft()) {
+                    $item->setDraftStatus(0);
+                    $item->saveAsItem();
+                }
 
                 // update modifier
                 $article->setModificatorItem($legacyEnvironment->getCurrentUserItem());
