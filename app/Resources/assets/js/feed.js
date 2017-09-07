@@ -72,7 +72,9 @@
 
     function loadMore(spinner)
     {
-        sort = $(".cs-sort-active").attr("id").split("-")[$(".cs-sort-active").attr("id").split("-").length-1];
+        if ($(".cs-sort-active").attr("id")) {
+            sort = $(".cs-sort-active").attr("id").split("-")[$(".cs-sort-active").attr("id").split("-").length-1];
+        }
         let path = spinner.data('feed').url  + feedStart + '/' + sort + sortOrder;
         let uri = new URI(path);
 
