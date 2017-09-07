@@ -916,6 +916,9 @@ class GroupController extends Controller
                 }
                 $groupRoom->save(false);
 
+                $calendarsService = $this->get('commsy.calendars_service');
+                $calendarsService->createCalendar($groupRoom, null, null, true);
+
                 // take values from a template?
                 if ($form->has('master_template')) {
                     $masterTemplate = $form->get('master_template')->getData();
