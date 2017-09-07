@@ -983,10 +983,14 @@ class MaterialController extends Controller
                 // set linked hashtags and categories
                 $formData = $form->getData();
                 if ($categoriesMandatory) {
-                    $materialItem->setTagListByID($formData['category_mapping']['categories']);
+                    if (isset($formData['category_mapping']['categories'])) {
+                        $materialItem->setTagListByID($formData['category_mapping']['categories']);
+                    }
                 }
                 if ($hashtagsMandatory) {
-                    $materialItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                    if (isset($formData['hashtag_mapping']['hashtags'])) {
+                        $materialItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                    }
                 }
 
                 $materialItem->save();

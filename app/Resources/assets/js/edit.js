@@ -128,12 +128,11 @@
 
             // override form submit behaviour
             article.find('button').click(function (event) {
-                event.preventDefault ? event.preventDefault() : (event.returnValue = false);
-
                 let $button = $(this);
 
                 // cancel is not handled via ajax
                 if ($button.attr('name').indexOf('cancel') > -1) {
+                    event.preventDefault ? event.preventDefault() : (event.returnValue = false);
                     /*
                     // cancel editing a NEW entry => return to list view
                     if($("#breadcrumb-nav .current.last").text().trim() == "") {
@@ -176,6 +175,7 @@
                     if (!$button.attr('name').indexOf('newHashtagAdd') > -1) {
                         let form = $(this).closest('form');
                         if (form[0].checkValidity()) {
+                            event.preventDefault ? event.preventDefault() : (event.returnValue = false);
 
                             if($('#date_start_time').length > 0){
                                 $('#date_start_time').prop('disabled', false);
@@ -238,8 +238,8 @@
         });
     });
 
-    $('#draft-save-combine-link').on('click', function(e){
-        e.preventDefault();
+    $('#draft-save-combine-link').on('click', function(event){
+        event.preventDefault ? event.preventDefault() : (event.returnValue = false);
         $(this).parents('article').find('form').each(function(){
             let button = $(this).find('.uk-button-primary');
             if (button.length) {
@@ -248,11 +248,12 @@
         });
     });
 
-    $('#draft-cancel-link').on('click', function(e){
-        e.preventDefault();
+    $('#draft-cancel-link').on('click', function(event){
+        event.preventDefault ? event.preventDefault() : (event.returnValue = false);
         let pathParts = window.location.pathname.split("/");
         pathParts.pop();
         window.location.href = pathParts.join("/");
     });
+
 
 })(UIkit);
