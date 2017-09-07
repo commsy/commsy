@@ -137,7 +137,7 @@ class AnnotationController extends Controller
     /**
      * @Route("/room/{roomId}/annotation/{itemId}/create")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_ANNOTATE', itemId)")
      */
     public function createAction($roomId, $itemId, Request $request)
     {

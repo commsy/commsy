@@ -264,7 +264,7 @@
                 
                 <div id="annotations{{ todo.itemId }}" class="uk-panel uk-panel-box uk-margin-bottom uk-panel-box-primary ">
 
-                    {% if is_granted('ITEM_EDIT', 'NEW') %}
+                    {% if is_granted('ITEM_ANNOTATE', todo.itemId) %}
                         <article class="uk-comment">
                             <header class="uk-comment-header uk-flex">
                                 <div class="uk-margin-right uk-flex-item-none">
