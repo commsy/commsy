@@ -132,6 +132,10 @@ class UserService
     public function getUser($userId)
     {
         $user = $this->userManager->getItem($userId);
+        // hotfix for birthday strings not containing valid date strings
+        if (!strtotime($user->getBirthday())) {
+            $user->setBirthday("");
+        }
         return $user;
     }
     
