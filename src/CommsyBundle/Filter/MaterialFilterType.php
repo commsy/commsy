@@ -2,6 +2,7 @@
 namespace CommsyBundle\Filter;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -32,6 +33,8 @@ class MaterialFilterType extends AbstractType
             ->add('rubrics', RubricFilterType::class, array(
                 'label' => false,
             ))
+            ->add('filter', HiddenType::class, []
+            )
         ;
 
         if ($options['hasCategories']) {
