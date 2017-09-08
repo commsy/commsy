@@ -390,10 +390,12 @@ class MenuBuilder
                 $route = "commsy_dashboard_overview";
             }
 
+            list($bundle, $controller, $action) = explode("_", $currentRequest->attributes->get('_route'));
+
             // NOTE: hide dashboard menu in dashboard overview and room list!
-            if (!$inPrivateRoom or
-                (!in_array("overview", explode("_", $currentRequest->attributes->get('_route')))) and
-                (!in_array("listall", explode("_", $currentRequest->attributes->get('_route'))))) {
+            if ( (!$inPrivateRoom or ($action != "overview" and $action != "listall") ) and
+                 ($controller != "copy" or $action != "list") and
+                 ($controller != "room" or $action != "detail")) {
                 // home navigation
                 $menu->addChild('room_home', array(
                     'label' => $label,
