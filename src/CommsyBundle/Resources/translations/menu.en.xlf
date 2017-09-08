@@ -7,6 +7,10 @@
                 <source>home</source>
                 <target>Home</target>
             </trans-unit>
+            <trans-unit id="my_home">
+                <source>my home</source>
+                <target>My home</target>
+            </trans-unit>
             <trans-unit id="announcement">
                 <source>announcement</source>
                 <target>Announcements</target>

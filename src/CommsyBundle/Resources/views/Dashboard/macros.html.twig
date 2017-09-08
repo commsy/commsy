@@ -1,3 +1,25 @@
+{% macro dashboardAllRooms(roomItem) %}
+    <div class="uk-panel uk-panel-box uk-panel-box-primary">
+        <div class="uk-panel-teaser cs-panel-teaser-primary">
+            <div class="uk-flex uk-flex-middle">
+                <div class="uk-text-large">{{ 'All rooms'|trans({}, "room") }}</div>
+             </div>
+        </div>
+        <form action="{{ path('commsy_room_listall', {'roomId': roomItem.itemId}) }}" class="uk-form-horizontal uk-form">
+            <input type="text" name="room_filter[title]" placeholder="{{ 'search-filter-placeholder'|trans({}, "room") }}" style="min-width:225px;">
+            <button type="submit" class="uk-button uk-button-primary">{{ 'Room search'|trans({}, "search") }}</button>
+        </form>
+        <ul class="uk-text-large">
+            <li>
+                <a class="uk-text-large cs-link-highlight" href="{{ path('commsy_room_listall', {'roomId': roomItem.itemId}) }}">{{ 'List all rooms'|trans([], 'room') }}</a>
+            </li>
+            <li>
+                <a class="uk-text-large cs-link-highlight" href="{{ path('commsy_room_listall', {'roomId': roomItem.itemId}|merge({'room_filter[membership]': 1})) }}">{{ 'List my rooms'|trans([], 'room') }}</a>
+            </li>
+        </ul>
+    </div>
+{% endmacro %}
+
 {% macro dashboardFeed(roomItem) %}
     {#<li id="dashboard-latest" class="uk-grid-margin">#}
         <div class="uk-panel uk-panel-box uk-panel-box-primary">

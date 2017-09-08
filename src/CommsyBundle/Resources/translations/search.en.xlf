@@ -42,6 +42,10 @@
                 <source>Search in all my rooms</source>
                 <target>Search in all my rooms</target>
             </trans-unit>
+            <trans-unit id="room-search">
+                <source>Room search</source>
+                <target>Room search</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

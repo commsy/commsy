@@ -11,9 +11,13 @@
 {% endblock %}
 
 {% block content %}
+    <div id="dashboard-cover" aria-hidden="false">
+        <h1 class="uk-heading-primary">{{ 'my home'|trans({}, "menu") }}</h1>
+    </div>
     <div class="uk-grid">
         {# right column #}
         <div class="uk-width-medium-1-2 uk-push-1-2">
+            {{ macros.dashboardAllRooms(roomItem) }}
             {{ macros.dashboardCalendar(roomItem, calendars, iCal, contextArray) }}
             {{ macros.dashboardExternalAccess(roomItem) }}
         </div>
