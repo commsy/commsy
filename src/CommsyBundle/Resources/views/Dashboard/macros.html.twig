@@ -5,6 +5,10 @@
                 <div class="uk-text-large">{{ 'All rooms'|trans({}, "room") }}</div>
              </div>
         </div>
+        <form action="{{ path('commsy_room_listall', {'roomId': roomItem.itemId}) }}" class="uk-form-horizontal uk-form">
+            <input type="text" name="room_filter[title]" placeholder="{{ 'search-filter-placeholder'|trans({}, "room") }}" style="min-width:225px;">
+            <button type="submit" class="uk-button uk-button-primary">{{ 'Room search'|trans({}, "search") }}</button>
+        </form>
         <ul>
             <li>
                 <a class="uk-text-large cs-link-highlight" href="{{ path('commsy_room_listall', {'roomId': roomItem.itemId}) }}">{{ 'List all rooms'|trans([], 'room') }}</a>
