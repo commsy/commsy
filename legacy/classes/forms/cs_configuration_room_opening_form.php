@@ -189,7 +189,10 @@ var $_template_array = array();
          $this->_form->addTextfield('room_deleting_days_unused','','','',4,4,false,'','','','left',$this->_translator->getMessage('CONFIGURATION_ROOM_DELETING_DAYS_UNUSED1'),'',false,$this->_translator->getMessage('CONFIGURATION_ROOM_DELETING_DAYS_UNUSED2'));
          $this->_form->combine();
          $this->_form->addTextfield('room_deleting_days_unused_mail','','','',2,2,false,'','','','left',$this->_translator->getMessage('CONFIGURATION_ROOM_DELETING_DAYS_MAIL_UNUSED1'),'',false,$this->_translator->getMessage('CONFIGURATION_ROOM_DELETING_DAYS_MAIL_UNUSED2'));
-      
+
+         $this->_form->addEmptyLine();
+         $this->_form->addText('', $this->_translator->getMessage('CONFIGURATION_ROOM_CATEGORIES'), '<a href="/portal/'.$this->_environment->getCurrentPortalId().'/room/categories">'.$this->_translator->getMessage('CONFIGURATION_ROOM_CATEGORIES_DESC').'</a>');
+
       // buttons
       $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }

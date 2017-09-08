@@ -166,6 +166,15 @@
                 <source>irreversibleMessage</source>
                 <target>This action can not be undone!</target>
             </trans-unit>
+
+            <trans-unit id="Room categories">
+                <source>Room categories</source>
+                <target>Room categories</target>
+            </trans-unit>
+            <trans-unit id="Portal settings">
+                <source>Portal settings</source>
+                <target>Portal settings</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

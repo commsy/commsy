@@ -16,7 +16,7 @@ class PortalController extends Controller
      * @Route("/portal/{roomId}/room/categories")
      * @Template()
      */
-    public function categoriesAction($roomId, Request $request)
+    public function roomcategoriesAction($roomId, Request $request)
     {
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();;
@@ -25,5 +25,14 @@ class PortalController extends Controller
             'roomId' => $roomId,
             'item' => $legacyEnvironment->getCurrentPortalItem(),
         );
+    }
+
+    /**
+     * @Route("/portal/{roomId}/legacysettings")
+     * @Template()
+     */
+    public function legacysettingsAction($roomId, Request $request)
+    {
+        return $this->redirect('/?cid='.$roomId.'&mod=configuration&fct=index');
     }
 }
