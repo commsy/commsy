@@ -15,6 +15,12 @@
             </a>
         </li>
 
+        <li>
+            <a href="{{ path('commsy_material_list', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'stackStatus'|trans({}, "profile")}}">
+                <i class="uk-icon-folder-o"></i>
+            </a>
+        </li>
+
         {% if privateRoomItem %}
             <li>
                 <a href="{{ path('commsy_dashboard_overview', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'dashboard description text'|trans({}, "rubric")}}">
