@@ -96,6 +96,7 @@ class ContextType extends AbstractType
                 'times',
                 'communities',
                 'linkCommunitiesMandantory',
+                'roomCategories',
             ])
             ->setDefaults([
                 'translation_domain' => 'project',

@@ -51,4 +51,15 @@ class RoomCategoriesService
 
         return $calendars = $query->getResult();
     }
+
+    public function getRoomCategoriesLinkedToContext ($contextId) {
+        $repository = $this->em->getRepository('CommsyBundle:RoomCategories');
+        $query = $repository->createQueryBuilder('room_categories_links')
+            ->select()
+            ->where('room_categories_links.context_id = :context_id')
+            ->setParameter('context_id', $contextId)
+            ->getQuery();
+
+        return $calendars = $query->getResult();
+    }
 }

@@ -1024,6 +1024,12 @@ class RoomController extends Controller
             $linkCommunitiesMandantory = false;
         }
 
+        $roomCategoriesService = $this->get('commsy.roomcategories_service');
+        $roomCategories = [];
+        foreach ($roomCategoriesService->getListRoomCategories($current_portal->getItemId()) as $roomCategory) {
+            $roomCategories[$roomCategory->getTitle()] = $roomCategory->getId();
+        }
+
         $formData = [];
         $form = $this->createForm(ContextType::class, $formData, [
             'types' => $types,
@@ -1033,6 +1039,7 @@ class RoomController extends Controller
             'times' => $times,
             'communities' => $community_room_array,
             'linkCommunitiesMandantory' => $linkCommunitiesMandantory,
+            'roomCategories' => $roomCategories,
         ]);
 
         $form->handleRequest($request);
