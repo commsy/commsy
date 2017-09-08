@@ -349,7 +349,12 @@ class MenuBuilder
 
         $roomId = $currentRequest->attributes->get('roomId');
 
-        if ($roomId) {
+        $inPortal = false;
+        if ($roomId == $this->legacyEnvironment->getCurrentPortalId()) {
+            $inPortal = true;
+        }
+
+        if ($roomId && !$inPortal) {
             // dashboard
             $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 

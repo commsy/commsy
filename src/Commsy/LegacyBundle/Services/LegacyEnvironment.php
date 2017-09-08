@@ -87,7 +87,7 @@ class LegacyEnvironment
             // check request uri
             $requestUri = $currentRequest->getRequestUri();
                 
-            if (preg_match('/(room|dashboard)\/(\d+)/', $requestUri, $matches)) {
+            if (preg_match('/(room|dashboard|portal)\/(\d+)/', $requestUri, $matches)) {
                 $roomId = $matches[2];
                 return $roomId;
             }
