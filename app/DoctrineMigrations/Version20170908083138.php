@@ -21,7 +21,7 @@ class Version20170908083138 extends AbstractMigration
         $this->addSql('
             CREATE TABLE room_categories (
                 id int(11) NOT NULL AUTO_INCREMENT,
-                portal_id int(11) NOT NULL,
+                context_id int(11) NOT NULL,
                 title varchar(255) NOT NULL,
                 PRIMARY KEY (id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8

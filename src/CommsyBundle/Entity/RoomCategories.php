@@ -26,9 +26,9 @@ class RoomCategories
     /**
      * @var integer
      *
-     * @ORM\Column(name="portal_id", type="integer", nullable=false)
+     * @ORM\Column(name="context_id", type="integer", nullable=false)
      */
-    private $portal_id;
+    private $context_id;
 
     /**
      * @var string
@@ -49,15 +49,15 @@ class RoomCategories
     }
 
     /**
-     * Set portalId
+     * Set contextId
      *
-     * @param integer $portalId
+     * @param integer $contextId
      *
      * @return Calendars
      */
-    public function setPortalId($portalId)
+    public function setContextId($contextId)
     {
-        $this->portal_id = $portalId;
+        $this->context_id = $contextId;
 
         return $this;
     }
@@ -67,9 +67,9 @@ class RoomCategories
      *
      * @return integer
      */
-    public function getPortalId()
+    public function getContextId()
     {
-        return $this->portal_id;
+        return $this->context_id;
     }
 
     /**
