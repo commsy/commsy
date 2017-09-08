@@ -14,6 +14,7 @@
     <div class="uk-grid">
         {# right column #}
         <div class="uk-width-medium-1-2 uk-push-1-2">
+            {{ macros.dashboardAllRooms(roomItem) }}
             {{ macros.dashboardCalendar(roomItem, calendars, iCal, contextArray) }}
             {{ macros.dashboardExternalAccess(roomItem) }}
         </div>

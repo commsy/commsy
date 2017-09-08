@@ -1,3 +1,21 @@
+{% macro dashboardAllRooms(roomItem) %}
+    <div class="uk-panel uk-panel-box uk-panel-box-primary">
+        <div class="uk-panel-teaser cs-panel-teaser-primary">
+            <div class="uk-flex uk-flex-middle">
+                <div class="uk-text-large">{{ 'All rooms'|trans({}, "room") }}</div>
+             </div>
+        </div>
+        <ul>
+            <li>
+                <a class="uk-text-large cs-link-highlight" href="{{ path('commsy_room_listall', {'roomId': roomItem.itemId}) }}">{{ 'List all rooms'|trans([], 'room') }}</a>
+            </li>
+            <li>
+                <a class="uk-text-large cs-link-highlight" href="{{ path('commsy_room_listall', {'roomId': roomItem.itemId}|merge({'room_filter[membership]': 1})) }}">{{ 'List my rooms'|trans([], 'room') }}</a>
+            </li>
+        </ul>
+    </div>
+{% endmacro %}
+
 {% macro dashboardFeed(roomItem) %}
     {#<li id="dashboard-latest" class="uk-grid-margin">#}
         <div class="uk-panel uk-panel-box uk-panel-box-primary">

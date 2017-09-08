@@ -78,9 +78,17 @@
                 <source>All rooms</source>
                 <target>All rooms</target>
             </trans-unit>
+            <trans-unit id="list-all-rooms">
+                <source>List all rooms</source>
+                <target>List all rooms</target>
+            </trans-unit>
             <trans-unit id="room-my-rooms">
                 <source>My rooms</source>
                 <target>My rooms</target>
+            </trans-unit>
+            <trans-unit id="list-my-rooms">
+                <source>List my rooms</source>
+                <target>List my rooms</target>
             </trans-unit>
             <trans-unit id="room-filter-label-membership">
                 <source>Membership</source>
