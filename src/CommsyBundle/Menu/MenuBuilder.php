@@ -390,8 +390,10 @@ class MenuBuilder
                 $route = "commsy_dashboard_overview";
             }
 
-            // NOTE: hide dashboard menu in dashboard overview!
-            if (!$inPrivateRoom or !in_array("overview", explode("_", $currentRequest->attributes->get('_route')))) {
+            // NOTE: hide dashboard menu in dashboard overview and room list!
+            if (!$inPrivateRoom or
+                (!in_array("overview", explode("_", $currentRequest->attributes->get('_route')))) and
+                (!in_array("listall", explode("_", $currentRequest->attributes->get('_route'))))) {
                 // home navigation
                 $menu->addChild('room_home', array(
                     'label' => $label,
