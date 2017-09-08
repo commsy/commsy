@@ -40,6 +40,8 @@
         {{ 'user'|trans({}, 'user')|capitalize }}
     {% elseif user.status == 3 %}
         {{ 'moderator'|trans({}, 'user')|capitalize }}
+    {% elseif user.status == 4 %}
+        {{ 'reading user'|trans({}, 'user') }}
     {% endif %}
 {% endmacro %}
 
