@@ -9,10 +9,10 @@ use Nette\Utils\Strings;
 /**
  * Invitations
  *
- * @ORM\Table(name="room_categories", indexes={@ORM\Index(name="id", columns={"id"})})
+ * @ORM\Table(name="room_categories_links", indexes={@ORM\Index(name="id", columns={"id"})})
  * @ORM\Entity
  */
-class RoomCategories
+class RoomCategoriesLinks
 {
     /**
      * @var integer
@@ -31,11 +31,11 @@ class RoomCategories
     private $context_id;
 
     /**
-     * @var string
+     * @var integer
      *
-     * @ORM\Column(name="title", type="string", length=255, nullable=false)
+     * @ORM\Column(name="category_id", type="integer", nullable=false)
      */
-    private $title;
+    private $category_id;
 
 
     /**
@@ -53,7 +53,7 @@ class RoomCategories
      *
      * @param integer $contextId
      *
-     * @return RoomCategories
+     * @return RoomCategoriesLinks
      */
     public function setContextId($contextId)
     {
@@ -73,26 +73,26 @@ class RoomCategories
     }
 
     /**
-     * Set title
+     * Set categoryId
      *
-     * @param string $title
+     * @param integer $ccategoryId
      *
-     * @return RoomCategories
+     * @return RoomcategoriesLinks
      */
-    public function setTitle($title)
+    public function setCategoryId($categoryId)
     {
-        $this->title = $title;
+        $this->cate = $categoryId;
 
-        return $this;
+        return $this->category_id;
     }
 
     /**
-     * Get title
+     * Get categoryId
      *
-     * @return string
+     * @return integer
      */
-    public function getTitle()
+    public function getCategoryId()
     {
-        return $this->title;
+        return $this->category_id;
     }
 }

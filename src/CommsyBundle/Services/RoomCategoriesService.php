@@ -53,7 +53,7 @@ class RoomCategoriesService
     }
 
     public function getRoomCategoriesLinkedToContext ($contextId) {
-        $repository = $this->em->getRepository('CommsyBundle:RoomCategories');
+        $repository = $this->em->getRepository('CommsyBundle:RoomCategoriesLinks');
         $query = $repository->createQueryBuilder('room_categories_links')
             ->select()
             ->where('room_categories_links.context_id = :context_id')
