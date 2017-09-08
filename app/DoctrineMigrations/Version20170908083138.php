@@ -26,6 +26,15 @@ class Version20170908083138 extends AbstractMigration
                 PRIMARY KEY (id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8
         ');
+
+        $this->addSql('
+            CREATE TABLE room_categories_links (
+                id int(11) NOT NULL AUTO_INCREMENT,
+                context_id int(11) NOT NULL,
+                category_id int(11) NOT NULL,
+                PRIMARY KEY (id)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+        ');
     }
 
     /**
@@ -37,5 +46,7 @@ class Version20170908083138 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('DROP TABLE IF EXISTS room_categories');
+
+        $this->addSql('DROP TABLE IF EXISTS room_categories_links');
     }
 }

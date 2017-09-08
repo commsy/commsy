@@ -9,7 +9,7 @@ use Nette\Utils\Strings;
 /**
  * Invitations
  *
- * @ORM\Table(name="calendars", indexes={@ORM\Index(name="id", columns={"id"})})
+ * @ORM\Table(name="room_categories", indexes={@ORM\Index(name="id", columns={"id"})})
  * @ORM\Entity
  */
 class RoomCategories
