@@ -33,7 +33,7 @@
 
 {% macro userStatus(user) %}
     {% if user.status == 0 %}
-        {{ 'quit'|trans({}, 'user')|capitalize }}
+        {{ 'is blocked'|trans({}, 'user')|capitalize }}
     {% elseif user.status == 1 %}
         {{ 'request'|trans({}, 'user')|capitalize }}
     {% elseif user.status == 2 %}
