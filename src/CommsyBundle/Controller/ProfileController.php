@@ -93,6 +93,10 @@ class ProfileController extends Controller
                 $tempUserItem = $userList->getFirst();
                 $discService = $this->get('commsy_legacy.disc_service');
                 while ($tempUserItem) {
+                    if ($tempUserItem->getItemId() == $userItem->getItemId()) {
+                        $tempUserItem = $userList->getNext();
+                        continue;
+                    }
                     if($formData['useProfileImage']) {
                         $tempFilename = $discService->copyImageFromRoomToRoom($userItem->getPicture(), $tempUserItem->getContextId());
                         if ($tempFilename) {
