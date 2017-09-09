@@ -33,13 +33,15 @@
 
 {% macro userStatus(user) %}
     {% if user.status == 0 %}
-        {{ 'quit'|trans({}, 'user')|capitalize }}
+        {{ 'is blocked'|trans({}, 'user')|capitalize }}
     {% elseif user.status == 1 %}
         {{ 'request'|trans({}, 'user')|capitalize }}
     {% elseif user.status == 2 %}
         {{ 'user'|trans({}, 'user')|capitalize }}
     {% elseif user.status == 3 %}
         {{ 'moderator'|trans({}, 'user')|capitalize }}
+    {% elseif user.status == 4 %}
+        {{ 'reading user'|trans({}, 'user') }}
     {% endif %}
 {% endmacro %}
 

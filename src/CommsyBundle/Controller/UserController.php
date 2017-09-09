@@ -381,9 +381,17 @@ class UserController extends Controller
                     $this->sendUserInfoMail($formData['userIds'], $formData['status']);
                 }
 
-                return $this->redirectToRoute('commsy_user_list', [
-                    'roomId' => $roomId,
-                ]);
+                if($request->query->has('userDetail')) {
+                    return $this->redirectToRoute('commsy_user_detail', [
+                        'roomId' => $roomId,
+                        'itemId' => array_values($request->query->get('userIds'))[0],
+                    ]);
+                }
+                else {
+                    return $this->redirectToRoute('commsy_user_list', [
+                        'roomId' => $roomId,
+                    ]);
+                }
             }
         }
 
@@ -481,6 +489,35 @@ class UserController extends Controller
             'layout' => 'cs-notify-message',
             'data' => $result,
         ]);
+    }
+
+
+    /**
+     * @Route("/room/{roomId}/user/{itemId}/delete", requirements={
+     *     "itemId": "\d+"
+     * }))
+     * @Security("is_granted('MODERATOR')")
+     */
+    public function deleteAction($roomId, $itemId, Request $request) {
+        // FIXME: popup confirm-cancel dialog does not work, yet!
+        $translator = $this->get('translator');
+        if ($this->contextHasModerators($roomId, [$itemId])) {
+            $userService = $this->get('commsy_legacy.user_service');
+            $user = $userService->getUser($itemId);
+            //$user->delete();
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->trans('1 deleted entries');
+            $this->sendUserInfoMail([$itemId], 'user-delete');
+        } else {
+            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('no moderators left', array(), 'user');
+        }
+
+        return new JsonResponse([
+            'message' => $message,
+            'timeout' => '5550',
+            'layout' => 'cs-notify-message',
+            'data' => [],
+        ]);
+        //return $this->redirectToRoute('commsy_user_list', array('roomId' => $roomId));
     }
 
     private function contextHasModerators($roomId, $selectedIds) {
