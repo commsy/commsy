@@ -29,6 +29,7 @@ class RoomCategoriesEditType extends AbstractType
                 'label' => 'Title',
                 'translation_domain' => 'calendar',
                 'required' => true,
+                'translation_domain' => 'portal',
             ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
@@ -59,7 +60,7 @@ class RoomCategoriesEditType extends AbstractType
                                 'class' => 'uk-button-danger',
                             ),
                             'label' => 'Delete category',
-                            'translation_domain' => 'calendar',
+                            'translation_domain' => 'portal',
                             'validation_groups' => false,   // disable validation
                         ]);
                     $form
@@ -68,6 +69,7 @@ class RoomCategoriesEditType extends AbstractType
                                 'class' => 'uk-button-secondary',
                             ),
                             'label' => 'Cancel',
+                            'translation_domain' => 'portal',
                         ]);
                 }
             });

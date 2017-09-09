@@ -124,7 +124,8 @@ class GeneralSettingsType extends AbstractType
                 'label' => 'Room categories',
                 'required' => false,
                 'expanded' => true,
-                'multiple' => true
+                'multiple' => true,
+                'translation_domain' => 'portal',
             ));
         }
 
