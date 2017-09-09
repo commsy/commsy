@@ -51,6 +51,9 @@ class SettingsController extends Controller
         foreach ($roomCategoriesService->getListRoomCategories($legacyEnvironment->getCurrentPortalId()) as $roomCategory) {
             $roomCategories[$roomCategory->getTitle()] = $roomCategory->getId();
         }
+        foreach ($roomCategoriesService->getRoomCategoriesLinkedToContext($roomId) as $roomCategory) {
+            $roomData['categories'][] = $roomCategory->getId();
+        }
 
         $form = $this->createForm(GeneralSettingsType::class, $roomData, array(
             'roomId' => $roomId,
@@ -67,6 +70,9 @@ class SettingsController extends Controller
             else {
                 $roomItem->save(false);
             }
+
+            $formData = $form->getData();
+            $roomCategoriesService->setRoomCategoriesLinkedToContext($roomItem->getItemId(), $formData['categories']);
 
             // persist
             // $em = $this->getDoctrine()->getManager();

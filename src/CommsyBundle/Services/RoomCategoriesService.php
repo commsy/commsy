@@ -67,7 +67,7 @@ class RoomCategoriesService
     public function setRoomCategoriesLinkedToContext ($contextId, $roomCategories) {
         $linkedCategories = $this->getRoomCategoriesLinkedToContext($contextId);
         foreach ($linkedCategories as $linkedCategory) {
-            if (!in_array($linkedCategory->setCategoryId(), $roomCategories)) {
+            if (!in_array($linkedCategory->getCategoryId(), $roomCategories)) {
                 $this->em->remove($linkedCategory);
             }
         }
