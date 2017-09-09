@@ -89,4 +89,23 @@ class RoomCategoriesService
 
         $this->em->flush();
     }
+
+    public function removeRoomCategory ($roomCategory) {
+        $repository = $this->em->getRepository('CommsyBundle:RoomCategoriesLinks');
+
+        $query = $repository->createQueryBuilder('room_categories_links')
+            ->select()
+            ->where('room_categories_links.category_id = :category_id')
+            ->setParameter('category_id', $roomCategory->getId())
+            ->getQuery();
+        $roomCategoriesLinks = $query->getResult();
+
+        foreach ($roomCategoriesLinks as $roomCategoriesLink) {
+            $this->em->remove($roomCategoriesLink);
+        }
+
+        $this->em->remove($roomCategory);
+
+        $this->em->flush();
+    }
 }

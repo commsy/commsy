@@ -39,12 +39,16 @@ class PortalController extends Controller
 
         $editForm = $this->createForm(RoomCategoriesEditType::class, $roomCategory, []);
 
-
         $editForm->handleRequest($request);
         if ($editForm->isValid()) {
             // tells Doctrine you want to (eventually) save the Product (no queries yet)
 
-            $em->persist($roomCategory);
+            if ($editForm->getClickedButton()->getName() == 'delete') {
+                $roomCategoriesService = $this->get('commsy.roomcategories_service');
+                $roomCategoriesService->removeRoomCategory($roomCategory);
+            } else {
+                $em->persist($roomCategory);
+            }
 
             // actually executes the queries (i.e. the INSERT query)
             $em->flush();

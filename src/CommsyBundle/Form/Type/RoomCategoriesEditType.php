@@ -54,6 +54,15 @@ class RoomCategoriesEditType extends AbstractType
                             'translation_domain' => 'portal',
                         ]);
                     $form
+                        ->add('delete', Types\SubmitType::class, [
+                            'attr' => array(
+                                'class' => 'uk-button-danger',
+                            ),
+                            'label' => 'Delete category',
+                            'translation_domain' => 'calendar',
+                            'validation_groups' => false,   // disable validation
+                        ]);
+                    $form
                         ->add('cancel', Types\SubmitType::class, [
                             'attr' => array(
                                 'class' => 'uk-button-secondary',
