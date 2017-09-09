@@ -19,6 +19,7 @@ class PortalController extends Controller
     /**
      * @Route("/portal/{roomId}/room/categories/{roomCategoryId}")
      * @Template()
+     * @Security("is_granted('ITEM_MODERATE', roomId)")
      */
     public function roomcategoriesAction($roomId, $roomCategoryId = null, Request $request)
     {

@@ -1091,6 +1091,8 @@ class RoomController extends Controller
                 $linkModifierItemManager = $legacyEnvironment->getLinkModifierItemManager();
                 $linkModifierItemManager->markEdited($legacyRoom->getItemID());
 
+                $roomCategoriesService->setRoomCategoriesLinkedToContext($legacyRoom->getItemId(), $context['categories']);
+
                 // redirect to the project detail page
                 return $this->redirectToRoute('commsy_room_detail', [
                     'roomId' => $roomId,

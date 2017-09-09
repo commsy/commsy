@@ -2,7 +2,8 @@
 
 namespace CommsyBundle\Services;
 
-use CommsyBundle\Entity\Calendars;
+use CommsyBundle\Entity\RoomCategories;
+use CommsyBundle\Entity\RoomCategoriesLinks;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 use Sabre\VObject;
@@ -49,7 +50,7 @@ class RoomCategoriesService
             ->setParameter('roomCategoryId', $roomCategoryId)
             ->getQuery();
 
-        return $calendars = $query->getResult();
+        return $roomCategories = $query->getResult();
     }
 
     public function getRoomCategoriesLinkedToContext ($contextId) {
@@ -60,6 +61,32 @@ class RoomCategoriesService
             ->setParameter('context_id', $contextId)
             ->getQuery();
 
-        return $calendars = $query->getResult();
+        return $roomCategories = $query->getResult();
+    }
+
+    public function setRoomCategoriesLinkedToContext ($contextId, $roomCategories) {
+        $linkedCategories = $this->getRoomCategoriesLinkedToContext($contextId);
+        foreach ($linkedCategories as $linkedCategory) {
+            if (!in_array($linkedCategory->setCategoryId(), $roomCategories)) {
+                $this->em->remove($linkedCategory);
+            }
+        }
+
+        foreach ($roomCategories as $roomCategory) {
+            $foundCategory = false;
+            foreach ($linkedCategories as $linkedCategory) {
+                if ($linkedCategory->getId() == $roomCategory) {
+                    $foundCategory = true;
+                }
+            }
+            if (!$foundCategory) {
+                $roomCategoryLink = new RoomCategoriesLinks();
+                $roomCategoryLink->setContextId($contextId);
+                $roomCategoryLink->setCategoryId($roomCategory);
+                $this->em->persist($roomCategoryLink);
+            }
+        }
+
+        $this->em->flush();
     }
 }

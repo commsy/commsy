@@ -81,9 +81,9 @@ class RoomCategoriesLinks
      */
     public function setCategoryId($categoryId)
     {
-        $this->cate = $categoryId;
+        $this->category_id = $categoryId;
 
-        return $this->category_id;
+        return $this;
     }
 
     /**
