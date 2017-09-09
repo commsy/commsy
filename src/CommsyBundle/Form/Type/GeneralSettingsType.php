@@ -117,6 +117,16 @@ class GeneralSettingsType extends AbstractType
                 )
             ))
         ;
+        if (isset($options['roomCategories'])) {
+            $builder->add('categories', ChoiceType::class, array(
+                'placeholder' => false,
+                'choices' => $options['roomCategories'],
+                'label' => 'Room categories',
+                'required' => false,
+                'expanded' => true,
+                'multiple' => true
+            ));
+        }
 
         // TODO: filter room description input (cleanCKEditor)
 
@@ -197,7 +207,7 @@ class GeneralSettingsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['roomId'])
+            ->setRequired(['roomId', 'roomCategories'])
             ->setDefaults(array('translation_domain' => 'settings'))
         ;
     }

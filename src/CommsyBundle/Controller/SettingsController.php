@@ -29,6 +29,8 @@ class SettingsController extends Controller
     */
     public function generalAction($roomId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
         // get room from RoomService
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
@@ -44,8 +46,15 @@ class SettingsController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.general_settings');
         $roomData = $transformer->transform($roomItem);
 
+        $roomCategoriesService = $this->get('commsy.roomcategories_service');
+        $roomCategories = [];
+        foreach ($roomCategoriesService->getListRoomCategories($legacyEnvironment->getCurrentPortalId()) as $roomCategory) {
+            $roomCategories[$roomCategory->getTitle()] = $roomCategory->getId();
+        }
+
         $form = $this->createForm(GeneralSettingsType::class, $roomData, array(
             'roomId' => $roomId,
+            'roomCategories' => $roomCategories,
         ));
 
         $form->handleRequest($request);
