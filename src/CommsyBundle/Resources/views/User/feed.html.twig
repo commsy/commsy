@@ -37,8 +37,8 @@
                 </div>
             </div>
 
-            {# title and meta #}
-            <div class="uk-width-8-10">
+            {# name and meta #}
+            <div class="uk-width-5-10">
                 <h4 class="uk-comment-title">
                     <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">{{ user.fullName|decodeHtmlEntity }}</a>
                 </h4>
@@ -54,11 +54,26 @@
                     {% elseif user.status == 2 %}
                         <!-- <i class="uk-icon-user" data-uk-tooltip title="{{'user'|trans({}, 'user') }}"></i> -->
                     {% elseif user.status == 3 %}
-                        <i class="uk-text-small uk-icon-wrench" data-uk-tooltip title="{{'moderator'|trans({}, 'user') }}"></i> <!-- <i class="uk-icon-user" data-uk-tooltip title="{{'user'|trans({}, 'user') }}"></i> -->
+                        <i class="uk-text-small uk-icon-wrench" data-uk-tooltip title="{{'moderator'|trans({}, 'user') }}"></i> 
                     {% elseif user.status == 4 %}
                         <i class="uk-icon-user-secret"></i>
                     {% endif %}
                 </div>
+            </div>
+            <div class="uk-width-5-10">
+                {% if user.email %}
+                    {% if user.isEmailVisible %}
+                        <td>{{ 'email'|trans({}, 'user')}}: <a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
+                    {% endif %}
+                {% endif %}
+                <br/>
+                {% if user.telephone %}
+                    <span>{{ 'phone'|trans({}, 'user')}}: <a href="tel:{{user.telephone}}">{{ user.telephone|truncate(20) }}</a></span>
+                {% endif %}
+                <br/>
+                {% if user.cellularphone %}
+                    <span>{{ 'mobile'|trans({}, 'user')}}: <a href="tel:{{user.cellularphone}}">{{ user.cellularphone|truncate(20) }}</a></span>
+                {% endif %}
             </div>
         </header>
     </article>
