@@ -233,6 +233,10 @@ class ItemController extends Controller
         
         // get all items that are linked or can be linked
         $rubricInformation = $roomService->getRubricInformation($roomId);
+        if (in_array('group', $rubricInformation)) {
+            $rubricInformation[] = 'label';
+        }
+
         $optionsData['filterRubric']['all'] = 'all';
         foreach ($rubricInformation as $rubric) {
             $optionsData['filterRubric'][$rubric] = $rubric;
