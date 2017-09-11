@@ -78,7 +78,7 @@ class DashboardFeedGenerator
          * TODO: Showing users without check the room configuration leads to data privacy issues.
          * TODO: Users must not be displayed if the user rubric in a room is disabled.
          */
-        $itemManager->setTypeArrayLimit([/*'user', */'material', 'date', 'discussion']);
+        $itemManager->setTypeArrayLimit([/*'user', */'material', 'date', 'discussion', 'announcement']);
         $itemManager->setIntervalLimit($max + $start);
         $itemManager->select();
         $itemList = $itemManager->get();
