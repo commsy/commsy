@@ -177,6 +177,24 @@
                         if (form[0].checkValidity()) {
                             event.preventDefault ? event.preventDefault() : (event.returnValue = false);
 
+                            if($('#date_start_date').length > 0){
+                                var dateArray = $('#date_start_date').val().split('.');
+                                if (dateArray.length == 3) {
+                                    if (dateArray[2].length == 2) {
+                                        $('#date_start_date').val(dateArray[0]+'.'+dateArray[1]+'.20'+dateArray[2]);
+                                    }
+                                }
+                            }
+
+                            if($('#date_end_date').length > 0){
+                                var dateArray = $('#date_end_date').val().split('.');
+                                if (dateArray.length == 3) {
+                                    if (dateArray[2].length == 2) {
+                                        $('#date_end_date').val(dateArray[0]+'.'+dateArray[1]+'.20'+dateArray[2]);
+                                    }
+                                }
+                            }
+
                             if($('#date_start_time').length > 0){
                                 $('#date_start_time').prop('disabled', false);
                             }
