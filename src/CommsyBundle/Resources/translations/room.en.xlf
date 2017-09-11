@@ -162,6 +162,10 @@
                 <source>search-filter-placeholder</source>
                 <target>title, moderator, description</target>
             </trans-unit>
+            <trans-unit id="search-user-filter-placeholder">
+                <source>search-user-filter-placeholder</source>
+                <target>firstname, lastname</target>
+            </trans-unit>
             <trans-unit id="room_support_label">
                 <source>Support:</source>
                 <target>Support:</target>

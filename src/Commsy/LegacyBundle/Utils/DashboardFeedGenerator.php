@@ -68,11 +68,19 @@ class DashboardFeedGenerator
             }
         }
         $room_id_array_without_privateroom = $room_id_array;
-        
+
+        $userManager = $legacyEnvironment->getUserManager();
+        $room_id_array_without_privateroom_with_member_status = [];
+        foreach ($room_id_array_without_privateroom as $temp_room_id) {
+            $tempUserArray = $userManager->getUserArrayByUserAndRoomIDLimit($currentUser->getUserId(), [$temp_room_id], $authSource->getItemId());
+            if (!empty($tempUserArray)) {
+                $room_id_array_without_privateroom_with_member_status[] = $temp_room_id;
+            }
+        }
         
         $itemManager = $legacyEnvironment->getItemManager();
         $itemManager->reset();
-        $itemManager->setContextArrayLimit($room_id_array_without_privateroom);
+        $itemManager->setContextArrayLimit($room_id_array_without_privateroom_with_member_status);
 
         /**
          * TODO: Showing users without check the room configuration leads to data privacy issues.
