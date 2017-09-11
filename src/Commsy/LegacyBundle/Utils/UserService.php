@@ -127,6 +127,10 @@ class UserService
                 $this->userManager->setContactModeratorLimit();
             }
         }
+
+        if (isset($formData['user_search'])) {
+            $this->userManager->setNameLimit('%'.$formData['user_search'].'%');
+        }
     }
 
     public function getUser($userId)
