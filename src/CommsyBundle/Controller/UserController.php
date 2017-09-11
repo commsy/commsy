@@ -895,39 +895,48 @@ class UserController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $formData = $form->getData();
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $saveType = $form->getClickedButton()->getName();
 
-            $portalItem = $legacyEnvironment->getCurrentPortalItem();
-            $currentUser = $legacyEnvironment->getCurrentUserItem();
+            if ($saveType == 'save') {
+                $formData = $form->getData();
+                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
-            $from = $this->getParameter('commsy.email.from');
+                $portalItem = $legacyEnvironment->getCurrentPortalItem();
+                $currentUser = $legacyEnvironment->getCurrentUserItem();
 
-            $to = [];
-            foreach ($userIds as $userId) {
-                $user = $userService->getUser($userId);
-                $to[$user->getEmail()] = $user->getFullName();
+                $from = $this->getParameter('commsy.email.from');
+
+                $to = [];
+                foreach ($userIds as $userId) {
+                    $user = $userService->getUser($userId);
+                    $to[$user->getEmail()] = $user->getFullName();
+                }
+
+                $message = \Swift_Message::newInstance()
+                    ->setSubject($formData['subject'])
+                    ->setBody($formData['message'], 'text/html')
+                    ->setFrom([$from => $portalItem->getTitle()])
+                    ->setReplyTo([$currentUser->getEmail() => $currentUser->getFullName()])
+                    ->setTo($to);
+
+                // form option: copy_to_sender
+                if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
+                    $message->setCc($message->getReplyTo());
+                }
+
+                // send mail
+                $this->get('mailer')->send($message);
+
+                // redirect to success page
+                return $this->redirectToRoute('commsy_user_sendmultiplesuccess', [
+                    'roomId' => $roomId,
+                ]);
+            } else {
+                // redirect to user feed
+                return $this->redirectToRoute('commsy_user_list', [
+                    'roomId' => $roomId,
+                ]);
             }
-
-            $message = \Swift_Message::newInstance()
-                ->setSubject($formData['subject'])
-                ->setBody($formData['message'], 'text/html')
-                ->setFrom([$from => $portalItem->getTitle()])
-                ->setReplyTo([$currentUser->getEmail() => $currentUser->getFullName()])
-                ->setTo($to);
-
-            // form option: copy_to_sender
-            if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-                $message->setCc($message->getReplyTo());
-            }
-
-            // send mail
-            $this->get('mailer')->send($message);
-
-            // redirect to success page
-            return $this->redirectToRoute('commsy_user_sendmultiplesuccess', [
-                'roomId' => $roomId,
-            ]);
         }
 
         return [
