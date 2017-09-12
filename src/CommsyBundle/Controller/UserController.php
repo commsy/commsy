@@ -90,6 +90,7 @@ class UserController extends Controller
 
         // get filtered and total number of results
         $itemsCountArray = $userService->getCountArray($roomId, $currentUser->isModerator());
+        $itemsCountArray['countAll'] = $itemsCountArray['count'];
 
         $usageInfo = false;
         if ($roomItem->getUsageInfoTextForRubricInForm('user') != '') {
