@@ -19,11 +19,7 @@
 
             {# user icon and modification time #}
             <div class="uk-margin-right uk-flex-item-none">
-                {% if user.modificatorItem.isUser %}
-                    {{  macros.userIconLink(user.modificatorItem) }}
-                {% else %}
-                    {{  macros.userIcon(user.modificatorItem) }}
-                {% endif %}
+                {{  macros.userIconLink(user) }}
                 <div class="uk-comment-meta">
                     {% if user.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                         {{ 'today'|trans({})|capitalize }}, {{user.getModificationDate|date("H:i")}}
