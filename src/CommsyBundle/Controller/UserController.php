@@ -90,6 +90,7 @@ class UserController extends Controller
 
         // get filtered and total number of results
         $itemsCountArray = $userService->getCountArray($roomId, $currentUser->isModerator());
+        $itemsCountArray['countAll'] = $itemsCountArray['count'];
 
         $usageInfo = false;
         if ($roomItem->getUsageInfoTextForRubricInForm('user') != '') {
@@ -258,72 +259,86 @@ class UserController extends Controller
         }
 
         if ($form->isSubmitted()) {
-            $formData = $form->getData();
+            if ($form->get('save')->isClicked()) {
+                $formData = $form->getData();
 
-            // manual validation - moderator count check
-            if (in_array($formData['status'], ['user-block', 'user-status-reading-user', 'user-status-user'])) {
-                if (!$this->contextHasModerators($roomId, $formData['userIds'])) {
-                    $translator = $this->get('translator');
-                    $form->addError(new FormError($translator->trans('no moderators left', [], 'user')));
+                // manual validation - moderator count check
+                if (in_array($formData['status'], ['user-block', 'user-status-reading-user', 'user-status-user'])) {
+                    if (!$this->contextHasModerators($roomId, $formData['userIds'])) {
+                        $translator = $this->get('translator');
+                        $form->addError(new FormError($translator->trans('no moderators left', [], 'user')));
+                    }
+                }
+
+                if ($form->isValid()) {
+                    switch ($formData['status']) {
+                        case 'user-block':
+                            foreach ($users as $user) {
+                                $user->setStatus(0);
+                                $user->save();
+                            }
+                            break;
+
+                        case 'user-confirm':
+                            foreach ($users as $user) {
+                                $user->setStatus(2);
+                                $user->save();
+                            }
+                            break;
+
+                        case 'user-status-reading-user':
+                            foreach ($users as $user) {
+                                $user->setStatus(4);
+                                $user->save();
+                            }
+                            break;
+
+                        case 'user-status-user':
+                            foreach ($users as $user) {
+                                $user->setStatus(2);
+                                $user->save();
+                            }
+                            break;
+
+                        case 'user-status-moderator':
+                            foreach ($users as $user) {
+                                $user->setStatus(3);
+                                $user->save();
+                            }
+                            break;
+
+                        case 'user-contact':
+                            foreach ($users as $user) {
+                                $user->makeContactPerson();
+                                $user->save();
+                            }
+                            break;
+
+                        case 'user-contact-remove':
+                            foreach ($users as $user) {
+                                $user->makeNoContactPerson();
+                                $user->save();
+                            }
+                            break;
+                    }
+
+                    if ($formData['inform_user']) {
+                        $this->sendUserInfoMail($formData['userIds'], $formData['status']);
+                    }
+                    if($request->query->has('userDetail')) {
+                        return $this->redirectToRoute('commsy_user_detail', [
+                            'roomId' => $roomId,
+                            'itemId' => array_values($request->query->get('userIds'))[0],
+                        ]);
+                    }
+                    else {
+                        return $this->redirectToRoute('commsy_user_list', [
+                            'roomId' => $roomId,
+                        ]);
+                    }
                 }
             }
-
-            if ($form->isValid()) {
-                switch ($formData['status']) {
-                    case 'user-block':
-                        foreach ($users as $user) {
-                            $user->setStatus(0);
-                            $user->save();
-                        }
-                        break;
-
-                    case 'user-confirm':
-                        foreach ($users as $user) {
-                            $user->setStatus(2);
-                            $user->save();
-                        }
-                        break;
-
-                    case 'user-status-reading-user':
-                        foreach ($users as $user) {
-                            $user->setStatus(4);
-                            $user->save();
-                        }
-                        break;
-
-                    case 'user-status-user':
-                        foreach ($users as $user) {
-                            $user->setStatus(2);
-                            $user->save();
-                        }
-                        break;
-
-                    case 'user-status-moderator':
-                        foreach ($users as $user) {
-                            $user->setStatus(3);
-                            $user->save();
-                        }
-                        break;
-
-                    case 'user-contact':
-                        foreach ($users as $user) {
-                            $user->makeContactPerson();
-                            $user->save();
-                        }
-                        break;
-
-                    case 'user-contact-remove':
-                        foreach ($users as $user) {
-                            $user->makeNoContactPerson();
-                            $user->save();
-                        }
-                        break;
-                }
-
-                if ($formData['inform_user']) {
-                    $this->sendUserInfoMail($formData['userIds'], $formData['status']);
-                }
-
+            elseif ($form->get('cancel')->isClicked()) {
                 if($request->query->has('userDetail')) {
                     return $this->redirectToRoute('commsy_user_detail', [
                         'roomId' => $roomId,
@@ -365,7 +380,7 @@ class UserController extends Controller
         
         if ($selectAll == 'true') {
             $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $sort, $request);
-            foreach ($entries['materials'] as $key => $value) {
+            foreach ($entries['users'] as $key => $value) {
                 $selectedIds[] = $value->getItemId();
             }
         }
@@ -400,6 +415,10 @@ class UserController extends Controller
 
         } else if ($action == 'user-send-mail') {
             return $this->redirectToRoute('commsy_user_sendmail', array('roomId' => $roomId, 'userIds' => $selectedIds));
+        } else if ($action == 'sendmail') {
+            return new JsonResponse([
+                'redirect' => $this->generateUrl('commsy_user_sendmultiple', array('roomId' => $roomId, 'userIds' => $selectedIds)),
+            ]);
         } else if ($action == 'user-delete') {
             if ($this->contextHasModerators($roomId, $selectedIds)) {
                 foreach ($selectedIds as $id) {

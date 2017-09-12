@@ -776,7 +776,9 @@ class DateController extends Controller
 
         $listDates = array();
         foreach ($userList as $tempUser) {
-            $listDates = array_merge($listDates, $dateService->getCalendarEvents($tempUser->getContextId(), $_GET['start'], $_GET['end']));
+            if ($tempUser->getStatus() >= 2) {
+                $listDates = array_merge($listDates, $dateService->getCalendarEvents($tempUser->getContextId(), $_GET['start'], $_GET['end']));
+            }
         }
 
         $events = array();

@@ -2,7 +2,7 @@
 
 namespace CommsyBundle\Controller;
 
-use CommsyBundle\Form\Type\Settings\DeleteType;
+use CommsyBundle\Form\Type\Room\DeleteType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
