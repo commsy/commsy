@@ -824,6 +824,7 @@ class AnnouncementController extends Controller
                     $annotationItem = $annotationList->getFirst();
                     while($annotationItem){
                        $noticedManager->markNoticed($annotationItem->getItemID(),'0');
+                       $readerManager->markRead($annotationItem->getItemId(), '0');
                        $annotationItem = $annotationList->getNext();
                     }
                 }
