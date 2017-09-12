@@ -138,7 +138,7 @@
                     </div>
             
                     {# description #}
-                    <div id="description{{ date.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': date.contextId, 'itemId': date.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': date.contextId, 'itemId': date.itemId}) }}' }">
+                    <div id="description{{ date.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': date.contextId, 'itemId': date.itemId, 'draft': draft}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': date.contextId, 'itemId': date.itemId}) }}' }">
                         {{ macrosItem.itemDescription('description', date, true, date.description, draft) }}
                     </div>
 

@@ -27,11 +27,11 @@ use CommsyBundle\Event\CommsyEditEvent;
 class ItemController extends Controller
 {
     /**
-     * @Route("/room/{roomId}/item/{itemId}/editdescription")
+     * @Route("/room/{roomId}/item/{itemId}/editdescription/{draft}")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
-    public function editDescriptionAction($roomId, $itemId, Request $request)
+    public function editDescriptionAction($roomId, $itemId, $draft = false, Request $request)
     {
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
@@ -55,7 +55,7 @@ class ItemController extends Controller
         
         $withRecurrence = false;
         if ($itemType == 'date') {
-            if ($item->getRecurrencePattern() != '') {
+            if ($item->getRecurrencePattern() != '' && !$draft) {
                 $formOptions['attr']['unsetRecurrence'] = true;
                 $withRecurrence = true;
             }
