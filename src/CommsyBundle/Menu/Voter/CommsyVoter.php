@@ -29,7 +29,7 @@ class CommsyVoter implements VoterInterface
         list($bundle, $controller, $action) = explode('_', $this->requestStack->getCurrentRequest()->attributes->get('_route'));
         
         if (stristr($item->getUri(), 'room/' . $roomId . '/' . $controller)) {
-            return $action === 'detail' || $action === 'list' || $action === 'calendar';
+            return in_array($action, ['detail', 'list', 'calendar', 'changestatus']);
         }
 
         return false;
