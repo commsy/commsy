@@ -19,11 +19,7 @@
 
             {# user icon and modification time #}
             <div class="uk-margin-right uk-flex-item-none">
-                {% if user.modificatorItem.isUser %}
-                    {{  macros.userIconLink(user.modificatorItem) }}
-                {% else %}
-                    {{  macros.userIcon(user.modificatorItem) }}
-                {% endif %}
+                {{  macros.userIconLink(user) }}
                 <div class="uk-comment-meta">
                     {% if user.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
                         {{ 'today'|trans({})|capitalize }}, {{user.getModificationDate|date("H:i")}}
@@ -56,7 +52,7 @@
                     {% elseif user.status == 3 %}
                         <i class="uk-text-small uk-icon-wrench" data-uk-tooltip title="{{'moderator'|trans({}, 'user') }}"></i> 
                     {% elseif user.status == 4 %}
-                        <i class="uk-icon-user-secret"></i>
+                        <i class="uk-icon-user-secret" data-uk-tooltip title="{{ 'reading user'|trans({},'user') }}"></i>
                     {% endif %}
                 </div>
             </div>
