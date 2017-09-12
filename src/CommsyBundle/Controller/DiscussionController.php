@@ -578,7 +578,7 @@ class DiscussionController extends Controller
         $selectAllStart = $request->request->get('selectAllStart');
         
         if ($selectAll == 'true') {
-            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $request);
+            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $sort = 'date', $request);
             foreach ($entries['discussions'] as $key => $value) {
                 $selectedIds[] = $value->getItemId();
             }

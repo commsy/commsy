@@ -1407,7 +1407,7 @@ class MaterialController extends Controller
         $selectAllStart = $request->request->get('selectAllStart');
         
         if ($selectAll == 'true') {
-            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $request);
+            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $sort = 'date', $request);
             foreach ($entries['materials'] as $key => $value) {
                 $selectedIds[] = $value->getItemId();
             }
