@@ -52,7 +52,7 @@
                     {% elseif user.status == 3 %}
                         <i class="uk-text-small uk-icon-wrench" data-uk-tooltip title="{{'moderator'|trans({}, 'user') }}"></i> 
                     {% elseif user.status == 4 %}
-                        <i class="uk-icon-user-secret"></i>
+                        <i class="uk-icon-user-secret" data-uk-tooltip title="{{ 'reading user'|trans({},'user') }}"></i>
                     {% endif %}
                 </div>
             </div>
