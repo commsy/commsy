@@ -391,11 +391,11 @@
 
                     break;
 
-                case 'sendmail':
+                /* case 'sendmail':
                     // forward user to mailing form, providing user ids as query param
                     window.location.replace(actionUrl + '?' + $.param({ userIds: entries }));
 
-                    break;
+                    break; */
 
                 case 'user-block':
                 case 'user-confirm':
@@ -442,35 +442,41 @@
                 selectAllStart: input.length
             }
         }).done(function(result) {
-            $('#commsy-select-actions-select-shown').removeClass('uk-active');
-            $('#commsy-select-actions-select-all').removeClass('uk-active');
-            $('#commsy-select-actions-unselect').removeClass('uk-active');
+            if ( typeof result.redirect != 'undefined' ) {
+                window.location.replace(result.redirect);
+            } else {
+                $('#commsy-select-actions-select-shown').removeClass('uk-active');
+                $('#commsy-select-actions-select-all').removeClass('uk-active');
+                $('#commsy-select-actions-unselect').removeClass('uk-active');
 
-            target.find('input[type="checkbox"]').each(function() {
-                $(this).prop('checked', false);
-            });
-            target.find('article').each(function() {
-                $(this).removeClass('uk-comment-primary');
-            });
+                target.find('input[type="checkbox"]').each(function () {
+                    $(this).prop('checked', false);
+                });
+                target.find('article').each(function () {
+                    $(this).removeClass('uk-comment-primary');
+                });
 
-            if (action == 'copy' || action == 'remove') {
-                let $indicator = $('#cs-nav-copy-indicator');
-                $indicator.html(result.data.count);
+                if (action == 'copy' || action == 'remove') {
+                    let $indicator = $('#cs-nav-copy-indicator');
+                    $indicator.html(result.data.count);
+                }
+
+                if (action == 'remove') {
+                    let $countDisplay = $('#commsy-list-count-display');
+                    $countDisplay.html('(' + result.data.countSelected + ' - ' + result.data.count + ')')
+                }
+
+                if (action == 'user-delete') {
+                    let $countDisplay = $('#commsy-list-count-display');
+                    $countDisplay.html($countDisplay.html().replace(/\d+/g, function (match) {
+                        return parseInt(match) - entries.length
+                    }));
+                }
+
+                // reload feed
+                reloadFeed(result, false);
+                stopEdit();
             }
-
-            if (action == 'remove') {
-                let $countDisplay = $('#commsy-list-count-display');
-                $countDisplay.html('('+result.data.countSelected+' - '+result.data.count+')')
-            }
-
-            if (action == 'user-delete') {
-                let $countDisplay = $('#commsy-list-count-display');
-                $countDisplay.html($countDisplay.html().replace(/\d+/g, function(match){return parseInt(match)-entries.length}));
-            }
-
-            // reload feed
-            reloadFeed(result, false);
-            stopEdit();
         }).fail(function(jqXHR, textStatus, errorThrown) {
             UIkit.notify(errorMessage, 'danger');
         });

@@ -380,7 +380,7 @@ class UserController extends Controller
         
         if ($selectAll == 'true') {
             $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $sort, $request);
-            foreach ($entries['materials'] as $key => $value) {
+            foreach ($entries['users'] as $key => $value) {
                 $selectedIds[] = $value->getItemId();
             }
         }
@@ -415,6 +415,10 @@ class UserController extends Controller
 
         } else if ($action == 'user-send-mail') {
             return $this->redirectToRoute('commsy_user_sendmail', array('roomId' => $roomId, 'userIds' => $selectedIds));
+        } else if ($action == 'sendmail') {
+            return new JsonResponse([
+                'redirect' => $this->generateUrl('commsy_user_sendmultiple', array('roomId' => $roomId, 'userIds' => $selectedIds)),
+            ]);
         } else if ($action == 'user-delete') {
             if ($this->contextHasModerators($roomId, $selectedIds)) {
                 foreach ($selectedIds as $id) {
