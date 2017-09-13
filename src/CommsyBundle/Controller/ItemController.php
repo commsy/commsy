@@ -356,6 +356,12 @@ class ItemController extends Controller
                 $item->setTagListByID($data['categories']);
                 $item->setBuzzwordListByID($data['hashtags']);
 
+                if ($item->getItemType() == CS_TOPIC_TYPE) {
+                    if (empty($itemData)) {
+                        $item->deactivatePath();
+                    }
+                }
+
                 // persist
                 $item->save();
             } else if ($form->get('cancel')->isClicked()) {

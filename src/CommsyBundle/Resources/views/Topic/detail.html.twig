@@ -164,7 +164,7 @@
                     {% if not draft %}
                         {# path #}
                         <div id="path{{ topic.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_topic_editpath', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': topic.contextId, 'itemId': topic.itemId}) }}' }">
-                            {{ macrosTopic.path(topic, true) }}
+                            {{ macrosTopic.path(topic, isLinkedToItems, isLinkedToItems) }}
                         </div>
                     {% endif %}
             
