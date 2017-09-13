@@ -899,7 +899,16 @@ class ItemController extends Controller
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
-        $item->delete();
+        $noModeratorsError = false;
+        if ($item->getItemType() == CS_USER_TYPE) {
+            if (!$this->contextHasModerators($roomId, [$itemId])) {
+                $noModeratorsError = true;
+            }
+        }
+
+        if (!$noModeratorsError) {
+            $item->delete();
+        }
 
         $this->removeItemFromClipboard($itemId);
 
@@ -947,6 +956,26 @@ class ItemController extends Controller
         }
 
         return $this->redirectToRoute($route, array('roomId' => $roomId));
+    }
+
+    private function contextHasModerators($roomId, $selectedIds) {
+        $userService = $this->get('commsy_legacy.user_service');
+        $moderators = $userService->getModeratorsForContext($roomId);
+
+        $moderatorIds = [];
+        foreach ($moderators as $moderator) {
+            $moderatorIds[] = $moderator->getItemId();
+        }
+
+        foreach ($selectedIds as $selectedId) {
+            if (in_array($selectedId, $moderatorIds)) {
+                if(($key = array_search($selectedId, $moderatorIds)) !== false) {
+                    unset($moderatorIds[$key]);
+                }
+            }
+        }
+
+        return !empty($moderatorIds);
     }
 
     /**
