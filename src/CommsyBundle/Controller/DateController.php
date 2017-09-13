@@ -1180,8 +1180,10 @@ class DateController extends Controller
                     $tempDate->setColor($dateItem->getColor());
                     $tempDate->setCalendarId($dateItem->getCalendarId());
                     $tempDate->setWholeDay($dateItem->isWholeDay());
+                    $tempDate->setStartingTime($dateItem->getStartingTime());
+                    $tempDate->setEndingTime($dateItem->getEndingTime());
                     $tempDate->save();
-
+                    
                     // mark as read and noticed by creator
                     $reader_manager = $legacyEnvironment->getReaderManager();
                     $reader_manager->markRead($tempDate->getItemID(), $tempDate->getVersionID());
