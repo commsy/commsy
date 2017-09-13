@@ -44,8 +44,13 @@ class CalendarController extends Controller
             $calendar->setSynctoken(0);
         }
 
+        $translator = $this->get('translator');
+
         $editForm = $this->createForm(CalendarEditType::class, $calendar, [
             'editExternalUrl' => ($roomItem->usersCanSetExternalCalendarsUrl() || $legacyEnvironment->getCurrentUser()->isModerator()),
+            'confirm-delete' => $translator->trans('confirm-delete', array(), 'calendar'),
+            'confirm-delete-cancel' => $translator->trans('confirm-delete-cancel', array(), 'calendar'),
+            'confirm-delete-confirm' => $translator->trans('confirm-delete-confirm', array(), 'calendar'),
         ]);
 
 
