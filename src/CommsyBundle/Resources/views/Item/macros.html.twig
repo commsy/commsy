@@ -82,7 +82,10 @@
                         {% endif %}
                     </div>
 
-                    <a href="#">more</a>
+                    <a class="" href="#" data-cs-unhide-collapsed="{src: '.toggle-files-{{ item.itemId }}'}" data-cs-readmore>
+                        <span class="cs-readmoreless">{{- "read more"|trans({}) -}}</span>
+                    </a>
+
                 </div>
 
                 {# full content #}
@@ -99,10 +102,10 @@
                                                 </div>
                                             </div>
                                         </a>
-                                    {% else %} 
+                                    {% else %}
                                         <div class="uk-clearfix">
                                             <div class="cs-align-center">
-                                                <div class="cs-align-center uk-vertical-align-middle">                        
+                                                <div class="cs-align-center uk-vertical-align-middle">
                                                     <i class="cs-icon-xxl-large  cs-slider {{ macrosUtils.iconClassForFileType(file.extension) }}"></i>
                                                 </div>
                                             </div>
@@ -116,8 +119,11 @@
                             </div>
                         {% endfor %}
                     </div>
-                </div>
 
+                    <a class="" href="#" data-cs-unhide-collapsed="{src: '.toggle-files-{{ item.itemId }}'}" data-cs-readmore>
+                        <span class="cs-readmoreless uk-hidden">{{- "read less"|trans({}) -}}</span>
+                    </a>
+                </div>
             </div>
         {% else %}
             <div class="uk-width-9-10 uk-margin-top-remove">
