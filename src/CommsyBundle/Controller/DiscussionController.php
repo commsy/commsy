@@ -797,7 +797,8 @@ class DiscussionController extends Controller
                 if ($numDots == 0) {
                     // compare against our latest stored position
                     if (sprintf('%1$04d', $newRelativeNumericPosition) <= $position) {
-                        $newRelativeNumericPosition++;
+                        $newRelativeNumericPosition = $position + 1;
+//                        $newRelativeNumericPosition++;
                     }
                 }
             } else {
@@ -810,7 +811,7 @@ class DiscussionController extends Controller
 
                     // compare against our latest stored position
                     if (sprintf('%1$04d', $newRelativeNumericPosition) <= $lastPositionPart) {
-                        $newRelativeNumericPosition++;
+                        $newRelativeNumericPosition = $lastPositionPart + 1;
                     }
                 }
             }
