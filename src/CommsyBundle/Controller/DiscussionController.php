@@ -827,7 +827,6 @@ class DiscussionController extends Controller
 
         $article = $discussionService->getNewArticle();
         $article->setDraftStatus(1);
-        $article->setTitle('['.$translator->trans('insert title').']');
         $article->setDiscussionID($itemId);
         $article->setPosition($newPosition);
         $article->save();
