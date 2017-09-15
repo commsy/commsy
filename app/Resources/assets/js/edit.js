@@ -8,6 +8,8 @@
         'discussion': 'discarticle'
     };
 
+    var draftFormCount = 0;
+
     UI.component('edit', {
 
         defaults: {
@@ -82,9 +84,16 @@
 
                 $this.onClickEdit(this);
             });
+
+            // active form if item is draft
+            $(element).find('div.cs-edit-draft').each(function() {
+                $this.onClickEdit(this);
+            });
         },
 
         onClickEdit: function(el) {
+            draftFormCount++;
+
             let $this = this;
             let article = $(el).parents('.cs-edit-section');
 
@@ -119,12 +128,11 @@
 
             // override form submit behaviour
             article.find('button').click(function (event) {
-                event.preventDefault ? event.preventDefault() : (event.returnValue = false);
-
                 let $button = $(this);
 
                 // cancel is not handled via ajax
                 if ($button.attr('name').indexOf('cancel') > -1) {
+                    event.preventDefault ? event.preventDefault() : (event.returnValue = false);
                     /*
                     // cancel editing a NEW entry => return to list view
                     if($("#breadcrumb-nav .current.last").text().trim() == "") {
@@ -167,6 +175,25 @@
                     if (!$button.attr('name').indexOf('newHashtagAdd') > -1) {
                         let form = $(this).closest('form');
                         if (form[0].checkValidity()) {
+                            event.preventDefault ? event.preventDefault() : (event.returnValue = false);
+
+                            if($('#date_start_date').length > 0){
+                                var dateArray = $('#date_start_date').val().split('.');
+                                if (dateArray.length == 3) {
+                                    if (dateArray[2].length == 2) {
+                                        $('#date_start_date').val(dateArray[0]+'.'+dateArray[1]+'.20'+dateArray[2]);
+                                    }
+                                }
+                            }
+
+                            if($('#date_end_date').length > 0){
+                                var dateArray = $('#date_end_date').val().split('.');
+                                if (dateArray.length == 3) {
+                                    if (dateArray[2].length == 2) {
+                                        $('#date_end_date').val(dateArray[0]+'.'+dateArray[1]+'.20'+dateArray[2]);
+                                    }
+                                }
+                            }
 
                             if($('#date_start_time').length > 0){
                                 $('#date_start_time').prop('disabled', false);
@@ -191,7 +218,11 @@
                                         article.html($result);
                                         $this.handleFormSubmit(article);
                                     } else {
-                                        window.location.reload(true);
+                                        article.html($result);
+                                        draftFormCount--;
+                                        if (draftFormCount == 0) {
+                                            window.location.reload(true);
+                                        }
                                     }
                                 });
                         }
@@ -224,5 +255,23 @@
             }
         });
     });
+
+    $('#draft-save-combine-link').on('click', function(event){
+        event.preventDefault ? event.preventDefault() : (event.returnValue = false);
+        $(this).parents('article').find('form').each(function(){
+            let button = $(this).find('.uk-button-primary');
+            if (button.length) {
+                button.click();
+            }
+        });
+    });
+
+    $('#draft-cancel-link').on('click', function(event){
+        event.preventDefault ? event.preventDefault() : (event.returnValue = false);
+        let pathParts = window.location.pathname.split("/");
+        pathParts.pop();
+        window.location.href = pathParts.join("/");
+    });
+
 
 })(UIkit);

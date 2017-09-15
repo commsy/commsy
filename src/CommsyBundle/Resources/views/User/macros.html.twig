@@ -1,4 +1,4 @@
-{% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) %}
+{% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, isSelf) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
     {% set pathName = '' %}
     {% if item.itemType == 'user' %}
@@ -23,7 +23,7 @@
                 </div>        
                 <div class="uk-width-2-10 uk-text-right">
                     {# edit #}
-                    {% if is_granted('ITEM_EDIT', item.itemId) %}
+                    {% if is_granted('ITEM_EDIT', item.itemId) and isSelf %}
                         {{ macros.actionIcons('title', item, true) }}
                         {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
                     {% else %}
@@ -305,7 +305,7 @@
    </div>
 {% endmacro %}
 
-{% macro titleSave(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) %}
+{% macro titleSave(item, modifierList, userCount, readCount, readSinceModificationCount, draft, isSelf) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
     {% set pathName = '' %}
     {% if item.itemType == 'user' %}
@@ -329,7 +329,7 @@
             </div>        
             <div class="uk-width-2-10 uk-text-right">
                 {# edit #}
-                {% if is_granted('ITEM_EDIT', item.itemId) %}
+                {% if is_granted('ITEM_EDIT', item.itemId) and isSelf %}
                     {{ macros.actionIcons('title', item, true) }}
                     {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
                 {% else %}

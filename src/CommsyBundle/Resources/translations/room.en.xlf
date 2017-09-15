@@ -59,8 +59,8 @@
                 <target>Latest entries in this room</target>
             </trans-unit>
             <trans-unit id="16">
-                <source>latest entries from all rooms</source>
-                <target>Latest entries from all rooms</target>
+                <source>latest entries from my rooms</source>
+                <target>Latest entries from my rooms</target>
             </trans-unit>
             <trans-unit id="17">
                 <source>no hashtags</source>
@@ -78,9 +78,17 @@
                 <source>All rooms</source>
                 <target>All rooms</target>
             </trans-unit>
+            <trans-unit id="list-all-rooms">
+                <source>List all rooms</source>
+                <target>List all rooms</target>
+            </trans-unit>
             <trans-unit id="room-my-rooms">
                 <source>My rooms</source>
                 <target>My rooms</target>
+            </trans-unit>
+            <trans-unit id="list-my-rooms">
+                <source>List my rooms</source>
+                <target>List my rooms</target>
             </trans-unit>
             <trans-unit id="room-filter-label-membership">
                 <source>Membership</source>
@@ -145,6 +153,18 @@
             <trans-unit id="hide-without-membership">
                 <source>hide-rooms-without-membership</source>
                 <target>Hide rooms without membership</target>
+            </trans-unit>
+            <trans-unit id="search-filter">
+                <source>search-filter</source>
+                <target>Search</target>
+            </trans-unit>
+            <trans-unit id="search-filter-placeholder">
+                <source>search-filter-placeholder</source>
+                <target>title, moderator, description</target>
+            </trans-unit>
+            <trans-unit id="search-user-filter-placeholder">
+                <source>search-user-filter-placeholder</source>
+                <target>firstname, lastname</target>
             </trans-unit>
             <trans-unit id="room_support_label">
                 <source>Support:</source>

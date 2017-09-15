@@ -404,7 +404,7 @@
 {% endmacro %}
 
 
-{% macro grouproom(item, roomId, userIsGroupMember, roomMemberStatus) %}
+{% macro grouproom(item, roomId, userIsGroupMember, roomMemberStatus, draft) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
     <div id="grouproom{{ item.itemId }}" class="cs-edit-section cs-toggle" data-cs-edit="{editUrl: '{{ path('commsy_group_editgrouproom', {'roomId': item.contextId, 'itemId': item.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': item.contextId, 'itemId': item.itemId}) }}'}">
         <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
@@ -472,7 +472,7 @@
                 <div class="uk-width-2-10 uk-text-right">
                     {# edit #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
-                        {{ macros.actionIcons('editgrouproom', item, true) }}
+                        {{ macros.actionIcons('editgrouproom', item, true, draft) }}
                         {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
                     {% endif %}
                 </div>

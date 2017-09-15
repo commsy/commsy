@@ -72,6 +72,8 @@ class DiscussionController extends Controller
         // get discussion list from manager service
         $discussions = $discussionService->getListDiscussions($roomId, $max, $start, $sort);
 
+        $this->get('session')->set('sortDiscussions', $sort);
+
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
@@ -167,10 +169,10 @@ class DiscussionController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/discussion/print")
+     * @Route("/room/{roomId}/discussion/print/{sort}", defaults={"sort" = "none"})
      * @Template()
      */
-    public function printlistAction($roomId, Request $request)
+    public function printlistAction($roomId, Request $request, $sort)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         
@@ -191,6 +193,7 @@ class DiscussionController extends Controller
 
         // get the material manager service
         $discussionService = $this->get('commsy_legacy.discussion_service');
+        $numAllDiscussions = $discussionService->getCountArray($roomId)['countAll'];
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -199,8 +202,16 @@ class DiscussionController extends Controller
             $discussionService->setFilterConditions($filterForm);
         }
 
-        // get material list from manager service 
-        $discussions = $discussionService->getListDiscussions($roomId);
+        // get discussion list from manager service
+        if ($sort != "none") {
+            $discussions = $discussionService->getListDiscussions($roomId, $numAllDiscussions, 0, $sort);
+        }
+        elseif ($this->get('session')->get('sortDates')) {
+            $discussions = $discussionService->getListDiscussions($roomId, $numAllDiscussions, 0, $this->get('session')->get('sortDiscussions'));
+        }
+        else {
+            $discussions = $discussionService->getListDiscussions($roomId, $numAllDiscussions, 0, 'date');
+        }
 
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -567,7 +578,7 @@ class DiscussionController extends Controller
         $selectAllStart = $request->request->get('selectAllStart');
         
         if ($selectAll == 'true') {
-            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $request);
+            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $sort = 'date', $request);
             foreach ($entries['discussions'] as $key => $value) {
                 $selectedIds[] = $value->getItemId();
             }
@@ -816,7 +827,6 @@ class DiscussionController extends Controller
 
         $article = $discussionService->getNewArticle();
         $article->setDraftStatus(1);
-        $article->setTitle('['.$translator->trans('insert title').']');
         $article->setDiscussionID($itemId);
         $article->setPosition($newPosition);
         $article->save();
@@ -1130,6 +1140,9 @@ class DiscussionController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.discussion');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($itemId);
+
         $translator = $this->get('translator');
 
         // get section
@@ -1147,6 +1160,11 @@ class DiscussionController extends Controller
             if ($form->get('save')->isClicked()) {
                 // update title
                 $article->setTitle($form->getData()['title']);
+
+                if ($item->isDraft()) {
+                    $item->setDraftStatus(0);
+                    $item->saveAsItem();
+                }
 
                 // update modifier
                 $article->setModificatorItem($legacyEnvironment->getCurrentUserItem());

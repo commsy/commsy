@@ -386,6 +386,10 @@
                 <source>external_viewer_desc</source>
                 <target>You can provide a white-space separated list of usernames to grant access on this entry.</target>
             </trans-unit>
+            <trans-unit id="create entry">
+                <source>create entry</source>
+                <target>Create entry</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

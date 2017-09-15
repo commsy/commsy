@@ -286,7 +286,7 @@
             </trans-unit>
             <trans-unit id="profile_image_description">
                 <source>profileImageDescription</source>
-                <target>Ihr Profilbild wird neben Ihren Einträgen und Kommentaren im Raum "%s" angezeigt. Sie können für jeden Raum, in dem Sie Mitglied sind, ein eigenes Profilbild auswählen oder es über Option "in allen Räumen ändern" global konfigurieren.</target>
+                <target>Ihr Profilbild wird neben Ihren Einträgen und Kommentaren im Raum "%s" angezeigt. Sie können für jeden Raum, in dem Sie Mitglied sind, ein eigenes Profilbild auswählen oder es über Option "in allen Räumen ändern" global konfigurieren. Falls Sie kein eigenes Profilbild hochladen, werden stattdessen Ihre Initialen angezeigt.</target>
             </trans-unit>
             <trans-unit id="language_description">
                 <source>languageDescription</source>
@@ -392,7 +392,11 @@
             </trans-unit>
             <trans-unit id="profile_image_tip">
                 <source>Profile image tip</source>
-                <target>Wählen Sie ein ungefähr quadratisches Bild mit einer Mindesauflösung von 300x300 Pixeln!</target>
+                <target>Wählen Sie ein ungefähr quadratisches Bild mit einer Mindesauflösung von 200x200 Pixeln!</target>
+            </trans-unit>
+            <trans-unit id="use_profile_image">
+                <source>Use profile image</source>
+                <target>Eigenes Profilbild verwenden</target>
             </trans-unit>
         </body>
     </file>

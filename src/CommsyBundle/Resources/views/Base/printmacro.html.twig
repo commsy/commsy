@@ -308,7 +308,7 @@
 
                 {# preview #}
                 <div>
-                    {{ content|decodeHtmlEntity }}
+                    {{ content|raw }}
                 </div>
 
             </div>
@@ -535,7 +535,7 @@
 
                 {# full content #}
                 <div>
-                    {{ content|decodeHtmlEntity }}
+                    {{ content|raw }}
                 </div>
 
             </div>
@@ -544,7 +544,7 @@
                 
                 {% if not content is empty %}
                     <div>
-                        {{ content|decodeHtmlEntity }}
+                        {{ content|raw }}
                     </div>
                 {% else %}
                     <div>

@@ -5,6 +5,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class UserFilterType extends AbstractType
 {
@@ -19,6 +20,18 @@ class UserFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('user_search', TextType::class, [
+                'label' => 'search-filter',
+                'translation_domain' => 'room',
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+                'attr' => [
+                    'placeholder' => 'search-user-filter-placeholder',
+                    'class' => 'cs-form-horizontal-full-width',
+                ],
+            ])
+
             ->add('rubrics', RubricFilterType::class, array(
                 'label' => false,
             ))

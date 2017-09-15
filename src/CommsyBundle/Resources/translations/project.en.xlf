@@ -26,6 +26,10 @@
                 <source>Room description...</source>
                 <target>Room description...</target>
             </trans-unit>
+            <trans-unit id="delete">
+                <source>delete</source>
+                <target>Delete project room</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

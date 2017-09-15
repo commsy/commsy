@@ -77,6 +77,8 @@ class DateController extends Controller
         // get material list from manager service
         $dates = $dateService->getListDates($roomId, $max, $start, $sort);
 
+        $this->get('session')->set('sortDates', $sort);
+
         $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();
@@ -305,9 +307,9 @@ class DateController extends Controller
     }
 
        /**
-     * @Route("/room/{roomId}/date/print")
+     * @Route("/room/{roomId}/date/print/{sort}", defaults={"sort" = "none"})
      */
-    public function printlistAction($roomId, Request $request)
+    public function printlistAction($roomId, Request $request, $sort)
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
@@ -320,6 +322,7 @@ class DateController extends Controller
 
         // get the date manager service
         $dateService = $this->get('commsy_legacy.date_service');
+        $numAllDates = $dateService->getCountArray($roomId)['countAll'];
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -331,7 +334,15 @@ class DateController extends Controller
         }
 
         // get date list from manager service
-        $dates = $dateService->getListDates($roomId, $max = null, $start = 0, $sort = 'date');
+        if ($sort != "none") {
+            $dates = $dateService->getListDates($roomId, $numAllDates, 0, $sort);
+        }
+        elseif ($this->get('session')->get('sortDates')) {
+            $dates = $dateService->getListDates($roomId, $numAllDates, 0, $this->get('session')->get('sortDates'));
+        }
+        else {
+            $dates = $dateService->getListDates($roomId, $numAllDates, 0, 'date');
+        }
 
         $readerService = $this->get('commsy_legacy.reader_service');
 
@@ -765,7 +776,9 @@ class DateController extends Controller
 
         $listDates = array();
         foreach ($userList as $tempUser) {
-            $listDates = array_merge($listDates, $dateService->getCalendarEvents($tempUser->getContextId(), $_GET['start'], $_GET['end']));
+            if ($tempUser->getStatus() >= 2) {
+                $listDates = array_merge($listDates, $dateService->getCalendarEvents($tempUser->getContextId(), $_GET['start'], $_GET['end']));
+            }
         }
 
         $events = array();
@@ -1167,7 +1180,16 @@ class DateController extends Controller
                     $tempDate->setColor($dateItem->getColor());
                     $tempDate->setCalendarId($dateItem->getCalendarId());
                     $tempDate->setWholeDay($dateItem->isWholeDay());
+                    $tempDate->setStartingTime($dateItem->getStartingTime());
+                    $tempDate->setEndingTime($dateItem->getEndingTime());
                     $tempDate->save();
+                    
+                    // mark as read and noticed by creator
+                    $reader_manager = $legacyEnvironment->getReaderManager();
+                    $reader_manager->markRead($tempDate->getItemID(), $tempDate->getVersionID());
+
+                    $noticed_manager = $legacyEnvironment->getNoticedManager();
+                    $noticed_manager->markNoticed($tempDate->getItemID(), $tempDate->getVersionID());
                 }
             } else {
                 // ToDo ...
@@ -1503,6 +1525,14 @@ class DateController extends Controller
                 $tempDate->setRecurrenceId($dateItem->getItemID());
                 $tempDate->setRecurrencePattern($recurringPatternArray);
                 $tempDate->save();
+
+                // mark as read and noticed by creator
+                $reader_manager = $legacyEnvironment->getReaderManager();
+                $reader_manager->markRead($tempDate->getItemID(), $tempDate->getVersionID());
+
+                $noticed_manager = $legacyEnvironment->getNoticedManager();
+                $noticed_manager->markNoticed($tempDate->getItemID(), $tempDate->getVersionID());
+
             }
             $dateItem->setRecurrenceId($dateItem->getItemID());
             $dateItem->setRecurrencePattern($recurringPatternArray);
@@ -1530,6 +1560,14 @@ class DateController extends Controller
                 if(in_array('color',$valuesToChange)){
                     $tempDate->setColor($dateItem->getColor());
                 }
+
+                // mark as read and noticed by creator
+                $reader_manager = $legacyEnvironment->getReaderManager();
+                $reader_manager->markRead($tempDate->getItemID(), $tempDate->getVersionID());
+
+                $noticed_manager = $legacyEnvironment->getNoticedManager();
+                $noticed_manager->markNoticed($tempDate->getItemID(), $tempDate->getVersionID());
+
                 //$tempDate->save();
                 $tempDate = $datesList->getNext();
             }

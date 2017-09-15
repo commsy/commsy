@@ -164,6 +164,8 @@ class TodoController extends Controller
         // get todo list from manager service 
         $todos = $todoService->getListTodos($roomId, $max, $start, $sort);
 
+        $this->get('session')->set('sortTodos', $sort);
+
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
@@ -940,9 +942,9 @@ class TodoController extends Controller
     }
     
     /**
-     * @Route("/room/{roomId}/todo/print")
+     * @Route("/room/{roomId}/todo/print/{sort}", defaults={"sort" = "none"})
      */
-    public function printlistAction($roomId, Request $request)
+    public function printlistAction($roomId, Request $request, $sort)
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
@@ -961,6 +963,7 @@ class TodoController extends Controller
 
         // get the announcement manager service
         $todoService = $this->get('commsy_legacy.todo_service');
+        $numAllTodos = $todoService->getCountArray($roomId)['countAll'];
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -969,8 +972,16 @@ class TodoController extends Controller
             $todoService->setFilterConditions($filterForm);
         }
 
-        // get announcement list from manager service 
-        $todos = $todoService->getListTodos($roomId);
+        // get todo list from manager service
+        if ($sort != "none") {
+            $todos = $todoService->getListTodos($roomId, $numAllTodos, 0, $sort);
+        }
+        elseif ($this->get('session')->get('sortTodos')) {
+            $todos = $todoService->getListTodos($roomId, $numAllTodos, 0, $this->get('session')->get('sortTodos'));
+        }
+        else {
+            $todos = $todoService->getListTodos($roomId, $numAllTodos, 0, 'date');
+        }
 
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();

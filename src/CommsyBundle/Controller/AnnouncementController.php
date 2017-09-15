@@ -71,6 +71,8 @@ class AnnouncementController extends Controller
         // get announcement list from manager service 
         $announcements = $announcementService->getListAnnouncements($roomId, $max, $start, $sort);
 
+        $this->get('session')->set('sortAnnouncements', $sort);
+
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
@@ -228,9 +230,9 @@ class AnnouncementController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/announcement/print")
+     * @Route("/room/{roomId}/announcement/print/{sort}", defaults={"sort" = "none"})
      */
-    public function printlistAction($roomId, Request $request)
+    public function printlistAction($roomId, Request $request, $sort)
     {
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
@@ -249,6 +251,7 @@ class AnnouncementController extends Controller
 
         // get the announcement manager service
         $announcementService = $this->get('commsy_legacy.announcement_service');
+        $numAllAnnouncements = $announcementService->getCountArray($roomId)['countAll'];
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -261,7 +264,15 @@ class AnnouncementController extends Controller
         }
 
         // get announcement list from manager service 
-        $announcements = $announcementService->getListAnnouncements($roomId);
+        if ($sort != "none") {
+            $announcements = $announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, $sort);
+        }
+        elseif ($this->get('session')->get('sortAnnouncements')) {
+            $announcements = $announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, $this->get('session')->get('sortAnnouncements'));
+        }
+        else {
+            $announcements = $announcementService->getListAnnouncements($roomId, $numAllAnnouncements, 0, 'date');
+        }
 
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -620,7 +631,7 @@ class AnnouncementController extends Controller
         // $announcementItem->setTitle('['.$translator->trans('insert title').']');
         $dateTime = new \DateTime('now');
         $announcementItem->setFirstDateTime($dateTime->format('Y-m-d H:i:s'));
-        $dateTime->add(new \DateInterval('P1W'));
+        $dateTime->add(new \DateInterval('P2W'));
         $announcementItem->setSecondDateTime($dateTime->format('Y-m-d H:i:s'));
         $announcementItem->setDraftStatus(1);
         $announcementItem->setPrivateEditing(1);
@@ -813,6 +824,7 @@ class AnnouncementController extends Controller
                     $annotationItem = $annotationList->getFirst();
                     while($annotationItem){
                        $noticedManager->markNoticed($annotationItem->getItemID(),'0');
+                       $readerManager->markRead($annotationItem->getItemId(), '0');
                        $annotationItem = $annotationList->getNext();
                     }
                 }

@@ -2,9 +2,9 @@
 {% import 'CommsyBundle:Base:printmacro.html.twig' as macros %}
 
 <div class="">
- 
+
     <div>
-       {% if not linkedItemsByRubric is empty %} 
+       {% if not linkedItemsByRubric is empty %}
             <div >
                 {% for type,rubric in linkedItemsByRubric %}
                     <div class="">
@@ -13,14 +13,14 @@
                     <div>
                         <ul class="uk-list uk-margin-bottom-remove">
                         {% for linkedItem in rubric [0:10] %}
-                            <li>{{ linkedItem.title|decodeHtmlEntity }}
+                            <li>{{ linkedItem.title|raw }}
                         {% endfor %}
                         </ul>
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            {{ 'no linked items'|trans({}, "room")}}    
-        {% endif %}  
+            {{ 'no linked items'|trans({}, "room")}}
+        {% endif %}
     </div>
 </div>

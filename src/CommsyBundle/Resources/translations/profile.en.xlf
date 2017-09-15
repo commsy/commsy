@@ -286,7 +286,7 @@
             </trans-unit>
             <trans-unit id="profile_image_description">
                 <source>profileImageDescription</source>
-                <target>Your profile picture is displayed next to your comments in room "%s". For every room that are a member of you can choose an individual profile picture. Alternatively, you can use the "change in all rooms" option to set your profile picture globally.</target>
+                <target>Your profile picture is displayed next to your comments in room "%s". For every room that are a member of you can choose an individual profile picture. Alternatively, you can use the "change in all rooms" option to set your profile picture globally. If you do not upload a custom profile image your initials will be shown instead.</target>
             </trans-unit>
             <trans-unit id="language_description">
                 <source>languageDescription</source>
@@ -394,7 +394,11 @@
             </trans-unit>
             <trans-unit id="profile_image_tip">
                 <source>Profile image tip</source>
-                <target>For best results, chose an image with side ratio of approximately 1:1 and a resolution of at least 300x300 pixel!</target>
+                <target>For best results, chose an image with side ratio of approximately 1:1 and a resolution of at least 200x200 pixel!</target>
+            </trans-unit>
+            <trans-unit id="use_profile_image">
+                <source>Use profile image</source>
+                <target>Use custom profile image</target>
             </trans-unit>
          </body>
     </file>

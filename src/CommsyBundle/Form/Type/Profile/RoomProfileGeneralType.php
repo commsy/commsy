@@ -54,6 +54,12 @@ class RoomProfileGeneralType extends AbstractType
             ))
             ->add('image_data', HiddenType::class, array(
             ))
+            ->add('useProfileImage', CheckboxType::class, array(
+                'required' => false,
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+            ))
             ->add('imageChangeInAllContexts', CheckboxType::class, array(
                 'label'    => 'changeInAllContexts',
                 'required' => false,

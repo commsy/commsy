@@ -113,7 +113,12 @@ class CommsyBreadcrumbListener
 
             // rubric only
             else {
-                $this->breadcrumbs->addItem($this->translator->trans($controller, [], 'menu'));
+                if ($controller == 'room' && $action == 'listall') {
+                    $this->breadcrumbs->addItem($this->translator->trans('All rooms', [], 'room'));
+                }
+                else {
+                    $this->breadcrumbs->addItem($this->translator->trans($controller, [], 'menu'));
+                }
             }
         }
     }

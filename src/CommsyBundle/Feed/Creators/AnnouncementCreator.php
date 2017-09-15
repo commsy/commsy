@@ -13,7 +13,7 @@ class AnnouncementCreator extends Creator
 
     public function getTitle($item)
     {
-        return $this->translator->trans('Announcement: %title%: %title%', ['%title%' => $item->getTitle()], 'rss');
+        return $this->translator->trans('Announcement: %title%', ['%title%' => $item->getTitle()], 'rss');
     }
 
     public function getDescription($item)
