@@ -400,6 +400,18 @@
                 <source>Use profile image</source>
                 <target>Use custom profile image</target>
             </trans-unit>
+            <trans-unit id="email_notifications">
+                <source>e-mail notifications</source>
+                <target>E-mail notifications</target>
+            </trans-unit>
+            <trans-unit id="email_notification_registration">
+                <source>E-mail at registration</source>
+                <target>E-mail at registration</target>
+            </trans-unit>
+            <trans-unit id="email_notification_new_workspace">
+                <source>E-mail when a workspace is created</source>
+                <target>E-mail when a workspace is created</target>
+            </trans-unit>
          </body>
     </file>
 </xliff>

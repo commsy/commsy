@@ -357,9 +357,15 @@ services:
         tags:
             - { name: form.type }
 
+    commsy.form.type.profile_newsletter:
+        class: CommsyBundle\Form\Type\Profile\ProfileNewsletterType
+        arguments: ['@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
     commsy.form.type.profile_notifications:
-        class: CommsyBundle\Form\Type\Profile\ProfileNotificationsType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        class: CommsyBundle\Form\Type\Profile\RoomProfileNotificationsType
+        arguments: ['@commsy_legacy.environment']
         tags:
             - { name: form.type }
 

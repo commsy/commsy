@@ -7,21 +7,19 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-
-use Doctrine\ORM\EntityManager;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
-class ProfileNotificationsType extends AbstractType
+class ProfileNewsletterType extends AbstractType
 {
     private $em;
     private $legacyEnvironment;
 
     private $userItem;
 
-    public function __construct(EntityManager $em, LegacyEnvironment $legacyEnvironment)
+    public function __construct(LegacyEnvironment $legacyEnvironment)
     {
-        $this->em = $em;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -51,7 +49,6 @@ class ProfileNotificationsType extends AbstractType
                 'label'    => 'newsletterStatus',
                 'required' => false,
             ))
-            
             ->add('save', SubmitType::class, array(
                 'label' => 'save',
                 'translation_domain' => 'form',
