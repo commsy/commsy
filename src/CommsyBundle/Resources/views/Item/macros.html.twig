@@ -56,14 +56,14 @@
                                             {% if file.extension|lower == 'jpg' or file.extension|lower == 'jpeg' or file.extension|lower == 'png' or file.extension|lower == 'gif' %}
                                                 <a class="uk-margin-remove" href="{{ path('commsy_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" data-uk-lightbox="{group:{{ item.itemId }}}" data-lightbox-type="image">
                                                     <div class="uk-clearfix">
-                                                        <div class="cs-align-center" data-uk-tooltip title="{{ file.filename}} ({{ file.fileSize }} kb)">
+                                                        <div class="cs-align-center" data-uk-tooltip="{pos:'top-left'}" title="{{ file.filename}} ({{ file.fileSize }} kb)">
                                                             <img class="cs-align-center cs-slider" style="height:28px;" src="{{ path('commsy_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" />
                                                         </div>
                                                     </div>
                                                 </a>
                                             {% else %} 
                                                 <div class="uk-clearfix">
-                                                    <div class="cs-align-center"  data-uk-tooltip title="{{ file.filename}} ({{ file.fileSize }} kb)">
+                                                    <div class="cs-align-center" data-uk-tooltip="{pos:'top-left'}" title="{{ file.filename}} ({{ file.fileSize }} kb)">
                                                         <div class="cs-align-center uk-vertical-align-middle">                        
                                                             <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" ><i class="cs-icon-medium  cs-slider {{ macrosUtils.iconClassForFileType(file.extension) }}"></i></a>
                                                         </div>
@@ -111,8 +111,8 @@
                                             </div>
                                         </div>
                                     {% endif %}
-                                    <div class="uk-vertical-align-middle">
-                                        <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}">{{ file.filename|truncate(20) }}</a><br/>
+                                    <div class="uk-vertical-align-middle" data-uk-tooltip="{pos:'top-left'}" title="{{ file.filename }}">
+                                        <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}">{{ file.filename|truncate(20) }}</a><br/>
                                         ({{ file.fileSize }} kb)
                                     </div>
                                 </div>
