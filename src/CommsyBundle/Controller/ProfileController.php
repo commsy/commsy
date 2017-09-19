@@ -13,15 +13,15 @@ use CommsyBundle\Entity\User;
 use CommsyBundle\Form\Type\Profile\RoomProfileGeneralType;
 use CommsyBundle\Form\Type\Profile\RoomProfileAddressType;
 use CommsyBundle\Form\Type\Profile\RoomProfileContactType;
+use CommsyBundle\Form\Type\Profile\RoomProfileNotificationsType;
 use CommsyBundle\Form\Type\Profile\DeleteType;
 use CommsyBundle\Form\Type\Profile\ProfileAccountType;
 use CommsyBundle\Form\Type\Profile\ProfileChangePasswordType;
 use CommsyBundle\Form\Type\Profile\ProfileMergeAccountsType;
-use CommsyBundle\Form\Type\Profile\ProfileNotificationsType;
+use CommsyBundle\Form\Type\Profile\ProfileNewsletterType;
 use CommsyBundle\Form\Type\Profile\ProfileCalendarsType;
 use CommsyBundle\Form\Type\Profile\ProfileAdditionalType;
 use CommsyBundle\Form\Type\Profile\ProfilePersonalInformationType;
-
 
 class ProfileController extends Controller
 {
@@ -261,6 +261,46 @@ class ProfileController extends Controller
     }
 
     /**
+    * @Route("/room/{roomId}/user/{itemId}/notifications")
+    * @Template
+    * @Security("is_granted('ITEM_EDIT', itemId)")
+    */
+    public function notificationsAction($roomId, $itemId, Request $request)
+    {
+        $userService = $this->get('commsy_legacy.user_service');
+        $userItem = $userService->getUser($itemId);
+        $userData = [];
+
+        $userData['mail_account'] = $userItem->getAccountWantMail() === 'yes' ? true : false;
+        $userData['mail_room'] = $userItem->getOpenRoomWantMail() === 'yes' ? true : false;
+
+        $form = $this->createForm(RoomProfileNotificationsType::class, $userData, array(
+            'itemId' => $itemId,
+        ));
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $formData = $form->getData();
+            if($formData['mail_account']) {
+                $userItem->setAccountWantMail('yes');
+            } else {
+                $userItem->setAccountWantMail('no');
+            }
+
+            if($formData['mail_room']) {
+                $userItem->setOpenRoomWantMail('yes');
+            } else {
+                $userItem->setOpenRoomWantMail('no');
+            }
+            $userItem->save();
+        }
+
+        return array(
+            'form' => $form->createView(),
+        );
+    }
+
+    /**
     * @Route("/room/{roomId}/user/{itemId}/personal")
     * @Template
     * @Security("is_granted('ITEM_EDIT', itemId)")
@@ -432,11 +472,11 @@ class ProfileController extends Controller
     }
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/notifications")
+    * @Route("/room/{roomId}/user/{itemId}/newsletter")
     * @Template
     * @Security("is_granted('ITEM_EDIT', itemId)")
     */
-    public function notificationsAction($roomId, $itemId, Request $request)
+    public function newsletterAction($roomId, $itemId, Request $request)
     {
         $userTransformer = $this->get('commsy_legacy.transformer.user');
         $userService = $this->get('commsy_legacy.user_service');
@@ -451,7 +491,7 @@ class ProfileController extends Controller
 
         $userData = array_merge($userData, $privateRoomData);
 
-        $form = $this->createForm(ProfileNotificationsType::class, $userData, array(
+        $form = $this->createForm(ProfileNewsletterType::class, $userData, array(
             'itemId' => $itemId,
         ));
 

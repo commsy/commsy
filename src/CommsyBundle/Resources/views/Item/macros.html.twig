@@ -42,7 +42,7 @@
                 {# preview #}
                 <div class="toggle-files-{{ item.itemId }} cs-toggle-preview-small">
                     {% if fileArray|length > 10 %}
-                        <div class="uk-slidenav-position uk-margin-top uk-margin-bottom" data-uk-slider="{infinite: false}">
+                        <div class="uk-slidenav-position uk-margin-top uk-margin-bottom" data-uk-slider="{infinite: true}">
                             <div class="uk-slider-container">
                                 <ul class="uk-slider uk-grid uk-grid-width-medium-1-10">
                     {% else %}
@@ -56,14 +56,14 @@
                                             {% if file.extension|lower == 'jpg' or file.extension|lower == 'jpeg' or file.extension|lower == 'png' or file.extension|lower == 'gif' %}
                                                 <a class="uk-margin-remove" href="{{ path('commsy_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" data-uk-lightbox="{group:{{ item.itemId }}}" data-lightbox-type="image">
                                                     <div class="uk-clearfix">
-                                                        <div class="cs-align-center" data-uk-tooltip title="{{ file.filename}} ({{ file.fileSize }} kb)">
+                                                        <div class="cs-align-center" data-uk-tooltip="{pos:'top-left'}" title="{{ file.filename}} ({{ file.fileSize }} kb)">
                                                             <img class="cs-align-center cs-slider" style="height:28px;" src="{{ path('commsy_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" />
                                                         </div>
                                                     </div>
                                                 </a>
                                             {% else %} 
                                                 <div class="uk-clearfix">
-                                                    <div class="cs-align-center"  data-uk-tooltip title="{{ file.filename}} ({{ file.fileSize }} kb)">
+                                                    <div class="cs-align-center" data-uk-tooltip="{pos:'top-left'}" title="{{ file.filename}} ({{ file.fileSize }} kb)">
                                                         <div class="cs-align-center uk-vertical-align-middle">                        
                                                             <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" ><i class="cs-icon-medium  cs-slider {{ macrosUtils.iconClassForFileType(file.extension) }}"></i></a>
                                                         </div>
@@ -82,7 +82,10 @@
                         {% endif %}
                     </div>
 
-                    <a href="#">more</a>
+                    <a class="" href="#" data-cs-unhide-collapsed="{src: '.toggle-files-{{ item.itemId }}'}" data-cs-readmore>
+                        <span class="cs-readmoreless">{{- "read more"|trans({}) -}}</span>
+                    </a>
+
                 </div>
 
                 {# full content #}
@@ -99,25 +102,28 @@
                                                 </div>
                                             </div>
                                         </a>
-                                    {% else %} 
+                                    {% else %}
                                         <div class="uk-clearfix">
                                             <div class="cs-align-center">
-                                                <div class="cs-align-center uk-vertical-align-middle">                        
+                                                <div class="cs-align-center uk-vertical-align-middle">
                                                     <i class="cs-icon-xxl-large  cs-slider {{ macrosUtils.iconClassForFileType(file.extension) }}"></i>
                                                 </div>
                                             </div>
                                         </div>
                                     {% endif %}
-                                    <div class="uk-vertical-align-middle">
-                                        <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}">{{ file.filename|truncate(20) }}</a><br/>
+                                    <div class="uk-vertical-align-middle" data-uk-tooltip="{pos:'top-left'}" title="{{ file.filename }}">
+                                        <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}">{{ file.filename|truncate(20) }}</a><br/>
                                         ({{ file.fileSize }} kb)
                                     </div>
                                 </div>
                             </div>
                         {% endfor %}
                     </div>
-                </div>
 
+                    <a class="" href="#" data-cs-unhide-collapsed="{src: '.toggle-files-{{ item.itemId }}'}" data-cs-readmore>
+                        <span class="cs-readmoreless uk-hidden">{{- "read less"|trans({}) -}}</span>
+                    </a>
+                </div>
             </div>
         {% else %}
             <div class="uk-width-9-10 uk-margin-top-remove">

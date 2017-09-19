@@ -511,6 +511,7 @@ class UserController extends Controller
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
@@ -526,6 +527,11 @@ class UserController extends Controller
         if ($request->query->get('path')) {
             $topicService = $this->get('commsy_legacy.topic_service');
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
+        }
+
+        $isSelf = false;
+        if ($legacyEnvironment->getCurrentUserItem()->getItemId() == $itemId) {
+            $isSelf = true;
         }
 
         return array(
@@ -553,6 +559,7 @@ class UserController extends Controller
             'status' => $infoArray['status'],
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
+            'isSelf' => $isSelf,
        );
     }
 

@@ -97,14 +97,14 @@ class MenuBuilder
                 ->setExtra('translation_domain', 'profile');
             }
 
-            $menu->addChild('notifications', [
-                'route' => 'commsy_profile_notifications',
+            $menu->addChild('newsletter', [
+                'route' => 'commsy_profile_newsletter',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
                     'itemId' => $currentUser->getItemId(),
                 ],
                 'extras' => [
-                    'icon' => 'uk-icon-envelope uk-icon-small uk-icon-justify',
+                    'icon' => 'uk-icon-newspaper-o uk-icon-small uk-icon-justify',
                     'user' => $currentUser,
                 ]
             ])
@@ -212,6 +212,21 @@ class MenuBuilder
                 ]
             ])
             ->setExtra('translation_domain', 'menu');
+
+            if ($this->authorizationChecker->isGranted('MODERATOR')) {
+                $menu->addChild('notifications', [
+                    'route' => 'commsy_profile_notifications',
+                    'routeParameters' => [
+                        'roomId' => $currentStack->attributes->get('roomId'),
+                        'itemId' => $currentUser->getItemId(),
+                    ],
+                    'extras' => [
+                        'icon' => 'uk-icon-envelope uk-icon-small uk-icon-justify',
+                        'user' => $currentUser,
+                    ]
+                ])
+                ->setExtra('translation_domain', 'menu');
+            }
 
             $menu->addChild('cancelMembership', [
                 'route' => 'commsy_profile_deleteroomprofile',

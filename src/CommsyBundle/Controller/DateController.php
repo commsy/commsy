@@ -1180,7 +1180,16 @@ class DateController extends Controller
                     $tempDate->setColor($dateItem->getColor());
                     $tempDate->setCalendarId($dateItem->getCalendarId());
                     $tempDate->setWholeDay($dateItem->isWholeDay());
+                    $tempDate->setStartingTime($dateItem->getStartingTime());
+                    $tempDate->setEndingTime($dateItem->getEndingTime());
                     $tempDate->save();
+                    
+                    // mark as read and noticed by creator
+                    $reader_manager = $legacyEnvironment->getReaderManager();
+                    $reader_manager->markRead($tempDate->getItemID(), $tempDate->getVersionID());
+
+                    $noticed_manager = $legacyEnvironment->getNoticedManager();
+                    $noticed_manager->markNoticed($tempDate->getItemID(), $tempDate->getVersionID());
                 }
             } else {
                 // ToDo ...
@@ -1516,6 +1525,14 @@ class DateController extends Controller
                 $tempDate->setRecurrenceId($dateItem->getItemID());
                 $tempDate->setRecurrencePattern($recurringPatternArray);
                 $tempDate->save();
+
+                // mark as read and noticed by creator
+                $reader_manager = $legacyEnvironment->getReaderManager();
+                $reader_manager->markRead($tempDate->getItemID(), $tempDate->getVersionID());
+
+                $noticed_manager = $legacyEnvironment->getNoticedManager();
+                $noticed_manager->markNoticed($tempDate->getItemID(), $tempDate->getVersionID());
+
             }
             $dateItem->setRecurrenceId($dateItem->getItemID());
             $dateItem->setRecurrencePattern($recurringPatternArray);
@@ -1543,6 +1560,14 @@ class DateController extends Controller
                 if(in_array('color',$valuesToChange)){
                     $tempDate->setColor($dateItem->getColor());
                 }
+
+                // mark as read and noticed by creator
+                $reader_manager = $legacyEnvironment->getReaderManager();
+                $reader_manager->markRead($tempDate->getItemID(), $tempDate->getVersionID());
+
+                $noticed_manager = $legacyEnvironment->getNoticedManager();
+                $noticed_manager->markNoticed($tempDate->getItemID(), $tempDate->getVersionID());
+
                 //$tempDate->save();
                 $tempDate = $datesList->getNext();
             }

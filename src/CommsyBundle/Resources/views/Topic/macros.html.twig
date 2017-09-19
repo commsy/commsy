@@ -404,7 +404,7 @@
     {{ macros.editContent('members', item, false, content, preview, true, true, members|length) }}
 {% endmacro %}
 
-{% macro path(item, edit) %}
+{% macro path(item, edit, isLinkedToItems) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
     <hr class="uk-width-9-10"/>
@@ -444,7 +444,7 @@
         {# content #}
         {% if item.isPathActive %}
             <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
-
+                
                 {# preview #}
                 <div class="toggle-path-{{ item.itemId }} cs-toggle-preview">
                     <div class="uk-flex">
@@ -489,6 +489,9 @@
             <div class="uk-width-9-10 uk-margin-top-remove">
                 <div class="toggle-path-{{ item.itemId }} cs-toggle-empty">
                     <span class="uk-text-muted">{{ 'no path'|trans({}, "topic") }}</span>
+                    {% if not isLinkedToItems %}
+                        <span class="uk-text-muted">{{ 'link to items to create path'|trans({}, "topic") }}</span>
+                    {% endif %}
                 </div>
             </div>
         {% endif %}
