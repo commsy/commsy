@@ -166,7 +166,7 @@
             </trans-unit>
             <trans-unit id="basic_settings_text">
                 <source>Basic settings text</source>
-                <target>Please define workspace basics, i.e. title, logo, language.</target>
+                <target>Please define workspace basics, i.e. title, access checks, language.</target>
             </trans-unit>
             <trans-unit id="rubric_selection_text">
                 <source>Rubric selection text</source>

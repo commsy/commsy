@@ -97,14 +97,14 @@ class MenuBuilder
                 ->setExtra('translation_domain', 'profile');
             }
 
-            $menu->addChild('notifications', [
-                'route' => 'commsy_profile_notifications',
+            $menu->addChild('newsletter', [
+                'route' => 'commsy_profile_newsletter',
                 'routeParameters' => [
                     'roomId' => $currentStack->attributes->get('roomId'),
                     'itemId' => $currentUser->getItemId(),
                 ],
                 'extras' => [
-                    'icon' => 'uk-icon-envelope uk-icon-small uk-icon-justify',
+                    'icon' => 'uk-icon-newspaper-o uk-icon-small uk-icon-justify',
                     'user' => $currentUser,
                 ]
             ])
@@ -212,6 +212,21 @@ class MenuBuilder
                 ]
             ])
             ->setExtra('translation_domain', 'menu');
+
+            if ($this->authorizationChecker->isGranted('MODERATOR')) {
+                $menu->addChild('notifications', [
+                    'route' => 'commsy_profile_notifications',
+                    'routeParameters' => [
+                        'roomId' => $currentStack->attributes->get('roomId'),
+                        'itemId' => $currentUser->getItemId(),
+                    ],
+                    'extras' => [
+                        'icon' => 'uk-icon-envelope uk-icon-small uk-icon-justify',
+                        'user' => $currentUser,
+                    ]
+                ])
+                ->setExtra('translation_domain', 'menu');
+            }
 
             $menu->addChild('cancelMembership', [
                 'route' => 'commsy_profile_deleteroomprofile',
@@ -390,34 +405,41 @@ class MenuBuilder
                 $route = "commsy_dashboard_overview";
             }
 
-            // home navigation
-            $menu->addChild('room_home', array(
-                'label' => $label,
-                'route' => $route,
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => $icon . ' uk-icon-small')
-            ))
-            ->setExtra('translation_domain', 'menu');
+            list($bundle, $controller, $action) = explode("_", $currentRequest->attributes->get('_route'));
 
-            // loop through rubrics to build the menu
-            foreach ($rubrics as $value) {
-                $route = 'commsy_'.$value.'_list';
-                if ($value == 'date') {
-                    $room = $this->roomService->getRoomItem($roomId);
-                    if ($room->getDatesPresentationStatus() != 'normal') {
-                        $route = 'commsy_date_calendar';
-                    }
-                }
-
-                $menu->addChild($value, [
-                    'label' => $value,
+            // NOTE: hide dashboard menu in dashboard overview and room list!
+            if ( (!$inPrivateRoom or ($action != "overview" and $action != "listall") ) and
+                 ($controller != "copy" or $action != "list") and
+                 ($controller != "room" or $action != "detail")) {
+                // home navigation
+                $menu->addChild('room_home', array(
+                    'label' => $label,
                     'route' => $route,
                     'routeParameters' => array('roomId' => $roomId),
-                    'extras' => [
-                        'icon' => $this->getRubricIcon($value),
-                    ]
-                ])
+                    'extras' => array('icon' => $icon . ' uk-icon-small')
+                ))
                 ->setExtra('translation_domain', 'menu');
+
+                // loop through rubrics to build the menu
+                foreach ($rubrics as $value) {
+                    $route = 'commsy_'.$value.'_list';
+                    if ($value == 'date') {
+                        $room = $this->roomService->getRoomItem($roomId);
+                        if ($room->getDatesPresentationStatus() != 'normal') {
+                            $route = 'commsy_date_calendar';
+                        }
+                    }
+
+                    $menu->addChild($value, [
+                        'label' => $value,
+                        'route' => $route,
+                        'routeParameters' => array('roomId' => $roomId),
+                        'extras' => [
+                            'icon' => $this->getRubricIcon($value),
+                        ]
+                    ])
+                    ->setExtra('translation_domain', 'menu');
+                }
             }
 
             if (!$inPrivateRoom) {

@@ -364,6 +364,8 @@ fos_elastica:
                             type: text
                         roomDescription:
                             type: text
+                        activity:
+                            type: integer
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Room

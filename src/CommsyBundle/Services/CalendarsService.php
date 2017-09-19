@@ -63,6 +63,21 @@ class CalendarsService
         return $calendars = $query->getResult();
     }
 
+    public function removeCalendar ($calendar) {
+        $dateService = $this->serviceContainer->get('commsy_legacy.date_service');
+        $dates = $dateService->getDatesByCalendarId($calendar->getId());
+
+        foreach ($dates as $date) {
+            $date->setCalendarId($this->getDefaultCalendar($date->getContextId())[0]->getId());
+            $date->save();
+        }
+
+        $this->em->remove($calendar);
+
+        $this->em->flush();
+    }
+
+
     public function updateSynctoken ($calendarId) {
         $calendar = $this->getCalendar($calendarId);
 

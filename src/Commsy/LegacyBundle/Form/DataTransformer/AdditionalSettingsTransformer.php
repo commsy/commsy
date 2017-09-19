@@ -35,7 +35,7 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
             $roomData['structural_auxilaries']['categories']['activate'] = $roomItem->withTags();
             $roomData['structural_auxilaries']['categories']['show_expanded'] = $roomItem->isTagsShowExpanded();
             $roomData['structural_auxilaries']['categories']['mandatory'] = $roomItem->isTagMandatory();
-            $roomData['structural_auxilaries']['categories']['edit'] = $roomItem->isTagEditedByAll();
+            $roomData['structural_auxilaries']['categories']['edit'] = !$roomItem->isTagEditedByAll();
 
             $roomData['structural_auxilaries']['calendars']['edit'] = $roomItem->usersCanEditCalendars();
             $roomData['structural_auxilaries']['calendars']['external'] = $roomItem->usersCanSetExternalCalendarsUrl();

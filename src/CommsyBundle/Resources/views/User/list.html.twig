@@ -2,18 +2,33 @@
 {% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
 
 {% block feed %}
-    <div id="user-feed" class="uk-grid">
-        {{ render(controller(
-            'CommsyBundle:User:feed', {
-                'roomId': roomId,
-                'userFilter': app.request.query.get('user_filter')
-            }
-        )) }}
-    </div>
-    <div class="feed-load-more-grid" data-uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomId }}/user/feed/", "target": "#user-feed"}'>
-        <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
-        <div class="cs-toggle-class"></div>
-    </div>
+    {% if view == 'feedView' %}
+        <ul id="user-feed" class="uk-comment-list">
+            {{ render(controller(
+                'CommsyBundle:User:feed', {
+                    'roomId': roomId,
+                    'userFilter': app.request.query.get('user_filter')
+                }
+            )) }}
+        </ul>
+        <div class="feed-load-more" data-uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomId }}/user/feed/", "target": "#user-feed"}'>
+            <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
+            <div class="cs-toggle-class"></div>
+        </div>
+    {% elseif view == 'gridView' %}
+        <div id="user-feed" class="uk-grid">
+            {{ render(controller(
+                'CommsyBundle:User:grid', {
+                    'roomId': roomId,
+                    'userFilter': app.request.query.get('user_filter')
+                }
+            )) }}
+        </div>
+        <div class="feed-load-more-grid" data-uk-scrollspy="{repeat: true, cls:'cs-toggle-class'}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomId }}/user/grid/", "target": "#user-feed"}'>
+            <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
+            <div class="cs-toggle-class"></div>
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block editbox %}
@@ -32,7 +47,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target": ".feed", "actionUrl": "{{ path('commsy_user_sendmultiple', {'roomId': roomId}) }}", "action": "sendmail"}'>
+                    <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target": ".feed", "actionUrl": "{{ path('commsy_user_feedaction', {'roomId': roomId}) }}", "action": "sendmail"}'>
                         <i class="uk-icon-justify uk-icon-small uk-icon-send-o uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
                     </a>
                 </li>
@@ -167,4 +182,26 @@
                 </ul>
             </div>
         </div>
+{% endblock %}
+
+{% block listAddons %}
+    {% if view == 'feedView' %}
+        <div class="uk-float-right uk-margin-small-left">
+            <a href="{{ path('commsy_user_list', {'roomId': roomId, 'view': 'gridView'}) }}" class="uk-text-contrast">
+                <i class="uk-icon-folder-o uk-icon-small" data-uk-tooltip title="{{ 'tiles'|trans({}, "user") }}"></i>
+            </a>
+        </div>
+        <div class="uk-float-right uk-margin-small-left">
+            <i class="uk-icon-list-ul uk-icon-small cs-icon-mute" data-uk-tooltip title="{{ 'list view'|trans({}, "date") }}"></i>
+        </div>
+    {% elseif view == 'gridView' %}
+        <div class="uk-float-right uk-margin-small-left">
+            <i class="uk-icon-folder-o uk-icon-small cs-icon-mute" data-uk-tooltip title="{{ 'tiles'|trans({}, "user") }}"></i>
+        </div>
+        <div class="uk-float-right uk-margin-small-left">
+            <a href="{{ path('commsy_user_list', {'roomId': roomId, 'view': 'feedView'}) }}" class="uk-text-contrast">
+                <i class="uk-icon-list-ul uk-icon-small" data-uk-tooltip title="{{ 'list view'|trans({}, "date") }}"></i>
+            </a>
+        </div>
+    {% endif %}
 {% endblock %}

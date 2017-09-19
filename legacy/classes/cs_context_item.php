@@ -6122,6 +6122,9 @@ class cs_context_item extends cs_item {
   public function getDefaultCalendarId () {
       global $symfonyContainer;
       $calendarsService = $symfonyContainer->get('commsy.calendars_service');
+      if (!isset($calendarsService->getDefaultCalendar($this->getItemId())[0])) {
+          $calendarsService->createCalendar($this, null, null, true);
+      }
       return $calendarsService->getDefaultCalendar($this->getItemId())[0]->getId();
   }
 

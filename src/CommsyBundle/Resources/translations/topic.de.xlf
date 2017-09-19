@@ -6,6 +6,22 @@
                 <source>Path</source>
                 <target>Pfad</target>
             </trans-unit>
+            <trans-unit id="no path">
+                <source>no path</source>
+                <target>Kein Pfad vorhanden.</target>
+            </trans-unit>
+            <trans-unit id="link to items to create path">
+                <source>link to items to create path</source>
+                <target>Ein Pfad kann erst nach dem Zuordnen von Einträgen erstellt werden.</target>
+            </trans-unit>
+            <trans-unit id="save">
+                <source>save</source>
+                <target>Speichern</target>
+            </trans-unit>
+            <trans-unit id="cancel">
+                <source>cancel</source>
+                <target>Abbrechen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

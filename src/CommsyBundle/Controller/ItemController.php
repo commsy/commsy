@@ -27,11 +27,11 @@ use CommsyBundle\Event\CommsyEditEvent;
 class ItemController extends Controller
 {
     /**
-     * @Route("/room/{roomId}/item/{itemId}/editdescription")
+     * @Route("/room/{roomId}/item/{itemId}/editdescription/{draft}")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
-    public function editDescriptionAction($roomId, $itemId, Request $request)
+    public function editDescriptionAction($roomId, $itemId, $draft = false, Request $request)
     {
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
@@ -55,7 +55,7 @@ class ItemController extends Controller
         
         $withRecurrence = false;
         if ($itemType == 'date') {
-            if ($item->getRecurrencePattern() != '') {
+            if ($item->getRecurrencePattern() != '' && !$draft) {
                 $formOptions['attr']['unsetRecurrence'] = true;
                 $withRecurrence = true;
             }
@@ -233,6 +233,10 @@ class ItemController extends Controller
         
         // get all items that are linked or can be linked
         $rubricInformation = $roomService->getRubricInformation($roomId);
+        if (in_array('group', $rubricInformation)) {
+            $rubricInformation[] = 'label';
+        }
+
         $optionsData['filterRubric']['all'] = 'all';
         foreach ($rubricInformation as $rubric) {
             $optionsData['filterRubric'][$rubric] = $rubric;
@@ -351,6 +355,12 @@ class ItemController extends Controller
                 $item->setLinkedItemsByIDArray($itemData);
                 $item->setTagListByID($data['categories']);
                 $item->setBuzzwordListByID($data['hashtags']);
+
+                if ($item->getItemType() == CS_TOPIC_TYPE) {
+                    if (empty($itemData)) {
+                        $item->deactivatePath();
+                    }
+                }
 
                 // persist
                 $item->save();
@@ -889,7 +899,16 @@ class ItemController extends Controller
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
-        $item->delete();
+        $noModeratorsError = false;
+        if ($item->getItemType() == CS_USER_TYPE) {
+            if (!$this->contextHasModerators($roomId, [$itemId])) {
+                $noModeratorsError = true;
+            }
+        }
+
+        if (!$noModeratorsError) {
+            $item->delete();
+        }
 
         $this->removeItemFromClipboard($itemId);
 
@@ -937,6 +956,26 @@ class ItemController extends Controller
         }
 
         return $this->redirectToRoute($route, array('roomId' => $roomId));
+    }
+
+    private function contextHasModerators($roomId, $selectedIds) {
+        $userService = $this->get('commsy_legacy.user_service');
+        $moderators = $userService->getModeratorsForContext($roomId);
+
+        $moderatorIds = [];
+        foreach ($moderators as $moderator) {
+            $moderatorIds[] = $moderator->getItemId();
+        }
+
+        foreach ($selectedIds as $selectedId) {
+            if (in_array($selectedId, $moderatorIds)) {
+                if(($key = array_search($selectedId, $moderatorIds)) !== false) {
+                    unset($moderatorIds[$key]);
+                }
+            }
+        }
+
+        return !empty($moderatorIds);
     }
 
     /**

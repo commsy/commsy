@@ -74,6 +74,8 @@ class MaterialController extends Controller
         // get material list from manager service 
         $materials = $materialService->getListMaterials($roomId, $max, $start, $sort);
 
+        $this->get('session')->set('sortMaterials', $sort);
+
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
@@ -174,9 +176,9 @@ class MaterialController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/material/print")
+     * @Route("/room/{roomId}/material/print/{sort}", defaults={"sort" = "none"})
      */
-    public function printlistAction($roomId, Request $request)
+    public function printlistAction($roomId, Request $request, $sort)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -197,6 +199,7 @@ class MaterialController extends Controller
 
         // get the material manager service
         $materialService = $this->get('commsy_legacy.material_service');
+        $numAllMaterials = $materialService->getCountArray($roomId)['countAll'];
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -206,7 +209,15 @@ class MaterialController extends Controller
         }
 
         // get material list from manager service 
-        $materials = $materialService->getListMaterials($roomId);
+        if ($sort != "none") {
+            $materials = $materialService->getListMaterials($roomId, $numAllMaterials, 0, $sort);
+        }
+        elseif ($this->get('session')->get('sortMaterials')) {
+            $materials = $materialService->getListMaterials($roomId, $numAllMaterials, 0, $this->get('session')->get('sortMaterials'));
+        }
+        else {
+            $materials = $materialService->getListMaterials($roomId, $numAllMaterials, 0, 'date');
+        }
 
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -972,10 +983,14 @@ class MaterialController extends Controller
                 // set linked hashtags and categories
                 $formData = $form->getData();
                 if ($categoriesMandatory) {
-                    $materialItem->setTagListByID($formData['category_mapping']['categories']);
+                    if (isset($formData['category_mapping']['categories'])) {
+                        $materialItem->setTagListByID($formData['category_mapping']['categories']);
+                    }
                 }
                 if ($hashtagsMandatory) {
-                    $materialItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                    if (isset($formData['hashtag_mapping']['hashtags'])) {
+                        $materialItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                    }
                 }
 
                 $materialItem->save();
@@ -1392,7 +1407,7 @@ class MaterialController extends Controller
         $selectAllStart = $request->request->get('selectAllStart');
         
         if ($selectAll == 'true') {
-            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $request);
+            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $sort = 'date', $request);
             foreach ($entries['materials'] as $key => $value) {
                 $selectedIds[] = $value->getItemId();
             }

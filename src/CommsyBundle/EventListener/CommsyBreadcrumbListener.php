@@ -113,7 +113,12 @@ class CommsyBreadcrumbListener
 
             // rubric only
             else {
-                $this->breadcrumbs->addItem($this->translator->trans($controller, [], 'menu'));
+                if ($controller == 'room' && $action == 'listall') {
+                    $this->breadcrumbs->addItem($this->translator->trans('All rooms', [], 'room'));
+                }
+                else {
+                    $this->breadcrumbs->addItem($this->translator->trans($controller, [], 'menu'));
+                }
             }
         }
     }
@@ -194,7 +199,7 @@ class CommsyBreadcrumbListener
 
     private function addProfileCrumbs($roomItem, $routeParameters, $action)
     {
-        if($action == 'general' || $action == 'address' || $action == 'contact' || $action == 'deleteroomprofile') {
+        if($action == 'general' || $action == 'address' || $action == 'contact' || $action == 'deleteroomprofile' || $action == 'notifications') {
             $this->addRoom($roomItem, true);
             $this->breadcrumbs->addRouteItem($this->translator->trans('Room profile', [], 'menu'), "commsy_profile_" . $action, $routeParameters);
         }

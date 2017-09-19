@@ -1,5 +1,5 @@
 <?php
-namespace CommsyBundle\Form\Type\Settings;
+namespace CommsyBundle\Form\Type\Room;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;

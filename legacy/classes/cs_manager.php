@@ -729,8 +729,10 @@ class cs_manager {
          ) {
          $query .= ' modification_date="'.$modification_date.'",';
       }
-      $query .= ' context_id="'.encode(AS_DB,$item->getContextID()).'",';
-      $query .= ' draft="'.encode(AS_DB,$item->isDraft()).'"';
+      $query .= ' context_id="'.encode(AS_DB,$item->getContextID()).'"';
+      if (get_class($item) == 'cs_item') {
+          $query .= ', draft="' . encode(AS_DB, $item->isDraft()) . '"';
+      }
       $query .= ' WHERE item_id = "'.encode(AS_DB,$item->getItemID()).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {

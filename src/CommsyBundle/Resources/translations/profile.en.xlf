@@ -394,11 +394,23 @@
             </trans-unit>
             <trans-unit id="profile_image_tip">
                 <source>Profile image tip</source>
-                <target>For best results, chose an image with side ratio of approximately 1:1 and a resolution of at least 300x300 pixel!</target>
+                <target>For best results, chose an image with side ratio of approximately 1:1 and a resolution of at least 200x200 pixel!</target>
             </trans-unit>
             <trans-unit id="use_profile_image">
                 <source>Use profile image</source>
                 <target>Use custom profile image</target>
+            </trans-unit>
+            <trans-unit id="email_notifications">
+                <source>e-mail notifications</source>
+                <target>E-mail notifications</target>
+            </trans-unit>
+            <trans-unit id="email_notification_registration">
+                <source>E-mail at registration</source>
+                <target>E-mail at registration</target>
+            </trans-unit>
+            <trans-unit id="email_notification_new_workspace">
+                <source>E-mail when a workspace is created</source>
+                <target>E-mail when a workspace is created</target>
             </trans-unit>
          </body>
     </file>
