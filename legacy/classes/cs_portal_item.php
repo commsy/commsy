@@ -1711,7 +1711,7 @@ class cs_portal_item extends cs_guide_item {
             for($i=1;$i < $day_diff;$i++) {
                $log_manager->resetLimits();
                $log_manager->setContextLimit($room_item->getItemID());
-               $log_manager->setRequestLimit("commsy.php");
+               $log_manager->setRequestLimit("/room/");
                $older_limit_stamp = datetime2Timestamp(date("Y-m-d 00:00:00"))-($i-1)*86400;
                $older_limit = date('Y-m-d', $older_limit_stamp);
                $log_manager->setTimestampOlderLimit($older_limit);
