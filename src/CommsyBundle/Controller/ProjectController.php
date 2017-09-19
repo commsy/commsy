@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
+use CommsyBundle\Form\Type\Room\DeleteType;
 use CommsyBundle\Filter\ProjectFilterType;
 use CommsyBundle\Entity\Room;
 
@@ -196,6 +197,9 @@ class ProjectController extends Controller
             // persist with legacy code
             $legacyRoom->save();
 
+            $calendarsService = $this->get('commsy.calendars_service');
+            $calendarsService->createCalendar($legacyRoom, null, null, true);
+
             // take values from a template?
             if ($form->has('master_template')) {
                 $masterTemplate = $form->get('master_template')->getData();
@@ -232,6 +236,43 @@ class ProjectController extends Controller
     public function editAction()
     {
     }
+
+    /**
+     * @Route("/room/{roomId}/project/{itemId}/delete", requirements={
+     *     "itemId": "\d+"
+     * }))
+     * @Template()
+     * @Security("is_granted('MODERATOR', itemId)")
+     */
+    public function deleteAction($roomId, $itemId, Request $request)
+    {
+        $form = $this->createForm(DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], []);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // get room from RoomService
+            $roomService = $this->get('commsy_legacy.room_service');
+            $roomItem = $roomService->getRoomItem($itemId);
+
+            if (!$roomItem) {
+                throw $this->createNotFoundException('No room found for id ' . $itemId);
+            }
+
+            $roomItem->delete();
+            $roomItem->save();
+
+            // redirect back to portal
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+            return $this->redirectToRoute('commsy_project_list', ['roomId' => $roomId]);
+        }
+
+        return [
+            'form' => $form->createView(),
+        ];
+    }
+
+
 
     private function getDetailInfo($room)
     {

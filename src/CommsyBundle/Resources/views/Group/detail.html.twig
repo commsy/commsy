@@ -185,7 +185,7 @@
                 {%  endif %}
 
                 {# content #}
-                <article class="uk-article uk-position-relative" data-uk-observe>
+                <article class="uk-article uk-position-relative {% if draft %}cs-edit-draft{% endif %}" data-uk-observe>
                     {# title, etc. #}
                     <div class="cs-toggle" data-uk-observe>
                         {{ macrosGroup.title(group, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) }}
@@ -193,7 +193,7 @@
             
                     {# description #}
                     <div id="description{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': group.contextId, 'itemId': group.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': group.contextId, 'itemId': group.itemId}) }}' }">
-                        {{ macrosItem.itemDescription('description', group, true, group.description) }}
+                        {{ macrosItem.itemDescription('description', group, true, group.description, draft) }}
                     </div>
             
                     {# members #}
@@ -204,13 +204,26 @@
                     {# grouproom #}
                     <div id="member{{ group.itemId }}" class="cs-toggle" data-uk-observe>
                         <hr class="uk-width-9-10"/>
-                        {{ macrosGroup.grouproom(group, roomId, userIsMember, memberStatus) }}
+                        {{ macrosGroup.grouproom(group, roomId, userIsMember, memberStatus, draft) }}
                     </div>
 
-                    {# links #}
-                    <div id="links{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': group.contextId, 'itemId': group.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': group.contextId, 'itemId': group.itemId}) }}' }">
-                        {{ macrosItem.links(group, showHashtags, showCategories, roomCategories) }}
-                    </div>        
+                    {% if not draft %}
+                        {# links #}
+                        <div id="links{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': group.contextId, 'itemId': group.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': group.contextId, 'itemId': group.itemId}) }}' }">
+                            {{ macrosItem.links(group, showHashtags, showCategories, roomCategories) }}
+                        </div>
+                    {% endif %}
+
+                    {% if draft %}
+                        <div id="draft-buttons-wrapper">
+                            <a id="draft-save-combine-link" href="" class="uk-button uk-button-primary">
+                                {{ 'create entry'|trans({}, "form") }}
+                            </a>
+                            <a id="draft-cancel-link" href="" class="uk-button uk-button-secondary">
+                                {{ 'cancel'|trans({}, "form") }}
+                            </a>
+                        </div>
+                    {% endif %}
                 </article>
             </div>
         </div>

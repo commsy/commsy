@@ -4,8 +4,9 @@ namespace CommsyBundle\Filter;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
 use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
+use Lexik\Bundle\FormFilterBundle\Filter\Query\QueryInterface;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class RoomFilterType extends AbstractType
 {
@@ -20,11 +21,39 @@ class RoomFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('title', Filters\TextFilterType::class, [
+                'label' => 'search-filter',
+                'translation_domain' => 'room',
+                'label_attr' => array(
+                    'class' => 'uk-form-label',
+                ),
+                'attr' => [
+                    'placeholder' => 'search-filter-placeholder',
+                    'class' => 'cs-form-horizontal-full-width',
+                ],
+                'apply_filter' => function (QueryInterface $filterQuery, $field, $values) {
+                    if (empty($values['value'])) {
+                        return null;
+                    }
+
+                    $expr = $filterQuery->getExpr();
+
+                    return $filterQuery->getQueryBuilder()
+                        ->andWhere(
+                            $expr->orX(
+                                $expr->like('r.title', ':title'),
+                                $expr->like('r.contactPersons', ':contactPersons'),
+                                $expr->like('r.roomDescription', ':roomDescription')
+                            )
+                        )
+                        ->setParameter('title', '%'.$values['value'].'%')
+                        ->setParameter('contactPersons', '%'.$values['value'].'%')
+                        ->setParameter('roomDescription', '%'.$values['value'].'%')
+                    ;
+                },
+            ])
             ->add('membership', Filters\CheckboxFilterType::class, [
                 'label' => 'hide-rooms-without-membership',
-                'attr' => [
-                    'onchange' => 'this.form.submit()',
-                ],
                 'mapped' => false,
                 'translation_domain' => 'room',
                 'label_attr' => array(
@@ -34,9 +63,6 @@ class RoomFilterType extends AbstractType
             ->add('archived', Filters\CheckboxFilterType::class, [
                 'label' => 'hide-archived-rooms',
                 'apply_filter' => false, // disable filter
-                'attr' => [
-                    'onchange' => 'this.form.submit()',
-                ],
                 'mapped' => false,
                 'translation_domain' => 'room',
                 'label_attr' => array(
@@ -44,9 +70,6 @@ class RoomFilterType extends AbstractType
                 ),
             ])
             ->add('type', Filters\ChoiceFilterType::class, [
-                'attr' => [
-                    'onchange' => 'this.form.submit()',
-                ],
                 'choices' => [
                     'Project Rooms' => 'project',
                     'Community Rooms' => 'community',
@@ -59,14 +82,18 @@ class RoomFilterType extends AbstractType
             $builder
                 ->add('timePulses', Filters\ChoiceFilterType::class, [
                     'label' => 'time pulses',
-                    'attr' => [
-                        'onchange' => 'this.form.submit()',
-                    ],
                     'choices' => $options['timePulses'],
                     'placeholder' => 'All',
                     'translation_domain' => 'room',
                 ]);
         }
+        $builder
+            ->add('submit', SubmitType::class, array(
+                'attr' => array(
+                    'class' => 'uk-button-primary',
+                ),
+                'label' => 'Suchen',
+            ));
     }
 
     /**

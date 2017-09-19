@@ -428,6 +428,10 @@
                     %sender%
                 </target>
             </trans-unit>
+            <trans-unit id="calendar">
+                <source>calendar</source>
+                <target>Calendars</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -4,10 +4,6 @@
 
 {% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
 
-{% block side_navigation %}
-    {{ knp_menu_render('account') }}
-{% endblock %}
-
 {% block content %}
     <div class="uk-grid">
 
@@ -26,18 +22,18 @@
                             <table class="uk-table">
                                 <tr>
                                     <td>
-                                        <h1 class="uk-panel-title">{{ 'newsletterStatus'|trans({},'profile') }}</h1>
+                                        <h1 class="uk-panel-title">{{ 'e-mail notifications'|trans({},'profile') }}</h1>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>{{ 'newsletterText'|trans({},'profile')|raw }}</td>
+                                    <td>{{ form_row(form.mail_account) }}</td>
                                 </tr>
                                 <tr>
-                                    <td>{{ form_widget(form.newsletterStatus) }}</td>
+                                    <td>{{ form_row(form.mail_room) }}</td>
                                 </tr>
                             </table>
                         </div>
-    
+
                         <div class="uk-panel uk-margin-large-bottom">
                             <table class="uk-table">
                                 <tr>

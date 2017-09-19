@@ -234,11 +234,23 @@ class TopicController extends Controller
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+
+        $topicService = $this->get('commsy_legacy.topic_service');
+        $topic = $topicService->getTopic($itemId);
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
+
+        $categories = array();
+        if ($current_context->withTags()) {
+            $roomCategories = $this->get('commsy_legacy.category_service')->getTags($roomId);
+            $topicCategories = $topic->getTagsArray();
+            $categories = $this->getTagDetailArray($roomCategories, $topicCategories);
+        }
 
         $alert = null;
         if ($infoArray['topic']->isLocked()) {
@@ -252,6 +264,11 @@ class TopicController extends Controller
         if ($request->query->get('path')) {
             $topicService = $this->get('commsy_legacy.topic_service');
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
+        }
+
+        $isLinkedToItems = false;
+        if (!empty($topic->getAllLinkedItemIDArray())) {
+            $isLinkedToItems = true;
         }
 
         return array(
@@ -274,10 +291,12 @@ class TopicController extends Controller
             'showWorkflow' => $infoArray['showWorkflow'],
             'showHashtags' => $infoArray['showHashtags'],
             'showCategories' => $infoArray['showCategories'],
+            'roomCategories' => $categories,
             'user' => $infoArray['user'],
             'annotationForm' => $form->createView(),
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
+            'isLinkedToItems' => $isLinkedToItems,
        );
     }
 
@@ -784,6 +803,7 @@ class TopicController extends Controller
         //$itemManager->setTypeArrayLimit($rubricInformation);
 
         // get all linked items
+        $linkedItemArray = [];
         foreach ($item->getPathItemList()->to_array() as $pathElement) {
             $formData['path'][] = $pathElement->getItemId();
             $linkedItemArray[] = $pathElement;
@@ -833,7 +853,7 @@ class TopicController extends Controller
                     $sortingPlace = 1;
                     if (isset($formData['pathOrder'])) {
                         foreach (explode(',', $formData['pathOrder']) as $orderItemId) {
-                            if ($linkItem = $linkManager->getItemByFirstAndSecondID($item->getItemId(), $orderItemId)) {
+                            if ($linkItem = $linkManager->getItemByFirstAndSecondID($item->getItemId(), $orderItemId, true)) {
                                 if (in_array($orderItemId, $formDataPath)) {
                                     $linkItem->setSortingPlace($sortingPlace);
                                     $linkItem->save();
@@ -884,8 +904,48 @@ class TopicController extends Controller
 
         $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($item));
 
+        $isLinkedToItems = false;
+        if (!empty($item->getAllLinkedItemIDArray())) {
+            $isLinkedToItems = true;
+        }
+
         return [
             'topic' => $itemService->getTypedItem($itemId),
+            'isLinkedToItems' => $isLinkedToItems,
         ];
+    }
+
+    private function getTagDetailArray ($baseCategories, $itemCategories) {
+        $result = array();
+        $tempResult = array();
+        $addCategory = false;
+        foreach ($baseCategories as $baseCategory) {
+            if (!empty($baseCategory['children'])) {
+                $tempResult = $this->getTagDetailArray($baseCategory['children'], $itemCategories);
+            }
+            if (!empty($tempResult)) {
+                $addCategory = true;
+            }
+            $tempArray = array();
+            $foundCategory = false;
+            foreach ($itemCategories as $itemCategory) {
+                if ($baseCategory['item_id'] == $itemCategory['id']) {
+                    if ($addCategory) {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                    } else {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
+                    }
+                    $foundCategory = true;
+                }
+            }
+            if (!$foundCategory) {
+                if ($addCategory) {
+                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                }
+            }
+            $tempResult = array();
+            $addCategory = false;
+        }
+        return $result;
     }
 }

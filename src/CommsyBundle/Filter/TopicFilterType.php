@@ -34,7 +34,7 @@ class TopicFilterType extends AbstractType
             // checkbox that is not passed in the request to the server when the checkbox is
             // unchecked and symfony couldn't distinguish between a submitted form with an
             // unchecked checkbox and no submitted form at all
-            ->add('field0', HiddenType::class, [])
+            ->add('filter', HiddenType::class, [])
         ;
 
         if ($options['hasCategories']) {

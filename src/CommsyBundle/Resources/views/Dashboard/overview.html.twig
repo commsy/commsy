@@ -11,6 +11,9 @@
 {% endblock %}
 
 {% block content %}
+    <div id="dashboard-cover" aria-hidden="false">
+        <h1 class="uk-h2">{{ 'my home'|trans({}, "menu") }}</h1>
+    </div>
     <div class="uk-grid">
         {# right column #}
         <div class="uk-width-medium-1-2 uk-push-1-2">
@@ -20,6 +23,7 @@
 
         {# left column #}
         <div class="uk-width-medium-1-2 uk-pull-1-2 uk-row-first">
+            {{ macros.dashboardAllRooms(roomItem) }}
             {{ macros.dashboardFeed(roomItem) }}
         </div>
     </div>

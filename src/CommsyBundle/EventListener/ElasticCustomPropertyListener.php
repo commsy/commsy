@@ -11,6 +11,8 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
 {
     private $legacyEnvironment;
 
+    private $itemCache = [];
+
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
@@ -40,7 +42,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         }
 
         if (isset($fields['files'])) {
-            $this->addFilesContent($event);
+//            $this->addFilesContent($event);
         }
 
         if (isset($fields['discussionarticles'])) {
@@ -58,8 +60,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
 
     private function addHashtags(TransformEvent $event)
     {
-        $itemManager = $this->legacyEnvironment->getItemManager();
-        $item = $itemManager->getItem($event->getObject()->getItemId());
+        $item = $this->getItemCached($event->getObject()->getItemId());
 
         if ($item) {
             $hashtags = $item->getBuzzwordList();
@@ -84,8 +85,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
 
     private function addTags(TransformEvent $event)
     {
-        $itemManager = $this->legacyEnvironment->getItemManager();
-        $item = $itemManager->getItem($event->getObject()->getItemId());
+        $item = $this->getItemCached($event->getObject()->getItemId());
 
         if ($item) {
             $tags = $item->getTagList();
@@ -110,8 +110,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
 
     private function addAnnotations(TransformEvent $event)
     {
-        $itemManager = $this->legacyEnvironment->getItemManager();
-        $item = $itemManager->getItem($event->getObject()->getItemId());
+        $item = $this->getItemCached($event->getObject()->getItemId());
 
         if ($item) {
             $annotations = $item->getAnnotationList();
@@ -136,8 +135,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
 
     private function addFilesContent(TransformEvent $event)
     {
-        $itemManager = $this->legacyEnvironment->getItemManager();
-        $item = $itemManager->getItem($event->getObject()->getItemId());
+        $item = $this->getItemCached($event->getObject()->getItemId());
 
         if ($item) {
             $files = $item->getFileList();
@@ -147,9 +145,13 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
                 $file = $files->getFirst();
                 while ($file) {
                     if (!$file->isDeleted()) {
-                        $content = $file->getContentBase64();
-                        if (!empty($content)) {
-                            $fileContents[] = $content;
+                        $fileSize = $file->getFileSize();
+
+                        if (round($fileSize / 1024) < 25) {
+                            $content = $file->getContentBase64();
+                            if (!empty($content)) {
+                                $fileContents[] = $content;
+                            }
                         }
                     }
 
@@ -248,5 +250,29 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
                 }
             }
         }
+    }
+
+    private function getItemCached($itemId)
+    {
+        // cache wiping
+        if (sizeof($this->itemCache) >= 10000) {
+            $this->itemCache = [];
+        }
+
+        // cache hit
+        if (isset($this->itemCache[$itemId])) {
+            return $this->itemCache[$itemId];
+        }
+
+        // cache miss
+        $itemManager = $this->legacyEnvironment->getItemManager();
+        $item = $itemManager->getItem($itemId);
+
+        if ($item) {
+            $this->itemCache[$itemId] = $item;
+            return $item;
+        }
+
+        return null;
     }
 }

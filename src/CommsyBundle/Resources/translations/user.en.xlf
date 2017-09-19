@@ -222,6 +222,10 @@
                 <source>New status</source>
                 <target>New status</target>
             </trans-unit>
+            <trans-unit id="tiles">
+                <source>tiles</source>
+                <target>Tiles</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

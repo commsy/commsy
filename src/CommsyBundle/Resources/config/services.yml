@@ -154,6 +154,12 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
+    kernel.listener.commsy_activity:
+        class: CommsyBundle\EventListener\CommsyActivityListener
+        arguments: ['@commsy_legacy.room_service', '@commsy_legacy.environment']
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
     commsy.listener.get_room_membership_filter:
             class: CommsyBundle\EventListener\RoomMembershipFilterConditionListener
             arguments: ['@commsy_legacy.user_service']
@@ -351,9 +357,15 @@ services:
         tags:
             - { name: form.type }
 
+    commsy.form.type.profile_newsletter:
+        class: CommsyBundle\Form\Type\Profile\ProfileNewsletterType
+        arguments: ['@commsy_legacy.environment']
+        tags:
+            - { name: form.type }
+
     commsy.form.type.profile_notifications:
-        class: CommsyBundle\Form\Type\Profile\ProfileNotificationsType
-        arguments: ['@doctrine.orm.entity_manager', '@commsy_legacy.environment']
+        class: CommsyBundle\Form\Type\Profile\RoomProfileNotificationsType
+        arguments: ['@commsy_legacy.environment']
         tags:
             - { name: form.type }
 

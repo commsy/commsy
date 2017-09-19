@@ -100,7 +100,7 @@ class TodoType extends AbstractType
                     if ($todo['hashtagsMandatory'] && $formOptions['hashtagMappingOptions']) {
                         $form->add('hashtag_mapping', MandatoryHashtagMappingType::class, $formOptions['hashtagMappingOptions']);
                     }
-                    if ($todo['categoriesMandatory'] && $formOptions['hashtagMappingOptions']) {
+                    if ($todo['categoriesMandatory'] && $formOptions['categoryMappingOptions']) {
                         $form->add('category_mapping', MandatoryCategoryMappingType::class, $formOptions['categoryMappingOptions']);
                     }
                 }

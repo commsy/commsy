@@ -10,8 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-
-use CommsyBundle\Form\Type\Custom\DateSelectType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class UserType extends AbstractType
 {
@@ -24,15 +23,18 @@ class UserType extends AbstractType
                     'placeholder' => 'title',
                     'class' => '',
                 ),
-                'translation_domain' => 'user',
                 'required' => false,
             ))
-            ->add('dateOfBirth', DateSelectType::class, array(
+            ->add('dateOfBirth', DateType::class, array(
                 'label'    => 'dateOfBirth',
-                'translation_domain' => 'user',
                 'required' => false,
+                'format' => 'dd.MM.yyyy',
+                'attr' => array(
+                    'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
+                ),
+                'widget' => 'single_text',
             ))
-            ->add('email', TextType::class, array(
+            ->add('emailRoom', TextType::class, array(
                 'constraints' => array(
                     new NotBlank(),
                 ),
@@ -47,7 +49,6 @@ class UserType extends AbstractType
             ->add('hideEmailInThisRoom', CheckboxType::class, array(
                 'label' => 'hideEmailInThisRoom',
                 'required' => false,
-                'translation_domain' => 'user',
             ))
             ->add('phone', TextType::class, array(
                 'label' => 'phone',
@@ -55,7 +56,6 @@ class UserType extends AbstractType
                     'placeholder' => 'phone',
                     'class' => '',
                 ),
-                'translation_domain' => 'user',
                 'required' => false,
             ))
             ->add('mobile', TextType::class, array(
@@ -64,7 +64,6 @@ class UserType extends AbstractType
                     'placeholder' => 'mobile',
                     'class' => '',
                 ),
-                'translation_domain' => 'user',
                 'required' => false,
             ))
             ->add('street', TextType::class, array(
@@ -73,7 +72,6 @@ class UserType extends AbstractType
                     'placeholder' => 'street',
                     'class' => '',
                 ),
-                'translation_domain' => 'user',
                 'required' => false,
             ))
             ->add('zipCode', TextType::class, array(
@@ -82,7 +80,6 @@ class UserType extends AbstractType
                     'placeholder' => 'zipCode',
                     'class' => '',
                 ),
-                'translation_domain' => 'user',
                 'required' => false,
             ))
             ->add('city', TextType::class, array(
@@ -91,7 +88,6 @@ class UserType extends AbstractType
                     'placeholder' => 'city',
                     'class' => '',
                 ),
-                'translation_domain' => 'user',
                 'required' => false,
             ))
             ->add('room', TextType::class, array(
@@ -100,7 +96,6 @@ class UserType extends AbstractType
                     'placeholder' => 'room',
                     'class' => '',
                 ),
-                'translation_domain' => 'user',
                 'required' => false,
             ))
             ->add('organisation', TextType::class, array(
@@ -109,7 +104,6 @@ class UserType extends AbstractType
                     'placeholder' => 'organisation',
                     'class' => '',
                 ),
-                'translation_domain' => 'user',
                 'required' => false,
             ))
             ->add('position', TextType::class, array(
@@ -118,7 +112,6 @@ class UserType extends AbstractType
                     'placeholder' => 'position',
                     'class' => '',
                 ),
-                'translation_domain' => 'user',
                 'required' => false,
             ))
             ->add('homepage', TextType::class, array(
@@ -127,7 +120,6 @@ class UserType extends AbstractType
                     'placeholder' => 'homepage',
                     'class' => '',
                 ),
-                'translation_domain' => 'user',
                 'required' => false,
             ))
             ->add('skype', TextType::class, array(
@@ -136,7 +128,6 @@ class UserType extends AbstractType
                     'placeholder' => 'skype',
                     'class' => '',
                 ),
-                'translation_domain' => 'user',
                 'required' => false,
             ))
             ->add('language', ChoiceType::class, array(
@@ -147,7 +138,6 @@ class UserType extends AbstractType
                     'english' => 'english',
                 ),
                 'label' => 'language',
-                'translation_domain' => 'user',
                 'required' => false,
                 'expanded' => false,
                 'multiple' => false
@@ -183,6 +173,7 @@ class UserType extends AbstractType
     {
         $resolver
             ->setRequired(['uploadUrl'])
+            ->setDefaults(array('translation_domain' => 'user'))
         ;
     }
 

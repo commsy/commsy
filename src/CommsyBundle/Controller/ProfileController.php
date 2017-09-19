@@ -13,15 +13,15 @@ use CommsyBundle\Entity\User;
 use CommsyBundle\Form\Type\Profile\RoomProfileGeneralType;
 use CommsyBundle\Form\Type\Profile\RoomProfileAddressType;
 use CommsyBundle\Form\Type\Profile\RoomProfileContactType;
+use CommsyBundle\Form\Type\Profile\RoomProfileNotificationsType;
 use CommsyBundle\Form\Type\Profile\DeleteType;
 use CommsyBundle\Form\Type\Profile\ProfileAccountType;
 use CommsyBundle\Form\Type\Profile\ProfileChangePasswordType;
 use CommsyBundle\Form\Type\Profile\ProfileMergeAccountsType;
-use CommsyBundle\Form\Type\Profile\ProfileNotificationsType;
+use CommsyBundle\Form\Type\Profile\ProfileNewsletterType;
 use CommsyBundle\Form\Type\Profile\ProfileCalendarsType;
 use CommsyBundle\Form\Type\Profile\ProfileAdditionalType;
 use CommsyBundle\Form\Type\Profile\ProfilePersonalInformationType;
-
 
 class ProfileController extends Controller
 {
@@ -32,6 +32,8 @@ class ProfileController extends Controller
     */
     public function generalAction($roomId, $itemId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $discManager = $legacyEnvironment->getDiscManager();
         $userService = $this->get('commsy_legacy.user_service');
         $roomService = $this->get('commsy_legacy.room_service');
         $userItem = $userService->getUser($itemId);
@@ -42,6 +44,7 @@ class ProfileController extends Controller
 
         $userTransformer = $this->get('commsy_legacy.transformer.user');
         $userData = $userTransformer->transform($userItem);
+        $userData['useProfileImage'] = $userItem->getPicture() != "";
 
         $form = $this->createForm(RoomProfileGeneralType::class, $userData, array(
             'itemId' => $itemId,
@@ -55,38 +58,61 @@ class ProfileController extends Controller
         if ($form->isValid()) {
             $formData = $form->getData();
 
-            // save profile picture if given
-            if($formData['image_data']) {
-                $saveDir = implode("/", array($this->getParameter('files_directory'), $roomService->getRoomFileDirectory($userItem->getContextID())));
-                if(!file_exists($saveDir)){
-                    mkdir($saveDir, 0777, true);
+            // use custom profile picture if given
+            if($formData['useProfileImage']) {
+                if($formData['image_data']) {
+                    $saveDir = implode("/", array($this->getParameter('files_directory'), $roomService->getRoomFileDirectory($userItem->getContextID())));
+                    if(!file_exists($saveDir)){
+                        mkdir($saveDir, 0777, true);
+                    }
+                    $data = $formData['image_data'];
+                    list($fileName, $type, $data) = explode(";", $data);
+                    list(, $data) = explode(",", $data);
+                    list(, $extension) = explode("/", $type);
+                    $data = base64_decode($data);
+                    $fileName = implode("_", array('cid'.$userItem->getContextID(), $userItem->getUserID(), $fileName));
+                    $absoluteFilepath = implode("/", array($saveDir, $fileName));
+                    file_put_contents($absoluteFilepath, $data);
+                    $userItem->setPicture($fileName);
+
+                    $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
+                    $userItem->save();
                 }
-                $data = $formData['image_data'];
-                list($fileName, $type, $data) = explode(";", $data);
-                list(, $data) = explode(",", $data);
-                list(, $extension) = explode("/", $type);
-                $data = base64_decode($data);
-                $fileName = implode("_", array('cid'.$userItem->getContextID(), $userItem->getUserID(), $fileName));
-                $absoluteFilepath = implode("/", array($saveDir, $fileName));
-                file_put_contents($absoluteFilepath, $data);
-                $userItem->setPicture($fileName);
+            }
+            // use user initials else
+            else {
+                if($discManager->existsFile($userItem->getPicture())) {
+                    $discManager->unlinkFile($userItem->getPicture());
+                }
+                $userItem->setPicture("");
+                $userItem->save();
             }
 
-            $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
-            $userItem->save();
-
-            $userList = $userItem->getRelatedUserList();
-            $tempUserItem = $userList->getFirst();
-            while ($tempUserItem) {
-                if ($formData['imageChangeInAllContexts']) {
-                    $discService = $this->get('commsy_legacy.disc_service');
-                    $tempFilename = $discService->copyImageFromRoomToRoom($userItem->getPicture(), $tempUserItem->getContextId());
-                    if ($tempFilename) {
-                        $tempUserItem->setPicture($tempFilename);
+            if ($formData['imageChangeInAllContexts']) {
+                $userList = $userItem->getRelatedUserList();
+                $tempUserItem = $userList->getFirst();
+                $discService = $this->get('commsy_legacy.disc_service');
+                while ($tempUserItem) {
+                    if ($tempUserItem->getItemId() == $userItem->getItemId()) {
+                        $tempUserItem = $userList->getNext();
+                        continue;
                     }
+                    if($formData['useProfileImage']) {
+                        $tempFilename = $discService->copyImageFromRoomToRoom($userItem->getPicture(), $tempUserItem->getContextId());
+                        if ($tempFilename) {
+                            $tempUserItem->setPicture($tempFilename);
+                        }
+                    }
+                    else {
+                        if($discManager->existsFile($tempUserItem->getPicture())) {
+                            $discManager->unlinkFile($tempUserItem->getPicture());
+                        }
+                        $tempUserItem->setPicture("");
+
+                    }
+                    $tempUserItem->save();
+                    $tempUserItem = $userList->getNext();
                 }
-                $tempUserItem->save();
-                $tempUserItem = $userList->getNext();    
             }
             
             return $this->redirectToRoute('commsy_profile_general', array('roomId' => $roomId, 'itemId' => $itemId));
@@ -227,6 +253,46 @@ class ProfileController extends Controller
             }
 
             return $this->redirectToRoute('commsy_profile_contact', array('roomId' => $roomId, 'itemId' => $itemId));
+        }
+
+        return array(
+            'form' => $form->createView(),
+        );
+    }
+
+    /**
+    * @Route("/room/{roomId}/user/{itemId}/notifications")
+    * @Template
+    * @Security("is_granted('ITEM_EDIT', itemId)")
+    */
+    public function notificationsAction($roomId, $itemId, Request $request)
+    {
+        $userService = $this->get('commsy_legacy.user_service');
+        $userItem = $userService->getUser($itemId);
+        $userData = [];
+
+        $userData['mail_account'] = $userItem->getAccountWantMail() === 'yes' ? true : false;
+        $userData['mail_room'] = $userItem->getOpenRoomWantMail() === 'yes' ? true : false;
+
+        $form = $this->createForm(RoomProfileNotificationsType::class, $userData, array(
+            'itemId' => $itemId,
+        ));
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $formData = $form->getData();
+            if($formData['mail_account']) {
+                $userItem->setAccountWantMail('yes');
+            } else {
+                $userItem->setAccountWantMail('no');
+            }
+
+            if($formData['mail_room']) {
+                $userItem->setOpenRoomWantMail('yes');
+            } else {
+                $userItem->setOpenRoomWantMail('no');
+            }
+            $userItem->save();
         }
 
         return array(
@@ -406,11 +472,11 @@ class ProfileController extends Controller
     }
 
     /**
-    * @Route("/room/{roomId}/user/{itemId}/notifications")
+    * @Route("/room/{roomId}/user/{itemId}/newsletter")
     * @Template
     * @Security("is_granted('ITEM_EDIT', itemId)")
     */
-    public function notificationsAction($roomId, $itemId, Request $request)
+    public function newsletterAction($roomId, $itemId, Request $request)
     {
         $userTransformer = $this->get('commsy_legacy.transformer.user');
         $userService = $this->get('commsy_legacy.user_service');
@@ -425,7 +491,7 @@ class ProfileController extends Controller
 
         $userData = array_merge($userData, $privateRoomData);
 
-        $form = $this->createForm(ProfileNotificationsType::class, $userData, array(
+        $form = $this->createForm(ProfileNewsletterType::class, $userData, array(
             'itemId' => $itemId,
         ));
 
@@ -473,6 +539,7 @@ class ProfileController extends Controller
             $userItem->save();
             $privateRoomItem = $privateRoomTransformer->applyTransformation($privateRoomItem, $form->getData());
             $privateRoomItem->save();
+            return $this->redirect($request->getUri());
         }
 
         return [

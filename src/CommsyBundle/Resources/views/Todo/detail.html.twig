@@ -124,7 +124,7 @@
                 {%  endif %}
 
                 {# content #}
-                <article class="uk-article uk-position-relative" data-uk-observe>
+                <article class="uk-article uk-position-relative {% if draft %}cs-edit-draft{% endif %}" data-uk-observe>
                     {# title, details, etc. #}
                     <div class="cs-toggle" data-uk-observe>
                         {{ macrosTodo.title(todo, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, ratingArray, timeSpendSum) }}
@@ -132,23 +132,36 @@
             
                     {# description #}
                     <div id="description{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }">
-                        {{ macrosItem.itemDescription('description', todo, true, todo.description) }}
+                        {{ macrosItem.itemDescription('description', todo, true, todo.description, draft) }}
                     </div>
             
                     {# files #}
                     <div id="files{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }">
-                        {{ macrosItem.files(todo) }}
+                        {{ macrosItem.files(todo, draft) }}
                     </div>
-        
-                    {# links #}
-                    <div id="links{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }">
-                        {{ macrosItem.links(todo,showHashtags,showCategories,roomCategories) }}
-                    </div>
-                    
-                    {# steps #}
-                    <div id="steps{{ todo.itemId }}" class="cs-edit-section cs-toggle">
-                        {{ macrosTodo.steps(todo, stepList) }}
-                    </div>
+
+                    {% if not draft %}
+                        {# links #}
+                        <div id="links{{ todo.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': todo.contextId, 'itemId': todo.itemId}) }}' }">
+                            {{ macrosItem.links(todo,showHashtags,showCategories,roomCategories, draft) }}
+                        </div>
+
+                        {# steps #}
+                        <div id="steps{{ todo.itemId }}" class="cs-edit-section cs-toggle">
+                            {{ macrosTodo.steps(todo, stepList) }}
+                        </div>
+                    {% endif %}
+
+                    {% if draft %}
+                        <div id="draft-buttons-wrapper">
+                            <a id="draft-save-combine-link" href="" class="uk-button uk-button-primary">
+                                {{ 'create entry'|trans({}, "form") }}
+                            </a>
+                            <a id="draft-cancel-link" href="" class="uk-button uk-button-secondary">
+                                {{ 'cancel'|trans({}, "form") }}
+                            </a>
+                        </div>
+                    {% endif %}
                 </article>
             </div>
 
@@ -251,7 +264,7 @@
                 
                 <div id="annotations{{ todo.itemId }}" class="uk-panel uk-panel-box uk-margin-bottom uk-panel-box-primary ">
 
-                    {% if is_granted('ITEM_EDIT', 'NEW') %}
+                    {% if is_granted('ITEM_ANNOTATE', todo.itemId) %}
                         <article class="uk-comment">
                             <header class="uk-comment-header uk-flex">
                                 <div class="uk-margin-right uk-flex-item-none">

@@ -7,6 +7,10 @@
                 <source>home</source>
                 <target>Einstiegsseite</target>
             </trans-unit>
+            <trans-unit id="my_home">
+                <source>my home</source>
+                <target>Meine Einstiegsseite</target>
+            </trans-unit>
             <trans-unit id="announcement">
                 <source>announcement</source>
                 <target>Ankündigungen</target>

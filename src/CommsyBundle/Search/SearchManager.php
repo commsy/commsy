@@ -106,6 +106,8 @@ class SearchManager
             $contextIds[] = $searchableRoom->getItemId();
         }
 
+        $query = new \Elastica\Query();
+
         $boolQuery = new Queries\BoolQuery();
 
         // query context
@@ -141,7 +143,14 @@ class SearchManager
 
         $boolQuery->addFilter($idsQuery);
 
-        return $this->commsyFinder->find($boolQuery, 50);
+        $query->setQuery($boolQuery);
+
+        // sort by activity
+        $sortArray = ['activity' => 'desc'];
+
+        $query->setSort($sortArray);
+
+        return $this->commsyFinder->find($query, 50);
     }
 
     public function createExcludeFilter($itemId)
