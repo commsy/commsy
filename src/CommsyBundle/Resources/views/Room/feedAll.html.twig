@@ -52,7 +52,7 @@
                     </div>
                     <div>
                         <h4 class="uk-comment-title">
-                            {% if projectsMemberStatus[room.itemId] != 'archived' %}
+                            {% if 'archived' not in projectsMemberStatus[room.itemId] %}
                                 <a href="{{ path('commsy_room_detail', {'roomId': roomId, 'itemId': room.itemId}) }}">{{ room.title|decodeHtmlEntity }}</a>
                             {% else %}
                                 <span class="uk-text-muted">{{ room.title|decodeHtmlEntity }}</span>
