@@ -24,10 +24,18 @@ class InvitationsService
 
     public function invitationsEnabled () {
         $legacyEnvironment = $this->serviceContainer->get('commsy_legacy.environment')->getEnvironment();
-        $portal = $legacyEnvironment->getCurrentPortalItem();
-        $authSourceItem = $portal->getDefaultAuthSourceItem();
-        if ($authSourceItem->allowAddAccountInvitation()) {
-            return true;
+
+        $authSourceManager = $legacyEnvironment->getAuthSourceManager();
+        $authSourceManager->setContextLimit($legacyEnvironment->getCurrentPortalId());
+        $authSourceManager->select();
+        $authSourceArray = $authSourceManager->get()->to_array();
+
+        foreach ($authSourceArray as $authSourceItem) {
+            if ($authSourceItem->isCommSyDefault()) {
+                if ($authSourceItem->allowAddAccountInvitation()) {
+                    return true;
+                }
+            }
         }
         return false;
     }

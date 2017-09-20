@@ -623,6 +623,12 @@
                 <target>Guest Access</target>
             </trans-unit>
 
+            <!-- Invitations -->
+            <trans-unit id="send">
+                <source>Send</source>
+                <target>Send invitation</target>
+            </trans-unit>
+
             <!-- Delete -->
             <trans-unit id="settings_delete_title">
                 <source>Delete room</source>
