@@ -8,6 +8,7 @@ services:
       - "./.data/debug:/tmp"
     links:
       - commsy_mailhog
+      - commsy_mediawiki
 
   commsy_mailhog:
     image: mailhog/mailhog:latest
