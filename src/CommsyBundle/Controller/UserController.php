@@ -534,6 +534,10 @@ class UserController extends Controller
             $isSelf = true;
         }
 
+        $markupService = $this->get('commsy_legacy.markup');
+        $itemService = $this->get('commsy_legacy.item_service');
+        $markupService->addFiles($itemService->getItemFileList($itemId));
+
         return array(
             'roomId' => $roomId,
             'user' => $infoArray['user'],

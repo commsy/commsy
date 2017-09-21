@@ -271,6 +271,10 @@ class TopicController extends Controller
             $isLinkedToItems = true;
         }
 
+        $markupService = $this->get('commsy_legacy.markup');
+        $itemService = $this->get('commsy_legacy.item_service');
+        $markupService->addFiles($itemService->getItemFileList($itemId));
+
         return array(
             'roomId' => $roomId,
             'topic' => $infoArray['topic'],
