@@ -343,6 +343,10 @@ class DiscussionController extends Controller
                 $noticedManager->markNoticed($article->getItemID(), 0);
             }
 
+            $markupService = $this->get('commsy_legacy.markup');
+            $itemService = $this->get('commsy_legacy.item_service');
+            $markupService->addFiles($itemService->getItemFileList($article->getItemID()));
+
             $article = $articleList->getNext();
         }
 

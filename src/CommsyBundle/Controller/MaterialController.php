@@ -322,7 +322,7 @@ class MaterialController extends Controller
 
         $markupService = $this->get('commsy_legacy.markup');
         $itemService = $this->get('commsy_legacy.item_service');
-        $markupService->setFiles($itemService->getItemFileList($itemId));
+        $markupService->addFiles($itemService->getItemFileList($itemId));
 
         return array(
             'roomId' => $roomId,

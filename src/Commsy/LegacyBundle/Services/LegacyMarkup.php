@@ -19,7 +19,7 @@ class LegacyMarkup
 
     private $translator;
 
-    private $files;
+    private $files = [];
 
     public function __construct(LegacyEnvironment $legacyEnvironment, Router $router, TranslatorInterface $translator)
     {
@@ -28,9 +28,9 @@ class LegacyMarkup
         $this->translator = $translator;
     }
 
-    public function setFiles($files)
+    public function addFiles($files)
     {
-        $this->files = $files;
+        $this->files = array_merge($this->files, $files);
     }
 
     public function convertToHTML($text)
@@ -196,6 +196,19 @@ class LegacyMarkup
             }
         }
 
+        // CS8-Images
+        $cs8ImageRegex = '~<img.*?src=".*?iid=(\d*?)".*?\/>~u';
+        $cs8ImageFound = preg_match_all($cs8ImageRegex, $text, $cs8ImageMatches, PREG_SET_ORDER);
+
+        if ($cs8ImageFound) {
+            foreach ($cs8ImageMatches as $cs8ImageMatch) {
+                $cs8ImageHTML = $cs8ImageMatch[0];
+                $cs8ImageReplace = $this->formatCS8Image($cs8ImageHTML, $cs8ImageMatch[1]);
+
+                $text = str_replace($cs8ImageHTML, $cs8ImageReplace, $text);
+            }
+        }
+
         return $text;
     }
 
@@ -323,22 +336,23 @@ class LegacyMarkup
                     $lookupFileName = $array[2];
                 }
 
-                $file = $this->files[$lookupFileName];
+                if (isset($this->files[$lookupFileName])) {
+                    $file = $this->files[$lookupFileName];
 
-                if ($file) {
-                    $lowerFilename = mb_strtolower($file->getFilename(), 'UTF-8');
-                    if (    mb_stristr($lowerFilename, 'png') ||
+                    if ($file) {
+                        $lowerFilename = mb_strtolower($file->getFilename(), 'UTF-8');
+                        if (    mb_stristr($lowerFilename, 'png') ||
                             mb_stristr($lowerFilename, 'jpg') ||
                             mb_stristr($lowerFilename, 'jpeg') ||
                             mb_stristr($lowerFilename, 'gif')) {
 
-                        $src = $this->router->generate('commsy_file_getfile', [
-                            'fileId' => $file->getFileID(),
-                            'disposition' => 'inline',
-                        ]);
+                            $src = $this->router->generate('commsy_file_getfile', [
+                                'fileId' => $file->getFileID(),
+                                'disposition' => 'inline',
+                            ]);
+                        }
                     }
                 }
-
             }
         }
 
@@ -354,6 +368,14 @@ class LegacyMarkup
 
         if (isset($args['alt'])) {
             $imageHTML .= ' alt="' . $args['alt'] . '"';
+        }
+
+        if (isset($args['lfloat'])) {
+            $imageHTML .= ' style="float: left;"';
+        }
+
+        if (isset($args['rfloat'])) {
+            $imageHTML .= ' style="float: right;"';
         }
 
         $imageHTML .= '/></div>';
@@ -442,71 +464,42 @@ class LegacyMarkup
 
     private function formatFile($text, $array)
     {
-//        $file_name_array = $this->itemService->getItemFileList(123);
-//
-//
-//        $image_text = '';
-//        if ( !empty($array[1])
-//            and !empty($file_name_array)
-//        ) {
-//            $temp_file_name = htmlentities($array[1], ENT_NOQUOTES, 'UTF-8');
-//            if ( !empty($file_name_array[$temp_file_name]) ) {
-//                $file = $file_name_array[$temp_file_name];
-//            } elseif ( !empty($file_name_array[html_entity_decode($temp_file_name,ENT_COMPAT,'UTF-8')]) ) {
-//                $file = $file_name_array[html_entity_decode($temp_file_name,ENT_COMPAT,'UTF-8')];
-//            }
-//            if ( isset($file) ) {
-//
-//                if ( !empty($array[2]) ) {
-//                    $args = $this->parseArgs($array[2]);
-//                } else {
-//                    $args = array();
-//                }
-//
-//                if ( empty($args['icon'])
-//                    or ( !empty($args['icon'])
-//                        and $args['icon'] == 'true'
-//                    )
-//                ) {
-//                    $icon = $file->getFileIcon().' ';
-//                } else {
-//                    $icon = '';
-//                }
-//                if ( empty($args['size'])
-//                    or ( !empty($args['size'])
-//                        and $args['size'] == 'true'
-//                    )
-//                ) {
-//                    $kb = ' ('.$file->getFileSize().' KB)';
-//                } else {
-//                    $kb = '';
-//                }
-//                if ( !empty($args['text']) ) {
-//                    $name = $args['text'];
-//                } else {
-//                    $name = $file->getDisplayName();
-//                }
-//
-//                if ( !empty($args['target']) ) {
-//                    $target = ' target="'.$args['target'].'"';
-//                } elseif ( !empty($args['newwin']) ) {
-//                    $target = ' target=_blank;';
-//                } else {
-//                    $target = '';
-//                }
-//                $source = $file->getUrl();
-//                if(($file->getExtension() == 'jpg') or ($file->getExtension() == 'gif') or ($file->getExtension() == 'png')){
-//                    $image_text = '<a href="'.$source.'"'.$target.' rel="lightbox">'.$icon.$name.'</a>'.$kb;
-//                } else {
-//                    $image_text = '<a href="'.$source.'"'.$target.'>'.$icon.$name.'</a>'.$kb;
-//                }
-//            }
-//        }
-//
-//        if ( !empty($image_text) ) {
-//            $text = str_replace($array[0],$image_text,$text);
-//        }
-//
+        if (!isset($this->files)) {
+            return $text;
+        }
+
+        if (empty($array[1])) {
+            return $text;
+        }
+
+        $tempFileName = htmlentities($array[1], ENT_NOQUOTES, 'UTF-8');
+
+        if (!empty($this->files[$tempFileName])) {
+            $file = $this->files[$tempFileName];
+        } elseif (!empty($this->files[html_entity_decode($tempFileName, ENT_COMPAT, 'UTF-8')])) {
+            $file = $this->files[html_entity_decode($tempFileName, ENT_COMPAT, 'UTF-8')];
+        }
+
+        if (isset($file)) {
+            $args = [];
+            if (!empty($array[2])) {
+                $args = $this->parseArgs($array[2]);
+            }
+
+            $name = $file->getDisplayName();
+            if (!empty($args['text'])) {
+                $name = $args['text'];
+            }
+
+            $src = $this->router->generate('commsy_file_getfile', [
+                'fileId' => $file->getFileId(),
+            ]);
+
+            $fileText = '<a href="' . $src . '">' . $name . '</a>';
+
+            return str_replace($array[0], $fileText, $text);
+        }
+
         return $text;
     }
 
@@ -564,5 +557,31 @@ class LegacyMarkup
         $videoHTML .= '></video></div>';
 
         return $videoHTML;
+    }
+
+    private function formatCS8Image($text, $fileId)
+    {
+        $src = $this->router->generate('commsy_file_getfile', [
+            'fileId' => $fileId,
+            'disposition' => 'inline',
+        ]);
+
+        $altRegex = '~<img.*?alt="(\w*?)".*?\/>~u';
+        $altFound = preg_match($altRegex, $text, $altMatches);
+        $alt = '';
+        if ($altFound) {
+            $alt = $altMatches[1];
+        }
+
+        $styleRegex = '~<img.*?style="(.*?)".*?\/>~u';
+        $styleFound = preg_match($styleRegex, $text, $styleMatches);
+        $style = '';
+        if ($styleFound) {
+            $style = $styleMatches[1];
+        }
+
+        $imageHTML = '<img alt="' . $alt . '" src="' . $src . '" style="' . $style . '"/>';
+
+        return $imageHTML;
     }
 }
