@@ -204,6 +204,8 @@ class cs_room2_manager extends cs_context_manager {
          $public = 0;
       }
 
+      $title = str_ireplace("'", '"', $item->getTitle());
+
       $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
                'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
                'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
@@ -211,7 +213,7 @@ class cs_room2_manager extends cs_context_manager {
                'modifier_id="'.encode(AS_DB,$user->getItemID()).'",'.
                'creation_date="'.$current_datetime.'",'.
                'modification_date="'.$current_datetime.'",'.
-               'title="'.encode(AS_DB,$item->getTitle()).'",'.
+               'title="'.encode(AS_DB,$title).'",'.
                'extras="'.encode(AS_DB,serialize($item->getExtraInformation())).'",'.
                'public="'.encode(AS_DB,$public).'",'.
                'type="'.encode(AS_DB,$item->getRoomType()).'",'.
