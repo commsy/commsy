@@ -23,7 +23,7 @@ class StepTransformer implements DataTransformerInterface
     {
         $stepData = array();
 
-        if ($stepData) {
+        if ($stepItem) {
             $stepData['description'] = $stepItem->getDescription();
         }
 
