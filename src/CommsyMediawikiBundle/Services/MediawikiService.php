@@ -28,11 +28,9 @@ class MediawikiService
             $url = $this->wikiApiUrl . '?action=commsy&function=enablewiki&session-id=' . $this->legacyEnvironment->getEnvironment()->getSessionID() . '&context-id=' . $roomId . '&format=json';
             $restClient = $this->container->get('circle.restclient');
             $json = json_decode($restClient->get($url)->getContent());
-            if ($json) {
-                if (!isset($json->commsy->error)) {
-                    if ($json->commsy->result == 'wiki enabled') {
-                        $result = true;
-                    }
+            if (!isset($json->commsy->error)) {
+                if ($json->commsy->result == 'wiki enabled') {
+                    $result = true;
                 }
             }
         }
@@ -46,11 +44,9 @@ class MediawikiService
             $url = $this->wikiApiUrl . '?action=commsy&function=disablewiki&session-id=' . $this->legacyEnvironment->getEnvironment()->getSessionID() . '&context-id=' . $roomId . '&format=json';
             $restClient = $this->container->get('circle.restclient');
             $json = json_decode($restClient->get($url)->getContent());
-            if ($json) {
-                if (!isset($json->commsy->error)) {
-                    if ($json->commsy->result == 'wiki enabled') {
-                        $result = true;
-                    }
+            if (!isset($json->commsy->error)) {
+                if ($json->commsy->result == 'wiki enabled') {
+                    $result = true;
                 }
             }
         }
@@ -65,11 +61,9 @@ class MediawikiService
         //$response = file_get_contents($url);
 
         $json = json_decode($restClient->get($url)->getContent());
-        if ($json) {
-            if (!isset($json->commsy->error)) {
-                if ($json->commsy->result == 'wiki is enabled') {
-                    return true;
-                }
+        if (!isset($json->commsy->error)) {
+            if ($json->commsy->result == 'wiki is enabled') {
+                return true;
             }
         }
         return false;
