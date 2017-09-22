@@ -41,6 +41,23 @@ class CalendarsService
         return $result;
     }
 
+    public function getListExternalCalendars () {
+        $result = array();
+
+        $repository = $this->em->getRepository('CommsyBundle:Calendars');
+        $query = $repository->createQueryBuilder('calendars')
+            ->select()
+            ->where('calendars.external_url <> \'\'')
+            ->getQuery();
+        $calendars = $query->getResult();
+
+        foreach ($calendars as $calendar) {
+            $result[] = $calendar;
+        }
+
+        return $result;
+    }
+
     public function getCalendar ($calendarId) {
         $repository = $this->em->getRepository('CommsyBundle:Calendars');
         $query = $repository->createQueryBuilder('calendars')
