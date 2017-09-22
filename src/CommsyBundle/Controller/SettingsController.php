@@ -361,7 +361,21 @@ class SettingsController extends Controller
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $portal = $legacyEnvironment->getCurrentPortalItem();
-        $authSourceItem = $portal->getDefaultAuthSourceItem();
+
+        $authSourceManager = $legacyEnvironment->getAuthSourceManager();
+        $authSourceManager->setContextLimit($legacyEnvironment->getCurrentPortalId());
+        $authSourceManager->select();
+        $authSourceArray = $authSourceManager->get()->to_array();
+
+        $authSourceItem = null;
+        foreach ($authSourceArray as $tempAuthSourceItem) {
+            if ($tempAuthSourceItem->isCommSyDefault()) {
+                if ($tempAuthSourceItem->allowAddAccountInvitation()) {
+                    $authSourceItem = $tempAuthSourceItem;
+                }
+            }
+        }
+
         $user = $legacyEnvironment->getCurrentUserItem();
 
         $invitees = array();

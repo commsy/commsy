@@ -27,6 +27,7 @@ class ExternalCalendarsCommand extends ContainerAwareCommand
         $serverItem = $legacyEnvironment->getServerItem();
         $portalIds = $serverItem->getPortalIDArray();
         foreach ($portalIds as $portalId) {
+            $legacyEnvironment->unsetPortalItem();
             $legacyEnvironment->setCurrentPortalID($portalId);
             $rooms = $legacyEnvironment->getCurrentPortalItem()->getRoomList()->to_array();
             foreach ($rooms as $room) {
