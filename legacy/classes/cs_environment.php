@@ -2451,5 +2451,9 @@ class cs_environment {
    public function foundCurrentContextInArchive () {
       return $this->_found_in_archive;
    }
+
+   public function unsetPortalItem () {
+       $this->_current_portal = NULL;
+   }
 }
 ?>
