@@ -173,6 +173,20 @@ class UserService
         }
     }
 
+    /**
+     * Returns a array of archived room ids from userId
+     * @param $userId
+     * @return array
+     */
+    public function getArchivedRoomList($userId)
+    {
+        $archivedRoomManager = $this->legacyEnvironment->getZzzRoomManager();
+        $archivedRoomList = $archivedRoomManager->getRelatedRoomListForUser($userId);
+
+        return $archivedRoomList->to_array();
+
+    }
+
     public function getRoomList($userId)
     {
         $roomList = $this->roomManager->getRelatedRoomListForUser($userId);
