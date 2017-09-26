@@ -202,7 +202,7 @@ class CalendarsService
                     $date->setCreatorId($calendar->getCreatorId());
                     $date->setModifierId($calendar->getCreatorId());
                 } else {
-                    $legacyEnvironment = $container->get('commsy_legacy.environment')->getEnvironment();
+                    $legacyEnvironment = $this->serviceContainer->get('commsy_legacy.environment')->getEnvironment();
                     $date->setCreatorId($legacyEnvironment->getRootUserItemID());
                     $date->setModifierId($legacyEnvironment->getRootUserItemID());
                 }
