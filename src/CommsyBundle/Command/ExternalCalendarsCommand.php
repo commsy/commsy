@@ -30,38 +30,45 @@ class ExternalCalendarsCommand extends ContainerAwareCommand
         $calendars = $calendarsService->getListExternalCalendars();
         foreach ($calendars as $calendar) {
             // get external calendars
+            $output->write('<info>' . $calendar->getTitle() . '</info>');
 
-            $output->writeln('<info>... ' . $calendar->getTitle() . '</info>');
+            if (filter_var($calendar->getExternalUrl(), FILTER_VALIDATE_URL)) {
+                // delete old entries from database
+                $entityManagerDates = $container->get('doctrine.orm.entity_manager');
+                $repositoryDates = $entityManagerDates->getRepository('CommsyBundle:Dates');
+                $oldDateItems = $repositoryDates->createQueryBuilder('dates')
+                    ->select()
+                    ->where('dates.calendarId = :calendarId')
+                    ->setParameter('calendarId', $calendar->getId())
+                    ->getQuery()
+                    ->getResult();
 
-            // delete old entries from database
-            $entityManagerDates = $container->get('doctrine.orm.entity_manager');
-            $repositoryDates = $entityManagerDates->getRepository('CommsyBundle:Dates');
-            $oldDateItems = $repositoryDates->createQueryBuilder('dates')
-                ->select()
-                ->where('dates.calendarId = :calendarId')
-                ->setParameter('calendarId', $calendar->getId())
-                ->getQuery()
-                ->getResult();
+                $removeIds = array();
+                foreach ($oldDateItems as $oldDateItem) {
+                    $removeIds[] = $oldDateItem->getItemId();
+                    $entityManagerDates->remove($oldDateItem);
+                }
+                $entityManagerDates->flush();
 
-            $removeIds = array();
-            foreach ($oldDateItems as $oldDateItem) {
-                $removeIds[] = $oldDateItem->getItemId();
-                $entityManagerDates->remove($oldDateItem);
+
+                $entityManagerItems = $container->get('doctrine.orm.entity_manager');
+                $repositoryItems = $entityManagerItems->getRepository('CommsyBundle:Items');
+                $repositoryItems->createQueryBuilder('items')
+                    ->delete()
+                    ->where("items.itemId IN(:removeIds)")
+                    ->setParameter('removeIds', $removeIds)
+                    ->getQuery()
+                    ->getResult();
+
+                // fetch and parse data from external calendars
+                $result = $calendarsService->importEvents(fopen(str_ireplace('webcal://', 'http://', $calendar->getExternalUrl()), 'r'), $calendar, true);
+                if ($result !== true) {
+                    $output->write('<info>... Error: ' . $result . '</info>');
+                }
+            } else {
+                $output->write('<info>... Error: no valid url</info>');
             }
-            $entityManagerDates->flush();
-
-
-            $entityManagerItems = $container->get('doctrine.orm.entity_manager');
-            $repositoryItems = $entityManagerItems->getRepository('CommsyBundle:Items');
-            $repositoryItems->createQueryBuilder('items')
-                ->delete()
-                ->where("items.itemId IN(:removeIds)")
-                ->setParameter('removeIds', $removeIds)
-                ->getQuery()
-                ->getResult();
-
-            // fetch and parse data from external calendars
-            $calendarsService->importEvents(fopen(str_ireplace('webcal://', 'http://', $calendar->getExternalUrl()), 'r'), $calendar, true);
+            $output->writeln('');
         }
     }
 }
