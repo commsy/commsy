@@ -497,7 +497,7 @@ class cs_authentication {
       }
 
       if ($allowed) {
-          // add ValDAV Hash
+          // add CalDAV Hash
           global $symfonyContainer;
           $caldavService = $symfonyContainer->get('commsy.caldav_service');
           $caldavService->setCalDAVHash($uid, $password, 'CommSy');
