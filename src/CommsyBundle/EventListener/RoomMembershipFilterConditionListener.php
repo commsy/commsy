@@ -33,6 +33,8 @@ class RoomMembershipFilterConditionListener
 
             $currentUserItem = $this->userService->getCurrentUserItem();
             $userRoomList = $this->userService->getRoomList($currentUserItem);
+            $userArchivedRoomList = $this->userService->getArchivedRoomList($currentUserItem);
+            $userRoomList = array_merge($userRoomList, $userArchivedRoomList);
 
             $roomIds = [];
             foreach ($userRoomList as $room) {

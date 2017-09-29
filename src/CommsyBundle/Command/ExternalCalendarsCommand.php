@@ -22,34 +22,17 @@ class ExternalCalendarsCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('<info>Fetching dates from external calendars ...</info>');
-        $container = $this->getContainer();
-        $legacyEnvironment = $container->get('commsy_legacy.environment')->getEnvironment();
-        $serverItem = $legacyEnvironment->getServerItem();
-        $portalIds = $serverItem->getPortalIDArray();
-        foreach ($portalIds as $portalId) {
-            $legacyEnvironment->setCurrentPortalID($portalId);
-            $rooms = $legacyEnvironment->getCurrentPortalItem()->getRoomList()->to_array();
-            foreach ($rooms as $room) {
-                $this->getExternalCalendarsForContext($room, $output);
-            }
-            $privateRooms = $legacyEnvironment->getCurrentPortalItem()->getPrivateRoomList()->to_array();
-            foreach ($privateRooms as $privateRoom) {
-                $this->getExternalCalendarsForContext($privateRoom, $output);
-            }
-        }
-    }
 
-    private function getExternalCalendarsForContext ($context, OutputInterface $output) {
         $container = $this->getContainer();
         $calendarsService = $container->get('commsy.calendars_service');
 
         // get calendars
-        $calendars = $calendarsService->getListCalendars($context->getItemId());
+        $calendars = $calendarsService->getListExternalCalendars();
         foreach ($calendars as $calendar) {
             // get external calendars
-            if ($calendar->getExternalUrl()) {
-                $output->writeln('<info>... ' . $calendar->getTitle() . '</info>');
+            $output->write('<info>' . $calendar->getTitle() . '</info>');
 
+            if (filter_var($calendar->getExternalUrl(), FILTER_VALIDATE_URL)) {
                 // delete old entries from database
                 $entityManagerDates = $container->get('doctrine.orm.entity_manager');
                 $repositoryDates = $entityManagerDates->getRepository('CommsyBundle:Dates');
@@ -67,19 +50,34 @@ class ExternalCalendarsCommand extends ContainerAwareCommand
                 }
                 $entityManagerDates->flush();
 
+                $output->write('<info> ... removed dates</info>');
 
                 $entityManagerItems = $container->get('doctrine.orm.entity_manager');
                 $repositoryItems = $entityManagerItems->getRepository('CommsyBundle:Items');
-                $repositoryItems->createQueryBuilder('items')
-                    ->delete()
+                $oldItems = $repositoryItems->createQueryBuilder('items')
+                    ->select()
                     ->where("items.itemId IN(:removeIds)")
                     ->setParameter('removeIds', $removeIds)
                     ->getQuery()
                     ->getResult();
 
+                foreach ($oldItems as $oldItem) {
+                    //$entityManagerItems->remove($oldItem);
+                    $entityManagerItems->getConnection()->exec('DELETE FROM items WHERE items.item_id = "'.$oldItem->getItemId().'"');
+                }
+                //$entityManagerItems->flush();
+
+                $output->write('<info> ... removed items</info>');
+
                 // fetch and parse data from external calendars
-                $calendarsService->importEvents(fopen(str_ireplace('webcal://', 'http://', $calendar->getExternalUrl()), 'r'), $calendar, true);
+                $result = $calendarsService->importEvents(fopen(str_ireplace('webcal://', 'http://', $calendar->getExternalUrl()), 'r'), $calendar, true);
+                if ($result !== true) {
+                    $output->write('<info>... Error: ' . $result . '</info>');
+                }
+            } else {
+                $output->write('<info> ... Error: no valid url</info>');
             }
+            $output->writeln('');
         }
     }
 }

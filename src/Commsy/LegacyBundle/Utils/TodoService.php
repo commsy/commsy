@@ -63,6 +63,11 @@ class TodoService
             $this->todoManager->showNoNotActivatedEntries();
         }
 
+        // hide completed todos
+        if ($formData['hide-completed-entries']) {
+            $this->todoManager->setStatusLimit(4);
+        }
+
         // rubrics
         if ($formData['rubrics']) {
             // group

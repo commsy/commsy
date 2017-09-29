@@ -528,6 +528,7 @@ services:
         arguments:
             - '@router'
             - '@commsy_legacy.item_service'
+            - '@commsy_legacy.markup'
 
     # Controller
     commsy.item_controller:

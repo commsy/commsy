@@ -14,6 +14,10 @@
                 <source>Hide-deactivated-entries</source>
                 <target>Deaktivierte Einträge ausblenden</target>
             </trans-unit>
+            <trans-unit id="form-filter-hide-completed-entries">
+                <source>Hide-completed-entries</source>
+                <target>Erledigte Einträge ausblenden</target>
+            </trans-unit>
             <trans-unit id="form-filter-hide-invalid-entries">
                 <source>Hide-invalid-entries</source>
                 <target>Ungültige Einträge ausblenden</target>

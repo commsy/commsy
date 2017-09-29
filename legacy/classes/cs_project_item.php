@@ -1237,11 +1237,15 @@ class cs_project_item extends cs_room_item {
    }
 
    public function getGroupRoomList () {
-      $grouproom_manager = $this->_environment->getGroupRoomManager();
-      $grouproom_manager->setContextLimit($this->getContextID());
-      $grouproom_manager->setProjectRoomLimit($this->getItemID());
-      $grouproom_manager->select();
-      return $grouproom_manager->get();
+       if ($this->getItemID()) {
+           $grouproom_manager = $this->_environment->getGroupRoomManager();
+           $grouproom_manager->setContextLimit($this->getContextID());
+           $grouproom_manager->setProjectRoomLimit($this->getItemID());
+           $grouproom_manager->select();
+           return $grouproom_manager->get();
+       } else {
+           return new cs_list();
+       }
    }
 
    function _setObjectLinkItems($changed_key) {

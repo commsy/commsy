@@ -40,6 +40,15 @@ class ProfilePersonalInformationType extends AbstractType
         $userManager = $this->legacyEnvironment->getUserManager();
         $this->userItem = $userManager->getItem($options['itemId']);
 
+        $authSourceManager = $this->legacyEnvironment->getAuthSourceManager();
+        $authSourceItem = $authSourceManager->getItem($this->userItem->getAuthSource());
+
+        if($authSourceItem->allowChangeUserID()) {
+            $disabled = false;
+        } else {
+            $disabled = true;
+        }
+
         $builder
             ->add('userId', TextType::class, array(
                 'constraints' => array(
@@ -47,6 +56,7 @@ class ProfilePersonalInformationType extends AbstractType
                 ),
                 'label' => 'userId',
                 'required' => true,
+                'disabled' => $disabled,
             ))
             ->add('firstname', TextType::class, array(
                 'label' => 'firstname',
