@@ -1027,6 +1027,12 @@ class RoomController extends Controller
             $linkCommunitiesMandantory = false;
         }
 
+        $roomCategoriesService = $this->get('commsy.roomcategories_service');
+        $roomCategories = [];
+        foreach ($roomCategoriesService->getListRoomCategories($current_portal->getItemId()) as $roomCategory) {
+            $roomCategories[$roomCategory->getTitle()] = $roomCategory->getId();
+        }
+
         $formData = [];
         $form = $this->createForm(ContextType::class, $formData, [
             'types' => $types,
@@ -1036,6 +1042,7 @@ class RoomController extends Controller
             'times' => $times,
             'communities' => $community_room_array,
             'linkCommunitiesMandantory' => $linkCommunitiesMandantory,
+            'roomCategories' => $roomCategories,
         ]);
 
         $form->handleRequest($request);
@@ -1086,6 +1093,8 @@ class RoomController extends Controller
                 // mark the room as edited
                 $linkModifierItemManager = $legacyEnvironment->getLinkModifierItemManager();
                 $linkModifierItemManager->markEdited($legacyRoom->getItemID());
+
+                $roomCategoriesService->setRoomCategoriesLinkedToContext($legacyRoom->getItemId(), $context['categories']);
 
                 // redirect to the project detail page
                 return $this->redirectToRoute('commsy_room_detail', [

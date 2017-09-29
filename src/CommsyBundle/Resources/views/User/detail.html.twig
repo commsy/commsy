@@ -207,7 +207,7 @@
                                                     </div>
                                                     {% if group.isGroupRoomActivated %}
                                                         <div class="uk-width-1-3 uk-text-right">
-                                                            <a href="{{ path('commsy_room_home', {'roomId': roomId}) }}" class="uk-icon-button uk-icon-sign-in cs-grouproom-sign-in" data-uk-tooltip title="{{'enter grouproom'|trans({}) }}"></a>
+                                                            <a href="{{ path('commsy_room_home', {'roomId': group.groupRoomItemID}) }}" class="uk-icon-button uk-icon-sign-in cs-grouproom-sign-in" data-uk-tooltip title="{{'enter grouproom'|trans({}) }}"></a>
                                                         </div>
                                                     {% endif %}
                                                 </div>

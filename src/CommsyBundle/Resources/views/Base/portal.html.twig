@@ -1,0 +1,9 @@
+{% extends '::base.html.twig' %}
+
+{% block side_navigation %}
+    {{ knp_menu_render('main') }}
+{% endblock %}
+
+{% block breadcrumb %}
+    {{ wo_render_breadcrumbs({ viewTemplate: "CommsyBundle:Breadcrumbs:breadcrumbs.html.twig" }) }}
+{% endblock %}

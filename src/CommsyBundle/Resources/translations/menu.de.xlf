@@ -170,6 +170,15 @@
                 <source>irreversibleMessage</source>
                 <target>Diese Aktion kann nicht rückgängig gemacht werden!</target>
             </trans-unit>
+
+            <trans-unit id="Room categories">
+                <source>Room categories</source>
+                <target>Raumkategorien</target>
+            </trans-unit>
+            <trans-unit id="Portal settings">
+                <source>Portal settings</source>
+                <target>Portaleinstellungen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

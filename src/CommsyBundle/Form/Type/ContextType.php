@@ -51,8 +51,21 @@ class ContextType extends AbstractType
                 ],
                 'required' => false,
                 'translation_domain' => 'room',
-            ])
-            ->add('save', SubmitType::class, [
+            ]);
+
+            if (isset($options['roomCategories'])) {
+                $builder->add('categories', ChoiceType::class, array(
+                    'placeholder' => false,
+                    'choices' => $options['roomCategories'],
+                    'label' => 'Room categories',
+                    'required' => false,
+                    'expanded' => true,
+                    'multiple' => true,
+                    'translation_domain' => 'portal',
+                ));
+            }
+
+            $builder->add('save', SubmitType::class, [
                 'attr' => [
                     'class' => 'uk-button-primary',
                 ],
@@ -84,6 +97,7 @@ class ContextType extends AbstractType
                 'times',
                 'communities',
                 'linkCommunitiesMandantory',
+                'roomCategories',
             ])
             ->setDefaults([
                 'translation_domain' => 'project',

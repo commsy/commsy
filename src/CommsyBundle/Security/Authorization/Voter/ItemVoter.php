@@ -13,6 +13,7 @@ class ItemVoter extends Voter
     const SEE = 'ITEM_SEE';
     const EDIT = 'ITEM_EDIT';
     const ANNOTATE = 'ITEM_ANNOTATE';
+    const MODERATE = 'ITEM_MODERATE';
 
     private $legacyEnvironment;
     private $itemService;
@@ -29,6 +30,7 @@ class ItemVoter extends Voter
             self::SEE,
             self::EDIT,
             self::ANNOTATE,
+            self::MODERATE,
         ));
     }
 
@@ -56,6 +58,9 @@ class ItemVoter extends Voter
 
                 case self::ANNOTATE:
                     return $this->canAnnotate($item, $currentUser);
+
+                case self::MODERATE:
+                    return $this->canModerate($item, $currentUser);
             }
         } else if ($itemId == 'NEW') {
             if ($attribute == self::EDIT) {
@@ -113,6 +118,15 @@ class ItemVoter extends Voter
     private function canAnnotate($item, $currentUser)
     {
         if ($currentUser->getStatus() == 2 || $currentUser->getStatus() == 3) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function canModerate($item, $currentUser)
+    {
+        if ($currentUser->getStatus() == 3) {
             return true;
         }
 
