@@ -410,6 +410,11 @@
                 <source>E-mail when a workspace is created</source>
                 <target>E-Mail bei Raumeröffnung</target>
             </trans-unit>
+
+            <trans-unit id="email_to_commsy_description">
+                <source>email_to_commsy_description</source>
+                <target>Diese Funktion erlaubt es Ihnen, Materialien in Ihrer Ablage mittles E-Mail-Versandes anzulegen. Schicken Sie hierzu eine E-Mail von Ihrer Account-E-Mail-Adresse '%s' an '%s'. Die Betreffzeile der E-Mail wird als Titel und der Nachrichtentext als Beschreibungdes Materials übernommen.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

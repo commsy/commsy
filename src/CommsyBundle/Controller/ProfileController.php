@@ -545,6 +545,7 @@ class ProfileController extends Controller
         return [
             'form' => $form->createView(),
             'uploadEmail' => $this->getParameter('email.upload.account'),
+            'portalEmail' => $userItem->getRelatedPortalUserItem()->getRoomEmail(),
         ];
     }
 

@@ -64,8 +64,7 @@ class EmailUploadCommand extends ContainerAwareCommand
         $translator = $legacyEnvironment->getTranslationObject();
 
         // split the plain text part
-        $textPlain = preg_replace('/\r\n|\r/', '\n', $mail->textPlain);
-        $bodyLines = explode("\n", $textPlain);
+        $bodyLines = preg_split('/\\r\\n|\\r|\\n/', $mail->textPlain);
 
         // account / secret translations
         $translator->setSelectedLanguage('de');
@@ -95,12 +94,15 @@ class EmailUploadCommand extends ContainerAwareCommand
             if (!empty($bodyLine)) {
                 $bodyLine = strip_tags($bodyLine);
 
+                $isNonMetaLine = true;
+
                 if (empty($account)) {
                     foreach (['de', 'en'] as $language) {
                         if (stristr($bodyLine, $translation[$language]['account'])) {
                             $accountLine = str_ireplace($translation[$language]['account'] . ':', '', $bodyLine);
                             $accountLineExp = explode(' ', trim($accountLine));
                             $account = $accountLineExp[0];
+                            $isNonMetaLine = false;
                             break;
                         }
                     }
@@ -112,18 +114,21 @@ class EmailUploadCommand extends ContainerAwareCommand
                             $passwordLine = str_ireplace($translation[$language]['password'] . ':', '', $bodyLine);
                             $passwordLineExp = explode(' ', trim($passwordLine));
                             $secret = $passwordLineExp[0];
+                            $isNonMetaLine = false;
                             break;
                         }
                     }
                 }
 
-                $nonMetaLines[] = $bodyLine;
+                if ($isNonMetaLine) {
+                    $nonMetaLines[] = $bodyLine;
+                }
             } else {
                 $nonMetaLines[] = $bodyLine;
             }
         }
 
-        $nonMetaBody = implode('\n', $nonMetaLines);
+        $nonMetaBody = implode("<br/>", $nonMetaLines);
 
         $serverItem = $legacyEnvironment->getServerItem();
         $portalIds = $serverItem->getPortalIDArray();

@@ -59,6 +59,11 @@
                                     </tr>
                                     <tr>
                                         <td>
+                                            <div>{{ 'email_to_commsy_description'|trans({}, "profile")|format(portalEmail,uploadEmail) }}</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
                                             {{ form_row(form.emailToCommsy) }}
                                             <div class="uk-form-controls">
                                                 {{ 'emailToCommsyText'|trans({},'profile') }} {{ uploadEmail }}
