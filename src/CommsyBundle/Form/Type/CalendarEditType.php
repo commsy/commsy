@@ -53,6 +53,7 @@ class CalendarEditType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
                 $calendar = $event->getData();
                 $form = $event->getForm();
+                $options = $event->getForm()->getConfig()->getOptions();
 
                 // check if this is a "new" object
                 if (!$calendar->getId()) {
@@ -77,6 +78,9 @@ class CalendarEditType extends AbstractType
                             ->add('delete', Types\SubmitType::class, [
                                 'attr' => array(
                                     'class' => 'uk-button-danger',
+                                    'data-confirm-delete' => $options['confirm-delete'],
+                                    'data-confirm-delete-cancel' => $options['confirm-delete-cancel'],
+                                    'data-confirm-delete-confirm' => $options['confirm-delete-confirm'],
                                 ),
                                 'label' => 'Delete calendar',
                                 'translation_domain' => 'calendar',
@@ -89,6 +93,7 @@ class CalendarEditType extends AbstractType
                                 'class' => 'uk-button-secondary',
                             ),
                             'label' => 'Cancel',
+                            'translation_domain' => 'calendar',
                         ]);
                 }
             });
@@ -103,7 +108,7 @@ class CalendarEditType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['editExternalUrl'])
+            ->setRequired(['editExternalUrl', 'confirm-delete', 'confirm-delete-cancel', 'confirm-delete-confirm'])
         ;
     }
 

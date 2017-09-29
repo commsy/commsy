@@ -166,7 +166,7 @@
             </trans-unit>
             <trans-unit id="basic_settings_text">
                 <source>Basic settings text</source>
-                <target>Legen Sie z.B. den Raumnamen fest und ob er dargestellt werden soll, wählen Sie die Sprache des Raumes aus und geben Sie dem Raum ein Logo. Außerdem können Sie die zentralen Zuordnungen für den Raum treffen.</target>
+                <target>Legen Sie z.B. den Raumnamen fest, wählen Sie die Sprache des Raumes aus und entscheiden Sie, ob und wie eine Teilnahmeüberprüfung stattfinden soll. Außerdem können Sie die zentralen Zuordnungen für den Raum treffen.</target>
             </trans-unit>
             <trans-unit id="rubric_selection_text">
                 <source>Rubric selection text</source>
@@ -620,6 +620,12 @@
             <trans-unit id="guest_access">
                 <source>Guest Access</source>
                 <target>Gastzugang</target>
+            </trans-unit>
+
+            <!-- Invitations -->
+            <trans-unit id="send">
+                <source>Send</source>
+                <target>Einladung verschicken</target>
             </trans-unit>
 
             <!-- Delete -->

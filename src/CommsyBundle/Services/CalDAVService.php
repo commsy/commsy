@@ -40,12 +40,15 @@ class CalDAVService
             $legacyUserItem = $userService->getUser($users[0]->getItemId());
             $privateRoomUser = $legacyUserItem->getRelatedPrivateRoomUserItem();
 
-            $hash = md5($userId . ':' . $realm . ':' . $password);
+            // TODO: User item might be null in some cases when using multiple auth sources
+            if ($privateRoomUser) {
+                $hash = md5($userId . ':' . $realm . ':' . $password);
 
-            $this->em->createQuery('UPDATE CommsyBundle:Hash hash SET hash.caldav = :hash WHERE hash.userItemId = :itemId')
-                ->setParameter('hash', $hash)
-                ->setParameter('itemId', $privateRoomUser->getItemId())
-                ->getResult();
+                $this->em->createQuery('UPDATE CommsyBundle:Hash hash SET hash.caldav = :hash WHERE hash.userItemId = :itemId')
+                    ->setParameter('hash', $hash)
+                    ->setParameter('itemId', $privateRoomUser->getItemId())
+                    ->getResult();
+            }
         }
     }
 }

@@ -1553,7 +1553,7 @@ class cs_user_item extends cs_item
         if ($userItem->getContextID() == $this->getContextID()) {
 
             // Moderators are only allowed to edit user in portal context
-            if ($userItem->isModerator() && $userItem->getContextItem()->isPortal()) {
+            if ($userItem->isModerator()) { // && $userItem->getContextItem()->isPortal()
                 return true;
             }
 

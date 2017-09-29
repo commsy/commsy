@@ -511,6 +511,7 @@ class UserController extends Controller
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
@@ -527,6 +528,15 @@ class UserController extends Controller
             $topicService = $this->get('commsy_legacy.topic_service');
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
+
+        $isSelf = false;
+        if ($legacyEnvironment->getCurrentUserItem()->getItemId() == $itemId) {
+            $isSelf = true;
+        }
+
+        $markupService = $this->get('commsy_legacy.markup');
+        $itemService = $this->get('commsy_legacy.item_service');
+        $markupService->addFiles($itemService->getItemFileList($itemId));
 
         return array(
             'roomId' => $roomId,
@@ -553,6 +563,7 @@ class UserController extends Controller
             'status' => $infoArray['status'],
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
+            'isSelf' => $isSelf,
        );
     }
 
@@ -677,23 +688,7 @@ class UserController extends Controller
                 $lastItemId = $users[sizeof($users)-1]->getItemId();
             }
         }
-
-        $groupUser = $userService->getUser($itemId);
-
-        $this->groupManager = $legacyEnvironment->getGroupManager();
-        $this->groupManager->reset();
-        $this->groupManager->setContextLimit($roomId);
-        $this->groupManager->select();
-        $groupList = $this->groupManager->get();
-
-
-        $group = $groupList->getFirst();
-        while ( $group ) {
-            if (!$groupUser->isInGroup($group)){
-                $groupList->removeElement($group);
-            }
-            $group = $groupList->getNext();
-        }
+        
         $infoArray['user'] = $user;
         $infoArray['readerList'] = $readerList;
         $infoArray['modifierList'] = $modifierList;
@@ -713,7 +708,7 @@ class UserController extends Controller
         $infoArray['currentUser'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
-        $infoArray['linkedGroups'] = $groupList->to_array();;
+        $infoArray['linkedGroups'] = $userService->getUser($itemId)->getGroupList()->to_array();;
         $infoArray['comment'] = $user->getUserComment();
         $infoArray['status'] = $user->getStatus();
 

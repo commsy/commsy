@@ -464,7 +464,6 @@ class RoomController extends Controller
         foreach ($rooms as $room) {
             $projectsMemberStatus[$room->getItemId()] = $this->memberStatus($room);
         }
-
         return [
             'roomId' => $roomId,
             'portal' => $portalItem,
@@ -583,6 +582,10 @@ class RoomController extends Controller
         } else {
             $userMayCreateContext = true;
         }
+
+        $markupService = $this->get('commsy_legacy.markup');
+        $itemService = $this->get('commsy_legacy.item_service');
+        $markupService->addFiles($itemService->getItemFileList($itemId));
 
         return [
             'roomId' => $roomId,
@@ -1193,13 +1196,13 @@ class RoomController extends Controller
         return $templates;
     }
 
-    private function memberStatus($item)
+    private function memberStatus($roomItem)
     {
         $status = 'closed';
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $currentUser = $legacyEnvironment->getCurrentUserItem();
         $roomService = $this->get('commsy_legacy.room_service');
-        $item = $roomService->getRoomItem($item->getItemId());
+        $item = $roomService->getRoomItem($roomItem->getItemId());
 
         if ($item) {
             $relatedUserArray = $currentUser->getRelatedUserList()->to_array();
@@ -1231,7 +1234,25 @@ class RoomController extends Controller
                 $status = 'rejected';
             }
         } else {
+
+            $legacyEnvironment->activateArchiveMode();
+
+            $item = $roomService->getRoomItem($roomItem->getItemId());
             $status = 'archived';
+
+            $currentUser = $legacyEnvironment->getCurrentUserItem();
+            $relatedUserArray = $currentUser->getRelatedUserList()->to_array();
+
+            foreach ($relatedUserArray as $relatedUser) {
+                if ($relatedUser->getContextId() == $item->getItemId()) {
+                    $roomUser = $relatedUser;
+                }
+            }
+            if ($currentUser->isRoot() || (!empty($roomUser) && $item->mayEnter($roomUser))) {
+                $status = 'enter_archived';
+            }
+
+            $legacyEnvironment->deactivateArchiveMode();
         }
         return $status;
     }

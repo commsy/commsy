@@ -343,6 +343,10 @@ class AnnouncementController extends Controller
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
 
+        $markupService = $this->get('commsy_legacy.markup');
+        $itemService = $this->get('commsy_legacy.item_service');
+        $markupService->addFiles($itemService->getItemFileList($itemId));
+
         return array(
             'roomId' => $roomId,
             'announcement' => $infoArray['announcement'],
@@ -631,7 +635,7 @@ class AnnouncementController extends Controller
         // $announcementItem->setTitle('['.$translator->trans('insert title').']');
         $dateTime = new \DateTime('now');
         $announcementItem->setFirstDateTime($dateTime->format('Y-m-d H:i:s'));
-        $dateTime->add(new \DateInterval('P1W'));
+        $dateTime->add(new \DateInterval('P2W'));
         $announcementItem->setSecondDateTime($dateTime->format('Y-m-d H:i:s'));
         $announcementItem->setDraftStatus(1);
         $announcementItem->setPrivateEditing(1);
@@ -824,6 +828,7 @@ class AnnouncementController extends Controller
                     $annotationItem = $annotationList->getFirst();
                     while($annotationItem){
                        $noticedManager->markNoticed($annotationItem->getItemID(),'0');
+                       $readerManager->markRead($annotationItem->getItemId(), '0');
                        $annotationItem = $annotationList->getNext();
                     }
                 }

@@ -266,6 +266,15 @@ class TopicController extends Controller
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
 
+        $isLinkedToItems = false;
+        if (!empty($topic->getAllLinkedItemIDArray())) {
+            $isLinkedToItems = true;
+        }
+
+        $markupService = $this->get('commsy_legacy.markup');
+        $itemService = $this->get('commsy_legacy.item_service');
+        $markupService->addFiles($itemService->getItemFileList($itemId));
+
         return array(
             'roomId' => $roomId,
             'topic' => $infoArray['topic'],
@@ -291,6 +300,7 @@ class TopicController extends Controller
             'annotationForm' => $form->createView(),
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
+            'isLinkedToItems' => $isLinkedToItems,
        );
     }
 
@@ -797,6 +807,7 @@ class TopicController extends Controller
         //$itemManager->setTypeArrayLimit($rubricInformation);
 
         // get all linked items
+        $linkedItemArray = [];
         foreach ($item->getPathItemList()->to_array() as $pathElement) {
             $formData['path'][] = $pathElement->getItemId();
             $linkedItemArray[] = $pathElement;
@@ -846,7 +857,7 @@ class TopicController extends Controller
                     $sortingPlace = 1;
                     if (isset($formData['pathOrder'])) {
                         foreach (explode(',', $formData['pathOrder']) as $orderItemId) {
-                            if ($linkItem = $linkManager->getItemByFirstAndSecondID($item->getItemId(), $orderItemId)) {
+                            if ($linkItem = $linkManager->getItemByFirstAndSecondID($item->getItemId(), $orderItemId, true)) {
                                 if (in_array($orderItemId, $formDataPath)) {
                                     $linkItem->setSortingPlace($sortingPlace);
                                     $linkItem->save();
@@ -897,8 +908,14 @@ class TopicController extends Controller
 
         $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($item));
 
+        $isLinkedToItems = false;
+        if (!empty($item->getAllLinkedItemIDArray())) {
+            $isLinkedToItems = true;
+        }
+
         return [
             'topic' => $itemService->getTypedItem($itemId),
+            'isLinkedToItems' => $isLinkedToItems,
         ];
     }
 

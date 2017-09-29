@@ -85,40 +85,40 @@ class ItemService
         return $additional_modifier_array;
     }
 
-//    public function getItemFileList($itemId) {
-//        $item = $this->getItem($itemId);
-//
-//        if (isset($item)) {
-//            if ( $item->isA('material') ) {
-//                $file_list = $item->getFileListWithFilesFromSections();
-//            } elseif ( $item->isA('discussion') ) {
-//                $file_list = $item->getFileListWithFilesFromArticles();
-//            } elseif ( $item->isA('todo') ) {
-//                $file_list = $item->getFileListWithFilesFromSteps();
-//            } else {
-//                $file_list = $item->getFileList();
-//            }
-//
-//            if ($item->isA('section')) {
-//                $material_item = $item->getLinkedItem();
-//                $file_list2 = $material_item->getFileList();
-//                if ( isset($file_list2) and !empty($file_list2) and $file_list2->getCount() > 0 ) {
-//                    $file_list->addList($file_list2);
-//                }
-//            }
-//
-//            if (!empty($file_list)) {
-//                $file_array = $file_list->to_Array();
-//
-//                $file_name_array = array();
-//                foreach ($file_array as $file) {
-//                    $file_name_array[htmlentities($file->getDisplayName(), ENT_NOQUOTES, 'UTF-8')] = $file;
-//                }
-//
-//                return $file_name_array;
-//            }
-//        }
-//
-//        return [];
-//    }
+    public function getItemFileList($itemId) {
+        $item = $this->getTypedItem($itemId);
+
+        if (isset($item)) {
+            if ( $item->isA('material') ) {
+                $file_list = $item->getFileListWithFilesFromSections();
+            } elseif ( $item->isA('discussion') ) {
+                $file_list = $item->getFileListWithFilesFromArticles();
+            } elseif ( $item->isA('todo') ) {
+                $file_list = $item->getFileListWithFilesFromSteps();
+            } else {
+                $file_list = $item->getFileList();
+            }
+
+            if ($item->isA('section')) {
+                $material_item = $item->getLinkedItem();
+                $file_list2 = $material_item->getFileList();
+                if ( isset($file_list2) and !empty($file_list2) and $file_list2->getCount() > 0 ) {
+                    $file_list->addList($file_list2);
+                }
+            }
+
+            if (!empty($file_list)) {
+                $file_array = $file_list->to_Array();
+
+                $file_name_array = array();
+                foreach ($file_array as $file) {
+                    $file_name_array[htmlentities($file->getDisplayName(), ENT_NOQUOTES, 'UTF-8')] = $file;
+                }
+
+                return $file_name_array;
+            }
+        }
+
+        return [];
+    }
 }

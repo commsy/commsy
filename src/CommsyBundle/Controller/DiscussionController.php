@@ -343,6 +343,10 @@ class DiscussionController extends Controller
                 $noticedManager->markNoticed($article->getItemID(), 0);
             }
 
+            $markupService = $this->get('commsy_legacy.markup');
+            $itemService = $this->get('commsy_legacy.item_service');
+            $markupService->addFiles($itemService->getItemFileList($article->getItemID()));
+
             $article = $articleList->getNext();
         }
 
@@ -578,7 +582,7 @@ class DiscussionController extends Controller
         $selectAllStart = $request->request->get('selectAllStart');
         
         if ($selectAll == 'true') {
-            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $request);
+            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $sort = 'date', $request);
             foreach ($entries['discussions'] as $key => $value) {
                 $selectedIds[] = $value->getItemId();
             }
@@ -797,7 +801,8 @@ class DiscussionController extends Controller
                 if ($numDots == 0) {
                     // compare against our latest stored position
                     if (sprintf('%1$04d', $newRelativeNumericPosition) <= $position) {
-                        $newRelativeNumericPosition++;
+                        $newRelativeNumericPosition = $position + 1;
+//                        $newRelativeNumericPosition++;
                     }
                 }
             } else {
@@ -810,7 +815,7 @@ class DiscussionController extends Controller
 
                     // compare against our latest stored position
                     if (sprintf('%1$04d', $newRelativeNumericPosition) <= $lastPositionPart) {
-                        $newRelativeNumericPosition++;
+                        $newRelativeNumericPosition = $lastPositionPart + 1;
                     }
                 }
             }
@@ -827,7 +832,6 @@ class DiscussionController extends Controller
 
         $article = $discussionService->getNewArticle();
         $article->setDraftStatus(1);
-        $article->setTitle('['.$translator->trans('insert title').']');
         $article->setDiscussionID($itemId);
         $article->setPosition($newPosition);
         $article->save();

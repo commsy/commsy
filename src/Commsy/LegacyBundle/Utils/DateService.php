@@ -204,4 +204,14 @@ class DateService
         }
         return false;
     }
+
+    public function getDatesByCalendarId($calendarId)
+    {
+        $this->dateManager->reset();
+        $this->dateManager->setCalendarArrayLimit(['"'.$calendarId.'"']);
+        $this->dateManager->setWithoutDateModeLimit();
+        $this->dateManager->select();
+        $dateList = $this->dateManager->get();
+        return $dateList->to_array();
+    }
 }

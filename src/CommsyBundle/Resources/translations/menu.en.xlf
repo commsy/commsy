@@ -158,7 +158,7 @@
                 <target>Overview</target>
             </trans-unit>
             <trans-unit id="invitations">
-                <source>Invitations</source>
+                <source>invitations</source>
                 <target>Invitations</target>
             </trans-unit>
 

@@ -36,7 +36,7 @@
             </trans-unit>
             <trans-unit id="search-results-top50">
                 <source>Top 50 matches</source>
-                <target>Die 50 besten Treffer</target>
+                <target>Die 50 besten Treffen (nach Aktivität und Raumtyp sortiert)</target>
             </trans-unit>
             <trans-unit id="search-filter-all-my-rooms">
                 <source>Search in all my rooms</source>

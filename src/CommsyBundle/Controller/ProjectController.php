@@ -136,6 +136,10 @@ class ProjectController extends Controller
         $infoArray = $this->getDetailInfo($roomItem);
 
         $memberStatus = $userService->getMemberStatus($roomItem, $currentUser);
+
+        $markupService = $this->get('commsy_legacy.markup');
+        $itemService = $this->get('commsy_legacy.item_service');
+        $markupService->addFiles($itemService->getItemFileList($itemId));
         
         return [
             'roomId' => $roomId,
@@ -244,7 +248,7 @@ class ProjectController extends Controller
      * @Template()
      * @Security("is_granted('MODERATOR', itemId)")
      */
-    public function deleteAction($roomId, Request $request)
+    public function deleteAction($roomId, $itemId, Request $request)
     {
         $form = $this->createForm(DeleteType::class, ['confirm_string' => $this->get('translator')->trans('delete', [], 'profile')], []);
 
@@ -252,10 +256,10 @@ class ProjectController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             // get room from RoomService
             $roomService = $this->get('commsy_legacy.room_service');
-            $roomItem = $roomService->getRoomItem($roomId);
+            $roomItem = $roomService->getRoomItem($itemId);
 
             if (!$roomItem) {
-                throw $this->createNotFoundException('No room found for id ' . $roomId);
+                throw $this->createNotFoundException('No room found for id ' . $itemId);
             }
 
             $roomItem->delete();

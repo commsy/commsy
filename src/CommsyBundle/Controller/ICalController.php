@@ -91,6 +91,8 @@ class ICalController extends Controller
         // setup calendar
         $calendar = new Calendar('www.commsy.net');
 
+        $calendar->setPublishedTTL('PT30M');
+
         $dateList = $this->getDateList($currentContextItem, $export, $calendarId);
 
         // get ids auf all items

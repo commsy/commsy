@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="Edit calendars">
+                <source>Edit calendars</source>
+                <target>Edit calendars</target>
+            </trans-unit>
+            <trans-unit id="Title">
+                <source>Title</source>
+                <target>Title</target>
+            </trans-unit>
+            <trans-unit id="Color">
+                <source>Color</source>
+                <target>Color</target>
+            </trans-unit>
+            <trans-unit id="External url">
+                <source>External url</source>
+                <target>External url</target>
+            </trans-unit>
+            <trans-unit id="Create new calendar">
+                <source>Create new calendar</source>
+                <target>Create new calendar</target>
+            </trans-unit>
+            <trans-unit id="Update calendar">
+                <source>Update calendar</source>
+                <target>Update calendar</target>
+            </trans-unit>
+            <trans-unit id="Delete calendar">
+                <source>Delete calendar</source>
+                <target>Delete calendar</target>
+            </trans-unit>
+            <trans-unit id="Cancel">
+                <source>Cancel</source>
+                <target>Cancel</target>
+            </trans-unit>
+            <trans-unit id="confirm-delete">
+                <source>confirm-delete</source>
+                <target>Delete calendar?</target>
+            </trans-unit>
+            <trans-unit id="confirm-delete-cancel">
+                <source>confirm-delete-cancel</source>
+                <target>Cancel</target>
+            </trans-unit>
+            <trans-unit id="confirm-confirm">
+                <source>confirm-delete-confirm</source>
+                <target>Delete</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

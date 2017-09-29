@@ -6,6 +6,22 @@
                 <source>Path</source>
                 <target>Path</target>
             </trans-unit>
+            <trans-unit id="no path">
+                <source>no path</source>
+                <target>No path available.</target>
+            </trans-unit>
+            <trans-unit id="link to items to create path">
+                <source>link to items to create path</source>
+                <target>A path can be created after adding links to other entries.</target>
+            </trans-unit>
+            <trans-unit id="save">
+                <source>save</source>
+                <target>Save</target>
+            </trans-unit>
+            <trans-unit id="cancel">
+                <source>cancel</source>
+                <target>Cancel</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

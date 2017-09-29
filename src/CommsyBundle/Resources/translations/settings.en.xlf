@@ -166,7 +166,7 @@
             </trans-unit>
             <trans-unit id="basic_settings_text">
                 <source>Basic settings text</source>
-                <target>Please define workspace basics, i.e. title, logo, language.</target>
+                <target>Please define workspace basics, i.e. title, access checks, language.</target>
             </trans-unit>
             <trans-unit id="rubric_selection_text">
                 <source>Rubric selection text</source>
@@ -621,6 +621,12 @@
             <trans-unit id="guest_access">
                 <source>Guest Access</source>
                 <target>Guest Access</target>
+            </trans-unit>
+
+            <!-- Invitations -->
+            <trans-unit id="send">
+                <source>Send</source>
+                <target>Send invitation</target>
             </trans-unit>
 
             <!-- Delete -->

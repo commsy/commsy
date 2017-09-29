@@ -320,6 +320,10 @@ class MaterialController extends Controller
             $pathTopicItem = $topicService->getTopic($request->query->get('path'));
         }
 
+        $markupService = $this->get('commsy_legacy.markup');
+        $itemService = $this->get('commsy_legacy.item_service');
+        $markupService->addFiles($itemService->getItemFileList($itemId));
+
         return array(
             'roomId' => $roomId,
             'material' => $infoArray['material'],
@@ -1407,7 +1411,7 @@ class MaterialController extends Controller
         $selectAllStart = $request->request->get('selectAllStart');
         
         if ($selectAll == 'true') {
-            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $request);
+            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $sort = 'date', $request);
             foreach ($entries['materials'] as $key => $value) {
                 $selectedIds[] = $value->getItemId();
             }

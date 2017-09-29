@@ -286,7 +286,7 @@
             </trans-unit>
             <trans-unit id="profile_image_description">
                 <source>profileImageDescription</source>
-                <target>Ihr Profilbild wird neben Ihren Einträgen und Kommentaren im Raum "%s" angezeigt. Sie können für jeden Raum, in dem Sie Mitglied sind, ein eigenes Profilbild auswählen oder es über Option "in allen Räumen ändern" global konfigurieren. Falls Sie kein eigenes Profilbild hochladen, werden stattdessen Ihre Initialen angezeigt.</target>
+                <target>Ihr Profilbild wird neben Ihren Einträgen und Kommentaren im Raum "%s" angezeigt. Sie können für jeden Raum, in dem Sie Mitglied sind, ein eigenes Profilbild auswählen oder es über die Option "in allen Räumen ändern" global konfigurieren. Falls Sie kein eigenes Profilbild hochladen, werden stattdessen Ihre Initialen angezeigt.</target>
             </trans-unit>
             <trans-unit id="language_description">
                 <source>languageDescription</source>
@@ -397,6 +397,18 @@
             <trans-unit id="use_profile_image">
                 <source>Use profile image</source>
                 <target>Eigenes Profilbild verwenden</target>
+            </trans-unit>
+            <trans-unit id="email_notifications">
+                <source>e-mail notifications</source>
+                <target>E-Mail-Benachrichtigungen</target>
+            </trans-unit>
+            <trans-unit id="email_notification_registration">
+                <source>E-mail at registration</source>
+                <target>E-Mail bei Einschreibung</target>
+            </trans-unit>
+            <trans-unit id="email_notification_new_workspace">
+                <source>E-mail when a workspace is created</source>
+                <target>E-Mail bei Raumeröffnung</target>
             </trans-unit>
         </body>
     </file>
