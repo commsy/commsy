@@ -911,13 +911,13 @@ class DiscussionController extends Controller
             $transformer = $this->get('commsy_legacy.transformer.discarticle');
         }
 
+        $itemController = $this->get('commsy.item_controller');
         if ($item->getItemType() == 'discussion') {
             // get discussion from DiscussionService
             $discussionItem = $discussionService->getDiscussion($itemId);
             if (!$discussionItem) {
                 throw $this->createNotFoundException('No discussion found for id ' . $itemId);
             }
-            $itemController = $this->get('commsy.item_controller');
             $formData = $transformer->transform($discussionItem);
             $formData['categoriesMandatory'] = $categoriesMandatory;
             $formData['hashtagsMandatory'] = $hashtagsMandatory;
