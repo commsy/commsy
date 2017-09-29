@@ -336,10 +336,19 @@ class ContextController extends Controller
                 ]);
             }
             else {
-                $route = $this->redirectToRoute('commsy_project_detail', [
-                    'roomId' => $roomId,
-                    'itemId' => $itemId,
-                ]);
+                if ($roomManager->getItem($roomId)) {
+                    // in community-context -> redirect to detail view in project rubric.
+                    $route = $this->redirectToRoute('commsy_project_detail', [
+                        'roomId' => $roomId,
+                        'itemId' => $itemId,
+                    ]);
+                } else {
+                    // in private room context -> redirect to detail view of all rooms list.
+                    $route = $this->redirectToRoute('commsy_room_detail', [
+                        'roomId' => $roomId,
+                        'itemId' => $itemId,
+                    ]);
+                }
             }
             return $route;
         }
