@@ -27,7 +27,7 @@
                                 <tr>
                                     <td>
                                         <div class="uk-margin-small-bottom">
-                                            {{ 'profileImageDescription'|trans({}, "profile")|format(roomTitle) }}
+                                            {{ 'profileImageDescription'|trans({}, "profile")|format(roomTitle)|raw }}
                                         </div>
                                         <div>
                                             <em>{{ 'tip'| trans({}, 'messages') }}:</em> {{ 'Profile image tip'|trans({}, 'profile') }}

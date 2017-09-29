@@ -30,7 +30,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>{{ 'newsletterText'|trans({},'profile')|raw }}</td>
+                                    <td>{{ 'newsletterText'|trans({},'profile')|format(portalEmail)|raw }}</td>
                                 </tr>
                                 <tr>
                                     <td>{{ form_widget(form.newsletterStatus) }}</td>

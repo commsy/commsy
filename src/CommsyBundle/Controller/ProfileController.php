@@ -505,6 +505,7 @@ class ProfileController extends Controller
 
         return array(
             'form' => $form->createView(),
+            'portalEmail' => $userItem->getRelatedPortalUserItem()->getRoomEmail(),
         );
     }
 

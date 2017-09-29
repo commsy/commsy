@@ -286,7 +286,7 @@
             </trans-unit>
             <trans-unit id="profile_image_description">
                 <source>profileImageDescription</source>
-                <target>Ihr Profilbild wird neben Ihren Einträgen und Kommentaren im Raum "%s" angezeigt. Sie können für jeden Raum, in dem Sie Mitglied sind, ein eigenes Profilbild auswählen oder es über die Option "in allen Räumen ändern" global konfigurieren. Falls Sie kein eigenes Profilbild hochladen, werden stattdessen Ihre Initialen angezeigt.</target>
+                <target>Ihr Profilbild wird neben Ihren Einträgen und Kommentaren im Raum "<![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]>" angezeigt. Sie können für jeden Raum, in dem Sie Mitglied sind, ein eigenes Profilbild auswählen oder es über die Option "in allen Räumen ändern" global konfigurieren. Falls Sie kein eigenes Profilbild hochladen, werden stattdessen Ihre Initialen angezeigt.</target>
             </trans-unit>
             <trans-unit id="language_description">
                 <source>languageDescription</source>
@@ -307,7 +307,7 @@
             </trans-unit>
             <trans-unit id="newsletter_text">
                 <source>newsletterText</source>
-                <target>Hier können Sie auswählen, in welchen Zeitabständen Sie den Newsletter empfangen möchten.</target>
+                <target>Hier können Sie auswählen, in welchen Zeitabständen Sie den Newsletter empfangen möchten. Der Newsletter wird an Ihre Account-E-Mail-Adresse <![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]> geschickt.</target>
             </trans-unit>
 
             <!-- delete / lock account / room profile -->
@@ -413,7 +413,7 @@
 
             <trans-unit id="email_to_commsy_description">
                 <source>email_to_commsy_description</source>
-                <target>Diese Funktion erlaubt es Ihnen, Materialien in Ihrer Ablage mittles E-Mail-Versandes anzulegen. Schicken Sie hierzu eine E-Mail von Ihrer Account-E-Mail-Adresse '%s' an '%s'. Die Betreffzeile der E-Mail wird als Titel und der Nachrichtentext als Beschreibungdes Materials übernommen.</target>
+                <target>Diese Funktion erlaubt es Ihnen, Materialien in Ihrer Ablage mittles E-Mail-Versandes anzulegen. Schicken Sie hierzu eine E-Mail von Ihrer Account-E-Mail-Adresse <![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]> an <![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]>. Die Betreffzeile der E-Mail wird als Titel und der Nachrichtentext als Beschreibungdes Materials übernommen.</target>
             </trans-unit>
         </body>
     </file>

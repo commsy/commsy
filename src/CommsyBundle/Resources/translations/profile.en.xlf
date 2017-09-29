@@ -286,7 +286,7 @@
             </trans-unit>
             <trans-unit id="profile_image_description">
                 <source>profileImageDescription</source>
-                <target>Your profile picture is displayed next to your comments in room "%s". For every room that are a member of you can choose an individual profile picture. Alternatively, you can use the "change in all rooms" option to set your profile picture globally. If you do not upload a custom profile image your initials will be shown instead.</target>
+                <target>Your profile picture is displayed next to your comments in room "<![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]>". For every room that are a member of you can choose an individual profile picture. Alternatively, you can use the "change in all rooms" option to set your profile picture globally. If you do not upload a custom profile image your initials will be shown instead.</target>
             </trans-unit>
             <trans-unit id="language_description">
                 <source>languageDescription</source>
@@ -307,7 +307,7 @@
             </trans-unit>
             <trans-unit id="newsletter_text">
                 <source>newsletterText</source>
-                <target>Here you can configure how often you want to receive the Newsletter of this room.</target>
+                <target>Here you can configure how often you want to receive the Newsletter of this room. The newsletter will be send to you account e-mail address <![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]>.</target>
             </trans-unit>
 
             <!-- delete / lock account / room profile -->
@@ -415,7 +415,7 @@
 
             <trans-unit id="email_to_commsy_description">
                 <source>email_to_commsy_description</source>
-                <target>This function allows to create materials in your stack by sending e-mails from your configured account e-mail address '%s' to '%s'. The mail's subject will be used as the title of the new material and the mail's body as the materials description text.</target>
+                <target>This function allows to create materials in your stack by sending e-mails from your configured account e-mail address <![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]> to <![CDATA[<span class='uk-text-bold'>]]>%s<![CDATA[</span>]]>. The mail's subject will be used as the title of the new material and the mail's body as the materials description text.</target>
             </trans-unit>
          </body>
     </file>
