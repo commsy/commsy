@@ -566,9 +566,11 @@ class ProfileController extends Controller
     public function menuAction($roomId, Request $request)
     {
         $userService = $this->get('commsy_legacy.user_service');
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         return [
             'userId' => $userService->getCurrentUserItem()->getItemId(),
             'roomId' => $roomId,
+            'inPrivateRoom' => $legacyEnvironment->inPrivateRoom(),
         ];
     }
 
