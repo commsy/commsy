@@ -96,16 +96,62 @@ class DashboardFeedGenerator
         }
         
         $itemList = $itemList->getSubList($start, $max);
-        
+
         $feedList = array();
         $item = $itemList->getFirst();
         while ($item) {
-            $tempManager = $legacyEnvironment->getManager($item->getItemType());
-            $tempItem = $tempManager->getItem($item->getItemId());
-            $feedList[] = $tempItem;
+            $type = $item->getItemType();
+            switch ($type) {
+                case 'date':
+                    $datesManager = $this->legacyEnvironment->getEnvironment()->getDatesManager();
+                    $dateItem = $datesManager->getItem($item->getItemId());
+                    if ($dateItem) {
+                        if ($dateItem->getRecurrencePattern() == '') {
+                            $feedList[] = $dateItem;
+                        }
+                        else {
+                            $foundRecurrenceId = false;
+                            foreach ($feedList as $feedListEntry) {
+                                if ($feedListEntry->getItemType() == CS_DATE_TYPE) {
+                                    if ($feedListEntry->getRecurrenceId() == $dateItem->getRecurrenceId()) {
+                                        $foundRecurrenceId = true;
+                                    }
+                                }
+                            }
+                            if (!$foundRecurrenceId) {
+                                $feedList[] = $dateItem;
+                            }
+                        }
+                    }
+                    break;
+
+                case 'label':
+                    $labelManager = $this->legacyEnvironment->getEnvironment()->getLabelManager();
+                    $labelItem = $labelManager->getItem($item->getItemId());
+                    if ($labelItem->getItemType() == 'group') {
+                        $groupManager = $this->legacyEnvironment->getEnvironment()->getLabelManager();
+                        $groupItem = $groupManager->getItem($item->getItemId());
+                        if ($groupItem) {
+                            $feedList[] = $groupItem;
+                        }
+                    } else if ($labelItem->getItemType() == 'topic') {
+                        $topicManager = $this->legacyEnvironment->getEnvironment()->getTopicManager();
+                        $topicItem = $topicManager->getItem($item->getItemId());
+                        if ($topicItem) {
+                            $feedList[] = $topicItem;
+                        }
+                    }
+                    break;
+
+                default:
+                    $tempManager = $legacyEnvironment->getManager($item->getItemType());
+                    $tempItem = $tempManager->getItem($item->getItemId());
+                    $feedList[] = $tempItem;
+                    break;
+            }
             $item = $itemList->getNext();
         }
-        
+
         /* usort($feedList, function ($firstItem, $secondItem) {
             return ($firstItem->getModificationDate() < $secondItem->getModificationDate());
         }); */

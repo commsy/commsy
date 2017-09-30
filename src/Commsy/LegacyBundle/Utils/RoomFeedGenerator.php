@@ -97,8 +97,15 @@ class RoomFeedGenerator
                                 $feedList[] = $dateItem;
                             }
                             else {
-                                $recurringDates[] = $this->dateService->getRecurringDates($dateItem->getContextId(), $dateItem->getRecurrenceId());
-                                if (count($recurringDates) && !in_array($dateItem, $recurringDates[0])) {
+                                $foundRecurrenceId = false;
+                                foreach ($feedList as $feedListEntry) {
+                                    if ($feedListEntry->getItemType() == CS_DATE_TYPE) {
+                                        if ($feedListEntry->getRecurrenceId() == $dateItem->getRecurrenceId()) {
+                                            $foundRecurrenceId = true;
+                                        }
+                                    }
+                                }
+                                if (!$foundRecurrenceId) {
                                     $feedList[] = $dateItem;
                                 }
                             }
