@@ -512,6 +512,7 @@ class UserController extends Controller
     public function detailAction($roomId, $itemId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomService = $this->get('commsy_legacy.room_service');
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
@@ -538,6 +539,8 @@ class UserController extends Controller
         $itemService = $this->get('commsy_legacy.item_service');
         $markupService->addFiles($itemService->getItemFileList($itemId));
 
+        $roomItem = $roomService->getRoomItem($roomId);
+        $moderatorListLength = $roomItem->getModeratorList()->getCount();
         return array(
             'roomId' => $roomId,
             'user' => $infoArray['user'],
@@ -564,6 +567,7 @@ class UserController extends Controller
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
             'isSelf' => $isSelf,
+            'moderatorListLength' => $moderatorListLength,
        );
     }
 
