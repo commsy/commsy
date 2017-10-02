@@ -3,10 +3,10 @@
 case "$1" in
     wipe)
         echo "Stopping CommSy container";
-        docker-compose -f docker-compose.yml -f docker-compose-dev.yml stop
+        docker-compose -f docker-compose.yml -f docker-compose.override.yml stop
 
         echo "Removing all CommSy container"
-        docker-compose -f docker-compose.yml -f docker-compose-dev.yml rm
+        docker-compose -f docker-compose.yml -f docker-compose.override.yml rm
 
         echo "Removing all docker images";
         docker rmi $(docker images -a -q)
@@ -28,7 +28,7 @@ case "$1" in
 
     build)
         echo "Building CommSy container";
-        docker-compose -f docker-compose.yml -f docker-compose-dev.yml build
+        docker-compose -f docker-compose.yml -f docker-compose.override.yml build
         ;;
 
     start)
@@ -42,7 +42,7 @@ case "$1" in
             rm -r ./data/logs/
         fi
 
-        docker-compose -f docker-compose.yml -f docker-compose-dev.yml up
+        docker-compose -f docker-compose.yml -f docker-compose.override.yml up
 
         ;;
 
