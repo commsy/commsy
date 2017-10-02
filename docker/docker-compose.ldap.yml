@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  commsy_ldap:
+    image: osixia/openldap
+    container_name: commsy_ldap
+
+  commsy_php:
+    links:
+      - commsy_ldap

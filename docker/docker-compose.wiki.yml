@@ -1,35 +1,6 @@
-version: '2'
+version: "3"
 
-services:
-  commsy_php:
-    build: ./commsy_dev
-    volumes:
-      - commsy-unison-sync:/var/www/commsy:nocopy
-      - "./.data/debug:/tmp"
-    links:
-      - commsy_mailhog
-#      - commsy_mediawiki
-
-  commsy_mailhog:
-    image: mailhog/mailhog:latest
-    container_name: commsy_mailhog
-    ports:
-      - "8025:8025"
-
-  commsy_kibana:
-    image: docker.elastic.co/kibana/kibana:5.4.0
-    container_name: commsy_kibana
-    ports:
-      - "5601:5601"
-    links:
-      - commsy_elastic:elasticsearch
-    environment:
-      XPACK_SECURITY_ENABLED: "false"
-
-  commsy_elastic:
-    environment:
-      cluster.routing.allocation.disk.threshold_enabled: "false"
-
+#services:
 #  commsy_mediawiki:
 #    image: wikimedia/mediawiki:1.30.0-wmf4
 #    #build: ./commsy_wordpress
@@ -61,7 +32,3 @@ services:
 #     - "./.data/db_mediawiki:/var/lib/mysql"
 #    ports:
 #     - "3307:3306"
-
-volumes:
-  commsy-unison-sync:
-    external: true
