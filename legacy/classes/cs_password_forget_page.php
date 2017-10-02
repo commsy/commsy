@@ -151,7 +151,7 @@ class cs_password_forget_page extends cs_left_page {
                $body .= LF.LF;
                $body .= $translator->getEmailMessage('MAIL_BODY_HELLO',$user_fullname);
                $body .= LF.LF;
-               if ( $auth_source_item->allowAddAccount() ) {
+               if ( $auth_source_item->allowChangePassword() ) {
                   $body .= $translator->getMessage('USER_PASSWORD_MAIL_BODY',$user_id,$context_item->getTitle(),$url,'15');
                } else {
                   $body .= $translator->getMessage('USER_PASSWORD_MAIL_BODY_SORRY',$user_id,$context_item->getTitle());
