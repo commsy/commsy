@@ -464,7 +464,6 @@ class RoomController extends Controller
         foreach ($rooms as $room) {
             $projectsMemberStatus[$room->getItemId()] = $this->memberStatus($room);
         }
-
         return [
             'roomId' => $roomId,
             'portal' => $portalItem,
@@ -1028,6 +1027,12 @@ class RoomController extends Controller
             $linkCommunitiesMandantory = false;
         }
 
+        $roomCategoriesService = $this->get('commsy.roomcategories_service');
+        $roomCategories = [];
+        foreach ($roomCategoriesService->getListRoomCategories($current_portal->getItemId()) as $roomCategory) {
+            $roomCategories[$roomCategory->getTitle()] = $roomCategory->getId();
+        }
+
         $formData = [];
         $form = $this->createForm(ContextType::class, $formData, [
             'types' => $types,
@@ -1037,6 +1042,7 @@ class RoomController extends Controller
             'times' => $times,
             'communities' => $community_room_array,
             'linkCommunitiesMandantory' => $linkCommunitiesMandantory,
+            'roomCategories' => $roomCategories,
         ]);
 
         $form->handleRequest($request);
@@ -1087,6 +1093,10 @@ class RoomController extends Controller
                 // mark the room as edited
                 $linkModifierItemManager = $legacyEnvironment->getLinkModifierItemManager();
                 $linkModifierItemManager->markEdited($legacyRoom->getItemID());
+
+                if (isset($context['categories'])) {
+                    $roomCategoriesService->setRoomCategoriesLinkedToContext($legacyRoom->getItemId(), $context['categories']);
+                }
 
                 // redirect to the project detail page
                 return $this->redirectToRoute('commsy_room_detail', [
@@ -1188,13 +1198,13 @@ class RoomController extends Controller
         return $templates;
     }
 
-    private function memberStatus($item)
+    private function memberStatus($roomItem)
     {
         $status = 'closed';
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $currentUser = $legacyEnvironment->getCurrentUserItem();
         $roomService = $this->get('commsy_legacy.room_service');
-        $item = $roomService->getRoomItem($item->getItemId());
+        $item = $roomService->getRoomItem($roomItem->getItemId());
 
         if ($item) {
             $relatedUserArray = $currentUser->getRelatedUserList()->to_array();
@@ -1226,7 +1236,25 @@ class RoomController extends Controller
                 $status = 'rejected';
             }
         } else {
+
+            $legacyEnvironment->activateArchiveMode();
+
+            $item = $roomService->getRoomItem($roomItem->getItemId());
             $status = 'archived';
+
+            $currentUser = $legacyEnvironment->getCurrentUserItem();
+            $relatedUserArray = $currentUser->getRelatedUserList()->to_array();
+
+            foreach ($relatedUserArray as $relatedUser) {
+                if ($relatedUser->getContextId() == $item->getItemId()) {
+                    $roomUser = $relatedUser;
+                }
+            }
+            if ($currentUser->isRoot() || (!empty($roomUser) && $item->mayEnter($roomUser))) {
+                $status = 'enter_archived';
+            }
+
+            $legacyEnvironment->deactivateArchiveMode();
         }
         return $status;
     }

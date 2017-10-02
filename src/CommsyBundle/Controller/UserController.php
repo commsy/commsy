@@ -512,6 +512,7 @@ class UserController extends Controller
     public function detailAction($roomId, $itemId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomService = $this->get('commsy_legacy.room_service');
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
@@ -538,6 +539,8 @@ class UserController extends Controller
         $itemService = $this->get('commsy_legacy.item_service');
         $markupService->addFiles($itemService->getItemFileList($itemId));
 
+        $roomItem = $roomService->getRoomItem($roomId);
+        $moderatorListLength = $roomItem->getModeratorList()->getCount();
         return array(
             'roomId' => $roomId,
             'user' => $infoArray['user'],
@@ -564,6 +567,7 @@ class UserController extends Controller
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
             'isSelf' => $isSelf,
+            'moderatorListLength' => $moderatorListLength,
        );
     }
 
@@ -688,23 +692,7 @@ class UserController extends Controller
                 $lastItemId = $users[sizeof($users)-1]->getItemId();
             }
         }
-
-        $groupUser = $userService->getUser($itemId);
-
-        $this->groupManager = $legacyEnvironment->getGroupManager();
-        $this->groupManager->reset();
-        $this->groupManager->setContextLimit($roomId);
-        $this->groupManager->select();
-        $groupList = $this->groupManager->get();
-
-
-        $group = $groupList->getFirst();
-        while ( $group ) {
-            if (!$groupUser->isInGroup($group)){
-                $groupList->removeElement($group);
-            }
-            $group = $groupList->getNext();
-        }
+        
         $infoArray['user'] = $user;
         $infoArray['readerList'] = $readerList;
         $infoArray['modifierList'] = $modifierList;
@@ -724,7 +712,7 @@ class UserController extends Controller
         $infoArray['currentUser'] = $legacyEnvironment->getCurrentUserItem();
         $infoArray['showCategories'] = $current_context->withTags();
         $infoArray['showHashtags'] = $current_context->withBuzzwords();
-        $infoArray['linkedGroups'] = $groupList->to_array();;
+        $infoArray['linkedGroups'] = $userService->getUser($itemId)->getGroupList()->to_array();;
         $infoArray['comment'] = $user->getUserComment();
         $infoArray['status'] = $user->getStatus();
 

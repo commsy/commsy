@@ -4,9 +4,11 @@
         <li>
             <a href="{{ path('commsy_profile_personal', {'roomId': roomId, 'itemId': userId }) }}"><i class="uk-icon-justify uk-icon-user"></i> {{ 'Account'|trans([], 'profile') }}</a>
         </li>
-        <li>
-            <a href="{{ path('commsy_profile_general', {'roomId': roomId, 'itemId': userId }) }}"><i class="uk-icon-justify uk-icon-th-list"></i> {{ 'Room profile'|trans([], 'profile') }}</a>
-        </li>
+        {% if not inPrivateRoom %}
+            <li>
+                <a href="{{ path('commsy_profile_general', {'roomId': roomId, 'itemId': userId }) }}"><i class="uk-icon-justify uk-icon-th-list"></i> {{ 'Room profile'|trans([], 'profile') }}</a>
+            </li>
+        {% endif %}
         <li class="uk-nav-divider"></li>
             <li>
                 <a href="{{ path('commsy_logout_logout', {'roomId': roomId }) }}"><i class="uk-icon-justify uk-icon-power-off"></i> {{ 'Sign out'|trans([], 'profile') }}</a>

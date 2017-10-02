@@ -43,6 +43,9 @@
                             {% if form.community_rooms is defined %}
                                 {{ form_row(form.community_rooms) }}
                             {% endif %}
+                            {% if form.categories is defined %}
+                                {{ form_row(form.categories) }}
+                            {% endif %}
                         </div>
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">

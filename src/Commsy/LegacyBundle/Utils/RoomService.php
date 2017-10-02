@@ -23,21 +23,23 @@ class RoomService
     {
         // get the rooms rubric configuration
         $roomItem = $this->getRoomItem($roomId);
-        $homeConfiguration = $roomItem->getHomeConf();
+        if ($roomItem) {
+            $homeConfiguration = $roomItem->getHomeConf();
 
-        $rubrics = array();
-        if (!empty($homeConfiguration)) {
-            $rubricConfigurations = explode(',', $homeConfiguration);
+            $rubrics = array();
+            if (!empty($homeConfiguration)) {
+                $rubricConfigurations = explode(',', $homeConfiguration);
 
-            foreach ($rubricConfigurations as $rubricConfiguration) {
-                list($rubricName) = explode('_', $rubricConfiguration);
-                $rubrics[] = $rubricName;
+                foreach ($rubricConfigurations as $rubricConfiguration) {
+                    list($rubricName) = explode('_', $rubricConfiguration);
+                    $rubrics[] = $rubricName;
+                }
             }
-        }
-        if ($includeModifier) {
-            return $rubricConfigurations;
-        } else {
-            return $rubrics;
+            if ($includeModifier) {
+                return $rubricConfigurations;
+            } else {
+                return $rubrics;
+            }
         }
     }
 

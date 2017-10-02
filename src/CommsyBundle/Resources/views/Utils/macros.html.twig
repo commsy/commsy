@@ -43,6 +43,9 @@
     {% elseif user.status == 4 %}
         {{ 'reading user'|trans({}, 'user') }}
     {% endif %}
+    {% if user.isContact %}
+        , {{ 'is contact'|trans({}, 'user') }}
+    {% endif %}
 {% endmacro %}
 
 {% macro detailInformation(item, modifierList) %}
@@ -454,8 +457,12 @@
 {% endmacro %}
 
 {% macro contextLink(roomId, context, contextMemberStatus) %}
-    {% if contextMemberStatus == 'enter' %}
-        <a href="{{ path('commsy_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>
+    {% if 'enter' in contextMemberStatus %}
+        {% if 'archived' in contextMemberStatus %}
+            {{ 'Archived room'|trans({}, 'room') }} (<a href="{{ path('commsy_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>)
+        {% else %}
+            <a href="{{ path('commsy_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>
+        {% endif %}
     {% else %}
         {% if contextMemberStatus == 'join' %}
             <a href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}">{{ 'become member'|trans({}, 'room') }}</a>
@@ -485,7 +492,7 @@
             <i class="uk-icon-spinner uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'Your request has not been processed yet.'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
         {% elseif contextMemberStatus == 'rejected' %}
             <i class="uk-icon-lock uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'Your request has been rejected.'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
-        {% elseif contextMemberStatus == 'archived' %}
+        {% elseif 'archived' in contextMemberStatus %}
             <i class="uk-icon-file-archive-o uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'Archived room'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i>
         {% else %}
             <a href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon-user-plus uk-icon-medium uk-text-muted" style="width:24px; height:24px;" title="{{ 'become member'|trans({}, 'room') }}" data-uk-tooltip="{pos:'top-left'}"></i></a>
