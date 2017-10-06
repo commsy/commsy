@@ -2855,26 +2855,38 @@ function getExternalViewerArray(){
       }
    }
 
-   protected function replaceElasticItem($objectPersister, $repository) {
-        $object = $repository->findOneByItemId($this->getItemID());
+    protected function replaceElasticItem($objectPersister, $repository)
+    {
+        global $symfonyContainer;
+        $elasticHost = $symfonyContainer->getParameter('elastic_host');
 
-        if ($object && $object->isIndexable() && !$this->isDraft()) {
-            $objectPersister->replaceOne($object);
+        if ($elasticHost) {
+            $object = $repository->findOneByItemId($this->getItemID());
+
+            if ($object && $object->isIndexable() && !$this->isDraft()) {
+                $objectPersister->replaceOne($object);
+            }
         }
-   }
+    }
 
-   protected function deleteElasticItem($objectPersister, $repository) {
-        $object = $repository->findOneByItemId($this->getItemID());
+    protected function deleteElasticItem($objectPersister, $repository)
+    {
+        global $symfonyContainer;
+        $elasticHost = $symfonyContainer->getParameter('elastic_host');
 
-        $objectPersister->deleteOne($object);
-   }
+        if ($elasticHost) {
+            $object = $repository->findOneByItemId($this->getItemID());
 
-   public function getPath () {
-      $result = null;
+            $objectPersister->deleteOne($object);
+        }
+    }
+
+    public function getPath()
+    {
+        $result = null;
 
 
-
-      return $result;
-   }
+        return $result;
+    }
 }
 ?>

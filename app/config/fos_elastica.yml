@@ -10,8 +10,8 @@
 fos_elastica:
     clients:
         default:
-            host: %elastic_host%
-            port: %elastic_port%
+            host: '%elastic_host%'
+            port: '%elastic_port%'
             #username: %elastic_user%
             #password: %elastic_password%
 

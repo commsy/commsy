@@ -36,7 +36,7 @@ parameters:
     secret:            ThisTokenIsNotSoSecretChangeIt
 
     # elasticsearch
-    elastic_host: localhost
+    elastic_host: ~
     elastic_port: 9200
     elastic_user: ~
     elastic_password: ~
