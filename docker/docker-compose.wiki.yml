@@ -1,34 +1,37 @@
 version: "3"
 
-#services:
-#  commsy_mediawiki:
-#    image: wikimedia/mediawiki:1.30.0-wmf4
-#    #build: ./commsy_wordpress
-#    container_name: commsy_mediawiki
-#    volumes:
-#     - "./.data/mediawiki:/var/www/html"
-#    links:
-#     - commsy_mediawiki_mysql
-#    environment:
-#     - MEDIAWIKI_SITE_SERVER=http://localhost:8082
-#     - MEDIAWIKI_SITE_NAME=CommSy 9
-#     - MEDIAWIKI_ADMIN_PASS=admin
-#     - MEDIAWIKI_DB_HOST=commsy_mediawiki_mysql
-#     - MEDIAWIKI_DB_USER=root
-#     - MEDIAWIKI_DB_PASSWORD=password
-#     - MEDIAWIKI_DB_TYPE=mysql
-#     - MEDIAWIKI_DB_PORT=3306
-#     - MEDIAWIKI_DB_NAME=mediawiki
-#    ports:
-#     - "8082:80"
-#
-#  commsy_mediawiki_mysql:
-#    image: mysql:5.7.4
-#    container_name: commsy_mediawiki_mysql
-#    environment:
-#     - MYSQL_ROOT_PASSWORD=password
-#     - MYSQL_DATABASE=mediawiki
-#    volumes:
-#     - "./.data/db_mediawiki:/var/lib/mysql"
-#    ports:
-#     - "3307:3306"
+services:
+  commsy_mediawiki:
+    image: wikimedia/mediawiki:1.30.0-wmf4
+    container_name: commsy_mediawiki
+    volumes:
+     - "./.data/mediawiki:/var/www/html"
+    links:
+     - commsy_mediawiki_mysql
+    environment:
+     - MEDIAWIKI_SITE_SERVER=http://localhost:8082
+     - MEDIAWIKI_SITE_NAME=CommSy 9
+     - MEDIAWIKI_ADMIN_PASS=admin
+     - MEDIAWIKI_DB_HOST=commsy_mediawiki_mysql
+     - MEDIAWIKI_DB_USER=root
+     - MEDIAWIKI_DB_PASSWORD=password
+     - MEDIAWIKI_DB_TYPE=mysql
+     - MEDIAWIKI_DB_PORT=3306
+     - MEDIAWIKI_DB_NAME=mediawiki
+    ports:
+     - "8082:80"
+
+  commsy_mediawiki_mysql:
+    image: mysql:5.7.4
+    container_name: commsy_mediawiki_mysql
+    environment:
+     - MYSQL_ROOT_PASSWORD=password
+     - MYSQL_DATABASE=mediawiki
+    volumes:
+     - "./.data/db_mediawiki:/var/lib/mysql"
+    ports:
+     - "3307:3306"
+
+  commsy_php:
+    links:
+     - commsy_mediawiki
