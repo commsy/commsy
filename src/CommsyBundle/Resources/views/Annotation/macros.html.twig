@@ -1,6 +1,15 @@
 {% macro editAnnotationContent(title, item, content) %}
     <div class="uk-grid uk-margin-top-remove">
 
+        <div class="cs-comment-head">
+            <div class="uk-comment-meta">
+                {{ 'by'|trans({})|capitalize }}: {{item.creator.getFullName}}
+            </div>
+            <div class="uk-comment-meta uk-margin-bottom">
+                {{ 'last changed'|trans({})|capitalize }}: {{item.getModificationDate|date("d.m.Y H:i")}}
+            </div>
+        </div>
+
         {# content #}
         {% if not content is empty %}
             <div class="uk-width-8-10">
@@ -9,16 +18,6 @@
 
                 {# preview #}
                 <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-preview-small">
-
-                    <div class="cs-comment-head">
-                        <div class="uk-comment-meta">
-                            {{ 'by'|trans({})|capitalize }}: {{item.creator.getFullName}}
-                        </div>   
-                        <div class="uk-comment-meta uk-margin-bottom">
-                            {{ 'last changed'|trans({})|capitalize }}: {{item.getModificationDate|date("d.m.Y H:i")}}
-                        </div>
-                    </div>
-
                     {{ content|commsyMarkup|raw }}
                 </div>
 
