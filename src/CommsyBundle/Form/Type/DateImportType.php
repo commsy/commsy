@@ -28,7 +28,7 @@ class DateImportType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $uploadErrorMessage = $this->translator->trans('upload error', [], 'error');
-        $noFileIdsMessage = $this->translator->trans('wrong file type error', [], 'error');
+        $noFileIdsMessage = $this->translator->trans('upload error', [], 'error');
 
         $builder
             ->add('files', CollectionType::class, [
