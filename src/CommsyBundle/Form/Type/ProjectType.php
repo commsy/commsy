@@ -29,6 +29,22 @@ class ProjectType extends AbstractType
                 'required' => false,
                 'mapped' => false,
                 'label' => 'Template',
+                'attr' => [
+                    'data-description' => json_encode($options['descriptions']),
+                ]
+            ])
+            ->add('template_description', TextareaType::class, [
+                'attr' => [
+                    'style' => 'display: none;',
+                    'rows' => 3,
+                    'cols' => 100,
+                    'readonly' => true,
+                ],
+                'mapped' => false,
+                'required' => false,
+                'label_attr' => [
+                    'style' => 'display: none;',
+                ]
             ])
             ->add('room_description', TextareaType::class, [
                 'attr' => [
@@ -57,6 +73,7 @@ class ProjectType extends AbstractType
         $resolver
             ->setRequired([
                 'templates',
+                'descriptions',
                 'preferredChoices',
             ])
             ->setDefaults([
