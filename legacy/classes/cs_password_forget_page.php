@@ -75,7 +75,7 @@ class cs_password_forget_page extends cs_left_page {
                $auth_source_manager = $this->_environment->getAuthSourceManager();
                $auth_source_item = $auth_source_manager->getItem($user_item->getAuthSource());
 
-               if ( $auth_source_item->allowAddAccount() ) {
+               if ( $auth_source_item->allowChangePassword() ) {
                   include_once('classes/cs_session_item.php');
                   $new_special_session_item = new cs_session_item();
                   $new_special_session_item->createSessionID($this->_post_vars['user_id']);
@@ -109,7 +109,7 @@ class cs_password_forget_page extends cs_left_page {
                $user_id = $user_item->getUserID();
 
                $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$this->_environment->getCurrentPortalID();
-               if ( $auth_source_item->allowAddAccount() ) {
+               if ( $auth_source_item->allowChangePassword() ) {
                   $url .= '&SID='.$new_special_session_item->getSessionID();
                }
 
