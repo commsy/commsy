@@ -93,20 +93,21 @@ class RoomFeedGenerator
                         $datesManager = $this->legacyEnvironment->getDatesManager();
                         $dateItem = $datesManager->getItem($item->getItemId());
                         if ($dateItem) {
-                            if ($dateItem->getRecurrencePattern() == '') {
-                                $feedList[] = $dateItem;
-                            }
-                            else {
-                                $foundRecurrenceId = false;
-                                foreach ($feedList as $feedListEntry) {
-                                    if ($feedListEntry->getItemType() == CS_DATE_TYPE) {
-                                        if ($feedListEntry->getRecurrenceId() == $dateItem->getRecurrenceId()) {
-                                            $foundRecurrenceId = true;
+                            if (!$dateItem->isExternal()) {
+                                if ($dateItem->getRecurrencePattern() == '') {
+                                    $feedList[] = $dateItem;
+                                } else {
+                                    $foundRecurrenceId = false;
+                                    foreach ($feedList as $feedListEntry) {
+                                        if ($feedListEntry->getItemType() == CS_DATE_TYPE) {
+                                            if ($feedListEntry->getRecurrenceId() == $dateItem->getRecurrenceId()) {
+                                                $foundRecurrenceId = true;
+                                            }
                                         }
                                     }
-                                }
-                                if (!$foundRecurrenceId) {
-                                    $feedList[] = $dateItem;
+                                    if (!$foundRecurrenceId) {
+                                        $feedList[] = $dateItem;
+                                    }
                                 }
                             }
                         }
