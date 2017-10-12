@@ -1261,9 +1261,14 @@ class MaterialController extends Controller
 
             $material = $materialService->getMaterial($section->getLinkedItemID());
             $material->save();
+        } else if ($form->get('cancel')->isClicked()) {
+            // remove not saved item
+            $section->delete();
 
-            return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));
+            $section->save();
         }
+
+        return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));
     }
 
     /**
@@ -1356,7 +1361,7 @@ class MaterialController extends Controller
                     $item->saveAsItem();
                 }
             } else if ($form->get('cancel')->isClicked()) {
-                // ToDo ...
+                return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $itemId));
             }
             return $this->redirectToRoute('commsy_material_savesections', array('roomId' => $roomId, 'itemId' => $itemId));
         }
