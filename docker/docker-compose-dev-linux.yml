@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  commsy_db:
+    image: mariadb:10.1
+    container_name: commsy_db
+    ports:
+      - "3308:3306"
+    volumes:
+      - "./.data/db:/var/lib/mysql"
+    environment:
+      - "MYSQL_ROOT_PASSWORD=root"
+      - "MYSQL_DATABASE=commsy"
+      - "MYSQL_USER=commsy"
+      - "MYSQL_PASSWORD=commsy"
+
+  commsy_nginx:
+    build: ./nginx
+    container_name: commsy_nginx
+    ports:
+      - "8090:80"
+    links:
+      - commsy_php
+    volumes:
+      - "./.data/logs/nginx:/var/log/nginx"
+      - "./../:/var/www/commsy"
+
+  commsy_php:
+    build: ./commsy_dev
+    container_name: commsy_php
+    volumes:
+      - "./.data/logs/commsy:/var/www/commsy/var/logs"
+      - "./.data/files:/var/www/commsy/files"
+      - "./../:/var/www/commsy"
+      - "./.data/debug:/tmp"
+    links:
+      - commsy_db
+    environment:
+      COMMSY_DB_USER: commsy
+      COMMSY_DB_PASSWORD: commsy
+      COMMSY_DB_NAME: commsy
