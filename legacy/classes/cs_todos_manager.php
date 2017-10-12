@@ -314,18 +314,18 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
 
       // order
       if ( isset($this->_sort_order) ) {
-         if ( $this->_sort_order == 'modified' ) {
+         if ( $this->_sort_order == 'date' ) {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.modification_date DESC';
-         } elseif ( $this->_sort_order == 'modified_rev' ) {
+         } elseif ( $this->_sort_order == 'date_rev' ) {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.modification_date';
+         } elseif ( $this->_sort_order == 'duedate' ) {
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.date DESC';
+         } elseif ( $this->_sort_order == 'duedate_rev' ) {
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.date';
          } elseif ( $this->_sort_order == 'title' ) {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.title';
          } elseif ( $this->_sort_order == 'title_rev' ) {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.title DESC';
-         } elseif ( $this->_sort_order == 'date' ) {
-            $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.date';
-         } elseif ( $this->_sort_order == 'date_rev' ) {
-            $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.date DESC';
          } elseif ( $this->_sort_order == 'status' ) {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('todos').'.status';
          } elseif ( $this->_sort_order == 'status_rev' ) {

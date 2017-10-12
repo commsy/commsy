@@ -38,7 +38,7 @@
             </div>
 
             {# title and meta #}
-            <div class="uk-width-8-10">
+            <div class="uk-width-5-10">
                 <h4 class="uk-comment-title uk-text-truncate">
                     <a class="uk-text-break" href="{{ path('commsy_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}) }}">{{ todo.title|decodeHtmlEntity }}</a>
                 </h4>
@@ -49,6 +49,12 @@
                
                 <div class="uk-comment-meta">
                     {{  macros.fileListShort(todo) }}
+                </div>
+            </div>
+
+            <div class="uk-width-3-10">
+                <div class="uk-comment-meta">
+                    {{ 'due date'|trans({}, 'todo') }}: {{todo.getDate|date("d.m.Y")}}
                 </div>
             </div>
             

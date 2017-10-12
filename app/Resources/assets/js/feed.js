@@ -70,6 +70,10 @@
         reloadCurrent('email', false);
     });
 
+    $('#commsy-sort-duedate').on('click', function(event) {
+        reloadCurrent('duedate', true);
+    });
+
     function loadMore(spinner)
     {
         if ($(".cs-sort-active").attr("id")) {
