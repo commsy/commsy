@@ -27,6 +27,9 @@ include_once('classes/cs_list.php');
 
 $admin_link_list = new cs_list();
 
+global $symfonyContainer;
+$router = $symfonyContainer->get('router');
+
 if ( !isset($environment) and isset($this->_environment) ) {
    $environment = $this->_environment;
 }
@@ -144,6 +147,7 @@ if ( !isset($translator) and isset($this->_translator) ) {
       $link_item->setModule('configuration');
       $link_item->setFunction('news');
       $link_item->setParameter(array());
+      $link_item->setLink($router->generate('commsy_portal_portalannouncements', ['roomId' => $environment->getCurrentContextID()]));
       $admin_link_list->add($link_item);
    }
 

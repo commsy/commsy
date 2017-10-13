@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+use CommsyBundle\Form\Type\PortalAnnouncementsType;
 use CommsyBundle\Form\Type\RoomCategoriesEditType;
 use CommsyBundle\Entity\RoomCategories;
 
@@ -69,6 +70,53 @@ class PortalController extends Controller
             'roomCategories' => $roomCategories,
             'roomCategoryId' => $roomCategoryId,
             'item' => $legacyEnvironment->getCurrentPortalItem(),
+        ];
+    }
+
+    /**
+     * @Route("/portal/{roomId}/portal/announcements")
+     * @Template()
+     * @Security("is_granted('ITEM_MODERATE', roomId)")
+     */
+    public function portalAnnouncementsAction($roomId, Request $request) {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+
+        $portalAnnouncementData = [];
+        $portalAnnouncementData['text'] = $portalItem->getServerNewsText();
+        $portalAnnouncementData['link'] = $portalItem->getServerNewsLink();
+        $portalAnnouncementData['show'] = $portalItem->showServerNews();
+        $portalAnnouncementData['title'] = $portalItem->getServerNewsTitle();
+        $portalAnnouncementData['showServerInfos'] = $portalItem->showNewsFromServer();
+
+        $announcementsForm = $this->createForm(PortalAnnouncementsType::class, $portalAnnouncementData, []);
+
+        $announcementsForm->handleRequest($request);
+        if ($announcementsForm->isValid()) {
+            if ($announcementsForm->getClickedButton()->getName() == 'save') {
+                $formData = $announcementsForm->getData();
+                $portalItem->setServerNewsText($formData['text']);
+                $portalItem->setServerNewsLink($formData['link']);
+                $portalItem->setServerNewsTitle($formData['title']);
+                if ($formData['show']) {
+                    $portalItem->setShowServerNews();
+                }
+                else {
+                    $portalItem->setDontShowServerNews();
+                }
+                if ($formData['showServerInfos']) {
+                    $portalItem->setShowNewsFromServer();
+                }
+                else {
+                    $portalItem->setDontShowNewsFromServer();
+                }
+                $portalItem->save();
+            }
+        }
+
+        return [
+            'form' => $announcementsForm->createView(),
         ];
     }
 

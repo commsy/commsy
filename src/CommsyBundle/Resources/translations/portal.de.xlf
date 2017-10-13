@@ -30,6 +30,24 @@
                 <source>Room categories</source>
                 <target>Raumkategorien</target>
             </trans-unit>
+
+            <!-- portal announcements -->
+            <trans-unit id="Portal announcements">
+                <source>Portal announcements</source>
+                <target>Portal-Ankündigungen</target>
+            </trans-unit>
+            <trans-unit id="Show announcements">
+                <source>Show</source>
+                <target>Anzeigen?</target>
+            </trans-unit>
+            <trans-unit id="Show server information">
+                <source>Show server infos</source>
+                <target>Serverinfos anzeigen?</target>
+            </trans-unit>
+            <trans-unit id="Link">
+                <source>Link</source>
+                <target>Link</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -474,6 +474,13 @@ class MenuBuilder
                 'extras' => array('icon' => 'uk-icon-tags uk-icon-small')
             ))
                 ->setExtra('translation_domain', 'menu');;
+            $menu->addChild('portal_configuration_portalannouncements', array(
+                'label' => 'Portal announcements',
+                'route' => 'commsy_portal_portalannouncements',
+                'routeParameters' => array('roomId' => $roomId),
+                'extras' => array('icon' => 'uk-icon-beer uk-icon-small')
+            ))
+                ->setExtra('translation_domain', 'portal');
             $menu->addChild('room_navigation_space_2', array(
                     'label' => ' ',
                     'route' => 'commsy_room_home',
