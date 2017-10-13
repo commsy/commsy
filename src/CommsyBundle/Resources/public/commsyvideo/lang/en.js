@@ -9,9 +9,9 @@ CKEDITOR.plugins.setLang('commsyvideo', 'en', {
     helpintro: 'You can provide various sources, e.g.',
     helpdirect: 'Direct: https://...',
     helpyoutube: 'YouTube: https://www.youtube.com/watch?v=...',
-    helplecture2go: 'Lecture2Go: Html5 Code',
+    helplecture2go: 'Lecture2Go: CommSy Code',
     helppodcampus: 'podcampus: https://www.podcampus.de/nodes/...',
-    urlcode: 'From URL / HTML5 Video Tag',
+    urlcode: 'From URL / Video Tag',
     emptyUrl: 'Please enter an URL',
     width: 'Width',
     height: 'Height'

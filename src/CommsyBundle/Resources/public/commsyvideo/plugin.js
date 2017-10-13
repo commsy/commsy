@@ -78,6 +78,9 @@
                             case 'podcampus':
                                 this.podcampusData(this.element);
                                 break;
+                            case 'l2g':
+                                this.l2gData(this.element);
+                                break;
                         }
 
                         this.element.setAttribute('data-type', this.data.type);
@@ -132,6 +135,19 @@
 
                     var frameElement = divElement.getChild(0);
                     frameElement.setAttribute('src', 'https://www.podcampus.de/nodes/' + this.data.src + '/embed');
+                },
+
+                l2gData: function (divElement) {
+                    if (!divElement.getChild(0)) {
+                        var frameElement = new CKEDITOR.dom.element('iframe');
+                        frameElement.setAttribute('allowfullscreen', true);
+                        frameElement.setAttribute('frameborder', '0');
+
+                        divElement.append(frameElement);
+                    }
+
+                    var frameElement = divElement.getChild(0);
+                    frameElement.setAttribute('src', 'https://lecture2go.uni-hamburg.de/lecture2go-portlet/player/iframe/?v=' + this.data.src);
                 }
             });
 
