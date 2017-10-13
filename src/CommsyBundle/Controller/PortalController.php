@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Form\Type\PortalAnnouncementsType;
+use CommsyBundle\Form\Type\PortalTermsType;
 use CommsyBundle\Form\Type\RoomCategoriesEditType;
 use CommsyBundle\Entity\RoomCategories;
 
@@ -74,11 +75,11 @@ class PortalController extends Controller
     }
 
     /**
-     * @Route("/portal/{roomId}/portal/announcements")
+     * @Route("/portal/{roomId}/announcements")
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")
      */
-    public function portalAnnouncementsAction($roomId, Request $request) {
+    public function announcementsAction($roomId, Request $request) {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
@@ -118,6 +119,40 @@ class PortalController extends Controller
         return [
             'form' => $announcementsForm->createView(),
         ];
+    }
+
+    /**
+     * @Route("/portal/{roomId}/terms")
+     * @Template()
+     * @Security("is_granted('ITEM_MODERATE', roomId)")
+     */
+    public function termsAction($roomId, Request $request) {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+
+        $portalTerms = $portalItem->getAGBTextArray();
+        $portalTerms['status'] = $portalItem->getAGBStatus();
+
+        $termsForm = $this->createForm(PortalTermsType::class, $portalTerms, []);
+
+        $termsForm->handleRequest($request);
+        if ($termsForm->isValid()) {
+            if ($termsForm->getClickedButton()->getName() == 'save') {
+                $formData = $termsForm->getData();
+
+                $portalItem->setAGBTextArray(array_filter($formData, function($key) {
+                    return $key == 'DE' || $key == 'EN';
+                }, ARRAY_FILTER_USE_KEY));
+                $portalItem->setAGBStatus($formData['status']);
+                $portalItem->save();
+            }
+        }
+
+        return [
+            'form' => $termsForm->createView(),
+        ];
+
     }
 
     /**

@@ -71,6 +71,7 @@ if ( !isset($translator) and isset($this->_translator) ) {
       $link_item->setModule('configuration');
       $link_item->setFunction('agb');
       $link_item->setParameter('');
+      $link_item->setLink($router->generate('commsy_portal_terms', ['roomId' => $environment->getCurrentContextID()]));
       $admin_link_list->add($link_item);
    }
 
@@ -147,7 +148,7 @@ if ( !isset($translator) and isset($this->_translator) ) {
       $link_item->setModule('configuration');
       $link_item->setFunction('news');
       $link_item->setParameter(array());
-      $link_item->setLink($router->generate('commsy_portal_portalannouncements', ['roomId' => $environment->getCurrentContextID()]));
+      $link_item->setLink($router->generate('commsy_portal_announcements', ['roomId' => $environment->getCurrentContextID()]));
       $admin_link_list->add($link_item);
    }
 

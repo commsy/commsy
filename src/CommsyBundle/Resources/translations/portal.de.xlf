@@ -48,6 +48,12 @@
                 <source>Link</source>
                 <target>Link</target>
             </trans-unit>
+
+            <!-- portal terms -->
+            <trans-unit id="termsUpdateNote">
+                <source>terms update note</source>
+                <target>Bei Änderungen müssen alle Benutzer die Nutzungsbedingungen erneut akzeptieren!</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

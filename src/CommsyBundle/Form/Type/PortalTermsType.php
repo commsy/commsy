@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints;
 
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 
-class PortalAnnouncementsType extends AbstractType
+class PortalTermsType extends AbstractType
 {
     /**
      * Builds the form.
@@ -20,40 +20,33 @@ class PortalAnnouncementsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('show' , Types\ChoiceType::class, [
+            ->add('status' , Types\ChoiceType::class, [
+                'label' => 'Show',
                 'expanded' => true,
                 'multiple' => false,
                 'choices' => [
-                    'Yes' => true,
-                    'No' => false,
+                    'Yes' => 1,
+                    'No' => 2,
                 ],
                 'choice_translation_domain' => 'form',
             ])
-            ->add('title', Types\TextType::class, [
-                'constraints' => [
-                    new Constraints\NotBlank(),
-                ],
-                'required' => true,
-            ])
-            ->add('text', CKEditorType::class, [
+            ->add('DE', CKEditorType::class, [
                 'inline' => false,
                 'attr' => array(
                     'class' => 'uk-form-width-large',
                     'style' => 'width: 100%;',
                 ),
+                'label' => 'body_de',
                 'translation_domain' => 'settings',
             ])
-            ->add('link', Types\TextType::class, [
-                'required' => false,
-            ])
-            ->add('showServerInfos', Types\ChoiceType::class, [
-                'expanded' => true,
-                'multiple' => false,
-                'choices' => [
-                    'Yes' => true,
-                    'No' => false,
-                ],
-                'choice_translation_domain' => 'form',
+            ->add('EN', CKEditorType::class, [
+                'inline' => false,
+                'attr' => array(
+                    'class' => 'uk-form-width-large',
+                    'style' => 'width: 100%;',
+                ),
+                'label' => 'body_en',
+                'translation_domain' => 'settings',
             ])
             ->add('save', Types\SubmitType::class, [
                 'label' => 'save',
@@ -87,6 +80,6 @@ class PortalAnnouncementsType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'portalannouncements';
+        return 'portalterms';
     }
 }

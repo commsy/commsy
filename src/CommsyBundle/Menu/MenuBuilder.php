@@ -474,13 +474,20 @@ class MenuBuilder
                 'extras' => array('icon' => 'uk-icon-tags uk-icon-small')
             ))
                 ->setExtra('translation_domain', 'menu');;
-            $menu->addChild('portal_configuration_portalannouncements', array(
+            $menu->addChild('portal_configuration_announcements', array(
                 'label' => 'Portal announcements',
-                'route' => 'commsy_portal_portalannouncements',
+                'route' => 'commsy_portal_announcements',
                 'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-beer uk-icon-small')
+                'extras' => array('icon' => 'uk-icon-bullhorn uk-icon-small')
             ))
                 ->setExtra('translation_domain', 'portal');
+            $menu->addChild('portal_configuration_terms', array(
+                'label' => 'AGB',
+                'route' => 'commsy_portal_terms',
+                'routeParameters' => array('roomId' => $roomId),
+                'extras' => array('icon' => 'uk-icon-file-text-o uk-icon-small')
+            ))
+                ->setExtra('translation_domain', 'room');
             $menu->addChild('room_navigation_space_2', array(
                     'label' => ' ',
                     'route' => 'commsy_room_home',
