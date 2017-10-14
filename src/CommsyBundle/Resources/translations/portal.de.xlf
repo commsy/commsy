@@ -54,6 +54,16 @@
                 <source>terms update note</source>
                 <target>Bei Änderungen müssen alle Benutzer die Nutzungsbedingungen erneut akzeptieren!</target>
             </trans-unit>
-        </body>
+
+            <!-- portal help link -->
+            <trans-unit id="support page link">
+                <source>help link</source>
+                <target>Support-Seite</target>
+            </trans-unit>
+            <trans-unit id="tooltip text">
+                <source>tooltip text</source>
+                <target>Tooltip-Text</target>
+            </trans-unit>
+       </body>
     </file>
 </xliff>

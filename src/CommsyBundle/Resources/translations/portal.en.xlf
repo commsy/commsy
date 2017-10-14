@@ -54,6 +54,16 @@
                 <source>terms update note</source>
                 <target>If you change and save this text, all users will be forced to reaccept the Terms and Conditions the next time they log in!</target>
             </trans-unit>
+
+            <!-- portal help link -->
+            <trans-unit id="support page link">
+                <source>help link</source>
+                <target>Support page</target>
+            </trans-unit>
+            <trans-unit id="tooltip text">
+                <source>tooltip text</source>
+                <target>Tooltip text</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

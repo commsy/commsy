@@ -1186,6 +1186,7 @@ class UserController extends Controller
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $sessionItem = $legacyEnvironment->getSessionItem();
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
         $currentClipboardIds = array();
         if ($sessionItem->issetValue('clipboard_ids')) {
@@ -1196,6 +1197,8 @@ class UserController extends Controller
             'privateRoomItem' => $privateRoomItem,
             'count' => sizeof($currentClipboardIds),
             'roomId' => $legacyEnvironment->getCurrentContextId(),
+            'supportLink' => $portalItem->getSupportPageLink(),
+            'tooltip' => $portalItem->getSupportPageLinkTooltip(),
         ];
     }
 

@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Form\Type\PortalAnnouncementsType;
+use CommsyBundle\Form\Type\PortalHelpType;
 use CommsyBundle\Form\Type\PortalTermsType;
 use CommsyBundle\Form\Type\RoomCategoriesEditType;
 use CommsyBundle\Entity\RoomCategories;
@@ -151,6 +152,40 @@ class PortalController extends Controller
 
         return [
             'form' => $termsForm->createView(),
+        ];
+
+    }
+
+    /**
+     * @Route("/portal/{roomId}/help")
+     * @Template()
+     * @Security("is_granted('ITEM_MODERATE', roomId)")
+     */
+    public function helpAction($roomId, Request $request) {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+
+        $portalHelp = [];
+        $portalHelp['link'] = $portalItem->getSupportPageLink();
+        $portalHelp['alt'] = $portalItem->getSupportPageLinkTooltip();
+
+        $helpForm = $this->createForm(PortalHelpType::class, $portalHelp, []);
+
+        $helpForm->handleRequest($request);
+        if ($helpForm->isValid()) {
+            if ($helpForm->getClickedButton()->getName() == 'save') {
+                $formData = $helpForm->getData();
+
+                $portalItem->setSupportPageLink($formData['link']);
+                $portalItem->setSupportPageLinkTooltip($formData['alt']);
+
+                $portalItem->save();
+            }
+        }
+
+        return [
+            'form' => $helpForm->createView(),
         ];
 
     }
