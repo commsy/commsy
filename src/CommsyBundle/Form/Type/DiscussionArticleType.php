@@ -42,6 +42,7 @@ class DiscussionArticleType extends AbstractType
                     'formnovalidate' => '',
                 ),
                 'label' => 'cancel',
+                'validation_groups' => false,
             ))
         ;
         
