@@ -146,6 +146,7 @@ class PortalController extends Controller
                     return $key == 'DE' || $key == 'EN';
                 }, ARRAY_FILTER_USE_KEY));
                 $portalItem->setAGBStatus($formData['status']);
+                $portalItem->setAGBChangeDate();
                 $portalItem->save();
             }
         }
