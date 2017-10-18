@@ -4,6 +4,7 @@ namespace CommsyBundle\Security\Authorization\Voter;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use Commsy\LegacyBundle\Utils\ItemService;
@@ -17,11 +18,13 @@ class ItemVoter extends Voter
 
     private $legacyEnvironment;
     private $itemService;
+    private $requestStack;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, ItemService $itemService)
+    public function __construct(LegacyEnvironment $legacyEnvironment, ItemService $itemService, RequestStack $requestStack)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->itemService = $itemService;
+        $this->requestStack = $requestStack;
     }
 
     protected function supports($attribute, $object)
@@ -110,6 +113,13 @@ class ItemVoter extends Voter
 
         if ($item->mayEdit($currentUser)) {
             return true;
+        }
+
+        if ($item->getItemType() == CS_DISCUSSION_TYPE) {
+            $request = $this->requestStack->getCurrentRequest();
+            if ($request->get('_route') == 'commsy_discussion_createarticle') {
+                return true;
+            }
         }
 
         return false;
