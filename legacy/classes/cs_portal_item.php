@@ -3549,6 +3549,28 @@ class cs_portal_item extends cs_guide_item {
         }
         return $retour;
     }
-   
+
+    function setSupportPageLink($value) {
+       $this->_setExtra('SUPPORTPAGELINK', (string)$value);
+    }
+    function getSupportPageLink() {
+       $result = '';
+       if($this->_issetExtra('SUPPORTPAGELINK')){
+          $result = $this->_getExtra('SUPPORTPAGELINK');
+       }
+       return $result;
+    }
+
+    function setSupportPageLinkTooltip($value) {
+       $this->_setExtra('SUPPORTPAGELINKTOOLTIP', (string)$value);
+    }
+    function getSupportPageLinkTooltip() {
+       $result = '';
+       if($this->_issetExtra('SUPPORTPAGELINKTOOLTIP')){
+          $result = $this->_getExtra('SUPPORTPAGELINKTOOLTIP');
+       }
+       return $result;
+    }
+
 }
 ?>

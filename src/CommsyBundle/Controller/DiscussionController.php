@@ -1133,14 +1133,11 @@ class DiscussionController extends Controller
     }
     
     /**
-     * @Route("/room/{roomId}/material/{itemId}/savearticle")
-     * @Template()
+     * @Route("/room/{roomId}/discussion/{itemId}/savearticle")
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
     public function saveArticleAction($roomId, $itemId, Request $request)
     {
-        $translator = $this->get('translator');
-
         $discussionService = $this->get('commsy_legacy.discussion_service');
         $transformer = $this->get('commsy_legacy.transformer.discussion');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -1165,6 +1162,12 @@ class DiscussionController extends Controller
             if ($form->get('save')->isClicked()) {
                 // update title
                 $article->setTitle($form->getData()['title']);
+
+                if ($form->getData()['permission']) {
+                    $article->setPrivateEditing('0');
+                } else {
+                    $article->setPrivateEditing('1');
+                }
 
                 if ($item->isDraft()) {
                     $item->setDraftStatus(0);

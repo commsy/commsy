@@ -38,13 +38,15 @@ class EtherpadEditSubscriber implements EventSubscriberInterface
 
         if ($enabled) {
             $result = $event->getControllerResult();
-            if (array_key_exists('isMaterial', $result)) {
-                if ($result['isMaterial']) {
-                    if (array_key_exists('itemId', $result)) {
-                        $materialItem = $this->materialService->getMaterial($result['itemId']);
-                        if ($materialItem->getEtherpadEditor()) {
-                            $result['useEtherpad'] = true;
-                            $event->setControllerResult($result);    
+            if ($result) {
+                if (array_key_exists('isMaterial', $result)) {
+                    if ($result['isMaterial']) {
+                        if (array_key_exists('itemId', $result)) {
+                            $materialItem = $this->materialService->getMaterial($result['itemId']);
+                            if ($materialItem->getEtherpadEditor()) {
+                                $result['useEtherpad'] = true;
+                                $event->setControllerResult($result);
+                            }
                         }
                     }
                 }
@@ -59,22 +61,24 @@ class EtherpadEditSubscriber implements EventSubscriberInterface
 
         if ($enabled) {
             $result = $event->getControllerResult();
-            if (array_key_exists('item', $result) && $result['item']->getItemID()) {
-                $materialItem = $this->materialService->getMaterial($result['item']->getItemID());
-                if (get_class($materialItem) == 'cs_material_item') {
-                    if ($materialItem->getEtherpadEditor() && $materialItem->getEtherpadEditorID()) {
-                        // get description text from etherpad
-                        $etherpadService = $this->container->get('commsy.etherpad_service');
-                        $client = $etherpadService->getClient();
+            if ($result) {
+                if (array_key_exists('item', $result) && $result['item']->getItemID()) {
+                    $materialItem = $this->materialService->getMaterial($result['item']->getItemID());
+                    if (get_class($materialItem) == 'cs_material_item') {
+                        if ($materialItem->getEtherpadEditor() && $materialItem->getEtherpadEditorID()) {
+                            // get description text from etherpad
+                            $etherpadService = $this->container->get('commsy.etherpad_service');
+                            $client = $etherpadService->getClient();
 
-                        $materialItem = $result['item'];
+                            $materialItem = $result['item'];
 
-                        // get pad and get text from pad
-                        $textObject = $client->getHTML($materialItem->getEtherpadEditorId());
+                            // get pad and get text from pad
+                            $textObject = $client->getHTML($materialItem->getEtherpadEditorId());
 
-                        // save etherpad text to material description
-                        $materialItem->setDescription(nl2br($textObject->html));
-                        $materialItem->save();
+                            // save etherpad text to material description
+                            $materialItem->setDescription(nl2br($textObject->html));
+                            $materialItem->save();
+                        }
                     }
                 }
             }

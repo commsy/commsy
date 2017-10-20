@@ -4,6 +4,12 @@
             {#<a href="#"><i class="uk-icon-bell-o"></i></a>#}
         {#</li>#}
 
+        {% if supportLink is not empty and tooltip is not empty %}
+            <li>
+                <a href="{{ supportLink }}" title="{{ tooltip }}"><i class="uk-icon-question-circle"></i></a>
+            </li>
+        {% endif %}
+
         <li>
             <a href="{{ path('commsy_copy_list', {'roomId': roomId}) }}" title="{{ 'copies'|capitalize|trans({}, "rubric")}}">
                 <i class="uk-icon-copy"></i>

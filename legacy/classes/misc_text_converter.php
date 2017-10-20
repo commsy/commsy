@@ -86,67 +86,16 @@ class misc_text_converter {
       return $text;
    }
 
-   public function cleanDataFromTextArea ( $text ) {
-      ### hack ###
-      # unmotiviertes br ausserhalb des fck texts
-      # keine Ahnung wo das her kommt
-      # ij 28.05.2009
-      $text = str_replace('<!-- KFC TEXT --><br />','<!-- KFC TEXT -->COMMSY_BR',$text);
-      $text = str_replace('<!-- KFC TEXT --><br type="_moz" />','<!-- KFC TEXT -->COMMSY_BR',$text);
-      ### hack ###
-
-      // security KFC
-      $values = array();
-      $pattern = '<!-- KFC TEXT [a-z0-9]* -->[\S|\s]*<!-- KFC TEXT [a-z0-9]* -->';
-      preg_match('~'.$pattern.'~',$text,$values); // nicht ~u, das geht nicht
-      #preg_match('~<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->~u',$text,$values);
-      foreach ($values as $key => $value) {
-         $text = str_replace($value,'COMMSY_FCKEDITOR'.$key,$text);
-      }
-      $text = $this->_cleanDataFromTextAreaNotFromFCK($text);
-      foreach ($values as $key => $value) {
-         $text = str_replace('COMMSY_FCKEDITOR'.$key,$this->_cleanDataFromTextAreaFromFCK($value),$text);
-
-      }
-
-
-
-      ### hack ###
-      $text = str_replace('COMMSY_BR',BRLF,$text);
-      ### hack ###
-
-      return $text;
+   public function cleanDataFromTextArea($text)
+   {
+       return $this->sanitizeFullHTML($text);
    }
 
-   private function _cleanDataFromTextAreaNotFromFCK ( $text ) {
-      // word and open office bugs
-      $retour = str_replace('</meta>','',$text);
-      // word and open office bugs
-
-      $retour = $this->_htmlentities_smaller($retour);
-      return $retour;
-   }
-
-   private function _cleanDataFromTextAreaFromFCK ( $text ) {
-      $values = array();
-      // security KFC
-      preg_match('~<!-- KFC TEXT ([a-z0-9]*) -->~u',$text,$values);
-      if ( !empty($values[1]) ) {
-         $hash = $values[1];
-         $temp_text = str_replace('<!-- KFC TEXT '.$hash.' -->','',$text);
-      } else {
-         $text = $this->_cleanDataFromTextAreaNotFromFCK($text);
-      }
-      return $text;
-   }
-
-   #private function _cs_htmlspecialchars ($text) {
    public function _cs_htmlspecialchars ($text) {
       $text = $this->_cleanBadCode($text);
       return $text;
    }
 
-   #private function _cs_htmlspecialchars1 ($text) {
    public function _cs_htmlspecialchars1 ($text) {
       $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
       return $text;

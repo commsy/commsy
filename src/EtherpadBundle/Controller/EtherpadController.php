@@ -5,13 +5,15 @@ namespace EtherpadBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\Request;
 
 class EtherpadController extends Controller
 {
     /**
      * @Template()
      */
-    public function indexAction($materialId, $roomId)
+    public function indexAction($materialId, $roomId, Request $request)
     {
         $materialService = $this->get('commsy_legacy.material_service');
         $etherpadService = $this->get('commsy.etherpad_service');
@@ -52,10 +54,17 @@ class EtherpadController extends Controller
         $session = $client->createSession($group->groupID, $author->authorID, $timestamp);
         setcookie('sessionID', $session->sessionID, $timestamp, '/');
 
-        return array(
+        $fs = new Filesystem();
+        $baseUrl = $etherpadService->getBaseUrl();
+
+        if (!$fs->isAbsolutePath($baseUrl)) {
+            $baseUrl = $request->getBaseUrl() . '/' . $baseUrl;
+        }
+
+        return [
             'materialId' => $materialId, 
             'etherpadId' => $material->getEtherpadEditorID(),
-            'baseUrl' => $etherpadService->getBaseUrl()
-            );
+            'baseUrl' => $baseUrl,
+        ];
     }
 }

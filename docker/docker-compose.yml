@@ -1,18 +1,18 @@
-version: '2'
+version: "3"
 
 services:
   commsy_db:
     image: mariadb:10.1
     container_name: commsy_db
-    volumes:
-      - "./.data/db:/var/lib/mysql"
     ports:
       - "3306:3306"
+    volumes:
+      - "./.data/db:/var/lib/mysql"
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: commsy
-      MYSQL_USER: commsy
-      MYSQL_PASSWORD: commsy
+      - "MYSQL_ROOT_PASSWORD=root"
+      - "MYSQL_DATABASE=commsy"
+      - "MYSQL_USER=commsy"
+      - "MYSQL_PASSWORD=commsy"
 
   commsy_nginx:
     build: ./nginx
@@ -21,33 +21,20 @@ services:
       - "8080:80"
     links:
       - commsy_php
-    volumes_from:
-      - commsy_php
     volumes:
       - "./.data/logs/nginx:/var/log/nginx"
-
-  commsy_elastic:
-    build: ./elasticsearch
-    container_name: commsy_elastic
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    volumes:
-      - "./.data/elastic:/usr/share/elasticsearch/data"
-    environment:
-      xpack.security.enabled: "false"
+      - "./../:/var/www/commsy:cached"
 
   commsy_php:
-    build: ./commsy_prod
+    build: ./commsy_dev
     container_name: commsy_php
-    expose:
-      - "9001"
     volumes:
       - "./.data/logs/commsy:/var/www/commsy/var/logs"
       - "./.data/files:/var/www/commsy/files"
+      - "./../:/var/www/commsy:cached"
+      - "./.data/debug:/tmp"
     links:
       - commsy_db
-      - commsy_elastic
     environment:
       COMMSY_DB_USER: commsy
       COMMSY_DB_PASSWORD: commsy

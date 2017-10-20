@@ -35,6 +35,7 @@ class UploadType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $uploadErrorMessage = $this->translator->trans('upload error', [], 'error');
+        $noFileIdsMessage = $this->translator->trans('upload error', [], 'error');
 
         $builder
             ->add('files', CollectionType::class, [
@@ -46,7 +47,7 @@ class UploadType extends AbstractType
             ->add('upload', FileType::class, array(
                 'label' => 'upload',
                 'attr' => array(
-                     'data-uk-csupload' => '{"path": "' . $options['uploadUrl'] . '", "errorMessage": "' . $uploadErrorMessage . '"}',
+                     'data-uk-csupload' => '{"path": "' . $options['uploadUrl'] . '", "errorMessage": "'.$uploadErrorMessage.'", "noFileIdsMessage": "'.$noFileIdsMessage.'"}',
                 ),
                 'required' => false,
                 'translation_domain' => 'material',

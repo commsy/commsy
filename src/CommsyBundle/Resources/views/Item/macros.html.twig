@@ -19,12 +19,23 @@
             </div>
 
             <div class="uk-width-2-10 uk-flex uk-flex-right">
-                {# edit action #}
-                {% if is_granted('ITEM_EDIT', item.itemId) %}
-                    <div class="uk-display-inline cs-edit uk-invisible {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
-                        <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
-                    </div>
+                {% if item.type != "discarticle" %}
+                    {# edit action #}
+                    {% if is_granted('ITEM_EDIT', item.itemId) %}
+                        <div class="uk-display-inline cs-edit uk-invisible {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
+                            <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    {% if not draft %}
+                        {% if is_granted('ITEM_EDIT', item.itemId) %}
+                            <div class="uk-display-inline cs-edit uk-invisible {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
+                                <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+                            </div>
+                        {% endif %}
+                    {% endif %}
                 {% endif %}
+
 
                 {# toggle action #}
                 {% if not fileArray is empty %}
@@ -337,10 +348,20 @@
             <div class="uk-width-2-10 uk-flex uk-flex-right">
 
                 {# edit action #}
-                {% if edit and is_granted('ITEM_EDIT', item.itemId) %}
-                    <div class="uk-display-inline cs-edit uk-invisible {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
-                        <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
-                    </div>
+                {% if item.type != "discarticle" %}
+                    {% if edit and is_granted('ITEM_EDIT', item.itemId) %}
+                        <div class="uk-display-inline cs-edit uk-invisible {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
+                            <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    {% if not draft %}
+                        {% if edit and is_granted('ITEM_EDIT', item.itemId) %}
+                            <div class="uk-display-inline cs-edit uk-invisible {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
+                                <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+                            </div>
+                        {% endif %}
+                    {% endif %}
                 {% endif %}
 
                 {# toggle action #}

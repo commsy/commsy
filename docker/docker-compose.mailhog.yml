@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  commsy_php:
+    links:
+      - commsy_mailhog
+
+  commsy_mailhog:
+    image: mailhog/mailhog:latest
+    container_name: commsy_mailhog
+    ports:
+      - "8025:8025"

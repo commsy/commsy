@@ -20,6 +20,8 @@ $message["PORTAL_ERROR_DELETED"]["de"] = "Sie können nicht mehr auf das CommSy-
 $message["PORTAL_ERROR_DELETED_ROOM"]["de"] = "Sie können nicht mehr auf den CommSy-Raum <span class=&quot;bold&quot;>%2</span> zugreifen, da das CommSy-Portal <span class=&quot;bold&quot;>%1</span> gelöscht wurde.";
 $message["PORTAL_EXPORT_ROOM"]["de"] = "Raum exportieren";
 $message["PORTAL_EXPORT_ROOM_BUTTON"]["de"] = "Raum exportieren";
+$message["PORTAL_HELP_LINK"]["de"] = "Hilfelink";
+$message["PORTAL_HELP_LINK_DESC"]["de"] = "Hier können Sie einen Link zu einer Support-Seite für dieses Portal hinterlegen.";
 $message["PORTAL_LOGIN_TO_SEE_ROOMS"]["de"] = "Bitte loggen Sie sich ein, um die Räume zu sehen.";
 $message["PORTAL_MOVE_ROOM"]["de"] = "Raum umziehen";
 $message["PORTAL_MOVE_ROOM_REGISTER_BUTTON"]["de"] = "Anmelden";

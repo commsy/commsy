@@ -170,8 +170,10 @@ class ProjectController extends Controller
         $defaultId = ($defaultId === '-1') ? [] : $defaultId;
 
         $room = new Room();
+        $templates = $this->getAvailableTemplates();
         $form = $this->createForm(ProjectType::class, $room, [
-            'templates' => $this->getAvailableTemplates(),
+            'templates' => array_flip($templates['titles']),
+            'descriptions' => $templates['descriptions'],
             'preferredChoices' => $defaultId,
         ]);
 
@@ -393,6 +395,10 @@ class ProjectController extends Controller
         $roomManager->select();
 
         $templateList = $roomManager->get();
+
+        $titles = [];
+        $descriptions = [];
+
         if ($templateList->isNotEmpty()) {
             $template = $templateList->getFirst();
             while ($template) {
@@ -448,12 +454,15 @@ class ProjectController extends Controller
                 }
 
                 if ($add) {
-                    $templates[$template->getTitle()] = $template->getItemID();
+                    $titles[$template->getItemID()] = $template->getTitle();
+                    $descriptions[$template->getItemID()] = $template->getDescription();
                 }
 
                 $template = $templateList->getNext();
             }
         }
+        $templates['titles'] = $titles;
+        $templates['descriptions'] = $descriptions;
 
         return $templates;
     }

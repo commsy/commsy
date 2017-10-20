@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  commsy_elastic:
+    build: ./elasticsearch
+    container_name: commsy_elastic
+    ports:
+      - "9200:9200"
+    volumes:
+      - "./.data/elastic:/usr/share/elasticsearch/data"
+    environment:
+      - "xpack.security.enabled=false"
+      - "cluster.routing.allocation.disk.threshold_enabled=false"
+      - "http.cors.enabled=true"
+      - "http.cors.allow-origin=*"
+      - "http.cors.allow-headers=Authorization"
+      - "bootstrap.memory_lock=true"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  commsy_php:
+    links:
+      - commsy_elastic

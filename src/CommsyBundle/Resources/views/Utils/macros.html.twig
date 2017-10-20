@@ -43,6 +43,9 @@
     {% elseif user.status == 4 %}
         {{ 'reading user'|trans({}, 'user') }}
     {% endif %}
+    {% if user.isContact %}
+        , {{ 'is contact'|trans({}, 'user') }}
+    {% endif %}
 {% endmacro %}
 
 {% macro detailInformation(item, modifierList) %}

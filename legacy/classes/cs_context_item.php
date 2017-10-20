@@ -1056,17 +1056,14 @@ class cs_context_item extends cs_item {
     return $retour;
   }
 
-  /** get htmltextarea status
-   *
-   * @return integer htmltextarea status 1 = yes, 2 = yes, but minimum, 3 = no
-   */
-  function getHtmlTextAreaStatus () {
-    $retour = 3;
-    if ($this->_issetExtra('HTMLTEXTAREASTATUS')) {
-      $retour = $this->_getExtra('HTMLTEXTAREASTATUS');
+    /** get htmltextarea status
+     *
+     * @return integer htmltextarea status 1 = yes, 2 = yes, but minimum, 3 = no
+     */
+    public function getHtmlTextAreaStatus()
+    {
+        return 3;
     }
-    return $retour;
-  }
 
   /** set agb status
    *

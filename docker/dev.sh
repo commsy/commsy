@@ -3,10 +3,10 @@
 case "$1" in
     wipe)
         echo "Stopping CommSy container";
-        docker-compose -f docker-compose.yml -f docker-compose-dev.yml stop
+        docker-compose -f docker-compose.yml stop
 
         echo "Removing all CommSy container"
-        docker-compose -f docker-compose.yml -f docker-compose-dev.yml rm
+        docker-compose -f docker-compose.yml rm
 
         echo "Removing all docker images";
         docker rmi $(docker images -a -q)
@@ -28,26 +28,22 @@ case "$1" in
 
     build)
         echo "Building CommSy container";
-        docker-compose -f docker-compose.yml -f docker-compose-dev.yml build
+        docker-compose -f docker-compose.yml build
         ;;
 
     start)
-        if ! gem list docker-sync -i > /dev/null ; then
-            echo "Installing docker-sync gem"
-            gem install docker-sync
-        fi
-
         if [ ! -e "../legacy/etc/cs_config.php" ]; then
             echo "Legacy cs_config.php seems not to be present, copying..."
             cp -p ../legacy/etc/cs_config.php-dist ../legacy/etc/cs_config.php
         fi
 
-        docker-sync-stack start
+        if [ -d "./data/logs" ]; then
+            echo "Clearing old logs..."
+            rm -r ./data/logs/
+        fi
 
-        ;;
+        docker-compose -f docker-compose.yml up
 
-    clean)
-        docker-sync-stack clean
         ;;
 
     *)

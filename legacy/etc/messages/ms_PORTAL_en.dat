@@ -19,6 +19,8 @@ $message["PORTAL_ERROR_DELETED"]["en"] = "You can not use the commsy portal <spa
 $message["PORTAL_ERROR_DELETED_ROOM"]["en"] = "Sorry, you cannot access CommSy workspace <span class=&quot;bold&quot;>%2</span>, because CommSy portal <span class=&quot;bold&quot;>%1</span> has been deleted entirely.";
 $message["PORTAL_EXPORT_ROOM"]["en"] = "Export workspace";
 $message["PORTAL_EXPORT_ROOM_BUTTON"]["en"] = "Export workspace";
+$message["PORTAL_HELP_LINK"]["en"] = "Help link";
+$message["PORTAL_HELP_LINK_DESC"]["en"] = "Define a link to a support page for this portal.";
 $message["PORTAL_LOGIN_TO_SEE_ROOMS"]["en"] = "Please login to see the workspaces.";
 $message["PORTAL_MOVE_ROOM"]["en"] = "Move workspace";
 $message["PORTAL_MOVE_ROOM_REGISTER_BUTTON"]["en"] = "Register";

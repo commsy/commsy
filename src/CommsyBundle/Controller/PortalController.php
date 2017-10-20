@@ -9,6 +9,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+use CommsyBundle\Form\Type\PortalAnnouncementsType;
+use CommsyBundle\Form\Type\PortalHelpType;
+use CommsyBundle\Form\Type\PortalTermsType;
 use CommsyBundle\Form\Type\RoomCategoriesEditType;
 use CommsyBundle\Entity\RoomCategories;
 
@@ -70,6 +73,122 @@ class PortalController extends Controller
             'roomCategoryId' => $roomCategoryId,
             'item' => $legacyEnvironment->getCurrentPortalItem(),
         ];
+    }
+
+    /**
+     * @Route("/portal/{roomId}/announcements")
+     * @Template()
+     * @Security("is_granted('ITEM_MODERATE', roomId)")
+     */
+    public function announcementsAction($roomId, Request $request) {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+
+        $portalAnnouncementData = [];
+        $portalAnnouncementData['text'] = $portalItem->getServerNewsText();
+        $portalAnnouncementData['link'] = $portalItem->getServerNewsLink();
+        $portalAnnouncementData['show'] = $portalItem->showServerNews();
+        $portalAnnouncementData['title'] = $portalItem->getServerNewsTitle();
+        $portalAnnouncementData['showServerInfos'] = $portalItem->showNewsFromServer();
+
+        $announcementsForm = $this->createForm(PortalAnnouncementsType::class, $portalAnnouncementData, []);
+
+        $announcementsForm->handleRequest($request);
+        if ($announcementsForm->isValid()) {
+            if ($announcementsForm->getClickedButton()->getName() == 'save') {
+                $formData = $announcementsForm->getData();
+                $portalItem->setServerNewsText($formData['text']);
+                $portalItem->setServerNewsLink($formData['link']);
+                $portalItem->setServerNewsTitle($formData['title']);
+                if ($formData['show']) {
+                    $portalItem->setShowServerNews();
+                }
+                else {
+                    $portalItem->setDontShowServerNews();
+                }
+                if ($formData['showServerInfos']) {
+                    $portalItem->setShowNewsFromServer();
+                }
+                else {
+                    $portalItem->setDontShowNewsFromServer();
+                }
+                $portalItem->save();
+            }
+        }
+
+        return [
+            'form' => $announcementsForm->createView(),
+        ];
+    }
+
+    /**
+     * @Route("/portal/{roomId}/terms")
+     * @Template()
+     * @Security("is_granted('ITEM_MODERATE', roomId)")
+     */
+    public function termsAction($roomId, Request $request) {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+
+        $portalTerms = $portalItem->getAGBTextArray();
+        $portalTerms['status'] = $portalItem->getAGBStatus();
+
+        $termsForm = $this->createForm(PortalTermsType::class, $portalTerms, []);
+
+        $termsForm->handleRequest($request);
+        if ($termsForm->isValid()) {
+            if ($termsForm->getClickedButton()->getName() == 'save') {
+                $formData = $termsForm->getData();
+
+                $portalItem->setAGBTextArray(array_filter($formData, function($key) {
+                    return $key == 'DE' || $key == 'EN';
+                }, ARRAY_FILTER_USE_KEY));
+                $portalItem->setAGBStatus($formData['status']);
+                $portalItem->setAGBChangeDate();
+                $portalItem->save();
+            }
+        }
+
+        return [
+            'form' => $termsForm->createView(),
+        ];
+
+    }
+
+    /**
+     * @Route("/portal/{roomId}/help")
+     * @Template()
+     * @Security("is_granted('ITEM_MODERATE', roomId)")
+     */
+    public function helpAction($roomId, Request $request) {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+
+        $portalHelp = [];
+        $portalHelp['link'] = $portalItem->getSupportPageLink();
+        $portalHelp['alt'] = $portalItem->getSupportPageLinkTooltip();
+
+        $helpForm = $this->createForm(PortalHelpType::class, $portalHelp, []);
+
+        $helpForm->handleRequest($request);
+        if ($helpForm->isValid()) {
+            if ($helpForm->getClickedButton()->getName() == 'save') {
+                $formData = $helpForm->getData();
+
+                $portalItem->setSupportPageLink($formData['link']);
+                $portalItem->setSupportPageLinkTooltip($formData['alt']);
+
+                $portalItem->save();
+            }
+        }
+
+        return [
+            'form' => $helpForm->createView(),
+        ];
+
     }
 
     /**

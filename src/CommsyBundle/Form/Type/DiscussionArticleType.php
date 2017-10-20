@@ -42,6 +42,7 @@ class DiscussionArticleType extends AbstractType
                     'formnovalidate' => '',
                 ),
                 'label' => 'cancel',
+                'validation_groups' => false,
             ))
         ;
         
@@ -55,7 +56,7 @@ class DiscussionArticleType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(array('placeholderText', 'categories', 'hashTagPlaceholderText', 'hashtagEditUrl', 'hashtags'))
+            ->setDefined(array('placeholderText', 'categories', 'hashTagPlaceholderText', 'hashtagEditUrl', 'hashtags'))
             ->setDefaults(array('translation_domain' => 'form'))
         ;
     }

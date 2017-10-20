@@ -30,6 +30,40 @@
                 <source>Room categories</source>
                 <target>Raumkategorien</target>
             </trans-unit>
-        </body>
+
+            <!-- portal announcements -->
+            <trans-unit id="Portal announcements">
+                <source>Portal announcements</source>
+                <target>Portal-Ankündigungen</target>
+            </trans-unit>
+            <trans-unit id="Show announcements">
+                <source>Show</source>
+                <target>Anzeigen?</target>
+            </trans-unit>
+            <trans-unit id="Show server information">
+                <source>Show server infos</source>
+                <target>Serverinfos anzeigen?</target>
+            </trans-unit>
+            <trans-unit id="Link">
+                <source>Link</source>
+                <target>Link</target>
+            </trans-unit>
+
+            <!-- portal terms -->
+            <trans-unit id="termsUpdateNote">
+                <source>terms update note</source>
+                <target>Bei Änderungen müssen alle Benutzer die Nutzungsbedingungen erneut akzeptieren!</target>
+            </trans-unit>
+
+            <!-- portal help link -->
+            <trans-unit id="support page link">
+                <source>help link</source>
+                <target>Support-Seite</target>
+            </trans-unit>
+            <trans-unit id="tooltip text">
+                <source>tooltip text</source>
+                <target>Tooltip-Text</target>
+            </trans-unit>
+       </body>
     </file>
 </xliff>

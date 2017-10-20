@@ -220,7 +220,7 @@ class SearchManager
             'hashtags',
             'tags',
             'annotations',
-            'files.content',
+//            'files.content',
 //            'discussionarticles.files.content',
 //            'steps.files.content',
 //            'sections.files.content',

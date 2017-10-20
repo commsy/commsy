@@ -351,7 +351,8 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
      }
      $query .= 'subject="'.encode(AS_DB,$discussionarticle_item->getSubject()).'",'.
                'description="'.encode(AS_DB,$discussionarticle_item->getDescription()).'",'.
-               'position="'.encode(AS_DB,$discussionarticle_item->getPosition()).'"';
+               'position="'.encode(AS_DB,$discussionarticle_item->getPosition()).'",'.
+               'public="'.encode(AS_DB,!$discussionarticle_item->isPrivateEditing()).'"';
      if ( $this->_update_with_changing_modification_information ) {
         $query .= ', modifier_id="'.encode(AS_DB,$this->_current_user->getItemID()).'"';
      }
@@ -402,11 +403,12 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
               'discussion_id="'.encode(AS_DB,$discussionarticle_item->getDiscussionID()).'",'.
               'creator_id="'.encode(AS_DB,$this->_current_user->getItemID()).'",'.
               'creation_date="'.$current_datetime.'",'.
-             'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
+              'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
               'modification_date="'.$current_datetime.'",'.
               'subject="'.encode(AS_DB,$discussionarticle_item->getSubject()).'",'.
               'position="'.encode(AS_DB,$discussionarticle_item->getPosition()).'",'.
-              'description="'.encode(AS_DB,$discussionarticle_item->getDescription()).'"';
+              'description="'.encode(AS_DB,$discussionarticle_item->getDescription()).'",'.
+              'public="'.encode(AS_DB,!$discussionarticle_item->isPrivateEditing()).'"';
      $discussionarticle_item->setCreationDate($current_datetime);
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {

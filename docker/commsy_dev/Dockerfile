@@ -34,7 +34,7 @@ RUN apt-get install -yqq nodejs
 # yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update && sudo apt-get install -y yarn
+RUN apt-get update && apt-get install -y yarn
 
 # install gulp
 RUN yarn global add gulp
@@ -58,5 +58,16 @@ RUN { \
 # copy configurations
 COPY conf/commsy.ini /usr/local/etc/php/conf.d/
 COPY conf/commsy.pool.conf /usr/local/etc/php-fpm.d/
+
+# wkhtmltopdf
+RUN apt-get update && apt-get install -y \
+        xfonts-base \
+        xfonts-75dpi \
+        fontconfig \
+        libxrender1 \
+        xvfb
+
+RUN curl -o /usr/src/wkhtmltopdf.deb -SL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.2.1/wkhtmltox-0.12.2.1_linux-jessie-amd64.deb \
+        && dpkg -i /usr/src/wkhtmltopdf.deb
 
 CMD ["php-fpm"]

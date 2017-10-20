@@ -1,0 +1,30 @@
+{% extends 'CommsyBundle:Base:portal.html.twig' %}
+{% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
+
+{% block content %}
+    <div class="uk-grid" data-uk-grid-margin>
+        <div class="uk-width-1-1">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div class="uk-text-large">{{ 'AGB'|trans({}, "room") }}</div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="uk-grid">
+                        {{ form_start(form) }}
+                        {{ form_row(form.status)}}
+                        {{ form_row(form.DE)}}
+                        {{ form_row(form.EN)}}
+                        <div class="uk-form-row">
+                            <label class="uk-form-label"><em>{{ 'note'|trans({}, "messages") }}</em></label>
+                            <div class="uk-form-controls">{{ 'terms update note'|trans({}, "portal") }}</div>
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

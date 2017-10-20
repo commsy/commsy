@@ -86,7 +86,7 @@ class DashboardFeedGenerator
          * TODO: Showing users without check the room configuration leads to data privacy issues.
          * TODO: Users must not be displayed if the user rubric in a room is disabled.
          */
-        $itemManager->setTypeArrayLimit([/*'user', */'material', 'date', 'discussion', 'announcement']);
+        $itemManager->setTypeArrayLimit([/*'user', */'material', 'date', 'discussion', 'announcement', 'todo']);
         $itemManager->setIntervalLimit($max + $start);
         $itemManager->select();
         $itemList = $itemManager->get();
@@ -128,25 +128,33 @@ class DashboardFeedGenerator
                 case 'label':
                     $labelManager = $this->legacyEnvironment->getEnvironment()->getLabelManager();
                     $labelItem = $labelManager->getItem($item->getItemId());
-                    if ($labelItem->getItemType() == 'group') {
-                        $groupManager = $this->legacyEnvironment->getEnvironment()->getLabelManager();
-                        $groupItem = $groupManager->getItem($item->getItemId());
-                        if ($groupItem) {
-                            $feedList[] = $groupItem;
-                        }
-                    } else if ($labelItem->getItemType() == 'topic') {
-                        $topicManager = $this->legacyEnvironment->getEnvironment()->getTopicManager();
-                        $topicItem = $topicManager->getItem($item->getItemId());
-                        if ($topicItem) {
-                            $feedList[] = $topicItem;
+
+                    if ($labelItem) {
+                        if ($labelItem->getItemType() == 'group') {
+                            $groupManager = $this->legacyEnvironment->getEnvironment()->getLabelManager();
+                            $groupItem = $groupManager->getItem($item->getItemId());
+                            if ($groupItem) {
+                                $feedList[] = $groupItem;
+                            }
+                        } else if ($labelItem->getItemType() == 'topic') {
+                            $topicManager = $this->legacyEnvironment->getEnvironment()->getTopicManager();
+                            $topicItem = $topicManager->getItem($item->getItemId());
+                            if ($topicItem) {
+                                $feedList[] = $topicItem;
+                            }
                         }
                     }
+
                     break;
 
                 default:
                     $tempManager = $legacyEnvironment->getManager($item->getItemType());
                     $tempItem = $tempManager->getItem($item->getItemId());
-                    $feedList[] = $tempItem;
+
+                    if ($tempItem) {
+                        $feedList[] = $tempItem;
+                    }
+
                     break;
             }
             $item = $itemList->getNext();

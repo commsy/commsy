@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  commsy_etherpad:
+    build: ./etherpad
+    container_name: commsy_etherpad
+
+  commsy_php:
+    links:
+      - commsy_etherpad

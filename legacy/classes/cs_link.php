@@ -27,6 +27,8 @@
  */
 class cs_link {
 
+  var $_link = NULL;
+
    /**
     * string - containing the type of the list resp. the type of the elements
     */
@@ -281,11 +283,25 @@ class cs_link {
     * @author CommSy Development Group
     */
    function getLink () {
-      return ahref_curl($this->_getContextID(),$this->_getModule(),$this->_getFunction(),$this->_getParameter(),$this->getTitle());
+      if (isset($this->_link)) {
+        return "<a href='" . $this->_link . "'>" . $this->getTitle() . "</a>";
+      }
+      else {
+        return ahref_curl($this->_getContextID(),$this->_getModule(),$this->_getFunction(),$this->_getParameter(),$this->getTitle());
+      }
    }
 
    function getShortLink () {
-      return ahref_curl($this->_getContextID(),$this->_getModule(),$this->_getFunction(),$this->_getParameter(),$this->getShortTitle());
+      if (isset($this->_link)) {
+        return "<a href='" . $this->_link . "'>" . $this->getShortTitle() . "</a>";
+      }
+      else {
+        return ahref_curl($this->_getContextID(),$this->_getModule(),$this->_getFunction(),$this->_getParameter(),$this->getShortTitle());
+      }
+   }
+
+   function setLink($value) {
+      $this->_link = $value;
    }
 
     /** return the HTML-Hyperlink of the link as an icon
