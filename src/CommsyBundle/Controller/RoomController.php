@@ -152,6 +152,12 @@ class RoomController extends Controller
             $entryId = $roomItem->getInformationBoxEntryID();
             $itemService = $this->get('commsy_legacy.item_service');
             $homeInformationEntry = $itemService->getTypedItem($entryId);
+
+            // This check is now present in settings form. Check also added here to secure display of rooms with old and invalid settings in database.
+            if (!in_array($homeInformationEntry->getItemType(), [CS_ANNOUNCEMENT_TYPE, CS_DATE_TYPE, CS_MATERIAL_TYPE, CS_TODO_TYPE])) {
+                $roomItem->setwithInformationBox(false);
+                $homeInformationEntry = null;
+            }
         }
 
         return [
