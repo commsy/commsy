@@ -1163,6 +1163,12 @@ class DiscussionController extends Controller
                 // update title
                 $article->setTitle($form->getData()['title']);
 
+                if ($form->getData()['permission']) {
+                    $article->setPrivateEditing('0');
+                } else {
+                    $article->setPrivateEditing('1');
+                }
+
                 if ($item->isDraft()) {
                     $item->setDraftStatus(0);
                     $item->saveAsItem();

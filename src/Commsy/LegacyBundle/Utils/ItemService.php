@@ -15,11 +15,12 @@ class ItemService
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        $this->itemManager = $this->legacyEnvironment->getItemManager();
+        $this->setItemManager();
     }
 
     public function getItem($itemId)
     {
+        $this->setItemManager();
         $item = $this->itemManager->getItem($itemId);
         return $item;
     }
@@ -120,5 +121,13 @@ class ItemService
         }
 
         return [];
+    }
+
+    private function setItemManager() {
+        if (!$this->legacyEnvironment->isArchiveMode()) {
+            $this->itemManager = $this->legacyEnvironment->getItemManager();
+        } else {
+            $this->itemManager = $this->legacyEnvironment->getZzzItemManager();
+        }
     }
 }
