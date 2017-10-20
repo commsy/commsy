@@ -1048,9 +1048,18 @@ class RoomController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->get('save')->isClicked()) {
-                $projectManager = $legacyEnvironment->getProjectManager();
-                $legacyRoom = $projectManager->getNewItem();
+            $formData = $form->getData();
+            if ($form->get('save')->isClicked() && isset($formData['type_select'])) {
+                if ($formData['type_select'] == 'project') {
+                    $roomManager = $legacyEnvironment->getProjectManager();
+                }
+                elseif ($formData['type_select'] == 'community') {
+                     $roomManager = $legacyEnvironment->getCommunityManager();
+                }
+                else {
+                    throw new UnexpectedValueException("Error Processing Request: Unrecognized room type", 1);
+                }
+                $legacyRoom = $roomManager->getNewItem();
 
                 $currentUser = $legacyEnvironment->getCurrentUserItem();
                 $legacyRoom->setCreatorItem($currentUser);
@@ -1059,7 +1068,7 @@ class RoomController extends Controller
                 $legacyRoom->setContextID($legacyEnvironment->getCurrentPortalID());
                 $legacyRoom->open();
 
-                if (isset($context['type_sub']['community_rooms'])) {
+                if ($formData['type_select'] == 'project' && isset($context['type_sub']['community_rooms'])) {
                     $legacyRoom->setCommunityListByID($context['type_sub']['community_rooms']);
                 }
 
