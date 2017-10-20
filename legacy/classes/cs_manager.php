@@ -1236,6 +1236,13 @@ class cs_manager {
                $do_it = false;
             }
 
+            // Skip draft items
+            if ($do_it) {
+                $itemManager = $this->_environment->getItemManager();
+                $correspondingItem = $itemManager->getItem($query_result['item_id']);
+                $do_it = !$correspondingItem->isDraft();
+            }
+
             if ( $do_it
                  and DBTable2Type($this->_db_table) != CS_LINKITEMFILE_TYPE
                  and DBTable2Type($this->_db_table) != CS_LINK_TYPE

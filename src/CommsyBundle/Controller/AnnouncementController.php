@@ -142,6 +142,8 @@ class AnnouncementController extends Controller
             $sort = 'date';
         }
 
+        $announcementService->hideDeactivatedEntries();
+
         // get announcement list from manager service 
         $announcements = $announcementService->getListAnnouncements($roomId, $max, $start, $sort);
 
