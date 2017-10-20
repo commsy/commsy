@@ -173,12 +173,7 @@ class TodoController extends Controller
         $readerList = array();
         $allowedActions = array();
         foreach ($todos as $item) {
-            $reader = $readerService->getLatestReader($item->getItemId());
-            if ( empty($reader) ) {
-                $readerList[$item->getItemId()] = 'new';
-            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-                $readerList[$item->getItemId()] = 'changed';
-            }
+            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
 
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
                 $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete', 'markpending', 'markinprogress', 'markdone');
@@ -406,7 +401,12 @@ class TodoController extends Controller
         if(empty($noticed) || $noticed['read_date'] < $todo->getModificationDate()) {
             $noticed_manager->markNoticed($todo->getItemID(), $todo->getVersionID());
         }
-        
+
+        // mark annotations as read
+        $annotationService = $this->get('commsy_legacy.annotation_service');
+        $annotationList = $todo->getAnnotationList();
+        $annotationService->markAnnotationsReadedAndNoticed($annotationList);
+
         $itemArray = array($todo);
 
         $current_context = $legacyEnvironment->getCurrentContextItem();

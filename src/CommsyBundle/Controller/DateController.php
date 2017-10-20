@@ -84,12 +84,7 @@ class DateController extends Controller
         $readerList = array();
         $allowedActions = array();
         foreach ($dates as $item) {
-            $reader = $readerService->getLatestReader($item->getItemId());
-            if ( empty($reader) ) {
-               $readerList[$item->getItemId()] = 'new';
-            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-               $readerList[$item->getItemId()] = 'changed';
-            }
+            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
             if ($this->isGranted('ITEM_EDIT', $item->getItemID())) {
                 $allowedActions[$item->getItemID()] = array('markread', 'copy', 'save', 'delete');
             } else {
@@ -503,6 +498,11 @@ class DateController extends Controller
         if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
+
+        // mark annotations as read
+        $annotationService = $this->get('commsy_legacy.annotation_service');
+        $annotationList = $date->getAnnotationList();
+        $annotationService->markAnnotationsReadedAndNoticed($annotationList);
 
         $itemArray = array($date);
 
