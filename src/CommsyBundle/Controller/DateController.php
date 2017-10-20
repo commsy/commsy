@@ -1186,6 +1186,7 @@ class DateController extends Controller
                     $tempDate->setWholeDay($dateItem->isWholeDay());
                     $tempDate->setStartingTime($dateItem->getStartingTime());
                     $tempDate->setEndingTime($dateItem->getEndingTime());
+                    $tempDate->setPlace($dateItem->getPlace());
                     $tempDate->save();
                     
                     // mark as read and noticed by creator
