@@ -237,6 +237,12 @@ services:
         tags:
             - { name: validator.constraint_validator, alias: alias_name }
 
+    commsy.validator.home_notice_constraint:
+        class: CommsyBundle\Validator\Constraints\HomeNoticeConstraintValidator
+        arguments: ['@service_container', '@translator']
+        tags:
+            - { name: validator.constraint_validator, alias: alias_name }
+
     # Form types
     commsy.form.type.general_settings:
         class: CommsyBundle\Form\Type\GeneralSettingsType

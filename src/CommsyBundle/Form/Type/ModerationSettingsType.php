@@ -19,6 +19,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use CommsyBundle\Validator\Constraints\HomeNoticeConstraint;
 
 class ModerationSettingsType extends AbstractType
 {
@@ -54,6 +55,9 @@ class ModerationSettingsType extends AbstractType
                 ))
                 ->add('item_id', TextType::class, array(
                     'label' => 'Content ID',
+                    'constraints' => array(
+                        new HomeNoticeConstraint(),
+                    )
                 )) 
                 ->add('show_information_box', ChoiceType::class, array(
                     'label' => false,

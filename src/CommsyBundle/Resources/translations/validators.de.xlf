@@ -42,6 +42,18 @@
                 <source>Please select at least one hashtag</source>
                 <target>Bitte wählen Sie mindestens ein Schlagwort aus!</target>
             </trans-unit>
+            <trans-unit id="homeNoticeNoItem">
+                <source>There is not item with this id.</source>
+                <target>Es existiert kein Eintrag mit dieser Referenznummer.</target>
+            </trans-unit>
+            <trans-unit id="homeNotiveInvalidItemType">
+                <source>A item of this type ({{ type }}) can not be used as home notice.</source>
+                <target>Ein Eintrag mit diesem Typ ({{ type }}) kann nicht verwendet werden.</target>
+            </trans-unit>
+            <trans-unit id="homeNotiveInvalidId">
+                <source>The id is invalid.</source>
+                <target>Die Referenznummer ist ungültig.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
