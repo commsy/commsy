@@ -124,7 +124,7 @@ class TodoController extends Controller
      * @Route("/room/{roomId}/todo/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'duedate_rev', Request $request)
     {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
