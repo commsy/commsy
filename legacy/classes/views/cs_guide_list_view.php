@@ -497,58 +497,50 @@ class cs_guide_list_view extends cs_list_view_plain {
       return $html;
    }
 
-   function _getListActionsAsHTML () {
-      $current_context = $this->_environment->getCurrentContextItem();
-      $html  = '';
-      $html .= '<div class="search_link">'.LF;
-      if ($this->_environment->inPortal()) {
-         $current_user = $this->_environment->getCurrentUserItem();
-         $portal_item = $this->_environment->getCurrentContextItem();
-         $room_opening_status = $portal_item->getProjectRoomCreationStatus();
+    function _getListActionsAsHTML()
+    {
+        $html = '';
+        $html .= '<div class="search_link">' . LF;
+        if ($this->_environment->inPortal()) {
+            $current_user = $this->_environment->getCurrentUserItem();
+            $portal_item = $this->_environment->getCurrentContextItem();
+            $room_opening_status = $portal_item->getProjectRoomCreationStatus();
 
-         $isAllowedToCreateRoom = true;
-         if (!$current_user->isGuest()) {
-             $isAllowedToCreateRoom = $current_user->isAllowedToCreateContext();
-         }
-
-         if ( $current_user->isUser()
-              and $this->_with_modifying_actions
-              and $room_opening_status == 'portal'
-              and $isAllowedToCreateRoom
-            ) {
-            // open a new project room
-            $params = array();
-            $params['iid'] = 'NEW';
-            $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),'project','edit',$params,$this->_translator->getMessage('PORTAL_ENTER_PROJECT')).BRLF;
-            unset($params);
-            $community_room_opening = $portal_item->getCommunityRoomCreationStatus();
-            if ($community_room_opening == 'all' or $current_user->isModerator()){
-               // open a new community room
-               $params = array();
-               $params['iid'] = 'NEW';
-               $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),'community','edit',$params,$this->_translator->getMessage('PORTAL_ENTER_COMMUNITY')).BRLF;
-               unset($params);
-            } else {
-               $html .='<span class="disabled">&gt;&nbsp;</span>'.'<span class="disabled" style="font-weight:normal">'.$this->_translator->getMessage('PORTAL_ENTER_COMMUNITY').'</span>';
+            $isAllowedToCreateRoom = true;
+            if (!$current_user->isGuest()) {
+                $isAllowedToCreateRoom = $current_user->isAllowedToCreateContext();
             }
-         } elseif ( $this->_with_modifying_actions and $isAllowedToCreateRoom) {
-            $community_room_opening = $portal_item->getCommunityRoomCreationStatus();
-            if (  ( $community_room_opening == 'all' and $current_user->isUser() )
-                  or $current_user->isModerator()
-               ) {
-               // open a new community room
-               $params = array();
-               $params['iid'] = 'NEW';
-               $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),'community','edit',$params,$this->_translator->getMessage('PORTAL_ENTER_COMMUNITY')).BRLF;
-               unset($params);
-            }
-            $this->addAction('<span class="disabled">'.$this->_translator->getMessage('PORTAL_ENTER_ROOM').'</span>');
-         }
-      }
 
-      $html .= '</div>'.LF;
-      return $html;
-   }
+            if ($this->_with_modifying_actions && $isAllowedToCreateRoom) {
+
+                $showLink = false;
+                if ($current_user->isUser() && $room_opening_status == 'portal') {
+                    $showLink = true;
+                } else {
+                    $community_room_opening = $portal_item->getCommunityRoomCreationStatus();
+                    if (($community_room_opening == 'all' && $current_user->isUser()) || $current_user->isModerator()) {
+                        $showLink = true;
+                    }
+                }
+
+                if ($showLink) {
+                    global $symfonyContainer;
+                    $router = $symfonyContainer->get('router');
+
+                    $url = $router->generate(
+                        'commsy_room_create', [
+                            'roomId' => $current_user->getOwnRoom()->getItemId(),
+                        ]
+                    );
+
+                    $html .= '> <a href="' . $url . '">' . $this->_translator->getMessage('PORTAL_ENTER_ROOM') . '</a>';
+                }
+            }
+        }
+
+        $html .= '</div>' . LF;
+        return $html;
+    }
 
    function _getConfigurationBoxAsHTML () {
       $current_context = $this->_environment->getCurrentContextItem();
