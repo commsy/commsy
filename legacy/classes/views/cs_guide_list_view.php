@@ -527,13 +527,16 @@ class cs_guide_list_view extends cs_list_view_plain {
                     global $symfonyContainer;
                     $router = $symfonyContainer->get('router');
 
-                    $url = $router->generate(
-                        'commsy_room_create', [
-                            'roomId' => $current_user->getOwnRoom()->getItemId(),
-                        ]
-                    );
+                    $ownRoom = $current_user->getOwnRoom();
+                    if (isset($ownRoom)) {
+                        $url = $router->generate(
+                            'commsy_room_create', [
+                                'roomId' => $ownRoom->getItemId(),
+                            ]
+                        );
 
-                    $html .= '> <a href="' . $url . '">' . $this->_translator->getMessage('PORTAL_ENTER_ROOM') . '</a>';
+                        $html .= '> <a href="' . $url . '">' . $this->_translator->getMessage('PORTAL_ENTER_ROOM') . '</a>';
+                    }
                 }
             }
         }
