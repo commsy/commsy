@@ -1,0 +1,11 @@
+{
+    "autoload": {
+        "psr-4": {
+            "CommSy\\": "src/"
+        }
+    },
+    "require": {
+        "symfony/console": "^3.3",
+        "symfony/filesystem": "^3.3"
+    }
+}
