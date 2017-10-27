@@ -228,6 +228,7 @@ class AnnouncementController extends Controller
             'showHashTags' => $roomItem->withBuzzwords(),
             'showCategories' => $roomItem->withTags(),
             'usageInfo' => $usageInfo,
+            'isArchived' => $roomItem->isArchived(),
         );
     }
 

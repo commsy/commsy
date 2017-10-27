@@ -79,6 +79,7 @@ class TopicController extends Controller
             'showHashTags' => false,
             'showCategories' => false,
             'usageInfo' => $usageInfo,
+            'isArchived' => $roomItem->isArchived(),
         );
     }
     

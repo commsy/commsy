@@ -172,6 +172,7 @@ class MaterialController extends Controller
             'showCategories' => $roomItem->withTags(),
             'material_filter' => $filterForm,
             'usageInfo' => $usageInfo,
+            'isArchived' => $roomItem->isArchived(),
         );
     }
 
