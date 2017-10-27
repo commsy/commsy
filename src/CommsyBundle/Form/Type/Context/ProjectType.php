@@ -59,7 +59,7 @@ class ProjectType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['types', 'templates', 'preferredChoices', 'timesDisplay', 'times', 'communities', 'linkCommunitiesMandantory', 'roomCategories'])
+            ->setRequired(['types', 'templates', 'preferredChoices', 'timesDisplay', 'times', 'communities', 'linkCommunitiesMandantory', 'roomCategories', 'linkRoomCategoriesMandatory'])
             ->setDefaults(array('translation_domain' => 'form'))
         ;
     }

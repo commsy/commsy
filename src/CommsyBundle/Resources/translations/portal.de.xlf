@@ -31,9 +31,14 @@
                 <target>Raumkategorien</target>
             </trans-unit>
 
+            <trans-unit id="Portal settings">
+                <source>settings</source>
+                <target>Portaleinstellungen</target>
+            </trans-unit>
+
             <!-- portal announcements -->
             <trans-unit id="Portal announcements">
-                <source>Portal announcements</source>
+                <source>announcements</source>
                 <target>Portal-Ankündigungen</target>
             </trans-unit>
             <trans-unit id="Show announcements">
@@ -46,10 +51,14 @@
             </trans-unit>
             <trans-unit id="Link">
                 <source>Link</source>
-                <target>Link</target>
+                <target>Adresse</target>
             </trans-unit>
 
             <!-- portal terms -->
+            <trans-unit id="portal_agb">
+                <source>terms</source>
+                <target>Nutzungsbedingungen</target>
+            </trans-unit>
             <trans-unit id="termsUpdateNote">
                 <source>terms update note</source>
                 <target>Bei Änderungen müssen alle Benutzer die Nutzungsbedingungen erneut akzeptieren!</target>
@@ -57,12 +66,17 @@
 
             <!-- portal help link -->
             <trans-unit id="support page link">
-                <source>help link</source>
+                <source>help</source>
                 <target>Support-Seite</target>
             </trans-unit>
             <trans-unit id="tooltip text">
                 <source>tooltip text</source>
                 <target>Tooltip-Text</target>
+            </trans-unit>
+
+            <trans-unit id="roomcategories">
+                <source>roomcategories</source>
+                <target>Raumkategorien</target>
             </trans-unit>
        </body>
     </file>

@@ -57,6 +57,18 @@ class CommsyBreadcrumbListener
 
         $this->addPortalCrumb($request);
 
+        // portal settings
+        if ($controller == 'portal') {
+
+            $portal = $this->legacyEnvironment->getEnvironment()->getCurrentPortalItem();
+
+            $this->breadcrumbs->addRouteItem($this->translator->trans('settings', [], 'portal'), "commsy_portal_legacysettings", ["roomId" => $portal->getItemId()]);
+
+            $this->breadcrumbs->addItem($this->translator->trans($action, [], 'portal'));
+
+            return;
+        }
+
         if ($roomItem == null) {
             return;
         }

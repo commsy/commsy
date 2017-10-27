@@ -31,10 +31,15 @@
                 <target>Room categories</target>
             </trans-unit>
 
+            <trans-unit id="Portal settings">
+                <source>settings</source>
+                <target>Portaleinstellungen</target>
+            </trans-unit>
+
             <!-- portal announcements -->
             <trans-unit id="Portal announcements">
                 <source>Portal announcements</source>
-                <target>Portal announcements</target>
+                <target>announcements</target>
             </trans-unit>
             <trans-unit id="Show announcements">
                 <source>Show</source>
@@ -46,10 +51,14 @@
             </trans-unit>
             <trans-unit id="Link">
                 <source>Link</source>
-                <target>Link</target>
+                <target>Address</target>
             </trans-unit>
 
             <!-- portal terms -->
+            <trans-unit id="portal_agb">
+                <source>terms</source>
+                <target>Terms and Conditions</target>
+            </trans-unit>
             <trans-unit id="termsUpdateNote">
                 <source>terms update note</source>
                 <target>If you change and save this text, all users will be forced to reaccept the Terms and Conditions the next time they log in!</target>
@@ -57,12 +66,17 @@
 
             <!-- portal help link -->
             <trans-unit id="support page link">
-                <source>help link</source>
+                <source>help</source>
                 <target>Support page</target>
             </trans-unit>
             <trans-unit id="tooltip text">
                 <source>tooltip text</source>
                 <target>Tooltip text</target>
+            </trans-unit>
+
+            <trans-unit id="roomcategories">
+                <source>roomcategories</source>
+                <target>Room categories</target>
             </trans-unit>
         </body>
     </file>

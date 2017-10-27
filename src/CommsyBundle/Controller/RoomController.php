@@ -1039,6 +1039,8 @@ class RoomController extends Controller
             $roomCategories[$roomCategory->getTitle()] = $roomCategory->getId();
         }
 
+        $linkRoomCategoriesMandatory = $current_portal->isTagMandatory() && count($roomCategories) > 0;
+
         $formData = [];
         $form = $this->createForm(ContextType::class, $formData, [
             'types' => $types,
@@ -1049,6 +1051,7 @@ class RoomController extends Controller
             'communities' => $community_room_array,
             'linkCommunitiesMandantory' => $linkCommunitiesMandantory,
             'roomCategories' => $roomCategories,
+            'linkRoomCategoriesMandatory' => $linkRoomCategoriesMandatory,
         ]);
 
         $form->handleRequest($request);

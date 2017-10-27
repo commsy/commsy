@@ -473,23 +473,23 @@ class MenuBuilder
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-tags uk-icon-small')
             ))
-                ->setExtra('translation_domain', 'menu');;
+                ->setExtra('translation_domain', 'portal');;
             $menu->addChild('portal_configuration_announcements', array(
-                'label' => 'Portal announcements',
+                'label' => 'announcements',
                 'route' => 'commsy_portal_announcements',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-bullhorn uk-icon-small')
             ))
                 ->setExtra('translation_domain', 'portal');
             $menu->addChild('portal_configuration_terms', array(
-                'label' => 'AGB',
+                'label' => 'terms',
                 'route' => 'commsy_portal_terms',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-file-text-o uk-icon-small')
             ))
-                ->setExtra('translation_domain', 'room');
+                ->setExtra('translation_domain', 'portal');
             $menu->addChild('portal_configuration_help', array(
-                'label' => 'help link',
+                'label' => 'help',
                 'route' => 'commsy_portal_help',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-question-circle uk-icon-small')
@@ -502,12 +502,12 @@ class MenuBuilder
                     'extras' => array('icon' => 'uk-icon-small')
                 ));
             $menu->addChild('room', array(
-                'label' => 'Portal settings',
+                'label' => 'settings',
                 'route' => 'commsy_portal_legacysettings',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-reply uk-icon-small uk-icon-justify')
             ))
-                ->setExtra('translation_domain', 'menu');
+                ->setExtra('translation_domain', 'portal');
         }
         
         return $menu;

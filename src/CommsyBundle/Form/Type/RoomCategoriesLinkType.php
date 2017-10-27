@@ -1,35 +1,37 @@
 <?php
-namespace CommsyBundle\Form\Type\Context;
+namespace CommsyBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-class CommunityType extends AbstractType
+class RoomCategoriesLinkType extends AbstractType
 {
     /**
      * Builds the form.
      * This method is called for each type in the hierarchy starting from the top most type.
      * Type extensions can further modify the form.
-     * 
+     *
      * @param  FormBuilderInterface $builder The form builder
      * @param  array                $options The options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $translationDomain = 'form';
-
         $builder
-            ->add('master_template', ChoiceType::class, [
-                'choices' => $options['templates'],
-                'preferred_choices' => $options['preferredChoices'],
-                'placeholder' => 'Choose a template',
+            ->add('mandatory', CheckboxType::class, [
+                'label_attr' => [
+                    'class' => 'uk-form-label',
+                ],
                 'required' => false,
-                'mapped' => false,
-                'label' => 'Template',
             ])
-        ;
+            ->add('save', SubmitType::class, array(
+                'attr' => [
+                    'class' => 'uk-button-primary',
+                ],
+
+            ));
     }
 
     /**
@@ -40,8 +42,8 @@ class CommunityType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['types', 'templates', 'preferredChoices', 'timesDisplay', 'times', 'communities', 'linkCommunitiesMandantory', 'roomCategories', 'linkRoomCategoriesMandatory'])
-            ->setDefaults(array('translation_domain' => 'form'))
+            ->setRequired([])
+            ->setDefaults(array('translation_domain' => 'settings'))
         ;
     }
 
@@ -49,12 +51,11 @@ class CommunityType extends AbstractType
      * Returns the prefix of the template block name for this type.
      * The block prefix defaults to the underscored short class name with the "Type" suffix removed
      * (e.g. "UserProfileType" => "user_profile").
-     * 
+     *
      * @return string The prefix of the template block name
      */
     public function getBlockPrefix()
     {
-        return 'project';
+        return 'roomcategories_link';
     }
-
 }

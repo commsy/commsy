@@ -10,6 +10,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
+use Symfony\Component\Validator\Constraints\Count;
+
 use CommsyBundle\Form\Type\Event\AddContextFieldListener;
 
 use CommsyBundle\Entity\Room;
@@ -53,15 +55,21 @@ class ContextType extends AbstractType
                 'translation_domain' => 'room',
             ]);
 
-            if (isset($options['roomCategories'])) {
+            $constraints = [];
+            if (isset($options['linkRoomCategoriesMandatory']) && $options['linkRoomCategoriesMandatory']) {
+                $constraints[] = new Count(array('min' => 1, 'minMessage' => "Please select at least one category"));
+            }
+
+            if (isset($options['roomCategories']) && isset($options['linkRoomCategoriesMandatory'])) {
                 $builder->add('categories', ChoiceType::class, array(
                     'placeholder' => false,
                     'choices' => $options['roomCategories'],
                     'label' => 'Room categories',
-                    'required' => false,
+                    'required' => $options['linkRoomCategoriesMandatory'],
                     'expanded' => true,
                     'multiple' => true,
                     'translation_domain' => 'portal',
+                    'constraints' => $constraints,
                 ));
             }
 
@@ -97,6 +105,7 @@ class ContextType extends AbstractType
                 'times',
                 'communities',
                 'linkCommunitiesMandantory',
+                'linkRoomCategoriesMandatory',
                 'roomCategories',
             ])
             ->setDefaults([
