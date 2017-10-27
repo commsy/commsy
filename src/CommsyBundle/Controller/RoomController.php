@@ -33,7 +33,7 @@ class RoomController extends Controller
         $roomItem = $roomManager->getItem($roomId);
 
         // fall back on default theme if rooms theme is not supported anymore
-        if (!in_array($roomItem->getColorArray()['schema'], $this->container->getParameter('liip_theme.themes'))) {
+        if ($roomItem && !in_array($roomItem->getColorArray()['schema'], $this->container->getParameter('liip_theme.themes'))) {
             $roomItem->setColorArray(array('schema' => 'default'));
             $roomItem->save();
         }

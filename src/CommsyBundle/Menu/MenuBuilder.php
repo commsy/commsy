@@ -331,12 +331,7 @@ class MenuBuilder
             ])
             ->setExtra('translation_domain', 'menu');
 
-            $menu->addChild('room_navigation_space_2', array(
-                'label' => ' ',
-                'route' => 'commsy_room_home',
-                'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-small')
-            ));
+            $menu->addChild(' ', ['uri' => '#']);
             $menu->addChild('room', array(
                 'label' => 'Back to room',
                 'route' => 'commsy_room_home',
@@ -450,12 +445,7 @@ class MenuBuilder
             if (!$inPrivateRoom) {
                 if ($currentUser) {
                     if ($this->authorizationChecker->isGranted('MODERATOR')) {
-                        $menu->addChild('room_navigation_space_2', array(
-                            'label' => ' ',
-                            'route' => 'commsy_room_home',
-                            'routeParameters' => array('roomId' => $roomId),
-                            'extras' => array('icon' => 'uk-icon-small')
-                        ));
+                        $menu->addChild(' ', ['uri' => '#']);
                         $menu->addChild('room_configuration', array(
                             'label' => 'settings',
                             'route' => 'commsy_settings_general',
@@ -495,12 +485,7 @@ class MenuBuilder
                 'extras' => array('icon' => 'uk-icon-question-circle uk-icon-small')
             ))
                 ->setExtra('translation_domain', 'portal');
-            $menu->addChild('room_navigation_space_2', array(
-                    'label' => ' ',
-                    'route' => 'commsy_room_home',
-                    'routeParameters' => array('roomId' => $roomId),
-                    'extras' => array('icon' => 'uk-icon-small')
-                ));
+            $menu->addChild(' ', ['uri' => '#']);
             $menu->addChild('room', array(
                 'label' => 'settings',
                 'route' => 'commsy_portal_legacysettings',
