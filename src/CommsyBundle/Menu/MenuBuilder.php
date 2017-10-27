@@ -369,7 +369,7 @@ class MenuBuilder
             $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
             $inPrivateRoom = false;
-            if (!$currentUser->isRoot()) {
+            if (!$currentUser->isRoot() && !$currentUser->isGuest()) {
                 $portalUser = $this->userService->getPortalUserFromSessionId();
                 $authSourceManager = $this->legacyEnvironment->getAuthSourceManager();
                 $authSource = $authSourceManager->getItem($portalUser->getAuthSource());
