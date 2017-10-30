@@ -395,7 +395,7 @@ class cs_privateroom_item extends cs_room_item
                 and $this->isPrivateroom()
             ) {
                 $mail_array = array();
-                $mail_array[] = $user->getRelatedUserItem()->getRoomEmail();
+                $mail_array[] = $user->getRelatedCommSyUserItem()->getRoomEmail();
 
                 // get activity informations for room and send mail
                 if (!empty($mail_array)) {
