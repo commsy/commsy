@@ -39,11 +39,11 @@
                                         <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left uk-nav-parent-icon" data-uk-nav>
 
                                             {% if is_granted('ITEM_EDIT', 'NEW') %}
-                                            <li>
-                                                 <a href="{{ path('commsy_date_create', {'roomId': roomId, 'dateDescription' : "now"}) }}">
-                                                    <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
-                                                </a>
-                                            </li>
+                                                <li>
+                                                     <a id="create-date" href="{{ path('commsy_date_create', {'roomId': roomId, 'dateDescription' : "now"}) }}">
+                                                        <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
+                                                    </a>
+                                                </li>
                                             {% endif %}
 
                                             {# print #}
@@ -93,7 +93,7 @@
                                                 </li>
                                             {% endif %}
 
-                                            {% if is_granted('MODERATOR') %}
+                                            {% if not isArchived and is_granted('MODERATOR') %}
                                                 {# import iCal #}
                                                 <li>
                                                     <a href="{{ path('commsy_date_import', {'roomId': roomId}) }}" >

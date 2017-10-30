@@ -33,7 +33,7 @@ class RoomController extends Controller
         $roomItem = $roomManager->getItem($roomId);
 
         // fall back on default theme if rooms theme is not supported anymore
-        if (!in_array($roomItem->getColorArray()['schema'], $this->container->getParameter('liip_theme.themes'))) {
+        if ($roomItem && !in_array($roomItem->getColorArray()['schema'], $this->container->getParameter('liip_theme.themes'))) {
             $roomItem->setColorArray(array('schema' => 'default'));
             $roomItem->save();
         }
@@ -1039,6 +1039,8 @@ class RoomController extends Controller
             $roomCategories[$roomCategory->getTitle()] = $roomCategory->getId();
         }
 
+        $linkRoomCategoriesMandatory = $current_portal->isTagMandatory() && count($roomCategories) > 0;
+
         $formData = [];
         $form = $this->createForm(ContextType::class, $formData, [
             'types' => $types,
@@ -1049,6 +1051,7 @@ class RoomController extends Controller
             'communities' => $community_room_array,
             'linkCommunitiesMandantory' => $linkCommunitiesMandantory,
             'roomCategories' => $roomCategories,
+            'linkRoomCategoriesMandatory' => $linkRoomCategoriesMandatory,
         ]);
 
         $form->handleRequest($request);

@@ -13,6 +13,7 @@ use CommsyBundle\Form\Type\PortalAnnouncementsType;
 use CommsyBundle\Form\Type\PortalHelpType;
 use CommsyBundle\Form\Type\PortalTermsType;
 use CommsyBundle\Form\Type\RoomCategoriesEditType;
+use CommsyBundle\Form\Type\RoomCategoriesLinkType;
 use CommsyBundle\Entity\RoomCategories;
 
 use CommsyBundle\Event\CommsyEditEvent;
@@ -30,6 +31,8 @@ class PortalController extends Controller
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('CommsyBundle:RoomCategories');
 
@@ -44,8 +47,8 @@ class PortalController extends Controller
 
         $editForm->handleRequest($request);
         if ($editForm->isValid()) {
-            // tells Doctrine you want to (eventually) save the Product (no queries yet)
 
+            // tells Doctrine you want to (eventually) save the Product (no queries yet)
             if ($editForm->getClickedButton()->getName() == 'delete') {
                 $roomCategoriesService = $this->get('commsy.roomcategories_service');
                 $roomCategoriesService->removeRoomCategory($roomCategory);
@@ -66,8 +69,26 @@ class PortalController extends Controller
         $dispatcher = $this->get('event_dispatcher');
         $dispatcher->dispatch('commsy.edit', new CommsyEditEvent(null));
 
+        // mandatory links form
+        $linkForm = $this->createForm(RoomCategoriesLinkType::class, ['mandatory' => $portalItem->isTagMandatory()], []);
+
+        $linkForm->handleRequest($request);
+
+        if ($linkForm->isValid() && $linkForm->getClickedButton()->getName() == 'save') {
+            $formData = $linkForm->getData();
+
+            if($formData['mandatory']) {
+                $portalItem->setTagMandatory();
+            }
+            else {
+                $portalItem->unsetTagMandatory();
+            }
+            $portalItem->save();
+        }
+
         return [
             'editForm' => $editForm->createView(),
+            'linkForm' => $linkForm->createView(),
             'roomId' => $portalId,
             'roomCategories' => $roomCategories,
             'roomCategoryId' => $roomCategoryId,

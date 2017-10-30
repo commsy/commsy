@@ -75,7 +75,8 @@ class TodoController extends Controller
             'showHashTags' => $roomItem->withBuzzwords(),
             'showCategories' => $roomItem->withTags(),
             'statusList' => $roomItem->getExtraToDoStatusArray(),
-            'usageInfo' => $usageInfo
+            'usageInfo' => $usageInfo,
+            'isArchived' => $roomItem->isArchived(),
         );
     }
     

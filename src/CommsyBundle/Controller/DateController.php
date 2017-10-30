@@ -298,6 +298,7 @@ class DateController extends Controller
             'usageInfo' => $usageInfo,
             'iCal' => $iCal,
             'calendars' => $calendars,
+            'isArchived' => $roomItem->isArchived(),
         ];
     }
 
@@ -448,6 +449,7 @@ class DateController extends Controller
             'usageInfo' => $usageInfo,
             'iCal' => $iCal,
             'calendars' => $calendars,
+            'isArchived' => $roomItem->isArchived(),
         ];
     }
     

@@ -53,7 +53,7 @@
                 </li>
             </ul>
 
-            {% if is_granted('MODERATOR') %}
+            {% if is_granted('MODERATOR') and not isArchived %}
                 <ul class="uk-nav uk-nav-dropdown cs-list-moderation uk-padding-remove uk-margin-remove uk-text-left">
                     {# delete #}
                     <li>

@@ -128,7 +128,8 @@ class ItemVoter extends Voter
     private function canAnnotate($item, $currentUser)
     {
         if ($currentUser->getStatus() == 2 || $currentUser->getStatus() == 3) {
-            return true;
+            $currentRoom = $this->legacyEnvironment->getCurrentContextItem();
+            return !$currentRoom->isArchived();
         }
 
         return false;

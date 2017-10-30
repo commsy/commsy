@@ -107,6 +107,7 @@ class UserController extends Controller
             'showCategories' => false,
             'usageInfo' => $usageInfo,
             'view' => $view,
+            'isArchived' => $roomItem->isArchived(),
         ];
     }
 

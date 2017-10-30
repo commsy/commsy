@@ -83,45 +83,48 @@
                                 <div id="cs-additional-actions" class="uk-dropdown  uk-padding-remove">
                                     <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
 
-                                        {# join group #}
-                                        {% if userIsMember %}
-                                            <li style="display: none;">
-                                        {% else %}
-                                            <li>
+                                        {% if is_granted('ITEM_EDIT', item.itemId) %}
+                                            {# join group #}
+                                            {% if userIsMember %}
+                                                <li style="display: none;">
+                                            {% else %}
+                                                <li>
+                                            {% endif %}
+                                                <a href="#" data-cs-action-join="{
+                                                    'url': '{{ path('commsy_group_join', {'roomId': roomId, 'itemId': group.itemId}) }}',
+                                                    'successMessage': '<i class=\'uk-icon-medium uk-icon-user-plus\'></i> {{ 'Joined group %s'|trans|format(group.title|decodeHtmlEntity) }}',
+                                                    'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}',
+                                                    'groupId': [ {{ group.itemId }} ]
+                                                }">
+                                                    <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'join'|trans({})|capitalize }}
+                                                </a>
+                                            </li>
+
+                                            {# leave group #}
+                                            {% if userIsMember %}
+                                                <li>
+                                            {% else %}
+                                                <li style="display: none;">
+                                            {% endif %}
+                                                <a href="#" data-cs-action-leave="{
+                                                    'url': '{{ path('commsy_group_leave', {'roomId': roomId, 'itemId': group.itemId}) }}',
+                                                    'successMessage': '<i class=\'uk-icon-medium uk-icon-user-times\'></i> {{ 'Left group %s'|trans|format(group.title|decodeHtmlEntity) }}',
+                                                    'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}',
+                                                    'groupId': [ {{ group.itemId }} ]
+                                                }">
+                                                    <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave'|trans({})|capitalize }}
+                                                </a>
+                                            </li>
                                         {% endif %}
-                                            <a href="#" data-cs-action-join="{
-                                                'url': '{{ path('commsy_group_join', {'roomId': roomId, 'itemId': group.itemId}) }}',
-                                                'successMessage': '<i class=\'uk-icon-medium uk-icon-user-plus\'></i> {{ 'Joined group %s'|trans|format(group.title|decodeHtmlEntity) }}',
-                                                'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}',
-                                                'groupId': [ {{ group.itemId }} ]
-                                            }">
-                                                <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'join'|trans({})|capitalize }}
-                                            </a>
-                                        </li>
 
-                                        {# leave group #}
-                                        {% if userIsMember %}
+                                        {% if is_granted('ITEM_EDIT', 'NEW') %}
+                                            {# new entry #}
                                             <li>
-                                        {% else %}
-                                            <li style="display: none;">
+                                                <a class="" href="{{ path('commsy_group_create', {'roomId': roomId}) }}" id="newEntry">
+                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
+                                                </a>
+                                            </li>
                                         {% endif %}
-                                            <a href="#" data-cs-action-leave="{
-                                                'url': '{{ path('commsy_group_leave', {'roomId': roomId, 'itemId': group.itemId}) }}',
-                                                'successMessage': '<i class=\'uk-icon-medium uk-icon-user-times\'></i> {{ 'Left group %s'|trans|format(group.title|decodeHtmlEntity) }}',
-                                                'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}',
-                                                'groupId': [ {{ group.itemId }} ]
-                                            }">
-                                                <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave'|trans({})|capitalize }}
-                                            </a>
-                                        </li>
-
-
-                                        {# new entry #}
-                                        <li>
-                                            <a class="" href="{{ path('commsy_group_create', {'roomId': roomId}) }}" id="newEntry">
-                                                <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
-                                            </a>
-                                        </li>
                                         
                                         {# print #}
                                         <li>
@@ -156,18 +159,14 @@
                                             </a>
                                         </li>
 
-                                        {# delete #}
-                                        <li>
-                                            {% if is_granted('ITEM_EDIT', item.itemId) %}
+                                        {% if is_granted('ITEM_EDIT', item.itemId) %}
+                                            {# delete #}
+                                            <li>
                                                 <a class="commsy-action-delete" id="" href="#" data-delete-url="{{ path('commsy_item_delete', {'roomId': roomId, 'itemId': group.itemId}) }}" data-item-type="{{group.itemType}}" data-title="{{ 'list choice'|trans({},'rubric')|capitalize }}" data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}" data-return-url="{{ path('commsy_group_list', {'roomId': roomId}) }}">
                                                     <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                 </a>
-                                            {% else %}
-                                                <a href="#" onclick="{}" class="uk-text-muted">
-                                                    <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
-                                                </a>
-                                            {% endif %}
-                                        </li>
+                                            </li>
+                                        {% endif %}
                                     </ul>
                                 </div>
                             </div>
