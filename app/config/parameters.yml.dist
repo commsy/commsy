@@ -44,6 +44,10 @@ parameters:
     # security
     security.privacy_disable_overwriting: false
 
+    # proxy
+    proxy.ip: ~
+    proxy.port: ~
+
     # extensions
     extensions.etherpad.enabled: false
     extensions.etherpad.api_key: ~

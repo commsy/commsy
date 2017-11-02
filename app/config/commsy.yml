@@ -116,8 +116,8 @@ commsy:
         session_lifetime: 6
 
         # proxy settings
-        proxy_ip: ~
-        proxy_port: ~
+        proxy_ip: '%proxy.ip%'
+        proxy_port: '%proxy.port%'
 
         # single selection for categories
         single_cat_selection: false

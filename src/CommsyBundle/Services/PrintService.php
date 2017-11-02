@@ -79,6 +79,16 @@ class PrintService
         $this->serviceContainer->get('knp_snappy.pdf')->setOption('images',true);
         $this->serviceContainer->get('knp_snappy.pdf')->setOption('load-media-error-handling','ignore');
         $this->serviceContainer->get('knp_snappy.pdf')->setOption('load-error-handling','ignore');
+
+        if ($this->serviceContainer->hasParameter('proxy_ip')) {
+            if ($this->serviceContainer->hasParameter('proxy_port')) {
+                $proxyIp = $this->serviceContainer->getParameter('proxy_ip');
+                $proxyPort = $this->serviceContainer->getParameter('proxy_port');
+                $proxy = 'http://' . $proxyIp . ':' . $proxyPort;
+
+                $this->serviceContainer->get('knp_snappy.pdf')->setOption('proxy', $proxy);
+            }
+        }
         
         // set cookie for authentication - needed to request images
         $this->serviceContainer->get('knp_snappy.pdf')->setOption('cookie', [
