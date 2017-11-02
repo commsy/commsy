@@ -36,9 +36,9 @@ class UserTransformer implements DataTransformerInterface
             $userData['lastname'] = $userItem->getLastname();
             $userData['language'] = $userItem->getLanguage();
             if ($userItem->getAutoSaveStatus() == '1') {
-                $userData['autoSaveStatus'] = false;
-            } else {
                 $userData['autoSaveStatus'] = true;
+            } else {
+                $userData['autoSaveStatus'] = false;
             }
             $userData['title'] = $userItem->getTitle();
             if($userItem->getBirthday()){
