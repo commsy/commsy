@@ -346,6 +346,10 @@ class GroupController extends Controller
 
         $memberStatus = '';
 
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
         if($infoArray['group']->isGroupRoomActivated()) {
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             $userService = $this->get('commsy_legacy.user_service');
@@ -408,6 +412,7 @@ class GroupController extends Controller
             'annotationForm' => $form->createView(),
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
+            'isArchived' => $roomItem->isArchived(),
        );
     }
 
