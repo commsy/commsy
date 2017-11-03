@@ -330,4 +330,30 @@ class UserService
 
         return $user_array;
     }
+
+    public function updateAllGroupStatus($user, $roomId) {
+        $group_list = $user->getGroupList();
+        if ($group_list->isEmpty()) {
+            $group_manager = $this->legacyEnvironment->getLabelManager();
+            $group_manager->setExactNameLimit('ALL');
+            $group_manager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
+            $group_manager->select();
+            $group_list = $group_manager->get();
+            if ($group_list->getCount() == 1) {
+                $group = $group_list->getFirst();
+                $group->setTitle('ALL');
+            }
+
+            if (isset($group)) {
+                if ($user->getStatus() > 1 && !$group->isMember($user)) {
+                    $group->addMember($user);
+                }
+                elseif ($user->getStatus() < 2 && $group->isMember($user)) {
+                    $groupItem->removeMember($user);
+                }
+                $group->setModificatorItem($user);
+                $group->save();
+            }
+        }
+    }
 }

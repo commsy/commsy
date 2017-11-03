@@ -323,6 +323,9 @@ class UserController extends Controller
                             break;
                     }
 
+                    $userService = $this->get('commsy_legacy.user_service');
+                    $userService->updateAllGroupStatus($user, $roomId);
+
                     if ($formData['inform_user']) {
                         $this->sendUserInfoMail($formData['userIds'], $formData['status']);
                     }
