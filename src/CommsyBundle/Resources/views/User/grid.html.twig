@@ -19,6 +19,18 @@
                 <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">
                     <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
                 </a>
+
+                {% if user.status == 1 and is_granted('MODERATOR') %}
+                    <div style="float: right;">
+                        <a href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-confirm', 'userDetail': 1}) }}" id="status-confirm">
+                            <button class="uk-button-small uk-button uk-button-success uk-icon-check uk-margin uk-border-rounded" data-uk-tooltip title="{{'reject'|trans({}, 'room') }}"></button>
+                        </a>
+                        <a href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-block', 'userDetail': 1}) }}" id="status-block">
+                            <button class="uk-button-small uk-button uk-button-danger uk-icon-times uk-margin uk-border-rounded"  data-uk-tooltip title="{{'Confirm'|trans({}, 'settings') }}"></button>
+                        </a>
+                    </div>
+                {% endif %}
+
                 <div class="uk-text-large uk-text-middle uk-text-truncate uk-link">
                     <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">{{ user.title }} {{user.fullname}}</a>
                     <div class="uk-align-right {% if not user.isUser %}cs-moderation-warning{% endif %} uk-text-muted">

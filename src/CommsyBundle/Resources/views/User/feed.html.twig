@@ -34,7 +34,7 @@
             </div>
 
             {# name and meta #}
-            <div class="uk-width-5-10">
+            <div class="uk-width-4-10">
                 <h4 class="uk-comment-title">
                     <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">{{ user.fullName|decodeHtmlEntity }}</a>
                 </h4>
@@ -56,7 +56,7 @@
                     {% endif %}
                 </div>
             </div>
-            <div class="uk-width-5-10">
+            <div class="uk-width-4-10">
                 {% if user.email %}
                     {% if user.isEmailVisible %}
                         <td>{{ 'email'|trans({}, 'user')}}: <a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
@@ -69,6 +69,16 @@
                 <br/>
                 {% if user.cellularphone %}
                     <span>{{ 'mobile'|trans({}, 'user')}}: <a href="tel:{{user.cellularphone}}">{{ user.cellularphone|truncate(20) }}</a></span>
+                {% endif %}
+            </div>
+            <div class="uk-width-2-10">
+                {% if user.status == 1 and is_granted('MODERATOR') %}
+                    <a href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-confirm', 'userDetail': 1}) }}" id="status-confirm">
+                        <button class="uk-button-small uk-button uk-button-success uk-icon-check uk-margin uk-border-rounded" data-uk-tooltip title="{{'reject'|trans({}, 'room') }}">{{'reject'|trans({}, 'room') }}</button>
+                    </a>
+                    <a href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-block', 'userDetail': 1}) }}" id="status-block">
+                        <button class="uk-button-small uk-button uk-button-danger uk-icon-times uk-margin uk-border-rounded"  data-uk-tooltip title="{{'Confirm'|trans({}, 'settings') }}">{{'Confirm'|trans({}, 'settings') }}</button>
+                    </a>
                 {% endif %}
             </div>
         </header>
