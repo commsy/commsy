@@ -1237,7 +1237,7 @@ class cs_manager {
             }
 
             // Skip draft items
-            if ($do_it) {
+            if ($do_it && isset($query_result['item_id'])) {
                 $itemManager = $this->_environment->getItemManager();
                 $correspondingItem = $itemManager->getItem($query_result['item_id']);
                 $do_it = !$correspondingItem->isDraft();
