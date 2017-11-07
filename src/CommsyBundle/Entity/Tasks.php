@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Tasks
  *
  * @ORM\Table(name="tasks", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="creator_id", columns={"creator_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="CommsyBundle\Repository\TasksRepository")
  */
 class Tasks
 {

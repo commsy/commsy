@@ -226,6 +226,14 @@
                 <source>tiles</source>
                 <target>Tiles</target>
             </trans-unit>
+            <trans-unit id="taskinfo">
+                <source>taskinfo</source>
+                <target>Users are waiting moderation confirmation</target>
+            </trans-unit>
+            <trans-unit id="show user">
+                <source>show user</source>
+                <target>show user</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

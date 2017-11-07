@@ -31,6 +31,17 @@
     {% endif %}
 {% endblock %}
 
+{% block taskinfo %}
+    {% if tasks|length > 0 %}
+        <div class="uk-alert uk-alert-danger">
+            {{ tasks|length }} {{ 'taskinfo'|trans({},'user') }} : <a href="{{ path('commsy_user_list', {'roomId': roomId,'user_filter[user_status]':1}) }}">
+                {{ 'show user'|trans({},'user') }}
+            </a>
+        </div>
+
+    {% endif %}
+{% endblock %}
+
 {% block editbox %}
     <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
         <button class="uk-button uk-button-mini cs-button-list">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
