@@ -25,6 +25,11 @@
             return ( url.match(p) ) ? RegExp.$1 : false;
         };
 
+        var l2gTag = function (url) {
+            var p = /^(?:\(:lecture2go (\S+):\))$/;
+            return ( url.match(p) ) ? RegExp.$1 : false;
+        };
+
         return {
             title: editor.lang.commsyvideo.title,
             minWidth: 500,
@@ -148,6 +153,13 @@
                                         if (videoSrc) {
                                             widget.setData('type', 'commsy');
                                             widget.setData('src', videoSrc);
+                                            return;
+                                        }
+
+                                        var l2gSrc = l2gTag(this.getValue());
+                                        if (l2gSrc) {
+                                            widget.setData('type', 'l2g');
+                                            widget.setData('src', l2gSrc);
                                             return;
                                         }
 
