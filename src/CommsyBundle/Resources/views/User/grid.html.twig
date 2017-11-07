@@ -23,10 +23,10 @@
                 {% if user.status == 1 and is_granted('MODERATOR') %}
                     <div style="float: right;">
                         <a href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-confirm', 'userDetail': 1}) }}" id="status-confirm">
-                            <button class="uk-button-small uk-button uk-button-success uk-icon-check uk-margin uk-border-rounded" data-uk-tooltip title="{{'reject'|trans({}, 'room') }}"></button>
+                            <button class="uk-button-small uk-button uk-button-success uk-icon-check uk-margin uk-border-rounded" data-uk-tooltip title="{{'Confirm'|trans({}, 'settings') }}"></button>
                         </a>
                         <a href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-block', 'userDetail': 1}) }}" id="status-block">
-                            <button class="uk-button-small uk-button uk-button-danger uk-icon-times uk-margin uk-border-rounded"  data-uk-tooltip title="{{'Confirm'|trans({}, 'settings') }}"></button>
+                            <button class="uk-button-small uk-button uk-button-danger uk-icon-times uk-margin uk-border-rounded"  data-uk-tooltip title="{{'reject'|trans({}, 'room') }}"></button>
                         </a>
                     </div>
                 {% endif %}
