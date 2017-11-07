@@ -11,7 +11,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
-use CommsyBundle\Entity\Tasks;
+use CommsyBundle\Entity\User;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -100,7 +100,8 @@ class UserController extends Controller
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('user');
         }
 
-        $tasks = $this->getDoctrine()->getRepository(Tasks::class)->getTasksByContextId($roomId)->getQuery()->getResult();
+        // number of users which are waiting for confirmation
+        $userTasks = $this->getDoctrine()->getRepository(User::class)->getConfirmableUserByContextId($roomId)->getQuery()->getResult();
 
         return [
             'roomId' => $roomId,
@@ -113,7 +114,7 @@ class UserController extends Controller
             'usageInfo' => $usageInfo,
             'view' => $view,
             'isArchived' => $roomItem->isArchived(),
-            'tasks' => $tasks,
+            'userTasks' => $userTasks,
         ];
     }
 

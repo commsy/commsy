@@ -32,9 +32,9 @@
 {% endblock %}
 
 {% block taskinfo %}
-    {% if tasks|length > 0 %}
+    {% if userTasks|length > 0 %}
         <div class="uk-alert uk-alert-danger">
-            {{ tasks|length }} {{ 'taskinfo'|trans({},'user') }} : <a href="{{ path('commsy_user_list', {'roomId': roomId,'user_filter[user_status]':1}) }}">
+            {{ userTasks|length }} {{ 'taskinfo'|trans({},'user') }} : <a href="{{ path('commsy_user_list', {'roomId': roomId,'user_filter[user_status]':1}) }}">
                 {{ 'show user'|trans({},'user') }}
             </a>
         </div>
