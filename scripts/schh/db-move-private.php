@@ -11,8 +11,10 @@ require __DIR__ . '/vendor/autoload.php';
 use Symfony\Component\Console\Application;
 
 use CommSy\Command\MovePrivateCommand;
+use CommSy\Command\FixPortfolioCommand;
 
 
 $application = new Application();
 $application->add(new MovePrivateCommand());
+$application->add(new FixPortfolioCommand());
 $application->run();

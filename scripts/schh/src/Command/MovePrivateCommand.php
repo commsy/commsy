@@ -84,7 +84,7 @@ class MovePrivateCommand extends Command
             p.item_id = u.context_id
             WHERE
             p.context_id = :contextId AND
-            p.deletion_date IS NULL AND u.user_id = "movemove"
+            p.deletion_date IS NULL
         ';
 
         $stmt = $connection->prepare($newPortalPrivateRoomsSQL);
