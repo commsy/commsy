@@ -11,6 +11,8 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
+use CommsyBundle\Entity\Tasks;
+
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Filter\UserFilterType;
@@ -97,6 +99,9 @@ class UserController extends Controller
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('user');
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('user');
         }
+
+        $tasks = $this->getDoctrine()->getRepository(Tasks::class)->getTasksByContextId($roomId)->getQuery()->getResult();
+
         return [
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
@@ -108,6 +113,7 @@ class UserController extends Controller
             'usageInfo' => $usageInfo,
             'view' => $view,
             'isArchived' => $roomItem->isArchived(),
+            'tasks' => $tasks,
         ];
     }
 

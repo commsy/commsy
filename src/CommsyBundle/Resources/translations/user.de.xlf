@@ -226,6 +226,14 @@
                 <source>tiles</source>
                 <target>Kacheln</target>
             </trans-unit>
+            <trans-unit id="taskinfo">
+                <source>taskinfo</source>
+                <target>Kennungen warten noch auf die Freischaltung durch die Moderation</target>
+            </trans-unit>
+            <trans-unit id="show user">
+                <source>show user</source>
+                <target>Kennungen anzeigen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
