@@ -23,9 +23,11 @@ use CommsyBundle\Event\CommsyEditEvent;
 class TodoController extends Controller
 {
     // setup filter form default values
-    private $defaultFilterValues = array(
-            'hide-deactivated-entries' => true,
-    );
+    private $defaultFilterValues = [
+        'hide-deactivated-entries' => true,
+        'hide-completed-entries' => true,
+    ];
+
     /**
      * @Route("/room/{roomId}/todo")
      * @Template()
@@ -56,6 +58,7 @@ class TodoController extends Controller
             $todoService->setFilterConditions($filterForm);
         } else {
             $todoService->showNoNotActivatedEntries();
+            $todoService->hideCompletedEntries();
         }
 
         // get todo list from manager service 
@@ -160,6 +163,7 @@ class TodoController extends Controller
             $todoService->setFilterConditions($filterForm);
         } else {
             $todoService->showNoNotActivatedEntries();
+            $todoService->hideCompletedEntries();
         }
 
         // get todo list from manager service 

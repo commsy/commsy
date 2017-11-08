@@ -130,7 +130,12 @@ class TodoService
         return $this->stepManager->getNewItem();
     }
     
-    public function showNoNotActivatedEntries(){
+    public function showNoNotActivatedEntries() {
         $this->todoManager->showNoNotActivatedEntries();
+    }
+
+    public function hideCompletedEntries()
+    {
+        $this->todoManager->setStatusLimit(4);
     }
 }
