@@ -156,11 +156,11 @@ class LegacyMarkup
                             $valueNew = $this->formatDeprecated($valueNew, $args);
                             break;
                         }
-//
-//                        if ($markup == '(:lecture2go' && mb_stristr($valueNew, '(:lecture2go')) {
-//                            $valueNew = $this->formatLecture2Go($valueNew, $args);
-//                            break;
-//                        }
+
+                        if ($markup == '(:lecture2go' && mb_stristr($valueNew, '(:lecture2go')) {
+                            $valueNew = $this->formatLecture2Go($valueNew, $args);
+                            break;
+                        }
 //
 //                        if ($markup == '(:slideshare' && mb_stristr($valueNew, '(:slideshare')) {
 //                            $valueNew = $this->formatSlideshare($valueNew, $args);
@@ -530,7 +530,7 @@ class LegacyMarkup
             $args = $this->parseArgs($array[2]);
         }
 
-        $youTubeHTML = '<div class="ckeditor-commsy-video"><iframe allowfullscreen frameborder="0" src="' . $src . '"';
+        $youTubeHTML = '<div class="ckeditor-commsy-video" data-type="youtube"><iframe allowfullscreen frameborder="0" src="' . $src . '"';
 
         if (isset($args['width']) && is_numeric($args['width'])) {
             $youTubeHTML .= ' width="' . $args['width'] . '"';
@@ -543,6 +543,35 @@ class LegacyMarkup
         $youTubeHTML .= '></iframe></div>';
 
         return $youTubeHTML;
+    }
+
+
+    private function formatLecture2Go($text, $array)
+    {
+        if (empty($array[1])) {
+            return $text;
+        }
+
+        $src = 'https://lecture2go.uni-hamburg.de/lecture2go-portlet/player/iframe/?v=' . $array[1];
+
+        $args = [];
+        if (!empty($array[2])) {
+            $args = $this->parseArgs($array[2]);
+        }
+
+        $lecture2GoHTML = '<div class="ckeditor-commsy-video" data-type="l2g"><iframe frameborder="0" src="' . $src . '"';
+
+        if (isset($args['width']) && is_numeric($args['width'])) {
+            $lecture2GoHTML .= ' width="' . $args['width'] . '"';
+        }
+
+        if (isset($args['height']) && is_numeric($args['height'])) {
+            $lecture2GoHTML .= ' height="' . $args['height'] . '"';
+        }
+
+        $lecture2GoHTML .= '></iframe></div>';
+
+        return $lecture2GoHTML;
     }
 
     private function formatCS8Video($text, $fileId)
