@@ -105,7 +105,7 @@ class RoomController extends Controller
         $portalItem = $roomItem->getContextItem();
         if ($portalItem->showServiceLink()) {
             $serviceContact['show'] = true;
-            $serviceContact['email'] = $portalItem->getServiceEmail();
+            $serviceContact['link'] = $roomService->buildServiceLink();
         }
 
         // RSS-Feed / iCal / Wiki
