@@ -70,12 +70,25 @@ class RoomService
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
-        if (!$roomItem) {
-            $privateRoomManager = $this->legacyEnvironment->getPrivateroomManager();
-            $roomItem = $privateRoomManager->getItem($roomId);
+        if ($roomItem) {
+            return $roomItem;
         }
 
-        return $roomItem;
+        $privateRoomManager = $this->legacyEnvironment->getPrivateroomManager();
+        $roomItem = $privateRoomManager->getItem($roomId);
+
+        if ($roomItem) {
+            return $roomItem;
+        }
+
+        $zzzRoomManager = $this->legacyEnvironment->getZzzRoomManager();
+        $roomItem = $zzzRoomManager->getItem($roomId);
+
+        if ($roomItem) {
+            return $roomItem;
+        }
+
+        return null;
     }
 
     public function getFilterableRubrics($roomId)
