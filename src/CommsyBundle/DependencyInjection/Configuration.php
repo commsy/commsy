@@ -239,7 +239,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('roomWikiUrl')
                             ->defaultValue('')
                         ->end()
-                        ->scalarNode('apiPath')
+                        ->scalarNode('apiUrl')
                             ->defaultValue('/w/api.php')
                         ->end()
                     ->end()

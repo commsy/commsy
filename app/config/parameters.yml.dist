@@ -57,7 +57,7 @@ parameters:
     extensions.mediawiki.enabled: false
     extensions.mediawiki.url: ~
     extensions.mediawiki.room_wiki_url: ~
-    extensions.mediawiki.api_path: /api.php
+    extensions.mediawiki.api_url: ~
 
     #dates
     dates.timezone: ~

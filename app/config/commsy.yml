@@ -170,7 +170,7 @@ commsy:
         enabled: '%extensions.mediawiki.enabled%'
         url: '%extensions.mediawiki.url%'
         roomWikiUrl: '%extensions.mediawiki.room_wiki_url%'
-        apiPath: '%extensions.mediawiki.api_path%'
+        apiUrl: '%extensions.mediawiki.api_url%'
 
     # dates
     dates:
