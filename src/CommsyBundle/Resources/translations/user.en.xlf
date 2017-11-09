@@ -234,6 +234,14 @@
                 <source>show user</source>
                 <target>show user</target>
             </trans-unit>
+            <trans-unit id="quick_action_confirm">
+                <source>Confirm</source>
+                <target>Confirm</target>
+            </trans-unit>
+            <trans-unit id="quick_action_reject">
+                <source>Reject</source>
+                <target>Reject</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
