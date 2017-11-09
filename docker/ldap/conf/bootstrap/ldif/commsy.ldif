@@ -1,0 +1,15 @@
+dn: uid=commsy,dc=example,dc=org
+changetype: add
+uid: commsy
+cn: commsy
+sn: 3
+objectClass: top
+objectClass: posixAccount
+objectClass: inetOrgPerson
+loginShell: /bin/bash
+homeDirectory: /home/commsy
+uidNumber: 14583102
+gidNumber: 14564100
+userPassword: {SSHA}DXKEoihjooxUzSBXvhpziRcI4Qx7VQfg
+mail: commsy@commsy.net
+gecos: Commsy User
