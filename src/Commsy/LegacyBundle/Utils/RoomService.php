@@ -66,6 +66,12 @@ class RoomService
 
     public function getRoomItem($roomId)
     {
+        /**
+         * NOTICE: returning archived rooms here as a fallback if no room or private room item was found
+         * currently impacts at least the "all rooms" feed due to the fact, that it relies on this function
+         * returning false, if the room is archived.
+         */
+
         // get room item
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
@@ -74,6 +80,14 @@ class RoomService
             $privateRoomManager = $this->legacyEnvironment->getPrivateroomManager();
             $roomItem = $privateRoomManager->getItem($roomId);
         }
+
+        return $roomItem;
+    }
+
+    public function getArchivedRoomItem($roomId)
+    {
+        $zzzRoomItem = $this->legacyEnvironment->getZzzRoomManager();
+        $roomItem = $zzzRoomItem->getItem($roomId);
 
         return $roomItem;
     }
