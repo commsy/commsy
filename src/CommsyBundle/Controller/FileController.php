@@ -21,7 +21,7 @@ class FileController extends Controller
         // fix for archived rooms
         if (!$file->getPortalID()) {
             $roomService = $this->get('commsy_legacy.room_service');
-            $roomItem = $roomService->getRoomItem($file->getContextID());
+            $roomItem = $roomService->getArchivedRoomItem($file->getContextID());
 
             if ($roomItem) {
                 $file->setPortalID($roomItem->getContextId());
