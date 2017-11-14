@@ -11,6 +11,13 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 use CommsyBundle\Filter\UserFilterType;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
+/**
+ * Class LinkController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_SEE', roomId)")
+ */
 class LinkController extends Controller
 {
     /**

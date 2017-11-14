@@ -23,6 +23,10 @@ use CommsyBundle\Form\Type\UserSendType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
+/**
+ * Class UserController
+ * @package CommsyBundle\Controller
+ */
 class UserController extends Controller
 {
 

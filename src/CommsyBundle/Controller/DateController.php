@@ -26,6 +26,11 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use CommsyBundle\Event\CommsyEditEvent;
 use CommsyBundle\Entity\Calendars;
 
+/**
+ * Class DateController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_SEE', roomId)")
+ */
 class DateController extends Controller
 {    
     private $defaultFilterValues = array(
