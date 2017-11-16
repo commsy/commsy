@@ -18,6 +18,17 @@ class FileController extends Controller
         $file = $fileService->getFile($fileId);
         $rootDir = $this->get('kernel')->getRootDir().'/';
 
+        // fix for archived rooms
+        if (!$file->getPortalID()) {
+            $roomService = $this->get('commsy_legacy.room_service');
+            $roomItem = $roomService->getArchivedRoomItem($file->getContextID());
+
+            if ($roomItem) {
+                $file->setPortalID($roomItem->getContextId());
+            }
+        }
+        // ~fix for archived rooms
+
         if (file_exists($rootDir.$file->getDiskFileName())) {
             $content = file_get_contents($rootDir.$file->getDiskFileName());
         } else {

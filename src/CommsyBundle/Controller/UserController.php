@@ -271,7 +271,7 @@ class UserController extends Controller
                 $formData = $form->getData();
 
                 // manual validation - moderator count check
-                if (in_array($formData['status'], ['user-block', 'user-status-reading-user', 'user-status-user'])) {
+                if (in_array($formData['status'], ['user-block', 'user-status-reading-user', 'user-status-user', 'user-confirm'])) {
                     if (!$this->contextHasModerators($roomId, $formData['userIds'])) {
                         $translator = $this->get('translator');
                         $form->addError(new FormError($translator->trans('no moderators left', [], 'user')));
