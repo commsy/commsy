@@ -58,6 +58,10 @@ parameters:
     extensions.mediawiki.url: ~
     extensions.mediawiki.room_wiki_url: ~
     extensions.mediawiki.api_url: ~
+    extensions.mediawiki.consumer_key: ~
+    extensions.mediawiki.consumer_secret: ~
+    extensions.mediawiki.access_token: ~
+    extensions.mediawiki.access_secret: ~
 
-    #dates
+    # dates
     dates.timezone: ~

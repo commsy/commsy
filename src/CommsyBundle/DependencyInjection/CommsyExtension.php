@@ -97,6 +97,10 @@ class CommsyExtension extends Extension
         $container->setParameter('commsy.mediawiki.url', $config['mediawiki']['url']);
         $container->setParameter('commsy.mediawiki.roomWikiUrl', $config['mediawiki']['roomWikiUrl']);
         $container->setParameter('commsy.mediawiki.apiUrl', $config['mediawiki']['apiUrl']);
+        $container->setParameter('commsy.mediawiki.consumerKey', $config['mediawiki']['consumerKey']);
+        $container->setParameter('commsy.mediawiki.consumerSecret', $config['mediawiki']['consumerSecret']);
+        $container->setParameter('commsy.mediawiki.accessToken', $config['mediawiki']['accessToken']);
+        $container->setParameter('commsy.mediawiki.accessSecret', $config['mediawiki']['accessSecret']);
 
         // etherpad
         $container->setParameter('commsy.etherpad.enabled', $config['etherpad']['enabled']);

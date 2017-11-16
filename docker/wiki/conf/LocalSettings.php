@@ -28,7 +28,7 @@ $wgSitename = "CommSy-Wiki";
 $wgScriptPath = "";
 
 ## The protocol and server name to use in fully-qualified URLs
-$wgServer = "http://localhost:8082";
+$wgServer = "http://commsy_mediawiki";
 
 ## The URL path to static resources (images, scripts, etc.)
 $wgResourceBasePath = $wgScriptPath;
