@@ -25,44 +25,29 @@ class PrintService
         $this->requestStack = $requestStack;
     }
 
-    public function printDetail($html, $debug = false)
-    {
-        $debug = $this->requestStack->getCurrentRequest()->get('debug');
-        
+    public function printHtml($html, $raw = false, $debug = false) {
+
         $this->setOptions();
 
-        if (!$debug) {
-            return new Response(
-                $this->serviceContainer->get('knp_snappy.pdf')->getOutputFromHtml($html),
-                200,
-                [
-                    'Content-Type' => 'application/pdf',
-                    'Content-Disposition' => 'inline; filename="print.pdf"'
-                ]
-            );
+        if ($raw) {
+            return $this->serviceContainer->get('knp_snappy.pdf')->getOutputFromHtml($html);
         } else {
-            return new Response($html);
-        }
-    }
-    
-    public function printList($html, $debug = false)
-    {
-        $debug = $this->requestStack->getCurrentRequest()->get('debug');
-        
-        $this->setOptions();
+            if (!$debug) {
+                return new Response(
+                    $this->serviceContainer->get('knp_snappy.pdf')->getOutputFromHtml($html),
+                    200,
+                    [
+                        'Content-Type' => 'application/pdf',
+                        'Content-Disposition' => 'inline; filename="print.pdf"'
+                    ]
+                );
+            } else {
+                return new Response($html);
+            }
 
-        if (!$debug) {
-            return new Response(
-                $this->serviceContainer->get('knp_snappy.pdf')->getOutputFromHtml($html),
-                200,
-                [
-                    'Content-Type' => 'application/pdf',
-                    'Content-Disposition' => 'inline; filename="print.pdf"',
-                ]
-            );
-        } else {
-            return new Response($html);
         }
+
+
     }
     
     function setOptions() {
@@ -80,8 +65,10 @@ class PrintService
         $this->serviceContainer->get('knp_snappy.pdf')->setOption('load-media-error-handling','ignore');
         $this->serviceContainer->get('knp_snappy.pdf')->setOption('load-error-handling','ignore');
 
-        if ($this->serviceContainer->hasParameter('commsy.settings.proxy_ip')) {
-            if ($this->serviceContainer->hasParameter('commsy.settings.proxy_port')) {
+        if ($this->serviceContainer->hasParameter('commsy.settings.proxy_ip') &&
+            !empty($this->serviceContainer->getParameter('commsy.settings.proxy_ip'))) {
+            if ($this->serviceContainer->hasParameter('commsy.settings.proxy_port') &&
+                !empty($this->serviceContainer->getParameter('commsy.settings.proxy_port'))) {
                 $proxyIp = $this->serviceContainer->getParameter('commsy.settings.proxy_ip');
                 $proxyPort = $this->serviceContainer->getParameter('commsy.settings.proxy_port');
                 $proxy = 'http://' . $proxyIp . ':' . $proxyPort;

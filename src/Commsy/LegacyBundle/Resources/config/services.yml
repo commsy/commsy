@@ -110,7 +110,7 @@ services:
         
     commsy_legacy.download_service:
         class: Commsy\LegacyBundle\Utils\DownloadService
-        arguments: ['@commsy_legacy.environment', '@service_container']
+        arguments: ['@commsy_legacy.environment', '@service_container', '@commsy.print_service']
         
     commsy_legacy.project_service:
         class: Commsy\LegacyBundle\Utils\ProjectService

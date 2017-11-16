@@ -362,7 +362,7 @@ class DateController extends Controller
             'readerList' => $readerList,
         ]);
 
-        return $this->get('commsy.print_service')->printList($html);
+        return $this->get('commsy.print_service')->printHtml($html);
     }
     
     /**
@@ -1687,7 +1687,7 @@ class DateController extends Controller
             'roomCategories' => $categories,
         ]);
 
-        return $this->get('commsy.print_service')->printDetail($html);
+        return $this->get('commsy.print_service')->printHtml($html);
     }
     
     /**

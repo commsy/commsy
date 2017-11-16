@@ -157,7 +157,7 @@ class GroupController extends Controller
             'showCategories' => false,
         ]);
 
-        return $this->get('commsy.print_service')->printList($html);
+        return $this->get('commsy.print_service')->printHtml($html);
     }
     
    /**
@@ -452,7 +452,7 @@ class GroupController extends Controller
             'annotationForm' => $form->createView(),
         ]);
 
-        return $this->get('commsy.print_service')->printDetail($html);
+        return $this->get('commsy.print_service')->printHtml($html);
     }
  
 

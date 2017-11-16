@@ -232,7 +232,7 @@ class UserController extends Controller
             'showCategories' => false,
         ]);
 
-        return $this->get('commsy.print_service')->printList($html);
+        return $this->get('commsy.print_service')->printHtml($html);
     }
 
     /**
@@ -1271,7 +1271,7 @@ class UserController extends Controller
             'linkedGroups' => $infoArray['linkedGroups'],
         ]);
 
-        return $this->get('commsy.print_service')->printDetail($html);
+        return $this->get('commsy.print_service')->printHtml($html);
     }
 
     private function sendUserInfoMail($userIds, $action)
