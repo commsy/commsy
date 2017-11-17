@@ -170,7 +170,11 @@ commsy:
         enabled: '%extensions.mediawiki.enabled%'
         url: '%extensions.mediawiki.url%'
         roomWikiUrl: '%extensions.mediawiki.room_wiki_url%'
-        apiPath: '%extensions.mediawiki.api_path%'
+        apiUrl: '%extensions.mediawiki.api_url%'
+        consumerKey: '%extensions.mediawiki.consumer_key%'
+        consumerSecret: '%extensions.mediawiki.consumer_secret%'
+        accessToken: '%extensions.mediawiki.access_token%'
+        accessSecret: '%extensions.mediawiki.access_secret%'
 
     # dates
     dates:
