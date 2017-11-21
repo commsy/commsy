@@ -1,6 +1,7 @@
 <?php
 namespace Commsy\LegacyBundle\Utils;
 
+use CommsyBundle\Services\PrintService;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Filesystem\Filesystem;
@@ -16,11 +17,11 @@ class DownloadService
     private $serviceContainer;
     
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, Container $container)
+    public function __construct(LegacyEnvironment $legacyEnvironment, Container $container, PrintService $printService)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-
         $this->serviceContainer = $container;
+        $this->printService = $printService;
     }
 
     public function zipFile($roomId, $itemIds)
@@ -57,9 +58,8 @@ class DownloadService
             mkdir($tempDirectory, 0777, true);
             
             // create PDF-file
-            $output = $this->serviceContainer->get('templating')->renderResponse('CommsyBundle:'.ucfirst($detailArray['item']->getItemType()).':detailPrint.html.twig', $detailArray);
-            $pdf = $this->serviceContainer->get('knp_snappy.pdf')->getOutputFromHtml($output);
-            file_put_contents($tempDirectory.'/test.pdf', $pdf);
+            $htmlOutput = $this->serviceContainer->get('templating')->renderResponse('CommsyBundle:'.ucfirst($detailArray['item']->getItemType()).':detailPrint.html.twig', $detailArray);
+            file_put_contents($tempDirectory.'/test.pdf', $this->printService->getPdfContent($htmlOutput));
         
             // add files
             $files = array();

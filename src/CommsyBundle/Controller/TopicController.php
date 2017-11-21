@@ -706,7 +706,7 @@ class TopicController extends Controller
             'roomCategories' => 'roomCategories',
         ]);
 
-        return $this->get('commsy.print_service')->printDetail($html);
+        return $this->get('commsy.print_service')->buildPdfResponse($html);
     }
     
     /**
@@ -779,7 +779,7 @@ class TopicController extends Controller
             'showWorkflow' => $current_context->withWorkflow(),
         ]);
 
-        return $this->get('commsy.print_service')->printList($html);
+        return $this->get('commsy.print_service')->buildPdfResponse($html);
     }
 
     /**
