@@ -20,9 +20,7 @@ class DownloadService
     public function __construct(LegacyEnvironment $legacyEnvironment, Container $container, PrintService $printService)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-
         $this->serviceContainer = $container;
-
         $this->printService = $printService;
     }
 
@@ -60,8 +58,8 @@ class DownloadService
             mkdir($tempDirectory, 0777, true);
             
             // create PDF-file
-            $output = $this->serviceContainer->get('templating')->renderResponse('CommsyBundle:'.ucfirst($detailArray['item']->getItemType()).':detailPrint.html.twig', $detailArray);
-            file_put_contents($tempDirectory.'/test.pdf', $this->printService->printHtml($output, true));
+            $htmlOutput = $this->serviceContainer->get('templating')->renderResponse('CommsyBundle:'.ucfirst($detailArray['item']->getItemType()).':detailPrint.html.twig', $detailArray);
+            file_put_contents($tempDirectory.'/test.pdf', $this->printService->getPdfContent($htmlOutput));
         
             // add files
             $files = array();

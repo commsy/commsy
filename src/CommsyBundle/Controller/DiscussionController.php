@@ -250,7 +250,7 @@ class DiscussionController extends Controller
             'showCategories' => $roomItem->withTags(),
         ]);
 
-        return $this->get('commsy.print_service')->printHtml($html);
+        return $this->get('commsy.print_service')->buildPdfResponse($html);
     }
     
     /**
@@ -710,7 +710,7 @@ class DiscussionController extends Controller
             'userCount' => $infoArray['userCount'],
         ]);
 
-        return $this->get('commsy.print_service')->printHtml($html);
+        return $this->get('commsy.print_service')->buildPdfResponse($html);
     }
     
     /**

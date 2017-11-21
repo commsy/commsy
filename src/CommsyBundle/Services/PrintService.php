@@ -2,83 +2,94 @@
 
 namespace CommsyBundle\Services;
 
-use Symfony\Component\DependencyInjection\ContainerInterface as Container;
+use Knp\Snappy\Pdf;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RequestStack;
-
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
+/**
+ * Class PrintService
+ *
+ * @package CommsyBundle\Services
+ */
 class PrintService
 {    
     private $legacyEnvironment;
+    private $pdf;
+
+    private $proxyIp;
+    private $proxyPort;
     
-    private $serviceContainer;
-    
-    private $requestStack;
-    
-    public function __construct(LegacyEnvironment $legacyEnvironment, Container $container, RequestStack $requestStack)
+    public function __construct(LegacyEnvironment $legacyEnvironment, Pdf $pdf, $proxyIp, $proxyPort)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-        
-        $this->serviceContainer = $container;
-        
-        $this->requestStack = $requestStack;
+        $this->pdf = $pdf;
+        $this->proxyIp = $proxyIp;
+        $this->proxyPort = $proxyPort;
     }
 
-    public function printHtml($html, $raw = false, $debug = false) {
-
+    /**
+     * Converts the given HTML content into a pdf.
+     *
+     * @param string $html The HTML content
+     *
+     * @return string Generated PDF content
+     */
+    public function getPdfContent($html)
+    {
         $this->setOptions();
 
-        if ($raw) {
-            return $this->serviceContainer->get('knp_snappy.pdf')->getOutputFromHtml($html);
-        } else {
-            if (!$debug) {
-                return new Response(
-                    $this->serviceContainer->get('knp_snappy.pdf')->getOutputFromHtml($html),
-                    200,
-                    [
-                        'Content-Type' => 'application/pdf',
-                        'Content-Disposition' => 'inline; filename="print.pdf"'
-                    ]
-                );
-            } else {
-                return new Response($html);
-            }
+        return $this->pdf->getOutputFromHtml($html);
+    }
 
+    /**
+     * Generates a pdf response, converting the given html content.
+     *
+     * @param string $html HTML content
+     * @param bool $debug Return plain html, instead of a pdf document (helps debugging)
+     *
+     * @return Response HTML Response containing the generated PDF
+     */
+    public function buildPdfResponse($html, $debug = false)
+    {
+        if ($debug) {
+            return new Response($html);
         }
 
-
+        return new Response($this->getPdfContent($html), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="print.pdf"',
+        ]);
     }
-    
-    function setOptions() {
+
+    /**
+     * Sets wkhtmltopdf command line options
+     */
+    private function setOptions() {
         $roomItem = $this->legacyEnvironment->getCurrentContextItem();
-        
-        $this->serviceContainer->get('knp_snappy.pdf')->setOption('footer-line',true);
-        $this->serviceContainer->get('knp_snappy.pdf')->setOption('footer-spacing', 1);
-        $this->serviceContainer->get('knp_snappy.pdf')->setOption('footer-center',"[page] / [toPage]");
-        $this->serviceContainer->get('knp_snappy.pdf')->setOption('header-line', true);
-        $this->serviceContainer->get('knp_snappy.pdf')->setOption('header-spacing', 1 );
-        $this->serviceContainer->get('knp_snappy.pdf')->setOption('header-right', date("d.m.y"));
-        $this->serviceContainer->get('knp_snappy.pdf')->setOption('header-left', $roomItem->getTitle());
-        $this->serviceContainer->get('knp_snappy.pdf')->setOption('header-center', "Commsy");
-        $this->serviceContainer->get('knp_snappy.pdf')->setOption('images',true);
-        $this->serviceContainer->get('knp_snappy.pdf')->setOption('load-media-error-handling','ignore');
-        $this->serviceContainer->get('knp_snappy.pdf')->setOption('load-error-handling','ignore');
 
-        if ($this->serviceContainer->hasParameter('commsy.settings.proxy_ip') &&
-            !empty($this->serviceContainer->getParameter('commsy.settings.proxy_ip'))) {
-            if ($this->serviceContainer->hasParameter('commsy.settings.proxy_port') &&
-                !empty($this->serviceContainer->getParameter('commsy.settings.proxy_port'))) {
-                $proxyIp = $this->serviceContainer->getParameter('commsy.settings.proxy_ip');
-                $proxyPort = $this->serviceContainer->getParameter('commsy.settings.proxy_port');
-                $proxy = 'http://' . $proxyIp . ':' . $proxyPort;
+        $this->pdf->setOptions([
+            'footer-line' => true,
+            'footer-spacing' => 1,
+            'footer-center' => '[page] / [toPage]',
+            'header-line' => true,
+            'header-spacing' => 1,
+            'header-right' => date('d.m.y'),
+            'header-left' => $roomItem->getTitle(),
+            'header-center' => 'CommSy',
+            'images' => true,
+            'load-media-error-handling' => 'ignore',
+            'load-error-handling' => 'ignore',
+        ]);
 
-                $this->serviceContainer->get('knp_snappy.pdf')->setOption('proxy', $proxy);
-            }
+        // proxy support
+        if ($this->proxyIp && $this->proxyPort) {
+            $proxy = 'http://' . $this->proxyIp . ':' . $this->proxyPort;
+
+            $this->pdf->setOption('proxy', $proxy);
         }
         
         // set cookie for authentication - needed to request images
-        $this->serviceContainer->get('knp_snappy.pdf')->setOption('cookie', [
+        $this->pdf->setOption('cookie', [
             'SID' => $this->legacyEnvironment->getSessionID(),
         ]);
     }
