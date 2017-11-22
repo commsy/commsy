@@ -67,7 +67,7 @@
 					($itemId === "NEW") ||
 					(isset($item) && !$item->maySee($currentUser))) {
 					
-				continue;
+				return;
 			}
 			
 			// init needed values
