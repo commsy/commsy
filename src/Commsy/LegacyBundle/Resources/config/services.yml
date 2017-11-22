@@ -114,6 +114,7 @@ services:
           - '@commsy_legacy.environment'
           - '@service_container'
           - '@commsy.print_service'
+          - '@commsy_legacy.item_service'
         
     commsy_legacy.project_service:
         class: Commsy\LegacyBundle\Utils\ProjectService

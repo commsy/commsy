@@ -871,7 +871,6 @@ class ItemController extends Controller
      */
     public function downloadAction($roomId, $itemId)
     {
-        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
         $itemService = $this->get('commsy_legacy.item_service');
         $baseItem = $itemService->getItem($itemId);
         
@@ -882,7 +881,7 @@ class ItemController extends Controller
         $response = new BinaryFileResponse($zipFile);
         $response->deleteFileAfterSend(true);
 
-        $filename = 'CommSy_'.ucfirst($baseItem->getItemType()).'.zip';
+        $filename = 'CommSy_' . ucfirst($baseItem->getItemType()) . '.zip';
         $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$filename);   
         $response->headers->set('Content-Disposition', $contentDisposition);
 
