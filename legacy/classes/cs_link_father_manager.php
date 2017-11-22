@@ -53,7 +53,7 @@ class cs_link_father_manager extends cs_manager {
      *
      * @param object cs_environment the environment
      */
-   function cs_link_father_manager ( $environment ) {
+   function __construct($environment ) {
       $this->_environment     = $environment;
       $this->_current_user    = $this->_environment->getCurrentUser();
       $this->_db_connector    = $this->_environment->getDBConnector();

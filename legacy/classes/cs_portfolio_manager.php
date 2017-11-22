@@ -17,7 +17,7 @@ class cs_portfolio_manager extends cs_manager implements cs_export_import_interf
   private $_translator = null;
 
   function cs_announcement_manager ($environment) {
-     $this->cs_manager($environment);
+     cs_manager::__construct($environment);
      $this->_db_table = CS_PORTFOLIO_TYPE;
      $this->_translator = $environment->getTranslationObject();
   }

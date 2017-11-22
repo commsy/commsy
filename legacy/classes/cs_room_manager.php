@@ -79,9 +79,9 @@ class cs_room_manager extends cs_context_manager
      *
      * @param object cs_environment the environment
      */
-    function cs_room_manager($environment)
+    function __construct($environment)
     {
-        $this->cs_context_manager($environment);
+        cs_context_manager::__construct($environment);
         $this->_db_table = CS_ROOM_TYPE;
         $this->_room_type = '';
     }

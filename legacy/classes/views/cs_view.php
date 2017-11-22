@@ -91,7 +91,7 @@ class cs_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_view ($params) {
+   function __construct($params) {
       if ( !empty($params['environment']) ) {
          $this->_environment = $params['environment'];
       } else {

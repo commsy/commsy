@@ -39,9 +39,9 @@ class cs_item_attach_index_view extends cs_item_index_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_item_attach_index_view ($params) {
+   function __construct($params) {
       $params['viewname'] = 'item_attach_index';
-      $this->cs_item_index_view($params);
+      cs_item_index_view::__construct($params);
    }
 
    function setRefItemID($iid){

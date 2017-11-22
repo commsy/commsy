@@ -39,7 +39,7 @@ class cs_form_view_overlay extends cs_form_view {
     * @param array params parameters in an array of this class
     */
    function __construct ($params) {
-      $this->cs_form_view($params);
+      cs_form_view::__construct($params);
    }
 
    public function setBackLink ($value) {

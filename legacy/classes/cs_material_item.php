@@ -53,8 +53,8 @@ class cs_material_item extends cs_item {
 
 
 
-   function cs_material_item ($environment) {
-      $this->cs_item($environment);
+   function __construct($environment) {
+      cs_item::__construct($environment);
       $this->_type = CS_MATERIAL_TYPE;
    }
 

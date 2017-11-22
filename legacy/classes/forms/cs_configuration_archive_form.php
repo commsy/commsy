@@ -41,8 +41,8 @@ var $_with_template_form_element3 = false;
     *
     * @param array params array of parameter
     */
-   function cs_configuration_archive_form ($params) {
-      $this->cs_rubric_form($params);
+   function __construct($params) {
+      cs_rubric_form::__construct($params);
    }
 
 

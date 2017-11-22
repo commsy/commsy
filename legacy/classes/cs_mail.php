@@ -40,7 +40,7 @@ class cs_mail extends Mail
 
    /** standard constructor information
     */
-   function cs_mail() {
+   function __construct() {
       $this->mail = new Mail();
       $this->mime_mail=$this->mail->factory('mime');
    }

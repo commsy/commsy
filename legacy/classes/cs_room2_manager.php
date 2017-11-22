@@ -55,7 +55,7 @@ class cs_room2_manager extends cs_context_manager {
     *
     * @param object cs_environment the environment
     */
-  function cs_room2_manager ($environment) {
+  function __construct($environment) {
   }
 
   /** reset limits

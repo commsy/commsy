@@ -77,8 +77,8 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
     *
     * @param object cs_environment the environment
     */
-   function cs_context_manager ($environment) {
-      $this->cs_manager($environment);
+   function __construct($environment) {
+      cs_manager::__construct($environment);
    }
 
    /** reset limits

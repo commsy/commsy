@@ -111,7 +111,7 @@ class cs_auth_ldap extends cs_auth_manager {
     * @param string server url to ldap-server
     * @param string baseuser information about baseuser
     */
-   function cs_auth_ldap () {
+   function __construct() {
       global $environment;
       $this->_translator = $environment->getTranslationObject();
    }

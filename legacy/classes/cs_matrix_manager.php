@@ -40,8 +40,8 @@ class cs_matrix_manager extends cs_labels_manager {
     *
     * @param object cs_environment the environment
     */
-  function cs_matrix_manager ($environment) {
-     $this->cs_labels_manager($environment);
+  function __construct($environment) {
+     cs_labels_manager::__construct($environment);
   }
 
   /** get an empty buzzword item

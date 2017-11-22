@@ -38,10 +38,10 @@ class cs_portal_manager extends cs_context_manager {
     *
     * @param object cs_environment the environment
     */
-  function cs_portal_manager ($environment) {
+  function __construct($environment) {
      $this->_db_table = 'portal';
      $this->_room_type = CS_PORTAL_TYPE;
-     $this->cs_context_manager($environment);
+     cs_context_manager::__construct($environment);
   }
 
    /** reset limits

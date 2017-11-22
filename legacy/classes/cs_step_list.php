@@ -40,7 +40,7 @@ class cs_step_list {
     *
     * @author CommSy Development Group
     */
-   function cs_step_list () {
+   function __construct() {
       $this->_type = 'step_list';
    }
 

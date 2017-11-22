@@ -55,8 +55,8 @@ class cs_ftsearch_manager extends cs_manager {
     *
     * @param object cs_environment the environment
     */
-   function cs_ftsearch_manager($environment) {
-      $this->cs_manager($environment);
+   function __construct($environment) {
+      cs_manager::__construct($environment);
    }
 
    function setIncremental () {

@@ -114,8 +114,8 @@ class cs_home_informationbox_view extends cs_home_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_home_informationbox_view ($params) {
-      $this->cs_home_view($params);
+   function __construct($params) {
+      cs_home_view::__construct($params);
       $current_context = $this->_environment->getCurrentContextItem();
       $id = $current_context->getInformationBoxEntryID();
       $manager = $this->_environment->getItemManager();

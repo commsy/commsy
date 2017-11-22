@@ -66,8 +66,8 @@ class cs_portal_item extends cs_guide_item {
     *
     * @param object environment the environment of the commsy
     */
-   function cs_portal_item ($environment) {
-      $this->cs_guide_item($environment);
+   function __construct($environment) {
+      cs_guide_item::__construct($environment);
       $this->_type = CS_PORTAL_TYPE;
       $this->_default_rubrics_array[0] = CS_COMMUNITY_TYPE;
       $this->_default_rubrics_array[1] = CS_PROJECT_TYPE;

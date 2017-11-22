@@ -41,7 +41,7 @@ class cs_configuration_update_form extends cs_rubric_form {
     * @param array params array of parameter
     */
    public function __construct($params) {
-      $this->cs_rubric_form($params);
+      cs_rubric_form::__construct($params);
       $this->_path_to_scripts = 'scripts';
    }
 

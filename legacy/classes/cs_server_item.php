@@ -36,9 +36,9 @@ class cs_server_item extends cs_guide_item
      *
      * @param object environment the environment of the commsy
      */
-    public function cs_server_item($environment)
+    public function __construct($environment)
     {
-        $this->cs_guide_item($environment);
+        cs_guide_item::__construct($environment);
         $this->_type = CS_SERVER_TYPE;
     }
 

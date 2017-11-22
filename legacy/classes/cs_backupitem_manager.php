@@ -40,7 +40,7 @@ class cs_backupitem_manager extends cs_manager {
 	 * @param object cs_environment the environment
 	 */
 	function __construct($environment) {
-	   $this->cs_manager($environment);
+	   cs_manager::__construct($environment);
 	   $this->_db_table = CS_ITEMBACKUP_TYPE;
 	}
 	

@@ -71,7 +71,7 @@ class cs_grouproom_manager extends cs_room2_manager {
   public function __construct ($environment) {
      $this->_db_table = 'room';
      $this->_room_type = CS_GROUPROOM_TYPE;
-     $this->cs_context_manager($environment);
+     cs_context_manager::__construct($environment);
   }
 
   /** reset limits

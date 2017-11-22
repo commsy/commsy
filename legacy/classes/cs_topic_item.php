@@ -38,8 +38,8 @@ class cs_topic_item extends cs_label_item {
     *
     * @param object environment environment of CommSy
     */
-   function cs_topic_item ($environment) {
-      $this->cs_label_item($environment, 'topic');
+   function __construct($environment) {
+      cs_label_item::__construct($environment, 'topic');
    }
 
    function activatePath () {

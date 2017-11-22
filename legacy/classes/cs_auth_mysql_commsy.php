@@ -49,7 +49,7 @@ class cs_auth_mysql_commsy extends cs_auth_mysql {
    /** constructor
      * the only available constructor, initial values for internal variables
      */
-   function cs_auth_mysql_commsy() {
+   function __construct() {
       $this->_is_implemented_array = array ();
       $this->_is_implemented_array[] = 'addAccount';
       $this->_is_implemented_array[] = 'changeUserId';

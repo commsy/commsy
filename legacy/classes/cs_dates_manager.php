@@ -86,8 +86,8 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
     * NOTE: the constructor must never be called directly, instead the cs_environment must
     * be used to access this manager
     */
-   function cs_dates_manager ($environment) {
-      $this->cs_manager($environment);
+   function __construct($environment) {
+      cs_manager::__construct($environment);
       $this->_db_table = 'dates';
       $this->_translator = $environment->getTranslationObject();
    }

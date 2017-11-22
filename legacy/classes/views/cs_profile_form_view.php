@@ -35,8 +35,8 @@ class cs_profile_form_view extends cs_form_view {
 
    private $_language = NULL;
 
-   function cs_profile_form_view ($params) {
-      $this->cs_form_view($params);
+   function __construct($params) {
+      cs_form_view::__construct($params);
       $this->_language = $this->_environment->getSelectedLanguage();
    }
 

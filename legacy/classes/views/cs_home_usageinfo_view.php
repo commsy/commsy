@@ -33,8 +33,8 @@ class cs_home_usageinfo_view extends cs_view {
 
 var $_config_boxes = false;
 
-   function cs_home_usageinfo_view ($params) {
-      $this->cs_view($params);
+   function __construct($params) {
+      cs_view::__construct($params);
       $this->setViewName('usageinfos');
       $room = $this->_environment->getCurrentContextItem();
       $this->_view_title = $room->getUsageInfoHeaderForRubric($this->_environment->getCurrentModule());

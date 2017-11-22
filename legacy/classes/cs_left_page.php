@@ -30,7 +30,7 @@ class cs_left_page {
    var $_translator = NULL;
    var $_command = NULL;
 
-   function cs_left_page ($environment) {
+   function __construct($environment) {
       $this->_environment = $environment;
       $this->_class_factory = $this->_environment->getClassFactory();
       $this->_translator = $this->_environment->getTranslationObject();

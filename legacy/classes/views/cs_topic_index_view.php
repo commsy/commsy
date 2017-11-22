@@ -46,8 +46,8 @@ class cs_topic_index_view extends cs_index_view {
     *
     * @author CommSy Development Group
     */
-   function cs_topic_index_view ($params) {
-      $this->cs_index_view($params);
+   function __construct($params) {
+      cs_index_view::__construct($params);
       $this->setTitle($this->_translator->getMessage('COMMON_TOPICS'));
       $this->setColspan(3);
       $user = $this->_environment->getCurrentUser();

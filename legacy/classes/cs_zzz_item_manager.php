@@ -34,7 +34,7 @@ class cs_zzz_item_manager extends cs_item_manager {
       global $symfonyContainer;
       $this->_db_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix').'_';
 
-      parent::cs_item_manager($environment);
+      parent::__construct($environment);
    }
 
    public function getItem ($iid, $vid = NULL) {

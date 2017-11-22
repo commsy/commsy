@@ -31,7 +31,7 @@ class cs_tag2tag_manager extends cs_manager {
     * the only available constructor, initial values for internal variables
     */
   function __construct ($environment) {
-     $this->cs_manager($environment);
+     cs_manager::__construct($environment);
      $this->_db_table = CS_TAG2TAG_TYPE;
      $this->_cached_rows = array();
      $this->_cached_father_id_array = array();

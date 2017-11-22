@@ -81,7 +81,7 @@ class cs_auth_mysql_typo3 extends cs_auth_manager {
   /** constructor
     * the only available constructor, initial values for internal variables
     */
-  function cs_auth_mysql_typo3 () {
+  function __construct() {
      $this->_is_implemented_array = array();
      $this->_dbtable = 'fe_users';
      $this->_field_userid = 'username';

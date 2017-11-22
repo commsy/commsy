@@ -43,7 +43,7 @@ class cs_page {
     * @param object environment the environment object
     * @param boolean with_mod_actions
     */
-   function cs_page ($environment, $with_mod_actions) {
+   function __construct($environment, $with_mod_actions) {
       $this->_environment = $environment;
       $this->_class_factory = $this->_environment->getClassFactory();
       $this->_with_mod_actions = $with_mod_actions;

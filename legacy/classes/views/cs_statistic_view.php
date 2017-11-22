@@ -91,8 +91,8 @@ class cs_statistic_view extends cs_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_statistic_view ($params) {
-      $this->cs_view( $params );
+   function __construct($params) {
+      cs_view::__construct( $params );
    }
 
    /** set title of the statistic view

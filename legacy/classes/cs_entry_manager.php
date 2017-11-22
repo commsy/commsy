@@ -80,8 +80,8 @@ class cs_entry_manager extends cs_manager {
   /** constructor: cs_announcement_manager
     * the only available constructor, initial values for internal variables
     */
-  function cs_entry_manager ($environment) {
-     $this->cs_manager($environment);
+  function __construct($environment) {
+     cs_manager::__construct($environment);
      $this->_db_table = CS_ITEM_TYPE;
      $this->_translator = $environment->getTranslationObject();
   }

@@ -37,7 +37,7 @@ class cs_group_manager extends cs_labels_manager {
    * @param object cs_environment the environment
    */
    public function __construct ($environment) {
-      $this->cs_labels_manager($environment);
+      cs_labels_manager::__construct($environment);
    }
 
    /** resetLimits

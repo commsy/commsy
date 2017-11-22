@@ -26,8 +26,8 @@
 include_once('classes/cs_left_page.php');
 class cs_home_member2_page extends cs_left_page {
 
-   function cs_home_member2_page ($environment) {
-      $this->cs_left_page($environment);
+   function __construct($environment) {
+      cs_left_page::__construct($environment);
    }
 
    function execute () {

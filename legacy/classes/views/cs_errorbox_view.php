@@ -38,11 +38,11 @@ class cs_errorbox_view extends cs_text_view {
     * the only available constructor, initial values for internal variables
     *
     */
-   function cs_errorbox_view ($params) {
+   function __construct($params) {
       if ( !empty($params['width']) ){
          $this->_width = $params['width'];
       }
-      $this->cs_text_view($params);
+      cs_text_view::__construct($params);
       $this->setTitle($this->_translator->getMessage('ERRORBOX_TITLE'));
    }
 

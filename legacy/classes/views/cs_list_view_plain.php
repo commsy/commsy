@@ -71,7 +71,7 @@ class cs_list_view_plain extends cs_view {
       if ( !empty($params['viewname']) ) {
          $this->_view_name = $params['viewname'];
       }
-      $this->cs_view($params);
+      cs_view::__construct($params);
       $this->_stylesheet_name = 'list_view_plain';
    }
 

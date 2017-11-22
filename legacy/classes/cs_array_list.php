@@ -47,7 +47,7 @@ class cs_array_list {
     *
     * @author CommSy Development Group
     */
-   function cs_array_list() {
+   function __construct() {
       $this->reset();
    }
 

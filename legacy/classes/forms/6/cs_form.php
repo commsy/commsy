@@ -52,7 +52,7 @@ class cs_form {
          *
          * @author CommSy Development Group
          */
-        function cs_form() {
+        function __construct() {
            $this->_formElements = new cs_array_list();
            
            global $environment;

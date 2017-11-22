@@ -34,8 +34,8 @@ class cs_guide_room_list_page extends cs_page {
     *
     * @param object environment the environment object
     */
-   function cs_guide_room_list_page ($environment, $with_mod_actions) {
-      $this->cs_page($environment, $with_mod_actions);
+   function __construct($environment, $with_mod_actions) {
+      cs_page::__construct($environment, $with_mod_actions);
    }
 
    function _generateViewObject () {

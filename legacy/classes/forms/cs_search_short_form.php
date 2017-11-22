@@ -49,7 +49,7 @@ class cs_search_short_form extends cs_form {
     *
     * @param object environment the environment object
     */
-   function cs_search_short_form($params) {
+   function __construct($params) {
       if ( !empty($params['environment']) ) {
          $this->_environment = $params['environment'];
       } else {

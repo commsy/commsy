@@ -99,7 +99,7 @@ class cs_authentication {
     *
     * @param object environment of commsy
     */
-   function cs_authentication($environment) {
+   function __construct($environment) {
      $this->_environment = $environment;
      $this->_translator = $this->_environment->getTranslationObject();
      $this->reset();

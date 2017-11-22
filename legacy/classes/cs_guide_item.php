@@ -36,8 +36,8 @@ class cs_guide_item extends cs_context_item {
     *
     * @param object environment the environment of the commsy
     */
-   function cs_guide_item ($environment) {
-      $this->cs_context_item($environment);
+   function __construct($environment) {
+      cs_context_item::__construct($environment);
    }
 
    function isServer () {

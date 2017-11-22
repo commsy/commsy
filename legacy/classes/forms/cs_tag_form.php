@@ -42,8 +42,8 @@ class cs_tag_form extends cs_rubric_form {
     *
     * @param object environment the environment object
     */
-   function cs_tag_form($params) {
-      $this->cs_rubric_form($params);
+   function __construct($params) {
+      cs_rubric_form::__construct($params);
    }
 
    private function _initFormChildren ( $item, $depth ) {

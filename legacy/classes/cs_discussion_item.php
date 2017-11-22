@@ -37,8 +37,8 @@ class cs_discussion_item extends cs_item {
    * @param object  environment            environment of the commsy
    *
    */
-   function cs_discussion_item($environment) {
-      $this->cs_item($environment);
+   function __construct($environment) {
+      cs_item::__construct($environment);
       $this->_type = CS_DISCUSSION_TYPE;
    }
 

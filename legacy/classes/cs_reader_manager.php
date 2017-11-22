@@ -52,7 +52,7 @@ class cs_reader_manager {
      *
      * @param object cs_environment the environment
      */
-   function cs_reader_manager ( $environment ) {
+   function __construct($environment ) {
       $this->_environment = $environment;
       $this->_current_user    = $this->_environment->getCurrentUser();
       $this->_current_user_id = $this->_current_user->getItemID();

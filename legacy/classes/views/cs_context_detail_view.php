@@ -38,8 +38,8 @@ var $_room_type = 'context';
     *
     * @param array params parameters in an array of this class
     */
-   function cs_context_detail_view ($params) {
-      $this->cs_detail_view($params);
+   function __construct($params) {
+      cs_detail_view::__construct($params);
       $this->_show_content_without_window = true;
    }
 

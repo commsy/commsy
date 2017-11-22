@@ -34,7 +34,7 @@ class cs_zzz_announcement_manager extends cs_announcement_manager {
         global $symfonyContainer;
         $this->_db_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix').'_';
 
-        parent::cs_announcement_manager($environment);
+        parent::__construct($environment);
     }
 }
 ?>

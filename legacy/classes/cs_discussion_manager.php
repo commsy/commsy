@@ -76,8 +76,8 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
     *
     * @author CommSy Development Group
     */
-   function cs_discussion_manager ($environment) {
-     $this->cs_manager($environment);
+   function __construct($environment) {
+     cs_manager::__construct($environment);
      $this->_db_table = 'discussions';
      $this->_translator = $environment->getTranslationObject();
    }

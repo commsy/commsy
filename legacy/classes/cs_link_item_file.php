@@ -35,8 +35,8 @@ class cs_link_item_file extends cs_item {
     *
     * @author CommSy Development Group
     */
-   function cs_link_item_file ($environment) {
-      $this->cs_item($environment);
+   function __construct($environment) {
+      cs_item::__construct($environment);
       $this->_type = 'link_item_file';
    }
 

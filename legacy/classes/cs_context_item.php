@@ -76,8 +76,8 @@ class cs_context_item extends cs_item {
    *
    * @param object environment the environment of the commsy
    */
-  function cs_context_item ($environment) {
-    $this->cs_item($environment);
+  function __construct($environment) {
+    cs_item::__construct($environment);
     $this->_type = 'context';
 
     $this->_default_listbox_array[0] = 'actions';

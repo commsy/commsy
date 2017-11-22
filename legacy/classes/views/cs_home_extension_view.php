@@ -36,8 +36,8 @@ class cs_home_extension_view extends cs_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_home_extension_view ($params) {
-      $this->cs_view($params);
+   function __construct($params) {
+      cs_view::__construct($params);
       $this->_view_title = $this->_translator->getMessage('HOME_EXTRA_TOOLS');
       $this->setViewName('homeextratools');
    }

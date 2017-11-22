@@ -57,8 +57,8 @@ class cs_project_item extends cs_room_item {
     *
     * @param object environment environment of the commsy project
     */
-   function cs_project_item ($environment) {
-      $this->cs_context_item($environment);
+   function __construct($environment) {
+      cs_context_item::__construct($environment);
       $this->_type = CS_PROJECT_TYPE;
 
       $this->_default_rubrics_array[0] = CS_ANNOUNCEMENT_TYPE;

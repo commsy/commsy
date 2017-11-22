@@ -46,9 +46,9 @@ class cs_wordpress_manager extends cs_manager
     private $_wp_skin_option_array = array();
     private $_with_session_caching = false;
 
-    public function cs_wordpress_manager($environment)
+    public function __construct($environment)
     {
-        parent::cs_manager($environment);
+        parent::__construct($environment);
 
         $this->wp_user = $this->_environment->getCurrentUser()->_getItemData();
 

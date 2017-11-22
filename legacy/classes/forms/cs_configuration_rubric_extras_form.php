@@ -40,8 +40,8 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
     *
     * @param object environment the environment object
     */
-   function cs_configuration_rubric_extras_form($environment) {
-      $this->cs_rubric_form($environment);
+   function __construct($environment) {
+      cs_rubric_form::__construct($environment);
    }
 
    /** init data for form, INTERNAL

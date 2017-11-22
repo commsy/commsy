@@ -50,9 +50,9 @@ var $_sel_rubric = '';
     *
     * @param array params parameters in an array of this class
     */
-   function cs_item_index_view ($params) {
+   function __construct($params) {
       $params['viewname'] = 'campus_search_index';
-      $this->cs_index_view($params);
+      cs_index_view::__construct($params);
       $this->institution = $this->_translator->getMessage('INSTITUTION');
    }
 

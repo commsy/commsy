@@ -29,7 +29,7 @@ class cs_roomInfo {
 		var $_faculty;
 		var $_source;
 		
-		function cs_roomInfo($stine_id,$description_short,$description_long,$portal_id,$institution,$faculty,$source) {
+		function __construct($stine_id, $description_short, $description_long, $portal_id, $institution, $faculty, $source) {
 			$this->_stine_id = $stine_id;
 			$this->_description_short = $description_short;
 			$this->_description_long = $description_long;

@@ -36,8 +36,8 @@ class cs_form_view_detail extends cs_form_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_form_view_detail ($params) {
-      $this->cs_form_view($params);
+   function __construct($params) {
+      cs_form_view::__construct($params);
    }
 
    /** get form element as HTML and in commsy-style- internal, do not use

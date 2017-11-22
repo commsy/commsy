@@ -52,7 +52,7 @@ class cs_entry_index_view extends cs_index_view {
    var $_selected_tag_array = array();
    
    public function __construct ($params) {
-      $this->cs_index_view($params);
+      cs_index_view::__construct($params);
       $this->setTitle($this->_translator->getMessage('COMMON_ENTRIES'));
       $this->setActionTitle($this->_translator->getMessage('COMMON_ENTRY'));
       $this->_colspan = '4';

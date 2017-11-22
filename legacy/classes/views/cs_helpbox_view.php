@@ -39,12 +39,12 @@ class cs_helpbox_view extends cs_text_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_helpbox_view ($params) {
+   function __construct($params) {
       $width="100%";
       if ( !empty($params['width']) ) {
          $width = $params['width'];
       }
-      $this->cs_text_view($params);
+      cs_text_view::__construct($params);
       $this->width = $width;
    }
 
