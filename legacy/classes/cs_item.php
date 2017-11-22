@@ -2344,7 +2344,7 @@ function getExternalViewerArray(){
             }
             if ( $key == 'description' ) {
                // AS XML ???
-               $value = preg_replace('~\\(:(.*?):\\)~eu','',$value); // entfernt medien einbindung
+               $value = preg_replace('~\\(:(.*?):\\)~u','',$value); // entfernt medien einbindung
                $value = strip_tags($value); // entfernt html tags
                $value = html_entity_decode($value, ENT_NOQUOTES, 'UTF-8'); // wandelt &quot; usw. in lesbare Zeichen um
             }
