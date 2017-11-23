@@ -86,17 +86,18 @@
                                                     <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                 </a>
                                             </li>
-
-                                            {# separator #}
-                                            <li>&nbsp;</li>
-
-                                            {# new article #}
-                                             <li>
-                                                <a class="newArticle" href="#" id="newArticle" data-article-url="{{ path('commsy_discussion_createarticle', {'roomId': roomId, 'itemId': discussion.itemId}) }}">
-                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new article'|trans({},'discussion') }}
-                                                </a>
-                                            </li>
                                         {% endif %}
+                                        
+                                        {# separator #}
+                                        <li>&nbsp;</li>
+
+                                        {# new article #}
+                                         <li>
+                                            <a class="newArticle" href="#" id="newArticle" data-article-url="{{ path('commsy_discussion_createarticle', {'roomId': roomId, 'itemId': discussion.itemId}) }}">
+                                                <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new article'|trans({},'discussion') }}
+                                            </a>
+                                        </li>
+
                                     </ul>
                                 </div>
                             </div>
