@@ -418,7 +418,7 @@ class cs_wordpress_manager extends cs_manager
         if ($c_proxy_ip) {
             $options['proxy_host'] = $c_proxy_ip;
         }
-        if ($c_proxy_port)) {
+        if ($c_proxy_port) {
             $options['proxy_port'] = $c_proxy_port;
         }
         $retour = null;
