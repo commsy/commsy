@@ -83,11 +83,6 @@ class cs_home_member2_page extends cs_left_page {
                $redirect_to_login = false;
             }
 
-            // joomla!
-            elseif ( $auth_source_item->getSourceType() == 'Joomla' ) {
-               $redirect_to_login = false;
-            }
-
             // mysql allg.
             elseif ( $auth_source_item->getSourceType() == 'MYSQL' ) {
                $redirect_to_login = false;

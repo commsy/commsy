@@ -145,9 +145,6 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $this->_auth_type_array[$counter]['text'] = 'MySQL: allgemein';
          $this->_auth_type_array[$counter]['value'] = 'MYSQL';
          $counter++;
-         $this->_auth_type_array[$counter]['text'] = 'MySQL: Joomla!';
-         $this->_auth_type_array[$counter]['value'] = 'Joomla';
-         $counter++;
          $this->_auth_type_array[$counter]['text'] = 'MySQL: Typo3';
          $this->_auth_type_array[$counter]['value'] = 'Typo3';
          $counter++;
@@ -373,16 +370,6 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $this->_form->addTextfield('userid','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER'),'','',21,true,'','','','','','',false,'');
          $this->_form->addPassword('password','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW'),'','',21,true,'','','','','','',false,'');
          $this->_form->addRadioGroup('encryption',$translator->getMessage('CONFIGURATION_AUTHENTICATION_TYPO3_ENCRYPTION'),'',$this->_encryption_array,'','',true,'','',$disabled or $this->_disable_show);
-         $this->_form->addEmptyLine();
-      }
-      // Joomla
-      elseif ( $this->_auth_type == 'Joomla' ) {
-         $this->_form->addTextfield('dbname','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_DBNAME'),'','',21,true,'','','','','','',false,'');
-         $this->_form->addTextfield('dbtable','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_DBTABLE'),'','',21,true,'','','','','','',false,$translator->getMessage('CONFIGURATION_AUTHENTICATION_DBTABLE_HINT_JOOMLA'));
-         $this->_form->addTextfield('host','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_HOST'),'','',21,true,'','','','','','',false,'');
-         $this->_form->addTextfield('port','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PORT'),'','',21,true,'','','','','','',false,'');
-         $this->_form->addTextfield('userid','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER'),'','',21,true,'','','','','','',false,'');
-         $this->_form->addTextfield('password','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW'),'','',21,true,'','','','','','',false,'');
          $this->_form->addEmptyLine();
       }
       // MySQL (allgmein)
@@ -807,29 +794,6 @@ class cs_configuration_authentication_form extends cs_rubric_form {
             }
             if ( !empty($auth_data_array['ENCRYPTION']) ) {
                $this->_values['encryption'] = $auth_data_array['ENCRYPTION'];
-            }
-         }
-
-         // Joomla!
-         elseif ( $this->_values['auth_type'] == 'Joomla' ) {
-            $auth_data_array = $this->_item->getAuthData();
-            if ( !empty($auth_data_array['DBNAME']) ) {
-               $this->_values['dbname'] = $auth_data_array['DBNAME'];
-            }
-            if ( !empty($auth_data_array['DBTABLE']) ) {
-               $this->_values['dbtable'] = $auth_data_array['DBTABLE'];
-            }
-            if ( !empty($auth_data_array['HOST']) ) {
-               $this->_values['host'] = $auth_data_array['HOST'];
-            }
-            if ( !empty($auth_data_array['PORT']) ) {
-               $this->_values['port'] = $auth_data_array['PORT'];
-            }
-            if ( !empty($auth_data_array['USER']) ) {
-               $this->_values['userid'] = $auth_data_array['USER'];
-            }
-            if ( !empty($auth_data_array['PASSWORD']) ) {
-               $this->_values['password'] = $auth_data_array['PASSWORD'];
             }
          }
 

@@ -28,7 +28,6 @@ $message["CONFIGURATION_AUTHENTICATION_DBCOLUMNPASSWD"]["de"] = "Datenbank-Spalt
 $message["CONFIGURATION_AUTHENTICATION_DBCOLUMNUSERID"]["de"] = "Datenbank-Spalte mit Benutzernamen";
 $message["CONFIGURATION_AUTHENTICATION_DBNAME"]["de"] = "Datenbank";
 $message["CONFIGURATION_AUTHENTICATION_DBTABLE"]["de"] = "Datenbanktabelle";
-$message["CONFIGURATION_AUTHENTICATION_DBTABLE_HINT_JOOMLA"]["de"] = "z.B. jos_users (hängt vom bei der Joomla!-Installation gewählten Datenbank-Präfix ab)";
 $message["CONFIGURATION_AUTHENTICATION_DELETE_ACCOUNT_TITLE"]["de"] = "Kennung löschen";
 $message["CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_SOURCE"]["de"] = "Quelle";
 $message["CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_TYPE"]["de"] = "Typ";

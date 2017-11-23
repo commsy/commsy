@@ -236,10 +236,6 @@ class cs_authentication {
             include_once('classes/cs_auth_mysql_typo3.php');
             $auth_manager = new cs_auth_mysql_typo3();
             $auth_manager->setAuthSourceItem($auth_source_item);
-         } elseif ( $type == 'Joomla' ) {
-            include_once('classes/cs_auth_mysql_joomla.php');
-            $auth_manager = new cs_auth_mysql_joomla();
-            $auth_manager->setAuthSourceItem($auth_source_item);
          } elseif ( $type == 'Typo3Web' ) {
             include_once('classes/cs_auth_typo3.php');
             $auth_manager = new cs_auth_typo3();
@@ -290,9 +286,6 @@ class cs_authentication {
       } elseif ( $value == 'Typo3' ) {
          include_once('classes/cs_auth_mysql_typo3.php');
          $auth_manager = new cs_auth_mysql_typo3();
-      } elseif ( $value == 'Joomla' ) {
-         include_once('classes/cs_auth_mysql_joomla.php');
-         $auth_manager = new cs_auth_mysql_joomla();
       } elseif ( $value == 'MYSQL' ) {
          include_once('classes/cs_auth_mysql_mysql.php');
          $auth_manager = new cs_auth_mysql_mysql();
