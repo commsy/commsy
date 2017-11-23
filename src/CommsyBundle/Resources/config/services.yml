@@ -660,7 +660,11 @@ services:
         
     commsy.print_service:
         class: CommsyBundle\Services\PrintService
-        arguments: ['@commsy_legacy.environment', '@service_container', '@request_stack']
+        arguments:
+          - '@commsy_legacy.environment'
+          - '@knp_snappy.pdf'
+          - '%commsy.settings.proxy_ip%'
+          - '%commsy.settings.proxy_port%'
         
     commsy.copy_service:
         class: CommsyBundle\Services\CopyService

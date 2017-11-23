@@ -255,7 +255,7 @@ class MaterialController extends Controller
             
         ]);
 
-        return $this->get('commsy.print_service')->printList($html);
+        return $this->get('commsy.print_service')->buildPdfResponse($html);
     }
 
     /**
@@ -1122,7 +1122,7 @@ class MaterialController extends Controller
             'roomCategories' => $infoArray['roomCategories'],
         ]);
 
-        return $this->get('commsy.print_service')->printDetail($html);
+        return $this->get('commsy.print_service')->buildPdfResponse($html);
     }
 
     /**

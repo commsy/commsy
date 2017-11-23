@@ -190,12 +190,16 @@ class AdditionalSettingsTransformer implements DataTransformerInterface
         $archived = $roomData['archived'];
         if (isset($archived['active'])) {
             if ($archived['active']) {
-                $roomObject->moveToArchive();
-                $this->legacyEnvironment->activateArchiveMode();
+                if (!$roomObject->isArchived()) {
+                    $roomObject->moveToArchive();
+                    $this->legacyEnvironment->activateArchiveMode();
+                }
             } else {
-                if ($this->legacyEnvironment->isArchiveMode()) {
-                    $roomObject->backFromArchive();
-                    $this->legacyEnvironment->deactivateArchiveMode();
+                if ($roomObject->isArchived()) {
+                    if ($this->legacyEnvironment->isArchiveMode()) {
+                        $roomObject->backFromArchive();
+                        $this->legacyEnvironment->deactivateArchiveMode();
+                    }
                 }
             }
         }

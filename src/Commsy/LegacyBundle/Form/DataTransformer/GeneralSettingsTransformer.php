@@ -64,7 +64,9 @@ class GeneralSettingsTransformer implements DataTransformerInterface
 
             if (!$roomItem->isGroupRoom()) {
                 foreach ($roomItem->getCommunityList()->to_array() as $key => $communityRoom) {
-                    $linkedCommunityRooms[] = $communityRoom->getItemID();
+                    if ($communityRoom) {
+                        $linkedCommunityRooms[] = $communityRoom->getItemID();
+                    }
                 }
                 $roomData['community_rooms'] = $linkedCommunityRooms;
             }

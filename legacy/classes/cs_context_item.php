@@ -3782,7 +3782,7 @@ class cs_context_item extends cs_item {
 
   function getInformationBoxEntryID() {
     $translator = $this->_environment->getTranslationObject();
-    $retour = $translator->getMessage('COMMON_INFORMATION_INDEX');
+      $retour = '';
     if ($this->_issetExtra('INFORMATIONBOXENTRYID')) {
       $retour = $this->_getExtra('INFORMATIONBOXENTRYID');
     }

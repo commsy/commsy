@@ -278,7 +278,12 @@ class cs_community_item extends cs_room_item {
       $em = $symfonyContainer->get('doctrine.orm.entity_manager');
       $repository = $em->getRepository('CommsyBundle:Room');
 
-      $this->deleteElasticItem($objectPersister, $repository);
+       // use zzz repository if room is archived
+       if ($this->isArchived()) {
+           $repository = $em->getRepository('CommsyBundle:ZzzRoom');
+       }
+
+       $this->deleteElasticItem($objectPersister, $repository);
    }
 
    function undelete () {

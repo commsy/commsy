@@ -105,7 +105,7 @@ class RoomController extends Controller
         $portalItem = $roomItem->getContextItem();
         if ($portalItem->showServiceLink()) {
             $serviceContact['show'] = true;
-            $serviceContact['email'] = $portalItem->getServiceEmail();
+            $serviceContact['link'] = $roomService->buildServiceLink();
         }
 
         // RSS-Feed / iCal / Wiki
@@ -465,7 +465,6 @@ class RoomController extends Controller
             $legacyEnvironment->deactivateArchiveMode();
         }
 
-        // get material list from manager service
         $projectsMemberStatus = array();
         foreach ($rooms as $room) {
             $projectsMemberStatus[$room->getItemId()] = $this->memberStatus($room);

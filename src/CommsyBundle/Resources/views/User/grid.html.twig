@@ -22,11 +22,16 @@
 
                 {% if user.status == 1 and is_granted('MODERATOR') %}
                     <div style="float: right;">
-                        <a href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-confirm', 'userDetail': 1}) }}" id="status-confirm">
-                            <button class="uk-button-small uk-button uk-button-success uk-icon-check uk-margin uk-border-rounded" data-uk-tooltip title="{{'Confirm'|trans({}, 'settings') }}"></button>
+                        <a class="uk-button uk-button-small uk-button-success uk-border-rounded" title="{{'Confirm'|trans({}, 'user') }}" href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-confirm', 'userDetail': 1}) }}" id="status-confirm">
+                            <i class="uk-icon-check"></i>
+                            <span class="uk-visible-large">{{'Confirm'|trans({}, 'user') }}</span>
                         </a>
-                        <a href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-block', 'userDetail': 1}) }}" id="status-block">
-                            <button class="uk-button-small uk-button uk-button-danger uk-icon-times uk-margin uk-border-rounded"  data-uk-tooltip title="{{'reject'|trans({}, 'room') }}"></button>
+                        <a class="uk-button uk-button-small uk-button-danger uk-border-rounded" title="{{'Reject'|trans({}, 'user') }}" href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-block', 'userDetail': 1}) }}" id="status-block">
+                            <i class="uk-icon-times"></i>
+                            <span class="uk-visible-large">{{'Reject'|trans({}, 'user') }}</span>
+                        </a>
+                        <a class="uk-botton uk-button-small uk-border-rounded" data-uk-tooltip="{pos:'bottom'}" title="{{ 'user comment'|trans({}, 'user') }}: {{user.userComment }}">
+                            <i class="uk-icon-info uk-icon-small uk-border-rounded user-comment-info"></i>
                         </a>
                     </div>
                 {% endif %}

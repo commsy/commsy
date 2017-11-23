@@ -314,7 +314,7 @@ class AnnouncementController extends Controller
             'showWorkflow' => $current_context->withWorkflow(),
         ]);
 
-        return $this->get('commsy.print_service')->printList($html);
+        return $this->get('commsy.print_service')->buildPdfResponse($html);
     }
 
     /**
@@ -413,7 +413,7 @@ class AnnouncementController extends Controller
             'annotationForm' => $form->createView(),
         ]);
 
-        return $this->get('commsy.print_service')->printDetail($html);
+        return $this->get('commsy.print_service')->buildPdfResponse($html);
     }
 
 

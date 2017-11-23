@@ -947,7 +947,7 @@ class TodoController extends Controller
             'roomCategories' => 'roomCategories',
         ]);
 
-        return $this->get('commsy.print_service')->printDetail($html);
+        return $this->get('commsy.print_service')->buildPdfResponse($html);
     }
     
     /**
@@ -1027,7 +1027,7 @@ class TodoController extends Controller
             'showWorkflow' => $current_context->withWorkflow(),
         ]);
 
-        return $this->get('commsy.print_service')->printList($html);
+        return $this->get('commsy.print_service')->buildPdfResponse($html);
     }
     
     private function getDetailInfo ($roomId, $itemId) {

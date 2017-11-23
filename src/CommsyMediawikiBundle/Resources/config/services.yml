@@ -1,4 +1,10 @@
 services:
     commsy_mediawiki.mediawiki:
         class: CommsyMediawikiBundle\Services\MediawikiService
-        arguments: ['@service_container', '@commsy_legacy.environment']
+        arguments:
+            - '@commsy_legacy.environment'
+            - '%commsy.mediawiki.apiUrl%'
+            - '%commsy.mediawiki.consumerKey%'
+            - '%commsy.mediawiki.consumerSecret%'
+            - '%commsy.mediawiki.accessToken%'
+            - '%commsy.mediawiki.accessSecret%'

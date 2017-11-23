@@ -66,6 +66,12 @@ class RoomService
 
     public function getRoomItem($roomId)
     {
+        /**
+         * NOTICE: returning archived rooms here as a fallback if no room or private room item was found
+         * currently impacts at least the "all rooms" feed due to the fact, that it relies on this function
+         * returning false, if the room is archived.
+         */
+
         // get room item
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
@@ -74,6 +80,14 @@ class RoomService
             $privateRoomManager = $this->legacyEnvironment->getPrivateroomManager();
             $roomItem = $privateRoomManager->getItem($roomId);
         }
+
+        return $roomItem;
+    }
+
+    public function getArchivedRoomItem($roomId)
+    {
+        $zzzRoomItem = $this->legacyEnvironment->getZzzRoomManager();
+        $roomItem = $zzzRoomItem->getItem($roomId);
 
         return $roomItem;
     }
@@ -139,5 +153,47 @@ class RoomService
         }
 
         return $timePulses;
+    }
+
+    public function buildServiceLink()
+    {
+        $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
+
+        $remoteServiceLink = '';
+        if ($portalItem) {
+            $remoteServiceLink = $portalItem->getServiceLinkExternal();
+        }
+
+        if (empty($remoteServiceLink)) {
+            $serverItem = $this->legacyEnvironment->getServerItem();
+            $remoteServiceLink = $serverItem->getServiceLinkExternal();
+        }
+
+        if (!empty($remoteServiceLink)) {
+            if (strstr($remoteServiceLink, '%')) {
+                $textConverter = $this->legacyEnvironment->getTextConverter();
+                $remoteServiceLink = $textConverter->convertPercent($remoteServiceLink, true, true);
+            }
+
+            return $remoteServiceLink;
+        } else {
+            $serviceEmail = '';
+
+            if ($portalItem) {
+                $serviceEmail = $portalItem->getServiceEmail();
+            }
+
+            if (empty($serviceEmail)) {
+                $serverItem = $this->_environment->getServerItem();
+
+                $serviceEmail = $serverItem->getServiceEmail();
+            }
+
+            if (!empty($serviceEmail)) {
+                return 'mailto:' . $serviceEmail;
+            }
+        }
+
+        return '';
     }
 }

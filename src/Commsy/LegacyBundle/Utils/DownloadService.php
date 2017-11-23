@@ -1,8 +1,8 @@
 <?php
 namespace Commsy\LegacyBundle\Utils;
 
+use CommsyBundle\Services\PrintService;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
-use Symfony\Component\Form\Form;
 use Symfony\Component\Filesystem\Filesystem;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
@@ -12,20 +12,24 @@ use CommsyBundle\Form\Type\AnnotationType;
 class DownloadService
 {
     private $legacyEnvironment;
-
     private $serviceContainer;
-    
+    private $itemService;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, Container $container)
-    {
+    public function __construct(
+        LegacyEnvironment $legacyEnvironment,
+        Container $container,
+        PrintService $printService,
+        ItemService $itemService
+    ) {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-
         $this->serviceContainer = $container;
+        $this->printService = $printService;
+        $this->itemService = $itemService;
     }
 
     public function zipFile($roomId, $itemIds)
     {
-        $environment = $this->serviceContainer->get('commsy_legacy.environment')->getEnvironment();
+        $itemIds = is_array($itemIds) ? $itemIds : [$itemIds];
 
         $exportTempFolder = $this->serviceContainer->getParameter('kernel.root_dir') . '/../files/temp/zip_export/' . time();
 
@@ -37,71 +41,40 @@ class DownloadService
             echo "An error occurred while creating a directory at " . $e->getPath();
         }
         $directory = $exportTempFolder;
-
-        $filemanager = $environment->getFileManager();
-    
-        if (!is_array($itemIds)) {
-            $itemIds = array($itemIds);
-        }
     
         foreach ($itemIds as $itemId) {
             $detailArray = $this->getDetailInfo($roomId, $itemId);
             $detailArray['roomId'] = $roomId;
             $detailArray['annotationForm'] = $this->serviceContainer->get('form.factory')->create(AnnotationType::class)->createView();
-            
-            $tempDirectory = $directory.'/'.$detailArray['item']->getTitle();
+
+            $item = $detailArray['item'];
+
+            $tempDirectory = $directory . '/' . $item->getTitle();
             $index = 1;
             while (file_exists($tempDirectory)) {
-                $tempDirectory = $directory.'/'.$detailArray['item']->getTitle().'_'.$index;    
+                $tempDirectory = $directory . '/' . $item->getTitle() . '_' . $index;
             }
-            mkdir($tempDirectory, 0777, true);
+            $fileSystem->mkdir($tempDirectory, 0777);
             
             // create PDF-file
-            $output = $this->serviceContainer->get('templating')->renderResponse('CommsyBundle:'.ucfirst($detailArray['item']->getItemType()).':detailPrint.html.twig', $detailArray);
-            $pdf = $this->serviceContainer->get('knp_snappy.pdf')->getOutputFromHtml($output);
-            file_put_contents($tempDirectory.'/test.pdf', $pdf);
+            $htmlView = 'CommsyBundle:' . ucfirst($item->getItemType()) . ':detailPrint.html.twig';
+            $htmlOutput = $this->serviceContainer->get('templating')->renderResponse($htmlView, $detailArray);
+            file_put_contents($tempDirectory . '/' . $item->getTitle() . '.pdf', $this->printService->getPdfContent($htmlOutput));
         
             // add files
-            $files = array();
-            if ($detailArray['item']->getItemType() == 'material') {
-                $files = $detailArray['item']->getFileListWithFilesFromSections()->to_array();
-            }
-            $filesCounter = array();
-            if (!empty($files)) {
-                mkdir($tempDirectory.'/files', 0777);
-                foreach ($files as $file) {
-                    if (file_exists($this->serviceContainer->get('kernel')->getRootDir().'/'.$file->getDiskFileName())) {
-                        if (!file_exists($tempDirectory.'/files/'.$file->getFilename())) {
-                            copy($this->serviceContainer->get('kernel')->getRootDir().'/'.$file->getDiskFileName(), $tempDirectory.'/files/'.$file->getFilename());
-                        } else {
-                            $fileNameWithoutExtension = mb_substr($file->getFilename(), 0, strlen($file->getFilename())-(strlen($file->getExtension())+1));
-                            
-                            $counter = 1;
-                            if (isset($filesCounter[$fileNameWithoutExtension])) {
-                                $filesCounter[$fileNameWithoutExtension] = $filesCounter[$fileNameWithoutExtension] + 1;
-                                $counter = $filesCounter[$fileNameWithoutExtension];
-                            } else {
-                                $filesCounter[$fileNameWithoutExtension] = $counter;
-                            }
-                            
-                            $newFilename = $fileNameWithoutExtension.' ('.$counter.').'.$file->getExtension();
-                            copy($this->serviceContainer->get('kernel')->getRootDir().'/'.$file->getDiskFileName(), $tempDirectory.'/files/'.$newFilename);
-                        }
-                    }
-                }
-            }
+            $this->copyItemFilesToFolder($item, $tempDirectory . '/files/');
         }
 
-        //create ZIP File
-        $zipfile = $exportTempFolder.DIRECTORY_SEPARATOR.'RUBRIC_NAME'.'_'.$itemId.'.zip';
+        // create ZIP File
+        $zipFile = $exportTempFolder . '/' . time() . '.zip';
          
-        if(file_exists(realpath($zipfile))) {
-            unlink($zipfile);
+        if (file_exists(realpath($zipFile))) {
+            unlink($zipFile);
         }
 
         include_once('functions/misc_functions.php');
         $zip = new \ZipArchive();
-        $filename = $zipfile;
+        $filename = $zipFile;
 
         if ( $zip->open($filename, \ZipArchive::CREATE) !== TRUE ) {
             include_once('functions/error_functions.php');
@@ -110,37 +83,55 @@ class DownloadService
         $temp_dir = getcwd();
         chdir($directory);
 
-        $zip = addFolderToZip('.',$zip);
+        $zip = addFolderToZip('.', $zip);
         chdir($temp_dir);
 
         $zip->close();
-        unset($zip);
     
-        //send zipfile by header
-        $translator = $environment->getTranslationObject();
-        if($environment->getCurrentModule() == 'announcement'){
-            $current_module = $translator->getMessage('ANNOUNCEMENT_EXPORT_ITEM_ZIP');
-        } elseif($environment->getCurrentModule() == 'material'){
-            $current_module = $translator->getMessage('MATERIAL_EXPORT_ITEM_ZIP');
-        } elseif($environment->getCurrentModule() == 'date'){
-            $current_module = $translator->getMessage('DATE_EXPORT_ITEM_ZIP');
-        } elseif($environment->getCurrentModule() == 'discussion'){
-            $current_module = $translator->getMessage('DISCUSSION_EXPORT_ITEM_ZIP');
-        } elseif($environment->getCurrentModule() == 'todo'){
-            $current_module = $translator->getMessage('TODO_EXPORT_ITEM_ZIP');
-        } elseif($environment->getCurrentModule() == 'group'){
-            $current_module = $translator->getMessage('GROUP_EXPORT_ITEM_ZIP');
-        } elseif($environment->getCurrentModule() == 'topic'){
-            $current_module = $translator->getMessage('TOPIC_EXPORT_ITEM_ZIP');
-        } elseif($environment->getCurrentModule() == 'user'){
-            $current_module = $translator->getMessage('USER_EXPORT_ITEM_ZIP');
-        } else {
-            $current_module = $environment->getCurrentModule();
+        return $zipFile;
+    }
+
+    /**
+     * Copies item files into a target folder for zip generation. Takes also duplicate file names into account.
+     *
+     * @param cs_item $item The CommSy item
+     * @param string $targetFolder Path to the target folder
+     */
+    private function copyItemFilesToFolder($item, $targetFolder)
+    {
+        $files = $this->itemService->getItemFileList($item->getItemId());
+
+        if (!empty($files)) {
+            $fileSystem = new Filesystem();
+            $fileSystem->mkdir($targetFolder, 0777);
+
+            $rootDirectory = $this->serviceContainer->get('kernel')->getRootDir();
+
+            $filesCounter = [];
+            foreach ($files as $file) {
+                $sourceFilePath = $rootDirectory . '/' . $file->getDiskFileName();
+                if ($fileSystem->exists($sourceFilePath)) {
+                    $targetFilePath = $targetFolder . '/' . $file->getFilename();
+
+                    if (!$fileSystem->exists($targetFilePath)) {
+                        $fileSystem->copy($sourceFilePath, $targetFilePath);
+                    } else {
+                        $fileNameWithoutExtension = mb_substr($file->getFilename(), 0, strlen($file->getFilename())-(strlen($file->getExtension())+1));
+
+                        $counter = 1;
+                        if (isset($filesCounter[$fileNameWithoutExtension])) {
+                            $filesCounter[$fileNameWithoutExtension] = $filesCounter[$fileNameWithoutExtension] + 1;
+                            $counter = $filesCounter[$fileNameWithoutExtension];
+                        } else {
+                            $filesCounter[$fileNameWithoutExtension] = $counter;
+                        }
+
+                        $newFilename = $fileNameWithoutExtension . ' (' . $counter . ').' . $file->getExtension();
+                        $fileSystem->copy($sourceFilePath, $targetFolder . '/' . $newFilename);
+                    }
+                }
+            }
         }
-    
-        $downloadfile = 'RUBRIC_NAME'.'_'.$itemId.'.zip';
-    
-        return $zipfile;
     }
     
     private function getDetailInfo ($roomId, $itemId) {
