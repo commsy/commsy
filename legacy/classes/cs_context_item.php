@@ -4739,7 +4739,7 @@ class cs_context_item extends cs_item {
    * @return array results of running crons
    */
   function _runCronDaily () {
-    $result = '';
+    $result = null;
     if (!$this->_runCronDailyAlready()) {
       $result = $this->_cronDaily();
       $this->_saveCronDailyTimestamp();
@@ -4765,7 +4765,7 @@ class cs_context_item extends cs_item {
    * @return array results of running crons
    */
   function _runCronWeekly () {
-    $result = '';
+    $result = null;
     if (!$this->_runCronWeeklyAlready()) {
       $result = $this->_cronWeekly();
       $this->_saveCronWeeklyTimestamp();
