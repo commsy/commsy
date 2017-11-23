@@ -87,7 +87,7 @@ class Mail_mime extends PEAR
     *
     * @access public
     */
-    function Mail_mime($crlf = "\n")
+    function __construct($crlf = "\n")
     {
         if (!defined('MAIL_MIME_CRLF')) {
             define('MAIL_MIME_CRLF', $crlf, true);
