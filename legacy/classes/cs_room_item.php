@@ -1545,156 +1545,156 @@ class cs_room_item extends cs_context_item {
    public function setArchiveMailSendDateTime ($value) {
       $this->_addExtra('ARCHIVE_SEND_MAIL_DATETIME',$value);
    }
-   
-   public function sendMailArchiveInfoToModeration () {
-   	$translator = $this->_environment->getTranslationObject();
-   	$default_language = 'de';
-   	$server_item = $this->_environment->getServerItem();
-   	$default_sender_address = $server_item->getDefaultSenderAddress();
-   	if ( empty($default_sender_address) ) {
-   		$default_sender_address = '@';
-   	}
-   	$current_portal = $this->getContextItem();
-   	$current_user = $this->_environment->getCurrentUserItem();
-   	$fullname = $current_user->getFullname();
-   	if ( empty($fullname) ) {
-   		$mod_list = $current_portal->getContactModeratorList();
-   		if ( empty($mod_list)
-   		     or $mod_list->isNotEmpty()
-   		   ) {
-   		   $mod_list = $current_portal->getContactModeratorList();
-   		}
-   		if ( !empty($mod_list)
-   		     and $mod_list->isNotEmpty()
-   		   ) {
-   			$current_user = $mod_list->getFirst();
-   		}
-   		unset($mod_list);
-   	}
-   	
-   	$moderator_list = $this->getModeratorList();
-   	
-   	// get moderators
-   	$receiver_array = array();
-   	$moderator_name_array = array();
-   	
-   	if ( $moderator_list->isNotEmpty() ) {
-   		$mod_item = $moderator_list->getFirst();
-   		while ($mod_item) {
-   			if ($mod_item->getOpenRoomWantMail() == 'yes') {
-   				$language = $this->getLanguage();
-   				if ($language == 'user') {
-   					$language = $mod_item->getLanguage();
-   					if ($language == 'browser') {
-   						$language = $default_language;
-   					}
-   				}
-   				$receiver_array[$language][] = $mod_item->getEmail();
-   				$moderator_name_array[] = $mod_item->getFullname();
-   			}
-   			$mod_item = $moderator_list->getNext();
-   		}
-   	}
-   	
-   	// now email information
-   	foreach ($receiver_array as $key => $value) {
-   		$save_language = $translator->getSelectedLanguage();
-   		$translator->setSelectedLanguage($key);
-   		$subject = '';
-		   $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_ARCHIVE_INFO',str_ireplace('&amp;', '&', $this->getTitle()),$current_portal->getDaysSendMailBeforeArchivingRooms());
-         
-  			$body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-   		$body .= LF.LF;
-         if ( $this->isCommunityRoom() ) {
-         	$body .= $translator->getMessage('COMMUNITY_MAIL_BODY_ARCHIVE_INFO',$this->getTitle(),$current_portal->getDaysSendMailBeforeArchivingRooms(),($current_portal->getDaysUnusedBeforeArchivingRooms()-$current_portal->getDaysSendMailBeforeArchivingRooms()));
-         } else {
-         	$body .= $translator->getMessage('PROJECT_MAIL_BODY_ARCHIVE_INFO',$this->getTitle(),$current_portal->getDaysSendMailBeforeArchivingRooms(),($current_portal->getDaysUnusedBeforeArchivingRooms()-$current_portal->getDaysSendMailBeforeArchivingRooms()));
-         }
-         $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_ARCHIVE_INFO');
 
-  			$body .= LF.LF;
-   		$body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION',str_ireplace('&amp;', '&', $this->getTitle()),$current_user->getFullname(),$room_change_action);
-   		
-         $url_to_portal = '';
-         if ( !empty($current_portal) ) {
-            $url_to_portal = $current_portal->getURL();
-         }
+    public function sendMailArchiveInfoToModeration()
+    {
+        $translator = $this->_environment->getTranslationObject();
+        $default_language = 'de';
+        $server_item = $this->_environment->getServerItem();
+        $default_sender_address = $server_item->getDefaultSenderAddress();
+        if (empty($default_sender_address)) {
+            $default_sender_address = '@';
+        }
+        $current_portal = $this->getContextItem();
+        $current_user = $this->_environment->getCurrentUserItem();
+        $fullname = $current_user->getFullname();
+        if (empty($fullname)) {
+            $mod_list = $current_portal->getContactModeratorList();
+            if (empty($mod_list)
+                or $mod_list->isNotEmpty()
+            ) {
+                $mod_list = $current_portal->getContactModeratorList();
+            }
+            if (!empty($mod_list)
+                and $mod_list->isNotEmpty()
+            ) {
+                $current_user = $mod_list->getFirst();
+            }
+            unset($mod_list);
+        }
 
-         $c_commsy_cron_path = $this->_environment->getConfiguration('c_commsy_cron_path');
-         if ( isset($c_commsy_cron_path) ) {
-            $url = $c_commsy_cron_path.'commsy.php?cid=';
-         } elseif ( !empty($url_to_portal) ) {
-            $c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
-            if ( stristr($c_commsy_domain,'https://') ) {
-               $url = 'https://';
+        $moderator_list = $this->getModeratorList();
+
+        // get moderators
+        $receiver_array = array();
+        $moderator_name_array = array();
+
+        if ($moderator_list->isNotEmpty()) {
+            $mod_item = $moderator_list->getFirst();
+            while ($mod_item) {
+                if ($mod_item->getOpenRoomWantMail() == 'yes') {
+                    $language = $this->getLanguage();
+                    if ($language == 'user') {
+                        $language = $mod_item->getLanguage();
+                        if ($language == 'browser') {
+                            $language = $default_language;
+                        }
+                    }
+                    $receiver_array[$language][] = $mod_item->getEmail();
+                    $moderator_name_array[] = $mod_item->getFullname();
+                }
+                $mod_item = $moderator_list->getNext();
+            }
+        }
+
+        // now email information
+        foreach ($receiver_array as $key => $value) {
+            $save_language = $translator->getSelectedLanguage();
+            $translator->setSelectedLanguage($key);
+            $subject = '';
+            $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_ARCHIVE_INFO', str_ireplace('&amp;', '&', $this->getTitle()), $current_portal->getDaysSendMailBeforeArchivingRooms());
+
+            $body = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
+            $body .= LF . LF;
+            if ($this->isCommunityRoom()) {
+                $body .= $translator->getMessage('COMMUNITY_MAIL_BODY_ARCHIVE_INFO', $this->getTitle(), $current_portal->getDaysSendMailBeforeArchivingRooms(), ($current_portal->getDaysUnusedBeforeArchivingRooms() - $current_portal->getDaysSendMailBeforeArchivingRooms()));
             } else {
-               $url = 'http://';
+                $body .= $translator->getMessage('PROJECT_MAIL_BODY_ARCHIVE_INFO', $this->getTitle(), $current_portal->getDaysSendMailBeforeArchivingRooms(), ($current_portal->getDaysUnusedBeforeArchivingRooms() - $current_portal->getDaysSendMailBeforeArchivingRooms()));
             }
-            $url .= $url_to_portal;
-            $file = 'commsy.php';
-            $c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
-            if ( !empty($c_single_entry_point) ) {
-               $file = $c_single_entry_point;
+            $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_ARCHIVE_INFO');
+
+            $body .= LF . LF;
+            $body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION', str_ireplace('&amp;', '&', $this->getTitle()), $current_user->getFullname(), $room_change_action);
+
+            $url_to_portal = '';
+            if (!empty($current_portal)) {
+                $url_to_portal = $current_portal->getURL();
             }
-            $url .= '/'.$file.'?cid=';
-         } else {
-            $file = $_SERVER['PHP_SELF'];
-            $file = str_replace('cron','commsy',$file);
-            $url = 'http://'.$_SERVER['HTTP_HOST'].$file.'?cid=';
-         }   		
-   		$url .= $this->getItemID();
-  			$body .= LF.$url;
-  			   	   	
-         if ( $this->isProjectRoom() ) {
-  			   $community_name_array = array();
-  			   $community_list = $this->getCommunityList();
-  			   if ( $community_list->isNotEmpty() ) {
-  				   $community_item = $community_list->getFirst();
-  				   while ($community_item) {
-  					   $community_name_array[] = $community_item->getTitle();
-  					   unset($community_item);
-  					   $community_item = $community_list->getNext();
-  				   }
-  			   }
-  			   unset($community_list);
-   		   if ( !empty($community_name_array) ) {
-   		      $body .= LF.LF;
-   		      $body .= $translator->getMessage('PROJECT_MAIL_BODY_COMMUNITIY_ROOMS').LF;
-   			   $body .= implode(LF,$community_name_array);
-   		   }
-         }
-   	
-   		$body .= LF.LF;
-   		$body .= $translator->getMessage('MAIL_SEND_TO',implode(LF,$moderator_name_array));
-   		$body .= LF.LF;
-         if ( $this->isCommunityRoom() ) {
-   			$body .= $translator->getMessage('MAIL_SEND_WHY_COMMUNITY',$this->getTitle());
-   		} else {
-   			$body .= $translator->getMessage('MAIL_SEND_WHY_PROJECT',$this->getTitle());
-   		}
-   	
-   		// send email
-   		include_once('classes/cs_mail.php');
-   		$mail = new cs_mail();
-   		$mail->set_to(implode(',',$value));
-   		$mail->set_from_email($default_sender_address);
-   		if (isset($current_portal)){
-   			$mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_portal->getTitle()));
-   		}else{
-   			$mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
-   		}
-   		$mail->set_reply_to_name($current_user->getFullname());
-   		$mail->set_reply_to_email($current_user->getEmail());
-   		$mail->set_subject($subject);
-   		$mail->set_message($body);
-   		$retour = $mail->send();
-   		unset($mail);
-   		$translator->setSelectedLanguage($save_language);
-   		unset($save_language);
-   	}
-   	
-   	return $retour;
-   }
+
+            $c_commsy_cron_path = $this->_environment->getConfiguration('c_commsy_cron_path');
+            if (isset($c_commsy_cron_path)) {
+                $url = $c_commsy_cron_path . 'commsy.php?cid=';
+            } elseif (!empty($url_to_portal)) {
+                $c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
+                if (stristr($c_commsy_domain, 'https://')) {
+                    $url = 'https://';
+                } else {
+                    $url = 'http://';
+                }
+                $url .= $url_to_portal;
+                $file = 'commsy.php';
+                $c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
+                if (!empty($c_single_entry_point)) {
+                    $file = $c_single_entry_point;
+                }
+                $url .= '/' . $file . '?cid=';
+            } else {
+                $file = $_SERVER['PHP_SELF'];
+                $file = str_replace('cron', 'commsy', $file);
+                $url = 'http://' . $_SERVER['HTTP_HOST'] . $file . '?cid=';
+            }
+            $url .= $this->getItemID();
+            $body .= LF . $url;
+
+            if ($this->isProjectRoom()) {
+                $community_name_array = array();
+                $community_list = $this->getCommunityList();
+                if ($community_list->isNotEmpty()) {
+                    $community_item = $community_list->getFirst();
+                    while ($community_item) {
+                        $community_name_array[] = $community_item->getTitle();
+                        unset($community_item);
+                        $community_item = $community_list->getNext();
+                    }
+                }
+                unset($community_list);
+                if (!empty($community_name_array)) {
+                    $body .= LF . LF;
+                    $body .= $translator->getMessage('PROJECT_MAIL_BODY_COMMUNITIY_ROOMS') . LF;
+                    $body .= implode(LF, $community_name_array);
+                }
+            }
+
+            $body .= LF . LF;
+            $body .= $translator->getMessage('MAIL_SEND_TO', implode(LF, $moderator_name_array));
+            $body .= LF . LF;
+            if ($this->isCommunityRoom()) {
+                $body .= $translator->getMessage('MAIL_SEND_WHY_COMMUNITY', $this->getTitle());
+            } else {
+                $body .= $translator->getMessage('MAIL_SEND_WHY_PROJECT', $this->getTitle());
+            }
+
+            // send email
+            include_once('classes/cs_mail.php');
+            $mail = new cs_mail();
+            $mail->set_to(implode(',', $value));
+            $mail->set_from_email($default_sender_address);
+            if (isset($current_portal)) {
+                $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $current_portal->getTitle()));
+            } else {
+                $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $room_item->getTitle()));
+            }
+            $mail->set_reply_to_name($current_user->getFullname());
+            $mail->set_reply_to_email($current_user->getEmail());
+            $mail->set_subject($subject);
+            $mail->set_message($body);
+
+            $translator->setSelectedLanguage($save_language);
+            return $mail->send();
+        }
+
+        return false;
+    }
 
    public function getDeleteMailSendDateTime () {
    	$retour = '';
@@ -1707,168 +1707,168 @@ class cs_room_item extends cs_context_item {
    public function setDeleteMailSendDateTime ($value) {
    	$this->_addExtra('DELETE_SEND_MAIL_DATETIME',$value);
    }
-    
-   public function sendMailDeleteInfoToModeration () {
-   	$translator = $this->_environment->getTranslationObject();
-   	$default_language = 'de';
-   	
-   	$toggle_archive = false;
-   	if ( $this->_environment->isArchiveMode() ) {
-   		$toggle_archive = true;
-   		$this->_environment->toggleArchiveMode();
-   	}
-   	
-   	$server_item = $this->_environment->getServerItem();
-   	$default_sender_address = $server_item->getDefaultSenderAddress();
-   	if ( empty($default_sender_address) ) {
-   		$default_sender_address = '@';
-   	}
-   	$current_portal = $this->getContextItem();
-   	$current_user = $this->_environment->getCurrentUserItem();
-   	$fullname = $current_user->getFullname();
-   	if ( empty($fullname) ) {
-   		$mod_list = $current_portal->getContactModeratorList();
-   		if ( empty($mod_list)
-   			  or $mod_list->isNotEmpty()
-   		   ) {
-   			$mod_list = $current_portal->getContactModeratorList();
-   		}
-   		if ( !empty($mod_list)
-   			  and $mod_list->isNotEmpty()
-   		   ) {
-   			$current_user = $mod_list->getFirst();
-   		}
-   		unset($mod_list);
-   	}
-   	
-   	if ( $toggle_archive ) {
-   		$this->_environment->toggleArchiveMode();
-   	}
-   	unset($toggle_archive);
-   	
-   	$moderator_list = $this->getModeratorList();
-   
-   	// get moderators
-   	$receiver_array = array();
-   	$moderator_name_array = array();
-   
-   	if ( $moderator_list->isNotEmpty() ) {
-   		$mod_item = $moderator_list->getFirst();
-   		while ($mod_item) {
-   			if ($mod_item->getOpenRoomWantMail() == 'yes') {
-   				$language = $this->getLanguage();
-   				if ($language == 'user') {
-   					$language = $mod_item->getLanguage();
-   					if ($language == 'browser') {
-   						$language = $default_language;
-   					}
-   				}
-   				$receiver_array[$language][] = $mod_item->getEmail();
-   				$moderator_name_array[] = $mod_item->getFullname();
-   			}
-   			$mod_item = $moderator_list->getNext();
-   		}
-   	}
-   
-   	// now email information
-   	foreach ($receiver_array as $key => $value) {
-   		$save_language = $translator->getSelectedLanguage();
-   		$translator->setSelectedLanguage($key);
-   		$subject = '';
-   		$subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_DELETE_INFO',str_ireplace('&amp;', '&', $this->getTitle()),$current_portal->getDaysSendMailBeforeDeletingRooms());
-   		 
-   		$body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-   		$body .= LF.LF;
-   		if ( $this->isCommunityRoom() ) {
-   			$body .= $translator->getMessage('COMMUNITY_MAIL_BODY_DELETE_INFO',$this->getTitle(),$current_portal->getDaysSendMailBeforeDeletingRooms(),($current_portal->getDaysUnusedBeforeDeletingRooms()-$current_portal->getDaysSendMailBeforeDeletingRooms()));
-   		} else {
-   			$body .= $translator->getMessage('PROJECT_MAIL_BODY_DELETE_INFO',$this->getTitle(),$current_portal->getDaysSendMailBeforeDeletingRooms(),($current_portal->getDaysUnusedBeforeDeletingRooms()-$current_portal->getDaysSendMailBeforeDeletingRooms()));
-   		}
-   		$room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_DELETE_INFO');
-   
-   		$body .= LF.LF;
-   		$body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION',str_ireplace('&amp;', '&', $this->getTitle()),$current_user->getFullname(),$room_change_action);
-   		 
-   		$url_to_portal = '';
-   		if ( !empty($current_portal) ) {
-   			$url_to_portal = $current_portal->getURL();
-   		}
-   
-   		$c_commsy_cron_path = $this->_environment->getConfiguration('c_commsy_cron_path');
-   		if ( isset($c_commsy_cron_path) ) {
-   			$url = $c_commsy_cron_path.'commsy.php?cid=';
-   		} elseif ( !empty($url_to_portal) ) {
-   			$c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
-   			if ( stristr($c_commsy_domain,'https://') ) {
-   				$url = 'https://';
-   			} else {
-   				$url = 'http://';
-   			}
-   			$url .= $url_to_portal;
-   			$file = 'commsy.php';
-   			$c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
-   			if ( !empty($c_single_entry_point) ) {
-   				$file = $c_single_entry_point;
-   			}
-   			$url .= '/'.$file.'?cid=';
-   		} else {
-   			$file = $_SERVER['PHP_SELF'];
-   			$file = str_replace('cron','commsy',$file);
-   			$url = 'http://'.$_SERVER['HTTP_HOST'].$file.'?cid=';
-   		}
-   		$url .= $this->getItemID();
-   		$body .= LF.$url;
-   		 
-   		if ( $this->isProjectRoom() ) {
-   			$community_name_array = array();
-   			$community_list = $this->getCommunityList();
-   			if ( $community_list->isNotEmpty() ) {
-   				$community_item = $community_list->getFirst();
-   				while ($community_item) {
-   					$community_name_array[] = $community_item->getTitle();
-   					unset($community_item);
-   					$community_item = $community_list->getNext();
-   				}
-   			}
-   			unset($community_list);
-   			if ( !empty($community_name_array) ) {
-   				$body .= LF.LF;
-   				$body .= $translator->getMessage('PROJECT_MAIL_BODY_COMMUNITIY_ROOMS').LF;
-   				$body .= implode(LF,$community_name_array);
-   			}
-   		}
-   
-   		$body .= LF.LF;
-   		$body .= $translator->getMessage('MAIL_SEND_TO',implode(LF,$moderator_name_array));
-   		$body .= LF.LF;
-   		if ( $this->isCommunityRoom() ) {
-   			$body .= $translator->getMessage('MAIL_SEND_WHY_COMMUNITY',$this->getTitle());
-   		} else {
-   			$body .= $translator->getMessage('MAIL_SEND_WHY_PROJECT',$this->getTitle());
-   		}
-   
-   		// send email
-   		include_once('classes/cs_mail.php');
-   		$mail = new cs_mail();
-   		$mail->set_to(implode(',',$value));
-   		$mail->set_from_email($default_sender_address);
-   		if (isset($current_portal)){
-   			$mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_portal->getTitle()));
-   		}else{
-   			$mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
-   		}
-   		$mail->set_reply_to_name($current_user->getFullname());
-   		$mail->set_reply_to_email($current_user->getEmail());
-   		$mail->set_subject($subject);
-   		$mail->set_message($body);
-   		$retour = $mail->send();
-   		unset($mail);
-   		$translator->setSelectedLanguage($save_language);
-   		unset($save_language);
-   	}
-   
-   	return $retour;
-   }
+
+    public function sendMailDeleteInfoToModeration()
+    {
+        $translator = $this->_environment->getTranslationObject();
+        $default_language = 'de';
+
+        $toggle_archive = false;
+        if ($this->_environment->isArchiveMode()) {
+            $toggle_archive = true;
+            $this->_environment->toggleArchiveMode();
+        }
+
+        $server_item = $this->_environment->getServerItem();
+        $default_sender_address = $server_item->getDefaultSenderAddress();
+        if (empty($default_sender_address)) {
+            $default_sender_address = '@';
+        }
+        $current_portal = $this->getContextItem();
+        $current_user = $this->_environment->getCurrentUserItem();
+        $fullname = $current_user->getFullname();
+        if (empty($fullname)) {
+            $mod_list = $current_portal->getContactModeratorList();
+            if (empty($mod_list)
+                or $mod_list->isNotEmpty()
+            ) {
+                $mod_list = $current_portal->getContactModeratorList();
+            }
+            if (!empty($mod_list)
+                and $mod_list->isNotEmpty()
+            ) {
+                $current_user = $mod_list->getFirst();
+            }
+            unset($mod_list);
+        }
+
+        if ($toggle_archive) {
+            $this->_environment->toggleArchiveMode();
+        }
+        unset($toggle_archive);
+
+        $moderator_list = $this->getModeratorList();
+
+        // get moderators
+        $receiver_array = array();
+        $moderator_name_array = array();
+
+        if ($moderator_list->isNotEmpty()) {
+            $mod_item = $moderator_list->getFirst();
+            while ($mod_item) {
+                if ($mod_item->getOpenRoomWantMail() == 'yes') {
+                    $language = $this->getLanguage();
+                    if ($language == 'user') {
+                        $language = $mod_item->getLanguage();
+                        if ($language == 'browser') {
+                            $language = $default_language;
+                        }
+                    }
+                    $receiver_array[$language][] = $mod_item->getEmail();
+                    $moderator_name_array[] = $mod_item->getFullname();
+                }
+                $mod_item = $moderator_list->getNext();
+            }
+        }
+
+        // now email information
+        foreach ($receiver_array as $key => $value) {
+            $save_language = $translator->getSelectedLanguage();
+            $translator->setSelectedLanguage($key);
+            $subject = '';
+            $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_DELETE_INFO', str_ireplace('&amp;', '&', $this->getTitle()), $current_portal->getDaysSendMailBeforeDeletingRooms());
+
+            $body = $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
+            $body .= LF . LF;
+            if ($this->isCommunityRoom()) {
+                $body .= $translator->getMessage('COMMUNITY_MAIL_BODY_DELETE_INFO', $this->getTitle(), $current_portal->getDaysSendMailBeforeDeletingRooms(), ($current_portal->getDaysUnusedBeforeDeletingRooms() - $current_portal->getDaysSendMailBeforeDeletingRooms()));
+            } else {
+                $body .= $translator->getMessage('PROJECT_MAIL_BODY_DELETE_INFO', $this->getTitle(), $current_portal->getDaysSendMailBeforeDeletingRooms(), ($current_portal->getDaysUnusedBeforeDeletingRooms() - $current_portal->getDaysSendMailBeforeDeletingRooms()));
+            }
+            $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_DELETE_INFO');
+
+            $body .= LF . LF;
+            $body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION', str_ireplace('&amp;', '&', $this->getTitle()), $current_user->getFullname(), $room_change_action);
+
+            $url_to_portal = '';
+            if (!empty($current_portal)) {
+                $url_to_portal = $current_portal->getURL();
+            }
+
+            $c_commsy_cron_path = $this->_environment->getConfiguration('c_commsy_cron_path');
+            if (isset($c_commsy_cron_path)) {
+                $url = $c_commsy_cron_path . 'commsy.php?cid=';
+            } elseif (!empty($url_to_portal)) {
+                $c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
+                if (stristr($c_commsy_domain, 'https://')) {
+                    $url = 'https://';
+                } else {
+                    $url = 'http://';
+                }
+                $url .= $url_to_portal;
+                $file = 'commsy.php';
+                $c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
+                if (!empty($c_single_entry_point)) {
+                    $file = $c_single_entry_point;
+                }
+                $url .= '/' . $file . '?cid=';
+            } else {
+                $file = $_SERVER['PHP_SELF'];
+                $file = str_replace('cron', 'commsy', $file);
+                $url = 'http://' . $_SERVER['HTTP_HOST'] . $file . '?cid=';
+            }
+            $url .= $this->getItemID();
+            $body .= LF . $url;
+
+            if ($this->isProjectRoom()) {
+                $community_name_array = array();
+                $community_list = $this->getCommunityList();
+                if ($community_list->isNotEmpty()) {
+                    $community_item = $community_list->getFirst();
+                    while ($community_item) {
+                        $community_name_array[] = $community_item->getTitle();
+                        unset($community_item);
+                        $community_item = $community_list->getNext();
+                    }
+                }
+                unset($community_list);
+                if (!empty($community_name_array)) {
+                    $body .= LF . LF;
+                    $body .= $translator->getMessage('PROJECT_MAIL_BODY_COMMUNITIY_ROOMS') . LF;
+                    $body .= implode(LF, $community_name_array);
+                }
+            }
+
+            $body .= LF . LF;
+            $body .= $translator->getMessage('MAIL_SEND_TO', implode(LF, $moderator_name_array));
+            $body .= LF . LF;
+            if ($this->isCommunityRoom()) {
+                $body .= $translator->getMessage('MAIL_SEND_WHY_COMMUNITY', $this->getTitle());
+            } else {
+                $body .= $translator->getMessage('MAIL_SEND_WHY_PROJECT', $this->getTitle());
+            }
+
+            // send email
+            include_once('classes/cs_mail.php');
+            $mail = new cs_mail();
+            $mail->set_to(implode(',', $value));
+            $mail->set_from_email($default_sender_address);
+            if (isset($current_portal)) {
+                $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $current_portal->getTitle()));
+            } else {
+                $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $room_item->getTitle()));
+            }
+            $mail->set_reply_to_name($current_user->getFullname());
+            $mail->set_reply_to_email($current_user->getEmail());
+            $mail->set_subject($subject);
+            $mail->set_message($body);
+
+            $translator->setSelectedLanguage($save_language);
+            return $mail->send();
+        }
+
+        return false;
+    }
     
   /** get lastlogin of a context
    * this method returns the last login date of the context
@@ -1884,4 +1884,3 @@ class cs_room_item extends cs_context_item {
       return $this->getLastLogin() >= getCurrentDateTimeMinusDaysInMySQL(99);
    }
 }
-?>
