@@ -53,6 +53,7 @@ class DownloadService
             $index = 1;
             while (file_exists($tempDirectory)) {
                 $tempDirectory = $directory . '/' . $item->getTitle() . '_' . $index;
+                $index++;
             }
             $fileSystem->mkdir($tempDirectory, 0777);
             
