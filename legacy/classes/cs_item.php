@@ -1544,20 +1544,32 @@ class cs_item {
    }
 
 
-   function maySee ($user_item) {
-      $current_context = $this->_environment->getCurrentContextItem();
-      if ( $user_item->isRoot()
-           or ( $user_item->getContextID() == $this->_environment->getCurrentContextID()
-                and $user_item->isUser()
-              )
-           or ($user_item->isGuest())
-         ) {
-         $access = true;
-      } else {
-         $access = false;
-      }
-      return $access;
-   }
+    function maySee($userItem)
+    {
+        if ($userItem->isRoot()) {
+           return true;
+        }
+
+        if ($userItem->isUser() && $userItem->getContextID() == $this->_environment->getCurrentContextID()) {
+           if ($this->isNotActivated()) {
+              if ($userItem->isModerator()) {
+                 return true;
+              }
+
+              if ($this->getCreatorID() == $userItem->getItemId()) {
+                 return true;
+              }
+           } else {
+               return true;
+           }
+        }
+
+        if ($userItem->isGuest()) {
+           return true;
+        }
+
+        return false;
+    }
 
    function getLatestLinkItemList ($count) {
       $link_list = new cs_list();

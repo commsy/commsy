@@ -40,7 +40,11 @@
             {# title and meta #}
             <div class="uk-width-6-10">
                 <h4 class="uk-comment-title uk-text-truncate">
-                    <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': material.itemId}) }}">{{ material.title|decodeHtmlEntity }}</a>
+                    {% if is_granted('ITEM_SEE', material.itemId) %}
+                        <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': material.itemId}) }}">{{ material.title|decodeHtmlEntity }}</a>
+                    {% else %}
+                        {{ material.title|decodeHtmlEntity }}
+                    {% endif %}
                 </h4>
 
                 <div class="uk-comment-meta">
