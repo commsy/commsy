@@ -60,10 +60,11 @@ class ContextType extends AbstractType
                 $constraints[] = new Count(array('min' => 1, 'minMessage' => "Please select at least one category"));
             }
 
-            if (isset($options['roomCategories']) && isset($options['linkRoomCategoriesMandatory'])) {
+            $roomCategories = $options['roomCategories'];
+            if (isset($roomCategories) && !empty($roomCategories) && isset($options['linkRoomCategoriesMandatory'])) {
                 $builder->add('categories', ChoiceType::class, array(
                     'placeholder' => false,
-                    'choices' => $options['roomCategories'],
+                    'choices' => $roomCategories,
                     'label' => 'Room categories',
                     'required' => $options['linkRoomCategoriesMandatory'],
                     'expanded' => true,
