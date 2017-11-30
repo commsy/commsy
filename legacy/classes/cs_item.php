@@ -1565,7 +1565,9 @@ class cs_item {
         }
 
         if ($userItem->isGuest()) {
-           return true;
+           if (!$this->isNotActivated()) {
+              return true;
+           }
         }
 
         return false;
