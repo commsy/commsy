@@ -1644,6 +1644,22 @@ class cs_room_item extends cs_context_item {
                 $url = 'http://' . $_SERVER['HTTP_HOST'] . $file . '?cid=';
             }
             $url .= $this->getItemID();
+
+            // set new commsy url
+            global $symfonyContainer;
+
+            $url = $symfonyContainer->get('router')->generate(
+                'commsy_room_home',
+                array('roomId' => $this->getItemID()),
+                true
+            );
+
+            $requestStack = $symfonyContainer->get('request_stack');
+            $currentRequest = $requestStack->getCurrentRequest();
+            if ($currentRequest) {
+                $url = $currentRequest->getSchemeAndHttpHost() . $url;
+            }
+            
             $body .= LF . $url;
 
             if ($this->isProjectRoom()) {

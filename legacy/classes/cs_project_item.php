@@ -1106,6 +1106,20 @@ class cs_project_item extends cs_room_item {
             }   		
    		   $url .= $this->getContextID();
    		   $url .= '&room_id='.$this->getItemID();
+
+   		   global $symfonyContainer;
+
+   		   $url = $symfonyContainer->get('router')->generate(
+   		       'commsy_room_home',
+               array('roomId' => $this->getItemID()),
+               true
+           );
+   		   $requestStack = $symfonyContainer->get('request_stack');
+   		   $currentRequest = $requestStack->getCurrentRequest();
+   		   if ($currentRequest) {
+   		       $url = $currentRequest->getSchemeAndHttpHost() . $url;
+   		   }
+
   			   $body .= LF.$url;
          	
   			   #$body .= LF.'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$this->getContextID().'&room_id='.$this->getItemID();
