@@ -2891,7 +2891,10 @@ function getExternalViewerArray(){
         if ($elasticHost) {
             $object = $repository->findOneByItemId($this->getItemID());
 
-            $objectPersister->deleteOne($object);
+            try {
+                $objectPersister->deleteOne($object);
+            } catch (Exception $exception) {
+            }
         }
     }
 
