@@ -147,6 +147,20 @@ class DashboardFeedGenerator
 
                     break;
 
+                case 'announcement':
+                    $announcementManager = $this->legacyEnvironment->getEnvironment()->getAnnouncementManager();
+                    $announcementItem = $announcementManager->getItem($item->getItemId());
+
+                    if ($announcementItem) {
+                        $currentDate = new \DateTime();
+                        $announcementEndDate = new \DateTime($announcementItem->getSecondDateTime());
+                        if ($currentDate <= $announcementEndDate) {
+                            $feedList[] = $announcementItem;
+                        }
+                    }
+
+                    break;
+
                 default:
                     $tempManager = $legacyEnvironment->getManager($item->getItemType());
                     $tempItem = $tempManager->getItem($item->getItemId());
