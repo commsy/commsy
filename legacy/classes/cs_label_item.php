@@ -496,9 +496,9 @@ class cs_label_item extends cs_item {
 
       // prevent indexing of label types like buzzwords
       if (in_array($this->getLabelType(), [
-          'groups',
-          'topics',
-          'institutions'
+          'group',
+          'topic',
+          'institution'
       ])) {
             $this->updateElastic();
       }
