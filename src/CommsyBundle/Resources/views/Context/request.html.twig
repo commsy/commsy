@@ -24,13 +24,23 @@
                     {{ form_start(form) }}
                     {{ form_errors(form) }}
 
-                    {# description #}
-                    {{ form_row(form.description) }}
-
                     {# optional code #}
                     {% if form.code is defined %}
+                        <div class="uk-form-row">
+                            <div class="uk-form-controls uk-form-controls-text">
+                                {{ 'room code description'|trans({}, 'room') }}
+                            </div>
+                        </div>
                         {{ form_row(form.code) }}
                     {% endif %}
+
+                    {# description #}
+                    <div class="uk-form-row">
+                        <div class="uk-form-controls uk-form-controls-text">
+                            {{ 'room join description'|trans({}, 'room') }}
+                        </div>
+                    </div>
+                    {{ form_row(form.description) }}
 
                     {# optional agb #}
                     {% if form.agb is defined %}
