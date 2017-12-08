@@ -100,76 +100,77 @@ class DashboardFeedGenerator
         $feedList = array();
         $item = $itemList->getFirst();
         while ($item) {
-            $type = $item->getItemType();
-            switch ($type) {
-                case 'date':
-                    $datesManager = $this->legacyEnvironment->getEnvironment()->getDatesManager();
-                    $dateItem = $datesManager->getItem($item->getItemId());
-                    if ($dateItem) {
-                        if ($dateItem->getRecurrencePattern() == '') {
-                            $feedList[] = $dateItem;
-                        }
-                        else {
-                            $foundRecurrenceId = false;
-                            foreach ($feedList as $feedListEntry) {
-                                if ($feedListEntry->getItemType() == CS_DATE_TYPE) {
-                                    if ($feedListEntry->getRecurrenceId() == $dateItem->getRecurrenceId()) {
-                                        $foundRecurrenceId = true;
+            if (!$item->isNotActivated()) {
+                $type = $item->getItemType();
+                switch ($type) {
+                    case 'date':
+                        $datesManager = $this->legacyEnvironment->getEnvironment()->getDatesManager();
+                        $dateItem = $datesManager->getItem($item->getItemId());
+                        if ($dateItem) {
+                            if ($dateItem->getRecurrencePattern() == '') {
+                                $feedList[] = $dateItem;
+                            } else {
+                                $foundRecurrenceId = false;
+                                foreach ($feedList as $feedListEntry) {
+                                    if ($feedListEntry->getItemType() == CS_DATE_TYPE) {
+                                        if ($feedListEntry->getRecurrenceId() == $dateItem->getRecurrenceId()) {
+                                            $foundRecurrenceId = true;
+                                        }
                                     }
                                 }
-                            }
-                            if (!$foundRecurrenceId) {
-                                $feedList[] = $dateItem;
-                            }
-                        }
-                    }
-                    break;
-
-                case 'label':
-                    $labelManager = $this->legacyEnvironment->getEnvironment()->getLabelManager();
-                    $labelItem = $labelManager->getItem($item->getItemId());
-
-                    if ($labelItem) {
-                        if ($labelItem->getItemType() == 'group') {
-                            $groupManager = $this->legacyEnvironment->getEnvironment()->getLabelManager();
-                            $groupItem = $groupManager->getItem($item->getItemId());
-                            if ($groupItem) {
-                                $feedList[] = $groupItem;
-                            }
-                        } else if ($labelItem->getItemType() == 'topic') {
-                            $topicManager = $this->legacyEnvironment->getEnvironment()->getTopicManager();
-                            $topicItem = $topicManager->getItem($item->getItemId());
-                            if ($topicItem) {
-                                $feedList[] = $topicItem;
+                                if (!$foundRecurrenceId) {
+                                    $feedList[] = $dateItem;
+                                }
                             }
                         }
-                    }
+                        break;
 
-                    break;
+                    case 'label':
+                        $labelManager = $this->legacyEnvironment->getEnvironment()->getLabelManager();
+                        $labelItem = $labelManager->getItem($item->getItemId());
 
-                case 'announcement':
-                    $announcementManager = $this->legacyEnvironment->getEnvironment()->getAnnouncementManager();
-                    $announcementItem = $announcementManager->getItem($item->getItemId());
-
-                    if ($announcementItem) {
-                        $currentDate = new \DateTime();
-                        $announcementEndDate = new \DateTime($announcementItem->getSecondDateTime());
-                        if ($currentDate <= $announcementEndDate) {
-                            $feedList[] = $announcementItem;
+                        if ($labelItem) {
+                            if ($labelItem->getItemType() == 'group') {
+                                $groupManager = $this->legacyEnvironment->getEnvironment()->getLabelManager();
+                                $groupItem = $groupManager->getItem($item->getItemId());
+                                if ($groupItem) {
+                                    $feedList[] = $groupItem;
+                                }
+                            } else if ($labelItem->getItemType() == 'topic') {
+                                $topicManager = $this->legacyEnvironment->getEnvironment()->getTopicManager();
+                                $topicItem = $topicManager->getItem($item->getItemId());
+                                if ($topicItem) {
+                                    $feedList[] = $topicItem;
+                                }
+                            }
                         }
-                    }
 
-                    break;
+                        break;
 
-                default:
-                    $tempManager = $legacyEnvironment->getManager($item->getItemType());
-                    $tempItem = $tempManager->getItem($item->getItemId());
+                    case 'announcement':
+                        $announcementManager = $this->legacyEnvironment->getEnvironment()->getAnnouncementManager();
+                        $announcementItem = $announcementManager->getItem($item->getItemId());
 
-                    if ($tempItem) {
-                        $feedList[] = $tempItem;
-                    }
+                        if ($announcementItem) {
+                            $currentDate = new \DateTime();
+                            $announcementEndDate = new \DateTime($announcementItem->getSecondDateTime());
+                            if ($currentDate <= $announcementEndDate) {
+                                $feedList[] = $announcementItem;
+                            }
+                        }
 
-                    break;
+                        break;
+
+                    default:
+                        $tempManager = $legacyEnvironment->getManager($item->getItemType());
+                        $tempItem = $tempManager->getItem($item->getItemId());
+
+                        if ($tempItem) {
+                            $feedList[] = $tempItem;
+                        }
+
+                        break;
+                }
             }
             $item = $itemList->getNext();
         }

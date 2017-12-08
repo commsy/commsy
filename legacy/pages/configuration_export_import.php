@@ -69,7 +69,7 @@ else {
             $dom->loadXML($xml->asXML());
             //el($dom->saveXML());
    
-            $filename = 'var/temp/commsy_xml_export_import_'.$_POST['room'].'.xml';
+            $filename = '../files/temp/commsy_xml_export_import_'.$_POST['room'].'.xml';
             if ( file_exists($filename) ) {
                unlink($filename);
             }
@@ -79,7 +79,7 @@ else {
             fclose($xmlfile);
    
             //Location where export is saved
-            $zipfile = 'var/temp/commsy_export_import_'.$_POST['room'].'.zip';
+            $zipfile = '../files/temp/commsy_export_import_'.$_POST['room'].'.zip';
             if ( file_exists($zipfile) ) {
                unlink($zipfile);
             }
@@ -100,24 +100,24 @@ else {
             if ($room_item->getRoomType() == 'community') {
                $disc_manager->setContextID($room_item->getItemId());
                $backup_paths[$room_item->getItemId()] = $disc_manager->getFilePath();
-               if (file_exists('var/templates/individual/styles_'.$room_item->getItemID().'.css')) {
-                  $backup_paths_files[] = 'var/templates/individual/styles_'.$room_item->getItemID().'.css';
+               if (file_exists('../files/templates/individual/styles_'.$room_item->getItemID().'.css')) {
+                  $backup_paths_files[] = '../files/templates/individual/styles_'.$room_item->getItemID().'.css';
                }
                $project_list = $room_item->getProjectList();
                $project_item = $project_list->getFirst();
                while ($project_item) {
                   $disc_manager->setContextID($project_item->getItemId());
                   $backup_paths[$project_item->getItemId()] = $disc_manager->getFilePath();
-                  if (file_exists('var/templates/individual/styles_'.$project_item->getItemID().'.css')) {
-                     $backup_paths_files[] = 'var/templates/individual/styles_'.$project_item->getItemID().'.css';
+                  if (file_exists('../files/templates/individual/styles_'.$project_item->getItemID().'.css')) {
+                     $backup_paths_files[] = '../files/templates/individual/styles_'.$project_item->getItemID().'.css';
                   }
                   $grouproom_list = $project_item->getGroupRoomList();
                   $grouproom_item = $grouproom_list->getFirst();
                   while ($grouproom_item) {
                      $disc_manager->setContextID($grouproom_item->getItemId());
                      $backup_paths[$grouproom_item->getItemId()] = $disc_manager->getFilePath();
-                     if (file_exists('var/templates/individual/styles_'.$grouproom_item->getItemID().'.css')) {
-                        $backup_paths_files[] = 'var/templates/individual/styles_'.$grouproom_item->getItemID().'.css';
+                     if (file_exists('../files/templates/individual/styles_'.$grouproom_item->getItemID().'.css')) {
+                        $backup_paths_files[] = '../files/templates/individual/styles_'.$grouproom_item->getItemID().'.css';
                      }
                      $grouproom_item = $grouproom_list->getNext();   
                   }
@@ -126,30 +126,30 @@ else {
             } else if ($room_item->getRoomType() == 'project') {
                $disc_manager->setContextID($room_item->getItemId());
                $backup_paths[$room_item->getItemId()] = $disc_manager->getFilePath();
-               if (file_exists('var/templates/individual/styles_'.$room_item->getItemID().'.css')) {
-                  $backup_paths_files[] = 'var/templates/individual/styles_'.$room_item->getItemID().'.css';
+               if (file_exists('../files/templates/individual/styles_'.$room_item->getItemID().'.css')) {
+                  $backup_paths_files[] = '../files/templates/individual/styles_'.$room_item->getItemID().'.css';
                }
                $grouproom_list = $room_item->getGroupRoomList();
                $grouproom_item = $grouproom_list->getFirst();
                while ($grouproom_item) {
                   $disc_manager->setContextID($grouproom_item->getItemId());
                   $backup_paths[$grouproom_item->getItemId()] = $disc_manager->getFilePath();
-                  if (file_exists('var/templates/individual/styles_'.$grouproom_item->getItemID().'.css')) {
-                     $backup_paths_files[] = 'var/templates/individual/styles_'.$grouproom_item->getItemID().'.css';
+                  if (file_exists('../files/templates/individual/styles_'.$grouproom_item->getItemID().'.css')) {
+                     $backup_paths_files[] = '../files/templates/individual/styles_'.$grouproom_item->getItemID().'.css';
                   }
                   $grouproom_item = $grouproom_list->getNext();   
                }
             } else if ($room_item->getRoomType() == 'privateroom') {
                $disc_manager->setContextID($room_item->getItemId());
                $backup_paths[$room_item->getItemId()] = $disc_manager->getFilePath();
-               if (file_exists('var/templates/individual/styles_'.$room_item->getItemID().'.css')) {
-                  $backup_paths_files[] = 'var/templates/individual/styles_'.$room_item->getItemID().'.css';
+               if (file_exists('../files/templates/individual/styles_'.$room_item->getItemID().'.css')) {
+                  $backup_paths_files[] = '../files/templates/individual/styles_'.$room_item->getItemID().'.css';
                }
             }
    
             if ( class_exists('ZipArchive') ) {
                include_once('functions/misc_functions.php');
-               $zip = new ZipArchive();
+               $zip = new \ZipArchive();
                $filename_zip = $zipfile;
    
                if ( $zip->open($filename_zip, ZIPARCHIVE::CREATE) !== TRUE ) {
@@ -186,15 +186,15 @@ else {
          if ( !empty($_FILES['upload']['tmp_name']) ) {
             $temp_stamp = time();
             //$files = file_get_contents($_FILES['upload']['tmp_name']);
-            move_uploaded_file($_FILES['upload']['tmp_name'], 'var/temp/upload_'.$temp_stamp.'.zip');
+            move_uploaded_file($_FILES['upload']['tmp_name'], '../files/temp/upload_'.$temp_stamp.'.zip');
             $zip = new ZipArchive;
-            $res = $zip->open('var/temp/upload_'.$temp_stamp.'.zip');
+            $res = $zip->open('../files/temp/upload_'.$temp_stamp.'.zip');
             if ($res === TRUE) {
-               $zip->extractTo('var/temp/'.$temp_stamp);
+               $zip->extractTo('../files/temp/'.$temp_stamp);
                $zip->close();
                
                $commsy_work_dir = getcwd();
-               chdir('var/temp/'.$temp_stamp);
+               chdir('../files/temp/'.$temp_stamp);
                foreach (glob("commsy_xml_export_import_*.xml") as $filename) {
                   $xml = simplexml_load_file($filename, null, LIBXML_NOCDATA);
                   $dom = new DOMDocument('1.0');
@@ -206,7 +206,7 @@ else {
                   chdir($commsy_work_dir);
                   $room_manager = $environment->getRoomManager();
                   $room_item = $room_manager->import_item($xml, null, $options);
-                  chdir('var/temp/'.$temp_stamp);
+                  chdir('../files/temp/'.$temp_stamp);
    
                   $files = scandir('.');
                   foreach($files as $file) {
@@ -263,7 +263,7 @@ else {
                               $style_new_id = $options[$style_old_id];
                               if ($style_new_id != '') {
                                  $style_to_copy_temp = str_ireplace($style_old_id.'.', $style_new_id.'.', $style_to_copy);
-                                 copy($style_to_copy, $commsy_work_dir.'/var/templates/individual/'.$style_to_copy_temp);
+                                 copy($style_to_copy, $commsy_work_dir.'/../files/templates/individual/'.$style_to_copy_temp);
                               }
                            }
                         }
