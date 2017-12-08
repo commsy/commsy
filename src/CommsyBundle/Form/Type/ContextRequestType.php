@@ -40,6 +40,22 @@ class ContextRequestType extends AbstractType
                     'translation_domain' => 'room',
                     'required' => false,
                 ])
+                ->add('coderequest', SubmitType::class, [
+                    'attr' => [
+                        'class' => 'uk-button-primary',
+                    ],
+                    'label' => 'become member',
+                    'translation_domain' => 'room',
+                ])
+                ->add('codecancel', SubmitType::class, [
+                    'attr' => [
+                        'class' => 'uk-button-secondary',
+                        'formnovalidate' => '',
+                    ],
+                    'label' => 'cancel',
+                    'translation_domain' => 'form',
+                    'validation_groups' => false,
+                ])
             ;
         }
         if ($options['withAGB']) {

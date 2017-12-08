@@ -32,6 +32,16 @@
                             </div>
                         </div>
                         {{ form_row(form.code) }}
+                        {# buttons #}
+                        <div class="uk-form-row">
+                            <div class="uk-button-group">
+                                {{ form_widget(form.coderequest) }}
+
+                                {#<div class="uk-margin-small-left">#}
+                                    {{ form_widget(form.codecancel) }}
+                                {#</div>#}
+                            </div>
+                        </div>
                     {% endif %}
 
                     {# description #}
