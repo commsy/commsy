@@ -29,7 +29,7 @@ class DiscussionController extends Controller
      * @Route("/room/{roomId}/discussion/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0, $sort = '', Request $request)
     {
         // extract current filter from parameter bag (embedded controller call)
         // or from query paramters (AJAX)
