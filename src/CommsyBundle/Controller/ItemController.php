@@ -944,7 +944,9 @@ class ItemController extends Controller
             $route = 'commsy_material_detail';
             $materialService = $this->get('commsy_legacy.material_service');
             $section = $materialService->getSection($item->getItemID());
-            return $this->redirectToRoute($route, array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));
+            $material = $section->getLinkedItem();
+            $section->delete($material->getVersionID());
+            return $this->redirectToRoute($route, array('roomId' => $roomId, 'itemId' => $material->getItemId()));
         }
 
         if ($item->getItemType() == 'step') {
