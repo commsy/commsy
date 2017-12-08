@@ -246,31 +246,48 @@ if ( empty($command)) {
    						}
    						$body .= $translator->getMessage('MAIL_SEND_TO',$recipients);
    						$body .= LF;
+
+   						global $symfonyContainer;
+   						$router = $symfonyContainer->get('router');
+
    						if ($check_message == 'YES') {
+   							$url = $router->generate(
+   								'commsy_user_list', [
+   									'roomId' => $current_item_id,
+   									'user_filter' => [
+   										'user_status' => 1,
+   									],
+   								]
+   							);
+
    							$body .= $translator->getMessage('MAIL_USER_FREE_LINK').LF;
-   							$body .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$current_item_id.'&mod=account&fct=index'.'&selstatus=1';
    						} else {
-   							$body .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$current_item_id;
+   							$url = $router->generate(
+   								'commsy_room_home', [
+   									'roomId' => $current_item_id,
+   								]
+   							);
    						}
-   						$mail = new cs_mail();
-   						$mail->set_to(implode(',',$email_array));
-   						$server_item = $environment->getServerItem();
-   						$default_sender_address = $server_item->getDefaultSenderAddress();
-   						if (!empty($default_sender_address)) {
-   							$mail->set_from_email($default_sender_address);
-   						} else {
-   							$mail->set_from_email('@');
+
+   						$requestStack = $symfonyContainer->get('request_stack');
+   						$currentRequest = $requestStack->getCurrentRequest();
+   						if ($currentRequest) {
+   							$url = $currentRequest->getSchemeAndHttpHost() . $url;
    						}
-   						$current_context = $environment->getCurrentContextItem();
-   						//$mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_context->getTitle()));
-   						//$mail->set_from_name($room_item->getTitle());
-   						$mail->set_from_email($environment->getServerItem()->getDefaultSenderAddress());
-                        $mail->set_from_name($environment->getCurrentPortalItem()->getTitle());
-   						$mail->set_reply_to_name($user_item->getFullname());
-   						$mail->set_reply_to_email($user_item->getEmail());
-   						$mail->set_subject($subject);
-   						$mail->set_message($body);
-   						$mail->send();
+
+   						$body .= $url;
+
+   						$emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+
+   						$message = \Swift_Message::newInstance()
+   							->setSubject($subject)
+   							->setBody($body, 'text/plain')
+   							->setFrom([$emailFrom => $environment->getCurrentPortalItem()->getTitle()])
+   							->setReplyTo([$user_item->getEmail() => $user_item->getFullname()])
+   							->setTo($email_array);
+
+   						$symfonyContainer->get('mailer')->send($message);
+
    						$translator->setSelectedLanguage($old_lang);
    					}
    				}
