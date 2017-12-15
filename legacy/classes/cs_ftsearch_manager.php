@@ -108,11 +108,13 @@ class cs_ftsearch_manager extends cs_manager {
       if (!empty($fileIdArray)) {
          $query = "SELECT item_iid FROM " . $this->addDatabasePrefix("item_link_file") . " WHERE deletion_date IS NULL AND (";
 
-         foreach($fileIdArray as $fileId) {
+         $numFileIds = sizeof($fileIdArray);
+
+         foreach($fileIdArray as $index => $fileId) {
             $query .= "file_id = " . encode(AS_DB, $fileId);
 
-            if ($fileId != end($fileIdArray)) {
-               $query .= " OR ";
+            if ($index != $numFileIds - 1) {
+                $query .= " OR ";
             }
          }
          $query .= ")";
