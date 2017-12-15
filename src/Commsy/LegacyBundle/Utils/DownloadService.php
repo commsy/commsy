@@ -53,6 +53,7 @@ class DownloadService
             $index = 1;
             while (file_exists($tempDirectory)) {
                 $tempDirectory = $directory . '/' . $item->getTitle() . '_' . $index;
+                $index++;
             }
             $fileSystem->mkdir($tempDirectory, 0777);
             
@@ -60,7 +61,7 @@ class DownloadService
             $htmlView = 'CommsyBundle:' . ucfirst($item->getItemType()) . ':detailPrint.html.twig';
             $htmlOutput = $this->serviceContainer->get('templating')->renderResponse($htmlView, $detailArray);
             file_put_contents($tempDirectory . '/' . $item->getTitle() . '.pdf', $this->printService->getPdfContent($htmlOutput));
-        
+
             // add files
             $this->copyItemFilesToFolder($item, $tempDirectory . '/files/');
         }
@@ -134,7 +135,8 @@ class DownloadService
         }
     }
     
-    private function getDetailInfo ($roomId, $itemId) {
+    private function getDetailInfo($roomId, $itemId)
+    {
         $infoArray = array();
         
         $itemService = $this->serviceContainer->get('commsy_legacy.item_service');
@@ -149,11 +151,8 @@ class DownloadService
 
         $legacyEnvironment = $this->serviceContainer->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
- 
-        $roomManager = $legacyEnvironment->getRoomManager();
+
         $readerManager = $legacyEnvironment->getReaderManager();
-        $roomItem = $roomManager->getItem($item->getContextId());        
-        $numTotalMember = $roomItem->getAllUsers();
 
         $userManager = $legacyEnvironment->getUserManager();
         $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
@@ -184,8 +183,6 @@ class DownloadService
             }
 		    $current_user = $user_list->getNext();
 		}
-        $read_percentage = round(($read_count/$all_user_count) * 100);
-        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
         $readerService = $this->serviceContainer->get('commsy_legacy.reader_service');
         
         $readerList = array();

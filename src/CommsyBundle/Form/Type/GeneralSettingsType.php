@@ -117,10 +117,12 @@ class GeneralSettingsType extends AbstractType
                 )
             ))
         ;
-        if (isset($options['roomCategories'])) {
+
+        $roomCategories = $options['roomCategories'];
+        if (isset($roomCategories) && !empty($roomCategories)) {
             $builder->add('categories', ChoiceType::class, array(
                 'placeholder' => false,
-                'choices' => $options['roomCategories'],
+                'choices' => $roomCategories,
                 'label' => 'Room categories',
                 'required' => false,
                 'expanded' => true,

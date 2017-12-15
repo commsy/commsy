@@ -24,13 +24,33 @@
                     {{ form_start(form) }}
                     {{ form_errors(form) }}
 
-                    {# description #}
-                    {{ form_row(form.description) }}
-
                     {# optional code #}
                     {% if form.code is defined %}
+                        <div class="uk-form-row">
+                            <div class="uk-form-controls uk-form-controls-text">
+                                {{ 'room code description'|trans({}, 'room') }}
+                            </div>
+                        </div>
                         {{ form_row(form.code) }}
+                        {# buttons #}
+                        <div class="uk-form-row">
+                            <div class="uk-button-group">
+                                {{ form_widget(form.coderequest) }}
+
+                                {#<div class="uk-margin-small-left">#}
+                                    {{ form_widget(form.codecancel) }}
+                                {#</div>#}
+                            </div>
+                        </div>
                     {% endif %}
+
+                    {# description #}
+                    <div class="uk-form-row">
+                        <div class="uk-form-controls uk-form-controls-text">
+                            {{ 'room join description'|trans({}, 'room') }}
+                        </div>
+                    </div>
+                    {{ form_row(form.description) }}
 
                     {# optional agb #}
                     {% if form.agb is defined %}

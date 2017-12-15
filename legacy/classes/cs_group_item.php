@@ -260,6 +260,8 @@ class cs_group_item extends cs_label_item {
          $this->addMember($current_user_item);
       }
 
+      $this->updateElastic();
+
       unset($current_user_item);
    }
 

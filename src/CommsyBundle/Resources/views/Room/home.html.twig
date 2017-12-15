@@ -17,7 +17,7 @@
                 {% if roomItem.withInformationBox %}
                     <div class="uk-panel uk-panel-box cs-cover-grid-opacity " data-uk-parallax="{opacity: '0.5'}">
                         <div>
-                            {{ homeInformationEntry.description | raw }}
+                            {{ homeInformationEntry.description|commsyMarkup|raw }}
                         </div>
                         <div class="uk-margin-top uk-align-right">
                         {% set pathName = 'commsy_' ~ homeInformationEntry.type ~ '_detail' %}

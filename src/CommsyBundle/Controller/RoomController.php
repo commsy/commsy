@@ -985,8 +985,9 @@ class RoomController extends Controller
         }
 
         $times = [];
+        $translator = $legacyEnvironment->getTranslationObject();
         foreach ($legacyEnvironment->getCurrentPortalItem()->getTimeList()->to_array() as $timeItem) {
-            $times[$timeItem->getName()] = $timeItem->getItemId();
+            $times[$translator->getTimeMessage($timeItem->getName())] = $timeItem->getItemId();
         }
 
         $current_user = $legacyEnvironment->getCurrentUserItem();

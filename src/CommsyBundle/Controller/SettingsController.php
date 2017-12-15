@@ -73,7 +73,10 @@ class SettingsController extends Controller
             }
 
             $formData = $form->getData();
-            $roomCategoriesService->setRoomCategoriesLinkedToContext($roomItem->getItemId(), $formData['categories']);
+
+            if (isset($formData['categories'])) {
+                $roomCategoriesService->setRoomCategoriesLinkedToContext($roomItem->getItemId(), $formData['categories']);
+            }
 
             // persist
             // $em = $this->getDoctrine()->getManager();

@@ -266,6 +266,14 @@
                 <source>Archived room</source>
                 <target>Archivierter Raum</target>
             </trans-unit>
+            <trans-unit id="room code description">
+                <source>room code description</source>
+                <target>Bitte geben Sie den Teilnahme-Code an. Bei richtiger Eingabe werden Sie sofort in den Raum hineingelassen.</target>
+            </trans-unit>
+            <trans-unit id="room join description">
+                <source>room join description</source>
+                <target>Anmeldung ohne Freischalt-Code. Bitte erläutern Sie den ModeratorInnen dieses Raums, warum Sie Mitglied werden möchten. Dieser Text wird per E-Mail an die ModeratorInnen verschickt.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

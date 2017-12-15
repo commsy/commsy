@@ -266,6 +266,14 @@
                 <source>Archived room</source>
                 <target>Archivierter Raum</target>
             </trans-unit>
+            <trans-unit id="room code description">
+                <source>room code description</source>
+                <target>Please type in the correct membership code for this workspace in the textfield below. Entering the correct code, you immediately join the workspace as a member.</target>
+            </trans-unit>
+            <trans-unit id="room join description">
+                <source>room join description</source>
+                <target>Become a member without membership code. Please explain, if necessary, why you want to join this workspace. Your explanation will be enclosed in the e-mail notice that informs the moderator/s about your request.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -4,6 +4,8 @@ namespace CommsyBundle\Controller;
 
 use CommsyBundle\Form\Type\UserStatusChangeType;
 use CommsyBundle\Utils\AccountMail;
+use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\RFCValidation;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -936,16 +938,24 @@ class UserController extends Controller
                 $from = $this->getParameter('commsy.email.from');
 
                 $to = [];
+                $validator = new EmailValidator();
                 foreach ($userIds as $userId) {
                     $user = $userService->getUser($userId);
-                    $to[$user->getEmail()] = $user->getFullName();
+                    if ($validator->isValid($user->getEmail(), new RFCValidation())) {
+                        $to[$user->getEmail()] = $user->getFullName();
+                    }
+                }
+
+                $replyTo = [];
+                if ($validator->isValid($currentUser->getEmail(), new RFCValidation())) {
+                    $replyTo[$currentUser->getEmail()] = $currentUser->getFullName();
                 }
 
                 $message = \Swift_Message::newInstance()
                     ->setSubject($formData['subject'])
                     ->setBody($formData['message'], 'text/html')
                     ->setFrom([$from => $portalItem->getTitle()])
-                    ->setReplyTo([$currentUser->getEmail() => $currentUser->getFullName()])
+                    ->setReplyTo($replyTo)
                     ->setTo($to);
 
                 // form option: copy_to_sender

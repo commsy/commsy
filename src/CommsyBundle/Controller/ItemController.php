@@ -303,8 +303,10 @@ class ItemController extends Controller
         while ($latestItem && $i < 5) {
             $tempTypedItem = $itemService->getTypedItem($latestItem->getItemId());
             if ($tempTypedItem && (!array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) && ($tempTypedItem->getItemId() != $itemId)) {
-                $optionsData['itemsLatest'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
-                $i++;
+                if ($tempTypedItem->getType() != "discarticle" && $tempTypedItem->getType() != "task") {
+                    $optionsData['itemsLatest'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
+                    $i++;
+                }
             }
             $latestItem = $latestItemList->getNext();
         }
@@ -944,7 +946,9 @@ class ItemController extends Controller
             $route = 'commsy_material_detail';
             $materialService = $this->get('commsy_legacy.material_service');
             $section = $materialService->getSection($item->getItemID());
-            return $this->redirectToRoute($route, array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));
+            $material = $section->getLinkedItem();
+            $section->delete($material->getVersionID());
+            return $this->redirectToRoute($route, array('roomId' => $roomId, 'itemId' => $material->getItemId()));
         }
 
         if ($item->getItemType() == 'step') {

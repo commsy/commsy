@@ -40,7 +40,11 @@
             {# title and meta #}
             <div class="uk-width-5-10">
                 <h4 class="uk-comment-title uk-text-truncate">
-                    <a class="uk-text-break" href="{{ path('commsy_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}) }}">{{ todo.title|decodeHtmlEntity }}</a>
+                    {% if is_granted('ITEM_SEE', todo.itemId) %}
+                        <a class="uk-text-break" href="{{ path('commsy_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}) }}">{{ todo.title|decodeHtmlEntity }}</a>
+                    {% else %}
+                        {{ todo.title|decodeHtmlEntity }}
+                    {% endif %}
                 </h4>
 
                 <div class="uk-comment-meta">

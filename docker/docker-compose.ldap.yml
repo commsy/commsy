@@ -3,7 +3,11 @@ version: "3"
 services:
   commsy_ldap:
     image: osixia/openldap
+    build: ./ldap
     container_name: commsy_ldap
+    volumes:
+      - "./.data/ldap/lib:/var/lib/ldap"
+      - "./.data/ldap/slap.d:/etc/ldap/slap.d"
 
   commsy_php:
     links:

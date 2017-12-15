@@ -126,6 +126,12 @@ class ItemVoter extends Voter
             }
         }
 
+        if ($currentUser->isReadOnlyUser()) {
+            if ($currentUser->getItemId() == $item->getItemId()) {
+                return true;
+            }
+        }
+
         return false;
     }
 
