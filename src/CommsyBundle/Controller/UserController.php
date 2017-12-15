@@ -1291,6 +1291,7 @@ class UserController extends Controller
 
         $fromAddress = $this->getParameter('commsy.email.from');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
         $fromSender = $legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
 
         $userService = $this->get('commsy_legacy.user_service');
@@ -1307,6 +1308,7 @@ class UserController extends Controller
                     ->setSubject($subject)
                     ->setBody($body, 'text/plain')
                     ->setFrom([$fromAddress => $fromSender])
+                    ->setReplyTo([$currentUser->getEmail() => $currentUser->getFullname()])
                     ->setTo([$email]);
 
                 // send mail
