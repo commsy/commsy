@@ -430,6 +430,7 @@ class ProfileController extends Controller
             {
                 $user_manager = $legacyEnvironment->getUserManager();
                 $user_manager->setUserIDLimitBinary($formData['combineUserId']);
+                $user_manager->setContextLimit($current_portal_item->getItemId());
 
                 $user_manager->select();
                 $user = $user_manager->get();
