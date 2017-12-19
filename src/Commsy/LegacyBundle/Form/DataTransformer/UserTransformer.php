@@ -155,6 +155,9 @@ class UserTransformer implements DataTransformerInterface
             }
             if (isset($userData['emailAccount'])) {
                 $portalUser->setEmail($userData['emailAccount']);
+                if ($portalUser->hasToChangeEmail()) {
+                    $portalUser->unsetHasToChangeEmail();
+                }
                 $portalUser->save();
             }
 
