@@ -81,11 +81,11 @@
             <div class="uk-width-2-10">
                 {% if user.status == 1 and is_granted('MODERATOR') %}
                     <a class="uk-button uk-button-small uk-button-success uk-border-rounded responsive-icon-only" title="{{'Confirm'|trans({}, 'user') }}" href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-confirm', 'userDetail': 1}) }}" id="status-confirm">
-                        <i class="uk-icon-check"></i>
+                        <i class="uk-icon-check uk-icon-justify"></i>
                         <span class="uk-visible-large">{{'Confirm'|trans({}, 'user') }}</span>
                     </a>
                     <a class="uk-button uk-button-small uk-button-danger uk-border-rounded responsive-icon-only" title="{{'Reject'|trans({}, 'user') }}" href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-block', 'userDetail': 1}) }}" id="status-block">
-                        <i class="uk-icon-times"></i>
+                        <i class="uk-icon-times uk-icon-justify"></i>
                         <span class="uk-visible-large">{{'Reject'|trans({}, 'user') }}</span>
                     </a>
                 {% endif %}
