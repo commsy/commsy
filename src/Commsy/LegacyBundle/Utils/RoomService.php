@@ -184,7 +184,7 @@ class RoomService
             }
 
             if (empty($serviceEmail)) {
-                $serverItem = $this->_environment->getServerItem();
+                $serverItem = $this->legacyEnvironment->getServerItem();
 
                 $serviceEmail = $serverItem->getServiceEmail();
             }
