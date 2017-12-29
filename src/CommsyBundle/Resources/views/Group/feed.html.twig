@@ -31,8 +31,8 @@
                         {% if group.isGroupRoomActivated %}
                             <!-- check whether user is member in group and grouproom -->
                             <div class="uk-width-1-4 uk-text-right">
-                                {% if memberStatus[group.itemId].groupMember %}
-                                    {% if memberStatus[group.itemId].groupRoomMember =='enter' %}
+                                {% if memberStatus[group.itemId].groupMember or isRoot %}
+                                    {% if memberStatus[group.itemId].groupRoomMember =='enter' or isRoot %}
                                         <a href="{{ path('commsy_room_home', {'roomId': group.groupRoomItemID}) }}" class="uk-icon-button uk-icon-sign-in cs-grouproom-sign-in" data-uk-tooltip title="{{'enter grouproom'|trans({}) }}"></a>
                                     {% elseif memberStatus[group.itemId].groupRoomMember =='join' %}
                                         <a href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': group.groupRoomItem.itemId}) }}" class="uk-icon-button uk-icon-sign-in cs-grouproom-sign-in" data-uk-tooltip title="{{'get grouproom access'|trans({}, 'group') }}"></a>
