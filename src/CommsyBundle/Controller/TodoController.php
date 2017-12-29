@@ -232,7 +232,7 @@ class TodoController extends Controller
         $selectAllStart = $request->request->get('selectAllStart');
         
         if ($selectAll == 'true') {
-            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $request);
+            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, 'duedate_rev', $request);
             foreach ($entries['todos'] as $key => $value) {
                 $selectedIds[] = $value->getItemId();
             }
