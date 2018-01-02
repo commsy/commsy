@@ -27,6 +27,8 @@ include_once 'functions/text_functions.php';
  */
 include_once 'functions/date_functions.php';
 
+require_once('functions/security_functions');
+
 /*
  * some spezific constants
  */
@@ -205,14 +207,14 @@ class cs_wordpress_manager extends cs_manager
                     $file_post = array(
                         'post_content'         =>'',
                         'post_content_filtered'=>'',
-                        'post_title'           =>mysql_escape_string($file->getDisplayName()),
+                        'post_title'           =>mysql_escape_mimic($file->getDisplayName()),
                         'post_excerpt'         =>'',
                         'post_status'          =>'inherit',
                         'post_type'            =>'attachment',
                         'comment_status'       =>(($comment_status=='1') ? 'open' : 'closed'), // aus einstellungen übernehmen
                         'ping_status'          =>'open',
                         'post_password'        =>'',
-                        'post_name'            =>mysql_escape_string($file->getDisplayName()),
+                        'post_name'            =>mysql_escape_mimic($file->getDisplayName()),
                         'to_ping'              =>'',
                         'pinged'               =>'',
                         'post_modified'        =>$item->getModificationDate(),
@@ -220,7 +222,7 @@ class cs_wordpress_manager extends cs_manager
                         'post_parent'          =>'0',  // wenn kein parent
                         'menu_order'           =>'0',
                         'guid'                 =>$fileUrl,
-                        'post_mime_type'          =>mysql_escape_string($file->getMime()));
+                        'post_mime_type'          =>mysql_escape_mimic($file->getMime()));
 
                     $wordpress_post_id = $file->getWordpressPostId();
                     $wpPostId = $this->CW->insertPost($this->_environment->getSessionID(), $file_post, $wpUser, $wordpressId, 'Material', $wordpress_post_id);
@@ -314,16 +316,16 @@ class cs_wordpress_manager extends cs_manager
         }
 
         $post = array(
-            'post_content'         => mysql_escape_string($post_content_complete),
+            'post_content'         => mysql_escape_mimic($post_content_complete),
             'post_content_filtered'=> '',
-            'post_title'           => mysql_escape_string($post_title),
-            'post_excerpt'         => mysql_escape_string($post_content),
+            'post_title'           => mysql_escape_mimic($post_title),
+            'post_excerpt'         => mysql_escape_mimic($post_content),
             'post_status'          =>'publish',
             'post_type'            =>'post',
             'comment_status'       =>(($comment_status=='1') ? 'open' : 'closed'), // aus einstellungen übernehmen
             'ping_status'          =>'open',
             'post_password'        =>'',
-            'post_name'            => mysql_escape_string(str_replace(' ', '-', $post_title)),
+            'post_name'            => mysql_escape_mimic(str_replace(' ', '-', $post_title)),
             'to_ping'              =>'',
             'pinged'               =>'',
             'post_modified'        =>$item->getModificationDate(),

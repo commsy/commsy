@@ -1,5 +1,6 @@
 <?php
     require_once('classes/controller/cs_ajax_controller.php');
+    require_once('functions/security_functions');
 
     class cs_ajax_mdo_perform_search_controller extends cs_ajax_controller {
         /**
@@ -82,8 +83,8 @@
                     $session_id = (string) $result[0]->attributes()->id;
                     $notch = (string) $result[0];
                     unset($xml_object);
-                    
-                    $id = mysql_real_escape_string($_GET['identifier']);
+
+                    $id = mysql_escape_mimic($_GET['identifier']);
                     $data = "<notch identifier='".$id."' />";
 
                     curl_setopt($curl_handler, CURLOPT_POSTFIELDS, array('xmlstatement' => $data));
