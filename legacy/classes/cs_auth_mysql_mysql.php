@@ -1,4 +1,4 @@
-<?PHP
+<?php
 // $Id$
 //
 // Release $Name$
@@ -36,233 +36,217 @@ include_once('classes/cs_auth_manager.php');
  * this class implements a database manager for the table "auth"
  * maybe this class should named cs_auth_mysql?
  */
-class cs_auth_mysql_mysql extends cs_auth_manager {
+class cs_auth_mysql_mysql extends cs_auth_manager
+{
+    /**
+     * @var \Doctrine\DBAL\Connection
+     */
+    private $dbalConnection;
 
-  /**
-   * link - containing a link to the (mysql) database
-   */
-  var $_dblink;
+    /**
+     * @var cs_auth_item
+     */
+    private $item;
 
-  /**
-   * integer - containing the error number if an error occured
-   */
-  var $_dberrno;
+    /**
+     * integer - containing the error number if an error occured
+     */
+    private $_dberrno;
 
-  /**
-   * string - containing the error text if an error occured
-   */
-  var $_dberror;
+    /**
+     * string - containing the error text if an error occured
+     */
+    private $_dberror;
 
-  /**
-   * object - containing the auth item of an account
-   */
-   var $_item = NULL;
+    /**
+     * @var cs_translator
+     */
+    private $translator;
 
-  /**
-   * string - containing MySQL database table
-   */
-   var $_dbtable;
+    /** constructor
+     * the only available constructor, initial values for internal variables
+     */
+    public function __construct()
+    {
+        $this->_is_implemented_array = [];
 
-  /**
-   * string - containing MySQL database table field containing User-ID
-   */
-   var $_field_userid;
+        global $environment;
+        $this->translator = $environment->getTranslationObject();
+    }
 
-  /**
-   * string - containing MySQL database table field containing password
-   */
-   var $_field_password;
-   
-   /*
-    * Translation Object
-    */
-   private $_translator = null;
+    public function setAuthSourceItem($value)
+    {
+        parent::setAuthSourceItem($value);
+    }
 
-  /** constructor
-    * the only available constructor, initial values for internal variables
-    */
-  function __construct() {
-     $this->_is_implemented_array = array();
-#     $this->_dbtable = 'fe_users';
-#     $this->_field_userid = 'username';
-#     $this->_field_password = 'password';
-#     $this->_is_implemented_array[] = 'addAccount';
-#     $this->_is_implemented_array[] = 'changeUserId';
-#     $this->_is_implemented_array[] = 'deleteAccount';
-#     $this->_is_implemented_array[] = 'changeUserData';
-#     $this->_is_implemented_array[] = 'changePassword';
+    /** reset limits
+     * reset limits of this class: room limit, delete limit
+     *
+     * @author CommSy Development Group
+     */
+    public function resetLimits()
+    {
+    }
 
-      global $environment;
-      $this->_translator = $environment->getTranslationObject();
-  }
+    /** get error number
+     * this method returns the number of an error, if an error occured
+     *
+     * @return integer error number
+     *
+     * @author CommSy Development Group
+     */
+    public function getErrorNumber()
+    {
+        return $this->_dberrno;
+    }
 
-  function setAuthSourceItem ($value) {
-     parent::setAuthSourceItem($value);
-  }
+    /** get error text
+     * this method returns the text of an error, if an error occured
+     *
+     * @return string error number
+     *
+     * @author CommSy Development Group
+     */
+    public function getErrorMessage()
+    {
+        return $this->_dberror;
+    }
 
-  function setDBLink ($value) {
-     $this->_dblink = $value;
-  }
-
-  function _getDBLink () {
-     if ( !isset($this->_dblink) ) {
-        $auth_data_array = $this->_auth_data_array;
-        $this->_dblink = mysql_connect($auth_data_array['HOST'],$auth_data_array['USER'],$auth_data_array['PASSWORD'],true);
-        mysql_select_db($auth_data_array['DBNAME'], $this->_dblink);
-        unset($auth_data_array);
-     }
-     return $this->_dblink;
-  }
-
-  /** reset limits
-    * reset limits of this class: room limit, delete limit
-    *
-    * @author CommSy Development Group
-    */
-  function resetLimits () {}
-
-  /** get error number
-    * this method returns the number of an error, if an error occured
-    *
-    * @return integer error number
-    *
-    * @author CommSy Development Group
-    */
-  function getErrorNumber () {
-     return $this->_dberrno;
-  }
-
-  /** get error text
-    * this method returns the text of an error, if an error occured
-    *
-    * @return string error number
-    *
-    * @author CommSy Development Group
-    */
-  function getErrorMessage () {
-     return $this->_dberror;
-  }
-
-  /** get authentication item for a user (user_id), INTERNAL - do not use
-    * this method returns a authentication item for a user
-    *
-    * @param integer user_id id of the user (not item id)
-    *
-    * @return object cs_item an authentication item
-    */
-  function _get ($user_id) {
-     if (!isset($this->_item) or $this->_item->getUserID() != $user_id) {
-        $this->_item = NULL;
-        $query = 'SELECT * FROM '.$this->_auth_data_array['DBTABLE'];
-        $query .= ' WHERE '.$this->_auth_data_array['DBCOLUMNUSERID'].'="'.encode(AS_DB,$user_id).'"';
-        $db_link = $this->_getDBLink();
-        $result = mysql_query($query,$db_link);
-        $this->_dberrno = mysql_errno($db_link);
-        $this->_dberror = mysql_error($db_link);
-        if (!$result) {
-           include_once('functions/error_functions.php');
-           trigger_error('Problems selecting authentication: "'.$this->_dberror.'" from query: "'.$query.'"', E_USER_WARNING);
+    /** exists an authentication ?
+     * this method returns a boolean whether the authentication exists in the database or not
+     *
+     * @param integer user_id id of the user (not item id)
+     *
+     * @return boolean true, if authentication already exists
+     *                 false, if authentication not exists -> new user
+     */
+    public function exists($user_id)
+    {
+        $this->get($user_id);
+        $user_id = $this->item->getUserID();
+        if (!empty($user_id)) {
+            return true;
         } else {
-           $this->_item = $this->_buildItem(mysql_fetch_assoc($result));
+            $this->_error_array[] = $this->translator->getMessage('USER_DOES_NOT_EXIST_OR_PASSWORD_WRONG');
+            return false;
         }
-     }
-  }
+    }
 
-  /** build a authentication item out of an (database) array - internal method, do not use
-    * this method returns a authentication item out of a row form the database
-    *
-    * @param array array array with information about the authentication out of the database table "auth"
-    *
-    * @return object cs_item a authentication item
-    *
-    * @author CommSy Development Group
-    */
-  function _buildItem ($array) {
-     $item = new cs_auth_item();
-     $item->setUserID($array[$this->_auth_data_array['DBCOLUMNUSERID']]);
-     if ( !empty($this->_auth_data_array['ENCRYPTION']) and ($this->_auth_data_array['ENCRYPTION'] == 'md5') ) {
-        $item->setPasswordMD5($array[$this->_auth_data_array['DBCOLUMNPASSWD']]);
-     } else {
-        $item->setPassword($array[$this->_auth_data_array['DBCOLUMNPASSWD']]);
-     }
-     return $item;
-  }
-
-  /** exists an authentication ?
-    * this method returns a boolean whether the authentication exists in the database or not
-    *
-    * @param integer user_id id of the user (not item id)
-    *
-    * @return boolean true, if authentication already exists
-    *                 false, if authentication not exists -> new user
-    */
-  function exists ($user_id) {
-     $exists = false;
-     $user_id_old = $user_id;
-     $item = '';
-     $this->_get($user_id);
-     $user_id = $this->_item->getUserID();
-     if (!empty($user_id)) {
-        $exists = true;
-     } else {
-        //$this->_error_array[] = $this->_translator->getMessage('AUTH_ERROR_ACCOUNT_NOT_EXIST',$user_id_old);
-        //less specific error message to protect from brute force attacks
-        $this->_error_array[] = $this->_translator->getMessage('USER_DOES_NOT_EXIST_OR_PASSWORD_WRONG');
-     }
-     return $exists;
-  }
-
-  /** is the account granted ?
-    * this method returns a boolean, if the account is granted in MySQL.
-    *
-    * @param string uid user id of the current user
-    * @param string password the password of the current user
-    *
-    * @return boolean true, account is granted in MySQL
-    *                 false, account is not granted in MySQL
-    *
-    * @author CommSy Development Group
-    */
-  function checkAccount ($uid, $password) {
-     $retour = false;
-     if ($this->exists($uid)) {
-        $this->_get($uid);
-        if ( !empty($this->_auth_data_array['ENCRYPTION']) and ($this->_auth_data_array['ENCRYPTION'] == 'md5') ) {
-           $checkpass = md5($password);
-           if ($checkpass == $this->_item->getPasswordMD5()) {
-              $retour = true;
-           } else {
-             $this->_error_array[] = $this->_translator->getMessage('USER_DOES_NOT_EXIST_OR_PASSWORD_WRONG');
-           }
-        } else {
-           $checkpass = $password;
-           if ($checkpass == $this->_item->getPassword()) {
-              $retour = true;
-           } else {
-              $this->_error_array[] = $this->_translator->getMessage('USER_DOES_NOT_EXIST_OR_PASSWORD_WRONG');
-           }
+    /** is the account granted ?
+     * this method returns a boolean, if the account is granted in MySQL.
+     *
+     * @param string uid user id of the current user
+     * @param string password the password of the current user
+     *
+     * @return boolean true, account is granted in MySQL
+     *                 false, account is not granted in MySQL
+     *
+     * @author CommSy Development Group
+     */
+    public function checkAccount($uid, $password)
+    {
+        if ($this->exists($uid)) {
+            $this->get($uid);
+            if (!empty($this->_auth_data_array['ENCRYPTION']) and ($this->_auth_data_array['ENCRYPTION'] == 'md5')) {
+                $checkpass = md5($password);
+                if ($checkpass == $this->item->getPasswordMD5()) {
+                    return true;
+                } else {
+                    $this->_error_array[] = $this->translator->getMessage('USER_DOES_NOT_EXIST_OR_PASSWORD_WRONG');
+                }
+            } else {
+                $checkpass = $password;
+                if ($checkpass == $this->item->getPassword()) {
+                    return true;
+                } else {
+                    $this->_error_array[] = $this->translator->getMessage('USER_DOES_NOT_EXIST_OR_PASSWORD_WRONG');
+                }
+            }
         }
 
-     }
-     return $retour;
-  }
+        return false;
+    }
 
-  /** get auth item form the auth_manager
-    * this method returns an auth item form the auth_manager
-    *
-    * @return object auth_item of the user
-    *
-    * @author CommSy Development Group
-    */
-   function getItem ($user_id) {
-      $retour = $this->_item;
-      if (empty($retour) or $retour->getUserID() != $user_id ) {
-         if (!empty($user_id)) {
-            $this->_get($user_id);
-            $retour = $this->_item;
-         }
-      }
-      return $retour;
-   }
+    /** get auth item form the auth_manager
+     * this method returns an auth item form the auth_manager
+     *
+     * @return object auth_item of the user
+     *
+     * @author CommSy Development Group
+     */
+    public function getItem($user_id)
+    {
+        $retour = $this->item;
+        if (empty($retour) or $retour->getUserID() != $user_id) {
+            if (!empty($user_id)) {
+                $this->get($user_id);
+                $retour = $this->item;
+            }
+        }
+        return $retour;
+    }
+
+    private function getDBLink(): \Doctrine\DBAL\Connection
+    {
+        if (!isset($this->dbalConnection)) {
+            $authData = $this->_auth_data_array;
+
+            $config = new \Doctrine\DBAL\Configuration();
+            $connectionParams = [
+                'dbname' => $authData['DBNAME'],
+                'user' => $authData['USER'],
+                'password' => $authData['PASSWORD'],
+                'host' => $authData['HOST'],
+                'driver' => 'pdo_mysql',
+            ];
+
+            $this->dbalConnection = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
+        }
+
+        return $this->dbalConnection;
+    }
+
+    /** get authentication item for a user (user_id), INTERNAL - do not use
+     * this method returns a authentication item for a user
+     *
+     * @param integer user_id id of the user (not item id)
+     */
+    private function get($userId)
+    {
+        if (!isset($this->item) or $this->item->getUserID() != $userId) {
+            $this->item = NULL;
+
+            $sql = 'SELECT * FROM ' . $this->_auth_data_array['DBTABLE'] . ' WHERE ' . $this->_auth_data_array['DBCOLUMNUSERID'] . ' = :userId';
+            $stmt = $this->getDBLink()->prepare($sql);
+            $stmt->bindValue('userId', $userId);
+            $stmt->execute();
+
+            $user = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($user) {
+                $this->item = $this->buildItem($user);
+            }
+        }
+    }
+
+    /** build a authentication item out of an (database) array - internal method, do not use
+     * this method returns a authentication item out of a row form the database
+     *
+     * @param array array array with information about the authentication out of the database table "auth"
+     *
+     * @return object cs_item a authentication item
+     *
+     * @author CommSy Development Group
+     */
+    private function buildItem($userData): cs_auth_item
+    {
+        $item = new cs_auth_item();
+        $item->setUserID($userData[$this->_auth_data_array['DBCOLUMNUSERID']]);
+        if (!empty($this->_auth_data_array['ENCRYPTION']) and ($this->_auth_data_array['ENCRYPTION'] == 'md5')) {
+            $item->setPasswordMD5($userData[$this->_auth_data_array['DBCOLUMNPASSWD']]);
+        } else {
+            $item->setPassword($userData[$this->_auth_data_array['DBCOLUMNPASSWD']]);
+        }
+
+        return $item;
+    }
 }
-?>
