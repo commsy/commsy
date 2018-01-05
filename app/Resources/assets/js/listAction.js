@@ -49,12 +49,13 @@
         $(this).addClass('uk-active');
         $('#commsy-select-actions-select-shown').removeClass('uk-active');
 
-        inputs.each(function() {
+        inputs.filter(":visible").each(function() {
             if (this.type == 'checkbox') {
                 $(this).prop('checked', true);
             }
         });
-        articles.each(function() {
+
+        articles.has('input:visible').each(function() {
             $(this).addClass('uk-comment-primary');
         });
 
