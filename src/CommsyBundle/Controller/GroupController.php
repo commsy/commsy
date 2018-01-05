@@ -278,10 +278,11 @@ class GroupController extends Controller
         }
         
         $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
-        
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
         if ($action == 'markread') {
             $groupService = $this->get('commsy_legacy.group_service');
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             $noticedManager = $legacyEnvironment->getNoticedManager();
             $readerManager = $legacyEnvironment->getReaderManager();
             foreach ($selectedIds as $id) {
@@ -314,7 +315,9 @@ class GroupController extends Controller
             $groupService = $this->get('commsy_legacy.group_service');
             foreach ($selectedIds as $id) {
                 $item = $groupService->getGroup($id);
-                $item->delete();
+                if ($item->mayEdit($legacyEnvironment->getCurrentUser())) {
+                    $item->delete();
+                }
             }
            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> '.$translator->transChoice('%count% deleted entries',count($selectedIds), array('%count%' => count($selectedIds)));
         }

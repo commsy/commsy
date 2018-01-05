@@ -293,7 +293,12 @@ class cs_group_item extends cs_label_item {
      * for CommSy 9: only the moderators or groups creator may edit
      * the group item
      */
-    function mayEdit(cs_user_item $user_item) {
+    public function mayEdit(cs_user_item $user_item)
+    {
+        if ($this->isSystemLabel()) {
+            return false;
+        }
+
         return ($user_item->getStatus() == '3' || $user_item->getItemId() == $this->getModificatorID());
     }
 }

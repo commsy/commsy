@@ -105,7 +105,7 @@ class ItemVoter extends Voter
             }
         }
 
-        if ($item->getItemType() == CS_GROUP_TYPE && $item->isSystemLabel()) {
+        if ($item instanceof \cs_group_item && $item->isSystemLabel()) {
             return false;
         }
 
