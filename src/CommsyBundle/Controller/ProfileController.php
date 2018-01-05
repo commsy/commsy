@@ -312,6 +312,8 @@ class ProfileController extends Controller
         $userItem = $userService->getUser($itemId);
         $userData = $userTransformer->transform($userItem);
 
+        $portalUser = $userItem->getRelatedPortalUserItem();
+
         $request->setLocale($userItem->getLanguage());
 
         $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
@@ -333,6 +335,7 @@ class ProfileController extends Controller
 
         return array(
             'form' => $form->createView(),
+            'hasToChangeEmail' => $portalUser->hasToChangeEmail(),
         );
     }
 

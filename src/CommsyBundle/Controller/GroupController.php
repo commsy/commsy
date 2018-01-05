@@ -258,6 +258,7 @@ class GroupController extends Controller
             'showRating' => false,
             'allowedActions' => $allowedActions,
             'memberStatus' => $allGroupsMemberStatus,
+            'isRoot' => $legacyEnvironment->getCurrentUser()->isRoot(),
        );
     }
 

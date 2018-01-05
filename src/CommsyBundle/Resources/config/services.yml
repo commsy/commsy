@@ -160,6 +160,12 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
+    kernel.listener.commsy_changemail:
+        class: CommsyBundle\EventListener\CommsyChangeMailListener
+        arguments: ['@commsy_legacy.environment', '@router']
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
     commsy.listener.get_room_membership_filter:
             class: CommsyBundle\EventListener\RoomMembershipFilterConditionListener
             arguments: ['@commsy_legacy.user_service']

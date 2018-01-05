@@ -5,6 +5,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -66,7 +67,7 @@ class ProfilePersonalInformationType extends AbstractType
                 'label' => 'lastname',
                 'required' => false,
             ))
-            ->add('emailAccount', TextType::class, array(
+            ->add('emailAccount', EmailType::class, array(
                 'label' => 'email',
                 'required' => true,
             ))

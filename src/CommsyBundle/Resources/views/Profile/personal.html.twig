@@ -18,6 +18,11 @@
                         <div class="uk-text-large">{{ 'personal'|trans({}, 'menu') }}</div>
                     </div>
                 </div>
+                {% if hasToChangeEmail == true %}
+                    <div class="uk-alert uk-alert-danger">
+                        {{ 'has to change mail'|trans({}, 'profile') }}
+                    </div>
+                {% endif %}
                 <div class="uk-margin-left uk-margin-right">
                     {{ form_start(form) }}
                         {{ form_errors(form) }}

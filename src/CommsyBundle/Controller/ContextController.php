@@ -103,6 +103,7 @@ class ContextController extends Controller
 
                 $currentUserItem = $legacyEnvironment->getCurrentUserItem();
                 $privateRoomUserItem = $currentUserItem->getRelatedPrivateRoomUserItem();
+                $portalUserItem = $legacyEnvironment->getPortalUserItem();
 
                 if ($privateRoomUserItem) {
                     $newUser = $privateRoomUserItem->cloneData();
@@ -110,6 +111,11 @@ class ContextController extends Controller
                 } else {
                     $newUser = $currentUserItem->cloneData();
                     $newPicture = $currentUserItem->getPicture();
+                }
+
+                // TODO: fix inconsistency!! privateRoomUser or portalUser as "account" user?
+                if ($portalUserItem) {
+                    $newUser->setEmail($portalUserItem->getEmail());
                 }
 
                 $newUser->setContextID($roomItem->getItemID());
