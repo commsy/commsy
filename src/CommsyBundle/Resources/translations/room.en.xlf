@@ -158,6 +158,10 @@
                 <source>search-filter</source>
                 <target>Search</target>
             </trans-unit>
+            <trans-unit id="search-filter-user-name">
+                <source>username</source>
+                <target>User name</target>
+            </trans-unit>
             <trans-unit id="search-filter-placeholder">
                 <source>search-filter-placeholder</source>
                 <target>title, moderator, description</target>
