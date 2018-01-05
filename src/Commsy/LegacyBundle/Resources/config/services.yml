@@ -15,7 +15,12 @@ services:
     # Event subscriber
     commsy_legacy.subscriber.KernelSubscriber:
         class: Commsy\LegacyBundle\EventSubscriber\KernelSubscriber
-        arguments: ['@commsy_legacy.legacy_kernel', '@commsy_legacy.legacy_authentication', '@commsy_legacy.environment']
+        arguments:
+            - '@commsy_legacy.legacy_kernel'
+            - '@commsy_legacy.legacy_authentication'
+            - '@commsy_legacy.item_service'
+            - '@router'
+            - '@commsy_legacy.environment'
         tags:
             - { name: kernel.event_subscriber }
 
