@@ -81,6 +81,7 @@ class GroupController extends Controller
             'showCategories' => false,
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
+            'user' => $legacyEnvironment->getCurrentUserItem(),
         );
     }
 

@@ -34,6 +34,7 @@ class TodoController extends Controller
      */
     public function listAction($roomId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
@@ -80,6 +81,7 @@ class TodoController extends Controller
             'statusList' => $roomItem->getExtraToDoStatusArray(),
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
+            'user' => $legacyEnvironment->getCurrentUserItem(),
         );
     }
     
