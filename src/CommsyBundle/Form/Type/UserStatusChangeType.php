@@ -32,6 +32,7 @@ class UserStatusChangeType extends AbstractType
                 'translation_domain' => 'user',
                 'choice_translation_domain' => 'form',
                 'required' => true,
+                'data' => true,
             ])
             ->add('userIds', CollectionType::class, [
                 'entry_type' => HiddenType::class,
