@@ -242,6 +242,10 @@
                 <source>Reject</source>
                 <target>Reject</target>
             </trans-unit>
+            <trans-unit id="manage_users">
+                <source>Manage users</source>
+                <target>Manage users</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
