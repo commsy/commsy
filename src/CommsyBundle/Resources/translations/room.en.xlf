@@ -270,6 +270,10 @@
                 <source>Archived room</source>
                 <target>Archivierter Raum</target>
             </trans-unit>
+            <trans-unit id="room_template">
+                <source>Template</source>
+                <target>Template</target>
+            </trans-unit>
             <trans-unit id="room code description">
                 <source>room code description</source>
                 <target>Please type in the correct membership code for this workspace in the textfield below. Entering the correct code, you immediately join the workspace as a member.</target>
