@@ -299,6 +299,7 @@ class DateController extends Controller
             'iCal' => $iCal,
             'calendars' => $calendars,
             'isArchived' => $roomItem->isArchived(),
+            'user' => $legacyEnvironment->getCurrentUserItem(),
         ];
     }
 

@@ -165,6 +165,7 @@ class DiscussionController extends Controller
             'showCategories' => $roomItem->withTags(),
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
+            'user' => $legacyEnvironment->getCurrentUserItem(),
         );
         
     }

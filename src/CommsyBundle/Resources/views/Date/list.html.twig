@@ -38,13 +38,17 @@
         <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
             <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left uk-nav-parent-icon" data-uk-nav>
 
-                {% if is_granted('ITEM_EDIT', 'NEW') %}
-                    <li>
-                         <a href="{{ path('commsy_date_create', {'roomId': roomId, 'dateDescription' : "now"}) }}">
+                <li>
+                    {% if is_granted('ITEM_EDIT', 'NEW') %}
+                        <a href="{{ path('commsy_date_create', {'roomId': roomId, 'dateDescription' : "now"}) }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
                         </a>
-                    </li>
-                {% endif %}
+                    {% else %}
+                        <span class="uk-text-muted">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
+                        </span>
+                    {% endif %}
+                </li>
 
                 {# print #}
                 <li>
@@ -111,21 +115,31 @@
                     </li>
                 {% endif %}
 
-                {% if not isArchived %}
-                    <li>
+                <li>
+                    {% if (user.isUser and not user.isReadOnlyUser) and not isArchived %}
                         <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_date_feedaction', {'roomId': roomId}) }}", "action": "delete"}' data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}" data-no-selection="{{'no entry selected'|trans({},'item')}}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
                         </a>
-                    </li>
+                    {% else %}
+                        <span class="uk-text-muted">
+                            <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
+                        </span>
+                    {% endif %}
+                </li>
 
-                    {% if is_granted('MODERATOR') %}
-                        {# import iCal #}
-                        <li>
+                {# import iCal #}
+                {% if is_granted('MODERATOR') %}
+                    <li>
+                        {% if not isArchived %}
                             <a href="{{ path('commsy_date_import', {'roomId': roomId}) }}" >
                                 <i class="uk-icon-justify uk-icon-small uk-icon-download uk-visible-large"></i> {{ 'import dates'|trans({},'date') }}
                             </a>
-                        </li>
-                    {% endif %}
+                        {% else %}
+                            <span class="uk-text-muted">
+                                <i class="uk-icon-justify uk-icon-small uk-icon-download uk-visible-large"></i> {{ 'import dates'|trans({},'date') }}
+                            </span>
+                        {% endif %}
+                    </li>
                 {% endif %}
             </ul>
         </div>

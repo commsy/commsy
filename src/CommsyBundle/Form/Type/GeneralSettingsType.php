@@ -63,6 +63,7 @@ class GeneralSettingsType extends AbstractType
                     'German' => 'de',
                     'English' => 'en',
                 ),
+                'empty_data' => 'user',
                 'attr' => array(
                     'style' => 'width: 250px;',
                 ),

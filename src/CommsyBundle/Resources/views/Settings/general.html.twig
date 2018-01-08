@@ -50,7 +50,10 @@
 
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Rubric selection'|trans({}, 'settings') }}</h1>
-                            <div style="margin-bottom: 25px;">{{ 'Rubric selection text'|trans({}, 'settings') }}</div>
+                            <div class="uk-margin-small-bottom">{{ 'Rubric selection text'|trans({}, 'settings') }}</div>
+                            <div style="margin-bottom: 25px;">
+                                <em class="uk-text-bold">{{ 'note'| trans({}, 'messages') }}</em> {{ 'Rubric selection tip'|trans({}, 'settings')|raw }}
+                            </div>
                             {{ form_label(form.rubrics) }}
                             <fieldset>
                                 <div id ="general_settings_rubrics" class="uk-sortable" data-uk-sortable="">

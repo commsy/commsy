@@ -80,6 +80,7 @@ class TopicController extends Controller
             'showCategories' => false,
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
+            'user' => $legacyEnvironment->getCurrentUserItem(),
         );
     }
     
