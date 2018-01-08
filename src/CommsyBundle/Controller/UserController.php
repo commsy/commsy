@@ -939,10 +939,15 @@ class UserController extends Controller
 
                 $to = [];
                 $validator = new EmailValidator();
+                $users = [];
+                $failedUsers = [];
                 foreach ($userIds as $userId) {
                     $user = $userService->getUser($userId);
+                    $users[] = $user;
                     if ($validator->isValid($user->getEmail(), new RFCValidation())) {
                         $to[$user->getEmail()] = $user->getFullName();
+                    } else {
+                        $failedUsers[] = $user;
                     }
                 }
 
@@ -964,7 +969,24 @@ class UserController extends Controller
                 }
 
                 // send mail
-                $this->get('mailer')->send($message);
+                $failedRecipients = [];
+                $this->get('mailer')->send($message, $failedRecipients);
+
+                $failedRecipients[] = 'schoenfeld@effective-webwork.de';
+
+                foreach ($failedUsers as $failedUser) {
+                    $this->addFlash('failedRecipients', $failedUser->getUserId());
+                }
+
+                foreach ($failedRecipients as $failedRecipient) {
+                    $failedUser = array_filter($users, function($user) use ($failedRecipient) {
+                        return $user->getEmail() == $failedRecipient;
+                    });
+
+                    if ($failedUser) {
+                        $this->addFlash('failedRecipients', $failedUser[0]->getUserId());
+                    }
+                }
 
                 // redirect to success page
                 return $this->redirectToRoute('commsy_user_sendmultiplesuccess', [
