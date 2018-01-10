@@ -203,7 +203,7 @@ $message["MAIL_SENDER"]["de"] = "Sender";
 $message["MAIL_SENDER_EMAIL"]["de"] = "Ihre E-Mail Adresse";
 $message["MAIL_SENDER_NAME"]["de"] = "Ihr Name";
 $message["MAIL_SEND_BUTTON"]["de"] = "E-Mail senden";
-$message["MAIL_SEND_TO"]["de"] = "Dies E-Mail wurde versendet an:
+$message["MAIL_SEND_TO"]["de"] = "Diese E-Mail wurde versendet an:
 %1";
 $message["MAIL_SEND_WHY_COMMUNITY"]["de"] = "Sie haben diese E-Mail als Mitglied der Moderation %_COMMUNITY_ART_DEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG %1 erhalten.";
 $message["MAIL_SEND_WHY_PORTAL"]["de"] = "Sie haben diese E-Mail als Mitglied der Moderation des Portals %1 erhalten.";
