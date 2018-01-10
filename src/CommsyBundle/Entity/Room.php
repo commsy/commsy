@@ -133,7 +133,7 @@ class Room
     /**
      * @var boolean
      *
-     * @ORM\Column(name="template", type="boolean", nullable=false)
+     * @ORM\Column(name="template", type="integer", nullable=false)
      */
     private $template = '-1';
 

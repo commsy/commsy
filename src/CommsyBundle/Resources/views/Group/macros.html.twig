@@ -404,7 +404,7 @@
 {% endmacro %}
 
 
-{% macro grouproom(item, roomId, userIsGroupMember, roomMemberStatus, draft) %}
+{% macro grouproom(item, roomId, userIsGroupMember, roomMemberStatus, draft, isRoot) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
     <div id="grouproom{{ item.itemId }}" class="cs-edit-section cs-toggle" data-cs-edit="{editUrl: '{{ path('commsy_group_editgrouproom', {'roomId': item.contextId, 'itemId': item.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': item.contextId, 'itemId': item.itemId}) }}'}">
         <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
@@ -426,7 +426,7 @@
                                     <div class="uk-width-1-5 uk-text-left">
                                         {% if item.isGroupRoomActivated %}
                                             <div class="uk-width-1-5 uk-text-left">
-                                                {% if userIsGroupMember and roomMemberStatus == 'enter' %}
+                                                {% if isRoot or (userIsGroupMember and roomMemberStatus == 'enter') %}
                                                     <a href="{{ path('commsy_room_home', {'roomId': item.groupRoomItem.ItemId}) }}" class="uk-icon-large uk-icon-button uk-icon-sign-in" data-uk-tooltip title="{{'enter grouproom'|trans({}) }}"></a>
                                                 {% else %}
                                                     <span class="uk-icon-large uk-icon-button uk-icon-remove" data-uk-tooltip title="{{'no access'|trans({}, 'room') }}"> </span>
@@ -443,7 +443,7 @@
                                             {{'grouproom description text'|trans({},'group') }}    
                                             </p>
                                             <p>
-                                            {% if userIsGroupMember %}
+                                            {% if isRoot or userIsGroupMember %}
                                                 {{ macros.contextLink(roomId, item.getGroupRoomItem, roomMemberStatus) }}
                                             {% else %}
                                                 {{'grouproom access'|trans({},'group') }}

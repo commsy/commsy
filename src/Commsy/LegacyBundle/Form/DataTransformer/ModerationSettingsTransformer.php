@@ -41,7 +41,12 @@ class ModerationSettingsTransformer implements DataTransformerInterface
 
         if ($roomItem) {
 
-            $roomData['homenotice']['item_id'] = $roomItem->getInformationBoxEntryID();
+            $referenceId = $roomItem->getInformationBoxEntryID();
+            if (!is_numeric($referenceId)) {
+                $referenceId = '';
+            }
+
+            $roomData['homenotice']['item_id'] = $referenceId;
             if ( $roomItem->withInformationBox() ) {
                $roomData['homenotice']['show_information_box'] = '1';
             } else {

@@ -137,8 +137,9 @@ class AccountMail
         }
 
         $body .= "\n\n";
-        $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_CIAO', $moderator->getFullname(), $room->getTitle());
         $body .= $absoluteRoomUrl;
+        $body .= "\n\n";
+        $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_CIAO', $moderator->getFullname(), $room->getTitle());
 
         return $body;
     }

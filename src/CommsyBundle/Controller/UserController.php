@@ -117,6 +117,7 @@ class UserController extends Controller
             'view' => $view,
             'isArchived' => $roomItem->isArchived(),
             'userTasks' => $userTasks,
+            'isModerator' => $currentUser->isModerator(),
         ];
     }
 
@@ -939,10 +940,15 @@ class UserController extends Controller
 
                 $to = [];
                 $validator = new EmailValidator();
+                $users = [];
+                $failedUsers = [];
                 foreach ($userIds as $userId) {
                     $user = $userService->getUser($userId);
+                    $users[] = $user;
                     if ($validator->isValid($user->getEmail(), new RFCValidation())) {
                         $to[$user->getEmail()] = $user->getFullName();
+                    } else {
+                        $failedUsers[] = $user;
                     }
                 }
 
@@ -964,7 +970,24 @@ class UserController extends Controller
                 }
 
                 // send mail
-                $this->get('mailer')->send($message);
+                $failedRecipients = [];
+                $this->get('mailer')->send($message, $failedRecipients);
+
+                $failedRecipients[] = 'schoenfeld@effective-webwork.de';
+
+                foreach ($failedUsers as $failedUser) {
+                    $this->addFlash('failedRecipients', $failedUser->getUserId());
+                }
+
+                foreach ($failedRecipients as $failedRecipient) {
+                    $failedUser = array_filter($users, function($user) use ($failedRecipient) {
+                        return $user->getEmail() == $failedRecipient;
+                    });
+
+                    if ($failedUser) {
+                        $this->addFlash('failedRecipients', $failedUser[0]->getUserId());
+                    }
+                }
 
                 // redirect to success page
                 return $this->redirectToRoute('commsy_user_sendmultiplesuccess', [
@@ -1291,6 +1314,7 @@ class UserController extends Controller
 
         $fromAddress = $this->getParameter('commsy.email.from');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
         $fromSender = $legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
 
         $userService = $this->get('commsy_legacy.user_service');
@@ -1307,6 +1331,7 @@ class UserController extends Controller
                     ->setSubject($subject)
                     ->setBody($body, 'text/plain')
                     ->setFrom([$fromAddress => $fromSender])
+                    ->setReplyTo([$currentUser->getEmail() => $currentUser->getFullname()])
                     ->setTo([$email]);
 
                 // send mail

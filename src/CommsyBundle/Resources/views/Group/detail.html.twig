@@ -203,7 +203,7 @@
                     {# grouproom #}
                     <div id="member{{ group.itemId }}" class="cs-toggle" data-uk-observe>
                         <hr class="uk-width-9-10"/>
-                        {{ macrosGroup.grouproom(group, roomId, userIsMember, memberStatus, draft) }}
+                        {{ macrosGroup.grouproom(group, roomId, userIsMember, memberStatus, draft, user.isRoot) }}
                     </div>
 
                     {% if not draft %}

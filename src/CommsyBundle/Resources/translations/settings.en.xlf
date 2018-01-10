@@ -172,6 +172,10 @@
                 <source>Rubric selection text</source>
                 <target>Select and configure workspace rubrics. The option "Show" means that this workspace rubric is shown in the navigation menu on the home page. The option "Hide" means that entries from this workspace rubric are included in the "Latest entries in this room" section on the home page. The option "Deactivate" means that this workspace rubric is not available in this CommSy room. You can customize the rubric order in the side menu with drag &amp; drop.</target>
             </trans-unit>
+            <trans-unit id="profile_image_tip">
+                <source>Rubric selection tip</source>
+                <target>In order to be able to manage the room membership of individual users, room moderators like yourself will always see the rubric "<![CDATA[<span class='uk-text-bold'>]]>Users<![CDATA[</span>]]>", even if it is deactivated for normal users.</target>
+            </trans-unit>
             <trans-unit id="room_description_text">
                 <source>Room description text</source>
                 <target>Insert an additional Description. Max. 1000 characters are allowed.</target>

@@ -158,6 +158,10 @@
                 <source>search-filter</source>
                 <target>Suche</target>
             </trans-unit>
+            <trans-unit id="search-filter-user-name">
+                <source>username</source>
+                <target>Benutzername</target>
+            </trans-unit>
             <trans-unit id="search-filter-placeholder">
                 <source>search-filter-placeholder</source>
                 <target>Titel, ModeratorIn, Beschreibung</target>
@@ -265,6 +269,10 @@
             <trans-unit id="Archived room">
                 <source>Archived room</source>
                 <target>Archivierter Raum</target>
+            </trans-unit>
+            <trans-unit id="room_template">
+                <source>Template</source>
+                <target>Vorlage</target>
             </trans-unit>
             <trans-unit id="room code description">
                 <source>room code description</source>
