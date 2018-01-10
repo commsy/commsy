@@ -249,7 +249,7 @@ $message["USER_TITLE"]["en"] = "Title";
 $message["USER_USER"]["en"] = "Member";
 $message["USER_USER_ID"]["en"] = "User ID";
 $message["USER_USER_ID_ERROR"]["en"] = "The account [%1] is already used. Please choose another one.";
-$message["USER_USER_ID_ERROR_UMLAUT"]["en"] = "Please, use only digits and letters (ASCII) in your user ID.";
+$message["USER_USER_ID_ERROR_UMLAUT"]["en"] = "Please, use only digits and English letters in your user ID.";
 $message["USER_USER_ID_NOT_EXIST"]["en"] = "The account <span style=&quot;font-weight:bold;&quot;>%1</span> does not exist. Please check the entered information.";
 $message["USER_YAHOO"]["en"] = "Yahoo";
 $message["USER_ZIPCODE"]["en"] = "Zip code";
