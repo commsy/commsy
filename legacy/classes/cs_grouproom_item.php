@@ -27,6 +27,8 @@
  */
 include_once('classes/cs_room_item.php');
 
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
 /** group room
  * this class implements a group room item
  */
@@ -1126,27 +1128,18 @@ class cs_grouproom_item extends cs_room_item {
                      'commsy_group_detail', [
                         'roomId' => $project_room->getItemID(),
                         'itemId' => $group_item->getItemID()
-                     ]
-                  );
+                     ], UrlGeneratorInterface::ABSOLUTE_URL);
                } else {
                   $url = $router->generate(
                      'commsy_room_home', [
                         'roomId' => $project_room->getItemID()
-                     ]
-                  );
+                     ], UrlGeneratorInterface::ABSOLUTE_URL);
                }
             } else {
                   $url = $router->generate(
                      'commsy_room_home', [
                         'roomId' => $this->getItemID(),
-                     ]
-                  );
-            }
-
-            $requestStack = $symfonyContainer->get('request_stack');
-            $currentRequest = $requestStack->getCurrentRequest();
-            if ($currentRequest) {
-               $url = $currentRequest->getSchemeAndHttpHost() . $url;
+                     ], UrlGeneratorInterface::ABSOLUTE_URL);
             }
 
             $body .= LF.$url;
