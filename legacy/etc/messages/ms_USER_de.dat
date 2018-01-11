@@ -254,7 +254,7 @@ $message["USER_TITLE"]["de"] = "Titel";
 $message["USER_USER"]["de"] = "Mitglieder";
 $message["USER_USER_ID"]["de"] = "Kennung";
 $message["USER_USER_ID_ERROR"]["de"] = "Die Kennung [%1] wird leider schon verwendet. Bitte wählen Sie eine andere.";
-$message["USER_USER_ID_ERROR_UMLAUT"]["de"] = "Die Kennung darf nur aus Zahlen und Buchstaben bestehen.";
+$message["USER_USER_ID_ERROR_UMLAUT"]["de"] = "Die Kennung darf nur aus Zahlen und Buchstaben (ohne Umlaute) bestehen.";
 $message["USER_USER_ID_NOT_EXIST"]["de"] = "Die Kennung <span style=&quot;font-weight:bold;&quot;>%1</span> existiert nicht. Bitte überprüfen Sie Ihre Eingabe.";
 $message["USER_YAHOO"]["de"] = "Yahoo";
 $message["USER_ZIPCODE"]["de"] = "Postleitzahl";
