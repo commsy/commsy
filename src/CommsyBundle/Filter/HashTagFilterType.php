@@ -52,6 +52,7 @@ class HashTagFilterType extends AbstractType
                                 ->andWhere('l.type = :type')
                                 ->andWhere('l.deletionDate IS NULL')
                                 ->andWhere('l.deleter IS NULL')
+                                ->orderBy('l.name')
                                 ->setParameter('roomId', $roomId)
                                 ->setParameter('type', 'buzzword');
                         },
