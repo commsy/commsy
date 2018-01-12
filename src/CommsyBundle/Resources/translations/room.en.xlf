@@ -282,6 +282,10 @@
                 <source>room join description</source>
                 <target>Become a member without membership code. Please explain, if necessary, why you want to join this workspace. Your explanation will be enclosed in the e-mail notice that informs the moderator/s about your request.</target>
             </trans-unit>
+            <trans-unit id="name">
+                <source>Name</source>
+                <target>Name</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

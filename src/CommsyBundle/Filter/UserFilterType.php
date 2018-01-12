@@ -22,7 +22,7 @@ class UserFilterType extends AbstractType
     {
         $builder
             ->add('user_search', TextType::class, [
-                'label' => 'username',
+                'label' => 'Name',
                 'translation_domain' => 'room',
                 'label_attr' => array(
                     'class' => 'uk-form-label',

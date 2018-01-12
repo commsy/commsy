@@ -282,6 +282,10 @@
                 <source>room join description</source>
                 <target>Anmeldung ohne Freischalt-Code. Bitte erläutern Sie den ModeratorInnen dieses Raums, warum Sie Mitglied werden möchten. Dieser Text wird per E-Mail an die ModeratorInnen verschickt.</target>
             </trans-unit>
+            <trans-unit id="name">
+                <source>Name</source>
+                <target>Name</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
