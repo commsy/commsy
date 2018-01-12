@@ -126,14 +126,18 @@ class CalendarsService
                         $title = $event->SUMMARY->getValue();
                     }
 
+                    $currentTimeZone = new \DateTimeZone(date_default_timezone_get());
+
                     $startDatetime = '';
                     if ($event->DTSTART) {
                         $startDatetime = $event->DTSTART->getDateTime();
+                        $startDatetime = $startDatetime->setTimezone($currentTimeZone);
                     }
 
                     $endDatetime = '';
                     if ($event->DTEND) {
                         $endDatetime = $event->DTEND->getDateTime();
+                        $endDatetime = $endDatetime->setTimezone($currentTimeZone);
                     } else {
                         $endDatetime = $startDatetime;
                     }
