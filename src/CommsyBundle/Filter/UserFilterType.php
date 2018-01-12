@@ -6,6 +6,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class UserFilterType extends AbstractType
 {
@@ -35,6 +36,13 @@ class UserFilterType extends AbstractType
             ->add('rubrics', RubricFilterType::class, array(
                 'label' => false,
             ))
+            ->add('submit', SubmitType::class, [
+                'position' => 'last',
+                'label' => 'Filter',
+                'attr' => [
+                    'class' => 'uk-button-primary uk-button',
+                ]
+            ])
         ;
 
         if ($options['hasHashtags']) {
@@ -66,9 +74,6 @@ class UserFilterType extends AbstractType
         $builder->add('user_status', ChoiceType::class, array(
             'placeholder' => false,
             'choices' => $statusChoices,
-            'attr' => array(
-                'onchange' => 'this.form.submit()',
-            ),
             'label' => 'status',
             'translation_domain' => 'user',
             'required' => false,
