@@ -3,6 +3,7 @@ namespace CommsyBundle\Filter;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -22,17 +23,11 @@ class AnnouncementFilterType extends AbstractType
     {
         $builder
             ->add('hide-invalid-entries', Filters\CheckboxFilterType::class, array(
-                'attr' => array(
-                    'onchange' => 'this.form.submit()',
-                ),
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
             ))
             ->add('hide-deactivated-entries', Filters\CheckboxFilterType::class, array(
-                'attr' => array(
-                    'onchange' => 'this.form.submit()',
-                ),
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
@@ -42,6 +37,13 @@ class AnnouncementFilterType extends AbstractType
             ))
             ->add('filter', HiddenType::class, []
             )
+            ->add('submit', SubmitType::class, [
+                'position' => 'last',
+                'label' => 'Filter',
+                'attr' => [
+                    'class' => 'uk-button-primary uk-button',
+                ]
+            ])
         ;
 
         if ($options['hasCategories']) {

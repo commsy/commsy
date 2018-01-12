@@ -37,15 +37,17 @@ class CommsyChangeMailListener
                     $privateRoomUser = $currentUser->getRelatedPrivateRoomUserItem();
 
                     if ($privateRoom && $privateRoomUser) {
-                        if ($portalUser->hasToChangeEmail()) {
-                            // generate route to profile
-                            $route = $this->router->generate('commsy_profile_personal', [
-                                'roomId' => $privateRoom->getItemId(),
-                                'itemId' => $privateRoomUser->getItemId()
-                            ]);
+                        if ($portalUser) {
+                            if ($portalUser->hasToChangeEmail()) {
+                                // generate route to profile
+                                $route = $this->router->generate('commsy_profile_personal', [
+                                    'roomId' => $privateRoom->getItemId(),
+                                    'itemId' => $privateRoomUser->getItemId()
+                                ]);
 
-                            // redirect user to account mail settings
-                            $event->setResponse(new RedirectResponse($route));
+                                // redirect user to account mail settings
+                                $event->setResponse(new RedirectResponse($route));
+                            }
                         }
                     }
                 }

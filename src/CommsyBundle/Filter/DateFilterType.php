@@ -3,6 +3,7 @@ namespace CommsyBundle\Filter;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
@@ -23,17 +24,11 @@ class DateFilterType extends AbstractType
     {
         $builder
             ->add('hide-deactivated-entries', Filters\CheckboxFilterType::class, array(
-                'attr' => array(
-                    'onchange' => 'this.form.submit()',
-                ),
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
             ))
             ->add('hide-past-dates', Filters\CheckboxFilterType::class, array(
-                'attr' => array(
-                    'onchange' => 'this.form.submit()',
-                ),
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
@@ -53,6 +48,13 @@ class DateFilterType extends AbstractType
             ->add('calendar', CalendarFilterType::class, array(
                 'label' => false,
             ))
+            ->add('submit', SubmitType::class, [
+                'position' => 'last',
+                'label' => 'Filter',
+                'attr' => [
+                    'class' => 'uk-button-primary uk-button',
+                ]
+            ])
         ;
         if ($options['hasCategories']) {
             $builder->add('category', CategoryFilterType::class, array(
