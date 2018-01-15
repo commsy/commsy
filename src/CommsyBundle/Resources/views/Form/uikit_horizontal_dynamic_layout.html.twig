@@ -55,11 +55,10 @@
         <div id="room-hashtags" class="cs-toggle-preview-filter{% if expanded %} cs-toggle-full-filter{% endif %}">
             {% if form is not empty %}
                 {% for child in form %}
-                    <input class="uk-hidden" type="radio" id="{{ child.vars.id }}" name="{{ child.vars.full_name }}" value="{{ child.vars.value }}" {% if child.vars.checked %} checked="checked"{% endif %} />
+                    <input class="uk-hidden" type="radio" id="{{ child.vars.id }}" name="{{ child.vars.full_name }}" value="{{ child.vars.value }}" onchange="this.form.submit()" {% if child.vars.checked %} checked="checked"{% endif %} />
 
                     <span>
-                        <span class="uk-button uk-margin-small-bottom uk-margin-small-right{% if child.vars.checked %} uk-button-primary{% endif %}" onclick="updateHashtagSelection(this);"
-                        >{{ child.vars.label }}</span>
+                        <span class="uk-button uk-margin-small-bottom uk-margin-small-right{% if child.vars.checked %} uk-button-primary{% endif %}" onclick="$(this).parent().prev().prop('checked', !$(this).parent().prev().prop('checked')); $(this).parents('form').submit(); return false;">{{ child.vars.label }}</span>
                     </span>
                 {% endfor %}
             {% else %}
@@ -74,18 +73,6 @@
             </a>
         {% endif %}
     </div>
-    <script>
-        function updateHashtagSelection(element) {
-            $element = $(element);
-            $selected = $element.hasClass('uk-button-primary');
-            $('#room-hashtags').find('input:checked').prop('checked', false);
-            $('#room-hashtags').find('.uk-button-primary').removeClass('uk-button-primary');
-            if (!$selected) {
-                $element.parent().prev().prop('checked', true);
-                $element.addClass('uk-button-primary');
-            }
-        }
-    </script>
 {% endblock %}
 
 {% block category_widget %}

@@ -81,6 +81,8 @@
                                         .prop('checked', true);
 
                                 });
+
+                                $('div#room-category').parents('form').submit();
                             }
                         });
                 })
