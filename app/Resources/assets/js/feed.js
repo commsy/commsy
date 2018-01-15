@@ -76,17 +76,9 @@
 
     function loadMore(spinner)
     {
-        let $activeSort = $(".cs-sort-active");
-
-
-        if ($activeSort.attr("id")) {
-            sort = $activeSort.attr("id").split("-")[$activeSort.attr("id").split("-").length-1];
+        if ($(".cs-sort-active").attr("id")) {
+            sort = $(".cs-sort-active").attr("id").split("-")[$(".cs-sort-active").attr("id").split("-").length-1];
         }
-
-        if ($activeSort.find("i").hasClass("uk-icon-chevron-up")) {
-            sortOrder = "_rev";
-        }
-
         let path = spinner.data('feed').url  + feedStart + '/' + sort + sortOrder;
         let uri = new URI(path);
 
