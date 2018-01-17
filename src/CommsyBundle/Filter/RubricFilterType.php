@@ -45,6 +45,9 @@ class RubricFilterType extends AbstractType
                     $builder
                         ->add('group', Filters\EntityFilterType::class, array(
                             'label' => 'group',
+                            'attr' => array(
+                                'onchange' => 'this.form.submit()',
+                            ),
                             'class' => 'CommsyBundle:Labels',
                             'query_builder' => function (LabelRepository $er) use ($roomId) {
                                 return $er->createQueryBuilder('l')
@@ -69,6 +72,9 @@ class RubricFilterType extends AbstractType
                     $builder
                         ->add('topic', Filters\EntityFilterType::class, array(
                             'label' => 'topic',
+                            'attr' => array(
+                                'onchange' => 'this.form.submit()',
+                            ),
                             'class' => 'CommsyBundle:Labels',
                             'query_builder' => function (LabelRepository $er) use ($roomId) {
                                 return $er->createQueryBuilder('l')
@@ -89,6 +95,9 @@ class RubricFilterType extends AbstractType
                 if (in_array('institution', $filterableRubrics)) {
                     $builder
                         ->add('institution', Filters\EntityFilterType::class, array(
+                            'attr' => array(
+                                'onchange' => 'this.form.submit()',
+                            ),
                             'class' => 'CommsyBundle:Labels',
                             'query_builder' => function (LabelRepository $er) use ($roomId) {
                                 return $er->createQueryBuilder('l')

@@ -610,3 +610,15 @@
         </div>
     </div>
 {% endmacro %}
+
+{% macro sortActor(identifier, translationKey, translationDomain, sortAsc, sortDesc, initialState) %}
+    {%- set sortingClass = initialState is not empty ? (initialState == 'asc' ? 'uk-icon-sort-asc' : 'uk-icon-sort-desc' ) : '' %}
+    <li>
+        <a href="#" id="commsy-sort-{{ identifier }}" class="cs-sort-actor uk-clearfix{% if initialState is not empty %} cs-sort-active cs-sort-active-{{ initialState }}{% endif %}" data-sort-order='{"asc": "{{ sortAsc }}", "desc": "{{ sortDesc }}"}'>
+            <span class="uk-float-left">{{ translationKey|trans({}, translationDomain)}}</span>
+            <span class="uk-float-right">
+                <i id="commsy-sort-{{ identifier }}-chevron" class="{{ sortingClass }}"></i>
+            </span>
+        </a>
+    </li>
+{% endmacro %}

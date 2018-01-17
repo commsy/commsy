@@ -21,6 +21,7 @@ class DateSelectType extends AbstractType
                 'required' => false,
                 'attr' => array(
                     'data-uk-datepicker' => '{format:\'DD.MM.YYYY\'}',
+                    'onchange' => 'this.form.submit()'
                 )
             ));
     }

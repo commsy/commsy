@@ -1,6 +1,8 @@
 {% extends 'CommsyBundle:Base:list.html.twig' %}
 {% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
 
+{% import 'CommsyBundle:Utils:macros.html.twig' as utilsMacros %}
+
 {% block feed %}
     <ul id="discussions-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
@@ -22,13 +24,15 @@
         <button class="uk-button uk-button-mini cs-button-list">{{ 'list sort'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
         <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
             <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
-                <li><a href="#" id="commsy-sort-title" class="uk-clearfix"><span class="uk-float-left">{{ 'title'|trans({},'rubric')}}</span><span class="uk-float-right"><i id="commsy-sort-title-chevron" class=""></i></span></a></li>
-                <li><a href="#" id="commsy-sort-creator" class="uk-clearfix"><span class="uk-float-left">{{ 'modifier'|trans({},'rubric') }}</span><span class="uk-float-right"><i id="commsy-sort-creator-chevron" class=""></i></span></a></li>
-                <li><a href="#" id="commsy-sort-latest" class="cs-sort-active uk-clearfix"><span class="uk-float-left">{{ 'latest article'|trans({},'discussion') }}</span><span class="uk-float-right"><i id="commsy-sort-latest-chevron" class="uk-icon-chevron-up"></i></span></a></li>
+                {# sorting options #}
+                {{ utilsMacros.sortActor('title', 'title', 'rubric', 'title', 'title_rev', '') }}
+                {{ utilsMacros.sortActor('creator', 'modifier', 'rubric', 'creator', 'creator_rev', '') }}
+                {{ utilsMacros.sortActor('latest', 'latest article', 'discussion', 'latest_rev', 'latest', 'desc') }}
+
                 {% if showRating %}
-                    <li><a href="#" id="commsy-sort-assessment" class="uk-clearfix"><span class="uk-float-left">{{ 'rating'|trans({},'rubric') }}</span><span class="uk-float-right"><i id="commsy-sort-assessment-chevron" class=""></i></span></a></li>
+                    {{ utilsMacros.sortActor('assessment', 'rating', 'rubric', 'assessment', 'assessment_rev', '') }}
                 {% endif %}
-           </ul>
+            </ul>
         </div>
     </div>
 {% endblock %}
