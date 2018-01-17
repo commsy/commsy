@@ -581,12 +581,83 @@ class SoapService
         }
     }
 
+    /**
+     * Returns statistic information
+     *
+     * @param string $sessionId The session id
+     * @param string $dateStart starting date
+     * @param string $dateEnd ending date
+     *
+     * @throws SoapFault
+     *
+     * @return string | null
+     */
 
-    private function _encode_input ($value) {
-        return utf8_decode($value);
+
+    public function getStatistics($sessionId, $dateStart, $dateEnd)
+    {
+        if (!$this->isSessionValid($sessionId)) {
+            return new \SoapFault('ERROR', 'given session id is invalid!');
+        }
+
+        $sessionId = $this->_encode_input($sessionId);
+        $this->legacyEnvironment->setSessionID($sessionId);
+        $session = $this->legacyEnvironment->getSessionItem();
+        $user_id = $session->getValue('user_id');
+        $auth_source_id = $session->getValue('auth_source');
+        $context_id = $session->getValue('commsy_id');
+        $this->legacyEnvironment->setCurrentContextID($context_id);
+
+        $user_manager = $this->legacyEnvironment->getUserManager();
+        $user_manager->setContextLimit($context_id);
+        $user_manager->setUserIDLimit($user_id);
+        $user_manager->setAuthSourceLimit($auth_source_id);
+        $user_manager->select();
+        $user_list = $user_manager->get();
+
+        if ($user_list->getCount() == 1) {
+            $user_item = $user_list->getFirst();
+            if ($user_item->isRoot()) {
+                if (!empty($dateStart)) {
+                    $dateStart = $this->_encode_input($dateStart);
+                    if (!empty($dateEnd)) {
+                        $dateEnd = $this->_encode_input($dateEnd);
+                    } else {
+                        $dateEnd = 'NOW';
+                    }
+                    if ($dateEnd == 'NOW') {
+                        $dateEnd = date('Y-m-d') . ' 23:59:59';
+                    }
+                    $server_item = $this->legacyEnvironment->getServerItem();
+                    if (!empty($server_item)) {
+                        include_once('functions/misc_functions.php');
+                        return array2XML($server_item->getStatistics($dateStart, $dateEnd));
+                    } else {
+                        $info = 'ERROR: GET STATISTICS';
+                        $info_text = 'server_item is empty';
+                        return new \SoapFault($info, $info_text);
+                    }
+                } else {
+                    $info = 'ERROR: GET STATISTICS';
+                    $info_text = 'date_start (second parameter) is empty';
+                    return new \SoapFault($info, $info_text);
+                }
+            } else {
+                $info = 'ERROR: GET STATISTICS';
+                $info_text = 'only root is allowed to use this function';
+                return new \SoapFault($info, $info_text);
+            }
+        } else {
+            $info = 'ERROR: GET STATISTICS';
+            $info_text = 'multiple user (' . $user_id . ') with auth source (' . $auth_source_id . ')';
+            return new \SoapFault($info, $info_text);
+        }
     }
 
-
+    private function _encode_input($value)
+    {
+        return utf8_decode($value);
+    }
 
     private function isSessionActive($userId, $portalId)
     {
@@ -3030,66 +3101,6 @@ class SoapService
 //        return $result;
 //    }
 //
-//    public function getStatistics($session_id, $date_start, $date_end){
-//        $result = '';
-//        $session_id = $this->_encode_input($session_id);
-//        if ($this->_isSessionValid($session_id)) {
-//            $this->_environment->setSessionID($session_id);
-//            $session = $this->_environment->getSessionItem();
-//            $user_id = $session->getValue('user_id');
-//            $auth_source_id = $session->getValue('auth_source');
-//            $context_id = $session->getValue('commsy_id');
-//            $this->_environment->setCurrentContextID($context_id);
-//            $user_manager = $this->_environment->getUserManager();
-//            $user_manager->setContextLimit($context_id);
-//            $user_manager->setUserIDLimit($user_id);
-//            $user_manager->setAuthSourceLimit($auth_source_id);
-//            $user_manager->select();
-//            $user_list = $user_manager->get();
-//            if ( $user_list->getCount() == 1 ) {
-//                $user_item = $user_list->getFirst();
-//                if ( $user_item->isRoot() ) {
-//                    if ( !empty($date_start) ) {
-//                        $date_start = $this->_encode_input($date_start);
-//                        if ( !empty($date_end) ) {
-//                            $date_end = $this->_encode_input($date_end);
-//                        } else {
-//                            $date_end = 'NOW';
-//                        }
-//                        if ($date_end == 'NOW') {
-//                            $date_end = date('Y-m-d').' 23:59:59';
-//                        }
-//                        $server_item = $this->_environment->getServerItem();
-//                        if ( !empty($server_item) ) {
-//                            include_once('functions/misc_functions.php');
-//                            $result = array2XML($server_item->getStatistics($date_start,$date_end));
-//                        } else {
-//                            $info = 'ERROR: GET STATISTICS';
-//                            $info_text = 'server_item is empty';
-//                            $result = new SoapFault($info,$info_text);
-//                        }
-//                    } else {
-//                        $info = 'ERROR: GET STATISTICS';
-//                        $info_text = 'date_start (second parameter) is empty';
-//                        $result = new SoapFault($info,$info_text);
-//                    }
-//                } else {
-//                    $info = 'ERROR: GET STATISTICS';
-//                    $info_text = 'only root is allowed to use this function';
-//                    $result = new SoapFault($info,$info_text);
-//                }
-//            } else {
-//                $info = 'ERROR: GET STATISTICS';
-//                $info_text = 'multiple user ('.$user_id.') with auth source ('.$auth_source_id.')';
-//                $result = new SoapFault($info,$info_text);
-//            }
-//        } else {
-//            $info = 'ERROR: GET STATISTICS';
-//            $info_text = 'session id ('.$session_id.') is not valid';
-//            $result = new SoapFault($info,$info_text);
-//        }
-//        return $result;
-//    }
 //
 //
 //    // ----------------------------------------
