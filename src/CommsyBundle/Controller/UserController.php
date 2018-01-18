@@ -939,6 +939,7 @@ class UserController extends Controller
                 $from = $this->getParameter('commsy.email.from');
 
                 $to = [];
+                $toBCC = [];
                 $validator = new EmailValidator();
                 $users = [];
                 $failedUsers = [];
@@ -946,7 +947,11 @@ class UserController extends Controller
                     $user = $userService->getUser($userId);
                     $users[] = $user;
                     if ($validator->isValid($user->getEmail(), new RFCValidation())) {
-                        $to[$user->getEmail()] = $user->getFullName();
+                        if ($user->isEmailVisible()) {
+                            $to[$user->getEmail()] = $user->getFullName();
+                        } else {
+                            $toBCC[$user->getEmail()] = $user->getFullName();
+                        }
                     } else {
                         $failedUsers[] = $user;
                     }
@@ -963,6 +968,10 @@ class UserController extends Controller
                     ->setFrom([$from => $portalItem->getTitle()])
                     ->setReplyTo($replyTo)
                     ->setTo($to);
+
+                if (!empty($toBCC)) {
+                    $message->setBcc($toBCC);
+                }
 
                 // form option: copy_to_sender
                 if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
