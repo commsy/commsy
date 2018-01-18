@@ -982,8 +982,6 @@ class UserController extends Controller
                 $failedRecipients = [];
                 $this->get('mailer')->send($message, $failedRecipients);
 
-                $failedRecipients[] = 'schoenfeld@effective-webwork.de';
-
                 foreach ($failedUsers as $failedUser) {
                     $this->addFlash('failedRecipients', $failedUser->getUserId());
                 }
