@@ -939,6 +939,7 @@ class UserController extends Controller
                 $from = $this->getParameter('commsy.email.from');
 
                 $to = [];
+                $toBCC = [];
                 $validator = new EmailValidator();
                 $users = [];
                 $failedUsers = [];
@@ -946,15 +947,31 @@ class UserController extends Controller
                     $user = $userService->getUser($userId);
                     $users[] = $user;
                     if ($validator->isValid($user->getEmail(), new RFCValidation())) {
-                        $to[$user->getEmail()] = $user->getFullName();
+                        if ($user->isEmailVisible()) {
+                            $to[$user->getEmail()] = $user->getFullName();
+                        } else {
+                            $toBCC[$user->getEmail()] = $user->getFullName();
+                        }
                     } else {
                         $failedUsers[] = $user;
                     }
                 }
 
                 $replyTo = [];
+                $toCC = [];
                 if ($validator->isValid($currentUser->getEmail(), new RFCValidation())) {
-                    $replyTo[$currentUser->getEmail()] = $currentUser->getFullName();
+                    if ($currentUser->isEmailVisible()) {
+                        $replyTo[$currentUser->getEmail()] = $currentUser->getFullName();
+                    }
+
+                    // form option: copy_to_sender
+                    if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
+                        if ($currentUser->isEmailVisible()) {
+                            $toCC[$currentUser->getEmail()] = $currentUser->getFullName();
+                        } else {
+                            $toBCC[$currentUser->getEmail()] = $currentUser->getFullName();
+                        }
+                    }
                 }
 
                 $message = \Swift_Message::newInstance()
@@ -964,16 +981,17 @@ class UserController extends Controller
                     ->setReplyTo($replyTo)
                     ->setTo($to);
 
-                // form option: copy_to_sender
-                if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-                    $message->setCc($message->getReplyTo());
+                if (!empty($toCC)) {
+                    $message->setCc($toCC);
+                }
+
+                if (!empty($toBCC)) {
+                    $message->setBcc($toBCC);
                 }
 
                 // send mail
                 $failedRecipients = [];
                 $this->get('mailer')->send($message, $failedRecipients);
-
-                $failedRecipients[] = 'schoenfeld@effective-webwork.de';
 
                 foreach ($failedUsers as $failedUser) {
                     $this->addFlash('failedRecipients', $failedUser->getUserId());
