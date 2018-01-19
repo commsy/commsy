@@ -418,10 +418,11 @@ class GroupController extends Controller
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
             'isArchived' => $roomItem->isArchived(),
+            'lastModeratorStanding' => $this->userIsLastGrouproomModerator($infoArray['group']->getGroupRoomItem()),
        );
     }
 
-/**
+    /**
      * @Route("/room/{roomId}/group/{itemId}/print")
      */
     public function printAction($roomId, $itemId)
@@ -1041,10 +1042,10 @@ class GroupController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/group/{itemId}/join")
+     * @Route("/room/{roomId}/group/{itemId}/join/{joinRoom}", defaults={"joinRoom"=false})
      * @Template()
      */
-    public function joinAction($roomId, $itemId, Request $request)
+    public function joinAction($roomId, $itemId, $joinRoom, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -1062,20 +1063,40 @@ class GroupController extends Controller
 
         $current_user = $legacyEnvironment->getCurrentUser();
 
-        $roomGroupitem = $groupItem->getGroupRoomItem();
-        if ( isset($roomGroupItem) and !empty($roomGroupItem) ) {
-            // TODO: join group room
-            // joinGroupRoom();
-            throw new Exception("Joining a group room is not yet implemented!");
-        } else {
+        // first, join group
+        if ($groupItem->getMemberItemList()->inList($current_user)) {
+            throw new \Exception("ERROR: User '" . $current_user->getUserID() . "' cannot join group '" . $groupItem->getName() . "' since (s)he already is a member!");
+        }
+        else {
             $groupItem->addMember($current_user);
-            /*
-            if($legacyEnvironment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() === '1') {
-                $wiki_manager = $this->_environment->getWikiManager();
-                $wiki_manager->updateNotification();
+        }
+
+        // then, join grouproom
+        if ($joinRoom) {
+            $grouproomItem = $groupItem->getGroupRoomItem();
+            if ($grouproomItem) {
+                $userService = $this->get('commsy_legacy.user_service');
+                $memberStatus = $userService->getMemberStatus($grouproomItem, $legacyEnvironment->getCurrentUser());
+                if ($memberStatus == 'join') {
+                    return $this->redirectToRoute('commsy_context_request', [
+                        'roomId' => $roomId,
+                        'itemId' => $grouproomItem->getItemId(),
+                    ]);
+                }
+                else {
+                    throw new \Exception("ERROR: User '" . $current_user->getUserID() . "' cannot join group room '" . $grouproomItem->getTitle() . "' since (s)he has room member status '" . $memberStatus . "' (requires status 'join' to become a room member)!");
+                }
             }
-            */
-       }
+            else {
+                throw new \Exception("ERROR: User '" . $current_user->getUserID() . "' cannot join the group room of group '" . $groupItem->getName() . "' since it does not exist!");
+                /*
+                if($legacyEnvironment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() === '1') {
+                    $wiki_manager = $this->_environment->getWikiManager();
+                    $wiki_manager->updateNotification();
+                }
+                */
+            }
+        }
 
         return new JsonResponse(array(
            'title' => $groupItem->getTitle(),
@@ -1085,10 +1106,10 @@ class GroupController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/group/{itemId}/leave")
+     * @Route("/room/{roomId}/group/{itemId}/leave/{leaveRoom}", defaults={"leaveRoom"=false})
      * @Template()
      */
-    public function leaveAction($roomId, $itemId, Request $request)
+    public function leaveAction($roomId, $itemId, $leaveRoom, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -1106,22 +1127,33 @@ class GroupController extends Controller
 
         $current_user = $legacyEnvironment->getCurrentUser();
 
+        // first, remove member from group
         $groupItem->removeMember($current_user);
+
 /*
         if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() === '1') {
             $wiki_manager = $this->_environment->getWikiManager();
             $wiki_manager->updateNotification();
         }
+*/
 
-        if($groupItem->isGroupRoomActivated()) {
-            $grouproom_item = $this->_item->getGroupRoomItem();
-            if(isset($grouproom_item) && !empty($grouproom_item)) {
-                $group_room_user_item = $grouproom_item->getUserByUserID($current_user->getUserID(), $current_user->getAuthSource());
-                $group_room_user_item->reject();
-                $group_room_user_item->save();
+        // then, remove member from group room
+        if($leaveRoom) {
+            if($groupItem->isGroupRoomActivated()) {
+                $grouproom_item = $groupItem->getGroupRoomItem();
+                if($grouproom_item) {
+                    $group_room_user_item = $grouproom_item->getUserByUserID($current_user->getUserID(), $current_user->getAuthSource());
+                    $group_room_user_item->reject();
+                    $group_room_user_item->save();
+                }
+                else {
+                    throw new \Exception("ERROR: User '" . $current_user->getUserID() . "' cannot leave the group room of group '" . $groupItem->getName() . "' since it does not exist!");
+                }
+            }
+            else {
+                throw new \Exception("ERROR: User '" . $current_user->getUserID() . "' cannot leave the group room of group '" . $groupItem->getName() . "' since it is not activated!");
             }
         }
-*/
         return new JsonResponse(array(
            'title' => $groupItem->getTitle(),
            'groupId' => $itemId,
@@ -1363,5 +1395,23 @@ class GroupController extends Controller
         }
 
         return $templates;
+    }
+
+    private function userIsLastGrouproomModerator($groupRoom) {
+
+        if (!empty($groupRoom)) {
+            $grouproomModerators = $groupRoom->getModeratorList();
+        }
+        else {
+            return false;
+        }
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $relatedUsers = $legacyEnvironment->getCurrentUser()->getRelatedUserList();
+
+        $grouproomModeratorItemIds = array_map(create_function('$o', 'return $o->getItemId();'), $grouproomModerators->to_array());
+        $relatedUsersItemIds = array_map(create_function('$o', 'return $o->getItemId();'), $relatedUsers->to_array());
+
+        return count($grouproomModerators) == 1 and count(array_intersect($relatedUsersItemIds, $grouproomModeratorItemIds));
     }
 }
