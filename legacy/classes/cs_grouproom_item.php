@@ -1116,9 +1116,10 @@ class cs_grouproom_item extends cs_room_item {
          $body .= LF.LF;
          $body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION',$title,$current_user->getFullname(),$room_change_action);
 
+         global $symfonyContainer;
+
          if ( $room_change != 'delete' ) {
 
-            global $symfonyContainer;
             $router = $symfonyContainer->get('router');
 
             $group_item = $this->getLinkedGroupItem();
