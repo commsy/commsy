@@ -958,9 +958,19 @@ class UserController extends Controller
                 }
 
                 $replyTo = [];
+                $toCC = [];
                 if ($validator->isValid($currentUser->getEmail(), new RFCValidation())) {
                     if ($currentUser->isEmailVisible()) {
                         $replyTo[$currentUser->getEmail()] = $currentUser->getFullName();
+                    }
+
+                    // form option: copy_to_sender
+                    if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
+                        if ($currentUser->isEmailVisible()) {
+                            $toCC[$currentUser->getEmail()] = $currentUser->getFullName();
+                        } else {
+                            $toBCC[$currentUser->getEmail()] = $currentUser->getFullName();
+                        }
                     }
                 }
 
@@ -971,17 +981,12 @@ class UserController extends Controller
                     ->setReplyTo($replyTo)
                     ->setTo($to);
 
-                if (!empty($toBCC)) {
-                    $message->setBcc($toBCC);
+                if (!empty($toCC)) {
+                    $message->setCc($toCC);
                 }
 
-                // form option: copy_to_sender
-                if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-                    if ($currentUser->isEmailVisible()) {
-                        $message->setCc($message->getReplyTo());
-                    } else {
-                        $message->setBcc([$currentUser->getEmail() => $currentUser->getFullName()]);
-                    }
+                if (!empty($toBCC)) {
+                    $message->setBcc($toBCC);
                 }
 
                 // send mail
