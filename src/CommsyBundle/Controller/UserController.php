@@ -959,7 +959,9 @@ class UserController extends Controller
 
                 $replyTo = [];
                 if ($validator->isValid($currentUser->getEmail(), new RFCValidation())) {
-                    $replyTo[$currentUser->getEmail()] = $currentUser->getFullName();
+                    if ($currentUser->isEmailVisible()) {
+                        $replyTo[$currentUser->getEmail()] = $currentUser->getFullName();
+                    }
                 }
 
                 $message = \Swift_Message::newInstance()
@@ -975,7 +977,11 @@ class UserController extends Controller
 
                 // form option: copy_to_sender
                 if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-                    $message->setCc($message->getReplyTo());
+                    if ($currentUser->isEmailVisible()) {
+                        $message->setCc($message->getReplyTo());
+                    } else {
+                        $message->setBcc([$currentUser->getEmail() => $currentUser->getFullName()]);
+                    }
                 }
 
                 // send mail
