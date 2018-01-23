@@ -312,6 +312,10 @@ class GroupController extends Controller
             $response->headers->set('Content-Disposition', $contentDisposition);
             
             return $response;
+        } else if ($action == 'sendmail') {
+            return new JsonResponse([
+                'redirect' => $this->generateUrl('commsy_group_sendmultiple', array('roomId' => $roomId, 'userIds' => $selectedIds)),
+            ]);
         } else if ($action == 'delete') {
             $groupService = $this->get('commsy_legacy.group_service');
             foreach ($selectedIds as $id) {
