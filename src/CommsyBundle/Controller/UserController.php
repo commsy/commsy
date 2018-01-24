@@ -1340,8 +1340,9 @@ class UserController extends Controller
         foreach ($userIds as $userId) {
             $user = $userService->getUser($userId);
 
-            $email = $user->getEmail();
-            if (!empty($email)) {
+            $userEmail = $user->getEmail();
+            if (!empty($userEmail)) {
+                $to = [$userEmail => $user->getFullname()];
                 $subject = $accountMail->generateSubject($action);
                 $body = $accountMail->generateBody($user, $action);
 
@@ -1349,8 +1350,13 @@ class UserController extends Controller
                     ->setSubject($subject)
                     ->setBody($body, 'text/plain')
                     ->setFrom([$fromAddress => $fromSender])
-                    ->setReplyTo([$currentUser->getEmail() => $currentUser->getFullname()])
-                    ->setTo([$email]);
+                    ->setReplyTo([$currentUser->getEmail() => $currentUser->getFullname()]);
+
+                if ($user->isEmailVisible()) {
+                    $mailMessage->setTo($to);
+                } else {
+                    $mailMessage->setBcc($to);
+                }
 
                 // send mail
                 $mailer->send($mailMessage);
