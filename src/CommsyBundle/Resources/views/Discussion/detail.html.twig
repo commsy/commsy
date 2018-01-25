@@ -192,13 +192,13 @@
                                         <div class="uk-flex-inline uk-width-2-5 ">
                                             {% if loop.last and loop.length > 1 %}
                                                 <div class="uk-margin-right">
-                                                    <a class="uk-button-primary" href="#article_{{count-1}}"><i class="uk-icon-small uk-icon-angle-up"></i></a>
+                                                    <a class="uk-button-primary" href="#discarticle_{{count-1}}"><i class="uk-icon-small uk-icon-angle-up"></i></a>
                                                     <i class="uk-icon-small uk-icon-angle-down uk-text-muted"></i>
                                                 </div>
                                             {% elseif loop.first and loop.length > 1 %}
                                                 <div>
                                                     <i class="uk-icon-small uk-icon-angle-up uk-text-muted"></i>
-                                                    <a class="uk-button-primary" href="#article_{{count+1}}"><i class="uk-icon-small uk-icon-angle-down"></i></a>
+                                                    <a class="uk-button-primary" href="#discarticle_{{count+1}}"><i class="uk-icon-small uk-icon-angle-down"></i></a>
                                                 </div>
                                             {% elseif loop.length == 1 %}
                                                 <div>
@@ -207,8 +207,8 @@
                                                 </div>
                                             {% else %}
                                                 <div class="uk-margin-right">
-                                                    <a class="uk-button-primary" href="#article_{{count-1}}"><i class="uk-icon-small uk-icon-angle-up"></i></a>
-                                                    <a class="uk-button-primary" href="#article_{{count+1}}"><i class="uk-icon-small uk-icon-angle-down"></i></a>
+                                                    <a class="uk-button-primary" href="#discarticle_{{count-1}}"><i class="uk-icon-small uk-icon-angle-up"></i></a>
+                                                    <a class="uk-button-primary" href="#discarticle_{{count+1}}"><i class="uk-icon-small uk-icon-angle-down"></i></a>
                                                 </div>
                                             {% endif %}
                                         </div>

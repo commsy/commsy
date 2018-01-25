@@ -1337,11 +1337,23 @@ class UserController extends Controller
 
         $userService = $this->get('commsy_legacy.user_service');
 
+        $validator = new EmailValidator();
+        $replyTo = [];
+        $currentUserEmail = $currentUser->getEmail();
+        if ($validator->isValid($currentUserEmail, new RFCValidation())) {
+            if ($currentUser->isEmailVisible()) {
+                $replyTo[$currentUserEmail] = $currentUser->getFullName();
+            }
+        }
+
+        $users = [];
+        $failedUsers = [];
         foreach ($userIds as $userId) {
             $user = $userService->getUser($userId);
 
-            $email = $user->getEmail();
-            if (!empty($email)) {
+            $userEmail = $user->getEmail();
+            if (!empty($userEmail) && $validator->isValid($userEmail, new RFCValidation())) {
+                $to = [$userEmail => $user->getFullname()];
                 $subject = $accountMail->generateSubject($action);
                 $body = $accountMail->generateBody($user, $action);
 
@@ -1349,11 +1361,33 @@ class UserController extends Controller
                     ->setSubject($subject)
                     ->setBody($body, 'text/plain')
                     ->setFrom([$fromAddress => $fromSender])
-                    ->setReplyTo([$currentUser->getEmail() => $currentUser->getFullname()])
-                    ->setTo([$email]);
+                    ->setReplyTo($replyTo);
+
+                if ($user->isEmailVisible()) {
+                    $mailMessage->setTo($to);
+                } else {
+                    $mailMessage->setBcc($to);
+                }
 
                 // send mail
-                $mailer->send($mailMessage);
+                $failedRecipients = [];
+                $mailer->send($mailMessage, $failedRecipients);
+            } else {
+                $failedUsers[] = $user;
+            }
+        }
+
+        foreach ($failedUsers as $failedUser) {
+            $this->addFlash('failedRecipients', $failedUser->getUserId());
+        }
+
+        foreach ($failedRecipients as $failedRecipient) {
+            $failedUser = array_filter($users, function($user) use ($failedRecipient) {
+                return $user->getEmail() == $failedRecipient;
+            });
+
+            if ($failedUser) {
+                $this->addFlash('failedRecipients', $failedUser[0]->getUserId());
             }
         }
     }
