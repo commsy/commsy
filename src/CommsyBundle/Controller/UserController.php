@@ -1337,6 +1337,15 @@ class UserController extends Controller
 
         $userService = $this->get('commsy_legacy.user_service');
 
+        $validator = new EmailValidator();
+        $replyTo = [];
+        $currentUserEmail = $currentUser->getEmail();
+        if ($validator->isValid($currentUserEmail, new RFCValidation())) {
+            if ($currentUser->isEmailVisible()) {
+                $replyTo[$currentUserEmail] = $currentUser->getFullName();
+            }
+        }
+
         foreach ($userIds as $userId) {
             $user = $userService->getUser($userId);
 
@@ -1350,7 +1359,7 @@ class UserController extends Controller
                     ->setSubject($subject)
                     ->setBody($body, 'text/plain')
                     ->setFrom([$fromAddress => $fromSender])
-                    ->setReplyTo([$currentUser->getEmail() => $currentUser->getFullname()]);
+                    ->setReplyTo($replyTo);
 
                 if ($user->isEmailVisible()) {
                     $mailMessage->setTo($to);
