@@ -1346,11 +1346,13 @@ class UserController extends Controller
             }
         }
 
+        $users = [];
+        $failedUsers = [];
         foreach ($userIds as $userId) {
             $user = $userService->getUser($userId);
 
             $userEmail = $user->getEmail();
-            if (!empty($userEmail)) {
+            if (!empty($userEmail) && $validator->isValid($userEmail, new RFCValidation())) {
                 $to = [$userEmail => $user->getFullname()];
                 $subject = $accountMail->generateSubject($action);
                 $body = $accountMail->generateBody($user, $action);
@@ -1368,7 +1370,24 @@ class UserController extends Controller
                 }
 
                 // send mail
-                $mailer->send($mailMessage);
+                $failedRecipients = [];
+                $mailer->send($mailMessage, $failedRecipients);
+            } else {
+                $failedUsers[] = $user;
+            }
+        }
+
+        foreach ($failedUsers as $failedUser) {
+            $this->addFlash('failedRecipients', $failedUser->getUserId());
+        }
+
+        foreach ($failedRecipients as $failedRecipient) {
+            $failedUser = array_filter($users, function($user) use ($failedRecipient) {
+                return $user->getEmail() == $failedRecipient;
+            });
+
+            if ($failedUser) {
+                $this->addFlash('failedRecipients', $failedUser[0]->getUserId());
             }
         }
     }
