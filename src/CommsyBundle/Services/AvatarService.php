@@ -58,13 +58,13 @@ class AvatarService
             return $this->generateInitialsAvatar();
         }
         
-        return file_get_contents($this->kernelRootDir.'/Resources/assets/img/user_unknown.gif');
+        return file_get_contents($this->kernelRootDir.'/../assets/img/user_unknown.gif');
     }
     
     function generateInitialsAvatar() {
         if ($this->type == 1) {
-            $image = @imagecreatefromgif($this->kernelRootDir.'/Resources/assets/img/user_unknown.gif');
-            $imageSize = getimagesize($this->kernelRootDir.'/Resources/assets/img/user_unknown.gif');
+            $image = @imagecreatefromgif($this->kernelRootDir.'/../assets/img/user_unknown.gif');
+            $imageSize = getimagesize($this->kernelRootDir.'/../assets/img/user_unknown.gif');
             $this->imageWidth = $imageSize[0];
             $this->imageHeight = $imageSize[1];
             $fontSize = 50;
@@ -81,8 +81,8 @@ class AvatarService
         if (!$initialString) {
             $initialString = strtoupper(substr($this->user->getUserId(), 0, 1));
         }
-        
-        $font = realPath('fonts').'/LiberationSans-Regular.ttf';
+
+        $font = $this->kernelRootDir.'/../assets/fonts/LiberationSans-Regular.ttf';
         $angle = 0;
         
         $textBox = imagettfbbox($fontSize,$angle,$font,$initialString);
@@ -165,6 +165,6 @@ class AvatarService
     }
 
     function getUnknownUserImage() {
-        return file_get_contents($this->kernelRootDir.'/Resources/assets/img/user_unknown.gif');
+        return file_get_contents($this->kernelRootDir.'/../assets/img/user_unknown.gif');
     }
 }

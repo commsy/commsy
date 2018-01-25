@@ -122,9 +122,7 @@ web/commsy
 
 web/js/build/*
 web/css/build/*
-web/fonts
-web/img
-app/Resources/assets/manifests/rev-manifest.json
+web/build
 
 node_modules
 src/CommsyBundle/Resources/public/components
