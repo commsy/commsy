@@ -35,6 +35,8 @@
     "nprogress": "^0.2.0",
     "promise": "^7.1.1",
     "tooltipster": "^4.2.5",
+    "ts-loader": "^3.3.1",
+    "typescript": "^2.6.2",
     "uikit": "^2.27.4",
     "urijs": "^1.18.10",
     "video.js": "^5.19.2",

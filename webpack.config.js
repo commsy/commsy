@@ -29,6 +29,8 @@ Encore
     //     './assets/js/common_js.js'
     // ])
 
+    .enableTypeScriptLoader()
+
     // allow less files to be processed
     .enableLessLoader(function(options) {
         options.paths = [
