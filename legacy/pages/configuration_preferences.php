@@ -290,6 +290,11 @@ if ($current_user->isGuest()) {
          $page->addDeleteBox(curl($environment->getCurrentContextID(),module2type($environment->getCurrentModule()),$environment->getCurrentFunction(),$params));
       }
 
+      if (isOption($command, $translator->getMessage('PORTAL_DELETE_BUTTON'))) {
+          $params = $environment->getCurrentParameterArray();
+          $page->addDeleteBox(curl($environment->getCurrentContextID(),module2type($environment->getCurrentModule()),$environment->getCurrentFunction(),$params));
+      }
+
       // Cancel editing
       if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
          if ( $environment->getCurrentModule() == CS_PROJECT_TYPE
