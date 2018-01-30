@@ -104,9 +104,11 @@ if (isOption($option, $translator->getMessage('CONTACT_MAIL_SEND_BUTTON'))){
       $body .= LF;
       $mail = new cs_mail();
       $mail->set_to(implode(',',$email_addresses));
-      //$mail->set_from_email($user_item->getEmail());
-      //$mail->set_from_name($user_item->getFullname());
-      $mail->set_from_email($environment->getServerItem()->getDefaultSenderAddress());
+
+       global $symfonyContainer;
+       $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+       $mail->set_from_email($emailFrom);
+
       $mail->set_from_name($environment->getCurrentPortalItem()->getTitle());
       $mail->set_reply_to_name($user_item->getFullname());
       $mail->set_reply_to_email($user_item->getEmail());
@@ -270,13 +272,11 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
              }
              $mail = new cs_mail();
              $mail->set_to(implode(',',$email_addresses));
-             $server_item = $environment->getServerItem();
-             $default_sender_address = $server_item->getDefaultSenderAddress();
-             if (!empty($default_sender_address)) {
-                $mail->set_from_email($default_sender_address);
-             } else {
-                $mail->set_from_email('@');
-             }
+
+              global $symfonyContainer;
+              $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+              $mail->set_from_email($emailFrom);
+
              $current_context = $environment->getCurrentContextItem();
              $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_context->getTitle()));
              $mail->set_reply_to_name($user_item->getFullname());
@@ -333,13 +333,11 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
              $mail = new cs_mail();
              $mail->set_to($user_item->getEmail());
              $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
-             $server_item = $environment->getServerItem();
-             $default_sender_address = $server_item->getDefaultSenderAddress();
-             if (!empty($default_sender_address)) {
-                $mail->set_from_email($default_sender_address);
-             } else {
-                $mail->set_from_email('@');
-             }
+
+              global $symfonyContainer;
+              $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+              $mail->set_from_email($emailFrom);
+
              $mail->set_reply_to_email($contact_moderator->getEmail());
              $mail->set_reply_to_name($contact_moderator->getFullname());
              $mail->set_subject($subject);

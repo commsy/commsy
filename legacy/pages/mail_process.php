@@ -36,9 +36,11 @@ if ( $mail_obj->isSendMailAuto() ) {
       $senderName = $name;
       $senderAddress = $address;
    }
-   //$mail->set_from_email($senderAddress);
-   //$mail->set_from_name($senderName);
-   $mail->set_from_email($environment->getServerItem()->getDefaultSenderAddress());
+
+    global $symfonyContainer;
+    $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+    $mail->set_from_email($emailFrom);
+
    $mail->set_from_name($environment->getCurrentPortalItem()->getTitle());
    $mail->set_reply_to_email($senderAddress);
    $mail->set_reply_to_name($senderName);
@@ -122,9 +124,11 @@ if ( $command != 'error' ) {
          if ( $correct ) {
             include_once('classes/cs_mail.php');
             $mail = new cs_mail();
-            //$mail->set_from_email($_POST['senderAddress']);
-            //$mail->set_from_name($_POST['senderName']);
-            $mail->set_from_email($environment->getServerItem()->getDefaultSenderAddress());
+
+             global $symfonyContainer;
+             $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+             $mail->set_from_email($emailFrom);
+
             $mail->set_from_name($environment->getCurrentPortalItem()->getTitle());
             $mail->set_reply_to_email($_POST['senderAddress']);
             $mail->set_reply_to_name($_POST['senderName']);

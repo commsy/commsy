@@ -560,8 +560,8 @@ class cs_authentication {
                   if(!empty($new_account_data['email'])){
                      $user_item->setEmail($new_account_data['email']);
                   } else {
-                     $server_item = $this->_environment->getServerItem();
-                     $email = $server_item->getDefaultSenderAddress();
+                     global $symfonyContainer;
+                     $email = $symfonyContainer->getParameter('commsy.email.from');
                      $user_item->setEmail($email);
                      $user_item->setHasToChangeEmail();
                   }

@@ -1779,13 +1779,9 @@ function exportItemToWiki($current_item_id,$rubric){
              $from = $translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_title);
              $mail->set_from_name($from);
 
-             $server_item = $this->_environment->getServerItem();
-             $default_sender_address = $server_item->getDefaultSenderAddress();
-             if (!empty($default_sender_address)) {
-                 $mail->set_from_email($default_sender_address);
-             } else {
-                 $mail->set_from_email('@');
-             }
+              global $symfonyContainer;
+              $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+              $mail->set_from_email($emailFrom);
 
              $subject = $translator->getMessage('MATERIAL_EXPORT_WIKI_MAIL_SUBJECT').': '.$room_title;
              $mail->set_subject($subject);
@@ -2099,13 +2095,9 @@ function exportItemToWiki_soap($current_item_id,$rubric){
              $from = $translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_title);
              $mail->set_from_name($from);
 
-             $server_item = $this->_environment->getServerItem();
-             $default_sender_address = $server_item->getDefaultSenderAddress();
-             if (!empty($default_sender_address)) {
-                 $mail->set_from_email($default_sender_address);
-             } else {
-                 $mail->set_from_email('@');
-             }
+              global $symfonyContainer;
+              $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+              $mail->set_from_email($emailFrom);
 
              $subject = $translator->getMessage('MATERIAL_EXPORT_WIKI_MAIL_SUBJECT').': '.$room_title;
              $mail->set_subject($subject);
