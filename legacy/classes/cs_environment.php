@@ -117,7 +117,7 @@ class cs_environment {
   /** get the current user
    * returns the current user. If there is no current user it will be returned an emtpy user_item.
    *
-   * @return object                                cs_user_item
+   * @return \cs_user_item cs_user_item
    */
    function getCurrentUserItem () {
       if ( !isset($this->current_user) ) {

@@ -381,7 +381,7 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
     *
     * @param integer item_id id of the item
     *
-    * @return object cs_item a todo
+    * @return \cs_todo_item a todo
     */
    function getItem ($item_id) {
       $todo = NULL;

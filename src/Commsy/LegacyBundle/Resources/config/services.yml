@@ -95,7 +95,8 @@ services:
         
     commsy_legacy.announcement_service:
         class: Commsy\LegacyBundle\Utils\AnnouncementService
-        arguments: ['@commsy_legacy.environment']
+        arguments:
+          - '@commsy_legacy.environment'
         
     commsy_legacy.discussion_service:
         class: Commsy\LegacyBundle\Utils\DiscussionService

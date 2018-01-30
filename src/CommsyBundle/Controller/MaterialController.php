@@ -2,6 +2,7 @@
 
 namespace CommsyBundle\Controller;
 
+use CommsyBundle\Http\JsonRedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -381,29 +382,34 @@ class MaterialController extends Controller
      **/
     public function workflowAction($roomId, $itemId, Request $request)
     {
-        if ($request->request->has('read')) {
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        if ($request->request->has('payload')) {
+            $payload = $request->request->get('payload');
 
-            $itemManager = $legacyEnvironment->getItemManager();
-            $currentContextItem = $legacyEnvironment->getCurrentContextItem();
-            $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+            if (isset($payload['read']) && $payload['read']) {
+                $read = $payload['read'];
 
-            $read = $request->request->get('read');
+                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
-            if ($currentContextItem->withWorkflow()) {
-                if ($read == 'true') {
-                    $itemManager->markItemAsWorkflowRead($itemId, $currentUserItem->getItemID());
+                $itemManager = $legacyEnvironment->getItemManager();
+                $currentContextItem = $legacyEnvironment->getCurrentContextItem();
+                $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+
+                if ($currentContextItem->withWorkflow()) {
+                    if ($read == 'true') {
+                        $itemManager->markItemAsWorkflowRead($itemId, $currentUserItem->getItemID());
+                    } else {
+                        $itemManager->markItemAsWorkflowNotRead($itemId, $currentUserItem->getItemID());
+                    }
                 } else {
-                    $itemManager->markItemAsWorkflowNotRead($itemId, $currentUserItem->getItemID());
+                    throw new \Exception('workflow is not enabled');
                 }
-            } else {
-                throw new \Exception('workflow is not enabled');
             }
         }
 
-        $response = new JsonResponse();
-
-        return $response;
+        return new JsonRedirectResponse($this->generateUrl('commsy_material_detail', [
+            'roomId' => $roomId,
+            'itemId' => $itemId
+        ]));
     }
     
     /**

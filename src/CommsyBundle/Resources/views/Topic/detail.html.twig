@@ -113,12 +113,14 @@
 
                                         {# copy #}
                                         <li>
-                                            <a href="#" data-cs-action-copy="{
-                                                'url': '{{ path('commsy_item_copy', {'roomId': roomId}) }}',
-                                                'successMessage': '<i class=\'uk-icon-medium uk-icon-copy\'></i> {{ 'Entry stored in clipboard|%count% entries stored in clipboard'|transchoice(1, {}, 'item') }}',
-                                                'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}',
-                                                'itemIds': [ {{ topic.itemId}} ]
-                                            }">
+                                            <a href="#" data-cs-action="{{ {
+                                                'url': path('commsy_topic_feedaction', {'roomId': roomId}),
+                                                'action': 'copy',
+                                                'itemId': topic.itemId,
+                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                'mode': 'click',
+                                                'successMessage': '<i class="uk-icon-medium uk-icon-copy"></i>' ~ 'Entry stored in clipboard|%count% entries stored in clipboard'|transchoice(1, {}, 'item')
+                                            }|json_encode|e('html_attr') }}">
                                                 <i class="uk-icon-small uk-icon-copy uk-icon-justify uk-visible-large"></i> {{ 'copy'|trans({})|capitalize }}
                                             </a>
                                         </li>
@@ -133,7 +135,19 @@
                                         {# delete #}
                                         <li>
                                             {% if is_granted('ITEM_EDIT', item.itemId) %}
-                                                <a class="commsy-action-delete" id="" href="#" data-delete-url="{{ path('commsy_item_delete', {'roomId': roomId, 'itemId': topic.itemId}) }}" data-item-type="{{topic.itemType}}" data-title="{{ 'list choice'|trans({},'rubric')|capitalize }}" data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}" data-return-url="{{ path('commsy_topic_list', {'roomId': roomId}) }}">
+                                                <a  href="#" data-cs-action="{{ {
+                                                    'url': path('commsy_topic_feedaction', {'roomId': roomId, 'itemId': topic.itemId}),
+                                                    'action': 'delete',
+                                                    'itemId': topic.itemId,
+                                                    'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                    'mode': 'click',
+                                                    'itemType': topic.itemType,
+                                                    'title': 'list choice'|trans({},'rubric')|capitalize,
+                                                    'confirmQuestion': 'confirm delete'|trans({},'rubric'),
+                                                    'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
+                                                    'confirmOk': 'confirm delete confirm'|trans({},'rubric'),
+                                                    'returnUrl': path('commsy_topic_list', {'roomId': roomId})
+                                                }|json_encode|e('html_attr') }}">
                                                     <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                 </a>
                                             {% else %}

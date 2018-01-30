@@ -9,8 +9,14 @@ class TodoService
 {
     private $legacyEnvironment;
 
+    /**
+     * @var \cs_todos_manager
+     */
     private $todoManager;
-    
+
+    /**
+     * @var \cs_step_manager
+     */
     private $stepManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
@@ -24,6 +30,13 @@ class TodoService
         $this->stepManager->reset();
     }
 
+    /**
+     * @param integer $roomId
+     * @param integer $max
+     * @param integer $start
+     * @param string $sort
+     * @return \cs_todo_item[]
+     */
     public function getListTodos($roomId, $max = NULL, $start = NULL, $sort = NULL)
     {
         $this->todoManager->setContextLimit($roomId);
@@ -34,6 +47,21 @@ class TodoService
         if ($sort) {
             $this->todoManager->setSortOrder($sort);
         }
+
+        $this->todoManager->select();
+        $todoList = $this->todoManager->get();
+
+        return $todoList->to_array();
+    }
+
+    /**
+     * @param integer $roomId
+     * @param integer[] $idArray
+     * @return \cs_todo_item[]
+     */
+    public function getTodosById($roomId, $idArray) {
+        $this->todoManager->setContextLimit($roomId);
+        $this->todoManager->setIDArrayLimit($idArray);
 
         $this->todoManager->select();
         $todoList = $this->todoManager->get();
@@ -109,7 +137,11 @@ class TodoService
             }
         }
     }
-    
+
+    /**
+     * @param integer $itemId
+     * @return \cs_todo_item
+     */
     public function getTodo($itemId)
     {
         return $this->todoManager->getItem($itemId);
@@ -119,12 +151,18 @@ class TodoService
     {
         return $this->stepManager->getItem($itemId);
     }
-    
+
+    /**
+     * @return \cs_todo_item
+     */
     public function getNewTodo()
     {
         return $this->todoManager->getNewItem();
     }
 
+    /**
+     * @return \cs_step_item
+     */
     public function getNewStep()
     {
         return $this->stepManager->getNewItem();

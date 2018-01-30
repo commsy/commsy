@@ -2,6 +2,7 @@
 
 namespace CommsyBundle\Controller;
 
+use CommsyBundle\Http\JsonRedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -754,7 +755,9 @@ class DiscussionController extends Controller
 
         $tempItem->delete();
 
-        return $this->redirectToRoute('commsy_discussion_list', array('roomId' => $roomId));
+        return new JsonRedirectResponse($this->generateUrl('commsy_discussion_list', [
+            'roomId' => $roomId,
+        ]));
     }
     
     /**

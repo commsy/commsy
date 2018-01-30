@@ -19,6 +19,13 @@ class DateService
         $this->dateManager->reset();
     }
 
+    /**
+     * @param integer $roomId
+     * @param integer $max
+     * @param integer $start
+     * @param string $sort
+     * @return \cs_dates_item[]
+     */
     public function getListDates($roomId, $max, $start, $sort)
     {
         $this->dateManager->setContextLimit($roomId);
@@ -138,12 +145,22 @@ class DateService
             $this->dateManager->setFutureLimit();
         }
     }
-    
+
+    /**
+     * @param integer $itemId
+     * @return \cs_dates_item
+     */
     public function getDate($itemId)
     {
         return $this->dateManager->getItem($itemId);
     }
-    
+
+    /**
+     * @param integer $roomId
+     * @param integer $start
+     * @param integer $end
+     * @return \cs_dates_item[]
+     */
     public function getCalendarEvents($roomId, $start, $end)
     {
         $this->dateManager->setContextLimit($roomId);
@@ -174,7 +191,12 @@ class DateService
 
         return $countDatelArray;
     }
-    
+
+    /**
+     * @param integer $roomId
+     * @param integer $recurringId
+     * @return \cs_dates_item[]
+     */
     public function getRecurringDates($roomId, $recurringId)
     {
         $this->dateManager->reset();
@@ -183,6 +205,7 @@ class DateService
         $this->dateManager->setWithoutDateModeLimit();
         $this->dateManager->select();
         $dateList = $this->dateManager->get();
+
         return $dateList->to_array();
     }
     

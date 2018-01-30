@@ -9,6 +9,7 @@ require('fullcalendar/dist/locale-all');
 require('tooltipster/dist/js/tooltipster.bundle');
 require('expose-loader?URI!urijs/src/URI');
 require('video.js/dist/video');
+require('jscolor-picker/jscolor');
 
 require('expose-loader?UIkit!uikit/dist/js/uikit');
 require('uikit/dist/js/components/autocomplete');
@@ -33,3 +34,11 @@ var commsyModules = require.context('./commsy', true, /\.js$/);
 commsyModules.keys().forEach(function(key) {
     commsyModules(key);
 });
+
+import {DetailActionManager} from "./commsy/actions/DetailActionManager";
+let detailActionManager = new DetailActionManager();
+detailActionManager.registerActors();
+
+import {ListActionManager} from "./commsy/actions/ListActionManager";
+let listActionManager = new ListActionManager();
+listActionManager.bootstrap();

@@ -365,6 +365,10 @@ class cs_dates_item extends cs_item {
         return $this->_getValue('calendar_id');
     }
 
+    /**
+     * @return \CommsyBundle\Entity\Calendars
+     * @throws Exception
+     */
     function getCalendar() {
         global $symfonyContainer;
         $calendarsService = $symfonyContainer->get('commsy.calendars_service');

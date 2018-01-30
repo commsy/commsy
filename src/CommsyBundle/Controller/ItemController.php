@@ -21,7 +21,6 @@ use CommsyBundle\Form\Type\ItemWorkflowType;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use CommsyBundle\Event\CommsyEditEvent;
 
 class ItemController extends Controller
@@ -34,6 +33,7 @@ class ItemController extends Controller
     public function editDescriptionAction($roomId, $itemId, $draft = false, Request $request)
     {
         $itemService = $this->get('commsy_legacy.item_service');
+        /** @var \cs_item $item */
         $item = $itemService->getTypedItem($itemId);
         
         $transformer = $this->get('commsy_legacy.transformer.'.$item->getItemType());
@@ -55,6 +55,7 @@ class ItemController extends Controller
         
         $withRecurrence = false;
         if ($itemType == 'date') {
+            /** @var \cs_dates_item $item */
             if ($item->getRecurrencePattern() != '' && !$draft) {
                 $formOptions['attr']['unsetRecurrence'] = true;
                 $withRecurrence = true;
@@ -93,7 +94,7 @@ class ItemController extends Controller
                     $tempDate->save();
                 }
             } else {
-                throw new UnexpectedValueException("Value must be one of 'save', 'saveThisDate' and 'saveAllDates'.");
+                throw new \UnexpectedValueException("Value must be one of 'save', 'saveThisDate' and 'saveAllDates'.");
             }
 
             return $this->redirectToRoute('commsy_item_savedescription', array('roomId' => $roomId, 'itemId' => $itemId));
@@ -366,9 +367,8 @@ class ItemController extends Controller
 
                 // persist
                 $item->save();
-            } else if ($form->get('cancel')->isClicked()) {
-                //ToDo ...
             }
+
             return $this->redirectToRoute('commsy_item_savelinks', [
                 'roomId' => $roomId,
                 'itemId' => $itemId,
@@ -415,49 +415,6 @@ class ItemController extends Controller
             'showCategories' => $roomItem->withTags(),
             'modifierList' => $modifierList
         );
-    }
-
-    /**
-     * @Route("/room/{roomId}/item/copy", condition="request.isXmlHttpRequest()")
-     **/
-    public function copyAction($roomId, Request $request)
-    {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-        $sessionItem = $legacyEnvironment->getSessionItem();
-
-        $currentClipboardIds = array();
-        if ($sessionItem->issetValue('clipboard_ids')) {
-            $currentClipboardIds = $sessionItem->getValue('clipboard_ids');
-        }
-
-        // extract ids from request data
-        $requestContent = $request->getContent();
-        if (empty($requestContent)) {
-            throw new \Exception('no request content given');
-        }
-
-        $jsonArray = json_decode($requestContent, true);
-
-        if (!isset($jsonArray['itemIds']) || empty($jsonArray['itemIds'])) {
-            throw new \Exception('no item ids given');
-        }
-
-        $itemIds = $jsonArray['itemIds'];
-
-        foreach ($itemIds as $itemId) {
-            if (!in_array($itemId, $currentClipboardIds)) {
-                $currentClipboardIds[] = $itemId;
-                $sessionItem->setValue('clipboard_ids', $currentClipboardIds);
-            }
-        }
-
-        $sessionManager = $legacyEnvironment->getSessionManager();
-        $sessionManager->save($sessionItem);
-
-        return new JsonResponse([
-            'count' => sizeof($currentClipboardIds)
-        ]);
     }
 
     /**
@@ -734,8 +691,11 @@ class ItemController extends Controller
     public function filelistAction($roomId, $itemId, Request $request)
     {
         $itemService = $this->get('commsy_legacy.item_service');
+
+        /** @var \cs_item $item */
         $item = $itemService->getItem($itemId);
 
+        /** @var \cs_file_item[] $files */
         $files = $item->getFileList()->to_array();
         $fileArray = array();
 
@@ -766,10 +726,14 @@ class ItemController extends Controller
         $environment = $this->get('commsy_legacy.environment')->getEnvironment();
         
         $itemService = $this->get('commsy_legacy.item_service');
+
+        /** @var \cs_item $baseItem */
         $baseItem = $itemService->getItem($itemId);
-        
+
+        /** @var \cs_manager $rubricManager */
         $rubricManager = $environment->getManager($baseItem->getItemType());
-        
+
+        /** @var \cs_item $item */
         $item = $rubricManager->getItem($itemId);
 
         if ($baseItem->getItemType() == 'project') {
@@ -890,76 +854,90 @@ class ItemController extends Controller
         return $response;
     }
     
-    /**
-     * @Route("/room/{roomId}/item/{itemId}/delete")
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     **/
-    public function deleteAction($roomId, $itemId, Request $request)
-    {
-        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $itemService = $this->get('commsy_legacy.item_service');
-        $item = $itemService->getTypedItem($itemId);
-
-        $noModeratorsError = false;
-        if ($item->getItemType() == CS_USER_TYPE) {
-            if (!$this->contextHasModerators($roomId, [$itemId])) {
-                $noModeratorsError = true;
-            }
-        }
-
-        if (!$noModeratorsError) {
-            $item->delete();
-        }
-
-        $this->removeItemFromClipboard($itemId);
-
-        $route = 'commsy_'.$item->getItemType().'_list';
-
-        if ($item->getItemType() == 'date') {
-            $roomService = $this->get('commsy_legacy.room_service');
-            $room = $roomService->getRoomItem($roomId);
-            if ($room->getDatesPresentationStatus() != 'normal') {
-                $route = 'commsy_date_calendar';
-            }
-            // remove recurring events
-            if ($request->query->has('recurring') && $item->getRecurrenceId() != '') {
-                $dates_manager = $environment->getDatesManager();
-                $dates_manager->resetLimits();
-
-                $date_item = $dates_manager->getItem($itemId);
-                $recurrence_id = $date_item->getRecurrenceId();
-                $dates_manager->setRecurrenceLimit($recurrence_id);
-
-                $dates_manager->setWithoutDateModeLimit();
-                $dates_manager->select();
-                $dates_list = $dates_manager->get();
-
-                $temp_date = $dates_list->getFirst();
-                while($temp_date) {
-                    $temp_date->delete();
-                    $temp_date = $dates_list->getNext();
-                }
-            }
-        }
-
-        if ($item->getItemType() == 'section') {
-            $route = 'commsy_material_detail';
-            $materialService = $this->get('commsy_legacy.material_service');
-            $section = $materialService->getSection($item->getItemID());
-            $material = $section->getLinkedItem();
-            $section->delete($material->getVersionID());
-            return $this->redirectToRoute($route, array('roomId' => $roomId, 'itemId' => $material->getItemId()));
-        }
-
-        if ($item->getItemType() == 'step') {
-            $route = 'commsy_todo_detail';
-            $todoService = $this->get('commsy_legacy.todo_service');
-            $step = $todoService->getStep($item->getItemID());
-            return $this->redirectToRoute($route, array('roomId' => $roomId, 'itemId' => $step->getTodoID()));
-        }
-
-        return $this->redirectToRoute($route, array('roomId' => $roomId));
-    }
+//    /**
+//     * @Route("/room/{roomId}/item/delete")
+//     * @throws \Exception
+//     **/
+//    public function deleteAction($roomId, Request $request)
+//    {
+//
+//
+//
+//
+//
+//
+////        $item = $itemService->getTypedItem($itemId);
+////
+//        $noModeratorsError = false;
+//        if ($item->getItemType() == CS_USER_TYPE) {
+//            if (!$this->contextHasModerators($roomId, [$itemId])) {
+//                $noModeratorsError = true;
+//            }
+//        }
+//
+//        if (!$noModeratorsError) {
+//            $item->delete();
+//        }
+//
+//        $this->removeItemFromClipboard($itemId);
+//
+//        $route = 'commsy_'.$item->getItemType().'_list';
+//
+//        if ($item->getItemType() == 'date') {
+//            $roomService = $this->get('commsy_legacy.room_service');
+//            $room = $roomService->getRoomItem($roomId);
+//            if ($room->getDatesPresentationStatus() != 'normal') {
+//                $route = 'commsy_date_calendar';
+//            }
+//            // remove recurring events
+//            if ($request->query->has('recurring') && $item->getRecurrenceId() != '') {
+//                $dates_manager = $environment->getDatesManager();
+//                $dates_manager->resetLimits();
+//
+//                $date_item = $dates_manager->getItem($itemId);
+//                $recurrence_id = $date_item->getRecurrenceId();
+//                $dates_manager->setRecurrenceLimit($recurrence_id);
+//
+//                $dates_manager->setWithoutDateModeLimit();
+//                $dates_manager->select();
+//                $dates_list = $dates_manager->get();
+//
+//                $temp_date = $dates_list->getFirst();
+//                while($temp_date) {
+//                    $temp_date->delete();
+//                    $temp_date = $dates_list->getNext();
+//                }
+//            }
+//        }
+//
+//        if ($item->getItemType() == 'section') {
+//            $route = 'commsy_material_detail';
+//            $materialService = $this->get('commsy_legacy.material_service');
+//            $section = $materialService->getSection($item->getItemID());
+//            $material = $section->getLinkedItem();
+//            $section->delete($material->getVersionID());
+//
+//            return new JsonRedirectResponse($this->generateUrl($route, [
+//                'roomId' => $roomId,
+//                'itemId' => $material->getItemId(),
+//            ]));
+//        }
+//
+//        if ($item->getItemType() == 'step') {
+//            $route = 'commsy_todo_detail';
+//            $todoService = $this->get('commsy_legacy.todo_service');
+//            $step = $todoService->getStep($item->getItemID());
+//
+//            return new JsonRedirectResponse($this->generateUrl($route, [
+//                'roomId' => $roomId,
+//                'itemId' => $step->getTodoID(),
+//            ]));
+//        }
+//
+//        return new JsonRedirectResponse($this->generateUrl($route, [
+//            'roomId' => $roomId,
+//        ]));
+//    }
 
     private function contextHasModerators($roomId, $selectedIds) {
         $userService = $this->get('commsy_legacy.user_service');
@@ -998,8 +976,6 @@ class ItemController extends Controller
         return [
             'item' => $item,
         ];
-
-        return $response;
     }
 
     private function removeItemFromClipboard($itemId)
@@ -1100,6 +1076,8 @@ class ItemController extends Controller
 
     public function getHashtags($roomId, $legacyEnvironment) {
         $hashtags = [];
+
+        /** @var \cs_buzzword_manager $buzzwordManager */
         $buzzwordManager = $legacyEnvironment->getBuzzwordManager();
         $buzzwordManager->setContextLimit($roomId);
         $buzzwordManager->setTypeLimit('buzzword');
@@ -1115,11 +1093,15 @@ class ItemController extends Controller
 
     public function getLinkedHashtags($itemId, $roomId, $legacyEnvironment) {
         $linkedHashtags = [];
+
+        /** @var \cs_buzzword_manager $buzzwordManager */
         $buzzwordManager = $legacyEnvironment->getBuzzwordManager();
         $buzzwordManager->setContextLimit($roomId);
         $buzzwordManager->setTypeLimit('buzzword');
         $buzzwordManager->select();
         $buzzwordList = $buzzwordManager->get();
+
+        /** @var \cs_buzzword_item $buzzwordItem */
         $buzzwordItem = $buzzwordList->getFirst();
         while ($buzzwordItem) {
             $selected_ids = $buzzwordItem->getAllLinkedItemIDArrayLabelVersion();

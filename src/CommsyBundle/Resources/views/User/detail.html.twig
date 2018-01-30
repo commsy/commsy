@@ -106,7 +106,19 @@
 
                                                 {# delete #}
                                                 <li>
-                                                    <a class="commsy-action-delete" id="" href="#" data-delete-url="{{ path('commsy_item_delete', {'roomId': roomId, 'itemId': user.itemId}) }}" data-item-type="{{user.itemType}}" data-title="{{ 'list choice'|trans({},'rubric')|capitalize }}" data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}" data-return-url="{{ path('commsy_user_list', {'roomId': roomId}) }}">
+                                                    <a  href="#" data-cs-action="{{ {
+                                                        'url': path('commsy_user_feedaction', {'roomId': roomId, 'itemId': user.itemId}),
+                                                        'action': 'delete',
+                                                        'itemId': user.itemId,
+                                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                        'mode': 'click',
+                                                        'itemType': user.itemType,
+                                                        'title': 'list choice'|trans({},'rubric')|capitalize,
+                                                        'confirmQuestion': 'confirm delete'|trans({},'rubric'),
+                                                        'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
+                                                        'confirmOk': 'confirm delete confirm'|trans({},'rubric'),
+                                                        'returnUrl': path('commsy_user_list', {'roomId': roomId})
+                                                    }|json_encode|e('html_attr') }}">
                                                         <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                     </a>
                                                 </li>
@@ -149,7 +161,7 @@
 
                                                 {# delete #}
                                                 <li>
-                                                    <a href="#" id="" class="commsy-action-delete uk-text-muted" data-uk-tooltip title="{{ 'no moderators left'|trans({}, 'user') }}">
+                                                    <a href="#" id="" class="uk-text-muted" data-uk-tooltip title="{{ 'no moderators left'|trans({}, 'user') }}">
                                                         <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                     </a>
                                                 </li>

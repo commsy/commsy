@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 use CommsyBundle\Filter\DateFilterType;
-use CommsyBundle\Validator\Constraints\EndDateConstraint;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use CommsyBundle\Event\CommsyEditEvent;
@@ -106,22 +105,13 @@ class DateController extends Controller
     public function feedActionAction($roomId, Request $request)
     {
         $translator = $this->get('translator');
-        
-        $action = $request->request->get('act');
-        
-        $selectedIds = $request->request->get('data');
+
+        $payload = $request->request->get('payload');
+        $action = $payload['act'];
+        $selectedIds = $payload['data'];
+
         if (!is_array($selectedIds)) {
             $selectedIds = json_decode($selectedIds);
-        }
-        
-        $selectAll = $request->request->get('selectAll');
-        $selectAllStart = $request->request->get('selectAllStart');
-        
-        if ($selectAll == 'true') {
-            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, 'date_rev', $request);
-            foreach ($entries['dates'] as $date) {
-                $selectedIds[] = $date->getItemId();
-            }
         }
         
         $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
@@ -175,14 +165,6 @@ class DateController extends Controller
 
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('%count% copied entries',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'save') {
-            /* $zipfile = $this->download($roomId, $selectedIds);
-            $content = file_get_contents($zipfile);
-
-            $response = new Response($content, Response::HTTP_OK, array('content-type' => 'application/zip'));
-            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,'zipfile.zip');   
-            $response->headers->set('Content-Disposition', $contentDisposition);
-            
-            return $response; */
             
             $downloadService = $this->get('commsy_legacy.download_service');
         
@@ -209,7 +191,7 @@ class DateController extends Controller
             'message' => $message,
             'timeout' => '5550',
             'layout' => 'cs-notify-message',
-            'data' => $result,
+            'payload' => $result,
         ]);
     }
 
@@ -245,8 +227,10 @@ class DateController extends Controller
         $itemsCountArray = $dateService->getCountArray($roomId);
 
         $usageInfo = false;
+        /** @noinspection PhpUndefinedMethodInspection */
         if ($roomItem->getUsageInfoTextForRubricInForm('date') != '') {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('date');
+            /** @noinspection PhpUndefinedMethodInspection */
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('date');
         }
 
@@ -398,8 +382,10 @@ class DateController extends Controller
         }
 
         $usageInfo = false;
+        /** @noinspection PhpUndefinedMethodInspection */
         if ($roomItem->getUsageInfoTextForRubricInForm('date') != '') {
             $usageInfo['title'] = $roomItem->getUsageInfoHeaderForRubric('date');
+            /** @noinspection PhpUndefinedMethodInspection */
             $usageInfo['text'] = $roomItem->getUsageInfoTextForRubricInForm('date');
         }
 
@@ -460,14 +446,6 @@ class DateController extends Controller
      */
     public function calendardashboardAction($roomId, Request $request)
     {
-        // setup filter form
-        $defaultFilterValues = array(
-            'Hide-deactivated-entries' => true
-        );
-
-        // get the material manager service
-        $dateService = $this->get('commsy_legacy.date_service');
-
         return array(
             'roomId' => $roomId,
             'module' => 'date'
@@ -510,11 +488,8 @@ class DateController extends Controller
         $itemArray = array($date);
 
         $current_context = $legacyEnvironment->getCurrentContextItem();
- 
-        $roomService = $this->get('commsy_legacy.room_service');
+
         $readerManager = $legacyEnvironment->getReaderManager();
-        $roomItem = $roomService->getRoomItem($date->getContextId());
-        $numTotalMember = $roomItem->getAllUsers();
 
         $userManager = $legacyEnvironment->getUserManager();
         $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
@@ -545,8 +520,6 @@ class DateController extends Controller
             }
 		    $current_user = $user_list->getNext();
 		}
-        $read_percentage = round(($read_count/$all_user_count) * 100);
-        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
         $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
@@ -616,11 +589,10 @@ class DateController extends Controller
     
     /**
      * @Route("/room/{roomId}/date/events")
+     * @throws
      */
     public function eventsAction($roomId, Request $request)
     {
-        $translator = $this->get('translator');
-        
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
         
@@ -744,22 +716,22 @@ class DateController extends Controller
             }
 
             $events[] = array('itemId' => $date->getItemId(),
-                              'title' => html_entity_decode($date->getTitle()),
-                              'start' => $start,
-                              'end' => $end,
-                              'color' => $color,
-                              'calendar' => $date->getCalendar()->getTitle(),
-                              'editable' => $date->isPublic(),
-                              'description' => $date->getDateDescription(),
-                              'place' => $date->getPlace(),
-                              'participants' => $participantsDisplay,
-                              'contextId' => '',
-                              'contextTitle' => '',
-                              'recurringDescription' => $recurringDescription,
-                              'textColor' => $textColor,
-                              'borderColor' => $borderColor,
-                              'allDay' => $date->isWholeDay(),
-                             );
+                'title' => html_entity_decode($date->getTitle()),
+                'start' => $start,
+                'end' => $end,
+                'color' => $color,
+                'calendar' => $date->getCalendar()->getTitle(),
+                'editable' => $date->isPublic(),
+                'description' => $date->getDateDescription(),
+                'place' => $date->getPlace(),
+                'participants' => $participantsDisplay,
+                'contextId' => '',
+                'contextTitle' => '',
+                'recurringDescription' => $recurringDescription,
+                'textColor' => $textColor,
+                'borderColor' => $borderColor,
+                'allDay' => $date->isWholeDay(),
+            );
         }
 
         return new JsonResponse($events);
@@ -1050,8 +1022,6 @@ class DateController extends Controller
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
-        
-        $formData = array();
 
         $isDraft = $item->isDraft();
 
@@ -1124,6 +1094,7 @@ class DateController extends Controller
 
                 // update modifier
                 $dateItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
                 // set linked hashtags and categories
                 $formData = $form->getData();
                 if ($categoriesMandatory) {
@@ -1262,13 +1233,10 @@ class DateController extends Controller
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
-    public function saveAction($roomId, $itemId, Request $request)
+    public function saveAction($roomId, $itemId)
     {
         $itemService = $this->get('commsy_legacy.item_service');
-        $item = $itemService->getItem($itemId);
-        
         $dateService = $this->get('commsy_legacy.date_service');
-        $transformer = $this->get('commsy_legacy.transformer.date');
         
         $date = $dateService->getDate($itemId);
         
@@ -1280,8 +1248,6 @@ class DateController extends Controller
         
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $readerManager = $legacyEnvironment->getReaderManager();
-        //$roomItem = $roomManager->getItem($material->getContextId());        
-        //$numTotalMember = $roomItem->getAllUsers();
         
         $userManager = $legacyEnvironment->getUserManager();
         $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
@@ -1312,8 +1278,6 @@ class DateController extends Controller
             }
 		    $current_user = $user_list->getNext();
 		}
-        $read_percentage = round(($read_count/$all_user_count) * 100);
-        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
         $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
@@ -1344,8 +1308,7 @@ class DateController extends Controller
     function saveRecurringDates($dateItem, $isNewRecurring, $valuesToChange, $formData){
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
        
-        if($isNewRecurring){
-            $recurrentId = $dateItem->getItemID();
+        if($isNewRecurring) {
             $recurringDateArray = array();
             $recurringPatternArray = array();
 
@@ -1551,9 +1514,13 @@ class DateController extends Controller
             $datesManager->setRecurrenceLimit($dateItem->getRecurrenceId());
             $datesManager->setWithoutDateModeLimit();
             $datesManager->select();
+
+
             $datesList = $datesManager->get();
+
+            /** @var \cs_dates_item $tempDate */
             $tempDate = $datesList->getFirst();
-            while($tempDate){
+            while($tempDate) {
                 if(in_array('startingTime',$valuesToChange)){
                     $tempDate->setStartingTime($dateItem->getStartingTime());
                     $tempDate->setDateTime_start(mb_substr($tempDate->getDateTime_start(),0,10) . ' ' . $dateItem->getStartingTime());
@@ -1610,11 +1577,8 @@ class DateController extends Controller
         $itemArray = array($date);
 
         $current_context = $legacyEnvironment->getCurrentContextItem();
- 
-        $roomService = $this->get('commsy_legacy.room_service');
+
         $readerManager = $legacyEnvironment->getReaderManager();
-        $roomItem = $roomService->getRoomItem($date->getContextId());
-        $numTotalMember = $roomItem->getAllUsers();
 
         $userManager = $legacyEnvironment->getUserManager();
         $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
@@ -1804,7 +1768,6 @@ class DateController extends Controller
 
     /**
      * @Route("/room/{roomId}/date/importupload")
-     * @Template()
      */
     public function importUploadAction($roomId, Request $request)
     {
