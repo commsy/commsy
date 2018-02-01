@@ -546,7 +546,10 @@ class cs_server_item extends cs_guide_item
             $fullnameFirstModUser = '';
         }
 
-        $mail->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
+        global $symfonyContainer;
+        $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+        $mail->set_from_email($emailFrom);
+
         $mail->set_from_name($portal_item->getTitle());
 
 
@@ -672,7 +675,11 @@ class cs_server_item extends cs_guide_item
                                     }
                                     $mod_contact_list = $portal_item->getContactModeratorList();
                                     $mod_user_first = $mod_contact_list->getFirst();
-                                    $mail->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
+
+                                    global $symfonyContainer;
+                                    $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+                                    $mail->set_from_email($emailFrom);
+
                                     $mail->set_from_name($portal_item->getTitle());
 
                                     // link
@@ -787,9 +794,11 @@ class cs_server_item extends cs_guide_item
 
                                     $mod_contact_list = $portal_item->getContactModeratorList();
                                     $mod_user_first = $mod_contact_list->getFirst();
-                                    //$mail->set_from_email($mod_user_first->getEmail());
-                                    //$mail->set_from_name($mod_user_first->getFullname());
-                                    $mail->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
+
+                                    global $symfonyContainer;
+                                    $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+                                    $mail->set_from_email($emailFrom);
+
                                     $mail->set_from_name($portal_item->getTitle());
 
                                     if ($user->getPasswordExpireDate() > getCurrentDateTimeInMySQL()) {

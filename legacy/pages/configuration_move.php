@@ -156,13 +156,11 @@ else {
                   include_once('classes/cs_mail.php');
                   $mail = new cs_mail();
                   $mail->set_to(implode(',',$value));
-                 $server_item = $environment->getServerItem();
-                 $default_sender_address = $server_item->getDefaultSenderAddress();
-                 if (!empty($default_sender_address)) {
-                     $mail->set_from_email($default_sender_address);
-                 } else {
-                    $mail->set_from_email('@');
-                 }
+
+                   global $symfonyContainer;
+                   $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+                   $mail->set_from_email($emailFrom);
+
                   $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_portal->getTitle()));
                   $mail->set_reply_to_name($current_user->getFullname());
                   $mail->set_reply_to_email($current_user->getEmail());

@@ -94,7 +94,7 @@ class ContextController extends Controller
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if ($form->get('request')->isClicked()) {
+            if ($form->get('request')->isClicked() || $form->get('coderequest')->isClicked()) {
                 $formData = $form->getData();
 
                 // At this point we can assume that the user has accepted agb and

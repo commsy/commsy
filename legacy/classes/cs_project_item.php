@@ -970,12 +970,10 @@ class cs_project_item extends cs_room_item {
       	$toggle_archive = true;
       	$this->_environment->toggleArchiveMode();
       }
-      
-      $server_item = $this->_environment->getServerItem();
-      $default_sender_address = $server_item->getDefaultSenderAddress();
-      if ( empty($default_sender_address) ) {
-         $default_sender_address = '@';
-      }
+
+       global $symfonyContainer;
+       $default_sender_address = $symfonyContainer->getParameter('commsy.email.from');
+
       $current_portal = $this->_environment->getCurrentPortalItem();
       if ( empty($current_portal)
            or !$current_portal->isPortal()

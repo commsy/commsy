@@ -223,13 +223,11 @@ class cs_become_member_page extends cs_left_page {
                   include_once('classes/cs_mail.php');
                   $mail = new cs_mail();
                   $mail->set_to(implode(',',$value));
-                  $server_item = $this->_environment->getServerItem();
-                  $default_sender_address = $server_item->getDefaultSenderAddress();
-                  if (!empty($default_sender_address)) {
-                     $mail->set_from_email($default_sender_address);
-                  } else {
-                     $mail->set_from_email('@');
-                  }
+
+                  global $symfonyContainer;
+                  $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+                  $mail->set_from_email($emailFrom);
+
                   $current_context = $this->_environment->getCurrentContextItem();
                   $mail->set_from_name($this->_translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_context->getTitle()));
                   $mail->set_reply_to_name($user_item->getFullname());
@@ -283,13 +281,11 @@ class cs_become_member_page extends cs_left_page {
                $mail = new cs_mail();
                $mail->set_to($user_item->getEmail());
                $mail->set_from_name($this->_translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_context->getTitle()));
-               $server_item = $this->_environment->getServerItem();
-               $default_sender_address = $server_item->getDefaultSenderAddress();
-               if (!empty($default_sender_address)) {
-                  $mail->set_from_email($default_sender_address);
-               } else {
-                  $mail->set_from_email('@');
-               }
+
+               global $symfonyContainer;
+               $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+               $mail->set_from_email($emailFrom);
+
                if (!empty($contact_moderator)) {
                   $mail->set_reply_to_email($contact_moderator->getEmail());
                   $mail->set_reply_to_name($contact_moderator->getFullname());

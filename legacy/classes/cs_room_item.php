@@ -962,13 +962,11 @@ class cs_room_item extends cs_context_item {
                $mail = new cs_mail();
                $mail->set_to($creator->getEMail());
                $mail->set_from_name($context_title_from);
-               $server_item = $this->_environment->getServerItem();
-               $default_sender_address = $server_item->getDefaultSenderAddress();
-               if ( !empty($default_sender_address) ) {
-                  $mail->set_from_email($default_sender_address);
-               } else {
-                  $mail->set_from_email('@');
-               }
+
+                global $symfonyContainer;
+                $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+                $mail->set_from_email($emailFrom);
+
                $mail->set_reply_to_name($root_user->getFullname());
                $root_mail = $root_user->getEmail();
                if ( !empty($root_mail) ) {
@@ -983,7 +981,6 @@ class cs_room_item extends cs_context_item {
                unset($creator);
                unset($translator);
                unset($context);
-               unset($server_item);
                unset($root_user);
             } else {
                $file_item->updateScanned();
@@ -1550,11 +1547,10 @@ class cs_room_item extends cs_context_item {
     {
         $translator = $this->_environment->getTranslationObject();
         $default_language = 'de';
-        $server_item = $this->_environment->getServerItem();
-        $default_sender_address = $server_item->getDefaultSenderAddress();
-        if (empty($default_sender_address)) {
-            $default_sender_address = '@';
-        }
+
+        global $symfonyContainer;
+        $default_sender_address = $symfonyContainer->getParameter('commsy.email.from');
+
         $current_portal = $this->getContextItem();
         $current_user = $this->_environment->getCurrentUserItem();
         $fullname = $current_user->getFullname();
@@ -1669,7 +1665,7 @@ class cs_room_item extends cs_context_item {
             if (isset($current_portal)) {
                 $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $current_portal->getTitle()));
             } else {
-                $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $room_item->getTitle()));
+                $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $this->getTitle()));
             }
             $mail->set_reply_to_name($current_user->getFullname());
             $mail->set_reply_to_email($current_user->getEmail());
@@ -1706,11 +1702,9 @@ class cs_room_item extends cs_context_item {
             $this->_environment->toggleArchiveMode();
         }
 
-        $server_item = $this->_environment->getServerItem();
-        $default_sender_address = $server_item->getDefaultSenderAddress();
-        if (empty($default_sender_address)) {
-            $default_sender_address = '@';
-        }
+        global $symfonyContainer;
+        $default_sender_address = $symfonyContainer->getParameter('commsy.email.from');
+
         $current_portal = $this->getContextItem();
         $current_user = $this->_environment->getCurrentUserItem();
         $fullname = $current_user->getFullname();
@@ -1843,7 +1837,7 @@ class cs_room_item extends cs_context_item {
             if (isset($current_portal)) {
                 $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $current_portal->getTitle()));
             } else {
-                $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $room_item->getTitle()));
+                $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $this->getTitle()));
             }
             $mail->set_reply_to_name($current_user->getFullname());
             $mail->set_reply_to_email($current_user->getEmail());

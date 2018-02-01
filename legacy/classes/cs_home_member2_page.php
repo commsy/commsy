@@ -184,13 +184,11 @@ class cs_home_member2_page extends cs_left_page {
                     include_once('classes/cs_mail.php');
                     $mail = new cs_mail();
                     $mail->set_to(implode(',',$value));
-                    $server_item = $this->_environment->getServerItem();
-                    $default_sender_address = $server_item->getDefaultSenderAddress();
-                    if (!empty($default_sender_address)) {
-                        $mail->set_from_email($default_sender_address);
-                    } else {
-                       $mail->set_from_email('@');
-                    }
+
+                     global $symfonyContainer;
+                     $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+                     $mail->set_from_email($emailFrom);
+
                     $mail->set_from_name($this->_translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle()));
                     $mail->set_reply_to_name($portal_user->getFullname());
                     $mail->set_reply_to_email($portal_user->getEmail());
@@ -286,20 +284,11 @@ class cs_home_member2_page extends cs_left_page {
                  $mail = new cs_mail();
                  $mail->set_to($current_user->getEmail());
                  $mail->set_from_name($this->_translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle()));
-                 $server_item = $this->_environment->getServerItem();
-                 $default_sender_address = $server_item->getDefaultSenderAddress();
-                 if (!empty($default_sender_address)) {
-                     $mail->set_from_email($default_sender_address);
-                 } else {
-                    $user_manager = $this->_environment->getUserManager();
-                    $root_user = $user_manager->getRootUser();
-                    $root_mail_address = $root_user->getEmail();
-                    if ( !empty($root_mail_address) ) {
-                       $mail->set_from_email($root_mail_address);
-                    } else {
-                       $mail->set_from_email('@');
-                    }
-                 }
+
+                  global $symfonyContainer;
+                  $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+                  $mail->set_from_email($emailFrom);
+
                  if (!empty($contact_moderator)) {
                     $mail->set_reply_to_email($contact_moderator->getEmail());
                     $mail->set_reply_to_name($contact_moderator->getFullname());

@@ -618,7 +618,11 @@ class cs_popup_material_controller extends cs_rubric_popup_main_controller imple
                         include_once('classes/cs_mail.php');
                         $mail = new cs_mail();
                         $sender = $item->getModificatorItem();
-                        $mail->set_from_email($environment->getServerItem()->getDefaultSenderAddress());
+
+                         global $symfonyContainer;
+                         $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+                         $mail->set_from_email($emailFrom);
+
                         $mail->set_from_name($environment->getCurrentPortalItem()->getTitle());
                         $mail->set_reply_to_name($sender->getFullName());
                         $mail->set_reply_to_email($sender->getEMail());
