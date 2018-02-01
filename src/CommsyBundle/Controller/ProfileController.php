@@ -324,6 +324,7 @@ class ProfileController extends Controller
 
         $form = $this->createForm(ProfilePersonalInformationType::class, $userData, array(
             'itemId' => $itemId,
+            'portalUser' => $portalUser,
         ));
 
         $form->handleRequest($request);
