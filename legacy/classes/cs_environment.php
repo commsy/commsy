@@ -709,7 +709,7 @@ class cs_environment {
 
    /** get instance of cs_dates_manager
    *
-   * @return cs_dates_manager
+   * @return \cs_dates_manager
    * @access public
    */
    function getDatesManager() {
