@@ -218,7 +218,7 @@ class cs_tasks_manager extends cs_manager {
   /** build a new task item
     * this method returns a new EMTPY material item
     *
-    * @return object cs_item a new EMPTY material
+    * @return \cs_task_item
     */
    function getNewItem () {
       include_once('classes/cs_task_item.php');

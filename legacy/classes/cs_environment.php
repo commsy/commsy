@@ -117,7 +117,7 @@ class cs_environment {
   /** get the current user
    * returns the current user. If there is no current user it will be returned an emtpy user_item.
    *
-   * @return object                                cs_user_item
+   * @return \cs_user_item
    */
    function getCurrentUserItem () {
       if ( !isset($this->current_user) ) {
@@ -1340,7 +1340,7 @@ class cs_environment {
 
   /** get instance of cs_task_manager
    *
-   * @return cs_task_manager
+   * @return \cs_tasks_manager
    * @access public
    */
    function getTaskManager() {
@@ -1821,7 +1821,7 @@ class cs_environment {
    /** get Instance of the translation object
     * returns an object for translation of message tags
     *
-    * @return cs_object translation object for commsy
+    * @return \cs_translator
     */
    function getTranslationObject () {
       global $dont_resolve_messagetags;
