@@ -2,6 +2,8 @@
 
 namespace CommsyBundle\Controller;
 
+use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\RFCValidation;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -312,6 +314,10 @@ class GroupController extends Controller
             $response->headers->set('Content-Disposition', $contentDisposition);
             
             return $response;
+        } else if ($action == 'sendmail') {
+            return new JsonResponse([
+                'redirect' => $this->generateUrl('commsy_group_sendmultiple', array('roomId' => $roomId, 'userIds' => $selectedIds)),
+            ]);
         } else if ($action == 'delete') {
             $groupService = $this->get('commsy_legacy.group_service');
             foreach ($selectedIds as $id) {
@@ -1248,10 +1254,46 @@ class GroupController extends Controller
 
                 $from = $this->getParameter('commsy.email.from');
 
+                $users = [];
+                foreach ($groupIds as $groupId) {
+                    $groupUsers = $userService->getUsersByGroupIds($roomId, $groupIds);
+                    $users = array_merge($users, $groupUsers);
+                }
+
                 $to = [];
-                foreach ($userService->getUsersByGroupIds($roomId, $groupIds) as $user) {
-                    if (filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) {
-                        $to[$user->getEmail()] = $user->getFullName();
+                $toBCC = [];
+                $validator = new EmailValidator();
+                $failedUsers = [];
+                foreach ($users as $user) {
+                    $userEmail = $user->getEmail();
+                    $userName = $user->getFullName();
+                    if ($validator->isValid($userEmail, new RFCValidation())) {
+                        if ($user->isEmailVisible()) {
+                            $to[$userEmail] = $userName;
+                        } else {
+                            $toBCC[$userEmail] = $userName;
+                        }
+                    } else {
+                        $failedUsers[] = $user;
+                    }
+                }
+
+                $replyTo = [];
+                $toCC = [];
+                $currentUserEmail = $currentUser->getEmail();
+                $currentUserName = $currentUser->getFullName();
+                if ($validator->isValid($currentUserEmail, new RFCValidation())) {
+                    if ($currentUser->isEmailVisible()) {
+                        $replyTo[$currentUserEmail] = $currentUserName;
+                    }
+
+                    // form option: copy_to_sender
+                    if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
+                        if ($currentUser->isEmailVisible()) {
+                            $toCC[$currentUserEmail] = $currentUserName;
+                        } else {
+                            $toBCC[$currentUserEmail] = $currentUserName;
+                        }
                     }
                 }
 
@@ -1259,16 +1301,34 @@ class GroupController extends Controller
                     ->setSubject($formData['subject'])
                     ->setBody($formData['message'], 'text/html')
                     ->setFrom([$from => $portalItem->getTitle()])
-                    ->setReplyTo([$currentUser->getEmail() => $currentUser->getFullName()])
+                    ->setReplyTo($replyTo)
                     ->setTo($to);
 
-                // form option: copy_to_sender
-                if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-                    $message->setCc($message->getReplyTo());
+                if (!empty($toCC)) {
+                    $message->setCc($toCC);
+                }
+
+                if (!empty($toBCC)) {
+                    $message->setBcc($toBCC);
                 }
 
                 // send mail
-                $this->get('mailer')->send($message);
+                $failedRecipients = [];
+                $this->get('mailer')->send($message, $failedRecipients);
+
+                foreach ($failedUsers as $failedUser) {
+                    $this->addFlash('failedRecipients', $failedUser->getUserId());
+                }
+
+                foreach ($failedRecipients as $failedRecipient) {
+                    $failedUser = array_filter($users, function($user) use ($failedRecipient) {
+                        return $user->getEmail() == $failedRecipient;
+                    });
+
+                    if ($failedUser) {
+                        $this->addFlash('failedRecipients', $failedUser[0]->getUserId());
+                    }
+                }
 
                 // redirect to success page
                 return $this->redirectToRoute('commsy_group_sendmultiplesuccess', [
