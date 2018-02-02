@@ -19,6 +19,11 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 use CommsyBundle\Event\CommsyEditEvent;
 
+/**
+ * Class AnnouncementController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_SEE', roomId)")
+ */
 class AnnouncementController extends Controller
 {
     // setup filter form default values

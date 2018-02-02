@@ -18,6 +18,11 @@ use CommsyBundle\Entity\RoomCategories;
 
 use CommsyBundle\Event\CommsyEditEvent;
 
+/**
+ * Class PortalController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_SEE', roomId)")
+ */
 class PortalController extends Controller
 {
     /**

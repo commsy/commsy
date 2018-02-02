@@ -10,6 +10,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
+/**
+ * Class ContextController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_SEE', roomId)")
+ */
 class ContextController extends Controller
 {    
     /**

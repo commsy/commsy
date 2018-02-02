@@ -14,6 +14,11 @@ use CommsyBundle\Event\CommsyEditEvent;
 
 use CommsyBundle\Form\Type\UploadType;
 
+/**
+ * Class UploadController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_SEE', roomId)")
+ */
 class UploadController extends Controller
 {
     /**

@@ -13,6 +13,11 @@ use CommsyBundle\Form\Type\Room\DeleteType;
 use CommsyBundle\Filter\ProjectFilterType;
 use CommsyBundle\Entity\Room;
 
+/**
+ * Class ProjectController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_SEE', roomId)")
+ */
 class ProjectController extends Controller
 {    
     /**

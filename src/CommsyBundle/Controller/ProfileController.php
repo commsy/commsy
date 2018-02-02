@@ -23,6 +23,11 @@ use CommsyBundle\Form\Type\Profile\ProfileCalendarsType;
 use CommsyBundle\Form\Type\Profile\ProfileAdditionalType;
 use CommsyBundle\Form\Type\Profile\ProfilePersonalInformationType;
 
+/**
+ * Class ProfileController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_SEE', roomId)")
+ */
 class ProfileController extends Controller
 {
     /**
