@@ -5,6 +5,7 @@ namespace CommsyBundle\Controller;
 use CommsyBundle\Filter\ProjectFilterType;
 use CommsyBundle\Form\Type\ContextRequestType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
