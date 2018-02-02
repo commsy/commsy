@@ -3,8 +3,6 @@
 namespace CommsyBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Jsvrcek\ICS\Model\Calendar;
-use Nette\Utils\Strings;
 
 /**
  * Invitations
@@ -181,7 +179,7 @@ class Calendars
     /**
      * Set default
      *
-     * @param boolean $default
+     * @param boolean $default_calendar
      *
      * @return Calendars
      */
