@@ -36,14 +36,12 @@
                     data: JSON.stringify({})
                 }).done(function(data) {
 
-                    // update 'additional actions' list
-                    $('#join-group-link').removeClass('uk-text-muted').css('pointer-events', 'auto');
-                    $('#leave-group-link').addClass('uk-text-muted').css('pointer-events', 'none');
-
                     // update member information
                     let $membersDiv = $("#member" + data.groupId);
                     if($membersDiv.length > 0) {
                         let membersUrl = $this.options.url.replace("leave", "members");
+                        $this.element.parent().prev().show();
+                        $this.element.parent().hide();
                         $.ajax({
                             url: membersUrl,
                             type: 'POST',
@@ -57,6 +55,8 @@
                     let $grouproomDiv = $("#grouproom" + data.groupId);
                     if($grouproomDiv.length > 0) {
                         let grouproomUrl = $this.options.url.replace("leave", "grouproom");
+                        $this.element.parent().prev().show();
+                        $this.element.parent().hide();
                         $.ajax({
                             url: grouproomUrl,
                             type: 'POST',
@@ -70,6 +70,8 @@
                     let $linksDiv = $("#links" + data.groupId);
                     if($linksDiv.length > 0) {
                         let linksUrl = $this.options.url.replace("group", "item").replace("leave", "links");
+                        $this.element.parent().prev().show();
+                        $this.element.parent().hide();
                         $.ajax({
                             url: linksUrl,
                             type: 'POST',
