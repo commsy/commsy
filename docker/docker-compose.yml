@@ -5,7 +5,7 @@ services:
     image: mariadb:10.1
     container_name: commsy_db
     ports:
-      - "3306:3306"
+      - "3308:3306"
     volumes:
       - "./.data/db:/var/lib/mysql"
     environment:
@@ -18,12 +18,12 @@ services:
     build: ./nginx
     container_name: commsy_nginx
     ports:
-      - "8080:80"
+      - "8090:80"
     links:
       - commsy_php
     volumes:
       - "./.data/logs/nginx:/var/log/nginx"
-      - "./../:/var/www/commsy:cached"
+      - "./../:/var/www/commsy"
 
   commsy_php:
     build: ./commsy_dev
@@ -31,7 +31,7 @@ services:
     volumes:
       - "./.data/logs/commsy:/var/www/commsy/var/logs"
       - "./.data/files:/var/www/commsy/files"
-      - "./../:/var/www/commsy:cached"
+      - "./../:/var/www/commsy"
       - "./.data/debug:/tmp"
     links:
       - commsy_db

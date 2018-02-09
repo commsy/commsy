@@ -54,6 +54,10 @@
                 <source>Choose a template</source>
                 <target>Choose a template</target>
             </trans-unit>
+            <trans-unit id="leaveGrouproomBeforeGroup">
+                <source>leave group bevore grouproom</source>
+                <target>Please cancel your grouproom membership before leaving the group.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

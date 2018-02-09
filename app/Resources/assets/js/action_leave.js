@@ -36,6 +36,10 @@
                     data: JSON.stringify({})
                 }).done(function(data) {
 
+                    // update 'additional actions' list
+                    $('#join-group-link, #join-group-and-room-link').removeClass('uk-hidden').css('pointer-events', 'auto');
+                    $('#leave-group-link').addClass('uk-hidden').css('pointer-events', 'none');
+
                     // update member information
                     let $membersDiv = $("#member" + data.groupId);
                     if($membersDiv.length > 0) {

@@ -54,6 +54,10 @@
                 <source>Choose a template</source>
                 <target>Vorlage auswählen</target>
             </trans-unit>
+            <trans-unit id="leaveGrouproomBeforeGroup">
+                <source>leave group bevore grouproom</source>
+                <target>Sie müssen Ihre Mitgliedschaft in dem Gruppenraum beenden, before Sie aus der Gruppe austreten können.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
