@@ -54,8 +54,12 @@
                 <source>Choose a template</source>
                 <target>Choose a template</target>
             </trans-unit>
+            <trans-unit id="joinGroupBeforeGrouproom">
+                <source>join group before grouproom</source>
+                <target>Please join the group before applying for membership in this group room.</target>
+            </trans-unit>
             <trans-unit id="leaveGrouproomBeforeGroup">
-                <source>leave group bevore grouproom</source>
+                <source>leave grouproom before group</source>
                 <target>Please cancel your grouproom membership before leaving the group.</target>
             </trans-unit>
         </body>
