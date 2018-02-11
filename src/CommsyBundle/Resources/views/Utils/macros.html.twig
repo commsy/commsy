@@ -476,7 +476,9 @@
             {% elseif contextMemberStatus == 'locked' %}
                 {{ 'This room is currently locked.'|trans({}, 'room') }}
             {% elseif contextMemberStatus == 'requested' %}
-                {{ 'Your request has not been processed yet.'|trans({}, 'room') }}
+                <span data-uk-tooltip title="{{ 'Your request has not been processed yet.'|trans({}, 'room') }}">
+                    <a class='uk-button uk-button-secondary uk-text-bold uk-text-muted' style="pointer-events: none;" href=""><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>
+                </span>
             {% elseif contextMemberStatus == 'rejected' %}
                 {{ 'Your request has been rejected.'|trans({}, 'room') }}
             {% elseif contextMemberStatus == 'archived' %}
