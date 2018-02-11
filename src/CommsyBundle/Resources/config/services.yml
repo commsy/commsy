@@ -572,6 +572,14 @@ services:
         tags:
             - { name: console.command }
 
+    commsy.command.fix_group_all_user_relation:
+            class: CommsyBundle\Command\FixGroupAllUserRelation
+            arguments:
+                - '@doctrine.orm.entity_manager'
+                - '@commsy_legacy.environment'
+            tags:
+                - { name: console.command }
+
     commsy.command.setup_dev:
         class: CommsyBundle\Command\SetupDevCommand
         tags:
