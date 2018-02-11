@@ -165,6 +165,6 @@ class ItemVoter extends Voter
         $roomItem = $roomManager->getItem($item->getItemID());
 
         return ($currentUser->isRoot() ||
-                $roomItem->mayEnter($currentUser));
+                (!$roomItem->isDeleted() && $roomItem->mayEnter($currentUser)));
     }
 }
