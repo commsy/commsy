@@ -21,7 +21,7 @@ use CommsyBundle\Event\CommsyEditEvent;
 /**
  * Class PortalController
  * @package CommsyBundle\Controller
- * @Security("is_granted('ITEM_SEE', roomId)")
+ * @Security("is_granted('ITEM_ENTER', roomId)")
  */
 class PortalController extends Controller
 {

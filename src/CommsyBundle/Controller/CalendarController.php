@@ -17,7 +17,7 @@ use CommsyBundle\Event\CommsyEditEvent;
 /**
  * Class CalendarController
  * @package CommsyBundle\Controller
- * @Security("is_granted('ITEM_SEE', roomId)")
+ * @Security("is_granted('ITEM_ENTER', roomId)")
  */
 class CalendarController extends Controller
 {

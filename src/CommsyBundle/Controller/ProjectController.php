@@ -16,7 +16,7 @@ use CommsyBundle\Entity\Room;
 /**
  * Class ProjectController
  * @package CommsyBundle\Controller
- * @Security("is_granted('ITEM_SEE', roomId)")
+ * @Security("is_granted('ITEM_ENTER', roomId)")
  */
 class ProjectController extends Controller
 {    

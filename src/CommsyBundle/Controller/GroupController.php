@@ -26,7 +26,7 @@ use CommsyBundle\Event\CommsyEditEvent;
 /**
  * Class GroupController
  * @package CommsyBundle\Controller
- * @Security("is_granted('ITEM_SEE', roomId)")
+ * @Security("is_granted('ITEM_ENTER', roomId)")
  */
 class GroupController extends Controller
 {
@@ -367,7 +367,6 @@ class GroupController extends Controller
         $roomItem = $roomManager->getItem($roomId);
 
         if($infoArray['group']->isGroupRoomActivated()) {
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             $userService = $this->get('commsy_legacy.user_service');
             if ($infoArray['group']->getGroupRoomItem()) {
                 $memberStatus = $userService->getMemberStatus(

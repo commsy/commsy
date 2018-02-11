@@ -16,7 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 /**
  * Class CopyController
  * @package CommsyBundle\Controller
- * @Security("is_granted('ITEM_SEE', roomId)")
+ * @Security("is_granted('ITEM_ENTER', roomId)")
  */
 class CopyController extends Controller
 {

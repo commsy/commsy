@@ -22,7 +22,7 @@ use CommsyBundle\Event\CommsyEditEvent;
 /**
  * Class DiscussionController
  * @package CommsyBundle\Controller
- * @Security("is_granted('ITEM_SEE', roomId)")
+ * @Security("is_granted('ITEM_ENTER', roomId)")
  */
 class DiscussionController extends Controller
 {

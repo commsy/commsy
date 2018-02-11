@@ -26,7 +26,7 @@ use CommsyBundle\Form\Type\Profile\ProfilePersonalInformationType;
 /**
  * Class ProfileController
  * @package CommsyBundle\Controller
- * @Security("is_granted('ITEM_SEE', roomId)")
+ * @Security("is_granted('ITEM_ENTER', roomId)")
  */
 class ProfileController extends Controller
 {

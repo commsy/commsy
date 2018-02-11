@@ -18,7 +18,7 @@ use CommsyBundle\Form\Type\AnnotationType;
 /**
  * Class InstitutionController
  * @package CommsyBundle\Controller
- * @Security("is_granted('ITEM_SEE', roomId)")
+ * @Security("is_granted('ITEM_ENTER', roomId)")
  */
 class InstitutionController extends Controller
 {
