@@ -164,7 +164,7 @@ class ItemVoter extends Voter
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($item->getItemID());
 
-        return ($currentUser->isRoot() || $item->isPrivateRoom() ||
+        return ($item->isPrivateRoom() ||
                 (!$roomItem->isDeleted() && $roomItem->mayEnter($currentUser)));
     }
 }
