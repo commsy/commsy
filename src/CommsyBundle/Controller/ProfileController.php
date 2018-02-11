@@ -743,11 +743,6 @@ class ProfileController extends Controller
                     throw $this->createNotFoundException('No room found for id ' . $roomId);
                 }
 
-                if ($roomItem->isGroupRoom()) {
-                    $group_item = $roomItem->getLinkedGroupItem();
-                    $group_item->removeMember($currentUser->getRelatedUserItemInContext($group_item->getContextID()));
-                }
-
                 return $this->redirect($portalUrl);
             }
         }
