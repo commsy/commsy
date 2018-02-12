@@ -458,7 +458,7 @@
 
 {% macro contextLink(roomId, context, contextMemberStatus, memberInGroup) %}
 
-    {% if not memberInGroup|default(true) %}
+    {% if memberInGroup is defined and memberInGroup is same as(false) %}
         <span data-uk-tooltip title="{{'join group before grouproom'|trans({},'group') }}">
             <a class='uk-button uk-button-secondary uk-text-bold uk-text-muted' style="pointer-events: none;" href=""><i class="uk-icon uk-icon-plus-square"></i> {{ 'become member'|trans({}, 'room') }}</a>
         </span>
