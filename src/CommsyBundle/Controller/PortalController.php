@@ -225,4 +225,14 @@ class PortalController extends Controller
     {
         return $this->redirect('/?cid='.$roomId.'&mod=configuration&fct=index');
     }
+
+    /**
+     * @Route("/portal/{roomId}/translations")
+     * @Template()
+     * @Security("is_granted('ITEM_MODERATE', roomId)")
+     */
+    public function translationsAction($roomId, $roomCategoryId = null, Request $request)
+    {
+        return [];
+    }
 }
