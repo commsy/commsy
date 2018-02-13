@@ -2,7 +2,9 @@
 
 namespace CommsyBundle\Entity;
 
+use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Translatable\Translatable;
 
 /**
  * Translation
@@ -38,9 +40,18 @@ class Translation
     /**
      * @var string
      *
+     * @Gedmo\Translatable
      * @ORM\Column(name="translation", type="string", length=255)
      */
     private $translation;
+
+    /**
+     * @Gedmo\Locale
+     * Used locale to override Translation listener`s locale
+     * this is not a mapped field of entity metadata, just a simple property
+     * and it is not necessary because globally locale can be set in listener
+     */
+    private $locale;
 
 
     /**
@@ -123,6 +134,11 @@ class Translation
     public function getTranslation()
     {
         return $this->translation;
+    }
+
+    public function setTranslatableLocale($locale)
+    {
+        $this->locale = $locale;
     }
 }
 

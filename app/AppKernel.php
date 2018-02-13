@@ -30,7 +30,8 @@ class AppKernel extends Kernel
             new IDCI\Bundle\ColorSchemeBundle\IDCIColorSchemeBundle(),
             new Circle\RestClientBundle\CircleRestClientBundle(),
             new WhiteOctober\BreadcrumbsBundle\WhiteOctoberBreadcrumbsBundle(),
-           
+            new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
+
             new CommsyBundle\CommsyBundle(),
             new Commsy\LegacyBundle\CommsyLegacyBundle(),
             new EtherpadBundle\EtherpadBundle(),
