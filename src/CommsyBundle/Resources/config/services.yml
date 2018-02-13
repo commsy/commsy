@@ -699,3 +699,7 @@ services:
     commsy.roomcategories_service:
         class: CommsyBundle\Services\RoomCategoriesService
         arguments: ['@doctrine.orm.entity_manager', '@service_container']
+
+    commsy.translation_service:
+            class: CommsyBundle\Services\TranslationService
+            arguments: ['@doctrine.orm.entity_manager', '@service_container']

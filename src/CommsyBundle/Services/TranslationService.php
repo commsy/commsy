@@ -23,7 +23,7 @@ class TranslationService
     }
 
     public function getTranslations ($contextId) {
-        
+
     }
 
     public function getTranslation ($contextId, $translationKey, $locale) {
