@@ -191,6 +191,12 @@ class DateService
         $this->dateManager->showNoNotActivatedEntries();
     }
 
+    /** Retrieves the first date item matching the given VCALENDAR UID from a calendar & room with the given IDs
+     *   @param string $uid
+     *   @param integer $calendarId
+     *   @param integer $roomId
+     *   @return cs_date_item|boolean
+     */
     public function getDateByUid($uid, $calendarId, $roomId)
     {
         $this->dateManager->reset();
