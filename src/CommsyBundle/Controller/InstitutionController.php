@@ -15,6 +15,11 @@ use CommsyBundle\Filter\InstitutionFilterType;
 use CommsyBundle\Form\Type\GroupType;
 use CommsyBundle\Form\Type\AnnotationType;
 
+/**
+ * Class InstitutionController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_ENTER', roomId)")
+ */
 class InstitutionController extends Controller
 {
     // setup filter form default values

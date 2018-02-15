@@ -23,6 +23,11 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 use CommsyBundle\Event\CommsyEditEvent;
 
+/**
+ * Class GroupController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_ENTER', roomId)")
+ */
 class GroupController extends Controller
 {
     // setup filter form default values
@@ -362,7 +367,6 @@ class GroupController extends Controller
         $roomItem = $roomManager->getItem($roomId);
 
         if($infoArray['group']->isGroupRoomActivated()) {
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             $userService = $this->get('commsy_legacy.user_service');
             if ($infoArray['group']->getGroupRoomItem()) {
                 $memberStatus = $userService->getMemberStatus(
@@ -1095,12 +1099,6 @@ class GroupController extends Controller
             }
             else {
                 throw new \Exception("ERROR: User '" . $current_user->getUserID() . "' cannot join the group room of group '" . $groupItem->getName() . "' since it does not exist!");
-                /*
-                if($legacyEnvironment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() === '1') {
-                    $wiki_manager = $this->_environment->getWikiManager();
-                    $wiki_manager->updateNotification();
-                }
-                */
             }
         }
 
@@ -1112,10 +1110,10 @@ class GroupController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/group/{itemId}/leave/{leaveRoom}", defaults={"leaveRoom"=false})
+     * @Route("/room/{roomId}/group/{itemId}/leave")
      * @Template()
      */
-    public function leaveAction($roomId, $itemId, $leaveRoom, Request $request)
+    public function leaveAction($roomId, $itemId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -1133,33 +1131,22 @@ class GroupController extends Controller
 
         $current_user = $legacyEnvironment->getCurrentUser();
 
-        // first, remove member from group
         $groupItem->removeMember($current_user);
-
 /*
         if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() === '1') {
             $wiki_manager = $this->_environment->getWikiManager();
             $wiki_manager->updateNotification();
         }
-*/
 
-        // then, remove member from group room
-        if($leaveRoom) {
-            if($groupItem->isGroupRoomActivated()) {
-                $grouproom_item = $groupItem->getGroupRoomItem();
-                if($grouproom_item) {
-                    $group_room_user_item = $grouproom_item->getUserByUserID($current_user->getUserID(), $current_user->getAuthSource());
-                    $group_room_user_item->reject();
-                    $group_room_user_item->save();
-                }
-                else {
-                    throw new \Exception("ERROR: User '" . $current_user->getUserID() . "' cannot leave the group room of group '" . $groupItem->getName() . "' since it does not exist!");
-                }
-            }
-            else {
-                throw new \Exception("ERROR: User '" . $current_user->getUserID() . "' cannot leave the group room of group '" . $groupItem->getName() . "' since it is not activated!");
+        if($groupItem->isGroupRoomActivated()) {
+            $grouproom_item = $this->_item->getGroupRoomItem();
+            if(isset($grouproom_item) && !empty($grouproom_item)) {
+                $group_room_user_item = $grouproom_item->getUserByUserID($current_user->getUserID(), $current_user->getAuthSource());
+                $group_room_user_item->reject();
+                $group_room_user_item->save();
             }
         }
+*/
         return new JsonResponse(array(
            'title' => $groupItem->getTitle(),
            'groupId' => $itemId,

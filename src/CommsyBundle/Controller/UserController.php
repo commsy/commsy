@@ -25,6 +25,10 @@ use CommsyBundle\Form\Type\UserSendType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
+/**
+ * Class UserController
+ * @package CommsyBundle\Controller
+ */
 class UserController extends Controller
 {
 
@@ -334,7 +338,9 @@ class UserController extends Controller
                     }
 
                     $userService = $this->get('commsy_legacy.user_service');
-                    $userService->updateAllGroupStatus($user, $roomId);
+                    foreach ($users as $user) {
+                        $userService->updateAllGroupStatus($user, $roomId);
+                    }
 
                     if ($formData['inform_user']) {
                         $this->sendUserInfoMail($formData['userIds'], $formData['status']);

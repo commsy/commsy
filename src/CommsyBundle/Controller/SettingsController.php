@@ -21,6 +21,11 @@ use CommsyBundle\Form\Type\InvitationsSettingsType;
 
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 
+/**
+ * Class SettingsController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_ENTER', roomId)")
+ */
 class SettingsController extends Controller
 {
     /**

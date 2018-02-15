@@ -37,8 +37,8 @@
                 }).done(function(data) {
 
                     // update 'additional actions' list
-                    $('#leave-group-link').removeClass('uk-text-muted').css('pointer-events', 'auto');
-                    $('#join-group-link, #join-group-and-room-link').addClass('uk-text-muted').css('pointer-events', 'none');
+                    $('#leave-group-link').removeClass('uk-hidden').css('pointer-events', 'auto');
+                    $('#join-group-link, #join-group-and-room-link').addClass('uk-hidden').css('pointer-events', 'none');
 
                     // update member information
                     let $membersDiv = $("#member" + data.groupId);

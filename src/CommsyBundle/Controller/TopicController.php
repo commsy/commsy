@@ -20,6 +20,11 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 use CommsyBundle\Event\CommsyEditEvent;
 
+/**
+ * Class TopicController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_ENTER', roomId)")
+ */
 class TopicController extends Controller
 {
     // setup filter form default values

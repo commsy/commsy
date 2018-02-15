@@ -456,27 +456,38 @@
     {% endfor %}
 {% endmacro %}
 
-{% macro contextLink(roomId, context, contextMemberStatus) %}
-    {% if 'enter' in contextMemberStatus %}
-        {% if 'archived' in contextMemberStatus %}
-            {{ 'Archived room'|trans({}, 'room') }} (<a href="{{ path('commsy_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>)
-        {% else %}
-            <a href="{{ path('commsy_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>
-        {% endif %}
+{% macro contextLink(roomId, context, contextMemberStatus, memberInGroup) %}
+
+    {% if memberInGroup is defined and memberInGroup is same as(false) %}
+        <span data-uk-tooltip title="{{'join group before grouproom'|trans({},'group') }}">
+            <a class='uk-button uk-button-secondary uk-text-bold uk-text-muted' style="pointer-events: none;" href=""><i class="uk-icon uk-icon-plus-square"></i> {{ 'become member'|trans({}, 'room') }}</a>
+        </span>
     {% else %}
-        {% if contextMemberStatus == 'join' %}
-            <a href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}">{{ 'become member'|trans({}, 'room') }}</a>
-        {% elseif contextMemberStatus == 'locked' %}
-            {{ 'This room is currently locked.'|trans({}, 'room') }}
-        {% elseif contextMemberStatus == 'requested' %}
-            {{ 'Your request has not been processed yet.'|trans({}, 'room') }}
-        {% elseif contextMemberStatus == 'rejected' %}
-            {{ 'Your request has been rejected.'|trans({}, 'room') }}
-        {% elseif contextMemberStatus == 'archived' %}
-            {{ 'Archived room'|trans({}, 'room') }}
+
+        {% if 'enter' in contextMemberStatus %}
+            {% if 'archived' in contextMemberStatus %}
+                {{ 'Archived room'|trans({}, 'room') }} (<a href="{{ path('commsy_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>)
+            {% else %}
+                <a class='uk-button uk-button-primary uk-text-bold uk-text-contrast' href="{{ path('commsy_room_home', {'roomId': context.itemId}) }}"><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>
+            {% endif %}
         {% else %}
-            <a href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}">{{ 'become member'|trans({}, 'room') }}</a>
+            {% if contextMemberStatus == 'join' %}
+                <a class='uk-button uk-button-primary uk-text-bold uk-text-contrast' href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon uk-icon-plus-square"></i> {{ 'become member'|trans({}, 'room') }}</a>
+            {% elseif contextMemberStatus == 'locked' %}
+                {{ 'This room is currently locked.'|trans({}, 'room') }}
+            {% elseif contextMemberStatus == 'requested' %}
+                <span data-uk-tooltip title="{{ 'Your request has not been processed yet.'|trans({}, 'room') }}">
+                    <a class='uk-button uk-button-secondary uk-text-bold uk-text-muted' style="pointer-events: none;" href=""><i class="uk-icon-sign-in uk-icon"></i> {{ 'enter room'|trans({}, 'room') }}</a>
+                </span>
+            {% elseif contextMemberStatus == 'rejected' %}
+                {{ 'Your request has been rejected.'|trans({}, 'room') }}
+            {% elseif contextMemberStatus == 'archived' %}
+                {{ 'Archived room'|trans({}, 'room') }}
+            {% else %}
+                <a class='uk-button uk-button-primary uk-text-bold uk-text-contrast' href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon uk-icon-plus-square"></i> {{ 'become member'|trans({}, 'room') }}</a>
+            {% endif %}
         {% endif %}
+
     {% endif %}
 {% endmacro %}
 

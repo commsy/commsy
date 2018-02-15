@@ -14,6 +14,13 @@ use Commsy\LegacyBundle\Services\UserService;
 use Commsy\LegacyBundle\Services\ReaderService;
 use CommsyBundle\Filter\HomeFilterType;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
+/**
+ * Class DashboardController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_ENTER', roomId)")
+ */
 class DashboardController extends Controller
 {
     /**

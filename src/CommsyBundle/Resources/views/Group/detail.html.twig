@@ -84,9 +84,9 @@
                                     <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
 
                                         {% if not isArchived and not item.isSystemLabel %}
-                                            {# join and leave group #}
-                                            <li>
-                                                <a id="join-group-link" {% if userIsMember %} style="pointer-events: none;" class="uk-text-muted" {% endif %} href="#" data-cs-action-join="{
+                                            {# join and leave group (and group room) #}
+                                            <li id="join-group-link" {% if userIsMember %} class="uk-hidden" {% endif %}>
+                                                <a href="#" data-cs-action-join="{
                                                     'url': '{{ path('commsy_group_join', {'roomId': roomId, 'itemId': group.itemId}) }}',
                                                     'successMessage': '<i class=\'uk-icon-medium uk-icon-user-plus\'></i> {{ 'Joined group %s'|trans|format(group.title|decodeHtmlEntity) }}',
                                                     'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}',
@@ -95,8 +95,13 @@
                                                     <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'join'|trans({})|capitalize }}
                                                 </a>
                                             </li>
-                                            <li>
-                                                <a id="leave-group-link" {% if not userIsMember %} style="pointer-events: none;" class="uk-text-muted" {% endif %} href="#" data-cs-action-leave="{
+                                            <li id="join-group-and-room-link" {% if userIsMember or not memberStatus == 'join' %} class="uk-hidden" {% endif %}>
+                                                <a href="{{ path('commsy_group_join', {'roomId': roomId, 'itemId': group.itemId, 'joinRoom': true}) }}">
+                                                    <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'join'|trans({})|capitalize }} {{ 'withGrouproom'|trans({}) }}
+                                                </a>
+                                            </li>
+                                            <li id="leave-group-link" {% if not userIsMember %} class="uk-hidden" {% elseif memberStatus == 'enter' %} data-uk-tooltip title="{{ 'leave grouproom before group'|trans({},'group') }}" {% endif %}>
+                                                <a href="#" {% if memberStatus == 'enter'%} class="uk-text-muted" style="pointer-events: none;" {% endif%} data-cs-action-leave="{
                                                     'url': '{{ path('commsy_group_leave', {'roomId': roomId, 'itemId': group.itemId}) }}',
                                                     'successMessage': '<i class=\'uk-icon-medium uk-icon-user-times\'></i> {{ 'Left group %s'|trans|format(group.title|decodeHtmlEntity) }}',
                                                     'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}',
@@ -105,23 +110,16 @@
                                                     <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave'|trans({})|capitalize }}
                                                 </a>
                                             </li>
-
-                                            {# join and leave group AND grouproom #}
-                                            <li>
-                                                <a id="join-group-and-room-link" {% if lastModeratorStanding or memberStatus == 'deactivated' or userIsMember or memberStatus == 'enter' %} style="pointer-events: none;" class="uk-text-muted" {% endif %} href="{{ path('commsy_group_join', {'roomId': roomId, 'itemId': group.itemId, 'joinRoom': true}) }}">
-                                                    <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'join'|trans({})|capitalize }} {{ 'withGrouproom'|trans({}) }}
-                                                </a>
-                                            </li>
-                                            <li>
+{#                                            <li>
                                                 <a id="leave-group-and-room-link" {% if lastModeratorStanding or memberStatus == 'deactivated' or not (userIsMember and memberStatus =='enter') %} style="pointer-events: none;" class="uk-text-muted" {% endif %} href="#" data-cs-action-leave="{
                                                     'url': '{{ path('commsy_group_leave', {'roomId': roomId, 'itemId': group.itemId}) }}',
                                                     'successMessage': '<i class=\'uk-icon-medium uk-icon-user-times\'></i> {{ 'Left group %s'|trans|format(group.title|decodeHtmlEntity) }}',
                                                     'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}',
                                                     'groupId': [ {{ group.itemId }} ]
                                                 }">
-                                                    <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave'|trans({})|capitalize }} {{ 'withGrouproom'|trans({}) }}
+                                                    <i class="uk-icon-small uk-icon-user-times uk-icon-justify uk-visible-large"></i> {{ 'leave'|trans({})|capitalize }}
                                                 </a>
-                                            </li>
+                                            </li>#}
                                         {% endif %}
 
                                         {% if is_granted('ITEM_EDIT', 'NEW') %}

@@ -23,6 +23,11 @@ use CommsyBundle\Form\Type\Profile\ProfileCalendarsType;
 use CommsyBundle\Form\Type\Profile\ProfileAdditionalType;
 use CommsyBundle\Form\Type\Profile\ProfilePersonalInformationType;
 
+/**
+ * Class ProfileController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_ENTER', roomId)")
+ */
 class ProfileController extends Controller
 {
     /**
@@ -324,6 +329,7 @@ class ProfileController extends Controller
 
         $form = $this->createForm(ProfilePersonalInformationType::class, $userData, array(
             'itemId' => $itemId,
+            'portalUser' => $portalUser,
         ));
 
         $form->handleRequest($request);
@@ -735,11 +741,6 @@ class ProfileController extends Controller
 
                 if (!$roomItem) {
                     throw $this->createNotFoundException('No room found for id ' . $roomId);
-                }
-
-                if ($roomItem->isGroupRoom()) {
-                    $group_item = $roomItem->getLinkedGroupItem();
-                    $group_item->removeMember($currentUser->getRelatedUserItemInContext($group_item->getContextID()));
                 }
 
                 return $this->redirect($portalUrl);
