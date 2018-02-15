@@ -172,7 +172,10 @@ class CalendarsService
                         if (isset($event->ORGANIZER['CN'])) {
                             $tempOrganizerString .= $event->ORGANIZER['CN'];
                         }
-                        $attendeeArray[] = $tempOrganizerString.' (<a href="'.$event->ORGANIZER->getValue().'">'.str_ireplace('MAILTO:', '', $event->ORGANIZER->getValue()).'</a>)';
+                        // lowercase "mailto:" is required for proper comparison with the sanitized description from `cs_date_item->getDescription()` below
+                        $organizerMailto = str_ireplace('MAILTO:', 'mailto:', $event->ORGANIZER->getValue());
+                        $organizerEmail = str_ireplace('MAILTO:', '', $event->ORGANIZER->getValue());
+                        $attendeeArray[] = $tempOrganizerString.' (<a href="'.$organizerMailto.'">'.$organizerEmail.'</a>)';
                     }
                     if ($event->ATTENDEE) {
                         foreach ($event->ATTENDEE as $tempAttendee) {
@@ -180,7 +183,9 @@ class CalendarsService
                             if (isset($tempAttendee['CN'])) {
                                 $tempAttendeeString .= $tempAttendee['CN'];
                             }
-                            $attendeeArray[] = $tempAttendeeString.' (<a href="'.$tempAttendee->getValue().'">'.str_ireplace('MAILTO:', '', $tempAttendee->getValue()).'</a>)';
+                            $attendeeMailto = str_ireplace('MAILTO:', 'mailto:', $tempAttendee->getValue());
+                            $attendeeEmail = str_ireplace('MAILTO:', '', $tempAttendee->getValue());
+                            $attendeeArray[] = $tempAttendeeString.' (<a href="'.$organizerMailto.'">'.$organizerEmail.'</a>)';
                         }
                     }
                     if (!empty($attendeeArray)) {
