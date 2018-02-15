@@ -191,9 +191,10 @@ class DateService
         $this->dateManager->showNoNotActivatedEntries();
     }
 
-    public function getDateByUid($uid, $calendarId)
+    public function getDateByUid($uid, $calendarId, $roomId)
     {
         $this->dateManager->reset();
+        $this->dateManager->setContextLimit($roomId);
         $this->dateManager->setUidArrayLimit(['"'.$uid.'"']);
         $this->dateManager->setCalendarArrayLimit(['"'.$calendarId.'"']);
         $this->dateManager->setWithoutDateModeLimit();
