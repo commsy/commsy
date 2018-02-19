@@ -1,21 +1,19 @@
 <?php
 namespace CommsyBundle\Command;
 
+use CommsyBundle\Database\DatabaseChecks;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Doctrine\ORM\EntityManager;
-
 class DBCheckCommand extends Command
 {
-    private $em;
+    private $databaseChecks;
 
-    public function __construct(EntityManager $em)
+    public function __construct(DatabaseChecks $databaseChecks)
     {
-        $this->em = $em;
+        $this->databaseChecks = $databaseChecks;
 
         parent::__construct();
     }
@@ -40,5 +38,7 @@ class DBCheckCommand extends Command
 
         
         $output->writeln('<info>foo</info>');
+
+        $this->databaseChecks->runChecks();
     }
 }

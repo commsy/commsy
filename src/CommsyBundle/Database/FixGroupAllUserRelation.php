@@ -6,7 +6,7 @@
  * Time: 16:23
  */
 
-namespace CommsyBundle\Command;
+namespace CommsyBundle\Database;
 
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
@@ -17,7 +17,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class FixGroupAllUserRelation extends Command
+class FixGroupAllUserRelation implements DatabaseCheck
 {
     /**
      * @var EntityManagerInterface
@@ -34,7 +34,7 @@ class FixGroupAllUserRelation extends Command
         $this->em = $em;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
 
-        parent::__construct();
+//        parent::__construct();
     }
 
     protected function configure()
@@ -43,6 +43,11 @@ class FixGroupAllUserRelation extends Command
             ->setName('commsy:db:fix-user-group-all')
             ->setDescription('Ensures every user is present in the system group "ALL"')
         ;
+    }
+
+    public function check()
+    {
+        // TODO: Implement check() method.
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

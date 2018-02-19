@@ -568,17 +568,10 @@ services:
 
     commsy.command.db_check:
         class: CommsyBundle\Command\DBCheckCommand
-        arguments: ['@doctrine.orm.entity_manager']
+        arguments:
+            - '@commsy.database.checks'
         tags:
             - { name: console.command }
-
-    commsy.command.fix_group_all_user_relation:
-            class: CommsyBundle\Command\FixGroupAllUserRelation
-            arguments:
-                - '@doctrine.orm.entity_manager'
-                - '@commsy_legacy.environment'
-            tags:
-                - { name: console.command }
 
     commsy.command.setup_dev:
         class: CommsyBundle\Command\SetupDevCommand
@@ -594,6 +587,18 @@ services:
         class: CommsyBundle\Command\ExternalCalendarsCommand
         tags:
             - { name: console.command }
+
+    # Database checks
+    commsy.database.checks:
+        class: CommsyBundle\Database\DatabaseChecks
+
+    commsy.database.checks.group_all_user_relation:
+        class: CommsyBundle\Database\FixGroupAllUserRelation
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@commsy_legacy.environment'
+        tags:
+            - commsy.database.check
 
     # API
     commsy.api.soap:
