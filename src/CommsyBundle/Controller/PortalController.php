@@ -231,8 +231,16 @@ class PortalController extends Controller
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")
      */
-    public function translationsAction($roomId, $roomCategoryId = null, Request $request)
+    public function translationsAction($roomId, Request $request)
     {
+        $translationService = $this->get('commsy.translation_service');
+
+        $translations = $translationService->getTranslations($roomId);
+
+        foreach ($translations as $translation) {
+            $translationService->getTranslation($translation->getId());
+        }
+
         return [];
     }
 }

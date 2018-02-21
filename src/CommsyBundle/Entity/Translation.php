@@ -136,6 +136,9 @@ class Translation
         return $this->translation;
     }
 
+    /**
+     * @param $locale
+     */
     public function setTranslatableLocale($locale)
     {
         $this->locale = $locale;
