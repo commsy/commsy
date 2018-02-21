@@ -34,6 +34,24 @@ class TranslationType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
                 $form = $event->getForm();
                 $form
+                    ->add('translation_de', Types\TextareaType::class, [
+                        'constraints' => [
+                            new Constraints\NotBlank(),
+                        ],
+                        'label' => 'Translation german',
+                        'required' => true,
+                        'translation_domain' => 'portal',
+                    ]);
+                $form
+                    ->add('translation_en', Types\TextareaType::class, [
+                        'constraints' => [
+                            new Constraints\NotBlank(),
+                        ],
+                        'label' => 'Translation english',
+                        'required' => true,
+                        'translation_domain' => 'portal',
+                    ]);
+                $form
                     ->add('update', Types\SubmitType::class, [
                         'attr' => array(
                             'class' => 'uk-button-primary',

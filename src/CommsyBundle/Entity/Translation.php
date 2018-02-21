@@ -143,5 +143,45 @@ class Translation
     {
         $this->locale = $locale;
     }
+
+    /**
+     * Get german translation
+     *
+     * @return string
+     */
+    public function getTranslationDe()
+    {
+        $this->setTranslatableLocale('de_de');
+        return $this->translation;
+    }
+
+    /**
+     * Set german translation
+     */
+    public function setTranslationDe($translation)
+    {
+        $this->setTranslatableLocale('de_de');
+        $this->translation = $translation;
+    }
+
+    /**
+     * Get english translation
+     *
+     * @return string
+     */
+    public function getTranslationEn()
+    {
+        $this->setTranslatableLocale('en_en');
+        return $this->translation;
+    }
+
+    /**
+     * Set english translation
+     */
+    public function setTranslationEn($translation)
+    {
+        $this->setTranslatableLocale('en_en');
+        $this->translation = $translation;
+    }
 }
 
