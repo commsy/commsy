@@ -19,6 +19,11 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 use CommsyBundle\Event\CommsyEditEvent;
 
+/**
+ * Class DiscussionController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_ENTER', roomId)")
+ */
 class DiscussionController extends Controller
 {
     // setup filter form default values
@@ -165,6 +170,7 @@ class DiscussionController extends Controller
             'showCategories' => $roomItem->withTags(),
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
+            'user' => $legacyEnvironment->getCurrentUserItem(),
         );
         
     }

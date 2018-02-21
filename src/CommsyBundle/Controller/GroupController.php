@@ -2,6 +2,8 @@
 
 namespace CommsyBundle\Controller;
 
+use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\RFCValidation;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -21,6 +23,11 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 use CommsyBundle\Event\CommsyEditEvent;
 
+/**
+ * Class GroupController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_ENTER', roomId)")
+ */
 class GroupController extends Controller
 {
     // setup filter form default values
@@ -81,6 +88,7 @@ class GroupController extends Controller
             'showCategories' => false,
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
+            'user' => $legacyEnvironment->getCurrentUserItem(),
         );
     }
 
@@ -258,6 +266,7 @@ class GroupController extends Controller
             'showRating' => false,
             'allowedActions' => $allowedActions,
             'memberStatus' => $allGroupsMemberStatus,
+            'isRoot' => $legacyEnvironment->getCurrentUser()->isRoot(),
        );
     }
 
@@ -277,10 +286,11 @@ class GroupController extends Controller
         }
         
         $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
-        
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
         if ($action == 'markread') {
             $groupService = $this->get('commsy_legacy.group_service');
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             $noticedManager = $legacyEnvironment->getNoticedManager();
             $readerManager = $legacyEnvironment->getReaderManager();
             foreach ($selectedIds as $id) {
@@ -309,11 +319,17 @@ class GroupController extends Controller
             $response->headers->set('Content-Disposition', $contentDisposition);
             
             return $response;
+        } else if ($action == 'sendmail') {
+            return new JsonResponse([
+                'redirect' => $this->generateUrl('commsy_group_sendmultiple', array('roomId' => $roomId, 'userIds' => $selectedIds)),
+            ]);
         } else if ($action == 'delete') {
             $groupService = $this->get('commsy_legacy.group_service');
             foreach ($selectedIds as $id) {
                 $item = $groupService->getGroup($id);
-                $item->delete();
+                if ($item->mayEdit($legacyEnvironment->getCurrentUser())) {
+                    $item->delete();
+                }
             }
            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> '.$translator->transChoice('%count% deleted entries',count($selectedIds), array('%count%' => count($selectedIds)));
         }
@@ -351,7 +367,6 @@ class GroupController extends Controller
         $roomItem = $roomManager->getItem($roomId);
 
         if($infoArray['group']->isGroupRoomActivated()) {
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             $userService = $this->get('commsy_legacy.user_service');
             if ($infoArray['group']->getGroupRoomItem()) {
                 $memberStatus = $userService->getMemberStatus(
@@ -413,10 +428,11 @@ class GroupController extends Controller
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
             'isArchived' => $roomItem->isArchived(),
+            'lastModeratorStanding' => $this->userIsLastGrouproomModerator($infoArray['group']->getGroupRoomItem()),
        );
     }
 
-/**
+    /**
      * @Route("/room/{roomId}/group/{itemId}/print")
      */
     public function printAction($roomId, $itemId)
@@ -1036,10 +1052,10 @@ class GroupController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/group/{itemId}/join")
+     * @Route("/room/{roomId}/group/{itemId}/join/{joinRoom}", defaults={"joinRoom"=false})
      * @Template()
      */
-    public function joinAction($roomId, $itemId, Request $request)
+    public function joinAction($roomId, $itemId, $joinRoom, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -1057,20 +1073,34 @@ class GroupController extends Controller
 
         $current_user = $legacyEnvironment->getCurrentUser();
 
-        $roomGroupitem = $groupItem->getGroupRoomItem();
-        if ( isset($roomGroupItem) and !empty($roomGroupItem) ) {
-            // TODO: join group room
-            // joinGroupRoom();
-            throw new Exception("Joining a group room is not yet implemented!");
-        } else {
+        // first, join group
+        if ($groupItem->getMemberItemList()->inList($current_user)) {
+            throw new \Exception("ERROR: User '" . $current_user->getUserID() . "' cannot join group '" . $groupItem->getName() . "' since (s)he already is a member!");
+        }
+        else {
             $groupItem->addMember($current_user);
-            /*
-            if($legacyEnvironment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() === '1') {
-                $wiki_manager = $this->_environment->getWikiManager();
-                $wiki_manager->updateNotification();
+        }
+
+        // then, join grouproom
+        if ($joinRoom) {
+            $grouproomItem = $groupItem->getGroupRoomItem();
+            if ($grouproomItem) {
+                $userService = $this->get('commsy_legacy.user_service');
+                $memberStatus = $userService->getMemberStatus($grouproomItem, $legacyEnvironment->getCurrentUser());
+                if ($memberStatus == 'join') {
+                    return $this->redirectToRoute('commsy_context_request', [
+                        'roomId' => $roomId,
+                        'itemId' => $grouproomItem->getItemId(),
+                    ]);
+                }
+                else {
+                    throw new \Exception("ERROR: User '" . $current_user->getUserID() . "' cannot join group room '" . $grouproomItem->getTitle() . "' since (s)he has room member status '" . $memberStatus . "' (requires status 'join' to become a room member)!");
+                }
             }
-            */
-       }
+            else {
+                throw new \Exception("ERROR: User '" . $current_user->getUserID() . "' cannot join the group room of group '" . $groupItem->getName() . "' since it does not exist!");
+            }
+        }
 
         return new JsonResponse(array(
            'title' => $groupItem->getTitle(),
@@ -1200,40 +1230,103 @@ class GroupController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $formData = $form->getData();
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $saveType = $form->getClickedButton()->getName();
 
-            $portalItem = $legacyEnvironment->getCurrentPortalItem();
-            $currentUser = $legacyEnvironment->getCurrentUserItem();
+            if ($saveType == 'save') {
+                $formData = $form->getData();
+                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
-            $from = $this->getParameter('commsy.email.from');
+                $portalItem = $legacyEnvironment->getCurrentPortalItem();
+                $currentUser = $legacyEnvironment->getCurrentUserItem();
 
-            $to = [];
-            foreach ($userService->getUsersByGroupIds($roomId, $groupIds) as $user) {
-                if (filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) {
-                    $to[$user->getEmail()] = $user->getFullName();
+                $from = $this->getParameter('commsy.email.from');
+
+                $users = [];
+                foreach ($groupIds as $groupId) {
+                    $groupUsers = $userService->getUsersByGroupIds($roomId, $groupIds);
+                    $users = array_merge($users, $groupUsers);
                 }
+
+                $to = [];
+                $toBCC = [];
+                $validator = new EmailValidator();
+                $failedUsers = [];
+                foreach ($users as $user) {
+                    $userEmail = $user->getEmail();
+                    $userName = $user->getFullName();
+                    if ($validator->isValid($userEmail, new RFCValidation())) {
+                        if ($user->isEmailVisible()) {
+                            $to[$userEmail] = $userName;
+                        } else {
+                            $toBCC[$userEmail] = $userName;
+                        }
+                    } else {
+                        $failedUsers[] = $user;
+                    }
+                }
+
+                $replyTo = [];
+                $toCC = [];
+                $currentUserEmail = $currentUser->getEmail();
+                $currentUserName = $currentUser->getFullName();
+                if ($validator->isValid($currentUserEmail, new RFCValidation())) {
+                    if ($currentUser->isEmailVisible()) {
+                        $replyTo[$currentUserEmail] = $currentUserName;
+                    }
+
+                    // form option: copy_to_sender
+                    if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
+                        if ($currentUser->isEmailVisible()) {
+                            $toCC[$currentUserEmail] = $currentUserName;
+                        } else {
+                            $toBCC[$currentUserEmail] = $currentUserName;
+                        }
+                    }
+                }
+
+                $message = \Swift_Message::newInstance()
+                    ->setSubject($formData['subject'])
+                    ->setBody($formData['message'], 'text/html')
+                    ->setFrom([$from => $portalItem->getTitle()])
+                    ->setReplyTo($replyTo)
+                    ->setTo($to);
+
+                if (!empty($toCC)) {
+                    $message->setCc($toCC);
+                }
+
+                if (!empty($toBCC)) {
+                    $message->setBcc($toBCC);
+                }
+
+                // send mail
+                $failedRecipients = [];
+                $this->get('mailer')->send($message, $failedRecipients);
+
+                foreach ($failedUsers as $failedUser) {
+                    $this->addFlash('failedRecipients', $failedUser->getUserId());
+                }
+
+                foreach ($failedRecipients as $failedRecipient) {
+                    $failedUser = array_filter($users, function($user) use ($failedRecipient) {
+                        return $user->getEmail() == $failedRecipient;
+                    });
+
+                    if ($failedUser) {
+                        $this->addFlash('failedRecipients', $failedUser[0]->getUserId());
+                    }
+                }
+
+                // redirect to success page
+                return $this->redirectToRoute('commsy_group_sendmultiplesuccess', [
+                    'roomId' => $roomId,
+                ]);
+            } else {
+                // redirect to group feed
+                return $this->redirectToRoute('commsy_group_list', [
+                    'roomId' => $roomId,
+                ]);
             }
-
-            $message = \Swift_Message::newInstance()
-                ->setSubject($formData['subject'])
-                ->setBody($formData['message'], 'text/html')
-                ->setFrom([$from => $portalItem->getTitle()])
-                ->setReplyTo([$currentUser->getEmail() => $currentUser->getFullName()])
-                ->setTo($to);
-
-            // form option: copy_to_sender
-            if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-                $message->setCc($message->getReplyTo());
-            }
-
-            // send mail
-            $this->get('mailer')->send($message);
-
-            // redirect to success page
-            return $this->redirectToRoute('commsy_group_sendmultiplesuccess', [
-                'roomId' => $roomId,
-            ]);
         }
 
         return [
@@ -1349,5 +1442,23 @@ class GroupController extends Controller
         }
 
         return $templates;
+    }
+
+    private function userIsLastGrouproomModerator($groupRoom) {
+
+        if (!empty($groupRoom)) {
+            $grouproomModerators = $groupRoom->getModeratorList();
+        }
+        else {
+            return false;
+        }
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $relatedUsers = $legacyEnvironment->getCurrentUser()->getRelatedUserList();
+
+        $grouproomModeratorItemIds = array_map(create_function('$o', 'return $o->getItemId();'), $grouproomModerators->to_array());
+        $relatedUsersItemIds = array_map(create_function('$o', 'return $o->getItemId();'), $relatedUsers->to_array());
+
+        return count($grouproomModerators) == 1 and count(array_intersect($relatedUsersItemIds, $grouproomModeratorItemIds));
     }
 }

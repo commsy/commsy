@@ -26,6 +26,11 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use CommsyBundle\Event\CommsyEditEvent;
 use CommsyBundle\Entity\Calendars;
 
+/**
+ * Class DateController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_ENTER', roomId)")
+ */
 class DateController extends Controller
 {    
     private $defaultFilterValues = array(
@@ -299,6 +304,7 @@ class DateController extends Controller
             'iCal' => $iCal,
             'calendars' => $calendars,
             'isArchived' => $roomItem->isArchived(),
+            'user' => $legacyEnvironment->getCurrentUserItem(),
         ];
     }
 

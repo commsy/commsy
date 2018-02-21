@@ -769,70 +769,79 @@ class cs_item_manager extends cs_manager {
       return new cs_item($this->_environment);
    }
 
-   /** get an item
-    *
-    * @param integer item_id id of the item
-    *
-    * @return object cs_item an item
-    */
-   function getItem($iid, $vid = NULL) {
-      $retour = NULL;
-      if ( !isset($this->_cache_object[$iid]) ) {
-         $query = 'SELECT *';
-         $query .= ' FROM '.$this->addDatabasePrefix('items');
-         $query .= ' WHERE item_id="'.$iid.'"';
-         $result = $this->_db_connector->performQuery($query);
-         if ( isset($result) and !empty($result) ) {
-            $retour = $this->_buildItem($result[0]);
-         } elseif ( !$this->_environment->isArchiveMode()
-                    and get_class($this) == 'cs_item_manager'
-                  ) {
-            $zzz_item_manager = $this->_environment->getZzzItemManager();
-            $retour = $zzz_item_manager->getItem($iid);
-            if ( $retour == 'empty' ) {
-               $retour = NULL;
-            } else {
-               if ( $retour->getItemID() == $this->_environment->getCurrentContextID() ) {
-            	   $this->_environment->setFoundCurrentContextInArchive();
-            	   $this->_environment->activateArchiveMode();
-            	}
-            }
-            unset($zzz_item_manager);
-         } elseif ( $this->_environment->isArchiveMode()
-                    and get_class($this) == 'cs_zzz_item_manager'
-                  ) {
-            $item_manager = $this->_environment->getItemManager(true);
-            $retour = $item_manager->getItem($iid);
-            if ( $retour == 'empty' ) {
-               $retour = NULL;
-            }
-            unset($item_manager);
-         } else {
-            $retour = 'empty';
-         }
-         
-         if ( !empty($retour)
-              and $retour != 'empty'
-              and is_object($retour)
+    /** get an item
+     *
+     * @param integer item_id id of the item
+     *
+     * @return object cs_item an item
+     */
+    public function getItem($iid, $vid = NULL)
+    {
+        if (!is_numeric($iid)) {
+            return null;
+        }
+
+        if (isset($vid) && !is_numeric($vid)) {
+            return null;
+        }
+
+        $retour = NULL;
+        if (!isset($this->_cache_object[$iid])) {
+            $query = 'SELECT *';
+            $query .= ' FROM ' . $this->addDatabasePrefix('items');
+            $query .= ' WHERE item_id="' . encode(AS_DB, $iid) . '"';
+            $result = $this->_db_connector->performQuery($query);
+            if (isset($result) and !empty($result)) {
+                $retour = $this->_buildItem($result[0]);
+            } elseif (!$this->_environment->isArchiveMode()
+                and get_class($this) == 'cs_item_manager'
             ) {
-            
-            // archive
-            $db_prefix = $this->getDatabasePrefix();
-            if ( $this->withDatabasePrefix()
-                 and !empty($db_prefix)
-                 and Stristr($query,$db_prefix)
-               ) {
-               $retour->setArchiveStatus();
+                $zzz_item_manager = $this->_environment->getZzzItemManager();
+                $retour = $zzz_item_manager->getItem($iid);
+                if ($retour == 'empty') {
+                    $retour = NULL;
+                } else {
+                    if ($retour->getItemID() == $this->_environment->getCurrentContextID()) {
+                        $this->_environment->setFoundCurrentContextInArchive();
+                        $this->_environment->activateArchiveMode();
+                    }
+                }
+                unset($zzz_item_manager);
+            } elseif ($this->_environment->isArchiveMode()
+                and get_class($this) == 'cs_zzz_item_manager'
+            ) {
+                $item_manager = $this->_environment->getItemManager(true);
+                $retour = $item_manager->getItem($iid);
+                if ($retour == 'empty') {
+                    $retour = NULL;
+                }
+                unset($item_manager);
+            } else {
+                $retour = 'empty';
             }
-            // archive
-                     
-            $this->_cache_object[$iid] = $retour;
-         }
-      } else {
-         $retour = $this->_cache_object[$iid];
-      }
-      return $retour;
-   }
+
+            if (!empty($retour)
+                and $retour != 'empty'
+                and is_object($retour)
+            ) {
+
+                // archive
+                $db_prefix = $this->getDatabasePrefix();
+                if ($this->withDatabasePrefix()
+                    and !empty($db_prefix)
+                    and Stristr($query, $db_prefix)
+                ) {
+                    $retour->setArchiveStatus();
+                }
+                // archive
+
+                $this->_cache_object[$iid] = $retour;
+            }
+        } else {
+            $retour = $this->_cache_object[$iid];
+        }
+        return $retour;
+    }
 
 
    function getExternalViewerForItem($iid, $uid) {

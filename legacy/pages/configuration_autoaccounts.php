@@ -467,8 +467,9 @@ function auto_create_accounts($date_array){
                   } elseif ( !empty($new_account_data['email']) ) {
                      $user_item->setEmail($new_account_data['email']);
                   } else {
-                     $server_item = $environment->getServerItem();
-                     $email = $server_item->getDefaultSenderAddress();
+                      global $symfonyContainer;
+                      $email = $symfonyContainer->getParameter('commsy.email.from');
+
                      $user_item->setEmail($email);
                      $user_item->setHasToChangeEmail();
                   }
@@ -627,10 +628,11 @@ function add_user_to_rooms($user, $room_array, $password_generated = false, $tem
       include_once('classes/cs_mail.php');
       $mail = new cs_mail();
       $mail->set_to($user->getEmail());
-      $admin = $environment->getCurrentUserItem();
-      //$mail->set_from_name($admin->getFullName);
-      //$mail->set_from_email($admin->getEmail);
-      $mail->set_from_email($environment->getServerItem()->getDefaultSenderAddress());
+
+       global $symfonyContainer;
+       $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+       $mail->set_from_email($emailFrom);
+
       $mail->set_from_name($environment->getCurrentPortalItem()->getTitle());
       $mail->set_subject($_POST['autoaccount_email_subject']);
       $mail->set_message($_POST['autoaccount_email_text']);
@@ -705,13 +707,11 @@ function write_email_to_moderators($user_item, $room){
          include_once('classes/cs_mail.php');
          $mail = new cs_mail();
          $mail->set_to(implode(',',$email_array));
-         $server_item = $environment->getServerItem();
-         $default_sender_address = $server_item->getDefaultSenderAddress();
-         if (!empty($default_sender_address)) {
-            $mail->set_from_email($default_sender_address);
-         } else {
-            $mail->set_from_email('@');
-         }
+
+          global $symfonyContainer;
+          $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+          $mail->set_from_email($emailFrom);
+
          $current_context = $environment->getCurrentContextItem();
          $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_context->getTitle()));
          $mail->set_from_name($room_item->getTitle());
@@ -773,13 +773,11 @@ function write_email_to_user($user_item, $room, $password_generated = false, $te
    $mail = new cs_mail();
    $mail->set_to($user_item->getEmail());
    $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
-   $server_item = $environment->getServerItem();
-   $default_sender_address = $server_item->getDefaultSenderAddress();
-   if (!empty($default_sender_address)) {
-      $mail->set_from_email($default_sender_address);
-   } else {
-      $mail->set_from_email('@');
-   }
+
+    global $symfonyContainer;
+    $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+    $mail->set_from_email($emailFrom);
+
    $mail->set_reply_to_email($contact_moderator->getEmail());
    $mail->set_reply_to_name($contact_moderator->getFullname());
    $mail->set_subject($subject);

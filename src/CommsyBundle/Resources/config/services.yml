@@ -160,6 +160,12 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
+    kernel.listener.commsy_changemail:
+        class: CommsyBundle\EventListener\CommsyChangeMailListener
+        arguments: ['@commsy_legacy.environment', '@router']
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
     commsy.listener.get_room_membership_filter:
             class: CommsyBundle\EventListener\RoomMembershipFilterConditionListener
             arguments: ['@commsy_legacy.user_service']
@@ -565,6 +571,14 @@ services:
         arguments: ['@doctrine.orm.entity_manager']
         tags:
             - { name: console.command }
+
+    commsy.command.fix_group_all_user_relation:
+            class: CommsyBundle\Command\FixGroupAllUserRelation
+            arguments:
+                - '@doctrine.orm.entity_manager'
+                - '@commsy_legacy.environment'
+            tags:
+                - { name: console.command }
 
     commsy.command.setup_dev:
         class: CommsyBundle\Command\SetupDevCommand

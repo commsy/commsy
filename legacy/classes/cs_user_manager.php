@@ -601,7 +601,7 @@ class cs_user_manager extends cs_manager {
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('user').'.item_id AND l41.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('user').'.item_id AND l42.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
      }
-     if ( isset($this->_group_limit) ) {
+     if ( isset($this->_group_limit) || (isset($this->_group_array_limit) and !empty($this->_group_array_limit)) ) {
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix('user').'.item_id AND l31.second_item_type="'.CS_GROUP_TYPE.'"))) ';
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix('user').'.item_id AND l32.first_item_type="'.CS_GROUP_TYPE.'"))) ';
      }
@@ -808,6 +808,12 @@ class cs_user_manager extends cs_manager {
             $query .= ' AND ((l31.first_item_id = "'.encode(AS_DB,$this->_group_limit).'" OR l31.second_item_id = "'.encode(AS_DB,$this->_group_limit).'")';
             $query .= ' OR (l32.first_item_id = "'.encode(AS_DB,$this->_group_limit).'" OR l32.second_item_id = "'.encode(AS_DB,$this->_group_limit).'"))';
          }
+      }
+      if ( isset($this->_group_array_limit) and !empty($this->_group_array_limit) ) {
+         array_walk($this->_group_array_limit, function (&$v, $k) { $v = encode(AS_DB,$v); });
+         $mergedGroupIDs = implode(',', $this->_group_array_limit);
+         $query .= ' AND ((l31.first_item_id IN ('.$mergedGroupIDs.') OR l31.second_item_id IN ('.$mergedGroupIDs.'))';
+         $query .= ' OR (l32.first_item_id IN ('.$mergedGroupIDs.') OR l32.second_item_id IN ('.$mergedGroupIDs.')))';
       }
 
       if ( isset($this->_limit_portal_id)

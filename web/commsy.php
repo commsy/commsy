@@ -1,2 +1,2 @@
 <?php
-    require_once('app_dev.php');
+    require_once('app.php');

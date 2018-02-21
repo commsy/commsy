@@ -172,6 +172,10 @@
                 <source>Rubric selection text</source>
                 <target>Wählen Sie die Rubriken und ihre Reihenfolge aus. Die Option "Anzeigen" bedeutet, dass diese Rubrik in der Navigation erscheint. Die Option "Verbergen" bedeutet, dass die Einträge dieser Rubrik nicht im Bereich "Die neuesten Einträge in diesem Raum" auf der Einsteigsseite erscheinen. Die Option "Deaktiviert" bedeutet, dass diese Rubrik in dem CommSy-Raum nicht zur Verfügung steht. Die Reihenfolge der Rubriken im Navigationsmenü können Sie per Drag &amp; Drop konfigurieren.</target>
             </trans-unit>
+            <trans-unit id="profile_image_tip">
+                <source>Rubric selection tip</source>
+                <target>Auch wenn die Rubrik "<![CDATA[<span class='uk-text-bold'>]]>Personen<![CDATA[</span>]]>" für normale Benutzer deaktiviert ist, wird sie Ihnen als Raummoderator immer angezeigt, um die Mitgliedschaft der Teilnehmer verwalten zu können.</target>
+            </trans-unit>
             <trans-unit id="room_description_text">
                 <source>Room description text</source>
                 <target>Geben Sie noch eine zusätzliche Beschreibung an. Es sind max. 1000 Zeichen erlaubt.</target>

@@ -15,6 +15,13 @@ use CommsyBundle\Model\GlobalSearch;
 
 use CommsyBundle\Filter\SearchFilterType;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
+/**
+ * Class SearchController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_ENTER', roomId)")
+ */
 class SearchController extends Controller
 {
     /**

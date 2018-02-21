@@ -581,12 +581,320 @@ class SoapService
         }
     }
 
+    /**
+     * Returns statistic information
+     *
+     * @param string $sessionId The session id
+     * @param string $dateStart starting date
+     * @param string $dateEnd ending date
+     *
+     * @throws SoapFault
+     *
+     * @return string | null
+     */
+    public function getStatistics($sessionId, $dateStart, $dateEnd)
+    {
+        if (!$this->isSessionValid($sessionId)) {
+            return new \SoapFault('ERROR', 'given session id is invalid!');
+        }
 
-    private function _encode_input ($value) {
+        $sessionId = $this->_encode_input($sessionId);
+        $this->legacyEnvironment->setSessionID($sessionId);
+        $session = $this->legacyEnvironment->getSessionItem();
+        $user_id = $session->getValue('user_id');
+        $auth_source_id = $session->getValue('auth_source');
+        $context_id = $session->getValue('commsy_id');
+        $this->legacyEnvironment->setCurrentContextID($context_id);
+
+        $user_manager = $this->legacyEnvironment->getUserManager();
+        $user_manager->setContextLimit($context_id);
+        $user_manager->setUserIDLimit($user_id);
+        $user_manager->setAuthSourceLimit($auth_source_id);
+        $user_manager->select();
+        $user_list = $user_manager->get();
+
+        if ($user_list->getCount() == 1) {
+            $user_item = $user_list->getFirst();
+            if ($user_item->isRoot()) {
+                if (!empty($dateStart)) {
+                    $dateStart = $this->_encode_input($dateStart);
+                    if (!empty($dateEnd)) {
+                        $dateEnd = $this->_encode_input($dateEnd);
+                    } else {
+                        $dateEnd = 'NOW';
+                    }
+                    if ($dateEnd == 'NOW') {
+                        $dateEnd = date('Y-m-d') . ' 23:59:59';
+                    }
+                    $server_item = $this->legacyEnvironment->getServerItem();
+                    if (!empty($server_item)) {
+                        include_once('functions/misc_functions.php');
+                        return array2XML($server_item->getStatistics($dateStart, $dateEnd));
+                    } else {
+                        $info = 'ERROR: GET STATISTICS';
+                        $info_text = 'server_item is empty';
+                        return new \SoapFault($info, $info_text);
+                    }
+                } else {
+                    $info = 'ERROR: GET STATISTICS';
+                    $info_text = 'date_start (second parameter) is empty';
+                    return new \SoapFault($info, $info_text);
+                }
+            } else {
+                $info = 'ERROR: GET STATISTICS';
+                $info_text = 'only root is allowed to use this function';
+                return new \SoapFault($info, $info_text);
+            }
+        } else {
+            $info = 'ERROR: GET STATISTICS';
+            $info_text = 'multiple user (' . $user_id . ') with auth source (' . $auth_source_id . ')';
+            return new \SoapFault($info, $info_text);
+        }
+    }
+
+    /**
+     * Returns list of dates
+     *
+     * @param string $sessionId The session id
+     * @param integer $contextId The context id
+     *
+     * @throws SoapFault
+     *
+     * @return string | null
+     */
+    public function getDatesList($sessionId, $contextId)
+    {
+        if (!$this->isSessionValid($sessionId)) {
+            return new \SoapFault('ERROR', 'given session id is invalid!');
+        }
+
+        $this->legacyEnvironment->setSessionID($sessionId);
+        $session = $this->legacyEnvironment->getSessionItem();
+
+        $this->legacyEnvironment->setCurrentContextID($contextId);
+
+        $userId = $session->getValue('user_id');
+        $authSourceId = $session->getValue('auth_source');
+        $user_manager = $this->legacyEnvironment->getUserManager();
+        $userItem = $user_manager->getItemByUserIDAuthSourceID($userId, $authSourceId);
+
+        $reader_manager = $this->legacyEnvironment->getReaderManager();
+
+        $datesManager = $this->legacyEnvironment->getDatesManager();
+        $datesManager->setContextLimit($contextId);
+        $datesManager->showNoNotActivatedEntries();
+        $datesManager->setDateModeLimit(2);
+        $datesManager->select();
+
+        $dateList = $datesManager->get();
+        $xml = "<dates_list>\n";
+
+        /** @var \cs_dates_item $dateItem */
+        $dateItem = $dateList->getFirst();
+        while ($dateItem) {
+            $xml .= "<date_item>\n";
+            $xml .= "<date_id><![CDATA[" . $dateItem->getItemID() . "]]></date_id>\n";
+            $temp_title = $dateItem->getTitle();
+            $temp_title = $this->prepareText($temp_title);
+            $xml .= "<date_title><![CDATA[" . $temp_title . "]]></date_title>\n";
+            $xml .= "<date_starting_date><![CDATA[" . $dateItem->getDateTime_start() . "]]></date_starting_date>\n";
+            $xml .= "<date_ending_date><![CDATA[" . $dateItem->getDateTime_end() . "]]></date_ending_date>\n";
+            $reader = $reader_manager->getLatestReaderForUserByID($dateItem->getItemID(), $userItem->getItemID());
+            if (empty($reader)) {
+                $xml .= "<date_read><![CDATA[new]]></date_read>\n";
+            } elseif ($reader['read_date'] < $dateItem->getModificationDate()) {
+                $xml .= "<date_read><![CDATA[changed]]></date_read>\n";
+            } else {
+                $xml .= "<date_read><![CDATA[]]></date_read>\n";
+            }
+            if ($dateItem->mayEdit($userItem)) {
+                $xml .= "<date_edit><![CDATA[edit]]></date_edit>\n";
+            } else {
+                $xml .= "<date_edit><![CDATA[non_edit]]></date_edit>\n";
+            }
+            $xml .= "</date_item>\n";
+            $dateItem = $dateList->getNext();
+        }
+        $xml .= "</dates_list>";
+
+        return $xml;
+    }
+
+    /**
+     * Returns list of dates
+     *
+     * @param string $sessionId The session id
+     * @param integer $contextId The context id
+     * @param integer $startTimestamp Starting timestamp
+     * @param integer $endTimestamp Ending timestamp
+     *
+     * @throws \SoapFault
+     *
+     * @return string
+     */
+    public function getDatesInRange($sessionId, $contextId, $startTimestamp, $endTimestamp)
+    {
+        if (!$this->isSessionValid($sessionId)) {
+            throw new \SoapFault('ERROR', 'given session id is invalid!');
+        }
+
+        $startDate = date("Y-m-d H:i:s", $startTimestamp);
+        $endDate = date("Y-m-d H:i:s", $endTimestamp);
+
+        $datesManager = $this->legacyEnvironment->getDatesManager();
+        $datesManager->setContextLimit($contextId);
+        $datesManager->showNoNotActivatedEntries();
+        $datesManager->setDateModeLimit(2);
+        $datesManager->setBetweenLimit($startDate, $endDate);
+
+        $datesManager->select();
+        $datesList = $datesManager->get();
+        $xml = "<dates_list>\n";
+
+        /** @var \cs_dates_item $dateItem */
+        $dateItem = $datesList->getFirst();
+
+        while ($dateItem) {
+            $xml .= "<date_item>\n";
+
+            $xml .= "<date_id><![CDATA[".$dateItem->getItemID()."]]></date_id>\n";
+
+            $tempTitle = $dateItem->getTitle();
+            $tempTitle = $this->prepareText($tempTitle);
+            $xml .= "<date_title><![CDATA[".$tempTitle."]]></date_title>\n";
+
+            $tempDescription = $dateItem->getDescription();
+            $tempDescription = $this->prepareText($tempDescription);
+            $xml .= "<date_description><![CDATA[".$tempDescription."]]></date_description>\n";
+
+            $xml .= "<date_place><![CDATA[".$dateItem->getPlace()."]]></date_place>\n";
+
+            $xml .= "<date_starting_date><![CDATA[".$dateItem->getDateTime_start()."]]></date_starting_date>\n";
+            $xml .= "<date_ending_date><![CDATA[".$dateItem->getDateTime_end()."]]></date_ending_date>\n";
+
+            $xml .= "</date_item>\n";
+
+            $dateItem = $datesList->getNext();
+        }
+
+        $xml .= "</dates_list>";
+
+        return $xml;
+    }
+//
+//    public function getDateDetails($session_id, $context_id, $item_id) {
+//        include_once('functions/development_functions.php');
+//        if($this->_isSessionValid($session_id)) {
+//            $this->_environment->setSessionID($session_id);
+//            $session = $this->_environment->getSessionItem();
+//            $this->_environment->setCurrentContextID($context_id);
+//            $user_id = $session->getValue('user_id');
+//            $auth_source_id = $session->getValue('auth_source');
+//            $user_manager = $this->_environment->getUserManager();
+//            $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
+//            $this->_environment->setCurrentUser($user_item);
+//            $reader_manager = $this->_environment->getReaderManager();
+//            $noticed_manager = $this->_environment->getNoticedManager();
+//            $dates_manager = $this->_environment->getDatesManager();
+//            $date_item = $dates_manager->getItem($item_id);
+//            $xml  = "<date_item>\n";
+//            $xml .= "<date_id><![CDATA[".$date_item->getItemID()."]]></date_id>\n";
+//            $temp_title = $date_item->getTitle();
+//            $temp_title = $this->prepareText($temp_title);
+//            $xml .= "<date_title><![CDATA[".$temp_title."]]></date_title>\n";
+//            $xml .= "<date_starting_date><![CDATA[".$date_item->getDateTime_start()."]]></date_starting_date>\n";
+//            $xml .= "<date_ending_date><![CDATA[".$date_item->getDateTime_end()."]]></date_ending_date>\n";
+//            $xml .= "<date_place><![CDATA[".$date_item->getPlace()."]]></date_place>\n";
+//            $temp_description = $date_item->getDescription();
+//            $allow_edit = true;
+//            if(stristr($temp_description, '<table')){
+//                $allow_edit = false;
+//            }
+//            $temp_description = $this->prepareText($temp_description);
+//            $xml .= "<date_description><![CDATA[".$temp_description."]]></date_description>\n";
+//            $reader = $reader_manager->getLatestReaderForUserByID($date_item->getItemID(), $user_item->getItemID());
+//            if ( empty($reader) ) {
+//                $xml .= "<date_read><![CDATA[new]]></date_read>\n";
+//            } elseif ( $reader['read_date'] < $date_item->getModificationDate() ) {
+//                $xml .= "<date_read><![CDATA[changed]]></date_read>\n";
+//            } else {
+//                $xml .= "<date_read><![CDATA[]]></date_read>\n";
+//            }
+//            if($date_item->mayEdit($user_item) && $allow_edit){
+//                $xml .= "<date_edit><![CDATA[edit]]></date_edit>\n";
+//            } else {
+//                $xml .= "<date_edit><![CDATA[non_edit]]></date_edit>\n";
+//            }
+//            $modifier_user = $date_item->getModificatorItem();
+//            $xml .= "<date_last_modifier><![CDATA[".$modifier_user->getFullname()."]]></date_last_modifier>\n";
+//            $xml .= "<date_last_modification_date><![CDATA[".$date_item->getModificationDate()."]]></date_last_modification_date>\n";
+//            $xml .= "<date_files>\n";
+//            $file_list = $date_item->getFileList();
+//            $temp_file = $file_list->getFirst();
+//            while($temp_file){
+//                $xml .= "<date_file>\n";
+//                $xml .= "<date_file_name><![CDATA[".$temp_file->getFileName()."]]></date_file_name>\n";
+//                $xml .= "<date_file_id><![CDATA[".$temp_file->getFileID()."]]></date_file_id>\n";
+//                $xml .= "<date_file_size><![CDATA[".$temp_file->getFileSize()."]]></date_file_size>\n";
+//                $xml .= "<date_file_mime><![CDATA[".$temp_file->getMime()."]]></date_file_mime>\n";
+//                //if($temp_file->getMime() == 'image/gif' || $temp_file->getMime() == 'image/jpeg' || $temp_file->getMime() == 'image/png'){
+//                //   $xml .= "<date_file_data><![CDATA[".$temp_file->getBase64()."]]></date_file_data>\n";
+//                //   debugToFile($temp_file->getBase64());
+//                //}
+//                $xml .= "</date_file>\n";
+//                $temp_file = $file_list->getNext();
+//            }
+//            $xml .= "</date_files>\n";
+//            $xml .= "</date_item>\n";
+//            $xml = $this->_encode_output($xml);
+//            $reader = $reader_manager->getLatestReaderForUserByID($date_item->getItemID(), $user_item->getItemID());
+//            if ( empty($reader) or $reader['read_date'] < $date_item->getModificationDate() ) {
+//                $reader_manager->markRead($date_item->getItemID(),0);
+//            }
+//            $noticed = $noticed_manager->getLatestNoticedForUserByID($date_item->getItemID(), $user_item->getItemID());
+//            if ( empty($noticed) or $noticed['read_date'] < $date_item->getModificationDate() ) {
+//                $noticed_manager->markNoticed($date_item->getItemID(),0);
+//            }
+//            return $xml;
+//        }
+//    }
+
+
+
+
+
+
+
+
+    private function _encode_input($value)
+    {
         return utf8_decode($value);
     }
 
-
+    private function prepareText($text)
+    {
+        $text = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u', '', $text);
+        $text = html_entity_decode($text, ENT_COMPAT, 'UTF-8');
+        $text = str_ireplace("<li>", "CS_LI", $text);
+        $text = str_ireplace("\n", "CS_NEWLINE", $text);
+        $text = str_ireplace("\r", "", $text);
+        $text = str_ireplace("\t", "", $text);
+        $text = str_ireplace("CS_LICS_NEWLINE", "CS_BULL ", $text);
+        $text = str_ireplace("CS_LI", "CS_BULL ", $text);
+        $text = str_ireplace("CS_NEWLINE", "\n", $text);
+        $text = str_ireplace("<br />", "", $text);
+        $current_encoding = mb_detect_encoding($text, 'auto');
+        $text = iconv($current_encoding, 'UTF-8', $text);
+        $text = strip_tags($text);
+        $text = htmlentities($text, ENT_QUOTES, 'UTF-8');
+        $text = str_ireplace("CS_BULL", "&bull;", $text);
+        $text = trim($text);
+        if (empty($text)) {
+            $text = ' ';
+        }
+        $text = base64_encode($text);
+        return $text;
+    }
 
     private function isSessionActive($userId, $portalId)
     {
@@ -645,14 +953,6 @@ class SoapService
 //
 //    public function __construct ($environment) {
 //        $this->_environment = $environment;
-//    }
-//
-//    private function _encode_input ($value) {
-//        return $value;
-//    }
-//
-//    private function _encode_output ($value) {
-//        return $value;
 //    }
 //
 //    private function _htmlTextareaSecurity ( $value ) {
@@ -3030,66 +3330,6 @@ class SoapService
 //        return $result;
 //    }
 //
-//    public function getStatistics($session_id, $date_start, $date_end){
-//        $result = '';
-//        $session_id = $this->_encode_input($session_id);
-//        if ($this->_isSessionValid($session_id)) {
-//            $this->_environment->setSessionID($session_id);
-//            $session = $this->_environment->getSessionItem();
-//            $user_id = $session->getValue('user_id');
-//            $auth_source_id = $session->getValue('auth_source');
-//            $context_id = $session->getValue('commsy_id');
-//            $this->_environment->setCurrentContextID($context_id);
-//            $user_manager = $this->_environment->getUserManager();
-//            $user_manager->setContextLimit($context_id);
-//            $user_manager->setUserIDLimit($user_id);
-//            $user_manager->setAuthSourceLimit($auth_source_id);
-//            $user_manager->select();
-//            $user_list = $user_manager->get();
-//            if ( $user_list->getCount() == 1 ) {
-//                $user_item = $user_list->getFirst();
-//                if ( $user_item->isRoot() ) {
-//                    if ( !empty($date_start) ) {
-//                        $date_start = $this->_encode_input($date_start);
-//                        if ( !empty($date_end) ) {
-//                            $date_end = $this->_encode_input($date_end);
-//                        } else {
-//                            $date_end = 'NOW';
-//                        }
-//                        if ($date_end == 'NOW') {
-//                            $date_end = date('Y-m-d').' 23:59:59';
-//                        }
-//                        $server_item = $this->_environment->getServerItem();
-//                        if ( !empty($server_item) ) {
-//                            include_once('functions/misc_functions.php');
-//                            $result = array2XML($server_item->getStatistics($date_start,$date_end));
-//                        } else {
-//                            $info = 'ERROR: GET STATISTICS';
-//                            $info_text = 'server_item is empty';
-//                            $result = new SoapFault($info,$info_text);
-//                        }
-//                    } else {
-//                        $info = 'ERROR: GET STATISTICS';
-//                        $info_text = 'date_start (second parameter) is empty';
-//                        $result = new SoapFault($info,$info_text);
-//                    }
-//                } else {
-//                    $info = 'ERROR: GET STATISTICS';
-//                    $info_text = 'only root is allowed to use this function';
-//                    $result = new SoapFault($info,$info_text);
-//                }
-//            } else {
-//                $info = 'ERROR: GET STATISTICS';
-//                $info_text = 'multiple user ('.$user_id.') with auth source ('.$auth_source_id.')';
-//                $result = new SoapFault($info,$info_text);
-//            }
-//        } else {
-//            $info = 'ERROR: GET STATISTICS';
-//            $info_text = 'session id ('.$session_id.') is not valid';
-//            $result = new SoapFault($info,$info_text);
-//        }
-//        return $result;
-//    }
 //
 //
 //    // ----------------------------------------
@@ -3561,180 +3801,6 @@ class SoapService
 //
 //    // Dates
 //
-//    public function getDatesList($session_id, $context_id) {
-//        include_once('functions/development_functions.php');
-//        if($this->_isSessionValid($session_id)) {
-//            $this->_environment->setSessionID($session_id);
-//            $session = $this->_environment->getSessionItem();
-//            $this->_environment->setCurrentContextID($context_id);
-//            $user_id = $session->getValue('user_id');
-//            $auth_source_id = $session->getValue('auth_source');
-//            $user_manager = $this->_environment->getUserManager();
-//            $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
-//            $reader_manager = $this->_environment->getReaderManager();
-//            $dates_manager = $this->_environment->getDatesManager();
-//            $dates_manager->setContextLimit($context_id);
-//            $dates_manager->showNoNotActivatedEntries();
-//            $dates_manager->setDateModeLimit(2);
-//            $count_all = $dates_manager->getCountAll();
-//            $dates_manager->select();
-//            $dates_list = $dates_manager->get();
-//            $xml = "<dates_list>\n";
-//            $date_item = $dates_list->getFirst();
-//            while($date_item) {
-//                $xml .= "<date_item>\n";
-//                $xml .= "<date_id><![CDATA[".$date_item->getItemID()."]]></date_id>\n";
-//                $temp_title = $date_item->getTitle();
-//                $temp_title = $this->prepareText($temp_title);
-//                $xml .= "<date_title><![CDATA[".$temp_title."]]></date_title>\n";
-//                $xml .= "<date_starting_date><![CDATA[".$date_item->getDateTime_start()."]]></date_starting_date>\n";
-//                $xml .= "<date_ending_date><![CDATA[".$date_item->getDateTime_end()."]]></date_ending_date>\n";
-//                $reader = $reader_manager->getLatestReaderForUserByID($date_item->getItemID(), $user_item->getItemID());
-//                if ( empty($reader) ) {
-//                    $xml .= "<date_read><![CDATA[new]]></date_read>\n";
-//                } elseif ( $reader['read_date'] < $date_item->getModificationDate() ) {
-//                    $xml .= "<date_read><![CDATA[changed]]></date_read>\n";
-//                } else {
-//                    $xml .= "<date_read><![CDATA[]]></date_read>\n";
-//                }
-//                if($date_item->mayEdit($user_item)){
-//                    $xml .= "<date_edit><![CDATA[edit]]></date_edit>\n";
-//                } else {
-//                    $xml .= "<date_edit><![CDATA[non_edit]]></date_edit>\n";
-//                }
-//                $xml .= "</date_item>\n";
-//                $date_item = $dates_list->getNext();
-//            }
-//            $xml .= "</dates_list>";
-//            #debugToFile($xml);
-//            $xml = $this->_encode_output($xml);
-//            return $xml;
-//        }
-//    }
-//
-//    public function getDatesInRange($sessionId, $contextId, $startTimestamp, $endTimestamp) {
-//        include_once('functions/development_functions.php');
-//        if($this->_isSessionValid($sessionId)) {
-//            $startDate = date("Y-m-d H:i:s", $startTimestamp);
-//            $endDate = date("Y-m-d H:i:s", $endTimestamp);
-//
-//            $datesManager = $this->_environment->getDatesManager();
-//            $datesManager->setContextLimit($contextId);
-//            $datesManager->showNoNotActivatedEntries();
-//            $datesManager->setDateModeLimit(2);
-//            $datesManager->setBetweenLimit($startDate, $endDate);
-//
-//            $datesManager->select();
-//            $datesList = $datesManager->get();
-//            $xml = "<dates_list>\n";
-//            $dateItem = $datesList->getFirst();
-//
-//            while ($dateItem) {
-//                $xml .= "<date_item>\n";
-//
-//                $xml .= "<date_id><![CDATA[".$dateItem->getItemID()."]]></date_id>\n";
-//
-//                $tempTitle = $dateItem->getTitle();
-//                $tempTitle = $this->prepareText($tempTitle);
-//                $xml .= "<date_title><![CDATA[".$tempTitle."]]></date_title>\n";
-//
-//                $tempDescription = $dateItem->getDescription();
-//                $tempDescription = $this->prepareText($tempDescription);
-//                $xml .= "<date_description><![CDATA[".$tempDescription."]]></date_description>\n";
-//
-//                $xml .= "<date_place><![CDATA[".$dateItem->getPlace()."]]></date_place>\n";
-//
-//                $xml .= "<date_starting_date><![CDATA[".$dateItem->getDateTime_start()."]]></date_starting_date>\n";
-//                $xml .= "<date_ending_date><![CDATA[".$dateItem->getDateTime_end()."]]></date_ending_date>\n";
-//
-//                $xml .= "</date_item>\n";
-//
-//                $dateItem = $datesList->getNext();
-//            }
-//
-//            $xml .= "</dates_list>";
-//            $xml = $this->_encode_output($xml);
-//
-//            return $xml;
-//        }
-//    }
-//
-//    public function getDateDetails($session_id, $context_id, $item_id) {
-//        include_once('functions/development_functions.php');
-//        if($this->_isSessionValid($session_id)) {
-//            $this->_environment->setSessionID($session_id);
-//            $session = $this->_environment->getSessionItem();
-//            $this->_environment->setCurrentContextID($context_id);
-//            $user_id = $session->getValue('user_id');
-//            $auth_source_id = $session->getValue('auth_source');
-//            $user_manager = $this->_environment->getUserManager();
-//            $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
-//            $this->_environment->setCurrentUser($user_item);
-//            $reader_manager = $this->_environment->getReaderManager();
-//            $noticed_manager = $this->_environment->getNoticedManager();
-//            $dates_manager = $this->_environment->getDatesManager();
-//            $date_item = $dates_manager->getItem($item_id);
-//            $xml  = "<date_item>\n";
-//            $xml .= "<date_id><![CDATA[".$date_item->getItemID()."]]></date_id>\n";
-//            $temp_title = $date_item->getTitle();
-//            $temp_title = $this->prepareText($temp_title);
-//            $xml .= "<date_title><![CDATA[".$temp_title."]]></date_title>\n";
-//            $xml .= "<date_starting_date><![CDATA[".$date_item->getDateTime_start()."]]></date_starting_date>\n";
-//            $xml .= "<date_ending_date><![CDATA[".$date_item->getDateTime_end()."]]></date_ending_date>\n";
-//            $xml .= "<date_place><![CDATA[".$date_item->getPlace()."]]></date_place>\n";
-//            $temp_description = $date_item->getDescription();
-//            $allow_edit = true;
-//            if(stristr($temp_description, '<table')){
-//                $allow_edit = false;
-//            }
-//            $temp_description = $this->prepareText($temp_description);
-//            $xml .= "<date_description><![CDATA[".$temp_description."]]></date_description>\n";
-//            $reader = $reader_manager->getLatestReaderForUserByID($date_item->getItemID(), $user_item->getItemID());
-//            if ( empty($reader) ) {
-//                $xml .= "<date_read><![CDATA[new]]></date_read>\n";
-//            } elseif ( $reader['read_date'] < $date_item->getModificationDate() ) {
-//                $xml .= "<date_read><![CDATA[changed]]></date_read>\n";
-//            } else {
-//                $xml .= "<date_read><![CDATA[]]></date_read>\n";
-//            }
-//            if($date_item->mayEdit($user_item) && $allow_edit){
-//                $xml .= "<date_edit><![CDATA[edit]]></date_edit>\n";
-//            } else {
-//                $xml .= "<date_edit><![CDATA[non_edit]]></date_edit>\n";
-//            }
-//            $modifier_user = $date_item->getModificatorItem();
-//            $xml .= "<date_last_modifier><![CDATA[".$modifier_user->getFullname()."]]></date_last_modifier>\n";
-//            $xml .= "<date_last_modification_date><![CDATA[".$date_item->getModificationDate()."]]></date_last_modification_date>\n";
-//            $xml .= "<date_files>\n";
-//            $file_list = $date_item->getFileList();
-//            $temp_file = $file_list->getFirst();
-//            while($temp_file){
-//                $xml .= "<date_file>\n";
-//                $xml .= "<date_file_name><![CDATA[".$temp_file->getFileName()."]]></date_file_name>\n";
-//                $xml .= "<date_file_id><![CDATA[".$temp_file->getFileID()."]]></date_file_id>\n";
-//                $xml .= "<date_file_size><![CDATA[".$temp_file->getFileSize()."]]></date_file_size>\n";
-//                $xml .= "<date_file_mime><![CDATA[".$temp_file->getMime()."]]></date_file_mime>\n";
-//                //if($temp_file->getMime() == 'image/gif' || $temp_file->getMime() == 'image/jpeg' || $temp_file->getMime() == 'image/png'){
-//                //   $xml .= "<date_file_data><![CDATA[".$temp_file->getBase64()."]]></date_file_data>\n";
-//                //   debugToFile($temp_file->getBase64());
-//                //}
-//                $xml .= "</date_file>\n";
-//                $temp_file = $file_list->getNext();
-//            }
-//            $xml .= "</date_files>\n";
-//            $xml .= "</date_item>\n";
-//            $xml = $this->_encode_output($xml);
-//            $reader = $reader_manager->getLatestReaderForUserByID($date_item->getItemID(), $user_item->getItemID());
-//            if ( empty($reader) or $reader['read_date'] < $date_item->getModificationDate() ) {
-//                $reader_manager->markRead($date_item->getItemID(),0);
-//            }
-//            $noticed = $noticed_manager->getLatestNoticedForUserByID($date_item->getItemID(), $user_item->getItemID());
-//            if ( empty($noticed) or $noticed['read_date'] < $date_item->getModificationDate() ) {
-//                $noticed_manager->markNoticed($date_item->getItemID(),0);
-//            }
-//            return $xml;
-//        }
-//    }
 //
 //    public function saveDate($session_id, $context_id, $item_id, $title, $place, $description, $startingDate, $startingTime, $endingDate, $endingTime, $uploadFiles, $deleteFiles) {
 //        include_once('functions/development_functions.php');
@@ -4222,7 +4288,7 @@ class SoapService
 //                $xml .= "<discussion_article>\n";
 //                $xml .= "<discussion_article_id><![CDATA[".$temp_article->getItemID()."]]></discussion_article_id>\n";
 //                $temp_title = $temp_article->getTitle();
-//                $temp_title = $this->prepareText($temp_title);
+//                $temp_title = $this->preparefText($temp_title);
 //                $xml .= "<discussion_article_title><![CDATA[".$temp_title."]]></discussion_article_title>\n";
 //                $temp_description = $temp_article->getDescription();
 //                $allow_edit = true;
@@ -4857,30 +4923,6 @@ class SoapService
 //        return $xml;
 //    }
 //
-//    function prepareText($text){
-//        $text = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$text);
-//        $text = html_entity_decode($text, ENT_COMPAT, 'UTF-8');
-//        $text = str_ireplace("<li>", "CS_LI", $text);
-//        $text = str_ireplace("\n", "CS_NEWLINE", $text);
-//        $text = str_ireplace("\r", "", $text);
-//        $text = str_ireplace("\t", "", $text);
-//        $text = str_ireplace("CS_LICS_NEWLINE", "CS_BULL ", $text);
-//        $text = str_ireplace("CS_LI", "CS_BULL ", $text);
-//        $text = str_ireplace("CS_NEWLINE", "\n", $text);
-//        $text = str_ireplace("<br />", "", $text);
-//        $current_encoding = mb_detect_encoding($text, 'auto');
-//        $text = iconv($current_encoding, 'UTF-8', $text);
-//        $text = strip_tags($text);
-//        $text =  htmlentities($text, ENT_QUOTES, 'UTF-8');
-//        $text = str_ireplace("CS_BULL", "&bull;", $text);
-//        el($text);
-//        $text = trim($text);
-//        if(empty($text)){
-//            $text = ' ';
-//        }
-//        $text = base64_encode($text);
-//        return $text;
-//    }
 //
 //    /*
 //    * for plugin soap methods

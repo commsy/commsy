@@ -57,6 +57,7 @@ class ProfileAdditionalType extends AbstractType
                 ),
                 'label' => 'language',
                 'required' => false,
+                'empty_data' => 'browser',
             ));
             if ($options['emailToCommsy']) {
                 $builder

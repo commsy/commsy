@@ -38,13 +38,17 @@
                                     <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
                                         <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left uk-nav-parent-icon" data-uk-nav>
 
-                                            {% if is_granted('ITEM_EDIT', 'NEW') %}
-                                                <li>
-                                                     <a id="create-date" href="{{ path('commsy_date_create', {'roomId': roomId, 'dateDescription' : "now"}) }}">
+                                            <li>
+                                                {% if is_granted('ITEM_EDIT', 'NEW') %}
+                                                    <a id="create-date" href="{{ path('commsy_date_create', {'roomId': roomId, 'dateDescription' : "now"}) }}">
                                                         <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
                                                     </a>
-                                                </li>
-                                            {% endif %}
+                                                {% else %}
+                                                    <span class="uk-text-muted">
+                                                        <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
+                                                    </span>
+                                                {% endif %}
+                                            </li>
 
                                             {# print #}
                                             <li>
@@ -93,12 +97,18 @@
                                                 </li>
                                             {% endif %}
 
-                                            {% if not isArchived and is_granted('MODERATOR') %}
+                                            {% if is_granted('MODERATOR') %}
                                                 {# import iCal #}
                                                 <li>
-                                                    <a href="{{ path('commsy_date_import', {'roomId': roomId}) }}" >
-                                                        <i class="uk-icon-justify uk-icon-small uk-icon-download uk-visible-large"></i> {{ 'import dates'|trans({},'date') }}
-                                                    </a>
+                                                    {% if not isArchived %}
+                                                        <a href="{{ path('commsy_date_import', {'roomId': roomId}) }}" >
+                                                            <i class="uk-icon-justify uk-icon-small uk-icon-download uk-visible-large"></i> {{ 'import dates'|trans({},'date') }}
+                                                        </a>
+                                                    {% else %}
+                                                        <span class="uk-text-muted">
+                                                            <i class="uk-icon-justify uk-icon-small uk-icon-download uk-visible-large"></i> {{ 'import dates'|trans({},'date') }}
+                                                        </span>
+                                                    {% endif %}
                                                 </li>
                                             {% endif %}
 

@@ -14,17 +14,6 @@ class ContextRequestType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('description', TextareaType::class, [
-                'label' => 'description',
-                'attr' => [
-                    'rows' => 5,
-                    'cols' => 80,
-                ],
-                'translation_domain' => 'room',
-                'required' => false,
-            ])
-        ;
         if ($options['checkNewMembersWithCode']) {
             $builder
                 ->add('code', TextType::class, [
@@ -57,7 +46,36 @@ class ContextRequestType extends AbstractType
                     'validation_groups' => false,
                 ])
             ;
+        } else {
+            $builder
+                ->add('description', TextareaType::class, [
+                    'label' => 'description',
+                    'attr' => [
+                        'rows' => 5,
+                        'cols' => 80,
+                    ],
+                    'translation_domain' => 'room',
+                    'required' => false,
+                ])
+                ->add('request', SubmitType::class, [
+                    'attr' => [
+                        'class' => 'uk-button-primary',
+                    ],
+                    'label' => 'become member',
+                    'translation_domain' => 'room',
+                ])
+                ->add('cancel', SubmitType::class, [
+                    'attr' => [
+                        'class' => 'uk-button-secondary',
+                        'formnovalidate' => '',
+                    ],
+                    'label' => 'cancel',
+                    'translation_domain' => 'form',
+                    'validation_groups' => false,
+                ])
+            ;
         }
+
         if ($options['withAGB']) {
             $builder
                 ->add('agb', CheckboxType::class, [
@@ -74,24 +92,6 @@ class ContextRequestType extends AbstractType
                 ])
             ;
         }
-        $builder
-            ->add('request', SubmitType::class, [
-                'attr' => [
-                    'class' => 'uk-button-primary',
-                ],
-                'label' => 'become member',
-                'translation_domain' => 'room',
-            ])
-            ->add('cancel', SubmitType::class, [
-                'attr' => [
-                    'class' => 'uk-button-secondary',
-                    'formnovalidate' => '',
-                ],
-                'label' => 'cancel',
-                'translation_domain' => 'form',
-                'validation_groups' => false,
-            ])
-        ;
     }
 
     /**

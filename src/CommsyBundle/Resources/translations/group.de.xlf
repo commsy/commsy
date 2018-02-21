@@ -54,6 +54,14 @@
                 <source>Choose a template</source>
                 <target>Vorlage auswählen</target>
             </trans-unit>
+            <trans-unit id="joinGroupBeforeGrouproom">
+                <source>join group before grouproom</source>
+                <target>Sie müssen der Gruppe beitreten, bevor Sie die Mitgliedschaft in diesem Gruppenraum beantragen können.</target>
+            </trans-unit>
+            <trans-unit id="leaveGrouproomBeforeGroup">
+                <source>leave grouproom before group</source>
+                <target>Sie müssen Ihre Mitgliedschaft in dem Gruppenraum beenden, before Sie aus der Gruppe austreten können.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

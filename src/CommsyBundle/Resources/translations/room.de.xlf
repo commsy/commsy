@@ -158,6 +158,10 @@
                 <source>search-filter</source>
                 <target>Suche</target>
             </trans-unit>
+            <trans-unit id="search-filter-user-name">
+                <source>username</source>
+                <target>Benutzername</target>
+            </trans-unit>
             <trans-unit id="search-filter-placeholder">
                 <source>search-filter-placeholder</source>
                 <target>Titel, ModeratorIn, Beschreibung</target>
@@ -266,6 +270,10 @@
                 <source>Archived room</source>
                 <target>Archivierter Raum</target>
             </trans-unit>
+            <trans-unit id="room_template">
+                <source>Template</source>
+                <target>Vorlage</target>
+            </trans-unit>
             <trans-unit id="room code description">
                 <source>room code description</source>
                 <target>Bitte geben Sie den Teilnahme-Code an. Bei richtiger Eingabe werden Sie sofort in den Raum hineingelassen.</target>
@@ -273,6 +281,10 @@
             <trans-unit id="room join description">
                 <source>room join description</source>
                 <target>Anmeldung ohne Freischalt-Code. Bitte erläutern Sie den ModeratorInnen dieses Raums, warum Sie Mitglied werden möchten. Dieser Text wird per E-Mail an die ModeratorInnen verschickt.</target>
+            </trans-unit>
+            <trans-unit id="name">
+                <source>Name</source>
+                <target>Name</target>
             </trans-unit>
         </body>
     </file>

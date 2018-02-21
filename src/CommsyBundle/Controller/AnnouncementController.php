@@ -19,6 +19,11 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 use CommsyBundle\Event\CommsyEditEvent;
 
+/**
+ * Class AnnouncementController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_ENTER', roomId)")
+ */
 class AnnouncementController extends Controller
 {
     // setup filter form default values
@@ -182,6 +187,8 @@ class AnnouncementController extends Controller
      */
     public function listAction($roomId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
@@ -229,6 +236,7 @@ class AnnouncementController extends Controller
             'showCategories' => $roomItem->withTags(),
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
+            'user' => $legacyEnvironment->getCurrentUserItem(),
         );
     }
 

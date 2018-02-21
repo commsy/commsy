@@ -211,7 +211,13 @@ class cs_discussionarticle_item extends cs_item {
       }
       $discussion_item->setLatestArticleID($this->getItemID());
       $discussion_item->setLatestArticleModificationDate($this->getModificationDate());
-      $discussion_item->save();
+
+      $itemManager = $this->_environment->getItemManager();
+      $articleItem = $itemManager->getItem($this->getItemID());
+
+      if (!$articleItem->isDraft()) {
+        $discussion_item->save();
+      }
 
       $this->_saveFiles();     // this must be done before saveFileLinks
       $this->_saveFileLinks(); // this must be done after saving so we can be sure to have an item id

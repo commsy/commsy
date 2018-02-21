@@ -38,13 +38,17 @@
                                     <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
 
                                         {# new entry #}
-                                        {% if is_granted('ITEM_EDIT', 'NEW') %}
-                                            <li>
+                                        <li>
+                                            {% if is_granted('ITEM_EDIT', 'NEW') %}
                                                 <a href="{{ path('commsy_discussion_create', {'roomId': roomId}) }}" id="newEntry">
                                                     <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
                                                 </a>
-                                            </li>
-                                        {% endif %}
+                                            {% else %}
+                                                <span class="uk-text-muted">
+                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
+                                                </span>
+                                            {% endif %}
+                                        </li>
 
                                         {# print #}
                                         <li>
@@ -75,27 +79,37 @@
                                         {# send #}
                                         <li>
                                             <a href="{{ path('commsy_item_send', {'roomId': roomId, 'itemId': discussion.itemId}) }}">
-                                                <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send'|trans({})|capitalize }}
+                                                <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
                                             </a>
                                         </li>
 
-                                        {% if is_granted('ITEM_EDIT', item.itemId) %}
-                                            {# delete #}
-                                            <li>
+                                        {# delete #}
+                                        <li>
+                                            {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                 <a class="commsy-action-delete" id="" href="#" data-delete-url="{{ path('commsy_item_delete', {'roomId': roomId, 'itemId': discussion.itemId}) }}" data-item-type="{{discussion.itemType}}" data-title="{{ 'list choice'|trans({},'rubric')|capitalize }}" data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}" data-return-url="{{ path('commsy_discussion_list', {'roomId': roomId}) }}">
                                                     <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                 </a>
-                                            </li>
-                                        {% endif %}
-                                        
+                                            {% else %}
+                                                <span class="uk-text-muted">
+                                                    <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                </span>
+                                            {% endif %}
+                                        </li>
+
                                         {# separator #}
                                         <li>&nbsp;</li>
 
                                         {# new article #}
-                                         <li>
-                                            <a class="newArticle" href="#" id="newArticle" data-article-url="{{ path('commsy_discussion_createarticle', {'roomId': roomId, 'itemId': discussion.itemId}) }}">
-                                                <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new article'|trans({},'discussion') }}
-                                            </a>
+                                        <li>
+                                            {% if not user.isReadOnlyUser %}
+                                                <a class="newArticle" href="#" id="newArticle" data-article-url="{{ path('commsy_discussion_createarticle', {'roomId': roomId, 'itemId': discussion.itemId}) }}">
+                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new article'|trans({},'discussion') }}
+                                                </a>
+                                            {% else %}
+                                                <span class="uk-text-muted">
+                                                    <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new article'|trans({},'discussion') }}
+                                                </span>
+                                            {% endif %}
                                         </li>
 
                                     </ul>
@@ -178,13 +192,13 @@
                                         <div class="uk-flex-inline uk-width-2-5 ">
                                             {% if loop.last and loop.length > 1 %}
                                                 <div class="uk-margin-right">
-                                                    <a class="uk-button-primary" href="#article_{{count-1}}"><i class="uk-icon-small uk-icon-angle-up"></i></a>
+                                                    <a class="uk-button-primary" href="#discarticle_{{count-1}}"><i class="uk-icon-small uk-icon-angle-up"></i></a>
                                                     <i class="uk-icon-small uk-icon-angle-down uk-text-muted"></i>
                                                 </div>
                                             {% elseif loop.first and loop.length > 1 %}
                                                 <div>
                                                     <i class="uk-icon-small uk-icon-angle-up uk-text-muted"></i>
-                                                    <a class="uk-button-primary" href="#article_{{count+1}}"><i class="uk-icon-small uk-icon-angle-down"></i></a>
+                                                    <a class="uk-button-primary" href="#discarticle_{{count+1}}"><i class="uk-icon-small uk-icon-angle-down"></i></a>
                                                 </div>
                                             {% elseif loop.length == 1 %}
                                                 <div>
@@ -193,8 +207,8 @@
                                                 </div>
                                             {% else %}
                                                 <div class="uk-margin-right">
-                                                    <a class="uk-button-primary" href="#article_{{count-1}}"><i class="uk-icon-small uk-icon-angle-up"></i></a>
-                                                    <a class="uk-button-primary" href="#article_{{count+1}}"><i class="uk-icon-small uk-icon-angle-down"></i></a>
+                                                    <a class="uk-button-primary" href="#discarticle_{{count-1}}"><i class="uk-icon-small uk-icon-angle-up"></i></a>
+                                                    <a class="uk-button-primary" href="#discarticle_{{count+1}}"><i class="uk-icon-small uk-icon-angle-down"></i></a>
                                                 </div>
                                             {% endif %}
                                         </div>
@@ -214,10 +228,17 @@
 
                                                         {# answer #}
                                                         <li>
-                                                            <a class="newArticle" href="#" id="newArticle" data-article-url="{{ path('commsy_discussion_createarticle', {'roomId': roomId, 'itemId': discussion.itemId, 'answerTo': article.itemId }) }}">
-                                                                <i class="uk-icon-small uk-icon-reply uk-icon-justify uk-visible-large"></i> {{ 'Answer'|trans({},'discussion') }}
-                                                            </a>
+                                                            {% if not user.isReadOnlyUser %}
+                                                                <a class="newArticle" href="#" id="newArticle" data-article-url="{{ path('commsy_discussion_createarticle', {'roomId': roomId, 'itemId': discussion.itemId, 'answerTo': article.itemId }) }}">
+                                                                    <i class="uk-icon-small uk-icon-reply uk-icon-justify uk-visible-large"></i> {{ 'Answer'|trans({},'discussion') }}
+                                                                </a>
+                                                            {% else %}
+                                                                <span class="uk-text-muted">
+                                                                    <i class="uk-icon-small uk-icon-reply uk-icon-justify uk-visible-large"></i> {{ 'Answer'|trans({},'discussion') }}
+                                                                </span>
+                                                            {% endif %}
                                                         </li>
+
 
                                                         {# delete #}
                                                         <li>
@@ -226,7 +247,9 @@
                                                                     <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                                 </a>
                                                             {% else %}
-                                                                <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                                <span class="uk-text-muted">
+                                                                    <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                                </span>
                                                             {% endif %}
                                                         </li>
                                                     </ul>

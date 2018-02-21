@@ -124,7 +124,7 @@
             </trans-unit>
             <trans-unit id="userEmailSend">
                 <source>send email</source>
-                <target>send email</target>
+                <target>Send email</target>
             </trans-unit>
             <trans-unit id="delete">
                 <source>delete</source>
@@ -241,6 +241,10 @@
             <trans-unit id="quick_action_reject">
                 <source>Reject</source>
                 <target>Reject</target>
+            </trans-unit>
+            <trans-unit id="manage_users">
+                <source>Manage users</source>
+                <target>Manage users</target>
             </trans-unit>
         </body>
     </file>

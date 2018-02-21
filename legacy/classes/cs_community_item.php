@@ -918,19 +918,18 @@ class cs_community_item extends cs_room_item {
    function _sendMailToModeration2 ($room_item, $room_change) {
       $translator = $this->_environment->getTranslationObject();
       $default_language = 'de';
-      $server_item = $this->_environment->getServerItem();
       
       // maybe in archive mode
       $toggle_archive = false;
-   	if ( $this->_environment->isArchiveMode() ) {
-   		$toggle_archive = true;
-   		$this->_environment->toggleArchiveMode();
-   	}
-      
-   	$default_sender_address = $server_item->getDefaultSenderAddress();
-      if ( empty($default_sender_address) ) {
-         $default_sender_address = '@';
-      }
+        if ( $this->_environment->isArchiveMode() ) {
+            $toggle_archive = true;
+            $this->_environment->toggleArchiveMode();
+        }
+
+       global $symfonyContainer;
+       $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+       $default_sender_address = $emailFrom;
+
       $current_portal = $this->_environment->getCurrentPortalItem();
       if ( empty($current_portal)
            or !$current_portal->isPortal()

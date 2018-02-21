@@ -16,6 +16,11 @@ use CommsyBundle\Filter\RoomFilterType;
 use CommsyBundle\Entity\Room;
 use CommsyBundle\Form\Type\ContextType;
 
+/**
+ * Class RoomController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_ENTER', roomId)")
+ */
 class RoomController extends Controller
 {
     /**
@@ -96,7 +101,6 @@ class RoomController extends Controller
 
         // TODO: calculate parallax-scrolling range for home.html.twig depending on image dimensions!
         $roomService = $this->get('commsy_legacy.room_service');
-        $saveDir = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
 
         // support mail
         $serviceContact = [
@@ -157,6 +161,10 @@ class RoomController extends Controller
             if (!in_array($homeInformationEntry->getItemType(), [CS_ANNOUNCEMENT_TYPE, CS_DATE_TYPE, CS_MATERIAL_TYPE, CS_TODO_TYPE])) {
                 $roomItem->setwithInformationBox(false);
                 $homeInformationEntry = null;
+            } else {
+                $markupService = $this->get('commsy_legacy.markup');
+                $itemService = $this->get('commsy_legacy.item_service');
+                $markupService->addFiles($itemService->getItemFileList($homeInformationEntry->getItemId()));
             }
         }
 

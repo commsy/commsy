@@ -2,6 +2,7 @@
 
 namespace Commsy\LegacyBundle\EventSubscriber;
 
+use Commsy\LegacyBundle\Utils\ItemService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
@@ -11,6 +12,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 use Commsy\LegacyBundle\Authentication\LegacyAuthentication;
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class KernelSubscriber
@@ -33,13 +35,24 @@ class KernelSubscriber implements EventSubscriberInterface
 
     private $legacyAuthentication;
 
+    private $itemService;
+
+    private $urlGenerator;
+
     /**
      * @param HttpKernelInterface $legacyKernel
      */
-    public function __construct(HttpKernelInterface $legacyKernel, LegacyAuthentication $legacyAuthentication,LegacyEnvironment $legacyEnvironment)
-    {
+    public function __construct(
+        HttpKernelInterface $legacyKernel,
+        LegacyAuthentication $legacyAuthentication,
+        ItemService $itemService,
+        UrlGeneratorInterface $urlGenerator,
+        LegacyEnvironment $legacyEnvironment
+    ) {
         $this->legacyKernel = $legacyKernel;
         $this->legacyAuthentication = $legacyAuthentication;
+        $this->itemService = $itemService;
+        $this->urlGenerator = $urlGenerator;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
@@ -82,9 +95,17 @@ class KernelSubscriber implements EventSubscriberInterface
                 $response = new RedirectResponse($url);
                 $event->setResponse($response);
             } else {
-                $response = $this->legacyKernel->handle($currentRequest);
+                $cid = $currentRequest->query->get('cid');
+                $contextItem = $this->itemService->getTypedItem($cid);
+                if ($contextItem instanceof \cs_room_item) {
+                    $event->setResponse(new RedirectResponse($this->urlGenerator->generate('commsy_room_home', [
+                        'roomId' => $cid,
+                    ])));
+                } else {
+                    $response = $this->legacyKernel->handle($currentRequest);
 
-                $event->setResponse($response);
+                    $event->setResponse($response);
+                }
             }
         } else {
             // some services will handle authentication themselves or can bypass, like soap, rss, ...

@@ -216,7 +216,7 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
      if ($this->_sort_position){
         $query .= ' ORDER BY '.$this->addDatabasePrefix('discussionarticles').'.position ASC';
      }else{
-        $query .= ' ORDER BY '.$this->addDatabasePrefix('discussionarticles').'.creation_date ASC, item_id ASC, '.$this->addDatabasePrefix('discussionarticles').'.subject DESC';
+        $query .= ' ORDER BY '.$this->addDatabasePrefix('discussionarticles').'.creation_date ASC, '.$this->addDatabasePrefix('discussionarticles').'.item_id ASC, '.$this->addDatabasePrefix('discussionarticles').'.subject DESC';
      }
       if ($mode == 'select') {
          if (isset($this->_interval_limit) and isset($this->_from_limit)) {

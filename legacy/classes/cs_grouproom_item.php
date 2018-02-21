@@ -27,6 +27,8 @@
  */
 include_once('classes/cs_room_item.php');
 
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
 /** group room
  * this class implements a group room item
  */
@@ -1021,11 +1023,6 @@ class cs_grouproom_item extends cs_room_item {
       	$this->_environment->toggleArchiveMode();
       }
       
-      $server_item = $this->_environment->getServerItem();
-      $default_sender_address = $server_item->getDefaultSenderAddress();
-      if ( empty($default_sender_address) ) {
-         $default_sender_address = '@';
-      }
       $current_portal = $this->_environment->getCurrentPortalItem();
       if ( empty($current_portal)
            or !$current_portal->isPortal()
@@ -1072,7 +1069,9 @@ class cs_grouproom_item extends cs_room_item {
       foreach ($receiver_array as $key => $value) {
          $save_language = $translator->getSelectedLanguage();
          $translator->setSelectedLanguage($key);
+         $project_room = $this->getLinkedProjectItem();
          $title = str_ireplace('&amp;', '&', $this->getTitle());
+
          if ( $room_change == 'open' ) {
             $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_OPEN',$title);
          } elseif ( $room_change == 'reopen' ) {
@@ -1115,52 +1114,41 @@ class cs_grouproom_item extends cs_room_item {
             $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_UNLOCK');
          }
          $body .= LF.LF;
-         $body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION',str_ireplace('&amp;', '&', $this->getTitle()),$current_user->getFullname(),$room_change_action);
+         $body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION',$title,$current_user->getFullname(),$room_change_action);
+
+         global $symfonyContainer;
+
          if ( $room_change != 'delete' ) {
 
-            $url_to_portal = '';
-            if ( !empty($current_portal) ) {
-               $url_to_portal = $current_portal->getURL();
-            }
-            
-            if ( !empty($url_to_portal) ) {
-               $c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
-               if ( stristr($c_commsy_domain,'https://') ) {
-                  $url = 'https://';
-               } else {
-                  $url = 'http://';
-               }
-               $url .= $url_to_portal;
-               $file = 'commsy.php';
-               $c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
-               if ( !empty($c_single_entry_point) ) {
-                  $file = $c_single_entry_point;
-               }
-               $url .= '/'.$file.'?cid=';
-            } else {
-               $file = $_SERVER['PHP_SELF'];
-               $file = str_replace('cron','commsy',$file);
-               $url = 'http://'.$_SERVER['HTTP_HOST'].$file.'?cid=';
-            }
-                        
-            $project_room = $this->getLinkedProjectItem();
+            $router = $symfonyContainer->get('router');
+
             $group_item = $this->getLinkedGroupItem();
             if ( isset($project_room) and !empty($project_room) and !$room_item->isPortal() ) {
                if ( isset($group_item) and !empty($group_item) ) {
-                  $url .= $project_room->getItemID().'&mod=group&fct=detail&iid='.$group_item->getItemID();
+                  $url = $router->generate(
+                     'commsy_group_detail', [
+                        'roomId' => $project_room->getItemID(),
+                        'itemId' => $group_item->getItemID()
+                     ], UrlGeneratorInterface::ABSOLUTE_URL);
                } else {
-                  $url .= $project_room->getItemID();
+                  $url = $router->generate(
+                     'commsy_room_home', [
+                        'roomId' => $project_room->getItemID()
+                     ], UrlGeneratorInterface::ABSOLUTE_URL);
                }
             } else {
-               $url .= $this->getContextID().'&room_id='.$this->getItemID();
+                  $url = $router->generate(
+                     'commsy_room_home', [
+                        'roomId' => $this->getItemID(),
+                     ], UrlGeneratorInterface::ABSOLUTE_URL);
             }
+
             $body .= LF.$url;
          }
 
          $body .= LF.LF;
          $body .= $translator->getMessage('GROUPROOM_MAIL_BODY_PROJECT_ROOM').LF;
 
-         $project_room = $this->getLinkedProjectItem();
          if ( isset($project_room) and !empty($project_room) ) {
             $body .= str_ireplace('&amp;', '&', $project_room->getTitle());
          } else {
@@ -1181,16 +1169,18 @@ class cs_grouproom_item extends cs_room_item {
          }
 
          // send email
-         include_once('classes/cs_mail.php');
-         $mail = new cs_mail();
-         $mail->set_to(implode(',',$value));
-         $mail->set_from_email($default_sender_address);
-         $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_portal->getTitle()));
-         $mail->set_reply_to_name($current_user->getFullname());
-         $mail->set_reply_to_email($current_user->getEmail());
-         $mail->set_subject($subject);
-         $mail->set_message($body);
-         $mail->send();
+         $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+         $fromName = $translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_portal->getTitle());
+
+         $message = \Swift_Message::newInstance()
+            ->setSubject($subject)
+            ->setBody($body, 'text/plain')
+            ->setFrom([$emailFrom => $fromName])
+            ->setReplyTo([$current_user->getEmail() => $current_user->getFullname()])
+            ->setTo($value);
+
+         $symfonyContainer->get('mailer')->send($message);
+
          $translator->setSelectedLanguage($save_language);
          unset($save_language);
       }

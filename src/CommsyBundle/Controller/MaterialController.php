@@ -22,6 +22,11 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use CommsyBundle\Event\CommsyEditEvent;
 
+/**
+ * Class MaterialController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_ENTER', roomId)")
+ */
 class MaterialController extends Controller
 {
     // setup filter form default values
@@ -173,6 +178,7 @@ class MaterialController extends Controller
             'material_filter' => $filterForm,
             'usageInfo' => $usageInfo,
             'isArchived' => $roomItem->isArchived(),
+            'user' => $legacyEnvironment->getCurrentUserItem(),
         );
     }
 

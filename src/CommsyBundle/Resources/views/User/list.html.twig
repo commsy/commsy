@@ -1,6 +1,8 @@
 {% extends 'CommsyBundle:Base:list.html.twig' %}
 {% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
 
+{% import 'CommsyBundle:Utils:macros.html.twig' as utilsMacros %}
+
 {% block feed %}
     {% if view == 'feedView' %}
         <ul id="user-feed" class="uk-comment-list">
@@ -32,7 +34,7 @@
 {% endblock %}
 
 {% block taskinfo %}
-    {% if userTasks|length > 0 %}
+    {% if isModerator and userTasks|length > 0 %}
         <div class="uk-alert uk-alert-danger">
             {{ userTasks|length }} {{ 'taskinfo'|trans({},'user') }} : <a href="{{ path('commsy_user_list', {'roomId': roomId,'user_filter[user_status]':1}) }}">
                 {{ 'show user'|trans({},'user') }}
@@ -64,8 +66,14 @@
                 </li>
             </ul>
 
-            {% if is_granted('MODERATOR') and not isArchived %}
-                <ul class="uk-nav uk-nav-dropdown cs-list-moderation uk-padding-remove uk-margin-remove uk-text-left">
+        </div>
+    </div>
+
+    {% if is_granted('MODERATOR') and not isArchived %}
+        <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+            <button class="uk-button uk-button-mini cs-button-list">{{ 'Manage users'|trans({},'user') }} <i class="uk-icon-caret-down"></i></button>
+            <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
+                <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
                     {# delete #}
                     <li>
                         <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{
@@ -174,11 +182,11 @@
                             <i class="uk-icon-justify uk-icon-small uk-icon-square-o uk-visible-large"></i> {{ 'contact remove'|trans({},'user') }}
                         </a>
                     </li>
-
                 </ul>
-            {% endif %}
+            </div>
         </div>
-    </div>
+    {% endif %}
+
 {% endblock%}
 
 {% block sortbox %}
@@ -187,9 +195,10 @@
             <button class="uk-button uk-button-mini cs-button-list">{{ 'list sort'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
             <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
                 <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
-                    <li><a href="#" id="commsy-sort-name" class="uk-clearfix cs-sort-active "><span class="uk-float-left">{{ 'surname'|trans({},'user') }}</span><span class="uk-float-right"><i id="commsy-sort-name-chevron" class="uk-icon-chevron-up"></i></span></a></li>
-                    <li><a href="#" id="commsy-sort-email" class="uk-clearfix"><span class="uk-float-left">{{ 'email'|trans({},'user') }}</span><span class="uk-float-right"><i id="commsy-sort-email-chevron" class=""></i></span></a></li>
-                    <li><a href="#" id="commsy-sort-status" class="uk-clearfix"><span class="uk-float-left">{{ 'user status'|trans({},'user') }}</span><span class="uk-float-right"><i id="commsy-sort-status-chevron" class=""></i></span></a></li>
+                    {# sorting options #}
+                    {{ utilsMacros.sortActor('name', 'surname', 'user', 'name', 'name_rev', 'asc') }}
+                    {{ utilsMacros.sortActor('email', 'email', 'user', 'email', 'email', '') }}
+                    {{ utilsMacros.sortActor('status', 'user status', 'user', 'status', 'status_rev', '') }}
                 </ul>
             </div>
         </div>

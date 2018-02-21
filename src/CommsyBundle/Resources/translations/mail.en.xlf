@@ -63,8 +63,12 @@
                 <target>Send item</target>
             </trans-unit>
             <trans-unit id="mailSendSuccess">
-                <source>Your mail has been successfully delivered.</source>
-                <target>Your mail has been successfully delivered.</target>
+                <source>Your mail has been successfully send.</source>
+                <target>Your mail has been successfully send.</target>
+            </trans-unit>
+            <trans-unit id="mailSendWarning">
+                <source>Your mail might has been partially send.</source>
+                <target>Your mail might has been partially send. We encountered some problems while sending to:</target>
             </trans-unit>
             <trans-unit id="mailBackToEntry">
                 <source>Back to</source>

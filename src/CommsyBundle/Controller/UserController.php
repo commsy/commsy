@@ -25,6 +25,10 @@ use CommsyBundle\Form\Type\UserSendType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
+/**
+ * Class UserController
+ * @package CommsyBundle\Controller
+ */
 class UserController extends Controller
 {
 
@@ -117,6 +121,7 @@ class UserController extends Controller
             'view' => $view,
             'isArchived' => $roomItem->isArchived(),
             'userTasks' => $userTasks,
+            'isModerator' => $currentUser->isModerator(),
         ];
     }
 
@@ -333,7 +338,9 @@ class UserController extends Controller
                     }
 
                     $userService = $this->get('commsy_legacy.user_service');
-                    $userService->updateAllGroupStatus($user, $roomId);
+                    foreach ($users as $user) {
+                        $userService->updateAllGroupStatus($user, $roomId);
+                    }
 
                     if ($formData['inform_user']) {
                         $this->sendUserInfoMail($formData['userIds'], $formData['status']);
@@ -938,17 +945,39 @@ class UserController extends Controller
                 $from = $this->getParameter('commsy.email.from');
 
                 $to = [];
+                $toBCC = [];
                 $validator = new EmailValidator();
+                $users = [];
+                $failedUsers = [];
                 foreach ($userIds as $userId) {
                     $user = $userService->getUser($userId);
+                    $users[] = $user;
                     if ($validator->isValid($user->getEmail(), new RFCValidation())) {
-                        $to[$user->getEmail()] = $user->getFullName();
+                        if ($user->isEmailVisible()) {
+                            $to[$user->getEmail()] = $user->getFullName();
+                        } else {
+                            $toBCC[$user->getEmail()] = $user->getFullName();
+                        }
+                    } else {
+                        $failedUsers[] = $user;
                     }
                 }
 
                 $replyTo = [];
+                $toCC = [];
                 if ($validator->isValid($currentUser->getEmail(), new RFCValidation())) {
-                    $replyTo[$currentUser->getEmail()] = $currentUser->getFullName();
+                    if ($currentUser->isEmailVisible()) {
+                        $replyTo[$currentUser->getEmail()] = $currentUser->getFullName();
+                    }
+
+                    // form option: copy_to_sender
+                    if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
+                        if ($currentUser->isEmailVisible()) {
+                            $toCC[$currentUser->getEmail()] = $currentUser->getFullName();
+                        } else {
+                            $toBCC[$currentUser->getEmail()] = $currentUser->getFullName();
+                        }
+                    }
                 }
 
                 $message = \Swift_Message::newInstance()
@@ -958,13 +987,31 @@ class UserController extends Controller
                     ->setReplyTo($replyTo)
                     ->setTo($to);
 
-                // form option: copy_to_sender
-                if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-                    $message->setCc($message->getReplyTo());
+                if (!empty($toCC)) {
+                    $message->setCc($toCC);
+                }
+
+                if (!empty($toBCC)) {
+                    $message->setBcc($toBCC);
                 }
 
                 // send mail
-                $this->get('mailer')->send($message);
+                $failedRecipients = [];
+                $this->get('mailer')->send($message, $failedRecipients);
+
+                foreach ($failedUsers as $failedUser) {
+                    $this->addFlash('failedRecipients', $failedUser->getUserId());
+                }
+
+                foreach ($failedRecipients as $failedRecipient) {
+                    $failedUser = array_filter($users, function($user) use ($failedRecipient) {
+                        return $user->getEmail() == $failedRecipient;
+                    });
+
+                    if ($failedUser) {
+                        $this->addFlash('failedRecipients', $failedUser[0]->getUserId());
+                    }
+                }
 
                 // redirect to success page
                 return $this->redirectToRoute('commsy_user_sendmultiplesuccess', [
@@ -1291,15 +1338,28 @@ class UserController extends Controller
 
         $fromAddress = $this->getParameter('commsy.email.from');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
         $fromSender = $legacyEnvironment->getCurrentContextItem()->getContextItem()->getTitle();
 
         $userService = $this->get('commsy_legacy.user_service');
 
+        $validator = new EmailValidator();
+        $replyTo = [];
+        $currentUserEmail = $currentUser->getEmail();
+        if ($validator->isValid($currentUserEmail, new RFCValidation())) {
+            if ($currentUser->isEmailVisible()) {
+                $replyTo[$currentUserEmail] = $currentUser->getFullName();
+            }
+        }
+
+        $users = [];
+        $failedUsers = [];
         foreach ($userIds as $userId) {
             $user = $userService->getUser($userId);
 
-            $email = $user->getEmail();
-            if (!empty($email)) {
+            $userEmail = $user->getEmail();
+            if (!empty($userEmail) && $validator->isValid($userEmail, new RFCValidation())) {
+                $to = [$userEmail => $user->getFullname()];
                 $subject = $accountMail->generateSubject($action);
                 $body = $accountMail->generateBody($user, $action);
 
@@ -1307,10 +1367,33 @@ class UserController extends Controller
                     ->setSubject($subject)
                     ->setBody($body, 'text/plain')
                     ->setFrom([$fromAddress => $fromSender])
-                    ->setTo([$email]);
+                    ->setReplyTo($replyTo);
+
+                if ($user->isEmailVisible()) {
+                    $mailMessage->setTo($to);
+                } else {
+                    $mailMessage->setBcc($to);
+                }
 
                 // send mail
-                $mailer->send($mailMessage);
+                $failedRecipients = [];
+                $mailer->send($mailMessage, $failedRecipients);
+            } else {
+                $failedUsers[] = $user;
+            }
+        }
+
+        foreach ($failedUsers as $failedUser) {
+            $this->addFlash('failedRecipients', $failedUser->getUserId());
+        }
+
+        foreach ($failedRecipients as $failedRecipient) {
+            $failedUser = array_filter($users, function($user) use ($failedRecipient) {
+                return $user->getEmail() == $failedRecipient;
+            });
+
+            if ($failedUser) {
+                $this->addFlash('failedRecipients', $failedUser[0]->getUserId());
             }
         }
     }

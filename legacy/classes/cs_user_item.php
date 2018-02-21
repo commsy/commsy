@@ -1931,8 +1931,10 @@ class cs_user_item extends cs_item
         return $retour;
     }
 
-
-    function getRelatedPrivateRoomUserItem()
+    /**
+     * @return \cs_user_item
+     */
+    public function getRelatedPrivateRoomUserItem()
     {
         $retour = NULL;
 

@@ -92,7 +92,7 @@
             var newWidget = emailContainer.data('prototype');
 
             // get the number of current used email fields
-            var currentEmailCount = $('send[additional_recipients]').length;
+            var currentEmailCount = $('input[name^="send[additional_recipients]"]').length;
 
             // replace the "__name__" used in the id and name of the prototype
             // with a number that's unique to the other fields

@@ -519,7 +519,11 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 			$mail['message'] = $this->_data["body"];
 
 			$email = new cs_mail();
-			$email->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
+
+            global $symfonyContainer;
+            $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+            $mail->set_from_email($emailFrom);
+
             $email->set_from_name($this->_environment->getCurrentPortalItem()->getTitle());
             $email->set_reply_to_name($mail["reply_to_name"]);
 			$email->set_reply_to_email($mail["reply_to_email"]);

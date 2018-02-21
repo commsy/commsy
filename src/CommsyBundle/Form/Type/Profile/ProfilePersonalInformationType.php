@@ -5,6 +5,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -13,6 +14,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Doctrine\ORM\EntityManager;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use Symfony\Component\Validator\Constraints\NotEqualTo;
 
 class ProfilePersonalInformationType extends AbstractType
 {
@@ -49,6 +51,16 @@ class ProfilePersonalInformationType extends AbstractType
             $disabled = true;
         }
 
+        $emailConstraints = [];
+        if (isset($options['portalUser'])) {
+            /** @var \cs_user_item $portalUser */
+            $portalUser = $options['portalUser'];
+
+            if ($portalUser->hasToChangeEmail()) {
+                $emailConstraints[] = new NotEqualTo(['value' => $portalUser->getEmail()]);
+            }
+        }
+
         $builder
             ->add('userId', TextType::class, array(
                 'constraints' => array(
@@ -66,9 +78,10 @@ class ProfilePersonalInformationType extends AbstractType
                 'label' => 'lastname',
                 'required' => false,
             ))
-            ->add('emailAccount', TextType::class, array(
+            ->add('emailAccount', EmailType::class, array(
                 'label' => 'email',
                 'required' => true,
+                'constraints' => $emailConstraints,
             ))
             ->add('dateOfBirth', DateType::class, array(
                 'label'    => 'dateOfBirth',
@@ -108,7 +121,7 @@ class ProfilePersonalInformationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['itemId'])
+            ->setRequired(['itemId', 'portalUser'])
             ->setDefaults(array('translation_domain' => 'profile'))
         ;
     }
