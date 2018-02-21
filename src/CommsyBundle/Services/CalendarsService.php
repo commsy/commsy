@@ -172,7 +172,10 @@ class CalendarsService
                         if (isset($event->ORGANIZER['CN'])) {
                             $tempOrganizerString .= $event->ORGANIZER['CN'];
                         }
-                        $attendeeArray[] = $tempOrganizerString.' (<a href="'.$event->ORGANIZER->getValue().'">'.str_ireplace('MAILTO:', '', $event->ORGANIZER->getValue()).'</a>)';
+                        // lowercase "mailto:" is required for proper comparison with the sanitized description from `cs_date_item->getDescription()` below
+                        $organizerMailto = str_ireplace('MAILTO:', 'mailto:', $event->ORGANIZER->getValue());
+                        $organizerEmail = str_ireplace('MAILTO:', '', $event->ORGANIZER->getValue());
+                        $attendeeArray[] = $tempOrganizerString.' (<a href="'.$organizerMailto.'">'.$organizerEmail.'</a>)';
                     }
                     if ($event->ATTENDEE) {
                         foreach ($event->ATTENDEE as $tempAttendee) {
@@ -180,66 +183,126 @@ class CalendarsService
                             if (isset($tempAttendee['CN'])) {
                                 $tempAttendeeString .= $tempAttendee['CN'];
                             }
-                            $attendeeArray[] = $tempAttendeeString.' (<a href="'.$tempAttendee->getValue().'">'.str_ireplace('MAILTO:', '', $tempAttendee->getValue()).'</a>)';
+                            $attendeeMailto = str_ireplace('MAILTO:', 'mailto:', $tempAttendee->getValue());
+                            $attendeeEmail = str_ireplace('MAILTO:', '', $tempAttendee->getValue());
+                            $attendeeArray[] = $tempAttendeeString.' (<a href="'.$organizerMailto.'">'.$organizerEmail.'</a>)';
                         }
                     }
                     if (!empty($attendeeArray)) {
                         $attendee = implode("<br/>", array_unique($attendeeArray));
                     }
 
-                    if ($external) {
+                    // try to find existing date item
+                    $roomId = $calendar->getContextId();
+                    $hasChanges = false;
+                    $date = $dateService->getDateByUid($uid, $calendar->getId(), $roomId);
+                    if (!$date) {
                         $date = $dateService->getNewDate();
+                        if ($external) {
+                            $date->setExternal(true);
+                        }
+                        $hasChanges = true; // all date item properties are new
+                    }
+
+                    // set (or update) date item properties
+                    if ($hasChanges || $hasChanges = ($date->getContextID() !== $roomId)) {
+                        $date->setContextID($roomId);
+                    }
+
+                    if ($hasChanges || $hasChanges = ($date->getTitle() !== $title)) {
+                        $date->setTitle($title);
+                    }
+
+                    $dbStartDatetime = $startDatetime->format('Ymd') . 'T' . $startDatetime->format('His');
+                    // compare DateTime objects to account for differing formats
+                    if ($hasChanges || $hasChanges = (new \DateTime($date->getDateTime_start()) != $startDatetime)) {
+                        $date->setDateTime_start($dbStartDatetime);
+                    }
+
+                    $dbStartingDay = $startDatetime->format('Y-m-d');
+                    if ($hasChanges || $hasChanges = ($date->getStartingDay() !== $dbStartingDay)) {
+                        $date->setStartingDay($dbStartingDay);
+                    }
+
+                    $dbStartingTime = $startDatetime->format('H:i');
+                    if ($hasChanges || $hasChanges = ($date->getStartingTime() !== $dbStartingTime)) {
+                        $date->setStartingTime($dbStartingTime);
+                    }
+
+                    $dbEndDatetime = $endDatetime->format('Ymd') . 'T' . $endDatetime->format('His');
+                    if ($hasChanges || $hasChanges = (new \DateTime($date->getDateTime_end()) != $endDatetime)) {
+                        $date->setDateTime_end($dbEndDatetime);
+                    }
+
+                    $dbEndingDay = $endDatetime->format('Y-m-d');
+                    if ($hasChanges || $hasChanges = ($date->getEndingDay() !== $dbEndingDay)) {
+                        $date->setEndingDay($dbEndingDay);
+                    }
+
+                    $dbEndingTime = $endDatetime->format('H:i');
+                    if ($hasChanges || $hasChanges = ($date->getEndingTime() !== $dbEndingTime)) {
+                        $date->setEndingTime($dbEndingTime);
+                    }
+
+                    if ($hasChanges || $hasChanges = ($date->isWholeDay() !== $wholeDay)) {
+                        $date->setWholeDay($wholeDay);
+                    }
+
+                    $calendarId = $calendar->getId();
+                    if ($hasChanges || $hasChanges = ((int)$date->getCalendarId() !== $calendarId)) {
+                        $date->setCalendarId($calendarId);
+                    }
+
+                    if ($hasChanges || $hasChanges = ($date->getPlace() !== $location)) {
+                        $date->setPlace($location);
+                    }
+
+                    $dbDescription = $description . "<br /><br />" . $attendee;
+                    if ($hasChanges || $hasChanges = ($date->getDescription() !== $dbDescription)) {
+                        $date->setDescription($dbDescription);
+                    }
+
+                    // for VCALENDAR 2.0, the UID should be globally unique and stable, but this isn't always the case in the real world
+                    if ($hasChanges || $hasChanges = ($date->getUid() !== $uid)) {
+                        $date->setUid($uid);
+                    }
+
+                    $creatorId = $calendar->getCreatorId();
+                    if (!$creatorId) {
+                        $legacyEnvironment = $this->serviceContainer->get('commsy_legacy.environment')->getEnvironment();
+                        $creatorId = $legacyEnvironment->getRootUserItemID();
+                    }
+                    if ($hasChanges || $hasChanges = ((int)$date->getCreatorID() !== $creatorId)) {
+                        $date->setCreatorID($creatorId);
+                    }
+                    if ($hasChanges || $hasChanges = ((int)$date->getModificatorID() !== $creatorId)) {
+                        $date->setModifierID($creatorId);
+                    }
+
+                    if (!$hasChanges) {
+                        // for existing date items, don't update their modification date if nothing has changed
+                        $date->setChangeModificationOnSave(false);
                     } else {
-                        if (!$date = $dateService->getDateByUid($uid, $calendar->getId())) {
-                            $date = $dateService->getNewDate();
+                        // for date items that lie in the past, assign their start date as modification date
+                        // (for upcoming date items which have changes, the current date will be used on save)
+                        $eventDateTime = new \DateTime($dbStartDatetime);
+                        $nowDateTime = new \DateTime();
+                        if ($eventDateTime < $nowDateTime) {
+                            $date->setModificationDate($dbStartDatetime);
+                            $date->setChangeModificationOnSave(false);
                         }
                     }
-                    $date->setContextId($calendar->getContextId());
-                    $date->setTitle($title);
-                    $date->setDateTime_start($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
-                    $date->setStartingDay($startDatetime->format('Y-m-d'));
-                    $date->setStartingTime($startDatetime->format('H:i'));
-                    $date->setDateTime_end($endDatetime->format('Ymd') . 'T' . $endDatetime->format('His'));
-                    $date->setEndingDay($endDatetime->format('Y-m-d'));
-                    $date->setEndingTime($endDatetime->format('H:i'));
-                    $date->setWholeDay($wholeDay);
-                    $date->setCalendarId($calendar->getId());
-                    $date->setPlace($location);
-                    $date->setDescription($description . "<br/><br/>" . $attendee);
-                    $date->setUid($uid);
-                    if ($calendar->getCreatorId()) {
-                        $date->setCreatorId($calendar->getCreatorId());
-                        $date->setModifierId($calendar->getCreatorId());
-                    } else {
-                        $legacyEnvironment = $this->serviceContainer->get('commsy_legacy.environment')->getEnvironment();
-                        $date->setCreatorId($legacyEnvironment->getRootUserItemID());
-                        $date->setModifierId($legacyEnvironment->getRootUserItemID());
-                    }
 
-                    $eventDateTime = new \DateTime($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
-                    $nowDateTime = new \DateTime();
-                    if ($eventDateTime < $nowDateTime) {
-                        $date->setModificationDate($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
-                        $date->setChangeModificationOnSave(false);
-                    }
-
-                    if ($external) {
-                        $date->setExternal(true);
-                    }
                     $date->save();
                 }
             }
 
-            foreach ($dateService->getListDates($calendar->getContextId(), null, null, null) as $date) {
+            foreach ($dateService->getListDates($roomId, null, null, null) as $date) {
                 if ($date->getCalendarId() == $calendar->getId()) {
                     if (!in_array($date->getUid(), $uids)) {
                         $date->delete();
                     }
                 }
-            }
-
-            if (!$external) {
-                // check for dates with uid not in imported ical. Delete those.
             }
 
         } catch (ParseException $e) {

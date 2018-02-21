@@ -33,42 +33,6 @@ class ExternalCalendarsCommand extends ContainerAwareCommand
             $output->write('<info>' . $calendar->getTitle() . '</info>');
 
             if (filter_var($calendar->getExternalUrl(), FILTER_VALIDATE_URL)) {
-                // delete old entries from database
-                $entityManagerDates = $container->get('doctrine.orm.entity_manager');
-                $repositoryDates = $entityManagerDates->getRepository('CommsyBundle:Dates');
-                $oldDateItems = $repositoryDates->createQueryBuilder('dates')
-                    ->select()
-                    ->where('dates.calendarId = :calendarId')
-                    ->setParameter('calendarId', $calendar->getId())
-                    ->getQuery()
-                    ->getResult();
-
-                $removeIds = array();
-                foreach ($oldDateItems as $oldDateItem) {
-                    $removeIds[] = $oldDateItem->getItemId();
-                    $entityManagerDates->remove($oldDateItem);
-                }
-                $entityManagerDates->flush();
-
-                $output->write('<info> ... removed dates</info>');
-
-                $entityManagerItems = $container->get('doctrine.orm.entity_manager');
-                $repositoryItems = $entityManagerItems->getRepository('CommsyBundle:Items');
-                $oldItems = $repositoryItems->createQueryBuilder('items')
-                    ->select()
-                    ->where("items.itemId IN(:removeIds)")
-                    ->setParameter('removeIds', $removeIds)
-                    ->getQuery()
-                    ->getResult();
-
-                foreach ($oldItems as $oldItem) {
-                    //$entityManagerItems->remove($oldItem);
-                    $entityManagerItems->getConnection()->exec('DELETE FROM items WHERE items.item_id = "'.$oldItem->getItemId().'"');
-                }
-                //$entityManagerItems->flush();
-
-                $output->write('<info> ... removed items</info>');
-
                 // fetch and parse data from external calendars
                 $result = $calendarsService->importEvents(fopen(str_ireplace('webcal://', 'http://', $calendar->getExternalUrl()), 'r'), $calendar, true);
                 if ($result !== true) {

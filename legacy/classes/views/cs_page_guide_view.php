@@ -757,15 +757,26 @@ class cs_page_guide_view extends cs_page_view {
             if ( $item->isOpen()
                  and !$this->_current_user->isOnlyReadUser()
                ) {
-               $params = array();
-               $params = $this->_environment->getCurrentParameterArray();
-               $params['account'] = 'member';
-               $params['room_id'] = $item->getItemID();
-               $actionCurl = curl( $this->_environment->getCurrentContextID(),
-                                  'home',
-                                  'index',
-                                  $params,
-                                  '');
+                global $symfonyContainer;
+                $router = $symfonyContainer->get('router');
+
+                $privateRoom = $current_user->getOwnRoom();
+                if ($privateRoom) {
+                    $actionCurl = $router->generate('commsy_context_request', [
+                        'roomId' => $privateRoom->getItemID(),
+                        'itemId' => $item->getItemID(),
+                    ]);
+                } else {
+                    $params = $this->_environment->getCurrentParameterArray();
+                    $params['account'] = 'member';
+                    $params['room_id'] = $item->getItemID();
+                    $actionCurl = curl( $this->_environment->getCurrentContextID(),
+                        'home',
+                        'index',
+                        $params,
+                        '');
+                }
+
                $session_item = $this->_environment->getSessionItem();
                if ($session_item->issetValue('login_redirect')) {
                   $html .= '<div style="padding-top:7px;"><p style="margin-top:0px; margin-bottom:0px;text-align:left;" class="disabled">';

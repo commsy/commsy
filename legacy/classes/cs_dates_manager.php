@@ -763,7 +763,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
          $public = '0';
       }
       $modification_date = getCurrentDateTimeInMySQL();
-      if ($item->isNotActivated()){
+      if ( $item->isNotActivated() || !$item->isChangeModificationOnSave() ){
          $modification_date = $item->getModificationDate();
       }
 

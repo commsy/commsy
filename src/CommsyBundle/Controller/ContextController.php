@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -20,7 +21,11 @@ class ContextController extends Controller
 {    
     /**
      * @Route("/room/{roomId}/context")
-     * @Template()
+     *
+     * @param int $roomId
+     * @param Request $request
+     *
+     * @return array
      */
     public function listAction($roomId, Request $request)
     {
@@ -57,6 +62,12 @@ class ContextController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
+     *
+     * @param int $roomId
+     * @param int $itemId
+     * @param Request $request
+     *
+     * @return array|Response
      */
     public function requestAction($roomId, $itemId, Request $request)
     {
@@ -88,7 +99,9 @@ class ContextController extends Controller
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if ($form->get('request')->isClicked() || $form->get('coderequest')->isClicked()) {
+            if (($form->has('request') && $form->get('request')->isClicked()) ||
+                ($form->has('coderequest') && $form->get('coderequest')->isClicked())
+            ) {
                 $formData = $form->getData();
 
                 // At this point we can assume that the user has accepted agb and
@@ -125,7 +138,7 @@ class ContextController extends Controller
                     $newUser->setPicture($newPictureName);
                 }
 
-                if ($formData['description']) {
+                if ($form->has('description') && $formData['description']) {
                     $newUser->setUserComment($formData['description']);
                 }
 
@@ -145,6 +158,8 @@ class ContextController extends Controller
                     $groupManager->setContextLimit($roomItem->getItemID());
                     $groupManager->select();
                     $groupList = $groupManager->get();
+
+                    /** @var \cs_group_item $group */
                     $group = $groupList->getFirst();
 
                     if ($group) {
@@ -239,7 +254,7 @@ class ContextController extends Controller
                         }
                         $body .= "\n\n";
 
-                        if ($formData['description']) {
+                        if ($form->has('description') && $formData['description']) {
                             $body .= $translator->getMessage('MAIL_COMMENT_BY', $newUser->getFullname(), $formData['description']);
                             $body .= "\n\n";
                         }
