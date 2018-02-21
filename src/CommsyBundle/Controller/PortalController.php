@@ -2,6 +2,7 @@
 
 namespace CommsyBundle\Controller;
 
+use CommsyBundle\Entity\Translation;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -14,6 +15,7 @@ use CommsyBundle\Form\Type\PortalHelpType;
 use CommsyBundle\Form\Type\PortalTermsType;
 use CommsyBundle\Form\Type\RoomCategoriesEditType;
 use CommsyBundle\Form\Type\RoomCategoriesLinkType;
+use CommsyBundle\Form\Type\TranslationType;
 use CommsyBundle\Entity\RoomCategories;
 
 use CommsyBundle\Event\CommsyEditEvent;
@@ -227,13 +229,13 @@ class PortalController extends Controller
     }
 
     /**
-     * @Route("/portal/{roomId}/translations")
+     * @Route("/portal/{roomId}/translations/{translationId}")
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")
      */
-    public function translationsAction($roomId, Request $request)
+    public function translationsAction($roomId, $translationId = null, Request $request)
     {
-        $translationService = $this->get('commsy.translation_service');
+        /* $translationService = $this->get('commsy.translation_service');
 
         $translations = $translationService->getTranslations($roomId);
 
@@ -241,6 +243,51 @@ class PortalController extends Controller
             $translationService->getTranslation($translation->getId());
         }
 
-        return [];
+        return []; */
+
+        $portalId = $roomId;
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('CommsyBundle:Translation');
+
+        $form = null;
+
+        if ($translationId) {
+            $translation = $repository->findOneById($translationId);
+
+            $editForm = $this->createForm(TranslationType::class, $translation, []);
+
+            $editForm->handleRequest($request);
+            if ($editForm->isValid()) {
+
+                // tells Doctrine you want to (eventually) save the Product (no queries yet)
+                $em->persist($translation);
+
+                // actually executes the queries (i.e. the INSERT query)
+                $em->flush();
+
+                return $this->redirectToRoute('commsy_portal_translations', [
+                    'roomId' => $roomId,
+                ]);
+            }
+
+            $form = $editForm->createView();
+        }
+
+
+        $translations = $repository->findBy(array('contextId' => $portalId));
+
+
+        return [
+            'form' => $form,
+            'roomId' => $portalId,
+            'translations' => $translations,
+            'translationId' => $translationId,
+            'item' => $portalItem,
+        ];
     }
 }
