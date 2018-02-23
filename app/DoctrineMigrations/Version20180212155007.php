@@ -40,7 +40,7 @@ class Version20180212155007 extends AbstractMigration
         foreach ($portals as $portal) {
             $this->addSql('
                 INSERT INTO translation (id, context_id, translation_key, translation_de, translation_en)
-                VALUES (DEFAULT, "'.$portal['item_id'].'", "EMAIL_REGEX_ERROR", "Die Emailadresse hat ein ungültiges Format", "The e-mail address is not valid")
+                VALUES (DEFAULT, "'.$portal['item_id'].'", "EMAIL_REGEX_ERROR", "Die angegebene E-Mail-Adresse entspricht nicht den Vorgaben der Portalmoderation.", "The given email-address does not match the requirements set by the portal moderators.")
             ');
         }
 
