@@ -1257,6 +1257,7 @@ class MaterialController extends Controller
 
                 $section->getLinkedItem()->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
+                // this will also update the material item's modification date to indicate that it has changes
                 $section->getLinkedItem()->save();
                 
             } else if ($form->get('cancel')->isClicked()) {
@@ -1265,9 +1266,6 @@ class MaterialController extends Controller
 
                 $section->save();
             }
-
-            $material = $materialService->getMaterial($section->getLinkedItemID());
-            $material->save();
         }
 
         return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));
