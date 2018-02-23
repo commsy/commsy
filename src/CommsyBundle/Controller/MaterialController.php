@@ -1268,11 +1268,6 @@ class MaterialController extends Controller
 
             $material = $materialService->getMaterial($section->getLinkedItemID());
             $material->save();
-        } else if ($form->get('cancel')->isClicked()) {
-            // remove not saved item
-            $section->delete();
-
-            $section->save();
         }
 
         return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));
