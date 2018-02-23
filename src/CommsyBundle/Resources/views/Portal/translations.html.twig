@@ -22,12 +22,12 @@
                             {% endif %}
                         </div>
                         {# show existing categories #}
-                        <div id="categories" class="uk-width-2-3">
+                        <div id="translations" class="uk-width-2-3">
                             {% for translation in translations %}
                                 <span>
                                      <a class="uk-button uk-margin-small-bottom uk-margin-small-right{% if translationId == translation.id %} uk-button-primary{% endif %}" href="{{ path('commsy_portal_translations', { 'roomId': roomId, 'translationId': translation.id }) }}">
                                          <span class="uk-vertical-align-middle">
-                                            {{- translation.translationkey|trans({},'portal') -}}
+                                            {{- translation.translationkey|trans({},'translation') -}}
                                         </span>
                                     </a>
                                 </span>

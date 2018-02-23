@@ -64,4 +64,30 @@ class TranslationService
     public function getTranslation ($translationId) {
         return $this->em->find('CommsyBundle\Entity\Translation', $translationId);
     }
+
+    /**
+     * @param $translationId
+     * @return null|object
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     */
+    public function getTranslationByKey ($contextId, $translationKey, $locale) {
+        $result = '';
+
+        $repository = $this->em->getRepository('CommsyBundle:Translation');
+        $query = $repository->createQueryBuilder('translation')
+            ->select()
+            ->where('translation.contextId = :context_id AND translation.translationKey = :translation_key')
+            ->setParameter('context_id', $contextId)
+            ->setParameter('translation_key', $translationKey)
+            ->getQuery();
+        $translation = $query->getResult();
+
+        if ($translation[0]) {
+            return $translation[0]->getTranslationForLocale($locale);
+        }
+
+        return $result;
+    }
 }

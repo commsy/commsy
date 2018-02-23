@@ -21,35 +21,25 @@ class TranslationType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('translation_key', Types\TextType::class, [
-                'constraints' => [
-                    new Constraints\NotBlank(),
-                ],
-                'label' => 'Translation key',
-                'required' => true,
-                'translation_domain' => 'portal',
-            ]);
-
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
                 $form = $event->getForm();
                 $form
-                    ->add('translation_de', Types\TextareaType::class, [
+                    ->add('translationDe', Types\TextareaType::class, [
                         'constraints' => [
                             new Constraints\NotBlank(),
                         ],
                         'label' => 'Translation german',
                         'required' => true,
-                        'translation_domain' => 'portal',
+                        'translation_domain' => 'translation',
                     ]);
                 $form
-                    ->add('translation_en', Types\TextareaType::class, [
+                    ->add('translationEn', Types\TextareaType::class, [
                         'constraints' => [
                             new Constraints\NotBlank(),
                         ],
                         'label' => 'Translation english',
                         'required' => true,
-                        'translation_domain' => 'portal',
+                        'translation_domain' => 'translation',
                     ]);
                 $form
                     ->add('update', Types\SubmitType::class, [
@@ -57,7 +47,7 @@ class TranslationType extends AbstractType
                             'class' => 'uk-button-primary',
                         ),
                         'label' => 'Update translation',
-                        'translation_domain' => 'portal',
+                        'translation_domain' => 'translation',
                     ]);
                 $form
                     ->add('cancel', Types\SubmitType::class, [
@@ -65,7 +55,7 @@ class TranslationType extends AbstractType
                             'class' => 'uk-button-secondary',
                         ),
                         'label' => 'Cancel',
-                        'translation_domain' => 'portal',
+                        'translation_domain' => 'translation',
                     ]);
             });
         ;

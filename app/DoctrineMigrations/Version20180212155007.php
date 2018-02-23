@@ -24,7 +24,8 @@ class Version20180212155007 extends AbstractMigration
                 id int(11) NOT NULL AUTO_INCREMENT,
                 context_id int(11) NOT NULL,
                 translation_key varchar(255) NOT NULL,
-                translation varchar(255) NOT NULL,
+                translation_de varchar(255) NOT NULL,
+                translation_en varchar(255) NOT NULL,
                 PRIMARY KEY (id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8
         ');
@@ -38,10 +39,11 @@ class Version20180212155007 extends AbstractMigration
 
         foreach ($portals as $portal) {
             $this->addSql('
-                INSERT INTO translation (id, context_id, translation_key, translation)
-                VALUES (DEFAULT, "'.$portal['item_id'].'", "EMAIL_REGEX_ERROR", "EMAIL_REGEX_ERROR")
+                INSERT INTO translation (id, context_id, translation_key, translation_de, translation_en)
+                VALUES (DEFAULT, "'.$portal['item_id'].'", "EMAIL_REGEX_ERROR", "Die Emailadresse hat ein ungültiges Format", "The e-mail address is not valid")
             ');
         }
+
     }
 
     /**
@@ -53,6 +55,6 @@ class Version20180212155007 extends AbstractMigration
 
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP TABLE IF EXISTS translations');
+        $this->addSql('DROP TABLE IF EXISTS translation');
     }
 }

@@ -54,8 +54,7 @@
         "sabre/dav": "^3.2.2",
         "mediawiki/oauthclient": "^0.1.2",
         "nategood/httpful": "^0.2.20",
-        "egulias/email-validator": "^2.1",
-        "stof/doctrine-extensions-bundle": "dev-master"
+        "egulias/email-validator": "^2.1"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",

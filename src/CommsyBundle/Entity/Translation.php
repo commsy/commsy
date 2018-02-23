@@ -2,9 +2,7 @@
 
 namespace CommsyBundle\Entity;
 
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Translatable\Translatable;
 
 /**
  * Translation
@@ -40,18 +38,16 @@ class Translation
     /**
      * @var string
      *
-     * @Gedmo\Translatable
-     * @ORM\Column(name="translation", type="string", length=255)
+     * @ORM\Column(name="translation_de", type="string", length=255)
      */
-    private $translation;
+    private $translationDe;
 
     /**
-     * @Gedmo\Locale
-     * Used locale to override Translation listener`s locale
-     * this is not a mapped field of entity metadata, just a simple property
-     * and it is not necessary because globally locale can be set in listener
+     * @var string
+     *
+     * @ORM\Column(name="translation_en", type="string", length=255)
      */
-    private $locale;
+    private $translationEn;
 
 
     /**
@@ -127,41 +123,21 @@ class Translation
     }
 
     /**
-     * Get translation
-     *
-     * @return string
-     */
-    public function getTranslation()
-    {
-        return $this->translation;
-    }
-
-    /**
-     * @param $locale
-     */
-    public function setTranslatableLocale($locale)
-    {
-        $this->locale = $locale;
-    }
-
-    /**
      * Get german translation
      *
      * @return string
      */
     public function getTranslationDe()
     {
-        $this->setTranslatableLocale('de_de');
-        return $this->translation;
+        return $this->translationDe;
     }
 
     /**
      * Set german translation
      */
-    public function setTranslationDe($translation)
+    public function setTranslationDe($translationDe)
     {
-        $this->setTranslatableLocale('de_de');
-        $this->translation = $translation;
+        $this->translationDe = $translationDe;
     }
 
     /**
@@ -171,17 +147,24 @@ class Translation
      */
     public function getTranslationEn()
     {
-        $this->setTranslatableLocale('en_en');
-        return $this->translation;
+        return $this->translationEn;
     }
 
     /**
      * Set english translation
      */
-    public function setTranslationEn($translation)
+    public function setTranslationEn($translationEn)
     {
-        $this->setTranslatableLocale('en_en');
-        $this->translation = $translation;
+        $this->translationEn = $translationEn;
+    }
+
+    public function getTranslationForLocale($locale){
+        if ($locale == 'de') {
+            return $this->getTranslationDe();
+        } else if ($locale == 'en') {
+            return $this->getTranslationEn();
+        }
+        return '';
     }
 }
 

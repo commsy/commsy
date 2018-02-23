@@ -278,9 +278,7 @@ class PortalController extends Controller
             $form = $editForm->createView();
         }
 
-
         $translations = $repository->findBy(array('contextId' => $portalId));
-
 
         return [
             'form' => $form,
