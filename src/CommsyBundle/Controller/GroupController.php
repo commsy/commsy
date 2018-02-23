@@ -399,6 +399,8 @@ class GroupController extends Controller
         $itemService = $this->get('commsy_legacy.item_service');
         $markupService->addFiles($itemService->getItemFileList($itemId));
 
+        $roomService = $this->get('commsy_legacy.room_service');
+
         return array(
             'roomId' => $roomId,
             'group' => $infoArray['group'],
@@ -429,6 +431,7 @@ class GroupController extends Controller
             'pathTopicItem' => $pathTopicItem,
             'isArchived' => $roomItem->isArchived(),
             'lastModeratorStanding' => $this->userIsLastGrouproomModerator($infoArray['group']->getGroupRoomItem()),
+            'userRubricVisible' => in_array("user", $roomService->getRubricInformation($roomId)),
        );
     }
 

@@ -201,9 +201,11 @@
                     </div>
             
                     {# members #}
-                    <div id="member{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe>
-                        {{ macrosGroup.members(group, members) }}
-                    </div>
+                    {% if userRubricVisible %}
+                        <div id="member{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe>
+                            {{ macrosGroup.members(group, members) }}
+                        </div>
+                    {% endif %}
  
                     {# grouproom #}
                     <div id="member{{ group.itemId }}" class="cs-toggle" data-uk-observe>
