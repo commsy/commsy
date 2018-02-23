@@ -244,7 +244,9 @@
                 <div id="cs-nav-quick" class="cs-nav-quick">
                     <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ group.itemId }}\']'}" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
                         <li><a href="#description{{ group.itemId }}">{{ 'entry description'|trans({})}}</a></li>
-                        <li><a href="#member{{ group.itemId }}">{{ 'members'|trans({})}}</a></li>
+                        {% if userRubricVisible %}
+                            <li><a href="#member{{ group.itemId }}">{{ 'members'|trans({})}}</a></li>
+                        {% endif %}
                         <li><a href="#grouproom{{ group.itemId }}">{{ 'grouproom'|trans({},'group')}}</a></li>
                         <li><a href="#links{{ group.itemId }}">{{ 'links'|trans({})}}</a></li>
                      </ul>
