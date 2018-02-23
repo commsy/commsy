@@ -1198,6 +1198,7 @@ class MaterialController extends Controller
         $countSections = $sectionList->getCount();
 
         $section = $materialService->getNewSection();
+        $section->setDraftStatus(1);
         $section->setLinkedItemId($itemId);
         $section->setVersionId($material->getVersionId());
         $section->setNumber($countSections+1);
@@ -1232,6 +1233,9 @@ class MaterialController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.material');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($itemId);
+
         $translator = $this->get('translator');
 
         // get section
@@ -1249,6 +1253,11 @@ class MaterialController extends Controller
             if ($form->get('save')->isClicked()) {
                 // update title
                 $section->setTitle($form->getData()['title']);
+
+                if ($item->isDraft()) {
+                    $item->setDraftStatus(0);
+                    $item->saveAsItem();
+                }
 
                 // update modifier
                 $section->setModificatorItem($legacyEnvironment->getCurrentUserItem());
