@@ -1518,6 +1518,8 @@ class cs_user_item extends cs_item
                     if (!$room->withRubric(CS_USER_TYPE)) {
                         if ($user_item->getUserID() == $this->getUserID() && $user_item->getAuthSource() == $this->getAuthSource()) {
                             $access = true;
+                        } elseif ($user_item->isModerator()){
+                            $access = true;
                         } else {
                             $access = false;
                         }
