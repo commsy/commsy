@@ -10,12 +10,10 @@ namespace CommsyBundle\Database;
 
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
-use Doctrine\ORM\EntityManager;
+use CommsyBundle\Entity\Portal;
+use CommsyBundle\Entity\Room;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class FixGroupAllUserRelation implements DatabaseCheck
 {
@@ -29,28 +27,20 @@ class FixGroupAllUserRelation implements DatabaseCheck
      */
     private $legacyEnvironment;
 
+    private $fixes = [];
+
     public function __construct(EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment)
     {
         $this->em = $em;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-
-//        parent::__construct();
     }
 
-    protected function configure()
+    public function getPriority()
     {
-        $this
-            ->setName('commsy:db:fix-user-group-all')
-            ->setDescription('Ensures every user is present in the system group "ALL"')
-        ;
+        return 100;
     }
 
-    public function check()
-    {
-        // TODO: Implement check() method.
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function check(SymfonyStyle $io)
     {
         // find all active portals
         $qb = $this->em->createQueryBuilder()
@@ -64,8 +54,9 @@ class FixGroupAllUserRelation implements DatabaseCheck
         $groupManager = $this->legacyEnvironment->getGroupManager();
         $userManager = $this->legacyEnvironment->getUserManager();
 
+        /** @var Portal[] $portals */
         foreach ($portals as $portal) {
-            $output->writeln('<info>inspecting relations between users and system group "ALL" in portal ' . $portal->getTitle() . '(' . $portal->getItemId() . ')</info>');
+            $io->text('Inspecting relations between users and system group "ALL" in portal ' . $portal->getTitle() . '(' . $portal->getItemId() . ')');
 
             $qb = $this->em->createQueryBuilder()
                 ->select('r')
@@ -78,10 +69,11 @@ class FixGroupAllUserRelation implements DatabaseCheck
                 ->setParameter('roomType', 'project')
                 ->getQuery();
 
+            /** @var Room[] $projectRooms */
             $projectRooms = $qb->execute();
 
             foreach ($projectRooms as $projectRoom) {
-                $output->writeln('<info>processing room ' . $projectRoom->getTitle() . '(' . $projectRoom->getItemId() . ')</info>');
+                $io->text('Processing room ' . $projectRoom->getTitle() . '(' . $projectRoom->getItemId() . ')');
 
                 // get group "ALL"
                 $groupManager->reset();
@@ -96,28 +88,48 @@ class FixGroupAllUserRelation implements DatabaseCheck
                 $userList = $userManager->get();
 
                 if ($userList && $userList->isNotEmpty()) {
-                    $numUnrelated = 0;
-
                     // iterate users
                     /** @var \cs_user_item $userItem */
                     $userItem = $userList->getFirst();
                     while ($userItem) {
                         if (!$userItem->isRoot()) {
                             if (!$userItem->isInGroup($groupAll)) {
-                                $userItem->setGroup($groupAll);
-                                $userItem->setChangeModificationOnSave(false);
-                                $userItem->save();
+                                $io->warning('Missing user relation found');
 
-                                $numUnrelated++;
+                                $this->fixes[] = [
+                                    'user' => $userItem,
+                                    'group' => $groupAll,
+                                ];
                             }
                         }
 
                         $userItem = $userList->getNext();
                     }
-
-                    $output->writeln('<info>' . $numUnrelated . ' relations added</info>');
                 }
             }
         }
+
+        return sizeof($this->fixes) === 0;
+    }
+
+    public function resolve(SymfonyStyle $io)
+    {
+        $numUnrelated = 0;
+
+        foreach ($this->fixes as $fix) {
+            /** @var \cs_user_item $userItem */
+            $userItem = $fix['user'];
+            /** @var \cs_group_item $groupAll */
+            $groupAll = $fix['group'];
+
+            $groupAll->addMember($userItem);
+            $groupAll->save();
+
+            $numUnrelated++;
+        }
+
+        $io->text($numUnrelated . ' relations added');
+
+        return true;
     }
 }

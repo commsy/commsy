@@ -8,13 +8,23 @@
 
 namespace CommsyBundle\Database;
 
+use Symfony\Component\Console\Style\SymfonyStyle;
+
 /**
  * Interface DatabaseCheck
  * @package CommsyBundle\Database
  */
 interface DatabaseCheck
 {
-    public function get
+    public function getPriority();
 
-    public function check();
+    /**
+     * @return boolean
+     */
+    public function check(SymfonyStyle $io);
+
+    /**
+     * @return boolean
+     */
+    public function resolve(SymfonyStyle $io);
 }

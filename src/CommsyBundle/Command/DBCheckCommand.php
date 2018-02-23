@@ -34,11 +34,6 @@ class DBCheckCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $formatter = $this->getHelper('formatter');
-
-        
-        $output->writeln('<info>foo</info>');
-
-        $this->databaseChecks->runChecks();
+        $this->databaseChecks->runChecks($input, $output);
     }
 }
