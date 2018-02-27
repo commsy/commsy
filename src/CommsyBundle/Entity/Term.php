@@ -61,6 +61,30 @@ class Term
     }
 
     /**
+     * Set contextId
+     *
+     * @param string $contextId
+     *
+     * @return Term
+     */
+    public function setContextId($contextId)
+    {
+        $this->contextId = $contextId;
+
+        return $this;
+    }
+
+    /**
+     * Get contextId
+     *
+     * @return string
+     */
+    public function getContextId()
+    {
+        return $this->contextId;
+    }
+
+    /**
      * Set title
      *
      * @param string $title
