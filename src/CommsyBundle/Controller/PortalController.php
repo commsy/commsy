@@ -15,6 +15,8 @@ use CommsyBundle\Form\Type\PortalTermsType;
 use CommsyBundle\Form\Type\RoomCategoriesEditType;
 use CommsyBundle\Form\Type\RoomCategoriesLinkType;
 use CommsyBundle\Entity\RoomCategories;
+use CommsyBundle\Entity\Terms;
+use CommsyBundle\Form\Type\TermType;
 
 use CommsyBundle\Event\CommsyEditEvent;
 
@@ -149,12 +151,12 @@ class PortalController extends Controller
     }
 
     /**
-     * @Route("/portal/{roomId}/terms")
+     * @Route("/portal/{roomId}/terms/{termId}")
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")
      */
-    public function termsAction($roomId, Request $request) {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+    public function termsAction($roomId, $termId = null, Request $request) {
+        /* $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
 
@@ -175,12 +177,57 @@ class PortalController extends Controller
                 $portalItem->setAGBChangeDate();
                 $portalItem->save();
             }
+        } */
+
+        $portalId = $roomId;
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('CommsyBundle:Terms');
+
+        if ($termId) {
+            $term = $repository->findOneById($termId);
+        } else {
+            $term = new Terms();
+            $term->setContextId($portalId);
         }
 
-        return [
-            'form' => $termsForm->createView(),
-        ];
+        $form = $this->createForm(TermType::class, $term, []);
 
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+
+            // tells Doctrine you want to (eventually) save the Product (no queries yet)
+            if ($form->getClickedButton()->getName() == 'delete') {
+                $termsService = $this->get('commsy.terms_service');
+                $termsService->removeTerm($term);
+            } else {
+                $em->persist($term);
+            }
+
+            // actually executes the queries (i.e. the INSERT query)
+            $em->flush();
+
+            return $this->redirectToRoute('commsy_portal_terms', [
+                'roomId' => $roomId,
+            ]);
+        }
+
+        $terms = $repository->findBy(array('contextId' => $portalId));
+
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent(null));
+
+        return [
+            'form' => $form->createView(),
+            'roomId' => $portalId,
+            'terms' => $terms,
+            'termId' => $termId,
+            'item' => $legacyEnvironment->getCurrentPortalItem(),
+        ];
     }
 
     /**
