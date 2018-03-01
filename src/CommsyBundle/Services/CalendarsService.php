@@ -117,6 +117,7 @@ class CalendarsService
 
         try {
             $ical = VObject\Reader::read($icalData);
+            $roomId = $calendar->getContextId();
 
             $uids = [];
             if ($ical->VEVENT) {
@@ -193,7 +194,6 @@ class CalendarsService
                     }
 
                     // try to find existing date item
-                    $roomId = $calendar->getContextId();
                     $hasChanges = false;
                     $date = $dateService->getDateByUid($uid, $calendar->getId(), $roomId);
                     if (!$date) {
@@ -305,7 +305,7 @@ class CalendarsService
                 }
             }
 
-        } catch (ParseException $e) {
+        } catch (\Exception $e) {
             return $e->getMessage();
         }
 
