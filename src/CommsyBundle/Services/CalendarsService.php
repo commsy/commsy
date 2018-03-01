@@ -2,12 +2,10 @@
 
 namespace CommsyBundle\Services;
 
-use Cdb\Exception;
 use CommsyBundle\Entity\Calendars;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 use Sabre\VObject;
-use Sabre\VObject\ParseException;
 
 class CalendarsService
 {
