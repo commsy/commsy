@@ -26,7 +26,7 @@ use CommsyBundle\Event\CommsyEditEvent;
 /**
  * Class GroupController
  * @package CommsyBundle\Controller
- * @Security("is_granted('ITEM_ENTER', roomId)")
+ * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'group')")
  */
 class GroupController extends Controller
 {
@@ -354,7 +354,7 @@ class GroupController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
+     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'group')")
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
@@ -705,7 +705,7 @@ class GroupController extends Controller
     /**
      * @Route("/room/{roomId}/group/{itemId}/edit")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'group')")
      */
     public function editAction($roomId, $itemId, Request $request)
     {
@@ -803,7 +803,7 @@ class GroupController extends Controller
     /**
      * @Route("/room/{roomId}/group/{itemId}/save")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'group')")
      */
     public function saveAction($roomId, $itemId, Request $request)
     {
@@ -886,7 +886,7 @@ class GroupController extends Controller
     /**
      * @Route("/room/{roomId}/group/{itemId}/editgrouproom")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'group')")
      */
     public function editgrouproomAction($roomId, $itemId, Request $request)
     {
@@ -975,7 +975,7 @@ class GroupController extends Controller
     /**
      * @Route("/room/{roomId}/date/{itemId}/savegrouproom")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'group')")
      */
     public function savegrouproomAction($roomId, $itemId, Request $request)
     {
@@ -1162,7 +1162,7 @@ class GroupController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
+     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'group')")
      */
     public function membersAction($roomId, $itemId, Request $request)
     {
@@ -1183,7 +1183,7 @@ class GroupController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
+     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'group')")
      */
     public function groupRoomAction($roomId, $itemId, Request $request)
     {
