@@ -523,6 +523,9 @@ fos_elastica:
                             type: text
                             analyzer: commsy_analyzer
                             search_analyzer: html_strip_analyzer
+                            fields:
+                                raw:
+                                  type: keyword
                         description:
                             type: text
                             analyzer: html_strip_analyzer
