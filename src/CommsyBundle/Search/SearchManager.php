@@ -198,11 +198,11 @@ class SearchManager
 
         $matchQuery = new Queries\MultiMatch();
         $matchQuery->setQuery($this->query);
-        $matchQuery->setType('best_fields');
+        $matchQuery->setType('cross_fields');
         $matchQuery->setTieBreaker(0.3);
         $matchQuery->setMinimumShouldMatch('80%');
         $matchQuery->setFields([
-            'title^1.3',
+            'title^2',
             'discussionarticles.subject',
             'steps.title',
             'sections.title',
@@ -210,7 +210,7 @@ class SearchManager
             'discussionarticles.description',
             'steps.description',
             'sections.description',
-            'fullName^1.1',
+            'fullName^1.5',
             'userId',
 //            'creationDate',
 //            'endDate',
