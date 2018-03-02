@@ -140,6 +140,9 @@ class RoomFeedGenerator
                     case 'label':
                         $labelManager = $this->legacyEnvironment->getLabelManager();
                         $labelItem = $labelManager->getItem($item->getItemId());
+                        if ($labelItem->isSystemLabel()) {
+                            break;
+                        }
                         if ($labelItem->getItemType() == 'group') {
                             $groupManager = $this->legacyEnvironment->getLabelManager();
                             $groupItem = $groupManager->getItem($item->getItemId());
