@@ -28,6 +28,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 /**
  * Class UserController
  * @package CommsyBundle\Controller
+ * @Security("is_granted('RUBRIC_SEE', 'user')")
  */
 class UserController extends Controller
 {
@@ -527,7 +528,7 @@ class UserController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
+     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'user')")
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
@@ -768,7 +769,7 @@ class UserController extends Controller
     /**
      * @Route("/room/{roomId}/user/{itemId}/edit")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'user')")
      */
     public function editAction($roomId, $itemId, Request $request)
     {
@@ -831,7 +832,7 @@ class UserController extends Controller
     /**
      * @Route("/room/{roomId}/user/{itemId}/save")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'user')")
      */
     public function saveAction($roomId, $itemId, Request $request)
     {
@@ -1046,7 +1047,7 @@ class UserController extends Controller
     /**
      * @Route("/room/{roomId}/user/{itemId}/send")
      * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
+     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'user')")
      */
     public function sendAction($roomId, $itemId, Request $request)
     {
