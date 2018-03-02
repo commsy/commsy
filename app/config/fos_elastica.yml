@@ -345,6 +345,10 @@ fos_elastica:
                     properties:
                         contextId:
                             type: integer
+                        parentId:
+                            # resolved by FOSElastica using POST_TRANSFORM
+                            property_path: false
+                            type: integer
                         creator:
                             type: object
                             properties:

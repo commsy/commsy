@@ -56,6 +56,10 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         if (isset($fields['sections'])) {
             $this->addSections($event);
         }
+
+        if (isset($fields['parentId'])) {
+            $this->addParentRoomIds($event);
+        }
     }
 
     private function addHashtags(TransformEvent $event)
@@ -247,6 +251,34 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
 
                 if (!empty($sectionContents)) {
                     $event->getDocument()->set('steps', $sectionContents);
+                }
+            }
+        }
+    }
+
+    public function addParentRoomIds($event)
+    {
+        $roomManager = $this->legacyEnvironment->getRoomManager();
+        $room = $roomManager->getItem($event->getObject()->getItemId());
+
+        if ($room) {
+            if ($room instanceof \cs_project_item) {
+                $communityRooms = $room->getCommunityList();
+
+                if ($communityRooms->isNotEmpty()) {
+                    $parentIds = [];
+
+                    $communityRoom = $communityRooms->getFirst();
+
+                    while ($communityRoom) {
+                        $parentIds[] = $communityRoom->getItemId();
+
+                        $communityRoom = $communityRooms->getNext();
+                    }
+
+                    if (!empty($parentIds)) {
+                        $event->getDocument()->set('parentId', $parentIds);
+                    }
                 }
             }
         }
