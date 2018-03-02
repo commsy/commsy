@@ -43,8 +43,7 @@ class RubricVoter extends Voter
         if ($roomItem->isDeleted()) {
             return false;
         }
-
-        if (strcmp($rubric, 'user') && $currentUser->isModerator()) {
+        if ($rubric == 'user' && $currentUser->isModerator()) {
             return true;
         }
         return in_array($rubric, $roomItem->getAvailableRubrics());
