@@ -23,7 +23,7 @@ use CommsyBundle\Event\CommsyEditEvent;
 /**
  * Class TodoController
  * @package CommsyBundle\Controller
- * @Security("is_granted('ITEM_ENTER', roomId)")
+ * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'todo')")
  */
 class TodoController extends Controller
 {
@@ -389,7 +389,7 @@ class TodoController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
+     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
@@ -580,7 +580,7 @@ class TodoController extends Controller
     /**
      * @Route("/room/{roomId}/todo/{itemId}/createstep")
      * @Template("@Commsy/Todo/editStep.html.twig")
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      */
     public function createStepAction($roomId, $itemId, Request $request)
     {
@@ -612,7 +612,7 @@ class TodoController extends Controller
     /**
      * @Route("/room/{roomId}/todo/{itemId}/editstep")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      */
     public function editStepAction($roomId, $itemId, Request $request)
     {
@@ -690,7 +690,7 @@ class TodoController extends Controller
     /**
      * @Route("/room/{roomId}/todo/{itemId}/edit")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      */
     public function editAction($roomId, $itemId, Request $request)
     {
@@ -802,7 +802,7 @@ class TodoController extends Controller
     /**
      * @Route("/room/{roomId}/todo/{itemId}/save")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      */
     public function saveAction($roomId, $itemId, Request $request)
     {
