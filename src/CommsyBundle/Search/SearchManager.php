@@ -203,6 +203,7 @@ class SearchManager
         $matchQuery->setMinimumShouldMatch('80%');
         $matchQuery->setFields([
             'title^2',
+            'title.raw^5',
             'discussionarticles.subject',
             'steps.title',
             'sections.title',
