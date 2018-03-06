@@ -291,6 +291,14 @@ class ContextController extends Controller
 
                     $contactModerator = $moderatorList->getFirst();
 
+                    $modFullName = "";
+                    $modEmail = "";
+
+                    if ($contactModerator) {
+                        $modFullName = $contactModerator->getFullname();
+                        $modEmail = $contactModerator->getEmail();
+                    }
+
                     $translator = $legacyEnvironment->getTranslationObject();
                     $translator->setEmailTextArray($roomItem->getEmailTextArray());
                     $translator->setContext('project');
@@ -327,7 +335,7 @@ class ContextController extends Controller
                         $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_GP', $userId, $roomItem->getTitle());
                     }
                     $body .= "\n\n";
-                    $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $contactModerator->getFullname(), $roomItem->getTitle());
+                    $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $modFullName, $roomItem->getTitle());
                     $body .= "\n\n";
                     $body .= $this->generateUrl('commsy_room_home', [
                         'roomId' => $roomItem->getItemID(),
@@ -337,8 +345,11 @@ class ContextController extends Controller
                         ->setSubject($subject)
                         ->setBody($body, 'text/plain')
                         ->setFrom([$this->getParameter('commsy.email.from') => $roomItem->getContextItem()->getTitle()])
-                        ->setReplyTo([$contactModerator->getEmail() => $contactModerator->getFullName()])
                         ->setTo([$newUser->getEmail()]);
+
+                    if ($modEmail != '' && $modFullName != '') {
+                        $message->setReplyTo([$modEmail => $modFullName]);
+                    }
 
                     $this->get('mailer')->send($message);
 
