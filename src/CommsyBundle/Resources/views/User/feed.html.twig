@@ -72,14 +72,14 @@
                 {% endif %}
             </div>
             <div class="uk-width-1-10">
-                {% if user.status == 1 and is_granted('MODERATOR') %}
+                {% if user.status == 1 and is_granted('MODERATOR') and is_granted('ITEM_EDIT', user.itemId) %}
                     <a class="uk-botton uk-button-small uk-border-rounded" data-uk-tooltip="{pos:'bottom'}" title="{{ 'user comment'|trans({}, 'user') }}: {{user.userComment }}">
                         <i class="uk-icon-info uk-icon-small uk-border-rounded user-comment-info"></i>
                     </a>
                 {% endif %}
             </div>
             <div class="uk-width-2-10">
-                {% if user.status == 1 and is_granted('MODERATOR') %}
+                {% if user.status == 1 and is_granted('MODERATOR') and is_granted('ITEM_EDIT', user.itemId) %}
                     <a class="uk-button uk-button-small uk-button-success uk-border-rounded responsive-icon-only" title="{{'Confirm'|trans({}, 'user') }}" href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-confirm', 'userDetail': 1}) }}" id="status-confirm">
                         <i class="uk-icon-check uk-icon-justify"></i>
                         <span class="uk-visible-large">{{'Confirm'|trans({}, 'user') }}</span>
