@@ -29,7 +29,7 @@ use CommsyBundle\Entity\Calendars;
 /**
  * Class DateController
  * @package CommsyBundle\Controller
- * @Security("is_granted('ITEM_ENTER', roomId)")
+ * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'date')")
  */
 class DateController extends Controller
 {    
@@ -484,7 +484,7 @@ class DateController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
+     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'date')")
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
@@ -1041,7 +1041,7 @@ class DateController extends Controller
     /**
      * @Route("/room/{roomId}/date/{itemId}/edit")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'date')")
      */
     public function editAction($roomId, $itemId, Request $request)
     {
@@ -1265,7 +1265,7 @@ class DateController extends Controller
     /**
      * @Route("/room/{roomId}/date/{itemId}/save")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'date')")
      */
     public function saveAction($roomId, $itemId, Request $request)
     {

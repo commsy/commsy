@@ -49,13 +49,13 @@ class cs_community_item extends cs_room_item {
       $this->_default_rubrics_array[8] = CS_INSTITUTION_TYPE;
       $this->_default_home_conf_array[CS_ANNOUNCEMENT_TYPE] = 'short';
       $this->_default_home_conf_array[CS_PROJECT_TYPE] = 'short';
-      $this->_default_home_conf_array[CS_DATE_TYPE] = 'none';
+      $this->_default_home_conf_array[CS_DATE_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_MATERIAL_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_USER_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_TOPIC_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_INSTITUTION_TYPE] = 'tiny';
-      $this->_default_home_conf_array[CS_DISCUSSION_TYPE] = 'none';
-      $this->_default_home_conf_array[CS_TODO_TYPE] = 'none';
+      $this->_default_home_conf_array[CS_DISCUSSION_TYPE] = 'tiny';
+      $this->_default_home_conf_array[CS_TODO_TYPE] = 'tiny';
    }
 
    function isCommunityRoom () {

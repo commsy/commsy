@@ -22,7 +22,7 @@ use CommsyBundle\Event\CommsyEditEvent;
 /**
  * Class AnnouncementController
  * @package CommsyBundle\Controller
- * @Security("is_granted('ITEM_ENTER', roomId)")
+ * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'announcement')")
  */
 class AnnouncementController extends Controller
 {
@@ -330,7 +330,7 @@ class AnnouncementController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
+     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'announcement')")
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
@@ -669,7 +669,7 @@ class AnnouncementController extends Controller
     /**
      * @Route("/room/{roomId}/announcement/{itemId}/edit")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'announcement')")
      */
     public function editAction($roomId, $itemId, Request $request)
     {
@@ -770,7 +770,7 @@ class AnnouncementController extends Controller
     /**
      * @Route("/room/{roomId}/announcement/{itemId}/save")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'announcement')")
      */
     public function saveAction($roomId, $itemId, Request $request)
     {
