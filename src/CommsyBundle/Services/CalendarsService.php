@@ -2,12 +2,10 @@
 
 namespace CommsyBundle\Services;
 
-use Cdb\Exception;
 use CommsyBundle\Entity\Calendars;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 use Sabre\VObject;
-use Sabre\VObject\ParseException;
 
 class CalendarsService
 {
@@ -117,6 +115,7 @@ class CalendarsService
 
         try {
             $ical = VObject\Reader::read($icalData);
+            $roomId = $calendar->getContextId();
 
             $uids = [];
             if ($ical->VEVENT) {
@@ -193,7 +192,6 @@ class CalendarsService
                     }
 
                     // try to find existing date item
-                    $roomId = $calendar->getContextId();
                     $hasChanges = false;
                     $date = $dateService->getDateByUid($uid, $calendar->getId(), $roomId);
                     if (!$date) {
@@ -305,7 +303,7 @@ class CalendarsService
                 }
             }
 
-        } catch (ParseException $e) {
+        } catch (\Exception $e) {
             return $e->getMessage();
         }
 

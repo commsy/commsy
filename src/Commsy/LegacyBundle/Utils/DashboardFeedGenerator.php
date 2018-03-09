@@ -130,6 +130,9 @@ class DashboardFeedGenerator
                         $labelItem = $labelManager->getItem($item->getItemId());
 
                         if ($labelItem) {
+                            if ($labelItem->isSystemLabel()){
+                                break;
+                            }
                             if ($labelItem->getItemType() == 'group') {
                                 $groupManager = $this->legacyEnvironment->getEnvironment()->getLabelManager();
                                 $groupItem = $groupManager->getItem($item->getItemId());

@@ -35,6 +35,7 @@ class UserController extends Controller
     /**
      * @Route("/room/{roomId}/user/feed/{start}/{sort}")
      * @Template()
+     * @Security("is_granted('RUBRIC_SEE', 'user')")
      */
     public function feedAction($roomId, $max = 10, $start = 0, $sort = 'name', Request $request)
     {
@@ -44,6 +45,7 @@ class UserController extends Controller
     /**
      * @Route("/room/{roomId}/user/grid/{start}/{sort}")
      * @Template()
+     * @Security("is_granted('RUBRIC_SEE', 'user')")
      */
     public function gridAction($roomId, $max = 10, $start = 0, $sort = 'name', Request $request)
     {
@@ -55,6 +57,7 @@ class UserController extends Controller
      *       "view": "feedView|gridView"
      * })
      * @Template()
+     * @Security("is_granted('RUBRIC_SEE', 'user')")
      */
     public function listAction($roomId, $view, Request $request)
     {
@@ -163,6 +166,7 @@ class UserController extends Controller
 
     /**
      * @Route("/room/{roomId}/user/print/{sort}", defaults={"sort" = "none"})
+     * @Security("is_granted('RUBRIC_SEE', 'user')")
      */
     public function printlistAction($roomId, Request $request, $sort)
     {
@@ -527,7 +531,7 @@ class UserController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
+     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'user')")
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
@@ -768,7 +772,7 @@ class UserController extends Controller
     /**
      * @Route("/room/{roomId}/user/{itemId}/edit")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'user')")
      */
     public function editAction($roomId, $itemId, Request $request)
     {
@@ -831,7 +835,7 @@ class UserController extends Controller
     /**
      * @Route("/room/{roomId}/user/{itemId}/save")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'user')")
      */
     public function saveAction($roomId, $itemId, Request $request)
     {
@@ -1046,7 +1050,7 @@ class UserController extends Controller
     /**
      * @Route("/room/{roomId}/user/{itemId}/send")
      * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
+     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'user')")
      */
     public function sendAction($roomId, $itemId, Request $request)
     {

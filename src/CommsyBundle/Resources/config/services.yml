@@ -119,6 +119,13 @@ services:
         tags:
             - { name: security.voter }
 
+    commsy.security.rubric_voter:
+        class: CommsyBundle\Security\Authorization\Voter\RubricVoter
+        arguments: ['@commsy_legacy.environment']
+        public: false
+        tags:
+            - { name: security.voter }
+
     # Exporter
     commsy.export.wordpress:
         class: CommsyBundle\Export\WordpressExporter

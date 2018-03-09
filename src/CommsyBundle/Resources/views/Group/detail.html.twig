@@ -95,11 +95,13 @@
                                                     <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'join'|trans({})|capitalize }}
                                                 </a>
                                             </li>
-                                            <li id="join-group-and-room-link" {% if userIsMember or not memberStatus == 'join' %} class="uk-hidden" {% endif %}>
-                                                <a href="{{ path('commsy_group_join', {'roomId': roomId, 'itemId': group.itemId, 'joinRoom': true}) }}">
-                                                    <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'join'|trans({})|capitalize }} {{ 'withGrouproom'|trans({}) }}
-                                                </a>
-                                            </li>
+                                            {% if item.isGroupRoomActivated %}
+                                                <li id="join-group-and-room-link" {% if userIsMember or not memberStatus == 'join' %} class="uk-hidden" {% endif %}>
+                                                    <a href="{{ path('commsy_group_join', {'roomId': roomId, 'itemId': group.itemId, 'joinRoom': true}) }}">
+                                                        <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'join'|trans({})|capitalize }} {{ 'withGrouproom'|trans({}) }}
+                                                    </a>
+                                                </li>
+                                            {% endif %}
                                             <li id="leave-group-link" {% if not userIsMember %} class="uk-hidden" {% elseif memberStatus == 'enter' %} data-uk-tooltip title="{{ 'leave grouproom before group'|trans({},'group') }}" {% endif %}>
                                                 <a href="#" {% if memberStatus == 'enter'%} class="uk-text-muted" style="pointer-events: none;" {% endif%} data-cs-action-leave="{
                                                     'url': '{{ path('commsy_group_leave', {'roomId': roomId, 'itemId': group.itemId}) }}',

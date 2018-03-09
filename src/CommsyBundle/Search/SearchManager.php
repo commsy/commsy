@@ -61,14 +61,14 @@ class SearchManager
         $query->setQuery($boolQuery);
 
         // aggregations
-        $filterAggregation = new Aggregations\Filter('filterContext');
-        $filterAggregation->setFilter($contextFilter);
+//        $filterAggregation = new Aggregations\Filter('filterContext');
+//        $filterAggregation->setFilter($contextFilter);
 
-        $termsAggregation = new Aggregations\Terms('contexts');
-        $termsAggregation->setField('contextId');
-        $filterAggregation->addAggregation($termsAggregation);
+//        $termsAggregation = new Aggregations\Terms('contexts');
+//        $termsAggregation->setField('contextId');
+//        $filterAggregation->addAggregation($termsAggregation);
 
-        //$query->addAggregation($filterAggregation);
+//        $query->addAggregation($filterAggregation);
 
         return $this->commsyFinder->createPaginatorAdapter($query);
     }
@@ -168,14 +168,20 @@ class SearchManager
      * Creats a Terms Filter to restrict the search to contexts, the
      * user is allowed to access
      * 
-     * @return \Elastica\Query\Terms The terms filter
+     * @return Queries\BoolQuery
      */
     private function createContextFilter()
     {
-        $contextFilter = new Queries\Terms();
+        $bool = new Queries\BoolQuery();
 
         if ($this->context) {
+            $contextFilter = new Queries\Terms();
             $contextFilter->setTerms('contextId', [$this->context]);
+            $bool->addShould($contextFilter);
+
+            $parentIdFilter = new Queries\Terms();
+            $parentIdFilter->setTerms('parentId', [$this->context]);
+            $bool->addShould($parentIdFilter);
         } else {
             $searchableRooms = $this->userService->getSearchableRooms($this->userService->getCurrentUserItem());
 
@@ -184,10 +190,12 @@ class SearchManager
                 $contextIds[] = $searchableRoom->getItemId();
             }
 
+            $contextFilter = new Queries\Terms();
             $contextFilter->setTerms('contextId', $contextIds);
+            $bool->addMust($contextFilter);
         }
 
-        return $contextFilter;
+        return $bool;
     }
 
     private function createContextQuery()
@@ -198,11 +206,12 @@ class SearchManager
 
         $matchQuery = new Queries\MultiMatch();
         $matchQuery->setQuery($this->query);
-        $matchQuery->setType('best_fields');
+        $matchQuery->setType('cross_fields');
         $matchQuery->setTieBreaker(0.3);
         $matchQuery->setMinimumShouldMatch('80%');
         $matchQuery->setFields([
-            'title^1.3',
+            'title^2',
+            'title.raw^5',
             'discussionarticles.subject',
             'steps.title',
             'sections.title',
@@ -210,7 +219,7 @@ class SearchManager
             'discussionarticles.description',
             'steps.description',
             'sections.description',
-            'fullName^1.1',
+            'fullName^1.5',
             'userId',
 //            'creationDate',
 //            'endDate',
