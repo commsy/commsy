@@ -186,6 +186,13 @@ class AdditionalSettingsType extends AbstractType
             */
             ->add(
                 $builder->create('terms', FormType::class, array('required' => false))
+                ->add('portalTerms', ChoiceType::class, array(
+                    'required' => true,
+                    'expanded' => false,
+                    'multiple' => false,
+                    'choices' => $options['portalTerms'],
+                ))
+
                 ->add('status', ChoiceType::class, array(
                     'expanded' => true,
                     'multiple' => false,
@@ -229,7 +236,7 @@ class AdditionalSettingsType extends AbstractType
     {
         $resolver
             // TODO: add new task status list as required parameter here!
-            ->setRequired(['roomId', 'newStatus'])
+            ->setRequired(['roomId', 'newStatus', 'portalTerms'])
             //->setRequired(['roomId'])
             ->setDefaults(array('translation_domain' => 'settings'))
         ;

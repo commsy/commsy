@@ -148,11 +148,19 @@ class SettingsController extends Controller
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
 
+        $termsService = $this->get('commsy.terms_service');
+        $availableTerms = $termsService->getListTerms($roomItem->getContextId());
+        $portalTerms = [];
+        foreach ($availableTerms as $availableTerm) {
+            $portalTerms[$availableTerm->getTitle()] = $availableTerm->getId();
+        }
+
         $transformer = $this->get('commsy_legacy.transformer.additional_settings');
         $roomData = $transformer->transform($roomItem);
         $form = $this->createForm(AdditionalSettingsType::class, $roomData, array(
             'roomId' => $roomId,
             'newStatus' => $roomData['tasks']['additional_status'],
+            'portalTerms' => $portalTerms,
         ));
 
         $form->handleRequest($request);
