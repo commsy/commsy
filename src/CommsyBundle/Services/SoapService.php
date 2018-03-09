@@ -656,7 +656,9 @@ class SoapService
 
     private function _encode_input($value)
     {
-        return utf8_decode($value);
+        // TODO: check if 'utf8_decode' makes any sense in 2018 - probably not!
+        //return utf8_decode($value);
+        return $value;
     }
 
     private function isSessionActive($userId, $portalId)
