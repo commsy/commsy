@@ -30,6 +30,7 @@ class UserFilterType extends AbstractType
                     'placeholder' => 'search-user-filter-placeholder',
                     'class' => 'cs-form-horizontal-full-width',
                 ],
+                'required' => false,
             ])
 
             ->add('rubrics', RubricFilterType::class, array(
