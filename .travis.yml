@@ -17,6 +17,7 @@ before_install:
 
 install:
   - php composer.phar install
+  - yarn install
 
 before_script:
   - sleep 10
