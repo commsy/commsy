@@ -11,7 +11,6 @@ addons:
 
 install:
   - php composer.phar install
-  - cp app/config/paramters.yml.dist app/config/parameters.yml
 
 before_script:
   - sleep 10
