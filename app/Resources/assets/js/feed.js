@@ -96,6 +96,18 @@
         // adopt current query parameter
         uri.search(new URI().search(true));
 
+        let spinnerTarget = spinner.data('feed').target;
+        if (spinnerTarget) {
+            let lastArticle = $(spinnerTarget).find('article:last-child');
+            if (lastArticle) {
+                let lastItemId = lastArticle.data('item-id');
+
+                if (lastItemId) {
+                    uri.setSearch('lastId', lastItemId);
+                }
+            }
+        }
+
         if (spinner.data('feed').query) {
             // augment additional data
             uri.search(function(data) {

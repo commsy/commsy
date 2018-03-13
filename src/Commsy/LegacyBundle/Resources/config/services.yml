@@ -29,10 +29,6 @@ services:
         class: Commsy\LegacyBundle\Services\LegacyEnvironment
         arguments: ['%legacy.site_index%', '@service_container']
 
-    commsy_legacy.room_feed_generator:
-        class: Commsy\LegacyBundle\Utils\RoomFeedGenerator
-        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.date_service']
-
     commsy_legacy.category_service:
         class: Commsy\LegacyBundle\Utils\CategoryService
         arguments: ['@commsy_legacy.environment']
@@ -72,10 +68,6 @@ services:
     commsy_legacy.topic_service:
         class: Commsy\LegacyBundle\Utils\TopicService
         arguments: ['@commsy_legacy.environment']
-
-    commsy_legacy.dashboard_feed_generator:
-        class: Commsy\LegacyBundle\Utils\DashboardFeedGenerator
-        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
 
     commsy_legacy.noticed_service:
         class: Commsy\LegacyBundle\Utils\NoticedService

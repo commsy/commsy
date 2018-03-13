@@ -598,4 +598,3 @@ class cs_project_manager extends cs_room2_manager {
    	}
    }
 }
-?>
