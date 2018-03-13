@@ -10,6 +10,8 @@ addons:
   mariadb: 10.1
 
 before_install:
+  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.5.1
+  - export PATH=$HOME/.yarn/bin:$PATH
   - mysql -e 'CREATE DATABASE IF NOT EXISTS commsy;'
   - cp legacy/etc/cs_config.php-dist legacy/etc/cs_config.php
 
@@ -21,4 +23,3 @@ before_script:
 
 script:
   - phpunit
-
