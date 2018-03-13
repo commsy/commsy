@@ -9,6 +9,9 @@ services:
 addons:
   mariadb: 10.1
 
+before_install:
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS commsy;'
+
 install:
   - php composer.phar install
 
