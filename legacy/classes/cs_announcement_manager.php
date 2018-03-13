@@ -68,6 +68,8 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
    */
   var $_date_limit = NULL;
 
+  private $hideExpiredLimit = false;
+
   var $_with_material = false;
 
   var$_group_limit=NULL;
@@ -98,6 +100,7 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
      $this->_topic_limit = NULL;
      $this->_sort_order = NULL;
      $this->_group_limit= NULL;
+     $this->hideExpiredLimit = false;
   }
 
 
@@ -109,6 +112,11 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
   function setDateLimit ($datetime) {
      $this->_date_limit = (string)$datetime;
   }
+
+    public function setHideExpiredLimit($hideExpired)
+    {
+        $this->hideExpiredLimit = $hideExpired;
+    }
 
    /** set age limit
     * this method sets an age limit for announcement
@@ -302,6 +310,10 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
       }
       if( !empty($this->_id_array_limit) ) {
          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
+      }
+
+      if ($this->hideExpiredLimit) {
+          $query .= ' AND ' . $this->addDatabasePrefix('announcement') . '.enddate < NOW()';
       }
 
       // restrict sql-statement by search limit, create wheres
@@ -734,6 +746,8 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
         if ($size > 0) {
             $this->setIntervalLimit(0, $size);
         }
+
+        $this->setHideExpiredLimit(true);
 
         $this->select();
         return $this->get();
