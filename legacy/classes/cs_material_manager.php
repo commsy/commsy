@@ -481,18 +481,23 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
          $temp_number = md5($temp_number);
       }
       $cancel = false;
-      if (!$this->_handle_tmp_manual){
-         $query  = 'CREATE TEMPORARY TABLE tmp3'.$temp_number.' (item_id INT(11) NOT NULL, version_id INT(11) NOT NULL, PRIMARY KEY (item_id, version_id));';
-         $result = $this->_db_connector->performQuery($query);
-         $query  = 'INSERT INTO tmp3'.$temp_number.' (item_id,version_id) SELECT item_id,MAX(version_id) FROM '.$this->addDatabasePrefix('materials');
-         if ( isset($this->_room_limit) ) {
-            $query .= ' WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
-         } else {
-            $query .= ' WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
-         }
-         $query .= ' GROUP BY item_id;';
-         $result = $this->_db_connector->performQuery($query);
-      }
+       if (!$this->_handle_tmp_manual) {
+           $query = 'CREATE TEMPORARY TABLE tmp3' . $temp_number . ' (item_id INT(11) NOT NULL, version_id INT(11) NOT NULL, PRIMARY KEY (item_id, version_id));';
+           $this->_db_connector->performQuery($query);
+
+           $query = 'INSERT INTO tmp3' . $temp_number . ' (item_id,version_id) SELECT item_id,MAX(version_id) FROM ' . $this->addDatabasePrefix('materials');
+
+           if (isset($this->_room_array_limit) and !empty($this->_room_array_limit)) {
+               $query .= ' WHERE ' . $this->addDatabasePrefix($this->_db_table) . '.context_id IN (' . implode(", ", $this->_room_array_limit) . ')';
+           } else if (isset($this->_room_limit)) {
+               $query .= ' WHERE ' . $this->addDatabasePrefix($this->_db_table) . '.context_id = "' . encode(AS_DB, $this->_room_limit) . '"';
+           } else {
+               $query .= ' WHERE ' . $this->addDatabasePrefix($this->_db_table) . '.context_id = "' . encode(AS_DB, $this->_environment->getCurrentContextID()) . '"';
+           }
+
+           $query .= ' GROUP BY item_id;';
+           $this->_db_connector->performQuery($query);
+       }
       $query = '';
 
       if ( isset($this->_limit_only_files_mode) ) {
@@ -616,14 +621,12 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
       }
 
       $query .= ' WHERE 1';
-      if (isset($this->_room_limit)) {
-         $query .= ' AND '.$this->addDatabasePrefix('materials').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
-      }
-      //if (isset($this->_search_limit) AND !empty($this->_search_limit)) {
-      //   if (isset($this->_room_limit)) {
-      //      $query .= ' AND (" OR section.room_id IS NULL)';
-      //   }
-      //}
+
+       if (isset($this->_room_array_limit) and !empty($this->_room_array_limit)) {
+           $query .= ' AND ' . $this->addDatabasePrefix('materials') . '.context_id IN (' . implode(", ", $this->_room_array_limit) . ')';
+       } else if (isset($this->_room_limit)) {
+           $query .= ' AND ' . $this->addDatabasePrefix('materials') . '.context_id = "' . encode(AS_DB, $this->_room_limit) . '"';
+       }
 
       if ($this->_delete_limit == true) {
          $query .= ' AND '.$this->addDatabasePrefix('materials').'.deletion_date IS NULL';
@@ -790,6 +793,14 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
       if (isset($this->_only_files_limit) && $this->_only_files_limit) {
          $query .= ' AND '.$this->addDatabasePrefix('section').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('section').'.deletion_date IS NULL';
       }
+
+       if ($this->modificationNewerThenLimit) {
+           $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.modification_date >= "' . $this->modificationNewerThenLimit->format('Y-m-d H:i:s') . '"';
+       }
+
+       if ($this->excludedIdsLimit) {
+           $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.item_id NOT IN (' . implode(", ", encode(AS_DB, $this->excludedIdsLimit)) . ')';
+       }
 
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' GROUP BY '.$this->addDatabasePrefix('materials').'.item_id';
@@ -1282,7 +1293,7 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
                     $result2 = $this->_db_connector->performQuery($updateQuery);
                     if (!$result2) {
                         include_once('functions/error_functions.php');
-                        trigger_error('Problems automatic deleting materials from query: "' . $insert_query . '"', E_USER_WARNING);
+                        trigger_error('Problems automatic deleting materials from query: "' . $updateQuery . '"', E_USER_WARNING);
                     }
                 }
             }
@@ -1415,5 +1426,25 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
          }
       }
    }
+
+    /**
+     * @param int[] $contextIds List of context ids
+     * @param array Limits for buzzwords / categories
+     * @param int $size Number of items to get
+     * @param \DateTime $newerThen The oldest modification date to consider
+     * @param int[] $excludedIds Ids to exclude
+     *
+     * @return \cs_list
+     */
+    public function getNewestItems($contextIds, $limits, $size, \DateTime $newerThen = null, $excludedIds = [])
+    {
+        parent::setGenericNewestItemsLimits($contextIds, $limits, $newerThen, $excludedIds);
+
+        if ($size > 0) {
+            $this->setIntervalLimit(0, $size);
+        }
+
+        $this->select();
+        return $this->get();
+    }
 } // end of class
-?>
