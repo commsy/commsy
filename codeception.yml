@@ -14,7 +14,7 @@ extensions:
 modules:
     config:
         Db:
-            dsn: 'mysql:host=commsy_db;db_name=test'
+            dsn: 'mysql:host=commsy_test_db;db_name=commsy'
             user: 'root'
             password: 'root'
             dump: tests/_data/bootstrap.sql

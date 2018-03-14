@@ -7,7 +7,7 @@ parameters:
     database_port:     3306
     database_name:     commsy
     database_user:     root
-    database_password:
+    database_password: root
     # You should uncomment this if you want use pdo_sqlite
     # database_path: "%kernel.root_dir%/data.db3"
 

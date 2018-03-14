@@ -1,4 +1,5 @@
 language: php
+sudo: required
 
 matrix:
   # Fast finish allows to set the build as "finished" even if the "allow_failures" matrix elements are not finished yet.
@@ -24,12 +25,39 @@ services:
 addons:
   mariadb: 10.1
   chrome: stable
+  apt:
+    packages:
+      - nginx
+  hosts:
+    - commsy_test_db
 
 before_install:
+  - export PATH="$TRAVIS_BUILD_DIR/tests/_data/travis/bin:$PATH"
+  - export TPL_DIR="$TRAVIS_BUILD_DIR/tests/_data/travis/tpl"
+  - export WEB_DIR="$TRAVIS_BUILD_DIR/web"
+
+  # nginx / php-fpm
+  - "sudo chmod u+x tests/_data/travis/bin/install_nginx"
+  - install_nginx
+
+  # Install yarn
   - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.5.1
   - export PATH=$HOME/.yarn/bin:$PATH
+
+  # Setup Database
   - mysql -e 'CREATE DATABASE IF NOT EXISTS commsy;'
+  - mysql -e 'USE mysql; UPDATE user SET password=PASSWORD("root") WHERE user="root"; FLUSH PRIVILEGES;'
+
+  # Copy legacy config
   - cp legacy/etc/cs_config.php-dist legacy/etc/cs_config.php
+
+  # ChromeDriver
+  - wget -c -nc --retry-connrefused --tries=0 https://chromedriver.storage.googleapis.com/2.36/chromedriver_linux64.zip
+  - unzip -o -q chromedriver_linux64.zip
+  - sudo mv chromedriver /usr/local/bin
+  - chromedriver --url-base=/wd/hub &
+
+  # Headless Chrome
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
 
 install:
@@ -39,10 +67,11 @@ install:
   - gulp
 
 before_script:
-  - sleep 10
+  - "sudo chown root /opt/google/chrome/chrome-sandbox"
+  - "sudo chmod 4755 /opt/google/chrome/chrome-sandbox"
 
 script:
-  - php bin/codecept run --env travis
+  - php bin/codecept run --env travis -vvv
 
 notifications:
   webhooks:
