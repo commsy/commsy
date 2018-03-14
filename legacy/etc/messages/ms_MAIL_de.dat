@@ -4,15 +4,15 @@ $message["MAIL_AUTO"]["de"] = "[Diese E-Mail wurde am %1 um %2 Uhr automatisch v
 $message["MAIL_BCC_TO"]["de"] = "BCC:";
 $message["MAIL_BODY"]["de"] = "Nachricht:";
 $message["MAIL_BODY_CIAO"]["de"] = "Gruß ... %1
-%2";
+&quot;%2&quot;";
 $message["MAIL_BODY_CIAO_GP"]["de"] = "Gruß ... %1
-CommSy-Gruppenraum %2";
+CommSy-Gruppenraum &quot;%2&quot;";
 $message["MAIL_BODY_CIAO_GR"]["de"] = "Gruß ... %1
-Moderation %2";
+Moderation &quot;%2&quot;";
 $message["MAIL_BODY_CIAO_PO"]["de"] = "Gruß ... %1
-Moderation %2";
+Moderation &quot;%2&quot;";
 $message["MAIL_BODY_CIAO_PR"]["de"] = "Gruß ... %1
-CommSy-%_PROJECT_SUB_NOMS_BIG %2";
+CommSy-%_PROJECT_SUB_NOMS_BIG &quot;%2&quot;";
 $message["MAIL_BODY_HELLO_GP"]["de"] = "Hallo %1,";
 $message["MAIL_BODY_HELLO_GR"]["de"] = "Hallo %1,";
 $message["MAIL_BODY_HELLO_PO"]["de"] = "Hallo %1,";
@@ -23,92 +23,92 @@ Material: %1";
 $message["MAIL_BODY_MATERIAL_WORLDPUBLIC_GR"]["de"] = "Ihr Material ist nun weltweit verfügbar:
 CommSy: %2
 Material: %1";
-$message["MAIL_BODY_ROOM_DELETE_PO"]["de"] = "Der Raum %1 wurde gelöscht.";
-$message["MAIL_BODY_ROOM_LOCK_GR"]["de"] = "der CommSy-%_PROJECT_SUB_NOMS_BIG %1 wurde durch die Moderation gesperrt.";
-$message["MAIL_BODY_ROOM_LOCK_PO"]["de"] = "der Raum %1 wurde durch die Moderation gesperrt.";
-$message["MAIL_BODY_ROOM_OPEN_PO"]["de"] = "Der Raum %1 wurde angelegt.";
-$message["MAIL_BODY_ROOM_UNDELETE_PO"]["de"] = "Der Raum %1 wurde wieder hergestellt.";
-$message["MAIL_BODY_ROOM_UNLINK_GR"]["de"] = "%_PROJECT_ART_DEF_NOMS_LOW %_PROJECT_SUB_NOMS_BIG %1 wurde aus %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG %2 entfernt.
+$message["MAIL_BODY_ROOM_DELETE_PO"]["de"] = "Der Raum &quot;%1&quot; wurde gelöscht.";
+$message["MAIL_BODY_ROOM_LOCK_GR"]["de"] = "der CommSy-%_PROJECT_SUB_NOMS_BIG &quot;%1&quot; wurde durch die Moderation gesperrt.";
+$message["MAIL_BODY_ROOM_LOCK_PO"]["de"] = "der Raum &quot;%1&quot; wurde durch die Moderation gesperrt.";
+$message["MAIL_BODY_ROOM_OPEN_PO"]["de"] = "Der Raum &quot;%1&quot; wurde angelegt.";
+$message["MAIL_BODY_ROOM_UNDELETE_PO"]["de"] = "Der Raum &quot;%1&quot; wurde wieder hergestellt.";
+$message["MAIL_BODY_ROOM_UNLINK_GR"]["de"] = "%_PROJECT_ART_DEF_NOMS_LOW %_PROJECT_SUB_NOMS_BIG &quot;%1&quot; wurde aus %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG &quot;%2&quot; entfernt.
 
 %_PROJECT_ART_DEF_NOMS_BIG %_PROJECT_SUB_NOMS_BIG ist aber weiterhin unter der unten angegebenen URL erreichbar.";
-$message["MAIL_BODY_ROOM_UNLOCK_GR"]["de"] = "der CommSy %_PROJECT_SUB_NOMS_BIG %1 wurde wieder geöffnet.";
-$message["MAIL_BODY_ROOM_UNLOCK_PO"]["de"] = "der Raum %1 wurde wieder geöffnet.";
+$message["MAIL_BODY_ROOM_UNLOCK_GR"]["de"] = "der CommSy %_PROJECT_SUB_NOMS_BIG &quot;%1&quot; wurde wieder geöffnet.";
+$message["MAIL_BODY_ROOM_UNLOCK_PO"]["de"] = "der Raum &quot;%1&quot; wurde wieder geöffnet.";
 $message["MAIL_BODY_USER_ACCOUNT_DELETE_GP"]["de"] = "Ihre Kennung
    %1
 
-wurde in dem CommSy-Gruppenraum %2 gelöscht.";
+wurde in dem CommSy-Gruppenraum &quot;%2&quot; gelöscht.";
 $message["MAIL_BODY_USER_ACCOUNT_DELETE_GR"]["de"] = "Ihre Kennung
    %1
 
-wurde in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG %2 gelöscht.";
+wurde in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG &quot;%2&quot; gelöscht.";
 $message["MAIL_BODY_USER_ACCOUNT_DELETE_PO"]["de"] = "Ihre Kennung
    %1
 
-wurde auf dem Portal %2 und damit auch in allen Räumen des Portals gelöscht.";
+wurde auf dem Portal &quot;%2&quot; und damit auch in allen Räumen des Portals gelöscht.";
 $message["MAIL_BODY_USER_ACCOUNT_DELETE_PR"]["de"] = "Ihre Kennung
    %1
 
-wurde in %_PROJECT_ART_DEF_DATS_LOW CommSy-%_PROJECT_SUB_DATS_BIG %2 gelöscht.";
+wurde in %_PROJECT_ART_DEF_DATS_LOW CommSy-%_PROJECT_SUB_DATS_BIG &quot;%2&quot; gelöscht.";
 $message["MAIL_BODY_USER_ACCOUNT_LOCK_GP"]["de"] = "Ihre Kennung
    %1
 
-in dem CommSy-Gruppenraum %2 ist gesperrt worden.";
+in dem CommSy-Gruppenraum &quot;%2&quot; ist gesperrt worden.";
 $message["MAIL_BODY_USER_ACCOUNT_LOCK_GR"]["de"] = "Ihre Kennung
    %1
 
-in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG %2 ist gesperrt worden.
+in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG &quot;%2&quot; ist gesperrt worden.
 
 Bitte wenden Sie sich an die Moderation %_COMMUNITY_ART_DEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG %2, wenn Sie weitere Informationen wünschen.";
 $message["MAIL_BODY_USER_ACCOUNT_LOCK_PO"]["de"] = "Ihre Kennung
    %1
 
-im Portal %2 ist gesperrt worden.
+im Portal &quot;%2&quot; ist gesperrt worden.
 
-Bitte wenden Sie sich an die Moderation des Portals %2, wenn Sie weitere Informationen wünschen.";
+Bitte wenden Sie sich an die Moderation des Portals &quot;%2&quot;, wenn Sie weitere Informationen wünschen.";
 $message["MAIL_BODY_USER_ACCOUNT_LOCK_PR"]["de"] = "Ihre Kennung
    %1
 
-in %_PROJECT_ART_DEF_DATS_LOW  CommSy-%_PROJECT_SUB_DATS_BIG %2 ist gesperrt worden.";
-$message["MAIL_BODY_USER_ACCOUNT_MERGE_GR"]["de"] = "für Ihre E-Mail-Adresse %1 sind verschiedene Kennungen in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG %2 angemeldet:
+in %_PROJECT_ART_DEF_DATS_LOW CommSy-%_PROJECT_SUB_DATS_BIG &quot;%2&quot; ist gesperrt worden.";
+$message["MAIL_BODY_USER_ACCOUNT_MERGE_GR"]["de"] = "für Ihre E-Mail-Adresse %1 sind verschiedene Kennungen in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG &quot;%2&quot; angemeldet:
 
 %3
 
 Sie brauchen nicht mehrere Kennungen für die Mitgliedschaft in verschiedenen Räumen. Eine Kennung reicht dafür aus.
 
-Wenn Sie nur noch ein Kennung in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG %2 haben möchten, können Sie Ihre Kennungen zusammenlegen, so dass alle Rechte einer Kennung auf eine andere übertragen werden. Das Zusammenlegen von Kennungen geht wie folgt:
+Wenn Sie nur noch eine Kennung in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG &quot;%2&quot; haben möchten, können Sie Ihre Kennungen zusammenlegen, so dass alle Rechte einer Kennung auf eine andere übertragen werden. Das Zusammenlegen von Kennungen geht wie folgt:
 
-1. Melden Sie sich mit einer der Kennungen in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG %2 an.
+1. Melden Sie sich mit einer der Kennungen in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG &quot;%2&quot; an.
 2. Folgen Sie nun dem Link &quot;Kennung ändern&quot; auf der linken Seite unter Ihrem Namen.
 3. Geben Sie bei &quot;Kennung verbinden&quot; die andere Kennung an.
 4. Nun hat Ihre aktuelle Kennung alle Rechte der zweiten Kennung und die zweite Kennung wurde gelöscht.";
-$message["MAIL_BODY_USER_ACCOUNT_MERGE_PO"]["de"] = "für Ihre E-Mail-Adresse %1 sind verschiedene Kennungen im Portal %2 angemeldet:
+$message["MAIL_BODY_USER_ACCOUNT_MERGE_PO"]["de"] = "für Ihre E-Mail-Adresse %1 sind verschiedene Kennungen im Portal &quot;%2&quot; angemeldet:
 
 %3
 
 Sie brauchen nicht mehrere Kennungen für die Mitgliedschaft in verschiedenen Räumen. Eine Kennung reicht dafür aus.
 
-Wenn Sie nur noch ein Kennung auf dem Portal %2 haben möchten, können Sie Ihre Kennungen zusammenlegen, so dass alle Rechte einer Kennung auf eine andere übertragen werden. Das Zusammenlegen von Kennungen geht wie folgt:
+Wenn Sie nur noch ein Kennung auf dem Portal &quot;%2&quot; haben möchten, können Sie Ihre Kennungen zusammenlegen, so dass alle Rechte einer Kennung auf eine andere übertragen werden. Das Zusammenlegen von Kennungen geht wie folgt:
 
-1. Melden Sie sich mit einer Ihrer aktuellen Kennungen auf dem Portal %2 an.
+1. Melden Sie sich mit einer Ihrer aktuellen Kennungen auf dem Portal &quot;%2&quot; an.
 2. Folgen Sie nun dem Link &quot;Kennung ändern&quot; auf der linken Seite unter Ihrem Namen.
 3. Geben Sie bei &quot;Kennung verbinden&quot; die andere Kennung an.
 4. Nun hat Ihre aktuelle Kennung alle Rechte der zweiten Kennung und die zweite Kennung wurde gelöscht.";
-$message["MAIL_BODY_USER_ACCOUNT_PASSWORD_GR"]["de"] = "Ihre Kennung für %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG %1 lautet:
+$message["MAIL_BODY_USER_ACCOUNT_PASSWORD_GR"]["de"] = "Ihre Kennung für %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG &quot;%1&quot; lautet:
    %2
 
 Wenn Sie auch Ihr Passwort vergessen haben, dann können Sie sich auf der linken Seite %_COMMUNITY_ART_DEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG %1 ein neues Passwort zuschicken lassen, indem Sie dort dem Link &quot;Password vergessen?&quot; folgen.";
-$message["MAIL_BODY_USER_ACCOUNT_PASSWORD_PO"]["de"] = "Ihre Kennung für auf dem Portal %1 lautet:
+$message["MAIL_BODY_USER_ACCOUNT_PASSWORD_PO"]["de"] = "Ihre Kennung für das Portal &quot;%1&quot; lautet:
    %2
 
-Wenn Sie auch Ihr Passwort vergessen haben, dann können Sie sich auf der linken Seite des Portals %1 ein neues Passwort zuschicken lassen, indem Sie dort dem Link &quot;Password vergessen?&quot; folgen.";
-$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_GP"]["de"] = "Ihr Status in dem CommSy-Gruppenraum %2 hat sich geändert: Sie sind nun AnsprechpartnerIn für den Raum und werden außerhalb des Raumes entsprechend angezeigt.";
-$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_GR"]["de"] = "Ihr Status in %_COMMUNITY_ART_DEF_DATS_LOW CommSy-%_COMMUNITY_SUB_DATS_BIG %2 hat sich geändert: Sie sind nun AnsprechpartnerIn für den Raum und werden außerhalb des Raumes entsprechend angezeigt.";
-$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_PO"]["de"] = "Ihr Status im CommSy-Portal %2 hat sich geändert: Sie sind nun AnsprechpartnerIn für das Portal.";
-$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_PR"]["de"] = "Ihr Status in %_PROJECT_ART_DEF_DATS_LOW CommSy-%_PROJECT_SUB_DATS_BIG %2 hat sich geändert: Sie sind nun AnsprechpartnerIn für den Raum und werden außerhalb des Raumes entsprechend angezeigt.";
+Wenn Sie auch Ihr Passwort vergessen haben, dann können Sie sich auf der linken Seite des Portals &quot;%1&quot; ein neues Passwort zuschicken lassen, indem Sie dort dem Link &quot;Password vergessen?&quot; folgen.";
+$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_GP"]["de"] = "Ihr Status in dem CommSy-Gruppenraum &quot;%2&quot; hat sich geändert: Sie sind nun AnsprechpartnerIn für den Raum und werden außerhalb des Raumes entsprechend angezeigt.";
+$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_GR"]["de"] = "Ihr Status in %_COMMUNITY_ART_DEF_DATS_LOW CommSy-%_COMMUNITY_SUB_DATS_BIG &quot;%2&quot; hat sich geändert: Sie sind nun AnsprechpartnerIn für den Raum und werden außerhalb des Raumes entsprechend angezeigt.";
+$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_PO"]["de"] = "Ihr Status im CommSy-Portal &quot;%2&quot; hat sich geändert: Sie sind nun AnsprechpartnerIn für das Portal.";
+$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_PR"]["de"] = "Ihr Status in %_PROJECT_ART_DEF_DATS_LOW CommSy-%_PROJECT_SUB_DATS_BIG &quot;%2&quot; hat sich geändert: Sie sind nun AnsprechpartnerIn für den Raum und werden außerhalb des Raumes entsprechend angezeigt.";
 $message["MAIL_BODY_USER_PASSWORD_CHANGE_PO"]["de"] = "Ihr Passwort zur Kennung
    %1
 
-auf dem CommSy-Portal %2 wurde geändert.
+auf dem CommSy-Portal &quot;%2&quot; wurde geändert.
 
 Die Informationen im Einzelnen:
 Kennung: %1
@@ -118,32 +118,32 @@ Bitte ändern Sie das Passwort aus Sicherheitsgründen (es wurde unverschlüssel
 $message["MAIL_BODY_USER_STATUS_MODERATOR_GP"]["de"] = "der Status Ihrer Kennung
    %1
 
-in dem CommSy-Gruppenraum %2 hat sich geändert: Sie sind nun &quot;ModeratorIn&quot;.
+in dem CommSy-Gruppenraum &quot;%2&quot; hat sich geändert: Sie sind nun &quot;ModeratorIn&quot;.
 
-Sie können nun den CommSy-Gruppenraum %2 konfigurieren: Farben einstellen, Kennungen verwalten, ...";
+Sie können nun den CommSy-Gruppenraum &quot;%2&quot; konfigurieren: Farben einstellen, Kennungen verwalten, ...";
 $message["MAIL_BODY_USER_STATUS_MODERATOR_GR"]["de"] = "Sie gehören nun zur &quot;Moderation&quot; %_COMMUNITY_ART_DEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG %2. Damit können Sie diesen %_COMMUNITY_SUB_AKKS_BIG administrieren, Kennungen freischalten und Materialien zur weltweiten Veröffentlichung freischalten.";
 $message["MAIL_BODY_USER_STATUS_MODERATOR_PO"]["de"] = "Der Status Ihrer Kennung
    %1
 
-hat sich geändert. Sie gehören nun zur Moderation des Portals %2. Damit können Sie auf diesem Portal Kennungen und Räume freischalten bzw. sperren.";
+hat sich geändert. Sie gehören nun zur Moderation des Portals &quot;%2&quot;. Damit können Sie auf diesem Portal Kennungen und Räume freischalten bzw. sperren.";
 $message["MAIL_BODY_USER_STATUS_MODERATOR_PR"]["de"] = "der Status Ihrer Kennung
    %1
 
-in %_PROJECT_ART_DEF_DATS_LOW CommSy-%_PROJECT_SUB_DATS_BIG %2 hat sich geändert: Sie sind nun &quot;%_PROJECT_SUB_NOMS_BIG-ModeratorIn&quot;.
+in %_PROJECT_ART_DEF_DATS_LOW CommSy-%_PROJECT_SUB_DATS_BIG &quot;%2&quot; hat sich geändert: Sie sind nun &quot;%_PROJECT_SUB_NOMS_BIG-ModeratorIn&quot;.
 
 Sie können nun den CommSy-%_PROJECT_SUB_AKKS_BIG %2 konfigurieren: Farben einstellen, Kennungen verwalten, ...";
 $message["MAIL_BODY_USER_STATUS_USER_GP"]["de"] = "Ihre Kennung
    %1
 
-für den CommSy-Gruppenraum %2 hat nun den Status &quot;BenutzerIn&quot; und Sie können alle Möglichkeiten im %2 nutzen.";
+für den CommSy-Gruppenraum &quot;%2&quot; hat nun den Status &quot;BenutzerIn&quot; und Sie können alle Möglichkeiten im Gruppenraum &quot;%2&quot; nutzen.";
 $message["MAIL_BODY_USER_STATUS_USER_GR"]["de"] = "Ihre Kennung
    %1
 
-für %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG %2 hat nun den Status eines/r BenutzerIn. Sie können nun alle Möglichkeiten im %2 nutzen. Ihre Kennung gilt außerdem für alle %_PROJECT_SUB_AKKPL_BIG im %2, in denen Sie sich als Teilnehmer anmelden.";
+für %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG &quot;%2&quot; hat nun den Status eines/r BenutzerIn. Sie können nun alle Möglichkeiten in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG &quot;%2&quot; nutzen. Ihre Kennung gilt außerdem für alle %_PROJECT_SUB_AKKPL_BIG in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG &quot;%2&quot;, in denen Sie sich als Teilnehmer anmelden.";
 $message["MAIL_BODY_USER_STATUS_USER_PO"]["de"] = "Ihre Kennung
    %1
 
-für das Portal %2 hat nun den Status eines/r BenutzerIn. Sie können nun alle Möglichkeiten im %2 nutzen. Ihre Kennung gilt außerdem für alle Räume im %2, in denen Sie sich als Teilnehmer anmelden.
+für das Portal &quot;%2&quot; hat nun den Status eines/r BenutzerIn. Sie können nun alle Möglichkeiten im Portal &quot;%2&quot; nutzen. Ihre Kennung gilt außerdem für alle Räume im Portal &quot;%2&quot;, in denen Sie sich als Teilnehmer anmelden.
 
 Noch zwei Hinweise zu den Räumen:
 - TeilnehmerIn in einem Raum können Sie werden, indem Sie auf der zum Raum zugehörigen Seite auf den Link &quot;Teilnahme beantragen&quot; klicken.
@@ -152,15 +152,15 @@ Noch zwei Hinweise zu den Räumen:
 $message["MAIL_BODY_USER_STATUS_USER_PR"]["de"] = "Ihre Kennung
    %1
 
-für den CommSy-%_PROJECT_SUB_AKKS_BIG %2 hat nun den Status &quot;BenutzerIn&quot; und Sie können alle Möglichkeiten im %2 nutzen.";
+für den CommSy-%_PROJECT_SUB_AKKS_BIG &quot;%2&quot; hat nun den Status &quot;BenutzerIn&quot; und Sie können alle Möglichkeiten in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG &quot;%2&quot; nutzen.";
 $message["MAIL_BODY_USER_STATUS_USER_READ_ONLY"]["de"] = "Ihre Kennung
    %1
 
-für den CommSy-Raum %2 hat nun den Status &quot;LesendeR BenutzerIn&quot; und Sie können nun lesend auf die Inhalte im Raum %2 zugreifen.";
-$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GP"]["de"] = "Ihr Status in dem CommSy-Gruppenraum %2 hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für den Raum mehr und werden auch außerhalb des Raumes nicht mehr angezeigt.";
-$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GR"]["de"] = "Ihr Status in %_COMMUNITY_ART_DEF_DATS_LOW CommSy-%_COMMUNITY_SUB_DATS_BIG %2 hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für den Raum mehr und werden auch außerhalb des Raums nicht mehr angezeigt.";
-$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PO"]["de"] = "Ihr Status im CommSy-Portal %2 hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für das Portal mehr.";
-$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PR"]["de"] = "Ihr Status in %_PROJECT_ART_DEF_DATS_LOW CommSy-%_PROJECT_SUB_DATS_BIG %2 hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für den Raum mehr und werden auch außerhalb des Raumes nicht mehr angezeigt.";
+für den CommSy-Raum &quot;%2&quot; hat nun den Status &quot;LesendeR BenutzerIn&quot; und Sie können nun lesend auf die Inhalte im Raum &quot;%2&quot; zugreifen.";
+$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GP"]["de"] = "Ihr Status in dem CommSy-Gruppenraum &quot;%2&quot; hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für den Raum mehr und werden auch außerhalb des Raumes nicht mehr angezeigt.";
+$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GR"]["de"] = "Ihr Status in %_COMMUNITY_ART_DEF_DATS_LOW CommSy-%_COMMUNITY_SUB_DATS_BIG &quot;%2&quot; hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für den Raum mehr und werden auch außerhalb des Raums nicht mehr angezeigt.";
+$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PO"]["de"] = "Ihr Status im CommSy-Portal &quot;%2&quot; hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für das Portal mehr.";
+$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PR"]["de"] = "Ihr Status in %_PROJECT_ART_DEF_DATS_LOW CommSy-%_PROJECT_SUB_DATS_BIG &quot;%2&quot; hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für den Raum mehr und werden auch außerhalb des Raumes nicht mehr angezeigt.";
 $message["MAIL_CHOICE_CHOOSE_TEXT"]["de"] = "keinen E-Mail-Text";
 $message["MAIL_CHOICE_CIAO"]["de"] = "Grußformel";
 $message["MAIL_CHOICE_HELLO"]["de"] = "Anrede";
@@ -206,7 +206,7 @@ $message["MAIL_SEND_BUTTON"]["de"] = "E-Mail senden";
 $message["MAIL_SEND_TO"]["de"] = "Diese E-Mail wurde versendet an:
 %1";
 $message["MAIL_SEND_WHY_COMMUNITY"]["de"] = "Sie haben diese E-Mail als Mitglied der Moderation %_COMMUNITY_ART_DEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG %1 erhalten.";
-$message["MAIL_SEND_WHY_PORTAL"]["de"] = "Sie haben diese E-Mail als Mitglied der Moderation des Portals %1 erhalten.";
+$message["MAIL_SEND_WHY_PORTAL"]["de"] = "Sie haben diese E-Mail als Mitglied der Moderation des Portals &quot;%1&quot; erhalten.";
 $message["MAIL_SEND_WHY_PROJECT"]["de"] = "Sie haben diese E-Mail als Mitglied der Moderation %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG %1 erhalten.";
 $message["MAIL_SUBJECT"]["de"] = "Betreff:";
 $message["MAIL_SUBJECT_MATERIAL_NOT_WORLDPUBLIC"]["de"] = "%1: Material nicht veröffentlicht";
