@@ -30,7 +30,7 @@ before_script:
   - sleep 10
 
 script:
-  - phpunit
+  - php bin/codecept run --env travis
 
 notifications:
   webhooks:

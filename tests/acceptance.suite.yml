@@ -1,0 +1,13 @@
+actor: AcceptanceTester
+modules:
+    enabled:
+#        - WebDriver:
+#            browser: chrome
+#            port: 9222
+#            url: http://localhost/
+#            window_size: false
+        - PhpBrowser
+        - \Helper\Acceptance
+    config:
+        PhpBrowser:
+            url: http://commsy_nginx/
