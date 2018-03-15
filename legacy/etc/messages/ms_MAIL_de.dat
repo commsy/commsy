@@ -58,7 +58,7 @@ $message["MAIL_BODY_USER_ACCOUNT_LOCK_GR"]["de"] = "Ihre Kennung
 
 in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG &quot;%2&quot; ist gesperrt worden.
 
-Bitte wenden Sie sich an die Moderation %_COMMUNITY_ART_DEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG %2, wenn Sie weitere Informationen wünschen.";
+Bitte wenden Sie sich an die Moderation %_COMMUNITY_ART_DEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG &quot;%2&quot;, wenn Sie weitere Informationen wünschen.";
 $message["MAIL_BODY_USER_ACCOUNT_LOCK_PO"]["de"] = "Ihre Kennung
    %1
 
@@ -96,7 +96,7 @@ Wenn Sie nur noch ein Kennung auf dem Portal &quot;%2&quot; haben möchten, kön
 $message["MAIL_BODY_USER_ACCOUNT_PASSWORD_GR"]["de"] = "Ihre Kennung für %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG &quot;%1&quot; lautet:
    %2
 
-Wenn Sie auch Ihr Passwort vergessen haben, dann können Sie sich auf der linken Seite %_COMMUNITY_ART_DEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG %1 ein neues Passwort zuschicken lassen, indem Sie dort dem Link &quot;Password vergessen?&quot; folgen.";
+Wenn Sie auch Ihr Passwort vergessen haben, dann können Sie sich auf der linken Seite %_COMMUNITY_ART_DEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG &quot;%1&quot; ein neues Passwort zuschicken lassen, indem Sie dort dem Link &quot;Password vergessen?&quot; folgen.";
 $message["MAIL_BODY_USER_ACCOUNT_PASSWORD_PO"]["de"] = "Ihre Kennung für das Portal &quot;%1&quot; lautet:
    %2
 
@@ -121,7 +121,7 @@ $message["MAIL_BODY_USER_STATUS_MODERATOR_GP"]["de"] = "der Status Ihrer Kennung
 in dem CommSy-Gruppenraum &quot;%2&quot; hat sich geändert: Sie sind nun &quot;ModeratorIn&quot;.
 
 Sie können nun den CommSy-Gruppenraum &quot;%2&quot; konfigurieren: Farben einstellen, Kennungen verwalten, ...";
-$message["MAIL_BODY_USER_STATUS_MODERATOR_GR"]["de"] = "Sie gehören nun zur &quot;Moderation&quot; %_COMMUNITY_ART_DEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG %2. Damit können Sie diesen %_COMMUNITY_SUB_AKKS_BIG administrieren, Kennungen freischalten und Materialien zur weltweiten Veröffentlichung freischalten.";
+$message["MAIL_BODY_USER_STATUS_MODERATOR_GR"]["de"] = "Sie gehören nun zur &quot;Moderation&quot; %_COMMUNITY_ART_DEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG &quot;%2&quot;. Damit können Sie diesen %_COMMUNITY_SUB_AKKS_BIG administrieren, Kennungen freischalten und Materialien zur weltweiten Veröffentlichung freischalten.";
 $message["MAIL_BODY_USER_STATUS_MODERATOR_PO"]["de"] = "Der Status Ihrer Kennung
    %1
 
@@ -131,7 +131,7 @@ $message["MAIL_BODY_USER_STATUS_MODERATOR_PR"]["de"] = "der Status Ihrer Kennung
 
 in %_PROJECT_ART_DEF_DATS_LOW CommSy-%_PROJECT_SUB_DATS_BIG &quot;%2&quot; hat sich geändert: Sie sind nun &quot;%_PROJECT_SUB_NOMS_BIG-ModeratorIn&quot;.
 
-Sie können nun den CommSy-%_PROJECT_SUB_AKKS_BIG %2 konfigurieren: Farben einstellen, Kennungen verwalten, ...";
+Sie können nun den CommSy-%_PROJECT_SUB_AKKS_BIG &quot;%2&quot; konfigurieren: Farben einstellen, Kennungen verwalten, ...";
 $message["MAIL_BODY_USER_STATUS_USER_GP"]["de"] = "Ihre Kennung
    %1
 
@@ -205,9 +205,9 @@ $message["MAIL_SENDER_NAME"]["de"] = "Ihr Name";
 $message["MAIL_SEND_BUTTON"]["de"] = "E-Mail senden";
 $message["MAIL_SEND_TO"]["de"] = "Diese E-Mail wurde versendet an:
 %1";
-$message["MAIL_SEND_WHY_COMMUNITY"]["de"] = "Sie haben diese E-Mail als Mitglied der Moderation %_COMMUNITY_ART_DEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG %1 erhalten.";
+$message["MAIL_SEND_WHY_COMMUNITY"]["de"] = "Sie haben diese E-Mail als Mitglied der Moderation %_COMMUNITY_ART_DEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG &quot;%1&quot; erhalten.";
 $message["MAIL_SEND_WHY_PORTAL"]["de"] = "Sie haben diese E-Mail als Mitglied der Moderation des Portals &quot;%1&quot; erhalten.";
-$message["MAIL_SEND_WHY_PROJECT"]["de"] = "Sie haben diese E-Mail als Mitglied der Moderation %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG %1 erhalten.";
+$message["MAIL_SEND_WHY_PROJECT"]["de"] = "Sie haben diese E-Mail als Mitglied der Moderation %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG &quot;%1&quot; erhalten.";
 $message["MAIL_SUBJECT"]["de"] = "Betreff:";
 $message["MAIL_SUBJECT_MATERIAL_NOT_WORLDPUBLIC"]["de"] = "%1: Material nicht veröffentlicht";
 $message["MAIL_SUBJECT_MATERIAL_WORLDPUBLIC"]["de"] = "%1: Material veröffentlicht";
