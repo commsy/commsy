@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type as Types;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 
 class LicenseType extends AbstractType
 {
@@ -30,13 +31,17 @@ class LicenseType extends AbstractType
                 'required' => true,
                 'translation_domain' => 'portal',
             ])
-            ->add('content', Types\TextareaType::class, [
+            ->add('content', CKEditorType::class, [
                 'constraints' => [
                     new Constraints\NotBlank(),
                 ],
                 'label' => 'Content',
                 'required' => true,
                 'translation_domain' => 'portal',
+                'attr' => array(
+                    'class' => 'uk-form-width-large',
+                    'style' => 'width: 100%;',
+                ),
             ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {

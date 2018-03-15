@@ -79,6 +79,10 @@
                 <target>Raumkategorien</target>
             </trans-unit>
 
+            <trans-unit id="Edit Licenses">
+                <source>Edit Licenses</source>
+                <target>Lizenzen bearbeiten</target>
+            </trans-unit>
             <trans-unit id="Content">
                 <source>Content</source>
                 <target>Inhalt</target>

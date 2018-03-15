@@ -79,6 +79,10 @@
                 <target>Room categories</target>
             </trans-unit>
 
+            <trans-unit id="Edit Licenses">
+                <source>Edit Licenses</source>
+                <target>Edit Licenses</target>
+            </trans-unit>
             <trans-unit id="Content">
                 <source>Content</source>
                 <target>Content</target>
