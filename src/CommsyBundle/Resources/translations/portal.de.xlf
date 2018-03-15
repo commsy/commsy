@@ -78,6 +78,31 @@
                 <source>roomcategories</source>
                 <target>Raumkategorien</target>
             </trans-unit>
+
+            <trans-unit id="Edit terms">
+                <source>Edit terms</source>
+                <target>Nutzungsbedingungen bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="content_de">
+                <source>content_de</source>
+                <target>Inhalt (DE)</target>
+            </trans-unit>
+            <trans-unit id="content_en">
+                <source>content_en</source>
+                <target>Inhalt (EN)</target>
+            </trans-unit>
+            <trans-unit id="Create new term">
+                <source>Create new term</source>
+                <target>Nutzungsbedigungen anlegen</target>
+            </trans-unit>
+            <trans-unit id="Update term">
+                <source>Update term</source>
+                <target>Nutzungsbedigungen speichern</target>
+            </trans-unit>
+            <trans-unit id="Delete term">
+                <source>Delete term</source>
+                <target>Nutzungsbedigungen löschen</target>
+            </trans-unit>
        </body>
     </file>
 </xliff>

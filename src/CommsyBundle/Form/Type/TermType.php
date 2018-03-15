@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type as Types;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 
 class TermType extends AbstractType
 {
@@ -30,21 +31,29 @@ class TermType extends AbstractType
                 'required' => true,
                 'translation_domain' => 'portal',
             ])
-            ->add('contentDe', Types\TextareaType::class, [
+            ->add('contentDe', CKEditorType::class, [
                 'constraints' => [
                     new Constraints\NotBlank(),
                 ],
                 'label' => 'content_de',
                 'required' => true,
                 'translation_domain' => 'portal',
+                'attr' => array(
+                    'class' => 'uk-form-width-large',
+                    'style' => 'width: 100%;',
+                ),
             ])
-            ->add('contentEn', Types\TextareaType::class, [
+            ->add('contentEn', CKEditorType::class, [
                 'constraints' => [
                     new Constraints\NotBlank(),
                 ],
                 'label' => 'content_en',
                 'required' => true,
                 'translation_domain' => 'portal',
+                'attr' => array(
+                    'class' => 'uk-form-width-large',
+                    'style' => 'width: 100%;',
+                ),
             ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
