@@ -12,14 +12,14 @@ $message["PROJECT_MAIL_BODY_ACTION_REOPEN"]["de"] = "Wiedereröffnung";
 $message["PROJECT_MAIL_BODY_ACTION_UNDELETE"]["de"] = "Wiederherstellung";
 $message["PROJECT_MAIL_BODY_ACTION_UNLOCK"]["de"] = "Entsperrung";
 $message["PROJECT_MAIL_BODY_ARCHIVE"]["de"] = "Archivierung %_PROJECT_ART_UNDEF_GENS_LOW %_PROJECT_SUB_GENS_BIG.";
-$message["PROJECT_MAIL_BODY_ARCHIVE_INFO"]["de"] = "%_PROJECT_ART_DEF_NOMS_BIG %_PROJECT_SUB_NOMS_BIG %1 wurde seit %3 Tagen nicht mehr verwendet. Daher findet eine Archivierung  %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG in %2 Tagen statt. Nach der Archivierung können Sie weiterhin auf alle Inhalte lesend zugreifen.
+$message["PROJECT_MAIL_BODY_ARCHIVE_INFO"]["de"] = "%_PROJECT_ART_DEF_NOMS_BIG %_PROJECT_SUB_NOMS_BIG &quot;%1&quot; wurde seit %3 Tagen nicht mehr verwendet. Daher findet eine Archivierung  %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG in %2 Tagen statt. Nach der Archivierung können Sie weiterhin auf alle Inhalte lesend zugreifen.
 
 Wenn Sie nicht wollen, dass %_PROJECT_ART_DEF_NOMS_LOW  %_PROJECT_SUB_NOMS_BIG archiviert wird, loggen Sie sich einmal innerhalb der nächsten %2 Tage in %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_NOMS_BIG ein.";
 $message["PROJECT_MAIL_BODY_COMMUNITIY_ROOMS"]["de"] = "%_COMMUNITY_ART_DEF_NOMPL_BIG folgenden %_COMMUNITY_SUB_NOMPL_BIG sind mit %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_AKKS_BIG verknüpft:";
 $message["PROJECT_MAIL_BODY_COMMUNITIY_ROOMS_EMPTY"]["de"] = "*keine %_COMMUNITY_SUB_NOMPL_BIG";
 $message["PROJECT_MAIL_BODY_COMMUNITIY_ROOMS_UNLINKED"]["de"] = "%_PROJECT_ART_DEF_NOMS_BIG %_PROJECT_SUB_NOMS_BIG ist mit folgenden %_COMMUNITY_SUB_NOMPL_BIG NICHT mehr verknüpft:";
 $message["PROJECT_MAIL_BODY_DELETE"]["de"] = "Löschung %_PROJECT_ART_UNDEF_GENS_LOW %_PROJECT_SUB_GENS_BIG.";
-$message["PROJECT_MAIL_BODY_DELETE_INFO"]["de"] = "%_PROJECT_ART_DEF_NOMS_BIG %_PROJECT_SUB_NOMS_BIG %1 wurde seit %3 Tagen nicht mehr verwendet. Daher findet eine Löschung  %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG in %2 Tagen statt.
+$message["PROJECT_MAIL_BODY_DELETE_INFO"]["de"] = "%_PROJECT_ART_DEF_NOMS_BIG %_PROJECT_SUB_NOMS_BIG &quot;%1&quot; wurde seit %3 Tagen nicht mehr verwendet. Daher findet eine Löschung  %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG in %2 Tagen statt.
 
 Wenn Sie nicht wollen, dass %_PROJECT_ART_DEF_NOMS_LOW %_PROJECT_SUB_NOMS_BIG gelöscht wird, loggen Sie sich einmal innerhalb der nächsten %2 Tage in %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_NOMS_BIG ein.";
 $message["PROJECT_MAIL_BODY_INFORMATION"]["de"] = "Die Informationen im Einzelnen:
@@ -42,6 +42,6 @@ $message["PROJECT_MAIL_SUBJECT_OPEN"]["de"] = "%1 eröffnet";
 $message["PROJECT_MAIL_SUBJECT_REOPEN"]["de"] = "%1 wieder eröffnet";
 $message["PROJECT_MAIL_SUBJECT_UNDELETE"]["de"] = "%1 wieder hergestellt";
 $message["PROJECT_MAIL_SUBJECT_UNLOCK"]["de"] = "%1 entsperrt";
-$message["PROJECT_ROOM_IS_CLOSED"]["de"] = "%_PROJECT_ART_DEF_NOMS_LOW %_PROJECT_SUB_NOMS_BIG %1 ist geschlossen. Sie können keine Änderungen mehr in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG vornehmen.";
+$message["PROJECT_ROOM_IS_CLOSED"]["de"] = "%_PROJECT_ART_DEF_NOMS_LOW %_PROJECT_SUB_NOMS_BIG &quot;%1&quot; ist geschlossen. Sie können keine Änderungen mehr in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG vornehmen.";
 $message["PROJECT_SHORT_DESCRIPTION"]["de"] = "die aktivsten %1 Räume";
 ?>

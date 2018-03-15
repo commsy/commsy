@@ -26,7 +26,7 @@ $message["ACCOUNT_MERGE"]["en"] = "Merge accounts";
 $message["ACCOUNT_MERGE_BUTTON"]["en"] = "Merge";
 $message["ACCOUNT_MERGE_ERROR_ANNONYMOUS"]["en"] = "The account %1 is fixed.";
 $message["ACCOUNT_MERGE_ERROR_USER_ID"]["en"] = "You cannot merge account <span style=&quot;font-weight:bold;&quot;>%1</span> with itself. Please enter two different user IDs.";
-$message["ACCOUNT_MERGE_TEXT"]["en"] = "You can merge accounts on the portal %1 here.";
+$message["ACCOUNT_MERGE_TEXT"]["en"] = "You can merge accounts on the portal &quot;%1&quot; here.";
 $message["ACCOUNT_NOT_ACCEPTED"]["en"] = "Your user account has been locked in this workspace.";
 $message["ACCOUNT_NOT_ACCEPTED_AS_GUEST"]["en"] = "You cannot ask for membership with a guest account.";
 $message["ACCOUNT_NOT_ACCEPTED_YET"]["en"] = "Your membership is still <b>queued for approval</b> by the moderator/s.<br>Please be patient. You will receive an e-mail as soon as you are permitted to enter the workspace.";

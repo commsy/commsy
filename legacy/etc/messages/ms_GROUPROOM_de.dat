@@ -16,10 +16,10 @@ $message["GROUPROOM_MAIL_BODY_PROJECT_ROOMS_EMPTY"]["de"] = "*keine %_PROJECT_SU
 $message["GROUPROOM_MAIL_BODY_REOPEN"]["de"] = "Wiedereröffnung eines Gruppenraumes.";
 $message["GROUPROOM_MAIL_BODY_UNDELETE"]["de"] = "Wiederherstellung eines Gruppenraumes.";
 $message["GROUPROOM_MAIL_BODY_UNLOCK"]["de"] = "Entsperrung eines Gruppenraumes.";
-$message["GROUPROOM_MAIL_SEND_WHY_GROUP"]["de"] = "Sie haben diese E-Mail als Mitglied der Moderation des Gruppenraums %1 erhalten.";
+$message["GROUPROOM_MAIL_SEND_WHY_GROUP"]["de"] = "Sie haben diese E-Mail als Mitglied der Moderation des Gruppenraums &quot;%1&quot; erhalten.";
 $message["GROUPROOM_MODERATORS"]["de"] = "Moderatoren des Gruppenraums";
 $message["GROUPROOM_PORTAL_SELECT_TITLE"]["de"] = "Gruppenräume";
-$message["GROUPROOM_USER_JOIN_CONTEXT_MAIL_BODY"]["de"] = "%1 hat sich mit der Kennung [%2] für den Gruppenraum %4 angemeldet.
+$message["GROUPROOM_USER_JOIN_CONTEXT_MAIL_BODY"]["de"] = "%1 hat sich mit der Kennung [%2] für den Gruppenraum &quot;%4&quot; angemeldet.
 
 Die Informationen im Einzelnen:
 Name: %1
