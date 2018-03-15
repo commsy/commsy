@@ -27,6 +27,9 @@ class Version20180315103403 extends AbstractMigration
                 PRIMARY KEY (id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8
         ');
+
+        $this->addSql('ALTER TABLE materials ADD license_id int(11) NULL');
+        $this->addSql('ALTER TABLE zzz_materials ADD license_id int(11) NULL');
     }
 
     /**
@@ -38,5 +41,8 @@ class Version20180315103403 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('DROP TABLE IF EXISTS licenses');
+
+        $this->addSql('ALTER TABLE materials DROP COLUMN license_id');
+        $this->addSql('ALTER TABLE zzz_materials DROP COLUMN license_id');
     }
 }

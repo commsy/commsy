@@ -952,6 +952,14 @@ class MaterialController extends Controller
             $formData['hashtagsMandatory'] = $hashtagsMandatory;
             $formData['hashtag_mapping']['categories'] = $itemController->getLinkedCategories($item);
             $formData['category_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+
+            $licensesService = $this->get('commsy.licenses_service');
+            $availableLicenses = $licensesService->getListLicenses($legacyEnvironment->getCurrentPortalId());
+            $licenses = [];
+            foreach ($availableLicenses as $availableLicense) {
+                $licenses[$availableLicense->getTitle()] = $availableLicense->getId();
+            }
+
             $form = $this->createForm(MaterialType::class, $formData, array(
                 'action' => $this->generateUrl('commsy_material_edit', array(
                     'roomId' => $roomId,
@@ -966,6 +974,7 @@ class MaterialController extends Controller
                     'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
                     'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId])
                 ],
+                'licenses' => $licenses,
             ));
 
             $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($materialItem));
@@ -1028,6 +1037,7 @@ class MaterialController extends Controller
             'showHashtags' => $hashtagsMandatory,
             'showCategories' => $categoriesMandatory,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
+            'licenses' => $licenses,
         );
     }
     

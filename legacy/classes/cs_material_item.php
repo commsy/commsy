@@ -1738,5 +1738,13 @@ function _copySectionList ($copy_id) {
        }
        return parent::isLocked();
    }
+
+   function setLicenseId($licenseId) {
+        $this->_setValue('license_id', $licenseId);
+   }
+
+   function getLicenseId() {
+       return $this->_getValue('license_id');
+   }
 }
 ?>

@@ -97,6 +97,12 @@ class MaterialType extends AbstractType
                     }
                 }
             })
+            ->add('license_id', ChoiceType::class, array(
+                'required' => false,
+                'expanded' => false,
+                'multiple' => false,
+                'choices' => $options['licenses'],
+            ))
             ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
@@ -121,7 +127,7 @@ class MaterialType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['placeholderText', 'hashtagMappingOptions', 'categoryMappingOptions'])
+            ->setRequired(['placeholderText', 'hashtagMappingOptions', 'categoryMappingOptions', 'licenses'])
             ->setDefaults(array('translation_domain' => 'form'))
         ;
     }

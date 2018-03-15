@@ -71,6 +71,11 @@
                         </div>
                     </div>
                 {% endif %}
+
+                <div class="uk-form-row">
+                    {{ form_label(form.license_id) }}
+                    {{ form_widget(form.license_id) }}
+                </div>
             </div>
         {% endif %}
 

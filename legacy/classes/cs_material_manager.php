@@ -987,7 +987,8 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
                   'extras="'.encode(AS_DB,serialize($material_item->getExtraInformation())).'",'.
                   'workflow_status="'.encode(AS_DB,$material_item->getWorkflowTrafficLight()).'",'.
                   'workflow_resubmission_date="'.encode(AS_DB,$material_item->getWorkflowResubmissionDate()).'",'.
-                  'workflow_validity_date="'.encode(AS_DB,$material_item->getWorkflowValidityDate()).'"'.
+                  'workflow_validity_date="'.encode(AS_DB,$material_item->getWorkflowValidityDate()).'",'.
+                  'license_id="'.encode(AS_DB,$material_item->getLicenseId()).'"'.
                   ' WHERE item_id="'.encode(AS_DB,$material_item->getItemID()).'"'.
                   ' AND version_id="'.encode(AS_DB,$material_item->getVersionID()).'"';
          $result = $this->_db_connector->performQuery($query);
@@ -1080,7 +1081,8 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
                  'extras="'.encode(AS_DB,serialize($material_item->getExtraInformation())).'",'.
                  'workflow_status="'.encode(AS_DB,$material_item->getWorkflowTrafficLight()).'",'.
                  'workflow_resubmission_date="'.encode(AS_DB,$material_item->getWorkflowResubmissionDate()).'",'.
-                 'workflow_validity_date="'.encode(AS_DB,$material_item->getWorkflowValidityDate()).'"';
+                 'workflow_validity_date="'.encode(AS_DB,$material_item->getWorkflowValidityDate()).'",'.
+                 'license_id="'.encode(AS_DB,$material_item->getLicenseId()).'"';
         $result = $this->_db_connector->performQuery($query);
         if ( !isset($result) ) {
           include_once('functions/error_functions.php');
@@ -1334,6 +1336,7 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
    	$xml->addChildWithCDATA('publishing_date', $item->getPublishingDate());
    	$xml->addChildWithCDATA('public', $item->isPublic());
    	$xml->addChildWithCDATA('world_public', $item->isWorldPublic());
+    $xml->addChildWithCDATA('license_id', $item->getLicenseId());
 
    	$extras_array = $item->getExtraInformation();
       $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
@@ -1400,6 +1403,7 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
          $item->setPublishingDate((string)$xml->publishing_date[0]);
          $item->setPublic((string)$xml->public[0]);
          $item->setWorldPublic((string)$xml->world_public[0]);
+         $item->setLicenseId((string)$xml->license_id[0]);
          $extra_array = $this->getXMLAsArray($xml->extras);
          $item->setExtraInformation($extra_array['extras']);
          $temp_item = $this->getNewItem();
