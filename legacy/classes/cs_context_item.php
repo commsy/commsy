@@ -1863,20 +1863,25 @@ class cs_context_item extends cs_item {
     }
 
     // if a plugin is deleted, or a rubric configuration is faulty, remove it from HomeConf
-    $retour = array();
-    $rubric_array = explode(',',$rubricsString);
-    foreach ( $rubric_array as $rubric ) {
-      list($rubricType, $rubricConf) = explode('_',$rubric);
-      if ( !empty($rubricType) && !empty($rubricConf) &&
-          in_array($rubricType,$this->_default_rubrics_array) ) {
-        $retour[] = $rubricType.'_'.$rubricConf;
-      }
-    }
+      if ( !empty($rubricsString) ) {
+        $retour = array();
+        $rubric_array = explode(',', $rubricsString);
+        foreach ($rubric_array as $rubric) {
+          if (strpos($rubric, '_') === false) {
+            continue;
+          }
+          list($rubricType, $rubricConf) = explode('_', $rubric);
+          if (!empty($rubricType) && !empty($rubricConf) &&
+            in_array($rubricType, $this->_default_rubrics_array)) {
+            $retour[] = $rubricType . '_' . $rubricConf;
+          }
+        }
 
-    $rubricsString = "";
-    if ( !empty($retour) ) {
-      $rubricsString = implode(',',$retour);
-    }
+        $rubricsString = "";
+        if (!empty($retour)) {
+            $rubricsString = implode(',', $retour);
+        }
+      }
 
     return $rubricsString;
   }
