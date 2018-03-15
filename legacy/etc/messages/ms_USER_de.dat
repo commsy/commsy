@@ -88,25 +88,25 @@ $message["USER_ICQ"]["de"] = "ICQ";
 $message["USER_ICQ_ERROR"]["de"] = "The ICQ number should only contain digits.";
 $message["USER_INDEX"]["de"] = "Personen";
 $message["USER_JABBER"]["de"] = "Jabber";
-$message["USER_JOIN_COMMUNITY_MAIL_BODY"]["de"] = "%1 hat sich mit der Kennung [%2] für %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG %4 angemeldet.
+$message["USER_JOIN_COMMUNITY_MAIL_BODY"]["de"] = "%1 hat sich mit der Kennung [%2] für %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG &quot;%4&quot; angemeldet.
 
 Die Informationen im Einzelnen:
 Name: %1
 Kennung: %2
 E-Mail Adresse: %3";
-$message["USER_JOIN_COMMUNITY_MAIL_BODY_BY_MODERATOR"]["de"] = "%1 wurde mit der Kennung [%2] von %5 für %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG %4 angemeldet.
+$message["USER_JOIN_COMMUNITY_MAIL_BODY_BY_MODERATOR"]["de"] = "%1 wurde mit der Kennung [%2] von %5 für %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG &quot;%4&quot; angemeldet.
 
 Die Informationen im Einzelnen:
 Name: %1
 Kennung: %2
 E-Mail Adresse: %3";
-$message["USER_JOIN_CONTEXT_MAIL_BODY"]["de"] = "%1 hat sich mit der Kennung [%2] für %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG %4 angemeldet.
+$message["USER_JOIN_CONTEXT_MAIL_BODY"]["de"] = "%1 hat sich mit der Kennung [%2] für %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG &quot;%4&quot; angemeldet.
 
 Die Informationen im Einzelnen:
 Name: %1
 Kennung: %2
 E-Mail Adresse: %3";
-$message["USER_JOIN_CONTEXT_MAIL_BODY_BY_MODERATOR"]["de"] = "%1 wurde mit der Kennung [%2] von %5 für %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG %4 angemeldet.
+$message["USER_JOIN_CONTEXT_MAIL_BODY_BY_MODERATOR"]["de"] = "%1 wurde mit der Kennung [%2] von %5 für %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG &quot;%4&quot; angemeldet.
 
 Die Informationen im Einzelnen:
 Name: %1
@@ -217,7 +217,7 @@ $message["USER_PREFERENCES_NO_ENTRIES"]["de"] = "In diesem Raum sind für Sie ke
 $message["USER_PROJECT_CONTACT_MODERATOR"]["de"] = "AnsprechpartnerInnen von Räumen";
 $message["USER_PROJECT_USER"]["de"] = "NutzerInnen von Räumen";
 $message["USER_QUIT_CONTEXT_MAIL_SUBJECT"]["de"] = "%2: Teilnahme beendet [%1]";
-$message["USER_QUIT_PROJECT_MAIL_BODY"]["de"] = "%1 hat sich mit der Kennung [%2] aus %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG %4 abgemeldet.
+$message["USER_QUIT_PROJECT_MAIL_BODY"]["de"] = "%1 hat sich mit der Kennung [%2] aus %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG &quot;%4&quot; abgemeldet.
 
 Die Informationen im Einzelnen:
 Name: %1
