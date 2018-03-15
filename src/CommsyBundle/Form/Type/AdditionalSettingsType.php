@@ -191,6 +191,8 @@ class AdditionalSettingsType extends AbstractType
                     'expanded' => false,
                     'multiple' => false,
                     'choices' => $options['portalTerms'],
+                    'label' => 'Portal terms',
+                    'translation_domain' => 'settings',
                 ))
 
                 ->add('status', ChoiceType::class, array(

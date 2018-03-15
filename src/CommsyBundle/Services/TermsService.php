@@ -42,19 +42,23 @@ class TermsService
         return $result;
     }
 
-    public function getTerm ($termId) {
+    public function getTerms ($termsId) {
         $repository = $this->em->getRepository('CommsyBundle:Terms');
         $query = $repository->createQueryBuilder('terms')
             ->select()
             ->where('terms.id = :termId')
-            ->setParameter('termId', $termId)
+            ->setParameter('termId', $termsId)
             ->getQuery();
 
-        return $terms = $query->getResult();
+        if (isset($query->getResult()[0])) {
+            return $query->getResult()[0];
+        }
+
+        return null;
     }
 
-    public function removeTerm ($term) {
-        $this->em->remove($term);
+    public function removeTerms ($terms) {
+        $this->em->remove($terms);
 
         $this->em->flush();
     }

@@ -214,7 +214,7 @@
             // Simulate form data, but only include the selected sport value.
             var data = {};
 
-            //data[$(this).attr('name')] = $(this).val();
+            data['terms'] = $(this).val();
             // Submit data via AJAX to the form's action path.
             $.ajax({
                 url : $form.attr('action'),

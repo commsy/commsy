@@ -203,7 +203,7 @@ class PortalController extends Controller
             // tells Doctrine you want to (eventually) save the Product (no queries yet)
             if ($form->getClickedButton()->getName() == 'delete') {
                 $termsService = $this->get('commsy.terms_service');
-                $termsService->removeTerm($term);
+                $termsService->removeTerms($term);
             } else {
                 $em->persist($term);
             }

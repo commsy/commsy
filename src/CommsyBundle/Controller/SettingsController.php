@@ -150,13 +150,20 @@ class SettingsController extends Controller
 
         $termsService = $this->get('commsy.terms_service');
         $availableTerms = $termsService->getListTerms($roomItem->getContextId());
-        $portalTerms = [];
+        $portalTerms = ['' => false];
         foreach ($availableTerms as $availableTerm) {
             $portalTerms[$availableTerm->getTitle()] = $availableTerm->getId();
         }
 
         $transformer = $this->get('commsy_legacy.transformer.additional_settings');
         $roomData = $transformer->transform($roomItem);
+
+        if ($selectedTerms = $request->get('terms')) {
+            $currentTerms = $termsService->getTerms($selectedTerms);
+            $roomData['terms']['agb_text_de'] = $currentTerms->getContentDe();
+            $roomData['terms']['agb_text_en'] = $currentTerms->getContentEn();
+        }
+
         $form = $this->createForm(AdditionalSettingsType::class, $roomData, array(
             'roomId' => $roomId,
             'newStatus' => $roomData['tasks']['additional_status'],
