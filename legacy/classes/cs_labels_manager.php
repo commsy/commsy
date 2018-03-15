@@ -68,6 +68,11 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
    */
   var $_exact_name_limit = NULL;
 
+    /**
+     * @var string
+     */
+  private $excludeNameLimit = null;
+
   /**
    * integer - containing a start point for the select statement
    */
@@ -158,6 +163,7 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
      $this->_sort_order = NULL;
      $this->_exact_name_limit = NULL;
      $this->_count_links = false;
+     $this->excludeNameLimit = null;
   }
 
   public function setGetCountLinks () {
@@ -216,6 +222,10 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
     */
   function setNameLimit ($limit) {
      $this->_name_limit = (string)$limit;
+  }
+
+  public function setExcludeNameLimit($excludeName) {
+      $this->excludeNameLimit = $excludeName;
   }
 
   /** set exact name limit
@@ -437,9 +447,12 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
      }
 
      // insert limits into the select statement
-     if (isset($this->_room_limit)) {
-        $query .= ' AND '.$this->addDatabasePrefix('labels').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
-     }
+      if (isset($this->_room_array_limit) and !empty($this->_room_array_limit)) {
+          $query .= ' AND ' . $this->addDatabasePrefix('labels') . '.context_id IN (' . implode(", ", $this->_room_array_limit) . ')';
+      } else if (isset($this->_room_limit)) {
+          $query .= ' AND ' . $this->addDatabasePrefix('labels') . '.context_id = "' . encode(AS_DB, $this->_room_limit) . '"';
+      }
+
      if(!$this->_show_not_activated_entries_limit) {
         $query .= ' AND ('.$this->addDatabasePrefix('labels').'.modification_date IS NULL OR '.$this->addDatabasePrefix('labels').'.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
      }
@@ -489,6 +502,18 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
 
       if( !empty($this->_id_array_limit) ) {
          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
+      }
+
+      if ($this->modificationNewerThenLimit) {
+          $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.modification_date >= "' . $this->modificationNewerThenLimit->format('Y-m-d H:i:s') . '"';
+      }
+
+      if ($this->excludedIdsLimit) {
+          $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.item_id NOT IN (' . implode(", ", encode(AS_DB, $this->excludedIdsLimit)) . ')';
+      }
+
+      if ($this->excludeNameLimit) {
+          $query .= ' AND ' . $this->addDatabasePrefix('labels') . '.name != "' . encode(AS_DB, $this->excludeNameLimit) . '"';
       }
 
       // restrict sql-statement by search limit, create wheres
@@ -1259,5 +1284,27 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
    function import_sub_items($xml, $top_item, &$options) {
       
    }
+
+    /**
+     * @param int[] $contextIds List of context ids
+     * @param array Limits for buzzwords / categories
+     * @param int $size Number of items to get
+     * @param \DateTime $newerThen The oldest modification date to consider
+     * @param int[] $excludedIds Ids to exclude
+     *
+     * @return \cs_list
+     */
+    public function getNewestItems($contextIds, $limits, $size, \DateTime $newerThen = null, $excludedIds = [])
+    {
+        parent::setGenericNewestItemsLimits($contextIds, $limits, $newerThen, $excludedIds);
+
+        if ($size > 0) {
+            $this->setIntervalLimit(0, $size);
+        }
+
+        $this->setExcludeNameLimit('ALL');
+
+        $this->select();
+        return $this->get();
+    }
 }
-?>

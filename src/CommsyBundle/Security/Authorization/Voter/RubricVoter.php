@@ -43,6 +43,9 @@ class RubricVoter extends Voter
         if ($roomItem->isDeleted()) {
             return false;
         }
+        if ($roomItem->isPrivateRoom() && in_array($rubric, ['material', 'date', 'discussion', 'announcement', 'todo'])) {
+            return true;
+        }
         if ($rubric == 'user' && $currentUser->isModerator()) {
             return true;
         }
