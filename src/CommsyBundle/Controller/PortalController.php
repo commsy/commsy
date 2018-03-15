@@ -15,6 +15,9 @@ use CommsyBundle\Form\Type\PortalTermsType;
 use CommsyBundle\Form\Type\RoomCategoriesEditType;
 use CommsyBundle\Form\Type\RoomCategoriesLinkType;
 use CommsyBundle\Entity\RoomCategories;
+use CommsyBundle\Entity\Licenses;
+use CommsyBundle\Form\Type\LicenseType;
+
 
 use CommsyBundle\Event\CommsyEditEvent;
 
@@ -224,5 +227,65 @@ class PortalController extends Controller
     public function legacysettingsAction($roomId, Request $request)
     {
         return $this->redirect('/?cid='.$roomId.'&mod=configuration&fct=index');
+    }
+
+
+    /**
+     * @Route("/portal/{roomId}/licenses/{licenseId}")
+     * @Template()
+     * @Security("is_granted('ITEM_MODERATE', roomId)")
+     */
+    public function licensesAction($roomId, $licenseId = null, Request $request) {
+        $portalId = $roomId;
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('CommsyBundle:Licenses');
+
+        if ($licenseId) {
+            $license = $repository->findOneById($licenseId);
+        } else {
+            $license = new Licenses();
+            $license->setContextId($portalId);
+        }
+
+        $form = $this->createForm(LicenseType::class, $license, []);
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+
+            // tells Doctrine you want to (eventually) save the Product (no queries yet)
+            if ($form->getClickedButton()->getName() == 'delete') {
+                $licensesService = $this->get('commsy.licenses_service');
+                $licensesService->removeLicense($license);
+            } else {
+                $em->persist($license);
+            }
+
+            // actually executes the queries (i.e. the INSERT query)
+            $em->flush();
+
+            return $this->redirectToRoute('commsy_portal_licenses', [
+                'roomId' => $roomId,
+            ]);
+        }
+
+        $licenses = $repository->findBy(array('contextId' => $portalId));
+
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent(null));
+
+        return [
+            'form' => $form->createView(),
+            'roomId' => $portalId,
+            'licenses' => $licenses,
+            'licenseId' => $licenseId,
+            'item' => $legacyEnvironment->getCurrentPortalItem(),
+        ];
+
+
     }
 }
