@@ -956,8 +956,10 @@ class MaterialController extends Controller
             $licensesService = $this->get('commsy.licenses_service');
             $availableLicenses = $licensesService->getListLicenses($legacyEnvironment->getCurrentPortalId());
             $licenses = [];
+            $licensesContent = [];
             foreach ($availableLicenses as $availableLicense) {
                 $licenses[$availableLicense->getTitle()] = $availableLicense->getId();
+                $licensesContent[$availableLicense->getId()] = $availableLicense->getContent();
             }
 
             $form = $this->createForm(MaterialType::class, $formData, array(
@@ -1038,6 +1040,7 @@ class MaterialController extends Controller
             'showCategories' => $categoriesMandatory,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
             'licenses' => $licenses,
+            'licensesContent' => $licensesContent,
         );
     }
     
