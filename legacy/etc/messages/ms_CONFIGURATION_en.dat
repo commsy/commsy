@@ -176,7 +176,7 @@ $message["CONFIGURATION_DISCUSSION_DESC_1"]["en"] = "'Flat' discussions";
 $message["CONFIGURATION_DISCUSSION_DESC_2"]["en"] = "Threaded discussions";
 $message["CONFIGURATION_DISCUSSION_DESC_3"]["en"] = "Mixed: both flat and threaded (discussion initiator chooses)";
 $message["CONFIGURATION_DISCUSSION_WARNING"]["en"] = "<font color=&quot;#b9b4aa&quot;>Activating mixed styles in a &quot;fresh&quot; workspace is not recommended, because handling two discussion styles in one workspace might give your users unnecessary hassle. Use this option when you have a workspace running with existing discussions and want to enable the other discussion style. In this second case, only option &quot;mixed&quot; will keep all your discussions visible.</font>";
-$message["CONFIGURATION_ERROR_PORTAL_URL"]["en"] = "The url %1 is in use allready and points to the portal %2 on this server.";
+$message["CONFIGURATION_ERROR_PORTAL_URL"]["en"] = "The url %1 is in use allready and points to the portal &quot;%2&quot; on this server.";
 $message["CONFIGURATION_ERROR_SERVER_URL"]["en"] = "The url %1 is in use allready and points to the portal overview on this CommSy server.";
 $message["CONFIGURATION_ERROR_TIME_SPREAD_LONG"]["en"] = "Maximum of 365 days is allowed.";
 $message["CONFIGURATION_EXPORT_IMPORT"]["en"] = "Ex- and import of rooms";

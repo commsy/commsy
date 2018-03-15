@@ -1,18 +1,18 @@
 <?php
-$message["MOVE_ROOM_MAIL_BODY_AGREE"]["de"] = "Dem Umzug des Raums %1 wurde zugestimmt und der Umzug auf das Portal %2 ist bereits vollzogen.";
-$message["MOVE_ROOM_MAIL_BODY_CR"]["de"] = "%_COMMUNITY_ART_DEF_NOMS_LOW %_COMMUNITY_SUB_NOMS_BIG *%1* möchten auf Ihr CommSy-Portal umziehen.
+$message["MOVE_ROOM_MAIL_BODY_AGREE"]["de"] = "Dem Umzug des Raums &quot;%1&quot; wurde zugestimmt und der Umzug auf das Portal &quot;%2&quot; ist bereits vollzogen.";
+$message["MOVE_ROOM_MAIL_BODY_CR"]["de"] = "%_COMMUNITY_ART_DEF_NOMS_LOW %_COMMUNITY_SUB_NOMS_BIG &quot;%1&quot; möchten auf Ihr CommSy-Portal umziehen.
 
 Die Informationen im Überblick:
 %_COMMUNITY_SUB_NOMS_BIG: %1
 Sprache: %2
 initiiert von: %3";
-$message["MOVE_ROOM_MAIL_BODY_PR"]["de"] = "%_PROJECT_ART_DEF_NOMS_LOW %_PROJECT_SUB_NOMS_BIG *%1* möchten auf Ihr CommSy-Portal umziehen.
+$message["MOVE_ROOM_MAIL_BODY_PR"]["de"] = "%_PROJECT_ART_DEF_NOMS_LOW %_PROJECT_SUB_NOMS_BIG &quot;%1&quot; möchten auf Ihr CommSy-Portal umziehen.
 
 Die Informationen im Überblick:
 %_PROJECT_SUB_NOMS_BIG: %1
 Sprache: %2
 initiiert von: %3";
-$message["MOVE_ROOM_MAIL_BODY_REJECT"]["de"] = "Dem Umzug des Raums %1 wurde nicht zugestimmt.";
+$message["MOVE_ROOM_MAIL_BODY_REJECT"]["de"] = "Dem Umzug des Raums &quot;%1&quot; wurde nicht zugestimmt.";
 $message["MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_COPY"]["de"] = "Ihre Kennung %1 ist mit Passwort vom alten Portal auf das neue Portal übertragen worden.";
 $message["MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_COPY_CHANGE"]["de"] = "Ihre Kennung %1 vom alten Portal war leider auf dem neuen Portal schon vergeben, so dass eine neue Kennung %2 für Sie angelegt wurde. Ihr Passwort der alten Kennung ist auch das Passwort der neuen Kennung.
 
@@ -20,10 +20,10 @@ Neue Kennung: %2
 Passwort ist gleich geblieben.";
 $message["MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_NO_COPY_PL"]["de"] = "Alle Rechte wurden an Ihre bereits auf dem neuen Portal vorhandene Kennung %1 geknüpft. D.h. Sie haben mit Ihrer Kennung auf dem neuen Portal automatisch Zugriff auf die umgezogenen Räume.";
 $message["MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_NO_COPY_S"]["de"] = "Alle Rechte wurden an Ihre bereits auf dem neuen Portal vorhandene Kennung %1 geknüpft. D.h. Sie haben mit Ihrer Kennung auf dem neuen Portal automatisch Zugriff auf den umgezogenen Raum.";
-$message["MOVE_ROOM_MAIL_BODY_SUCESS_PL"]["de"] = "Folgende Ihrer CommSy-Räume sind vom CommSy-Portal %1 auf das CommSy-Portal %2 umgezogen und nun unter einer neuen URL erreichbar:";
-$message["MOVE_ROOM_MAIL_BODY_SUCESS_S"]["de"] = "Einer Ihrer CommSy-Räume ist vom CommSy-Portal %1 auf das CommSy-Portal %2 umgezogen und nun unter einer neuen URL erreichbar:";
+$message["MOVE_ROOM_MAIL_BODY_SUCESS_PL"]["de"] = "Folgende Ihrer CommSy-Räume sind vom CommSy-Portal &quot;%1&quot; auf das CommSy-Portal &quot;%2&quot; umgezogen und nun unter einer neuen URL erreichbar:";
+$message["MOVE_ROOM_MAIL_BODY_SUCESS_S"]["de"] = "Einer Ihrer CommSy-Räume ist vom CommSy-Portal &quot;%1&quot; auf das CommSy-Portal &quot;%2&quot; umgezogen und nun unter einer neuen URL erreichbar:";
 $message["MOVE_ROOM_MAIL_BODY_TO_NEW_PORTAL"]["de"] = "URL des neuen Portals:";
-$message["MOVE_ROOM_MAIL_BODY_TO_ROOM"]["de"] = "Neue URL zum Raum %1:";
+$message["MOVE_ROOM_MAIL_BODY_TO_ROOM"]["de"] = "Neue URL zum Raum &quot;%1&quot;:";
 $message["MOVE_ROOM_MAIL_SUBJECT"]["de"] = "%1: Raum möchte umziehen";
 $message["MOVE_ROOM_MAIL_SUBJECT_SUCCESS_PL"]["de"] = "%1: Räume sind umgezogen";
 $message["MOVE_ROOM_MAIL_SUBJECT_SUCCESS_S"]["de"] = "%1: Raum ist umgezogen";

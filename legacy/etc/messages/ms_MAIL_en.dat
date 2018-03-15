@@ -6,7 +6,7 @@ $message["MAIL_BODY"]["en"] = "Body:";
 $message["MAIL_BODY_CIAO"]["en"] = "Best regards ... %1
 %2";
 $message["MAIL_BODY_CIAO_GP"]["en"] = "Best regards ... %1
-CommSy group workspace %2";
+CommSy group workspace &quot;%2&quot;";
 $message["MAIL_BODY_CIAO_GR"]["en"] = "Best regards ... %1
 Moderator/s %2";
 $message["MAIL_BODY_CIAO_PO"]["en"] = "Best wishes ... %1

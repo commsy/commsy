@@ -28,7 +28,7 @@ $message["ACCOUNT_MERGE"]["de"] = "Kennungen verbinden";
 $message["ACCOUNT_MERGE_BUTTON"]["de"] = "Verbinden";
 $message["ACCOUNT_MERGE_ERROR_ANNONYMOUS"]["de"] = "Die Kennung %1 darf nicht verändert werden.";
 $message["ACCOUNT_MERGE_ERROR_USER_ID"]["de"] = "Sie können die Kennung <span style=&quot;font-weight:bold;&quot;>%1</span> nicht mit sich selbst zusammen führen. Bitte geben Sie eine andere Kennung an.";
-$message["ACCOUNT_MERGE_TEXT"]["de"] = "Hier können Sie Kennungen auf dem Portal %1 zusammenlegen.";
+$message["ACCOUNT_MERGE_TEXT"]["de"] = "Hier können Sie Kennungen auf dem Portal &quot;%1&quot; zusammenlegen.";
 $message["ACCOUNT_NOT_ACCEPTED"]["de"] = "Ihre Kennung ist für diesen Raum gesperrt.";
 $message["ACCOUNT_NOT_ACCEPTED_AS_GUEST"]["de"] = "Mit der Gastkennung können Sie keine Teilnahme beantragen.";
 $message["ACCOUNT_NOT_ACCEPTED_YET"]["de"] = "Die ModeratorInnen haben der Teilnahme <b>noch nicht</b> zugestimmt.";
