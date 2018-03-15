@@ -78,6 +78,23 @@
                 <source>roomcategories</source>
                 <target>Room categories</target>
             </trans-unit>
+
+            <trans-unit id="Content">
+                <source>Content</source>
+                <target>Content</target>
+            </trans-unit>
+            <trans-unit id="Create new license">
+                <source>Create new license</source>
+                <target>Create new license</target>
+            </trans-unit>
+            <trans-unit id="Update license">
+                <source>Update license</source>
+                <target>Update license</target>
+            </trans-unit>
+            <trans-unit id="Delete license">
+                <source>Delete license</source>
+                <target>Delete license</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

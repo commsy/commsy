@@ -78,6 +78,23 @@
                 <source>roomcategories</source>
                 <target>Raumkategorien</target>
             </trans-unit>
+
+            <trans-unit id="Content">
+                <source>Content</source>
+                <target>Inhalt</target>
+            </trans-unit>
+            <trans-unit id="Create new license">
+                <source>Create new license</source>
+                <target>Neue Lizenz anlegen</target>
+            </trans-unit>
+            <trans-unit id="Update license">
+                <source>Update license</source>
+                <target>Lizenz speichern</target>
+            </trans-unit>
+            <trans-unit id="Delete license">
+                <source>Delete license</source>
+                <target>Lizenz löschen</target>
+            </trans-unit>
        </body>
     </file>
 </xliff>

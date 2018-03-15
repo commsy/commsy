@@ -34,7 +34,7 @@ class LicenseType extends AbstractType
                 'constraints' => [
                     new Constraints\NotBlank(),
                 ],
-                'label' => 'content',
+                'label' => 'Content',
                 'required' => true,
                 'translation_domain' => 'portal',
             ]);

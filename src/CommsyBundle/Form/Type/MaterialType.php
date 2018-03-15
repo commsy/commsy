@@ -102,6 +102,7 @@ class MaterialType extends AbstractType
                 'expanded' => false,
                 'multiple' => false,
                 'choices' => $options['licenses'],
+                'translation_domain' => 'material',
             ))
             ->add('save', SubmitType::class, array(
                 'attr' => array(
