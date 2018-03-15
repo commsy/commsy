@@ -240,10 +240,12 @@ class ContextController extends Controller
                         } else {
                             $userId = $newUser->getUserID();
                         }
-                        if (!$roomItem->isGroupRoom()) {
-                            $body .= $translator->getMessage('USER_JOIN_CONTEXT_MAIL_BODY', $newUser->getFullname(), $userId, $newUser->getEmail(), $roomItem->getTitle());
-                        } else {
+                        if ($roomItem->isGroupRoom()) {
                             $body .= $translator->getMessage('GROUPROOM_USER_JOIN_CONTEXT_MAIL_BODY', $newUser->getFullname(), $userId, $newUser->getEmail(), $roomItem->getTitle());
+                        } else if ($roomItem->isCommunityRoom()) {
+                            $body .= $translator->getMessage('USER_JOIN_COMMUNITY_MAIL_BODY', $newUser->getFullname(), $userId, $newUser->getEmail(), $roomItem->getTitle());
+                        } else {
+                            $body .= $translator->getMessage('USER_JOIN_CONTEXT_MAIL_BODY', $newUser->getFullname(), $userId, $newUser->getEmail(), $roomItem->getTitle());
                         }
                         $body .= "\n\n";
 
