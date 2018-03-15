@@ -1739,12 +1739,22 @@ function _copySectionList ($copy_id) {
        return parent::isLocked();
    }
 
-   function setLicenseId($licenseId) {
+   function setLicenseId ($licenseId) {
         $this->_setValue('license_id', $licenseId);
    }
 
-   function getLicenseId() {
+   function getLicenseId () {
        return $this->_getValue('license_id');
+   }
+
+   function getLicenseTitle () {
+       global $symfonyContainer;
+       $licensesService = $symfonyContainer->get('commsy.licenses_service');
+       if ($this->getLicenseId() && $this->getLicenseId() > 0) {
+           $license = $licensesService->getLicense($this->getLicenseId());
+           return $license->getTitle();
+       }
+       return '';
    }
 }
 ?>
