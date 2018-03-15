@@ -137,7 +137,7 @@ has now the status &quot;user&quot; in CommSy group workspace %2. You can use th
 $message["MAIL_BODY_USER_STATUS_USER_GR"]["en"] = "your account
    %1
 
-for the %_COMMUNITY_SUB_NOMS_BIG %2 has now the status &quot;user&quot;. You can now use the whole range of functions on %2. Your account is valid for all %_PROJECT_SUB_NOMPL_BIG that you want to participate in.";
+for the %_COMMUNITY_SUB_NOMS_BIG %2 has now the status &quot;user&quot;. You can now use the whole range of functions on %2.";
 $message["MAIL_BODY_USER_STATUS_USER_PO"]["en"] = "your account
    %1
 

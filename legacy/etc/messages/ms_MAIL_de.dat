@@ -139,7 +139,7 @@ für den CommSy-Gruppenraum &quot;%2&quot; hat nun den Status &quot;BenutzerIn&q
 $message["MAIL_BODY_USER_STATUS_USER_GR"]["de"] = "Ihre Kennung
    %1
 
-für %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG &quot;%2&quot; hat nun den Status eines/r BenutzerIn. Sie können nun alle Möglichkeiten in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG &quot;%2&quot; nutzen. Ihre Kennung gilt außerdem für alle %_PROJECT_SUB_AKKPL_BIG in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG &quot;%2&quot;, in denen Sie sich als Teilnehmer anmelden.";
+für %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG &quot;%2&quot; hat nun den Status eines/r BenutzerIn. Sie können nun alle Möglichkeiten in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG &quot;%2&quot; nutzen.";
 $message["MAIL_BODY_USER_STATUS_USER_PO"]["de"] = "Ihre Kennung
    %1
 
