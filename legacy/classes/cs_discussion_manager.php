@@ -818,6 +818,8 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
             $this->setIntervalLimit(0, $size);
         }
 
+        $this->setSortOrder('latest');
+
         $this->select();
         return $this->get();
     }

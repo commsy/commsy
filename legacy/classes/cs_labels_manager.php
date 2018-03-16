@@ -1303,6 +1303,7 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
         }
 
         $this->setExcludeNameLimit('ALL');
+        $this->setOrder('date');
 
         $this->select();
         return $this->get();

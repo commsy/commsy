@@ -1444,6 +1444,8 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
             $this->setIntervalLimit(0, $size);
         }
 
+        $this->setOrder('date');
+
         $this->select();
         return $this->get();
     }

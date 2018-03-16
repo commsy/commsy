@@ -775,6 +775,8 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
             $this->setIntervalLimit(0, $size);
         }
 
+        $this->setSortOrder('date');
+
         $this->select();
         return $this->get();
     }

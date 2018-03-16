@@ -122,7 +122,14 @@ class RoomFeedGenerator
                  * will be stored grouped by rubric for better handling.
                  */
                 foreach ($previousFeedEntries as $previousFeedEntry) {
-                    $excludedIds[$previousFeedEntry->getType()][] = $previousFeedEntry->getItemId();
+                    $type = $previousFeedEntry->getType();
+
+                    // consider sub-label type
+                    if ($type == 'label') {
+                        $type = $previousFeedEntry->getLabelType();
+                    }
+
+                    $excludedIds[$type][] = $previousFeedEntry->getItemId();
 
                     if ($previousFeedEntry->getItemId() == $lastId) {
                         break;
@@ -196,10 +203,6 @@ class RoomFeedGenerator
             if (strcmp($modifier, 'hide') != 0) {
                 $rubrics[] = $rubricName;
             }
-        }
-
-        if (in_array('group', $rubrics) || in_array('topic', $rubrics)) {
-            $rubrics[] = 'label';
         }
 
         return $rubrics;

@@ -675,6 +675,8 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
             $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.title ASC';
          } elseif ( $this->_sort_order == 'title_rev' ) {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.title DESC';
+         } elseif ($this->_sort_order == 'date') {
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.modification_date DESC';
          }
       } elseif ($this->_future_limit) {
          $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.datetime_start ASC';
@@ -1202,6 +1204,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
         $this->setExternalLimit(false);
         $this->setDateModeLimit(3);
         $this->setHideRecurringEntriesLimit(true);
+        $this->setSortOrder('date');
 
         $this->select();
         return $this->get();

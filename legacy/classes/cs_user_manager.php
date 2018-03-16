@@ -882,6 +882,8 @@ class cs_user_manager extends cs_manager {
            $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastlogin ASC, '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname DESC';
         } elseif ($this->_sort_order == 'last_login_rev') {
            $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastlogin DESC, '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname DESC';
+        } elseif ($this->_sort_order == 'mod_date') {
+            $query .= ' ORDER BY ' . $this->addDatabasePrefix('user') . '.modification_date DESC';
         }
      } else {
         $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname DESC, '.$this->addDatabasePrefix('user').'.user_id ASC';
@@ -2000,6 +2002,7 @@ class cs_user_manager extends cs_manager {
         }
 
         $this->setUserLimit();
+        $this->setSortOrder('mod_date');
 
         $this->select();
         return $this->get();
