@@ -419,6 +419,23 @@ class TodoController extends Controller
         $annotationList = $todo->getAnnotationList();
         $annotationService->markAnnotationsReadedAndNoticed($annotationList);
 
+        $stepList = $todo->getStepItemList();
+
+        $stepItem = $stepList->getFirst();
+        while ( $stepItem ) {
+            $reader = $reader_manager->getLatestReader($stepItem->getItemID());
+            if ( empty($reader) || $reader['read_date'] < $stepItem->getModificationDate() ) {
+                $reader_manager->markRead($stepItem->getItemID(), 0);
+            }
+
+            $noticed = $noticed_manager->getLatestNoticed($stepItem->getItemID());
+            if ( empty($noticed) || $noticed['read_date'] < $stepItem->getModificationDate() ) {
+                $noticed_manager->markNoticed($stepItem->getItemID(), 0);
+            }
+
+            $stepItem = $stepList->getNext();
+        }
+
         $itemArray = array($todo);
 
         $current_context = $legacyEnvironment->getCurrentContextItem();
