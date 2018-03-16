@@ -66,11 +66,22 @@
   list-style-type: none;
 }
 
-#status-confirm, #status-block {
-    text-align: left;
-    margin-bottom: 3px;
+@media (min-width: 1300px) {
+    #status-confirm, #status-block {
+        text-align: left;
+        margin-bottom: 3px;
+    }
+    #user-feed.uk-comment-list #status-confirm, #user-feed.uk-comment-list #status-block {
+        width: 90%;
+    }
 }
 
-#user-feed.uk-comment-list #status-confirm, #user-feed.uk-comment-list #status-block {
-    width: 90%;
+@media (max-width: 1300px) {
+    #status-confirm span, #status-block span {
+        display: none;
+    }
+    #user-feed.uk-comment-list #status-confirm, #user-feed.uk-comment-list #status-block {
+        width: 25px;
+        padding: 0 5px;
+    }
 }
