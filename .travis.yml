@@ -1,0 +1,78 @@
+language: php
+sudo: required
+
+matrix:
+  # Fast finish allows to set the build as "finished" even if the "allow_failures" matrix elements are not finished yet.
+  fast_finish: true
+  include:
+    - php: 5.6
+    - php: 7.0
+    - php: 7.1
+    - php: 7.2
+  allow_failures:
+    - php: 7.0
+    - php: 7.1
+    - php: 7.2
+
+cache:
+  yarn: true
+  directories:
+    - $HOME/.composer/cache
+
+services:
+  - elasticsearch
+
+addons:
+  mariadb: 10.1
+  chrome: stable
+  apt:
+    packages:
+      - nginx
+  hosts:
+    - commsy_test_db
+
+before_install:
+  - export PATH="$TRAVIS_BUILD_DIR/tests/_data/travis/bin:$PATH"
+  - export TPL_DIR="$TRAVIS_BUILD_DIR/tests/_data/travis/tpl"
+  - export WEB_DIR="$TRAVIS_BUILD_DIR/web"
+
+  # nginx / php-fpm
+  - "sudo chmod u+x tests/_data/travis/bin/install_nginx"
+  - install_nginx
+
+  # Install yarn
+  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.5.1
+  - export PATH=$HOME/.yarn/bin:$PATH
+
+  # Setup Database
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS commsy;'
+  - mysql -e 'USE mysql; UPDATE user SET password=PASSWORD("root") WHERE user="root"; FLUSH PRIVILEGES;'
+
+  # Copy legacy config
+  - cp legacy/etc/cs_config.php-dist legacy/etc/cs_config.php
+
+  # ChromeDriver
+  - wget -c -nc --retry-connrefused --tries=0 https://chromedriver.storage.googleapis.com/2.36/chromedriver_linux64.zip
+  - unzip -o -q chromedriver_linux64.zip
+  - sudo mv chromedriver /usr/local/bin
+  - chromedriver --url-base=/wd/hub &
+
+  # Headless Chrome
+  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+
+install:
+  - php composer.phar install
+  - yarn install
+  - npm install gulp-cli -g
+  - gulp
+
+before_script:
+  - "sudo chown root /opt/google/chrome/chrome-sandbox"
+  - "sudo chmod 4755 /opt/google/chrome/chrome-sandbox"
+
+script:
+  - php bin/codecept run --env travis -vvv
+
+notifications:
+  webhooks:
+      secure: CJa3Z0CL3hm49S4GLVd/nK1ND4iotGPSdjjcSYzR1i0ljNpUt/+54s8ei334BhSe76cxlHHHPIWeb2PEtt3ko8tOyClaSONQ3VFiQ7zAe48UWeLOckICPdzt68EP3pTVlw5pQkD3J9QoXHRmsCba/jaGuOLCIU/FeCMnXKN4Bk8J+2WW53kuZ3K7+qytU2hXaLLyYbs+LfmA3Xbqa44R3IfIAVT+abKCe2Ker0wxU9DKnOefsdSQlPgMSzWtRDsDTlj6x+Zs8k95aUhEDg9DVXVQZ0B2WxyjsTeKytpMuLCPLt82SdGnTNEqKvA+tjGTN7tlcw56RPgYr3U1Ubv//tqxheAEqvlu89tUMNb1MGhHr1RvuTd5kAja++5iiHfEPjhH6Oxi6JleO+8F2W+gMmirCWM7H6WXqwW4I2xHyO9hiHsLfDnhyItQEDF5JKeJ8g62qIEPynMoGRSS/WwXfORIh8finyS8uzW+ZE5PtREUPU1EPp0cG07cVVcI7CLysVJ6+RBC37wepK9Sz0ZQGcdDFN1A8woo5TMblScRY0zg6FmXwzUzo3NRC2ltwtNKzwfKv1NMb9u1AjjRGJBh9LumY6MtoSa58nvFsDKuXN/SzET+/qwrpzwsUI/PFlni952ytfYSEo/cbQEsxJhGslbgfa5rbz2GSH/lzd5ZKpM=
