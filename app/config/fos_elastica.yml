@@ -102,6 +102,9 @@ fos_elastica:
                             type: text
                             analyzer: commsy_analyzer
                             search_analyzer: html_strip_analyzer
+                            fields:
+                                raw:
+                                    type: keyword
                         description:
                             type: text
                             analyzer: html_strip_analyzer
@@ -172,6 +175,9 @@ fos_elastica:
                             type: text
                             analyzer: commsy_analyzer
                             search_analyzer: html_strip_analyzer
+                            fields:
+                                raw:
+                                    type: keyword
                         description:
                             type: text
                             analyzer: html_strip_analyzer
@@ -329,6 +335,9 @@ fos_elastica:
                             type: text
                             analyzer: commsy_analyzer
                             search_analyzer: html_strip_analyzer
+                            fields:
+                                raw:
+                                    type: keyword
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Labels
@@ -364,6 +373,9 @@ fos_elastica:
                             type: text
                             analyzer: commsy_analyzer
                             search_analyzer: html_strip_analyzer
+                            fields:
+                                raw:
+                                    type: keyword
                         contactPersons:
                             type: text
                         roomDescription:
@@ -412,6 +424,9 @@ fos_elastica:
                             type: text
                             analyzer: commsy_analyzer
                             search_analyzer: html_strip_analyzer
+                            fields:
+                                raw:
+                                    type: keyword
                         date:
                             type: date
                             format: date_optional_time
@@ -428,6 +443,9 @@ fos_elastica:
                                     type: text
                                     analyzer: commsy_analyzer
                                     search_analyzer: html_strip_analyzer
+                                    fields:
+                                        raw:
+                                            type: keyword
                                 description:
                                     type: text
                                     analyzer: html_strip_analyzer
@@ -529,7 +547,7 @@ fos_elastica:
                             search_analyzer: html_strip_analyzer
                             fields:
                                 raw:
-                                  type: keyword
+                                    type: keyword
                         description:
                             type: text
                             analyzer: html_strip_analyzer
@@ -543,6 +561,9 @@ fos_elastica:
                                     type: text
                                     analyzer: commsy_analyzer
                                     search_analyzer: html_strip_analyzer
+                                    fields:
+                                        raw:
+                                            type: keyword
                                 description:
                                     type: text
                                     analyzer: html_strip_analyzer
