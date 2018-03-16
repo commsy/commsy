@@ -43,6 +43,7 @@ class SectionType extends AbstractType
                     'formnovalidate' => '',
                 ),
                 'label' => 'cancel',
+                'validation_groups' => false,
             ))
         ;
     }

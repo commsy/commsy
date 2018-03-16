@@ -1198,6 +1198,7 @@ class MaterialController extends Controller
         $countSections = $sectionList->getCount();
 
         $section = $materialService->getNewSection();
+        $section->setDraftStatus(1);
         $section->setLinkedItemId($itemId);
         $section->setVersionId($material->getVersionId());
         $section->setNumber($countSections+1);
@@ -1232,6 +1233,9 @@ class MaterialController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.material');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($itemId);
+
         $translator = $this->get('translator');
 
         // get section
@@ -1250,6 +1254,11 @@ class MaterialController extends Controller
                 // update title
                 $section->setTitle($form->getData()['title']);
 
+                if ($item->isDraft()) {
+                    $item->setDraftStatus(0);
+                    $item->saveAsItem();
+                }
+
                 // update modifier
                 $section->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
@@ -1257,6 +1266,7 @@ class MaterialController extends Controller
 
                 $section->getLinkedItem()->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
+                // this will also update the material item's modification date to indicate that it has changes
                 $section->getLinkedItem()->save();
                 
             } else if ($form->get('cancel')->isClicked()) {
@@ -1265,14 +1275,6 @@ class MaterialController extends Controller
 
                 $section->save();
             }
-
-            $material = $materialService->getMaterial($section->getLinkedItemID());
-            $material->save();
-        } else if ($form->get('cancel')->isClicked()) {
-            // remove not saved item
-            $section->delete();
-
-            $section->save();
         }
 
         return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));

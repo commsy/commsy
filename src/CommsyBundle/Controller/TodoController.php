@@ -590,6 +590,7 @@ class TodoController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.todo');
 
         $step = $todoService->getNewStep();
+        $step->setDraftStatus(1);
         $step->setTodoID($itemId);
         $step->save();
 
@@ -619,6 +620,9 @@ class TodoController extends Controller
         $todoService = $this->get('commsy_legacy.todo_service');
         $transformer = $this->get('commsy_legacy.transformer.todo');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($itemId);
 
         $translator = $this->get('translator');
 
@@ -650,6 +654,11 @@ class TodoController extends Controller
                     // spend hours
                     $step->setMinutes($formData['time_spend']['hour'] * 60 + $formData['time_spend']['minute']);
 
+                    if ($item->isDraft()) {
+                        $item->setDraftStatus(0);
+                        $item->saveAsItem();
+                    }
+
                     // update modifier
                     $step->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
@@ -657,6 +666,7 @@ class TodoController extends Controller
 
                     $step->getLinkedItem()->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
+                    // this will also update the todo item's modification date to indicate that it has changes
                     $step->getLinkedItem()->save();
 
                     $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($step->getLinkedItem()));
