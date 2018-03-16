@@ -174,6 +174,7 @@ class cs_step_manager extends cs_manager implements cs_export_import_interface {
         $query = 'SELECT '.$this->addDatabasePrefix('step').'.*';
      }
      $query .= ' FROM '.$this->addDatabasePrefix('step');
+     $query .= ' INNER JOIN ' . $this->addDatabasePrefix('items') . ' ON '.$this->addDatabasePrefix('items').'.item_id = '.$this->addDatabasePrefix('step').'.item_id AND '.$this->addDatabasePrefix('items').'.draft != "1"';
 
      $query .= ' WHERE 1';
 
