@@ -206,9 +206,9 @@ class SearchManager
 
         $matchQuery = new Queries\MultiMatch();
         $matchQuery->setQuery($this->query);
-        $matchQuery->setType('cross_fields');
-        $matchQuery->setTieBreaker(0.3);
-        $matchQuery->setMinimumShouldMatch('80%');
+        $matchQuery->setType('most_fields');
+//        $matchQuery->setTieBreaker(0.3);
+//        $matchQuery->setMinimumShouldMatch('80%');
         $matchQuery->setFields([
             'title^2',
             'title.raw^5',
