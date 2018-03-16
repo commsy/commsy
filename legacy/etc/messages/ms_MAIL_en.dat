@@ -6,13 +6,13 @@ $message["MAIL_BODY"]["en"] = "Body:";
 $message["MAIL_BODY_CIAO"]["en"] = "Best regards ... %1
 %2";
 $message["MAIL_BODY_CIAO_GP"]["en"] = "Best regards ... %1
-CommSy group workspace %2";
+CommSy group workspace &quot;%2&quot;";
 $message["MAIL_BODY_CIAO_GR"]["en"] = "Best regards ... %1
 Moderator/s %2";
 $message["MAIL_BODY_CIAO_PO"]["en"] = "Best wishes ... %1
 Moderator/s %2";
 $message["MAIL_BODY_CIAO_PR"]["en"] = "Best wishes ... %1
-CommSy %_PROJECT_SUB_NOMS_LOW %2";
+CommSy %_PROJECT_SUB_NOMS_LOW &quot;%2&quot;";
 $message["MAIL_BODY_HELLO_GP"]["en"] = "Dear %1,";
 $message["MAIL_BODY_HELLO_GR"]["en"] = "Dear %1,";
 $message["MAIL_BODY_HELLO_PO"]["en"] = "Dear %1,";
@@ -23,45 +23,45 @@ Material: %1";
 $message["MAIL_BODY_MATERIAL_WORLDPUBLIC_GR"]["en"] = "The following material is accessible for guests now:
 CommSy: %2
 Material: %1";
-$message["MAIL_BODY_ROOM_DELETE_PO"]["en"] = "Workspace %1 has been deleted.";
-$message["MAIL_BODY_ROOM_LOCK_GR"]["en"] = "the CommSy %_PROJECT_SUB_NOMS_LOW %1 was locked by the moderator/s.";
-$message["MAIL_BODY_ROOM_LOCK_PO"]["en"] = "workspace %1 has been locked by the moderator/s.";
-$message["MAIL_BODY_ROOM_OPEN_PO"]["en"] = "Workspace %1 has been created.";
-$message["MAIL_BODY_ROOM_UNDELETE_PO"]["en"] = "Workspace %1 has been restored.";
-$message["MAIL_BODY_ROOM_UNLINK_GR"]["en"] = "%_PROJECT_ART_DEF_NOMS_LOW %_PROJECT_SUB_NOMS_LOW %1 was unlinked from %_COMMUNITY_ART_DEF_NOMS_LOW %_COMMUNITY_SUB_NOMS_LOW %2.
+$message["MAIL_BODY_ROOM_DELETE_PO"]["en"] = "Workspace &quot;%1&quot; has been deleted.";
+$message["MAIL_BODY_ROOM_LOCK_GR"]["en"] = "the CommSy %_PROJECT_SUB_NOMS_LOW &quot;%1&quot; was locked by the moderator/s.";
+$message["MAIL_BODY_ROOM_LOCK_PO"]["en"] = "workspace &quot;%1&quot; has been locked by the moderator/s.";
+$message["MAIL_BODY_ROOM_OPEN_PO"]["en"] = "Workspace &quot;%1&quot; has been created.";
+$message["MAIL_BODY_ROOM_UNDELETE_PO"]["en"] = "Workspace &quot;%1&quot; has been restored.";
+$message["MAIL_BODY_ROOM_UNLINK_GR"]["en"] = "%_PROJECT_ART_DEF_NOMS_LOW %_PROJECT_SUB_NOMS_LOW &quot;%1&quot; was unlinked from %_COMMUNITY_ART_DEF_NOMS_LOW %_COMMUNITY_SUB_NOMS_LOW &quot;%2&quot;.
 
 Furthermore %_PROJECT_ART_DEF_NOMS_BIG %_PROJECT_SUB_NOMS_LOW is available at the following URL.";
-$message["MAIL_BODY_ROOM_UNLOCK_GR"]["en"] = "the CommSy %_PROJECT_SUB_NOMS_BIG %1 was unblocked.";
-$message["MAIL_BODY_ROOM_UNLOCK_PO"]["en"] = "workspace %1 has been unblocked.";
+$message["MAIL_BODY_ROOM_UNLOCK_GR"]["en"] = "the CommSy %_PROJECT_SUB_NOMS_BIG &quot;%1&quot; was unblocked.";
+$message["MAIL_BODY_ROOM_UNLOCK_PO"]["en"] = "workspace &quot;%1&quot; has been unblocked.";
 $message["MAIL_BODY_USER_ACCOUNT_DELETE_GP"]["en"] = "your account
     %1
 
-has been deleted in CommSy group workspace %2.";
+has been deleted in CommSy group workspace &quot;%2&quot;.";
 $message["MAIL_BODY_USER_ACCOUNT_DELETE_GR"]["en"] = "your account
     %1
 
-has been deleted at the %_COMMUNITY_SUB_NOMS_BIG %2.";
+has been deleted at the %_COMMUNITY_SUB_NOMS_BIG &quot;%2&quot;.";
 $message["MAIL_BODY_USER_ACCOUNT_DELETE_PO"]["en"] = "your account
     %1
 
-has been deleted on portal %2 as well as in all contained workspaces.";
+has been deleted on portal &quot;%2&quot; as well as in all contained workspaces.";
 $message["MAIL_BODY_USER_ACCOUNT_DELETE_PR"]["en"] = "your account
     %1
 
-has been deleted at the CommSy %_PROJECT_SUB_NOMS_BIG %2.";
-$message["MAIL_BODY_USER_ACCOUNT_LOCK_GP"]["en"] = "the status of your membership in CommSy group workspace %2 has changed:
+has been deleted at the CommSy %_PROJECT_SUB_NOMS_BIG &quot;%2&quot;.";
+$message["MAIL_BODY_USER_ACCOUNT_LOCK_GP"]["en"] = "the status of your membership in CommSy group workspace &quot;%2&quot; has changed:
 your account %1 has been locked.";
-$message["MAIL_BODY_USER_ACCOUNT_LOCK_GR"]["en"] = "the status of your membership for the %_COMMUNITY_SUB_NOMS_BIG %2 has changed:
+$message["MAIL_BODY_USER_ACCOUNT_LOCK_GR"]["en"] = "the status of your membership for the %_COMMUNITY_SUB_NOMS_BIG &quot;%2&quot; has changed:
 
 Your account %1 has locked.
 
-Please contact the moderator/s of the %_COMMUNITY_SUB_NOMS_BIG %2 for further information.";
-$message["MAIL_BODY_USER_ACCOUNT_LOCK_PO"]["en"] = "the status of your membership for the portal %2 has changed: Your account %1 has been locked.
+Please contact the moderator/s of the %_COMMUNITY_SUB_NOMS_BIG &quot;%2&quot; for further information.";
+$message["MAIL_BODY_USER_ACCOUNT_LOCK_PO"]["en"] = "the status of your membership for the portal &quot;%2&quot; has changed: Your account %1 has been locked.
 
-Please contact the moderator/s of the portal %2 for further information.";
-$message["MAIL_BODY_USER_ACCOUNT_LOCK_PR"]["en"] = "the status of your membership for the CommSy %_PROJECT_SUB_NOMS_BIG %2 has changed:
+Please contact the moderator/s of the portal &quot;%2&quot; for further information.";
+$message["MAIL_BODY_USER_ACCOUNT_LOCK_PR"]["en"] = "the status of your membership for the CommSy %_PROJECT_SUB_NOMS_BIG &quot;%2&quot; has changed:
 Your account %1 has locked.";
-$message["MAIL_BODY_USER_ACCOUNT_MERGE_GR"]["en"] = "there are several accounts registered for your email address %1 in the CommSy %2:
+$message["MAIL_BODY_USER_ACCOUNT_MERGE_GR"]["en"] = "there are several accounts registered for your email address %1 in the CommSy &quot;%2&quot;:
 
 %3
 
@@ -69,11 +69,11 @@ It is not necessary to use more than one account to get into different workspace
 
 You can merge your accounts as follows:
 
-1. Log on with one account and go to the %_COMMUNITY_SUB_NOMS_BIG of the CommSy %2.
+1. Log on with one account and go to the %_COMMUNITY_SUB_NOMS_BIG of the CommSy &quot;%2&quot;.
 2. Folllow the link &quot;change account&quot; on the left side of the page.
 3. Just enter the other account and password at &quot;merge accounts&quot;.
 4. Now your actual account as all rights of the second account and the second account will be deleted.";
-$message["MAIL_BODY_USER_ACCOUNT_MERGE_PO"]["en"] = "there are several accounts registered for your email address %1 at the Portal %2:
+$message["MAIL_BODY_USER_ACCOUNT_MERGE_PO"]["en"] = "there are several accounts registered for your email address %1 at the Portal &quot;%2&quot;:
 
 %3
 
@@ -81,26 +81,26 @@ It is not necessary to use more than one account to get into different workspace
 
 You can merge your accounts as follows:
 
-1. Log on with your actual account at the portal %2.
+1. Log on with your actual account at the portal &quot;%2&quot;.
 2. Folllow the link &quot;change account&quot; on the left side of the page.
 3. Just enter the other account and password at &quot;merge accounts&quot;.
 4. Now your actual account as all rights of the second account and the second account will be deleted.";
-$message["MAIL_BODY_USER_ACCOUNT_PASSWORD_GR"]["en"] = "Your account at the %_COMMUNITY_SUB_NOMS_BIG %1 is:
+$message["MAIL_BODY_USER_ACCOUNT_PASSWORD_GR"]["en"] = "Your account at the %_COMMUNITY_SUB_NOMS_BIG &quot;%1&quot; is:
    %2
 
-If you also have forgotten your password, just follow the link &quot;Forgot your password?&quot; on the left side of the %_COMMUNITY_SUB_NOMS_BIG %1.";
-$message["MAIL_BODY_USER_ACCOUNT_PASSWORD_PO"]["en"] = "Your account at the portal %1 is:
+If you also have forgotten your password, just follow the link &quot;Forgot your password?&quot; on the left side of the %_COMMUNITY_SUB_NOMS_BIG &quot;%1&quot;.";
+$message["MAIL_BODY_USER_ACCOUNT_PASSWORD_PO"]["en"] = "Your account at the portal &quot;%1&quot; is:
    %2
 
-If you also have forgotten your password, just follow the link &quot;Forgot your password?&quot; on the left side of the portal %1.";
-$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_GP"]["en"] = "your status for the CommSy group workspace %2 has been changed: you are denominated as contact person for this workspace. Your name, along with a contact link, will appear aside the workspace description.";
-$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_GR"]["en"] = "your status for the CommSy %_COMMUNITY_SUB_NOMS_BIG %2 has been changed: you are denominated as contact person for this workspace. Your name, along with a contact link, will appear aside the workspace description.";
-$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_PO"]["en"] = "your status for the CommSy portal %2 has been changed: You are now a contact person.";
-$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_PR"]["en"] = "your status for the CommSy %_PROJECT_SUB_NOMS_BIG %2 has been changed: you are denominated as contact person for this workspace. Your name, along with a contact link, will appear aside the workspace description.";
+If you also have forgotten your password, just follow the link &quot;Forgot your password?&quot; on the left side of the portal &quot;%1&quot;.";
+$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_GP"]["en"] = "your status for the CommSy group workspace &quot;%2&quot; has been changed: you are denominated as contact person for this workspace. Your name, along with a contact link, will appear aside the workspace description.";
+$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_GR"]["en"] = "your status for the CommSy %_COMMUNITY_SUB_NOMS_BIG &quot;%2&quot; has been changed: you are denominated as contact person for this workspace. Your name, along with a contact link, will appear aside the workspace description.";
+$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_PO"]["en"] = "your status for the CommSy portal &quot;%2&quot; has been changed: You are now a contact person.";
+$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_PR"]["en"] = "your status for the CommSy %_PROJECT_SUB_NOMS_BIG &quot;%2&quot; has been changed: you are denominated as contact person for this workspace. Your name, along with a contact link, will appear aside the workspace description.";
 $message["MAIL_BODY_USER_PASSWORD_CHANGE_PO"]["en"] = "your password of your account
    %1
 
-for the portal %2 has changed.
+for the portal &quot;%2&quot; has changed.
 
 Account: %1
 New password: %3
@@ -109,39 +109,39 @@ Please change your password immediately.";
 $message["MAIL_BODY_USER_STATUS_MODERATOR_GP"]["en"] = "the status of your account
    %1
 
-in CommSy group workspace %2 has changed: You are a &quot;moderator&quot; now.
+in CommSy group workspace &quot;%2&quot; has changed: You are a &quot;moderator&quot; now.
 
 You now have access to group workspace settings, such as: Select colours, administrate accounts, ...";
 $message["MAIL_BODY_USER_STATUS_MODERATOR_GR"]["en"] = "the status of your account
    %1
 
-for the %_COMMUNITY_SUB_NOMS_BIG %2 has changed:
+for the %_COMMUNITY_SUB_NOMS_BIG &quot;%2&quot; has changed:
 
-You are now an &quot;moderator&quot; of %2. That gives you the possibility to administrate this %_COMMUNITY_SUB_NOMS_BIG, activate accounts and activate the worldwide publication of materials.";
+You are now an &quot;moderator&quot; of &quot;%2&quot;. That gives you the possibility to administrate this %_COMMUNITY_SUB_NOMS_BIG, activate accounts and activate the worldwide publication of materials.";
 $message["MAIL_BODY_USER_STATUS_MODERATOR_PO"]["en"] = "the status of your account
    %1
 
-for the portal %2 has changed:
+for the portal &quot;%2&quot; has changed:
 
-You are a &quot;moderator&quot; now of %2. You now have access to user and workspace management controls for the entire CommSy installation.";
+You are a &quot;moderator&quot; now of &quot;%2&quot;. You now have access to user and workspace management controls for the entire CommSy installation.";
 $message["MAIL_BODY_USER_STATUS_MODERATOR_PR"]["en"] = "the status of your account
    %1
 
-for the CommSy %_PROJECT_SUB_NOMS_BIG %2 has been changed: You are now a &quot;moderator&quot;.
+for the CommSy %_PROJECT_SUB_NOMS_BIG &quot;%2&quot; has been changed: You are now a &quot;moderator&quot;.
 
 As a moderator you can configure %_PROJECT_SUB_NOMS_BIG: Select colours, administrate accounts, ...";
 $message["MAIL_BODY_USER_STATUS_USER_GP"]["en"] = "your account
    %1
 
-has now the status &quot;user&quot; in CommSy group workspace %2. You can use the whole range of functions of the group workspace %2 now.";
+has now the status &quot;user&quot; in CommSy group workspace &quot;%2&quot;. You can use the whole range of functions of the group workspace &quot;%2&quot; now.";
 $message["MAIL_BODY_USER_STATUS_USER_GR"]["en"] = "your account
    %1
 
-for the %_COMMUNITY_SUB_NOMS_BIG %2 has now the status &quot;user&quot;. You can now use the whole range of functions on %2. Your account is valid for all %_PROJECT_SUB_NOMPL_BIG that you want to participate in.";
+for the %_COMMUNITY_SUB_NOMS_BIG &quot;%2&quot; has now the status &quot;user&quot;. You can now use the whole range of functions on &quot;%2&quot;.";
 $message["MAIL_BODY_USER_STATUS_USER_PO"]["en"] = "your account
    %1
 
-for the portal %2 has now the status &quot;user&quot;. You can now use the whole range of functions on %2. Your account is valid for all rooms that you want to participate in.
+for the portal &quot;%2&quot; has now the status &quot;user&quot;. You can now use the whole range of functions on &quot;%2&quot;. Your account is valid for all rooms that you want to participate in.
 
 Two more details for the rooms:
 - you can open a room by making the accordant entry after the link &quot;enter new room&quot;.
@@ -150,15 +150,15 @@ Two more details for the rooms:
 $message["MAIL_BODY_USER_STATUS_USER_PR"]["en"] = "your account
    %1
 
-for the commsy %_PROJECT_SUB_NOMS_BIG %2 has now the status &quot;user&quot;. You can use the whole range of functions of the %_PROJECT_SUB_NOMS_BIG %2 now.";
+for the commsy %_PROJECT_SUB_NOMS_BIG &quot;%2&quot; has now the status &quot;user&quot;. You can use the whole range of functions of the %_PROJECT_SUB_NOMS_BIG &quot;%2&quot; now.";
   $message["MAIL_BODY_USER_STATUS_USER_READ_ONLY"]["en"] = "your account
    %1
 
-for the commsy %_PROJECT_SUB_NOMS_BIG %2 has now the status &quot;read only user&quot;.";
-$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GP"]["en"] = "your status for the CommSy group workspace %2 has changed: You are not a contact person anymore. So your name will not shown out side the room at the public description.";
-$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GR"]["en"] = "your status for the CommSy %_COMMUNITY_SUB_NOMS_BIG %2 has changed: You are not a contact person anymore. So your name will not shown out side the room at the public description.";
-$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PO"]["en"] = "your status for the CommSy portal %2 has changed: You are not a contact person anymore.";
-$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PR"]["en"] = "your status for the CommSy %_PROJECT_SUB_NOMS_BIG %2 has changed: You are not a contact person anymore. So your name will not shown out side the room at the public description.";
+for the commsy %_PROJECT_SUB_NOMS_BIG &quot;%2&quot; has now the status &quot;read only user&quot;.";
+$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GP"]["en"] = "your status for the CommSy group workspace &quot;%2&quot; has changed: You are not a contact person anymore. So your name will not shown out side the room at the public description.";
+$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GR"]["en"] = "your status for the CommSy %_COMMUNITY_SUB_NOMS_BIG &quot;%2&quot; has changed: You are not a contact person anymore. So your name will not shown out side the room at the public description.";
+$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PO"]["en"] = "your status for the CommSy portal &quot;%2&quot; has changed: You are not a contact person anymore.";
+$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PR"]["en"] = "your status for the CommSy %_PROJECT_SUB_NOMS_BIG &quot;%2&quot; has changed: You are not a contact person anymore. So your name will not shown out side the room at the public description.";
 $message["MAIL_CHOICE_CHOOSE_TEXT"]["en"] = "Select e-mail text";
 $message["MAIL_CHOICE_CIAO"]["en"] = "Salutation";
 $message["MAIL_CHOICE_HELLO"]["en"] = "Address";
@@ -203,9 +203,9 @@ $message["MAIL_SENDER_NAME"]["en"] = "Your name";
 $message["MAIL_SEND_BUTTON"]["en"] = "Send e-mail";
 $message["MAIL_SEND_TO"]["en"] = "This e-mail was sent to:
 %1";
-$message["MAIL_SEND_WHY_COMMUNITY"]["en"] = "You received this e-mail as one of the moderator/s in %_COMMUNITY_SUB_NOMS_LOW %1.";
-$message["MAIL_SEND_WHY_PORTAL"]["en"] = "You received this e-mail as one of the moderator/s in portal %1.";
-$message["MAIL_SEND_WHY_PROJECT"]["en"] = "You received this e-mail as one of the moderator/s in %_PROJECT_SUB_NOMS_LOW %1.";
+$message["MAIL_SEND_WHY_COMMUNITY"]["en"] = "You received this e-mail as one of the moderator/s in %_COMMUNITY_SUB_NOMS_LOW &quot;%1&quot;.";
+$message["MAIL_SEND_WHY_PORTAL"]["en"] = "You received this e-mail as one of the moderator/s in portal &quot;%1&quot;.";
+$message["MAIL_SEND_WHY_PROJECT"]["en"] = "You received this e-mail as one of the moderator/s in %_PROJECT_SUB_NOMS_LOW &quot;%1&quot;.";
 $message["MAIL_SUBJECT"]["en"] = "Subject:";
 $message["MAIL_SUBJECT_MATERIAL_NOT_WORLDPUBLIC"]["en"] = "%1: material not published";
 $message["MAIL_SUBJECT_MATERIAL_WORLDPUBLIC"]["en"] = "%1: material published";

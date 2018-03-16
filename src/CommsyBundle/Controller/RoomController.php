@@ -2,19 +2,16 @@
 
 namespace CommsyBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\HttpFoundation\Request;
-
-use Symfony\Component\HttpFoundation\JsonResponse;
-
 use CommsyBundle\Filter\HomeFilterType;
-use CommsyBundle\Form\Type\ModerationSupportType;
 use CommsyBundle\Filter\RoomFilterType;
-use CommsyBundle\Entity\Room;
 use CommsyBundle\Form\Type\ContextType;
+use CommsyBundle\Form\Type\ModerationSupportType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class RoomController
@@ -62,7 +59,7 @@ class RoomController extends Controller
         $filterForm->handleRequest($request);
         if ($filterForm->isValid()) {
             // set filter conditions in feed generator
-            $roomFeedGenerator = $this->get('commsy_legacy.room_feed_generator');
+            $roomFeedGenerator = $this->get('commsy.room_feed_generator');
             $roomFeedGenerator->setFilterConditions($filterForm);
             $header = "search results";
         }
@@ -217,7 +214,7 @@ class RoomController extends Controller
         ));
 
         // collect information for feed panel
-        $roomFeedGenerator = $this->get('commsy_legacy.room_feed_generator');
+        $roomFeedGenerator = $this->get('commsy.room_feed_generator');
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -226,7 +223,12 @@ class RoomController extends Controller
             $roomFeedGenerator->setFilterConditions($filterForm);
         }
 
-        $feedList = $roomFeedGenerator->getFeedList($roomId, $max, $start);
+        $lastId = null;
+        if ($request->query->has('lastId')) {
+            $lastId = $request->query->get('lastId');
+        }
+
+        $feedList = $roomFeedGenerator->getRoomFeedList($roomId, $max, $lastId);
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 

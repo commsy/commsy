@@ -68,6 +68,8 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
    */
   var $_date_limit = NULL;
 
+  private $hideExpiredLimit = false;
+
   var $_with_material = false;
 
   var$_group_limit=NULL;
@@ -98,6 +100,7 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
      $this->_topic_limit = NULL;
      $this->_sort_order = NULL;
      $this->_group_limit= NULL;
+     $this->hideExpiredLimit = false;
   }
 
 
@@ -109,6 +112,11 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
   function setDateLimit ($datetime) {
      $this->_date_limit = (string)$datetime;
   }
+
+    public function setHideExpiredLimit($hideExpired)
+    {
+        $this->hideExpiredLimit = $hideExpired;
+    }
 
    /** set age limit
     * this method sets an age limit for announcement
@@ -278,9 +286,13 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
             $query .= ' AND buzzwords.item_id="'.encode(AS_DB,$this->_buzzword_limit).'"';
          }
       }
-      if (isset($this->_room_limit)) {
-         $query .= ' AND '.$this->addDatabasePrefix('announcement').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
-      }
+
+       if (isset($this->_room_array_limit) and !empty($this->_room_array_limit)) {
+           $query .= ' AND ' . $this->addDatabasePrefix('announcement') . '.context_id IN (' . implode(", ", $this->_room_array_limit) . ')';
+       } else if (isset($this->_room_limit)) {
+           $query .= ' AND ' . $this->addDatabasePrefix('announcement') . '.context_id = "' . encode(AS_DB, $this->_room_limit) . '"';
+       }
+
       if ($this->_delete_limit == true) {
          $query .= ' AND '.$this->addDatabasePrefix('announcement').'.deleter_id IS NULL';
       }
@@ -298,6 +310,10 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
       }
       if( !empty($this->_id_array_limit) ) {
          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
+      }
+
+      if ($this->hideExpiredLimit) {
+          $query .= ' AND ' . $this->addDatabasePrefix('announcement') . '.enddate < NOW()';
       }
 
       // restrict sql-statement by search limit, create wheres
@@ -318,6 +334,14 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
       if ( isset($this->_only_files_limit) and $this->_only_files_limit ) {
          $query .= ' AND lf.deleter_id IS NULL AND lf.deletion_date IS NULL';
       }
+
+       if ($this->modificationNewerThenLimit) {
+           $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.modification_date >= "' . $this->modificationNewerThenLimit->format('Y-m-d H:i:s') . '"';
+       }
+
+       if ($this->excludedIdsLimit) {
+           $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.item_id NOT IN (' . implode(", ", encode(AS_DB, $this->excludedIdsLimit)) . ')';
+       }
 
 	  if((isset($this->_sort_order) && ($this->_sort_order == 'assessment' || $this->_sort_order == 'assessment_rev'))) {
 	  	$query .= ' GROUP BY '.$this->addDatabasePrefix('announcement').'.item_id';
@@ -705,5 +729,27 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
    function import_sub_items($xml, $top_item, &$options) {
    
    }
+
+    /**
+     * @param int[] $contextIds List of context ids
+     * @param array Limits for buzzwords / categories
+     * @param int $size Number of items to get
+     * @param \DateTime $newerThen The oldest modification date to consider
+     * @param int[] $excludedIds Ids to exclude
+     *
+     * @return \cs_list
+     */
+    public function getNewestItems($contextIds, $limits, $size, \DateTime $newerThen = null, $excludedIds = [])
+    {
+        parent::setGenericNewestItemsLimits($contextIds, $limits, $newerThen, $excludedIds);
+
+        if ($size > 0) {
+            $this->setIntervalLimit(0, $size);
+        }
+
+        $this->setHideExpiredLimit(true);
+
+        $this->select();
+        return $this->get();
+    }
 }
-?>

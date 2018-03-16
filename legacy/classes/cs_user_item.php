@@ -661,7 +661,7 @@ class cs_user_item extends cs_item
      */
     function getEmail()
     {
-        if ($this->getUsePortalEmail()) {
+        if ($this->getUsePortalEmail() || empty($this->_getValue('email'))) {
             return $this->getRelatedPortalUserItem()->getRoomEmail();
         } else {
             return $this->_getValue('email');
@@ -1517,6 +1517,8 @@ class cs_user_item extends cs_item
                     // if user rubric is not active, user can always see himself
                     if (!$room->withRubric(CS_USER_TYPE)) {
                         if ($user_item->getUserID() == $this->getUserID() && $user_item->getAuthSource() == $this->getAuthSource()) {
+                            $access = true;
+                        } elseif ($user_item->isModerator()){
                             $access = true;
                         } else {
                             $access = false;

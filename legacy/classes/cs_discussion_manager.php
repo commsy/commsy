@@ -348,6 +348,14 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
          $query .= ' AND lf.deleter_id IS NULL AND lf.deletion_date IS NULL';
       }
 
+       if ($this->modificationNewerThenLimit) {
+           $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.modification_date >= "' . $this->modificationNewerThenLimit->format('Y-m-d H:i:s') . '"';
+       }
+
+       if ($this->excludedIdsLimit) {
+           $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.item_id NOT IN (' . implode(", ", encode(AS_DB, $this->excludedIdsLimit)) . ')';
+       }
+
      if (isset($this->_search_array) AND !empty($this->_search_array)) {
         $query .= ' GROUP BY '.$this->addDatabasePrefix('discussions').'.item_id';
      }
@@ -792,5 +800,25 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
          }
       }
    }
+
+    /**
+     * @param int[] $contextIds List of context ids
+     * @param array Limits for buzzwords / categories
+     * @param int $size Number of items to get
+     * @param \DateTime $newerThen The oldest modification date to consider
+     * @param int[] $excludedIds Ids to exclude
+     *
+     * @return \cs_list
+     */
+    public function getNewestItems($contextIds, $limits, $size, \DateTime $newerThen = null, $excludedIds = [])
+    {
+        parent::setGenericNewestItemsLimits($contextIds, $limits, $newerThen, $excludedIds);
+
+        if ($size > 0) {
+            $this->setIntervalLimit(0, $size);
+        }
+
+        $this->select();
+        return $this->get();
+    }
 }
-?>

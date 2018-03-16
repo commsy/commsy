@@ -84,7 +84,7 @@ class SearchController extends Controller
         $searchManager->setContext($roomId);
 
         $searchResults = $searchManager->getLinkedItemResults();
-        $results = $this->prepareResults($searchResults, 0, true);
+        $results = $this->prepareResults($searchResults, $roomId, 0, true);
 
         $response = new JsonResponse();
 
@@ -106,7 +106,7 @@ class SearchController extends Controller
         $searchManager->setContext($roomId);
 
         $searchResults = $searchManager->getResults();
-        $results = $this->prepareResults($searchResults, 0, true);
+        $results = $this->prepareResults($searchResults, $roomId, 0, true);
 
         $response = new JsonResponse();
 
@@ -153,7 +153,7 @@ class SearchController extends Controller
 
         $searchResults = $searchManager->getResults();
         $totalHits = $searchResults->getTotalHits();
-        $results = $this->prepareResults($searchResults);
+        $results = $this->prepareResults($searchResults, $roomId);
 
         return [
             'filterForm' => $filterForm->createView(),
@@ -184,7 +184,7 @@ class SearchController extends Controller
         $searchManager = $this->getSearchManager($roomId, $filterData);
 
         $searchResults = $searchManager->getResults();
-        $results = $this->prepareResults($searchResults, $start);
+        $results = $this->prepareResults($searchResults, $roomId, $start);
 
         return [
             'roomId' => $roomId,
@@ -270,7 +270,7 @@ class SearchController extends Controller
         return $response;
     }
 
-    private function prepareResults(TransformedPaginatorAdapter $searchResults, $offset = 0, $json = false)
+    private function prepareResults(TransformedPaginatorAdapter $searchResults, $currentRoomId, $offset = 0, $json = false)
     {
         $results = [];
         foreach ($searchResults->getResults($offset, 10)->toArray() as $searchResult) {
@@ -289,10 +289,17 @@ class SearchController extends Controller
                 // construct target url
                 $url = '#';
 
+                if ($type == 'room') {
+                    $roomId = $currentRoomId;
+                    $type = 'project';
+                } else {
+                    $roomId = $searchResult->getContextId();
+                }
+
                 $routeName = 'commsy_' . $type . '_detail';
                 if ($router->getRouteCollection()->get($routeName)) {
                     $url = $this->generateUrl($routeName, [
-                        'roomId' => $searchResult->getContextId(),
+                        'roomId' => $roomId,
                         'itemId' => $searchResult->getItemId(),
                     ]);
                 }

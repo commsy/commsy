@@ -6,7 +6,7 @@ $message["VIRUS_VIRUS_FOUND"]["en"] = "Virus found in uploaded file:<br/>
 - virus: %1<br/>
 <br>
 Please update your virus scanner or install one like <a href=&quot;http://www.free-av.de/&quot; target=&quot;_blank&quot;>AntiVir</a>. Free for personal use.";
-$message["VIRUS_VIRUS_FOUND_MAIL_BODY"]["en"] = "Virus found in uploaded file in workspace %3:
+$message["VIRUS_VIRUS_FOUND_MAIL_BODY"]["en"] = "Virus found in uploaded file in workspace &quot;%3&quot;:
 - file: %2
 - virus: %1
 

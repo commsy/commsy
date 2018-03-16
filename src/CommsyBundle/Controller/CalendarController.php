@@ -24,7 +24,7 @@ class CalendarController extends Controller
     /**
      * @Route("/room/{roomId}/calendar/edit/{calendarId}")
      * @Template()
-     * @Security("is_granted('CALENDARS_EDIT')")
+     * @Security("is_granted('CALENDARS_EDIT') and is_granted('RUBRIC_SEE', 'date')")
      */
     public function editAction($roomId, $calendarId = null, Request $request)
     {
