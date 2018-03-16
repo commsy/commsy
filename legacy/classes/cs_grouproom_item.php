@@ -233,6 +233,11 @@ class cs_grouproom_item extends cs_room_item {
       }
       unset($current_portal_item);
 
+      // detach grouproom from group
+      $group = $this->getLinkedGroupItem();
+      $group->unsetGroupRoomActive();
+      $group->unsetGroupRoomItemID();
+
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.room');
       $em = $symfonyContainer->get('doctrine.orm.entity_manager');
@@ -242,7 +247,6 @@ class cs_grouproom_item extends cs_room_item {
        if ($this->isArchived()) {
            $repository = $em->getRepository('CommsyBundle:ZzzRoom');
        }
-
        $this->deleteElasticItem($objectPersister, $repository);
    }
 
