@@ -1866,7 +1866,7 @@ class cs_context_item extends cs_item {
     $retour = array();
     $rubric_array = explode(',',$rubricsString);
     foreach ( $rubric_array as $rubric ) {
-      list($rubricType) = explode('_',$rubric);
+      list($rubricType, $rubricConf) = explode('_',$rubric);
       if ( !empty($rubricType) && !empty($rubricConf) &&
           in_array($rubricType,$this->_default_rubrics_array) ) {
         $retour[] = $rubricType.'_'.$rubricConf;
