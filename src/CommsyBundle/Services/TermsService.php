@@ -56,10 +56,4 @@ class TermsService
 
         return null;
     }
-
-    public function removeTerms ($terms) {
-        $this->em->remove($terms);
-
-        $this->em->flush();
-    }
 }

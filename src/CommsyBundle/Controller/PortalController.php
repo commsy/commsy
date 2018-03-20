@@ -108,7 +108,8 @@ class PortalController extends Controller
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")
      */
-    public function announcementsAction($roomId, Request $request) {
+    public function announcementsAction($roomId, Request $request)
+    {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
@@ -155,38 +156,15 @@ class PortalController extends Controller
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")
      */
-    public function termsAction($roomId, $termId = null, Request $request) {
-        /* $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-        $portalItem = $legacyEnvironment->getCurrentPortalItem();
-
-        $portalTerms = $portalItem->getAGBTextArray();
-        $portalTerms['status'] = $portalItem->getAGBStatus();
-
-        $termsForm = $this->createForm(PortalTermsType::class, $portalTerms, []);
-
-        $termsForm->handleRequest($request);
-        if ($termsForm->isValid()) {
-            if ($termsForm->getClickedButton()->getName() == 'save') {
-                $formData = $termsForm->getData();
-
-                $portalItem->setAGBTextArray(array_filter($formData, function($key) {
-                    return $key == 'DE' || $key == 'EN';
-                }, ARRAY_FILTER_USE_KEY));
-                $portalItem->setAGBStatus($formData['status']);
-                $portalItem->setAGBChangeDate();
-                $portalItem->save();
-            }
-        } */
+    public function termsAction($roomId, $termId = null, Request $request)
+    {
 
         $portalId = $roomId;
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
-        $portalItem = $legacyEnvironment->getCurrentPortalItem();
-
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('CommsyBundle:Terms');
+        $repository = $em->getRepository(Terms::class);
 
         if ($termId) {
             $term = $repository->findOneById($termId);
@@ -202,8 +180,8 @@ class PortalController extends Controller
 
             // tells Doctrine you want to (eventually) save the Product (no queries yet)
             if ($form->getClickedButton()->getName() == 'delete') {
-                $termsService = $this->get('commsy.terms_service');
-                $termsService->removeTerms($term);
+                $em->remove($term);
+                $em->flush();
             } else {
                 $em->persist($term);
             }
@@ -235,7 +213,8 @@ class PortalController extends Controller
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")
      */
-    public function helpAction($roomId, Request $request) {
+    public function helpAction($roomId, Request $request)
+    {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
@@ -266,7 +245,6 @@ class PortalController extends Controller
 
     /**
      * @Route("/portal/{roomId}/legacysettings")
-     * @Template()
      */
     public function legacysettingsAction($roomId, Request $request)
     {
