@@ -10,7 +10,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 
-class LicenseType extends AbstractType
+class LicenseNewEditType extends AbstractType
 {
     /**
      * Builds the form.
@@ -109,6 +109,6 @@ class LicenseType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'license_edit';
+        return 'license_new_edit';
     }
 }

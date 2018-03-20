@@ -79,6 +79,16 @@
                 <target>Room categories</target>
             </trans-unit>
 
+            <!-- portal licenses configuration -->
+            <trans-unit id="portal_licenses_menu_title">
+                <source>Licenses</source>
+                <target>Licenses</target>
+            </trans-unit>
+            <trans-unit id="portal_licenses_breadcrumb_title">
+                <source>licenses</source>
+                <target>Licenses</target>
+            </trans-unit>
+
             <trans-unit id="Edit Licenses">
                 <source>Edit Licenses</source>
                 <target>Edit Licenses</target>

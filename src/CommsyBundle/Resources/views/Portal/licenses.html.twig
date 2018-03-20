@@ -1,52 +1,71 @@
 {% extends 'CommsyBundle:Base:portal.html.twig' %}
-{% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
+
+{% form_theme newEditForm 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
 
 {% block content %}
     <div class="uk-grid" data-uk-grid-margin>
+
         <div class="uk-width-1-1">
+
+            {# new license #}
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div class="uk-text-large">{{ 'Edit Licenses'|trans({}, "room") }}</div>
+                        <div class="uk-text-large">{{ pageTitle|trans({}, "portal") }}</div>
                     </div>
                 </div>
 
                 <div>
                     <div class="uk-grid">
                         {# form column #}
-                        <div class="uk-width-3-4">
-                            {{ form_start(form) }}
-                            {{ form_widget(form) }}
-                            {{ form_end(form) }}
-                        </div>
-                        {# show existing categories #}
-                        <div id="licenses" class="uk-width-1-4">
-                            {% for license in licenses %}
-                                <span>
-                                     <a class="uk-button uk-margin-small-bottom uk-margin-small-right{% if licenseId == license.id %} uk-button-primary{% endif %}" href="{{ path('commsy_portal_licenses', { 'roomId': roomId, 'licenseId': license.id }) }}">
-                                         <span class="uk-vertical-align-middle">
-                                            {{- license.title|trans({},'portal') -}}
-                                        </span>
-                                    </a>
-                                </span>
-                            {% endfor %}
+                        <div>
+                            {{ form_start(newEditForm) }}
+                            <fieldset>
+                                <div id="license_new_edit">
+                                    {{ form_row(newEditForm.title) }}
+                                    {{ form_row(newEditForm.content) }}
+
+                                    <div class="uk-form-row">
+                                        <div class="uk-form-controls">
+                                            {% if newEditForm.new is defined %}
+                                                <button id="license_new_edit_new" class="uk-button uk-button-primary" type="submit" name="license_new_edit[new]">{{ newEditForm.new.vars.label|trans({}, "portal") }}</button>
+                                            {% elseif newEditForm.update is defined and newEditForm.cancel is defined %}
+                                                <button id="license_new_edit_update" class="uk-button uk-button-primary" type="submit" name="license_new_edit[update]">{{ newEditForm.update.vars.label|trans({}, "portal") }}</button>
+                                                <button id="license_new_edit_cancel" class="uk-button uk-button-primary uk-margin-left" type="submit" name="license_new_edit[cancel]">{{ newEditForm.cancel.vars.label|trans({}, "form") }}</button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            {{ form_end(newEditForm) }}
                         </div>
                     </div>
                 </div>
+
+            </div>
+        </div>
+
+        <div class="uk-width-1-1">
+             edit license
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div class="uk-text-large">{{ 'Edit Licenses'|trans({}, "portal") }}</div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="uk-grid">
+                         form column
+                        <div class="uk-width-1-1">
+                            {{ form_start(editForm) }}
+                            {{ form_widget(editForm) }}
+                            {{ form_end(editForm) }}
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-        function toggleMandatoryLinksCheckbox() {
-            $('#roomcategories_link_mandatory').prop('disabled', $("#categories .uk-margin-small-bottom").length < 1);
-        }
-
-        window.onload = function() {
-            toggleMandatoryLinksCheckbox();
-        }
-    </script>
 {% endblock %}

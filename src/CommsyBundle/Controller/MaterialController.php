@@ -2,6 +2,7 @@
 
 namespace CommsyBundle\Controller;
 
+use CommsyBundle\Entity\Licenses;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -953,8 +954,8 @@ class MaterialController extends Controller
             $formData['hashtag_mapping']['categories'] = $itemController->getLinkedCategories($item);
             $formData['category_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
 
-            $licensesService = $this->get('commsy.licenses_service');
-            $availableLicenses = $licensesService->getListLicenses($legacyEnvironment->getCurrentPortalId());
+            $licensesRepository = $this->getDoctrine()->getRepository(Licenses::class);
+            $availableLicenses = $licensesRepository->findByContextId($legacyEnvironment->getCurrentPortalId());
             $licenses = [];
             $licensesContent = [];
             foreach ($availableLicenses as $availableLicense) {

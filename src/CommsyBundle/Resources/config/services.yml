@@ -712,7 +712,3 @@ services:
             arguments:
               - '@commsy_legacy.environment'
               - '@commsy_legacy.room_service'
-
-    commsy.licenses_service:
-        class: CommsyBundle\Services\LicensesService
-        arguments: ['@doctrine.orm.entity_manager', '@service_container']

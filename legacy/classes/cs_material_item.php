@@ -1739,22 +1739,25 @@ function _copySectionList ($copy_id) {
        return parent::isLocked();
    }
 
-   function setLicenseId ($licenseId) {
+    public function setLicenseId($licenseId)
+    {
         $this->_setValue('license_id', $licenseId);
-   }
+    }
 
-   function getLicenseId () {
-       return $this->_getValue('license_id');
-   }
+    public function getLicenseId()
+    {
+        return $this->_getValue('license_id');
+    }
 
-   function getLicenseTitle () {
-       global $symfonyContainer;
-       $licensesService = $symfonyContainer->get('commsy.licenses_service');
-       if ($this->getLicenseId() && $this->getLicenseId() > 0) {
-           $license = $licensesService->getLicense($this->getLicenseId());
-           return $license->getTitle();
-       }
-       return '';
-   }
+    public function getLicenseTitle()
+    {
+        if ($this->getLicenseId() && $this->getLicenseId() > 0) {
+            global $symfonyContainer;
+            $licensesRepository = $symfonyContainer->get('doctrine.orm.entity_manager')->getRepository(\CommsyBundle\Entity\Licenses::class);
+            $license = $licensesRepository->findOneById($this->getLicenseId());
+
+            return $license->getTitle();
+        }
+        return '';
+    }
 }
-?>
