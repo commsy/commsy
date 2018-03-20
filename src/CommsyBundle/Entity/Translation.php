@@ -49,7 +49,6 @@ class Translation
      */
     private $translationEn;
 
-
     /**
      * Get id
      *
@@ -109,20 +108,6 @@ class Translation
     }
 
     /**
-     * Set translation
-     *
-     * @param string $translation
-     *
-     * @return Translation
-     */
-    public function setTranslation($translation)
-    {
-        $this->translation = $translation;
-
-        return $this;
-    }
-
-    /**
      * Get german translation
      *
      * @return string
@@ -158,12 +143,14 @@ class Translation
         $this->translationEn = $translationEn;
     }
 
-    public function getTranslationForLocale($locale){
+    public function getTranslationForLocale($locale)
+    {
         if ($locale == 'de') {
             return $this->getTranslationDe();
         } else if ($locale == 'en') {
             return $this->getTranslationEn();
         }
+
         return '';
     }
 }

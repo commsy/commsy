@@ -218,8 +218,15 @@ class cs_home_member_form extends cs_rubric_form {
              if($auth_source_item->getEmailRegex() != ''){
                  if (!preg_match($auth_source_item->getEmailRegex(), $this->_form_post['email'])) {
                      global $symfonyContainer;
-                     $translationService = $symfonyContainer->get('commsy.translation_service');
-                     $this->_error_array[] = $translationService->getTranslationByKey($this->_environment->getCurrentPortalId(), 'EMAIL_REGEX_ERROR', $this->_environment->getUserLanguage());
+                     try {
+                         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+                         $translation = $em->getRepository(\CommsyBundle\Entity\Translation::class)
+                             ->findOneByContextAndKey($this->_environment->getCurrentPortalId(), 'EMAIL_REGEX_ERROR');
+
+                         $this->_error_array[] = $translation->getTranslationForLocale($this->_environment->getUserLanguage());
+                     } catch (Exception $e) {
+
+                     }
                  }
              }
          }

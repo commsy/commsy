@@ -235,16 +235,6 @@ class PortalController extends Controller
      */
     public function translationsAction($roomId, $translationId = null, Request $request)
     {
-        /* $translationService = $this->get('commsy.translation_service');
-
-        $translations = $translationService->getTranslations($roomId);
-
-        foreach ($translations as $translation) {
-            $translationService->getTranslation($translation->getId());
-        }
-
-        return []; */
-
         $portalId = $roomId;
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
