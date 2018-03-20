@@ -64,19 +64,15 @@
                 <target>Bei Änderungen müssen alle Benutzer die Nutzungsbedingungen erneut akzeptieren!</target>
             </trans-unit>
 
-            <!-- portal help link -->
-            <trans-unit id="support page link">
-                <source>help</source>
-                <target>Support-Seite</target>
-            </trans-unit>
-            <trans-unit id="tooltip text">
-                <source>tooltip text</source>
-                <target>Tooltip-Text</target>
+            <!-- portal terms templates -->
+            <trans-unit id="portal_terms_templates_reference">
+                <source>You can set up templates for room terms here</source>
+                <target>Sie können Vorlagen für Nutzungsbedingungen in Räumen hier verwalten</target>
             </trans-unit>
 
-            <trans-unit id="roomcategories">
-                <source>roomcategories</source>
-                <target>Raumkategorien</target>
+            <trans-unit id="portal_terms_templates_breadcrumb">
+                <source>roomtermstemplates</source>
+                <target>Vorlagen Nutzungsbedingungen</target>
             </trans-unit>
 
             <trans-unit id="Edit terms">
@@ -102,6 +98,21 @@
             <trans-unit id="Delete term">
                 <source>Delete term</source>
                 <target>Nutzungsbedigungen löschen</target>
+            </trans-unit>
+
+            <!-- portal help link -->
+            <trans-unit id="support page link">
+                <source>help</source>
+                <target>Support-Seite</target>
+            </trans-unit>
+            <trans-unit id="tooltip text">
+                <source>tooltip text</source>
+                <target>Tooltip-Text</target>
+            </trans-unit>
+
+            <trans-unit id="roomcategories">
+                <source>roomcategories</source>
+                <target>Raumkategorien</target>
             </trans-unit>
        </body>
     </file>

@@ -152,13 +152,52 @@ class PortalController extends Controller
     }
 
     /**
-     * @Route("/portal/{roomId}/terms/{termId}")
+     * Handles portal terms configuration
+     *
+     * @Route("/portal/{roomId}/terms")
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")
      */
-    public function termsAction($roomId, $termId = null, Request $request)
-    {
+    public function termsAction($roomId, Request $request) {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+
+        $portalTerms = $portalItem->getAGBTextArray();
+        $portalTerms['status'] = $portalItem->getAGBStatus();
+
+        $termsForm = $this->createForm(PortalTermsType::class, $portalTerms, []);
+
+        $termsForm->handleRequest($request);
+        if ($termsForm->isValid()) {
+            if ($termsForm->getClickedButton()->getName() == 'save') {
+                $formData = $termsForm->getData();
+
+                $portalItem->setAGBTextArray(array_filter($formData, function($key) {
+                    return $key == 'DE' || $key == 'EN';
+                }, ARRAY_FILTER_USE_KEY));
+                $portalItem->setAGBStatus($formData['status']);
+                $portalItem->setAGBChangeDate();
+                $portalItem->save();
+            }
+        }
+
+        return [
+            'form' => $termsForm->createView(),
+            'portal' => $portalItem,
+        ];
+
+    }
+
+    /**
+     * Handles portal terms templates for use inside rooms
+     *
+     * @Route("/portal/{roomId}/roomTermsTemplates/{termId}")
+     * @Template()
+     * @Security("is_granted('ITEM_MODERATE', roomId)")
+     */
+    public function roomTermsTemplatesAction($roomId, $termId = null, Request $request)
+    {
         $portalId = $roomId;
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -167,6 +206,7 @@ class PortalController extends Controller
         $repository = $em->getRepository(Terms::class);
 
         if ($termId) {
+            /** @noinspection PhpUndefinedMethodInspection */
             $term = $repository->findOneById($termId);
         } else {
             $term = new Terms();
@@ -189,12 +229,13 @@ class PortalController extends Controller
             // actually executes the queries (i.e. the INSERT query)
             $em->flush();
 
-            return $this->redirectToRoute('commsy_portal_terms', [
+            return $this->redirectToRoute('commsy_portal_roomtermstemplates', [
                 'roomId' => $roomId,
             ]);
         }
 
-        $terms = $repository->findBy(array('contextId' => $portalId));
+        /** @noinspection PhpUndefinedMethodInspection */
+        $terms = $repository->findByContextId($portalId);
 
         $dispatcher = $this->get('event_dispatcher');
         $dispatcher->dispatch('commsy.edit', new CommsyEditEvent(null));

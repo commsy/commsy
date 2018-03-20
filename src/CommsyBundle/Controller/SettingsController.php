@@ -2,6 +2,7 @@
 
 namespace CommsyBundle\Controller;
 
+use CommsyBundle\Entity\Terms;
 use CommsyBundle\Form\Type\Room\DeleteType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -148,8 +149,8 @@ class SettingsController extends Controller
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
 
-        $termsService = $this->get('commsy.terms_service');
-        $availableTerms = $termsService->getListTerms($roomItem->getContextId());
+        $termsRepository = $this->getDoctrine()->getRepository(Terms::class);
+        $availableTerms = $termsRepository->findByContextId($roomItem->getContextId());
         $portalTerms = ['' => false];
         foreach ($availableTerms as $availableTerm) {
             $portalTerms[$availableTerm->getTitle()] = $availableTerm->getId();
@@ -159,7 +160,9 @@ class SettingsController extends Controller
         $roomData = $transformer->transform($roomItem);
 
         if ($selectedTerms = $request->get('terms')) {
-            $currentTerms = $termsService->getTerms($selectedTerms);
+            $termsRepository = $this->getDoctrine()->getRepository(Terms::class);
+            $currentTerms = $termsRepository->findOneById($selectedTerms);
+
             $roomData['terms']['agb_text_de'] = $currentTerms->getContentDe();
             $roomData['terms']['agb_text_en'] = $currentTerms->getContentEn();
         }

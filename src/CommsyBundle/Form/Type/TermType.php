@@ -32,11 +32,12 @@ class TermType extends AbstractType
                 'translation_domain' => 'portal',
             ])
             ->add('contentDe', CKEditorType::class, [
+                'inline' => false,
                 'constraints' => [
                     new Constraints\NotBlank(),
                 ],
                 'label' => 'content_de',
-                'required' => true,
+                'required' => false,
                 'translation_domain' => 'portal',
                 'attr' => array(
                     'class' => 'uk-form-width-large',
@@ -44,11 +45,12 @@ class TermType extends AbstractType
                 ),
             ])
             ->add('contentEn', CKEditorType::class, [
+                'inline' => false,
                 'constraints' => [
                     new Constraints\NotBlank(),
                 ],
                 'label' => 'content_en',
-                'required' => true,
+                'required' => false,
                 'translation_domain' => 'portal',
                 'attr' => array(
                     'class' => 'uk-form-width-large',
@@ -57,11 +59,11 @@ class TermType extends AbstractType
             ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
-            $roomCategory = $event->getData();
+            $terms = $event->getData();
             $form = $event->getForm();
 
             // check if this is a "new" object
-            if (!$roomCategory->getId()) {
+            if (!$terms->getId()) {
                 $form->add('new', Types\SubmitType::class, [
                     'attr' => array(
                         'class' => 'uk-button-primary',
@@ -97,7 +99,6 @@ class TermType extends AbstractType
                     ]);
             }
         });
-        ;
     }
 
     /**
@@ -121,6 +122,6 @@ class TermType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'roomcategories_edit';
+        return 'room_terms_templates';
     }
 }

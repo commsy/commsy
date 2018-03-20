@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Term
  *
  * @ORM\Table(name="terms")
- * @ORM\Entity(repositoryClass="CommsyBundle\Repository\TermRepository")
+ * @ORM\Entity(repositoryClass="CommsyBundle\Repository\TermsRepository")
  */
 class Terms
 {
