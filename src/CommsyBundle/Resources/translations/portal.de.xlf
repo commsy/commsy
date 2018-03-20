@@ -78,6 +78,16 @@
                 <source>roomcategories</source>
                 <target>Raumkategorien</target>
             </trans-unit>
+
+            <!-- portal translations -->
+            <trans-unit id="portal_menu_translations_title">
+                <source>Translations</source>
+                <target>Übersetzungen</target>
+            </trans-unit>
+            <trans-unit id="portal_breadcrumb_translations_title">
+                <source>translations</source>
+                <target>Übersetzungen</target>
+            </trans-unit>
        </body>
     </file>
 </xliff>
