@@ -101,13 +101,16 @@ class AnnotationController extends Controller
                 $noticedManager->markNoticed($itemId, 0);
             }
 
-            return $this->redirectToRoute('commsy_annotation_success', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('commsy_annotation_success', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]);
         }
 
-        return array(
+        return [
             'itemId' => $itemId,
-            'form' => $form->createView()
-        );
+            'form' => $form->createView(),
+        ];
     }
 
     /**
