@@ -82,12 +82,8 @@ class AnnotationController extends Controller
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
-        $linkedItem = $item->getLinkedItem();
-        $itemType = $linkedItem->getItemType();
-
         $transformer = $this->get('commsy_legacy.transformer.annotation');
 
-        $formData = array();
         $formData = $transformer->transform($item);
 
         $form = $this->createForm(AnnotationType::class, $formData);
@@ -103,16 +99,9 @@ class AnnotationController extends Controller
 
                 $readerManager->markRead($itemId, 0);
                 $noticedManager->markNoticed($itemId, 0);
-            } else if ($form->get('cancel')->isClicked()) {
-                // ToDo ...
             }
 
             return $this->redirectToRoute('commsy_annotation_success', array('roomId' => $roomId, 'itemId' => $itemId));
-
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
         }
 
         return array(
