@@ -56,7 +56,7 @@
                 <div>
                     <div class="uk-comment-meta"><a href="{{ app.request.baseURL }}/room/{{ feedItem.contextItem.itemId }}">{{feedItem.contextItem.title|decodeHtmlEntity}}</a></div>
                     <h4 class="uk-comment-title">
-                        {% set feedItemTpe = feedItem.type %}
+                        {% set feedItemType = feedItem.type %}
                         {% if feedItem.type == 'label' %}
                             {% set feedItemType = feedItem.labelType %}
                         {% endif %}
