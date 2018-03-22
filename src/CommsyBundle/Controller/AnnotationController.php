@@ -79,6 +79,9 @@ class AnnotationController extends Controller
      */
     public function editAction($roomId, $itemId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $readerManager = $legacyEnvironment->getReaderManager();
+        $noticedManager = $legacyEnvironment->getNoticedManager();
 
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
@@ -97,6 +100,9 @@ class AnnotationController extends Controller
             if ($form->get('save')->isClicked()) {
                 $item = $transformer->applyTransformation($item, $form->getData());
                 $item->save();
+
+                $readerManager->markRead($itemId, 0);
+                $noticedManager->markNoticed($itemId, 0);
             } else if ($form->get('cancel')->isClicked()) {
                 // ToDo ...
             }
@@ -113,7 +119,6 @@ class AnnotationController extends Controller
             'itemId' => $itemId,
             'form' => $form->createView()
         );
-
     }
 
     /**
