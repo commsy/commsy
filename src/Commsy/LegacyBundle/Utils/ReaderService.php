@@ -34,7 +34,7 @@ class ReaderService
          $item = $itemManager->getItem($itemId);
          if ( empty($reader) ) {
             $return = 'new';
-         } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
+         } else if (!$item->isNotActivated() and $reader['read_date'] < $item->getModificationDate()) {
             $return = 'changed';
          } 
 
