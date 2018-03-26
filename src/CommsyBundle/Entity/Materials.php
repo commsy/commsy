@@ -21,20 +21,19 @@ class Materials
     /**
      * @var integer
      *
-     * @ORM\Column(name="item_id", type="integer")
      * @ORM\Id
+     * @ORM\Column(name="item_id", type="integer")
      * @ORM\GeneratedValue(strategy="NONE")
      */
-    private $itemId = '0';
+    private $itemId;
 
     /**
      * @var integer
      *
+     * Todo: Id
      * @ORM\Column(name="version_id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
      */
-    private $versionId = '0';
+    private $versionId;
 
     /**
      * @var integer
@@ -202,8 +201,11 @@ class Materials
 
 
 
-    public function __construct()
+    public function __construct($itemId, $versionId)
     {
+        $this->itemId = $itemId;
+        $this->versionId = $versionId;
+
         $this->sections = new ArrayCollection();
         $this->files = new ArrayCollection();
     }
