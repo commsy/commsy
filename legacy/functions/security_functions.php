@@ -24,48 +24,64 @@
 // following the example of django
 // http://code.djangoproject.com/browser/django/trunk/django/contrib/csrf/middleware.py
 
-function getToken () {
-   global $environment;
-   $session_item = $environment->getSessionItem();
-   $session_id = $session_item->getSessionID();
-   global $c_security_key;
-   if ( empty($c_security_key) ) {
-      $c_security_key = 'commsy';
-   }
-   $retour = md5($c_security_key.$session_id);
-   return $retour;
+function getToken()
+{
+    global $environment;
+    $session_item = $environment->getSessionItem();
+    $session_id = $session_item->getSessionID();
+    global $c_security_key;
+    if (empty($c_security_key)) {
+        $c_security_key = 'commsy';
+    }
+    $retour = md5($c_security_key . $session_id);
+    return $retour;
 }
 
-function addTokenToPost ( $value ) {
-   if ( !empty($value) ) {
-      $value_temp = $value;
-      // ------------------
-      // --->UTF8 - OK<----
-      // ------------------
-      $pattern = '~<form[^>]*method=[\'|"|][p|P][o|O][s|S][t|T][\'|"|][^>]*>~u';
-      $replace = '$0'.LF.'<div style=\'display:none;\'><input type=\'hidden\' name=\'security_token\' value=\''.getToken().'\'/></div>';
-      $value = preg_replace($pattern,$replace,$value);
-      if ( empty($value) ) {
-         $value = $value_temp;
-      }
-   }
-   return $value;
+function addTokenToPost($value)
+{
+    if (!empty($value)) {
+        $value_temp = $value;
+        // ------------------
+        // --->UTF8 - OK<----
+        // ------------------
+        $pattern = '~<form[^>]*method=[\'|"|][p|P][o|O][s|S][t|T][\'|"|][^>]*>~u';
+        $replace = '$0' . LF . '<div style=\'display:none;\'><input type=\'hidden\' name=\'security_token\' value=\'' . getToken() . '\'/></div>';
+        $value = preg_replace($pattern, $replace, $value);
+        if (empty($value)) {
+            $value = $value_temp;
+        }
+    }
+    return $value;
 }
 
-function getSecurityHash ( $value ) {
-   global $c_security_key;
-   if ( empty($c_security_key) ) {
-      $c_security_key = 'commsy';
-   }
-   $retour = md5($c_security_key.$value.$c_security_key);
-   return $retour;
+function getSecurityHash($value)
+{
+    global $c_security_key;
+    if (empty($c_security_key)) {
+        $c_security_key = 'commsy';
+    }
+    $retour = md5($c_security_key . $value . $c_security_key);
+    return $retour;
 }
 
-function renewSecurityHash ( $value ) {
-   $value = preg_replace('~<!-- KFC TEXT -->~u','',$value);
-   $value = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$value);
-   $fck_text = '<!-- KFC TEXT '.getSecurityHash($value).' -->';
-   $value = $fck_text.$value.$fck_text;
-   return $value;
+function renewSecurityHash($value)
+{
+    $value = preg_replace('~<!-- KFC TEXT -->~u', '', $value);
+    $value = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u', '', $value);
+    $fck_text = '<!-- KFC TEXT ' . getSecurityHash($value) . ' -->';
+    $value = $fck_text . $value . $fck_text;
+    return $value;
 }
-?>
+
+function mysql_escape_mimic($inp)
+{
+    if (is_array($inp)) {
+        return array_map(__METHOD__, $inp);
+    }
+
+    if (!empty($inp) && is_string($inp)) {
+        return str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $inp);
+    }
+
+    return $inp;
+}
