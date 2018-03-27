@@ -22,6 +22,18 @@ class LicenseRepository extends EntityRepository
             ->getResult();
     }
 
+    public function findHighestPosition($contextId)
+    {
+        return $this->createQueryBuilder('l')
+            ->select('l.position')
+            ->where('l.contextId = :contextId')
+            ->orderBy('l.position', 'DESC')
+            ->setParameter('contextId', $contextId)
+            ->getQuery()
+            ->setMaxResults(1)
+            ->getResult();
+    }
+
     public function updatePositions(array $positions, $portalId)
     {
         //[{"itemId":2},{"itemId":3},{"itemId":1}]

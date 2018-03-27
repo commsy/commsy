@@ -264,6 +264,18 @@ class PortalController extends Controller
             if (!$newEditForm->has('cancel') || !$newEditForm->get('cancel')->isClicked()) {
                 $license->setContextId($roomId);
 
+                if (!$license->getPosition()) {
+                    $position = 0;
+                    $highestPosition = $repository->findHighestPosition($roomId);
+
+                    if ($highestPosition) {
+                        $highestPosition = $highestPosition[0];
+                        $position = $highestPosition['position'] + 1;
+                    }
+
+                    $license->setPosition($position);
+                }
+
                 $em->persist($license);
                 $em->flush();
 
