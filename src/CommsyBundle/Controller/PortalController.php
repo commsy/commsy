@@ -288,6 +288,14 @@ class PortalController extends Controller
             /** @var ArrayCollection $delete */
             $delete = $data['license'];
             if (!$delete->isEmpty()) {
+                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+                $materialManager = $legacyEnvironment->getMaterialManager();
+                $materialManager->unsetLicenses($delete->get(0));
+
+                $zzzMaterialManager = $legacyEnvironment->getZzzMaterialManager();
+                $zzzMaterialManager->unsetLicenses($delete->get(0));
+
                 $em->remove($delete->get(0));
                 $em->flush();
             }

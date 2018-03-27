@@ -1316,6 +1316,26 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
 	   $query = 'SELECT item_id, version_id FROM '.$this->addDatabasePrefix('materials').' WHERE workflow_validity_date = "'.$year.'-'.$month.'-'.$day.'" AND deletion_date IS NULL';
 	   return $this->_db_connector->performQuery($query);
 	}
+
+    /**
+     * Resets license links to null
+     * 
+     * @param \CommsyBundle\Entity\License $license
+     * @return mixed
+     */
+	public function unsetLicenses(\CommsyBundle\Entity\License $license)
+    {
+        $query = '
+            UPDATE
+                ' . $this->addDatabasePrefix('materials') . '
+            SET
+                license_id = NULL
+            WHERE
+                license_id = ' . encode(AS_DB, $license->getId()) . '
+        ';
+
+        return $this->_db_connector->performQuery($query);
+    }
 	
 	function export_item($id) {
 	   $item = $this->getItem($id);
