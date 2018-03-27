@@ -5,16 +5,14 @@ namespace CommsyBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Licences
+ * License
  *
  * @ORM\Table(name="licenses")
- * @ORM\Entity(repositoryClass="CommsyBundle\Repository\LicencesRepository")
+ * @ORM\Entity(repositoryClass="CommsyBundle\Repository\LicenseRepository")
  */
-class Licenses
+class License
 {
     /**
-     * @var int
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -22,26 +20,24 @@ class Licenses
     private $id;
 
     /**
-     * @var contextId
-     *
      * @ORM\Column(name="context_id", type="integer")
      */
     private $contextId;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="title", type="string", length=255)
      */
     private $title;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="content", type="text")
      */
     private $content;
 
+    /**
+     * @ORM\Column(name="position", type="integer")
+     */
+    private $position;
 
     /**
      * Get id
@@ -58,7 +54,7 @@ class Licenses
      *
      * @param string $contextId
      *
-     * @return Term
+     * @return License
      */
     public function setContextId($contextId)
     {
@@ -82,7 +78,7 @@ class Licenses
      *
      * @param string $title
      *
-     * @return Licences
+     * @return License
      */
     public function setTitle($title)
     {
@@ -106,7 +102,7 @@ class Licenses
      *
      * @param string $content
      *
-     * @return Licences
+     * @return License
      */
     public function setContent($content)
     {
@@ -123,6 +119,29 @@ class Licenses
     public function getContent()
     {
         return $this->content;
+    }
+
+    /**
+     * Set position
+     *
+     * @param int $position
+     * @return License
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
+    /**
+     * Get position
+     *
+     * @return int
+     */
+    public function getPosition()
+    {
+        return $this->position;
     }
 }
 

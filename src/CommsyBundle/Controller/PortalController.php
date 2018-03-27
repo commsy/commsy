@@ -3,6 +3,7 @@
 namespace CommsyBundle\Controller;
 
 use CommsyBundle\Form\Type\LicenseSortType;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -16,7 +17,7 @@ use CommsyBundle\Form\Type\PortalTermsType;
 use CommsyBundle\Form\Type\RoomCategoriesEditType;
 use CommsyBundle\Form\Type\RoomCategoriesLinkType;
 use CommsyBundle\Entity\RoomCategories;
-use CommsyBundle\Entity\Licenses;
+use CommsyBundle\Entity\License;
 use CommsyBundle\Form\Type\LicenseNewEditType;
 
 
@@ -239,9 +240,9 @@ class PortalController extends Controller
     public function licensesAction($roomId, $licenseId = null, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository(Licenses::class);
+        $repository = $em->getRepository(License::class);
 
-        $license = new Licenses();
+        $license = new License();
         if ($licenseId) {
             $license = $repository->findOneById($licenseId);
             $license->setTitle(html_entity_decode($license->getTitle()));
@@ -284,29 +285,24 @@ class PortalController extends Controller
         if ($sortForm->isSubmitted() && $sortForm->isValid()) {
             $data = $sortForm->getData();
 
-            
+            /** @var ArrayCollection $delete */
+            $delete = $data['license'];
+            if (!$delete->isEmpty()) {
+                $em->remove($delete->get(0));
+                $em->flush();
+            }
 
-//            $data = $editForm->getData();
-//
-//            $delete = $data['category'];
-//            if ($delete) {
-//                $id = $delete[0];
-//
-//                $categoryService->removeTag($id, $roomId);
-//            }
-//
-//            $structure = $data['structure'];
-//            if ($structure) {
-//                // decode into array
-//                $structure = json_decode($structure, true);
-//
-//                $categoryService->updateStructure($structure, $roomId);
-//            }
-//
-//            return $this->redirectToRoute('commsy_category_edit', [
-//                'roomId' => $roomId,
-//                'editTitle' => $categoryEditTitle,
-//            ]);
+            $structure = $data['structure'];
+            if ($structure) {
+                $structure = json_decode($structure, true);
+
+                // update position
+                $repository->updatePositions($structure, $roomId);
+            }
+
+            return $this->redirectToRoute('commsy_portal_licenses', [
+                'roomId' => $roomId,
+            ]);
         }
 
         return [

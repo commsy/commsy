@@ -88,7 +88,10 @@
                 <source>licenses</source>
                 <target>Licenses</target>
             </trans-unit>
-
+            <trans-unit id="Edit license">
+                <source>Edit license</source>
+                <target>Edit license</target>
+            </trans-unit>
             <trans-unit id="Edit Licenses">
                 <source>Edit Licenses</source>
                 <target>Edit Licenses</target>

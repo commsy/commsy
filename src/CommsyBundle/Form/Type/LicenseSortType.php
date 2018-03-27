@@ -9,7 +9,7 @@
 namespace CommsyBundle\Form\Type;
 
 
-use CommsyBundle\Entity\Licenses;
+use CommsyBundle\Entity\License;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -31,10 +31,11 @@ class LicenseSortType extends AbstractType
     {
         $builder
             ->add('license', EntityType::class, [
-                'class' => Licenses::class,
+                'class' => License::class,
                 'query_builder' => function (EntityRepository $er) use ($options) {
                     return $er->createQueryBuilder('l')
                         ->where('l.contextId = :contextId')
+                        ->orderBy('l.position')
                         ->setParameter('contextId', $options['portalId']);
                 },
                 'choice_label' => 'title',

@@ -1753,7 +1753,7 @@ function _copySectionList ($copy_id) {
     {
         if ($this->getLicenseId() && $this->getLicenseId() > 0) {
             global $symfonyContainer;
-            $licensesRepository = $symfonyContainer->get('doctrine.orm.entity_manager')->getRepository(\CommsyBundle\Entity\Licenses::class);
+            $licensesRepository = $symfonyContainer->get('doctrine.orm.entity_manager')->getRepository(\CommsyBundle\Entity\License::class);
             $license = $licensesRepository->findOneById($this->getLicenseId());
 
             return $license->getTitle();
