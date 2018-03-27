@@ -9,6 +9,9 @@
 namespace CommsyBundle\Form\Type;
 
 
+use CommsyBundle\Entity\Licenses;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -27,12 +30,18 @@ class LicenseSortType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('category', CategoryType::class, array(
-                'choices' => $choices,
+            ->add('license', EntityType::class, [
+                'class' => Licenses::class,
+                'query_builder' => function (EntityRepository $er) use ($options) {
+                    return $er->createQueryBuilder('l')
+                        ->where('l.contextId = :contextId')
+                        ->setParameter('contextId', $options['portalId']);
+                },
+                'choice_label' => 'title',
                 'multiple' => true,
                 'expanded' => true,
                 'label' => false,
-            ))
+            ])
 
             ->add('structure', Types\HiddenType::class, [
             ])
@@ -55,7 +64,7 @@ class LicenseSortType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired([])
+            ->setRequired(['portalId'])
         ;
     }
 

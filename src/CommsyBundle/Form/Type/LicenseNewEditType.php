@@ -45,11 +45,11 @@ class LicenseNewEditType extends AbstractType
             ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
-            $roomCategory = $event->getData();
+            $license = $event->getData();
             $form = $event->getForm();
 
             // check if this is a "new" object
-            if (!$roomCategory->getId()) {
+            if (!$license->getId()) {
                 $form->add('new', Types\SubmitType::class, [
                     'attr' => array(
                         'class' => 'uk-button-primary',
@@ -65,15 +65,6 @@ class LicenseNewEditType extends AbstractType
                         ),
                         'label' => 'Update license',
                         'translation_domain' => 'portal',
-                    ]);
-                $form
-                    ->add('delete', Types\SubmitType::class, [
-                        'attr' => array(
-                            'class' => 'uk-button-danger',
-                        ),
-                        'label' => 'Delete license',
-                        'translation_domain' => 'portal',
-                        'validation_groups' => false,   // disable validation
                     ]);
                 $form
                     ->add('cancel', Types\SubmitType::class, [

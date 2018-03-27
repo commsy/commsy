@@ -2,6 +2,7 @@
 
 namespace CommsyBundle\Controller;
 
+use CommsyBundle\Form\Type\LicenseSortType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -259,30 +260,58 @@ class PortalController extends Controller
         // handle new/edit form
         $newEditForm->handleRequest($request);
         if ($newEditForm->isSubmitted() && $newEditForm->isValid()) {
-            if ($newEditForm->has('new') && $newEditForm->get('new')->isClicked()) {
+            if (!$newEditForm->has('cancel') || !$newEditForm->get('cancel')->isClicked()) {
+                $license->setContextId($roomId);
 
+                $em->persist($license);
+                $em->flush();
+
+                $dispatcher = $this->get('event_dispatcher');
+                $dispatcher->dispatch('commsy.edit', new CommsyEditEvent(null));
             }
-
-            if ($newEditForm->has('update') && $newEditForm->get('update')->isClicked()) {
-
-            }
-
-            $license->setContextId($roomId);
-
-            $em->persist($license);
-            $em->flush();
 
             return $this->redirectToRoute('commsy_portal_licenses', [
                 'roomId' => $roomId,
             ]);
         }
 
-        $dispatcher = $this->get('event_dispatcher');
-        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent(null));
+        // sort form
+        $sortForm = $this->createForm(LicenseSortType::class, null, [
+            'portalId' => $roomId,
+        ]);
+        $sortForm->handleRequest($request);
+
+        if ($sortForm->isSubmitted() && $sortForm->isValid()) {
+            $data = $sortForm->getData();
+
+            
+
+//            $data = $editForm->getData();
+//
+//            $delete = $data['category'];
+//            if ($delete) {
+//                $id = $delete[0];
+//
+//                $categoryService->removeTag($id, $roomId);
+//            }
+//
+//            $structure = $data['structure'];
+//            if ($structure) {
+//                // decode into array
+//                $structure = json_decode($structure, true);
+//
+//                $categoryService->updateStructure($structure, $roomId);
+//            }
+//
+//            return $this->redirectToRoute('commsy_category_edit', [
+//                'roomId' => $roomId,
+//                'editTitle' => $categoryEditTitle,
+//            ]);
+        }
 
         return [
             'newEditForm' => $newEditForm->createView(),
-//            'editForm' => $editForm->createView(),
+            'sortForm' => $sortForm->createView(),
             'portalId' => $roomId,
             'pageTitle' => $pageTitle,
         ];

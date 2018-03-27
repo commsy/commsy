@@ -156,6 +156,45 @@
 
 {% endblock %}
 
+{% block _license_sort_license_widget %}
+    {% import _self as macros %}
+
+    <div class="uk-hidden">
+        {% if form.children is not empty %}
+            {% for child in form.children %}
+                <input type="checkbox" id="{{ child.vars.id }}" name="{{ child.vars.full_name }}" value="{{ child.vars.value }}" {% if child.vars.checked %} checked="checked"{% endif %} />
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    {% if form.children is not empty %}
+        <ul id="licenseSortList" class="uk-nestable" data-uk-nestable="{maxDepth:1}">
+            {% for child in form.vars.choices %}
+                <li class="uk-nestable-item" id="license_{{ child.value }}" data-id='{{ child.data.id }}'>
+                    <div class="uk-nestable-panel uk-clearfix">
+                        <i class="uk-nestable-handle uk-icon uk-icon-bars uk-margin-small-right"></i>
+                        <div class="uk-nestable-toggle" data-nestable-action="toggle">
+                        </div>
+                        {{ child.label -}}
+                        <a class="uk-button uk-button-mini uk-button-primary uk-float-right uk-margin-left" href="{{ path('commsy_portal_licenses', {
+                            roomId: app.request.attributes.get('roomId'),
+                            licenseId: child.data.id
+                        }) }}">
+                            {{- 'Edit'|trans({}, 'form') -}}
+                        </a>
+                        <button class="license_delete uk-button uk-button-mini uk-button-danger uk-float-right" data-id='{{ child.data.id }}'>
+                            {{- 'Delete'|trans({}, 'form') -}}
+                        </button>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        {{ 'No categories has been created yet.'|trans({}, 'category') }}
+    {% endif %}
+
+{% endblock %}
+
 {% block _additional_settings_template_status_widget %}
     <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
 {% endblock %}

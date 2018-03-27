@@ -1,6 +1,7 @@
 {% extends 'CommsyBundle:Base:portal.html.twig' %}
 
 {% form_theme newEditForm 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
+{% form_theme sortForm 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
 
 {% block content %}
     <div class="uk-grid" data-uk-grid-margin>
@@ -25,16 +26,12 @@
                                     {{ form_row(newEditForm.title) }}
                                     {{ form_row(newEditForm.content) }}
 
-                                    <div class="uk-form-row">
-                                        <div class="uk-form-controls">
-                                            {% if newEditForm.new is defined %}
-                                                <button id="license_new_edit_new" class="uk-button uk-button-primary" type="submit" name="license_new_edit[new]">{{ newEditForm.new.vars.label|trans({}, "portal") }}</button>
-                                            {% elseif newEditForm.update is defined and newEditForm.cancel is defined %}
-                                                <button id="license_new_edit_update" class="uk-button uk-button-primary" type="submit" name="license_new_edit[update]">{{ newEditForm.update.vars.label|trans({}, "portal") }}</button>
-                                                <button id="license_new_edit_cancel" class="uk-button uk-button-primary uk-margin-left" type="submit" name="license_new_edit[cancel]">{{ newEditForm.cancel.vars.label|trans({}, "form") }}</button>
-                                            {% endif %}
-                                        </div>
-                                    </div>
+                                    {% if newEditForm.new is defined %}
+                                        {{ form_row(newEditForm.new) }}
+                                    {% elseif newEditForm.update is defined and newEditForm.cancel is defined %}
+                                        {{ form_row(newEditForm.update) }}
+                                        {{ form_row(newEditForm.cancel) }}
+                                    {% endif %}
                                 </div>
                             </fieldset>
                             {{ form_end(newEditForm) }}
@@ -46,7 +43,7 @@
         </div>
 
         <div class="uk-width-1-1">
-             edit license
+            {# sort licenses #}
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
@@ -56,11 +53,11 @@
 
                 <div>
                     <div class="uk-grid">
-                         form column
+                        {# form column #}
                         <div class="uk-width-1-1">
-                            {{ form_start(editForm) }}
-                            {{ form_widget(editForm) }}
-                            {{ form_end(editForm) }}
+                            {{ form_start(sortForm) }}
+                            {{ form_widget(sortForm) }}
+                            {{ form_end(sortForm) }}
                         </div>
                     </div>
                 </div>
