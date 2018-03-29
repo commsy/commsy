@@ -2,6 +2,7 @@
 
 namespace CommsyBundle\Controller;
 
+use CommsyBundle\Entity\User;
 use CommsyBundle\Filter\HomeFilterType;
 use CommsyBundle\Filter\RoomFilterType;
 use CommsyBundle\Form\Type\ContextType;
@@ -165,6 +166,8 @@ class RoomController extends Controller
             }
         }
 
+        $userTasks = $this->getDoctrine()->getRepository(User::class)->getConfirmableUserByContextId($roomId)->getQuery()->getResult();
+
         return [
             'homeInformationEntry' => $homeInformationEntry,
             'form' => $filterForm->createView(),
@@ -183,6 +186,8 @@ class RoomController extends Controller
             'rss' => $rss,
             'wiki' => $wiki,
             'header' => $header,
+            'isModerator' => $legacyEnvironment->getCurrentUserItem()->isModerator(),
+            'userTasks' => $userTasks,
         ];
     }
 

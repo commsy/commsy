@@ -662,9 +662,13 @@ class cs_user_item extends cs_item
     function getEmail()
     {
         if ($this->getUsePortalEmail() || empty($this->_getValue('email'))) {
-            return $this->getRelatedPortalUserItem()->getRoomEmail();
+            if ($this->getContextItem()->isPortal() || $this->getContextItem()->isServer()) {
+                return $this->getRoomEmail();
+            } else {
+                return $this->getRelatedPortalUserItem()->getRoomEmail();
+            }
         } else {
-            return $this->_getValue('email');
+            return $this->getRoomEmail('email');
         }
     }
 

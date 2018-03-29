@@ -746,8 +746,7 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
         if ($size > 0) {
             $this->setIntervalLimit(0, $size);
         }
-
-        $this->setHideExpiredLimit(true);
+        
         $this->setOrder('date');
 
         $this->select();

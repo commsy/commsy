@@ -20,35 +20,34 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-class db_mysql_connector {
+require_once('functions/security_functions.php');
 
-   private $_db_link = NULL;
-   private $_db_errno = NULL;
-   private $_db_error = NULL;
-   private $_query_array = array();
-   private $_log_query = false;
-   private $_display = true;
-   private $_db_connect_data = array();
-   private $_connect_failed = 0;
-   private $_connect_failed_border = 10;
-   private $_query_failed = 0;
-   private $_query_failed_border = 10;
-   private $_db_data = array();
-   private $_read_only = false;
+class db_mysql_connector
+{
+    private $_db_errno = NULL;
+    private $_db_error = NULL;
+    private $_query_array = array();
+    private $_log_query = false;
+    private $_display = true;
+    private $_query_failed = 0;
+    private $_db_data = array();
 
-   private $dbalConnection;
-    
-   public function __construct ($data) {
-      $this->_db_data = $data;
-      $this->_connect();
-   }
+    private $dbalConnection;
 
-    private function _connect() {
+    public function __construct($data)
+    {
+        $this->_db_data = $data;
+        $this->_connect();
+    }
+
+    private function _connect()
+    {
         global $symfonyContainer;
         $this->dbalConnection = $symfonyContainer->get('database_connection');
     }
 
-    public function performQuery($query) {
+    public function performQuery($query)
+    {
         global $symfonyContainer;
         $connection = $symfonyContainer->get('database_connection');
 
@@ -63,7 +62,7 @@ class db_mysql_connector {
         $this->_db_error = $connection->errorInfo();
 
         if (!$statement) {
-            throw new Exception($this->_db_error[2] , $this->_db_errno);
+            throw new Exception($this->_db_error[2], $this->_db_errno);
         } else {
             if (mb_substr(trim($query), 0, 6) === 'SELECT' || mb_substr(trim($query), 0, 4) === 'SHOW') {
                 $retour = array();
@@ -99,15 +98,18 @@ class db_mysql_connector {
         return $retour;
     }
 
-   public function setLogQueries () {
-      $this->_log_query = true;
-   }
+    public function setLogQueries()
+    {
+        $this->_log_query = true;
+    }
 
-   public function getQueryArray () {
-      return $this->_query_array;
-   }
+    public function getQueryArray()
+    {
+        return $this->_query_array;
+    }
 
-    public function getErrno () {
+    public function getErrno()
+    {
         if ($this->_db_errno === "00000") {
             return "";
         }
@@ -115,7 +117,8 @@ class db_mysql_connector {
         return $this->_db_errno;
     }
 
-    public function getError() {
+    public function getError()
+    {
         if (isset($this->_db_error[2])) {
             return $this->_db_error[2];
         }
@@ -123,15 +126,18 @@ class db_mysql_connector {
         return "";
     }
 
-   public function setDisplayOff () {
-      $this->_display = false;
-   }
+    public function setDisplayOff()
+    {
+        $this->_display = false;
+    }
 
-   public function setDisplayOn () {
-      $this->_display = true;
-   }
+    public function setDisplayOn()
+    {
+        $this->_display = true;
+    }
 
-    public function text_php2db($text) {
-        return trim($this->dbalConnection->quote($text), "'");
+    public function text_php2db($text)
+    {
+        return mysql_escape_mimic($text);
     }
 }
