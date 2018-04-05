@@ -837,6 +837,14 @@ class cs_user_manager extends cs_manager {
          $query .= $this->_getSQLLimitForNoMemberShip();
       }
 
+       if ($this->modificationNewerThenLimit) {
+           $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.modification_date >= "' . $this->modificationNewerThenLimit->format('Y-m-d H:i:s') . '"';
+       }
+
+       if ($this->excludedIdsLimit) {
+           $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.item_id NOT IN (' . implode(", ", encode(AS_DB, $this->excludedIdsLimit)) . ')';
+       }
+
       if ( isset($this->_limit_portal_id)
            and ( isset($this->_limit_community)
                 or isset($this->_limit_project)
@@ -874,6 +882,8 @@ class cs_user_manager extends cs_manager {
            $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastlogin ASC, '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname DESC';
         } elseif ($this->_sort_order == 'last_login_rev') {
            $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastlogin DESC, '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname DESC';
+        } elseif ($this->_sort_order == 'mod_date') {
+            $query .= ' ORDER BY ' . $this->addDatabasePrefix('user') . '.modification_date DESC';
         }
      } else {
         $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname DESC, '.$this->addDatabasePrefix('user').'.user_id ASC';
@@ -1973,5 +1983,28 @@ class cs_user_manager extends cs_manager {
 		}
 		return $user_array;
 	}
+
+    /**
+     * @param int[] $contextIds List of context ids
+     * @param array Limits for buzzwords / categories
+     * @param int $size Number of items to get
+     * @param \DateTime $newerThen The oldest modification date to consider
+     * @param int[] $excludedIds Ids to exclude
+     *
+     * @return \cs_list
+     */
+    public function getNewestItems($contextIds, $limits, $size, \DateTime $newerThen = null, $excludedIds = [])
+    {
+        parent::setGenericNewestItemsLimits($contextIds, $limits, $newerThen, $excludedIds);
+
+        if ($size > 0) {
+            $this->setIntervalLimit(0, $size);
+        }
+
+        $this->setUserLimit();
+        $this->setSortOrder('mod_date');
+
+        $this->select();
+        return $this->get();
+    }
 }
-?>

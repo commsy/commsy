@@ -182,6 +182,7 @@ class cs_section_manager extends cs_manager implements cs_export_import_interfac
         $query = 'SELECT '.$this->addDatabasePrefix('section').'.*';
      }
      $query .= ' FROM '.$this->addDatabasePrefix('section');
+     $query .= ' INNER JOIN ' . $this->addDatabasePrefix('items') . ' ON '.$this->addDatabasePrefix('items').'.item_id = '.$this->addDatabasePrefix('section').'.item_id AND '.$this->addDatabasePrefix('items').'.draft != "1"';
 
      if (isset($this->_search_limit) AND !empty($this->_search_limit)) {
         // join to user database table

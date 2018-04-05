@@ -84,7 +84,7 @@ $message["ROOM_GR_UNIVERSITY_CONTEXT_DESCRIPTION"]["en"] = "These are the worksp
 <li>Topics</li>
 <li>Todos</li>
 </ul>";
-$message["ROOM_IS_CLOSED"]["en"] = "%_PROJECT_ART_DEF_NOMS_BIG %_PROJECT_SUB_NOMS_LOW %1 is archived.";
+$message["ROOM_IS_CLOSED"]["en"] = "%_PROJECT_ART_DEF_NOMS_BIG %_PROJECT_SUB_NOMS_LOW &quot;%1&quot; is archived.";
 $message["ROOM_IS_CLOSED_APPLY_FOR_MEMBERSHIP"]["en"] = "You cannot apply for membership in this workspace anymore.";
 $message["ROOM_JOIN_ERROR_HAS_REQUESTED"]["en"] = "You already have applied for membership for the workspace <span style=&quot;font-weight:bold;&quot;>%1</span>. Your membership is cueued for approval. Please contact the workspace moderator/s of <span style=&quot;font-weight:bold;&quot;>%2</span>, if you have any questions concerning your application.";
 $message["ROOM_JOIN_ERROR_IS_DENIED"]["en"] = "You already have applied for membership in workspace <span style=&quot;font-weight:bold;&quot;>%1</span>. Your application has been declined. Please contact the moderator/s of <span style=&quot;font-weight:bold;&quot;>%2</span>, if you have any questions concerning your declinement.";

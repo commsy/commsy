@@ -48,7 +48,7 @@
         "symfony/stopwatch": "^3.2",
         "php-imap/php-imap": "^2.0",
         "whiteoctober/breadcrumbs-bundle": "^1.2",
-        "friendsofsymfony/elastica-bundle": "^5.0@dev",
+        "friendsofsymfony/elastica-bundle": "^5.0.3",
         "eluceo/ical": "^0.11.3",
         "sabre/vobject": "^4.1",
         "sabre/dav": "^3.2.2",
@@ -59,7 +59,8 @@
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
         "symfony/phpunit-bridge": "^3.0",
-        "doctrine/doctrine-fixtures-bundle": "^2.3"
+        "doctrine/doctrine-fixtures-bundle": "^2.3",
+        "codeception/codeception": "^2.4"
     },
     "scripts": {
         "symfony-scripts": [

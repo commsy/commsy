@@ -76,6 +76,16 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
    private $_until_date_limit = null;
    private $_participant_limit = null;
 
+    /**
+     * @var bool Controls return of external dates
+     */
+   private $externalLimit = true;
+
+    /**
+     * @var bool Hides recurring entries
+     */
+   private $hideRecurringEntriesLimit = false;
+
    /*
     * Translation Object
     */
@@ -253,6 +263,20 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
        $this->_participant_limit = $limit;
    }
 
+    /**
+     * @param bool $externalLimit limit external dates
+     */
+   public function setExternalLimit($externalLimit) {
+       $this->externalLimit = $externalLimit;
+   }
+
+    /**
+     * @param bool $hideRecurringEntriesLimit limit recurring entries
+     */
+   public function setHideRecurringEntriesLimit($hideRecurringEntriesLimit) {
+       $this->hideRecurringEntriesLimit = $hideRecurringEntriesLimit;
+   }
+
    function _performQuery ($mode = 'select') {
       if ($mode == 'count') {
          $query = 'SELECT count('.$this->addDatabasePrefix('dates').'.item_id) AS count';
@@ -377,11 +401,13 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
          $date = date("Y-m-d").' 00:00:00';
          $query .= ' AND ('.$this->addDatabasePrefix('dates').'.datetime_end >= "'.encode(AS_DB,$date).'" OR ('.$this->addDatabasePrefix('dates').'.datetime_end="0000-00-00 00:00:00" AND '.$this->addDatabasePrefix('dates').'.datetime_start >= "'.encode(AS_DB,$date).'") )';
       }
-      if (isset($this->_room_array_limit) and !empty($this->_room_array_limit)) {
-         $query .= ' AND '.$this->addDatabasePrefix('dates').'.context_id IN ('.implode(", ", $this->_room_array_limit).')';
-      }elseif (isset($this->_room_limit)) {
-         $query .= ' AND '.$this->addDatabasePrefix('dates').'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
-      }
+
+       if (isset($this->_room_array_limit) and !empty($this->_room_array_limit)) {
+           $query .= ' AND ' . $this->addDatabasePrefix('dates') . '.context_id IN (' . implode(", ", $this->_room_array_limit) . ')';
+       } else if (isset($this->_room_limit)) {
+           $query .= ' AND ' . $this->addDatabasePrefix('dates') . '.context_id = "' . encode(AS_DB, $this->_room_limit) . '"';
+       }
+
       if ($this->_delete_limit == true) {
          $query .= ' AND '.$this->addDatabasePrefix('dates').'.deleter_id IS NULL';
       }
@@ -619,6 +645,23 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       		$query .= " AND " . $this->addDatabasePrefix($this->_db_table) . ".datetime_end <= '" . $this->_until_date_limit . "'";
       }
 
+      if (!$this->externalLimit) {
+          $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.external = "0"';
+      }
+
+      if ($this->hideRecurringEntriesLimit) {
+          $databasePrefix = $this->addDatabasePrefix($this->_db_table);
+          $query .= ' AND (' . $databasePrefix . '.recurrence_id IS NULL OR ' . $databasePrefix . '.recurrence_id = ' . $databasePrefix . '.item_id)';
+      }
+
+       if ($this->modificationNewerThenLimit) {
+           $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.modification_date >= "' . $this->modificationNewerThenLimit->format('Y-m-d H:i:s') . '"';
+       }
+
+       if ($this->excludedIdsLimit) {
+           $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.item_id NOT IN (' . implode(", ", encode(AS_DB, $this->excludedIdsLimit)) . ')';
+       }
+
       if ( isset($this->_sort_order) ) {
          if ( $this->_sort_order == 'place' ) {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.place ASC';
@@ -632,6 +675,8 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
             $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.title ASC';
          } elseif ( $this->_sort_order == 'title_rev' ) {
             $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.title DESC';
+         } elseif ($this->_sort_order == 'date') {
+            $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.modification_date DESC';
          }
       } elseif ($this->_future_limit) {
          $query .= ' ORDER BY '.$this->addDatabasePrefix('dates').'.datetime_start ASC';
@@ -1138,5 +1183,30 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
    function import_sub_items($xml, $top_item, &$options) {
       
    }
+
+    /**
+     * @param int[] $contextIds List of context ids
+     * @param array Limits for buzzwords / categories
+     * @param int $size Number of items to get
+     * @param \DateTime $newerThen The oldest modification date to consider
+     * @param int[] $excludedIds Ids to exclude
+     *
+     * @return \cs_list
+     */
+    public function getNewestItems($contextIds, $limits, $size, \DateTime $newerThen = null, $excludedIds = [])
+    {
+        parent::setGenericNewestItemsLimits($contextIds, $limits, $newerThen, $excludedIds);
+
+        if ($size > 0) {
+            $this->setIntervalLimit(0, $size);
+        }
+
+        $this->setExternalLimit(false);
+        $this->setDateModeLimit(3);
+        $this->setHideRecurringEntriesLimit(true);
+        $this->setSortOrder('date');
+
+        $this->select();
+        return $this->get();
+    }
 }
-?>

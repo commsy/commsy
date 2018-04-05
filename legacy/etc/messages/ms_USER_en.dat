@@ -87,25 +87,25 @@ $message["USER_HOMEPAGE"]["en"] = "Homepage";
 $message["USER_ICQ"]["en"] = "ICQ";
 $message["USER_INDEX"]["en"] = "Members";
 $message["USER_JABBER"]["en"] = "Jabber";
-$message["USER_JOIN_COMMUNITY_MAIL_BODY"]["en"] = "%1 requests an account [%2] for the %_COMMUNITY_SUB_NOMS_BIG %4.
+$message["USER_JOIN_COMMUNITY_MAIL_BODY"]["en"] = "%1 requests an account [%2] for the %_COMMUNITY_SUB_NOMS_BIG &quot;%4&quot;.
 
 Complete information:
 Name: %1
 Account: %2
 E-mail: %3";
-$message["USER_JOIN_COMMUNITY_MAIL_BODY_BY_MODERATOR"]["en"] = "%1 requests an account [%2] by %5 for the %_COMMUNITY_SUB_NOMS_BIG %4.
+$message["USER_JOIN_COMMUNITY_MAIL_BODY_BY_MODERATOR"]["en"] = "%1 requests an account [%2] by %5 for the %_COMMUNITY_SUB_NOMS_BIG &quot;%4&quot;.
 
 Complete information:
 Name: %1
 Account: %2
 E-mail: %3";
-$message["USER_JOIN_CONTEXT_MAIL_BODY"]["en"] = "%1 requests an account [%2] for the %_PROJECT_SUB_NOMS_BIG %4.
+$message["USER_JOIN_CONTEXT_MAIL_BODY"]["en"] = "%1 requests an account [%2] for the %_PROJECT_SUB_NOMS_BIG &quot;%4&quot;.
 
 Complete information:
 Name: %1
 Account: %2
 E-mail: %3";
-$message["USER_JOIN_CONTEXT_MAIL_BODY_BY_MODERATOR"]["en"] = "%1 requests an account [%2] by %5 for the %_PROJECT_SUB_NOMS_BIG %4.
+$message["USER_JOIN_CONTEXT_MAIL_BODY_BY_MODERATOR"]["en"] = "%1 requests an account [%2] by %5 for the %_PROJECT_SUB_NOMS_BIG &quot;%4&quot;.
 
 Complete information:
 Name: %1
@@ -212,7 +212,7 @@ $message["USER_PREFERENCES_NO_ENTRIES"]["en"] = "You cannot set personal prefere
 $message["USER_PROJECT_CONTACT_MODERATOR"]["en"] = "Workspace moderator/s";
 $message["USER_PROJECT_USER"]["en"] = "workspace users";
 $message["USER_QUIT_CONTEXT_MAIL_SUBJECT"]["en"] = "%2: Membership canceled [%1]";
-$message["USER_QUIT_PROJECT_MAIL_BODY"]["en"] = "%1 canceled an account [%2] for the %_PROJECT_SUB_NOMS_BIG %4.
+$message["USER_QUIT_PROJECT_MAIL_BODY"]["en"] = "%1 canceled an account [%2] for the %_PROJECT_SUB_NOMS_BIG &quot;%4&quot;.
 
 Complete information:
 Name: %1

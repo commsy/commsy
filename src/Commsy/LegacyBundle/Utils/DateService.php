@@ -195,7 +195,7 @@ class DateService
      *   @param string $uid
      *   @param integer $calendarId
      *   @param integer $roomId
-     *   @return cs_date_item|boolean
+     *   @return \cs_dates_item|boolean
      */
     public function getDateByUid($uid, $calendarId, $roomId)
     {
@@ -212,6 +212,10 @@ class DateService
         return false;
     }
 
+    /**
+     * @param $calendarId
+     * @return \cs_dates_item[]
+     */
     public function getDatesByCalendarId($calendarId)
     {
         $this->dateManager->reset();

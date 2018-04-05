@@ -23,7 +23,7 @@ use CommsyBundle\Event\CommsyEditEvent;
 /**
  * Class TodoController
  * @package CommsyBundle\Controller
- * @Security("is_granted('ITEM_ENTER', roomId)")
+ * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'todo')")
  */
 class TodoController extends Controller
 {
@@ -389,7 +389,7 @@ class TodoController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
+     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
@@ -418,6 +418,23 @@ class TodoController extends Controller
         $annotationService = $this->get('commsy_legacy.annotation_service');
         $annotationList = $todo->getAnnotationList();
         $annotationService->markAnnotationsReadedAndNoticed($annotationList);
+
+        $stepList = $todo->getStepItemList();
+
+        $stepItem = $stepList->getFirst();
+        while ( $stepItem ) {
+            $reader = $reader_manager->getLatestReader($stepItem->getItemID());
+            if ( empty($reader) || $reader['read_date'] < $stepItem->getModificationDate() ) {
+                $reader_manager->markRead($stepItem->getItemID(), 0);
+            }
+
+            $noticed = $noticed_manager->getLatestNoticed($stepItem->getItemID());
+            if ( empty($noticed) || $noticed['read_date'] < $stepItem->getModificationDate() ) {
+                $noticed_manager->markNoticed($stepItem->getItemID(), 0);
+            }
+
+            $stepItem = $stepList->getNext();
+        }
 
         $itemArray = array($todo);
 
@@ -580,7 +597,7 @@ class TodoController extends Controller
     /**
      * @Route("/room/{roomId}/todo/{itemId}/createstep")
      * @Template("@Commsy/Todo/editStep.html.twig")
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      */
     public function createStepAction($roomId, $itemId, Request $request)
     {
@@ -590,6 +607,7 @@ class TodoController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.todo');
 
         $step = $todoService->getNewStep();
+        $step->setDraftStatus(1);
         $step->setTodoID($itemId);
         $step->save();
 
@@ -612,13 +630,16 @@ class TodoController extends Controller
     /**
      * @Route("/room/{roomId}/todo/{itemId}/editstep")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      */
     public function editStepAction($roomId, $itemId, Request $request)
     {
         $todoService = $this->get('commsy_legacy.todo_service');
         $transformer = $this->get('commsy_legacy.transformer.todo');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($itemId);
 
         $translator = $this->get('translator');
 
@@ -650,6 +671,11 @@ class TodoController extends Controller
                     // spend hours
                     $step->setMinutes($formData['time_spend']['hour'] * 60 + $formData['time_spend']['minute']);
 
+                    if ($item->isDraft()) {
+                        $item->setDraftStatus(0);
+                        $item->saveAsItem();
+                    }
+
                     // update modifier
                     $step->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
@@ -657,6 +683,7 @@ class TodoController extends Controller
 
                     $step->getLinkedItem()->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
+                    // this will also update the todo item's modification date to indicate that it has changes
                     $step->getLinkedItem()->save();
 
                     $this->get('event_dispatcher')->dispatch(CommsyEditEvent::SAVE, new CommsyEditEvent($step->getLinkedItem()));
@@ -690,7 +717,7 @@ class TodoController extends Controller
     /**
      * @Route("/room/{roomId}/todo/{itemId}/edit")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      */
     public function editAction($roomId, $itemId, Request $request)
     {
@@ -802,7 +829,7 @@ class TodoController extends Controller
     /**
      * @Route("/room/{roomId}/todo/{itemId}/save")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      */
     public function saveAction($roomId, $itemId, Request $request)
     {

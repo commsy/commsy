@@ -1,18 +1,18 @@
 <?php
-$message["MOVE_ROOM_MAIL_BODY_AGREE"]["en"] = "Workspace %1 has been successfully moved to portal %2 after approval.";
-$message["MOVE_ROOM_MAIL_BODY_CR"]["en"] = "the %_COMMUNITY_SUB_NOMS_LOW *%1* wants to move to your CommSy:
+$message["MOVE_ROOM_MAIL_BODY_AGREE"]["en"] = "Workspace &quot;%1&quot; has been successfully moved to portal &quot;%2&quot; after approval.";
+$message["MOVE_ROOM_MAIL_BODY_CR"]["en"] = "the %_COMMUNITY_SUB_NOMS_LOW &quot;%1&quot; wants to move to your CommSy:
 
 Further information:
 %_COMMUNITY_SUB_NOMS_BIG: %1
 Language: %2
 initiated by: %3";
-$message["MOVE_ROOM_MAIL_BODY_PR"]["en"] = "the %_PROJECT_SUB_NOMS_LOW *%1* wants to move to your CommSy:
+$message["MOVE_ROOM_MAIL_BODY_PR"]["en"] = "the %_PROJECT_SUB_NOMS_LOW &quot;%1&quot; wants to move to your CommSy:
 
 Further information:
 %_PROJECT_SUB_NOMS_BIG: %1
 Language: %2
 initiated by: %3";
-$message["MOVE_ROOM_MAIL_BODY_REJECT"]["en"] = "The move request for workspace %1 has been declined.";
+$message["MOVE_ROOM_MAIL_BODY_REJECT"]["en"] = "The move request for workspace &quot;%1&quot; has been declined.";
 $message["MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_COPY"]["en"] = "Your account %1 has been successfully  moved from the old portal to the new one.";
 $message["MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_COPY_CHANGE"]["en"] = "Your account %1 from the old portal is allready in use at the new portal, so a new account %2 was made for you. The password of your old account is also your password for the new one.
 
@@ -20,10 +20,10 @@ New account: %2
 Password is equal to the old account.";
 $message["MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_NO_COPY_PL"]["en"] = "All rights are linked to your existing account %1 at the new portal. So you can enter the rooms automatically with your existing account at the new portal.";
 $message["MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_NO_COPY_S"]["en"] = "All rights are linked to your existing account %1 at the new portal. So you can enter the room automatically with your existing account at the new portal.";
-$message["MOVE_ROOM_MAIL_BODY_SUCESS_PL"]["en"] = "The following CommSy rooms are moved from the CommSy portal %1 to the CommSy portal %2. The URLs of your rooms may changed:";
-$message["MOVE_ROOM_MAIL_BODY_SUCESS_S"]["en"] = "The following CommSy room is moved from the CommSy portal %1 to the CommSy portal %2. The URLs of your room may changed:";
+$message["MOVE_ROOM_MAIL_BODY_SUCESS_PL"]["en"] = "The following CommSy rooms are moved from the CommSy portal &quot;%1&quot; to the CommSy portal &quot;%2&quot;. The URLs of your rooms may changed:";
+$message["MOVE_ROOM_MAIL_BODY_SUCESS_S"]["en"] = "The following CommSy room is moved from the CommSy portal &quot;%1&quot; to the CommSy portal &quot;%2&quot;. The URLs of your room may changed:";
 $message["MOVE_ROOM_MAIL_BODY_TO_NEW_PORTAL"]["en"] = "URL of the new portal:";
-$message["MOVE_ROOM_MAIL_BODY_TO_ROOM"]["en"] = "New URL to workspace %1:";
+$message["MOVE_ROOM_MAIL_BODY_TO_ROOM"]["en"] = "New URL to workspace &quot;%1&quot;:";
 $message["MOVE_ROOM_MAIL_SUBJECT"]["en"] = "%1: workspace move awaits approval";
 $message["MOVE_ROOM_MAIL_SUBJECT_SUCCESS_PL"]["en"] = "%1: workspaces have been moved";
 $message["MOVE_ROOM_MAIL_SUBJECT_SUCCESS_S"]["en"] = "%1: workspace has been moved";

@@ -2,19 +2,15 @@
 
 namespace CommsyBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpFoundation\Request;
-
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-
-use Commsy\LegacyBundle\Services\UserService;
 use Commsy\LegacyBundle\Services\ReaderService;
-use CommsyBundle\Filter\HomeFilterType;
-
+use Commsy\LegacyBundle\Services\UserService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class DashboardController
@@ -38,8 +34,6 @@ class DashboardController extends Controller
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
-        
-        $roomFeedGenerator = $this->get('commsy_legacy.dashboard_feed_generator');
 
         // iCal
         $iCal = [
@@ -109,13 +103,15 @@ class DashboardController extends Controller
      * @Route("/dashboard/{roomId}/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0)
+    public function feedAction($roomId, $max = 10, $start = 0, Request $request)
     {
-        // collect information for feed panel
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $userId = $legacyEnvironment->getCurrentUser()->getUserID();
-        $dashboardFeedGenerator = $this->get('commsy_legacy.dashboard_feed_generator');
-        $feedList = $dashboardFeedGenerator->getFeedList($userId, $max, $start);
+        $lastId = null;
+        if ($request->query->has('lastId')) {
+            $lastId = $request->query->get('lastId');
+        }
+
+        $roomFeedGenerator = $this->get('commsy.room_feed_generator');
+        $feedList = $roomFeedGenerator->getDashboardFeedList($max, $lastId);
 
         $userService = $this->get("commsy_legacy.user_service");
         $user = $userService->getPortalUserFromSessionId();

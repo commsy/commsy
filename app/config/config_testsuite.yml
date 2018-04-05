@@ -1,0 +1,11 @@
+imports:
+    - { resource: config_dev.yml }
+
+doctrine:
+    dbal:
+        driver:   "pdo_mysql"
+        host:     "commsy_test_db"
+        port:     "3306"
+        dbname:   "commsy"
+        user:     "root"
+        password: "root"

@@ -773,7 +773,7 @@ class cs_item_manager extends cs_manager {
      *
      * @param integer item_id id of the item
      *
-     * @return object cs_item an item
+     * @return \cs_item an item
      */
     public function getItem($iid, $vid = NULL)
     {
