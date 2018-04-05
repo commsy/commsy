@@ -10,6 +10,7 @@ namespace CommsyBundle\RoomFeed;
 
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use Commsy\LegacyBundle\Utils\ItemService;
 use Commsy\LegacyBundle\Utils\RoomService;
 use Symfony\Component\Form\Form;
 
@@ -26,22 +27,21 @@ class RoomFeedGenerator
     private $roomService;
 
     /**
-     * @var \cs_item_manager
+     * @var ItemService
      */
-    private $itemManager;
+    private $itemService;
 
     /**
      * @var array limits
      */
     private $limits = [];
 
-    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService)
+    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService, ItemService $itemService)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->roomService = $roomService;
+        $this->itemService = $itemService;
 
-        $this->itemManager = $this->legacyEnvironment->getItemManager();
-        $this->itemManager->reset();
     }
 
     /**
@@ -98,7 +98,7 @@ class RoomFeedGenerator
          */
         $excludedIds = [];
         if ($lastId) {
-            $lastFeedItem = $this->itemManager->getItem($lastId);
+            $lastFeedItem = $this->itemService->getTypedItem($lastId);
             if ($lastFeedItem) {
                 $lastModificationDate = \DateTime::createFromFormat('Y-m-d H:i:s', $lastFeedItem->getModificationDate());
 
