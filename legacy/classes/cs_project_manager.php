@@ -396,10 +396,10 @@ class cs_project_manager extends cs_room2_manager {
            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.activity ASC,'.$this->addDatabasePrefix($this->_db_table).'.title';
         } elseif ($this->_sort_order == 'activity_rev') {
            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.activity DESC,'.$this->addDatabasePrefix($this->_db_table).'.title';
-        } elseif ($this->_sort_order == 'time') {
-            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
-        } elseif ($this->_sort_order == 'time_rev') {
+        } elseif ($this->_sort_order == 'date') {
             $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.modification_date ASC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
+        } elseif ($this->_sort_order == 'date_rev') {
+            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
         } elseif ($this->_sort_order == 'modificator') {
             $query .= ' ORDER BY modificator.lastname, '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC';
         } elseif ($this->_sort_order == 'modificator_rev') {
