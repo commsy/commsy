@@ -873,9 +873,9 @@ class cs_user_manager extends cs_manager {
         } elseif ($this->_sort_order == 'user_id_rev') {
            $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.user_id DESC';
         } elseif ($this->_sort_order == 'status') {
-           $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.status ASC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.status ASC, '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname';
         } elseif ($this->_sort_order == 'status_rev') {
-           $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.status DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.status DESC, '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname';
         } elseif ($this->_sort_order == 'date') {
            $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.creation_date DESC';
         } elseif ($this->_sort_order == 'last_login') {
