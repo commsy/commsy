@@ -879,14 +879,14 @@ class cs_user_manager extends cs_manager {
         } elseif ($this->_sort_order == 'date') {
            $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.creation_date DESC';
         } elseif ($this->_sort_order == 'last_login') {
-           $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastlogin ASC, '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastlogin ASC, '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname';
         } elseif ($this->_sort_order == 'last_login_rev') {
-           $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastlogin DESC, '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastlogin DESC, '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname';
         } elseif ($this->_sort_order == 'mod_date') {
             $query .= ' ORDER BY ' . $this->addDatabasePrefix('user') . '.modification_date DESC';
         }
      } else {
-        $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname DESC, '.$this->addDatabasePrefix('user').'.user_id ASC';
+        $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname, '.$this->addDatabasePrefix('user').'.user_id ASC';
      }
 
      if ($mode == 'select') {
