@@ -2,3 +2,11 @@ actor: UnitTester
 modules:
     enabled:
         - \Helper\Unit
+        - Asserts
+        - Symfony
+        - Db
+    config:
+        Symfony:
+            app_path: 'app'
+            var_path: 'var'
+            environment: testsuite
