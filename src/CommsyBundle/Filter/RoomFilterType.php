@@ -50,8 +50,6 @@ class RoomFilterType extends AbstractType
                         $qb->andWhere($fieldOr);
                     }
 
-
-
                     foreach ($tokens as $num => $token) {
                         $qb->setParameter("token$num", "%$token%");
                     }
