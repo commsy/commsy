@@ -27,6 +27,7 @@ services:
     # Legacy Environment
     commsy_legacy.environment:
         class: Commsy\LegacyBundle\Services\LegacyEnvironment
+        public: true
         arguments: ['%legacy.site_index%', '@service_container']
 
     commsy_legacy.category_service:
