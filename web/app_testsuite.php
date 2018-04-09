@@ -23,7 +23,6 @@ $loader = require __DIR__.'/../app/autoload.php';
 Debug::enable();
 
 $kernel = new AppKernel('testsuite', true);
-$kernel->loadClassCache();
 
 $request = Request::createFromGlobals();
 
