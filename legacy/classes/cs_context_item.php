@@ -319,35 +319,38 @@ class cs_context_item extends cs_item {
     }
 
     $last = $val[mb_strlen($val)-1];
+    $numericVal = (int) substr($val, 0, -1);
     switch($last) {
       case 'k':
       case 'K':
-        $val = $val * 1024;
+        $numericVal *= 1024;
         break;
       case 'm':
       case 'M':
-        $val = $val * 1048576;
+        $numericVal *= 1048576;
         break;
     }
 
     // check if limit is beyond server maximum
     $server_limit = ini_get('upload_max_filesize');
     $server_last = $server_limit[mb_strlen($server_limit)-1];
+    $numericServerVal = (int) substr($server_limit, 0, -1);
     switch($server_last) {
       case 'k':
       case 'K':
-        $server_limit *= 1024;
+        $numericServerVal *= 1024;
         break;
       case 'm':
       case 'M':
-        $server_limit *= 1048576;
+        $numericServerVal *= 1048576;
         break;
     }
-    if($server_limit < $val) {
-      return $server_limit;
+
+    if($numericServerVal < $numericVal) {
+      return $numericServerVal;
     }
 
-    return $val;
+    return $numericVal;
   }
 
   function setMaxUploadSizeInBytes($val) {
