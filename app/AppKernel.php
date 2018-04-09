@@ -66,14 +66,5 @@ class AppKernel extends Kernel
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load($this->getRootDir().'/config/config_'.$this->getEnvironment().'.yml');
-
-        // Symfony env variables are overwritten by parameters of the same name
-        // in parameters.yml, see https://github.com/symfony/symfony/issues/7555
-        // 
-        // The following is a temporary workaround:
-        $envParameters = $this->getEnvParameters();
-        $loader->load(function($container) use($envParameters) {
-            $container->getParameterBag()->add($envParameters);
-        });
     }
 }
