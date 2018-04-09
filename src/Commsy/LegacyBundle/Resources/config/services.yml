@@ -1,5 +1,5 @@
 parameters:
-        legacy.site_index: %kernel.root_dir%/../web/commsy_legacy.php
+        legacy.site_index: "%kernel.root_dir%/../web/commsy_legacy.php"
 
 services:
     _defaults:
