@@ -6,3 +6,5 @@
  * Time: 13:04
  */
 
+global $c_send_email;
+$c_send_email = false;
