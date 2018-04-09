@@ -74,7 +74,7 @@ class ItemController extends Controller
 
         $form = $this->createForm(ItemDescriptionType::class, $formData, $formOptions);
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             if ($saveType == 'save' || $saveType == 'saveThisDate') {
@@ -181,7 +181,7 @@ class ItemController extends Controller
         
         $form = $this->createForm(ItemWorkflowType::class, $formData, array());
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
                 $tempItem = $transformer->applyTransformation($tempItem, $form->getData());

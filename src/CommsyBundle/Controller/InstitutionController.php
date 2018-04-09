@@ -109,7 +109,7 @@ class InstitutionController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in institution manager
             $institutionService->setFilterConditions($filterForm);
         } else {
@@ -454,7 +454,7 @@ class InstitutionController extends Controller
         ));
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $institutionItem = $transformer->applyTransformation($institutionItem, $form->getData());
 
@@ -658,7 +658,7 @@ class InstitutionController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in institution manager
             $institutionService->setFilterConditions($filterForm);
         }

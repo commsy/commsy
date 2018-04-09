@@ -239,7 +239,7 @@ class DateController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in date manager
             $dateService->setFilterConditions($filterForm);
         } else {
@@ -328,7 +328,7 @@ class DateController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in date manager
             $dateService->setFilterConditions($filterForm);
         } else {
@@ -396,7 +396,7 @@ class DateController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             $dateService->setFilterConditions($filterForm);
         } else {
             $dateService->setPastFilter(false);
@@ -1115,7 +1115,7 @@ class DateController extends Controller
         
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
             $formData = $form->getData();
             if ($saveType == 'save') {
@@ -1758,7 +1758,7 @@ class DateController extends Controller
 
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
             $files = $formData['files'];
 

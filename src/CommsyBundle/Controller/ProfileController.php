@@ -60,7 +60,7 @@ class ProfileController extends Controller
         ));
         
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
 
             // use custom profile picture if given
@@ -157,7 +157,7 @@ class ProfileController extends Controller
         ));
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
             $userItem = $userTransformer->applyTransformation($userItem, $formData);
             $userItem->save();
@@ -221,7 +221,7 @@ class ProfileController extends Controller
         ));
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
             $userItem = $userTransformer->applyTransformation($userItem, $formData);
             $userItem->save();
@@ -284,7 +284,7 @@ class ProfileController extends Controller
         ));
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
             if($formData['mail_account']) {
                 $userItem->setAccountWantMail('yes');
@@ -333,7 +333,7 @@ class ProfileController extends Controller
         ));
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
             $userItem->save();
             return $this->redirectToRoute('commsy_profile_personal', array('roomId' => $roomId, 'itemId' => $itemId));
@@ -370,7 +370,7 @@ class ProfileController extends Controller
         ));
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
             $userItem->save();
             return $this->redirectToRoute('commsy_profile_account', array('roomId' => $roomId, 'itemId' => $itemId));
@@ -468,7 +468,7 @@ class ProfileController extends Controller
             {
                 $authSourceOld = $legacyEnvironment->getCurrentPortalItem()->getAuthDefault();
             }
-            if($form->isValid()) {
+            if($form->isSubmitted() && $form->isValid()) {
                 $authentication->mergeAccount($currentUser->getUserID(), $currentUser->getAuthSource(), $formData['combineUserId'], $authSourceOld);
 
                 return $this->redirectToRoute('commsy_profile_mergeaccounts', array('roomId' => $roomId, 'itemId' => $itemId));
@@ -506,7 +506,7 @@ class ProfileController extends Controller
         ));
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
             $userItem->save();
             $privateRoomItem = $privateRoomTransformer->applyTransformation($privateRoomItem, $form->getData());
@@ -545,7 +545,7 @@ class ProfileController extends Controller
         ]);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
             $userItem->save();
             $privateRoomItem = $privateRoomTransformer->applyTransformation($privateRoomItem, $form->getData());
@@ -667,7 +667,7 @@ class ProfileController extends Controller
         $changed = false;
 
         $form->handleRequest($request);
-        if ($form->isValid()) {                 // checks old password and new password criteria constraints
+        if ($form->isSubmitted() && $form->isValid()) {                 // checks old password and new password criteria constraints
 
             $form_data = $form->getData();
 
@@ -808,7 +808,7 @@ class ProfileController extends Controller
         ));
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $privateRoomItem->setCalendarSelection($form->getData());
             $privateRoomItem->save();
         }

@@ -58,7 +58,7 @@ class RoomController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in feed generator
             $roomFeedGenerator = $this->get('commsy.room_feed_generator');
             $roomFeedGenerator->setFilterConditions($filterForm);
@@ -223,7 +223,7 @@ class RoomController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in feed generator
             $roomFeedGenerator->setFilterConditions($filterForm);
         }
@@ -268,7 +268,7 @@ class RoomController extends Controller
         ));
         
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
@@ -346,7 +346,7 @@ class RoomController extends Controller
         $countAll += $activeRoomQueryBuilder->getQuery()->getSingleScalarResult();
 
         // filtered rooms
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             $this->get('lexik_form_filter.query_builder_updater')
                 ->addFilterConditions($filterForm, $activeRoomQueryBuilder);
             $count += $activeRoomQueryBuilder->getQuery()->getSingleScalarResult();
@@ -371,7 +371,7 @@ class RoomController extends Controller
 
             // "archived" not set or archived != 1 = include archived rooms in list 
             if (!isset($roomFilter['archived']) || $roomFilter['archived'] != "1") {
-                if ($filterForm->isValid()) {
+                if ($filterForm->isSubmitted() && $filterForm->isValid()) {
                     $this->get('lexik_form_filter.query_builder_updater')
                         ->addFilterConditions($filterForm, $archivedRoomQueryBuilder);
                     $count += $archivedRoomQueryBuilder->getQuery()->getSingleScalarResult();

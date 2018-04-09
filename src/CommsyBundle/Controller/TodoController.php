@@ -59,7 +59,7 @@ class TodoController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in todo manager
             $todoService->setFilterConditions($filterForm);
         } else {
@@ -661,7 +661,7 @@ class TodoController extends Controller
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
             if ($form->get('save')->isClicked()) {
-                if ($form->isValid()) {
+                if ($form->isSubmitted() && $form->isValid()) {
 
                     $formData = $form->getData();
 
@@ -787,7 +787,7 @@ class TodoController extends Controller
         $form = $this->createForm(TodoType::class, $formData, $formOptions);
         
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $todoItem = $transformer->applyTransformation($todoItem, $form->getData());
 
@@ -1010,7 +1010,7 @@ class TodoController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in announcement manager
             $todoService->setFilterConditions($filterForm);
         }
