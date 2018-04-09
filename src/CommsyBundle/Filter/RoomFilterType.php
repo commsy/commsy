@@ -39,23 +39,19 @@ class RoomFilterType extends AbstractType
                     $tokens = explode(' ', $values['value']);
 
                     $expr = $filterQuery->getExpr();
-
-                    $orX = $expr->orX();
+                    $qb = $filterQuery->getQueryBuilder();
 
                     foreach ($tokens as $num => $token) {
+                        $fieldOr = $expr->orX();
                         foreach (['title', 'contactPersons', 'roomDescription'] as $field) {
-                            $orX->add($expr->like('r.' . $field, ':' . $field . $num));
+                            $fieldOr->add($expr->like('r.' . $field, ':token' . $num));
                         }
+
+                        $qb->andWhere($fieldOr);
                     }
 
-                    $qb = $filterQuery->getQueryBuilder()
-                        ->andWhere($orX)
-                    ;
-
                     foreach ($tokens as $num => $token) {
-                        foreach (['title', 'contactPersons', 'roomDescription'] as $field) {
-                            $qb->setParameter($field . $num, "%$token%");
-                        }
+                        $qb->setParameter("token$num", "%$token%");
                     }
 
                     return $qb;

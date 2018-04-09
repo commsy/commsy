@@ -24,7 +24,7 @@ class ProjectController extends Controller
      * @Route("/room/{roomId}/project/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date_rev', Request $request)
     {
         // setup filter form
         $defaultFilterValues = array(

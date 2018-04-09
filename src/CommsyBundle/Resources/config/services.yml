@@ -712,3 +712,4 @@ services:
             arguments:
               - '@commsy_legacy.environment'
               - '@commsy_legacy.room_service'
+              - '@commsy_legacy.item_service'

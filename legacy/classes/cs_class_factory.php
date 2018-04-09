@@ -28,7 +28,7 @@ class cs_class_factory {
 
    public function __construct () {
        $class_config = array();
-       include_once('etc/config_classes.php');
+       include('etc/config_classes.php');
        $this->_class_array = $class_config;
    }
 
