@@ -150,7 +150,7 @@ class CopyController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions
             $copyService->setFilterConditions($filterForm);
         }

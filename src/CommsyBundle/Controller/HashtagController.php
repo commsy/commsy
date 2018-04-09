@@ -134,7 +134,7 @@ class HashtagController extends Controller
 
 
         $editForm->handleRequest($request);
-        if ($editForm->isValid()) {
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
             // persist changes / delete hashtag
             $labelManager = $legacyEnvironment->getLabelManager();
 
@@ -175,7 +175,7 @@ class HashtagController extends Controller
         $mergeForm = $this->createForm(HashtagMergeType::class, null, ['roomId'=>$roomId]);
 
         $mergeForm->handleRequest($request);
-        if ($mergeForm->isValid()) {
+        if ($mergeForm->isSubmitted() && $mergeForm->isValid()) {
             // persist changes / delete hashtag
             $labelManager = $legacyEnvironment->getLabelManager();
 

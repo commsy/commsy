@@ -139,7 +139,7 @@ class AnnouncementController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in announcement manager
             $announcementService->setFilterConditions($filterForm);
         } else {
@@ -209,7 +209,7 @@ class AnnouncementController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in announcement manager
             $announcementService->setFilterConditions($filterForm);
         } else {
@@ -266,7 +266,7 @@ class AnnouncementController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in announcement manager
             $announcementService->setFilterConditions($filterForm);
         } else {
@@ -725,7 +725,7 @@ class AnnouncementController extends Controller
         
         $submittedFormData = $form->getData();
         
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
             if ($saveType == 'save') {
                 $announcementItem = $transformer->applyTransformation($announcementItem, $form->getData());

@@ -91,7 +91,7 @@ class UserController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in user manager
             $userService->setFilterConditions($filterForm);
         } else {
@@ -200,7 +200,7 @@ class UserController extends Controller
         $userService->resetLimits();
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in user manager
             $userService->setFilterConditions($filterForm);
         }
@@ -289,7 +289,7 @@ class UserController extends Controller
                     }
                 }
 
-                if ($form->isValid()) {
+                if ($form->isSubmitted() && $form->isValid()) {
                     switch ($formData['status']) {
                         case 'user-block':
                             foreach ($users as $user) {
@@ -804,7 +804,7 @@ class UserController extends Controller
         $form = $this->createForm(UserType::class, $formData, $formOptions);
         
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
             if ($saveType == 'save') {
                 $userItem = $transformer->applyTransformation($userItem, $form->getData());

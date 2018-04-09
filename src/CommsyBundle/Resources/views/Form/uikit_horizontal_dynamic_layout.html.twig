@@ -1,12 +1,13 @@
 {% extends "CommsyBundle:Form:uikit_horizontal_layout.html.twig" %}
 
 {% macro nestedList(choices, level) %}
+    {% import _self as macros %}
     {% set opened = false %}
 
     {% for child in choices %}
         {% if child.choices is defined %}
             <ul>
-                {{ _self.nestedList(child.choices, level+1) }}
+                {{ macros.nestedList(child.choices, level+1) }}
             </ul>
         {% else %}
             {% if not loop.first %}

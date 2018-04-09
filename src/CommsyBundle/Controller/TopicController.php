@@ -58,7 +58,7 @@ class TopicController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in topic manager
             $topicService->setFilterConditions($filterForm);
         }
@@ -552,7 +552,7 @@ class TopicController extends Controller
         ));
         
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $topicItem = $transformer->applyTransformation($topicItem, $form->getData());
 
@@ -742,7 +742,7 @@ class TopicController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in announcement manager
             $topicService->setFilterConditions($filterForm);
         }
@@ -850,7 +850,7 @@ class TopicController extends Controller
         ));
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $linkManager = $legacyEnvironment->getLinkItemManager();
 
