@@ -676,7 +676,7 @@ class ItemController extends Controller
         // prepare form
         $mailAssistant = $this->get('commsy.utils.mail_assistant');
 
-        $formMessage = $this->renderView('CommsyBundle:Email:itemListTemplate.txt.twig',array('user' => $currentUser, 'room' => $room));
+        $formMessage = $this->renderView('CommsyBundle:email:item_list_template.txt.twig',array('user' => $currentUser, 'room' => $room));
 
         $formData = [
             'message' => $formMessage,
@@ -706,7 +706,7 @@ class ItemController extends Controller
                 ->setTo($toArray)
                 ->setBody(
                     $this->renderView(
-                        'CommsyBundle:Email:itemList.txt.twig',
+                        'CommsyBundle:email:item_list.txt.twig',
                         array('message' => strip_tags($data['message']))
                     ),
                     'text/plain'

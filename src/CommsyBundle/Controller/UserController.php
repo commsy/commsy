@@ -232,7 +232,7 @@ class UserController extends Controller
         $itemsCountArray = $userService->getCountArray($roomId);
 
         
-        $html = $this->renderView('CommsyBundle:User:listPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:user:list_print.html.twig', [
             'roomId' => $roomId,
             'users' => $users,
             'readerList' => $readerList,
@@ -1222,7 +1222,7 @@ class UserController extends Controller
     
     /**
      * @Route("/room/{roomId}/user/rooms/{start}")
-     * @Template("CommsyBundle:Menu:room_list.html.twig")
+     * @Template("CommsyBundle:menu:room_list.html.twig")
      */
     public function roomsAction($roomId, $max = 10, $start = 0)
     {
@@ -1309,7 +1309,7 @@ class UserController extends Controller
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
-        $html = $this->renderView('CommsyBundle:User:detailPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:user:detail_print.html.twig', [
             'roomId' => $roomId,
             'user' => $infoArray['user'],
             'readerList' => $infoArray['readerList'],

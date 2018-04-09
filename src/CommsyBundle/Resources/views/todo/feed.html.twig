@@ -1,0 +1,90 @@
+{% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+
+{% for todo in todos %}
+    {% set entryAllowedActions = '' %}
+    {% if allowedActions[todo.itemId] is defined %}
+        {% set entryAllowedActions = allowedActions[todo.itemId] %}
+    {% endif %}
+    <article class="uk-comment" data-allowed-actions="{{ entryAllowedActions|json_encode() }}">
+    
+        {# item change information #}
+            {{ macros.statusColor(readerList, todo.itemId) }}
+ 
+        <header class="uk-comment-header uk-flex">
+            <div class="items-checkbox uk-margin-right uk-margin-top uk-hidden">
+                <form class="uk-form">
+                    <input type="checkbox" value="{{ todo.itemId }}">
+                </form>
+            </div>
+
+            {# user icon and modification time #}
+            <div class="uk-margin-right uk-flex-item-none">
+                {% if todo.modificatorItem.isUser %}
+                    {{  macros.userIconLink(todo.modificatorItem) }}
+                {% else %}
+                    {{  macros.userIcon(todo.modificatorItem) }}
+                {% endif %}
+                <div class="uk-comment-meta">
+                    {% if todo.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                        {{ 'today'|trans({})|capitalize }}, {{todo.getModificationDate|date("H:i")}}
+                    {% else %}
+                        {% if '9999-00-00' not in todo.getModificationDate %}
+                            {{todo.getModificationDate|date("d.m.Y")}}
+                        {% else %}
+                            {{todo.getCreationDate|date("d.m.Y")}}
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            {# title and meta #}
+            <div class="uk-width-5-10">
+                <h4 class="uk-comment-title uk-text-truncate">
+                    {% if is_granted('ITEM_SEE', todo.itemId) %}
+                        <a class="uk-text-break" href="{{ path('commsy_todo_detail', {'roomId': roomId, 'itemId': todo.itemId}) }}">{{ todo.title|decodeHtmlEntity }}</a>
+                    {% else %}
+                        {{ todo.title|decodeHtmlEntity }}
+                    {% endif %}
+                </h4>
+
+                <div class="uk-comment-meta">
+                    {{ 'by'|trans({})|capitalize }}: {{todo.getCreator.fullname}} ({{todo.getCreationDate|date("d.m.Y")}})
+                </div>
+               
+                <div class="uk-comment-meta">
+                    {{  macros.fileListShort(todo) }}
+                </div>
+            </div>
+
+            <div class="uk-width-3-10">
+                <div class="uk-comment-meta">
+                    {{ 'due date'|trans({}, 'todo') }}: {{todo.getDate|date("d.m.Y")}}
+                </div>
+            </div>
+            
+            <div class="uk-width-2-10 uk-text-right uk-text-muted">
+                {% if todo.internalStatus == 0 %}
+
+                {% elseif todo.internalStatus == 1 %}
+                    <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large" data-uk-tooltip title="{{ todo.status }}"></i>
+                {% elseif todo.internalStatus == 2 %}
+                    <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large" data-uk-tooltip title="{{ todo.status }}"></i>
+                {% elseif todo.internalStatus == 3 %}
+                    <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large" data-uk-tooltip title="{{ todo.status }}"></i>
+                {% else %}
+                    <i class="uk-icon-justify uk-icon-small uk-icon-circle uk-visible-large" data-uk-tooltip title="{{ todo.status }}"></i>
+                {% endif %}
+            </div>
+            
+            {% if showRating %}
+                <div class="uk-width-2-10 uk-text-right">
+                    {%if showRating%}
+                        {{  macros.ratingStatus(todo, ratingList) }}
+                    {% endif %}
+                </div>
+            {% endif %}
+        </header>
+    </article>
+{% else %}
+    {{ 'No more results found'|trans}}
+{% endfor %}

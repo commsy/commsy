@@ -243,7 +243,7 @@ class DiscussionController extends Controller
         $itemsCountArray = $discussionService->getCountArray($roomId);
 
 
-        $html = $this->renderView('CommsyBundle:Discussion:listPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:discussion:list_print.html.twig', [
             'roomId' => $roomId,
             'discussions' => $discussions,
             'readerList' => $readerList,
@@ -690,7 +690,7 @@ class DiscussionController extends Controller
     {
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
-        $html = $this->renderView('CommsyBundle:Discussion:detailPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:discussion:detail_print.html.twig', [
             'roomId' => $roomId,
             'discussion' => $infoArray['discussion'],
             'articleList' => $infoArray['articleList'],

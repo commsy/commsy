@@ -1,0 +1,34 @@
+{% extends 'CommsyBundle:base:room.html.twig' %}
+
+{% form_theme form 'CommsyBundle:form:uikit_horizontal_layout.html.twig' %}
+
+{% block content %}
+    <div class="uk-grid">
+
+        <div class="uk-width-1-1">
+
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div class="uk-text-large">{{ 'Send mail'|trans({}, "mail") }}</div>
+                    </div>
+                </div>
+
+                <div>
+                    {{ form_start(form) }}
+
+                    {{ form_row(form.subject) }}
+                    {{ form_row(form.message) }}
+
+                    {{ form_row(form.copy_to_sender) }}
+
+                    {{ form_row(form.save) }}
+                    {{ form_row(form.cancel) }}
+                    {{ form_end(form) }}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+{% endblock %}

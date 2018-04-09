@@ -1,0 +1,48 @@
+{% extends 'CommsyBundle:base:room.html.twig' %}
+
+{% import 'CommsyBundle:dashboard:macros.html.twig' as macros %}
+
+{% block roomTitle %}
+    {{ 'Dashboard'|trans({}, "room") }}
+{% endblock %}
+
+{% block breadcrumb %}
+    {{ wo_render_breadcrumbs({ viewTemplate: "CommsyBundle:breadcrumbs:breadcrumbs.html.twig" }) }}
+{% endblock %}
+
+{% block content %}
+    <div id="dashboard-cover" aria-hidden="false">
+        <h1 class="uk-h2">{{ 'my home'|trans({}, "menu") }}</h1>
+    </div>
+    <div class="uk-grid">
+        {# right column #}
+        <div class="uk-width-medium-1-2 uk-push-1-2">
+            {{ macros.dashboardCalendar(roomItem, calendars, iCal, contextArray) }}
+            {{ macros.dashboardExternalAccess(roomItem) }}
+        </div>
+
+        {# left column #}
+        <div class="uk-width-medium-1-2 uk-pull-1-2 uk-row-first">
+            {{ macros.dashboardAllRooms(roomItem) }}
+            {{ macros.dashboardFeed(roomItem) }}
+        </div>
+    </div>
+
+    {#<ul id="dashboard-ul" class="uk-sortable uk-grid uk-grid-small uk-grid-width-1-2" data-uk-sortable="{handleClass:'uk-sortable-handle'}" data-dashboard='{"url": "{{ app.request.baseURL }}/dashboard/{{ roomItem.itemId }}/edit"}'>#}
+    {#{% if not dashboardLayout is empty %}#}
+        {#{% for layoutItem in dashboardLayout %}#}
+            {#{% if layoutItem == 'dashboard-feed' %}#}
+                {#{{ macros.dashboardFeed(roomItem) }}#}
+            {#{% elseif layoutItem == 'dashboard-calendar' %}#}
+                {#{{ macros.dashboardCalendar(roomItem) }}#}
+            {#{% elseif layoutItem == 'dashboard-external-access' %}#}
+                {#{{ macros.dashboardExternalAccess(roomItem) }}#}
+            {#{% endif %}#}
+        {#{% endfor %}#}
+    {#{% else %}#}
+        {#{{ macros.dashboardFeed(roomItem) }}#}
+        {#{{ macros.dashboardCalendar(roomItem) }}#}
+        {#{{ macros.dashboardExternalAccess(roomItem) }}#}
+    {#{% endif %}#}
+    {#</ul>#}
+{% endblock %}

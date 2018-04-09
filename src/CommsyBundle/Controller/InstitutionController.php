@@ -232,7 +232,7 @@ class InstitutionController extends Controller
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
-        $html = $this->renderView('CommsyBundle:Institution:detailPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:institution:detail_print.html.twig', [
             'roomId' => $roomId,
             'institution' => $infoArray['institution'],
             'readerList' => $infoArray['readerList'],
@@ -686,7 +686,7 @@ class InstitutionController extends Controller
         // get institution list from manager service
         $itemsCountArray = $institutionService->getCountArray($roomId);
 
-        $html = $this->renderView('CommsyBundle:Institution:listPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:institution:list_print.html.twig', [
             'roomId' => $roomId,
             'institutions' => $institutions,
             'readerList' => $readerList,

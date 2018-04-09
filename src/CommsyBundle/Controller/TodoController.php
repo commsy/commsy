@@ -596,7 +596,7 @@ class TodoController extends Controller
     
     /**
      * @Route("/room/{roomId}/todo/{itemId}/createstep")
-     * @Template("@Commsy/Todo/editStep.html.twig")
+     * @Template("@Commsy/Todo/edit_step.html.twig")
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      */
     public function createStepAction($roomId, $itemId, Request $request)
@@ -956,7 +956,7 @@ class TodoController extends Controller
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
-        $html = $this->renderView('CommsyBundle:Todo:detailPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:todo:detail_print.html.twig', [
             'roomId' => $roomId,
             'item' => $infoArray['todo'],
             'readerList' => $infoArray['readerList'],
@@ -1048,7 +1048,7 @@ class TodoController extends Controller
         // get announcement list from manager service 
         $itemsCountArray = $todoService->getCountArray($roomId);
 
-        $html = $this->renderView('CommsyBundle:Todo:listPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:todo:list_print.html.twig', [
             'roomId' => $roomId,
             'module' => 'todo',
             'announcements' => $todos,

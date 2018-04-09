@@ -360,7 +360,7 @@ class DateController extends Controller
 
         $itemsCountArray = $dateService->getCountArray($roomId);
 
-        $html = $this->renderView('CommsyBundle:Date:listPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:date:list_print.html.twig', [
             'roomId' => $roomId,
             'module' => 'date',
             'itemsCountArray' => $itemsCountArray,
@@ -1677,7 +1677,7 @@ class DateController extends Controller
             $categories = $this->getTagDetailArray($roomCategories, $dateCategories);
         }
 
-        $html = $this->renderView('CommsyBundle:Date:detailPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:date:detail_print.html.twig', [
             'roomId' => $roomId,
             'date' => $dateService->getDate($itemId),
             'readerList' => $readerList,

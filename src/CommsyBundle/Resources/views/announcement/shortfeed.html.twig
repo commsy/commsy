@@ -1,0 +1,31 @@
+{% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+
+{% for announcement in announcements %}
+   <article class="uk-comment">    
+        <header class="uk-comment-header uk-flex">
+            {# title and meta #}
+            <div class="uk-width-1-1">
+                <h4 class="uk-comment-title">
+                    <a title="{{ announcement.title|decodeHtmlEntity}}" href="{{ path('commsy_announcement_detail', {'roomId': roomId, 'itemId': announcement.itemId}) }}">{{ announcement.title|truncate(35)|decodeHtmlEntity }}</a>
+                </h4>
+                <div class="uk-comment-meta">
+                    {% if announcement.secondDateTime != '' %}
+                        {% if "now"|date("U") <= announcement.getSecondDateTime|date("U") %}
+                            <span class="uk-text-bold">
+                        {% endif %}
+                        
+                        {{ 'valid until'|trans({})}}: {{announcement.getSecondDateTime|date("d.m.Y")}}
+                        
+                        {% if "now"|date("U") <= announcement.getSecondDateTime|date("U") %}
+                            </span>
+                        {% endif %}
+                    {% else %}
+                        {{ 'valid until'|trans({})}}: 
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+    </article>
+{% else %}
+    {{ 'No more results found'|trans}}
+{% endfor %}

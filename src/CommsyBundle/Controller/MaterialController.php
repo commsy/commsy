@@ -249,7 +249,7 @@ class MaterialController extends Controller
         // get material list from manager service 
         $itemsCountArray = $materialService->getCountArray($roomId);
 
-        $html = $this->renderView('CommsyBundle:Material:listPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:material:list_print.html.twig', [
             'roomId' => $roomId,
             'module' => 'material',
             'materials' => $materials,
@@ -1095,7 +1095,7 @@ class MaterialController extends Controller
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
-        $html = $this->renderView('CommsyBundle:Material:detailPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:material:detail_print.html.twig', [
             'roomId' => $roomId,
             'material' => $infoArray['material'],
             'sectionList' => $infoArray['sectionList'],

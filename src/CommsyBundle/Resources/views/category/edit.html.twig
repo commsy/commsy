@@ -1,0 +1,88 @@
+{% extends 'CommsyBundle:base:room.html.twig' %}
+
+{% form_theme newForm 'CommsyBundle:form:uikit_horizontal_layout.html.twig' %}
+{% form_theme editForm 'CommsyBundle:form:uikit_horizontal_layout.html.twig' %}
+
+{% block content %}
+    <div class="uk-grid" data-uk-grid-margin>
+
+        <div class="uk-width-1-1">
+
+            {# new category #}
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div class="uk-text-large">{{ editTitle|trans({}, "category") }}</div>
+                     </div>
+                </div>
+
+                <div>
+                    <div class="uk-grid">
+                        {# form column #}
+                        <div>
+                            {{ form_start(newForm) }}
+                            <fieldset>
+                                <div id="category_new">
+                                    {{ form_row(newForm.title) }}
+                                    <div class="uk-form-row">
+                                        <div class="uk-form-controls">
+                                        {% if newForm.new is defined %}
+                                            <button id="category_new_new" class="uk-button uk-button-primary" type="submit" name="category_new[new]">{{ newForm.new.vars.label|trans({}, "category") }}</button>
+                                        {% elseif newForm.update is defined and newForm.cancel is defined %}
+                                            <button id="category_new_update" class="uk-button uk-button-primary" type="submit" name="category_new[update]">{{ newForm.update.vars.label|trans({}, "category") }}</button>
+                                            <button id="category_new_cancel" class="uk-button uk-button-primary uk-margin-left" type="submit" name="category_new[cancel]">{{ newForm.cancel.vars.label|trans({}, "form") }}</button>
+                                        {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            {{ form_end(newForm) }}
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="uk-width-1-1">
+            {# edit category #}
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div class="uk-text-large">{{ 'Edit categories'|trans({}, "category") }}</div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="uk-grid">
+                        {# form column #}
+                        <div class="uk-width-1-1">
+                            {{ form_start(editForm) }}
+                            {{ form_widget(editForm) }}
+                            {{ form_end(editForm) }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="uk-width-1-1">
+            {# merge categories #}
+            <div class="uk-panel-box">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div class="uk-text-large">{{ 'Combine categories'|trans({}, "category") }}</div>
+                    </div>
+                </div>
+                <div class="uk-grid">
+                    <div>
+                        {{ form_start(mergeForm) }}
+                        {{ form_widget(mergeForm) }}
+                        {{ form_end(mergeForm) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

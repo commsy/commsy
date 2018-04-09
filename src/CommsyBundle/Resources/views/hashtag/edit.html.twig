@@ -1,0 +1,63 @@
+{% extends 'CommsyBundle:base:room.html.twig' %}
+
+{% form_theme editForm 'CommsyBundle:form:uikit_horizontal_layout.html.twig' %}
+{% form_theme mergeForm 'CommsyBundle:form:uikit_horizontal_layout.html.twig' %}
+
+{% block content %}
+    <div class="uk-grid" data-uk-grid-margin>
+
+        <div class="uk-width-1-1">
+
+            {# new hashtag #}
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div class="uk-text-large">{{ 'Edit hashtags'|trans({}, "hashtag") }}</div>
+                     </div>
+                </div>
+
+                <div>
+                    <div class="uk-grid">
+                        {# form column #}
+                        <div class="uk-width-1-3">
+                            {{ form_start(editForm) }}
+                            {{ form_widget(editForm) }}
+                            {{ form_end(editForm) }}
+                        </div>
+
+                        {# show existing hashtags #}
+                        <div class="uk-width-2-3">
+                            {% for hashtag in hashtags %}
+                                <span>
+                                     <a class="uk-button uk-margin-small-bottom uk-margin-small-right{% if labelId == hashtag.itemId %} uk-button-primary{% endif %}" href="{{ path('commsy_hashtag_edit', { 'roomId': roomId, 'labelId': hashtag.itemId }) }}">
+                                        {{- hashtag.name -}}
+                                    </a>
+                                </span>
+                            {% else %}
+                                {{ 'No hashtag has been created yet.'|trans({}, 'hashtag') }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="uk-width-1-1">
+            {# combine hashtags #}
+            <div class="uk-panel-box">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div class="uk-text-large">{{ 'Combine hashtags'|trans({}, "hashtag") }}</div>
+                    </div>
+                </div>
+                <div class="uk-grid">
+                    <div>
+                        {{ form_start(mergeForm) }}
+                        {{ form_widget(mergeForm) }}
+                        {{ form_end(mergeForm) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

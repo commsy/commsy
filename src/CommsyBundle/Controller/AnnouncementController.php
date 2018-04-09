@@ -309,7 +309,7 @@ class AnnouncementController extends Controller
         $itemsCountArray = $announcementService->getCountArray($roomId);
 
 
-         $html = $this->renderView('CommsyBundle:Announcement:listPrint.html.twig', [
+         $html = $this->renderView('CommsyBundle:announcement:list_print.html.twig', [
             'roomId' => $roomId,
             'module' => 'announcement',
             'announcements' => $announcements,
@@ -397,7 +397,7 @@ class AnnouncementController extends Controller
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
-        $html = $this->renderView('CommsyBundle:Announcement:detailPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:announcement:detail_print.html.twig', [
             'roomId' => $roomId,
             'announcement' => $infoArray['announcement'],
             'readerList' => $infoArray['readerList'],

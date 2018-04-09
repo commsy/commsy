@@ -16,7 +16,7 @@ use CommsyBundle\Entity\Tag;
 class CategoryController extends Controller
 {
     /**
-     * @Template("CommsyBundle:Category:show.html.twig")
+     * @Template("CommsyBundle:category:show.html.twig")
      */
     public function showAction($roomId, Request $request)
     {
@@ -39,7 +39,7 @@ class CategoryController extends Controller
 
 
     /**
-     * @Template("CommsyBundle:Category:showDetail.html.twig")
+     * @Template("CommsyBundle:category:showDetail.html.twig")
      */
     public function showDetailAction($roomId, Request $request)
     {

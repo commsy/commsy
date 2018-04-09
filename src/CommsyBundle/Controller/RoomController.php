@@ -195,7 +195,7 @@ class RoomController extends Controller
      * @Route("/room/{roomId}/feed/{start}/{sort}", requirements={
      *     "roomId": "\d+"
      * })
-     * @Template("CommsyBundle:Room:list.html.twig")
+     * @Template("CommsyBundle:room:list.html.twig")
      */
     public function feedAction($roomId, $max = 10, $start = 0, $sort = 'date', Request $request)
     {
