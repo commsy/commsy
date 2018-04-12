@@ -44,7 +44,7 @@ twig:
     strict_variables: "%kernel.debug%"
     form_themes:
         - CommsyBundle:form:uikit_layout.html.twig
-        - LexikFormFilterBundle:form:form_div_layout.html.twig
+        - LexikFormFilterBundle:Form:form_div_layout.html.twig
         - CommsyBundle:form:ckeditor_widget.html.twig
 
 # Doctrine Configuration
