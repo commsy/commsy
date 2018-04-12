@@ -401,9 +401,9 @@ class cs_project_manager extends cs_room2_manager {
         } elseif ($this->_sort_order == 'date_rev') {
             $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
         } elseif ($this->_sort_order == 'modificator') {
-            $query .= ' ORDER BY modificator.lastname, '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC';
+            $query .= ' ORDER BY modificator.lastname, modificator.firstname, '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC';
         } elseif ($this->_sort_order == 'modificator_rev') {
-            $query .= ' ORDER BY modificator.lastname DESC, '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC';
+            $query .= ' ORDER BY modificator.lastname DESC, modificator.firstname DESC, '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC';
         } else {
            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
         }

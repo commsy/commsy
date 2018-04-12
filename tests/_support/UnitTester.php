@@ -138,4 +138,35 @@ class UnitTester extends \Codeception\Actor
 
         return $projectRoom;
     }
+
+    public function createCommunityRoom($title, \cs_user_item $creator, \cs_portal_item $portal)
+    {
+        /** @var \cs_environment $legacyEnvironment */
+        $legacyEnvironment = $this->grabService('commsy_legacy.environment')->getEnvironment();
+
+        $communityRoomManager = $legacyEnvironment->getCommunityManager();
+        $this->assertInstanceOf(cs_community_manager::class, $communityRoomManager);
+
+        /** @var \cs_project_item $communityRoom */
+        $communityRoom = $communityRoomManager->getNewItem();
+        $this->assertInstanceOf(cs_community_item::class, $communityRoom);
+
+        $now = new DateTimeImmutable();
+
+        $communityRoom->setTitle($title);
+        $communityRoom->setCreatorItem($creator);
+        $communityRoom->setCreationDate($now->format('Y-m-d H:i:s'));
+        $communityRoom->setModificatorItem($creator);
+        $communityRoom->setModificationDate($now->format('Y-m-d H:i:s'));
+        $communityRoom->setContextID($portal->getItemId());
+        $communityRoom->open();
+
+        $numItemsBeforeSave = $this->grabNumRecords('commsy.items', ['type' => 'community']);
+        $communityRoom->save();
+        $this->seeNumRecords($numItemsBeforeSave + 1, 'commsy.items', ['type' => 'community']);
+
+        $this->seeInDatabase('commsy.room', ['type' => 'community', 'title' => $title]);
+
+        return $communityRoom;
+    }
 }
