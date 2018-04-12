@@ -14,7 +14,7 @@
     <body id="commsy" class="nav-collapsed">
         {# modal message #}
         {{ render(controller(
-        'CommsyBundle:room:modalMessage',
+        'CommsyBundle:Room:modalMessage',
         { 'roomId': app.request.attributes.get('roomId') }
         ))}}
 
@@ -23,7 +23,7 @@
 
             {# CommSy Logo #}
             {{ render(controller(
-                'CommsyBundle:room:logo',
+                'CommsyBundle:Room:logo',
                 { 'roomId': app.request.attributes.get('roomId') }
             ))}}
 
@@ -47,7 +47,7 @@
                     <div class="uk-navbar-content">
                         {# global search #}
                         {{ render(controller(
-                            'CommsyBundle:search:searchForm', {
+                            'CommsyBundle:Search:searchForm', {
                                 'roomId': app.request.attributes.get('roomId'),
                                 'postData': app.request.request.get('search')
                             }
@@ -56,7 +56,7 @@
                     
                     {# global actions #}
                     {{ render(controller(
-                        'CommsyBundle:user:globalNavbar',
+                        'CommsyBundle:User:globalNavbar',
                         { 'roomId': app.request.attributes.get('roomId') }
                     ))}}
 
@@ -64,12 +64,12 @@
                         <ul class="uk-navbar-nav">
                             <li id="navbar_user_icon" class="uk-parent" data-uk-dropdown>
                                 {{ render(controller(
-                                    'CommsyBundle:profile:image',
+                                    'CommsyBundle:Profile:image',
                                     { 'roomId': app.request.attributes.get('roomId') }
                                 ))}}
 
                                 {{ render(controller(
-                                    'CommsyBundle:profile:menu',
+                                    'CommsyBundle:Profile:menu',
                                     { 'roomId': app.request.attributes.get('roomId') }
                                 ))}}
                             </li>
@@ -84,7 +84,7 @@
                 <ul class="uk-navbar-nav">
                     {# All Rooms #}
                     {{ render(controller(
-                        'CommsyBundle:user:allRoomsNavbar'
+                        'CommsyBundle:User:allRoomsNavbar'
                     ))}}
 
                     {# room navigation #}
