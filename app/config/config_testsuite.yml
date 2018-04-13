@@ -9,3 +9,10 @@ doctrine:
         dbname:   "commsy"
         user:     "root"
         password: "root"
+
+web_profiler:
+    toolbar: false
+    intercept_redirects: false
+
+swiftmailer:
+    disable_delivery: true
