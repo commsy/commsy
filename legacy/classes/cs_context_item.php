@@ -4120,15 +4120,13 @@ class cs_context_item extends cs_item {
       $current_room_modules = $this->getHomeConf();
       //rubric is mentioned? if not -> false
       if ( !empty ($rubric_type) and mb_stristr($current_room_modules,$rubric_type) ) {
-        //if rubric is mentioned as <rubric>_none ->false
-        if (mb_stristr($current_room_modules,$rubric_type.'_none') ) {
+        // for <rubric>_none, _rubric_support[<rubric>] previously was set to false; however,
+        // it now contains true since rubrics with <rubric>_none are activated in CS9 (while
+        // they were deactivated in CS8)
+        if ($this->isExtraRubric($rubric_type) and !$this->showExtraRubric($rubric_type)) {
           $this->_rubric_support[$rubric_type] = false;
         } else {
-          if ($this->isExtraRubric($rubric_type) and !$this->showExtraRubric($rubric_type)) {
-            $this->_rubric_support[$rubric_type] = false;
-          } else {
-            $this->_rubric_support[$rubric_type] = true;
-          }
+          $this->_rubric_support[$rubric_type] = true;
         }
       } else {
         $this->_rubric_support[$rubric_type] = false;
