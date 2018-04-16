@@ -25,7 +25,7 @@ use CommsyBundle\Event\CommsyEditEvent;
 /**
  * Class MaterialController
  * @package CommsyBundle\Controller
- * @Security("is_granted('ITEM_ENTER', roomId)")
+ * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'material')")
  */
 class MaterialController extends Controller
 {
@@ -270,7 +270,7 @@ class MaterialController extends Controller
      *     "versionId": "\d+"
      * }))
      * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
+     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'material')")
      */
     public function detailAction($roomId, $itemId, $versionId = null, Request $request)
     {
@@ -853,7 +853,7 @@ class MaterialController extends Controller
     /**
      * @Route("/room/{roomId}/material/{itemId}/saveworkflow")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
      */
     public function saveWorkflowAction($roomId, $itemId, Request $request)
     {
@@ -910,7 +910,7 @@ class MaterialController extends Controller
     /**
      * @Route("/room/{roomId}/material/{itemId}/edit")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
      */
     public function editAction($roomId, $itemId, Request $request)
     {
@@ -1034,7 +1034,7 @@ class MaterialController extends Controller
     /**
      * @Route("/room/{roomId}/material/{itemId}/save")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
      */
     public function saveAction($roomId, $itemId, Request $request)
     {
@@ -1182,7 +1182,7 @@ class MaterialController extends Controller
     /**
      * @Route("/room/{roomId}/material/{itemId}/createsection")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
      */
     public function createSectionAction($roomId, $itemId, Request $request)
     {
@@ -1198,6 +1198,7 @@ class MaterialController extends Controller
         $countSections = $sectionList->getCount();
 
         $section = $materialService->getNewSection();
+        $section->setDraftStatus(1);
         $section->setLinkedItemId($itemId);
         $section->setVersionId($material->getVersionId());
         $section->setNumber($countSections+1);
@@ -1224,13 +1225,16 @@ class MaterialController extends Controller
     /**
      * @Route("/room/{roomId}/material/{itemId}/savesection")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
      */
     public function saveSectionAction($roomId, $itemId, Request $request)
     {
         $materialService = $this->get('commsy_legacy.material_service');
         $transformer = $this->get('commsy_legacy.transformer.material');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($itemId);
 
         $translator = $this->get('translator');
 
@@ -1250,6 +1254,11 @@ class MaterialController extends Controller
                 // update title
                 $section->setTitle($form->getData()['title']);
 
+                if ($item->isDraft()) {
+                    $item->setDraftStatus(0);
+                    $item->saveAsItem();
+                }
+
                 // update modifier
                 $section->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
@@ -1257,6 +1266,7 @@ class MaterialController extends Controller
 
                 $section->getLinkedItem()->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
+                // this will also update the material item's modification date to indicate that it has changes
                 $section->getLinkedItem()->save();
                 
             } else if ($form->get('cancel')->isClicked()) {
@@ -1265,14 +1275,6 @@ class MaterialController extends Controller
 
                 $section->save();
             }
-
-            $material = $materialService->getMaterial($section->getLinkedItemID());
-            $material->save();
-        } else if ($form->get('cancel')->isClicked()) {
-            // remove not saved item
-            $section->delete();
-
-            $section->save();
         }
 
         return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));
@@ -1281,7 +1283,7 @@ class MaterialController extends Controller
     /**
      * @Route("/room/{roomId}/material/{itemId}/sortsections")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
      */
     public function sortSectionsAction($roomId, $itemId, Request $request)
     {
@@ -1318,7 +1320,7 @@ class MaterialController extends Controller
     /**
      * @Route("/room/{roomId}/material/{itemId}/editsections")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
      */
     public function editSectionsAction($roomId, $itemId, Request $request)
     {
@@ -1383,7 +1385,7 @@ class MaterialController extends Controller
     /**
      * @Route("/room/{roomId}/material/{itemId}/savesections")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
      */
     public function savesectionsAction($roomId, $itemId, Request $request)
     {
@@ -1531,7 +1533,7 @@ class MaterialController extends Controller
     /**
      * @Route("/room/{roomId}/material/{itemId}/{versionId}/createversion/")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'material')")
      */
     public function createVersionAction($roomId, $itemId, $versionId, Request $request)
     {           

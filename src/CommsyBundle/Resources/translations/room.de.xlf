@@ -190,6 +190,10 @@
                 <source>Your request has not been processed yet.</source>
                 <target>Ihre Anfrage wartet noch auf Bearbeitung.</target>
             </trans-unit>
+            <trans-unit id="room_requested_short">
+                <source>Membership request in process</source>
+                <target>Mitgliedschaft in Beantragung</target>
+            </trans-unit>
             <trans-unit id="room_request">
                 <source>Request membership</source>
                 <target>Mitgliedschaft beantragen</target>

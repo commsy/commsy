@@ -26,7 +26,7 @@ use CommsyBundle\Event\CommsyEditEvent;
 /**
  * Class GroupController
  * @package CommsyBundle\Controller
- * @Security("is_granted('ITEM_ENTER', roomId)")
+ * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'group')")
  */
 class GroupController extends Controller
 {
@@ -354,7 +354,7 @@ class GroupController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
+     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'group')")
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
@@ -368,9 +368,10 @@ class GroupController extends Controller
 
         if($infoArray['group']->isGroupRoomActivated()) {
             $userService = $this->get('commsy_legacy.user_service');
-            if ($infoArray['group']->getGroupRoomItem()) {
+            $groupRoomItem = $infoArray['group']->getGroupRoomItem();
+            if ($groupRoomItem && !empty($groupRoomItem)) {
                 $memberStatus = $userService->getMemberStatus(
-                    $infoArray['group']->getGroupRoomItem(),
+                    $groupRoomItem,
                     $legacyEnvironment->getCurrentUser()
                 );
             } else {
@@ -398,6 +399,8 @@ class GroupController extends Controller
         $markupService = $this->get('commsy_legacy.markup');
         $itemService = $this->get('commsy_legacy.item_service');
         $markupService->addFiles($itemService->getItemFileList($itemId));
+
+        $roomService = $this->get('commsy_legacy.room_service');
 
         return array(
             'roomId' => $roomId,
@@ -429,6 +432,7 @@ class GroupController extends Controller
             'pathTopicItem' => $pathTopicItem,
             'isArchived' => $roomItem->isArchived(),
             'lastModeratorStanding' => $this->userIsLastGrouproomModerator($infoArray['group']->getGroupRoomItem()),
+            'userRubricVisible' => in_array("user", $roomService->getRubricInformation($roomId)),
        );
     }
 
@@ -486,17 +490,17 @@ class GroupController extends Controller
         $item = $group;
         $reader_manager = $legacyEnvironment->getReaderManager();
         $reader = $reader_manager->getLatestReader($item->getItemID());
-        if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
+        // when group is newly created, "modificationDate" is equal to "reader['read_date']", so operator "<=" instead of "<" should be used here
+        if(empty($reader) || $reader['read_date'] <= $item->getModificationDate()) {
             $reader_manager->markRead($item->getItemID(), $item->getVersionID());
         }
 
         $noticed_manager = $legacyEnvironment->getNoticedManager();
         $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
-        if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
+        // when group is newly created, "modificationDate" is equal to "noticed['read_date']", so operator "<=" instead of "<" should be used here
+        if(empty($noticed) || $noticed['read_date'] <= $item->getModificationDate()) {
             $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
         }
-
-        
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
@@ -677,6 +681,8 @@ class GroupController extends Controller
      */
     public function createAction($roomId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
         $groupService = $this->get('commsy_legacy.group_service');
         
         // create new group item
@@ -684,6 +690,9 @@ class GroupController extends Controller
         $groupItem->setDraftStatus(1);
         $groupItem->setPrivateEditing(1);
         $groupItem->save();
+
+        // add current user to new group
+        $groupItem->addMember($legacyEnvironment->getCurrentUser());
 
         return $this->redirectToRoute('commsy_group_detail', array('roomId' => $roomId, 'itemId' => $groupItem->getItemId()));
     }
@@ -702,7 +711,7 @@ class GroupController extends Controller
     /**
      * @Route("/room/{roomId}/group/{itemId}/edit")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'group')")
      */
     public function editAction($roomId, $itemId, Request $request)
     {
@@ -800,7 +809,7 @@ class GroupController extends Controller
     /**
      * @Route("/room/{roomId}/group/{itemId}/save")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'group')")
      */
     public function saveAction($roomId, $itemId, Request $request)
     {
@@ -883,7 +892,7 @@ class GroupController extends Controller
     /**
      * @Route("/room/{roomId}/group/{itemId}/editgrouproom")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'group')")
      */
     public function editgrouproomAction($roomId, $itemId, Request $request)
     {
@@ -919,7 +928,7 @@ class GroupController extends Controller
             if ($saveType == 'save') {
 
                 $originalGroupName = "";
-                if ($groupItem->getGroupRoomItem()) {
+                if ($groupItem->getGroupRoomItem() && !empty($groupItem->getGroupRoomItem())) {
                     $originalGroupName = $groupItem->getGroupRoomItem()->getTitle();
                 }
 
@@ -933,25 +942,26 @@ class GroupController extends Controller
                 $groupRoom = $groupItem->getGroupRoomItem();
 
                 // only initialize the name of the grouproom the first time it is created!
-                if ($originalGroupName == "") {
-                    $translator = $this->get('translator');
-                    $groupRoom->setTitle($groupItem->getTitle() . " (" . $translator->trans('grouproom', [], 'group') . ")");
-                }
-                else {
-                    $groupRoom->setTitle($originalGroupName);
-                }
-                $groupRoom->save(false);
+                if ($groupRoom && !empty($groupRoom)) {
+                    if ($originalGroupName == "") {
+                        $translator = $this->get('translator');
+                        $groupRoom->setTitle($groupItem->getTitle() . " (" . $translator->trans('grouproom', [], 'group') . ")");
+                    } else {
+                        $groupRoom->setTitle($originalGroupName);
+                    }
+                    $groupRoom->save(false);
 
-                $calendarsService = $this->get('commsy.calendars_service');
-                $calendarsService->createCalendar($groupRoom, null, null, true);
+                    $calendarsService = $this->get('commsy.calendars_service');
+                    $calendarsService->createCalendar($groupRoom, null, null, true);
 
-                // take values from a template?
-                if ($form->has('master_template')) {
-                    $masterTemplate = $form->get('master_template')->getData();
+                    // take values from a template?
+                    if ($form->has('master_template')) {
+                        $masterTemplate = $form->get('master_template')->getData();
 
-                    $masterRoom = $this->get('commsy_legacy.room_service')->getRoomItem($masterTemplate);
-                    if ($masterRoom) {
-                        $groupRoom = $this->copySettings($masterRoom, $groupRoom);
+                        $masterRoom = $this->get('commsy_legacy.room_service')->getRoomItem($masterTemplate);
+                        if ($masterRoom) {
+                            $groupRoom = $this->copySettings($masterRoom, $groupRoom);
+                        }
                     }
                     $groupItem->save(true);
                 }
@@ -972,7 +982,7 @@ class GroupController extends Controller
     /**
      * @Route("/room/{roomId}/date/{itemId}/savegrouproom")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'group')")
      */
     public function savegrouproomAction($roomId, $itemId, Request $request)
     {
@@ -1058,7 +1068,6 @@ class GroupController extends Controller
     public function joinAction($roomId, $itemId, $joinRoom, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
@@ -1159,7 +1168,7 @@ class GroupController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
+     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'group')")
      */
     public function membersAction($roomId, $itemId, Request $request)
     {
@@ -1180,7 +1189,7 @@ class GroupController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
+     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'group')")
      */
     public function groupRoomAction($roomId, $itemId, Request $request)
     {

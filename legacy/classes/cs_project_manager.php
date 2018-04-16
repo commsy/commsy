@@ -216,6 +216,9 @@ class cs_project_manager extends cs_room2_manager {
      if ( !empty($this->_search_array) ) {
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' AS user2 ON user2.context_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND user2.deletion_date IS NULL AND user2.is_contact="1"';
      }
+     if ( isset($this->_sort_order) and ($this->_sort_order == 'modificator' || $this->_sort_order == 'modificator_rev') ) {
+        $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' AS modificator ON (modificator.item_id='.$this->addDatabasePrefix($this->_db_table).'.modifier_id)';
+     }
      if ( isset($this->_community_room_limit) ) {
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l31.second_item_type="'.CS_COMMUNITY_TYPE.'"))) ';
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND l32.first_item_type="'.CS_COMMUNITY_TYPE.'"))) ';
@@ -393,6 +396,14 @@ class cs_project_manager extends cs_room2_manager {
            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.activity ASC,'.$this->addDatabasePrefix($this->_db_table).'.title';
         } elseif ($this->_sort_order == 'activity_rev') {
            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.activity DESC,'.$this->addDatabasePrefix($this->_db_table).'.title';
+        } elseif ($this->_sort_order == 'date') {
+            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.modification_date ASC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
+        } elseif ($this->_sort_order == 'date_rev') {
+            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
+        } elseif ($this->_sort_order == 'modificator') {
+            $query .= ' ORDER BY modificator.lastname, modificator.firstname, '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC';
+        } elseif ($this->_sort_order == 'modificator_rev') {
+            $query .= ' ORDER BY modificator.lastname DESC, modificator.firstname DESC, '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC';
         } else {
            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title ASC';
         }
@@ -598,4 +609,3 @@ class cs_project_manager extends cs_room2_manager {
    	}
    }
 }
-?>

@@ -98,6 +98,21 @@ class cs_manager {
    var $_existence_limit = NULL;
    var $_age_limit = NULL;
 
+    /**
+     * @var \DateTime
+     */
+    protected $modificationOlderThenLimit = null;
+
+    /**
+     * @var \DateTime
+     */
+    protected $modificationNewerThenLimit = null;
+
+    /**
+     * @var int[]
+     */
+    protected $excludedIdsLimit = [];
+
    var $_show_not_activated_entries_limit = true;
 
    var $_update_with_changing_modification_information = true;
@@ -206,6 +221,9 @@ class cs_manager {
      $this->_room_array_limit = NULL;
      $this->_show_not_activated_entries_limit = true;
      $this->_id_array_limit = NULL;
+     $this->modificationOlderThenLimit = null;
+     $this->modificationNewerThenLimit = null;
+     $this->excludedIdsLimit = [];
   }
 
   /** reset data
@@ -228,13 +246,15 @@ class cs_manager {
       $this->_id_array_limit = (array)$id_array;
    }
 
-  function showNoNotActivatedEntries(){
-     $this->_show_not_activated_entries_limit = false;
-  }
+    public function showNoNotActivatedEntries()
+    {
+        $this->_show_not_activated_entries_limit = false;
+    }
 
-  function showNotActivatedEntries(){
-     $this->_show_not_activated_entries_limit = true;
-  }
+    public function showNotActivatedEntries()
+    {
+        $this->_show_not_activated_entries_limit = true;
+    }
 
    function setBuzzwordLimit ($limit) {
       $this->_buzzword_limit = (int)$limit;
@@ -519,6 +539,18 @@ class cs_manager {
       $this->_age_limit = (int)$limit;
    }
 
+   public function setModificationOlderThenLimit(\DateTime $olderThen) {
+       $this->modificationOlderThenLimit = $olderThen;
+   }
+
+   public function setModificationNewerThenLimit(\DateTime $newerThen) {
+       $this->modificationNewerThenLimit = $newerThen;
+   }
+
+   public function setExcludedIdsLimit($ids) {
+       $this->excludedIdsLimit = $ids;
+   }
+
   function saveWithoutChangingModificationInformation () {
      $this->_update_with_changing_modification_information = false;
   }
@@ -529,7 +561,7 @@ class cs_manager {
     * @return integer error number
     */
   function getErrorNumber () {
-     return $this->_db_connector->getErrno();;
+     return $this->_db_connector->getErrno();
   }
 
   /** get error text
@@ -1988,14 +2020,6 @@ class cs_manager {
     }
     
     function importAnnotationsFromXML ($xml, $top_item) {
-       if ($xml != null) {
-         if ($xml->annotations != null) {
-            $annotation_manager = $this->_environment->getAnnotationManager();
-            foreach ($xml->annotations->children() as $annotation_xml) {
-               $temp_annotation_item = $annotation_manager->import_item($annotation_xml, $top_item, $options);
-            }
-         }
-      }
     }
     
     function getFilesAsXML ($itemID) {
@@ -2082,5 +2106,37 @@ class cs_manager {
 
       return $this->_db_connector->performQuery($query);
    }
+
+    /**
+     * @param int[] $contextIds List of context ids
+     * @param array Limits for buzzwords / categories
+     * @param \DateTime $newerThen The oldest modification date to consider
+     * @param int[] $excludedIds Ids to exclude
+     *
+     * @return \cs_list
+     */
+    protected function setGenericNewestItemsLimits($contextIds, $limits, \DateTime $newerThen = null, $excludedIds = [])
+    {
+        $this->reset();
+
+        $this->setContextArrayLimit($contextIds);
+        $this->setDeleteLimit(true);
+        $this->showNoNotActivatedEntries();
+
+        if ($newerThen) {
+            $this->setModificationNewerThenLimit($newerThen);
+        }
+
+        if ($excludedIds) {
+            $this->setExcludedIdsLimit($excludedIds);
+        }
+
+        if (isset($limits['buzzword'])) {
+            $this->setBuzzwordLimit($limits['buzzword']);
+        }
+
+        if (isset($limits['categories'])) {
+            $this->setTagArrayLimit($limits['categories']);
+        }
+    }
 }
-?>

@@ -1862,18 +1862,26 @@ class cs_context_item extends cs_item {
       }
     }
 
-    // if a plugin is deleted, remove it from HomeConf
-    $retour = array();
-    $rubric_array = explode(',',$rubricsString);
-    foreach ( $rubric_array as $rubric ) {
-      $rubric2_array = explode('_',$rubric);
-      if ( in_array($rubric2_array[0],$this->_default_rubrics_array) ) {
-        $retour[] = implode('_',$rubric2_array);
+    // if a plugin is deleted, or a rubric configuration is faulty, remove it from HomeConf
+      if ( !empty($rubricsString) ) {
+        $retour = array();
+        $rubric_array = explode(',', $rubricsString);
+        foreach ($rubric_array as $rubric) {
+          if (strpos($rubric, '_') === false) {
+            continue;
+          }
+          list($rubricType, $rubricConf) = explode('_', $rubric);
+          if (!empty($rubricType) && !empty($rubricConf) &&
+            in_array($rubricType, $this->_default_rubrics_array)) {
+            $retour[] = $rubricType . '_' . $rubricConf;
+          }
+        }
+
+        $rubricsString = "";
+        if (!empty($retour)) {
+            $rubricsString = implode(',', $retour);
+        }
       }
-    }
-    if ( !empty($retour) ) {
-      $rubricsString = implode(',',$retour);
-    }
 
     return $rubricsString;
   }
@@ -4112,15 +4120,13 @@ class cs_context_item extends cs_item {
       $current_room_modules = $this->getHomeConf();
       //rubric is mentioned? if not -> false
       if ( !empty ($rubric_type) and mb_stristr($current_room_modules,$rubric_type) ) {
-        //if rubric is mentioned as <rubric>_none ->false
-        if (mb_stristr($current_room_modules,$rubric_type.'_none') ) {
+        // for <rubric>_none, _rubric_support[<rubric>] previously was set to false; however,
+        // it now contains true since rubrics with <rubric>_none are activated in CS9 (while
+        // they were deactivated in CS8)
+        if ($this->isExtraRubric($rubric_type) and !$this->showExtraRubric($rubric_type)) {
           $this->_rubric_support[$rubric_type] = false;
         } else {
-          if ($this->isExtraRubric($rubric_type) and !$this->showExtraRubric($rubric_type)) {
-            $this->_rubric_support[$rubric_type] = false;
-          } else {
-            $this->_rubric_support[$rubric_type] = true;
-          }
+          $this->_rubric_support[$rubric_type] = true;
         }
       } else {
         $this->_rubric_support[$rubric_type] = false;

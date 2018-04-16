@@ -16,10 +16,10 @@ $message["GROUPROOM_MAIL_BODY_PROJECT_ROOMS_EMPTY"]["en"] = "*no %_PROJECT_SUB_N
 $message["GROUPROOM_MAIL_BODY_REOPEN"]["en"] = "Group workspace unblocked.";
 $message["GROUPROOM_MAIL_BODY_UNDELETE"]["en"] = "Group workspace restored.";
 $message["GROUPROOM_MAIL_BODY_UNLOCK"]["en"] = "Unblocking group workspace.";
-$message["GROUPROOM_MAIL_SEND_WHY_GROUP"]["en"] = "This e-mail was sent to you as a moderator of group workspace %1.";
+$message["GROUPROOM_MAIL_SEND_WHY_GROUP"]["en"] = "This e-mail was sent to you as a moderator of group workspace &quot;%1&quot;.";
 $message["GROUPROOM_MODERATORS"]["en"] = "Group workspace moderators";
 $message["GROUPROOM_PORTAL_SELECT_TITLE"]["en"] = "group workspaces";
-$message["GROUPROOM_USER_JOIN_CONTEXT_MAIL_BODY"]["en"] = "%1 requests admission [%2] for group workspace %4.
+$message["GROUPROOM_USER_JOIN_CONTEXT_MAIL_BODY"]["en"] = "%1 requests admission [%2] for group workspace &quot;%4&quot;.
 
 Details:
 Name: %1

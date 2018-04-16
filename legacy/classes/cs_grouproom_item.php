@@ -55,13 +55,13 @@ class cs_grouproom_item extends cs_room_item {
       $this->_default_rubrics_array[5] = CS_USER_TYPE;
       $this->_default_rubrics_array[6] = CS_TOPIC_TYPE;
 
-      $this->_default_home_conf_array[CS_ANNOUNCEMENT_TYPE] = 'none';
-      $this->_default_home_conf_array[CS_TODO_TYPE] = 'none';
+      $this->_default_home_conf_array[CS_ANNOUNCEMENT_TYPE] = 'tiny';
+      $this->_default_home_conf_array[CS_TODO_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_DATE_TYPE] = 'short';
       $this->_default_home_conf_array[CS_MATERIAL_TYPE] = 'short';
       $this->_default_home_conf_array[CS_DISCUSSION_TYPE] = 'short';
       $this->_default_home_conf_array[CS_USER_TYPE] = 'tiny';
-      $this->_default_home_conf_array[CS_TOPIC_TYPE] = 'none';
+      $this->_default_home_conf_array[CS_TOPIC_TYPE] = 'tiny';
    }
 
    public function isGroupRoom () {
@@ -233,6 +233,11 @@ class cs_grouproom_item extends cs_room_item {
       }
       unset($current_portal_item);
 
+      // detach grouproom from group
+      $group = $this->getLinkedGroupItem();
+      $group->unsetGroupRoomActive();
+      $group->unsetGroupRoomItemID();
+
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.room');
       $em = $symfonyContainer->get('doctrine.orm.entity_manager');
@@ -242,7 +247,6 @@ class cs_grouproom_item extends cs_room_item {
        if ($this->isArchived()) {
            $repository = $em->getRepository('CommsyBundle:ZzzRoom');
        }
-
        $this->deleteElasticItem($objectPersister, $repository);
    }
 
@@ -265,7 +269,7 @@ class cs_grouproom_item extends cs_room_item {
       $this->_addExtra('ROOM_CONTEXT',(string)$value);
       if ($value == 'uni'){
          $this->setTimeSpread(7);
-         $this->setHomeConf(CS_ANNOUNCEMENT_TYPE.'_short,'.CS_DATE_TYPE.'_short,'.CS_TODO_TYPE.'_none,'.CS_MATERIAL_TYPE.'_tiny,'.CS_DISCUSSION_TYPE.'_tiny,'.CS_USER_TYPE.'_tiny,'.CS_TOPIC_TYPE.'_none,'.CS_GROUP_TYPE.'_short');
+         $this->setHomeConf(CS_ANNOUNCEMENT_TYPE.'_short,'.CS_DATE_TYPE.'_short,'.CS_TODO_TYPE.'_tiny,'.CS_MATERIAL_TYPE.'_tiny,'.CS_DISCUSSION_TYPE.'_tiny,'.CS_USER_TYPE.'_tiny,'.CS_TOPIC_TYPE.'_tiny,'.CS_GROUP_TYPE.'_short');
          $retour = array();
          $retour['NAME'] = CS_TOPIC_TYPE;
          $retour['DE']['GENUS']= 'N';
@@ -332,7 +336,7 @@ class cs_grouproom_item extends cs_room_item {
       // school
       elseif ($value == 'school') {
          $this->setTimeSpread(7);
-         $this->setHomeConf(CS_ANNOUNCEMENT_TYPE.'_short,'.CS_DATE_TYPE.'_short,'.CS_TODO_TYPE.'_none,'.CS_MATERIAL_TYPE.'_tiny,'.CS_DISCUSSION_TYPE.'_tiny,'.CS_USER_TYPE.'_short,'.CS_GROUP_TYPE.'_short,'.CS_TOPIC_TYPE.'_short');
+         $this->setHomeConf(CS_ANNOUNCEMENT_TYPE.'_short,'.CS_DATE_TYPE.'_short,'.CS_TODO_TYPE.'_tiny,'.CS_MATERIAL_TYPE.'_tiny,'.CS_DISCUSSION_TYPE.'_tiny,'.CS_USER_TYPE.'_short,'.CS_GROUP_TYPE.'_short,'.CS_TOPIC_TYPE.'_short');
          $retour['NAME'] = CS_TOPIC_TYPE;
          $retour['DE']['GENUS']= 'N';
          $retour['DE']['NOMS']= 'Fach';
@@ -400,7 +404,7 @@ class cs_grouproom_item extends cs_room_item {
       // project (business)
       elseif ($value == 'project') {
          $this->setTimeSpread(30);
-         $this->setHomeConf(CS_ANNOUNCEMENT_TYPE.'_short,'.CS_DATE_TYPE.'_short,'.CS_TODO_TYPE.'_none,'.CS_MATERIAL_TYPE.'_short,'.CS_DISCUSSION_TYPE.'_tiny,'.CS_USER_TYPE.'_tiny,'.CS_TOPIC_TYPE.'_tiny,'.CS_GROUP_TYPE.'_tiny');
+         $this->setHomeConf(CS_ANNOUNCEMENT_TYPE.'_short,'.CS_DATE_TYPE.'_short,'.CS_TODO_TYPE.'_tiny,'.CS_MATERIAL_TYPE.'_short,'.CS_DISCUSSION_TYPE.'_tiny,'.CS_USER_TYPE.'_tiny,'.CS_TOPIC_TYPE.'_tiny,'.CS_GROUP_TYPE.'_tiny');
          $retour = array();
          $retour['NAME'] = CS_TOPIC_TYPE;
          $retour['DE']['GENUS']= 'N';

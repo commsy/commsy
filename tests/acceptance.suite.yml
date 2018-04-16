@@ -1,0 +1,12 @@
+actor: AcceptanceTester
+modules:
+    enabled:
+        - WebDriver
+        - Db
+        - \Helper\Acceptance
+    config:
+        WebDriver:
+            url: http://commsy_nginx/app_testsuite.php
+            browser: chrome
+            host: commsy_selenium_hub
+            port: 4444

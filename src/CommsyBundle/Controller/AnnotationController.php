@@ -79,41 +79,38 @@ class AnnotationController extends Controller
      */
     public function editAction($roomId, $itemId, Request $request)
     {
-
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
-        $linkedItem = $item->getLinkedItem();
-        $itemType = $linkedItem->getItemType();
-
         $transformer = $this->get('commsy_legacy.transformer.annotation');
 
-        $formData = array();
         $formData = $transformer->transform($item);
 
         $form = $this->createForm(AnnotationType::class, $formData);
         $form->handleRequest($request);
         if ($form->isValid()) {
             if ($form->get('save')->isClicked()) {
+                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                $readerManager = $legacyEnvironment->getReaderManager();
+                $noticedManager = $legacyEnvironment->getNoticedManager();
+
                 $item = $transformer->applyTransformation($item, $form->getData());
                 $item->save();
-            } else if ($form->get('cancel')->isClicked()) {
-                // ToDo ...
+
+                $readerManager->markRead($itemId, 0);
+                $noticedManager->markNoticed($itemId, 0);
             }
 
-            return $this->redirectToRoute('commsy_annotation_success', array('roomId' => $roomId, 'itemId' => $itemId));
-
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
+            return $this->redirectToRoute('commsy_annotation_success', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]);
         }
 
-        return array(
+        return [
             'itemId' => $itemId,
-            'form' => $form->createView()
-        );
-
+            'form' => $form->createView(),
+        ];
     }
 
     /**

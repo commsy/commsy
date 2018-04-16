@@ -484,6 +484,7 @@ class cs_privateroom_item extends cs_room_item
                         $body_title .= $active . '):' . BRLF;
                         $body2 = '';
 
+                        /** @var \cs_annotations_manager $annotation_manager */
                         $annotation_manager = $this->_environment->getManager('annotation');
                         $annotation_manager->setContextLimit($roomItem->getItemID());
                         if ($mail_sequence == 'daily') {

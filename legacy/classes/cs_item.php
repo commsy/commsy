@@ -38,7 +38,9 @@ class cs_item {
    */
    var $_data = array();
 
-
+   /**
+     * @var \cs_environment $_environment
+    */
    var $_environment = null;
    /**
 

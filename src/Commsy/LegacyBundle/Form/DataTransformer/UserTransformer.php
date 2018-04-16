@@ -121,6 +121,10 @@ class UserTransformer implements DataTransformerInterface
             $userObject->setLastname($userData['lastname']);
             $userObject->setLanguage($userData['language']);
 
+            $portalUser->setFirstname($userData['firstname']);
+            $portalUser->setLastname($userData['lastname']);
+            $portalUser->setLanguage($userData['language']);
+
             // since name and language are now configured in the account settings,
             // they always have to be changed for the list of related users as well
             $userList = $userObject->getRelatedUserList();

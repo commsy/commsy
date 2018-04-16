@@ -1,7 +1,7 @@
 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 {% if not feedList is empty %}
     {% for feedItem in feedList %}
-        <article class="uk-comment">
+        <article class="uk-comment" data-item-id="{{ feedItem.itemId }}">
             <i class="{{ macros.iconClassForItemType(feedItem.itemType) }} uk-icon-small"></i>
             {% if feedItem.type != 'date' %}
                 {{ macros.statusColor(readerList, feedItem.itemId) }}
@@ -56,12 +56,17 @@
                 <div>
                     <div class="uk-comment-meta"><a href="{{ app.request.baseURL }}/room/{{ feedItem.contextItem.itemId }}">{{feedItem.contextItem.title|decodeHtmlEntity}}</a></div>
                     <h4 class="uk-comment-title">
-                        <a href="{{ app.request.baseURL }}/room/{{ feedItem.contextItem.itemId }}/{{ feedItem.type }}/{{ feedItem.itemID }}">
-                        {% if feedItem.itemType != 'user' %}
-                            {{ feedItem.title|decodeHtmlEntity }}
-                        {% else %}
-                            {{ feedItem.getFullName }}
+                        {% set feedItemType = feedItem.type %}
+                        {% if feedItem.type == 'label' %}
+                            {% set feedItemType = feedItem.labelType %}
                         {% endif %}
+
+                        <a href="{{ app.request.baseURL }}/room/{{ feedItem.contextItem.itemId }}/{{ feedItemType }}/{{ feedItem.itemID }}">
+                            {% if feedItem.itemType != 'user' %}
+                                {{ feedItem.title|decodeHtmlEntity }} {% if feedItem.itemType == 'date' and feedItem.getRecurrencePattern != '' %} ({{ 'recurring date'|trans({}, 'date') }}) {% endif %}
+                            {% else %}
+                                {{ feedItem.getFullName }}
+                            {% endif %}
                         </a>
                     </h4>
                     {% if feedItem.itemType == 'announcement' %}
