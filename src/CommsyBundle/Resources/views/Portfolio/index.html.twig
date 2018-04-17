@@ -14,9 +14,9 @@
                 {# content #}
                 <div class="uk-grid">
                     <div class="uk-width-1-6 uk-margin-large-top" style="padding-top: 0px; z-index:1;">
-                        <ul class="uk-tab uk-tab-left" data-uk-tab>
-                            <li class="uk-active"><a href="">{{ 'my portfolios'|trans({}, "portfolio") }}</a></li>
-                            <li><a href="">{{ 'external portfolios'|trans({}, "portfolio") }}</a></li>
+                        <ul id="portfolioSourceTabs" class="uk-tab uk-tab-left" data-uk-tab>
+                            <li class="uk-active" data-portfolio-source-id="my-portfolios"><a href="">{{ 'my portfolios'|trans({}, "portfolio") }}</a></li>
+                            <li data-portfolio-source-id="external-portfolios"><a href="">{{ 'external portfolios'|trans({}, "portfolio") }}</a></li>
                         </ul>
                     </div>
 
@@ -24,27 +24,13 @@
 
                         <div class="uk-grid commsy-sticky-table-wrapper">
                             <div class="uk-width-1-1" style="padding-left: 0px; margin-left: -1px;">
-                                <ul class="uk-tab" data-uk-tab>
-                                    <li class="uk-active"><a href="">Portfolio 1</a></li>
-                                    <li class=""><a href="">Portfolio 2</a></li>
-                                    <li class=""><a href="">Portfolio 3</a></li>
-                                    <li class=""><a href="">Portfolio 4</a></li>
-                                    <li class=""><a href="">Portfolio 5</a></li>
-                                    <li class=""><a href="">Portfolio 6</a></li>
-                                    <!-- <li class=""><a href="">Portfolio 7</a></li>
-                                    <li class=""><a href="">Portfolio 8</a></li>
-                                    <li class=""><a href="">Portfolio 9</a></li>
-                                    <li class=""><a href="">Portfolio 10</a></li>
-                                    <li class=""><a href="">Portfolio 11</a></li>
-                                    <li class=""><a href="">Portfolio 12</a></li>
-                                    <li class=""><a href="">Portfolio 13</a></li>
-                                    <li class=""><a href="">Portfolio 14</a></li>
-                                    <li class=""><a href="">Portfolio 15</a></li>
-                                    <li class=""><a href="">Portfolio 16</a></li>
-                                    <li class=""><a href="">Portfolio 17</a></li>
-                                    <li class=""><a href="">Portfolio 18</a></li>
-                                    <li class=""><a href="">Portfolio 19</a></li>
-                                    <li class=""><a href="">Portfolio 20</a></li> -->
+                                <ul id="portfolioTabs" class="uk-tab" data-uk-tab>
+                                    <li class="uk-active" data-portfolio-id="1"><a href="">Portfolio 1</a></li>
+                                    <li class="" data-portfolio-id="2"><a href="">Portfolio 2</a></li>
+                                    <li class="" data-portfolio-id="3"><a href="">Portfolio 3</a></li>
+                                    <li class="" data-portfolio-id="4"><a href="">Portfolio 4</a></li>
+                                    <li class="" data-portfolio-id="5"><a href="">Portfolio 5</a></li>
+                                    <li class="" data-portfolio-id="6"><a href="">Portfolio 6</a></li>
                                 </ul>
                             </div>
                             <div class="uk-width-1-1 uk-overflow-container" style="border:1px solid #dddddd; margin-top:-1px; margin-left:-1px; padding:10px;">
