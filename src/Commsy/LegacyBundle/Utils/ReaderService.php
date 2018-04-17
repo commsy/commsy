@@ -3,16 +3,19 @@
 namespace Commsy\LegacyBundle\Utils;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use Commsy\LegacyBundle\Utils\ItemService;
 
 class ReaderService
 {
     private $legacyEnvironment;
     private $readerManager;
+    private $itemService;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
+    public function __construct(LegacyEnvironment $legacyEnvironment, ItemService $itemService)
     {
         $this->legacyEnvironment = $legacyEnvironment;
         $this->readerManager = $this->legacyEnvironment->getEnvironment()->getReaderManager();
+        $this->itemService = $itemService;
     }
 
     public function getLatestReader($itemId)
@@ -36,10 +39,13 @@ class ReaderService
 
         $readerManager = $this->readerManager;
         $reader = $readerManager->getLatestReaderForUserByID($itemId, $userID);
-        $itemManager = $this->legacyEnvironment->getEnvironment()->getItemManager();
-        $item = $itemManager->getItem($itemId);
+        $item = $this->itemService->getTypedItem($itemId);
         if (empty($reader)) {
-            $return = 'new';
+            $currentUser = $this->legacyEnvironment->getEnvironment()->getCurrentUserItem();
+            $itemIsCurrentUser = ($item instanceof \cs_user_item && $item->getUserID() === $currentUser->getUserID());
+            if (!$itemIsCurrentUser) {
+                $return = 'new';
+            }
         } else if (!$item->isNotActivated() and $reader['read_date'] < $item->getModificationDate()) {
             $return = 'changed';
         }
