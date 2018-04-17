@@ -346,6 +346,16 @@ class UserController extends Controller
                         $userService->updateAllGroupStatus($user, $roomId);
                     }
 
+                    $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                    $readerManager = $legacyEnvironment->getReaderManager();
+                    $noticedManager = $legacyEnvironment->getNoticedManager();
+                    foreach ($users as $user) {
+                        $itemId = $user->getItemID();
+                        $versionId = $user->getVersionID();
+                        $readerManager->markRead($itemId, $versionId);
+                        $noticedManager->markNoticed($itemId, $versionId);
+                    }
+
                     if ($formData['inform_user']) {
                         $this->sendUserInfoMail($formData['userIds'], $formData['status']);
                     }
