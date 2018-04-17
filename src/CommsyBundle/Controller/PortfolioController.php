@@ -31,7 +31,7 @@ class PortfolioController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/portfolio/{portfolioId}/")
+     * @Route("/room/{roomId}/portfolio/{portfolioId}")
      * @Template()
      */
     public function portfolioAction($roomId, $portfolioId = null, Request $request)
