@@ -20,7 +20,7 @@
         //       currentPortfolioId = portfolioId
         //    }
         //}
-        resetPortfolioView();
+        resetPortfolioView(false);
         loadPortfolio(portfolioId);
     }
 
@@ -30,11 +30,17 @@
         //        currentPortfolioSource = portfolioSourceId
         //    }
         //}
-        resetPortfolioView();
+        resetPortfolioView(true);
+        loadPortfolioTabs(portfolioSourceId);
     }
 
-    function resetPortfolioView () {
-        $('#portfolio-table').html('<i class="uk-icon-spinner uk-icon-spin"></i>');
+    function resetPortfolioView (complete) {
+        if (complete) {
+            $('#portfolio-tabs').html('<i class="uk-icon-spinner uk-icon-spin"></i>');
+            $('#portfolio-table').html('');
+        } else {
+            $('#portfolio-table').html('<i class="uk-icon-spinner uk-icon-spin"></i>');
+        }
     }
 
     function loadPortfolio (portfolioId) {
@@ -45,6 +51,17 @@
             UIkit.notify('loaded portfolio', 'success');
         }).fail(function(jqXHR, textStatus, errorThrown) {
             UIkit.notify('fail to load portfolio', 'danger');
+        });
+    }
+
+    function loadPortfolioTabs (portfolioSourceId) {
+        $.ajax({
+            url: $('#portfolio-wrapper').data('portfolio-tabs-url')+'/'+portfolioSourceId,
+        }).done(function(result) {
+            $('#portfolio-tabs').html(result);
+            UIkit.notify('loaded portfolio tabs', 'success');
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            UIkit.notify('fail to load portfolio tabs', 'danger');
         });
     }
 

@@ -31,10 +31,21 @@ class PortfolioController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/portfolio/{portfolioId}")
+     * @Route("/room/{roomId}/portfolio/{portfolioId}", requirements={
+     *     "portfolioId": "\d+"
+     * }))
      * @Template()
      */
     public function portfolioAction($roomId, $portfolioId = null, Request $request)
+    {
+
+    }
+
+    /**
+     * @Route("/room/{roomId}/portfolio/portfoliosource/{source}")
+     * @Template()
+     */
+    public function portfolioTabsAction($roomId, $source = null, Request $request)
     {
 
     }
