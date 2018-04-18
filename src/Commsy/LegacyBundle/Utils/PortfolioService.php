@@ -23,8 +23,96 @@ class PortfolioService
 
     public function getPortfolio($itemId)
     {
-        $portfolio = $this->portfolioManager->getItem($itemId);
-        return $portfolio;
+        $portfolioItem = $this->portfolioManager->getItem($itemId);
+
+        $userManager = $this->legacyEnvironment->getEnvironment()->getUserManager();
+        $userItem = $userManager->getItem($portfolioItem->getCreatorId());
+        $privateRoom = $userItem->getOwnRoom();
+
+        // gather tag information
+        $tags = $this->portfolioManager->getPortfolioTags($itemId);
+        $tagIdArray = array();
+        foreach ($tags as $tag) {
+            $tagIdArray[] = $tag["t_id"];
+        }
+
+        // gather linked cell information
+        $linkManager = $this->legacyEnvironment->getEnvironment()->getLinkItemManager();
+        $links = $linkManager->getALlLinksByTagIDArray($privateRoom->getItemID(), $tagIdArray);
+
+        $rubricArray = array();
+
+        // structure links by rubric
+        if (is_array($links)) {
+            foreach ($links as $link) {
+                if ($link["first_item_type"] === CS_TAG_TYPE) {
+                    $rubricArray[$link["second_item_type"]][$link["first_item_id"]][] = $link["second_item_id"];
+                } else if ($link["second_item_type"] === CS_TAG_TYPE) {
+                    $rubricArray[$link["first_item_type"]][$link["second_item_id"]][] = $link["first_item_id"];
+                }
+            }
+        }
+
+        // fetch items
+        $linkArray = array();
+        foreach ($rubricArray as $rubric => $tagArray) {
+            foreach($tagArray as $tagId => $idArray) {
+                $manager = $this->legacyEnvironment->getEnvironment()->getManager($rubric);
+                $manager->resetLimits();
+                $manager->setIDArrayLimit($idArray);
+                $manager->setContextLimit($privateRoom->getItemID());
+                $manager->select();
+
+                $itemList = $manager->get();
+                $item = $itemList->getFirst();
+
+                while ($item) {
+                    $itemInformation = array(
+                        "itemId"	=> $item->getItemId(),
+                        "title"		=> $item->getTitle()
+                    );
+
+                    $linkArray[$tagId][] = $itemInformation;
+
+                    $item = $itemList->getNext();
+                }
+            }
+        }
+
+        $translator = $this->legacyEnvironment->getEnvironment()->getTranslationObject();
+        $creatorItem = $portfolioItem->getCreatorItem();
+        if (isset($creatorItem) && !$creatorItem->isDeleted()) {
+            if ($creatorItem->isGuest() && $modificator->isVisibleForLoggedIn()) {
+                $fullname = $translator->getMessage("COMMON_USER_NOT_VISIBLE");
+            } else {
+                $fullname = $creatorItem->getFullName();
+            }
+        } else {
+            $fullname = $translator->GetMessage("COMMON_DELETED_USER");
+        }
+
+        $externalViewer = $this->portfolioManager->getExternalViewer($itemId);
+        $externalViewerString = implode(";", $externalViewer);
+
+        $externalTemplate = $this->portfolioManager->getExternalTemplate($itemId);
+        $externalTemplateString = implode(";", $externalTemplate);
+
+        $template = $portfolioItem->isTemplate();
+
+        $return = array(
+            "contextId"			=> $privateRoom->getItemID(),
+            "title"				=> $portfolioItem->getTitle(),
+            "description"		=> $portfolioItem->getDescription(),
+            "externalViewer"	=> $externalViewerString,
+            "externalTemplate"	=> $externalTemplateString,
+            "template"			=> $template,
+            "creator"			=> $fullname,
+            "tags"				=> $tags,
+            "links"				=> $linkArray,
+            "numAnnotations"	=> $this->portfolioManager->getAnnotationCountForPortfolio($itemId)
+        );
+
+        return $return;
     }
 
     public function getPortfolioList()

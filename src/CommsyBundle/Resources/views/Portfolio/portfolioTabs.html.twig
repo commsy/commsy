@@ -1,6 +1,6 @@
 <ul id="portfolioTabs" class="uk-tab" data-uk-tab>
-    {% if portfolioList.myPortfolios %}
-        {% for portfolio in portfolioList.myPortfolios %}
+    {% if portfolios %}
+        {% for portfolio in portfolios %}
             <li {% if loop.first %}class="uk-active"{% endif %} data-portfolio-id="{{ portfolio.id }}"><a href="">{{ portfolio.title }}</a></li>
         {%  endfor %}
     {% endif %}
