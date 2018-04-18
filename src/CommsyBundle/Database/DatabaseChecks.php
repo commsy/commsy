@@ -9,8 +9,10 @@
 namespace CommsyBundle\Database;
 
 
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class DatabaseChecks
@@ -30,7 +32,7 @@ class DatabaseChecks
         $this->checks[] = $check;
     }
 
-    public function runChecks(InputInterface $input, OutputInterface $output)
+    public function runChecks(Command $command, InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -52,8 +54,11 @@ class DatabaseChecks
                 } else {
                     $io->warning('Check found some problems');
 
-                    if ($input->getOption('fix')) {
-                        $io->text('--fix option was given, trying to resolve');
+                    $helper = $command->getHelper('question');
+                    $fixQuestion = new ConfirmationQuestion('Do you want to auto-resolve these issues? ', false);
+
+                    if ($helper->ask($input, $output, $fixQuestion)) {
+                        $io->text('trying to resolve...');
                         if ($check->resolve($io)) {
                             $io->success('Check resolved problems');
                         } else {
@@ -61,7 +66,7 @@ class DatabaseChecks
                             break;
                         }
                     } else {
-                        $io->text('--fix option was not given, skipping');
+                        $io->text('skipping...');
                     }
                 }
             } catch (\Exception $e) {

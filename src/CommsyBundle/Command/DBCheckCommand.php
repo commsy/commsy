@@ -23,17 +23,11 @@ class DBCheckCommand extends Command
         $this
             ->setName('commsy:db:check')
             ->setDescription('Checks the database tables')
-            ->addOption(
-                'fix',
-                null,
-                InputOption::VALUE_NONE,
-                'Try to fix found errors'
-            )
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->databaseChecks->runChecks($input, $output);
+        $this->databaseChecks->runChecks($this, $input, $output);
     }
 }
