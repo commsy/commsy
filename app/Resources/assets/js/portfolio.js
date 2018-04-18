@@ -48,9 +48,9 @@
             url: $('#portfolio-wrapper').data('portfolio-url')+'/'+portfolioId,
         }).done(function(result) {
             $('#portfolio-table').html(result);
-            UIkit.notify('loaded portfolio', 'success');
+            //UIkit.notify('loaded portfolio', 'success');
         }).fail(function(jqXHR, textStatus, errorThrown) {
-            UIkit.notify('fail to load portfolio', 'danger');
+            //UIkit.notify('fail to load portfolio', 'danger');
         });
     }
 
@@ -59,9 +59,9 @@
             url: $('#portfolio-wrapper').data('portfolio-tabs-url')+'/'+portfolioSourceId,
         }).done(function(result) {
             $('#portfolio-tabs').html(result);
-            UIkit.notify('loaded portfolio tabs', 'success');
+            //UIkit.notify('loaded portfolio tabs', 'success');
         }).fail(function(jqXHR, textStatus, errorThrown) {
-            UIkit.notify('fail to load portfolio tabs', 'danger');
+            //UIkit.notify('fail to load portfolio tabs', 'danger');
         });
     }
 

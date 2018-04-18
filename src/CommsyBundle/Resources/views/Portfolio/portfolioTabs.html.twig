@@ -1,8 +1,7 @@
 <ul id="portfolioTabs" class="uk-tab" data-uk-tab>
-    <li class="uk-active" data-portfolio-id="1"><a href="">Portfolio 1</a></li>
-    <li class="" data-portfolio-id="2"><a href="">Portfolio 2</a></li>
-    <li class="" data-portfolio-id="3"><a href="">Portfolio 3</a></li>
-    <li class="" data-portfolio-id="4"><a href="">Portfolio 4</a></li>
-    <li class="" data-portfolio-id="5"><a href="">Portfolio 5</a></li>
-    <li class="" data-portfolio-id="6"><a href="">Portfolio 6</a></li>
+    {% if portfolioList.myPortfolios %}
+        {% for portfolio in portfolioList.myPortfolios %}
+            <li {% if loop.first %}class="uk-active"{% endif %} data-portfolio-id="{{ portfolio.id }}"><a href="">{{ portfolio.title }}</a></li>
+        {%  endfor %}
+    {% endif %}
 </ul>

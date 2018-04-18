@@ -38,7 +38,8 @@ class PortfolioController extends Controller
      */
     public function portfolioAction($roomId, $portfolioId = null, Request $request)
     {
-
+        //$portfolioService = $this->get('commsy_legacy.portfolio_service');
+        //$portfolio = $portfolioService->getPortfolio($portfolioId);
     }
 
     /**
@@ -47,6 +48,11 @@ class PortfolioController extends Controller
      */
     public function portfolioTabsAction($roomId, $source = null, Request $request)
     {
+        $portfolioService = $this->get('commsy_legacy.portfolio_service');
+        $portfolioList = $portfolioService->getPortfolioList();
 
+        return array(
+            'portfolioList' => $portfolioList,
+        );
     }
 }
