@@ -1,21 +1,100 @@
-<table class="uk-table uk-text-center uk-table-middle commsy-sticky-table-spacer">
+<table class="uk-table uk-text-center uk-table-middle commsy-sticky-table-spacer" border="1">
     <!-- table header row - first cell is empty and sticky, the other cells show the categories-->
     <tr>
         <th class="commsy-sticky-table-cell">&nbsp;</th>
         {% for tag in portfolio.tags %}
             {% if tag.row == 0 %}
-                <th>{{ tag.title }}</th>
+                <th>{{ tag.title }} {{ tag.t_id }}</th>
             {% endif %}
         {% endfor %}
     </tr>
 
-    <!-- Rows with categories column (first one, sticky) and content -->
+    <!-- Rows with categories column (first column; sticky) and content -->
     {% for tag in portfolio.tags %}
-        {% if tag.column == 0 %}
+        {% if tag.row != 0 %}
             <tr>
-                <th class="commsy-sticky-table-cell">{{ tag.title }}</th>
-                <td>Content</td>
+                {% if tag.column == 0 %}
+                    <th class="commsy-sticky-table-cell">{{ tag.title }} {{ tag.t_id }}</th>
+
+                    {% for link in linkPositions %}
+                        {% for secondTag in portfolio.tags %}
+                            {% if secondTag.row == 0 %}
+
+                                {% set foundContent = false %}
+                                {% set content = '' %}
+                                {% for linkData in link %}
+                                    {% if (linkData[0] == tag.t_id and linkData[1] == secondTag.t_id) or (linkData[1] == tag.t_id and linkData[0] == secondTag.t_id) %}
+                                        {% set foundContent = true %}
+                                        {% set content = content ~ 'Content' ~ tag.t_id ~ secondTag.t_id %}
+                                    {% endif %}
+                                {% endfor %}
+                                {% if foundContent %}
+                                <td>
+                                    {{ content }}
+                                </td>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+
+                {% endif %}
             </tr>
         {% endif %}
     {% endfor %}
 </table>
+
+<!--
+
+Array
+(
+    [5180947] => Array
+        (
+            [0] => Array
+                (
+                    [0] => 5180910
+                    [1] => 5180911
+                )
+
+        )
+
+    [5180935] => Array
+        (
+            [0] => Array
+                (
+                    [0] => 5180910
+                    [1] => 5180912
+                )
+
+            [1] => Array
+                (
+                    [0] => 5180911
+                    [1] => 5180912
+                )
+
+            [2] => Array
+                (
+                    [0] => 5180912
+                    [1] => 5180913
+                )
+
+        )
+
+    [5180919] => Array
+        (
+            [0] => Array
+                (
+                    [0] => 5180910
+                    [1] => 5180913
+                )
+
+            [1] => Array
+                (
+                    [0] => 5180911
+                    [1] => 5180913
+                )
+
+        )
+
+)
+
+-->
