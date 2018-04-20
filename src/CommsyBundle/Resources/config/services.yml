@@ -623,6 +623,14 @@ services:
         tags:
             - commsy.database.check
 
+    commsy.database.checks.files:
+        class: CommsyBundle\Database\FixFiles
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@commsy_legacy.environment'
+        tags:
+            - commsy.database.check
+
     # API
     commsy.api.soap:
         class: CommsyBundle\Services\SoapService

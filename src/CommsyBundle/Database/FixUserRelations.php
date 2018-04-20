@@ -35,56 +35,52 @@ class FixUserRelations implements DatabaseCheck
 
     public function getPriority()
     {
-        return 300;
+        return 201;
     }
 
     public function check(SymfonyStyle $io)
     {
         $io->text('Inspecting tables with user relations');
 
-        $genericUserRelatedTables = [
-            'annotations',
-            'announcement',
-            'assessments',
-            'dates',
-            'discussionarticles',
-            'discussions',
-            'files',
-            'labels',
-            'link_items',
-            'materials',
-            'portal',
-            'portfolio',
-            'room',
-            'room_privat',
-            'section',
-            'server',
-            'step',
-            'tag',
-            'tasks',
-            'todos',
-            'user'
-        ];
+        $schemaManager = $this->em->getConnection()->getSchemaManager();
+        $tables = $schemaManager->listTables();
 
-        foreach ($genericUserRelatedTables as $genericUserRelatedTable) {
-            $io->text('Inspecting table "' . $genericUserRelatedTable . '"');
+        foreach ($tables as $table) {
+            if (substr($table->getName(), 0, 4) === 'zzz_') {
+                continue;
+            }
 
-            $qb = $this->em->getConnection()->createQueryBuilder()
-                ->select('t.creator_id'/*, 't.modifier_id'*/)
-                ->from($genericUserRelatedTable, 't')
-                ->leftJoin('t', 'user', 'c', 't.creator_id = c.item_id')
-                ->where('t.deleter_id IS NULL')
-                ->andWhere('t.deletion_date IS NULL')
-                ->andWhere('c.item_id IS NULL');
+            $io->text('Inspecting table "' . $table->getName() . '"');
 
-            $missingRelations = $qb->execute();
+            foreach ($table->getColumns() as $column) {
+                if (!in_array($column->getName(), ['creator_id', 'modifier_id'])) {
+                    continue;
+                }
 
-            if ($missingRelations->rowCount() > 0) {
-                $io->warning('Missing user relations found');
+                $io->text('Inspecting column "' . $table->getName() . '" - "' . $column->getName() . '"');
 
-                $this->fixes[] = [
-                    $genericUserRelatedTable,
-                ];
+                $qb = $this->em->getConnection()->createQueryBuilder()
+                    ->select('t.' . $column->getName() . ' AS missingId')
+                    ->from($table->getName(), 't')
+                    ->leftJoin('t', 'user', 'c', 't.' . $column->getName() . ' = c.item_id')
+                    ->where('t.' . $column->getName() . ' IS NOT NULL')
+                    ->andWhere('c.item_id IS NULL');
+
+                if ($table->hasColumn('deletion_date')) {
+                    $qb->andWhere('t.deletion_date IS NULL');
+                }
+
+                $missingRelations = $qb->execute();
+
+                if ($missingRelations->rowCount() > 0) {
+                    foreach ($missingRelations as $missingRelation) {
+                        $io->warning('Missing user relations found - "' . $table->getName() . '" - "' . $column->getName() . '" - user with id "' . $missingRelation['missingId'] . '" not present');
+                    }
+
+                    $this->fixes[] = [
+                        $table->getName(),
+                    ];
+                }
             }
         }
 
