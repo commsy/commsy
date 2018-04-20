@@ -665,15 +665,16 @@ class cs_material_item extends cs_item {
       return $this->_data['section_for'];
    }
 
-   function getAnnotationList() {
-      $annotation_manager = $this->_environment->getAnnotationManager();
-      $annotation_manager->reset();
-      $annotation_manager->setLinkedItemID($this->getItemID());
-#      $annotation_manager->setLinkedVersionID($this->getVersionID());
-      $annotation_manager->setContextLimit($this->getContextID());
-      $annotation_manager->select();
-      return $annotation_manager->get();
-   }
+    public function getAnnotationList()
+    {
+        $annotation_manager = $this->_environment->getAnnotationManager();
+        $annotation_manager->reset();
+        $annotation_manager->setLinkedItemID($this->getItemID());
+#       $annotation_manager->setLinkedVersionID($this->getVersionID());
+        $annotation_manager->setContextLimit($this->getContextID());
+        $annotation_manager->select();
+        return $annotation_manager->get();
+    }
 
   function selectAttachedItems(){
       $link_manager = $this->_environment->getLinkManager();
