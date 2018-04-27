@@ -106,9 +106,11 @@ else {
             include_once('functions/error_functions.php');trigger_error('no reveiver selected',E_USER_ERROR);
          }
          $mail->set_to($receivers);
-         //$mail->set_from_name($_POST['sender_name']);
-         //$mail->set_from_email($_POST['sender_email']);
-         $mail->set_from_email($environment->getServerItem()->getDefaultSenderAddress());
+
+          global $symfonyContainer;
+          $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+          $mail->set_from_email($emailFrom);
+
          $mail->set_from_name($environment->getCurrentPortalItem()->getTitle());
          $mail->set_subject($_POST['subject']);
          $mail->set_message($_POST['content']);

@@ -253,9 +253,11 @@
                include_once('classes/cs_mail.php');
                $mail = new cs_mail();
                $mail->set_to(implode(',',$email_addresses));
-               $server_item = $environment->getServerItem();
-               $default_sender_address = $server_item->getDefaultSenderAddress();
-               $mail->set_from_email($default_sender_address);
+
+                global $symfonyContainer;
+                $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+                $mail->set_from_email($emailFrom);
+
                $current_context = $environment->getCurrentContextItem();
                $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_context->getTitle()));
                $mail->set_reply_to_name($user_item->getFullname());
@@ -318,9 +320,11 @@
                $mail = new cs_mail();
                $mail->set_to($user_item->getEmail());
                $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
-               $server_item = $environment->getServerItem();
-               $default_sender_address = $server_item->getDefaultSenderAddress();
-               $mail->set_from_email($default_sender_address);
+
+                global $symfonyContainer;
+                $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+                $mail->set_from_email($emailFrom);
+
                $mail->set_reply_to_email($contact_moderator->getEmail());
                $mail->set_reply_to_name($contact_moderator->getFullname());
                $mail->set_subject($subject);

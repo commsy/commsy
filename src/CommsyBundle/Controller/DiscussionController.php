@@ -20,6 +20,11 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 use CommsyBundle\Event\CommsyEditEvent;
 
+/**
+ * Class DiscussionController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'discussion')")
+ */
 class DiscussionController extends Controller
 {
     // setup filter form default values
@@ -260,7 +265,7 @@ class DiscussionController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
+     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'discussion')")
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
@@ -736,7 +741,7 @@ class DiscussionController extends Controller
     
     /**
      * @Route("/room/{roomId}/discussion/{itemId}/delete")
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")
      **/
     public function deleteAction($roomId, $itemId, Request $request)
     {
@@ -763,7 +768,7 @@ class DiscussionController extends Controller
     /**
      * @Route("/room/{roomId}/discussion/{itemId}/createarticle")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")
      */
     public function createArticleAction($roomId, $itemId, Request $request)
     {
@@ -867,7 +872,7 @@ class DiscussionController extends Controller
         /**
      * @Route("/room/{roomId}/discussion/{itemId}/editarticles")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")
      */
     public function editArticlesAction($roomId, $itemId, Request $request)
     {
@@ -886,7 +891,7 @@ class DiscussionController extends Controller
     /**
      * @Route("/room/{roomId}/discussion/{itemId}/edit")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")
      */
     public function editAction($roomId, $itemId, Request $request)
     {
@@ -1019,7 +1024,7 @@ class DiscussionController extends Controller
     /**
      * @Route("/room/{roomId}/discussion/{itemId}/save")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")
      */
     public function saveAction($roomId, $itemId, Request $request)
     {
@@ -1139,7 +1144,7 @@ class DiscussionController extends Controller
     
     /**
      * @Route("/room/{roomId}/discussion/{itemId}/savearticle")
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")
      */
     public function saveArticleAction($roomId, $itemId, Request $request)
     {

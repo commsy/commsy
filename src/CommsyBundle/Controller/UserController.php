@@ -25,12 +25,17 @@ use CommsyBundle\Form\Type\UserSendType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
+/**
+ * Class UserController
+ * @package CommsyBundle\Controller
+ */
 class UserController extends Controller
 {
 
     /**
      * @Route("/room/{roomId}/user/feed/{start}/{sort}")
      * @Template()
+     * @Security("is_granted('RUBRIC_SEE', 'user')")
      */
     public function feedAction($roomId, $max = 10, $start = 0, $sort = 'name', Request $request)
     {
@@ -40,6 +45,7 @@ class UserController extends Controller
     /**
      * @Route("/room/{roomId}/user/grid/{start}/{sort}")
      * @Template()
+     * @Security("is_granted('RUBRIC_SEE', 'user')")
      */
     public function gridAction($roomId, $max = 10, $start = 0, $sort = 'name', Request $request)
     {
@@ -51,6 +57,7 @@ class UserController extends Controller
      *       "view": "feedView|gridView"
      * })
      * @Template()
+     * @Security("is_granted('RUBRIC_SEE', 'user')")
      */
     public function listAction($roomId, $view, Request $request)
     {
@@ -159,6 +166,7 @@ class UserController extends Controller
 
     /**
      * @Route("/room/{roomId}/user/print/{sort}", defaults={"sort" = "none"})
+     * @Security("is_granted('RUBRIC_SEE', 'user')")
      */
     public function printlistAction($roomId, Request $request, $sort)
     {
@@ -334,7 +342,19 @@ class UserController extends Controller
                     }
 
                     $userService = $this->get('commsy_legacy.user_service');
-                    $userService->updateAllGroupStatus($user, $roomId);
+                    foreach ($users as $user) {
+                        $userService->updateAllGroupStatus($user, $roomId);
+                    }
+
+                    $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                    $readerManager = $legacyEnvironment->getReaderManager();
+                    $noticedManager = $legacyEnvironment->getNoticedManager();
+                    foreach ($users as $user) {
+                        $itemId = $user->getItemID();
+                        $versionId = $user->getVersionID();
+                        $readerManager->markRead($itemId, $versionId);
+                        $noticedManager->markNoticed($itemId, $versionId);
+                    }
 
                     if ($formData['inform_user']) {
                         $this->sendUserInfoMail($formData['userIds'], $formData['status']);
@@ -521,7 +541,7 @@ class UserController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
+     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'user')")
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
@@ -762,7 +782,7 @@ class UserController extends Controller
     /**
      * @Route("/room/{roomId}/user/{itemId}/edit")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'user')")
      */
     public function editAction($roomId, $itemId, Request $request)
     {
@@ -825,7 +845,7 @@ class UserController extends Controller
     /**
      * @Route("/room/{roomId}/user/{itemId}/save")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'user')")
      */
     public function saveAction($roomId, $itemId, Request $request)
     {
@@ -1040,7 +1060,7 @@ class UserController extends Controller
     /**
      * @Route("/room/{roomId}/user/{itemId}/send")
      * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
+     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'user')")
      */
     public function sendAction($roomId, $itemId, Request $request)
     {
@@ -1337,11 +1357,23 @@ class UserController extends Controller
 
         $userService = $this->get('commsy_legacy.user_service');
 
+        $validator = new EmailValidator();
+        $replyTo = [];
+        $currentUserEmail = $currentUser->getEmail();
+        if ($validator->isValid($currentUserEmail, new RFCValidation())) {
+            if ($currentUser->isEmailVisible()) {
+                $replyTo[$currentUserEmail] = $currentUser->getFullName();
+            }
+        }
+
+        $users = [];
+        $failedUsers = [];
         foreach ($userIds as $userId) {
             $user = $userService->getUser($userId);
 
-            $email = $user->getEmail();
-            if (!empty($email)) {
+            $userEmail = $user->getEmail();
+            if (!empty($userEmail) && $validator->isValid($userEmail, new RFCValidation())) {
+                $to = [$userEmail => $user->getFullname()];
                 $subject = $accountMail->generateSubject($action);
                 $body = $accountMail->generateBody($user, $action);
 
@@ -1349,11 +1381,33 @@ class UserController extends Controller
                     ->setSubject($subject)
                     ->setBody($body, 'text/plain')
                     ->setFrom([$fromAddress => $fromSender])
-                    ->setReplyTo([$currentUser->getEmail() => $currentUser->getFullname()])
-                    ->setTo([$email]);
+                    ->setReplyTo($replyTo);
+
+                if ($user->isEmailVisible()) {
+                    $mailMessage->setTo($to);
+                } else {
+                    $mailMessage->setBcc($to);
+                }
 
                 // send mail
-                $mailer->send($mailMessage);
+                $failedRecipients = [];
+                $mailer->send($mailMessage, $failedRecipients);
+            } else {
+                $failedUsers[] = $user;
+            }
+        }
+
+        foreach ($failedUsers as $failedUser) {
+            $this->addFlash('failedRecipients', $failedUser->getUserId());
+        }
+
+        foreach ($failedRecipients as $failedRecipient) {
+            $failedUser = array_filter($users, function($user) use ($failedRecipient) {
+                return $user->getEmail() == $failedRecipient;
+            });
+
+            if ($failedUser) {
+                $this->addFlash('failedRecipients', $failedUser[0]->getUserId());
             }
         }
     }

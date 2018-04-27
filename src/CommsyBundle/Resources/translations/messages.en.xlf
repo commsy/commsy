@@ -395,6 +395,10 @@
                 <source>leave</source>
                 <target>Leave</target>
             </trans-unit>
+            <trans-unit id="withGrouproom">
+                <source>withGrouproom</source>
+                <target>(incl. grouproom)</target>
+            </trans-unit>
             <trans-unit id="groupJoined">
                 <source>Joined group %s</source>
                 <target>Joined group %s</target>

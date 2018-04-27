@@ -23,6 +23,11 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use CommsyBundle\Event\CommsyEditEvent;
 
+/**
+ * Class ItemController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_ENTER', roomId)")
+ */
 class ItemController extends Controller
 {
     /**

@@ -66,7 +66,6 @@ class cs_popup_mailtogroup_controller implements cs_popup_controller {
 			$recipientsBCC = array_unique($recipientsBCC);
 			
 			$serverItem = $this->_environment->getServerItem();
-			$defaultSenderAddress = $serverItem->getDefaultSenderAddress();
 			
 			$currentUser = $this->_environment->getCurrentUser();
 			$mail["from_name"] = $currentUser->getFullName();
@@ -78,7 +77,11 @@ class cs_popup_mailtogroup_controller implements cs_popup_controller {
 			$mail["message"] = $form_data["mailcontent"];
 			
 			$email = new cs_mail();
-			$email->set_from_email($this->_environment->getServerItem()->getDefaultSenderAddress());
+
+            global $symfonyContainer;
+            $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+            $mail->set_from_email($emailFrom);
+
             $email->set_from_name($this->_environment->getCurrentPortalItem()->getTitle());
 			$email->set_reply_to_name($mail["reply_to_name"]);
 			$email->set_reply_to_email($mail["reply_to_email"]);

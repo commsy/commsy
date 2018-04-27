@@ -102,11 +102,16 @@ class MailAssistant
 
         $recipients = $this->getRecipients($formData, $item);
 
+        $replyTo = [];
+        if ($currentUser->isEmailVisible()) {
+            $replyTo[$currentUser->getEmail()] = $currentUser->getFullName();
+        }
+
         $message = \Swift_Message::newInstance()
             ->setSubject($formData['subject'])
             ->setBody($formData['message'], 'text/html')
             ->setFrom([$this->from => $portalItem->getTitle()])
-            ->setReplyTo([$currentUser->getEmail() => $currentUser->getFullName()])
+            ->setReplyTo($replyTo)
             ->setTo($recipients['to'])
             ->setBcc($recipients['bcc']);
 

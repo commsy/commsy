@@ -85,26 +85,26 @@ $message["PREFERENCES_PORTAL_DEFAULT"]["de"] = "Portal (Default)";
 $message["PREFERENCES_PORTAL_DEFAULT_OVERVIEW"]["de"] = "Portalübersicht";
 $message["PREFERENCES_REALLY_DELETE_BUTTON"]["de"] = "Teilnahme löschen (%1)";
 $message["PREFERENCES_REALLY_DELETE_BUTTON_ROOM"]["de"] = "Teilnahme löschen in diesem Raum";
-$message["PREFERENCES_REALLY_DELETE_DESC"]["de"] = "Alternativ können Sie für das gesamte CommSy Portal %1 und alle Räume:
+$message["PREFERENCES_REALLY_DELETE_DESC"]["de"] = "Alternativ können Sie für das gesamte CommSy Portal &quot;%1&quot; und alle Räume:
 <ul><li>*%2* oder</li><li>*%3*.</li></ul>";
-$message["PREFERENCES_REALLY_DELETE_DESC_PORTAL"]["de"] = "Sie haben zwei Möglichkeiten:<ul><li>Wenn Sie <b>%2</b> wählen, wird ihre Kennung für das Portal %1 und alle Ihre Raum gesperrt. Sie haben dann keinen Zutritt mehr zu Ihren Räumen auf dem Portal %1. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihre Teilnahme beenden.
+$message["PREFERENCES_REALLY_DELETE_DESC_PORTAL"]["de"] = "Sie haben zwei Möglichkeiten:<ul><li>Wenn Sie <b>%2</b> wählen, wird ihre Kennung für das Portal &quot;%1&quot; und alle Ihre Raum gesperrt. Sie haben dann keinen Zutritt mehr zu Ihren Räumen auf dem Portal &quot;%1&quot;. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihre Teilnahme beenden.
 
-Ihr Zugang kann bei Bedarf wieder freigeschaltet werden.</li><li>Wenn Sie <b>%3</b> wählen, werden sämtliche ihrer Beiträge und ihre Kennung auf dem Portal %1 und in allen Räumen gelöscht. Sie können danach das Portal und Ihre Räume nicht mehr betreten.
-
-Achtung: Dies kann nicht rückgängig gemacht werden.</li></ul>";
-$message["PREFERENCES_REALLY_DELETE_DESC_PORTAL_NOT_OVERWRITE"]["de"] = "Sie haben zwei Möglichkeiten:<ul><li>Wenn Sie <b>%2</b> wählen, wird ihre Kennung für das Portal %1 und alle Ihre Raum gesperrt. Sie haben dann keinen Zutritt mehr zu Ihren Räumen auf dem Portal %1. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihre Teilnahme beenden.
-
-Ihr Zugang kann bei Bedarf wieder freigeschaltet werden.</li><li>Wenn Sie <b>%3</b> wählen, werden ihrer persönlichen Daten und ihre Kennung auf dem Portal %1 und in allen Räumen gelöscht. Sie können danach das Portal und Ihre Räume nicht mehr betreten. Ihre Beiträge bleiben anonym erhalten.
+Ihr Zugang kann bei Bedarf wieder freigeschaltet werden.</li><li>Wenn Sie <b>%3</b> wählen, werden sämtliche ihrer Beiträge und ihre Kennung auf dem Portal &quot;%1&quot; und in allen Räumen gelöscht. Sie können danach das Portal und Ihre Räume nicht mehr betreten.
 
 Achtung: Dies kann nicht rückgängig gemacht werden.</li></ul>";
-$message["PREFERENCES_REALLY_DELETE_DESC_ROOM"]["de"] = "Sie haben zwei Möglichkeiten:<ul><li>Wenn Sie <b>%2</b> wählen, wird ihre Kennung für diesen Raum gesperrt. Sie haben dann keinen Zutritt mehr zu dem Raum %1. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihre Teilnahme beenden.
+$message["PREFERENCES_REALLY_DELETE_DESC_PORTAL_NOT_OVERWRITE"]["de"] = "Sie haben zwei Möglichkeiten:<ul><li>Wenn Sie <b>%2</b> wählen, wird ihre Kennung für das Portal &quot;%1&quot; und alle Ihre Raum gesperrt. Sie haben dann keinen Zutritt mehr zu Ihren Räumen auf dem Portal &quot;%1&quot;. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihre Teilnahme beenden.
 
-Ihr Zugang kann bei Bedarf wieder freigeschaltet werden.</li><li>Wenn Sie <b>%3</b> wählen, werden sämtliche ihrer Beiträge und ihre Kennung in dem Raum %1. Sie können danach den Raum nicht mehr betreten.
+Ihr Zugang kann bei Bedarf wieder freigeschaltet werden.</li><li>Wenn Sie <b>%3</b> wählen, werden ihrer persönlichen Daten und ihre Kennung auf dem Portal &quot;%1&quot; und in allen Räumen gelöscht. Sie können danach das Portal und Ihre Räume nicht mehr betreten. Ihre Beiträge bleiben anonym erhalten.
 
 Achtung: Dies kann nicht rückgängig gemacht werden.</li></ul>";
-$message["PREFERENCES_REALLY_DELETE_DESC_ROOM_NOT_OVERWRITE"]["de"] = "Sie haben zwei Möglichkeiten:<ul><li>Wenn Sie <b>%2</b> wählen, wird ihre Kennung für diesen Raum gesperrt. Sie haben dann keinen Zutritt mehr zu dem Raum %1. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihre Teilnahme beenden.
+$message["PREFERENCES_REALLY_DELETE_DESC_ROOM"]["de"] = "Sie haben zwei Möglichkeiten:<ul><li>Wenn Sie <b>%2</b> wählen, wird ihre Kennung für diesen Raum gesperrt. Sie haben dann keinen Zutritt mehr zu dem Raum &quot;%1&quot;. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihre Teilnahme beenden.
 
-Ihr Zugang kann bei Bedarf wieder freigeschaltet werden.</li><li>Wenn Sie <b>%3</b> wählen, werden ihrer persönlichen Daten und ihre Kennung in dem Raum %1 gelöscht. Sie können danach den Raum nicht mehr betreten. Ihre Beiträge bleiben anonym erhalten.
+Ihr Zugang kann bei Bedarf wieder freigeschaltet werden.</li><li>Wenn Sie <b>%3</b> wählen, werden sämtliche ihrer Beiträge und ihre Kennung in dem Raum &quot;%1&quot;. Sie können danach den Raum nicht mehr betreten.
+
+Achtung: Dies kann nicht rückgängig gemacht werden.</li></ul>";
+$message["PREFERENCES_REALLY_DELETE_DESC_ROOM_NOT_OVERWRITE"]["de"] = "Sie haben zwei Möglichkeiten:<ul><li>Wenn Sie <b>%2</b> wählen, wird ihre Kennung für diesen Raum gesperrt. Sie haben dann keinen Zutritt mehr zu dem Raum &quot;%1&quot;. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihre Teilnahme beenden.
+
+Ihr Zugang kann bei Bedarf wieder freigeschaltet werden.</li><li>Wenn Sie <b>%3</b> wählen, werden ihrer persönlichen Daten und ihre Kennung in dem Raum &quot;%1&quot; gelöscht. Sie können danach den Raum nicht mehr betreten. Ihre Beiträge bleiben anonym erhalten.
 
 Achtung: Dies kann nicht rückgängig gemacht werden.</li></ul>";
 $message["PREFERENCES_ROOM_ASSIGMENT"]["de"] = "Zuordnung von <br/>

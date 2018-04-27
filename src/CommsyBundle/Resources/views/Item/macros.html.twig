@@ -22,7 +22,7 @@
                 {% if item.type != "discarticle" %}
                     {# edit action #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
-                        <div class="uk-display-inline cs-edit uk-invisible {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
+                        <div id="{{ item.type }}-files-edit" class="uk-display-inline cs-edit uk-invisible {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
                             <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                         </div>
                     {% endif %}
@@ -350,7 +350,7 @@
                 {# edit action #}
                 {% if item.type != "discarticle" %}
                     {% if edit and is_granted('ITEM_EDIT', item.itemId) %}
-                        <div class="uk-display-inline cs-edit uk-invisible {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
+                        <div id="{{ item.type }}-description-edit" class="uk-display-inline cs-edit uk-invisible {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
                             <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                         </div>
                     {% endif %}

@@ -261,13 +261,11 @@ class cs_connection_soap_ims {
                               include_once('classes/cs_mail.php');
                               $mail = new cs_mail();
                               $mail->set_to(implode(',',$value));
-                              $server_item = $this->_environment->getServerItem();
-                              $default_sender_address = $server_item->getDefaultSenderAddress();
-                              if (!empty($default_sender_address)) {
-                                 $mail->set_from_email($default_sender_address);
-                              } else {
-                                 $mail->set_from_email('@');
-                              }
+
+                               global $symfonyContainer;
+                               $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+                               $mail->set_from_email($emailFrom);
+
                               $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle()));
                               $mail->set_reply_to_name($portal_user->getFullname());
                               $mail->set_reply_to_email($portal_user->getEmail());
@@ -401,13 +399,11 @@ class cs_connection_soap_ims {
                include_once('classes/cs_mail.php');
                $mail = new cs_mail();
                $mail->set_to(implode(',',$value));
-               $server_item = $this->_environment->getServerItem();
-               $default_sender_address = $server_item->getDefaultSenderAddress();
-               if (!empty($default_sender_address)) {
-                  $mail->set_from_email($default_sender_address);
-               } else {
-                  $mail->set_from_email('@');
-               }
+
+                global $symfonyContainer;
+                $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+                $mail->set_from_email($emailFrom);
+
                $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle()));
                $mail->set_reply_to_name($portal_user->getFullname());
                $mail->set_reply_to_email($portal_user->getEmail());
@@ -852,13 +848,10 @@ class cs_connection_soap_ims {
                         include_once('classes/cs_mail.php');
                         $mail = new cs_mail();
                         $mail->set_to(implode(',',$value));
-                        $server_item = $this->_environment->getServerItem();
-                        $default_sender_address = $server_item->getDefaultSenderAddress();
-                        if (!empty($default_sender_address)) {
-                           $mail->set_from_email($default_sender_address);
-                        } else {
-                           $mail->set_from_email('@');
-                        }
+
+                         global $symfonyContainer;
+                         $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+                         $mail->set_from_email($emailFrom);
 
                         $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
                         $mail->set_reply_to_name($new_room_member->getFullname());
@@ -1058,13 +1051,10 @@ class cs_connection_soap_ims {
                   include_once('classes/cs_mail.php');
                   $mail = new cs_mail();
                   $mail->set_to(implode(',',$value));
-                  $server_item = $this->_environment->getServerItem();
-                  $default_sender_address = $server_item->getDefaultSenderAddress();
-                  if (!empty($default_sender_address)) {
-                     $mail->set_from_email($default_sender_address);
-                  } else {
-                     $mail->set_from_email('@');
-                  }
+                   global $symfonyContainer;
+                   $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+                   $mail->set_from_email($emailFrom);
+
                   $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
                   $mail->set_reply_to_name($delete_user->getFullname());
                   $mail->set_reply_to_email($delete_user->getEmail());
@@ -1272,12 +1262,11 @@ class cs_connection_soap_ims {
                   include_once('classes/cs_mail.php');
                   $mail = new cs_mail();
                   $server_item = $this->_environment->getServerItem();
-                  $default_sender_address = $server_item->getDefaultSenderAddress();
-                  if ( !empty($default_sender_address) ) {
-                     $mail->set_from_email($default_sender_address);
-                  } else {
-                     $mail->set_from_email('@');
-                  }
+
+                   global $symfonyContainer;
+                   $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+                   $mail->set_from_email($emailFrom);
+
                   $mail->set_from_name($server_item->getTitle());
 
                   //Split Message in functional parts

@@ -31,11 +31,6 @@ class ProjectService
         }
 
         if ($sort) {
-            if ($sort == 'date') {
-                $sort = 'time_rev';
-            } else if ($sort == 'date_rev') {
-                $sort = 'time';
-            }
             $this->projectManager->setSortOrder($sort);
         }
 

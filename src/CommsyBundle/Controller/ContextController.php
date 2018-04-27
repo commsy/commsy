@@ -2,31 +2,30 @@
 
 namespace CommsyBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-
-use Symfony\Component\HttpFoundation\JsonResponse;
-
-use CommsyBundle\Form\Type\ContextRequestType;
-
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-
 use CommsyBundle\Filter\ProjectFilterType;
-
+use CommsyBundle\Form\Type\ContextRequestType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Form\FormError;
 
+/**
+ * Class ContextController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_ENTER', roomId)")
+ */
 class ContextController extends Controller
 {    
     /**
      * @Route("/room/{roomId}/context")
-     * @Template()
+     *
+     * @param int $roomId
+     * @param Request $request
+     *
+     * @return array
      */
     public function listAction($roomId, Request $request)
     {
@@ -63,6 +62,12 @@ class ContextController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
+     *
+     * @param int $roomId
+     * @param int $itemId
+     * @param Request $request
+     *
+     * @return array|Response
      */
     public function requestAction($roomId, $itemId, Request $request)
     {
@@ -94,7 +99,9 @@ class ContextController extends Controller
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if ($form->get('request')->isClicked() || $form->get('coderequest')->isClicked()) {
+            if (($form->has('request') && $form->get('request')->isClicked()) ||
+                ($form->has('coderequest') && $form->get('coderequest')->isClicked())
+            ) {
                 $formData = $form->getData();
 
                 // At this point we can assume that the user has accepted agb and
@@ -131,7 +138,7 @@ class ContextController extends Controller
                     $newUser->setPicture($newPictureName);
                 }
 
-                if ($formData['description']) {
+                if ($form->has('description') && $formData['description']) {
                     $newUser->setUserComment($formData['description']);
                 }
 
@@ -151,6 +158,8 @@ class ContextController extends Controller
                     $groupManager->setContextLimit($roomItem->getItemID());
                     $groupManager->select();
                     $groupList = $groupManager->get();
+
+                    /** @var \cs_group_item $group */
                     $group = $groupList->getFirst();
 
                     if ($group) {
@@ -193,6 +202,8 @@ class ContextController extends Controller
                     $userManager->select();
 
                     $moderatorList = $userManager->get();
+
+                    /** @var \cs_user_item $moderator */
                     $moderator = $moderatorList->getFirst();
                     $moderators = '';
                     while ($moderator) {
@@ -229,10 +240,12 @@ class ContextController extends Controller
                         } else {
                             $userId = $newUser->getUserID();
                         }
-                        if (!$roomItem->isGroupRoom()) {
-                            $body .= $translator->getMessage('USER_JOIN_CONTEXT_MAIL_BODY', $newUser->getFullname(), $userId, $newUser->getEmail(), $roomItem->getTitle());
-                        } else {
+                        if ($roomItem->isGroupRoom()) {
                             $body .= $translator->getMessage('GROUPROOM_USER_JOIN_CONTEXT_MAIL_BODY', $newUser->getFullname(), $userId, $newUser->getEmail(), $roomItem->getTitle());
+                        } else if ($roomItem->isCommunityRoom()) {
+                            $body .= $translator->getMessage('USER_JOIN_COMMUNITY_MAIL_BODY', $newUser->getFullname(), $userId, $newUser->getEmail(), $roomItem->getTitle());
+                        } else {
+                            $body .= $translator->getMessage('USER_JOIN_CONTEXT_MAIL_BODY', $newUser->getFullname(), $userId, $newUser->getEmail(), $roomItem->getTitle());
                         }
                         $body .= "\n\n";
 
@@ -243,7 +256,7 @@ class ContextController extends Controller
                         }
                         $body .= "\n\n";
 
-                        if ($formData['description']) {
+                        if ($form->has('description') && $formData['description']) {
                             $body .= $translator->getMessage('MAIL_COMMENT_BY', $newUser->getFullname(), $formData['description']);
                             $body .= "\n\n";
                         }
@@ -275,8 +288,18 @@ class ContextController extends Controller
 
                 // inform user if request required no authorization
                 if ($newUser->isUser()) {
+                    /** @var \cs_list $moderatorList */
                     $moderatorList = $roomItem->getModeratorList();
+
                     $contactModerator = $moderatorList->getFirst();
+
+                    $modFullName = "";
+                    $modEmail = "";
+
+                    if ($contactModerator) {
+                        $modFullName = $contactModerator->getFullname();
+                        $modEmail = $contactModerator->getEmail();
+                    }
 
                     $translator = $legacyEnvironment->getTranslationObject();
                     $translator->setEmailTextArray($roomItem->getEmailTextArray());
@@ -314,7 +337,7 @@ class ContextController extends Controller
                         $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_GP', $userId, $roomItem->getTitle());
                     }
                     $body .= "\n\n";
-                    $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $contactModerator->getFullname(), $roomItem->getTitle());
+                    $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $modFullName, $roomItem->getTitle());
                     $body .= "\n\n";
                     $body .= $this->generateUrl('commsy_room_home', [
                         'roomId' => $roomItem->getItemID(),
@@ -324,8 +347,11 @@ class ContextController extends Controller
                         ->setSubject($subject)
                         ->setBody($body, 'text/plain')
                         ->setFrom([$this->getParameter('commsy.email.from') => $roomItem->getContextItem()->getTitle()])
-                        ->setReplyTo([$contactModerator->getEmail() => $contactModerator->getFullName()])
                         ->setTo([$newUser->getEmail()]);
+
+                    if ($modEmail != '' && $modFullName != '') {
+                        $message->setReplyTo([$modEmail => $modFullName]);
+                    }
 
                     $this->get('mailer')->send($message);
 
@@ -334,7 +360,6 @@ class ContextController extends Controller
             }
 
             // redirect to detail page
-            $route = "";
             if ($roomItem->isGroupRoom()) {
                 $route = $this->redirectToRoute('commsy_group_detail', [
                     'roomId' => $roomId,

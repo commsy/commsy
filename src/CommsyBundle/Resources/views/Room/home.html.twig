@@ -174,7 +174,7 @@
                         <li  class="uk-flex">
                             <div class="uk-width-1-3">{% trans from "room" %}Support:{% endtrans %}</div>
                             <div class="uk-width-2-3">
-                                <a href="{{ serviceContact.link }}">{% trans from "room" %}E-Mail to support{% endtrans %}</a>
+                                <a href="{{ serviceContact.link }}" target="_blank">{% trans from "room" %}E-Mail to support{% endtrans %}</a>
                             </div>
                         </li>
                     {% endif %}
@@ -213,7 +213,15 @@
                      </div>
                 </div>
 
-                <div>
+                {% if isModerator and userTasks|length > 0 %}
+                    <div class="uk-alert uk-alert-danger">
+                        {{ userTasks|length }} {{ 'taskinfo'|trans({},'user') }} : <a href="{{ path('commsy_user_list', {'roomId': roomItem.itemId,'user_filter[user_status]':1}) }}">
+                            {{ 'show user'|trans({},'user') }}
+                        </a>
+                    </div>
+                {% endif %}
+
+                <div class="feed">
                     <ul id="room-feed" class="uk-comment-list">
                         {{ render(controller(
                             'CommsyBundle:Room:feed',

@@ -55,6 +55,10 @@ Icon
 /var/temp/*
 !var/temp/.gitkeep
 
+/bin/*
+!bin/console
+!bin/symfony_requirements
+
 ######################
 # Eclipse related    #
 ######################
@@ -116,6 +120,7 @@ web/css/external_portal_styles/[0-9]*
 
 !.bowerrc
 !.gitlab-ci.yml
+!.travis.yml
 
 wikis/*
 web/commsy

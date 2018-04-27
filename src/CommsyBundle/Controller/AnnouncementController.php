@@ -16,6 +16,11 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 use CommsyBundle\Event\CommsyEditEvent;
 
+/**
+ * Class AnnouncementController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'announcement')")
+ */
 class AnnouncementController extends BaseController
 {
     /**
@@ -300,7 +305,7 @@ class AnnouncementController extends BaseController
      *     "itemId": "\d+"
      * }))
      * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
+     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'announcement')")
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
@@ -629,7 +634,7 @@ class AnnouncementController extends BaseController
     /**
      * @Route("/room/{roomId}/announcement/{itemId}/edit")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'announcement')")
      */
     public function editAction($roomId, $itemId, Request $request)
     {
@@ -727,7 +732,7 @@ class AnnouncementController extends BaseController
     /**
      * @Route("/room/{roomId}/announcement/{itemId}/save")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'announcement')")
      */
     public function saveAction($roomId, $itemId)
     {

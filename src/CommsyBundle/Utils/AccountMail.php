@@ -118,20 +118,12 @@ class AccountMail
                 break;
 
             case 'user-contact':
-                if ($room->isGroupRoom()) {
-                    $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON_GP', $user->getUserID(), $room->getTitle());
-                } else {
-                    $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON_PR', $user->getUserID(), $room->getTitle());
-                }
+                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON', $user->getUserID(), $room->getTitle());
 
                 break;
 
             case 'user-contact-remove':
-                if ($room->isGroupRoom()) {
-                    $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GP', $user->getUserID(), $room->getTitle());
-                } else {
-                    $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PR', $user->getUserID(), $room->getTitle());
-                }
+                $body .= $legacyTranslator->getEmailMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON', $user->getUserID(), $room->getTitle());
 
                 break;
         }

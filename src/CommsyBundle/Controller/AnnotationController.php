@@ -12,6 +12,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Form\Type\AnnotationType;
 
+/**
+ * Class AnnotationController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_ENTER', roomId)")
+ */
 class AnnotationController extends Controller
 {
     /**
@@ -75,24 +80,32 @@ class AnnotationController extends Controller
      */
     public function editAction($roomId, $itemId, Request $request)
     {
-
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
         $transformer = $this->get('commsy_legacy.transformer.annotation');
+
         $formData = $transformer->transform($item);
 
         $form = $this->createForm(AnnotationType::class, $formData);
         $form->handleRequest($request);
         if ($form->isValid()) {
             if ($form->get('save')->isClicked()) {
+                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                $readerManager = $legacyEnvironment->getReaderManager();
+                $noticedManager = $legacyEnvironment->getNoticedManager();
+
                 $item = $transformer->applyTransformation($item, $form->getData());
                 $item->save();
-            } else if ($form->get('cancel')->isClicked()) {
-                // ToDo ...
+
+                $readerManager->markRead($itemId, 0);
+                $noticedManager->markNoticed($itemId, 0);
             }
 
-            return $this->redirectToRoute('commsy_annotation_success', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('commsy_annotation_success', [
+                'roomId' => $roomId,
+                'itemId' => $itemId,
+            ]);
         }
 
         return [

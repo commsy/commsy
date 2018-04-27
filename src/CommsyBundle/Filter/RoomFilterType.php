@@ -36,20 +36,25 @@ class RoomFilterType extends AbstractType
                         return null;
                     }
 
-                    $expr = $filterQuery->getExpr();
+                    $tokens = explode(' ', $values['value']);
 
-                    return $filterQuery->getQueryBuilder()
-                        ->andWhere(
-                            $expr->orX(
-                                $expr->like('r.title', ':title'),
-                                $expr->like('r.contactPersons', ':contactPersons'),
-                                $expr->like('r.roomDescription', ':roomDescription')
-                            )
-                        )
-                        ->setParameter('title', '%'.$values['value'].'%')
-                        ->setParameter('contactPersons', '%'.$values['value'].'%')
-                        ->setParameter('roomDescription', '%'.$values['value'].'%')
-                    ;
+                    $expr = $filterQuery->getExpr();
+                    $qb = $filterQuery->getQueryBuilder();
+
+                    foreach ($tokens as $num => $token) {
+                        $fieldOr = $expr->orX();
+                        foreach (['title', 'contactPersons', 'roomDescription'] as $field) {
+                            $fieldOr->add($expr->like('r.' . $field, ':token' . $num));
+                        }
+
+                        $qb->andWhere($fieldOr);
+                    }
+
+                    foreach ($tokens as $num => $token) {
+                        $qb->setParameter("token$num", "%$token%");
+                    }
+
+                    return $qb;
                 },
             ])
             ->add('membership', Filters\CheckboxFilterType::class, [

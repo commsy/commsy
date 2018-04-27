@@ -15,6 +15,7 @@ class ItemVoter extends Voter
     const EDIT = 'ITEM_EDIT';
     const ANNOTATE = 'ITEM_ANNOTATE';
     const MODERATE = 'ITEM_MODERATE';
+    const ENTER = 'ITEM_ENTER';
 
     private $legacyEnvironment;
     private $itemService;
@@ -34,6 +35,7 @@ class ItemVoter extends Voter
             self::EDIT,
             self::ANNOTATE,
             self::MODERATE,
+            self::ENTER,
         ));
     }
 
@@ -64,6 +66,9 @@ class ItemVoter extends Voter
 
                 case self::MODERATE:
                     return $this->canModerate($item, $currentUser);
+
+                case self::ENTER:
+                    return $this->canEnter($item, $currentUser);
             }
         } else if ($itemId == 'NEW') {
             if ($attribute == self::EDIT) {
@@ -148,6 +153,24 @@ class ItemVoter extends Voter
     private function canModerate($item, $currentUser)
     {
         if ($currentUser->getStatus() == 3) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function canEnter($item, $currentUser)
+    {
+        $roomManager = $this->legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($item->getItemID());
+
+        if ($item->isPrivateRoom()) {
+            return true;
+        } else if ($roomItem) {
+            if (!$roomItem->isDeleted() && $roomItem->mayEnter($currentUser)) {
+                return true;
+            }
+        } else if ($item->isPortal() && $item->mayEnter($currentUser)) {
             return true;
         }
 

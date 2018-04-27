@@ -84,7 +84,7 @@ $message["ROOM_GR_UNIVERSITY_CONTEXT_DESCRIPTION"]["de"] = "Die Rubriken lauten:
 <li>Themen</li>
 <li>Aufgaben</li>
 </ul>";
-$message["ROOM_IS_CLOSED"]["de"] = "%_PROJECT_ART_DEF_NOMS_BIG %_PROJECT_SUB_NOMS_BIG %1 ist archiviert.";
+$message["ROOM_IS_CLOSED"]["de"] = "%_PROJECT_ART_DEF_NOMS_BIG %_PROJECT_SUB_NOMS_BIG &quot;%1&quot; ist archiviert.";
 $message["ROOM_IS_CLOSED_APPLY_FOR_MEMBERSHIP"]["de"] = "Sie können sich nicht mehr für diesen %_PROJECT_SUB_AKKS_BIG anmelden.";
 $message["ROOM_JOIN_ERROR_HAS_REQUESTED"]["de"] = "Sie haben sich bereits beim Raum <span style=&quot;font-weight:bold;&quot;>%1</span> angemeldet. Ihre Kennung muss noch freigeschaltet werden. Bei Nachfragen wenden sie sich bitte an die Verantwortlichen des Raums <span style=&quot;font-weight:bold;&quot;>%2</span>.";
 $message["ROOM_JOIN_ERROR_IS_DENIED"]["de"] = "Sie haben sich bereits beim Raum <span style=&quot;font-weight:bold;&quot;>%1</span> angemeldet. Ihre Teilnahmewunsch wurde abgelehnt. Bei Nachfragen wenden sie sich bitte an die Verantwortlichen des Raums <span style=&quot;font-weight:bold;&quot;>%2</span>.";

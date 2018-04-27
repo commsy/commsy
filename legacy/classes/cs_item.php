@@ -38,7 +38,9 @@ class cs_item {
    */
    var $_data = array();
 
-
+   /**
+     * @var \cs_environment $_environment
+    */
    var $_environment = null;
    /**
 
@@ -2657,11 +2659,10 @@ function getExternalViewerArray(){
       if (!$self_context_item->isPrivateRoom()) {
    	   $translator = $this->_environment->getTranslationObject();
          $default_language = 'de';
-         $server_item = $this->_environment->getServerItem();
-         $default_sender_address = $server_item->getDefaultSenderAddress();
-         if ( empty($default_sender_address) ) {
-   		   $default_sender_address = '@';
-         }
+
+          global $symfonyContainer;
+          $default_sender_address = $symfonyContainer->getParameter('commsy.email.from');
+
          $current_context = $this->_environment->getCurrentContextItem();
          $moderator_list = $current_context->getModeratorList();
          $mod_item = $moderator_list->getFirst();

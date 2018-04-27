@@ -601,7 +601,7 @@ class cs_user_manager extends cs_manager {
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('user').'.item_id AND l41.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('user').'.item_id AND l42.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
      }
-     if ( isset($this->_group_limit) ) {
+     if ( isset($this->_group_limit) || (isset($this->_group_array_limit) and !empty($this->_group_array_limit)) ) {
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id='.$this->addDatabasePrefix('user').'.item_id AND l31.second_item_type="'.CS_GROUP_TYPE.'"))) ';
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix('user').'.item_id AND l32.first_item_type="'.CS_GROUP_TYPE.'"))) ';
      }
@@ -809,6 +809,12 @@ class cs_user_manager extends cs_manager {
             $query .= ' OR (l32.first_item_id = "'.encode(AS_DB,$this->_group_limit).'" OR l32.second_item_id = "'.encode(AS_DB,$this->_group_limit).'"))';
          }
       }
+      if ( isset($this->_group_array_limit) and !empty($this->_group_array_limit) ) {
+         array_walk($this->_group_array_limit, function (&$v, $k) { $v = encode(AS_DB,$v); });
+         $mergedGroupIDs = implode(',', $this->_group_array_limit);
+         $query .= ' AND ((l31.first_item_id IN ('.$mergedGroupIDs.') OR l31.second_item_id IN ('.$mergedGroupIDs.'))';
+         $query .= ' OR (l32.first_item_id IN ('.$mergedGroupIDs.') OR l32.second_item_id IN ('.$mergedGroupIDs.')))';
+      }
 
       if ( isset($this->_limit_portal_id)
           and ( isset($this->_limit_community)
@@ -830,6 +836,14 @@ class cs_user_manager extends cs_manager {
       if ( isset($this->_limit_no_membership) and  $this->_limit_no_membership  ) {
          $query .= $this->_getSQLLimitForNoMemberShip();
       }
+
+       if ($this->modificationNewerThenLimit) {
+           $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.modification_date >= "' . $this->modificationNewerThenLimit->format('Y-m-d H:i:s') . '"';
+       }
+
+       if ($this->excludedIdsLimit) {
+           $query .= ' AND ' . $this->addDatabasePrefix($this->_db_table) . '.item_id NOT IN (' . implode(", ", encode(AS_DB, $this->excludedIdsLimit)) . ')';
+       }
 
       if ( isset($this->_limit_portal_id)
            and ( isset($this->_limit_community)
@@ -859,18 +873,20 @@ class cs_user_manager extends cs_manager {
         } elseif ($this->_sort_order == 'user_id_rev') {
            $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.user_id DESC';
         } elseif ($this->_sort_order == 'status') {
-           $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.status ASC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.status ASC, '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname';
         } elseif ($this->_sort_order == 'status_rev') {
-           $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.status DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.status DESC, '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname';
         } elseif ($this->_sort_order == 'date') {
            $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.creation_date DESC';
         } elseif ($this->_sort_order == 'last_login') {
-           $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastlogin ASC, '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastlogin ASC, '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname';
         } elseif ($this->_sort_order == 'last_login_rev') {
-           $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastlogin DESC, '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname DESC';
+           $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastlogin DESC, '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname';
+        } elseif ($this->_sort_order == 'mod_date') {
+            $query .= ' ORDER BY ' . $this->addDatabasePrefix('user') . '.modification_date DESC';
         }
      } else {
-        $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname DESC, '.$this->addDatabasePrefix('user').'.user_id ASC';
+        $query .= ' ORDER BY '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname, '.$this->addDatabasePrefix('user').'.user_id ASC';
      }
 
      if ($mode == 'select') {
@@ -1967,5 +1983,28 @@ class cs_user_manager extends cs_manager {
 		}
 		return $user_array;
 	}
+
+    /**
+     * @param int[] $contextIds List of context ids
+     * @param array Limits for buzzwords / categories
+     * @param int $size Number of items to get
+     * @param \DateTime $newerThen The oldest modification date to consider
+     * @param int[] $excludedIds Ids to exclude
+     *
+     * @return \cs_list
+     */
+    public function getNewestItems($contextIds, $limits, $size, \DateTime $newerThen = null, $excludedIds = [])
+    {
+        parent::setGenericNewestItemsLimits($contextIds, $limits, $newerThen, $excludedIds);
+
+        if ($size > 0) {
+            $this->setIntervalLimit(0, $size);
+        }
+
+        $this->setUserLimit();
+        $this->setSortOrder('mod_date');
+
+        $this->select();
+        return $this->get();
+    }
 }
-?>

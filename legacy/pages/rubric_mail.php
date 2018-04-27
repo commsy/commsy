@@ -244,9 +244,11 @@ if ( isOption($command,$translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
          $mail['message'] = $_POST['mailcontent'];
 
          $email = new cs_mail();
-         //$email->set_from_email($mail['from_email']);
-         //$email->set_from_name($mail['from_name']);
-         $email->set_from_email($environment->getServerItem()->getDefaultSenderAddress());
+
+          global $symfonyContainer;
+          $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
+          $mail->set_from_email($emailFrom);
+
          $email->set_from_name($environment->getCurrentPortalItem()->getTitle());
          $email->set_to($mail['to']);
          $email->set_subject($mail['subject']);

@@ -2,8 +2,21 @@
 
 {% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
 
-{% form_theme form.request 'CommsyBundle:Form:uikit_layout.html.twig' %}
-{% form_theme form.cancel 'CommsyBundle:Form:uikit_layout.html.twig' %}
+{% if form.request is defined %}
+    {% form_theme form.request 'CommsyBundle:Form:uikit_layout.html.twig' %}
+{% endif %}
+
+{% if form.cancel is defined %}
+    {% form_theme form.cancel 'CommsyBundle:Form:uikit_layout.html.twig' %}
+{% endif %}
+
+{% if form.coderequest is defined %}
+    {% form_theme form.coderequest 'CommsyBundle:Form:uikit_layout.html.twig' %}
+{% endif %}
+
+{% if form.codecancel is defined %}
+    {% form_theme form.codecancel 'CommsyBundle:Form:uikit_layout.html.twig' %}
+{% endif %}
 
 {% block content %}
     <div class="uk-grid">
@@ -24,7 +37,7 @@
                     {{ form_start(form) }}
                     {{ form_errors(form) }}
 
-                    {# optional code #}
+                    {# code request #}
                     {% if form.code is defined %}
                         <div class="uk-form-row">
                             <div class="uk-form-controls uk-form-controls-text">
@@ -32,25 +45,17 @@
                             </div>
                         </div>
                         {{ form_row(form.code) }}
-                        {# buttons #}
-                        <div class="uk-form-row">
-                            <div class="uk-button-group">
-                                {{ form_widget(form.coderequest) }}
-
-                                {#<div class="uk-margin-small-left">#}
-                                    {{ form_widget(form.codecancel) }}
-                                {#</div>#}
-                            </div>
-                        </div>
                     {% endif %}
 
-                    {# description #}
-                    <div class="uk-form-row">
-                        <div class="uk-form-controls uk-form-controls-text">
-                            {{ 'room join description'|trans({}, 'room') }}
+                    {# regular request with free text #}
+                    {% if form.description is defined %}
+                        <div class="uk-form-row">
+                            <div class="uk-form-controls uk-form-controls-text">
+                                {{ 'room join description'|trans({}, 'room') }}
+                            </div>
                         </div>
-                    </div>
-                    {{ form_row(form.description) }}
+                        {{ form_row(form.description) }}
+                    {% endif %}
 
                     {# optional agb #}
                     {% if form.agb is defined %}
@@ -74,15 +79,29 @@
                     {% endif %}
 
                     {# buttons #}
-                    <div class="uk-form-row">
-                        <div class="uk-form-controls uk-button-group">
-                            {{ form_widget(form.request) }}
+                    {% if form.coderequest is defined and form.codecancel is defined %}
+                        <div class="uk-form-row">
+                            <div class="uk-form-controls uk-button-group">
+                                {{ form_widget(form.coderequest) }}
 
-                            <div class="uk-margin-small-left">
-                                {{ form_widget(form.cancel) }}
+                                <div class="uk-margin-small-left">
+                                    {{ form_widget(form.codecancel) }}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    {% else %}
+                        {% if form.request is defined and form.cancel is defined %}
+                            <div class="uk-form-row">
+                                <div class="uk-form-controls uk-button-group">
+                                    {{ form_widget(form.request) }}
+
+                                    <div class="uk-margin-small-left">
+                                        {{ form_widget(form.cancel) }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
                     
                     {{ form_end(form) }}
                 </div>

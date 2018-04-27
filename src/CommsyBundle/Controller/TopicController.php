@@ -20,6 +20,11 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 use CommsyBundle\Event\CommsyEditEvent;
 
+/**
+ * Class TopicController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'topic')")
+ */
 class TopicController extends Controller
 {
     // setup filter form default values
@@ -232,7 +237,7 @@ class TopicController extends Controller
      *     "itemId": "\d+"
      * }))
      * @Template()
-     * @Security("is_granted('ITEM_SEE', itemId)")
+     * @Security("is_granted('ITEM_SEE', itemId) and is_granted('RUBRIC_SEE', 'topic')")
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
@@ -497,7 +502,7 @@ class TopicController extends Controller
     /**
      * @Route("/room/{roomId}/topic/{itemId}/edit")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")
      */
     public function editAction($roomId, $itemId, Request $request)
     {
@@ -594,7 +599,7 @@ class TopicController extends Controller
     /**
      * @Route("/room/{roomId}/topic/{itemId}/save")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")
      */
     public function saveAction($roomId, $itemId, Request $request)
     {
@@ -786,7 +791,7 @@ class TopicController extends Controller
     /**
      * @Route("/room/{roomId}/topic/{itemId}/editpath")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")
      */
     public function editPathAction($roomId, $itemId, Request $request)
     {
@@ -901,7 +906,7 @@ class TopicController extends Controller
     /**
      * @Route("/room/{roomId}/topic/{itemId}/savepath")
      * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId)")
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'topic')")
      */
     public function savePathAction($roomId, $itemId, Request $request)
     {

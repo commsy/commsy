@@ -2,18 +2,21 @@
 
 namespace CommsyBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Commsy\LegacyBundle\Services\ReaderService;
+use Commsy\LegacyBundle\Services\UserService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpFoundation\Request;
-
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-use Commsy\LegacyBundle\Services\UserService;
-use Commsy\LegacyBundle\Services\ReaderService;
-use CommsyBundle\Filter\HomeFilterType;
-
+/**
+ * Class DashboardController
+ * @package CommsyBundle\Controller
+ * @Security("is_granted('ITEM_ENTER', roomId)")
+ */
 class DashboardController extends Controller
 {
     /**
@@ -31,8 +34,6 @@ class DashboardController extends Controller
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
-        
-        $roomFeedGenerator = $this->get('commsy_legacy.dashboard_feed_generator');
 
         // iCal
         $iCal = [
@@ -102,13 +103,15 @@ class DashboardController extends Controller
      * @Route("/dashboard/{roomId}/feed/{start}/{sort}")
      * @Template()
      */
-    public function feedAction($roomId, $max = 10, $start = 0)
+    public function feedAction($roomId, $max = 10, $start = 0, Request $request)
     {
-        // collect information for feed panel
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $userId = $legacyEnvironment->getCurrentUser()->getUserID();
-        $dashboardFeedGenerator = $this->get('commsy_legacy.dashboard_feed_generator');
-        $feedList = $dashboardFeedGenerator->getFeedList($userId, $max, $start);
+        $lastId = null;
+        if ($request->query->has('lastId')) {
+            $lastId = $request->query->get('lastId');
+        }
+
+        $roomFeedGenerator = $this->get('commsy.room_feed_generator');
+        $feedList = $roomFeedGenerator->getDashboardFeedList($max, $lastId);
 
         $userService = $this->get("commsy_legacy.user_service");
         $user = $userService->getPortalUserFromSessionId();
@@ -122,12 +125,7 @@ class DashboardController extends Controller
                 $feedItems[] = $item;
 
                 $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
-                $reader = $readerService->getLatestReaderForUserByID($item->getItemId(), $relatedUser->getItemId());
-                if (empty($reader)) {
-                    $readerList[$item->getItemId()] = 'new';
-                } elseif ($reader['read_date'] < $item->getModificationDate()) {
-                    $readerList[$item->getItemId()] = 'changed';
-                }
+                $readerList[$item->getItemId()] = $readerService->getChangeStatusForUserByID($item->getItemId(), $relatedUser->getItemId());
             }
         }
 

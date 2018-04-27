@@ -119,6 +119,13 @@ services:
         tags:
             - { name: security.voter }
 
+    commsy.security.rubric_voter:
+        class: CommsyBundle\Security\Authorization\Voter\RubricVoter
+        arguments: ['@commsy_legacy.environment']
+        public: false
+        tags:
+            - { name: security.voter }
+
     # Exporter
     commsy.export.wordpress:
         class: CommsyBundle\Export\WordpressExporter
@@ -572,6 +579,14 @@ services:
         tags:
             - { name: console.command }
 
+    commsy.command.fix_group_all_user_relation:
+            class: CommsyBundle\Command\FixGroupAllUserRelation
+            arguments:
+                - '@doctrine.orm.entity_manager'
+                - '@commsy_legacy.environment'
+            tags:
+                - { name: console.command }
+
     commsy.command.setup_dev:
         class: CommsyBundle\Command\SetupDevCommand
         tags:
@@ -691,3 +706,10 @@ services:
     commsy.roomcategories_service:
         class: CommsyBundle\Services\RoomCategoriesService
         arguments: ['@doctrine.orm.entity_manager', '@service_container']
+
+    commsy.room_feed_generator:
+            class: CommsyBundle\RoomFeed\RoomFeedGenerator
+            arguments:
+              - '@commsy_legacy.environment'
+              - '@commsy_legacy.room_service'
+              - '@commsy_legacy.item_service'

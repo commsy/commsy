@@ -80,16 +80,12 @@
                                     <i class="uk-icon-caret-down"></i>
                                 </button>
 
-                                <div id="cs-additional-actions" class="uk-dropdown  uk-padding-remove">
+                                <div id="cs-additional-actions" class="uk-dropdown uk-dropdown-small uk-padding-remove">
                                     <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
 
                                         {% if not isArchived and not item.isSystemLabel %}
-                                            {# join group #}
-                                            {% if userIsMember %}
-                                                <li style="display: none;">
-                                            {% else %}
-                                                <li>
-                                            {% endif %}
+                                            {# join and leave group (and group room) #}
+                                            <li id="join-group-link" {% if userIsMember %} class="uk-hidden" {% endif %}>
                                                 <a id="join-group-link" href="#" data-cs-action="{{ {
                                                     'url': path('commsy_group_join', {'roomId': roomId, 'itemId': group.itemId}),
                                                     'action': 'join',
@@ -101,13 +97,14 @@
                                                     <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'join'|trans({})|capitalize }}
                                                 </a>
                                             </li>
-
-                                            {# leave group #}
-                                            {% if userIsMember %}
-                                                <li>
-                                            {% else %}
-                                                <li style="display: none;">
+                                            {% if item.isGroupRoomActivated %}
+                                                <li id="join-group-and-room-link" {% if userIsMember or not memberStatus == 'join' %} class="uk-hidden" {% endif %}>
+                                                    <a href="{{ path('commsy_group_join', {'roomId': roomId, 'itemId': group.itemId, 'joinRoom': true}) }}">
+                                                        <i class="uk-icon-small uk-icon-user-plus uk-icon-justify uk-visible-large"></i> {{ 'join'|trans({})|capitalize }} {{ 'withGrouproom'|trans({}) }}
+                                                    </a>
+                                                </li>
                                             {% endif %}
+                                            <li id="leave-group-link" {% if not userIsMember %} class="uk-hidden" {% elseif memberStatus == 'enter' %} data-uk-tooltip title="{{ 'leave grouproom before group'|trans({},'group') }}" {% endif %}>
                                                 <a id="leave-group-link" href="#" data-cs-action="{{ {
                                                     'url': path('commsy_group_leave', {'roomId': roomId, 'itemId': group.itemId}),
                                                     'action': 'leave',
@@ -214,9 +211,11 @@
                     </div>
             
                     {# members #}
-                    <div id="member{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe>
-                        {{ macrosGroup.members(group, members) }}
-                    </div>
+                    {% if userRubricVisible %}
+                        <div id="member{{ group.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe>
+                            {{ macrosGroup.members(group, members) }}
+                        </div>
+                    {% endif %}
  
                     {# grouproom #}
                     <div id="member{{ group.itemId }}" class="cs-toggle" data-uk-observe>
@@ -255,7 +254,9 @@
                 <div id="cs-nav-quick" class="cs-nav-quick">
                     <ul class="uk-list uk-list-striped uk-padding-remove uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ group.itemId }}\']'}" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
                         <li><a href="#description{{ group.itemId }}">{{ 'entry description'|trans({})}}</a></li>
-                        <li><a href="#member{{ group.itemId }}">{{ 'members'|trans({})}}</a></li>
+                        {% if userRubricVisible %}
+                            <li><a href="#member{{ group.itemId }}">{{ 'members'|trans({})}}</a></li>
+                        {% endif %}
                         <li><a href="#grouproom{{ group.itemId }}">{{ 'grouproom'|trans({},'group')}}</a></li>
                         <li><a href="#links{{ group.itemId }}">{{ 'links'|trans({})}}</a></li>
                      </ul>

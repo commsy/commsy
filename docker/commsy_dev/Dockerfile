@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y \
         zip \
         sudo \
         apt-transport-https \
+        mariadb-client-10.0 \
     && docker-php-ext-install -j$(nproc) iconv mcrypt \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
@@ -42,7 +43,7 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 RUN apt-get update && apt-get install -y yarn
 
-RUN pecl install xdebug \
+RUN pecl install xdebug-2.5.5 \
     && docker-php-ext-enable xdebug
 
 RUN { \

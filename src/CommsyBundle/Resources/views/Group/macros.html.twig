@@ -417,7 +417,7 @@
                             <div class="uk-grid uk-margin-small-bottom">
                                 <div class="uk-width-9-10">
                                     <h4 class="cs-detail-section-header">
-                                        {{'grouproom'|trans({},'group') }} 
+                                        {{'grouproom'|trans({},'group') }}
                                     </h4>
                                 </div>
                             </div>
@@ -443,11 +443,10 @@
                                             {{'grouproom description text'|trans({},'group') }}    
                                             </p>
                                             <p>
-                                            {% if isRoot or userIsGroupMember %}
-                                                {{ macros.contextLink(roomId, item.getGroupRoomItem, roomMemberStatus) }}
-                                            {% else %}
-                                                {{'grouproom access'|trans({},'group') }}
-                                            {% endif %}
+                                            {{'grouproom access'|trans({},'group') }}
+                                            </p>
+                                            <p>
+                                            {{ macros.contextLink(roomId, item.getGroupRoomItem, roomMemberStatus, (isRoot or userIsGroupMember)) }}
                                             </p>
                                         {% else %}
                                             <span class="uk-text-bold">{{'no grouproom'|trans({},'group') }}</span><br/>

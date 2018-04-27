@@ -659,13 +659,17 @@ class cs_user_item extends cs_item
      *
      * @return string email of the user
      */
-    function getEmail()
+    public function getEmail()
     {
-        if ($this->getUsePortalEmail()) {
-            return $this->getRelatedPortalUserItem()->getRoomEmail();
-        } else {
-            return $this->_getValue('email');
+        if ($this->getUsePortalEmail() || empty($this->_getValue('email'))) {
+            if (!($this->getContextItem()->isPortal() && $this->getContextItem()->isServer())) {
+                if ($this->getRelatedPortalUserItem()) {
+                    return $this->getRelatedPortalUserItem()->getRoomEmail();
+                }
+            }
         }
+
+        return $this->getRoomEmail();
     }
 
     /** get room email of the user
@@ -1518,6 +1522,8 @@ class cs_user_item extends cs_item
                     if (!$room->withRubric(CS_USER_TYPE)) {
                         if ($user_item->getUserID() == $this->getUserID() && $user_item->getAuthSource() == $this->getAuthSource()) {
                             $access = true;
+                        } elseif ($user_item->isModerator()){
+                            $access = true;
                         } else {
                             $access = false;
                         }
@@ -1931,8 +1937,10 @@ class cs_user_item extends cs_item
         return $retour;
     }
 
-
-    function getRelatedPrivateRoomUserItem()
+    /**
+     * @return \cs_user_item
+     */
+    public function getRelatedPrivateRoomUserItem()
     {
         $retour = NULL;
 
