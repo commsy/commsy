@@ -2473,34 +2473,89 @@ HTML;
     }
 
 
-    /** Get the "auth_sources" form elements to be included within the CommSy login form as HTML.
+    /** Get the "auth_sources" form element(s) to be included within the CommSy login form as HTML.
      * @return string "auth_sources" form elements as HTML
      * @author CommSy Development Group
      */
     public function _getAuthSourcesAsHTML()
     {
-        // TODO: extract & localize strings
-        // TODO: dynamically create `name="auth_sources"` form elements
+        // TODO: support Shibboleth login
 
+        $currentPortal = $this->_environment->getCurrentPortalItem();
+        $authSourceList = $currentPortal->getAuthSourceListEnabled();
+
+        if (!isset($authSourceList) || $authSourceList->isEmpty()) {
+            return '';
+        }
+
+        $authSourceItem = $authSourceList->getFirst();
+
+        // single auth source
+        if ($authSourceList->getCount() == 1) {
+            $authSourceID = $authSourceItem->getItemID();
+
+            $html = <<<HTML
+            <input type="hidden" name="auth_source" value="$authSourceID"/>
+HTML;
+            return $html;
+        }
+
+        // multiple auth sources
         $html = <<<HTML
             <fieldset class="form-group">
               <div class="row">
                 <legend class="col-form-label col-sm-2 pt-0">Quelle</legend> 
                 <div class="col-sm-10">
+HTML;
+
+        $defaultAuthSourceID = $this->_getDefaultAuthSourceID();
+        $i = 0;
+
+        while ($authSourceItem) {
+            ++$i;
+            $authSourceID = $authSourceItem->getItemID();
+            $authSourceName = $authSourceItem->getTitle();
+            $authSourceDefault = ($authSourceID == $defaultAuthSourceID ? ' checked' : '');
+
+            $html .= LF . <<<HTML
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="radioSource" id="radioSource1" value="option1" checked>
-                    <label class="form-check-label" for="radioSource1">STiNE</label> 
+                    <input class="form-check-input" type="radio" name="auth_source" id="radioSource{$i}" value="$authSourceID"$authSourceDefault>
+                    <label class="form-check-label" for="radioSource{$i}">$authSourceName</label> 
                   </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="radioSource" id="radioSource2" value="option2">
-                    <label class="form-check-label" for="radioSource2">AGORA (CommSy)</label> 
-                  </div>
+HTML;
+            $authSourceItem = $authSourceList->getNext();
+        }
+
+        $html .= LF . <<<HTML
                 </div>
               </div>
             </fieldset>
 HTML;
 
         return $html;
+    }
+
+
+    /** Get the ID of the default authentication source.
+     * @return integer default auth source ID
+     * @author CommSy Development Group
+     */
+    public function _getDefaultAuthSourceID()
+    {
+        // TODO: can we assume 0 to mean "no default auth source" given?
+        $id = 0; // no default auth source
+
+        $currentPortal = $this->_environment->getCurrentPortalItem();
+        $portalDefaultID = $currentPortal->getAuthDefault();
+
+        if (isset($_GET['auth_source']) && !empty($_GET['auth_source'])) {
+            $id = $_GET['auth_source'];
+
+        } elseif (isset($portalDefaultID) && !empty($portalDefaultID)) {
+            $id = $portalDefaultID;
+        }
+
+        return $id;
     }
 
 
