@@ -13,17 +13,6 @@
                     </div>
                 </div>
 
-                {# content #}
-                <!-- <ul class="uk-list uk-list-line">
-                {% for item in items %}
-                    <li>
-                        <a href="{{ path('commsy_' ~ item.itemType ~ '_detail', {'roomId': roomId, 'itemId': item.itemId}) }}">
-                            <i class="{{ macros.iconClassForItemType(item.itemType) }} uk-icon"></i> {{ item.title }}
-                        </a>
-                    </li>
-                {% endfor %}
-                </ul> -->
-
                 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
                 {% if not feedList is empty %}
                     {% for feedItem in feedList %}
@@ -130,6 +119,14 @@
                     {% endblock %}
 
                     {# annotations #}
+                </div>
+            </div>
+
+            <div class="uk-panel uk-panel-box uk-margin-bottom uk-margin-small-top">
+                <div class="uk-panel-teaser uk-margin cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div>{{ 'comments'|trans({}, 'portfolio') }}</div>
+                    </div>
                 </div>
             </div>
         </div>

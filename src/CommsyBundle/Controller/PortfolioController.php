@@ -118,10 +118,10 @@ class PortfolioController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/portfolio/{portfolioId}/list/{firstTagId}/{secondTagId}")
+     * @Route("/room/{roomId}/portfolio/{portfolioId}/detail/{firstTagId}/{secondTagId}")
      * @Template()
      */
-    public function listAction($roomId, $portfolioId, $firstTagId, $secondTagId, $source = null, Request $request)
+    public function detailAction($roomId, $portfolioId, $firstTagId, $secondTagId, $source = null, Request $request)
     {
         $itemService = $this->get('commsy_legacy.item_service');
         $portfolioService = $this->get('commsy_legacy.portfolio_service');
@@ -163,20 +163,6 @@ class PortfolioController extends Controller
             'readerList' => $readerList,
             'firstTag' => $categoryService->getTag($firstTagId),
             'secondTag' => $categoryService->getTag($secondTagId),
-        ];
-    }
-
-    /**
-     * @Route("/room/{roomId}/portfolio/{portfolioId}/annotations/{firstTagId}/{secondTagId}")
-     * @Template()
-     */
-    public function annotationsAction($roomId, $portfolioId, $firstTagId, $secondTagId, $source = null, Request $request)
-    {
-        $portfolioService = $this->get('commsy_legacy.portfolio_service');
-        $portfolio = $portfolioService->getPortfolio($portfolioId);
-
-        return [
-
         ];
     }
 }

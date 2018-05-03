@@ -51,8 +51,8 @@
                                         </div>
                                         <h3 class="uk-panel-title">
                                             {% if foundContent %}
-                                                <a href="{{ path('commsy_portfolio_list', {'roomId': roomId, 'portfolioId': portfolioId, 'firstTagId': firstTagId, 'secondTagId': secondTagId}) }}"><i class="uk-icon-list"></i></a>
-                                                <a href="{{ path('commsy_portfolio_annotations', {'roomId': roomId, 'portfolioId': portfolioId, 'firstTagId': firstTagId, 'secondTagId': secondTagId}) }}"><i class="uk-icon-comments-o"></i></a>
+                                                <a href="{{ path('commsy_portfolio_detail', {'roomId': roomId, 'portfolioId': portfolioId, 'firstTagId': firstTagId, 'secondTagId': secondTagId}) }}"><i class="uk-icon-list"></i></i></a>
+                                                <a href="{{ path('commsy_portfolio_detail', {'roomId': roomId, 'portfolioId': portfolioId, 'firstTagId': firstTagId, 'secondTagId': secondTagId}) }}"><i class="uk-icon-comments-o"></i></a>
                                             {% else %}
                                                 <i class="uk-icon-list uk-text-muted"></i>
                                                 <i class="uk-icon-comments-o uk-text-muted"></i>
