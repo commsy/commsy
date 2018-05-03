@@ -2185,7 +2185,7 @@ class cs_external_page_portal_view extends cs_page_view
     {
         $lang = $this->_getDisplayLanguage();
 
-        $html=<<<HTML
+        $html = <<<HTML
 <!doctype html>
 <html lang="$lang">
 {$this->_getHTMLHeadAsHTML()}
@@ -2223,7 +2223,7 @@ HTML;
     {
         $siteShortTitle = "AGORA";
 
-        $html=<<<HTML
+        $html = <<<HTML
   <head>
 {$this->_getMetaAsHTML()}
     
@@ -2243,7 +2243,7 @@ HTML;
      */
     public function _getBodyAsHTML()
     {
-        $html=<<<HTML
+        $html = <<<HTML
   <body>
 {$this->_getHeaderAsHTML()}
 
@@ -2269,7 +2269,7 @@ HTML;
      */
     public function _getMetaAsHTML()
     {
-        $html=<<<HTML
+        $html = <<<HTML
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -2289,7 +2289,7 @@ HTML;
 
         $portalID = $this->_environment->getCurrentPortalID();
 
-        $html=<<<HTML
+        $html = <<<HTML
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <!-- Custom CSS -->
@@ -2313,7 +2313,7 @@ HTML;
         $loginTitle = "Login";
         $altPageTitle = "English";
 
-        $html=<<<HTML
+        $html = <<<HTML
     <!-- Header -->
     <div class="container-fluid container-topnav">
       <div class="container">
@@ -2357,7 +2357,7 @@ HTML;
         $siteLogoFileName = "logo-agora--de.png";
         $siteLogoURL = "css/external_portal_styles/" . $portalID . "/img/" . $siteLogoFileName;
 
-        $html=<<<HTML
+        $html = <<<HTML
     <!-- Site name + Slogan -->
     <div class="container container-sitename d-block d-md-none">
       <h1><a href="$siteURL" title="$siteShortTitle $sitePage">$siteShortTitle</a></h1>
@@ -2387,7 +2387,7 @@ HTML;
         $siteURL = "https://www.agora.uni-hamburg.de/";
         $loginTitle = "Login";
 
-        $html=<<<HTML
+        $html = <<<HTML
     <!-- Main Navigation -->
     <div class="container container-mainnav">
       <ul class="nav">
@@ -2422,13 +2422,14 @@ HTML;
     {
         // TODO: extract & localize strings/URLs
         // TODO: implement CommSy login functionality
-        // TODO: where to implement account_forget/password_forget functionality?
+        // TODO: should we honor `$currentPortal->showAuthAtLogin()`?
+        // TODO: implement account_forget/password_forget functionality?
         // TODO: fetch "Secondary Content"
 
         $portalID = $this->_environment->getCurrentPortalID();
         $formActionURL = "?cid=" . $portalID . "&amp;mod=context&amp;fct=login";
 
-        $html=<<<HTML
+        $html = <<<HTML
     <!-- Content -->
     <div class="container container-content">
       <div class="row">
@@ -2481,7 +2482,7 @@ HTML;
         // TODO: extract & localize strings
         // TODO: dynamically create `name="auth_sources"` form elements
 
-        $html=<<<HTML
+        $html = <<<HTML
             <fieldset class="form-group">
               <div class="row">
                 <legend class="col-form-label col-sm-2 pt-0">Quelle</legend> 
@@ -2517,7 +2518,7 @@ HTML;
         $siteEmail = "agora@uni-hamburg.de";
         $loginTitle = "Login";
 
-        $html=<<<HTML
+        $html = <<<HTML
     <!-- Footer -->
     <footer class="container-fluid">
       <div class="container">
@@ -2558,7 +2559,7 @@ HTML;
     {
         // TODO: remove JavaScript if unnecessary
 
-        $html=<<<HTML
+        $html = <<<HTML
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
