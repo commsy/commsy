@@ -2421,13 +2421,14 @@ HTML;
     public function _getContentAsHTML()
     {
         // TODO: extract & localize strings/URLs
-        // TODO: implement CommSy login functionality
         // TODO: should we honor `$currentPortal->showAuthAtLogin()`?
-        // TODO: implement account_forget/password_forget functionality?
+        // TODO: implement the account_forget/password_forget forms
         // TODO: fetch "Secondary Content"
 
         $portalID = $this->_environment->getCurrentPortalID();
         $formActionURL = "?cid=" . $portalID . "&amp;mod=context&amp;fct=login";
+        $forgotAccountURL = "?cid=" . $portalID . "&amp;mod=home&amp;fct=index&amp;cs_modus=account_forget";
+        $forgotPasswordURL = "?cid=" . $portalID . "&amp;mod=home&amp;fct=index&amp;cs_modus=password_forget";
 
         $html = <<<HTML
     <!-- Content -->
@@ -2442,14 +2443,14 @@ HTML;
               <label for="inputUsername" class="col-sm-2 col-form-label">Kennung</label> 
               <div class="col-sm-10">
                 <input type="text" class="form-control" id="inputUsername" name="user_id" placeholder="Kennung" required>
-                <small id="usernameHelpBlock" class="form-text text-muted"><a href="https://www.agoracommsy.uni-hamburg.de/?cid=651782&mod=home&fct=index&cs_modus=account_forget">Kennung vergessen?</a></small> 
+                <small id="usernameHelpBlock" class="form-text text-muted"><a href="$forgotAccountURL">Kennung vergessen?</a></small> 
               </div>
             </div>
             <div class="form-group row">
               <label for="inputPassword" class="col-sm-2 col-form-label">Passwort</label> 
               <div class="col-sm-10">
                 <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Passwort" required>
-                <small id="passwordHelpBlock" class="form-text text-muted"><a href="https://www.agoracommsy.uni-hamburg.de/?cid=651782&mod=home&fct=index&cs_modus=password_forget">Passwort vergessen?</a></small> 
+                <small id="passwordHelpBlock" class="form-text text-muted"><a href="$forgotPasswordURL">Passwort vergessen?</a></small> 
               </div>
             </div>
 {$this->_getAuthSourcesAsHTML()}
