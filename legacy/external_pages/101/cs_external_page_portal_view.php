@@ -50,6 +50,16 @@ include_once('functions/text_functions.php');
  */
 class cs_external_page_portal_view extends cs_page_view
 {
+    /**
+     * string - two-letter identifier specifying the default display language of the page
+     */
+    var $_defaultDisplayLanguage = 'de';
+
+    /**
+     * array - containing the two-letter identifiers for all supported display languages of the page
+     */
+    var $_availableDisplayLanguages = ["de", "en"];
+
 
     /**
      * string - containing the parameter of the page
@@ -2165,14 +2175,403 @@ class cs_external_page_portal_view extends cs_page_view
     }
 
 
-    /** get page view as HTML
-     * this method returns the page view in HTML-Code
-     *
+
+    /** Get page view as HTML.
+     * This method returns the page view in HTML code.
      * @return string page view as HMTL
-     *
      * @author CommSy Development Group
      */
     public function asHTML()
+    {
+        $lang = $this->_getDisplayLanguage();
+
+        $html=<<<HTML
+<!doctype html>
+<html lang="$lang">
+{$this->_getHTMLHeadAsHTML()}
+
+{$this->_getBodyAsHTML()}
+</html>
+HTML;
+
+        return $html;
+    }
+
+
+    /** Get the display language of the page view as a two-letter language identifier.
+     * @return string the page 's display language
+     * @author CommSy Development Group
+     */
+    public function _getDisplayLanguage()
+    {
+        $lang = $this->_defaultDisplayLanguage;
+
+        $selectedLanguage = $this->_environment->getSelectedLanguage();
+        if (in_array($selectedLanguage, $this->_availableDisplayLanguages)) {
+            $lang = $selectedLanguage;
+        }
+
+        return $lang;
+    }
+
+
+    /** Get the HTML head element as HTML.
+     * @return string HTML head element as HTML
+     * @author CommSy Development Group
+     */
+    public function _getHTMLHeadAsHTML()
+    {
+        $siteShortTitle = "AGORA";
+
+        $html=<<<HTML
+  <head>
+{$this->_getMetaAsHTML()}
+    
+{$this->_getCSSAsHTML()}
+    
+    <title>$siteShortTitle - CommSy Login</title>
+  </head>
+HTML;
+
+        return $html;
+    }
+
+
+    /** Get the HTML body element as HTML.
+     * @return string HTML body element as HTML
+     * @author CommSy Development Group
+     */
+    public function _getBodyAsHTML()
+    {
+        $html=<<<HTML
+  <body>
+{$this->_getHeaderAsHTML()}
+
+{$this->_getSiteInfoAsHTML()}
+
+{$this->_getMainNavigationAsHTML()}
+
+{$this->_getContentAsHTML()}
+
+{$this->_getFooterAsHTML()}
+
+{$this->_getJavaScriptAsHTML()}
+  </body>
+HTML;
+
+        return $html;
+    }
+
+
+    /** Get the meta tags to be included within the HTML head as HTML.
+     * @return string meta tags as HTML
+     * @author CommSy Development Group
+     */
+    public function _getMetaAsHTML()
+    {
+        $html=<<<HTML
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+HTML;
+
+        return $html;
+    }
+
+
+    /** Get the CSS specifications to be included within the HTML head as HTML.
+     * @return string CSS specifications as HTML
+     * @author CommSy Development Group
+     */
+    public function _getCSSAsHTML()
+    {
+        // TODO: use a local bootstrap dist file
+
+        $portalID = $this->_environment->getCurrentPortalID();
+
+        $html=<<<HTML
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/external_portal_styles/$portalID/css/custom.css">
+HTML;
+
+        return $html;
+    }
+
+
+    /** Get the visible page header as HTML.
+     * @return string visible page header as HTML
+     * @author CommSy Development Group
+     */
+    public function _getHeaderAsHTML()
+    {
+        // TODO: localize strings, or accept an array of nav-link definitions as input
+        $corporationURL = "https://www.uni-hamburg.de/";
+        $corporationShortTitle = "UHH";
+        $corporationTitle = "Universität Hamburg";
+        $loginTitle = "Login";
+        $altPageTitle = "English";
+
+        $html=<<<HTML
+    <!-- Header -->
+    <div class="container-fluid container-topnav">
+      <div class="container">
+        <!-- Top Navigation -->
+        <ul class="nav d-flex">
+          <li class="nav-item p-1 first d-block d-md-none">
+            <a class="nav-link" href="$corporationURL" title="$corporationTitle">$corporationShortTitle</a>
+          </li>
+          <li class="nav-item p-1 second">
+            <a class="nav-link active" href="#">$loginTitle</a>
+          </li>
+          <li class="nav-item ml-auto p-1 last">
+            <a class="nav-link" href="index-en.html">$altPageTitle</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+HTML;
+
+        return $html;
+    }
+
+
+    /** Get the site info as HTML.
+     * @return string site info as HTML
+     * @author CommSy Development Group
+     */
+    public function _getSiteInfoAsHTML()
+    {
+        $portalID = $this->_environment->getCurrentPortalID();
+
+        // TODO: localize strings/URLs
+        $corporationTitle = "Uni Hamburg";
+        $corporationLogoFileName = "logo-uhh.svg";
+        $corporationLogoURL = "css/external_portal_styles/" . $portalID . "/img/" . $corporationLogoFileName;
+
+        $sitePage = "Startseite";
+        $siteShortTitle = "AGORA";
+        $siteTitle = "ePlattform der Fakultät für Geisteswissenschaften";
+        $siteURL = "https://www.agora.uni-hamburg.de/";
+        $siteLogoFileName = "logo-agora--de.png";
+        $siteLogoURL = "css/external_portal_styles/" . $portalID . "/img/" . $siteLogoFileName;
+
+        $html=<<<HTML
+    <!-- Site name + Slogan -->
+    <div class="container container-sitename d-block d-md-none">
+      <h1><a href="$siteURL" title="$siteShortTitle $sitePage">$siteShortTitle</a></h1>
+      <p>$siteTitle</p>
+    </div>
+
+    <!-- Logos -->
+    <div class="container container-logos d-none d-md-block">
+      <div class="d-flex justify-content-between">
+        <span class="logo-uhh"><img src="$corporationLogoURL" alt="Logo $corporationTitle" /></span>
+        <span class="logo-agora"><img src="$siteLogoURL" alt="$siteShortTitle-Logo" /></span>
+      </div>
+    </div>
+HTML;
+
+        return $html;
+    }
+
+
+    /** Get the main site navigation as HTML.
+     * @return string main navigation as HTML
+     * @author CommSy Development Group
+     */
+    public function _getMainNavigationAsHTML()
+    {
+        // TODO: extract & localize strings/URLs
+        $siteURL = "https://www.agora.uni-hamburg.de/";
+        $loginTitle = "Login";
+
+        $html=<<<HTML
+    <!-- Main Navigation -->
+    <div class="container container-mainnav">
+      <ul class="nav">
+        <li class="nav-item first">
+          <a class="nav-link" href="$siteURL">Start<span class="d-none d-sm-inline">seite</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="#">$loginTitle</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://www.agora.uni-hamburg.de/hilfe-bei-der-nutzung">Hilfe<span class="d-none d-md-inline"> bei der Nutzung</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://www.agora.uni-hamburg.de/ueber-agora">Über <span class="d-none d-sm-inline">AGORA</span></a>
+        </li>
+        <li class="nav-item last">
+          <a class="nav-link" href="https://www.agora.uni-hamburg.de/kontakt">Kontakt</a>
+        </li>
+      </ul>
+    </div>
+HTML;
+
+        return $html;
+    }
+
+
+    /** Get the main body content as HTML.
+     * @return string main body content as HTML
+     * @author CommSy Development Group
+     */
+    public function _getContentAsHTML()
+    {
+        // TODO: extract & localize strings/URLs
+        // TODO: implement CommSy login functionality
+        // TODO: where to implement account_forget/password_forget functionality?
+        // TODO: fetch "Secondary Content"
+
+        $portalID = $this->_environment->getCurrentPortalID();
+        $formActionURL = "?cid=" . $portalID . "&amp;mod=context&amp;fct=login";
+
+        $html=<<<HTML
+    <!-- Content -->
+    <div class="container container-content">
+      <div class="row">
+        <!-- Main Content -->
+        <div class="col-md-7">
+          <h2 class="text-uppercase">AGORA-Login</h2>
+          <!-- Login -->
+          <form id="commsy-login" method="post" action="$formActionURL" name="login">
+            <div class="form-group row">
+              <label for="inputUsername" class="col-sm-2 col-form-label">Kennung</label> 
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputUsername" name="user_id" placeholder="Kennung" required>
+                <small id="usernameHelpBlock" class="form-text text-muted"><a href="https://www.agoracommsy.uni-hamburg.de/?cid=651782&mod=home&fct=index&cs_modus=account_forget">Kennung vergessen?</a></small> 
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="inputPassword" class="col-sm-2 col-form-label">Passwort</label> 
+              <div class="col-sm-10">
+                <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Passwort" required>
+                <small id="passwordHelpBlock" class="form-text text-muted"><a href="https://www.agoracommsy.uni-hamburg.de/?cid=651782&mod=home&fct=index&cs_modus=password_forget">Passwort vergessen?</a></small> 
+              </div>
+            </div>
+{$this->_getAuthSourcesAsHTML()}
+            <div class="form-group row">
+              <div class="col-sm-10">
+                <button type="submit" class="btn btn-primary" name="option">Anmelden</button> 
+              </div>
+            </div>
+          </form>
+        </div>
+        <!-- Secondary Content -->
+        <div class="col-md-4 offset-md-1">
+          <h2 class="text-uppercase">Hinweise</h2>
+          <p>At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+        </div>
+      </div>
+    </div>
+HTML;
+
+        return $html;
+    }
+
+
+    /** Get the "auth_sources" form elements to be included within the CommSy login form as HTML.
+     * @return string "auth_sources" form elements as HTML
+     * @author CommSy Development Group
+     */
+    public function _getAuthSourcesAsHTML()
+    {
+        // TODO: extract & localize strings
+        // TODO: dynamically create `name="auth_sources"` form elements
+
+        $html=<<<HTML
+            <fieldset class="form-group">
+              <div class="row">
+                <legend class="col-form-label col-sm-2 pt-0">Quelle</legend> 
+                <div class="col-sm-10">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="radioSource" id="radioSource1" value="option1" checked>
+                    <label class="form-check-label" for="radioSource1">STiNE</label> 
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="radioSource" id="radioSource2" value="option2">
+                    <label class="form-check-label" for="radioSource2">AGORA (CommSy)</label> 
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+HTML;
+
+        return $html;
+    }
+
+
+    /** Get the visible page footer as HTML.
+     * @return string visible page footer as HTML
+     * @author CommSy Development Group
+     */
+    public function _getFooterAsHTML()
+    {
+        // TODO: extract & localize strings/URLs
+        $sitePage = "Startseite";
+        $siteShortTitle = "AGORA";
+        $siteTitle = "ePlattform der Fakultät für Geisteswissenschaften";
+        $siteURL = "https://www.agora.uni-hamburg.de/";
+        $siteEmail = "agora@uni-hamburg.de";
+        $loginTitle = "Login";
+
+        $html=<<<HTML
+    <!-- Footer -->
+    <footer class="container-fluid">
+      <div class="container">
+        <!-- Footer Navigation -->
+        <ul class="nav justify-content-center">
+          <li class="nav-item">
+            <a class="nav-link active" href="$siteURL">$sitePage</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="#">$loginTitle</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://www.agora.uni-hamburg.de/hilfe-bei-der-nutzung">Hilfe bei der Nutzung</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://www.agora.uni-hamburg.de/ueber-agora">Über AGORA</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://www.agora.uni-hamburg.de/kontakt">Kontakt</a>
+          </li>
+        </ul>
+        <div class="text-center">
+          <p>$siteShortTitle · $siteTitle · $siteEmail</p>
+        </div>
+      </div>
+    </footer>
+HTML;
+
+        return $html;
+    }
+
+
+    /** Get the JavaScript specifications to be included within the HTML body as HTML.
+     * @return string JavaScript specifications as HTML
+     * @author CommSy Development Group
+     */
+    public function _getJavaScriptAsHTML()
+    {
+        // TODO: remove JavaScript if unnecessary
+
+        $html=<<<HTML
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script> -->
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> -->
+HTML;
+
+        return $html;
+    }
+
+
+
+    public function asHTMLOLD()
     {
 
         $html = '';
