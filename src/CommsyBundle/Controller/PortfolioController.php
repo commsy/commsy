@@ -89,6 +89,7 @@ class PortfolioController extends Controller
         }
 
         return array(
+            'roomId' => $roomId,
             'portfolio' => $portfolio,
             'linkPositions' => $linkPositions,
         );
