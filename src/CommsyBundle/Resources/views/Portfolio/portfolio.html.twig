@@ -1,5 +1,5 @@
 <div class="uk-overflow-container">
-    <table class="uk-table uk-table-condensed uk-table-hover" border="1">
+    <table id="commsy-portfolio" class="uk-table uk-table-condensed" border="0">
         <!-- table header row - first cell is empty and sticky, the other cells show the categories-->
         <tr>
             <th class="">&nbsp;</th>
@@ -19,18 +19,22 @@
                         {% for secondTag in portfolio.tags %}
                             {% if secondTag.row == 0 %}
                                 {% set foundContent = false %}
-                                {% set content = '' %}
+                                {% set content = '<ul class="uk-list uk-list-line">' %}
+                                {% set firstTagId = '' %}
+                                {% set secondTagId = '' %}
                                 {% for link in linkPositions %}
                                     {% for linkData in link %}
                                         {% if (linkData[0] == tag.t_id and linkData[1] == secondTag.t_id) or (linkData[1] == tag.t_id and linkData[0] == secondTag.t_id) %}
                                             {% set foundContent = true %}
+                                            {% set firstTagId = tag.t_id %}
+                                            {% set secondTagId = secondTag.t_id %}
                                             {% for firstLink in portfolio.links|keys %}
                                                 {% for secondLink in portfolio.links|keys %}
                                                     {% if (firstLink == tag.t_id and secondLink == secondTag.t_id) %}
                                                         {% for firstLinkEntry in portfolio.links[firstLink] %}
                                                             {% for secondLinkEntry in portfolio.links[secondLink] %}
                                                                 {% if (firstLinkEntry.itemId == secondLinkEntry.itemId) %}
-                                                                    {% set content = content ~ '<a href=' ~ path('commsy_' ~ firstLinkEntry.type ~ '_detail', {'roomId': roomId, 'itemId': firstLinkEntry.itemId}) ~ '>' ~ firstLinkEntry.title|decodeHtmlEntity ~ '</a><br/>' %}
+                                                                    {% set content = content ~ '<li><a href=' ~ path('commsy_' ~ firstLinkEntry.type ~ '_detail', {'roomId': roomId, 'itemId': firstLinkEntry.itemId}) ~ '>' ~ firstLinkEntry.title|decodeHtmlEntity ~ '</a></li>' %}
                                                                 {% endif %}
                                                             {% endfor %}
                                                         {% endfor %}
@@ -40,8 +44,29 @@
                                         {% endif %}
                                     {% endfor %}
                                 {% endfor %}
+                                {% set content = content ~ '</ul>' %}
                                 <td>
-                                    {{ content|raw }}
+                                    <div class="uk-panel uk-panel-box uk-panel-box-secondary">
+                                        <div class="uk-panel-badge uk-badge">
+                                        </div>
+                                        <h3 class="uk-panel-title">
+                                            {% if foundContent %}
+                                                <a href="{{ path('commsy_portfolio_list', {'roomId': roomId, 'portfolioId': portfolioId, 'firstTagId': firstTagId, 'secondTagId': secondTagId}) }}"><i class="uk-icon-list"></i></a>
+                                                <a href="{{ path('commsy_portfolio_annotations', {'roomId': roomId, 'portfolioId': portfolioId, 'firstTagId': firstTagId, 'secondTagId': secondTagId}) }}"><i class="uk-icon-comments-o"></i></a>
+                                            {% else %}
+                                                <i class="uk-icon-list uk-text-muted"></i>
+                                                <i class="uk-icon-comments-o uk-text-muted"></i>
+                                            {% endif %}
+                                        </h3>
+                                        {% if foundContent %}
+                                            <div class="portfolio-content">
+                                                {{ content|raw }}
+                                            </div>
+                                        {% else %}
+                                            <div class="portfolio-content-empty">
+                                            </div>
+                                        {% endif %}
+                                    </div>
                                 </td>
                             {% endif %}
                         {% endfor %}

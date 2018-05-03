@@ -90,6 +90,7 @@ class PortfolioController extends Controller
 
         return array(
             'roomId' => $roomId,
+            'portfolioId' => $portfolioId,
             'portfolio' => $portfolio,
             'linkPositions' => $linkPositions,
         );
@@ -99,7 +100,7 @@ class PortfolioController extends Controller
      * @Route("/room/{roomId}/portfolio/portfoliosource/{source}")
      * @Template()
      */
-    public function portfolioTabsAction($roomId, $source = null, Request $request)
+    public function tabsAction($roomId, $source = null, Request $request)
     {
         $portfolioService = $this->get('commsy_legacy.portfolio_service');
         $portfolioList = $portfolioService->getPortfolioList();
@@ -114,5 +115,33 @@ class PortfolioController extends Controller
         return array(
             'portfolios' => $portfolios,
         );
+    }
+
+    /**
+     * @Route("/room/{roomId}/portfolio/{portfolioId}/list/{firstTagId}/{secondTagId}")
+     * @Template()
+     */
+    public function listAction($roomId, $portfolioId, $firstTagId, $secondTagId, $source = null, Request $request)
+    {
+        $portfolioService = $this->get('commsy_legacy.portfolio_service');
+        $portfolio = $portfolioService->getPortfolio($portfolioId);
+
+        return [
+            'item' => $portfolio,
+        ];
+    }
+
+    /**
+     * @Route("/room/{roomId}/portfolio/{portfolioId}/annotations/{firstTagId}/{secondTagId}")
+     * @Template()
+     */
+    public function annotationsAction($roomId, $portfolioId, $firstTagId, $secondTagId, $source = null, Request $request)
+    {
+        $portfolioService = $this->get('commsy_legacy.portfolio_service');
+        $portfolio = $portfolioService->getPortfolio($portfolioId);
+
+        return [
+          'item' => $portfolio,
+        ];
     }
 }
