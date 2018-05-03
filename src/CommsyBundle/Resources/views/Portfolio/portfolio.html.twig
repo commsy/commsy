@@ -34,7 +34,7 @@
                                                         {% for firstLinkEntry in portfolio.links[firstLink] %}
                                                             {% for secondLinkEntry in portfolio.links[secondLink] %}
                                                                 {% if (firstLinkEntry.itemId == secondLinkEntry.itemId) %}
-                                                                    {% set content = content ~ '<li><a href=' ~ path('commsy_' ~ firstLinkEntry.type ~ '_detail', {'roomId': roomId, 'itemId': firstLinkEntry.itemId}) ~ '>' ~ firstLinkEntry.title|decodeHtmlEntity ~ '</a></li>' %}
+                                                                    {% set content = content ~ '<li><a href=' ~ path('commsy_' ~ firstLinkEntry.itemType ~ '_detail', {'roomId': roomId, 'itemId': firstLinkEntry.itemId}) ~ '>' ~ firstLinkEntry.title|decodeHtmlEntity ~ '</a></li>' %}
                                                                 {% endif %}
                                                             {% endfor %}
                                                         {% endfor %}

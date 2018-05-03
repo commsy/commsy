@@ -70,7 +70,7 @@ class PortfolioService
                     $itemInformation = array(
                         "itemId"	=> $item->getItemId(),
                         "title"		=> $item->getTitle(),
-                        "type"      => $item->getItemType()
+                        "itemType"      => $item->getItemType()
                     );
 
                     $linkArray[$tagId][] = $itemInformation;

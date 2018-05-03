@@ -123,11 +123,46 @@ class PortfolioController extends Controller
      */
     public function listAction($roomId, $portfolioId, $firstTagId, $secondTagId, $source = null, Request $request)
     {
+        $itemService = $this->get('commsy_legacy.item_service');
         $portfolioService = $this->get('commsy_legacy.portfolio_service');
         $portfolio = $portfolioService->getPortfolio($portfolioId);
 
+        $items = [];
+        foreach ($portfolio['links'] as $tempFirstTagId => $firstEntries) {
+            foreach ($portfolio['links'] as $tempSecondTagId => $secondEntries) {
+                if ($tempFirstTagId == $firstTagId && $tempSecondTagId == $secondTagId) {
+                    foreach ($firstEntries as $firstEntry) {
+                        foreach ($secondEntries as $secondEntry) {
+                            if ($firstEntry['itemId'] == $secondEntry['itemId']) {
+                                $items[] = $itemService->getTypedItem($firstEntry['itemId']);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $readerService = $this->get('commsy_legacy.reader_service');
+        $userService = $this->get("commsy_legacy.user_service");
+        $user = $userService->getPortalUserFromSessionId();
+
+        $readerList = array();
+        foreach ($items as $item) {
+            if ($item != null) {
+                $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
+                $readerList[$item->getItemId()] = $readerService->getChangeStatusForUserByID($item->getItemId(), $relatedUser->getItemId());
+            }
+        }
+
+        $categoryService = $this->get('commsy_legacy.category_service');
+
         return [
-            'item' => $portfolio,
+            'roomId' => $roomId,
+            'items' => $items,
+            'feedList' => $items,
+            'readerList' => $readerList,
+            'firstTag' => $categoryService->getTag($firstTagId),
+            'secondTag' => $categoryService->getTag($secondTagId),
         ];
     }
 
@@ -141,7 +176,7 @@ class PortfolioController extends Controller
         $portfolio = $portfolioService->getPortfolio($portfolioId);
 
         return [
-          'item' => $portfolio,
+
         ];
     }
 }
