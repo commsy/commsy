@@ -1,0 +1,31 @@
+<?php
+$message["EXTERNALMESSAGES_PORTAL_CORPORATION_ABBREVIATION"]["en"] = "UHH";
+$message["EXTERNALMESSAGES_PORTAL_CORPORATION_SHORT_TITLE"]["en"] = "Uni Hamburg";
+$message["EXTERNALMESSAGES_PORTAL_CORPORATION_TITLE"]["en"] = "University of Hamburg";
+$message["EXTERNALMESSAGES_PORTAL_CORPORATION_URL"]["en"] = "https://www.uni-hamburg.de/en.html";
+$message["EXTERNALMESSAGES_PORTAL_CORPORATION_LOGO_FILE_NAME"]["en"] = "logo-uhh.svg";
+$message["EXTERNALMESSAGES_PORTAL_LOGIN_TITLE"]["en"] = "Login";
+$message["EXTERNALMESSAGES_PORTAL_ALT_PAGE_TITLE"]["en"] = "Deutsch";
+$message["EXTERNALMESSAGES_PORTAL_SITE_PAGE_SHORT_TITLE"]["en"] = "Home";
+$message["EXTERNALMESSAGES_PORTAL_SITE_PAGE_TITLE"]["en"] = "Homepage";
+$message["EXTERNALMESSAGES_PORTAL_SITE_SHORT_TITLE"]["en"] = "AGORA";
+$message["EXTERNALMESSAGES_PORTAL_SITE_TITLE"]["en"] = "ePlatform for the Faculty of Humanities";
+$message["EXTERNALMESSAGES_PORTAL_SITE_URL"]["en"] = "https://www.agora.uni-hamburg.de/en";
+$message["EXTERNALMESSAGES_PORTAL_SITE_LOGO_FILE_NAME"]["en"] = "logo-agora--en.png";
+$message["EXTERNALMESSAGES_PORTAL_SITE_EMAIL"]["en"] = "agora@uni-hamburg.de";
+$message["EXTERNALMESSAGES_PORTAL_NAV_LINK_SHORT_TITLE_HELP"]["en"] = "Usage";
+$message["EXTERNALMESSAGES_PORTAL_NAV_LINK_TITLE_HELP"]["en"] = "Usage Information";
+$message["EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_HELP"]["en"] = "https://www.agora.uni-hamburg.de/en/support-and-assistance";
+$message["EXTERNALMESSAGES_PORTAL_NAV_LINK_SHORT_TITLE_ABOUT"]["en"] = "About";
+$message["EXTERNALMESSAGES_PORTAL_NAV_LINK_TITLE_ABOUT"]["en"] = "About AGORA";
+$message["EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_ABOUT"]["en"] = "https://www.agora.uni-hamburg.de/en/about-agora";
+$message["EXTERNALMESSAGES_PORTAL_NAV_LINK_TITLE_CONTACT"]["en"] = "Contact";
+$message["EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_CONTACT"]["en"] = "https://www.agora.uni-hamburg.de/en/contact";
+$message["EXTERNALMESSAGES_PORTAL_ACCOUNT_LABEL"]["en"] = "Username";
+$message["EXTERNALMESSAGES_PORTAL_ACCOUNT_LINK_TITLE_FORGOT"]["en"] = "Forgot username?";
+$message["EXTERNALMESSAGES_PORTAL_PASSWORD_LABEL"]["en"] = "Password";
+$message["EXTERNALMESSAGES_PORTAL_PASSWORD_LINK_TITLE_FORGOT"]["en"] = "Forgot password?";
+$message["EXTERNALMESSAGES_PORTAL_SUBMIT_BUTTON_TITLE"]["en"] = "Log in";
+$message["EXTERNALMESSAGES_PORTAL_INDICATIONS_TITLE"]["en"] = "Indications";
+$message["EXTERNALMESSAGES_PORTAL_SOURCE_LABEL"]["en"] = "Source";
+?>

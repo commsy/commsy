@@ -152,6 +152,9 @@ class cs_external_page_portal_view extends cs_page_view
             $this->_style_image_path = $this->_environment->getCurrentPortalID() . '/images/';
         }
 
+        $portalID = $this->_environment->getCurrentPortalID();
+        $this->_translator->addMessageDatFolder('external_pages/' . $portalID . '/externalmessages');
+
         $this->_honorExternalLanguage();
     }
 
@@ -2268,7 +2271,8 @@ HTML;
      */
     public function _getHTMLHeadAsHTML()
     {
-        $siteShortTitle = "AGORA";
+        $siteShortTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_SHORT_TITLE');
+        $loginTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LOGIN_TITLE');
 
         $html = <<<HTML
   <head>
@@ -2276,7 +2280,7 @@ HTML;
     
 {$this->_getCSSAsHTML()}
     
-    <title>$siteShortTitle - CommSy Login</title>
+    <title>$siteShortTitle - CommSy $loginTitle</title>
   </head>
 HTML;
 
@@ -2353,12 +2357,17 @@ HTML;
      */
     public function _getHeaderAsHTML()
     {
-        // TODO: localize strings, or accept an array of nav-link definitions as input
-        $corporationURL = "https://www.uni-hamburg.de/";
-        $corporationShortTitle = "UHH";
-        $corporationTitle = "Universität Hamburg";
-        $loginTitle = "Login";
+        $corporationURL = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_CORPORATION_URL');
+        $corporationShortTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_CORPORATION_ABBREVIATION');
+        $corporationTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_CORPORATION_TITLE');
+        $loginTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LOGIN_TITLE');
+
+// TODO: based on the selected language, toggle the language in title/URL of alternative page
+//      $lang = $this->_getDisplayLanguage();
+
         $altPageTitle = "English";
+        $portalID = $this->_environment->getCurrentPortalID();
+        $altPageURL = "?cid=" . $portalID . "&amp;external_language=en";
 
         $html = <<<HTML
     <!-- Header -->
@@ -2373,7 +2382,7 @@ HTML;
             <a class="nav-link active" href="#">$loginTitle</a>
           </li>
           <li class="nav-item ml-auto p-1 last">
-            <a class="nav-link" href="index-en.html">$altPageTitle</a>
+            <a class="nav-link" href="$altPageURL">$altPageTitle</a>
           </li>
         </ul>
       </div>
@@ -2392,22 +2401,20 @@ HTML;
     {
         $portalID = $this->_environment->getCurrentPortalID();
 
-        // TODO: localize strings/URLs
-        $corporationTitle = "Uni Hamburg";
-        $corporationLogoFileName = "logo-uhh.svg";
+        $corporationTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_CORPORATION_SHORT_TITLE');
+        $corporationLogoFileName = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_CORPORATION_LOGO_FILE_NAME');
         $corporationLogoURL = "css/external_portal_styles/" . $portalID . "/img/" . $corporationLogoFileName;
-
-        $sitePage = "Startseite";
-        $siteShortTitle = "AGORA";
-        $siteTitle = "ePlattform der Fakultät für Geisteswissenschaften";
-        $siteURL = "https://www.agora.uni-hamburg.de/";
-        $siteLogoFileName = "logo-agora--de.png";
+        $sitePageTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_PAGE_TITLE');
+        $siteShortTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_SHORT_TITLE');
+        $siteTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_TITLE');
+        $siteURL = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_URL');
+        $siteLogoFileName = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_LOGO_FILE_NAME');
         $siteLogoURL = "css/external_portal_styles/" . $portalID . "/img/" . $siteLogoFileName;
 
         $html = <<<HTML
     <!-- Site name + Slogan -->
     <div class="container container-sitename d-block d-md-none">
-      <h1><a href="$siteURL" title="$siteShortTitle $sitePage">$siteShortTitle</a></h1>
+      <h1><a href="$siteURL" title="$siteShortTitle $sitePageTitle">$siteShortTitle</a></h1>
       <p>$siteTitle</p>
     </div>
 
@@ -2430,28 +2437,46 @@ HTML;
      */
     public function _getMainNavigationAsHTML()
     {
-        // TODO: extract & localize strings/URLs
-        $siteURL = "https://www.agora.uni-hamburg.de/";
-        $loginTitle = "Login";
+        $sitePageShortTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_PAGE_SHORT_TITLE');
+        $sitePageTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_PAGE_TITLE');
+        $siteURL = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_URL');
+        $loginTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LOGIN_TITLE');
+        $navLinkShortTitleHelp = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_SHORT_TITLE_HELP');
+        $navLinkTitleHelp = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_TITLE_HELP');
+        $navLinkURLHelp = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_HELP');
+        $navLinkShortTitleAbout = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_SHORT_TITLE_ABOUT');
+        $navLinkTitleAbout = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_TITLE_ABOUT');
+        $navLinkURLAbout = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_ABOUT');
+        $navLinkTitleContact = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_TITLE_CONTACT');
+        $navLinkURLContact = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_CONTACT');
 
         $html = <<<HTML
     <!-- Main Navigation -->
     <div class="container container-mainnav">
       <ul class="nav">
         <li class="nav-item first">
-          <a class="nav-link" href="$siteURL">Start<span class="d-none d-sm-inline">seite</span></a>
+          <a class="nav-link" href="$siteURL">
+            <span class="d-inline d-sm-none">$sitePageShortTitle</span>
+            <span class="d-none d-sm-inline">$sitePageTitle</span>
+          </a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" href="#">$loginTitle</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="https://www.agora.uni-hamburg.de/hilfe-bei-der-nutzung">Hilfe<span class="d-none d-md-inline"> bei der Nutzung</span></a>
+          <a class="nav-link" href="$navLinkURLHelp">
+            <span class="d-inline d-md-none">$navLinkShortTitleHelp</span>
+            <span class="d-none d-md-inline">$navLinkTitleHelp</span>
+          </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="https://www.agora.uni-hamburg.de/ueber-agora">Über <span class="d-none d-sm-inline">AGORA</span></a>
+          <a class="nav-link" href="$navLinkURLAbout">
+            <span class="d-inline d-sm-none">$navLinkShortTitleAbout</span>
+            <span class="d-none d-sm-inline">$navLinkTitleAbout</span>
+          </a>
         </li>
         <li class="nav-item last">
-          <a class="nav-link" href="https://www.agora.uni-hamburg.de/kontakt">Kontakt</a>
+          <a class="nav-link" href="$navLinkURLContact">$navLinkTitleContact</a>
         </li>
       </ul>
     </div>
@@ -2467,11 +2492,20 @@ HTML;
      */
     public function _getContentAsHTML()
     {
-        // TODO: extract & localize strings/URLs
         // TODO: should we honor `$currentPortal->showAuthAtLogin()`?
         // TODO: implement the account_forget/password_forget forms
         // TODO: fetch "Secondary Content"
 
+        $siteShortTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_SHORT_TITLE');
+        $loginTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LOGIN_TITLE');
+        $accountLabel = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_ACCOUNT_LABEL');
+        $forgotAccountLinkTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_ACCOUNT_LINK_TITLE_FORGOT');
+        $passwordLabel = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_PASSWORD_LABEL');
+        $forgotPasswordLinkTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_PASSWORD_LINK_TITLE_FORGOT');
+        $submitButtonTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SUBMIT_BUTTON_TITLE');
+        $indicationsTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_INDICATIONS_TITLE');
+
+        // TODO: use ahref_curl() function instead?
         $portalID = $this->_environment->getCurrentPortalID();
         $formActionURL = "?cid=" . $portalID . "&amp;mod=context&amp;fct=login";
         $forgotAccountURL = "?cid=" . $portalID . "&amp;mod=home&amp;fct=index&amp;cs_modus=account_forget";
@@ -2483,34 +2517,34 @@ HTML;
       <div class="row">
         <!-- Main Content -->
         <div class="col-md-7">
-          <h2 class="text-uppercase">AGORA-Login</h2>
+          <h2 class="text-uppercase">$siteShortTitle-$loginTitle</h2>
           <!-- Login -->
           <form id="commsy-login" method="post" action="$formActionURL" name="login">
             <div class="form-group row">
-              <label for="inputUsername" class="col-sm-2 col-form-label">Kennung</label> 
+              <label for="inputUsername" class="col-sm-2 col-form-label">$accountLabel</label> 
               <div class="col-sm-10">
-                <input type="text" class="form-control" id="inputUsername" name="user_id" placeholder="Kennung" required>
-                <small id="usernameHelpBlock" class="form-text text-muted"><a href="$forgotAccountURL">Kennung vergessen?</a></small> 
+                <input type="text" class="form-control" id="inputUsername" name="user_id" placeholder="$accountLabel" required>
+                <small id="usernameHelpBlock" class="form-text text-muted"><a href="$forgotAccountURL">$forgotAccountLinkTitle</a></small> 
               </div>
             </div>
             <div class="form-group row">
-              <label for="inputPassword" class="col-sm-2 col-form-label">Passwort</label> 
+              <label for="inputPassword" class="col-sm-2 col-form-label">$passwordLabel</label> 
               <div class="col-sm-10">
-                <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Passwort" required>
-                <small id="passwordHelpBlock" class="form-text text-muted"><a href="$forgotPasswordURL">Passwort vergessen?</a></small> 
+                <input type="password" class="form-control" id="inputPassword" name="password" placeholder="$passwordLabel" required>
+                <small id="passwordHelpBlock" class="form-text text-muted"><a href="$forgotPasswordURL">$forgotPasswordLinkTitle</a></small> 
               </div>
             </div>
 {$this->_getAuthSourcesAsHTML()}
             <div class="form-group row">
               <div class="col-sm-10">
-                <button type="submit" class="btn btn-primary" name="option">Anmelden</button> 
+                <button type="submit" class="btn btn-primary" name="option">$submitButtonTitle</button> 
               </div>
             </div>
           </form>
         </div>
         <!-- Secondary Content -->
         <div class="col-md-4 offset-md-1">
-          <h2 class="text-uppercase">Hinweise</h2>
+          <h2 class="text-uppercase">$indicationsTitle</h2>
           <p>At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
         </div>
       </div>
@@ -2541,7 +2575,6 @@ HTML;
         // single auth source
         if ($authSourceList->getCount() == 1) {
             $authSourceID = $authSourceItem->getItemID();
-
             $html = <<<HTML
             <input type="hidden" name="auth_source" value="$authSourceID"/>
 HTML;
@@ -2549,10 +2582,12 @@ HTML;
         }
 
         // multiple auth sources
+        $sourceLabel = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SOURCE_LABEL');
+
         $html = <<<HTML
             <fieldset class="form-group">
               <div class="row">
-                <legend class="col-form-label col-sm-2 pt-0">Quelle</legend> 
+                <legend class="col-form-label col-sm-2 pt-0">$sourceLabel</legend> 
                 <div class="col-sm-10">
 HTML;
 
@@ -2564,7 +2599,6 @@ HTML;
             $authSourceID = $authSourceItem->getItemID();
             $authSourceName = $authSourceItem->getTitle();
             $authSourceDefault = ($authSourceID == $defaultAuthSourceID ? ' checked' : '');
-
             $html .= LF . <<<HTML
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="auth_source" id="radioSource{$i}" value="$authSourceID"$authSourceDefault>
@@ -2613,13 +2647,18 @@ HTML;
      */
     public function _getFooterAsHTML()
     {
-        // TODO: extract & localize strings/URLs
-        $sitePage = "Startseite";
-        $siteShortTitle = "AGORA";
-        $siteTitle = "ePlattform der Fakultät für Geisteswissenschaften";
-        $siteURL = "https://www.agora.uni-hamburg.de/";
-        $siteEmail = "agora@uni-hamburg.de";
-        $loginTitle = "Login";
+        $sitePageTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_PAGE_TITLE');
+        $siteShortTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_SHORT_TITLE');
+        $siteTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_TITLE');
+        $siteURL = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_URL');
+        $siteEmail = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_EMAIL');
+        $loginTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LOGIN_TITLE');
+        $navLinkTitleHelp = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_TITLE_HELP');
+        $navLinkURLHelp = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_HELP');
+        $navLinkTitleAbout = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_TITLE_ABOUT');
+        $navLinkURLAbout = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_ABOUT');
+        $navLinkTitleContact = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_TITLE_CONTACT');
+        $navLinkURLContact = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_CONTACT');
 
         $html = <<<HTML
     <!-- Footer -->
@@ -2628,19 +2667,19 @@ HTML;
         <!-- Footer Navigation -->
         <ul class="nav justify-content-center">
           <li class="nav-item">
-            <a class="nav-link active" href="$siteURL">$sitePage</a>
+            <a class="nav-link active" href="$siteURL">$sitePageTitle</a>
           </li>
           <li class="nav-item">
             <a class="nav-link active" href="#">$loginTitle</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="https://www.agora.uni-hamburg.de/hilfe-bei-der-nutzung">Hilfe bei der Nutzung</a>
+            <a class="nav-link" href="$navLinkURLHelp">$navLinkTitleHelp</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="https://www.agora.uni-hamburg.de/ueber-agora">Über AGORA</a>
+            <a class="nav-link" href="$navLinkURLAbout">$navLinkTitleAbout</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="https://www.agora.uni-hamburg.de/kontakt">Kontakt</a>
+            <a class="nav-link" href="$navLinkURLContact">$navLinkTitleContact</a>
           </li>
         </ul>
         <div class="text-center">
