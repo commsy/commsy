@@ -2534,7 +2534,7 @@ HTML;
                 <small id="passwordHelpBlock" class="form-text text-muted"><a href="$forgotPasswordURL">$forgotPasswordLinkTitle</a></small> 
               </div>
             </div>
-{$this->_getAuthSourcesAsHTML()}
+{$this->_getAuthSourcesAsHTML()}{$this->_getLoginRedirectAsHTML()}
             <div class="form-group row">
               <div class="col-sm-10">
                 <button type="submit" class="btn btn-primary" name="option">$submitButtonTitle</button> 
@@ -2638,6 +2638,28 @@ HTML;
         }
 
         return $id;
+    }
+
+
+    /** Get the login redirect (if any) as a form element to be included within the CommSy login form as HTML.
+     * @return string login redirect as HTML
+     * @author CommSy Development Group
+     */
+    public function _getLoginRedirectAsHTML()
+    {
+        $sessionItem = $this->_environment->getSessionItem();
+        if (!$sessionItem->issetValue('login_redirect')) {
+            return '';
+        }
+
+        $redirectURL = $sessionItem->getValue('login_redirect');
+        $sessionItem->unsetValue('login_redirect');
+
+        $html = LF . <<<HTML
+            <input type="hidden" name="login_redirect" value="$redirectURL"/>
+HTML;
+
+        return $html;
     }
 
 
