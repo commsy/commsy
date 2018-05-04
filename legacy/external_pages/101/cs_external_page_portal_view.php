@@ -151,6 +151,8 @@ class cs_external_page_portal_view extends cs_page_view
         if (file_exists('htdocs/' . $this->_environment->getCurrentPortalID() . '/commsy.css')) {
             $this->_style_image_path = $this->_environment->getCurrentPortalID() . '/images/';
         }
+
+        $this->_honorExternalLanguage();
     }
 
     public function addDeleteBoxHiddenValues($array)
@@ -2174,6 +2176,51 @@ class cs_external_page_portal_view extends cs_page_view
         return $html;
     }
 
+
+    /** Honors the language specified by the current request in the `external_language` parameter,
+     * and updates the selected language of the current user (or session) accordingly.
+     * @author CommSy Development Group
+     */
+    public function _honorExternalLanguage()
+    {
+        $lang = '';
+
+        if (isset($_GET['external_language']) && !empty($_GET['external_language'])) {
+            $lang = $_GET['external_language'];
+        } elseif (isset($_POST['external_language']) && !empty($_POST['external_language'])) {
+            $lang = $_POST['external_language'];
+        }
+        if (empty($lang)) {
+            return;
+        }
+
+        $currentUser = $this->_environment->getCurrentUserItem();
+        if ($currentUser->isUser()) {
+            $currentUser->setLanguage($lang);
+            $currentUser->setChangeModificationOnSave(false);
+            $currentUser->save();
+        } else {
+            $session_item = $this->_environment->getSessionItem();
+            $session_item->setValue('message_language_select', $lang);
+        }
+
+        $this->_translator->setSelectedLanguage($lang);
+        $this->_environment->setSelectedLanguage($lang);
+
+        $params = $this->_environment->getCurrentParameterArray();
+        unset($params['external_language']);
+        $parameter_array = $this->_environment->_getCurrentParameterArray();
+        $retour = array();
+        if (count($parameter_array) > 0) {
+            foreach ($parameter_array as $parameter) {
+                $temp_parameter_array = explode('=', $parameter);
+                if ('external_language' != $temp_parameter_array[0]) {
+                    $retour[] = $temp_parameter_array[0] . '=' . $temp_parameter_array[1];
+                }
+            }
+        }
+        $this->_environment->_current_parameter_array = $retour;
+    }
 
 
     /** Get page view as HTML.
