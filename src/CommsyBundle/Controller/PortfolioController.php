@@ -88,11 +88,14 @@ class PortfolioController extends Controller
             }
         }
 
+        $userService = $this->get("commsy_legacy.user_service");
+
         return array(
             'roomId' => $roomId,
             'portfolioId' => $portfolioId,
             'portfolio' => $portfolio,
             'linkPositions' => $linkPositions,
+            'user' => $userService->getPortalUserFromSessionId(),
         );
     }
 
