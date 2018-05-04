@@ -7,7 +7,7 @@
                     <div class="uk-panel-badge">
                     </div>
                     <h3 class="uk-panel-title uk-text-right">
-                        <a href=""><i class="uk-icon-edit"></i></a>
+                        <a href="" data-uk-tooltip title="{{ 'edit'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
                     </h3>
                     <div class="portfolio-content portfolio-description">
                         <span class="uk-text-bold">{{ portfolio.title }}</span><br/>
@@ -16,38 +16,41 @@
                     </div>
                 </div>
             </th>
-            {% for tag in portfolio.tags %}
-                {% if tag.row == 0 %}
+            {% for firstTag in portfolio.tags %}
+                {% if firstTag.row == 0 %}
                     <th>
                         <div class="uk-panel uk-panel-box uk-panel-box-secondary uk-panel-box-portfolio">
                             <div class="uk-panel-badge">
                             </div>
                             <h3 class="uk-panel-title uk-text-right">
-                                <a href=""><i class="uk-icon-edit"></i></a>
+                                <a href="" data-uk-tooltip title="{{ 'edit'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
                             </h3>
                             <div class="portfolio-content">
-                                {{ tag.title }}
+                                {{ firstTag.title }}
                             </div>
                         </div>
                     </th>
                 {% endif %}
             {% endfor %}
+            <th id="portfolio-add-column" class="uk-text-top">
+                <a href="" data-uk-tooltip title="{{ 'add column'|trans({}, 'portfolio') }}"><i class="uk-icon-plus uk-icon-small"></i></a>
+            </th>
         </tr>
         <!-- rows with categories column (first column; sticky) and content -->
         {% set counter1 = 0 %}
-        {% for tag in portfolio.tags %}
-            {% if tag.row != 0 %}
+        {% for firstTag in portfolio.tags %}
+            {% if firstTag.row != 0 %}
                 <tr>
-                    {% if tag.column == 0 %}
+                    {% if firstTag.column == 0 %}
                         <th class="">
                             <div class="uk-panel uk-panel-box uk-panel-box-secondary uk-panel-box-portfolio">
                                 <div class="uk-panel-badge">
                                 </div>
                                 <h3 class="uk-panel-title uk-text-right">
-                                    <a href=""><i class="uk-icon-edit"></i></a>
+                                    <a href="" data-uk-tooltip title="{{ 'edit'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
                                 </h3>
                                 <div class="portfolio-content">
-                                    {{ tag.title }}
+                                    {{ firstTag.title }}
                                 </div>
                             </div>
                         </th>
@@ -59,13 +62,13 @@
                                 {% set secondTagId = '' %}
                                 {% for link in linkPositions %}
                                     {% for linkData in link %}
-                                        {% if (linkData[0] == tag.t_id and linkData[1] == secondTag.t_id) or (linkData[1] == tag.t_id and linkData[0] == secondTag.t_id) %}
+                                        {% if (linkData[0] == firstTag.t_id and linkData[1] == secondTag.t_id) or (linkData[1] == firstTag.t_id and linkData[0] == secondTag.t_id) %}
                                             {% set foundContent = true %}
-                                            {% set firstTagId = tag.t_id %}
+                                            {% set firstTagId = firstTag.t_id %}
                                             {% set secondTagId = secondTag.t_id %}
                                             {% for firstLink in portfolio.links|keys %}
                                                 {% for secondLink in portfolio.links|keys %}
-                                                    {% if (firstLink == tag.t_id and secondLink == secondTag.t_id) %}
+                                                    {% if (firstLink == firstTag.t_id and secondLink == secondTag.t_id) %}
                                                         {% for firstLinkEntry in portfolio.links[firstLink] %}
                                                             {% for secondLinkEntry in portfolio.links[secondLink] %}
                                                                 {% if (firstLinkEntry.itemId == secondLinkEntry.itemId) %}
@@ -86,20 +89,20 @@
                                         </div>
                                         <h3 class="uk-panel-title uk-text-right">
                                             {% if foundContent %}
-                                                <a href="{{ path('commsy_portfolio_detail', {'roomId': roomId, 'portfolioId': portfolioId, 'firstTagId': firstTagId, 'secondTagId': secondTagId}) }}"><i class="uk-icon-list"></i></a>
-                                                <a href="{{ path('commsy_portfolio_detail', {'roomId': roomId, 'portfolioId': portfolioId, 'firstTagId': firstTagId, 'secondTagId': secondTagId}) }}"><i class="uk-icon-comments-o"></i></a>
+                                                <a href="{{ path('commsy_portfolio_detail', {'roomId': roomId, 'portfolioId': portfolioId, 'firstTagId': firstTagId, 'secondTagId': secondTagId}) }}" data-uk-tooltip title="{{ 'details'|trans({}, 'portfolio') }}"><i class="uk-icon-list"></i></a>
                                             {% else %}
-                                                <i class="uk-icon-list uk-text-muted"></i>
-                                                <i class="uk-icon-comments-o uk-text-muted"></i>
+                                                <a href="{{ path('commsy_portfolio_detail', {'roomId': roomId, 'portfolioId': portfolioId, 'firstTagId': firstTag.t_id, 'secondTagId': secondTag.t_id}) }}" data-uk-tooltip title="{{ 'details'|trans({}, 'portfolio') }}"><i class="uk-icon-list"></i></a>
                                             {% endif %}
                                         </h3>
                                         {% if foundContent %}
                                             <div class="portfolio-content">
                                                 {{ content|raw }}
                                             </div>
+                                            <i class="uk-icon-comments-o uk-text-muted"></i> <span class="uk-text-muted">(...)</span>
                                         {% else %}
                                             <div class="portfolio-content-empty">
                                             </div>
+                                            <i class="uk-icon-comments-o uk-text-muted"></i> <span class="uk-text-muted">(0)</span>
                                         {% endif %}
                                     </div>
                                 </td>
@@ -109,5 +112,10 @@
                 </tr>
             {% endif %}
         {% endfor %}
+        <tr>
+            <td id="portfolio-add-row">
+                <a href="" data-uk-tooltip title="{{ 'add row'|trans({}, 'portfolio') }}"><i class="uk-icon-plus uk-icon-small"></i></a>
+            </td>
+        </tr>
     </table>
 </div>
