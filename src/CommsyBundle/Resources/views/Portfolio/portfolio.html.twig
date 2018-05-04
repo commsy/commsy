@@ -1,11 +1,33 @@
 <div class="uk-overflow-container">
-    <table id="commsy-portfolio" class="uk-table uk-table-condensed" border="0">
+    <table id="commsy-portfolio" class="uk-table" border="0">
         <!-- table header row - first cell is empty and sticky, the other cells show the categories-->
         <tr>
-            <th class="">&nbsp;</th>
+            <th class="">
+                <div class="uk-panel uk-panel-box uk-panel-box-secondary uk-panel-box-portfolio">
+                    <div class="uk-panel-badge">
+                    </div>
+                    <h3 class="uk-panel-title uk-text-right">
+                        <a href=""><i class="uk-icon-edit"></i></a>
+                    </h3>
+                    <div class="portfolio-content portfolio-description">
+                        {{ portfolio.description }}
+                    </div>
+                </div>
+            </th>
             {% for tag in portfolio.tags %}
                 {% if tag.row == 0 %}
-                    <th>{{ tag.title }}</th>
+                    <th>
+                        <div class="uk-panel uk-panel-box uk-panel-box-secondary uk-panel-box-portfolio">
+                            <div class="uk-panel-badge">
+                            </div>
+                            <h3 class="uk-panel-title uk-text-right">
+                                <a href=""><i class="uk-icon-edit"></i></a>
+                            </h3>
+                            <div class="portfolio-content">
+                                {{ tag.title }}
+                            </div>
+                        </div>
+                    </th>
                 {% endif %}
             {% endfor %}
         </tr>
@@ -15,7 +37,18 @@
             {% if tag.row != 0 %}
                 <tr>
                     {% if tag.column == 0 %}
-                        <th class="">{{ tag.title }}</th>
+                        <th class="">
+                            <div class="uk-panel uk-panel-box uk-panel-box-secondary uk-panel-box-portfolio">
+                                <div class="uk-panel-badge">
+                                </div>
+                                <h3 class="uk-panel-title uk-text-right">
+                                    <a href=""><i class="uk-icon-edit"></i></a>
+                                </h3>
+                                <div class="portfolio-content">
+                                    {{ tag.title }}
+                                </div>
+                            </div>
+                        </th>
                         {% for secondTag in portfolio.tags %}
                             {% if secondTag.row == 0 %}
                                 {% set foundContent = false %}
@@ -47,11 +80,11 @@
                                 {% set content = content ~ '</ul>' %}
                                 <td>
                                     <div class="uk-panel uk-panel-box uk-panel-box-secondary">
-                                        <div class="uk-panel-badge uk-badge">
+                                        <div class="uk-panel-badge">
                                         </div>
-                                        <h3 class="uk-panel-title">
+                                        <h3 class="uk-panel-title uk-text-right">
                                             {% if foundContent %}
-                                                <a href="{{ path('commsy_portfolio_detail', {'roomId': roomId, 'portfolioId': portfolioId, 'firstTagId': firstTagId, 'secondTagId': secondTagId}) }}"><i class="uk-icon-list"></i></i></a>
+                                                <a href="{{ path('commsy_portfolio_detail', {'roomId': roomId, 'portfolioId': portfolioId, 'firstTagId': firstTagId, 'secondTagId': secondTagId}) }}"><i class="uk-icon-list"></i></a>
                                                 <a href="{{ path('commsy_portfolio_detail', {'roomId': roomId, 'portfolioId': portfolioId, 'firstTagId': firstTagId, 'secondTagId': secondTagId}) }}"><i class="uk-icon-comments-o"></i></a>
                                             {% else %}
                                                 <i class="uk-icon-list uk-text-muted"></i>
