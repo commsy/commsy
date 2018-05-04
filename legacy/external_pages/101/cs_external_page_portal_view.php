@@ -2203,8 +2203,8 @@ class cs_external_page_portal_view extends cs_page_view
             $currentUser->setChangeModificationOnSave(false);
             $currentUser->save();
         } else {
-            $session_item = $this->_environment->getSessionItem();
-            $session_item->setValue('message_language_select', $lang);
+            $sessionItem = $this->_environment->getSessionItem();
+            $sessionItem->setValue('message_language_select', $lang);
         }
 
         $this->_translator->setSelectedLanguage($lang);
@@ -2212,13 +2212,13 @@ class cs_external_page_portal_view extends cs_page_view
 
         $params = $this->_environment->getCurrentParameterArray();
         unset($params['external_language']);
-        $parameter_array = $this->_environment->_getCurrentParameterArray();
+        $parameterArray = $this->_environment->_getCurrentParameterArray();
         $retour = array();
-        if (count($parameter_array) > 0) {
-            foreach ($parameter_array as $parameter) {
-                $temp_parameter_array = explode('=', $parameter);
-                if ('external_language' != $temp_parameter_array[0]) {
-                    $retour[] = $temp_parameter_array[0] . '=' . $temp_parameter_array[1];
+        if (count($parameterArray) > 0) {
+            foreach ($parameterArray as $parameter) {
+                $tempParameterArray = explode('=', $parameter);
+                if ('external_language' != $tempParameterArray[0]) {
+                    $retour[] = $tempParameterArray[0] . '=' . $tempParameterArray[1];
                 }
             }
         }
