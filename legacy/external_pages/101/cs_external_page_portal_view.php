@@ -160,6 +160,29 @@ HTML;
     }
 
 
+    /** Get the first alternate two-letter language identifier from the list of available display languages.
+     * @return string the page's alternate display language
+     * @author CommSy Development Group
+     */
+    public function _getAlternateDisplayLanguage()
+    {
+        $altLang = $this->_defaultDisplayLanguage;
+        $lang = $this->_getDisplayLanguage();
+        $availableDisplayLanguages = $this->_availableDisplayLanguages;
+        $langIndex = array_search($lang, $availableDisplayLanguages);
+
+        if ($langIndex !== false) {
+            unset($availableDisplayLanguages[$langIndex]);
+            $availableDisplayLanguages = array_values($availableDisplayLanguages);
+            if (isset($availableDisplayLanguages[0]) && !empty($availableDisplayLanguages[0])) {
+                $altLang = $availableDisplayLanguages[0];
+            }
+        }
+
+        return $altLang;
+    }
+
+
     /** Get the HTML head element as HTML.
      * @return string HTML head element as HTML
      * @author CommSy Development Group
@@ -256,13 +279,9 @@ HTML;
         $corporationShortTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_CORPORATION_ABBREVIATION');
         $corporationTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_CORPORATION_TITLE');
         $loginTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LOGIN_TITLE');
-
-// TODO: based on the selected language, toggle the language in title/URL of alternative page
-//      $lang = $this->_getDisplayLanguage();
-
-        $altPageTitle = "English";
+        $altPageTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_ALT_PAGE_TITLE');
         $portalID = $this->_environment->getCurrentPortalID();
-        $altPageURL = "?cid=" . $portalID . "&amp;external_language=en";
+        $altPageURL = "?cid=" . $portalID . "&amp;external_language=" . $this->_getAlternateDisplayLanguage();
 
         $html = <<<HTML
     <!-- Header -->
