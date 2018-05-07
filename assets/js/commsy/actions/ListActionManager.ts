@@ -26,7 +26,9 @@ export class ListActionManager {
     private selectMode: boolean = false;
 
     private selectAll: boolean = false;
-    private numCurrentSelected: number = 0;
+    private positiveSelection: number[];
+    private negativeSelection: number[];
+    private numSelected: number = 0;
 
     public bootstrap() {
         this.registerClickEvents();
@@ -38,12 +40,10 @@ export class ListActionManager {
 
     private onFeedLoad() {
         if (this.selectMode) {
-            let selectAll: boolean = this.selectAll;
+            this.updateSelectables();
+            this.registerArticleEvents();
 
-            this.onStopEdit();
-            this.onStartEdit();
-
-            if (selectAll) {
+            if (this.selectAll) {
                 this.onSelectAll();
             }
         }
@@ -118,9 +118,12 @@ export class ListActionManager {
             $(this).addClass('uk-comment-primary');
         });
 
-        // update selected entries counter
+        // update selection
+        this.positiveSelection = [];
+        this.negativeSelection = [];
+
         let $listCountAll: JQuery = $('#commsy-list-count-all');
-        this.numCurrentSelected = parseInt($listCountAll.html());
+        this.numSelected = parseInt($listCountAll.html());
         this.updateCurrentSelected();
 
         // persist select all
@@ -144,7 +147,11 @@ export class ListActionManager {
             $(this).removeClass('uk-comment-primary');
         });
 
-        this.numCurrentSelected = 0;
+        // update selection
+        this.positiveSelection = [];
+        this.negativeSelection = [];
+
+        this.numSelected = 0;
         this.updateCurrentSelected();
 
         this.selectAll = false;
@@ -159,7 +166,7 @@ export class ListActionManager {
             return;
         }
 
-        this.addCheckboxes($feed.find('article'));
+        this.updateSelectables();
 
         // show the action dialog
         let $actionDialog: JQuery = $('#commsy-select-actions');
@@ -169,7 +176,10 @@ export class ListActionManager {
                 .css('height', '65px');
 
         // reset current selected count
-        this.numCurrentSelected = 0;
+        this.positiveSelection = [];
+        this.negativeSelection = [];
+
+        this.numSelected = 0;
         this.updateCurrentSelected();
 
         // hide normal list count / show edit count
@@ -221,13 +231,6 @@ export class ListActionManager {
             })
             .removeClass('selectable');
 
-
-        // TODO: what is this for?
-        // $(this).html($(this).data('title'));
-
-        this.numCurrentSelected = 0;
-        this.updateCurrentSelected();
-
         // show normal list count / hide edit count
         $('#commsy-list-count-display').removeClass('uk-hidden');
         $('#commsy-list-count-edit').addClass('uk-hidden');
@@ -242,13 +245,8 @@ export class ListActionManager {
         // collect values of selected checkboxes
         let $feed: JQuery = $('.feed ul');
 
-        let itemIds: number[] = [];
-        $feed.find('input:checked').each(function(index, element) {
-            itemIds.push(Number($(element).val()));
-        });
-
         // if no entries are selected, present notification
-        if (itemIds.length == 0) {
+        if (this.numSelected == 0) {
             UIkit.notify({
                 message : this.currentActionData.noSelectionMessage,
                 status  : 'warning',
@@ -261,7 +259,7 @@ export class ListActionManager {
 
         let action: BaseAction = Actions.createAction(this.currentActionData);
         let actionExecuter: ActionExecuter = new ActionExecuter();
-        actionExecuter.invokeListAction(this.actionActor, action, itemIds, this.selectAll, 0)
+        actionExecuter.invokeListAction(this.actionActor, action, this.positiveSelection, this.negativeSelection, this.selectAll, 0)
             .then(() => {
                 $('#commsy-select-actions-select-all').removeClass('uk-active');
                 $('#commsy-select-actions-unselect').removeClass('uk-active');
@@ -284,7 +282,14 @@ export class ListActionManager {
             });
     }
 
-    private addCheckboxes($articles: JQuery) {
+    private updateSelectables() {
+        let $feed: JQuery = $('.feed ul');
+        if (!$feed.length) {
+            return;
+        }
+
+        let $articles: JQuery = $feed.find('article')
+
         let currentAction: string = this.currentActionData.action;
 
         $articles.each(function() {
@@ -296,7 +301,7 @@ export class ListActionManager {
     }
 
     private updateCurrentSelected() {
-        $('#commsy-list-count-selected').html(this.numCurrentSelected.toString());
+        $('#commsy-list-count-selected').html(this.numSelected.toString());
     }
 
     private registerArticleEvents() {
@@ -319,10 +324,37 @@ export class ListActionManager {
                     checkbox.prop('checked', $article.hasClass('uk-comment-primary'));
 
                     if (checkbox.prop('checked')) {
-                        this.numCurrentSelected++;
+                        // article has been added
+                        if (this.selectAll) {
+                            let index: number = this.negativeSelection.findIndex((element: number) => {
+                                return element === Number(checkbox.val());
+                            });
+
+                            this.negativeSelection.splice(index, 1);
+                        } else {
+                            this.positiveSelection.push(Number(checkbox.val()));
+                        }
+
+                        this.numSelected++;
                     } else {
-                        this.numCurrentSelected--;
+                        // article has been removed
+                        if (this.selectAll) {
+                            this.negativeSelection.push(Number(checkbox.val()));
+                        } else {
+                            let index: number = this.positiveSelection.findIndex((element: number) => {
+                                return element === Number(checkbox.val());
+                            });
+
+                            this.positiveSelection.splice(index, 1);
+                        }
+
+                        this.numSelected--;
                     }
+
+                    // ensure uniqueness
+                    this.positiveSelection = Array.from(new Set(this.positiveSelection));
+                    this.negativeSelection = Array.from(new Set(this.negativeSelection));
+
                     this.updateCurrentSelected();
 
                     // disable normal click behaviour

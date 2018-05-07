@@ -708,8 +708,14 @@ services:
         arguments: ['@doctrine.orm.entity_manager', '@service_container']
 
     commsy.room_feed_generator:
-            class: CommsyBundle\RoomFeed\RoomFeedGenerator
-            arguments:
-              - '@commsy_legacy.environment'
-              - '@commsy_legacy.room_service'
-              - '@commsy_legacy.item_service'
+        class: CommsyBundle\RoomFeed\RoomFeedGenerator
+        arguments:
+          - '@commsy_legacy.environment'
+          - '@commsy_legacy.room_service'
+          - '@commsy_legacy.item_service'
+
+    commsy.action.factory:
+        class: CommsyBundle\Action\ActionFactory
+        arguments:
+          - '@translator'
+          - '@commsy_legacy.item_service'

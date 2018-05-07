@@ -4,6 +4,7 @@ namespace CommsyBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -827,7 +828,7 @@ class AnnouncementController extends BaseController
 
     /**
      * @param \cs_room_item $room
-     * @return \Symfony\Component\Form\Form
+     * @return FormInterface
      */
     private function createFilterForm($room)
     {

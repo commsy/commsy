@@ -9,6 +9,7 @@
 namespace CommsyBundle\Controller;
 
 
+use CommsyBundle\Action\ActionFactory;
 use CommsyBundle\Http\JsonDataResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -55,66 +56,25 @@ abstract class BaseController extends Controller
         /** @var \cs_item[] $items */
         $items = $this->getItemsByFilterConditions($request, $roomItem, $selectAll, $itemIds);
 
+        $action = $this->get('commsy.action.factory')->make($action);
+        $responsePayload = $action->executeAction($items);
+
+        return new JsonDataResponse($responsePayload);
+
+
+
+
+
+
+
+
+
+
+
         // handle actions
         $translator = $this->get('translator');
 
         switch ($action) {
-            case 'markread':
-                $itemService = $this->get('commsy_legacy.item_service');
-                $itemService->markRead($items);
-
-                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ' . $translator->transChoice('marked %count% entries as read', count($items), array('%count%' => count($items)));
-
-                break;
-
-            case 'copy':
-                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-                $sessionItem = $legacyEnvironment->getSessionItem();
-
-                $currentClipboardIds = array();
-                if ($sessionItem->issetValue('clipboard_ids')) {
-                    $currentClipboardIds = $sessionItem->getValue('clipboard_ids');
-                }
-
-                foreach ($items as $item) {
-                    if (!in_array($item->getItemID(), $currentClipboardIds)) {
-                        $currentClipboardIds[] = $item->getItemID();
-                        $sessionItem->setValue('clipboard_ids', $currentClipboardIds);
-                    }
-                }
-
-                $sessionManager = $legacyEnvironment->getSessionManager();
-                $sessionManager->save($sessionItem);
-
-                return new JsonDataResponse([
-                    'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> ' . $translator->transChoice('%count% copied entries', count($items), [
-                        '%count%' => count($items),
-                    ]),
-                    'count' => count($currentClipboardIds),
-                ]);
-
-                break;
-
-            case 'save':
-                $downloadService = $this->get('commsy_legacy.download_service');
-
-                $ids = [];
-                foreach ($items as $item) {
-                    $ids[] = $item->getItemID();
-                }
-
-                $zipFile = $downloadService->zipFile($roomId, $ids);
-
-                $response = new BinaryFileResponse($zipFile);
-                $response->deleteFileAfterSend(true);
-
-                $filename = 'CommSy_Save.zip';
-                $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename);
-                $response->headers->set('Content-Disposition', $contentDisposition);
-
-                return $response;
-
-                break;
 
             case 'delete':
                 $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();

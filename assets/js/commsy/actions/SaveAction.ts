@@ -17,8 +17,10 @@ export class SaveAction extends BaseAction {
                 .attr('action', this.url)
                 .attr('target', '_blank');
 
-            for (let i = 0; i < actionPayload.itemIds.length; i++) {
-                $form.append($('<input>').attr('name','itemIds[]').val(actionPayload.itemIds[i]));
+            // TODO: dealing with the positive list only is not enough
+
+            for (let i = 0; i < actionPayload.positiveItemIds.length; i++) {
+                $form.append($('<input>').attr('name','itemIds[]').val(actionPayload.positiveItemIds[i]));
             }
 
             $form.append($('<input>').attr('name', 'action').val(actionPayload.action));

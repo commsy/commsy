@@ -1,6 +1,6 @@
 // webpack.config.js
-var Encore = require('@symfony/webpack-encore');
-var webpack = require('webpack');
+let Encore = require('@symfony/webpack-encore');
+let webpack = require('webpack');
 
 Encore
     // the project directory where all compiled assets will be stored

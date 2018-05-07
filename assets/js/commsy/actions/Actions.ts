@@ -28,9 +28,14 @@ export interface ListActionData extends ActionData {
 
 export interface ActionRequest {
     /**
-     * Array of id's to operate on
+     * Positive list of id's to operate on
      */
-    itemIds: number[];
+    positiveItemIds: number[];
+
+    /**
+     * Negative list of id's to operate on
+     */
+    negativeItemIds: number[];
 
     /**
      * The action to perform
@@ -71,7 +76,8 @@ export interface ActionResponse {
 export class ActionExecuter {
     public invokeAction($actor: JQuery, action: BaseAction, itemId: number): Promise<ActionResponse> {
         let actionPayload: ActionRequest = {
-            itemIds: [itemId],
+            positiveItemIds: [itemId],
+            negativeItemIds: [],
             action: action.action,
             selectAll: false,
             selectAllStart: 0
@@ -80,14 +86,10 @@ export class ActionExecuter {
         return this.invoke($actor, action, actionPayload);
     }
 
-    public invokeListAction($actor: JQuery, action: BaseAction, itemIds: number[], selectAll: boolean, selectAllStart: number): Promise<ActionResponse> {
-        // if we operate on all items, omit ids
-        if (selectAll) {
-            itemIds = [];
-        }
-
+    public invokeListAction($actor: JQuery, action: BaseAction, positiveItemIds: number[], negativeItemIds: number[], selectAll: boolean, selectAllStart: number): Promise<ActionResponse> {
         let actionPayload: ActionRequest = {
-            itemIds: itemIds,
+            positiveItemIds: positiveItemIds,
+            negativeItemIds: negativeItemIds,
             action: action.action,
             selectAll: selectAll,
             selectAllStart: selectAllStart
