@@ -127,11 +127,11 @@ class AnnotationController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/annotation/{itemId}/create")
+     * @Route("/room/{roomId}/annotation/{itemId}/create/{firstTagId}/{secondTagId}")
      * @Template()
      * @Security("is_granted('ITEM_ANNOTATE', itemId)")
      */
-    public function createAction($roomId, $itemId, Request $request)
+    public function createAction($roomId, $itemId, $firstTagId = null, $secondTagId = null, Request $request)
     {
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
@@ -148,7 +148,18 @@ class AnnotationController extends Controller
 
                 // create new annotation
                 $annotationId = $annotationService->addAnnotation($roomId, $itemId, $data['description']);
-                return $this->redirectToRoute('commsy_'.$itemType.'_detail', array('roomId' => $roomId, 'itemId' => $itemId, '_fragment' => 'description' . $annotationId));
+
+                $routeArray = [];
+                $routeArray['roomId'] = $roomId;
+                $routeArray['itemId'] = $itemId;
+                $routeArray['_fragment'] = 'description' . $annotationId;
+                if ($itemType == 'portfolio') {
+                    $routeArray['portfolioId'] = $itemId;
+                    $routeArray['firstTagId'] = $firstTagId;
+                    $routeArray['secondTagId'] = $secondTagId;
+                }
+
+                return $this->redirectToRoute('commsy_'.$itemType.'_detail', $routeArray);
             }
         }
         return $this->redirectToRoute('commsy_'.$itemType.'_detail', array('roomId' => $roomId, 'itemId' => $itemId));

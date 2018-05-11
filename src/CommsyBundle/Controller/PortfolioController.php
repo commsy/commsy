@@ -14,6 +14,8 @@ use CommsyBundle\Entity\Calendars;
 
 use CommsyBundle\Event\CommsyEditEvent;
 
+use CommsyBundle\Form\Type\AnnotationType;
+
 /**
  * Class CalendarController
  * @package CommsyBundle\Controller
@@ -153,11 +155,16 @@ class PortfolioController extends Controller
         foreach ($items as $item) {
             if ($item != null) {
                 $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
-                $readerList[$item->getItemId()] = $readerService->getChangeStatusForUserByID($item->getItemId(), $relatedUser->getItemId());
+                if ($relatedUser) {
+                    $readerList[$item->getItemId()] = $readerService->getChangeStatusForUserByID($item->getItemId(), $relatedUser->getItemId());
+                }
             }
         }
 
         $categoryService = $this->get('commsy_legacy.category_service');
+
+        // annotation form
+        $form = $this->createForm(AnnotationType::class);
 
         return [
             'roomId' => $roomId,
@@ -166,6 +173,9 @@ class PortfolioController extends Controller
             'readerList' => $readerList,
             'firstTag' => $categoryService->getTag($firstTagId),
             'secondTag' => $categoryService->getTag($secondTagId),
+            'annotationForm' => $form->createView(),
+            'portfolio' => $portfolio,
+            'portfolioId' => $portfolioId,
         ];
     }
 }

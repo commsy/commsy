@@ -128,6 +128,32 @@
                         <div>{{ 'comments'|trans({}, 'portfolio') }}</div>
                     </div>
                 </div>
+
+                <div id="annotations" class="uk-panel uk-panel-box uk-margin-bottom uk-panel-box-primary ">
+
+                        <article class="uk-comment">
+                            <header class="uk-comment-header uk-flex">
+                                <div class="uk-margin-right uk-flex-item-none">
+                                    {#{  macros.userIconLink(user) }#}
+                                </div>
+                                <div class="uk-width-8-10">
+                                    {{ form_start(annotationForm, {'action': path('commsy_annotation_create', {'roomId': portfolio.contextId, 'itemId': portfolioId, 'firstTagId': firstTag.itemId, 'secondTagId': secondTag.itemId}), 'method': 'POST'}) }}
+                                    <p>
+                                        {{ form_label(annotationForm.description) }}
+                                    </p>
+                                    {{ form_widget(annotationForm.description) }}
+                                    {{ form_end(annotationForm) }}
+                                </div>
+                            </header>
+                        </article>
+
+                    {{ render(controller(
+                        'CommsyBundle:Annotation:feed',
+                        { 'roomId': roomId, 'linkedItemId': portfolioId }
+                    ))}}
+
+                </div>
+
             </div>
         </div>
 
