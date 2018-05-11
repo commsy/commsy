@@ -19,16 +19,36 @@ use CommsyBundle\Form\Type\AnnotationType;
 class AnnotationController extends Controller
 {
     /**
-     * @Route("/room/{roomId}/annotation/feed/{linkedItemId}/{start}")
+     * @Route("/room/{roomId}/annotation/feed/{linkedItemId}/{start}/{firstTagId}/{secondTagId}")
      * @Template()
      */
-    public function feedAction($roomId, $linkedItemId, $max = 10, $start = 0, Request $request)
+    public function feedAction($roomId, $linkedItemId, $max = 10, $start = 0, $firstTagId = null, $secondTagId = null, Request $request)
     {
         // get the annotation manager service
         $annotationService = $this->get('commsy_legacy.annotation_service');
 
         // get annotation list from manager service 
         $annotations = $annotationService->getListAnnotations($roomId, $linkedItemId, $max, $start);
+
+        if ($firstTagId && $secondTagId) {
+            $portfolioService = $this->get('commsy_legacy.portfolio_service');
+            $cellCoordinates = $portfolioService->getCellCoordinatesForTagIds($linkedItemId, $firstTagId, $secondTagId);
+            if (!empty($cellCoordinates)) {
+                $itemService = $this->get('commsy_legacy.item_service');
+
+                $annotationIds = $portfolioService->getAnnotationIdsForPortfolioCell($linkedItemId, $cellCoordinates[0], $cellCoordinates[1]);
+
+                $portfolioAnnotations = [];
+
+                if ($annotationIds) {
+                    foreach ($annotationIds as $annotationId) {
+                        $portfolioAnnotations[] = $itemService->getTypedItem($annotationId);
+                    }
+                }
+
+                $annotations = $portfolioAnnotations;
+            }
+        }
 
         $readerService = $this->get('commsy_legacy.reader_service');
 
@@ -157,6 +177,12 @@ class AnnotationController extends Controller
                     $routeArray['portfolioId'] = $itemId;
                     $routeArray['firstTagId'] = $firstTagId;
                     $routeArray['secondTagId'] = $secondTagId;
+
+                    $portfolioService = $this->get('commsy_legacy.portfolio_service');
+                    $cellCoordinates = $portfolioService->getCellCoordinatesForTagIds($itemId, $firstTagId, $secondTagId);
+                    if (!empty($cellCoordinates)) {
+                        $portfolioService->setPortfolioAnnotation($itemId, $annotationId, $cellCoordinates[0], $cellCoordinates[1]);
+                    }
                 }
 
                 return $this->redirectToRoute('commsy_'.$itemType.'_detail', $routeArray);

@@ -172,4 +172,30 @@ class PortfolioService
 
         return $return;
     }
+
+    public function getCellCoordinatesForTagIds ($portfolioId, $firstTagId, $secondTagId) {
+        $portfolio = $this->getPortfolio($portfolioId);
+        $columnCounter = -1;
+        foreach ($portfolio['tags'] as $firstTag) {
+            $rowCounter = 0;
+            foreach ($portfolio['tags'] as $secondTag) {
+                if ($firstTag['t_id'] == $firstTagId && $secondTag['t_id'] == $secondTagId) {
+                    return [$columnCounter, $rowCounter];
+                }
+                $rowCounter++;
+            }
+            $columnCounter++;
+        }
+        return [];
+    }
+
+    function setPortfolioAnnotation($portfolioId, $annotationId, $portfolioRow, $portfolioColumn) {
+        $portfolioManager = $this->legacyEnvironment->getEnvironment()->getPortfolioManager();
+        $portfolioManager->setPortfolioAnnotation($portfolioId, $annotationId, $portfolioRow, $portfolioColumn);
+    }
+
+    function getAnnotationIdsForPortfolioCell($portfolioId, $row, $column) {
+        $portfolioManager = $this->legacyEnvironment->getEnvironment()->getPortfolioManager();
+        return $portfolioManager->getAnnotationIdsForPortfolioCell($portfolioId, $row, $column);
+    }
 }
