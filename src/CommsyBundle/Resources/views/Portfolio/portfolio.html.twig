@@ -37,7 +37,7 @@
             </th>
         </tr>
         <!-- rows with categories column (first column; sticky) and content -->
-        {% set counter1 = 0 %}
+        {% set column = 0 %}
         {% for firstTag in portfolio.tags %}
             {% if firstTag.row != 0 %}
                 <tr>
@@ -54,6 +54,7 @@
                                 </div>
                             </div>
                         </th>
+                        {% set row = 0 %}
                         {% for secondTag in portfolio.tags %}
                             {% if secondTag.row == 0 %}
                                 {% set foundContent = false %}
@@ -98,7 +99,11 @@
                                             <div class="portfolio-content">
                                                 {{ content|raw }}
                                             </div>
-                                            <i class="uk-icon-comments-o uk-text-muted"></i> <span class="uk-text-muted">(...)</span>
+                                            {% set annotationCount = 0 %}
+                                            {% if portfolio.numAnnotations[column][row] is defined %}
+                                                {% set annotationCount = portfolio.numAnnotations[column][row] %}
+                                            {% endif %}
+                                            <i class="uk-icon-comments-o uk-text-muted"></i> <span class="uk-text-muted">({{ annotationCount }})</span>
                                         {% else %}
                                             <div class="portfolio-content-empty">
                                             </div>
@@ -107,10 +112,12 @@
                                     </div>
                                 </td>
                             {% endif %}
+                            {% set row = row + 1 %}
                         {% endfor %}
                     {% endif %}
                 </tr>
             {% endif %}
+            {% set column = column + 1 %}
         {% endfor %}
         <tr>
             <td id="portfolio-add-row">
