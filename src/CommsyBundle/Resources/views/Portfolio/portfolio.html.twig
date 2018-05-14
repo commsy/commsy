@@ -7,7 +7,7 @@
                     <div class="uk-panel-badge">
                     </div>
                     <h3 class="uk-panel-title uk-text-right">
-                        <a href="" data-uk-tooltip title="{{ 'edit'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
+                        <a href="{{ path('commsy_portfolio_edit', {'roomId': roomId, 'portfolioId': portfolioId}) }}" data-uk-tooltip title="{{ 'edit portfolio'|trans({}, 'portfolio') }}" data-uk-tooltip title="{{ 'edit'|trans({}, 'portfolio') }}" data-uk-tooltip title="{{ 'edit'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
                     </h3>
                     <div class="portfolio-content portfolio-description">
                         <span class="uk-text-bold">{{ portfolio.title }}</span><br/>

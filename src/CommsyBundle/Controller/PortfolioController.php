@@ -15,6 +15,7 @@ use CommsyBundle\Entity\Calendars;
 use CommsyBundle\Event\CommsyEditEvent;
 
 use CommsyBundle\Form\Type\AnnotationType;
+use CommsyBundle\Form\Type\PortfolioType;
 
 /**
  * Class CalendarController
@@ -126,7 +127,7 @@ class PortfolioController extends Controller
      * @Route("/room/{roomId}/portfolio/{portfolioId}/detail/{firstTagId}/{secondTagId}")
      * @Template()
      */
-    public function detailAction($roomId, $portfolioId, $firstTagId, $secondTagId, $source = null, Request $request)
+    public function detailAction($roomId, $portfolioId, $firstTagId, $secondTagId, Request $request)
     {
         $itemService = $this->get('commsy_legacy.item_service');
         $portfolioService = $this->get('commsy_legacy.portfolio_service');
@@ -176,6 +177,39 @@ class PortfolioController extends Controller
             'annotationForm' => $form->createView(),
             'portfolio' => $portfolio,
             'portfolioId' => $portfolioId,
+        ];
+    }
+
+    /**
+     * @Route("/room/{roomId}/portfolio/{portfolioId}/edit")
+     * @Template()
+     */
+    public function editAction($roomId, $portfolioId, Request $request)
+    {
+        $translator = $this->get('translator');
+
+        $portfolioService = $this->get('commsy_legacy.portfolio_service');
+        $portfolio = $portfolioService->getPortfolio($portfolioId);
+
+        $portfolioData = [];
+
+        $form = $this->createForm(PortfolioType::class, $portfolioData, array(
+            'placeholderText' => '['.$translator->trans('insert title').']',
+            'placeholderDescription' => '['.$translator->trans('insert description').']',
+        ));
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            if ($form->get('save')->isClicked()) {
+
+            } else if ($form->get('cancel')->isClicked()) {
+                // ToDo ...
+            }
+            return $this->redirectToRoute('commsy_portfolio_index', array('roomId' => $roomId));
+        }
+
+        return [
+            'form' => $form->createView(),
         ];
     }
 }

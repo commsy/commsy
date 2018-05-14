@@ -515,6 +515,11 @@ services:
         tags:
             - { name: form.type }
 
+    commsy.form.type.portfolio:
+        class: CommsyBundle\Form\Type\PortfolioType
+        tags:
+            - { name: form.type }
+
     # Form type extension
     commsy.form.extension.image_type:
         class: CommsyBundle\Form\Extension\ImageTypeExtension
