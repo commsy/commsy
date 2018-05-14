@@ -8,6 +8,7 @@
 
 namespace CommsyBundle\Database;
 
+use CommsyBundle\Database\Resolve\ResolutionInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -16,15 +17,20 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 interface DatabaseCheck
 {
+    /**
+     * @return int
+     */
     public function getPriority();
 
     /**
-     * @return boolean
+     * @param SymfonyStyle $io
+     * @return DatabaseProblem[]
      */
-    public function check(SymfonyStyle $io);
+    public function findProblems(SymfonyStyle $io);
+
 
     /**
-     * @return boolean
+     * @return ResolutionInterface[]
      */
-    public function resolve(SymfonyStyle $io);
+    public function getResolutionStrategies();
 }

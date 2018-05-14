@@ -25,8 +25,6 @@ class FixUserRelations implements DatabaseCheck
      */
     private $legacyEnvironment;
 
-    private $fixes = [];
-
     public function __construct(EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment)
     {
         $this->em = $em;
@@ -35,29 +33,35 @@ class FixUserRelations implements DatabaseCheck
 
     public function getPriority()
     {
-        return 201;
+        return 100;
     }
 
-    public function check(SymfonyStyle $io)
+    public function findProblems(SymfonyStyle $io)
     {
         $io->text('Inspecting tables with user relations');
 
         $schemaManager = $this->em->getConnection()->getSchemaManager();
         $tables = $schemaManager->listTables();
 
+        $problems = [];
+
         foreach ($tables as $table) {
             if (substr($table->getName(), 0, 4) === 'zzz_') {
                 continue;
             }
 
-            $io->text('Inspecting table "' . $table->getName() . '"');
+            if ($io->isVerbose()) {
+                $io->text('Inspecting table "' . $table->getName() . '"');
+            }
 
             foreach ($table->getColumns() as $column) {
                 if (!in_array($column->getName(), ['creator_id', 'modifier_id'])) {
                     continue;
                 }
 
-                $io->text('Inspecting column "' . $table->getName() . '" - "' . $column->getName() . '"');
+                if ($io->isVerbose()) {
+                    $io->text('Inspecting column "' . $table->getName() . '" - "' . $column->getName() . '"');
+                }
 
                 $qb = $this->em->getConnection()->createQueryBuilder()
                     ->select('t.' . $column->getName() . ' AS missingId')
@@ -75,20 +79,24 @@ class FixUserRelations implements DatabaseCheck
                 if ($missingRelations->rowCount() > 0) {
                     foreach ($missingRelations as $missingRelation) {
                         $io->warning('Missing user relations found - "' . $table->getName() . '" - "' . $column->getName() . '" - user with id "' . $missingRelation['missingId'] . '" not present');
-                    }
 
-                    $this->fixes[] = [
-                        $table->getName(),
-                    ];
+                        $problems[] = new DatabaseProblem([
+                            'table' => $table->getName(),
+                            'column' => $column->getName(),
+                            'id' => $missingRelation['missingId'],
+                        ]);
+                    }
                 }
             }
         }
 
-        return sizeof($this->fixes) === 0;
+        return $problems;
     }
 
-    public function resolve(SymfonyStyle $io)
+    public function getResolutionStrategies()
     {
+        return [
 
+        ];
     }
 }

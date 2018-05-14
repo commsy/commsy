@@ -624,7 +624,7 @@ services:
             - commsy.database.check
 
     commsy.database.checks.files:
-        class: CommsyBundle\Database\FixFiles
+        class: CommsyBundle\Database\FixDBFiles
         arguments:
             - '@doctrine.orm.entity_manager'
             - '@commsy_legacy.environment'

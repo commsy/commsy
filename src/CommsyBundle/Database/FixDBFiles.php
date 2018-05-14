@@ -11,7 +11,6 @@ namespace CommsyBundle\Database;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use CommsyBundle\Database\Resolve\DeleteDatabaseFilesResolution;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
@@ -56,7 +55,9 @@ class FixDBFiles implements DatabaseCheck
         $problems = [];
 
         foreach ($files as $file) {
-            $io->text('Looking for physical file with id "' . $file['files_id'] . '"');
+            if ($io->isVerbose()) {
+                $io->text('Looking for physical file with id "' . $file['files_id'] . '"');
+            }
 
             $discManager->setPortalID($file['portalId']);
             $discManager->setContextID($file['context_id']);

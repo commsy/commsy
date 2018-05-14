@@ -10,6 +10,7 @@ namespace CommsyBundle\Database;
 
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use CommsyBundle\Database\Resolve\CreateGroupAllResolution;
 use CommsyBundle\Entity\Room;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -26,8 +27,6 @@ class FixGroupAll implements DatabaseCheck
      */
     private $legacyEnvironment;
 
-    private $fixes = [];
-
     public function __construct(EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment)
     {
         $this->em = $em;
@@ -39,7 +38,7 @@ class FixGroupAll implements DatabaseCheck
         return 200;
     }
 
-    public function check(SymfonyStyle $io)
+    public function findProblems(SymfonyStyle $io)
     {
         $groupManager = $this->legacyEnvironment->getGroupManager();
 
@@ -57,8 +56,12 @@ class FixGroupAll implements DatabaseCheck
         /** @var Room[] $projectRooms */
         $projectRooms = $qb->execute();
 
+        $problems = [];
+
         foreach ($projectRooms as $projectRoom) {
-            $io->text('Processing room ' . $projectRoom->getTitle() . '(' . $projectRoom->getItemId() . ')');
+            if ($io->isVerbose()) {
+                $io->text('Processing room ' . $projectRoom->getTitle() . '(' . $projectRoom->getItemId() . ')');
+            }
 
             // get group "ALL"
             $groupManager->reset();
@@ -68,38 +71,17 @@ class FixGroupAll implements DatabaseCheck
             if (!$groupAll) {
                 $io->warning('Missing group found');
 
-                $this->fixes[] = [
-                    "room" => $projectRoom,
-                ];
+                $problems[] = new DatabaseProblem($projectRoom);
             }
         }
 
-        return sizeof($this->fixes) === 0;
+        return $problems;
     }
 
-    public function resolve(SymfonyStyle $io)
+    public function getResolutionStrategies()
     {
-        $numMissing = 0;
-        $groupManager = $this->legacyEnvironment->getGroupManager();
-
-        foreach ($this->fixes as $fix) {
-            /** @var Room $room */
-            $room = $fix['room'];
-
-            /** @var \cs_group_item $group */
-            $group = $groupManager->getNewItem('group');
-            $group->setName('ALL');
-            $group->setDescription('GROUP_ALL_DESC');
-            $group->setContextID($room->getItemId());
-            $group->setCreatorID($room->getCreator()->getItemId());
-            $group->makeSystemLabel();
-            $group->save();
-
-            $numMissing++;
-        }
-
-        $io->text($numMissing . ' groups added');
-
-        return true;
+        return [
+            new CreateGroupAllResolution($this->legacyEnvironment),
+        ];
     }
 }

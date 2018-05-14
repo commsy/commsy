@@ -10,6 +10,7 @@ namespace CommsyBundle\Database;
 
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use CommsyBundle\Database\Resolve\AddMemberToGroupResolution;
 use CommsyBundle\Entity\Portal;
 use CommsyBundle\Entity\Room;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,8 +28,6 @@ class FixGroupAllUserRelation implements DatabaseCheck
      */
     private $legacyEnvironment;
 
-    private $fixes = [];
-
     public function __construct(EntityManagerInterface $em, LegacyEnvironment $legacyEnvironment)
     {
         $this->em = $em;
@@ -40,7 +39,7 @@ class FixGroupAllUserRelation implements DatabaseCheck
         return 100;
     }
 
-    public function check(SymfonyStyle $io)
+    public function findProblems(SymfonyStyle $io)
     {
         // find all active portals
         $qb = $this->em->createQueryBuilder()
@@ -53,6 +52,8 @@ class FixGroupAllUserRelation implements DatabaseCheck
 
         $groupManager = $this->legacyEnvironment->getGroupManager();
         $userManager = $this->legacyEnvironment->getUserManager();
+
+        $problems = [];
 
         /** @var Portal[] $portals */
         foreach ($portals as $portal) {
@@ -73,7 +74,9 @@ class FixGroupAllUserRelation implements DatabaseCheck
             $projectRooms = $qb->execute();
 
             foreach ($projectRooms as $projectRoom) {
-                $io->text('Processing room ' . $projectRoom->getTitle() . '(' . $projectRoom->getItemId() . ')');
+                if ($io->isVerbose()) {
+                    $io->text('Processing room "' . $projectRoom->getTitle() . '" - ' . $projectRoom->getItemId());
+                }
 
                 // get group "ALL"
                 $groupManager->reset();
@@ -96,10 +99,10 @@ class FixGroupAllUserRelation implements DatabaseCheck
                             if (!$userItem->isInGroup($groupAll)) {
                                 $io->warning('Missing user relation found');
 
-                                $this->fixes[] = [
+                                $problems[] = new DatabaseProblem([
                                     'user' => $userItem,
                                     'group' => $groupAll,
-                                ];
+                                ]);
                             }
                         }
 
@@ -109,27 +112,13 @@ class FixGroupAllUserRelation implements DatabaseCheck
             }
         }
 
-        return sizeof($this->fixes) === 0;
+        return $problems;
     }
 
-    public function resolve(SymfonyStyle $io)
+    public function getResolutionStrategies()
     {
-        $numUnrelated = 0;
-
-        foreach ($this->fixes as $fix) {
-            /** @var \cs_user_item $userItem */
-            $userItem = $fix['user'];
-            /** @var \cs_group_item $groupAll */
-            $groupAll = $fix['group'];
-
-            $groupAll->addMember($userItem);
-            $groupAll->save();
-
-            $numUnrelated++;
-        }
-
-        $io->text($numUnrelated . ' relations added');
-
-        return true;
+        return [
+            new AddMemberToGroupResolution($this->legacyEnvironment),
+        ];
     }
 }
