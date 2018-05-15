@@ -7,7 +7,9 @@
                     <div class="uk-panel-badge">
                     </div>
                     <h3 class="uk-panel-title uk-text-right">
-                        <a href="{{ path('commsy_portfolio_edit', {'roomId': roomId, 'portfolioId': portfolioId}) }}" data-uk-tooltip title="{{ 'edit portfolio'|trans({}, 'portfolio') }}" data-uk-tooltip title="{{ 'edit'|trans({}, 'portfolio') }}" data-uk-tooltip title="{{ 'edit'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
+                        {% if not external %}
+                            <a href="{{ path('commsy_portfolio_edit', {'roomId': roomId, 'portfolioId': portfolioId}) }}" data-uk-tooltip title="{{ 'edit portfolio'|trans({}, 'portfolio') }}" data-uk-tooltip title="{{ 'edit'|trans({}, 'portfolio') }}" data-uk-tooltip title="{{ 'edit'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
+                        {% endif %}
                     </h3>
                     <div class="portfolio-content portfolio-description">
                         <span class="uk-text-bold">{{ portfolio.title }}</span><br/>
@@ -23,7 +25,9 @@
                             <div class="uk-panel-badge">
                             </div>
                             <h3 class="uk-panel-title uk-text-right">
-                                <a href="" data-uk-tooltip title="{{ 'edit'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
+                                {% if not external %}
+                                    <a href="" data-uk-tooltip title="{{ 'edit'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
+                                {% endif %}
                             </h3>
                             <div class="portfolio-content">
                                 {{ firstTag.title }}
@@ -33,7 +37,9 @@
                 {% endif %}
             {% endfor %}
             <th id="portfolio-add-column" class="uk-text-top">
-                <a href="" data-uk-tooltip title="{{ 'add column'|trans({}, 'portfolio') }}"><i class="uk-icon-plus uk-icon-small"></i></a>
+                {% if not external %}
+                    <a href="" data-uk-tooltip title="{{ 'add column'|trans({}, 'portfolio') }}"><i class="uk-icon-plus uk-icon-small"></i></a>
+                {% endif %}
             </th>
         </tr>
         <!-- rows with categories column (first column; sticky) and content -->
@@ -47,7 +53,9 @@
                                 <div class="uk-panel-badge">
                                 </div>
                                 <h3 class="uk-panel-title uk-text-right">
+                                    {% if not external %}
                                     <a href="" data-uk-tooltip title="{{ 'edit'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
+                                    {% endif %}
                                 </h3>
                                 <div class="portfolio-content">
                                     {{ firstTag.title }}
@@ -121,7 +129,9 @@
         {% endfor %}
         <tr>
             <td id="portfolio-add-row">
-                <a href="" data-uk-tooltip title="{{ 'add row'|trans({}, 'portfolio') }}"><i class="uk-icon-plus uk-icon-small"></i></a>
+                {% if not external %}
+                    <a href="" data-uk-tooltip title="{{ 'add row'|trans({}, 'portfolio') }}"><i class="uk-icon-plus uk-icon-small"></i></a>
+                {% endif %}
             </td>
         </tr>
     </table>

@@ -93,12 +93,20 @@ class PortfolioController extends Controller
 
         $userService = $this->get("commsy_legacy.user_service");
 
+        $user = $userService->getPortalUserFromSessionId();
+
+        $external = false;
+        if ($user->getRelatedPrivateRoomUserItem()->getItemId() != $portfolio['creatorId']) {
+            $external = true;
+        }
+
         return array(
             'roomId' => $roomId,
             'portfolioId' => $portfolioId,
             'portfolio' => $portfolio,
             'linkPositions' => $linkPositions,
-            'user' => $userService->getPortalUserFromSessionId(),
+            'user' => $user,
+            'external' => $external
         );
     }
 

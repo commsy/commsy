@@ -110,7 +110,8 @@ class PortfolioService
             "creator"			=> $fullname,
             "tags"				=> $tags,
             "links"				=> $linkArray,
-            "numAnnotations"	=> $this->portfolioManager->getAnnotationCountForPortfolio($itemId)
+            "numAnnotations"	=> $this->portfolioManager->getAnnotationCountForPortfolio($itemId),
+            "creatorId"		    => $portfolioItem->getCreatorID()
         );
 
         return $return;
