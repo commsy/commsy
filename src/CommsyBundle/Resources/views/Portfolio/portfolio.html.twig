@@ -69,6 +69,7 @@
                                 {% set content = '<ul class="uk-list uk-list-line">' %}
                                 {% set firstTagId = '' %}
                                 {% set secondTagId = '' %}
+                                {% set contentCount = 0 %}
                                 {% for link in linkPositions %}
                                     {% for linkData in link %}
                                         {% if (linkData[0] == firstTag.t_id and linkData[1] == secondTag.t_id) or (linkData[1] == firstTag.t_id and linkData[0] == secondTag.t_id) %}
@@ -82,6 +83,7 @@
                                                             {% for secondLinkEntry in portfolio.links[secondLink] %}
                                                                 {% if (firstLinkEntry.itemId == secondLinkEntry.itemId) %}
                                                                     {% set content = content ~ '<li><a href=' ~ path('commsy_' ~ firstLinkEntry.itemType ~ '_detail', {'roomId': roomId, 'itemId': firstLinkEntry.itemId}) ~ '>' ~ firstLinkEntry.title|decodeHtmlEntity ~ '</a></li>' %}
+                                                                    {% set contentCount = contentCount + 1 %}
                                                                 {% endif %}
                                                             {% endfor %}
                                                         {% endfor %}
@@ -111,10 +113,12 @@
                                             {% if portfolio.numAnnotations[column][row] is defined %}
                                                 {% set annotationCount = portfolio.numAnnotations[column][row] %}
                                             {% endif %}
+                                            <i class="uk-icon-file-o uk-text-muted"></i> <span class="uk-text-muted uk-margin-right">({{ contentCount }})</span>
                                             <i class="uk-icon-comments-o uk-text-muted"></i> <span class="uk-text-muted">({{ annotationCount }})</span>
                                         {% else %}
                                             <div class="portfolio-content-empty">
                                             </div>
+                                            <i class="uk-icon-file-o uk-text-muted"></i> <span class="uk-text-muted uk-margin-right">(0)</span>
                                             <i class="uk-icon-comments-o uk-text-muted"></i> <span class="uk-text-muted">(0)</span>
                                         {% endif %}
                                     </div>
