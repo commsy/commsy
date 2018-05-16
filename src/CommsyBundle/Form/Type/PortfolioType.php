@@ -42,18 +42,18 @@ class PortfolioType extends AbstractType
                 ],
                 'required' => false,
             ])
-            ->add('use_as_template', CheckboxType::class, array(
-                'label' => 'use as template',
+            ->add('is_template', CheckboxType::class, array(
+                'label' => 'is template',
                 'translation_domain' => 'portfolio',
                 'required' => false,
             ))
-            ->add('allow_template_access', TextType::class, array(
-                'label' => 'allow template access',
+            ->add('external_template', TextType::class, array(
+                'label' => 'external template',
                 'translation_domain' => 'portfolio',
                 'required' => false,
             ))
-            ->add('allow_read_access', TextType::class, array(
-                'label' => 'allow read access',
+            ->add('external_viewer', TextType::class, array(
+                'label' => 'external viewer',
                 'translation_domain' => 'portfolio',
                 'required' => false,
             ))

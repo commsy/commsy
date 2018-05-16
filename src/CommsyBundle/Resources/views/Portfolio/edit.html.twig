@@ -33,26 +33,26 @@
                             </div>
                             <div class="uk-form-row">
                                 <label class="uk-form-label">
-                                    {{ form_label(form.use_as_template) }}
+                                    {{ form_label(form.is_template) }}
                                 </label>
                                 <div class="uk-margin-left">
-                                    {{ form_widget(form.use_as_template) }}
+                                    {{ form_widget(form.is_template) }}
                                 </div>
                             </div>
                             <div class="uk-form-row">
                                 <label class="uk-form-label">
-                                    {{ form_label(form.allow_template_access) }}
+                                    {{ form_label(form.external_template) }}
                                 </label>
                                 <div class="uk-margin-left">
-                                    {{ form_widget(form.allow_template_access) }}
+                                    {{ form_widget(form.external_template) }}
                                 </div>
                             </div>
                             <div class="uk-form-row">
                                 <label class="uk-form-label">
-                                    {{ form_label(form.allow_read_access) }}
+                                    {{ form_label(form.external_viewer) }}
                                 </label>
                                 <div class="uk-margin-left">
-                                    {{ form_widget(form.allow_read_access) }}
+                                    {{ form_widget(form.external_viewer) }}
                                 </div>
                             </div>
                         </div>

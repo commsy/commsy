@@ -8,9 +8,12 @@ class PortfolioTransformer implements DataTransformerInterface
 {
     private $legacyEnvironment;
 
+    private $portfolioManager;
+
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->portfolioManager = $this->legacyEnvironment->getPortfolioManager();
     }
 
     /**
@@ -26,6 +29,13 @@ class PortfolioTransformer implements DataTransformerInterface
         if ($portfolioItem) {
             $portfolioData['title'] = html_entity_decode($portfolioItem->getTitle());
             $portfolioData['description'] = html_entity_decode($portfolioItem->getDescription());
+            $portfolioData['is_template'] = $portfolioItem->isTemplate();
+
+            $externalTemplate = $this->portfolioManager->getExternalTemplate($portfolioItem->getItemId());
+            $portfolioData['external_template'] = implode(";", $externalTemplate);
+
+            $externalViewer = $this->portfolioManager->getExternalViewer($portfolioItem->getItemId());
+            $portfolioData['external_viewer'] = implode(";", $externalViewer);
         }
 
         return $portfolioData;
@@ -43,6 +53,18 @@ class PortfolioTransformer implements DataTransformerInterface
     {
         $portfolioObject->setTitle($portfolioData['title']);
         $portfolioObject->setDescription($portfolioData['description']);
+        if ($portfolioData['is_template']) {
+            $portfolioObject->setTemplate();
+        } else {
+            $portfolioObject->unsetTemplate();
+        }
+
+        $externalTemplateUserIds = explode(";", trim($portfolioData['external_template']));
+        $portfolioObject->setExternalTemplate($externalTemplateUserIds);
+
+        $externalViewerUserIds = explode(";", trim($portfolioData['external_viewer']));
+        $portfolioObject->setExternalViewer($externalViewerUserIds);
+
         return $portfolioObject;
     }
 }
