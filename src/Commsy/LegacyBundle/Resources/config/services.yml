@@ -218,3 +218,7 @@ services:
     commsy_legacy.transformer.project:
         class: Commsy\LegacyBundle\Form\DataTransformer\ProjectTransformer
         arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.transformer.portfolio:
+        class: Commsy\LegacyBundle\Form\DataTransformer\PortfolioTransformer
+        arguments: ['@commsy_legacy.environment']

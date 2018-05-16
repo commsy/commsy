@@ -176,10 +176,12 @@ class cs_portfolio_manager extends cs_manager implements cs_export_import_interf
   		include_once('functions/error_functions.php');
   		trigger_error('Problems updating portfolio.',E_USER_WARNING);
   	}
-  	 
-  	foreach ($portfolio_item->getExternalTemplate() as $viewer) {
-  		if (!empty($viewer)) {
-  			$query = "
+
+    $externalTemplateArray = $portfolio_item->getExternalTemplate();
+  	if ($externalTemplateArray and is_array($externalTemplateArray)) {
+        foreach ($portfolio_item->getExternalTemplate() as $viewer) {
+            if (!empty($viewer)) {
+                $query = "
 		  		INSERT INTO
 		  			" . $this->addDatabasePrefix("template_portfolio") . "
 		  		(
@@ -190,13 +192,14 @@ class cs_portfolio_manager extends cs_manager implements cs_export_import_interf
 		  			'" . encode(AS_DB, $viewer) . "'
 		  		);
 	  		";
-  			$result = $this->_db_connector->performQuery($query);
-  			if ( !isset($result) ) {
-  				include_once('functions/error_functions.php');
-  				trigger_error('Problems updating portfolio.',E_USER_WARNING);
-  			}
-  		}
-  	}
+                $result = $this->_db_connector->performQuery($query);
+                if (!isset($result)) {
+                    include_once('functions/error_functions.php');
+                    trigger_error('Problems updating portfolio.', E_USER_WARNING);
+                }
+            }
+        }
+    }
   }
   
   function _updateExternalViewer($portfolio_item) {
@@ -211,10 +214,12 @@ class cs_portfolio_manager extends cs_manager implements cs_export_import_interf
   		include_once('functions/error_functions.php');
   		trigger_error('Problems updating portfolio.',E_USER_WARNING);
   	}
-  	
-  	foreach ($portfolio_item->getExternalViewer() as $viewer) {
-  		if (!empty($viewer)) {
-  			$query = "
+
+  	$externalViewerArray = $portfolio_item->getExternalViewer();
+  	if ($externalViewerArray and is_array($externalViewerArray)) {
+        foreach ($portfolio_item->getExternalViewer() as $viewer) {
+            if (!empty($viewer)) {
+                $query = "
 		  		INSERT INTO
 		  			" . $this->addDatabasePrefix("user_portfolio") . "
 		  		(
@@ -225,13 +230,14 @@ class cs_portfolio_manager extends cs_manager implements cs_export_import_interf
 		  			'" . encode(AS_DB, $viewer) . "'
 		  		);
 	  		";
-  			$result = $this->_db_connector->performQuery($query);
-  			if ( !isset($result) ) {
-  				include_once('functions/error_functions.php');
-  				trigger_error('Problems updating portfolio.',E_USER_WARNING);
-  			}
-  		}
-  	}
+                $result = $this->_db_connector->performQuery($query);
+                if (!isset($result)) {
+                    include_once('functions/error_functions.php');
+                    trigger_error('Problems updating portfolio.', E_USER_WARNING);
+                }
+            }
+        }
+    }
   }
 
   function _create ($portfolio_item) {

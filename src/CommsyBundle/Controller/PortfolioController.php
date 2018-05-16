@@ -199,9 +199,13 @@ class PortfolioController extends Controller
         $portfolioService = $this->get('commsy_legacy.portfolio_service');
         $portfolio = $portfolioService->getPortfolio($portfolioId);
 
-        $portfolioData = [];
+        $portfolioManager = $this->get('commsy_legacy.environment')->getEnvironment()->getPortfolioManager();
+        $portfolioItem = $portfolioManager->getItem($portfolioId);
 
-        $form = $this->createForm(PortfolioType::class, $portfolioData, array(
+        $transformer = $this->get('commsy_legacy.transformer.portfolio');
+        $formData = $transformer->transform($portfolioItem);
+
+        $form = $this->createForm(PortfolioType::class, $formData, array(
             'placeholderText' => '['.$translator->trans('insert title').']',
             'placeholderDescription' => '['.$translator->trans('insert description').']',
         ));
@@ -209,7 +213,9 @@ class PortfolioController extends Controller
         $form->handleRequest($request);
         if ($form->isValid()) {
             if ($form->get('save')->isClicked()) {
+                $portfolioItem = $transformer->applyTransformation($portfolioItem, $form->getData());
 
+                $portfolioItem->save();
             } else if ($form->get('cancel')->isClicked()) {
                 // ToDo ...
             }
