@@ -30,7 +30,13 @@ class PortfolioController extends Controller
      */
     public function indexAction($roomId, Request $request)
     {
+        if ($portfolioId = $request->get('portfolioId')) {
+            return [
+                'portfolioId' => $portfolioId
+            ];
+        }
 
+        return [];
     }
 
     /**
@@ -219,7 +225,7 @@ class PortfolioController extends Controller
             } else if ($form->get('cancel')->isClicked()) {
                 // ToDo ...
             }
-            return $this->redirectToRoute('commsy_portfolio_index', array('roomId' => $roomId));
+            return $this->redirectToRoute('commsy_portfolio_index', array('roomId' => $roomId, 'portfolioId' => $portfolioId));
         }
 
         return [

@@ -4,13 +4,19 @@
 
     var currentPortfolioSource = null;
     var currentPortfolioId = null;
+    var initialLoading = true;
+
+    // Load initial portfolio
+    loadPortfolioList($('#portfolioSourceTabs').find('li.uk-active').data('portfolio-source-id'));
 
     UI.$html.on('change.uk.tab', function(event, sortable, dragged, action) {
-        let $target = $(event.target);
-        if ($target.attr('id') === 'portfolioTabs') {
-            loadPortfolioContent($target.find('li.uk-active').data('portfolio-id'));
-        } else {
-            loadPortfolioList($target.find('li.uk-active').data('portfolio-source-id'));
+        if (!initialLoading) {
+            let $target = $(event.target);
+            if ($target.attr('id') === 'portfolioTabs') {
+                loadPortfolioContent($target.find('li.uk-active').data('portfolio-id'));
+            } else {
+                loadPortfolioList($target.find('li.uk-active').data('portfolio-source-id'));
+            }
         }
     });
 
@@ -49,6 +55,7 @@
         }).done(function(result) {
             $('#portfolio-table').html(result);
             //UIkit.notify('loaded portfolio', 'success');
+            initialLoading = false;
         }).fail(function(jqXHR, textStatus, errorThrown) {
             //UIkit.notify('fail to load portfolio', 'danger');
         });
@@ -60,6 +67,21 @@
         }).done(function(result) {
             $('#portfolio-tabs').html(result);
             //UIkit.notify('loaded portfolio tabs', 'success');
+            if (typeof portfolioId !== 'undefined'){
+                if (portfolioId) {
+                    var tabIndex = 0;
+                    $('#portfolioTabs li').each(function() {
+                        var $this = $(this);
+                        if ($this.data('portfolio-id') == portfolioId) {
+                            UIkit.switcher($('#portfolioTabs')).show(tabIndex);
+                            loadPortfolioContent(portfolioId);
+                        }
+                        tabIndex++;
+                    });
+                }
+            } else {
+                loadPortfolioContent($('#portfolioTabs').find('li.uk-active').data('portfolio-id'));
+            }
         }).fail(function(jqXHR, textStatus, errorThrown) {
             //UIkit.notify('fail to load portfolio tabs', 'danger');
         });

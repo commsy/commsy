@@ -1,6 +1,12 @@
 {% extends 'CommsyBundle:Base:detail.html.twig' %}
 
 {% block content %}
+    {% if portfolioId is defined %}
+        <script>
+            var portfolioId = {{ portfolioId }};
+        </script>
+    {% endif %}
+
     <div class="uk-grid">
         <div class="uk-width-medium-2-3">
             <div class="uk-panel uk-panel-box uk-margin-bottom">
