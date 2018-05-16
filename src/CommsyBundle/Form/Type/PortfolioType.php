@@ -32,8 +32,9 @@ class PortfolioType extends AbstractType
                     'class' => 'uk-form-width-medium cs-form-title',
                 ),
                 'translation_domain' => 'portfolio',
+                'required' => false,
             ))
-            ->add('portfolio_description', TextareaType::class, [
+            ->add('description', TextareaType::class, [
                 'attr' => [
                     'rows' => 10,
                     'cols' => 100,

@@ -25,6 +25,7 @@ class PortfolioTransformer implements DataTransformerInterface
 
         if ($portfolioItem) {
             $portfolioData['title'] = html_entity_decode($portfolioItem->getTitle());
+            $portfolioData['description'] = html_entity_decode($portfolioItem->getDescription());
         }
 
         return $portfolioData;
@@ -41,6 +42,7 @@ class PortfolioTransformer implements DataTransformerInterface
     public function applyTransformation($portfolioObject, $portfolioData)
     {
         $portfolioObject->setTitle($portfolioData['title']);
+        $portfolioObject->setDescription($portfolioData['description']);
         return $portfolioObject;
     }
 }
