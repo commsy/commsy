@@ -409,6 +409,8 @@ HTML;
         // TODO: fetch "Secondary Content"
         // TODO: support guest user
 
+        $csModus = $this->_getCommSyModus();
+
         $siteShortTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_SHORT_TITLE');
         $loginTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LOGIN_TITLE');
         $indicationsTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_INDICATIONS_TITLE');
@@ -422,7 +424,14 @@ HTML;
           <h2 class="text-uppercase">$siteShortTitle-$loginTitle</h2>
 HTML;
 
+        if (empty($csModus)) {
             $html .= LF . $this->_getLoginFormAsHTML();
+        }
+        else {
+            if ($csModus === 'account_forget') {
+                $html .= LF . $this->_getForgottenAccountFormAsHTML();
+            }
+        }
 
         $html .= LF . <<<HTML
         </div>
@@ -439,6 +448,24 @@ HTML;
     }
 
 
+    /** Get the value of the `cs_modus` parameter from the current request.
+     * @return string the request's `cs_modus` parameter value
+     * @author CommSy Development Group
+     */
+    public function _getCommSyModus()
+    {
+        $getVars = $this->_environment->getCurrentParameterArray();
+        $postVars = $this->_environment->getCurrentPostParameterArray();
+        $csModus = '';
+
+        if (!empty($getVars['cs_modus'])) {
+            $csModus = $getVars['cs_modus'];
+        } elseif (!empty($postVars['cs_modus'])) {
+            $csModus = $postVars['cs_modus'];
+        }
+
+        return $csModus;
+    }
 
 
     /** Get the CommSy login form as HTML.
@@ -484,6 +511,24 @@ HTML;
             </div>
           </form>
 HTML;
+
+        return $html;
+    }
+
+
+    /** Get the CommSy "forgotten account" form as HTML.
+     * @return string "forgotten account" form as HTML
+     * @author CommSy Development Group
+     */
+    public function _getForgottenAccountFormAsHTML()
+    {
+        $portalID = $this->_environment->getCurrentPortalID();
+        $externalIncludePath = 'external_pages/' . $portalID . '/classes';
+
+        include_once($externalIncludePath . '/cs_account_forget_page_agora.php');
+        $leftPage = new cs_account_forget_page_agora($this->_environment);
+        $html = $leftPage->execute();
+        unset($leftPage);
 
         return $html;
     }
