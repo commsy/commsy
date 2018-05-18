@@ -465,11 +465,16 @@ class cs_form_view_left_agora extends cs_form_view_left {
     * @return string hiddenfield as HMTL
     */
 
-   function _getHiddenFieldAsHTML ($form_element) {
-      $html  = '';
-      $html .= '   <input type="hidden" name="'.$form_element['name'].'"';
-      $html .= ' value="'.$this->_text_as_form($form_element['value']).'"/>'.LF;
-      return $html;
+   function _getHiddenFieldAsHTML ($form_element)
+   {
+        $elementName = $form_element['name'];
+        $elementValue = (isset($form_element['value'])) ? $this->_text_as_form($form_element['value']) : '';
+
+        $html = LF . <<<HTML
+            <input type="hidden" name="$elementName" value="$elementValue"/>
+HTML;
+
+        return $html;
    }
 
    /** get selectbox as HTML - internal, do not use
@@ -805,22 +810,27 @@ class cs_form_view_left_agora extends cs_form_view_left {
     *
     * @return string form view as HMTL
     */
-   function asHTML () {
-      $html  = '';
-      if (count($this->_error_array) > 0) {
-         $html .= '<div style="padding-right: 5px;"'.$this->_getErrorBoxAsHTML().'</div>'.LF;
-      }
-      $html .= '<!-- BEGIN OF FORM-VIEW PLAIN -->'.LF;
-      $html .= '<form action="'.$this->_action.'" method="'.$this->_action_type.'" enctype="multipart/form-data"';
-      if ( isset($this->_form_name) and !empty($this->_form_name) ) {
-         $html .= ' name="'.$this->_form_name.'"';
-      } else {
-         $html .= ' name="f"';
-      }
-      $html .= '>'.LF;
-      $html .= '<table class="form_view_plain" summary="Layout">'.LF;
-      $html .= '   <tr>'."\n";
-      $html .= '      <td class="form_view_plain">'.LF;
+   function asHTML ()
+   {
+        $html  = '';
+
+        // TODO: error box styling
+        if (count($this->_error_array) > 0) {
+            $html .= <<<HTML
+          <div class="container container-errorbox">
+            <div {$this->_getErrorBoxAsHTML()}</div>
+          </div>
+HTML;
+        }
+
+        $methodType = $this->_action_type;
+        $formActionURL = $this->_action;
+        $formName = (isset($this->_form_name) && !empty($this->_form_name)) ? $this->_form_name : 'f';
+
+        $html .= <<<HTML
+          <!-- FORM VIEW PLAIN -->
+          <form method="$methodType" action="$formActionURL" name="$formName" enctype="multipart/form-data">
+HTML;
 
       // first all hidden elements
       $form_element = $this->_form_elements->getFirst();
@@ -886,11 +896,9 @@ class cs_form_view_left_agora extends cs_form_view_left {
          }
       }
 
-      $html .= '      </td>'."\n";
-      $html .= '   </tr>'."\n";
-      $html .= '</table>'."\n";
-      $html .= '</form>'."\n";
-      $html .= '<!-- END OF FORM-VIEW PLAIN -->'."\n\n";
+        $html .= <<<HTML
+          </form>
+HTML;
 
       return $html;
    }
