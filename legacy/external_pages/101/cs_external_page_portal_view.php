@@ -51,7 +51,8 @@ class cs_external_page_portal_view extends cs_page_view
      */
     public function __construct($params)
     {
-        $this->cs_page_view($params);
+        parent::__construct($params);
+
         if (file_exists('htdocs/' . $this->_environment->getCurrentPortalID() . '/commsy.css')) {
             $this->_style_image_path = $this->_environment->getCurrentPortalID() . '/images/';
         }

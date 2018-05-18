@@ -55,14 +55,14 @@ class cs_form_view_left_agora extends cs_form_view_left {
 
    var $_form_name = '';
 
-   /** constructor: cs_form_view
-    * the only available constructor, initial values for internal variables
-    *
-    * @param array params parameters in an array of this class
-    */
-   function __construct($params) {
-      $this->cs_form_view_left($params);
-   }
+    /** The only available constructor, initial values for internal variables.
+     *
+     * @param array params parameters in an array of this class
+     */
+    function __construct($params)
+    {
+        parent::__construct($params);
+    }
 
    /** set URL of the form view
     * this method sets the URL where the data will post to

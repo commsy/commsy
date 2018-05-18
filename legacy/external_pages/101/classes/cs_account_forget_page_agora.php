@@ -6,9 +6,12 @@ include_once('classes/cs_account_forget_page.php');
  */
 class cs_account_forget_page_agora extends cs_account_forget_page
 {
+    /** The only available constructor.
+     * @param cs_environment environment the CommSy legacy environment
+     */
     function __construct($environment)
     {
-        $this->cs_account_forget_page($environment);
+        parent::__construct($environment);
     }
 
     /** Overridden for the custom AGORA portal theme to provide a "forgotten account" form view as HTML.
