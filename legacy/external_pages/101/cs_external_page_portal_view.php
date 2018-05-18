@@ -411,18 +411,7 @@ HTML;
 
         $siteShortTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_SHORT_TITLE');
         $loginTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LOGIN_TITLE');
-        $accountLabel = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_ACCOUNT_LABEL');
-        $forgotAccountLinkTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_ACCOUNT_LINK_TITLE_FORGOT');
-        $passwordLabel = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_PASSWORD_LABEL');
-        $forgotPasswordLinkTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_PASSWORD_LINK_TITLE_FORGOT');
-        $submitButtonTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SUBMIT_BUTTON_TITLE');
         $indicationsTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_INDICATIONS_TITLE');
-
-        // TODO: use ahref_curl() function instead?
-        $portalID = $this->_environment->getCurrentPortalID();
-        $formActionURL = "?cid=" . $portalID . "&amp;mod=context&amp;fct=login";
-        $forgotAccountURL = "?cid=" . $portalID . "&amp;mod=home&amp;fct=index&amp;cs_modus=account_forget";
-        $forgotPasswordURL = "?cid=" . $portalID . "&amp;mod=home&amp;fct=index&amp;cs_modus=password_forget";
 
         $html = <<<HTML
     <!-- Content -->
@@ -431,6 +420,46 @@ HTML;
         <!-- Main Content -->
         <div class="col-md-7">
           <h2 class="text-uppercase">$siteShortTitle-$loginTitle</h2>
+HTML;
+
+            $html .= LF . $this->_getLoginFormAsHTML();
+
+        $html .= LF . <<<HTML
+        </div>
+        <!-- Secondary Content -->
+        <div class="col-md-4 offset-md-1">
+          <h2 class="text-uppercase">$indicationsTitle</h2>
+          <p>At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+        </div>
+      </div>
+    </div>
+HTML;
+
+        return $html;
+    }
+
+
+
+
+    /** Get the CommSy login form as HTML.
+     * @return string login form as HTML
+     * @author CommSy Development Group
+     */
+    public function _getLoginFormAsHTML()
+    {
+        $accountLabel = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_ACCOUNT_LABEL');
+        $forgotAccountLinkTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_ACCOUNT_LINK_TITLE_FORGOT');
+        $passwordLabel = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_PASSWORD_LABEL');
+        $forgotPasswordLinkTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_PASSWORD_LINK_TITLE_FORGOT');
+        $submitButtonTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SUBMIT_BUTTON_TITLE');
+
+        // TODO: use ahref_curl() function instead?
+        $portalID = $this->_environment->getCurrentPortalID();
+        $formActionURL = "?cid=" . $portalID . "&amp;mod=context&amp;fct=login";
+        $forgotAccountURL = "?cid=" . $portalID . "&amp;mod=home&amp;fct=index&amp;cs_modus=account_forget";
+        $forgotPasswordURL = "?cid=" . $portalID . "&amp;mod=home&amp;fct=index&amp;cs_modus=password_forget";
+
+        $html = <<<HTML
           <!-- Login -->
           <form id="commsy-login" method="post" action="$formActionURL" name="login">
             <div class="form-group row">
@@ -454,14 +483,6 @@ HTML;
               </div>
             </div>
           </form>
-        </div>
-        <!-- Secondary Content -->
-        <div class="col-md-4 offset-md-1">
-          <h2 class="text-uppercase">$indicationsTitle</h2>
-          <p>At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-        </div>
-      </div>
-    </div>
 HTML;
 
         return $html;
