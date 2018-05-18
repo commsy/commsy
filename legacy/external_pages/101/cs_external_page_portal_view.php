@@ -254,8 +254,6 @@ HTML;
      */
     public function _getCSSAsHTML()
     {
-        // TODO: use a local bootstrap dist file
-
         $portalID = $this->_environment->getCurrentPortalID();
 
         $html = <<<HTML
@@ -406,7 +404,6 @@ HTML;
      */
     public function _getContentAsHTML()
     {
-        // TODO: should we honor `$currentPortal->showAuthAtLogin()`?
         // TODO: implement the portalmember form (request new account)
         // TODO: implement the account_forget/password_forget forms
         // TODO: fetch "Secondary Content"
@@ -477,7 +474,7 @@ HTML;
      */
     public function _getAuthSourcesAsHTML()
     {
-        // TODO: support Shibboleth login?
+        // NOTE: for now, there's no Shibboleth login support
 
         $currentPortal = $this->_environment->getCurrentPortalItem();
         $authSourceList = $currentPortal->getAuthSourceListEnabled();
