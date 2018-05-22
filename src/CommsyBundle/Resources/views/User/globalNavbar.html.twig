@@ -4,6 +4,12 @@
             {#<a href="#"><i class="uk-icon-bell-o"></i></a>#}
         {#</li>#}
 
+        {% if showPortalConfigurationLink %}
+            <li>
+                <a href="{{ path('commsy_portal_legacysettings', {'roomId': portal.itemId}) }}"><i class="uk-icon-wrench"></i></a>
+            </li>
+        {% endif %}
+
         {% if supportLink is not empty and tooltip is not empty %}
             <li>
                 <a href="{{ supportLink }}" title="{{ tooltip }}" target="_blank"><i class="uk-icon-question-circle"></i></a>
