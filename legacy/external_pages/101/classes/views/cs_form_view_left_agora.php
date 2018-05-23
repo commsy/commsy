@@ -113,43 +113,31 @@ class cs_form_view_left_agora extends cs_form_view_left {
     *
     * @return string headline as HMTL
     */
-   function _getHeadLineAsHTML ($form_element) {
-      $html  = '';
-      $html .= '<!-- BEGIN OF FORM-ELEMENT: headline -->'."\n";
+   function _getHeadLineAsHTML ($form_element)
+   {
+        // NOTE: ATM, this method doesn't support $form_element['right'] (class="form_actions"); see `cs_form_view_left.php->_getHeadLineAsHTML()`
 
-      $html .= '   <div class="form_view_plain_headline">'."\n";
+        $headlineLabel = $form_element['label'];
+        $headlineDescription = $this->_text_as_html_short($form_element['description']);
 
-      if (!empty($form_element['right'])) {
-         $html .= '      <table border="0" cellspacing="0" cellspacing="0" width="100%" summary="Layout">'."\n";
-         $html .= '         <tr>'."\n";
-         $html .= '            <td class="view_title">'."\n";
-         $html .= '               <b>'.$this->_text_as_html_short($form_element['label']).'</b>'."\n";
-         if (!empty($form_element['description'])) {
-             $html .= '               <span class="small">('.$this->_text_as_html_short($form_element['description']).')</span>'."\n";
-         }
-         $html .= '            </td>'."\n";
-         if (!empty($form_element['right'])) {
-             $html .= '            <td class="form_actions">'.$this->_text_as_html_short($form_element['right']).'</td>'."\n";
-         }
-         $html .= '         </tr>'."\n";
-         $html .= '      </table>'."\n";
-      } else {
-       $html .= '<span class="personal" style="font-weight: bold;">'.LF;
-         $html .= '      '.$form_element['label'].LF;
-       $html .= '</span>'.LF;
-         if (!empty($form_element['description'])) {
-             $html .= '      <span class="small">('.$this->_text_as_html_short($form_element['description']).')</span>'."\n";
-         }
-      }
-      $html .= '   </div>'."\n";
-      if (!empty($this->_description)){
-         $html .= '            </td>'.LF;
-         $html .= '         </tr>'.LF;
-         $html .= '         <tr>'.LF;
-         $html .= '            <td>'.LF;
-      }
-      $html .= '<!-- END OF FORM-ELEMENT: headline -->'."\n";
-      return $html;
+        $html = LF . <<<HTML
+            <fieldset class="form-group">
+              <div class="form-row">
+                <legend class="col-form-label font-weight-bold">$headlineLabel</legend> 
+HTML;
+
+        if (!empty($headlineDescription)) {
+            $html .= LF . <<<HTML
+                <small id="headlineHelpBlock" class="form-text text-muted">$headlineDescription</small> 
+HTML;
+        }
+
+        $html .= LF . <<<HTML
+              </div>
+            </fieldset>
+HTML;
+
+        return $html;
    }
 
    /** get textline as HTML - internal, do not use
@@ -178,28 +166,25 @@ class cs_form_view_left_agora extends cs_form_view_left {
 
 
    /** get button as HTML - internal, do not use
-    * this method returns a string contains a button in HMTL-Code
+    * this method returns a string containing a button in HMTL-Code
     *
     * @param array value form element: button, see class cs_form
     *
     * @return string button as HMTL
     */
-   function _getButtonAsHTML ($button_text, $button_name,$width='') {
-      $html  = '';
-      $html .= '<input type="submit" name="'.$button_name.'"';
-      $html .= ' value="'.$this->_text_as_html_short($button_text).'"';
-      $html .= ' tabindex="'.$this->_count_form_elements.'"';
-      if (!empty($width)){
-         $text = ' width:'.$width.'em;';
-      }else{
-         $text ='';
-      }
-      $html .= ' style=" font-size:8pt; margin-top: 2px;'.$text.'"';
-      $html .= '/>';
+   function _getButtonAsHTML ($buttonText, $buttonName, $buttonWidth = '', $isPrimaryButton = false)
+   {
+        // NOTE: ATM, this subclass ignores any given button width
+        $width = ''; // (!empty($buttonWidth)) ? ' style="width:' . $buttonWidth . 'em;"' : '';
 
-      return $html;
+        $buttonLabel = $this->_text_as_html_short($buttonText);
+        $additionalCSSClass = ($isPrimaryButton) ? ' btn-primary' : '';
+        $html = <<<HTML
+                <button type="submit" class="btn$additionalCSSClass" name="$buttonName"$width>$buttonLabel</button>
+HTML;
+
+        return $html;
    }
-
 
 
    /** get buttonbar as HTML - internal, do not use
@@ -210,21 +195,26 @@ class cs_form_view_left_agora extends cs_form_view_left {
     * @return string buttonbar as HMTL
     */
 
-   function _getButtonBarAsHTML ($form_element) {
-      $html = '';
-      if (!empty($form_element['labelSave'])) {
-         $html .= '   '.$this->_getButtonAsHTML($form_element['labelSave'],$form_element['name'],$form_element['firstWidth']).LF;
-      }
-      if (!empty($form_element['labelSecondSave'])) {
-         $html .= '   &nbsp;'.$this->_getButtonAsHTML($form_element['labelSecondSave'],$form_element['name']).LF;
-      }
-      if (!empty($form_element['labelCancel'])) {
-         $html .= '   &nbsp;'.$this->_getButtonAsHTML($form_element['labelCancel'],$form_element['name'],$form_element['secondWidth']).LF;
-      }
-      if (!empty($form_element['labelDelete'])) {
-         $html .= '                   '.$this->_getButtonAsHTML($form_element['labelDelete'],$form_element['name']).'&nbsp;'.LF;
-      }
-      return $html;
+   function _getButtonBarAsHTML ($form_element)
+   {
+        $buttonName = $form_element['name'];
+
+        $html = '';
+
+        if (!empty($form_element['labelSave'])) {
+            $html .= LF . $this->_getButtonAsHTML($form_element['labelSave'], $buttonName, $form_element['firstWidth'], true);
+        }
+        if (!empty($form_element['labelSecondSave'])) {
+            $html .= LF . $this->_getButtonAsHTML($form_element['labelSecondSave'], $buttonName, '', false);
+        }
+        if (!empty($form_element['labelCancel'])) {
+            $html .= LF . $this->_getButtonAsHTML($form_element['labelCancel'], $buttonName, $form_element['secondWidth'], false);
+        }
+        if (!empty($form_element['labelDelete'])) {
+            $html .= LF . $this->_getButtonAsHTML($form_element['labelDelete'], $buttonName, '', false);
+        }
+
+        return $html;
    }
 
 
@@ -471,7 +461,7 @@ class cs_form_view_left_agora extends cs_form_view_left {
         $elementValue = (isset($form_element['value'])) ? $this->_text_as_form($form_element['value']) : '';
 
         $html = LF . <<<HTML
-            <input type="hidden" name="$elementName" value="$elementValue"/>
+            <input type="hidden" name="$elementName" value="$elementValue" />
 HTML;
 
         return $html;
@@ -622,24 +612,34 @@ HTML;
     *
     * @return string textfield as HMTL
     */
-   function _getTextFieldAsHTML ($form_element) {
-      $html  = '';
-      $html .= '<input style="font-size:8pt;';
-      if (isset($form_element['width']) and !empty($form_element['width'])) {
-         $html .= ' width:'.$form_element['width'].'em;';
-      }
-      $html .= '" type="text" name="'.$form_element['name'].'"';
-      $html .= ' value="'.$this->_text_as_form($form_element['value']).'"';
-      $html .= ' maxlength="'.$form_element['maxlength'].'"';
-      $html .= ' size="'.$form_element['size'].'"';
-      $html .= ' tabindex="'.$this->_count_form_elements.'"';
-      $html .= ' class="text"';
-      $html .= '/>';
+   function _getTextFieldAsHTML ($form_element)
+   {
+        $formElementName = $form_element['name'];
+        $formElementID = $formElementName . $form_element['id'];
+        $formElementLabel = $form_element['label'];
+        $formElementValue = $this->_text_as_form($form_element['value']);
+        $formElementRequired = (!empty($form_element['mandatory'])) ? ' required' : '';
+        $formElementDescription = (isset($form_element['description']) && !empty($form_element['description'])) ? $this->_text_as_html_short($form_element['description']) : '';
+
+        $html = <<<HTML
+                <input type="text" class="form-control" id="$formElementID" name="$formElementName" placeholder="$formElementLabel" value="$formElementValue"$formElementRequired />
+HTML;
+
+        if (!empty($formElementDescription)) {
+            $html = <<<HTML
+                <small id="{$formElementID}HelpBlock" class="form-text text-muted"><$formElementDescription</small> 
+HTML;
+        }
+
+// TODO: handle `button_text` & `button_name`?
+/*
       if (!empty($form_element['button_text']) and !empty($form_element['button_name'])) {
          $html .= '&nbsp;';
          $html .= $this->_getButtonAsHTML($form_element['button_text'],$form_element['button_name']).LF;
       }
-      return $html;
+*/
+
+        return $html;
    }
 
 
@@ -664,26 +664,36 @@ HTML;
       return $html;
    }
 
-   function _getTextAsHTML ($form_element) {
-      $html  = '';
-      if (!empty($form_element['anchor'])){
-        $html='<a name="'.$form_element['anchor'].'"></a>';
+   function _getTextAsHTML ($form_element)
+   {
+        $html = '';
+
+        if (isset($form_element['anchor']) && !empty($form_element['anchor'])) {
+            $anchor = $form_element['anchor'];
+            $html .= <<<HTML
+                <a name="$anchor"></a>
+HTML;
      }
-      if (!empty($form_element['value'])) {
-       $html .= '<span class="personal">'.LF;
-         if ($form_element['isbold']) {
-            $html .= '<b>'.$form_element['value'].'<b>'.LF;
-         } else {
-            $html .= $form_element['value'].LF;
-         }
-       $html.= '</span>'.LF;
+
+        if (isset($form_element['value']) && !empty($form_element['value'])) {
+            $text = $form_element['value'];
+            $elementID = $form_element['name'] . $form_element['id'];
+            $additionalCSSClass = (!empty($form_element['isbold'])) ? ' font-weight-bold' : '';
+
+            $html .= <<<HTML
+                <span id="$elementID" class="personal$additionalCSSClass">$text</span>
+HTML;
+
+// TODO: handle `button_text` & `button_name`?
+/*
          if (!empty($form_element['button_text']) and !empty($form_element['button_name'])) {
             $html .= '         &nbsp;';
             $html .= $this->_getButtonAsHTML($form_element['button_text'],$form_element['button_name'],'',false)."\n";
          }
-         $html .= '<br />'."\n";
-      }
-      return $html;
+*/
+        }
+
+        return $html;
    }
 
    /** get form element as HTML and in commsy-style- internal, do not use
@@ -693,116 +703,118 @@ HTML;
     *
     * @return string form element in commsy-style as HMTL
     */
+   function _getFormElementAsHTML ($form_element)
+   {
+        // prepare form element array for combined form elements
+        $form_element_array = array();
+        if (!isset($form_element[0]['type'])) {
+            $form_element_array[] = $form_element;
+        } else {
+            $form_element_array = $form_element;
+        }
 
-   function _getFormElementAsHTML ($form_element) {
-      // prepare form element array for combined form elements
-      $form_element_array = array();
-      if (!isset($form_element[0]['type'])) {
-         $form_element_array[] = $form_element;
-      } else {
-         $form_element_array = $form_element;
-      }
+        $firstFormElement = $form_element_array[0];
+        $firstFormLabel = $firstFormElement['label'];
+        $firstFormID = $firstFormElement['name'] . $firstFormElement['id'];
 
-      // html code
-      $html  = '';
-      $html .= '<!-- BEGIN OF FORM-ELEMENT: '.$form_element_array[0]['name'].' ('.$form_element_array[0]['type'].') -->'."\n";
-      if (isset($form_element_array[0]['text-align']) and $form_element_array[0]['text-align'] == 'right') {
-         $html .= '   <div class="form_view_plain_formelement_right">'.LF;
-      } else {
-         $html .= '   <div class="form_view_plain_formelement" style="padding-bottom: 6px;">'.LF;
-      }
-      if (!empty($form_element_array[0]['label'])) {
-         if (isset($form_element_array[0]['failure'])) {
-            $label = '<span class="personal_bold">'.$form_element_array[0]['label'].'</span>';
-         } else {
-          $label = '<span class="personal">'.$form_element_array[0]['label'].'</span>';
-       }
-         $html .= $label;
-         if (!empty($form_element_array[0]['mandatory'])) {
-            $html.= '<span class="required">'.$this->_translator->getMessage('MARK').'</span>'.LF;
-         }
-       $html .= BRLF;
-      }
+        $html = LF . <<<HTML
+            <div class="form-group row">
+HTML;
 
-      // form element
-      if (isset($form_element_array[0]['combine']) and $form_element_array[0]['combine'] == 'horizontal') {
-         $horizontal = true;
-         $html .= '<table class="form_view_plain_combine" summary="Layout">'.LF;
-         $html .= '   <tr>'.LF;
-      } else {
-         $horizontal = false;
-      }
-      $first = true;
-      foreach ($form_element_array as $form_element) {
-         if ($first) {
-            $first = false;
-         } else {
-            $html .= LF.'<!-- COMBINED FIELDS -->'.BRLF;
-         }
+        // TODO: handle first element's alignment?
+        /*
+        $additionalContainerCSSClass = (isset($firstFormElement['text-align']) && $firstFormElement['text-align'] == 'right') ? ' justify-content-end' : '';
+        $html = LF . <<<HTML
+            <div class="container container-form-content$additionalContainerCSSClass">
+HTML;
+*/
 
-         if ($horizontal) {
-            if ($form_element['type']=='radio' and (isset($form_element['combine_direct']))){
-               $html .= '      <td class="form_view_plain_combine">'.LF;
+        // element label
+        $mainGridWidth = 12;
+        if (!empty($firstFormLabel)) {
+            $mainGridWidth = $mainGridWidth - 2;
+            $additionalLabelCSSClass = (isset($firstFormElement['failure'])) ? ' font-weight-bold' : '';
+
+            $requiredElementIndicator = $this->_translator->getMessage('MARK');
+            $requiredElementHTML = (!empty($firstFormElement['mandatory'])) ? '<span class="required">' . $requiredElementIndicator . '</span>' : '';
+
+            $html .= LF . <<<HTML
+              <label for="$firstFormID" class="col-sm-2 col-form-label$additionalLabelCSSClass">$firstFormLabel$requiredElementHTML</label> 
+HTML;
+        }
+
+        // form element
+        $html .= LF . <<<HTML
+              <div class="col-sm-$mainGridWidth">
+HTML;
+
+        foreach ($form_element_array as $form_element) {
+            // TODO: handle `$form_element['text-align'] == 'right'` and `$form_element['combine_direct']`?
+
+            if (isset($form_element['before_form_text']) && !empty($form_element['before_form_text'])) {
+                $textPrefix = $form_element['before_form_text'];
+                $html .= LF . <<<HTML
+                <span class="personal">$textPrefix</span>
+HTML;
             }
-            elseif (isset($form_element['text-align']) and $form_element['text-align'] == 'right') {
-               $html .= '      <td class="right" >'.LF;
-            } else {
-               $html .= '      <td>'.LF;
+
+            switch ($form_element['type']) {
+                case "textarea":
+                    $html .= LF . $this->_getTextAreaAsHTML($form_element);
+                    break;
+                case "textfield":
+                    $html .= LF . $this->_getTextFieldAsHTML($form_element);
+                    break;
+                case "password":
+                    $html .= LF . $this->_getPasswordAsHTML($form_element);
+                    break;
+                case "select":
+                    $html .= LF . $this->_getSelectAsHTML($form_element);
+                    break;
+                case "selectgroup":
+                    $html .= LF . $this->_getSelectGroupAsHTML($form_element);
+                    break;
+                case "checkbox":
+                    $html .= LF . $this->_getCheckboxAsHTML($form_element)."\n";
+                    break;
+                case "checkboxgroup":
+                    $html .= $this->_getCheckboxGroupAsHTML($form_element);
+                    break;
+                case "file":
+                    $html .= LF . $this->_getFileFieldAsHTML($form_element);
+                    break;
+                case "radio":
+                    $html .= $this->_getRadioGroupAsHTML($form_element);
+                    break;
+                case "datetime":
+                    $html .= $this->_getDateTimeFieldAsHTML($form_element);
+                    break;
+                case "emptyline":
+                    $html .= LF . $this->_getEmptyLineAsHTML($form_element);
+                    break;
+                case "buttonbar":
+                    $html .= $this->_getButtonBarAsHTML($form_element);
+                    break;
+                case "button":
+                    $html .= $this->_getButtonAsHTML($form_element['button_text'], $form_element['name']);
+                    break;
+                case "textline":
+                    $html .= LF . $this->_getTextLineAsHTML($form_element);
+                    break;
+                case "text":
+                    $html .= LF . $this->_getTextAsHTML($form_element);
+                    break;
+                case "color_table":
+                    $html .= LF . $this->_getColorTableAsHTML();
             }
-         }
+        }
 
-         if (!empty($form_element['before_form_text'])) {
-            $html .= '         <span class="personal">'.$form_element['before_form_text'].'</span>'.LF;
-         }
+        $html .= LF . <<<HTML
+              </div>
+            </div>
+HTML;
 
-         if ($form_element['type'] == 'textarea') {
-            $html .= '         '.$this->_getTextAreaAsHTML($form_element);
-         } elseif ($form_element['type'] == 'textfield') {
-            $html .= '         '.$this->_getTextFieldAsHTML($form_element);
-         } elseif ($form_element['type'] == 'password') {
-            $html .= '         '.$this->_getPasswordAsHTML($form_element);
-         } elseif ($form_element['type'] == 'select') {
-            $html .= '         '.$this->_getSelectAsHTML($form_element);
-         } elseif ($form_element['type'] == 'selectgroup') {
-            $html .= '         '.$this->_getSelectGroupAsHTML($form_element);
-         }  elseif ($form_element['type'] == 'checkbox') {
-            $html .= '         '.$this->_getCheckboxAsHTML($form_element)."\n";
-         } elseif ($form_element['type'] == 'checkboxgroup') {
-            $html .= $this->_getCheckboxGroupAsHTML($form_element);
-         } elseif ($form_element['type'] == 'file') {
-            $html .= '         '.$this->_getFileFieldAsHTML($form_element);
-         } elseif ($form_element['type'] == 'radio') {
-            $html .= $this->_getRadioGroupAsHTML($form_element);
-         } elseif ($form_element['type'] == 'datetime') {
-            $html .= $this->_getDateTimeFieldAsHTML($form_element);
-         } elseif ($form_element['type'] == 'emptyline') {
-            $html .= '         '.$this->_getEmptyLineAsHTML($form_element);
-         } elseif ($form_element['type'] == 'buttonbar') {
-            $html .= $this->_getButtonBarAsHTML($form_element);
-         } elseif ($form_element['type'] == 'button') {
-            $html .= $this->_getButtonAsHTML($form_element['button_text'],$form_element['name']);
-         } elseif ($form_element['type'] == 'textline') {
-            $html .= '         '.$this->_getTextLineAsHTML($form_element);
-         } elseif ($form_element['type'] == 'text') {
-            $html .= '         '.$this->_getTextAsHTML($form_element);
-         } elseif ($form_element['type'] == 'color_table') {
-            $html .= '         '.$this->_getColorTableAsHTML();
-         }
-
-         if ($horizontal) {
-            $html .= '      </td>'.LF;
-         }
-      }
-      if ($horizontal) {
-         $html .= '   </tr>'.LF;
-         $html .= '</table>'.LF;
-      }
-
-      // if buttonbar with delete button, delete button will be set into the descripiton field
-      // see the _getButtonBarAsHTML() methode
-      $html .= '</div>'.LF;
-      $html .= '<!-- END OF FORM-ELEMENT: '.$form_element_array[0]['name'].' ('.$form_element_array[0]['type'].') -->'."\n\n";
-      return $html;
+        return $html;
    }
 
    /** get form view as HTML
@@ -886,17 +898,17 @@ HTML;
          $form_element = $this->_form_elements->getNext();
       }
 
-      // now get the html code
-      $bool = true;
-      foreach ($form_element_array as $form_element) {
-         if (!isset($form_element[0]['type']) and $form_element['type'] == 'headline') {
-            $html .= $this->_getHeadLineAsHTML($form_element);
-         } else {
-            $html .= $this->_getFormElementAsHTML($form_element);
-         }
-      }
+        // now get the html code
+        $bool = true;
+        foreach ($form_element_array as $form_element) {
+            if (!isset($form_element[0]['type']) and $form_element['type'] == 'headline') {
+                $html .= $this->_getHeadLineAsHTML($form_element);
+            } else {
+                $html .= $this->_getFormElementAsHTML($form_element);
+            }
+        }
 
-        $html .= <<<HTML
+        $html .= LF . <<<HTML
           </form>
 HTML;
 
