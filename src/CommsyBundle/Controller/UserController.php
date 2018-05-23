@@ -1274,6 +1274,14 @@ class UserController extends Controller
         if ($sessionItem->issetValue('clipboard_ids')) {
             $currentClipboardIds = $sessionItem->getValue('clipboard_ids');
         }
+
+        $showPortalConfigurationLink = false;
+        $currentPortalUserItem = $currentUserItem->getRelatedPortalUserItem();
+        if ($currentPortalUserItem) {
+            if ($currentPortalUserItem->isModerator()) {
+                $showPortalConfigurationLink = true;
+            }
+        }
         
         return [
             'privateRoomItem' => $privateRoomItem,
@@ -1281,6 +1289,8 @@ class UserController extends Controller
             'roomId' => $legacyEnvironment->getCurrentContextId(),
             'supportLink' => $portalItem->getSupportPageLink(),
             'tooltip' => $portalItem->getSupportPageLinkTooltip(),
+            'showPortalConfigurationLink' => $showPortalConfigurationLink,
+            'portal' => $portalItem,
         ];
     }
 
