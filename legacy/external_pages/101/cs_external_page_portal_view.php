@@ -493,14 +493,14 @@ HTML;
             <div class="form-group row">
               <label for="inputUsername" class="col-sm-2 col-form-label">$accountLabel</label> 
               <div class="col-sm-10">
-                <input type="text" class="form-control" id="inputUsername" name="user_id" placeholder="$accountLabel" required>
+                <input type="text" class="form-control" id="inputUsername" name="user_id" placeholder="$accountLabel" required />
                 <small id="usernameHelpBlock" class="form-text text-muted"><a href="$forgotAccountURL">$forgotAccountLinkTitle</a></small> 
               </div>
             </div>
             <div class="form-group row">
               <label for="inputPassword" class="col-sm-2 col-form-label">$passwordLabel</label> 
               <div class="col-sm-10">
-                <input type="password" class="form-control" id="inputPassword" name="password" placeholder="$passwordLabel" required>
+                <input type="password" class="form-control" id="inputPassword" name="password" placeholder="$passwordLabel" required />
                 <small id="passwordHelpBlock" class="form-text text-muted"><a href="$forgotPasswordURL">$forgotPasswordLinkTitle</a></small> 
               </div>
             </div>
@@ -556,7 +556,7 @@ HTML;
         if ($authSourceList->getCount() == 1) {
             $authSourceID = $authSourceItem->getItemID();
             $html = <<<HTML
-            <input type="hidden" name="auth_source" value="$authSourceID"/>
+            <input type="hidden" name="auth_source" value="$authSourceID" />
 HTML;
             return $html;
         }
@@ -581,7 +581,7 @@ HTML;
             $authSourceDefault = ($authSourceID == $defaultAuthSourceID ? ' checked' : '');
             $html .= LF . <<<HTML
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="auth_source" id="radioSource{$i}" value="$authSourceID"$authSourceDefault>
+                    <input class="form-check-input" type="radio" name="auth_source" id="radioSource{$i}" value="$authSourceID"$authSourceDefault />
                     <label class="form-check-label" for="radioSource{$i}">$authSourceName</label> 
                   </div>
 HTML;
@@ -635,7 +635,7 @@ HTML;
         $sessionItem->unsetValue('login_redirect');
 
         $html = LF . <<<HTML
-            <input type="hidden" name="login_redirect" value="$redirectURL"/>
+            <input type="hidden" name="login_redirect" value="$redirectURL" />
 HTML;
 
         return $html;
