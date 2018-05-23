@@ -489,7 +489,7 @@ HTML;
 
         $html = <<<HTML
           <!-- Login -->
-          <form id="commsy-login" method="post" action="$formActionURL" name="login">
+          <form id="commsy-login" method="post" action="$formActionURL" name="commsy-login">
             <div class="form-group row">
               <label for="inputUsername" class="col-sm-2 col-form-label">$accountLabel</label> 
               <div class="col-sm-10">
