@@ -468,70 +468,89 @@ HTML;
    }
 
    /** get selectbox as HTML - internal, do not use
-    * this method returns a string contains an selectbox in HMTL-Code
+    * this method returns a string containing an selectbox in HMTL-Code
     *
     * @param array value form element: selectbox, see class cs_form
     *
     * @return string selectbox as HMTL
     */
-   function _getSelectAsHTML ($form_element) {
-      $html = '';
-      if ($form_element['multiple']) {
-         $form_element['name'] .= '[]';
-      }
-      $style ='font-size:8pt';
-      if (isset($form_element['width']) and !empty($form_element['width'])){
-         $style ='width:'.$form_element['width'].'em; font-size:8pt;';
-      }
-      $html .= '<select style="'.$style.'" name="'.$form_element['name'].'"';
-      $html .= ' size="'.$form_element['size'].'"';
-      if ($form_element['multiple']) {
-         $html .= ' multiple';
-      }
-      $html .= ' tabindex="'.$this->_count_form_elements.'"';
+   function _getSelectAsHTML ($form_element)
+   {
+        $name = $form_element['name'];
+        $id = $name . $form_element['id'];
 
-      // jQuery
-      //$html .= $form_element['event'] ? " onChange='javascript:document.f.submit()'" : '';
-      $html .= $form_element['event'] ? " id='submit_form'" : '';
-      // jQuery
-      $html .= '>'."\n";
-      $options = $form_element['options'];
-      $option = reset($options);
-      while ($option) {
-         if (!isset($option['value'])) {
-            $option['value'] = $option['text'];
-         }
-         $html .= '            <option ';
-         if (isset($option['value']) and $option['value'] == 'disabled') {
-            $html .= ' disabled="disabled"';
-         } else {
-            $html .= ' value="'.$this->_text_as_form($option['value']).'"';
-         }
-         if (in_array($option['value'],$form_element['selected']) or in_array($option['text'],$form_element['selected'])) {
-            $html .= ' selected';
-         }
-         $html .= '>';
-         $html .= $this->_text_as_html_short($option['text']);
-         $html .= '</option>'."\n";
+        $multipleAttribute = '';
+        if ($form_element['multiple']) {
+            $name .= '[]';
+            $multipleAttribute = ' multiple';
+        }
 
-         $option = next($options);
-      }
-      $html .= '         </select>'."\n";
-      if ($form_element['name']=='label'){
-           $element['type']      = 'textfield';
-           $element['name']      = 'new_label';
-           $element['value']     = '';
-           $element['label']     = '';
-           $element['example']   = '';
-           $element['maxlength'] = 255;
-           $element['size']      = 20;
-           $element['mandatory'] = 'false';
-           $html .= $this->_getTextFieldAsHTML($element);
-      }
-      if (!empty($form_element['button_text']) and !empty($form_element['button_name'])) {
-         $html .= $this->_getButtonAsHTML($form_element['button_text'],$form_element['button_name'])."\n";
-      }
-      return $html;
+        // NOTE: ATM, this subclass ignores any given select element width & size
+        $sizeAttribute = ''; // ' size="' . $form_element['size'] . '"';
+        $styleAttribute = '';
+        /*
+        if (isset($form_element['width']) && !empty($form_element['width'])) {
+            $styleAttribute =' style="width:' . $form_element['width'] . 'em;"';
+        }
+        */
+
+        $html = <<<HTML
+                <select id="$id" name="$name" class="form-control"$sizeAttribute$styleAttribute$multipleAttribute>
+HTML;
+
+        $options = $form_element['options'];
+        $option = reset($options);
+        while ($option) {
+            if (!isset($option['value'])) {
+                $option['value'] = $option['text'];
+            }
+
+            $optionName = $this->_text_as_html_short($option['text']);
+            $valueAttribute = '';
+            $selectedAttribute = '';
+            $disabledAttribute = '';
+            if (isset($option['value'])) {
+                if ($option['value'] === 'disabled') {
+                    $disabledAttribute = ' disabled';
+                } else {
+                    $valueAttribute = ' value="' . $this->_text_as_form($option['value']) . '"';
+                }
+
+                if (in_array($option['value'], $form_element['selected'])) {
+                    $selectedAttribute = ' selected';
+                }
+            }
+            
+            $html .= LF . <<<HTML
+                  <option$valueAttribute$selectedAttribute$disabledAttribute>$optionName</option>
+HTML;
+
+            $option = next($options);
+        }
+
+        $html .= LF . <<<HTML
+                </select>
+HTML;
+
+        if ($form_element['name'] === 'label') {
+            $element['type']      = 'textfield';
+            $element['name']      = 'new_label';
+            $element['value']     = '';
+            $element['label']     = '';
+            $element['example']   = '';
+            //$element['maxlength'] = 255;
+            //$element['size']      = 20;
+            $element['mandatory'] = 'false';
+            $html .= LF . $this->_getTextFieldAsHTML($element);
+        }
+// TODO: handle `button_text` & `button_name`?
+/*
+        if (!empty($form_element['button_text']) and !empty($form_element['button_name'])) {
+            $html .= $this->_getButtonAsHTML($form_element['button_text'],$form_element['button_name'])."\n";
+        }
+*/
+
+        return $html;
    }
 
    /** get selectgroupbox as HTML - internal, do not use
@@ -678,7 +697,7 @@ HTML;
         if (isset($form_element['value']) && !empty($form_element['value'])) {
             $text = $form_element['value'];
             $elementID = $form_element['name'] . $form_element['id'];
-            $additionalCSSClass = (!empty($form_element['isbold'])) ? ' font-weight-bold' : '';
+            $additionalCSSClass = ($form_element['isbold']) ? ' font-weight-bold' : '';
 
             $html .= <<<HTML
                 <span id="$elementID" class="personal$additionalCSSClass">$text</span>

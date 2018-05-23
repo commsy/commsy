@@ -406,7 +406,7 @@ HTML;
     public function _getContentAsHTML()
     {
         // TODO: implement the portalmember form (request new account)
-        // TODO: implement the account_forget/password_forget forms
+        // TODO: implement the password_forget form
         // TODO: fetch "Secondary Content"
         // TODO: support guest user
 
@@ -431,6 +431,9 @@ HTML;
         else {
             if ($csModus === 'account_forget') {
                 $html .= LF . $this->_getForgottenAccountFormAsHTML();
+            }
+            elseif ($csModus === 'password_forget') {
+                $html .= LF . $this->_getForgottenPasswordFormAsHTML();
             }
         }
 
@@ -528,6 +531,24 @@ HTML;
 
         include_once($externalIncludePath . '/cs_account_forget_page_agora.php');
         $leftPage = new cs_account_forget_page_agora($this->_environment);
+        $html = $leftPage->execute();
+        unset($leftPage);
+
+        return $html;
+    }
+
+
+    /** Get the CommSy "forgotten password" form as HTML.
+     * @return string "forgotten password" form as HTML
+     * @author CommSy Development Group
+     */
+    public function _getForgottenPasswordFormAsHTML()
+    {
+        $portalID = $this->_environment->getCurrentPortalID();
+        $externalIncludePath = 'external_pages/' . $portalID . '/classes';
+
+        include_once($externalIncludePath . '/cs_password_forget_page_agora.php');
+        $leftPage = new cs_password_forget_page_agora($this->_environment);
         $html = $leftPage->execute();
         unset($leftPage);
 
