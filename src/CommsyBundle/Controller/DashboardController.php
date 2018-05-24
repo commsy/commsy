@@ -89,12 +89,18 @@ class DashboardController extends Controller
             $contextArray[$calendar->getContextId()][] = $roomItemCalendar->getTitle();
         }
 
+        // announcements
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+        $serverItem = $legacyEnvironment->getServerItem();
+
         return array(
             'roomItem' => $roomItem,
             'dashboardLayout' => $roomItem->getDashboardLayout(),
             'iCal' => $iCal,
             'calendars' => $calendars,
-            'contextArray' => $contextArray
+            'contextArray' => $contextArray,
+            'portal' => $portalItem,
+            'server' => $serverItem,
         );
     }
 
