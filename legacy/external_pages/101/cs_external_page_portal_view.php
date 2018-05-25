@@ -423,10 +423,12 @@ HTML;
         // TODO: fetch "Secondary Content"
         // TODO: support guest user
 
+        $loggedIn = $this->_isUserLoggedIn(); // `true` if user is logged in on current portal
         $csModus = $this->_getCommSyModus();
 
         $siteShortTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_SHORT_TITLE');
         $loginTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LOGIN_TITLE');
+        $contentTitle = ($loggedIn) ? $siteShortTitle : $siteShortTitle . "-" . $loginTitle;
         $indicationsTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_INDICATIONS_TITLE');
 
         $html = <<<HTML
@@ -435,10 +437,13 @@ HTML;
       <div class="row">
         <!-- Main Content -->
         <div class="col-md-7">
-          <h2 class="text-uppercase">$siteShortTitle-$loginTitle</h2>
+          <h2 class="text-uppercase">$contentTitle</h2>
 HTML;
 
-        if (empty($csModus)) {
+        if ($loggedIn) {
+            $html .= LF . $this->_getLoggedInContentAsHTML();
+        }
+        elseif (empty($csModus)) {
             $html .= LF . $this->_getLoginFormAsHTML();
         }
         else {
@@ -462,6 +467,19 @@ HTML;
 HTML;
 
         return $html;
+    }
+
+
+    /** Returns whether the current user is logged in on the current portal.
+     * @return bool true if logged in, otherwise false
+     * @author CommSy Development Group
+     */
+    public function _isUserLoggedIn()
+    {
+        $currentUser = $this->_environment->getCurrentUserItem();
+        $loggedIn = !empty($currentUser) && $currentUser->getUserID() !== 'guest';
+
+        return $loggedIn;
     }
 
 
@@ -531,6 +549,55 @@ HTML;
             <div class="form-group row">
               <div class="col-sm-10">
                 <button type="submit" class="btn btn-primary" name="option">$submitButtonTitle</button> 
+              </div>
+            </div>
+          </form>
+HTML;
+
+        return $html;
+    }
+
+
+
+    /** Get the content that's shown for logged in CommSy users as HTML.
+     * @return string "logged in" content as HTML
+     * @author CommSy Development Group
+     */
+    public function _getLoggedInContentAsHTML()
+    {
+        // TODO: properly handle the root user (submitting the primary form button as root should lead to `/room/<ID>` -->> what is <ID>?)
+
+        $portalID = $this->_environment->getCurrentPortalID();
+        $getVars = $this->_environment->getCurrentParameterArray();
+
+        $currentUser = $this->_environment->getCurrentUserItem();
+        $currentUserOwnRoom = $currentUser->getOwnRoom($portalID); // empty for the root user
+        $currentUserName = $currentUser->getFullName();
+
+        $headlineLabel = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_ACCOUNT_STATUS');
+        $dashboardButtonTitle = ($currentUserOwnRoom) ? $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LOGGEDIN_SUBMIT_BUTTON_TITLE') : $this->_translator->getMessage('SERVER_PORTAL_OVERVIEW');
+        $logoutButtonTitle = $this->_translator->getMessage('MYAREA_LOGOUT');
+
+        $formActionURL = ($currentUserOwnRoom) ? "/dashboard/" . $currentUserOwnRoom->getItemID() : curl(0, 'home', 'index', $getVars);
+        $logoutURL = ($currentUserOwnRoom) ? "/room/" . $currentUserOwnRoom->getItemID() . "/logout" : curl($portalID, 'context', 'logout', $getVars);
+
+        $html = <<<HTML
+          <!-- Content For Logged In Users -->
+          <form id="commsy" method="post" action="$formActionURL" name="commsy">
+            <fieldset class="form-group">
+              <div class="form-row">
+                <legend class="col-form-label font-weight-bold">$headlineLabel</legend> 
+              </div>
+            </fieldset>
+            <div class="form-group row">
+              <div class="col">
+                <span id="text1" class="personal">$currentUserName</span>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col">
+                <button type="submit" class="btn btn-primary" name="option">$dashboardButtonTitle</button>
+                <a href="$logoutURL" class="btn">$logoutButtonTitle</a>
               </div>
             </div>
           </form>

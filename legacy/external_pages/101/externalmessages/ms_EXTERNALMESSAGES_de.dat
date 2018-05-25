@@ -22,10 +22,12 @@ $message["EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_ABOUT"]["de"] = "https://www.agor
 $message["EXTERNALMESSAGES_PORTAL_NAV_LINK_TITLE_CONTACT"]["de"] = "Kontakt";
 $message["EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_CONTACT"]["de"] = "https://www.agora.uni-hamburg.de/kontakt";
 $message["EXTERNALMESSAGES_PORTAL_ACCOUNT_LABEL"]["de"] = "Kennung";
+$message["EXTERNALMESSAGES_PORTAL_ACCOUNT_STATUS"]["de"] = "Angemeldet";
 $message["EXTERNALMESSAGES_PORTAL_ACCOUNT_LINK_TITLE_FORGOT"]["de"] = "Kennung vergessen?";
 $message["EXTERNALMESSAGES_PORTAL_PASSWORD_LABEL"]["de"] = "Passwort";
 $message["EXTERNALMESSAGES_PORTAL_PASSWORD_LINK_TITLE_FORGOT"]["de"] = "Passwort vergessen?";
 $message["EXTERNALMESSAGES_PORTAL_SUBMIT_BUTTON_TITLE"]["de"] = "Anmelden";
+$message["EXTERNALMESSAGES_PORTAL_LOGGEDIN_SUBMIT_BUTTON_TITLE"]["de"] = "Persönlicher Bereich";
 $message["EXTERNALMESSAGES_PORTAL_INDICATIONS_TITLE"]["de"] = "Hinweise";
 $message["EXTERNALMESSAGES_PORTAL_SOURCE_LABEL"]["de"] = "Quelle";
 ?>
