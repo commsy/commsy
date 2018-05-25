@@ -22,6 +22,8 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+include_once('functions/curl_functions.php');
+
 /** upper class of the detail view
  */
 $environment = $symfonyContainer->get('commsy_legacy.environment')->getEnvironment();
@@ -279,8 +281,16 @@ HTML;
         $corporationTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_CORPORATION_TITLE');
         $loginTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LOGIN_TITLE');
         $altPageTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_ALT_PAGE_TITLE');
+
         $portalID = $this->_environment->getCurrentPortalID();
-        $altPageURL = "?cid=" . $portalID . "&amp;external_language=" . $this->_getAlternateDisplayLanguage();
+        $currentModule = $this->_environment->getCurrentModule();
+        $currentFunction = $this->_environment->getCurrentFunction();
+        $getVars = $this->_environment->getCurrentParameterArray();
+
+        $loginURL = curl($portalID, 'context', 'login', '');
+
+        $getVars['external_language'] = $this->_getAlternateDisplayLanguage();
+        $altPageURL = curl($portalID, $currentModule, $currentFunction, $getVars);
 
         $html = <<<HTML
     <!-- Header -->
@@ -292,7 +302,7 @@ HTML;
             <a class="nav-link" href="$corporationURL" title="$corporationTitle">$corporationShortTitle</a>
           </li>
           <li class="nav-item p-1 second">
-            <a class="nav-link active" href="#">$loginTitle</a>
+            <a class="nav-link active" href="$loginURL">$loginTitle</a>
           </li>
           <li class="nav-item ml-auto p-1 last">
             <a class="nav-link" href="$altPageURL">$altPageTitle</a>
@@ -363,6 +373,9 @@ HTML;
         $navLinkTitleContact = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_TITLE_CONTACT');
         $navLinkURLContact = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_CONTACT');
 
+        $portalID = $this->_environment->getCurrentPortalID();
+        $loginURL = curl($portalID, 'context', 'login', '');
+
         $html = <<<HTML
     <!-- Main Navigation -->
     <div class="container container-mainnav">
@@ -374,7 +387,7 @@ HTML;
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="#">$loginTitle</a>
+          <a class="nav-link active" href="$loginURL">$loginTitle</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="$navLinkURLHelp">
@@ -484,27 +497,34 @@ HTML;
         $forgotPasswordLinkTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_PASSWORD_LINK_TITLE_FORGOT');
         $submitButtonTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SUBMIT_BUTTON_TITLE');
 
-        // TODO: use ahref_curl() function instead?
         $portalID = $this->_environment->getCurrentPortalID();
-        $formActionURL = "?cid=" . $portalID . "&amp;mod=context&amp;fct=login";
-        $forgotAccountURL = "?cid=" . $portalID . "&amp;mod=home&amp;fct=index&amp;cs_modus=account_forget";
-        $forgotPasswordURL = "?cid=" . $portalID . "&amp;mod=home&amp;fct=index&amp;cs_modus=password_forget";
+        $currentModule = $this->_environment->getCurrentModule();
+        $currentFunction = $this->_environment->getCurrentFunction();
+        $getVars = $this->_environment->getCurrentParameterArray();
+
+        $formActionURL = curl($portalID, 'context', 'login', '');
+
+        $getVars['cs_modus'] = 'account_forget';
+        $forgotAccountLink = ahref_curl($portalID, $currentModule, $currentFunction, $getVars, $forgotAccountLinkTitle, '', '', '', '', '', '', '', '', 'forgotAccount');
+
+        $getVars['cs_modus'] = 'password_forget';
+        $forgotPasswordLink = ahref_curl($portalID, $currentModule, $currentFunction, $getVars, $forgotPasswordLinkTitle, '', '', '', '', '', '', '', '', 'forgotPassword');
 
         $html = <<<HTML
           <!-- Login -->
-          <form id="commsy-login" method="post" action="$formActionURL" name="commsy-login">
+          <form id="login" method="post" action="$formActionURL" name="login">
             <div class="form-group row">
               <label for="inputUsername" class="col-sm-2 col-form-label">$accountLabel</label> 
               <div class="col-sm-10">
                 <input type="text" class="form-control" id="inputUsername" name="user_id" placeholder="$accountLabel" required />
-                <small id="usernameHelpBlock" class="form-text text-muted"><a href="$forgotAccountURL">$forgotAccountLinkTitle</a></small> 
+                <small id="usernameHelpBlock" class="form-text text-muted">$forgotAccountLink</small> 
               </div>
             </div>
             <div class="form-group row">
               <label for="inputPassword" class="col-sm-2 col-form-label">$passwordLabel</label> 
               <div class="col-sm-10">
                 <input type="password" class="form-control" id="inputPassword" name="password" placeholder="$passwordLabel" required />
-                <small id="passwordHelpBlock" class="form-text text-muted"><a href="$forgotPasswordURL">$forgotPasswordLinkTitle</a></small> 
+                <small id="passwordHelpBlock" class="form-text text-muted">$forgotPasswordLink</small> 
               </div>
             </div>
 {$this->_getAuthSourcesAsHTML()}{$this->_getLoginRedirectAsHTML()}
@@ -682,6 +702,9 @@ HTML;
         $navLinkTitleContact = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_TITLE_CONTACT');
         $navLinkURLContact = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_CONTACT');
 
+        $portalID = $this->_environment->getCurrentPortalID();
+        $loginURL = curl($portalID, 'context', 'login', '');
+
         $html = <<<HTML
     <!-- Footer -->
     <footer class="container-fluid">
@@ -692,7 +715,7 @@ HTML;
             <a class="nav-link active" href="$siteURL">$sitePageTitle</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="#">$loginTitle</a>
+            <a class="nav-link active" href="$loginURL">$loginTitle</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="$navLinkURLHelp">$navLinkTitleHelp</a>
