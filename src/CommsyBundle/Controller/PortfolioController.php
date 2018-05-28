@@ -232,4 +232,19 @@ class PortfolioController extends Controller
             'form' => $form->createView(),
         ];
     }
+
+    /**
+     * @Route("/room/{roomId}/portfolio/{portfolioId}/editcategory/{position}/{categoryId}/")
+     * @Template()
+     */
+    public function editcategoryAction($roomId, $position, $categoryId, Request $request)
+    {
+        if ($categoryId == 'add') {
+            // add new row or column
+        } else {
+            // edit row or column
+        }
+
+        return [];
+    }
 }
