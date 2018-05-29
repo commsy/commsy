@@ -144,11 +144,11 @@ h2 {
 }
 
 /* Content */
-form#commsy-login {
+form#login {
   margin: 1rem 0 3rem;
 }
 @media (min-width: 768px) {
-  form#commsy-login {
+  form#login {
     margin-top: 2rem;
   }
 }
