@@ -153,6 +153,10 @@ form#login {
   }
 }
 
+form .required {
+  display: none;
+}
+
 /* Error Box */
 .container-errorbox {
   padding-right: 5px;
