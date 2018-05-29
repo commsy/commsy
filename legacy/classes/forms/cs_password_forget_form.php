@@ -99,7 +99,7 @@ class cs_password_forget_form extends cs_rubric_form {
       $this->_form->addHeadline('title',$this->_translator->getMessage('USER_PASSWORD_FORGET_HEADLINE'));
       if ( $this->_count_auth_source_list_add_account > 1 ) {
          $this->_form->addText('text','',$this->_translator->getMessage('PASSWORD_CHOOSE_TEXT'));
-         $this->_form->addSelect('auth_source', $this->_auth_source_array, $this->_default_auth_source_entry, $this->_translator->getMessage('USER_AUTH_SOURCE'), '', 1 , false, false, false, '', '', '', '', 13.4);
+         $this->_form->addSelect('auth_source', $this->_auth_source_array, $this->_default_auth_source_entry, $this->_translator->getMessage('MYAREA_USER_AUTH_SOURCE_SHORT'), '', 1 , false, false, false, '', '', '', '', 13.4);
          $this->_form->addButtonBar('option',$this->_translator->getMessage('PASSWORD_CHOOSE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,6.4,6.3);
       } else {
 
