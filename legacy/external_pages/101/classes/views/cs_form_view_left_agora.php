@@ -172,15 +172,16 @@ HTML;
     *
     * @return string button as HMTL
     */
-   function _getButtonAsHTML ($buttonText, $buttonName, $buttonWidth = '', $isPrimaryButton = false)
+   function _getButtonAsHTML ($buttonText, $buttonName, $buttonWidth = '', $isPrimaryButton = false, $disableFormValidation = false)
    {
         // NOTE: ATM, this subclass ignores any given button width
         $width = ''; // (!empty($buttonWidth)) ? ' style="width:' . $buttonWidth . 'em;"' : '';
 
         $buttonLabel = $this->_text_as_html_short($buttonText);
         $additionalCSSClass = ($isPrimaryButton) ? ' btn-primary' : '';
+        $novalidate = ($disableFormValidation) ? ' formnovalidate' : '';
         $html = <<<HTML
-                <button type="submit" class="btn$additionalCSSClass" name="$buttonName"$width>$buttonLabel</button>
+                <button type="submit" class="btn$additionalCSSClass" name="$buttonName" value="$buttonLabel"$novalidate$width>$buttonLabel</button>
 HTML;
 
         return $html;
@@ -202,16 +203,16 @@ HTML;
         $html = '';
 
         if (!empty($form_element['labelSave'])) {
-            $html .= LF . $this->_getButtonAsHTML($form_element['labelSave'], $buttonName, $form_element['firstWidth'], true);
+            $html .= LF . $this->_getButtonAsHTML($form_element['labelSave'], $buttonName, $form_element['firstWidth'], true, false);
         }
         if (!empty($form_element['labelSecondSave'])) {
-            $html .= LF . $this->_getButtonAsHTML($form_element['labelSecondSave'], $buttonName, '', false);
+            $html .= LF . $this->_getButtonAsHTML($form_element['labelSecondSave'], $buttonName, '', false, false);
         }
         if (!empty($form_element['labelCancel'])) {
-            $html .= LF . $this->_getButtonAsHTML($form_element['labelCancel'], $buttonName, $form_element['secondWidth'], false);
+            $html .= LF . $this->_getButtonAsHTML($form_element['labelCancel'], $buttonName, $form_element['secondWidth'], false, true);
         }
         if (!empty($form_element['labelDelete'])) {
-            $html .= LF . $this->_getButtonAsHTML($form_element['labelDelete'], $buttonName, '', false);
+            $html .= LF . $this->_getButtonAsHTML($form_element['labelDelete'], $buttonName, '', false, false);
         }
 
         return $html;
