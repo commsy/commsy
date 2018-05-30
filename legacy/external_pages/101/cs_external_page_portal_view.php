@@ -548,7 +548,7 @@ HTML;
 {$this->_getAuthSourcesAsHTML()}{$this->_getLoginRedirectAsHTML()}
             <div class="form-group row">
               <div class="col-sm-10">
-                <button type="submit" class="btn btn-primary" name="option">$submitButtonTitle</button> 
+                <button type="submit" class="btn btn-primary" name="option" value="$submitButtonTitle">$submitButtonTitle</button> 
               </div>
             </div>
           </form>
