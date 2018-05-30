@@ -529,7 +529,9 @@ HTML;
         $getVars['cs_modus'] = 'password_forget';
         $forgotPasswordLink = ahref_curl($portalID, $currentModule, $currentFunction, $getVars, $forgotPasswordLinkTitle, '', '', '', '', '', '', '', '', 'forgotPassword');
 
-        $html = LF . <<<HTML
+        $html = $this->_getErrorBoxAsHTML();
+
+        $html .= LF . <<<HTML
           <!-- Login -->
           <form id="login" method="post" action="$formActionURL" name="login">
             <div class="form-group row">
@@ -558,6 +560,38 @@ HTML;
         return $html;
     }
 
+
+    /** Get the errorbox as HTML.
+     * This method uses an AGORA-specific errorbox view (instead of the one from `$this->getMyAreaErrorBox()`).
+     * @return string errorbox view as HTML, or an empty string if there are no errors
+     * @author CommSy Development Group
+     */
+    function _getErrorBoxAsHTML()
+    {
+        $sessionItem = $this->_environment->getSessionItem();
+        if (!$sessionItem->issetValue('error_array')) {
+            return '';
+        }
+
+        $errorArray = $sessionItem->getValue('error_array');
+
+        $params = array();
+        $params['environment'] = $this->_environment;
+        $params['with_modifying_actions'] = true;
+        $params['width'] = '100%';
+
+        $portalID = $this->_environment->getCurrentPortalID();
+        $externalIncludePath = 'external_pages/' . $portalID . '/classes/views';
+
+        include_once($externalIncludePath . '/cs_errorbox_view_agora.php');
+        $errorbox = new cs_errorbox_view_agora($params);
+        unset($params);
+
+        $errorString = implode(BRLF, $errorArray);
+        $errorbox->setText($errorString);
+
+        return LF . $errorbox->asHTML() . LF;
+    }
 
 
     /** Get the content that's shown for logged in CommSy users as HTML.

@@ -991,11 +991,11 @@ HTML;
       return $html;
    }
 
-  /** internal method to create errorbox if there are errors, INTERNAL
-    * this method creates an errorbox with messages form the error array
-    */
-   function _getErrorBoxAsHTML ()
-   {
+    /** internal method to create errorbox if there are errors, INTERNAL
+     * this method creates an errorbox with messages form the error array
+     */
+    function _getErrorBoxAsHTML ()
+    {
         $params = array();
         $params['environment'] = $this->_environment;
         $params['with_modifying_actions'] = true;
