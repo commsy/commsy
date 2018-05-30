@@ -846,21 +846,16 @@ HTML;
    {
         $html  = '';
 
-        // TODO: error box styling
         if (count($this->_error_array) > 0) {
-            $html .= <<<HTML
-          <div class="container container-errorbox">
-            <div {$this->_getErrorBoxAsHTML()}</div>
-          </div>
-HTML;
+            $html .= LF . $this->_getErrorBoxAsHTML() . LF;
         }
 
         $methodType = $this->_action_type;
         $formActionURL = $this->_action;
         $formName = (isset($this->_form_name) && !empty($this->_form_name)) ? $this->_form_name : 'f';
 
-        $html .= <<<HTML
-          <!-- FORM VIEW PLAIN -->
+        $html .= LF . <<<HTML
+          <!-- Form -->
           <form method="$methodType" action="$formActionURL" name="$formName" enctype="multipart/form-data">
 HTML;
 
@@ -999,20 +994,24 @@ HTML;
   /** internal method to create errorbox if there are errors, INTERNAL
     * this method creates an errorbox with messages form the error array
     */
-   function _getErrorBoxAsHTML () {
-      $params = array();
-      $params['environment'] = $this->_environment;
-      $params['with_modifying_actions'] = true;
-      $params['width'] = '100%';
-      $errorbox = $this->_class_factory->getClass(ERRORBOX_VIEW,$params);
-      unset($params);
-      $first = true;
-      $error_string = '';
-      foreach ($this->_error_array as $error) {
-         $error_string .= $error.BRLF;
-      }
-      $errorbox->setText($error_string);
-      return $errorbox->asHTML();
-   }
+   function _getErrorBoxAsHTML ()
+   {
+        $params = array();
+        $params['environment'] = $this->_environment;
+        $params['with_modifying_actions'] = true;
+        $params['width'] = '100%';
+
+        $portalID = $this->_environment->getCurrentPortalID();
+        $externalIncludePath = 'external_pages/' . $portalID . '/classes/views';
+
+        include_once($externalIncludePath . '/cs_errorbox_view_agora.php');
+        $errorbox = new cs_errorbox_view_agora($params);
+        unset($params);
+
+        $errorString = implode(BRLF, $this->_error_array);
+        $errorbox->setText($errorString);
+
+        return $errorbox->asHTML();
+    }
 }
 ?>

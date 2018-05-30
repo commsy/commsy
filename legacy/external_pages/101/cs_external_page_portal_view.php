@@ -457,6 +457,7 @@ HTML;
 
         $html .= LF . <<<HTML
         </div>
+
         <!-- Secondary Content -->
         <div class="col-md-4 offset-md-1">
           <h2 class="text-uppercase">$indicationsTitle</h2>
@@ -528,7 +529,7 @@ HTML;
         $getVars['cs_modus'] = 'password_forget';
         $forgotPasswordLink = ahref_curl($portalID, $currentModule, $currentFunction, $getVars, $forgotPasswordLinkTitle, '', '', '', '', '', '', '', '', 'forgotPassword');
 
-        $html = <<<HTML
+        $html = LF . <<<HTML
           <!-- Login -->
           <form id="login" method="post" action="$formActionURL" name="login">
             <div class="form-group row">
