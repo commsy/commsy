@@ -542,8 +542,8 @@ HTML;
           <!-- Login -->
           <form id="login" method="post" action="$formActionURL" name="login">
             <div class="form-group row">
-              <label for="inputUsername" class="col-sm-2 col-form-label">$accountLabel</label>
-              <div class="col-sm-10">
+              <label for="inputUsername" class="col-sm-2 col-md-3 col-lg-2 col-form-label">$accountLabel</label>
+              <div class="col-sm-10 col-md-9 col-lg-10">
                 <input type="text" class="form-control" id="inputUsername" name="user_id" placeholder="$accountLabel" required />
                 <div class="d-flex justify-content-between">
                   <small id="usernameHelpBlock" class="form-text text-muted">$forgotAccountLink</small>
@@ -552,15 +552,15 @@ HTML;
               </div>
             </div>
             <div class="form-group row">
-              <label for="inputPassword" class="col-sm-2 col-form-label">$passwordLabel</label>
-              <div class="col-sm-10">
+              <label for="inputPassword" class="col-sm-2 col-md-3 col-lg-2 col-form-label">$passwordLabel</label>
+              <div class="col-sm-10 col-md-9 col-lg-10">
                 <input type="password" class="form-control" id="inputPassword" name="password" placeholder="$passwordLabel" required />
                 <small id="passwordHelpBlock" class="form-text text-muted">$forgotPasswordLink</small>
               </div>
             </div>
 {$this->_getAuthSourcesAsHTML()}{$this->_getLoginRedirectAsHTML()}
             <div class="form-group row">
-              <div class="col-sm-10">
+              <div class="col-sm-12">
                 <button type="submit" class="btn btn-primary" name="option" value="$submitButtonTitle">$submitButtonTitle</button>
               </div>
             </div>
@@ -744,8 +744,8 @@ HTML;
         $html = <<<HTML
             <fieldset class="form-group">
               <div class="row">
-                <legend class="col-form-label col-sm-2 pt-0">$sourceLabel</legend>
-                <div class="col-sm-10">
+                <legend class="col-form-label col-sm-2 col-md-3 col-lg-2 pt-0">$sourceLabel</legend>
+                <div class="col-sm-10 col-md-9 col-lg-10">
 HTML;
 
         $defaultAuthSourceID = $this->_getDefaultAuthSourceID();

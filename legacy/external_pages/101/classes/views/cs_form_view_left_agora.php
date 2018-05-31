@@ -751,21 +751,23 @@ HTML;
 
         // element label
         $mainGridWidth = 12;
+        $mdGridWidth = 12;
         if (!empty($firstFormLabel)) {
             $mainGridWidth = $mainGridWidth - 2;
+            $mdGridWidth = $mainGridWidth - 1;
             $additionalLabelCSSClass = (isset($firstFormElement['failure'])) ? ' font-weight-bold' : '';
 
             $requiredElementIndicator = $this->_translator->getMessage('MARK');
             $requiredElementHTML = (!empty($firstFormElement['mandatory'])) ? '<span class="required">' . $requiredElementIndicator . '</span>' : '';
 
             $html .= LF . <<<HTML
-              <label for="$firstFormID" class="col-sm-2 col-form-label$additionalLabelCSSClass">$firstFormLabel$requiredElementHTML</label> 
+              <label for="$firstFormID" class="col-sm-2 col-md-3 col-lg-2 col-form-label$additionalLabelCSSClass">$firstFormLabel$requiredElementHTML</label> 
 HTML;
         }
 
         // form element
         $html .= LF . <<<HTML
-              <div class="col-sm-$mainGridWidth">
+              <div class="col-sm-$mainGridWidth col-md-$mdGridWidth col-lg-$mainGridWidth">
 HTML;
 
         foreach ($form_element_array as $form_element) {
