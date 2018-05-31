@@ -447,7 +447,10 @@ HTML;
             $html .= LF . $this->_getLoginFormAsHTML();
         }
         else {
-            if ($csModus === 'account_forget') {
+            if ($csModus === 'portalmember' || $csModus === 'portalmember2') {
+                $html .= LF . $this->_getNewAccountFormAsHTML($csModus);
+            }
+            elseif ($csModus === 'account_forget') {
                 $html .= LF . $this->_getForgottenAccountFormAsHTML();
             }
             elseif ($csModus === 'password_forget') {
@@ -512,6 +515,7 @@ HTML;
     {
         $accountLabel = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_ACCOUNT_LABEL');
         $forgotAccountLinkTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_ACCOUNT_LINK_TITLE_FORGOT');
+        $createAccountLinkTitle = $this->_translator->getMessage('MYAREA_LOGIN_ACCOUNT_WANT_LINK');
         $passwordLabel = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_PASSWORD_LABEL');
         $forgotPasswordLinkTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_PASSWORD_LINK_TITLE_FORGOT');
         $submitButtonTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SUBMIT_BUTTON_TITLE');
@@ -526,6 +530,9 @@ HTML;
         $getVars['cs_modus'] = 'account_forget';
         $forgotAccountLink = ahref_curl($portalID, $currentModule, $currentFunction, $getVars, $forgotAccountLinkTitle, '', '', '', '', '', '', '', '', 'forgotAccount');
 
+        $getVars['cs_modus'] = 'portalmember';
+        $createAccountLink = ahref_curl($portalID, $currentModule, $currentFunction, $getVars, $createAccountLinkTitle, '', '', '', '', '', '', '', '', 'portalmember');
+
         $getVars['cs_modus'] = 'password_forget';
         $forgotPasswordLink = ahref_curl($portalID, $currentModule, $currentFunction, $getVars, $forgotPasswordLinkTitle, '', '', '', '', '', '', '', '', 'forgotPassword');
 
@@ -538,7 +545,10 @@ HTML;
               <label for="inputUsername" class="col-sm-2 col-form-label">$accountLabel</label>
               <div class="col-sm-10">
                 <input type="text" class="form-control" id="inputUsername" name="user_id" placeholder="$accountLabel" required />
-                <small id="usernameHelpBlock" class="form-text text-muted">$forgotAccountLink</small> 
+                <div class="d-flex justify-content-between">
+                  <small id="usernameHelpBlock" class="form-text text-muted">$forgotAccountLink</small>
+                  <small id="newuserHelpBlock" class="form-text text-muted">$createAccountLink</small>
+                </div>
               </div>
             </div>
             <div class="form-group row">
@@ -637,6 +647,30 @@ HTML;
             </div>
           </form>
 HTML;
+
+        return $html;
+    }
+
+
+    /** Get the CommSy "new account" (or "complete account") form as HTML.
+     * @param array csModus the value of the `cs_modus` parameter from the current request
+     * @return string "new account" (or "complete account") form as HTML
+     * @author CommSy Development Group
+     */
+    public function _getNewAccountFormAsHTML($csModus)
+    {
+        $portalID = $this->_environment->getCurrentPortalID();
+        $externalIncludePath = 'external_pages/' . $portalID . '/classes';
+
+        if ($csModus === 'portalmember') {
+            include_once($externalIncludePath . '/cs_home_member_page_agora.php');
+            $leftPage = new cs_home_member_page_agora($this->_environment);
+        } else {
+            include_once($externalIncludePath . '/cs_home_member2_page_agora.php');
+            $leftPage = new cs_home_member2_page_agora($this->_environment);
+        }
+        $html = $leftPage->execute();
+        unset($leftPage);
 
         return $html;
     }
