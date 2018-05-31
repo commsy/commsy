@@ -535,23 +535,23 @@ HTML;
           <!-- Login -->
           <form id="login" method="post" action="$formActionURL" name="login">
             <div class="form-group row">
-              <label for="inputUsername" class="col-sm-2 col-form-label">$accountLabel</label> 
+              <label for="inputUsername" class="col-sm-2 col-form-label">$accountLabel</label>
               <div class="col-sm-10">
                 <input type="text" class="form-control" id="inputUsername" name="user_id" placeholder="$accountLabel" required />
                 <small id="usernameHelpBlock" class="form-text text-muted">$forgotAccountLink</small> 
               </div>
             </div>
             <div class="form-group row">
-              <label for="inputPassword" class="col-sm-2 col-form-label">$passwordLabel</label> 
+              <label for="inputPassword" class="col-sm-2 col-form-label">$passwordLabel</label>
               <div class="col-sm-10">
                 <input type="password" class="form-control" id="inputPassword" name="password" placeholder="$passwordLabel" required />
-                <small id="passwordHelpBlock" class="form-text text-muted">$forgotPasswordLink</small> 
+                <small id="passwordHelpBlock" class="form-text text-muted">$forgotPasswordLink</small>
               </div>
             </div>
 {$this->_getAuthSourcesAsHTML()}{$this->_getLoginRedirectAsHTML()}
             <div class="form-group row">
               <div class="col-sm-10">
-                <button type="submit" class="btn btn-primary" name="option" value="$submitButtonTitle">$submitButtonTitle</button> 
+                <button type="submit" class="btn btn-primary" name="option" value="$submitButtonTitle">$submitButtonTitle</button>
               </div>
             </div>
           </form>
@@ -621,7 +621,7 @@ HTML;
           <form id="commsy" method="post" action="$formActionURL" name="commsy">
             <fieldset class="form-group">
               <div class="form-row">
-                <legend class="col-form-label font-weight-bold">$headlineLabel</legend> 
+                <legend class="col-form-label font-weight-bold">$headlineLabel</legend>
               </div>
             </fieldset>
             <div class="form-group row">
@@ -710,7 +710,7 @@ HTML;
         $html = <<<HTML
             <fieldset class="form-group">
               <div class="row">
-                <legend class="col-form-label col-sm-2 pt-0">$sourceLabel</legend> 
+                <legend class="col-form-label col-sm-2 pt-0">$sourceLabel</legend>
                 <div class="col-sm-10">
 HTML;
 
@@ -725,7 +725,7 @@ HTML;
             $html .= LF . <<<HTML
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="auth_source" id="radioSource{$i}" value="$authSourceID"$authSourceDefault />
-                    <label class="form-check-label" for="radioSource{$i}">$authSourceName</label> 
+                    <label class="form-check-label" for="radioSource{$i}">$authSourceName</label>
                   </div>
 HTML;
             $authSourceItem = $authSourceList->getNext();
