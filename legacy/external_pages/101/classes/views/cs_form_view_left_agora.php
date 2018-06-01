@@ -583,44 +583,27 @@ HTML;
 
 
 
-   /** get passwordfield as HTML - internal, do not use
-    * this method returns a string contains an passwordfield in HMTL-Code
-    *
-    * @param array value form element: passwordfield, see class cs_form
-    *
-    * @return string passwordfield as HMTL
-    */
-   function _getPasswordAsHTML ($form_element) {
-      $html  = '';
-      $html .= '<input style="font-size:8pt;';
-      if (isset($form_element['width']) and !empty($form_element['width'])) {
-         $html .= ' width:'.$form_element['width'].'em;';
-      }
-      $html .= '" type="password" name="'.$form_element['name'].'"';
-      $html .= ' value="'.$this->_text_as_form($form_element['value']).'"';
-      if (isset($form_element['maxlength']) && !empty($form_element['maxlength'])) {
-         $html .= ' maxlength="'.$form_element['maxlength'].'"';
-      }
-      $html .= ' size="'.$form_element['size'].'"';
-      $html .= ' tabindex="'.$this->_count_form_elements.'"';
-      $html .= ' class="password"';
-      $html .= '/>';
-      // Passwort Securitycheck
-      if($form_element['name'] == 'password'){
-      	$auth_source_manager = $this->_environment->getAuthSourceManager();
-      	$auth_source = $auth_source_manager->_performQuery();
-	      $auth_source_item = $auth_source_manager->getItem($auth_source[0]['item_id']);
-      	#$auth_source_manager = $this->_environment->getAuthSourceManager();
-	      #$auth_source_item = $auth_source_manager->getItem($this->_environment->getCurrentUserItem()->getAuthSource());
-	      if(!empty($auth_source_item) AND $auth_source_item->isPasswordSecureActivated()){
-	      	$html .= '<div id="iSM"><ul class="weak"><li id="iWeak">zu leicht</li>
-				<li id="iMedium">erlaubt</li><li id="iStrong">sicher</li></ul></div>';
-	      }
-	      unset($auth_source_manager);
-	      unset($auth_source_item);
-      }
-      $html .= LF;
-      return $html;
+    /** get passwordfield as HTML - internal, do not use
+     * this method returns a string contains an passwordfield in HMTL-Code
+     *
+     * @param array value form element: passwordfield, see class cs_form
+     *
+     * @return string passwordfield as HMTL
+     */
+    function _getPasswordAsHTML ($form_element)
+    {
+        // TODO: passwort security check
+        $formElementName = $form_element['name'];
+        $formElementID = $formElementName . $form_element['id'];
+        $formElementLabel = $form_element['label'];
+        $formElementValue = $this->_text_as_form($form_element['value']);
+        $formElementRequired = (!empty($form_element['mandatory'])) ? ' required' : '';
+
+        $html = <<<HTML
+                <input type="password" class="form-control" id="$formElementID" name="$formElementName" placeholder="$formElementLabel" value="$formElementValue"$formElementRequired />
+HTML;
+
+        return $html;
    }
 
 
