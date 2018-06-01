@@ -157,6 +157,23 @@ form .required {
   display: none;
 }
 
+/* Password Form Field */
+.password-background {
+  position: relative;
+  top: -37px;
+  margin-bottom: -37px;
+  height: 37px;
+  width: 0;
+  border-radius: 4px;
+  z-index: -1;
+  /* CSS Transitions */
+  -webkit-transition: all .3s ease-in-out;
+  -moz-transition: all .3s ease-in-out;
+  -o-transition: all .3s ease-in-out;
+  -ms-transition: all .3s ease-in-out;
+  transition: all .3s ease-in-out;
+}
+
 /* Error Box */
 .container-errorbox {
 }

@@ -26,6 +26,7 @@ $message["EXTERNALMESSAGES_PORTAL_ACCOUNT_STATUS"]["de"] = "Angemeldet";
 $message["EXTERNALMESSAGES_PORTAL_ACCOUNT_LINK_TITLE_FORGOT"]["de"] = "Kennung vergessen?";
 $message["EXTERNALMESSAGES_PORTAL_PASSWORD_LABEL"]["de"] = "Passwort";
 $message["EXTERNALMESSAGES_PORTAL_PASSWORD_LINK_TITLE_FORGOT"]["de"] = "Passwort vergessen?";
+$message["EXTERNALMESSAGES_PORTAL_PASSWORD_LINK_TITLE_SHOW"]["de"] = "Passwort anzeigen";
 $message["EXTERNALMESSAGES_PORTAL_SUBMIT_BUTTON_TITLE"]["de"] = "Anmelden";
 $message["EXTERNALMESSAGES_PORTAL_LOGGEDIN_SUBMIT_BUTTON_TITLE"]["de"] = "Persönlicher Bereich";
 $message["EXTERNALMESSAGES_PORTAL_INDICATIONS_TITLE"]["de"] = "Hinweise";

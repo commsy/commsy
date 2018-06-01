@@ -592,16 +592,33 @@ HTML;
      */
     function _getPasswordAsHTML ($form_element)
     {
-        // TODO: passwort security check
         $formElementName = $form_element['name'];
-        $formElementID = $formElementName . $form_element['id'];
+
+        // NOTE: for the default password field, we use a fixed `id="password"` attribute to have it work with corresponding CSS and JavaScript (see "passwort strength" below)
+        $formElementID = ($formElementName === 'password') ? $formElementName : $formElementName . $form_element['id'];
+        $additionalCSSClass = ($formElementName === 'password') ? ' bg-transparent' : '';
+
         $formElementLabel = $form_element['label'];
         $formElementValue = $this->_text_as_form($form_element['value']);
         $formElementRequired = (!empty($form_element['mandatory'])) ? ' required' : '';
+        $showPasswordLinkTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_PASSWORD_LINK_TITLE_SHOW');
 
         $html = <<<HTML
-                <input type="password" class="form-control" id="$formElementID" name="$formElementName" placeholder="$formElementLabel" value="$formElementValue"$formElementRequired />
+                <input type="password" class="form-control$additionalCSSClass" id="$formElementID" name="$formElementName" placeholder="$formElementLabel" value="$formElementValue"$formElementRequired />
 HTML;
+
+        // passwort strength
+        // TODO: instead use CommSy's own "traffic light" system for a passwort security check?
+        if ($formElementName === 'password') {
+            $html .= LF . <<<HTML
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/1.0/zxcvbn-async.min.js"></script>
+                <div class="password-background"></div>
+                <small id="{$formElementID}HelpBlock" class="d-flex justify-content-between form-text text-muted">
+                  <a class="show-password" style="display: none" href="">$showPasswordLinkTitle</a>
+                  <span class="strength"></span>
+                </small> 
+HTML;
+        }
 
         return $html;
    }
@@ -629,7 +646,7 @@ HTML;
 HTML;
 
         if (!empty($formElementDescription)) {
-            $html = <<<HTML
+            $html .= LF . <<<HTML
                 <small id="{$formElementID}HelpBlock" class="form-text text-muted"><$formElementDescription</small> 
 HTML;
         }
