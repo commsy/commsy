@@ -610,8 +610,8 @@ HTML;
      */
     public function _getLoggedInContentAsHTML()
     {
-        // TODO: properly handle the root user (submitting the primary form button as root should lead to `/room/<ID>` -->> what is <ID>?)
-
+        global $symfonyContainer;
+        $symfonyTranslatorService = $symfonyContainer->get('translator');
         $portalID = $this->_environment->getCurrentPortalID();
         $getVars = $this->_environment->getCurrentParameterArray();
 
@@ -621,10 +621,14 @@ HTML;
 
         $headlineLabel = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_ACCOUNT_STATUS');
         $dashboardButtonTitle = ($currentUserOwnRoom) ? $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LOGGEDIN_SUBMIT_BUTTON_TITLE') : $this->_translator->getMessage('SERVER_PORTAL_OVERVIEW');
+        $allRoomsTitle = $symfonyTranslatorService->trans('All rooms', [], 'room');
         $logoutButtonTitle = $this->_translator->getMessage('MYAREA_LOGOUT');
 
-        $formActionURL = ($currentUserOwnRoom) ? "/dashboard/" . $currentUserOwnRoom->getItemID() : curl(0, 'home', 'index', $getVars);
-        $logoutURL = ($currentUserOwnRoom) ? "/room/" . $currentUserOwnRoom->getItemID() . "/logout" : curl($portalID, 'context', 'logout', $getVars);
+        // TODO: use Symfony router to create URLs
+        $contextID = ($currentUserOwnRoom) ? $currentUserOwnRoom->getItemID() : $portalID;
+        $formActionURL = ($currentUserOwnRoom) ? "/dashboard/" . $contextID : curl(0, 'home', 'index', $getVars);
+        $allRoomsURL = "/room/" . $contextID . "/all";
+        $logoutURL = ($currentUserOwnRoom) ? "/room/" . $contextID . "/logout" : curl($portalID, 'context', 'logout', $getVars);
 
         $html = <<<HTML
           <!-- Content For Logged In Users -->
@@ -642,6 +646,7 @@ HTML;
             <div class="form-group row">
               <div class="col">
                 <button type="submit" class="btn btn-primary" name="option">$dashboardButtonTitle</button>
+                <a href="$allRoomsURL" class="btn text-dark">$allRoomsTitle</a>
                 <a href="$logoutURL" class="btn">$logoutButtonTitle</a>
               </div>
             </div>
