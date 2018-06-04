@@ -113,17 +113,18 @@ class cs_form_view_left_agora extends cs_form_view_left {
     *
     * @return string headline as HMTL
     */
-   function _getHeadLineAsHTML ($form_element)
+   function _getHeadLineAsHTML ($form_element, $isBold = true)
    {
         // NOTE: ATM, this method doesn't support $form_element['right'] (class="form_actions"); see `cs_form_view_left.php->_getHeadLineAsHTML()`
 
         $headlineLabel = $form_element['label'];
         $headlineDescription = $this->_text_as_html_short($form_element['description']);
+        $additionalCSSClass = ($isBold) ? ' font-weight-bold' : '';
 
         $html = LF . <<<HTML
             <fieldset class="form-group">
               <div class="form-row">
-                <legend class="col-form-label font-weight-bold">$headlineLabel</legend> 
+                <legend class="col-form-label$additionalCSSClass">$headlineLabel</legend> 
 HTML;
 
         if (!empty($headlineDescription)) {
@@ -916,10 +917,12 @@ HTML;
       }
 
         // now get the html code
-        $bool = true;
         foreach ($form_element_array as $form_element) {
-            if (!isset($form_element[0]['type']) and $form_element['type'] == 'headline') {
-                $html .= $this->_getHeadLineAsHTML($form_element);
+            if (!isset($form_element[0]['type']) && $form_element['type'] === 'headline') {
+                $html .= $this->_getHeadLineAsHTML($form_element, true);
+            } elseif (!isset($form_element[0]['type']) && $form_element['type'] === 'text' && !empty($form_element['label']) && empty($form_element['value'])) {
+                // treat text with a label but no value as a headline (which spans the entire grid)
+                $html .= $this->_getHeadLineAsHTML($form_element, $form_element['isbold']);
             } else {
                 $html .= $this->_getFormElementAsHTML($form_element);
             }
