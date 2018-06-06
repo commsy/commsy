@@ -1282,7 +1282,11 @@ class UserController extends Controller
                 $showPortalConfigurationLink = true;
             }
         }
-        
+
+        // NOTE: getRelatedPortalUserItem() sets some limits which need to get reset again before feedAction gets called
+        $userManager = $legacyEnvironment->getUserManager();
+        $userManager->resetLimits();
+
         return [
             'privateRoomItem' => $privateRoomItem,
             'count' => sizeof($currentClipboardIds),
