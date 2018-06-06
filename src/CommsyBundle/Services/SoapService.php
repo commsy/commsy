@@ -781,6 +781,61 @@ class SoapService
 
         return $xml;
     }
+
+    /**
+     * Returns list of announcements
+     *
+     * @param string $sessionId The session id
+     * @param integer $contextId The context id
+     * @param integer $validTimestamp Valid timestamp
+     *
+     * @throws \SoapFault
+     *
+     * @return string
+     */
+    public function getAnnouncementsInRange($sessionId, $contextId, $validTimestamp)
+    {
+        if (!$this->isSessionValid($sessionId)) {
+            throw new \SoapFault('ERROR', 'given session id is invalid!');
+        }
+
+        $validDate = date("Y-m-d H:i:s", $validTimestamp);
+
+        $announcementManager = $this->legacyEnvironment->getAnnouncementManager();
+        $announcementManager->setContextLimit($contextId);
+        $announcementManager->showNoNotActivatedEntries();
+        $announcementManager->setDateLimit($validDate);
+
+        $announcementManager->select();
+        $announcementList = $announcementManager->get();
+        $xml = "<announcements_list>\n";
+        $announcementItem = $announcementList->getFirst();
+
+        while ($announcementItem) {
+            $xml .= "<announcement_item>\n";
+
+            $xml .= "<announcement_id><![CDATA[".$announcementItem->getItemID()."]]></announcement_id>\n";
+
+            $tempTitle = $announcementItem->getTitle();
+            $tempTitle = $this->prepareText($tempTitle);
+            $xml .= "<announcement_title><![CDATA[".$tempTitle."]]></announcement_title>\n";
+
+            $tempDescription = $announcementItem->getDescription();
+            $tempDescription = $this->prepareText($tempDescription);
+            $xml .= "<announcement_description><![CDATA[".$tempDescription."]]></announcement_description>\n";
+
+            $xml .= "<announcement_ending_date><![CDATA[".$announcementItem->getSecondDateTime()."]]></announcement_ending_date>\n";
+
+            $xml .= "</announcement_item>\n";
+
+            $announcementItem = $announcementList->getNext();
+        }
+
+        $xml .= "</announcements_list>";
+
+        return $xml;
+    }
+
 //
 //    public function getDateDetails($session_id, $context_id, $item_id) {
 //        include_once('functions/development_functions.php');
@@ -3759,47 +3814,6 @@ class SoapService
 //        return $xml;
 //    }
 //
-//    public function getAnnouncementsinRange($sessionId, $contextId, $validTimestamp) {
-//        include_once('functions/development_functions.php');
-//        if($this->_isSessionValid($sessionId)) {
-//            $validDate = date("Y-m-d H:i:s", $validTimestamp);
-//
-//            $announcementManager = $this->_environment->getAnnouncementManager();
-//            $announcementManager->setContextLimit($contextId);
-//            $announcementManager->showNoNotActivatedEntries();
-//            $announcementManager->setDateLimit($validDate);
-//
-//            $announcementManager->select();
-//            $announcementList = $announcementManager->get();
-//            $xml = "<announcements_list>\n";
-//            $announcementItem = $announcementList->getFirst();
-//
-//            while ($announcementItem) {
-//                $xml .= "<announcement_item>\n";
-//
-//                $xml .= "<announcement_id><![CDATA[".$announcementItem->getItemID()."]]></announcement_id>\n";
-//
-//                $tempTitle = $announcementItem->getTitle();
-//                $tempTitle = $this->prepareText($tempTitle);
-//                $xml .= "<announcement_title><![CDATA[".$tempTitle."]]></announcement_title>\n";
-//
-//                $tempDescription = $announcementItem->getDescription();
-//                $tempDescription = $this->prepareText($tempDescription);
-//                $xml .= "<announcement_description><![CDATA[".$tempDescription."]]></announcement_description>\n";
-//
-//                $xml .= "<announcement_ending_date><![CDATA[".$announcementItem->getSecondDateTime()."]]></announcement_ending_date>\n";
-//
-//                $xml .= "</announcement_item>\n";
-//
-//                $announcementItem = $announcementList->getNext();
-//            }
-//
-//            $xml .= "</announcements_list>";
-//            $xml = $this->_encode_output($xml);
-//
-//            return $xml;
-//        }
-//    }
 //
 //    // Dates
 //
