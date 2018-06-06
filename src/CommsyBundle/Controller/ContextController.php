@@ -151,20 +151,6 @@ class ContextController extends Controller
                     // no authorization is needed at all or the code was correct
                     $newUser->makeUser();
                     $isRequest = false;
-
-                    // link user with group "all"
-                    $groupManager = $legacyEnvironment->getLabelManager();
-                    $groupManager->setExactNameLimit('ALL');
-                    $groupManager->setContextLimit($roomItem->getItemID());
-                    $groupManager->select();
-                    $groupList = $groupManager->get();
-
-                    /** @var \cs_group_item $group */
-                    $group = $groupList->getFirst();
-
-                    if ($group) {
-                        $group->addMember($newUser);
-                    }
                 }
 
                 if ($roomItem->getAGBStatus()) {
@@ -176,6 +162,20 @@ class ContextController extends Controller
                 if (!$userTestItem && !$newUser->isReallyGuest() && !$newUser->isRoot()) {
                     $newUser->save();
                     $newUser->setCreatorID2ItemID();
+
+                    // link user with group "all"
+                    $groupManager = $legacyEnvironment->getLabelManager();
+                    $groupManager->setExactNameLimit('ALL');
+                    $groupManager->setContextLimit($roomItem->getItemID());
+                    $groupManager->select();
+                    $groupList = $groupManager->get();
+
+                    /** @var \cs_group_item $group */
+                    $systemGroupAll = $groupList->getFirst();
+
+                    if ($systemGroupAll) {
+                        $systemGroupAll->addMember($newUser);
+                    }
 
                     // save task
                     if ($isRequest) {
