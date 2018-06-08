@@ -34,17 +34,6 @@
 
             let element = $this.element[0];
 
-            // look for div.cs-edit and show on mouseover
-            $(element)
-                .mouseover(function() {
-                    $(this).find('div.cs-edit').toggleClass('uk-invisible', false);
-                    $(this).find('div.cs-delete').toggleClass('uk-invisible', false);
-                })
-                .mouseout(function() {
-                    $(this).find('div.cs-edit').toggleClass('uk-invisible', true);
-                    $(this).find('div.cs-delete').toggleClass('uk-invisible', true);
-                });
-
             $this.registerArticleEvents(element);
 
             if ($this.options.draft == '1') {

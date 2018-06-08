@@ -22,14 +22,14 @@
                 {% if item.type != "discarticle" %}
                     {# edit action #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
-                        <div id="{{ item.type }}-files-edit" class="uk-display-inline cs-edit uk-invisible {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
+                        <div id="{{ item.type }}-files-edit" class="uk-display-inline cs-edit {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
                             <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                         </div>
                     {% endif %}
                 {% else %}
                     {% if not draft %}
                         {% if is_granted('ITEM_EDIT', item.itemId) %}
-                            <div class="uk-display-inline cs-edit uk-invisible {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
+                            <div class="uk-display-inline cs-edit {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
                                 <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                             </div>
                         {% endif %}
@@ -38,10 +38,11 @@
 
 
                 {# toggle action #}
+                <div class="uk-display-inline cs-toggle-icon uk-margin-left">
                 {% if not fileArray is empty %}
-                    <div class="uk-display-inline cs-toggle-icon uk-margin-left">
-                        <a class="cs-toggle" data-uk-toggle="{target:'.toggle-files-{{ item.itemId }}'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
-                    </div>
+                    <a class="cs-toggle" data-uk-toggle="{target:'.toggle-files-{{ item.itemId }}'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+                {% else  %}
+                    <i class="uk-icon-small uk-icon-hover uk-icon-chevron-down uk-invisible"></i>
                 {% endif %}
            </div>
         </div>
@@ -350,14 +351,14 @@
                 {# edit action #}
                 {% if item.type != "discarticle" %}
                     {% if edit and is_granted('ITEM_EDIT', item.itemId) %}
-                        <div id="{{ item.type }}-description-edit" class="uk-display-inline cs-edit uk-invisible {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
+                        <div id="{{ item.type }}-description-edit" class="uk-display-inline cs-edit {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
                             <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                         </div>
                     {% endif %}
                 {% else %}
                     {% if not draft %}
                         {% if edit and is_granted('ITEM_EDIT', item.itemId) %}
-                            <div class="uk-display-inline cs-edit uk-invisible {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
+                            <div class="uk-display-inline cs-edit {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
                                 <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                             </div>
                         {% endif %}
@@ -366,10 +367,14 @@
 
                 {# toggle action #}
                 {% if not content is empty %}
-                    <div class="uk-display-inline cs-toggle-icon uk-margin-left uk-invisible" data-cs-unhide-collapsed="{src: '.toggle-{{ title }}-{{ item.itemId }}'}">
+                    <div class="uk-display-inline cs-toggle-icon uk-margin-left" data-cs-unhide-collapsed="{src: '.toggle-{{ title }}-{{ item.itemId }}'}">
                         <a class="cs-toggle" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}', cls: 'cs-toggle-full'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}">
                             <i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i>
                         </a>
+                    </div>
+                {% else %}
+                    <div class="uk-display-inline cs-toggle-icon uk-margin-left">
+                        <i class="uk-icon-small uk-icon-hover uk-icon-chevron-down uk-invisible"></i>
                     </div>
                 {% endif %}
             </div>
@@ -384,7 +389,7 @@
                     {{ content|commsyMarkup|raw }}
                 </div>
 
-                <a class="uk-invisible" href="#" data-cs-unhide-collapsed="{src: '.toggle-{{ title }}-{{ item.itemId }}'}" data-cs-readmore>
+                <a href="#" data-cs-unhide-collapsed="{src: '.toggle-{{ title }}-{{ item.itemId }}'}" data-cs-readmore>
                     <span class="cs-readmoreless">{{- "read more"|trans({}) -}}</span>
                     <span class="cs-readmoreless uk-hidden">{{- "read less"|trans({}) -}}</span>
                 </a>
