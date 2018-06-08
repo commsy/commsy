@@ -265,7 +265,9 @@
                                                 </div>
                                             </div>
                                             <span>
-                                               <!-- <i class="uk-icon-send-o"></i> --><a href="mailto:">{{'send mail to group'|trans({}) }}</a>
+                                            <a href="{{ path('commsy_item_send', {'roomId': roomId, 'itemId': group.itemId}) }}">
+                                                {{'send mail to group'|trans({}) }}
+                                            </a>
                                             </span><br/>
                                             <div class="uk-flex uk-flex-space-between">
                                                 <div>
