@@ -36,7 +36,7 @@ class FixGroupAllUserRelation implements DatabaseCheck
 
     public function getPriority()
     {
-        return 100;
+        return 199;
     }
 
     public function findProblems(SymfonyStyle $io)
