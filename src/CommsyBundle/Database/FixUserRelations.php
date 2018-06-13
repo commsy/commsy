@@ -78,7 +78,7 @@ class FixUserRelations implements DatabaseCheck
 
                 if ($missingRelations->rowCount() > 0) {
                     foreach ($missingRelations as $missingRelation) {
-                        $io->warning('Missing user relations found - "' . $table->getName() . '" - "' . $column->getName() . '" - user with id "' . $missingRelation['missingId'] . '" not present');
+                        $io->warning('Missing user relation found - "' . $table->getName() . '" - "' . $column->getName() . '" - user with id "' . $missingRelation['missingId'] . '" not present');
 
                         $problems[] = new DatabaseProblem([
                             'table' => $table->getName(),
