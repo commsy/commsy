@@ -429,7 +429,6 @@ HTML;
         $siteShortTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_SHORT_TITLE');
         $loginTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LOGIN_TITLE');
         $contentTitle = ($loggedIn) ? $siteShortTitle : $siteShortTitle . "-" . $loginTitle;
-        $indicationsTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_INDICATIONS_TITLE');
 
         $html = <<<HTML
     <!-- Content -->
@@ -458,18 +457,13 @@ HTML;
             }
         }
 
-        $html .= LF . <<<HTML
-        </div>
+        $secondaryContent = $this->_getSecondaryContentAsHTML();
 
-        <!-- Secondary Content -->
-        <div class="col-md-4 offset-md-1">
-          <h2 class="text-uppercase">$indicationsTitle</h2>
-{$this->_getServerAndPortalNewsAsHTML()}
-        </div>
+        $html .= LF . <<<HTML
+        </div>$secondaryContent
       </div>
     </div>
 HTML;
-
         return $html;
     }
 
@@ -717,6 +711,58 @@ HTML;
     }
 
 
+    /** Get any secondary content (such as server and/or portal news) as HTML.
+     * @return string secondary content as HTML
+     * @author CommSy Development Group
+     */
+    public function _getSecondaryContentAsHTML()
+    {
+        if ($this->_shouldDisplayServerNews() === false && $this->_shouldDisplayPortalNews() === false) {
+            return '';
+        }
+
+        $indicationsTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_INDICATIONS_TITLE');
+
+        $html = LF . <<<HTML
+
+        <!-- Secondary Content -->
+        <div class="col-md-4 offset-md-1">
+          <h2 class="text-uppercase">$indicationsTitle</h2>
+{$this->_getServerAndPortalNewsAsHTML()}
+        </div>
+HTML;
+
+        return $html;
+    }
+
+
+    /** Returns whether any server news should be displayed.
+     * @return bool true if server news should be displayed, otherwise false
+     * @author CommSy Development Group
+     */
+    public function _shouldDisplayServerNews()
+    {
+        $server = $this->_environment->getServerItem();
+        $currentPortal = $this->_environment->getCurrentPortalItem();
+        $displayNews = $server->showServerNews() && $currentPortal->showNewsFromServer();
+
+        return $displayNews;
+    }
+
+
+    /** Returns whether any news from the current portal should be displayed.
+     * @return bool true if portal news should be displayed, otherwise false
+     * @author CommSy Development Group
+     */
+    public function _shouldDisplayPortalNews()
+    {
+        $currentPortal = $this->_environment->getCurrentPortalItem();
+        $displayNews = $currentPortal->showServerNews();
+
+        return $displayNews;
+    }
+
+
     /** Get any server & portal news as HTML.
      * @return string server & portal news as HTML
      * @author CommSy Development Group
@@ -727,14 +773,14 @@ HTML;
         $currentPortal = $this->_environment->getCurrentPortalItem();
 
         $html = <<<HTML
-          <div id="news">
+          <div class="container container-news">
 HTML;
 
-        if ($server->showServerNews() && $currentPortal->showNewsFromServer()) {
+        if ($this->_shouldDisplayServerNews()) {
             $html .= LF . $this->_getNewsAsHTML($server, $this->_translator->getMessage('COMMON_SERVER_NEWS'));
         }
 
-        if ($currentPortal->showServerNews()) {
+        if ($this->_shouldDisplayPortalNews()) {
             $html .= LF . $this->_getNewsAsHTML($currentPortal, $this->_translator->getMessage('COMMON_PORTAL_NEWS'));
         }
 
@@ -765,10 +811,15 @@ HTML;
         // NOTE: we currently don't display any $newsHeadline
         $html = '';
 
+        $html .= <<<HTML
+            <div class="row bg-light mt-3">
+HTML;
+
         if (!empty($newsTitle)) {
             $newsTitle = $this->_text_as_html_short($newsTitle);
-            $html .= <<<HTML
-            <span class="font-weight-bold">
+            $html .= LF . <<<HTML
+              <div class="col-sm-12 p-2">
+                <span class="font-weight-bold">
 HTML;
 
             if (!empty($newsLinkURL)) {
@@ -782,13 +833,22 @@ HTML;
 
             $html .= <<<HTML
 </span>
+              </div>
 HTML;
         }
 
         if (!empty($newsText)) {
             $newsText = $this->_cleanDataFromTextArea($newsText);
-            $html .= LF . $newsText;
+            $html .= LF . <<<HTML
+              <div class="col-sm-12 p-2">
+                $newsText
+              </div>
+HTML;
         }
+
+        $html .= LF . <<<HTML
+            </div>
+HTML;
 
         return $html;
     }
