@@ -464,7 +464,7 @@ HTML;
         <!-- Secondary Content -->
         <div class="col-md-4 offset-md-1">
           <h2 class="text-uppercase">$indicationsTitle</h2>
-          <p>At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+{$this->_getServerAndPortalNewsAsHTML()}
         </div>
       </div>
     </div>
@@ -712,6 +712,83 @@ HTML;
         $leftPage = new cs_password_forget_page_agora($this->_environment);
         $html = $leftPage->execute();
         unset($leftPage);
+
+        return $html;
+    }
+
+
+    /** Get any server & portal news as HTML.
+     * @return string server & portal news as HTML
+     * @author CommSy Development Group
+     */
+    public function _getServerAndPortalNewsAsHTML()
+    {
+        $server = $this->_environment->getServerItem();
+        $currentPortal = $this->_environment->getCurrentPortalItem();
+
+        $html = <<<HTML
+          <div id="news">
+HTML;
+
+        if ($server->showServerNews() && $currentPortal->showNewsFromServer()) {
+            $html .= LF . $this->_getNewsAsHTML($server, $this->_translator->getMessage('COMMON_SERVER_NEWS'));
+        }
+
+        if ($currentPortal->showServerNews()) {
+            $html .= LF . $this->_getNewsAsHTML($currentPortal, $this->_translator->getMessage('COMMON_PORTAL_NEWS'));
+        }
+
+        $html .= LF . <<<HTML
+          </div>
+HTML;
+
+        return $html;
+    }
+
+
+    /** Get the server or portal news as HTML.
+     * @param object contextItem the server or current portal item whose news shall be returned
+     * @param string newsHeadline the localized headline for the returned news
+     * @return string server or portal news as HTML
+     * @author CommSy Development Group
+     */
+    public function _getNewsAsHTML($contextItem, $newsHeadline)
+    {
+        if (!$contextItem instanceof cs_server_item && !$contextItem instanceof cs_portal_item) {
+            return '';
+        }
+
+        $newsLinkURL = $contextItem->getServerNewsLink();
+        $newsTitle = $contextItem->getServerNewsTitle();
+        $newsText = $contextItem->getServerNewsText();
+
+        // NOTE: we currently don't display any $newsHeadline
+        $html = '';
+
+        if (!empty($newsTitle)) {
+            $newsTitle = $this->_text_as_html_short($newsTitle);
+            $html .= <<<HTML
+            <span class="font-weight-bold">
+HTML;
+
+            if (!empty($newsLinkURL)) {
+                $newsLinkURL = $this->_text_as_html_short($newsLinkURL);
+                $html .= <<<HTML
+<a href="$newsLinkURL" class="text-muted">$newsTitle</a>
+HTML;
+            } else {
+                $html .= $newsTitle;
+            }
+
+            $html .= <<<HTML
+</span>
+HTML;
+        }
+
+        if (!empty($newsText)) {
+            $newsText = $this->_cleanDataFromTextArea($newsText);
+            $html .= LF . $newsText;
+        }
 
         return $html;
     }
