@@ -418,9 +418,6 @@ HTML;
      */
     public function _getContentAsHTML()
     {
-        // TODO: implement the portalmember form (request new account)
-        // TODO: implement the password_forget form
-        // TODO: fetch "Secondary Content"
         // TODO: support guest user
 
         $loggedIn = $this->_isUserLoggedIn(); // `true` if user is logged in on current portal
@@ -439,11 +436,12 @@ HTML;
           <h2 class="text-uppercase">$contentTitle</h2>
 HTML;
 
-        if ($loggedIn) {
-            $html .= LF . $this->_getLoggedInContentAsHTML();
-        }
-        elseif (empty($csModus)) {
-            $html .= LF . $this->_getLoginFormAsHTML();
+        if (empty($csModus)) {
+            if ($loggedIn) {
+                $html .= LF . $this->_getLoggedInContentAsHTML();
+            } else {
+                $html .= LF . $this->_getLoginFormAsHTML();
+            }
         }
         else {
             if ($csModus === 'portalmember' || $csModus === 'portalmember2') {
@@ -454,6 +452,9 @@ HTML;
             }
             elseif ($csModus === 'password_forget') {
                 $html .= LF . $this->_getForgottenPasswordFormAsHTML();
+            }
+            elseif ($csModus === 'password_change') {
+                $html .= LF . $this->_getChangePasswordFormAsHTML();
             }
         }
 
@@ -704,6 +705,24 @@ HTML;
 
         include_once($externalIncludePath . '/cs_password_forget_page_agora.php');
         $leftPage = new cs_password_forget_page_agora($this->_environment);
+        $html = $leftPage->execute();
+        unset($leftPage);
+
+        return $html;
+    }
+
+
+    /** Get the CommSy "change password" form as HTML.
+     * @return string "change password" form as HTML
+     * @author CommSy Development Group
+     */
+    public function _getChangePasswordFormAsHTML()
+    {
+        $portalID = $this->_environment->getCurrentPortalID();
+        $externalIncludePath = 'external_pages/' . $portalID . '/classes';
+
+        include_once($externalIncludePath . '/cs_password_change_page_agora.php');
+        $leftPage = new cs_password_change_page_agora($this->_environment);
         $html = $leftPage->execute();
         unset($leftPage);
 
