@@ -67,11 +67,7 @@ class cs_password_change_form extends cs_rubric_form {
          }
          $this->_form->addPassword('password','',$this->_translator->getMessage('USER_PASSWORD_NEW'),'','','21',true);
          $this->_form->addPassword('password2','',$this->_translator->getMessage('USER_PASSWORD_NEW2'),'','','21',true);
-         if ( !$session_item->issetValue('password_forget_ip') ) {
-            $this->_form->addButtonBar('option',$this->_translator->getMessage('PASSWORD_CHANGE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,5.3,6.2);
-         } else {
-            $this->_form->addButtonBar('option',$this->_translator->getMessage('PASSWORD_CHANGE_BUTTON'),'','','','','',false,5.3,6.2);
-         }
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('PASSWORD_CHANGE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,5.3,6.2);
       } else {
          //we mustn't edit pw
          if ( isset($this->_auth_source) ) {

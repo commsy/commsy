@@ -47,6 +47,15 @@ class cs_password_change_page extends cs_left_page {
       if ( !empty($this->_command)
            and isOption($this->_command, $this->_translator->getMessage('COMMON_CANCEL_BUTTON'))
          ) {
+         // delete session
+         $session = $this->_environment->getSessionItem();
+         if (isset($session)) {
+            $session_manager = $this->_environment->getSessionManager();
+            $session_manager->delete($session->getSessionID(), true);
+            $this->_environment->setSessionItem(null);
+            $session->reset(); // so the session will not be saved at redirect
+         }
+
          $this->_redirect_back();
       }
 
