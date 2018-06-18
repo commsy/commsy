@@ -346,6 +346,16 @@ class UserController extends Controller
                         $userService->updateAllGroupStatus($user, $roomId);
                     }
 
+                    $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                    $readerManager = $legacyEnvironment->getReaderManager();
+                    $noticedManager = $legacyEnvironment->getNoticedManager();
+                    foreach ($users as $user) {
+                        $itemId = $user->getItemID();
+                        $versionId = $user->getVersionID();
+                        $readerManager->markRead($itemId, $versionId);
+                        $noticedManager->markNoticed($itemId, $versionId);
+                    }
+
                     if ($formData['inform_user']) {
                         $this->sendUserInfoMail($formData['userIds'], $formData['status']);
                     }
@@ -1264,13 +1274,27 @@ class UserController extends Controller
         if ($sessionItem->issetValue('clipboard_ids')) {
             $currentClipboardIds = $sessionItem->getValue('clipboard_ids');
         }
-        
+
+        $showPortalConfigurationLink = false;
+        $currentPortalUserItem = $currentUserItem->getRelatedPortalUserItem();
+        if ($currentPortalUserItem) {
+            if ($currentPortalUserItem->isModerator()) {
+                $showPortalConfigurationLink = true;
+            }
+        }
+
+        // NOTE: getRelatedPortalUserItem() sets some limits which need to get reset again before feedAction gets called
+        $userManager = $legacyEnvironment->getUserManager();
+        $userManager->resetLimits();
+
         return [
             'privateRoomItem' => $privateRoomItem,
             'count' => sizeof($currentClipboardIds),
             'roomId' => $legacyEnvironment->getCurrentContextId(),
             'supportLink' => $portalItem->getSupportPageLink(),
             'tooltip' => $portalItem->getSupportPageLinkTooltip(),
+            'showPortalConfigurationLink' => $showPortalConfigurationLink,
+            'portal' => $portalItem,
         ];
     }
 

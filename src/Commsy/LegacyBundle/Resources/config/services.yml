@@ -79,7 +79,7 @@ services:
 
     commsy_legacy.reader_service:
         class: Commsy\LegacyBundle\Utils\ReaderService
-        arguments: ['@commsy_legacy.environment']
+        arguments: ['@commsy_legacy.environment', '@commsy_legacy.item_service']
 
     commsy_legacy.date_service:
         class: Commsy\LegacyBundle\Utils\DateService

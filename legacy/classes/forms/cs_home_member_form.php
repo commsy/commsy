@@ -122,7 +122,7 @@ class cs_home_member_form extends cs_rubric_form {
            and $this->_count_auth_source_list_add_account == 1 ) {
          $this->_form->addHidden('auth_source',$this->_auth_source_array[0]['value']);
       } elseif ( $this->_count_auth_source_list_enabled > 1 ) {
-         $this->_form->addSelect('auth_source', $this->_auth_source_array, $this->_default_auth_source_entry, $this->_translator->getMessage('USER_AUTH_SOURCE'), '', 1 , false, false, false, '', '', '', '', 13.4);
+         $this->_form->addSelect('auth_source', $this->_auth_source_array, $this->_default_auth_source_entry, $this->_translator->getMessage('MYAREA_USER_AUTH_SOURCE_SHORT'), '', 1 , false, false, false, '', '', '', '', 13.4);
       }
       if ( $this->_count_auth_source_list_enabled == 1
            and $this->_count_auth_source_list_add_account == 0 ) {

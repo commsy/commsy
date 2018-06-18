@@ -6,18 +6,17 @@
  * Time: 16:23
  */
 
-namespace CommsyBundle\Command;
+namespace CommsyBundle\Database;
 
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
-use Doctrine\ORM\EntityManager;
+use CommsyBundle\Database\Resolve\AddMemberToGroupResolution;
+use CommsyBundle\Entity\Portal;
+use CommsyBundle\Entity\Room;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
-class FixGroupAllUserRelation extends Command
+class FixGroupAllUserRelation implements DatabaseCheck
 {
     /**
      * @var EntityManagerInterface
@@ -33,19 +32,14 @@ class FixGroupAllUserRelation extends Command
     {
         $this->em = $em;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
-
-        parent::__construct();
     }
 
-    protected function configure()
+    public function getPriority()
     {
-        $this
-            ->setName('commsy:db:fix-user-group-all')
-            ->setDescription('Ensures every user is present in the system group "ALL"')
-        ;
+        return 199;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function findProblems(SymfonyStyle $io)
     {
         // find all active portals
         $qb = $this->em->createQueryBuilder()
@@ -59,8 +53,11 @@ class FixGroupAllUserRelation extends Command
         $groupManager = $this->legacyEnvironment->getGroupManager();
         $userManager = $this->legacyEnvironment->getUserManager();
 
+        $problems = [];
+
+        /** @var Portal[] $portals */
         foreach ($portals as $portal) {
-            $output->writeln('<info>inspecting relations between users and system group "ALL" in portal ' . $portal->getTitle() . '(' . $portal->getItemId() . ')</info>');
+            $io->text('Inspecting relations between users and system group "ALL" in portal ' . $portal->getTitle() . '(' . $portal->getItemId() . ')');
 
             $qb = $this->em->createQueryBuilder()
                 ->select('r')
@@ -73,15 +70,20 @@ class FixGroupAllUserRelation extends Command
                 ->setParameter('roomType', 'project')
                 ->getQuery();
 
+            /** @var Room[] $projectRooms */
             $projectRooms = $qb->execute();
 
             foreach ($projectRooms as $projectRoom) {
-                $output->writeln('<info>processing room ' . $projectRoom->getTitle() . '(' . $projectRoom->getItemId() . ')</info>');
+                if ($io->isVerbose()) {
+                    $io->text('Processing room "' . $projectRoom->getTitle() . '" - ' . $projectRoom->getItemId());
+                }
 
                 // get group "ALL"
                 $groupManager->reset();
                 $groupManager->setContextLimit($projectRoom->getItemId());
+                /** @var \cs_group_item $groupAll */
                 $groupAll = $groupManager->getItemByName('ALL');
+                $groupAllMembers = $groupAll->getMemberItemList();
 
                 // get list of users
                 $userManager->reset();
@@ -91,28 +93,34 @@ class FixGroupAllUserRelation extends Command
                 $userList = $userManager->get();
 
                 if ($userList && $userList->isNotEmpty()) {
-                    $numUnrelated = 0;
-
                     // iterate users
                     /** @var \cs_user_item $userItem */
                     $userItem = $userList->getFirst();
                     while ($userItem) {
                         if (!$userItem->isRoot()) {
-                            if (!$userItem->isInGroup($groupAll)) {
-                                $userItem->setGroup($groupAll);
-                                $userItem->setChangeModificationOnSave(false);
-                                $userItem->save();
+                            if (!$groupAllMembers->inList($userItem)) {
+                                $io->warning('Missing user relation found');
 
-                                $numUnrelated++;
+                                $problems[] = new DatabaseProblem([
+                                    'user' => $userItem,
+                                    'group' => $groupAll,
+                                ]);
                             }
                         }
 
                         $userItem = $userList->getNext();
                     }
-
-                    $output->writeln('<info>' . $numUnrelated . ' relations added</info>');
                 }
             }
         }
+
+        return $problems;
+    }
+
+    public function getResolutionStrategies()
+    {
+        return [
+            new AddMemberToGroupResolution($this->legacyEnvironment),
+        ];
     }
 }

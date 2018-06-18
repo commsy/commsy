@@ -89,12 +89,18 @@ class DashboardController extends Controller
             $contextArray[$calendar->getContextId()][] = $roomItemCalendar->getTitle();
         }
 
+        // announcements
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+        $serverItem = $legacyEnvironment->getServerItem();
+
         return array(
             'roomItem' => $roomItem,
             'dashboardLayout' => $roomItem->getDashboardLayout(),
             'iCal' => $iCal,
             'calendars' => $calendars,
-            'contextArray' => $contextArray
+            'contextArray' => $contextArray,
+            'portal' => $portalItem,
+            'server' => $serverItem,
         );
     }
 
@@ -125,12 +131,7 @@ class DashboardController extends Controller
                 $feedItems[] = $item;
 
                 $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
-                $reader = $readerService->getLatestReaderForUserByID($item->getItemId(), $relatedUser->getItemId());
-                if (empty($reader)) {
-                    $readerList[$item->getItemId()] = 'new';
-                } elseif ($reader['read_date'] < $item->getModificationDate()) {
-                    $readerList[$item->getItemId()] = 'changed';
-                }
+                $readerList[$item->getItemId()] = $readerService->getChangeStatusForUserByID($item->getItemId(), $relatedUser->getItemId());
             }
         }
 

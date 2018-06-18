@@ -22,6 +22,9 @@ class TodoService
         
         $this->stepManager = $this->legacyEnvironment->getStepManager();
         $this->stepManager->reset();
+
+        $this->noticedManager = $this->legacyEnvironment->getNoticedManager();
+        $this->readerManager = $this->legacyEnvironment->getReaderManager();
     }
 
     public function getListTodos($roomId, $max = NULL, $start = NULL, $sort = NULL)
@@ -137,5 +140,51 @@ class TodoService
     public function hideCompletedEntries()
     {
         $this->todoManager->setStatusLimit(4);
+    }
+
+    /** Marks the Todo item with the given ID as read and noticed.
+     * @param integer $itemId the identifier of the Todo item to be marked as read and noticed
+     * @param bool $markSteps whether the Todo item's Todo steps should be also marked as read and noticed
+     * @param bool $markAnnotations whether the Todo item's annotations should be also marked as read and noticed
+     */
+    public function markTodoReadAndNoticed($itemId, $markSteps = true, $markAnnotations = true)
+    {
+        if (empty($itemId)) {
+            return;
+        }
+
+        // todo item
+        $item = $this->getTodo($itemId);
+        $versionId = $item->getVersionID();
+        $this->noticedManager->markNoticed($itemId, $versionId);
+        $this->readerManager->markRead($itemId, $versionId);
+
+        // steps
+        if ($markSteps === true) {
+            $stepList = $item->getStepItemList();
+            if (!empty($stepList)) {
+                $stepItem = $stepList->getFirst();
+                while ($stepItem) {
+                    $stepItemID = $stepItem->getItemID();
+                    $this->noticedManager->markNoticed($stepItemID, $versionId);
+                    $this->readerManager->markRead($stepItemID, $versionId);
+                    $stepItem = $stepList->getNext();
+                }
+            }
+        }
+
+        // annotations
+        if ($markAnnotations === true) {
+            $annotationList = $item->getAnnotationList();
+            if (!empty($annotationList)) {
+                $annotationItem = $annotationList->getFirst();
+                while ($annotationItem) {
+                    $annotationItemID = $annotationItem->getItemID();
+                    $this->noticedManager->markNoticed($annotationItemID, $versionId);
+                    $this->readerManager->markRead($annotationItemID, $versionId);
+                    $annotationItem = $annotationList->getNext();
+                }
+            }
+        }
     }
 }

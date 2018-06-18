@@ -248,37 +248,11 @@ class TodoController extends Controller
         $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
 
         $result = [];
-        
-        if ($action == 'markread') {
-	        $todoService = $this->get('commsy_legacy.todo_service');
-	        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $noticedManager = $legacyEnvironment->getNoticedManager();
-            $readerManager = $legacyEnvironment->getReaderManager();
-            foreach ($selectedIds as $id) {
-    	        $item = $todoService->getTodo($id);
-    	        $versionId = $item->getVersionID();
-    	        $noticedManager->markNoticed($id, $versionId);
-    	        $readerManager->markRead($id, $versionId);
-    	        
-                $stepList =$item->getStepItemList();
-                if ( !empty($stepList) ){
-                    $stepItem = $stepList->getFirst();
-                    while($stepItem){
-                       $noticedManager->markNoticed($stepItem->getItemID(),$versionId);
-                       $readerManager->markRead($stepItem->getItemID(),$versionId);
-                       $stepItem = $stepList->getNext();
-                    }
-                }
+        $todoService = $this->get('commsy_legacy.todo_service');
 
-    	        $annotationList =$item->getAnnotationList();
-    	        if ( !empty($annotationList) ){
-    	            $annotationItem = $annotationList->getFirst();
-    	            while($annotationItem){
-    	               $noticedManager->markNoticed($annotationItem->getItemID(),$versionId);
-    	               $readerManager->markRead($annotationItem->getItemID(),$versionId);
-    	               $annotationItem = $annotationList->getNext();
-    	            }
-    	        }
+        if ($action == 'markread') {
+            foreach ($selectedIds as $id) {
+                $todoService->markTodoReadAndNoticed($id);
 	        }
 	        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'copy') {
@@ -328,49 +302,47 @@ class TodoController extends Controller
     
             return $response;
         } else if ($action == 'delete') {
-            $todoService = $this->get('commsy_legacy.todo_service');
   		    foreach ($selectedIds as $id) {
   		        $item = $todoService->getTodo($id);
   		        $item->delete();
   		    }
            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> '.$translator->transChoice('%count% deleted entries',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'markpending') {
-            $todoService = $this->get('commsy_legacy.todo_service');
             foreach ($selectedIds as $id) {
                 $item = $todoService->getTodo($id);
                 $item->setStatus(1);
                 $item->save();
+                $todoService->markTodoReadAndNoticed($id, false, false);
             }
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('Set status of %count% entries to pending', count($selectedIds), array('%count%' => count($selectedIds)), "messages");
         } else if ($action == 'markinprogress') {
-            $todoService = $this->get('commsy_legacy.todo_service');
             foreach ($selectedIds as $id) {
                 $item = $todoService->getTodo($id);
                 $item->setStatus(2);
                 $item->save();
+                $todoService->markTodoReadAndNoticed($id, false, false);
             }
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('Set status of %count% entries to in progress', count($selectedIds), array('%count%' => count($selectedIds)), "messages");
         } else if ($action == 'markdone') {
-            $todoService = $this->get('commsy_legacy.todo_service');
             foreach ($selectedIds as $id) {
                 $item = $todoService->getTodo($id);
                 $item->setStatus(3);
                 $item->save();
+                $todoService->markTodoReadAndNoticed($id, false, false);
             }
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('Set status of %count% entries to done', count($selectedIds), array('%count%' => count($selectedIds)), "messages");
         } else {
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             $roomService = $this->get('commsy_legacy.room_service');
             $roomItem = $roomService->getRoomItem($roomId);
             $statusArray = $roomItem->getExtraToDoStatusArray();
             
             $tempAction = str_ireplace('mark', '', $action);
             if (in_array($tempAction, $statusArray)) {
-                $todoService = $this->get('commsy_legacy.todo_service');
                 foreach ($selectedIds as $id) {
                     $item = $todoService->getTodo($id);
                     $item->setStatus(array_search ($tempAction, $statusArray));
                     $item->save();
+                    $todoService->markTodoReadAndNoticed($id, false, false);
                 }
                 $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('Set status of %count% entries to %status%',count($selectedIds), array('%count%' => count($selectedIds), '%status%' => substr($action, 4)));
             }

@@ -53,15 +53,15 @@ class cs_environment {
    var $current_context = NULL;
 
   /**
-   * object - obejct of server
+   * @var \cs_portal_item portal item
    */
    var $_current_portal = NULL;
 
    var $_current_portal_id = 0;
 
-  /**
-   * object - obejct of server
-   */
+    /**
+     * @var \cs_server_item server item
+     */
    var $_server_item = NULL;
 
    var $_server_id = 99;
@@ -302,7 +302,7 @@ class cs_environment {
   /** get server object
    * returns the server object.
    *
-   * @return object server item
+   * @return \cs_server_item server item
    */
    function getServerItem () {
       if (!isset($this->_server_item)) {
@@ -319,7 +319,7 @@ class cs_environment {
   /** get portal object
    * returns the portal object.
    *
-   * @return object portal item
+   * @return \cs_portal_item portal item
    */
    function getCurrentPortalItem () {
       if (!isset($this->_current_portal)) {

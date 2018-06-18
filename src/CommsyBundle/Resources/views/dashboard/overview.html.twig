@@ -14,7 +14,42 @@
     <div id="dashboard-cover" aria-hidden="false">
         <h1 class="uk-h2">{{ 'my home'|trans({}, "menu") }}</h1>
     </div>
-    <div class="uk-grid">
+
+    <div class="uk-grid uk-grid-match" data-uk-grid-margin>
+
+        {# announcements #}
+        {% if portal.showServerNews or server.showServerNews %}
+            {% if portal.showServerNews %}
+                <div class="{% if portal.showServerNews and server.showServerNews %}uk-width-1-2{% else %}uk-width-1-1{% endif %}">
+                    <div class="uk-alert uk-alert-warning" style="border: 1px solid rgba(226,131,39,.3)" data-uk-alert>
+                        {#<a class="uk-alert-close uk-close" href=""></a>#}
+                        <h2 class="uk-article-title">{{ portal.serverNewsTitle }}</h2>
+                        <p>
+                            {{ portal.serverNewsText|raw }}
+                        </p>
+                        <p>
+                            <a href="{{ portal.serverNewsLink }}">{{ portal.serverNewsLink }}</a>
+                        </p>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if server.showServerNews %}
+                <div class="{% if portal.showServerNews and server.showServerNews %}uk-width-1-2{% else %}uk-width-1-1{% endif %}">
+                    <div class="uk-alert uk-alert-warning" style="border: 1px solid rgba(226,131,39,.3)" data-uk-alert>
+                        {#<a class="uk-alert-close uk-close" href=""></a>#}
+                        <h2 class="uk-article-title">{{ server.serverNewsTitle }}</h2>
+                        <p>
+                            {{ server.serverNewsText|raw }}
+                        </p>
+                        <p>
+                            <a href="{{ server.serverNewsLink }}">{{ server.serverNewsLink }}</a>
+                        </p>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+
         {# right column #}
         <div class="uk-width-medium-1-2 uk-push-1-2">
             {{ macros.dashboardCalendar(roomItem, calendars, iCal, contextArray) }}
@@ -27,22 +62,4 @@
             {{ macros.dashboardFeed(roomItem) }}
         </div>
     </div>
-
-    {#<ul id="dashboard-ul" class="uk-sortable uk-grid uk-grid-small uk-grid-width-1-2" data-uk-sortable="{handleClass:'uk-sortable-handle'}" data-dashboard='{"url": "{{ app.request.baseURL }}/dashboard/{{ roomItem.itemId }}/edit"}'>#}
-    {#{% if not dashboardLayout is empty %}#}
-        {#{% for layoutItem in dashboardLayout %}#}
-            {#{% if layoutItem == 'dashboard-feed' %}#}
-                {#{{ macros.dashboardFeed(roomItem) }}#}
-            {#{% elseif layoutItem == 'dashboard-calendar' %}#}
-                {#{{ macros.dashboardCalendar(roomItem) }}#}
-            {#{% elseif layoutItem == 'dashboard-external-access' %}#}
-                {#{{ macros.dashboardExternalAccess(roomItem) }}#}
-            {#{% endif %}#}
-        {#{% endfor %}#}
-    {#{% else %}#}
-        {#{{ macros.dashboardFeed(roomItem) }}#}
-        {#{{ macros.dashboardCalendar(roomItem) }}#}
-        {#{{ macros.dashboardExternalAccess(roomItem) }}#}
-    {#{% endif %}#}
-    {#</ul>#}
 {% endblock %}

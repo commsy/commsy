@@ -219,7 +219,6 @@ class PortalController extends Controller
 
     /**
      * @Route("/portal/{roomId}/legacysettings")
-     * @Template()
      */
     public function legacysettingsAction($roomId, Request $request)
     {

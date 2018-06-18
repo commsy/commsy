@@ -191,9 +191,15 @@
         {% set fileArray = item.fileListWithFilesFromSections.to_array %}
     {% endif %}
     {% if not fileArray is empty %}
-        {% for file in fileArray %}
-            <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}"><i class="{{ macros.iconClassForFileType(file.extension) }}"></i></a>
-        {% endfor %}
+        {% if is_granted('ITEM_SEE', item.itemId) %}
+            {% for file in fileArray %}
+                <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}"><i class="{{ macros.iconClassForFileType(file.extension) }}"></i></a>
+            {% endfor %}
+        {% else %}
+            {% for file in fileArray %}
+                <i data-uk-tooltip title="{{ file.filename }}" class="{{ macros.iconClassForFileType(file.extension) }}"></i>
+            {% endfor %}
+        {% endif %}
     {% endif %}
 {% endmacro %}
 

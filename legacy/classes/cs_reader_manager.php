@@ -84,18 +84,10 @@ class cs_reader_manager {
      *
      * @return array contains the latest version_id and read_date
      */
-   function getLatestReader ( $item_id ) {
-      if ( in_array($item_id,$this->_rubric_id_array) ) {
-         if ( array_key_exists($item_id,$this->_reader_id_array) ) {
-            $reader = $this->_reader_id_array[$item_id];
-         } else {
-            $reader = array();
-         }
-         return $reader;
-      } else {
-         return $this->getLatestReaderForUserByID($item_id, $this->_current_user_id);
-      }
-   }
+    function getLatestReader($item_id)
+    {
+        return $this->getLatestReaderForUserByID($item_id, $this->_current_user_id);
+    }
 
    function getLatestReaderByUserIDArray ($id_array, $item_id){
       if ($this->_cache_on and count($id_array)>0){
@@ -156,31 +148,40 @@ class cs_reader_manager {
    }
 
 
-   function getLatestReaderForUserByID ( $item_id, $user_id ) {
-      if (in_array($user_id,$this->_rubric_id_array)){
-         if (array_key_exists($user_id,$this->_reader_id_array)){
-            $reader = $this->_reader_id_array[$user_id];
-         }else{
-            $reader = array();
-         }
-      }else{
-         $reader = array();
-         $query  = 'SELECT version_id, read_date FROM '.$this->addDatabasePrefix('reader').
-                ' WHERE item_id="'.encode(AS_DB,$item_id).'"'.
-                ' AND   user_id="'.encode(AS_DB,$user_id).'"'.
-                ' ORDER BY read_date DESC';
-         $result = $this->_db_connector->performQuery($query);
-         if ( !isset($result) ) {
-            include_once('functions/error_functions.php');trigger_error('Problems selecting reader from query: "'.$query.'"');
-         } else {
-            if ( !empty($result[0]) ) {
-               $reader['version_id'] = $result[0]['version_id'];
-               $reader['read_date'] = $result[0]['read_date'];
+    function getLatestReaderForUserByID($item_id, $user_id)
+    {
+        // get latest reader entry from cache (keyed be item ID _or_ user ID), or query database
+        $reader = array();
+        if (in_array($item_id, $this->_rubric_id_array)) {
+            if (array_key_exists($item_id, $this->_reader_id_array)) {
+                $reader = $this->_reader_id_array[$item_id];
             }
-         }
-      }
-      return $reader;
-   }
+            return $reader;
+        } else {
+            if (in_array($user_id, $this->_rubric_id_array)) {
+                if (array_key_exists($user_id, $this->_reader_id_array)) {
+                    $reader = $this->_reader_id_array[$user_id];
+                }
+                return $reader;
+            } else {
+                $query = 'SELECT version_id, read_date FROM ' . $this->addDatabasePrefix('reader') .
+                    ' WHERE item_id="' . encode(AS_DB, $item_id) . '"' .
+                    ' AND   user_id="' . encode(AS_DB, $user_id) . '"' .
+                    ' ORDER BY read_date DESC';
+                $result = $this->_db_connector->performQuery($query);
+                if (!isset($result)) {
+                    include_once('functions/error_functions.php');
+                    trigger_error('Problems selecting reader from query: "' . $query . '"');
+                } else {
+                    if (!empty($result[0])) {
+                        $reader['version_id'] = $result[0]['version_id'];
+                        $reader['read_date'] = $result[0]['read_date'];
+                    }
+                }
+            }
+        }
+        return $reader;
+    }
 
    /** mark an item/version as read by the current user
      *
