@@ -81,7 +81,9 @@ class FixGroupAllUserRelation implements DatabaseCheck
                 // get group "ALL"
                 $groupManager->reset();
                 $groupManager->setContextLimit($projectRoom->getItemId());
+                /** @var \cs_group_item $groupAll */
                 $groupAll = $groupManager->getItemByName('ALL');
+                $groupAllMembers = $groupAll->getMemberItemList();
 
                 // get list of users
                 $userManager->reset();
@@ -96,7 +98,7 @@ class FixGroupAllUserRelation implements DatabaseCheck
                     $userItem = $userList->getFirst();
                     while ($userItem) {
                         if (!$userItem->isRoot()) {
-                            if (!$userItem->isInGroup($groupAll)) {
+                            if (!$groupAllMembers->inList($userItem)) {
                                 $io->warning('Missing user relation found');
 
                                 $problems[] = new DatabaseProblem([
