@@ -34,7 +34,7 @@ class cs_zzz_reader_manager extends cs_reader_manager {
         global $symfonyContainer;
         $this->_db_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix').'_';
         
-        parent::cs_reader_manager($environment);
+        parent::__construct($environment);
     }
 }
 ?>

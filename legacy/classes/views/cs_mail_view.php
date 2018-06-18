@@ -34,8 +34,8 @@ class cs_mail_view extends cs_text_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_mail_view ($params) {
-      $this->cs_text_view($params);
+   function __construct($params) {
+      cs_text_view::__construct($params);
       $this->setTitle($this->_translator->getMessage('SEND_MAIL_DESC'));
    }
 

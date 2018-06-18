@@ -26,7 +26,7 @@ class cs_membershipInfo {
       var $_role_type;
       var $_source;
 
-      function cs_membershipInfo($room_id,$source_item_id,$role_type,$source) {
+      function __construct($room_id, $source_item_id, $role_type, $source) {
          $this->_room_id = $room_id;
          $this->source_item_id = $source_item_id;
          $this->_role_type = $role_type;

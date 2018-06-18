@@ -67,7 +67,7 @@ class SettingsController extends Controller
         ));
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
 
             if (!$roomItem->isGroupRoom()) {
@@ -118,7 +118,7 @@ class SettingsController extends Controller
         ));
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
 
             $roomItem->save();
@@ -156,7 +156,7 @@ class SettingsController extends Controller
         ));
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
 
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
 
@@ -206,7 +206,7 @@ class SettingsController extends Controller
         ));
         
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
 
             // TODO: should this be used for normal file uploads (materials etc.) while bg images are saved into specific theme subfolders?
@@ -320,7 +320,7 @@ class SettingsController extends Controller
         ]);
         
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $transformer->applyTransformation($roomItem, $form->getData());
         }
 
@@ -421,7 +421,7 @@ class SettingsController extends Controller
             }
         }
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             // send invitation email
             if (isset($data['email'])) {
                 $invitationCode = $invitationsService->generateInvitationCode($authSourceItem, $roomId, $data['email']);

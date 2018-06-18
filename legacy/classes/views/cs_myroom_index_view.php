@@ -41,8 +41,8 @@ class cs_myroom_index_view extends cs_context_index_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_myroom_index_view ($params) {
-      $this->cs_context_index_view($params);
+   function __construct($params) {
+      cs_context_index_view::__construct($params);
       $this->_room_type = CS_MYROOM_TYPE;
    }
 

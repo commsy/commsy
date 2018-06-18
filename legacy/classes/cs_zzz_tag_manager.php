@@ -34,7 +34,7 @@ class cs_zzz_tag_manager extends cs_tag_manager {
         global $symfonyContainer;
         $this->_db_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix').'_';
         
-        parent::cs_tag_manager($environment);
+        parent::__construct($environment);
     }
 }
 ?>

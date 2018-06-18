@@ -1,5 +1,5 @@
 {% macro files(item, draft) %}
-    {% import 'CommsyBundle:Utils:macros.html.twig' as macrosUtils %}
+    {% import 'CommsyBundle:utils:macros.html.twig' as macrosUtils %}
 
     {% set fileArray = item.fileList.to_array %}
 
@@ -7,7 +7,7 @@
 
     <article class="uk-article uk-margin-left uk-margin-right">
         <a name="description"></a>
-        {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
+        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
 
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">
@@ -149,7 +149,7 @@
 {% endmacro %}
 
 {% macro links(item,withTags,withCategories,roomCategories, draft) %}
-    {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+    {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
     {% import _self as itemMacros %}
     
     {% set countEntries = item.tagsArray|length + item.buzzwordArray|length + item.AllLinkeditemIDArray|length %}
@@ -240,7 +240,7 @@
 {% endmacro %}
 
 {% macro workflow(item, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate, workflowTitles, withTrafficLight, withValidity, withResubmission) %}
-    {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+    {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
 
     {% set preview %}
 
@@ -335,7 +335,7 @@
 
     <article class="uk-article uk-margin-left uk-margin-right">
         <a name="description"></a>
-        {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
+        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
 
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">

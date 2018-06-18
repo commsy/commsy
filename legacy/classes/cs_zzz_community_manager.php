@@ -34,7 +34,7 @@ class cs_zzz_community_manager extends cs_community_manager {
         global $symfonyContainer;
         $this->_db_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix').'_';
         
-        parent::cs_community_manager($environment);
+        parent::__construct($environment);
     }
 }
 ?>

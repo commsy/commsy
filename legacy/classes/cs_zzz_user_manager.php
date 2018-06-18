@@ -34,7 +34,7 @@ class cs_zzz_user_manager extends cs_user_manager {
         global $symfonyContainer;
         $this->_db_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix').'_';
         
-        parent::cs_user_manager($environment);
+        parent::__construct($environment);
     }
 }
 ?>

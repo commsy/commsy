@@ -40,8 +40,8 @@ class cs_guide_community_announcement_view extends cs_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_guide_community_announcement_view ($params) {
-      $this->cs_view($params);
+   function __construct($params) {
+      cs_view::__construct($params);
    }
 
    /** get the single entry of the list view as HTML

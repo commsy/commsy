@@ -24,7 +24,6 @@
 include_once('functions/language_functions.php');
 $commsy = $environment->getCurrentContextItem();
 $text_array = $commsy->getAGBTextArray();
-break;
 $language = $commsy->getLanguage();
 if ( $language == 'user' ) {
    $language = getSelectedLanguage();

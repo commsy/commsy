@@ -1,6 +1,6 @@
-{% extends 'CommsyBundle:Base:room.html.twig' %}
+{% extends 'CommsyBundle:base:room.html.twig' %}
 
-{% form_theme filterForm 'CommsyBundle:Form:uikit_horizontal_dynamic_layout.html.twig' %}
+{% form_theme filterForm 'CommsyBundle:form:uikit_horizontal_dynamic_layout.html.twig' %}
 
 {% block content %}
     <div class="uk-grid" data-uk-grid-margin>
@@ -49,7 +49,7 @@
 
                 <div class="feed">
                     <ul id="search-feed" class="uk-comment-list" data-uk-observe>
-                        {% include 'CommsyBundle:Search:feed.html.twig' %}
+                        {% include 'CommsyBundle:search:feed.html.twig' %}
                     </ul>
 
                     {# setup "load more" if we do not show all results yet #}

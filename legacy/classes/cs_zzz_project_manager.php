@@ -34,7 +34,7 @@ class cs_zzz_project_manager extends cs_project_manager {
         global $symfonyContainer;
         $this->_db_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix').'_';
         
-        parent::cs_project_manager($environment);
+        parent::__construct($environment);
     }
 }
 ?>

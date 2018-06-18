@@ -55,8 +55,8 @@ class cs_home_view extends cs_view {
     * @param boolean with_modifying_actions true: display with modifying functions
     *                                       false: display without modifying functions
     */
-   function cs_home_view ($params) {
-      $this->cs_view($params);
+   function __construct($params) {
+      cs_view::__construct($params);
       $this->_title = 'title';
    }
 

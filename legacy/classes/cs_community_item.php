@@ -35,8 +35,8 @@ class cs_community_item extends cs_room_item {
    /**
     * Constructor
     */
-   function cs_community_item ($environment) {
-      $this->cs_context_item($environment);
+   function __construct($environment) {
+      cs_context_item::__construct($environment);
       $this->_type = CS_COMMUNITY_TYPE;
       $this->_default_rubrics_array[0] = CS_ANNOUNCEMENT_TYPE;
       $this->_default_rubrics_array[1] = CS_PROJECT_TYPE;

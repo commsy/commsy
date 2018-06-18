@@ -36,8 +36,8 @@ class cs_log_archive_manager extends cs_manager {
      *
      * @param object cs_environment the environment
      */
-   function cs_log_archive_manager ( $environment ) {
-      $this->cs_manager($environment);
+   function __construct($environment ) {
+      cs_manager::__construct($environment);
    }
 
    /** reset limits

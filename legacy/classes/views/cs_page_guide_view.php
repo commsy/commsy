@@ -132,8 +132,8 @@ class cs_page_guide_view extends cs_page_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_page_guide_view ($params) {
-      $this->cs_page_view($params);
+   function __construct($params) {
+      cs_page_view::__construct($params);
       if (file_exists('htdocs/'.$this->_environment->getCurrentPortalID().'/commsy.css') ){
          $this->_style_image_path = $this->_environment->getCurrentPortalID().'/images/';
       }

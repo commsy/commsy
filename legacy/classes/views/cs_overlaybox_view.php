@@ -38,7 +38,7 @@ class cs_overlaybox_view extends cs_text_view {
     *
     */
    public function __construct ($params) {
-      $this->cs_text_view($params);
+      cs_text_view::__construct($params);
    }
 
    public function setBackLink ( $value ) {

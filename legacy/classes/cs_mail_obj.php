@@ -90,7 +90,7 @@ class cs_mail_obj {
     /**
      * Constuctor
      */
-	function cs_mail_obj() {
+	function __construct() {
 	}
 
    /** is the type of the item = $type ?

@@ -44,7 +44,7 @@ class cs_link {
     *
     * @author CommSy Development Group
     */
-   function cs_link () {
+   function __construct() {
       $this->_type = 'link';
    }
 

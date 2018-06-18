@@ -39,8 +39,8 @@ var $_related_user = NULL;
     *
     * @param array params parameters in an array of this class
     */
-   function cs_privateroom_home_released_entries_view ($params) {
-      $this->cs_view($params);
+   function __construct($params) {
+      cs_view::__construct($params);
       $this->setViewName('note');
       $user = $this->_environment->getCurrentUserItem();
       $room = $this->_environment->getCurrentContextItem();

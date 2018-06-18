@@ -82,8 +82,8 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
   /** constructor: cs_announcement_manager
     * the only available constructor, initial values for internal variables
     */
-  function cs_announcement_manager ($environment) {
-     $this->cs_manager($environment);
+  function __construct($environment) {
+     cs_manager::__construct($environment);
      $this->_db_table = CS_ANNOUNCEMENT_TYPE;
      $this->_translator = $environment->getTranslationObject();
   }

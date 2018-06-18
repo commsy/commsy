@@ -150,7 +150,7 @@ class MaterialController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in material manager
             $materialService->setFilterConditions($filterForm);
         } else {
@@ -210,7 +210,7 @@ class MaterialController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in material manager
             $materialService->setFilterConditions($filterForm);
         }
@@ -249,7 +249,7 @@ class MaterialController extends Controller
         // get material list from manager service 
         $itemsCountArray = $materialService->getCountArray($roomId);
 
-        $html = $this->renderView('CommsyBundle:Material:listPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:material:list_print.html.twig', [
             'roomId' => $roomId,
             'module' => 'material',
             'materials' => $materials,
@@ -984,7 +984,7 @@ class MaterialController extends Controller
         }
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $materialItem = $transformer->applyTransformation($materialItem, $form->getData());
 
@@ -1095,7 +1095,7 @@ class MaterialController extends Controller
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
-        $html = $this->renderView('CommsyBundle:Material:detailPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:material:detail_print.html.twig', [
             'roomId' => $roomId,
             'material' => $infoArray['material'],
             'sectionList' => $infoArray['sectionList'],
@@ -1249,7 +1249,7 @@ class MaterialController extends Controller
         ));
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 // update title
                 $section->setTitle($form->getData()['title']);
@@ -1354,7 +1354,7 @@ class MaterialController extends Controller
 
         $submittedFormData = $form->getData();
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
             if ($saveType == 'save') {
                 $formData = $form->getData();

@@ -28,7 +28,7 @@ class cs_set {
 
    var $_type;
 
-   function cs_set () {
+   function __construct() {
       $this->_type = 'set';
    }
 

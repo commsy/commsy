@@ -35,8 +35,8 @@ class cs_project_short_view extends cs_context_short_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_project_short_view ($params) {
-      $this->cs_context_short_view($params);
+   function __construct($params) {
+      cs_context_short_view::__construct($params);
       $title = ahref_curl( $this->_environment->getCurrentContextID(),
                            CS_PROJECT_TYPE,
                            'index',

@@ -51,8 +51,8 @@ class cs_home_title_view extends cs_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_home_title_view ($params) {
-      $this->cs_view($params);
+   function __construct($params) {
+      cs_view::__construct($params);
    }
 
    var $_search_text = NULL;

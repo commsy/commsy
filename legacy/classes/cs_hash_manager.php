@@ -29,9 +29,9 @@ class cs_hash_manager extends cs_manager {
    private $_cached_rss_array = array();
    private $_cached_ical_array = array();
 
-   public function cs_hash_manager ($environment) {
+   public function __construct($environment) {
       $this->_db_table = 'hash';
-      $this->cs_manager($environment);
+      cs_manager::__construct($environment);
    }
 
    ###################

@@ -41,8 +41,8 @@ class cs_task_item extends cs_item {
     *
     * @param object environment the environment of the commsy
     */
-   function cs_task_item ($environment) {
-      $this->cs_item($environment);
+   function __construct($environment) {
+      cs_item::__construct($environment);
       $this->_type = 'task';
    }
 

@@ -80,8 +80,8 @@ class cs_label_item extends cs_item {
     *
     * @author CommSy Development Group
     */
-   function cs_label_item ($environment, $label_type = '') {
-      $this->cs_item($environment);
+   function __construct($environment, $label_type = '') {
+      cs_item::__construct($environment);
       $this->_type = CS_LABEL_TYPE;
       $this->_data['type'] = $label_type;
    }

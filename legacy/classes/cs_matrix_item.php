@@ -38,7 +38,7 @@ class cs_matrix_item extends cs_label_item {
     * @param string label_type type of the label
     */
    public function __construct ( $environment ) {
-      $this->cs_label_item($environment,CS_MATRIX_TYPE);
+      cs_label_item::__construct($environment,CS_MATRIX_TYPE);
    }
 
 

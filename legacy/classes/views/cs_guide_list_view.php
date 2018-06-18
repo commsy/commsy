@@ -65,7 +65,7 @@ class cs_guide_list_view extends cs_list_view_plain {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_guide_list_view ($params) {
+   function __construct($params) {
       $params['viewname'] = 'guide_list_view';
       $this->cs_plain_list_view($params);
       if ( $this->_environment->inServer() ) {

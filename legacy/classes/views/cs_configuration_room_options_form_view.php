@@ -42,8 +42,8 @@ class cs_configuration_room_options_form_view extends cs_configuration_form_view
     * @param boolean with_modifying_actions true: display with modifying functions
     *                                       false: display without modifying functions
     */
-   function cs_configuration_room_options_form_view ($environment, $with_modifying_actions = true) {
-      $this->cs_configuration_form_view($environment, $with_modifying_actions);
+   function __construct($environment, $with_modifying_actions = true) {
+      cs_configuration_form_view::__construct($environment, $with_modifying_actions);
    }
 
 

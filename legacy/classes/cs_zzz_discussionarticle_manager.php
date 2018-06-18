@@ -34,7 +34,7 @@ class cs_zzz_discussionarticle_manager extends cs_discussionarticles_manager {
         global $symfonyContainer;
         $this->_db_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix').'_';
         
-        parent::cs_discussionarticles_manager($environment);
+        parent::__construct($environment);
     }
 }
 ?>

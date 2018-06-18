@@ -1,6 +1,6 @@
-{% form_theme form 'CommsyBundle:Form:uikit_layout.html.twig' %}
+{% form_theme form 'CommsyBundle:form:uikit_layout.html.twig' %}
 
-{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+{% import 'CommsyBundle:utils:macros.html.twig' as macros %}
 
 <hr class="uk-width-9-10"/>
 <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
@@ -14,7 +14,7 @@
     {{ form_errors(form) }}
     <div class="uk-grid uk-margin-top-remove">
         <div class="uk-width-9-10">
-            {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
+            {% include 'CommsyBundle:utils:save_spinner.html.twig' %}
 
             <ul class='form-errors'>
             {% if form.categories is defined %}

@@ -33,7 +33,7 @@ class cs_etchat_manager extends cs_manager {
     * @param object cs_environment the environment
     */
    public function __construct ($environment) {
-      $this->cs_manager($environment);
+      cs_manager::__construct($environment);
       global $db;
       $this->_db_connector = new db_mysql_connector($db['etchat']);
    }

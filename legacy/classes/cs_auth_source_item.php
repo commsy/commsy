@@ -34,8 +34,8 @@ class cs_auth_source_item extends cs_item {
    /** constructor: cs_auth_source_item
     * the only available constructor, initial values for internal variables
     */
-   function cs_auth_source_item ($environment) {
-      $this->cs_item($environment);
+   function __construct($environment) {
+      cs_item::__construct($environment);
       $this->_type = CS_AUTH_SOURCE_TYPE;
    }
 

@@ -40,7 +40,7 @@ class cs_section_list {
     *
     * @author CommSy Development Group
     */
-   function cs_section_list () {
+   function __construct() {
       $this->_type = 'section_list';
    }
 

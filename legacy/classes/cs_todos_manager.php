@@ -60,8 +60,8 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
     *
     * @param object cs_environment the environment
     */
-   function cs_todos_manager ($environment) {
-      $this->cs_manager($environment);
+   function __construct($environment) {
+      cs_manager::__construct($environment);
       $this->_db_table = 'todos';
       $this->_translator = $environment->getTranslationObject();
    }

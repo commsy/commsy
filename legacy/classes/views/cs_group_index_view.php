@@ -41,8 +41,8 @@ class cs_group_index_view extends cs_index_view {
     * @param boolean with_modifying_actions true: display with modifying functions
     *                                       false: display without modifying functions
     */
-   function cs_group_index_view ($params) {
-      $this->cs_index_view($params);
+   function __construct($params) {
+      cs_index_view::__construct($params);
       $this->setTitle($this->_translator->getMessage('GROUP_HEADER'));
    }
 

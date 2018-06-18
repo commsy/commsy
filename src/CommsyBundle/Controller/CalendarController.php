@@ -60,7 +60,7 @@ class CalendarController extends Controller
 
 
         $editForm->handleRequest($request);
-        if ($editForm->isValid()) {
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
             // tells Doctrine you want to (eventually) save the Product (no queries yet)
             if ($calendar->getExternalUrl()) {
                 $calendar->setExternalUrl(str_ireplace('webcals://', 'https://', $calendar->getExternalUrl()));

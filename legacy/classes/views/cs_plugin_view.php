@@ -65,7 +65,7 @@ class cs_plugin_view extends cs_view {
     * @param array params parameters in an array of this class
     */
    public function __construct ($params) {
-      $this->cs_view($params);
+      cs_view::__construct($params);
    }
 
    /** set name of plugin

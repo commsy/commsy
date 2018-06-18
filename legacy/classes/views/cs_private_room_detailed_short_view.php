@@ -51,8 +51,8 @@ class cs_private_room_detailed_short_view extends cs_view{
     *
     * @param array params parameters in an array of this class
     */
-   function cs_private_room_detailed_short_view ($params) {
-      $this->cs_view( $params);
+   function __construct($params) {
+      cs_view::__construct( $params);
       $current_context = $this->_environment->getCurrentContextItem();
    }
 

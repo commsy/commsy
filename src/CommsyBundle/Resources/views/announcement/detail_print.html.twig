@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% import 'CommsyBundle:Base:printmacro.html.twig' as macros %}
+{% import 'CommsyBundle:base:printmacro.html.twig' as macros %}
 
 {% if announcement is defined %}
     {% set item = announcement %}
@@ -86,12 +86,11 @@
                 {% endif %}
                 
 
-                {# annotations #}             
-                    
-                        {{ render(controller(
-                            'CommsyBundle:Annotation:feedPrint',
-                            { 'roomId': roomId, 'linkedItemId': item.itemId }
-                        ))}}
+                {# annotations #}
+                {{ render(controller(
+                    'CommsyBundle:Annotation:feedPrint',
+                    { 'roomId': roomId, 'linkedItemId': item.itemId }
+                ))}}
 
 
             </div>

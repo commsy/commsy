@@ -34,7 +34,7 @@ class cs_zzz_institution_manager extends cs_institution_manager {
         global $symfonyContainer;
         $this->_db_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix').'_';
         
-        parent::cs_institution_manager($environment);
+        parent::__construct($environment);
     }
 }
 ?>

@@ -32,7 +32,7 @@ class cs_language {
    /**
      * Standard Constructor for cs_language_manager
      */
-   function cs_language ($defaultLanguage, $messages) {
+   function __construct($defaultLanguage, $messages) {
       if (!empty($defaultLanguage)) {
          $this->_defaultLanguage = $defaultLanguage;
       }

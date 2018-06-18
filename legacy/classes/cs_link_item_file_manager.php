@@ -37,8 +37,8 @@ class cs_link_item_file_manager extends cs_link_father_manager {
     *
     * @param object cs_environment the environment
     */
-   function cs_link_item_file_manager ( $environment ) {
-      $this->cs_link_father_manager($environment);
+   function __construct($environment ) {
+      cs_link_father_manager::__construct($environment);
       $this->_db_table = 'item_link_file';
    }
 

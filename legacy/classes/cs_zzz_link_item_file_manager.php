@@ -34,7 +34,7 @@ class cs_zzz_link_item_file_manager extends cs_link_item_file_manager {
         global $symfonyContainer;
         $this->_db_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix').'_';
         
-        parent::cs_link_item_file_manager($environment);
+        parent::__construct($environment);
     }
 }
 ?>

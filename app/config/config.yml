@@ -43,9 +43,9 @@ twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
     form_themes:
-        - CommsyBundle:Form:uikit_layout.html.twig
+        - CommsyBundle:form:uikit_layout.html.twig
         - LexikFormFilterBundle:Form:form_div_layout.html.twig
-        - CommsyBundle:Form:ckeditor_widget.html.twig
+        - CommsyBundle:form:ckeditor_widget.html.twig
 
 # Doctrine Configuration
 doctrine:
@@ -91,7 +91,7 @@ swiftmailer:
 
 # Doctrine Migrations Configuration
 doctrine_migrations:
-    dir_name: %kernel.root_dir%/DoctrineMigrations
+    dir_name: "%kernel.root_dir%/DoctrineMigrations"
     namespace: Application\Migrations
     table_name: migration_versions
     name: Application Migrations
@@ -135,7 +135,7 @@ liip_imagine:
 knp_menu:
     # use "twig: false" to disable the Twig extension and the TwigRenderer
     twig:
-        template: CommsyBundle:Menu:knp_menu_sidebar.html.twig
+        template: CommsyBundle:menu:knp_menu_sidebar.html.twig
         #template: knp_menu.html.twig
     #  if true, enables the helper for PHP templates
     templating: false

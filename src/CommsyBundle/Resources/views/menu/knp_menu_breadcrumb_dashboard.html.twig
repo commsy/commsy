@@ -1,8 +1,8 @@
-{% extends 'CommsyBundle:Menu:knp_menu_breadcrumb.html.twig' %}
+{% extends 'CommsyBundle:menu:knp_menu_breadcrumb.html.twig' %}
 
 {% block list %}
 {% if item.hasChildren and options.depth is not sameas(0) and item.displayChildren %}
-    {% from 'CommsyBundle:Menu:knp_menu_breadcrumb.html.twig' import attributes %}
+    {% from 'CommsyBundle:menu:knp_menu_breadcrumb.html.twig' import attributes %}
     <div class="cs-panel-teaser-primary uk-padding-remove cs-remove-border cs-max-width">
         <div>
             <ul id="breadcrumb-nav" class="uk-breadcrumb"{{ attributes(listAttributes) }}>

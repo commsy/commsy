@@ -241,7 +241,7 @@
 
     <article >
         <a name="description"></a>
-        {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
+        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
 
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">
@@ -291,7 +291,7 @@
 
     <article>
         <a name="description"></a>
-        {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
+        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
 
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">
@@ -357,7 +357,7 @@
                                     {% endif %}
                                 {% endif %}
                             </div>
-                            {% include 'CommsyBundle:Material:biblio.html.twig' %}
+                            {% include 'CommsyBundle:material:biblio.html.twig' %}
                             {% endif %}
 
                         </div>
@@ -512,7 +512,7 @@
 
     <article>
         <a name="description"></a>
-        {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
+        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
 
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">
@@ -663,7 +663,7 @@
 
     <article class="uk-article uk-margin-left uk-margin-right">
         <a name="details"></a>
-        {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
+        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
 
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">
@@ -764,7 +764,7 @@
                     {# edit #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                         {{ macros.actionIcons('title', item, true) }}
-                        {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
+                        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
                     {% else %}
                         {{ macros.actionIcons('title', item, false) }}
                     {% endif %}

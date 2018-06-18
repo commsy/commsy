@@ -136,12 +136,12 @@ class cs_index_view extends cs_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_index_view ($params) {
+   function __construct($params) {
       $this->_with_form_fields = true;
       if ( !empty($params['with_form_fields']) ) {
          $this->_with_form_fields = $params['with_form_fields'];
       }
-      $this->cs_view($params);
+      cs_view::__construct($params);
       $current_context = $this->_environment->getCurrentContextItem();
       if ( $current_context->withTags() ){
          $this->_show_tag_box = true;

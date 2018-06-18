@@ -38,8 +38,8 @@ class cs_announcement_detail_view extends cs_detail_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_announcement_detail_view ($params) {
-      $this->cs_detail_view($params);
+   function __construct($params) {
+      cs_detail_view::__construct($params);
    }
 
    function setClipboardIDArray($cia) {

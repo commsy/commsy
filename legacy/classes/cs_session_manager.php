@@ -47,7 +47,7 @@ class cs_session_manager {
     * @param object db_connector connection to the database
     * @param string domain domain for cookie management
     */
-   function cs_session_manager ($db_conntector, $settings) {
+   function __construct($db_conntector, $settings) {
      $this->reset();
      $this->_db_conntector = $db_conntector;
      $this->_settings = (array)$settings;

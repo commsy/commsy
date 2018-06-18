@@ -33,8 +33,8 @@ class cs_todo_item extends cs_item {
   /** constructor
    * the only available constructor, initial values for internal variables
    */
-   function cs_todo_item($environment) {
-      $this->cs_item($environment);
+   function __construct($environment) {
+      cs_item::__construct($environment);
       $this->_type = CS_TODO_TYPE;
    }
 

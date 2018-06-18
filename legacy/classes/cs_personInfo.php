@@ -32,7 +32,7 @@ class cs_personInfo {
 		var $_password;
 		var $_password_encryption_method;
 		
-		function cs_personInfo($stine_id,$user_id,$fullname,$family_name,$given_name,$email,$portal_id,$source,$password,$password_encryption_method) {
+		function __construct($stine_id, $user_id, $fullname, $family_name, $given_name, $email, $portal_id, $source, $password, $password_encryption_method) {
 			$this->_stine_id = $stine_id;
 			$this->_user_id = $user_id;
 			$this->_fullname = $fullname;

@@ -59,7 +59,7 @@ class TodoController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in todo manager
             $todoService->setFilterConditions($filterForm);
         } else {
@@ -568,7 +568,7 @@ class TodoController extends Controller
     
     /**
      * @Route("/room/{roomId}/todo/{itemId}/createstep")
-     * @Template("@Commsy/Todo/editStep.html.twig")
+     * @Template("@Commsy/Todo/edit_step.html.twig")
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      */
     public function createStepAction($roomId, $itemId, Request $request)
@@ -633,7 +633,7 @@ class TodoController extends Controller
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
             if ($form->get('save')->isClicked()) {
-                if ($form->isValid()) {
+                if ($form->isSubmitted() && $form->isValid()) {
 
                     $formData = $form->getData();
 
@@ -759,7 +759,7 @@ class TodoController extends Controller
         $form = $this->createForm(TodoType::class, $formData, $formOptions);
         
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $todoItem = $transformer->applyTransformation($todoItem, $form->getData());
 
@@ -928,7 +928,7 @@ class TodoController extends Controller
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
-        $html = $this->renderView('CommsyBundle:Todo:detailPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:todo:detail_print.html.twig', [
             'roomId' => $roomId,
             'item' => $infoArray['todo'],
             'readerList' => $infoArray['readerList'],
@@ -982,7 +982,7 @@ class TodoController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in announcement manager
             $todoService->setFilterConditions($filterForm);
         }
@@ -1020,7 +1020,7 @@ class TodoController extends Controller
         // get announcement list from manager service 
         $itemsCountArray = $todoService->getCountArray($roomId);
 
-        $html = $this->renderView('CommsyBundle:Todo:listPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:todo:list_print.html.twig', [
             'roomId' => $roomId,
             'module' => 'todo',
             'announcements' => $todos,

@@ -1,13 +1,13 @@
-{% extends 'CommsyBundle:Base:room.html.twig' %}
+{% extends 'CommsyBundle:base:room.html.twig' %}
 
-{% import 'CommsyBundle:Dashboard:macros.html.twig' as macros %}
+{% import 'CommsyBundle:dashboard:macros.html.twig' as macros %}
 
 {% block roomTitle %}
     {{ 'Dashboard'|trans({}, "room") }}
 {% endblock %}
 
 {% block breadcrumb %}
-    {{ wo_render_breadcrumbs({ viewTemplate: "CommsyBundle:Breadcrumbs:breadcrumbs.html.twig" }) }}
+    {{ wo_render_breadcrumbs({ viewTemplate: "CommsyBundle:breadcrumbs:breadcrumbs.html.twig" }) }}
 {% endblock %}
 
 {% block content %}

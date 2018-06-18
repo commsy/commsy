@@ -1,7 +1,10 @@
 parameters:
-        legacy.site_index: %kernel.root_dir%/../web/commsy_legacy.php
+        legacy.site_index: "%kernel.root_dir%/../web/commsy_legacy.php"
 
 services:
+    _defaults:
+        public: true
+
     # Legacy kernel
     commsy_legacy.legacy_kernel:
         class: Commsy\LegacyBundle\Kernel\LegacyKernel
@@ -27,6 +30,7 @@ services:
     # Legacy Environment
     commsy_legacy.environment:
         class: Commsy\LegacyBundle\Services\LegacyEnvironment
+        public: true
         arguments: ['%legacy.site_index%', '@service_container']
 
     commsy_legacy.category_service:

@@ -1,8 +1,8 @@
-{% extends 'CommsyBundle:Base:room.html.twig' %}
+{% extends 'CommsyBundle:base:room.html.twig' %}
 
 {% block content %}
 
-    {% form_theme form 'CommsyBundle:Form:uikit_stacked_layout.html.twig' %}
+    {% form_theme form 'CommsyBundle:form:uikit_stacked_layout.html.twig' %}
 
     <hr class="uk-width-9-10  cs-detail-divider"/>
     <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
@@ -15,7 +15,7 @@
         </div>
 
         <div>
-            {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
+            {% include 'CommsyBundle:utils:save_spinner.html.twig' %}
 
             {{ form_start(form) }}
             <div class="uk-flex uk-margin-small-top">

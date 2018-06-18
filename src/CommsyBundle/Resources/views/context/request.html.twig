@@ -1,21 +1,21 @@
-{% extends 'CommsyBundle:Base:room.html.twig' %}
+{% extends 'CommsyBundle:base:room.html.twig' %}
 
-{% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
+{% form_theme form 'CommsyBundle:form:uikit_horizontal_layout.html.twig' %}
 
 {% if form.request is defined %}
-    {% form_theme form.request 'CommsyBundle:Form:uikit_layout.html.twig' %}
+    {% form_theme form.request 'CommsyBundle:form:uikit_layout.html.twig' %}
 {% endif %}
 
 {% if form.cancel is defined %}
-    {% form_theme form.cancel 'CommsyBundle:Form:uikit_layout.html.twig' %}
+    {% form_theme form.cancel 'CommsyBundle:form:uikit_layout.html.twig' %}
 {% endif %}
 
 {% if form.coderequest is defined %}
-    {% form_theme form.coderequest 'CommsyBundle:Form:uikit_layout.html.twig' %}
+    {% form_theme form.coderequest 'CommsyBundle:form:uikit_layout.html.twig' %}
 {% endif %}
 
 {% if form.codecancel is defined %}
-    {% form_theme form.codecancel 'CommsyBundle:Form:uikit_layout.html.twig' %}
+    {% form_theme form.codecancel 'CommsyBundle:form:uikit_layout.html.twig' %}
 {% endif %}
 
 {% block content %}

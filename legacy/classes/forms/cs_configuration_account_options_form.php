@@ -46,8 +46,8 @@ class cs_configuration_account_options_form extends cs_rubric_form {
    var $_disable_code = true;
 
 
-   function cs_configuration_account_options_form ($params) {
-      $this->cs_rubric_form($params);
+   function __construct($params) {
+      cs_rubric_form::__construct($params);
    }
 
    function _initForm () {

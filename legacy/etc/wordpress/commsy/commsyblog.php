@@ -570,13 +570,13 @@ function commsy_XMLToArray($xml) {
             } elseif ( isset($value) ) {
                // convert > and < to their html entities (gt; and &lt;)
                if ( strstr($value,"%CS_AND;") ) {
-                  $value = ereg_replace("%CS_AND;", "&", $value);
+                  $value = str_replace("%CS_AND;", "&", $value);
                }
                if ( strstr($value,"%CS_LT;") ) {
-                  $value = ereg_replace("%CS_LT;", "<", $value);
+                  $value = str_replace("%CS_LT;", "<", $value);
                }
                if ( strstr($value,"%CS_GT;") ) {
-                  $value = ereg_replace("%CS_GT;", ">", $value);
+                  $value = str_replace("%CS_GT;", ">", $value);
                }
             } else {
                $value = '';

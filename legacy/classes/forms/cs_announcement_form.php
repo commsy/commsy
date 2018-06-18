@@ -85,8 +85,8 @@ class cs_announcement_form extends cs_rubric_form {
     *
     * @author CommSy Development Group
     */
-   function cs_announcement_form($params) {
-      $this->cs_rubric_form($params);
+   function __construct($params) {
+      cs_rubric_form::__construct($params);
    }
 
 

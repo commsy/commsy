@@ -738,6 +738,7 @@ services:
 
     commsy.room_feed_generator:
             class: CommsyBundle\RoomFeed\RoomFeedGenerator
+            public: true
             arguments:
               - '@commsy_legacy.environment'
               - '@commsy_legacy.room_service'

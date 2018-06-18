@@ -1,7 +1,7 @@
-{% extends 'CommsyBundle:Base:list.html.twig' %}
-{% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
+{% extends 'CommsyBundle:base:list.html.twig' %}
+{% form_theme form 'CommsyBundle:form:uikit_horizontal_layout.html.twig' %}
 
-{% import 'CommsyBundle:Utils:macros.html.twig' as utilsMacros %}
+{% import 'CommsyBundle:utils:macros.html.twig' as utilsMacros %}
 
 {% block feed %}
     <ul id="announcements-feed" class="uk-comment-list" data-uk-observe>

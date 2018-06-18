@@ -142,7 +142,7 @@ class DiscussionController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in discussion manager
             $discussionService->setFilterConditions($filterForm);
         }
@@ -204,7 +204,7 @@ class DiscussionController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in material manager
             $discussionService->setFilterConditions($filterForm);
         }
@@ -243,7 +243,7 @@ class DiscussionController extends Controller
         $itemsCountArray = $discussionService->getCountArray($roomId);
 
 
-        $html = $this->renderView('CommsyBundle:Discussion:listPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:discussion:list_print.html.twig', [
             'roomId' => $roomId,
             'discussions' => $discussions,
             'readerList' => $readerList,
@@ -690,7 +690,7 @@ class DiscussionController extends Controller
     {
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
-        $html = $this->renderView('CommsyBundle:Discussion:detailPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:discussion:detail_print.html.twig', [
             'roomId' => $roomId,
             'discussion' => $infoArray['discussion'],
             'articleList' => $infoArray['articleList'],
@@ -964,7 +964,7 @@ class DiscussionController extends Controller
         }
         
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 if ($item->getItemType() == 'discussion') {
                     $discussionItem = $transformer->applyTransformation($discussionItem, $form->getData());
@@ -1165,7 +1165,7 @@ class DiscussionController extends Controller
         ));
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 // update title
                 $article->setTitle($form->getData()['title']);

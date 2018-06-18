@@ -32,6 +32,7 @@ security:
         main:
             pattern:  ^/
             anonymous: ~
+            logout_on_user_change: true
 
     # with these settings you can restrict or allow access for different parts
     # of your application based on roles, ip, host or methods

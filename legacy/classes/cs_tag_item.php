@@ -41,8 +41,8 @@ class cs_tag_item extends cs_item {
     *
     * @param object environment environment of CommSy
     */
-   public function cs_tag_item ($environment) {
-      $this->cs_item($environment);
+   public function __construct($environment) {
+      cs_item::__construct($environment);
       $this->_type = CS_TAG_TYPE;
    }
 

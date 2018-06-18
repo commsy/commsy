@@ -44,8 +44,8 @@ class cs_context_index_view extends cs_index_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_context_index_view ($params) {
-      $this->cs_index_view($params);
+   function __construct($params) {
+      cs_index_view::__construct($params);
    }
 
    function _getGetParamsAsArray() {

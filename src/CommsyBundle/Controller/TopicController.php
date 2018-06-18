@@ -58,7 +58,7 @@ class TopicController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in topic manager
             $topicService->setFilterConditions($filterForm);
         }
@@ -552,7 +552,7 @@ class TopicController extends Controller
         ));
         
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $topicItem = $transformer->applyTransformation($topicItem, $form->getData());
 
@@ -689,7 +689,7 @@ class TopicController extends Controller
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
-        $html = $this->renderView('CommsyBundle:Todo:detailPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:todo:detail_print.html.twig', [
             'roomId' => $roomId,
             'item' => $infoArray['topic'],
             'readerList' => $infoArray['readerList'],
@@ -742,7 +742,7 @@ class TopicController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in announcement manager
             $topicService->setFilterConditions($filterForm);
         }
@@ -772,7 +772,7 @@ class TopicController extends Controller
         // get announcement list from manager service 
         $itemsCountArray = $topicService->getCountArray($roomId);
 
-        $html = $this->renderView('CommsyBundle:Topic:listPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:topic:list_print.html.twig', [
             'roomId' => $roomId,
             'module' => 'topic',
             'announcements' => $topics,
@@ -850,7 +850,7 @@ class TopicController extends Controller
         ));
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $linkManager = $legacyEnvironment->getLinkItemManager();
 

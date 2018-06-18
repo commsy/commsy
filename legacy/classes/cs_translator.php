@@ -100,7 +100,7 @@ class cs_translator {
    /** constructor
     * the only available constructor, initial values for internal variables
     */
-   function cs_translator () {
+   function __construct() {
     $this->_file_path = realpath(dirname(__FILE__)) . '/../' . $this->_file_path;
    }
 

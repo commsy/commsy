@@ -48,9 +48,9 @@ class cs_user_item extends cs_item
     /** constructor: cs_user_item
      * the only available constructor, initial values for internal variables
      */
-    function cs_user_item($environment)
+    function __construct($environment)
     {
-        $this->cs_item($environment);
+        cs_item::__construct($environment);
         $this->_type = CS_USER_TYPE;
         $this->_old_status = 'new';
     }

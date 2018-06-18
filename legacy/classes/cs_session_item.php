@@ -45,7 +45,7 @@ class cs_session_item {
    /** constructor: cs_session_item
     * the only available constructor, initial values for internal variables
     */
-   function cs_session_item () {
+   function __construct() {
       $this->reset();
    }
 

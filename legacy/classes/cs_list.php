@@ -40,7 +40,7 @@ class cs_list {
    /** constructor: cs_list
     * the only available constructor, initial values for internal variables
     */
-   function cs_list () {
+   function __construct() {
       $this->_type = 'list';
    }
 

@@ -1,6 +1,6 @@
-{% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
+{% form_theme form 'CommsyBundle:form:uikit_horizontal_layout.html.twig' %}
 
-{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+{% import 'CommsyBundle:utils:macros.html.twig' as macros %}
 
 <hr class="uk-width-9-10  cs-detail-divider"/>
 <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
@@ -17,7 +17,7 @@
 
 <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative uk-padding-remove">
     <div class="uk-width-9-10">
-    {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
+    {% include 'CommsyBundle:utils:save_spinner.html.twig' %}
     {{ form_start(form) }}
     {{ form_errors(form) }}
 

@@ -100,7 +100,7 @@ class cs_rubric_form {
     *
     * @param object environment the environment object
     */
-   function cs_rubric_form ($params) {
+   function __construct($params) {
       if ( is_array($params) ) {
          $environment = $params['environment'];
       } else {

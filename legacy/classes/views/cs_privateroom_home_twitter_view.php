@@ -39,8 +39,8 @@ class cs_privateroom_home_twitter_view extends cs_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_privateroom_home_twitter_view ($params) {
-      $this->cs_view($params);
+   function __construct($params) {
+      cs_view::__construct($params);
       $this->_view_title = $this->_translator->getMessage('COMMON_TWITTER_FRIENDS');
       $this->setViewName('twitter');
    }

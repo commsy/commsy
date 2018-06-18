@@ -74,7 +74,7 @@ class ItemController extends Controller
 
         $form = $this->createForm(ItemDescriptionType::class, $formData, $formOptions);
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
             $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             if ($saveType == 'save' || $saveType == 'saveThisDate') {
@@ -181,7 +181,7 @@ class ItemController extends Controller
         
         $form = $this->createForm(ItemWorkflowType::class, $formData, array());
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
                 $tempItem = $transformer->applyTransformation($tempItem, $form->getData());
@@ -676,7 +676,7 @@ class ItemController extends Controller
         // prepare form
         $mailAssistant = $this->get('commsy.utils.mail_assistant');
 
-        $formMessage = $this->renderView('CommsyBundle:Email:itemListTemplate.txt.twig',array('user' => $currentUser, 'room' => $room));
+        $formMessage = $this->renderView('CommsyBundle:email:item_list_template.txt.twig',array('user' => $currentUser, 'room' => $room));
 
         $formData = [
             'message' => $formMessage,
@@ -706,7 +706,7 @@ class ItemController extends Controller
                 ->setTo($toArray)
                 ->setBody(
                     $this->renderView(
-                        'CommsyBundle:Email:itemList.txt.twig',
+                        'CommsyBundle:email:item_list.txt.twig',
                         array('message' => strip_tags($data['message']))
                     ),
                     'text/plain'

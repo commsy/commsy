@@ -34,7 +34,7 @@ class cs_zzz_label_manager extends cs_labels_manager {
         global $symfonyContainer;
         $this->_db_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix').'_';
         
-        parent::cs_labels_manager($environment);
+        parent::__construct($environment);
     }
 }
 ?>

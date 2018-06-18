@@ -46,8 +46,8 @@ class cs_time_item extends cs_label_item {
     *
     * @author CommSy Development Group
     */
-   function cs_time_item ($environment) {
-      $this->cs_label_item($environment, 'time');
+   function __construct($environment) {
+      cs_label_item::__construct($environment, 'time');
    }
    
    /** sets the data of the item.
