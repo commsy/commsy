@@ -525,8 +525,11 @@ HTML;
         $getVars['cs_modus'] = 'account_forget';
         $forgotAccountLink = ahref_curl($portalID, $currentModule, $currentFunction, $getVars, $forgotAccountLinkTitle, '', '', '', '', '', '', '', '', 'forgotAccount');
 
-        $getVars['cs_modus'] = 'portalmember';
-        $createAccountLink = ahref_curl($portalID, $currentModule, $currentFunction, $getVars, $createAccountLinkTitle, '', '', '', '', '', '', '', '', 'portalmember');
+        $createAccountLink = '';
+        if ($this->_allowsSelfRegistration() === true) {
+            $getVars['cs_modus'] = 'portalmember';
+            $createAccountLink = ahref_curl($portalID, $currentModule, $currentFunction, $getVars, $createAccountLinkTitle, '', '', '', '', '', '', '', '', 'portalmember');
+        }
 
         $getVars['cs_modus'] = 'password_forget';
         $forgotPasswordLink = ahref_curl($portalID, $currentModule, $currentFunction, $getVars, $forgotPasswordLinkTitle, '', '', '', '', '', '', '', '', 'forgotPassword');
@@ -563,6 +566,33 @@ HTML;
 HTML;
 
         return $html;
+    }
+
+
+    /** Returns whether any of the enabled authentication sources allows users to add an account.
+     * @return bool true if at least one of the enabled authentication sources allows self registration
+     * @author CommSy Development Group
+     */
+    function _allowsSelfRegistration()
+    {
+        $currentPortal = $this->_environment->getCurrentPortalItem();
+        $authSourceList = $currentPortal->getAuthSourceListEnabled();
+
+        if (!isset($authSourceList) || $authSourceList->isEmpty()) {
+            return false;
+        }
+
+        $allowAddAccount = false;
+        $authSourceItem = $authSourceList->getFirst();
+        while ($authSourceItem) {
+            if ($authSourceItem->allowAddAccount()) {
+                $allowAddAccount = true;
+                break;
+            }
+            $authSourceItem = $authSourceList->getNext();
+        }
+
+        return $allowAddAccount;
     }
 
 
