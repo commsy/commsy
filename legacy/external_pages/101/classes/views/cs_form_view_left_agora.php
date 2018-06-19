@@ -55,6 +55,7 @@ class cs_form_view_left_agora extends cs_form_view_left {
 
    var $_form_name = '';
 
+
     /** The only available constructor, initial values for internal variables.
      *
      * @param array params parameters in an array of this class
@@ -64,47 +65,6 @@ class cs_form_view_left_agora extends cs_form_view_left {
         parent::__construct($params);
     }
 
-   /** set URL of the form view
-    * this method sets the URL where the data will post to
-    *
-    * @param string value <form action="URL">
-    */
-   function setAction ($value) {
-      $this->_action = (string)$value;
-   }
-
-   /** set action type of the form view
-    * this method sets the action type
-    *
-    * @param string value <form ... method="action_type">
-    */
-   function setActionType ($value) {
-      $this->_action_type = (string)$value;
-   }
-
-   public function setFormName ( $value ) {
-      $this->_form_name = $value;
-   }
-
-   /** set form form the form view
-    * this method sets the form for the form view
-    *
-    * @param array value form elements
-    */
-   function setForm ($value) {
-      $this->_form = $value;
-      $this->_form_elements = $this->_form->getFormElements();
-      $this->_error_array = $this->_form->getErrorArray();
-   }
-
-   /** set form form the form view
-    * this method sets the form for the form view
-    *
-    * @param array value form elements
-    */
-   function setDescription ($description_text) {
-      $this->_description = $description_text;
-   }
 
   /** get headline as HTML - internal, do not use
     * this method returns a string contains a headline in HMTL-Code
@@ -141,30 +101,6 @@ HTML;
         return $html;
    }
 
-   /** get textline as HTML - internal, do not use
-    * this method returns a string contains a textline in HMTL-Code
-    *
-    * @param array value form element: textline, see class cs_form
-    *
-    * @return string textline as HMTL
-    */
-
-   function _getTextLineAsHTML ($form_element) {
-      $html  = '';
-      if (!empty($form_element['value'])) {
-         if ($form_element['isbold']) {
-            $html .= '<span class="bold">'.$this->_text_as_html_short($form_element['value']).'</span>';
-         } else {
-            $html .= $this->_text_as_html_short($form_element['value']);
-         }
-         if (!empty($form_element['button_text']) and !empty($form_element['button_name'])) {
-            $html .= '         &nbsp;';
-            $html .= $this->_getButtonAsHTML($form_element['button_text'],$form_element['button_name'])."\n";
-         }
-      }
-      return $html;
-   }
-
 
    /** get button as HTML - internal, do not use
     * this method returns a string containing a button in HMTL-Code
@@ -196,7 +132,6 @@ HTML;
     *
     * @return string buttonbar as HMTL
     */
-
    function _getButtonBarAsHTML ($form_element)
    {
         $buttonName = $form_element['name'];
@@ -220,235 +155,6 @@ HTML;
    }
 
 
-
-   /** get emptyline as HTML - internal, do not use
-    * this method returns a string contains an emptyline in HMTL-Code
-    *
-    * @param array value form element: emptyline, see class cs_form
-    *
-    * @return string emptyline as HMTL
-    */
-   function _getEmptyLineAsHTML ($form_element) {
-      $html  = '';
-      $html .= '<!-- empty line -->';
-      $html .= '&nbsp;'."\n";
-      return $html;
-   }
-
-
-
-   /** get datetimefield as HTML - internal, do not use
-    * this method returns a string contains a datetimefield in HMTL-Code
-    *
-    * @param array value form element: datetimefield, see class cs_form
-    *
-    * @return string datetimefield as HMTL
-    */
-
-   function _getDateTimeFieldAsHTML ($form_element) {
-      $html  = '';
-      $textfield['name']  = $form_element['firstName'];
-      $textfield['size']  = $form_element['firstFieldSize'];
-      $textfield['maxlength']  = $form_element['firstFieldMaxLength'];
-      $textfield['value'] = reset($form_element['value']);
-      if ($form_element['isFirstMandatory']) {
-         $form_element['firstLabel'] .= '<span class="required">'.$this->_translator->getMessage('MARK').'</span>';
-      }
-      if (!empty($form_element['failure_element']) and in_array('0',$form_element['failure_element'])) {
-         $form_element['firstLabel'] = '<span class="bold">'.$form_element['firstLabel'].'</span>';
-      }
-      $html .= '         '.$this->_text_as_html_short($form_element['firstLabel']).'&nbsp;'.$this->_getTextFieldAsHTML($textfield);
-
-      if ($form_element['horizontal']) {
-         $html .= '         &nbsp;&nbsp;'."\n";
-      } else {
-         $html .= '<br />'."\n";
-      }
-      $textfield['name']  = $form_element['secondName'];
-      $textfield['size']  = $form_element['secondFieldSize'];
-      $textfield['maxlength']  = $form_element['secondFieldMaxLength'];
-      $textfield['value'] = next($form_element['value']);
-      if ($form_element['isSecondMandatory']) {
-         $form_element['secondLabel'] .= '<span class="required">'.$this->_translator->getMessage('MARK').'</span>';
-      }
-      if (!empty($form_element['failure_element']) and in_array('1',$form_element['failure_element'])) {
-         $form_element['secondLabel'] = '<span class="bold">'.$form_element['secondLabel'].'</span>';
-      }
-      if (!empty($form_element['second_field_type']) and $form_element['second_field_type'] == 'password') {
-         $html .= '         '.$this->_text_as_html_short($form_element['secondLabel']).'&nbsp;'.$this->_getPasswordAsHTML($textfield);
-      } else {
-         $html .= '         '.$this->_text_as_html_short($form_element['secondLabel']).'&nbsp;'.$this->_getTextFieldAsHTML($textfield);
-      }
-      return $html;
-   }
-
-
-   /** get radiogroup as HTML - internal, do not use
-    * this method returns a string contains an radiogroup in HMTL-Code
-    *
-    * @param array value form element: radiogroup, see class cs_form
-    *
-    * @return string radiogroup as HMTL
-    *
-    * @author CommSy Development Group
-    */
-
-   function _getRadioGroupAsHTML ($form_element) {
-      $html  = '';
-      $options = $form_element['value'];
-      $option = current($options);
-      $first = true;
-      while ($option) {
-         if ($first) {
-            $first = false;
-         } elseif (!$form_element['horizontal'] and !$first) {
-            $html .= '<br />'."\n";
-         }
-         $html .= '         <input style="font-size:8pt;" type="radio" name="'.$form_element['name'].'"';
-         $html .= ' value="'.$this->_text_as_form($option['value']).'"';
-         if ($form_element['checked'] == $option['value'] or $form_element['checked'] == $option['text']) {
-            $html .= ' checked';
-         }
-         $html .= ' tabindex="'.$this->_count_form_elements.'"';
-         $html .= '/>'.$this->_text_as_html_short($option['text']);
-         $html .= LF;
-         $option = next($options);
-      }
-      return $html;
-   }
-
-
-
-   /** get filefield as HTML - internal, do not use
-    * this method returns a string contains an filefield in HMTL-Code
-    *
-    * @param array value form element: filefield, see class cs_form
-    *
-    * @return string filefield as HMTL
-    */
-   function _getFileFieldAsHTML ($form_element) {
-      $html  = '';
-      $html .= '<input style="font-size:8pt;" type="file" name="'.$form_element['name'].'"';
-      $html .= ' size="'.$form_element['size'].'"';
-      $html .= ' tabindex="'.$this->_count_form_elements.'"';
-      $html .= '/>';
-      if (!empty($form_element['button_text']) and !empty($form_element['button_name'])) {
-         $html .= '         &nbsp;';
-         $html .= $this->_getButtonAsHTML($form_element['button_text'],$form_element['button_name']);
-      }
-      return $html;
-   }
-
-   /** get checkbox as HTML - internal, do not use
-    * this method returns a string contains an checkbox in HMTL-Code
-    *
-    * @param array value form element: checkbox, see class cs_form
-    *
-    * @return string checkbox as HMTL
-    */
-   function _getCheckboxAsHTML ($form_element) {
-      $html  = '';
-      $html .= '<input type="checkbox" name="'.$form_element['name'].'" value="'.$this->_text_as_form($form_element['value']).'"';
-      if ($form_element['ischecked']) {
-         $html .= ' checked';
-      }
-      $html .= ' tabindex="'.$this->_count_form_elements.'"';
-      $html .= ' style="font-size:8pt;margin-left:0px;"/>';
-      $html .= '<span class="personal">'.$form_element['text'].'</span>';
-      return $html;
-   }
-
-
-   /** get checkboxgroup as HTML - internal, do not use
-    * this method returns a string contains an checkboxgroup in HMTL-Code
-    *
-    * @param array value form element: checkboxgroup, see class cs_form
-    *
-    * @return string checkboxgroup as HMTL
-    */
-
-   function _getCheckboxGroupAsHTML ($form_element) {
-      $html  = 'muss noch angepasst werden an den left-form-view';
-      /*
-      $options = $form_element['value'];
-      $option = reset($options);
-      if (!empty($form_element['columns'])) {
-         $html .= '<table class="form_view_plain_checkboxgroup" summary="Layout">'."\n";
-         $num_of_options = count($options);
-         $width = floor(100/$form_element['columns']);
-         $num_of_column = 1;
-         if ($form_element['horizontal']) {
-            while ($option) {
-               if ($num_of_column == 1) {
-                  $html .= '<tr>'."\n";
-               }
-               $option['name'] = $form_element['name'].'[]';
-               if (in_array($option['value'],$form_element['selected']) or in_array($option['text'],$form_element['selected'])) {
-                  $option['ischecked'] = true;
-               } else {
-                  $option['ischecked'] = false;
-               }
-               $html .= '<td width="'.$width.'%">'.$this->_getCheckboxAsHTML($option).'</td>'."\n";
-               if ($num_of_column == $form_element['columns']) {
-                  $html .= '</tr>'."\n";
-                  $num_of_column = 0;
-               }
-               $num_of_column++;
-               $option = next($options);
-            }
-         } else {
-            $maximum = ceil($num_of_options/$form_element['columns']);
-            $num_of_column = 1;
-            for ($i=0; $i<$maximum; $i++) {
-               if ($num_of_column == 1) {
-                  $html .= '<tr>'."\n";
-               }
-               for ($j=0; $j<$form_element['columns'];$j++) {
-                  $id = $i + ($j*$maximum);
-                  if ($id<count($options)) {
-                     $option = $options[$id];
-                     $option['name'] = $form_element['name'].'[]';
-                     if (in_array($option['value'],$form_element['selected']) or in_array($option['text'],$form_element['selected'])) {
-                        $option['ischecked'] = true;
-                     } else {
-                        $option['ischecked'] = false;
-                     }
-                     $html .= '<td width="'.$width.'%">'.$this->_getCheckboxAsHTML($option).'</td>'."\n";
-                  }
-               }
-               if ($num_of_column == $form_element['columns'] or $i+1 == $maximum) {
-                  $html .= '</tr>'."\n";
-                  $num_of_column = 0;
-               }
-            }
-         }
-         $html .= '</table>'."\n";
-      } else {
-         while ($option) {
-            $option['name'] = $form_element['name'].'[]';
-            if (in_array($option['value'],$form_element['selected']) or in_array($option['text'],$form_element['selected'])) {
-               $option['ischecked'] = true;
-            } else {
-               $option['ischecked'] = false;
-            }
-            $html .= '         '.$this->_getCheckboxAsHTML($option);
-            if (!$form_element['horizontal'] and !empty($option)) {
-               $html .= '<br />';
-            }
-            $html .= "\n";
-            $option = next($options);
-         }
-      }
-      if (!empty($form_element['button_text']) and !empty($form_element['button_name'])) {
-         $html .= '         &nbsp;';
-         $html .= $this->_getButtonAsHTML($form_element['button_text'],$form_element['button_name'])."\n";
-      }
-      */
-      return $html;
-   }
-
-
-
    /** get hiddenfield as HTML - internal, do not use
     * this method returns a string contains an hiddenfield in HMTL-Code
     *
@@ -456,7 +162,6 @@ HTML;
     *
     * @return string hiddenfield as HMTL
     */
-
    function _getHiddenFieldAsHTML ($form_element)
    {
         $elementName = $form_element['name'];
@@ -468,6 +173,7 @@ HTML;
 
         return $html;
    }
+
 
    /** get selectbox as HTML - internal, do not use
     * this method returns a string containing an selectbox in HMTL-Code
@@ -555,34 +261,6 @@ HTML;
         return $html;
    }
 
-   /** get selectgroupbox as HTML - internal, do not use
-    * this method returns a string contains selectboxes in HMTL-Code
-    *
-    * @param array value form element: selectboxgroup, see class cs_form
-    *
-    * @return string selectbox as HMTL
-    */
-   function _getSelectGroupAsHTML ($form_element) {
-      $html  = '';
-      for($i=0; $i<count($form_element['options']);$i++){
-          $element['type']          = 'select';
-          $element['name']          = $form_element['names4select'][$i];
-          $element['options']       = $form_element['options'][$i];
-          if(isset($form_element['selected'][$i])){
-             $element['selected']      = (array)$form_element['selected'][$i];
-          }else{
-             $element['selected']      = array();
-          }
-
-          $element['size']          = $form_element['size'];
-          $element['multiple']      = false;
-          $element['event']         = $form_element['event'];
-          $html .= $this->_getSelectAsHTML ($element);
-      }
-      return $html;
-   }
-
-
 
     /** get passwordfield as HTML - internal, do not use
      * this method returns a string contains an passwordfield in HMTL-Code
@@ -625,7 +303,6 @@ HTML;
    }
 
 
-
    /** get textfield as HTML - internal, do not use
     * this method returns a string contains an textfield in HMTL-Code
     *
@@ -664,27 +341,6 @@ HTML;
    }
 
 
-   /** get textarea as HTML - internal, do not use
-    * this method returns a string contains an textarea in HMTL-Code
-    *
-    * @param array value form element: textarea, see class cs_form
-    *
-    * @return string textarea as HMTL
-    */
-   function _getTextAreaAsHTML ($form_element) {
-      $html  = '';
-      $html .= '<textarea style="font-size:8pt;" name="'.$form_element['name'].'"';
-      $html .= ' cols="'.$form_element['vsize'].'"';
-      $html .= ' rows="'.$form_element['hsize'].'"';
-      $html .= ' wrap="'.$form_element['wrap'].'"';
-      $html .= ' tabindex="'.$this->_count_form_elements.'"';
-      $html .= '">';
-      $html .= $this->_text_as_form($form_element['value']);
-      $html .= '</textarea>';
-      $html .= "\n";
-      return $html;
-   }
-
    function _getTextAsHTML ($form_element)
    {
         $html = '';
@@ -716,6 +372,7 @@ HTML;
 
         return $html;
    }
+
 
    /** get form element as HTML and in commsy-style- internal, do not use
     * this method returns a string contains a form element in commsy-style in HMTL-Code
@@ -840,6 +497,7 @@ HTML;
         return $html;
    }
 
+
    /** get form view as HTML
     * this method returns the form view in HTML-Code
     *
@@ -935,66 +593,6 @@ HTML;
       return $html;
    }
 
-
-  /** get first input field
-    * this method returns the name of the first input field, needed for setFocus
-    *
-    * @return string name of first input field
-    */
-
-   function _getFirstInputFieldName() {
-      $form_element = $this->_form_elements->getFirst();
-      $result = '';
-      while ( $form_element and $result == '') {
-         if ( $form_element['type'] != 'hidden' and $form_element['type'] != 'text' and $form_element['type'] != 'headline' and $form_element['type'] != 'radio') {
-            if ($form_element['type'] == 'datetime') {
-               $result = $form_element['firstName'];
-            } else {
-               $result = $form_element['name'];
-            }
-         }
-         $form_element = $this->_form_elements->getNext();
-      }
-      return $result;
-   }
-
-   function withoutJavascript () {
-      $this->_with_javascript = false;
-   }
-
-
-   /** get information for header as HTML
-    * this method returns information in HTML-Code needs for the header of the HTML-Page
-    *
-    * @return string javascipt needed for setFocus on first input field
-    */
-   function getInfoForHeaderAsHTML () {
-      $html  = '';
-      if ($this->_with_javascript) {
-         $html .= '   <script type="text/javascript">'."\n";
-         $html .= '      <!--'."\n";
-         // jQuery
-         //$html .= '         function setfocus() { document.f.'.$this->_getFirstInputFieldName().'.focus(); }'."\n";
-         $html .= '         function setfocus() { jQuery("input[name=\''.$this->_getFirstInputFieldName().'\'], f").focus(); }'."\n";
-         // jQuery
-         $html .= '      -->'."\n";
-         $html .= '   </script>'."\n";
-      }
-      return $html;
-   }
-
-   /** get information for body as HTML
-    * this method returns information in HTML-Code needs for the body of the HTML-Page
-    *
-    * @return string  needed for setFocus on first input field
-    */
-   function getInfoForBodyAsHTML () {
-      $html  = '';
-      if ($this->_with_javascript) {
-         $html .= ' onload="setfocus()"';
-      }
-      return $html;
-   }
 
     /** internal method to create errorbox if there are errors, INTERNAL
      * this method creates an errorbox with messages form the error array
