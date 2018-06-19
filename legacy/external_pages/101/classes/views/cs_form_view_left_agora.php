@@ -6,54 +6,53 @@ $environment = $symfonyContainer->get('commsy_legacy.environment')->getEnvironme
 $classFactory = $environment->getClassFactory();
 $classFactory->includeClass(FORM_LEFT_VIEW);
 
-// TODO: remove all code from `cs_form_view_left` that hasn't been overridden
-
 /** Overridden to implement a form view for the custom AGORA portal theme.
  * @author CommSy Development Group
  */
-class cs_form_view_left_agora extends cs_form_view_left {
+class cs_form_view_left_agora extends cs_form_view_left
+{
 
-   /**
-    * string - containing the URL where data will post to
-    */
-   var $_action = NULL;
+    /**
+     * string - containing the URL where data will post to
+     */
+    var $_action = NULL;
 
-   /**
-    * string - containing the action type
-    */
-   var $_action_type = 'post';
+    /**
+     * string - containing the action type
+     */
+    var $_action_type = 'post';
 
-   /**
-    * array - array of form elements from class cs_form, headline of the form view is the first element of this array
-    */
-   var $_form_elements;
+    /**
+     * array - array of form elements from class cs_form, headline of the form view is the first element of this array
+     */
+    var $_form_elements;
 
-   /**
-    * object - a form object
-    */
-   var $_form = NULL;
+    /**
+     * object - a form object
+     */
+    var $_form = NULL;
 
-  /**
-   * array - containing strings of error messages
-   */
-   var $_error_array = array();
+    /**
+     * array - containing strings of error messages
+     */
+    var $_error_array = array();
 
-  /**
-   * int - number of form elements
-   */
-   var $_count_form_elements;
+    /**
+     * int - number of form elements
+     */
+    var $_count_form_elements;
 
-  /**
-   * boolean - adds header infos if true
-   */
-   var $_with_javascript = true;
+    /**
+     * boolean - adds header infos if true
+     */
+    var $_with_javascript = true;
 
-  /**
-   * string - adds description infos if true
-   */
-   var $_description_text ='';
+    /**
+     * string - adds description infos if true
+     */
+    var $_description_text = '';
 
-   var $_form_name = '';
+    var $_form_name = '';
 
 
     /** The only available constructor, initial values for internal variables.
@@ -66,15 +65,15 @@ class cs_form_view_left_agora extends cs_form_view_left {
     }
 
 
-  /** get headline as HTML - internal, do not use
-    * this method returns a string contains a headline in HMTL-Code
-    *
-    * @param array value form element: headline, see class cs_form
-    *
-    * @return string headline as HMTL
-    */
-   function _getHeadLineAsHTML ($form_element, $isBold = true)
-   {
+    /** get headline as HTML - internal, do not use
+     * this method returns a string contains a headline in HMTL-Code
+     *
+     * @param array value form element: headline, see class cs_form
+     *
+     * @return string headline as HMTL
+     */
+    function _getHeadLineAsHTML($form_element, $isBold = true)
+    {
         // NOTE: ATM, this method doesn't support $form_element['right'] (class="form_actions"); see `cs_form_view_left.php->_getHeadLineAsHTML()`
 
         $headlineLabel = $form_element['label'];
@@ -99,18 +98,18 @@ HTML;
 HTML;
 
         return $html;
-   }
+    }
 
 
-   /** get button as HTML - internal, do not use
-    * this method returns a string containing a button in HMTL-Code
-    *
-    * @param array value form element: button, see class cs_form
-    *
-    * @return string button as HMTL
-    */
-   function _getButtonAsHTML ($buttonText, $buttonName, $buttonWidth = '', $isPrimaryButton = false, $disableFormValidation = false)
-   {
+    /** get button as HTML - internal, do not use
+     * this method returns a string containing a button in HMTL-Code
+     *
+     * @param array value form element: button, see class cs_form
+     *
+     * @return string button as HMTL
+     */
+    function _getButtonAsHTML($buttonText, $buttonName, $buttonWidth = '', $isPrimaryButton = false, $disableFormValidation = false)
+    {
         // NOTE: ATM, this subclass ignores any given button width
         $width = ''; // (!empty($buttonWidth)) ? ' style="width:' . $buttonWidth . 'em;"' : '';
 
@@ -122,18 +121,18 @@ HTML;
 HTML;
 
         return $html;
-   }
+    }
 
 
-   /** get buttonbar as HTML - internal, do not use
-    * this method returns a string contains a buttonbar (save, cancel and delete) in HMTL-Code
-    *
-    * @param array value form element: buttonbar, see class cs_form
-    *
-    * @return string buttonbar as HMTL
-    */
-   function _getButtonBarAsHTML ($form_element)
-   {
+    /** get buttonbar as HTML - internal, do not use
+     * this method returns a string contains a buttonbar (save, cancel and delete) in HMTL-Code
+     *
+     * @param array value form element: buttonbar, see class cs_form
+     *
+     * @return string buttonbar as HMTL
+     */
+    function _getButtonBarAsHTML($form_element)
+    {
         $buttonName = $form_element['name'];
 
         $html = '';
@@ -152,18 +151,18 @@ HTML;
         }
 
         return $html;
-   }
+    }
 
 
-   /** get hiddenfield as HTML - internal, do not use
-    * this method returns a string contains an hiddenfield in HMTL-Code
-    *
-    * @param array value form element: hiddenfield, see class cs_form
-    *
-    * @return string hiddenfield as HMTL
-    */
-   function _getHiddenFieldAsHTML ($form_element)
-   {
+    /** get hiddenfield as HTML - internal, do not use
+     * this method returns a string contains an hiddenfield in HMTL-Code
+     *
+     * @param array value form element: hiddenfield, see class cs_form
+     *
+     * @return string hiddenfield as HMTL
+     */
+    function _getHiddenFieldAsHTML($form_element)
+    {
         $elementName = $form_element['name'];
         $elementValue = (isset($form_element['value'])) ? $this->_text_as_form($form_element['value']) : '';
 
@@ -172,18 +171,18 @@ HTML;
 HTML;
 
         return $html;
-   }
+    }
 
 
-   /** get selectbox as HTML - internal, do not use
-    * this method returns a string containing an selectbox in HMTL-Code
-    *
-    * @param array value form element: selectbox, see class cs_form
-    *
-    * @return string selectbox as HMTL
-    */
-   function _getSelectAsHTML ($form_element)
-   {
+    /** get selectbox as HTML - internal, do not use
+     * this method returns a string containing an selectbox in HMTL-Code
+     *
+     * @param array value form element: selectbox, see class cs_form
+     *
+     * @return string selectbox as HMTL
+     */
+    function _getSelectAsHTML($form_element)
+    {
         $name = $form_element['name'];
         $id = $name . $form_element['id'];
 
@@ -228,7 +227,7 @@ HTML;
                     $selectedAttribute = ' selected';
                 }
             }
-            
+
             $html .= LF . <<<HTML
                   <option$valueAttribute$selectedAttribute$disabledAttribute>$optionName</option>
 HTML;
@@ -241,25 +240,25 @@ HTML;
 HTML;
 
         if ($form_element['name'] === 'label') {
-            $element['type']      = 'textfield';
-            $element['name']      = 'new_label';
-            $element['value']     = '';
-            $element['label']     = '';
-            $element['example']   = '';
+            $element['type'] = 'textfield';
+            $element['name'] = 'new_label';
+            $element['value'] = '';
+            $element['label'] = '';
+            $element['example'] = '';
             //$element['maxlength'] = 255;
             //$element['size']      = 20;
             $element['mandatory'] = 'false';
             $html .= LF . $this->_getTextFieldAsHTML($element);
         }
 // TODO: handle `button_text` & `button_name`?
-/*
-        if (!empty($form_element['button_text']) and !empty($form_element['button_name'])) {
-            $html .= $this->_getButtonAsHTML($form_element['button_text'],$form_element['button_name'])."\n";
-        }
-*/
+        /*
+                if (!empty($form_element['button_text']) and !empty($form_element['button_name'])) {
+                    $html .= $this->_getButtonAsHTML($form_element['button_text'],$form_element['button_name'])."\n";
+                }
+        */
 
         return $html;
-   }
+    }
 
 
     /** get passwordfield as HTML - internal, do not use
@@ -269,7 +268,7 @@ HTML;
      *
      * @return string passwordfield as HMTL
      */
-    function _getPasswordAsHTML ($form_element)
+    function _getPasswordAsHTML($form_element)
     {
         $formElementName = $form_element['name'];
 
@@ -300,18 +299,18 @@ HTML;
         }
 
         return $html;
-   }
+    }
 
 
-   /** get textfield as HTML - internal, do not use
-    * this method returns a string contains an textfield in HMTL-Code
-    *
-    * @param array value form element: textfield, see class cs_form
-    *
-    * @return string textfield as HMTL
-    */
-   function _getTextFieldAsHTML ($form_element)
-   {
+    /** get textfield as HTML - internal, do not use
+     * this method returns a string contains an textfield in HMTL-Code
+     *
+     * @param array value form element: textfield, see class cs_form
+     *
+     * @return string textfield as HMTL
+     */
+    function _getTextFieldAsHTML($form_element)
+    {
         $formElementName = $form_element['name'];
         $formElementID = $formElementName . $form_element['id'];
         $formElementLabel = $form_element['label'];
@@ -330,19 +329,19 @@ HTML;
         }
 
 // TODO: handle `button_text` & `button_name`?
-/*
-      if (!empty($form_element['button_text']) and !empty($form_element['button_name'])) {
-         $html .= '&nbsp;';
-         $html .= $this->_getButtonAsHTML($form_element['button_text'],$form_element['button_name']).LF;
-      }
-*/
+        /*
+              if (!empty($form_element['button_text']) and !empty($form_element['button_name'])) {
+                 $html .= '&nbsp;';
+                 $html .= $this->_getButtonAsHTML($form_element['button_text'],$form_element['button_name']).LF;
+              }
+        */
 
         return $html;
-   }
+    }
 
 
-   function _getTextAsHTML ($form_element)
-   {
+    function _getTextAsHTML($form_element)
+    {
         $html = '';
 
         if (isset($form_element['anchor']) && !empty($form_element['anchor'])) {
@@ -350,7 +349,7 @@ HTML;
             $html .= <<<HTML
                 <a name="$anchor"></a>
 HTML;
-     }
+        }
 
         if (isset($form_element['value']) && !empty($form_element['value'])) {
             $text = $form_element['value'];
@@ -362,27 +361,27 @@ HTML;
 HTML;
 
 // TODO: handle `button_text` & `button_name`?
-/*
-         if (!empty($form_element['button_text']) and !empty($form_element['button_name'])) {
-            $html .= '         &nbsp;';
-            $html .= $this->_getButtonAsHTML($form_element['button_text'],$form_element['button_name'],'',false)."\n";
-         }
-*/
+            /*
+                     if (!empty($form_element['button_text']) and !empty($form_element['button_name'])) {
+                        $html .= '         &nbsp;';
+                        $html .= $this->_getButtonAsHTML($form_element['button_text'],$form_element['button_name'],'',false)."\n";
+                     }
+            */
         }
 
         return $html;
-   }
+    }
 
 
-   /** get form element as HTML and in commsy-style- internal, do not use
-    * this method returns a string contains a form element in commsy-style in HMTL-Code
-    *
-    * @param array value form element: form element, see class cs_form
-    *
-    * @return string form element in commsy-style as HMTL
-    */
-   function _getFormElementAsHTML ($form_element)
-   {
+    /** get form element as HTML and in commsy-style- internal, do not use
+     * this method returns a string contains a form element in commsy-style in HMTL-Code
+     *
+     * @param array value form element: form element, see class cs_form
+     *
+     * @return string form element in commsy-style as HMTL
+     */
+    function _getFormElementAsHTML($form_element)
+    {
         // prepare form element array for combined form elements
         $form_element_array = array();
         if (!isset($form_element[0]['type'])) {
@@ -455,7 +454,7 @@ HTML;
                     $html .= LF . $this->_getSelectGroupAsHTML($form_element);
                     break;
                 case "checkbox":
-                    $html .= LF . $this->_getCheckboxAsHTML($form_element)."\n";
+                    $html .= LF . $this->_getCheckboxAsHTML($form_element) . "\n";
                     break;
                 case "checkboxgroup":
                     $html .= $this->_getCheckboxGroupAsHTML($form_element);
@@ -495,17 +494,17 @@ HTML;
 HTML;
 
         return $html;
-   }
+    }
 
 
-   /** get form view as HTML
-    * this method returns the form view in HTML-Code
-    *
-    * @return string form view as HMTL
-    */
-   function asHTML ()
-   {
-        $html  = '';
+    /** get form view as HTML
+     * this method returns the form view in HTML-Code
+     *
+     * @return string form view as HMTL
+     */
+    function asHTML()
+    {
+        $html = '';
 
         if (count($this->_error_array) > 0) {
             $html .= LF . $this->_getErrorBoxAsHTML() . LF;
@@ -520,59 +519,59 @@ HTML;
           <form method="$methodType" action="$formActionURL" name="$formName" enctype="multipart/form-data">
 HTML;
 
-      // first all hidden elements
-      $form_element = $this->_form_elements->getFirst();
-      while ($form_element) {
-         if ($form_element['type'] == 'hidden') {
-            $html .= $this->_getHiddenfieldAsHTML($form_element);
-         }
-         $form_element = $this->_form_elements->getNext();
-      }
-
-      // prepare form elements, especially combine form fields
-      $form_element_array = array();
-      $form_element = $this->_form_elements->getFirst();
-      $temp_array = array();
-      $failure = false;
-      $mandatory = false;
-      $this->_count_form_elements = 0;
-      while ($form_element) {
-         if ($form_element['type'] != 'hidden') {
-            if (!empty($form_element['combine']) and $form_element['combine']) {
-               $temp_array[] = $form_element;
-               if (!empty($form_element['failure']) and $form_element['failure']) {
-                  $failure = true;
-               }
-               if (!empty($form_element['mandatory']) and $form_element['mandatory']) {
-                  $mandatory = true;
-               }
-            } else {
-               $temp_array[] = $form_element;
-               if (count($temp_array) == 1) {
-                  $form_element_array[] = $temp_array[0];
-               } else {
-                  if (!empty($form_element['failure']) and $form_element['failure']) {
-                     $failure = true;
-                  }
-                  if (!empty($form_element['mandatory']) and $form_element['mandatory']) {
-                     $mandatory = true;
-                  }
-                  if ($failure) {
-                     $temp_array[0]['failure'] = true;
-                     $failure = false;
-                  }
-                  if ($mandatory) {
-                     $temp_array[0]['mandatory'] = true;
-                     $mandatory = false;
-                  }
-                  $form_element_array[] = $temp_array;
-               }
-               $temp_array = array();
+        // first all hidden elements
+        $form_element = $this->_form_elements->getFirst();
+        while ($form_element) {
+            if ($form_element['type'] == 'hidden') {
+                $html .= $this->_getHiddenfieldAsHTML($form_element);
             }
-         }
-         $this->_count_form_elements++;
-         $form_element = $this->_form_elements->getNext();
-      }
+            $form_element = $this->_form_elements->getNext();
+        }
+
+        // prepare form elements, especially combine form fields
+        $form_element_array = array();
+        $form_element = $this->_form_elements->getFirst();
+        $temp_array = array();
+        $failure = false;
+        $mandatory = false;
+        $this->_count_form_elements = 0;
+        while ($form_element) {
+            if ($form_element['type'] != 'hidden') {
+                if (!empty($form_element['combine']) and $form_element['combine']) {
+                    $temp_array[] = $form_element;
+                    if (!empty($form_element['failure']) and $form_element['failure']) {
+                        $failure = true;
+                    }
+                    if (!empty($form_element['mandatory']) and $form_element['mandatory']) {
+                        $mandatory = true;
+                    }
+                } else {
+                    $temp_array[] = $form_element;
+                    if (count($temp_array) == 1) {
+                        $form_element_array[] = $temp_array[0];
+                    } else {
+                        if (!empty($form_element['failure']) and $form_element['failure']) {
+                            $failure = true;
+                        }
+                        if (!empty($form_element['mandatory']) and $form_element['mandatory']) {
+                            $mandatory = true;
+                        }
+                        if ($failure) {
+                            $temp_array[0]['failure'] = true;
+                            $failure = false;
+                        }
+                        if ($mandatory) {
+                            $temp_array[0]['mandatory'] = true;
+                            $mandatory = false;
+                        }
+                        $form_element_array[] = $temp_array;
+                    }
+                    $temp_array = array();
+                }
+            }
+            $this->_count_form_elements++;
+            $form_element = $this->_form_elements->getNext();
+        }
 
         // now get the html code
         foreach ($form_element_array as $form_element) {
@@ -590,14 +589,14 @@ HTML;
           </form>
 HTML;
 
-      return $html;
-   }
+        return $html;
+    }
 
 
     /** internal method to create errorbox if there are errors, INTERNAL
      * this method creates an errorbox with messages form the error array
      */
-    function _getErrorBoxAsHTML ()
+    function _getErrorBoxAsHTML()
     {
         $params = array();
         $params['environment'] = $this->_environment;
@@ -617,4 +616,5 @@ HTML;
         return $errorbox->asHTML();
     }
 }
+
 ?>

@@ -442,18 +442,14 @@ HTML;
             } else {
                 $html .= LF . $this->_getLoginFormAsHTML();
             }
-        }
-        else {
+        } else {
             if ($csModus === 'portalmember' || $csModus === 'portalmember2') {
                 $html .= LF . $this->_getNewAccountFormAsHTML($csModus);
-            }
-            elseif ($csModus === 'account_forget') {
+            } elseif ($csModus === 'account_forget') {
                 $html .= LF . $this->_getForgottenAccountFormAsHTML();
-            }
-            elseif ($csModus === 'password_forget') {
+            } elseif ($csModus === 'password_forget') {
                 $html .= LF . $this->_getForgottenPasswordFormAsHTML();
-            }
-            elseif ($csModus === 'password_change') {
+            } elseif ($csModus === 'password_change') {
                 $html .= LF . $this->_getChangePasswordFormAsHTML();
             }
         }
