@@ -49,8 +49,8 @@ class cs_material_detail_view extends cs_detail_view {
     *
     * @author CommSy Development Group
     */
-   function cs_material_detail_view ($params) {
-      $this->cs_detail_view($params);
+   function __construct($params) {
+      cs_detail_view::__construct($params);
    }
 
    function setClipboardIDArray($cia) {

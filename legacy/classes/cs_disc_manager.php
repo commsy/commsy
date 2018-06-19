@@ -28,7 +28,7 @@ class cs_disc_manager {
    private $_folder_temp = 'temp';
    private $_last_saved_filename = '';
 
-   function cs_disc_manager () {
+   function __construct() {
    }
 
    function _setFirstID ($value) {

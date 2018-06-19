@@ -1,0 +1,68 @@
+{% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+{% import 'CommsyBundle:material:macros.html.twig' as macrosMaterial %}
+
+<hr class="uk-width-9-10  cs-detail-divider"/>
+<article class="uk-article uk-margin-left uk-margin-right">
+    {% include 'CommsyBundle:utils:save_spinner.html.twig' %}
+    <div class="uk-form-horizontal">
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        <div class="">
+            <div class="">
+                <div class="uk-width-9-10">
+                    <h4 class="uk-width-1-2 cs-brand-color">
+                        {{ 'sort sections'|trans }}
+                    </h4>
+                </div>
+                <div class="uk-width-9-10" data-uk-observe>
+                    <div style="position:absolute;" class="uk-list section-list uk-list-striped">
+                        {% set counter = 1 %}
+                        {% for section in form.sections %}
+                            <div class="uk-panel uk-panel-box cs-remove-padding cs-brand-color">
+                                {{counter}}.
+                            </div>
+                        {% set counter = counter + 1  %}
+                        {% endfor %}
+                    </div>
+                    {% if not form.sections is empty %}
+                        <ul class="uk-list uk-sortable section-list cs-padding-left-20 uk-list-striped uk-width-2-3" data-uk-sortable>
+                            {% set counter = 0 %}
+                            {% for sectionId, sectionName in form.sections %}
+                                <li class="uk-panel uk-panel-box uk-sortable-handle" id="section_{{sectionId}}">
+                                    <a href="#section{{ sectionId }}" data-uk-tooltip title="{{ sectionName.vars.data|decodeHtmlEntity }}">{{ sectionName.vars.data|raw }}</a> {{ macros.fileListShort(sectionList[sectionList|keys[counter]]) }}
+                                </li>
+                                {% set counter = counter + 1  %}
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {{ form_row(form.sectionOrder) }}
+        <div class="uk-flex uk-margin-small-top">
+            <div class="uk-margin-small-left">
+                {{ form_row(form.save) }}
+            </div>
+            <div class="uk-margin-small-left">
+                {{ form_row(form.cancel) }}
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+</article>
+
+{% block javascripts %}
+    <script>
+        var regExp = /#section(\d+)$/;
+        function setSectionOrder(){
+            var $sections = $(".section-list").find("a").map(function(){
+                var sectionId = regExp.exec($(this).attr('href'));
+                if(sectionId){
+                    return sectionId[1];
+                }
+            }).get();
+            $("#material_sectionOrder").val($sections);
+        }
+        $(".section-list").on('change.uk.sortable', setSectionOrder);
+    </script>
+{% endblock %}

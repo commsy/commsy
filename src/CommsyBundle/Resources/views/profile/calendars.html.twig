@@ -1,0 +1,126 @@
+{% extends 'CommsyBundle:base:profile.html.twig' %}
+
+{% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+
+{% form_theme form 'CommsyBundle:form:uikit_horizontal_layout.html.twig' %}
+
+{% block side_navigation %}
+    {{ knp_menu_render('account') }}
+{% endblock %}
+
+{% block content %}
+    <div class="uk-grid">
+
+        <div class="uk-width-medium-4-4">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div class="uk-text-large">{{ 'calendars'|trans({}, 'menu') }}</div>
+                    </div>
+                </div>
+                <div class="uk-margin-left uk-margin-right">
+                        <div class="uk-panel uk-margin-large-bottom">
+                            <table class="uk-table">
+                                <tr class="uk-margin-bottom">
+                                    <td>
+                                        <table>
+                                            <tr>
+                                                <td><strong>{{ 'caldav_server'|trans({},'profile') }}:</strong></td>
+                                                <td>{{ caldavUrl }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ 'caldav_path'|trans({},'profile') }}:</strong></td>
+                                                <td>{{ caldavPath }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ 'caldav_user'|trans({},'profile') }}:</strong></td>
+                                                <td>{{ user.userId }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>{{ 'caldav_password'|trans({},'profile') }}:</strong></td>
+                                                <td>{{ 'caldav_password_description'|trans({},'profile') }}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="uk-grid">
+                                        <!-- <div class="uk-width-1-10">
+                                            <div>
+                                                {{ 'dashboard'|trans({}, 'profile') }}
+                                            </div>
+                                        </div> -->
+                                        <div class="uk-width-1-10">
+                                            <div>
+                                                {{ 'caldav'|trans({}, 'profile') }}
+                                            </div>
+                                        </div>
+                                        <div class="uk-width-8-10">
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="uk-grid">
+                                        <!-- <div class="uk-width-1-10">
+                                            <div class="cs-user-calendars-settings">
+                                                <div class="uk-form-controls">
+                                                    <input type="checkbox" id="calendars_check_all_dashboard" class="calendars_check_all" name="" value="" {{ allNoneDashboard ? 'checked' : ''  }} />
+                                                </div>
+                                            </div>
+                                        </div> -->
+                                        <div class="uk-width-1-10">
+                                            <div class="cs-user-calendars-settings">
+                                                <div class="uk-form-controls">
+                                                    <input type="checkbox" id="calendars_check_all_caldav" class="calendars_check_all" name="" value="" {{ allNoneCaldav? 'checked' : ''  }} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="uk-width-8-10">
+                                            {{ 'all_none'|trans({}, 'profile') }}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    {{ form_start(form) }}
+                                    {{ form_errors(form) }}
+                                    <td class="uk-grid">
+                                        <!-- <div class="uk-width-1-10 calendars_checkboxes_dashboard">
+                                            {% for child in form.calendarsDashboard %}
+                                                <div class="cs-user-calendars-settings">
+                                                    {{ form_widget(child) }}
+                                                </div>
+                                            {% endfor %}
+                                        </div> -->
+                                        <div class="uk-width-1-10 calendars_checkboxes_caldav">
+                                            {% for child in form.calendarsCalDAV %}
+                                                <div class="cs-user-calendars-settings">
+                                                    {{ form_widget(child) }}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="uk-width-8-10">
+                                            {% for roomTitle in roomTitles %}
+                                                <div class="cs-user-calendars-settings">
+                                                    {{ roomTitle }}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+    
+                        <div class="uk-panel uk-margin-large-bottom">
+                            <table class="uk-table">
+                                <tr>
+                                    <td>{{ form_widget(form.save) }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

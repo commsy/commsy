@@ -39,8 +39,8 @@ class cs_room_item extends cs_context_item {
    *
    * @param object environment environment of the commsy project
    */
-   function cs_room_item ($environment) {
-      $this->cs_context_item($environment);
+   function __construct($environment) {
+      cs_context_item::__construct($environment);
    }
 
    ######################################################

@@ -123,7 +123,7 @@ class AnnouncementController extends BaseController
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in announcement manager
             $announcementService->setFilterConditions($filterForm);
         } else {
@@ -188,7 +188,7 @@ class AnnouncementController extends BaseController
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in announcement manager
             $announcementService->setFilterConditions($filterForm);
         } else {
@@ -242,7 +242,7 @@ class AnnouncementController extends BaseController
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in announcement manager
             $announcementService->setFilterConditions($filterForm);
         } else {
@@ -285,7 +285,7 @@ class AnnouncementController extends BaseController
         // get announcement list from manager service 
         $itemsCountArray = $announcementService->getCountArray($roomId);
 
-        $html = $this->renderView('CommsyBundle:Announcement:listPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:announcement:list_print.html.twig', [
             'roomId' => $roomId,
             'module' => 'announcement',
             'announcements' => $announcements,
@@ -374,7 +374,7 @@ class AnnouncementController extends BaseController
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
-        $html = $this->renderView('CommsyBundle:Announcement:detailPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:announcement:detail_print.html.twig', [
             'roomId' => $roomId,
             'announcement' => $infoArray['announcement'],
             'readerList' => $infoArray['readerList'],
@@ -689,8 +689,8 @@ class AnnouncementController extends BaseController
         }
 
         $form->handleRequest($request);
-
-        if ($form->isValid()) {
+        
+        if ($form->isSubmitted() && $form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
             if ($saveType == 'save') {
                 $announcementItem = $transformer->applyTransformation($announcementItem, $form->getData());

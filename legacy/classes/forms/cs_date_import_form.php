@@ -43,8 +43,8 @@ class cs_date_import_form extends cs_rubric_form {
     *
     * @author CommSy Development Group
     */
-   function cs_date_import_form($params) {
-      $this->cs_rubric_form($params);
+   function __construct($params) {
+      cs_rubric_form::__construct($params);
    }
 
 

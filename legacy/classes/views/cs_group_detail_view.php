@@ -39,8 +39,8 @@ class cs_group_detail_view extends cs_detail_view {
     * @param boolean with_modifying_actions true: display with modifying functions
     *                                       false: display without modifying functions
     */
-   function cs_group_detail_view ($params) {
-      $this->cs_detail_view($params);
+   function __construct($params) {
+      cs_detail_view::__construct($params);
    }
 
    function setAccountMode($mode) {

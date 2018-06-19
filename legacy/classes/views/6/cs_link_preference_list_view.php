@@ -44,8 +44,8 @@ var $_configuration_rubric_list = NULL;
     *
     * @param array params parameters in an array of this class
     */
-   function cs_link_preference_list_view ($params) {
-      $this->cs_view($params);
+   function __construct($params) {
+      cs_view::__construct($params);
       $current_context = $this->_environment->getCurrentContextItem();
    }
 

@@ -38,8 +38,8 @@ var $_with_tags = false;
     *
     * @param object environment the environment object
     */
-   function cs_configuration_structure_options_form($params) {
-      $this->cs_rubric_form($params);
+   function __construct($params) {
+      cs_rubric_form::__construct($params);
    }
 
    /** init data for form, INTERNAL

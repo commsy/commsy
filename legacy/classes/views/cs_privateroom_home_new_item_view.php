@@ -36,8 +36,8 @@ class cs_privateroom_home_new_item_view extends cs_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_privateroom_home_new_item_view ($params) {
-      $this->cs_view($params);
+   function __construct($params) {
+      cs_view::__construct($params);
       $this->setViewName('new_item');
       $user = $this->_environment->getCurrentUserItem();
       $room = $this->_environment->getCurrentContextItem();

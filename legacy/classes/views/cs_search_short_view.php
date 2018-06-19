@@ -76,7 +76,7 @@ class cs_search_short_view extends cs_view {
     *                                       false: display without modifying functions
     */
    function __construct ($params) {
-      $this->cs_view($params);
+      cs_view::__construct($params);
       $this->setViewName('search');
       $this->_view_title = $this->_translator->getMessage('CAMPUS_SEARCH_INDEX');
    }

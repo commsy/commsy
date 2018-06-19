@@ -36,8 +36,8 @@ class cs_material_admin_detail_view extends cs_material_detail_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_material_admin_detail_view ($params) {
-      $this->cs_material_detail_view($params);
+   function __construct($params) {
+      cs_material_detail_view::__construct($params);
    }
 
    function _getDetailActionsAsHTML ($item) {

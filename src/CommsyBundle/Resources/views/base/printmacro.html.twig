@@ -1,0 +1,1012 @@
+{% macro ratingStatusDetail(item, ratingArray) %}
+    {% set rating = 0 %}
+    {% if ratingArray.ratingAverageDetail.0 is defined %}
+        {% set rating = ratingArray.ratingAverageDetail.0 %}
+    {% endif %}
+    <div id="cs-rating-div" data-uk-dropdown="{pos:'bottom-right', remaintime:200}">
+        {% set hasVoted = false %}
+        {% if ratingArray.ratingOwnDetail %}
+            {% set hasVoted = true %}
+        {% endif %}
+    
+        <div id="cs-rating-wrapper" data-cs-rating-wrapper='{"hasVoted": "{{ hasVoted }}"}'>
+            {% for i in 1..5 %}
+                {% if rating >= i %}
+                    {% if not ratingArray.ratingOwnDetail %}
+                        <i class="cs-icon-star-small uk-icon-star uk-text-warning"></i>
+                    {% else %}
+                        <i class="cs-icon-star-small uk-icon-star uk-text-warning"></i>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            {% for i in 1..5 %}
+                {% if rating < i %}
+                    {% if not ratingArray.ratingOwnDetail %}
+                        <i class="cs-icon-star-small uk-icon-star-o"></i>
+                    {% else %}
+                        <i class="cs-icon-star-small uk-icon-star-o uk-text-muted"></i>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="uk-dropdown uk-dropdown-close">
+            <div class="uk-text-left">
+                <b>{{ 'ratingTitle'|trans({}, 'material') }}</b><br/>
+                <div class="uk-margin-small-top uk-margin-small-bottom">
+                    <table class="uk-table uk-table-condensed">
+                        {% for ratingValue in 1..5 %}
+                            <tr>
+                                <td class="uk-padding-top-remove uk-padding-bottom-remove">
+                                    {% for i in 1..5 %}
+                                        {% if ratingValue >= i %}
+                                            <i class="cs-icon-star-small uk-icon-star uk-text-warning"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% for i in 1..5 %}
+                                        {% if ratingValue < i %}
+                                            <i class="cs-icon-star-small uk-icon-star-o uk-text-muted"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                                <td class="uk-padding-top-remove uk-padding-bottom-remove uk-text-right">
+                                    {% set ratingDisplay = 'rating'|transchoice(1, {}, 'material') %}
+                                    <span class="uk-text-bold uk-margin-left">
+                                    {% if ratingArray.ratingDetail[ratingValue] is defined %}
+                                        {{ ratingArray.ratingDetail[ratingValue] }}
+                                        {% if ratingArray.ratingDetail[ratingValue] == 1 %}
+                                            {% set ratingDisplay = 'rating'|transchoice(0, {}, 'material') %}
+                                        {% endif %}
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                    </span>
+                                    <!-- {{ ratingDisplay }} -->
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                {% if not hasVoted %}
+                    {{ 'ratingNoOwn'|trans({}, 'material') }}
+                {% else %}
+                    {{ 'ratingOwn'|trans({}, 'material') }} <span class="uk-text-bold">{{ ratingArray.ratingOwnDetail }}</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro workflowTrafficLight(item) %}
+    {% import _self as macros %}
+    
+    {{ macros.workflowStatus(item.workflowTrafficLight) }}
+{% endmacro %}
+
+{% macro workflowStatus(status) %}
+    <div class="uk-text-nowrap">
+    {% if status == '0_green' %}
+        <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-success"></i>
+        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+    {% elseif status == '1_yellow' %}
+        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+        <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-warning"></i>
+        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+    {% elseif status == '2_red' %}
+        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+        <i class="cs-icon-xs-small-workflow uk-icon-circle uk-text-danger"></i>
+    {% else %}
+        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+        <i class="cs-icon-xs-small-workflow uk-icon-circle-o"></i>
+    {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro workflow(item, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate) %}
+    {% import _self as macros %}
+
+    {% set preview %}
+
+    <div class="uk-grid">
+        <div class="uk-width-1-3">
+            <strong>{{ 'worflow status'|trans({}, "material") }}:</strong> <br/>
+            <div class="uk-flex-inline">
+                <div class="uk-margin-right">{{ macros.workflowTrafficLight(item) }}</div>
+                <div>{{workflowText}}</div>
+             </div>         
+        </div>
+
+        {% if workflowValidityDate != '0000-00-00 00:00:00' %}
+            <div class="uk-width-1-3">
+                <div class="uk-margin-bottom">
+                    <strong>{{ 'workflow validity date'|trans({}, "material") }}</strong>: <br/>
+                    {{ workflowValidityDate|craue_date }}       
+                </div>
+            </div>
+        {% endif %}
+        {% if workflowResubmissionDate != '0000-00-00 00:00:00' %}
+             <div class="uk-width-1-3">
+                <div class="uk-margin-bottom">
+                    <strong>{{ 'workflow resubmission date'|trans({}, "material") }}</strong>:<br/> 
+                    {{ workflowResubmissionDate|craue_date }}
+                </div>
+            </div>
+       {% endif %}
+    </div>
+
+        
+    {% endset %}
+
+    {% set content %}
+    <div class="uk-grid">
+        <div class="uk-width-1-3">
+            <strong>{{ 'worflow status'|trans({}, "material") }}:</strong> <br/>
+            <div class="uk-flex-inline uk-margin-bottom">
+                <div class="uk-margin-right">{{ macros.workflowTrafficLight(item) }}</div>
+                <div>{{workflowText}}</div>
+             </div>         
+        </div>
+        <div>
+            {% if workflowValidityDate != '0000-00-00 00:00:00' %}
+                <div class="uk-margin-bottom">
+                    <strong>{{ 'workflow validity date'|trans({}, "material") }}</strong>: <br/>
+                    {{ workflowValidityDate|craue_date }}       
+                </div>
+            {% endif %}
+        </div>
+        <div >
+            {% if workflowResubmissionDate != '0000-00-00 00:00:00' %}
+                <div class="uk-margin-bottom">
+                    <strong>{{ 'workflow resubmission date'|trans({}, "material") }}</strong>:<br/> 
+                    {{ workflowResubmissionDate|craue_date }}
+                </div>
+           {% endif %}
+       </div>
+       {% if not workflowGroupArray is empty %}
+            <div>
+                <strong>{{ 'workflow marked as read by groups'|trans({}, "material") }}:</strong><br/>
+                {% set counter = 1 %}
+                {% for workflowGroup in workflowGroupArray %}
+                    {{workflowGroup.title}} ({{workflowGroup.userCount}} {{ 'of'|trans({}, "room") }} {{workflowGroup.userCountComplete}})
+                    {% if counter != workflowGroupArray|length %}, {% endif %}
+                    {% set counter = counter + 1 %}
+                {% endfor %}
+            </div>
+        {% endif %}       
+        {% if not workflowUserArray is empty %}
+            <div class="uk-width-1-2">            
+               <strong>{{ 'workflow marked as read by users'|trans({}, "material") }}:</strong><br/>
+               {% set counter = 1 %}
+               {% for workflowUser in workflowUserArray %}
+                   {{workflowUser.name}} 
+                    {% if counter != workflowUserArray|length %}, {% endif %}
+                    {% set counter = counter + 1 %}
+               {% endfor %}
+           </div>
+       {% endif %}       
+     </div>
+   {% endset %}
+    
+    {{ macros.editContent('workflow', item, true, content, preview, true, false, 0) }}
+{% endmacro %}
+
+{% macro links(item,withTags,withCategories,roomCategories) %}
+    {% import _self as macros %}
+    
+    {%set countEntries = item.tagsArray|length + item.buzzwordArray|length + item.AllLinkeditemIDArray|length %}
+
+    
+
+    {% set content %}
+
+    <div>
+        <div >
+            <strong>{{ 'linked entries'|trans({}, "room") }}:</strong> <br/>
+            {{ render(controller(
+                'CommsyBundle:Link:showDetailPrint',
+                { 'roomId': item.contextId, 'itemId': item.itemId }
+            ))}}            
+        </div>
+        <div >
+            <strong>{{ 'categories'|trans({}, "room") }}:</strong>
+            <div class="cs-tree-plain">
+                {{ _self.nestedTagList(item.tagsArray, roomCategories, 1) }}
+            </div>
+        </div>
+        <div>
+            <strong>{{ 'hashtags'|trans({}, "room") }}:</strong> <br/>
+            {% set tagArray = item.buzzwordList.to_array() %} 
+            {% if (tagArray|length) > 0 %}
+                {% for tag in tagArray %}
+                    <button class="uk-button uk-margin-small-bottom">{{tag.title}}
+                {% endfor %}
+            {% else %}
+                {{ 'no linked items'|trans({}, "room")}}    
+            {% endif %}
+        </div>
+    </div>
+    {% endset %}
+    
+    {{ macros.editContent('links', item, true, content, true, true, countEntries) }}
+{% endmacro %}
+
+{% macro files(item) %}
+    {% import _self as macros %}
+
+    {% set fileArray = item.fileList.to_array %}
+
+    <hr />
+
+    <article >
+        <a name="description"></a>
+        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
+
+        {# title row #}
+        <div class="uk-grid uk-margin-small-bottom">
+            <div class="uk-width-9-10">
+                <h4 class="cs-detail-section-header">
+                    {{- "files"|trans({}) }}
+                    ({{ fileArray|length}} )
+                </h4>
+            </div>
+        </div>
+
+        {# content #}
+        {% if not fileArray is empty %}
+            <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
+
+                
+                {# full content #}
+                <div>
+                    <div >
+                        {% set prefix='' %}
+                        {% for file in fileArray %}
+                                        {{prefix}}
+                                        {{ file.filename}}
+                                        ({{ file.fileSize }} kb)
+                                         {% set prefix=', ' %}
+                                    
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+        {% else %}
+            <div class="uk-width-9-10 uk-margin-top-remove">
+                
+                <div>
+                    <span class="uk-text-muted">{{ 'no content'|trans({}, "room") }}</span>
+                </div>
+
+            </div>
+        {% endif %}
+        
+    </article>
+{% endmacro %}
+
+{% macro itemDescription(title, item, edit, content) %}
+    <hr/>
+
+    <article>
+        <a name="description"></a>
+        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
+
+        {# title row #}
+        <div class="uk-grid uk-margin-small-bottom">
+            <div class="uk-width-9-10">
+                <h4 class="cs-detail-section-header">
+                    {{- title|trans({}) -}}
+                </h4>
+            </div>
+
+
+        {# content #}
+        {% if not content is empty %}
+            <div class="uk-width-9-10">
+
+                {# preview #}
+                <div>
+                    {{ content|raw }}
+                </div>
+
+            </div>
+        {% endif %}
+{% endmacro %}
+
+{% macro userIconLink(user, size) %}
+    {% import _self as macros %}
+    
+        {{  macros.userIcon(user, size) }}
+    
+{% endmacro %}
+
+
+{% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, ratingArray) %}
+    {% import _self as macros %}
+    {% set pathName = '' %}
+    {% if item.itemType == 'material' %}
+        {% set pathName = 'commsy_material_edit' %}
+    {% elseif item.itemType == 'section' %}
+        <a name="section{{item.ItemID}}"></a>
+        {% set pathName = 'commsy_material_edit' %}
+    {% endif %}
+    {% if userCount == 0 %}
+        {% set userCount = 1 %}
+    {% endif %}
+    
+    <div>
+        <div >
+            <div >
+                <div  >        
+                    <div>
+                    {% if item.itemType != 'section' %}
+                        <div>
+                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
+                            {% if item.itemType == 'material' %}
+                                {% set material = item %}
+                                <div top-padding=0>
+                                {% if showRating or showWorkflow%}
+                                
+                                    {% if showRating%}
+                                        {{  macros.ratingStatusDetail(material, ratingArray) }}
+                                    {% endif %}
+                                    {% if showWorkflow%}
+                                        {{  macros.workflowTrafficLight(material) }}
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            {% include 'CommsyBundle:material:biblio.html.twig' %}
+                            {% endif %}
+
+                        </div>
+                       
+                    {% else %}
+                        <div>
+                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
+                        </div>
+                {% endif %}
+                </div>
+                </div>        
+               
+            </div>
+            {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}
+        </div>
+
+        <div >
+            <div >    
+                <div >
+                    <div>
+                        
+                            <div >
+
+                                <div class="uk-grid">
+
+                                    <div class="uk-width-1-3">
+
+                                        <div class="uk-flex">
+                                            {{ 'last changed'|trans({})|capitalize }}
+                                            <div>
+                                                {% if item.modificatorItem.isUser %}
+                                                    {{  macros.userIconLink(item.modificatorItem) }}
+                                                {% else %}
+                                                    {{  macros.userIcon(item.modificatorItem) }}
+                                                {% endif %}
+                                            </div>
+                                            <div>
+                                                &nbsp{{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                &nbsp{{item.modificatorItem.Fullname}}<br/>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="uk-width-1-3">
+                                        <div class="uk-clearfix">
+                                            {{ 'creator'|trans({})}}
+                                            <div class="uk-margin-remove">
+                                                {% if item.creator.isUser %}
+                                                    {{  macros.userIconLink(item.creator) }}
+                                                {% else %}
+                                                    {{  macros.userIcon(item.creator) }}
+                                                {% endif %}
+                                            </div>
+                                        
+                                        <div>
+                                              &nbsp{{item.creator.Fullname}} 
+                                        </div>
+                                        </div>
+                                    </div>
+                                    <div class="uk-width-1-3">                           
+                                        <div class="uk-clearfix">
+                                            <div class="uk-margin-remove">
+                                                {% if modifierList[item.itemId] is defined %}
+                                                    {% if not modifierList[item.itemId] is empty %}
+                                                        {{ 'editors'|trans({})}}
+                                                        <div class="uk-flex">
+                                                            {% for modifier in modifierList[item.itemId] %}
+                                                                <div>
+                                                                    {% if modifier.isUser %}
+                                                                        {{  macros.userIconLink(modifier) }}
+                                                                    {% else %}
+                                                                        {{  macros.userIcon(modifier) }}
+                                                                    {% endif %}
+                                                                </div>
+                                                                <div class="uk-clearfix">
+                                                                    &nbsp{{modifier.fullname}}
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>                            
+                                </div>                        
+                            </div>
+                            <div class="uk-panel uk-margin-top">
+                                <div class="uk-grid">
+                                    <div class="uk-width-2-4">                           
+                                        <div class="uk-clearfix">
+                                            <div class="uk-align-left uk-width-1-1">
+                                            {{ 'clicked since last editing'|trans({})}}: <br/>
+                                                <div class="uk-progress">
+                                                    {% set activePercent = (readSinceModificationCount/userCount*100)|round %}
+                                                    <div class="uk-progress-bar cs-progress-bar" style="width: {{ activePercent }}%;">{{readSinceModificationCount}}</div>
+                                                </div>
+                                           </div>
+                                        </div>                           
+                                    </div>                            
+                                    <div class="uk-width-2-4">                           
+                                        <div class="uk-clearfix">
+                                            <div class="uk-align-left uk-width-1-1">
+                                            {{ 'clicked since creating'|trans({}) }}: <br/>
+                                                <div class="uk-progress">
+                                                    {% set activePercent = (readCount/userCount*100)|round %}
+                                                   <div class="uk-progress-bar cs-progress-bar" style="width: {{ activePercent }}%;">{{readCount}}</div>
+                                                </div> 
+                                            </div>
+                                        </div>                           
+                                    </div>                            
+                                </div>                        
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+   </div>
+{% endmacro %}
+
+{% macro nestedTagList(tags, roomTags, level) %}
+    {% set opened = true %}
+    <ul class="uk-list">
+    {% for child in roomTags %}
+    
+        {% set childTitle %}
+            <div><span class="uk-text-muted">{{ child.title|decodeHtmlEntity }}</span></div>
+        {% endset %}
+        {% for tag in tags %}
+            {% if tag.id == child.item_id %}
+                {% set childTitle %}
+                    <div><span class="uk-text-bold">{{ child.title|decodeHtmlEntity }}</span></div>
+                {% endset %}
+            {% endif %}
+        {% endfor %}
+    
+        {% if child.children is defined and not child.children is empty %}
+            <li id="tag_{{ child.title|decodeHtmlEntity }}" data-jstree='{"opened": {{ opened }}}'>
+                {{ childTitle }}
+                {{ _self.nestedTagList(tags, child.children, level+1) }}
+            </li>
+        {% else %}
+            <li id="tag_{{ child.title|decodeHtmlEntity }}" data-jstree='{"opened": {{ opened }}}'>
+                {{ childTitle }}
+            </li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+{% endmacro %}
+
+{% macro editContent(title, item, edit, content, preview, shortPreview, displayCount, count) %}
+    <hr />
+
+    <article>
+        <a name="description"></a>
+        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
+
+        {# title row #}
+        <div class="uk-grid uk-margin-small-bottom">
+            <div class="uk-width-9-10">
+                <h4 class="cs-detail-section-header">
+                    {{- title|trans({}) }}
+                    {% if displayCount %}
+                        ({{count}})
+                    {% endif %}
+                </h4>
+            </div>
+
+            
+        </div>
+
+        {# content #}
+        {% if not content is empty and not preview is empty %}
+            <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
+
+
+                {# full content #}
+                <div>
+                    {{ content|raw }}
+                </div>
+
+            </div>
+        {% else %}
+            <div class="uk-width-9-10 uk-margin-top-remove">
+                
+                {% if not content is empty %}
+                    <div>
+                        {{ content|raw }}
+                    </div>
+                {% else %}
+                    <div>
+                        <span class="uk-text-muted">{{ 'no content'|trans({}, "room") }}</span>
+                    </div>
+                {% endif %}
+
+            </div>
+        {% endif %}
+    </article>
+
+{% endmacro %}
+
+{% macro userIcon(user, size) %}
+    {% if size == 'small' %}
+        <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ absolute_url(path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) )}}" data-uk-tooltip title="{{ user.fullname }}">
+    {% elseif size matches '/^\\d+$/' %}
+        <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:{{ size }}px; width:{{ size }}px;" src="{{ absolute_url(path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) )}}" data-uk-tooltip title="{{ user.fullname }}">
+    {% else %}
+        <img class="uk-comment-avatar uk-thumbnail uk-border-circle cs-comment-thumbnail" style="height:42px; width:42px;" src="{{ absolute_url(path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) )}}" data-uk-tooltip title="{{ user.fullname }}">
+    {% endif %}
+{% endmacro %}
+
+
+
+{% macro iconClassForFileType(type) %}
+    {% if type == 'xlsx' or type == 'xls' %}
+        uk-icon-file-excel-o
+    {% elseif type == 'docx' or type == 'doc' or type == 'ods' %}
+        uk-icon-file-word-o
+    {% elseif type == 'pptx' or type == 'ppt' %}
+        uk-icon-file-powerpoint-o
+    {% elseif type == 'pdf' %}
+        uk-icon-file-pdf-o
+    {% elseif type == 'zip' or type == 'ipa' %}
+        uk-icon-file-archive-o
+    {% elseif type == 'png' or type == 'jpg' or type == 'eps' or type == 'gif' or type == 'svg' %}
+        uk-icon-file-image-o
+    {% elseif type == 'txt' or type == 'csv' or type == 'md' %}
+        uk-icon-file-text-o
+    {% elseif type == 'mpg' or type == 'wmv' or type == 'mp4' or type == 'avi' %}
+        uk-icon-file-movie-o
+    {% else %}
+        uk-icon-file-o
+    {% endif %}
+{% endmacro %}
+
+{% macro fileListShort(item) %}
+    {% import _self as macros %}
+    {% if item.itemType != 'material' %}
+        {% set fileArray = item.fileList.to_array %}
+    {% else %}
+        {% set fileArray = item.fileListWithFilesFromSections.to_array %}
+    {% endif %}
+    {% if not fileArray is empty %}
+        {% for file in fileArray %}
+            <i class="{{ macros.iconClassForFileType(file.extension) }}"></i>
+        {% endfor %}
+    {% endif %}
+{% endmacro %}
+{% macro iconClassForItemType(type) %}
+    {% if type == 'announcement' %}
+        uk-icon-comment-o
+    {% elseif type == 'date' %}
+        uk-icon-calendar
+    {% elseif type == 'material' %}
+        uk-icon-file-o
+    {% elseif type == 'section' %}
+        uk-icon-file-o
+    {% elseif type == 'discussion' %}
+        uk-icon-comments-o
+    {% elseif type == 'user' %}
+        uk-icon-user
+    {% elseif type == 'group' %}
+        uk-icon-group
+    {% elseif type == 'todo' %}
+        uk-icon-check
+    {% elseif type == 'task' %}
+        uk-icon-home
+    {% endif %}
+{% endmacro %}
+
+
+{% macro editAnnotationContent(title, item, content) %}
+    <div class="uk-grid uk-margin-top-remove">
+
+        {# content #}
+        {% if not content is empty %}
+            <div class="uk-width-9-10">
+
+                {# preview #}
+                <div>
+
+                    <div class="cs-comment-head">
+                        <div class="uk-comment-meta">
+                            {{ 'by'|trans({})|capitalize }}: {{item.creator.getFullName}}
+                        </div>   
+                        <div class="uk-comment-meta uk-margin-bottom">
+                            {{ 'last changed'|trans({})|capitalize }}: {{item.getModificationDate|date("d.m.Y H:i")}}
+                        </div>
+                    </div>
+
+                    {{ content|decodeHtmlEntity }}
+                </div>
+
+            </div>
+        {% endif %}
+
+    </div>    
+{% endmacro %}
+
+{% macro details(date) %}
+    {% import _self as macros %}
+    
+    <hr class="uk-width-9-10"/>
+
+    <article class="uk-article uk-margin-left uk-margin-right">
+        <a name="details"></a>
+        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
+
+        {# title row #}
+        <div class="uk-grid uk-margin-small-bottom">
+            <div class="uk-width-9-10">
+                <h4 class="cs-detail-section-header">
+                    {{ "info"|trans({},'date') }}
+                </h4>
+            </div>
+
+            <div class="uk-width-1-10 uk-flex uk-text-right">
+                {# edit action #}
+                {% if is_granted('ITEM_EDIT', date.itemId) %}
+                    <div class="cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
+                        <a class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+                    </div>
+                {% endif %}
+
+           </div>
+        </div>
+
+        {# content #}
+        <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
+            <table class="ui-table">
+                <tr>
+                    <td class="uk-text-top">
+                        <strong>{{ "date"|trans({},'date') }}</strong>
+                    </td>
+                    <td class="uk-text-top">
+                        {{ date.dateDescription }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="uk-text-top">
+                        <strong>{{ "place"|trans({},'date') }}</strong>
+                    </td>
+                    <td class="uk-text-top">
+                        {{ date.place }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="uk-text-top">
+                        <strong>{{ "participants"|trans({},'date') }}</strong>
+                    </td>
+                    <td class="uk-text-top">
+                        {{ macros.participants(date, date.participantsItemList.to_array) }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </article>
+    
+{% endmacro %}
+
+{% macro participants(item,participants) %}
+    {% import _self as macros %}
+    {% if not participants is empty %}
+        {% for participant in participants %}
+                <div>
+                    {% if participant.isUser %}
+                        {{  macros.userIconLink(participant) }}
+                    {% else %}
+                        {{  macros.userIcon(participant) }}
+                    {% endif %}
+                    {{participant.Fullname}}
+                    <br><br>
+                    <br>
+                </div>
+                
+        {% endfor %}
+    {% endif %}
+{% endmacro %}
+
+{% macro titleUser(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) %}
+    {% import _self as macros %}
+    {% set pathName = '' %}
+    {% if item.itemType == 'user' %}
+        {% set pathName = 'commsy_user_edit' %}
+    {% elseif item.itemType == 'section' %}
+        <a name="section{{item.ItemID}}"></a>
+        {% set pathName = 'commsy_user_edit' %}
+    {% endif %}
+    {% if userCount == 0 %}
+        {% set userCount = 1 %}
+    {% endif %}
+    
+    <div>
+        <div>
+            <div >
+                <div >        
+                    <div class="uk-grid">
+                        <div class="uk-width-1-1">
+                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }} {{ item.fullname|decodeHtmlEntity }}</h1>
+                        </div>
+                    </div>
+                </div>        
+                <div class="uk-width-1-10  uk-text-right">
+                    <!-- <i class="uk-icon-small uk-icon-hover uk-icon-edit"></i> -->
+                    {# edit #}
+                    {% if is_granted('ITEM_EDIT', item.itemId) %}
+                        {{ macros.actionIcons('title', item, true) }}
+                        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
+                    {% else %}
+                        {{ macros.actionIcons('title', item, false) }}
+                    {% endif %}
+                </div>
+            </div>
+
+
+
+            {# title, etc. #}
+            <div class="uk-flex">
+                <div>
+                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle cs-avatar-user-detail" src="{{ absolute_url(app.request.baseURL) }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ item.itemID }}/image" alt="">
+                </div>
+                <div>
+                    <table class="uk-table-condensed" style="margin-bottom:30px;">
+                        <tbody>
+                            {% if not item.birthday is empty %}
+                            <tr>
+                                <td class="uk-text-bold">{{ 'date of birth'|trans({})}}:</td>
+                                <td>{{ item.birthday }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if not item.email is empty %}
+                            <tr>
+                                <td class="uk-text-bold">{{ 'email'|trans({})}}:</td>
+                                <td><a>{{item.email }}</a></td>
+                            </tr>
+                            {% endif %}
+                            {% if not item.telephone is empty %}
+                            <tr>
+                                <td class="uk-text-bold">{{ 'telephone'|trans({})}}:</td>
+                                <td><a>{{ item.telephone }}</a></td>
+                            </tr>
+                            {% endif %}
+                            {% if not item.cellularphone is empty %}
+                            <tr>
+                                <td class="uk-text-bold">{{ 'handy'|trans({})}}:</td>
+                                <td><a>{{ item.cellularphone }}</a></td>
+                            </tr>
+                            {% endif %}
+                            {% if not item.street is empty %}
+                            <tr>
+                                <td class="uk-text-bold">{{ 'street'|trans({})}}:</td>
+                                <td>{{ item.street }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if not item.city is empty %}
+                            <tr>
+                                <td class="uk-text-bold">{{ 'city'|trans({})}}:</td>
+                                <td>{{ item.city }}</td>
+                            </tr>
+                            {% endif %}
+
+                            <tr>
+                                <td class="uk-text-bold">ToDo:</td>
+                                <td>further user fields</td>
+                            </tr>
+                            {% if not item.status is empty %}
+                            <tr>
+                                <td class="uk-text-bold">{{ 'user status'|trans({})}}:</td>
+                                <td>{{ macros.userStatus(item) }}</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div >
+            <div >    
+                <div >
+                    <div >
+                        <div>
+                            <div class="uk-panel">
+                                <div class="uk-grid">
+                                    <div class="uk-width-1-1">
+                                        <div class="uk-flex">
+                                            <div >
+                                                {% if item.modificatorItem.isUser %}
+                                                    {{  macros.userIconLink(item.modificatorItem) }}
+                                                {% else %}
+                                                    {{  macros.userIcon(item.modificatorItem) }}
+                                                {% endif %}
+                                            </div>
+                                            <div >
+                                                  &nbsp&nbsp{{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                  &nbsp&nbsp{{ 'changed by'|trans({})|capitalize }}: {{item.modificatorItem.Fullname}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+   </div>
+{% endmacro %}
+
+{% macro userStatus(user) %}
+    {% if user.status == 0 %}
+        {{ 'quit'|trans({})|capitalize }}
+    {% elseif user.status == 1 %}
+        {{ 'request'|trans({})|capitalize }}
+    {% elseif user.status == 2 %}
+        {{ 'user'|trans({})|capitalize }}
+    {% elseif user.status == 3 %}
+        {{ 'moderator'|trans({})|capitalize }}
+    {% endif %}
+{% endmacro %}
+
+{% macro members(item,members) %}
+    {% import _self as macros %}
+
+    {% set preview = '' %}
+    {% set content = '' %}
+ 
+
+    {% if not members is empty %}
+
+    
+        {% set content %}
+        <div class="uk-margin-top uk-margin-bottom" data-uk-grid="{gutter: 20}">
+            {% for member in members %}
+        <div class="uk-width-medium-1-2">
+
+            <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
+ 
+                <div class="uk-panel-teaser cs-panel-teaser-user">
+                   <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ absolute_url(path('commsy_user_image', {'roomId': member.contextId, 'itemId': member.itemId})) }}" data-uk-tooltip title="{{ member.fullname }}">
+                    <span class="uk-text-large uk-text-middle">
+                        <a>{{ member.title }} {{member.fullname}}</a>
+                    </span>
+                </div>
+                <span>
+                    {% if member.email %}
+                        <a>{{ member.email }}</a>
+                    {% else %}
+                        {'no email'|trans({}) }
+                    {% endif %}
+                </span><br/>
+                <div class="uk-flex uk-flex-space-between">
+                    <div>
+                        {% if member.telephone %}
+                            <a>{{ member.telephone}}</a><br/>
+                        {% else %}
+                            <span class="uk-text-muted" data-uk-tooltip title="{{'no telephone'|trans({}) }}">---</span><br/>
+                        {% endif %}
+                        {% if member.cellularphone %}
+                            <a >{{ member.cellularphone}}</a>
+                        {% else %}
+                            <span class="uk-text-muted" data-uk-tooltip title="{{'no handy'|trans({}) }}">---</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        {% if member.street %}
+                            <span data-uk-tooltip title="{{member.street}}">{{ member.street}}</span><br/>
+                        {% else %}
+                            <span class="uk-text-muted" data-uk-tooltip title="{{'no street'|trans({}) }}">---</span><br/>
+                        {% endif %}
+                        
+                        {% if member.city %}
+                            <span >{{ member.zipcode }} {{ member.city }}</span>
+                        {% else %}
+                            <span class="uk-text-muted" data-uk-tooltip title="{{'no city'|trans({}) }}">---</span>
+                        {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+            {% endfor %}
+
+        </div>
+        {% endset %}
+    {% endif %}
+    {{ macros.editContent('members', item, false, content, preview, true, true, members|length) }}
+{% endmacro %}
+
+
+{% macro statusColor(readerList, itemId, type='comment') %}
+    {% if type == 'grid' %}
+        {% if readerList[itemId] is defined %}
+           {% if readerList[itemId] == 'new' %}
+                <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newEntry'|trans({})}}">
+                    <i class="uk-icon-medium uk-text-danger uk-icon-exclamation"></i>
+                </div>
+            {% elseif readerList[itemId] == 'changed' %}
+                <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedEntry'|trans({})}}">
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                </div>
+            {% elseif readerList[itemId] == 'new_annotation' %}
+                <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newAnnotation'|trans({})}}">
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                </div>
+            {% elseif readerList[itemId] == 'changed_annotation' %}
+                <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedAnnotation'|trans({})}}">
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% else %}
+        {% if readerList[itemId] is defined %}
+           {% if readerList[itemId] == 'new' %}
+                <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newEntry'|trans({})}}">
+                    <i class="uk-icon-medium uk-text-danger uk-icon-exclamation"></i>
+                </div>
+            {% elseif readerList[itemId] == 'changed' %}
+                <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedEntry'|trans({})}}">
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                </div>
+            {% elseif readerList[itemId] == 'new_annotation' %}
+                <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newAnnotation'|trans({})}}">
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                </div>
+            {% elseif readerList[itemId] == 'changed_annotation' %}
+                <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedAnnotation'|trans({})}}">
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endmacro %}
+
+{% macro ratingStatus(item, ratingList) %}
+    {% set rating = 0 %}
+    {% for ratingItemId, ratingValues in ratingList %}
+        {% if item.itemId == ratingItemId %}
+            {% set rating = ratingValues.average_assessment|round %}
+        {% endif %}
+    {% endfor %}
+    <div class="uk-text-nowrap" data-uk-dropdown="{pos:'bottom-right', remaintime:200}">
+        {% for i in 1..5 %}
+            {% if rating >= i %}
+                <i class="cs-icon-star-small uk-icon-star uk-text-warning"></i>
+            {% endif %}
+        {% endfor %}
+        {% for i in 1..5 %}
+            {% if rating < i %}
+                <i class="cs-icon-star-small uk-icon-star-o"></i>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endmacro %}

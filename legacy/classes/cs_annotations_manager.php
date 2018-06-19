@@ -68,8 +68,8 @@ class cs_annotations_manager extends cs_manager implements cs_export_import_inte
    *
     * @author CommSy Development Group
    */
-  function cs_annotations_manager ($environment) {
-    $this->cs_manager($environment);
+  function __construct($environment) {
+    cs_manager::__construct($environment);
     $this->_db_table = 'annotations';
     $this->_translator = $environment->getTranslationObject();
   }

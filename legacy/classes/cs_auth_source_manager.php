@@ -36,8 +36,8 @@ class cs_auth_source_manager extends cs_manager {
   /** constructor: cs_auth_source_manager
     * the only available constructor, initial values for internal variables
     */
-  function cs_auth_source_manager ($environment) {
-     $this->cs_manager($environment);
+  function __construct($environment) {
+     cs_manager::__construct($environment);
      $this->_db_table = CS_AUTH_SOURCE_TYPE;
   }
 

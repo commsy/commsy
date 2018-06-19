@@ -43,7 +43,7 @@ class cs_assessments_manager extends cs_manager {
     * the only available constructor, initial values for internal variables
     */
   function __construct ($environment) {
-     $this->cs_manager($environment);
+     cs_manager::__construct($environment);
      $this->_db_table = CS_ASSESSMENT_TYPE;
   }
 

@@ -177,7 +177,7 @@ class cs_list_view extends cs_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_list_view ($params) {
+   function __construct($params) {
       $viewname = 'list_view';
       if ( !empty($params['viewname']) ) {
          $viewname = $params['viewname'];
@@ -187,7 +187,7 @@ class cs_list_view extends cs_view {
       $this->_link_name = $viewname;
       $this->link_id ='';
       $this->_assigned_list_of = NULL;
-      $this->cs_view($params);
+      cs_view::__construct($params);
       $this->_sort_keys = array();
       $this->_sort_key = '';
       $this->_button_list = new cs_list();

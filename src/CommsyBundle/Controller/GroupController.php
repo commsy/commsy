@@ -61,7 +61,7 @@ class GroupController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in group manager
             $groupService->setFilterConditions($filterForm);
         }
@@ -120,7 +120,7 @@ class GroupController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in group manager
             $groupService->setFilterConditions($filterForm);
         }
@@ -153,7 +153,7 @@ class GroupController extends Controller
         $itemsCountArray = $groupService->getCountArray($roomId);
 
 
-        $html = $this->renderView('CommsyBundle:Group:listPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:group:list_print.html.twig', [
             'roomId' => $roomId,
             'groups' => $groups,
             'readerList' => $readerList,
@@ -447,7 +447,7 @@ class GroupController extends Controller
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
-        $html = $this->renderView('CommsyBundle:Group:detailPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:group:detail_print.html.twig', [
             'roomId' => $roomId,
             'group' => $infoArray['group'],
             'readerList' => $infoArray['readerList'],
@@ -762,7 +762,7 @@ class GroupController extends Controller
     ));
         
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $groupItem = $transformer->applyTransformation($groupItem, $form->getData());
 
@@ -923,7 +923,7 @@ class GroupController extends Controller
         ));
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
             if ($saveType == 'save') {
 

@@ -166,7 +166,7 @@ $message["USER_PASSWORD2_DESC"]["en"] = "Please repeat your password.";
 $message["USER_PASSWORD_CHANGE_HEADLINE"]["en"] = "Change password";
 $message["USER_PASSWORD_DESC"]["en"] = "Please enter a password.";
 $message["USER_PASSWORD_ERROR"]["en"] = "Please check your passwords. They are not identical.";
-$message["USER_PASSWORD_FORGET_HEADLINE"]["en"] = "Forget password?";
+$message["USER_PASSWORD_FORGET_HEADLINE"]["en"] = "Forgot password?";
 $message["USER_PASSWORD_FORGET_SUCCESS_TEXT"]["en"] = "Further information was sent to your email address saved in the system.
 <br/><br/>
 If you are not receiving this email, please contact the portal moderation.";

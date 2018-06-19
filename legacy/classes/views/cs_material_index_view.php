@@ -49,7 +49,7 @@ class cs_material_index_view extends cs_index_view {
     *                                       false: display without modifying functions
     */
    function __construct ($params) {
-      $this->cs_index_view($params);
+      cs_index_view::__construct($params);
       $this->setTitle($this->_translator->getMessage('MATERIAL_INDEX'));
       $this->_show_buzzword_box = true;
    }

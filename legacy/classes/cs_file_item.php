@@ -55,7 +55,7 @@ class cs_file_item extends cs_item {
    /** constructor: cs_file_item
     * the only available constructor, initial values for internal variables
     */
-   function cs_file_item ($environment) {
+   function __construct($environment) {
 
       // No icon yet ... (TBD) mj 20.03.03
       $this->_mime['tex']   = 'application/x-tex';
@@ -221,7 +221,7 @@ class cs_file_item extends cs_item {
 
       $this->_icon['unknown'] = "unknown.png";
 
-      $this->cs_item($environment);
+      cs_item::__construct($environment);
       $this->_type = 'file';
 
    }

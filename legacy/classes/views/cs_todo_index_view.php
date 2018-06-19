@@ -40,8 +40,8 @@ class cs_todo_index_view extends cs_room_index_view {
     *
     * @author CommSy Development Group
     */
-   function cs_todo_index_view ($params) {
-      $this->cs_room_index_view($params);
+   function __construct($params) {
+      cs_room_index_view::__construct($params);
       $this->setTitle($this->_translator->getMessage('TODO_HEADER'));
       $this->setActionTitle($this->_translator->getMessage('COMMON_TODO'));
       $this->setColspan(6);

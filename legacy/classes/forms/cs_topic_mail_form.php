@@ -52,8 +52,8 @@ class cs_topic_mail_form extends cs_rubric_form {
     *
     * @author CommSy Development Topic
     */
-   function cs_topic_mail_form($params) {
-      $this->cs_rubric_form($params);
+   function __construct($params) {
+      cs_rubric_form::__construct($params);
    }
 
    /** init data for form, INTERNAL

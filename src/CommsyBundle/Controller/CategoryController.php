@@ -16,7 +16,7 @@ use CommsyBundle\Entity\Tag;
 class CategoryController extends Controller
 {
     /**
-     * @Template("CommsyBundle:Category:show.html.twig")
+     * @Template("CommsyBundle:category:show.html.twig")
      */
     public function showAction($roomId, Request $request)
     {
@@ -39,7 +39,7 @@ class CategoryController extends Controller
 
 
     /**
-     * @Template("CommsyBundle:Category:showDetail.html.twig")
+     * @Template("CommsyBundle:category:showDetail.html.twig")
      */
     public function showDetailAction($roomId, Request $request)
     {
@@ -72,7 +72,7 @@ class CategoryController extends Controller
 
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() &&$form->isValid()) {
             $data = $form->getData();
 
             // persist new tag
@@ -120,7 +120,7 @@ class CategoryController extends Controller
         }
         
         $createNewForm->handleRequest($request);
-        if ($createNewForm->isValid()) {
+        if ($createNewForm->isSubmitted() && $createNewForm->isValid()) {
             if ($createNewForm->has('new') && $createNewForm->get('new')->isClicked()) {
                 $categoryService->addTag($category->getTitle(), $roomId);
             }
@@ -143,7 +143,7 @@ class CategoryController extends Controller
         ]);
 
         $editForm->handleRequest($request);
-        if ($editForm->isValid()) {
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
             $data = $editForm->getData();
 
             $delete = $data['category'];
@@ -171,7 +171,7 @@ class CategoryController extends Controller
         $mergeForm = $this->createForm(Types\CategoryMergeType::class, null, ['roomId'=>$roomId]);
 
         $mergeForm->handleRequest($request);
-        if ($mergeForm->isValid()) {
+        if ($mergeForm->isSubmitted() && $mergeForm->isValid()) {
             $mergeData = $mergeForm->getData();
             $tagIdOne = $mergeData['first']->getItemId();
             $tagIdTwo = $mergeData['second']->getItemId();

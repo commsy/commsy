@@ -575,17 +575,10 @@ services:
 
     commsy.command.db_check:
         class: CommsyBundle\Command\DBCheckCommand
-        arguments: ['@doctrine.orm.entity_manager']
+        arguments:
+            - '@commsy.database.checks'
         tags:
             - { name: console.command }
-
-    commsy.command.fix_group_all_user_relation:
-            class: CommsyBundle\Command\FixGroupAllUserRelation
-            arguments:
-                - '@doctrine.orm.entity_manager'
-                - '@commsy_legacy.environment'
-            tags:
-                - { name: console.command }
 
     commsy.command.setup_dev:
         class: CommsyBundle\Command\SetupDevCommand
@@ -601,6 +594,42 @@ services:
         class: CommsyBundle\Command\ExternalCalendarsCommand
         tags:
             - { name: console.command }
+
+    # Database checks
+    commsy.database.checks:
+        class: CommsyBundle\Database\DatabaseChecks
+
+    commsy.database.checks.group_all_user_relation:
+        class: CommsyBundle\Database\FixGroupAllUserRelation
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@commsy_legacy.environment'
+        tags:
+            - commsy.database.check
+
+    commsy.database.checks.group_all:
+        class: CommsyBundle\Database\FixGroupAll
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@commsy_legacy.environment'
+        tags:
+            - commsy.database.check
+
+    commsy.database.checks.user_relation:
+        class: CommsyBundle\Database\FixUserRelations
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@commsy_legacy.environment'
+        tags:
+            - commsy.database.check
+
+#    commsy.database.checks.files:
+#        class: CommsyBundle\Database\FixDBFiles
+#        arguments:
+#            - '@doctrine.orm.entity_manager'
+#            - '@commsy_legacy.environment'
+#        tags:
+#            - commsy.database.check
 
     # API
     commsy.api.soap:
@@ -708,14 +737,15 @@ services:
         arguments: ['@doctrine.orm.entity_manager', '@service_container']
 
     commsy.room_feed_generator:
-        class: CommsyBundle\RoomFeed\RoomFeedGenerator
-        arguments:
-          - '@commsy_legacy.environment'
-          - '@commsy_legacy.room_service'
-          - '@commsy_legacy.item_service'
+            class: CommsyBundle\RoomFeed\RoomFeedGenerator
+            public: true
+            arguments:
+              - '@commsy_legacy.environment'
+              - '@commsy_legacy.room_service'
+              - '@commsy_legacy.item_service'
 
     commsy.action.factory:
-        class: CommsyBundle\Action\ActionFactory
-        arguments:
-          - '@translator'
-          - '@commsy_legacy.item_service'
+            class: CommsyBundle\Action\ActionFactory
+            arguments:
+              - '@translator'
+              - '@commsy_legacy.item_service'

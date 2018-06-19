@@ -89,7 +89,7 @@ class AnnotationController extends Controller
 
         $form = $this->createForm(AnnotationType::class, $formData);
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
                 $readerManager = $legacyEnvironment->getReaderManager();
@@ -147,7 +147,7 @@ class AnnotationController extends Controller
 
         $form = $this->createForm(AnnotationType::class);
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $data = $form->getData();
 

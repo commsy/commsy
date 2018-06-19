@@ -41,7 +41,7 @@ class cs_configuration_datasecurity_form_view extends cs_configuration_form_view
     * @param array params parameters in an array of this class
     */
    public function __construct ($params) {
-      $this->cs_configuration_form_view($params);
+      cs_configuration_form_view::__construct($params);
    }
 
 

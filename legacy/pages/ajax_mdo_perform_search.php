@@ -23,6 +23,7 @@
 //    along with CommSy.
 
 include_once('functions/development_functions.php');
+require_once('functions/security_functions');
 
 $access = false;
 
@@ -73,10 +74,10 @@ if($access === true) {
     ############################
     ## perform search
     ############################
-    $operator = mysql_real_escape_string($_GET['mdo_andor']);
-    $option = mysql_real_escape_string($_GET['mdo_wordbegin']);
-    $field = mysql_real_escape_string($_GET['mdo_titletext']);
-    $search = mysql_real_escape_string($_GET['mdo_search']);
+    $operator = mysql_escape_mimic($_GET['mdo_andor']);
+    $option = mysql_escape_mimic($_GET['mdo_wordbegin']);
+    $field = mysql_escape_mimic($_GET['mdo_titletext']);
+    $search = mysql_escape_mimic($_GET['mdo_search']);
     
     $data = '<search fields="titel,text">';
     $data .= '<condition';

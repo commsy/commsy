@@ -545,7 +545,6 @@ class cs_popup_configuration_controller implements cs_popup_controller {
                                    $wiki_manager->openWiki();
                                 }
                          }
-                     }
 
                      $agbtext_array = [];
                          $languages = $this->_environment->getAvailableLanguageArray();

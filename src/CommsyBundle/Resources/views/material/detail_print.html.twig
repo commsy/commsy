@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+{% import 'CommsyBundle:base:printmacro.html.twig' as macros %}
+
+{% if material is defined %}
+    {% set item = material %}
+{% endif %}
+
+<html lang="de">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>{% block title %}CommSy{% endblock %}</title>
+
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ absolute_url(asset('css/build/commsy.css')) }}" />
+        {% endblock %}
+
+    </head>
+
+    <body>
+
+        {% block content %}
+        <div >
+
+            <div>
+
+                {# material content panel #}
+                <div class="uk-panel-box-primary">
+                    {# content #}
+                    <article>
+                        {# title, etc. #}
+                        <div>
+                            {{ macros.title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow, ratingArray) }}
+                        </div>
+                
+                        {# description #}
+                        <div>
+                            {{ macros.itemDescription('description', item, true, item.description) }}
+                        </div>
+                
+                        {# files #}
+                        <div>
+                            {{ macros.files(item) }}
+                        </div>
+            
+                        {# links #}
+                        <div>
+                            {{ macros.links(item,showHashtags,showCategories,roomCategories) }}
+                        </div>
+            
+                        {# workflow #}
+                        {% if showWorkflow %}
+                            <div>
+                                {{ macros.workflow(item, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate) }}
+                            </div>
+                        {% endif %}
+                    </article>
+                
+                {% if sectionList is not empty %}
+                    <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top page-break-before">
+                        <div class="uk-grid">
+                            <div class="uk-text-large">
+                                {{ 'Abschnitte'|trans({})|capitalize }}
+                            </div>
+                        </div>
+                    </div>       
+                    {# material sections #}
+                    {% for section in sectionList %}                               
+
+                            <article class="uk-article uk-position-relative page-break-inside">
+                                {# title #}
+                                <div>
+                                    {{ macros.title(section, modifierList, userCount, readCount, readSinceModificationCount) }}
+                                </div>
+                                
+                                {# description #}
+                                <div>
+                                    {{ macros.itemDescription('description', section, true, section.description) }}
+                                </div>
+
+                                {# files #}
+                                <div>
+                                    {{ macros.files(section) }}
+                                    <hr>
+                                </div>
+                            </article>
+                        
+                    {% endfor %}
+                {% endif %}
+                
+
+                {# annotations #}
+                             
+                    
+                        {{ render(controller(
+                            'CommsyBundle:Annotation:feedPrint',
+                            { 'roomId': roomId, 'linkedItemId': item.itemId }
+                        ))}}
+
+
+            </div>
+        </div>
+            
+
+
+			        
+		{% endblock %}
+          
+        
+    </body>
+</html>

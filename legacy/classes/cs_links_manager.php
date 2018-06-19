@@ -83,8 +83,8 @@ class cs_links_manager extends cs_manager {
     *
     * @param object cs_environment the environment
     */
-  function cs_links_manager ($environment) {
-      $this->cs_manager($environment);
+  function __construct($environment) {
+      cs_manager::__construct($environment);
       $this->_db_table = 'links';
   }
 

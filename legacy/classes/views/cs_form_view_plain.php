@@ -71,8 +71,8 @@ class cs_form_view_plain extends cs_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_form_view_plain ($params) {
-      $this->cs_view($params);
+   function __construct($params) {
+      cs_view::__construct($params);
    }
 
    /** set URL of the form view

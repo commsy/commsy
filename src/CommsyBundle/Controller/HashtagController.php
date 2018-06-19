@@ -18,7 +18,7 @@ use CommsyBundle\Event\CommsyEditEvent;
 class HashtagController extends Controller
 {
     /**
-     * @Template("CommsyBundle:Hashtag:show.html.twig")
+     * @Template("CommsyBundle:hashtag:show.html.twig")
      */
     public function showAction($roomId, Request $request)
     {
@@ -32,7 +32,7 @@ class HashtagController extends Controller
     }
 
     /**
-     * @Template("CommsyBundle:Hashtag:showDetail.html.twig")
+     * @Template("CommsyBundle:hashtag:showDetail.html.twig")
      */
     public function showDetailAction($roomId, Request $request)
     {
@@ -46,7 +46,7 @@ class HashtagController extends Controller
     }
 
     /**
-     * @Template("CommsyBundle:Hashtag:showDetailShort.html.twig")
+     * @Template("CommsyBundle:hashtag:showDetailShort.html.twig")
      */
     public function showDetailShortAction($roomId, Request $request)
     {
@@ -134,7 +134,7 @@ class HashtagController extends Controller
 
 
         $editForm->handleRequest($request);
-        if ($editForm->isValid()) {
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
             // persist changes / delete hashtag
             $labelManager = $legacyEnvironment->getLabelManager();
 
@@ -175,7 +175,7 @@ class HashtagController extends Controller
         $mergeForm = $this->createForm(HashtagMergeType::class, null, ['roomId'=>$roomId]);
 
         $mergeForm->handleRequest($request);
-        if ($mergeForm->isValid()) {
+        if ($mergeForm->isSubmitted() && $mergeForm->isValid()) {
             // persist changes / delete hashtag
             $labelManager = $legacyEnvironment->getLabelManager();
 

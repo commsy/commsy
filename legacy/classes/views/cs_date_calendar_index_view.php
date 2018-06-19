@@ -111,8 +111,8 @@ class cs_date_calendar_index_view extends cs_room_index_view {
     * @param boolean with_modifying_actions true: display with modifying functions
     *                                       false: display without modifying functions
     */
-   function cs_date_calendar_index_view ($params) {
-      $this->cs_room_index_view($params);
+   function __construct($params) {
+      cs_room_index_view::__construct($params);
       $this->setTitle($this->_translator->getMessage('DATES_HEADER'));
       $this->setActionTitle($this->_translator->getMessage('COMMON_DATES'));
       /*

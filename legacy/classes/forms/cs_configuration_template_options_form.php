@@ -32,8 +32,8 @@ class cs_configuration_template_options_form extends cs_rubric_form {
 
    var $_with_template_form_element3 = false;
 
-   function cs_configuration_template_options_form ($environment) {
-      $this->cs_rubric_form($environment);
+   function __construct($environment) {
+      cs_rubric_form::__construct($environment);
    }
 
 

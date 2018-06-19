@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+{% import 'CommsyBundle:base:printmacro.html.twig' as macros %}
+
+{% if group is defined %}
+    {% set item = group %}
+{% endif %}
+
+<html lang="de">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>{% block title %}CommSy{% endblock %}</title>
+
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ absolute_url(asset('css/build/commsy.css')) }}" />
+        {% endblock %}
+
+    </head>
+
+    <body>
+
+        {% block content %}
+        <div>
+
+	        <div>
+
+	            {# discussion content panel #}
+	            <div class="uk-panel-box-primary">
+	                {# content #}
+	                <article>
+                    {# title, etc. #}
+                    <div>
+                        {{ macros.title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) }}
+                    </div>
+            
+                    {# description #}
+                    <div>
+                        {{ macros.itemDescription('description', item, true, item.description) }}
+                    </div>
+            
+                    {# members #}
+                    <div>
+                        {{ macros.members(item,members) }}
+                    </div>
+ 
+                    <div id="grouproom{{ item.itemId }}">
+                        <hr class="uk-width-9-10"/>
+                        <article class="uk-article uk-margin-left uk-margin-right">
+                            <a name="grouproom"></a>
+                            {# title row #}
+                            <div class="uk-grid uk-margin-small-bottom">
+                                <div class="uk-width-9-10">
+                                    <h4 class="cs-detail-section-header">
+                                        {{'grouproom'|trans({},'group') }} 
+                                    </h4>
+                                </div>
+                            </div>
+                            <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
+                                <div class="uk-flex">
+                                <div class="uk-width-1-5 uk-text-left">
+                                {% if item.isGroupRoomActivated %}
+                                    <a class="uk-icon-large uk-icon-button uk-icon-sign-in" data-uk-tooltip title="{{'enter grouproom'|trans({}) }}"></a>
+                                {% else %}
+                                    <span class="uk-icon-large uk-icon-button uk-icon-remove" data-uk-tooltip title="{{'no grouproom'|trans({},'group') }}"> </span>
+                                {% endif %}
+                                </div>
+                                <div class="uk-width-2-5 uk-text-left uk-margin-right">
+                                {% if item.isGroupRoomActivated %}
+                                    <span class="uk-text-bold">{{item.groupRoomItem.title|decodeHtmlEntity}}</span><br/>
+                                    <p>
+                                    {{'grouproom description text'|trans({},'group') }}    
+                                    </p>
+                                {% else %}
+                                    <span class="uk-text-bold">{{'no grouproom'|trans({},'group') }}</span><br/>
+                                    <p>
+                                    {{'no grouproom description text'|trans({},'group') }}    
+                                    </p>
+                                {% endif %}
+                                </div>
+                                <div class="uk-width-2-5 uk-text-left">
+                                {% if item.isGroupRoomActivated %}
+                                    <span class="uk-text-bold">{{'grouproom information'|trans({},'group') }}</span><br/>
+                                    <p>
+                                    {{'grouproom moderators'|trans({},'group') }}: {{item.groupRoomItem.ModeratorListString}}     
+                                    </p>
+                                    <p>
+                                      ToDo: Zuganglinks
+                                    </p>
+                                {% endif %}
+                                </div>
+                               </div>
+
+                            </div>
+                        </article>
+                    </div>
+
+
+                    {# links #}
+                    <div id="links{{ item.itemId }}" class="cs-toggle" data-uk-observe>
+                       <hr class="uk-width-9-10"/>
+                        <article class="uk-article uk-margin-left uk-margin-right">
+                            <a name="grouproom"></a>
+                            {# title row #}
+                            <div class="uk-grid uk-margin-small-bottom">
+                                <div class="uk-width-9-10">
+                                    <h4 class="cs-detail-section-header">
+                                        {{'links'|trans({}) }} 
+                                    </h4>
+                                </div>
+                            </div>
+ 
+            {{ render(controller(
+                'CommsyBundle:Link:showDetailLong',
+                { 'roomId': item.contextId, 'itemId': item.itemId }
+            ))}}            
+                        </article>
+                    </div>
+        
+                </article>
+            </div>
+            </div>
+        </div>
+
+			        
+		{% endblock %}
+          
+        
+    </body>
+</html>

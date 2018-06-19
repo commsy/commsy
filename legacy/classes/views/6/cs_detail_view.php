@@ -68,12 +68,12 @@ class cs_detail_view extends cs_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_detail_view ($params) {
+   function __construct($params) {
       $creatorInfoStatus = array();
       if ( isset($params['creator_info_status']) ) {
          $creatorInfoStatus = $params['creator_info_status'];
       }
-      $this->cs_view($params);
+      cs_view::__construct($params);
       $this->_openCreatorInfo = $creatorInfoStatus;
       $context_item = $this->_environment->getCurrentContextItem();
    }

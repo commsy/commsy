@@ -25,8 +25,8 @@
 include_once('classes/cs_left_page.php');
 class cs_password_change_page extends cs_left_page {
 
-   function cs_password_change_page ($environment) {
-      $this->cs_left_page($environment);
+   function __construct($environment) {
+      cs_left_page::__construct($environment);
    }
 
    function execute () {

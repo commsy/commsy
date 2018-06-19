@@ -48,7 +48,7 @@ class cs_auth_mysql extends cs_auth_manager {
    /** constructor
      * the only available constructor, initial values for internal variables
      */
-   function cs_auth_mysql () {
+   function __construct() {
       global $environment;
       $this->_translator = $environment->getTranslationObject();
    }

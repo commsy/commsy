@@ -44,7 +44,7 @@ var $_count_entries = 0;
     *                                       false: display without modifying functions
     */
    public function __construct ($params) {
-      $this->cs_index_view($params);
+      cs_index_view::__construct($params);
       $this->setTitle($this->_translator->getMessage('COMMON_TAGS'));
       $this->setActionTitle($this->_translator->getMessage('COMMON_TAGS'));
       $this->_colspan = '5';

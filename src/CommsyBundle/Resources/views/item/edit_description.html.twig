@@ -1,0 +1,57 @@
+{% form_theme form 'CommsyBundle:form:uikit_stacked_layout.html.twig' %}
+
+<hr class="uk-width-9-10  cs-detail-divider"/>
+<div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
+    <a name="description"></a>
+    <div class="uk-grid uk-margin-small-bottom">
+        <div class="uk-width-9-10">
+            <h4 class="cs-detail-section-header">
+                <span class="cs-detail-section-header-background">{{ 'edit description'|trans({},'form')|capitalize}}
+                 </span>
+            </h4>
+        </div>
+    </div>
+<div>
+
+<div class="uk-margin-left uk-margin-bottom uk-position-relative uk-padding-remove cs-description-inline">
+    {% include 'CommsyBundle:utils:save_spinner.html.twig' %}
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+
+    {# Render etherpad if configured #}
+    {% if useEtherpad is defined %}
+        {% if useEtherpad %}
+            {{ render(controller(
+                'EtherpadBundle:Etherpad:index',
+                { 'materialId': itemId, 'roomId': roomId } 
+            )) }}
+            <!-- {{ form_widget(form.description, {'id': 'descriptionedit' ~ itemId}) }} -->
+        {% endif %}
+    {% else %}
+        <div class="uk-flex">
+            <div class="uk-width-9-10">
+                {{ form_widget(form.description, {'id': 'descriptionedit' ~ itemId}) }}
+            </div>
+        </div>
+    {% endif %}
+    <div class="uk-flex uk-margin-small-top">
+        {% if not withRecurrence %}
+        <div class="uk-margin-small-left">
+            {{ form_row(form.save) }}
+        </div>
+        {% else %}
+        <div class="uk-margin-small-left">
+            {{ form_row(form.saveThisDate) }}
+        </div>
+        <div class="uk-margin-small-left">
+            {{ form_row(form.saveAllDates) }}
+        </div>
+        {% endif %}
+        <div class="uk-margin-small-left">
+            {{ form_row(form.cancel) }}
+        </div>
+    </div>
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+</div>
+

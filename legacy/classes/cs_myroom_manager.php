@@ -66,10 +66,10 @@ class cs_myroom_manager extends cs_context_manager {
     *
     * @param object cs_environment the environment
     */
-  function cs_myroom_manager ($environment) {
+  function __construct($environment) {
      $this->_db_table = 'room';
      $this->_room_type = CS_PRIVATEROOM_TYPE;
-     $this->cs_context_manager($environment);
+     cs_context_manager::__construct($environment);
   }
 
   /** reset limits

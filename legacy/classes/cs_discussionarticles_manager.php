@@ -106,8 +106,8 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
     *
     * @param object cs_environment the environment
     */
-  function cs_discussionarticles_manager ($environment) {
-      $this->cs_manager($environment);
+  function __construct($environment) {
+      cs_manager::__construct($environment);
       $this->_db_table = 'discussionarticles';
       $this->_translator = $environment->getTranslationObject();
    }

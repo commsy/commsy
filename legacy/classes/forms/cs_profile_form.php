@@ -78,7 +78,7 @@ class cs_profile_form extends cs_rubric_form {
     * @param object environment the environment object
     */
    function __construct ($params) {
-      $this->cs_rubric_form($params);
+      cs_rubric_form::__construct($params);
       $this->_language = $this->_environment->getSelectedLanguage();
    }
 

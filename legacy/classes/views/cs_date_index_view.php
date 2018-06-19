@@ -51,8 +51,8 @@ class cs_date_index_view extends cs_index_view {
     *
     * @author CommSy Development Group
     */
-   function cs_date_index_view ($params) {
-      $this->cs_index_view($params);
+   function __construct($params) {
+      cs_index_view::__construct($params);
       $this->setTitle($this->_translator->getMessage('DATES_HEADER'));
       $this->setActionTitle($this->_translator->getMessage('COMMON_DATES'));
       $this->_colspan = 6;

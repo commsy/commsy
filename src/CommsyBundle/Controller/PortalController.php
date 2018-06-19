@@ -51,7 +51,7 @@ class PortalController extends Controller
         $editForm = $this->createForm(RoomCategoriesEditType::class, $roomCategory, []);
 
         $editForm->handleRequest($request);
-        if ($editForm->isValid()) {
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
 
             // tells Doctrine you want to (eventually) save the Product (no queries yet)
             if ($editForm->getClickedButton()->getName() == 'delete') {
@@ -79,7 +79,7 @@ class PortalController extends Controller
 
         $linkForm->handleRequest($request);
 
-        if ($linkForm->isValid() && $linkForm->getClickedButton()->getName() == 'save') {
+        if ($linkForm->isSubmitted() && $linkForm->isValid() && $linkForm->getClickedButton()->getName() == 'save') {
             $formData = $linkForm->getData();
 
             if($formData['mandatory']) {
@@ -121,7 +121,7 @@ class PortalController extends Controller
         $announcementsForm = $this->createForm(PortalAnnouncementsType::class, $portalAnnouncementData, []);
 
         $announcementsForm->handleRequest($request);
-        if ($announcementsForm->isValid()) {
+        if ($announcementsForm->isSubmitted() && $announcementsForm->isValid()) {
             if ($announcementsForm->getClickedButton()->getName() == 'save') {
                 $formData = $announcementsForm->getData();
                 $portalItem->setServerNewsText($formData['text']);
@@ -164,7 +164,7 @@ class PortalController extends Controller
         $termsForm = $this->createForm(PortalTermsType::class, $portalTerms, []);
 
         $termsForm->handleRequest($request);
-        if ($termsForm->isValid()) {
+        if ($termsForm->isSubmitted() && $termsForm->isValid()) {
             if ($termsForm->getClickedButton()->getName() == 'save') {
                 $formData = $termsForm->getData();
 
@@ -200,7 +200,7 @@ class PortalController extends Controller
         $helpForm = $this->createForm(PortalHelpType::class, $portalHelp, []);
 
         $helpForm->handleRequest($request);
-        if ($helpForm->isValid()) {
+        if ($helpForm->isSubmitted() && $helpForm->isValid()) {
             if ($helpForm->getClickedButton()->getName() == 'save') {
                 $formData = $helpForm->getData();
 
@@ -219,7 +219,6 @@ class PortalController extends Controller
 
     /**
      * @Route("/portal/{roomId}/legacysettings")
-     * @Template()
      */
     public function legacysettingsAction($roomId, Request $request)
     {

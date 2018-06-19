@@ -34,8 +34,8 @@ class cs_configuration_privateroom_newsletter_form extends cs_rubric_form {
     *
     * @param array params array of parameter
     */
-   function cs_configuration_privateroom_newsletter_form($params) {
-      $this->cs_rubric_form($params);
+   function __construct($params) {
+      cs_rubric_form::__construct($params);
    }
 
    /** init data for form, INTERNAL

@@ -38,7 +38,7 @@ class cs_announcement_index_view extends cs_index_view {
     *                                       false: display without modifying functions
     */
    public function __construct ($params) {
-      $this->cs_index_view($params);
+      cs_index_view::__construct($params);
       $this->setTitle($this->_translator->getMessage('COMMON_ANNOUNCEMENTS'));
       $this->setActionTitle($this->_translator->getMessage('COMMON_ANNOUNCEMENT'));
       $this->_colspan = '4';

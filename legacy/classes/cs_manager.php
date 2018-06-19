@@ -162,7 +162,7 @@ class cs_manager {
     *
     * @param object cs_environment the environment
     */
-  function cs_manager ($environment) {
+  function __construct($environment) {
      $this->_environment = $environment;
      $this->_class_factory = $this->_environment->getClassFactory();
      $this->reset();

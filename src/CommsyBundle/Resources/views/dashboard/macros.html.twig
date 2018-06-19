@@ -1,0 +1,165 @@
+{% macro dashboardAllRooms(roomItem) %}
+    <div class="uk-panel uk-panel-box uk-panel-box-primary">
+        <div class="uk-panel-teaser cs-panel-teaser-primary">
+            <div class="uk-flex uk-flex-middle">
+                <div class="uk-text-large">{{ 'Rooms'|trans({}, "room") }}</div>
+             </div>
+        </div>
+        <form action="{{ path('commsy_room_listall', {'roomId': roomItem.itemId}) }}" class="uk-form-horizontal uk-form">
+            <input type="text" name="room_filter[title]" placeholder="{{ 'search-filter-placeholder'|trans({}, "room") }}" style="min-width:225px;">
+            <button type="submit" class="uk-button uk-button-primary">{{ 'Room search'|trans({}, "search") }}</button>
+        </form>
+        <ul class="uk-list">
+            <li>
+                <a class="uk-comment-title cs-link-highlight" href="{{ path('commsy_room_listall', {'roomId': roomItem.itemId}) }}">{{ 'List all rooms'|trans([], 'room') }}</a>
+            </li>
+            <li>
+                <a class="uk-comment-title cs-link-highlight" href="{{ path('commsy_room_listall', {'roomId': roomItem.itemId}|merge({'room_filter[membership]': 1})) }}">{{ 'List my rooms'|trans([], 'room') }}</a>
+            </li>
+        </ul>
+    </div>
+{% endmacro %}
+
+{% macro dashboardFeed(roomItem) %}
+    {#<li id="dashboard-latest" class="uk-grid-margin">#}
+        <div class="uk-panel uk-panel-box uk-panel-box-primary">
+            <div class="uk-panel-teaser cs-panel-teaser-primary">
+                <div class="uk-flex uk-flex-middle">
+                    <div class="uk-text-large">{{ 'latest entries from my rooms'|trans({}, "room") }}</div>
+                 </div>
+            </div>
+
+            <div class="feed">
+                <ul id="dashboard-feed" class="uk-comment-list">
+                    {{ render(controller(
+                        'CommsyBundle:Dashboard:feed',
+                        { 'roomId': roomItem.itemId }
+                    ))}}
+                </ul>
+            </div>
+
+            <div class="feed-load-more" data-uk-scrollspy="{cls: 'uk-animation-fade', repeat: true, topoffset: 0}" data-feed='{"url": "{{ app.request.baseURL }}/dashboard/{{ roomItem.itemId }}/feed/", "target": "#dashboard-feed"}'>
+                <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
+            </div>
+
+        </div>
+    {#</li>#}
+{% endmacro %}
+
+{% macro dashboardCalendar(roomItem, calendars, iCal, contextArray) %}
+    {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+
+    {#<li id="dashboard-calendar" class="uk-grid-margin">#}
+        <div class="uk-panel uk-panel-box uk-panel-box-primary">
+            <div class="uk-panel-teaser cs-panel-teaser-primary">
+                <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                    <div class="uk-text-large">{{ 'calendar'|trans({}, "date") }}</div>
+
+{# FIXME: dashboard subscription and import links are broken #}
+{#
+                    <div>
+                        <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+                            <button class="uk-button uk-button-mini cs-button-list">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
+                            <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
+                                <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left uk-nav-parent-icon" data-uk-nav>
+                                    {% if iCal.show %}
+#}
+                                        {# date export #}
+{#
+                                        <li class="uk-parent">
+                                            <a href="#">
+                                                <i class="uk-icon-small uk-icon-calendar-o uk-icon-justify uk-visible-large"></i> {{ 'export dates'|trans({}, 'date') }}
+                                            </a>
+                                            <ul class="uk-nav-sub uk-list-striped uk-text-left">
+                                                {% for key, context in contextArray  %}
+                                                    <li><span class="uk-text-bold">{{ context[0] }}</span></li>
+                                                    {% for calendar in calendars  %}
+                                                        {% if key == calendar.contextId %}
+                                                            <li>
+                                                                <a class="uk-margin-left" href="{{ iCal.exportUrl }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
+                                                                    {{ macros.calendarIcon(calendar) }}
+                                                                    <span class="uk-vertical-align-middle">
+                                                                        {{ calendar.title|trans({}, 'date') }}
+                                                                    </span>
+                                                                </a>
+                                                            </li>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+#}
+                                        {# date abo#}
+{#
+                                        <li class="uk-parent">
+                                            <a href="#">
+                                                <i class="uk-icon-small uk-icon-calendar-plus-o uk-icon-justify uk-visible-large"></i> {{ 'abo dates'|trans({}, 'date') }}
+                                            </a>
+                                            <ul class="uk-nav-sub uk-list-striped uk-text-left">
+                                                {% for key, context in contextArray  %}
+                                                    <li><span class="uk-text-bold">{{ context[0] }}</span></li>
+                                                    {% for calendar in calendars  %}
+                                                        {% if key == calendar.contextId %}
+                                                            <li>
+                                                                <a class="uk-margin-left" href="{{ iCal.aboUrl|replace({"http:" : "webcal:", "https:" : "webcal:"}) }}&calendar_id={{ calendar.id }}" target="_blank" style="color:#444">
+                                                                    {{ macros.calendarIcon(calendar) }}
+                                                                    <span class="uk-vertical-align-middle">
+                                                                        {{ calendar.title|trans({}, 'date') }}
+                                                                    </span>
+                                                                </a>
+                                                            </li>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+#}
+                 </div>
+            </div>
+
+            {{ render(controller(
+            'CommsyBundle:Date:calendardashboard',
+            { 'roomId': roomItem.itemId }
+            ))}}
+        </div>
+    {#</li>#}
+{% endmacro %}
+
+{% macro dashboardRss(roomItem) %}
+    {#<li id="dashboard-rss" class="uk-grid-margin">#}
+        <div class="uk-panel uk-panel-box uk-panel-box-primary">
+            <div class="uk-panel-teaser cs-panel-teaser-primary">
+                <div class="uk-flex uk-flex-middle">
+                    <div class="uk-text-large">{{ 'rss feeds'|trans({}, "dashboard") }}</div>
+                 </div>
+            </div>
+
+            {{ render(controller(
+            'CommsyBundle:Dashboard:rss',
+            { 'roomId': roomItem.itemId }
+            ))}}
+        </div>
+    {#</li>#}
+{% endmacro %}
+
+{% macro dashboardExternalAccess(roomItem) %}
+    {#<li id="dashboard-external-access" class="uk-grid-margin">#}
+        <div class="uk-panel uk-panel-box uk-panel-box-primary">
+            <div class="uk-panel-teaser cs-panel-teaser-primary">
+                <div class="uk-flex uk-flex-middle">
+                    <div class="uk-text-large">{{ 'external access'|trans({}, "dashboard") }}</div>
+                 </div>
+            </div>
+
+            {{ render(controller(
+            'CommsyBundle:Dashboard:externalaccess',
+            { 'roomId': roomItem.itemId }
+            ))}}
+        </div>
+    {#</li>#}
+{% endmacro %}

@@ -1,0 +1,499 @@
+{% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating) %}
+    {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+    {% set pathName = '' %}
+    {% if item.itemType == 'topic' %}
+        {% set pathName = 'commsy_topic_edit' %}
+    {% elseif item.itemType == 'section' %}
+        <a name="section{{item.ItemID}}"></a>
+        {% set pathName = 'commsy_topic_edit' %}
+    {% endif %}
+    {% if userCount == 0 %}
+        {% set userCount = 1 %}
+    {% endif %}
+    
+    <div id="section{{ item.itemId }}" class="cs-edit-section cs-toggle" data-cs-edit="{editUrl: '{{ path(pathName, {'roomId': item.contextId, 'itemId': item.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': item.contextId, 'itemId': item.itemId}) }}', draft: '{{ draft }}'}">
+        <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
+            <div class="uk-grid uk-margin-small-bottom">
+                <div class="uk-width-8-10 uk-margin-small-bottom" >
+                    <div class="uk-grid">
+                        <div class="uk-width-8-10">
+                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
+                        </div>
+                    </div>
+                </div>        
+                <div class="uk-width-2-10 uk-text-right">
+                    {# edit #}
+                    {% if is_granted('ITEM_EDIT', item.itemId) %}
+                        {{ macros.actionIcons('title', item, true) }}
+                        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
+                    {% else %}
+                        {{ macros.actionIcons('title', item, false) }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="uk-margin-left uk-margin-right uk-position-relative">
+            <div class="uk-width-1-1 uk-padding-remove uk-margin-small-bottom">    
+                <div class="uk-grid uk-margin-small-left uk-margin-top-remove">
+                    <div class="uk-width-9-10 uk-padding-remove">
+                        <div class="toggle-title-{{ item.itemId }}">
+                            <div class="uk-panel">
+                                <div class="uk-grid">
+                                    <div class="uk-width-1-1">
+                                        <div class="uk-flex">
+                                            <div class="uk-margin-right">
+                                                {% if item.modificatorItem.isUser %}
+                                                    {{  macros.userIconLink(item.modificatorItem) }}
+                                                {% else %}
+                                                    {{  macros.userIcon(item.modificatorItem) }}
+                                                {% endif %}
+                                            </div>
+                                            <div class="uk-margin-right">
+                                                {% if '9999-00-00' not in item.getModificationDate %}
+                                                    {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                {% else %}
+                                                    {{ 'last changed'|trans({})|capitalize }}: {{item.creationDate|date("d.m.Y H:i")}}<br/>
+                                                {% endif %}
+                                                {{ 'changed by'|trans({})|capitalize }}: {{item.modificatorItem.Fullname}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="toggle-title-{{ item.itemId }} uk-hidden">
+                            <div class="uk-panel">
+                                <ul class="uk-grid" data-uk-grid-margin>
+                                    <li class="uk-grid-width-4-10">
+                                        <div class="uk-flex">
+                                            <div class="uk-margin-right">
+                                                {% if item.modificatorItem.isUser %}
+                                                    {{  macros.userIconLink(item.modificatorItem) }}
+                                                {% else %}
+                                                    {{  macros.userIcon(item.modificatorItem) }}
+                                                {% endif %}
+                                            </div>
+                                            <div class="uk-margin-right">
+                                                {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                {{ 'changed by'|trans({})|capitalize }}: {{item.modificatorItem.Fullname}}<br/>
+                                                {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="uk-grid-width-2-10">
+                                        <div class="uk-clearfix">
+                                            <div class="uk-margin-remove">
+                                                {% if item.creator.isUser %}
+                                                    {{  macros.userIconLink(item.creator) }}
+                                                {% else %}
+                                                    {{  macros.userIcon(item.creator) }}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="uk-clearfix">
+                                            {{ 'creator'|trans({})}} 
+                                        </div>
+                                    </li>
+                                    <li class="uk-grid-width-4-10">
+                                        <div class="uk-clearfix">
+                                            <div class="uk-margin-remove">
+                                                {% if modifierList[item.itemId] is defined %}
+                                                    {% if not modifierList[item.itemId] is empty %}
+                                                        <div class="">
+                                                            {% for modifier in modifierList[item.itemId] %}
+                                                                <div class="">
+                                                                    {% if modifier.isUser %}
+                                                                        {{  macros.userIconLink(modifier) }}
+                                                                    {% else %}
+                                                                        {{  macros.userIcon(modifier) }}
+                                                                    {% endif %}
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </div>
+                                        </div>                           
+                                        {% if modifierList[item.itemId] is defined %}
+                                        {% if not modifierList[item.itemId] is empty %}
+                                        <div class="uk-clearfix">
+                                            {{ 'editors'|trans({})}} 
+                                        </div>
+                                        {% endif %}
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="uk-panel uk-margin-top">
+                                <div class="uk-grid">
+                                    <div class="uk-width-2-5">                           
+                                        <div class="uk-clearfix">
+                                            <div class="uk-align-left uk-width-1-1">
+                                            {{ 'clicked since last editing'|trans({})}}: <br/>
+                                                <div class="uk-progress">
+                                                    {% set activePercent = (readSinceModificationCount/userCount*100)|round %}
+                                                    <div class="uk-progress-bar cs-progress-bar" style="width: {{ activePercent }}%;">{{readSinceModificationCount}}</div>
+                                                </div>
+                                           </div>
+                                        </div>                           
+                                    </div>                            
+                                    <div class="uk-width-1-5">                            
+                                    </div>                            
+                                    <div class="uk-width-2-5">                           
+                                        <div class="uk-clearfix">
+                                            <div class="uk-align-left uk-width-1-1">
+                                            {{ 'clicked since creating'|trans({}) }}: <br/>
+                                                <div class="uk-progress">
+                                                    {% set activePercent = (readCount/userCount*100)|round %}
+                                                   <div class="uk-progress-bar cs-progress-bar" style="width: {{ activePercent }}%;">{{readCount}}</div>
+                                                </div> 
+                                            </div>
+                                        </div>                           
+                                    </div>                            
+                                </div>                        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+   </div>
+{% endmacro %}
+
+{% macro titleSave(item, modifierList, userCount, readCount, readSinceModificationCount) %}
+    {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+    <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
+            <div class="uk-grid uk-margin-small-bottom">
+                <div class="uk-width-8-10 uk-margin-small-bottom" >
+                    <div class="uk-grid">
+                        <div class="uk-width-8-10">
+                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
+                        </div>
+                    </div>
+                </div>        
+                <div class="uk-width-2-10 uk-text-right">
+                    {# edit #}
+                    {% if is_granted('ITEM_EDIT', item.itemId) %}
+                        {{ macros.actionIcons('title', item, true) }}
+                        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
+                    {% else %}
+                        {{ macros.actionIcons('title', item, false) }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="uk-margin-left uk-margin-right uk-position-relative">
+            <div class="uk-width-1-1 uk-padding-remove uk-margin-small-bottom">    
+                <div class="uk-grid uk-margin-small-left uk-margin-top-remove">
+                    <div class="uk-width-9-10 uk-padding-remove">
+                        <div class="toggle-title-{{ item.itemId }}">
+                            <div class="uk-panel">
+                                <div class="uk-grid">
+                                    <div class="uk-width-1-1">
+                                        <div class="uk-flex">
+                                            <div class="uk-margin-right">
+                                                {% if item.modificatorItem.isUser %}
+                                                    {{  macros.userIconLink(item.modificatorItem) }}
+                                                {% else %}
+                                                    {{  macros.userIcon(item.modificatorItem) }}
+                                                {% endif %}
+                                            </div>
+                                            <div class="uk-margin-right">
+                                                {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                {{ 'changed by'|trans({})|capitalize }}: {{item.modificatorItem.Fullname}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="toggle-title-{{ item.itemId }} uk-hidden">
+                            <div class="uk-panel">
+                                <div class="uk-grid">
+                                    <div class="uk-width-2-5">
+                                        <div class="uk-flex">
+                                            <div class="uk-margin-right">
+                                                {% if item.modificatorItem.isUser %}
+                                                    {{  macros.userIconLink(item.modificatorItem) }}
+                                                {% else %}
+                                                    {{  macros.userIcon(item.modificatorItem) }}
+                                                {% endif %}
+                                            </div>
+                                            <div class="uk-margin-right">
+                                                {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}<br/>
+                                                {{ 'changed by'|trans({})|capitalize }}: {{item.modificatorItem.Fullname}}<br/>
+                                                {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="uk-width-1-5">
+                                        <div class="uk-clearfix">
+                                            <div class="uk-margin-remove">
+                                                {% if item.creator.isUser %}
+                                                    {{  macros.userIconLink(item.creator) }}
+                                                {% else %}
+                                                    {{  macros.userIcon(item.creator) }}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="uk-clearfix">
+                                            {{ 'creator'|trans({})}} 
+                                        </div>
+                                    </div>
+                                    <div class="uk-width-2-5">                           
+                                        <div class="uk-clearfix">
+                                            <div class="uk-margin-remove">
+                                                {% if modifierList[item.itemId] is defined %}
+                                                    {% if not modifierList[item.itemId] is empty %}
+                                                        <div class="uk-flex">
+                                                            {% for modifier in modifierList[item.itemId] %}
+                                                                <div class="">
+                                                                    {% if modifier.isUser %}
+                                                                        {{  macros.userIconLink(modifier) }}
+                                                                    {% else %}
+                                                                        {{  macros.userIcon(modifier) }}
+                                                                    {% endif %}
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </div>
+                                        </div>                           
+                                        {% if modifierList[item.itemId] is defined %}
+                                        {% if not modifierList[item.itemId] is empty %}
+                                        <div class="uk-clearfix">
+                                            {{ 'editors'|trans({})}} 
+                                        </div>
+                                        {% endif %}
+                                        {% endif %}
+                                    </div>                            
+                                </div>                        
+                            </div>
+                            <div class="uk-panel uk-margin-top">
+                                <div class="uk-grid">
+                                    <div class="uk-width-2-5">                           
+                                        <div class="uk-clearfix">
+                                            <div class="uk-align-left uk-width-1-1">
+                                            {{ 'clicked since last editing'|trans({})}}: <br/>
+                                                <div class="uk-progress">
+                                                    {% set activePercent = (readSinceModificationCount/userCount*100)|round %}
+                                                    <div class="uk-progress-bar cs-progress-bar" style="width: {{ activePercent }}%;">{{readSinceModificationCount}}</div>
+                                                </div>
+                                           </div>
+                                        </div>                           
+                                    </div>                            
+                                    <div class="uk-width-1-5">                            
+                                    </div>                            
+                                    <div class="uk-width-2-5">                           
+                                        <div class="uk-clearfix">
+                                            <div class="uk-align-left uk-width-1-1">
+                                            {{ 'clicked since creating'|trans({}) }}: <br/>
+                                                <div class="uk-progress">
+                                                    {% set activePercent = (readCount/userCount*100)|round %}
+                                                   <div class="uk-progress-bar cs-progress-bar" style="width: {{ activePercent }}%;">{{readCount}}</div>
+                                                </div> 
+                                            </div>
+                                        </div>                           
+                                    </div>                            
+                                </div>                        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endmacro %}
+
+
+
+{% macro members(item,members) %}
+    {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+
+    {% set preview = '' %}
+    {% set content = '' %}
+ 
+
+    {% if not members is empty %}
+       {% set preview %}
+
+            {% if members|length > 10%}
+                <div class="uk-slidenav-position uk-margin-bottom" style="margin-top:-5px;" data-uk-slider="{infinite: false}">
+                    <div class="uk-slider-container">
+                        <ul class="uk-slider uk-grid uk-grid-width-medium-1-10">
+            {% else %}
+                <div class="uk-margin-bottom">
+                    <div>
+                        <ul class="uk-grid cs-file-grid uk-grid-width-medium-1-10">
+            {% endif %}
+        {% for member in members %}
+            <li>
+                <div class="uk-panel cs-file-panel-box uk-vertical-align" data-uk-tooltip title="{{member.title}} {{member.fullname}}">
+                    {% if member.isUser %}
+                        {{  macros.userIconLink(member) }}
+                    {% else %}
+                        {{  macros.userIcon(member) }}
+                    {% endif %}
+                </div>
+            </li>
+        {% endfor %}
+                    </ul>
+                </div>
+            {% if members|length > 10%}
+                <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-previous" data-uk-slider-item="previous" draggable="false"></a>
+                <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-next" data-uk-slider-item="next" draggable="false"></a>
+            {% endif %}
+            </div>
+        {% endset %}
+    
+        {% set content %}
+        <div class="uk-margin-top uk-margin-bottom" data-uk-grid="{gutter: 20}">
+            {% for member in members %}
+        <div class="uk-width-medium-1-2">
+
+            <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
+ 
+                <div class="uk-panel-teaser cs-panel-teaser-user">
+                   <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ path('commsy_user_image', {'roomId': member.contextId, 'itemId': member.itemId}) }}" data-uk-tooltip title="{{ member.fullname }}">
+                    <span class="uk-text-large uk-text-middle">
+                        <a href="{{ path('commsy_user_detail', {'roomId': member.contextId, 'itemId': member.itemId}) }}">{{ member.title }} {{member.fullname}}</a>
+                    </span>
+                </div>
+                <span>
+                    {% if member.email %}
+                        <a href="mailto:{{ member.email }}">{{ member.email }}</a>
+                    {% else %}
+                        {'no email'|trans({}) }
+                    {% endif %}
+                </span><br/>
+                <div class="uk-flex uk-flex-space-between">
+                    <div>
+                        {% if member.telephone %}
+                            <a href="tel:{{member.telephone}}" data-uk-tooltip title="{{member.telephone}}" >{{ member.telephone|truncate(20) }}</a><br/>
+                        {% else %}
+                            <span class="uk-text-muted" data-uk-tooltip title="{{'no telephone'|trans({}) }}">---</span><br/>
+                        {% endif %}
+                        {% if member.cellularphone %}
+                            <a href="tel:{{member.cellularphone}}" data-uk-tooltip title="{{member.cellularphone}}" >{{ member.cellularphone|truncate(20) }}</a>
+                        {% else %}
+                            <span class="uk-text-muted" data-uk-tooltip title="{{'no handy'|trans({}) }}">---</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        {% if member.street %}
+                            <span data-uk-tooltip title="{{member.street}}">{{ member.street |truncate(20)}}</span><br/>
+                        {% else %}
+                            <span class="uk-text-muted" data-uk-tooltip title="{{'no street'|trans({}) }}">---</span><br/>
+                        {% endif %}
+                        
+                        {% if member.city %}
+                            <span >{{ member.zipcode }} {{ member.city }}</span>
+                        {% else %}
+                            <span class="uk-text-muted" data-uk-tooltip title="{{'no city'|trans({}) }}">---</span>
+                        {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+            {% endfor %}
+
+        </div>
+        {% endset %}
+    {% endif %}
+    {{ macros.editContent('members', item, false, content, preview, true, true, members|length) }}
+{% endmacro %}
+
+{% macro path(item, edit, isLinkedToItems) %}
+    {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+
+    <hr class="uk-width-9-10"/>
+
+    <article class="uk-article uk-margin-left uk-margin-right">
+        <a name="description"></a>
+        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
+
+        {# title row #}
+        <div class="uk-grid uk-margin-small-bottom">
+            <div class="uk-width-8-10">
+                <h4 class="cs-detail-section-header">
+                    {{- 'Path'|trans({}, "topic") -}}
+                </h4>
+            </div>
+
+            <div class="uk-width-2-10 uk-flex uk-flex-right">
+
+                {# edit action #}
+                {% if edit and is_granted('ITEM_EDIT', item.itemId) %}
+                    <div class="uk-display-inline cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
+                        <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+                    </div>
+                {% endif %}
+
+                {# toggle action #}
+                {% if item.isPathActive %}
+                    <div class="uk-display-inline cs-toggle-icon uk-margin-left">
+                        <a class="cs-toggle" data-uk-toggle="{target:'.toggle-path-{{ item.itemId }}'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}">
+                            <i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {# content #}
+        {% if item.isPathActive %}
+            <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
+                
+                {# preview #}
+                <div class="toggle-path-{{ item.itemId }} cs-toggle-preview">
+                    <div class="uk-flex">
+                        {% for linkedItem in item.pathItemList.to_array %}
+                            <div>
+                                <a href="{{ path('commsy_'~linkedItem.itemType~'_detail', {'roomId': linkedItem.contextId, 'itemId': linkedItem.itemId}) }}?path={{ item.itemId }}">
+                                    <i class="{{ macros.iconClassForItemType(linkedItem.itemType) }} uk-margin-small-right" data-uk-tooltip title="{{ linkedItem.title|decodeHtmlEntity }}"></i>
+                                </a>
+                            </div>
+
+                            {% if not loop.last %}
+                                <div>
+                                    <i class="uk-icon uk-icon-arrow-right uk-margin-small-right uk-text-muted uk-text-small"></i>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {# full content #}
+                <div class="toggle-path-{{ item.itemId }} cs-toggle-content uk-hidden">
+                    <div class="uk-grid">
+                        {% for linkedItem in item.pathItemList.to_array %}
+                            <div class="uk-width-1-1">
+                                <a href="{{ path('commsy_'~linkedItem.itemType~'_detail', {'roomId': linkedItem.contextId, 'itemId': linkedItem.itemId}) }}?path={{ item.itemId }}">
+                                    <i class="{{ macros.iconClassForItemType(linkedItem.itemType) }} uk-icon uk-margin-small-right"></i>
+                                    {{ linkedItem.title|decodeHtmlEntity }}
+                                </a>
+                            </div>
+
+                            {% if not loop.last %}
+                                <div class="uk-width-1-1">
+                                    <i class="uk-icon uk-icon-arrow-down uk-text-muted uk-text-small"></i>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+        {% else %}
+            <div class="uk-width-9-10 uk-margin-top-remove">
+                <div class="toggle-path-{{ item.itemId }} cs-toggle-empty">
+                    <span class="uk-text-muted">{{ 'no path'|trans({}, "topic") }}</span>
+                    {% if not isLinkedToItems %}
+                        <span class="uk-text-muted">{{ 'link to items to create path'|trans({}, "topic") }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+
+{% endmacro %}

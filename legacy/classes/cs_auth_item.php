@@ -85,7 +85,7 @@ class cs_auth_item {
    /** constructor
     * the only available constructor, initial values for internal variables
     */
-   function cs_auth_item () {
+   function __construct() {
    }
 
    /** is the type of the item = $type ?

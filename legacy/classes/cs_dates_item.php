@@ -36,8 +36,8 @@ class cs_dates_item extends cs_item {
     *
     * @param object  environment            environment of commsy
     */
-   function cs_dates_item ($environment) {
-      $this->cs_item($environment);
+   function __construct($environment) {
+      cs_item::__construct($environment);
       $this->_type = CS_DATE_TYPE;
    }
 

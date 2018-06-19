@@ -134,12 +134,12 @@ class cs_copy_index_view extends cs_index_view {
     * @param boolean with_modifying_actions true: display with modifying functions
     *                                       false: display without modifying functions
     */
-   function cs_copy_index_view ($params) {
+   function __construct($params) {
       $this->_with_form_fields = true;
       if ( !empty($params['with_form_fields']) ) {
          $this->_with_form_fields = $params['with_form_fields'];
       }
-      $this->cs_view($params);
+      cs_view::__construct($params);
       $current_context = $this->_environment->getCurrentContextItem();
       if ( $current_context->withTags() ){
          $this->_show_tag_box = true;

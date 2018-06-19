@@ -46,7 +46,7 @@ class TodoController extends BaseController
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in todo manager
             $todoService->setFilterConditions($filterForm);
         } else {
@@ -221,67 +221,35 @@ class TodoController extends BaseController
         $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
 
         $result = [];
-        
+        $todoService = $this->get('commsy_legacy.todo_service');
+
         if ($action == 'markread') {
-	        $todoService = $this->get('commsy_legacy.todo_service');
-	        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $noticedManager = $legacyEnvironment->getNoticedManager();
-            $readerManager = $legacyEnvironment->getReaderManager();
             foreach ($selectedIds as $id) {
-    	        $item = $todoService->getTodo($id);
-    	        $versionId = $item->getVersionID();
-    	        $noticedManager->markNoticed($id, $versionId);
-    	        $readerManager->markRead($id, $versionId);
-
-    	        /** @var \cs_list $stepList */
-                $stepList =$item->getStepItemList();
-                if ( !empty($stepList) ){
-                    /** @var \cs_step_item $stepItem */
-                    $stepItem = $stepList->getFirst();
-                    while($stepItem){
-                       $noticedManager->markNoticed($stepItem->getItemID(),$versionId);
-                       $readerManager->markRead($stepItem->getItemID(),$versionId);
-                       $stepItem = $stepList->getNext();
-                    }
-                }
-
-                /** @var \cs_list $annotationList */
-    	        $annotationList =$item->getAnnotationList();
-    	        if ( !empty($annotationList) ){
-    	            /** @var \cs_annotation_item $annotationItem */
-    	            $annotationItem = $annotationList->getFirst();
-    	            while($annotationItem){
-    	               $noticedManager->markNoticed($annotationItem->getItemID(),$versionId);
-    	               $readerManager->markRead($annotationItem->getItemID(),$versionId);
-
-    	               $annotationItem = $annotationList->getNext();
-    	            }
-    	        }
+                $todoService->markTodoReadAndNoticed($id);
 	        }
 	        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
-
         } else if ($action == 'markpending') {
-            $todoService = $this->get('commsy_legacy.todo_service');
             foreach ($selectedIds as $id) {
                 $item = $todoService->getTodo($id);
                 $item->setStatus(1);
                 $item->save();
+                $todoService->markTodoReadAndNoticed($id, false, false);
             }
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('Set status of %count% entries to pending', count($selectedIds), array('%count%' => count($selectedIds)), "messages");
         } else if ($action == 'markinprogress') {
-            $todoService = $this->get('commsy_legacy.todo_service');
             foreach ($selectedIds as $id) {
                 $item = $todoService->getTodo($id);
                 $item->setStatus(2);
                 $item->save();
+                $todoService->markTodoReadAndNoticed($id, false, false);
             }
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('Set status of %count% entries to in progress', count($selectedIds), array('%count%' => count($selectedIds)), "messages");
         } else if ($action == 'markdone') {
-            $todoService = $this->get('commsy_legacy.todo_service');
             foreach ($selectedIds as $id) {
                 $item = $todoService->getTodo($id);
                 $item->setStatus(3);
                 $item->save();
+                $todoService->markTodoReadAndNoticed($id, false, false);
             }
             $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('Set status of %count% entries to done', count($selectedIds), array('%count%' => count($selectedIds)), "messages");
         } else {
@@ -291,11 +259,11 @@ class TodoController extends BaseController
             
             $tempAction = str_ireplace('mark', '', $action);
             if (in_array($tempAction, $statusArray)) {
-                $todoService = $this->get('commsy_legacy.todo_service');
                 foreach ($selectedIds as $id) {
                     $item = $todoService->getTodo($id);
                     $item->setStatus(array_search ($tempAction, $statusArray));
                     $item->save();
+                    $todoService->markTodoReadAndNoticed($id, false, false);
                 }
                 $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('Set status of %count% entries to %status%',count($selectedIds), array('%count%' => count($selectedIds), '%status%' => substr($action, 4)));
             }
@@ -518,7 +486,7 @@ class TodoController extends BaseController
     
     /**
      * @Route("/room/{roomId}/todo/{itemId}/createstep")
-     * @Template("@Commsy/Todo/editStep.html.twig")
+     * @Template("@Commsy/Todo/edit_step.html.twig")
      * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'todo')")
      */
     public function createStepAction($roomId, $itemId)
@@ -583,7 +551,7 @@ class TodoController extends BaseController
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
             if ($form->get('save')->isClicked()) {
-                if ($form->isValid()) {
+                if ($form->isSubmitted() && $form->isValid()) {
 
                     $formData = $form->getData();
 
@@ -710,7 +678,7 @@ class TodoController extends BaseController
         $form = $this->createForm(TodoType::class, $formData, $formOptions);
         
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $todoItem = $transformer->applyTransformation($todoItem, $form->getData());
 
@@ -879,7 +847,7 @@ class TodoController extends BaseController
         // annotation form
         $form = $this->createForm(AnnotationType::class);
 
-        $html = $this->renderView('CommsyBundle:Todo:detailPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:todo:detail_print.html.twig', [
             'roomId' => $roomId,
             'item' => $infoArray['todo'],
             'readerList' => $infoArray['readerList'],
@@ -927,7 +895,7 @@ class TodoController extends BaseController
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in announcement manager
             $todoService->setFilterConditions($filterForm);
         }
@@ -968,7 +936,7 @@ class TodoController extends BaseController
         // get announcement list from manager service 
         $itemsCountArray = $todoService->getCountArray($roomId);
 
-        $html = $this->renderView('CommsyBundle:Todo:listPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:todo:list_print.html.twig', [
             'roomId' => $roomId,
             'module' => 'todo',
             'announcements' => $todos,

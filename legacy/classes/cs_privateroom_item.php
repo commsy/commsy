@@ -41,9 +41,9 @@ class cs_privateroom_item extends cs_room_item
     /**
      * Constructor
      */
-    function cs_privateroom_item($environment)
+    function __construct($environment)
     {
-        $this->cs_context_item($environment);
+        cs_context_item::__construct($environment);
         $this->_type = CS_PRIVATEROOM_TYPE;
 
         // new private room

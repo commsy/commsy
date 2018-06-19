@@ -27,7 +27,7 @@ class MailAssistant
     {
         $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
 
-        return $this->twig->render('CommsyBundle:Mail:send.html.twig', [
+        return $this->twig->render('CommsyBundle:mail:send.html.twig', [
             'contextItem' => $currentContextItem,
             'item' => $item,
             'content' => $this->generateMessageData($item),

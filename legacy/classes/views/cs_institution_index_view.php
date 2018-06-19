@@ -33,8 +33,8 @@ class cs_institution_index_view extends cs_index_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_institution_index_view ($params) {
-      $this->cs_index_view($params);
+   function __construct($params) {
+      cs_index_view::__construct($params);
       $this->setTitle($this->_translator->getMessage('COMMON_INSTITUTIONS'));
       $this->setColspan(3);
    }

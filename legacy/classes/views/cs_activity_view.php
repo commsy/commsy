@@ -46,7 +46,7 @@ class cs_activity_view extends cs_view {
     *                                       false: display without modifying functions
     */
    public function __construct ( $params ) {
-      $this->cs_view($params);
+      cs_view::__construct($params);
       $this->setViewName('activity');
       // Determine time spread
       $context = $this->_environment->getCurrentContextItem();

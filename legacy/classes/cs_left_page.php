@@ -23,14 +23,14 @@
 //    along with CommSy.
 class cs_left_page {
 
-   var $_environment = NULL;
-   var $_class_factory = NULL;
-   var $_post_vars = array();
-   var $_get_vars = array();
-   var $_translator = NULL;
-   var $_command = NULL;
+   protected $_environment = NULL;
+   protected $_class_factory = NULL;
+   protected $_post_vars = array();
+   protected $_get_vars = array();
+   protected $_translator = NULL;
+   protected $_command = NULL;
 
-   function cs_left_page ($environment) {
+   function __construct($environment) {
       $this->_environment = $environment;
       $this->_class_factory = $this->_environment->getClassFactory();
       $this->_translator = $this->_environment->getTranslationObject();

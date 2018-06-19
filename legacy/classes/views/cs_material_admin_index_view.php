@@ -46,7 +46,7 @@ class cs_material_admin_index_view extends cs_material_index_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_material_admin_index_view ($params) {
+   function __construct($params) {
       $environment = $params['environment'];
       $with_modifying_actions = true;
       if ( isset($params['with_modifying_actions']) ) {

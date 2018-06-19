@@ -1,0 +1,22 @@
+{% form_theme form 'CommsyBundle:form:uikit_stacked_layout.html.twig' %}
+
+<div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative uk-padding-remove">
+    {% include 'CommsyBundle:utils:save_spinner.html.twig' %}
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    <div class="uk-flex">
+        <div class="uk-width-9-10">
+            {{ form_widget(form.description, {'id': 'annotationedit' ~ itemId}) }}
+        </div>
+    </div>
+    <div class="uk-flex uk-margin-small-top">
+        <div>
+            {{ form_row(form.save) }}
+        </div>
+        <div class="uk-margin-small-left">
+            {{ form_row(form.cancel) }}
+        </div>
+    </div>
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+</div>

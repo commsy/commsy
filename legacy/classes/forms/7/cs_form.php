@@ -52,7 +52,7 @@ class cs_form {
          *
          * @author CommSy Development Group
          */
-        function cs_form() {
+        function __construct() {
            $this->_formElements = new cs_array_list();
 
            global $environment;
@@ -1076,8 +1076,7 @@ class cs_form {
                           $anchor='',
                           $extention = '',
                           $drop_down = false,
-                          $show_drop_down = false,
-                          $exampleText = '') {
+                          $show_drop_down = false) {
 
                 $element['type']  = 'text';
                 $element['name']  = $name;

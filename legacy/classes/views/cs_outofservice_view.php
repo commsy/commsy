@@ -37,8 +37,8 @@ class cs_outofservice_view extends cs_text_view {
     *
     * @param array params parameters in an array of this class
    */
-   function cs_outofservice_view ($params) {
-      $this->cs_text_view($params);
+   function __construct($params) {
+      cs_text_view::__construct($params);
    }
    
    /** get text view as HTML

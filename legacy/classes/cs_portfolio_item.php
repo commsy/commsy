@@ -13,8 +13,8 @@ include_once('classes/cs_item.php');
  */
 class cs_portfolio_item extends cs_item {
 
-   function cs_portfolio_item ($environment) {
-      $this->cs_item($environment);
+   function __construct($environment) {
+      cs_item::__construct($environment);
       $this->_type = CS_PORTFOLIO_TYPE;
    }
 

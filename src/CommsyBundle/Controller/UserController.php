@@ -91,7 +91,7 @@ class UserController extends Controller
 
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in user manager
             $userService->setFilterConditions($filterForm);
         } else {
@@ -200,7 +200,7 @@ class UserController extends Controller
         $userService->resetLimits();
         // apply filter
         $filterForm->handleRequest($request);
-        if ($filterForm->isValid()) {
+        if ($filterForm->isSubmitted() && $filterForm->isValid()) {
             // set filter conditions in user manager
             $userService->setFilterConditions($filterForm);
         }
@@ -232,7 +232,7 @@ class UserController extends Controller
         $itemsCountArray = $userService->getCountArray($roomId);
 
         
-        $html = $this->renderView('CommsyBundle:User:listPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:user:list_print.html.twig', [
             'roomId' => $roomId,
             'users' => $users,
             'readerList' => $readerList,
@@ -289,7 +289,7 @@ class UserController extends Controller
                     }
                 }
 
-                if ($form->isValid()) {
+                if ($form->isSubmitted() && $form->isValid()) {
                     switch ($formData['status']) {
                         case 'user-block':
                             foreach ($users as $user) {
@@ -814,7 +814,7 @@ class UserController extends Controller
         $form = $this->createForm(UserType::class, $formData, $formOptions);
         
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
             if ($saveType == 'save') {
                 $userItem = $transformer->applyTransformation($userItem, $form->getData());
@@ -1232,7 +1232,7 @@ class UserController extends Controller
     
     /**
      * @Route("/room/{roomId}/user/rooms/{start}")
-     * @Template("CommsyBundle:Menu:room_list.html.twig")
+     * @Template("CommsyBundle:menu:room_list.html.twig")
      */
     public function roomsAction($roomId, $max = 10, $start = 0)
     {
@@ -1274,13 +1274,27 @@ class UserController extends Controller
         if ($sessionItem->issetValue('clipboard_ids')) {
             $currentClipboardIds = $sessionItem->getValue('clipboard_ids');
         }
-        
+
+        $showPortalConfigurationLink = false;
+        $currentPortalUserItem = $currentUserItem->getRelatedPortalUserItem();
+        if ($currentPortalUserItem) {
+            if ($currentPortalUserItem->isModerator()) {
+                $showPortalConfigurationLink = true;
+            }
+        }
+
+        // NOTE: getRelatedPortalUserItem() sets some limits which need to get reset again before feedAction gets called
+        $userManager = $legacyEnvironment->getUserManager();
+        $userManager->resetLimits();
+
         return [
             'privateRoomItem' => $privateRoomItem,
             'count' => sizeof($currentClipboardIds),
             'roomId' => $legacyEnvironment->getCurrentContextId(),
             'supportLink' => $portalItem->getSupportPageLink(),
             'tooltip' => $portalItem->getSupportPageLinkTooltip(),
+            'showPortalConfigurationLink' => $showPortalConfigurationLink,
+            'portal' => $portalItem,
         ];
     }
 
@@ -1319,7 +1333,7 @@ class UserController extends Controller
 
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
-        $html = $this->renderView('CommsyBundle:User:detailPrint.html.twig', [
+        $html = $this->renderView('CommsyBundle:user:detail_print.html.twig', [
             'roomId' => $roomId,
             'user' => $infoArray['user'],
             'readerList' => $infoArray['readerList'],

@@ -58,8 +58,8 @@ class cs_external_id_manager extends cs_manager {
     * NOTE: the constructor must never be called directly, instead the cs_environment must
     * be used to access this manager
     */
-   function cs_external_id_manager ($environment) {
-      $this->cs_manager($environment);
+   function __construct($environment) {
+      cs_manager::__construct($environment);
       $this->_db_table = 'external2commsy_id';
    }
 

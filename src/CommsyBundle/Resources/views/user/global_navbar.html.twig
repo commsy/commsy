@@ -1,0 +1,46 @@
+<div class="uk-navbar-content">
+    <ul class="uk-navbar-nav">
+        {#<li>#}
+            {#<a href="#"><i class="uk-icon-bell-o"></i></a>#}
+        {#</li>#}
+
+        {% if showPortalConfigurationLink %}
+            <li>
+                <a href="{{ path('commsy_portal_legacysettings', {'roomId': portal.itemId}) }}"><i class="uk-icon-wrench"></i></a>
+            </li>
+        {% endif %}
+
+        {% if supportLink is not empty and tooltip is not empty %}
+            <li>
+                <a href="{{ supportLink }}" title="{{ tooltip }}" target="_blank"><i class="uk-icon-question-circle"></i></a>
+            </li>
+        {% endif %}
+
+        <li>
+            <a href="{{ path('commsy_copy_list', {'roomId': roomId}) }}" title="{{ 'copies'|capitalize|trans({}, "rubric")}}">
+                <i class="uk-icon-copy"></i>
+                <small id="cs-nav-copy-indicator">
+                {% if count > 0 %}
+                    {{ count }}
+                {% endif %}
+                </small>
+            </a>
+        </li>
+
+        {% if privateRoomItem %}
+            <li>
+                <a href="{{ path('commsy_material_list', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'stackStatus'|trans({}, "profile")}}">
+                    <i class="uk-icon-folder-open-o"></i>
+                </a>
+            </li>
+
+            {% if privateRoomItem %}
+                <li>
+                    <a href="{{ path('commsy_dashboard_overview', {'roomId': privateRoomItem.itemId}) }}" title="{{ 'dashboard description text'|trans({}, "rubric")}}">
+                        <i class="uk-icon-qrcode"></i>
+                    </a>
+                </li>
+            {% endif %}
+        {% endif %}
+    </ul>
+</div>

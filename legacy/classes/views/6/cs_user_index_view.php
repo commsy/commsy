@@ -37,8 +37,8 @@ class cs_user_index_view extends cs_room_index_view {
     *
     * @param array params parameters in an array of this class
     */
-   function cs_user_index_view ($params) {
-      $this->cs_room_index_view($params);
+   function __construct($params) {
+      cs_room_index_view::__construct($params);
       $this->setTitle($this->_translator->getMessage('USER_HEADER'));
    }
 

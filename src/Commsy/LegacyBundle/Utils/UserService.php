@@ -331,26 +331,38 @@ class UserService
         return $user_array;
     }
 
+    /**
+     * @param \cs_user_item $user
+     * @param int $roomId
+     */
     public function updateAllGroupStatus($user, $roomId) {
-        $group_list = $user->getGroupList();
-        if ($group_list->isEmpty()) {
-            $group_manager = $this->legacyEnvironment->getLabelManager();
-            $group_manager->setExactNameLimit('ALL');
-            $group_manager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
-            $group_manager->select();
-            $group_list = $group_manager->get();
-            if ($group_list->getCount() == 1) {
-                $group = $group_list->getFirst();
+
+        $userGroups = $user->getGroupList();
+        if ($userGroups->isEmpty()) {
+            // try to find the system group "all" for the current context
+            // TODO: why is this not using the $roomId parameter instead?
+            $groupManager = $this->legacyEnvironment->getLabelManager();
+            $groupManager->setExactNameLimit('ALL');
+            $groupManager->setContextLimit($this->legacyEnvironment->getCurrentContextID());
+            $groupManager->select();
+            $userGroups = $groupManager->get();
+
+            // TODO: what is this for?
+            if ($userGroups->getCount() == 1) {
+                $group = $userGroups->getFirst();
                 $group->setTitle('ALL');
             }
 
+            // we found the system group
             if (isset($group)) {
                 if ($user->getStatus() > 1 && !$group->isMember($user)) {
                     $group->addMember($user);
+                } else {
+                    if ($user->getStatus() < 2 && $group->isMember($user)) {
+                        $group->removeMember($user);
+                    }
                 }
-                elseif ($user->getStatus() < 2 && $group->isMember($user)) {
-                    $groupItem->removeMember($user);
-                }
+
                 $group->setModificatorItem($user);
                 $group->save();
             }

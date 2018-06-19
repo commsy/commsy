@@ -42,10 +42,10 @@ class cs_server_manager extends cs_context_manager {
     *
     * @param object cs_environment the environment
     */
-   function cs_server_manager ($environment) {
+   function __construct($environment) {
       $this->_db_table = 'server';
       $this->_room_type = CS_SERVER_TYPE;
-      $this->cs_context_manager($environment);
+      cs_context_manager::__construct($environment);
    }
 
    public function getStatistics ($server_item,$date_start,$date_end) {
