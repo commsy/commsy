@@ -970,7 +970,9 @@ if(isset($c_smarty) && $c_smarty === true) {
             $context_item = $environment->getCurrentContextItem();
             $externalStylesFilename = 'external_pages/'.$context_item->getItemID().'/cs_external_page_portal_view.php';
 
-            if ($environment->getCurrentModule() != 'configuration' && file_exists($externalStylesFilename)) {
+            if ($environment->getCurrentModule() !== 'configuration'
+                && $environment->getCurrentModule() !== 'account'
+                && file_exists($externalStylesFilename)) {
                 include_once($externalStylesFilename);
                 $params = array();
                 $params['environment'] = $environment;
