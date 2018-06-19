@@ -510,7 +510,10 @@ HTML;
         $passwordLabel = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_PASSWORD_LABEL');
         $forgotPasswordLinkTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_PASSWORD_LINK_TITLE_FORGOT');
         $submitButtonTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SUBMIT_BUTTON_TITLE');
+        $guestAccessLinkTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_GUEST_ACCESS_LINK_TITLE');
 
+        $currentPortal = $this->_environment->getCurrentPortalItem();
+        $currentUser = $this->_environment->getCurrentUserItem();
         $portalID = $this->_environment->getCurrentPortalID();
         $currentModule = $this->_environment->getCurrentModule();
         $currentFunction = $this->_environment->getCurrentFunction();
@@ -556,6 +559,14 @@ HTML;
             <div class="form-group row">
               <div class="col-sm-12">
                 <button type="submit" class="btn btn-primary" name="option" value="$submitButtonTitle">$submitButtonTitle</button>
+HTML;
+
+        // if guest access is allowed, include a link to the "All Rooms" list
+        if ($currentPortal->isOpenForGuests() && !$currentUser->isUser()) {
+            $html .= LF . $this->_getAllRoomsLinkAsHTML($guestAccessLinkTitle);
+        }
+
+        $html .= LF . <<<HTML
               </div>
             </div>
           </form>
@@ -589,6 +600,38 @@ HTML;
         }
 
         return $allowAddAccount;
+    }
+
+
+    /** Get a link to the "All Rooms" list as HTML.
+     * @return string "All Rooms" link as HTML
+     * @author CommSy Development Group
+     */
+    function _getAllRoomsLinkAsHTML($linkTitle = '')
+    {
+        global $symfonyContainer;
+        $symfonyTranslatorService = $symfonyContainer->get('translator');
+        $portalID = $this->_environment->getCurrentPortalID();
+
+        $currentUserOwnRoom = NULL;
+        $currentUser = $this->_environment->getCurrentUserItem();
+        if (!empty($currentUser)) {
+            $currentUserOwnRoom = $currentUser->getOwnRoom($portalID); // empty for the root user
+        }
+
+        // TODO: use Symfony router to create URL
+        $contextID = ($currentUserOwnRoom) ? $currentUserOwnRoom->getItemID() : $portalID;
+        $linkURL = "/room/" . $contextID . "/all";
+
+        if (empty($linkTitle)) {
+            $linkTitle = $symfonyTranslatorService->trans('All rooms', [], 'room');
+        }
+
+        $html = <<<HTML
+                <a href="$linkURL" class="btn text-dark">$linkTitle</a>
+HTML;
+
+        return $html;
     }
 
 
@@ -631,8 +674,6 @@ HTML;
      */
     public function _getLoggedInContentAsHTML()
     {
-        global $symfonyContainer;
-        $symfonyTranslatorService = $symfonyContainer->get('translator');
         $portalID = $this->_environment->getCurrentPortalID();
         $getVars = $this->_environment->getCurrentParameterArray();
 
@@ -642,13 +683,11 @@ HTML;
 
         $headlineLabel = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_ACCOUNT_STATUS');
         $dashboardButtonTitle = ($currentUserOwnRoom) ? $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LOGGEDIN_SUBMIT_BUTTON_TITLE') : $this->_translator->getMessage('SERVER_PORTAL_OVERVIEW');
-        $allRoomsTitle = $symfonyTranslatorService->trans('All rooms', [], 'room');
         $logoutButtonTitle = $this->_translator->getMessage('MYAREA_LOGOUT');
 
         // TODO: use Symfony router to create URLs
         $contextID = ($currentUserOwnRoom) ? $currentUserOwnRoom->getItemID() : $portalID;
         $formActionURL = ($currentUserOwnRoom) ? "/dashboard/" . $contextID : curl(0, 'home', 'index', $getVars);
-        $allRoomsURL = "/room/" . $contextID . "/all";
         $logoutURL = ($currentUserOwnRoom) ? "/room/" . $contextID . "/logout" : curl($portalID, 'context', 'logout', $getVars);
 
         $html = <<<HTML
@@ -667,7 +706,7 @@ HTML;
             <div class="form-group row">
               <div class="col">
                 <button type="submit" class="btn btn-primary" name="option">$dashboardButtonTitle</button>
-                <a href="$allRoomsURL" class="btn text-dark">$allRoomsTitle</a>
+{$this->_getAllRoomsLinkAsHTML()}
                 <a href="$logoutURL" class="btn">$logoutButtonTitle</a>
               </div>
             </div>

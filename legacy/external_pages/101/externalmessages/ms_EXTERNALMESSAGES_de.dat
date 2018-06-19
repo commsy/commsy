@@ -31,4 +31,5 @@ $message["EXTERNALMESSAGES_PORTAL_SUBMIT_BUTTON_TITLE"]["de"] = "Anmelden";
 $message["EXTERNALMESSAGES_PORTAL_LOGGEDIN_SUBMIT_BUTTON_TITLE"]["de"] = "Persönlicher Bereich";
 $message["EXTERNALMESSAGES_PORTAL_INDICATIONS_TITLE"]["de"] = "Hinweise";
 $message["EXTERNALMESSAGES_PORTAL_SOURCE_LABEL"]["de"] = "Quelle";
+$message["EXTERNALMESSAGES_PORTAL_GUEST_ACCESS_LINK_TITLE"]["de"] = "Weiter ohne Login";
 ?>
