@@ -139,7 +139,7 @@ class SearchManager
         $boolQuery->addMust($fieldQuery);
 
         // filter context
-        $idsQuery = new Queries\Ids('room', $contextIds);
+        $idsQuery = new Queries\Ids($contextIds);
 
         $boolQuery->addFilter($idsQuery);
 
