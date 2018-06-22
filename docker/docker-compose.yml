@@ -2,7 +2,7 @@ version: "3"
 
 services:
   commsy_db:
-    image: mariadb:10.3
+    image: mariadb:10.1
     container_name: commsy_db
     ports:
       - "3306:3306"
