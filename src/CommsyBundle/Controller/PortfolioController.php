@@ -16,6 +16,7 @@ use CommsyBundle\Event\CommsyEditEvent;
 
 use CommsyBundle\Form\Type\AnnotationType;
 use CommsyBundle\Form\Type\PortfolioType;
+use CommsyBundle\Form\Type\PortfolioEditCategoryType;
 
 /**
  * Class CalendarController
@@ -237,14 +238,60 @@ class PortfolioController extends Controller
      * @Route("/room/{roomId}/portfolio/{portfolioId}/editcategory/{position}/{categoryId}/")
      * @Template()
      */
-    public function editcategoryAction($roomId, $position, $categoryId, Request $request)
+    public function editcategoryAction($roomId, $portfolioId, $position, $categoryId, Request $request)
     {
-        if ($categoryId == 'add') {
-            // add new row or column
-        } else {
-            // edit row or column
+        $translator = $this->get('translator');
+
+        $portfolioService = $this->get('commsy_legacy.portfolio_service');
+        $portfolio = $portfolioService->getPortfolio($portfolioId);
+
+        $formData = [];
+
+        $categoryService = $this->get('commsy_legacy.category_service');
+        $roomTags = $categoryService->getTags($roomId);
+
+        $form = $this->createForm(PortfolioEditCategoryType::class, $formData, array(
+            'categories' => $roomTags,
+            'placeholderDescription' => '['.$translator->trans('insert description').']',
+        ));
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            if ($form->get('save')->isClicked()) {
+                $formData = $form->getData();
+
+                if ($categoryId == 'add') {
+                    // add new row or column
+
+                    $tagId = $formData['category'];
+
+                    $index = 1;
+                    foreach ($portfolio['tags'] as $tag) {
+                        if ($position == 'row') {
+                            if ($tag['column'] == 0) {
+                                $index++;
+                            }
+                        } else {
+                            if ($tag['row'] == 0) {
+                                $index++;
+                            }
+                        }
+                    }
+
+                    $portfolioService->addTagToPortfolio($portfolioId, $tagId, $position, $index, $formData['description']);
+
+                } else {
+                    // edit row or column
+                }
+
+            } else if ($form->get('cancel')->isClicked()) {
+                // ToDo ...
+            }
+            return $this->redirectToRoute('commsy_portfolio_index', array('roomId' => $roomId, 'portfolioId' => $portfolioId));
         }
 
-        return [];
+        return [
+            'form' => $form->createView(),
+        ];
     }
 }

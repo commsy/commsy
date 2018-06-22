@@ -199,4 +199,9 @@ class PortfolioService
         $portfolioManager = $this->legacyEnvironment->getEnvironment()->getPortfolioManager();
         return $portfolioManager->getAnnotationIdsForPortfolioCell($portfolioId, $row, $column);
     }
+
+    function addTagToPortfolio($portfolioId, $tagId, $position, $index, $description) {
+        $portfolioManager = $this->legacyEnvironment->getEnvironment()->getPortfolioManager();
+        $portfolioManager->addTagToPortfolio($portfolioId, $tagId, $position, $index, $description);
+    }
 }

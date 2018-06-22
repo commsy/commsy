@@ -520,6 +520,11 @@ services:
         tags:
             - { name: form.type }
 
+    commsy.form.type.portfolioeditcategory:
+        class: CommsyBundle\Form\Type\PortfolioEditCategoryType
+        tags:
+            - { name: form.type }
+
     # Form type extension
     commsy.form.extension.image_type:
         class: CommsyBundle\Form\Extension\ImageTypeExtension

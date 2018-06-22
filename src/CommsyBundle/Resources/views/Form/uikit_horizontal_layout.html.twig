@@ -161,3 +161,36 @@
 {% endblock %}
 
 
+{% block _portfolio_category_widget_backup %}
+        {% import _self as macros %}
+
+        {% if form.children is not empty %}
+            <ul>
+                {{ macros.nestedCategoriesList(form.vars.choices) }}
+                </li>
+            </ul>
+        {% else %}
+            {{ 'No categories has been created yet.'|trans({}, 'category') }}
+        {% endif %}
+
+{% endblock %}
+
+{% macro nestedCategoriesList(choices) %}
+    {% set opened = false %}
+
+    {% for child in choices %}
+        {% if child.choices is defined %}
+            <ul>
+                {{ _self.nestedCategoriesList(child.choices) }}
+            </ul>
+        {% else %}
+            {% if not loop.first %}
+            </li>
+        {% endif %}
+
+        <li>
+            {{ child.label -}}
+            <input type="checkbox" value="{{ child.value }}" />
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
