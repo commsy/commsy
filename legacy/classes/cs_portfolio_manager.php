@@ -363,7 +363,7 @@ function getPortfolioTags($portfolioId) {
   		WHERE
   			tag_portfolio.p_id = '" . encode(AS_DB, $portfolioId) . "'
   		ORDER BY
-  			tag2tag.sorting_place
+  			tag_portfolio.row, tag_portfolio.column
   	";
   	$result = $this->_db_connector->performQuery($query);
   	 
