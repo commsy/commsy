@@ -204,4 +204,19 @@ class PortfolioService
         $portfolioManager = $this->legacyEnvironment->getEnvironment()->getPortfolioManager();
         $portfolioManager->addTagToPortfolio($portfolioId, $tagId, $position, $index, $description);
     }
+
+    function deletePortfolioTag($portfolioId, $tagId) {
+        $portfolioManager = $this->legacyEnvironment->getEnvironment()->getPortfolioManager();
+        $portfolioManager->deletePortfolioTag($portfolioId, $tagId);
+    }
+
+    function getPortfolioTags($portfolioId) {
+        $portfolioManager = $this->legacyEnvironment->getEnvironment()->getPortfolioManager();
+        return $portfolioManager->getPortfolioTags($portfolioId);
+    }
+
+    function updatePortfolioTagPosition($portfolioId, $tagId, $row, $column) {
+        $portfolioManager = $this->legacyEnvironment->getEnvironment()->getPortfolioManager();
+        $portfolioManager->updatePortfolioTagPosition($portfolioId, $tagId, $row, $column);
+    }
 }

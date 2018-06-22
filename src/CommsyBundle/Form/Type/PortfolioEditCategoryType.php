@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 use CommsyBundle\Form\Type\Custom\DateTimeSelectType;
 
@@ -43,11 +44,21 @@ class PortfolioEditCategoryType extends AbstractType
                 ],
                 'required' => false,
             ])
+            ->add('delete-category', HiddenType::class, [
+                'label' => false,
+                'required' => true,
+            ])
             ->add('save', SubmitType::class, array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 ),
                 'label' => 'save',
+            ))
+            ->add('delete', SubmitType::class, array(
+                'attr' => array(
+                    'class' => 'uk-button-primary',
+                ),
+                'label' => 'delete',
             ))
             ->add('cancel', SubmitType::class, array(
                 'attr' => array(

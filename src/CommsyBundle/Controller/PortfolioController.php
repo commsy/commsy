@@ -245,20 +245,23 @@ class PortfolioController extends Controller
         $portfolioService = $this->get('commsy_legacy.portfolio_service');
         $portfolio = $portfolioService->getPortfolio($portfolioId);
 
-        $formData = [];
+        $formData = [
+            'delete-category' => $categoryId,
+        ];
 
         $categoryService = $this->get('commsy_legacy.category_service');
         $roomTags = $categoryService->getTags($roomId);
 
         $form = $this->createForm(PortfolioEditCategoryType::class, $formData, array(
             'categories' => $roomTags,
-            'placeholderDescription' => '['.$translator->trans('insert description').']',
+            'placeholderDescription' => '['.$translator->trans('insert description').']'
         ));
 
         $form->handleRequest($request);
         if ($form->isValid()) {
+            $formData = $form->getData();
+
             if ($form->get('save')->isClicked()) {
-                $formData = $form->getData();
 
                 if ($categoryId == 'add') {
                     // add new row or column
@@ -284,6 +287,39 @@ class PortfolioController extends Controller
                     // edit row or column
                 }
 
+            } else if ($form->get('delete')->isClicked()) {
+                $tagId = $formData['delete-category'];
+
+                $portfolioTags = $portfolioService->getPortfolioTags($portfolioId);
+
+                // get the tag we want to delete
+                $deleteTag = null;
+                foreach ($portfolioTags as $portfolioTag) {
+                    if ($portfolioTag["t_id"] == $tagId) {
+                        $deleteTag = $portfolioTag;
+                        break;
+                    }
+                }
+
+                // determe if this is a row or column tag
+                $isRow = false;
+                if ($deleteTag["row"] > 0) $isRow = true;
+
+                // delete the tag
+                $portfolioService->deletePortfolioTag($portfolioId, $tagId);
+
+                // if there are rows or column after this tag, we need to decrease their positions
+                foreach ($portfolioTags as $portfolioTag) {
+                    if ($isRow) {
+                        if ($portfolioTag["row"] > $deleteTag["row"]) {
+                            $portfolioService->updatePortfolioTagPosition($portfolioId, $portfolioTag["t_id"], $portfolioTag["row"] - 1, 0);
+                        }
+                    } else {
+                        if ($portfolioTag["column"] > $deleteTag["column"]) {
+                            $portfolioService->updatePortfolioTagPosition($portfolioId, $portfolioTag["t_id"], 0, $portfolioTag["column"] - 1);
+                        }
+                    }
+                }
             } else if ($form->get('cancel')->isClicked()) {
                 // ToDo ...
             }
