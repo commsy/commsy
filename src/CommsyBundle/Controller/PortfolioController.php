@@ -33,7 +33,7 @@ class PortfolioController extends Controller
     {
         if ($portfolioId = $request->get('portfolioId')) {
             return [
-                'portfolioId' => $portfolioId
+                'portfolioId' => $portfolioId,
             ];
         }
 
@@ -134,6 +134,7 @@ class PortfolioController extends Controller
         }
 
         return array(
+            'roomId' => $roomId,
             'portfolios' => $portfolios,
         );
     }
@@ -204,6 +205,13 @@ class PortfolioController extends Controller
         $translator = $this->get('translator');
 
         $portfolioService = $this->get('commsy_legacy.portfolio_service');
+
+        if ($portfolioId == 'new') {
+            $portfolioItem = $portfolioService->getNewItem();
+            $portfolioItem->save();
+            return $this->redirectToRoute('commsy_portfolio_edit', array('roomId' => $roomId, 'portfolioId' => $portfolioItem->getItemId()));
+        }
+
         $portfolio = $portfolioService->getPortfolio($portfolioId);
 
         $portfolioManager = $this->get('commsy_legacy.environment')->getEnvironment()->getPortfolioManager();
@@ -221,12 +229,17 @@ class PortfolioController extends Controller
         if ($form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $portfolioItem = $transformer->applyTransformation($portfolioItem, $form->getData());
-
                 $portfolioItem->save();
+
+                if ($portfolioItem->isDraft()) {
+                    $portfolioItem->setDraftStatus(0);
+                    $portfolioItem->saveAsItem();
+                }
+
+                return $this->redirectToRoute('commsy_portfolio_index', array('roomId' => $roomId, 'portfolioId' => $portfolioId));
             } else if ($form->get('cancel')->isClicked()) {
-                // ToDo ...
+                return $this->redirectToRoute('commsy_portfolio_index', array('roomId' => $roomId));
             }
-            return $this->redirectToRoute('commsy_portfolio_index', array('roomId' => $roomId, 'portfolioId' => $portfolioId));
         }
 
         return [

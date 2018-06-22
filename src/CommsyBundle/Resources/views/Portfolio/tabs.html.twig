@@ -3,5 +3,6 @@
         {% for portfolio in portfolios %}
             <li {% if loop.first %}class="uk-active"{% endif %} data-portfolio-id="{{ portfolio.id }}"><a href="">{{ portfolio.title }}</a></li>
         {%  endfor %}
+        <li data-portfolio-id="new"><a href="{{ path('commsy_portfolio_edit', {'roomId': roomId, 'portfolioId': 'new'}) }}" data-uk-tooltip title="{{ 'new portfolio'|trans({}, 'portfolio') }}" data-uk-tooltip title="{{ 'edit'|trans({}, 'portfolio') }}" data-uk-tooltip title="{{ 'edit'|trans({}, 'portfolio') }}"><i class="uk-icon-plus uk-icon-small"></i></a></li>
     {% endif %}
 </ul>

@@ -135,15 +135,16 @@ class PortfolioService
         $myPortfolios = array();
         $portfolioItem = $portfolioList->getFirst();
         while ($portfolioItem) {
-            $externalViewer = $this->portfolioManager->getExternalViewer($portfolioItem->getItemID());
-            $externalViewerString = implode(";", $externalViewer);
+            if (!$portfolioItem->isDraft()) {
+                $externalViewer = $this->portfolioManager->getExternalViewer($portfolioItem->getItemID());
+                $externalViewerString = implode(";", $externalViewer);
 
-            $myPortfolios[] = array(
-                "id"		=> $portfolioItem->getItemID(),
-                "title"		=> $portfolioItem->getTitle(),
-                "external"  => $externalViewerString != "" ? $externalViewer : array()
-            );
-
+                $myPortfolios[] = array(
+                    "id" => $portfolioItem->getItemID(),
+                    "title" => $portfolioItem->getTitle(),
+                    "external" => $externalViewerString != "" ? $externalViewer : array()
+                );
+            }
             $portfolioItem = $portfolioList->getNext();
         }
         $return["myPortfolios"] = $myPortfolios;
@@ -210,13 +211,9 @@ class PortfolioService
         $portfolioManager->deletePortfolioTag($portfolioId, $tagId);
     }
 
-    function getPortfolioTags($portfolioId) {
+    function getNewItem() {
         $portfolioManager = $this->legacyEnvironment->getEnvironment()->getPortfolioManager();
-        return $portfolioManager->getPortfolioTags($portfolioId);
+        return $portfolioManager->getNewItem();
     }
 
-    function updatePortfolioTagPosition($portfolioId, $tagId, $row, $column) {
-        $portfolioManager = $this->legacyEnvironment->getEnvironment()->getPortfolioManager();
-        $portfolioManager->updatePortfolioTagPosition($portfolioId, $tagId, $row, $column);
-    }
 }

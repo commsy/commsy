@@ -13,7 +13,11 @@
         if (!initialLoading) {
             let $target = $(event.target);
             if ($target.attr('id') === 'portfolioTabs') {
-                loadPortfolioContent($target.find('li.uk-active').data('portfolio-id'));
+                if ($target.find('li.uk-active').data('portfolio-id') != 'new') {
+                    loadPortfolioContent($target.find('li.uk-active').data('portfolio-id'));
+                } else {
+                    window.location.replace($target.find('li.uk-active a').attr('href'));
+                }
             } else {
                 loadPortfolioList($target.find('li.uk-active').data('portfolio-source-id'));
             }
