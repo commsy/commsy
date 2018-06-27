@@ -140,7 +140,8 @@ class KernelSubscriber implements EventSubscriberInterface
 
                     $sessionManager->save($userSessionItem);
 
-                    $url = $event->getRequest()->getBaseUrl() . '?cid=' . $portalItem->getItemID();
+                    $baseURL = $currentRequest->getSchemeAndHttpHost() . $currentRequest->getBaseUrl();
+                    $url = $baseURL . '?cid=' . $portalItem->getItemID();
 
                     // if this is a room url, send us to room detail view on portal
                     if (preg_match('/room\/([0-9]+)/', $requestUri, $roomIdMatch)) {
