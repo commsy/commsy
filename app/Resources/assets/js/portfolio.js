@@ -91,4 +91,17 @@
         });
     }
 
+    (function($) {
+        var origAppend = $.fn.append;
+        $.fn.append = function () {
+            return origAppend.apply(this, arguments).trigger("append");
+        };
+    })(jQuery);
+
+    $("#portfolio-tabs").bind("append", function() {
+        $('#portfolio-tabs div.uk-dropdown').each(function () {
+            $(this).addClass('uk-dropdown-scrollable');
+        });
+    });
+
 })(UIkit);
