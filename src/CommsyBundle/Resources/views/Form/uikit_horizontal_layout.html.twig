@@ -161,7 +161,7 @@
 {% endblock %}
 
 
-{% block _portfolio_category_widget_backup %}
+{% block _portfolio_category_widget %}
         {% import _self as macros %}
 
         {% if form.children is not empty %}
@@ -189,8 +189,7 @@
         {% endif %}
 
         <li>
-            {{ child.label -}}
-            <input type="checkbox" value="{{ child.value }}" />
+            <input type="radio" value="{{ child.value }}" />{{ child.label}}
         {% endif %}
     {% endfor %}
 {% endmacro %}
