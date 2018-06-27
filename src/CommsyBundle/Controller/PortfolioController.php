@@ -127,15 +127,18 @@ class PortfolioController extends Controller
         $portfolioList = $portfolioService->getPortfolioList();
 
         $portfolios = [];
+        $myPortfolios = true;
         if ($source == 'my-portfolios') {
             $portfolios = $portfolioList['myPortfolios'];
         } else if ($source == "activated-portfolios") {
             $portfolios = $portfolioList['activatedPortfolios'];
+            $myPortfolios = false;
         }
 
         return array(
             'roomId' => $roomId,
             'portfolios' => $portfolios,
+            'myPortfolios' => $myPortfolios,
         );
     }
 
