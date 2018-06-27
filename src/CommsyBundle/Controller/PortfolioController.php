@@ -215,7 +215,8 @@ class PortfolioController extends Controller
             return $this->redirectToRoute('commsy_portfolio_edit', array('roomId' => $roomId, 'portfolioId' => $portfolioItem->getItemId()));
         }
 
-        $portfolio = $portfolioService->getPortfolio($portfolioId);
+        $itemService = $this->get('commsy_legacy.item_service');
+        $item = $itemService->getItem($portfolioId);
 
         $portfolioManager = $this->get('commsy_legacy.environment')->getEnvironment()->getPortfolioManager();
         $portfolioItem = $portfolioManager->getItem($portfolioId);
@@ -234,9 +235,9 @@ class PortfolioController extends Controller
                 $portfolioItem = $transformer->applyTransformation($portfolioItem, $form->getData());
                 $portfolioItem->save();
 
-                if ($portfolioItem->isDraft()) {
-                    $portfolioItem->setDraftStatus(0);
-                    $portfolioItem->saveAsItem();
+                if ($item->isDraft()) {
+                    $item->setDraftStatus(0);
+                    $item->saveAsItem();
                 }
 
                 return $this->redirectToRoute('commsy_portfolio_index', array('roomId' => $roomId, 'portfolioId' => $portfolioId));
