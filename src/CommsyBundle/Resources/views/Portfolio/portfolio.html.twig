@@ -1,26 +1,26 @@
+<div data-uk-sticky="{boundary: '#portfolio-table'}">
+    <span class="uk-text-small"><b>{{ user.fullname }}</b></span>
+    <span id="portfolio-edit" class="uk-align-right">
+            {% if not external %}
+                <a href="{{ path('commsy_portfolio_edit', {'roomId': roomId, 'portfolioId': portfolioId}) }}" data-uk-tooltip title="{{ 'edit portfolio'|trans({}, 'portfolio') }}" data-uk-tooltip title="{{ 'edit'|trans({}, 'portfolio') }}" data-uk-tooltip title="{{ 'edit'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
+            {% endif %}
+        </span>
+    <br/>
+    <div id="portfolio-description">
+        <i>
+            {{ portfolio.description }}
+        </i>
+    </div>
+</div>
 <div class="uk-overflow-container">
     <table id="commsy-portfolio" class="uk-table" border="0">
         <!-- table header row - first cell is empty and sticky, the other cells show the categories-->
         <tr>
-            <th class="">
-                <div class="uk-panel uk-panel-box uk-panel-box-secondary uk-panel-box-portfolio">
-                    <div class="uk-panel-badge">
-                    </div>
-                    <h3 class="uk-panel-title uk-text-right">
-                        {% if not external %}
-                            <a href="{{ path('commsy_portfolio_edit', {'roomId': roomId, 'portfolioId': portfolioId}) }}" data-uk-tooltip title="{{ 'edit portfolio'|trans({}, 'portfolio') }}" data-uk-tooltip title="{{ 'edit'|trans({}, 'portfolio') }}" data-uk-tooltip title="{{ 'edit'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
-                        {% endif %}
-                    </h3>
-                    <div class="portfolio-content portfolio-description">
-                        <span class="uk-text-bold">{{ portfolio.title }}</span><br/>
-                        <span class="uk-text-small"><i>{{ user.fullname }}</i></span><br/>
-                        {{ portfolio.description }}
-                    </div>
-                </div>
+            <th class="portfolio-header-column">
             </th>
             {% for firstTag in portfolio.tags %}
                 {% if firstTag.row == 0 %}
-                    <th>
+                    <th class="portfolio-header-column">
                         <div class="uk-panel uk-panel-box uk-panel-box-secondary uk-panel-box-portfolio">
                             <div class="uk-panel-badge">
                             </div>
@@ -48,7 +48,7 @@
             {% if firstTag.row != 0 %}
                 <tr>
                     {% if firstTag.column == 0 %}
-                        <th class="">
+                        <th class="portfolio-header-row">
                             <div class="uk-panel uk-panel-box uk-panel-box-secondary uk-panel-box-portfolio">
                                 <div class="uk-panel-badge">
                                 </div>
@@ -116,7 +116,7 @@
                                             <i class="uk-icon-file-o uk-text-muted"></i> <span class="uk-text-muted uk-margin-right">({{ contentCount }})</span>
                                             <i class="uk-icon-comments-o uk-text-muted"></i> <span class="uk-text-muted">({{ annotationCount }})</span>
                                         {% else %}
-                                            <div class="portfolio-content-empty">
+                                            <div class="portfolio-content">
                                             </div>
                                             <i class="uk-icon-file-o uk-text-muted"></i> <span class="uk-text-muted uk-margin-right">(0)</span>
                                             <i class="uk-icon-comments-o uk-text-muted"></i> <span class="uk-text-muted">(0)</span>
