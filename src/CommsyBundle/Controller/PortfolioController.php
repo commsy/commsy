@@ -263,6 +263,7 @@ class PortfolioController extends Controller
         $portfolio = $portfolioService->getPortfolio($portfolioId);
 
         $formData = [
+            'category' => $categoryId,
             'delete-category' => $categoryId,
         ];
 
