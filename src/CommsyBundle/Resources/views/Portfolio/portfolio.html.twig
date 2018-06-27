@@ -4,7 +4,7 @@
             {% if not external %}
                 <a href="{{ path('commsy_portfolio_edit', {'roomId': roomId, 'portfolioId': portfolioId}) }}" data-uk-tooltip title="{{ 'edit'|trans({}, 'portfolio') }}" data-uk-tooltip title="{{ 'edit'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
             {% else %}
-                <a href="" data-uk-tooltip title="{{ 'stop viewing'|trans({}, 'portfolio') }}"><i class="uk-icon-remove"></i></a>
+                <a id="portfolio-stop-activation" data-portfolio-id="{{ portfolioId }}" href="" data-uk-tooltip title="{{ 'stop activation'|trans({}, 'portfolio') }}"><i class="uk-icon-remove"></i></a>
             {% endif %}
         </span>
     <br/>
@@ -146,3 +146,8 @@
         </tr>
     </table>
 </div>
+<script>
+    $('#portfolio-stop-activation').on('click', function(event) {
+        event.preventDefault();
+    })
+</script>
