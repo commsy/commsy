@@ -166,7 +166,7 @@
 
         {% if form.children is not empty %}
             <ul>
-                {{ macros.nestedCategoriesList(form.vars.choices) }}
+                {{ macros.nestedPortfolioCategoriesList(form.vars.choices) }}
                 </li>
             </ul>
         {% else %}
@@ -175,13 +175,13 @@
 
 {% endblock %}
 
-{% macro nestedCategoriesList(choices) %}
+{% macro nestedPortfolioCategoriesList(choices) %}
     {% set opened = false %}
 
     {% for child in choices %}
         {% if child.choices is defined %}
             <ul>
-                {{ _self.nestedCategoriesList(child.choices) }}
+                {{ _self.nestedPortfolioCategoriesList(child.choices) }}
             </ul>
         {% else %}
             {% if not loop.first %}
@@ -189,7 +189,7 @@
         {% endif %}
 
         <li>
-            <input type="radio" value="{{ child.value }}" />{{ child.label}}
+            <input type="radio" name="portfolio[category]" value="{{ child.value }}" />{{ child.label}}
         {% endif %}
     {% endfor %}
 {% endmacro %}
