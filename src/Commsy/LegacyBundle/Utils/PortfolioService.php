@@ -216,4 +216,9 @@ class PortfolioService
         return $portfolioManager->getNewItem();
     }
 
+    function replaceTagForPortfolio($portfolioId, $tagId, $oldTagId, $description) {
+        $portfolioManager = $this->legacyEnvironment->getEnvironment()->getPortfolioManager();
+        $portfolioManager->replaceTagForPortfolio($portfolioId, $tagId, $oldTagId, $description);
+    }
+
 }

@@ -281,10 +281,10 @@ class PortfolioController extends Controller
 
             if ($form->get('save')->isClicked()) {
 
+                $tagId = $formData['category'];
+
                 if ($categoryId == 'add') {
                     // add new row or column
-
-                    $tagId = $formData['category'];
 
                     $index = 1;
                     foreach ($portfolio['tags'] as $tag) {
@@ -303,6 +303,7 @@ class PortfolioController extends Controller
 
                 } else {
                     // edit row or column
+                    $portfolioService->replaceTagForPortfolio($portfolioId, $tagId, $categoryId, $formData['description']);
                 }
 
             } else if ($form->get('delete')->isClicked()) {

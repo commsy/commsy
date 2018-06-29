@@ -143,6 +143,11 @@
                     <a href="{{ path('commsy_portfolio_editcategory', {'roomId': roomId, 'portfolioId': portfolioId, 'position': 'row', 'categoryId': 'add'}) }}" data-uk-tooltip title="{{ 'add row'|trans({}, 'portfolio') }}"><i class="uk-icon-plus uk-icon-small"></i></a>
                 {% endif %}
             </td>
+            {% if portfolio.tags is empty %}
+                <td>
+                    {{ 'This portfolio is empty. Add rows and columns via the "+"-icons'|trans({}, 'portfolio') }}
+                </td>
+            {% endif %}
         </tr>
     </table>
 </div>
