@@ -269,10 +269,12 @@ class PortfolioController extends Controller
 
         $categoryService = $this->get('commsy_legacy.category_service');
         $roomTags = $categoryService->getTags($roomId);
+        $disabledCategories = $this->getDisabledTags($roomTags, $categoryId, $portfolio);
 
         $form = $this->createForm(PortfolioEditCategoryType::class, $formData, array(
             'categories' => $roomTags,
-            'placeholderDescription' => '['.$translator->trans('insert description').']'
+            'placeholderDescription' => '['.$translator->trans('insert description').']',
+            'disabledCategories' => $disabledCategories,
         ));
 
         $form->handleRequest($request);
@@ -348,5 +350,32 @@ class PortfolioController extends Controller
         return [
             'form' => $form->createView(),
         ];
+    }
+
+    private function getDisabledTags($roomTags, $orientation, $portfolio) {
+        $result = [];
+        foreach ($roomTags as $roomTag) {
+            $usedCategories = [];
+            foreach ($portfolio['tags'] as $tag) {
+                if ($orientation == 'row') {
+                    if ($tag['row'] == 0) {
+                        $usedCategories[] = $tag['t_id'];
+                    }
+                } else {
+                    if ($tag['column'] == 0) {
+                        $usedCategories[] = $tag['t_id'];
+                    }
+                }
+            }
+            $result[$roomTag['item_id']] = false;
+            if (in_array($roomTag['item_id'], $usedCategories)) {
+                $result[$roomTag['item_id']] = true;
+            }
+
+            if (!empty($roomTag['children'])) {
+                $result = $result + $this->getDisabledTags($roomTag['children'], $orientation, $portfolio);
+            }
+        }
+        return $result;
     }
 }

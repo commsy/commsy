@@ -26,6 +26,7 @@ class PortfolioEditCategoryType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $choices = $this->buildChoices($options['categories']);
+        $disabledCategories = $this->buildChoices($options['disabledCategories']);
 
         $builder
             ->add('category', ChoiceType::class, array(
@@ -35,6 +36,13 @@ class PortfolioEditCategoryType extends AbstractType
                 'required' => false,
                 'expanded' => true,
                 'multiple' => false,
+                'choice_attr' => function($key, $val, $index) use ($disabledCategories) {
+                    $result = [];
+                    if (isset($disabledCategories[$key])) {
+                        $result[$key] ? ['disabled' => 'disabled'] : [];
+                    }
+                    return $result;
+                },
             ))
             ->add('description', TextareaType::class, [
                 'attr' => [
@@ -78,7 +86,7 @@ class PortfolioEditCategoryType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['categories', 'placeholderDescription'])
+            ->setRequired(['categories', 'placeholderDescription', 'disabledCategories'])
             ->setDefaults(array('translation_domain' => 'form'))
         ;
     }
