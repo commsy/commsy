@@ -262,6 +262,9 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                 $dateTime = new \DateTime($dateItem->getModificationDate());
 
                 $calendarObjectId = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getItemId();
+                /* if ($dateItem->getRecurrenceId() != '') {
+                    $calendarObjectId = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getRecurrenceId();
+                } */
 
                 $result[] = [
                     'id' => $calendarObjectId,
@@ -591,12 +594,19 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
 
     private function getCalendarData($dateItem, $objectUri)
     {
+        $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
+
+        $uid = str_ireplace('.ics', '', $objectUri);
+        if ($dateItem->getRecurrenceId() != '') {
+            $uid = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getRecurrenceId();
+        }
+
         $vDateItem = new VObject\Component\VCalendar([
             'VEVENT' => [
                 'SUMMARY' => $dateItem->getTitle(),
                 'DTSTART' => new \DateTime($dateItem->getDateTime_start()),
                 'DTEND' => new \DateTime($dateItem->getDateTime_end()),
-                'UID' => str_ireplace('.ics', '', $objectUri),
+                'UID' => $uid,
                 'LOCATION' => $dateItem->getPlace(),
                 'DESCRIPTION' => $dateItem->getDescription(),
                 'CLASS' => ($dateItem->isPublic() ? 'PUBLIC' : 'PRIVATE'),
@@ -605,6 +615,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
 
         foreach ($dateItem->getParticipantsItemList()->to_array() as $attendee) {
             $vDateItem->add('ATTENDEE', 'mailto:' . $attendee->getEmail());
+        }
+
+        if ($dateItem->getRecurrenceId() != '') {
+            $vDateItem->add('RECURRENCE-ID', new \DateTime($dateItem->getDateTime_start()));
         }
 
         return $vDateItem->serialize();
