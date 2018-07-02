@@ -394,6 +394,8 @@
 {% endmacro %}
 
 {% macro nestedTagList(tags, roomTags, level) %}
+    {% import _self as itemMacros %}
+
     {% set opened = true %}
     <ul class="uk-list">
     {% for child in roomTags %}
@@ -412,7 +414,7 @@
         {% if child.children is defined and not child.children is empty %}
             <li id="tag_{{ child.title|decodeHtmlEntity }}" data-jstree='{"opened": {{ opened }}}'>
                 {{ childTitle }}
-                {{ _self.nestedTagList(tags, child.children, level+1) }}
+                {{ itemMacros.nestedTagList(tags, child.children, level+1) }}
             </li>
         {% else %}
             <li id="tag_{{ child.title|decodeHtmlEntity }}" data-jstree='{"opened": {{ opened }}}'>

@@ -212,7 +212,7 @@
         <div >
             <strong>{{ 'categories'|trans({}, "room") }}:</strong>
             <div class="cs-tree-plain">
-                {{ _self.nestedTagList(item.tagsArray, roomCategories, 1) }}
+                {{ macros.nestedTagList(item.tagsArray, roomCategories, 1) }}
             </div>
         </div>
         <div>
@@ -478,6 +478,8 @@
 {% endmacro %}
 
 {% macro nestedTagList(tags, roomTags, level) %}
+    {% import _self as macros %}
+
     {% set opened = true %}
     <ul class="uk-list">
     {% for child in roomTags %}
@@ -496,7 +498,7 @@
         {% if child.children is defined and not child.children is empty %}
             <li id="tag_{{ child.title|decodeHtmlEntity }}" data-jstree='{"opened": {{ opened }}}'>
                 {{ childTitle }}
-                {{ _self.nestedTagList(tags, child.children, level+1) }}
+                {{ macros.nestedTagList(tags, child.children, level+1) }}
             </li>
         {% else %}
             <li id="tag_{{ child.title|decodeHtmlEntity }}" data-jstree='{"opened": {{ opened }}}'>
