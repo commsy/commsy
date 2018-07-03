@@ -253,6 +253,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         if ($calendars[0]) {
             $datesManager = $legacyEnvironment->getDatesManager();
             $datesManager->setContextArrayLimit([$calendars[0]->getcontextId()]);
+            $datesManager->setCalendarArrayLimit([$calendars[0]->getId()]);
             $datesManager->setWithoutDateModeLimit();
             $datesManager->select();
             $datesArray = $datesManager->get()->to_array();
