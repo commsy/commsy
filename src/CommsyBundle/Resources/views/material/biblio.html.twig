@@ -204,15 +204,12 @@
     		{% endif %}
         {% elseif material.bibKind == 'journal' %}
             {% set biblio = biblio ~ ' ' ~ material.title ~ '.' %}
-
             {% if material.volume %}
-                {% set biblio = biblio ~ ", " ~ material.volume %}
+                {% set biblio = biblio ~ ", " ~ "#{'Volume %volume%'|trans({'%volume%': material.volume}) }" %}
+                {% if material.issue %}
+                    {% set biblio = biblio ~ " (" ~ material.issue ~ ")" %}
+                {% endif %}
             {% endif %}
-
-            {% if material.issue %}
-                {% set biblio = biblio ~ "(" ~ material.issue ~ ")" %}
-            {% endif %}
-
             {% if material.pages %}
                 {% set biblio = biblio ~ ", " ~ material.pages ~ " #{ 'pages'|trans({}, 'form') }." %}
             {% endif %}
