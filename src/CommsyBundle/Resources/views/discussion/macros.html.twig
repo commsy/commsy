@@ -326,6 +326,8 @@
 
 
 {% macro articleTree(articles, level) %}
+    {% import _self as discussionMacros %}
+
     {% set opened = false %}
 
     {% for child in articles %}
