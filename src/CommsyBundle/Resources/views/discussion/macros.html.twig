@@ -326,6 +326,8 @@
 
 
 {% macro articleTree(articles, level) %}
+    {% import _self as discussionMacros %}
+
     {% set opened = false %}
 
     {% for child in articles %}
@@ -334,7 +336,7 @@
 
         {% if child.children is defined %}
             <ul>
-                {{ _self.articleTree(child.children, level+1) }}
+                {{ discussionMacros.articleTree(child.children, level+1) }}
             </ul>
         {% endif %}
 
@@ -344,6 +346,7 @@
 
 {% macro articles(item, articleList, articleTree) %}
     {% import 'CommsyBundle:utils:macros.html.twig' as macrosUtils %}
+    {% import _self as discussionMacros %}
 
     <hr class="uk-width-9-10"/>
 
@@ -368,7 +371,7 @@
 
                 <div class="uk-width-2-3" data-cs-tree='{"tree": {"checkbox": {"visible": false}}, "custom": {"toggle": "toggleDiscussionTree"}}'>
                     <ul class="uk-list">
-                        {{ _self.articleTree(articleTree.children, 0) }}
+                        {{ discussionMacros.articleTree(articleTree.children, 0) }}
                     </ul>
                 </div>
 

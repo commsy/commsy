@@ -1,5 +1,6 @@
 {% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, ratingArray, timeSpendSum) %}
     {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+    {% import _self as todoMacros %}
 
     {% if item.type == 'todo' %}
         {% set pathName = 'commsy_todo_edit' %}
@@ -176,7 +177,7 @@
                                         <strong>{{ "time planned"|trans({},'todo') }}:</strong>
                                     </td>
                                     <td class="uk-text-top">
-                                        {{ item.plannedTime }} {{ _self.timeType(item.timeType) }}
+                                        {{ item.plannedTime }} {{ todoMacros.timeType(item.timeType) }}
                                     </td>
                                 </tr>
                                 <tr>
@@ -193,7 +194,7 @@
                                                     {% set activePercent = 100 %}
                                                 {% endif %}
                                             {% endif %}
-                                            <div class="uk-progress-bar cs-progress-bar" style="width: {{ activePercent }}%;">{{ timeSpendSum }} {{ _self.timeType(1) }}</div>
+                                            <div class="uk-progress-bar cs-progress-bar" style="width: {{ activePercent }}%;">{{ timeSpendSum }} {{ todoMacros.timeType(1) }}</div>
                                         </div>
                                     </td>
                                 </tr>
@@ -210,7 +211,7 @@
                                         <strong>{{ "responsibility"|trans({},'todo') }}:</strong>
                                     </td>
                                     <td class="uk-text-top">
-                                        {{ _self.responsibility(item, item.getProcessorItemList.to_array) }}
+                                        {{ todoMacros.responsibility(item, item.getProcessorItemList.to_array) }}
                                     </td>
                                 </tr>
                             {% else %}
@@ -219,7 +220,7 @@
                                         <strong>{{ "time spend"|trans({},'todo') }}:</strong>
                                     </td>
                                     <td class="uk-text-top">
-                                        {{ item.minutes }} {{ _self.timeType(1) }}
+                                        {{ item.minutes }} {{ todoMacros.timeType(1) }}
                                     </td>
                                 </tr>
                             {% endif %}
@@ -236,6 +237,8 @@
 
 {% macro titleSave(item, modifierList, userCount, readCount, readSinceModificationCount, showRating, ratingArray) %}
     {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+    {% import _self as todoMacros %}
+
     <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
             <div class="uk-grid uk-margin-small-bottom">
                 <div class="uk-width-8-10 uk-margin-small-bottom" >
@@ -396,7 +399,7 @@
                                             <strong>{{ "time planned"|trans({},'todo') }}:</strong>
                                         </td>
                                         <td class="uk-text-top">
-                                            {{ item.plannedTime }} {{ _self.timeType(item.timeType) }}
+                                            {{ item.plannedTime }} {{ todoMacros.timeType(item.timeType) }}
                                         </td>
                                     </tr>
                                     <tr>
@@ -412,7 +415,7 @@
                                             <strong>{{ "responsibility"|trans({},'todo') }}:</strong>
                                         </td>
                                         <td class="uk-text-top">
-                                            {{ _self.responsibility(item, item.getProcessorItemList.to_array) }}
+                                            {{ todoMacros.responsibility(item, item.getProcessorItemList.to_array) }}
                                         </td>
                                     </tr>
                                 </table>
