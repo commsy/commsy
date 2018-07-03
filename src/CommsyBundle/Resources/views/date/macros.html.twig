@@ -1,6 +1,7 @@
 {% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft) %}
     {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
     {% import _self as dateMacros %}
+
     {% set pathName = 'commsy_date_edit' %}
     {% if userCount == 0 %}
         {% set userCount = 1 %}
@@ -166,7 +167,7 @@
                                             <strong>{{ "recurring date"|trans({},'date') }}</strong>
                                         </td>
                                         <td class="uk-text-top">
-                                            {{ _self.recurringDateDescription(item) }}
+                                            {{ dateMacros.recurringDateDescription(item) }}
                                         </td>
                                     </tr>
                                 {% endif %}
@@ -212,6 +213,7 @@
 {% macro titleSave(item, modifierList, userCount, readCount, readSinceModificationCount) %}
     {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
     {% import _self as dateMacros %}
+
     <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
             <div class="uk-grid uk-margin-small-bottom">
                 <div class="uk-width-8-10 uk-margin-small-bottom" >
@@ -367,7 +369,7 @@
                                             <strong>{{ "recurring date"|trans({},'date') }}</strong>
                                         </td>
                                         <td class="uk-text-top">
-                                            {{ _self.recurringDateDescription(item) }}
+                                            {{ dateMacros.recurringDateDescription(item) }}
                                         </td>
                                     </tr>
                                 {% endif %}
@@ -525,7 +527,7 @@
                             <strong>{{ "recurring date"|trans({},'date') }}</strong>
                         </td>
                         <td class="uk-text-top">
-                            {{ _self.recurringDateDescription(date) }}
+                            {{ macros.recurringDateDescription(date) }}
                         </td>
                     </tr>
                 {% endif %}
