@@ -119,6 +119,11 @@ class AuthPDO extends \Sabre\DAV\Auth\Backend\AbstractDigest {
         }
 
         $userItem = $this->getUserFromPortal($username);
+
+        if (!$userItem) {
+            return [false, "No user could be created"];
+        }
+
         if (!$userItem->isAllowedToUseCalDAV()) {
             return [false, "User is not allowed to use CalDAV"];
         }
