@@ -425,6 +425,21 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l32.first_item_type="'.CS_GROUP_TYPE.'"))) ';
      }
 
+     if (isset($this->_tag_limit)) {
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'"))) ';
+        $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'"))) ';
+     }
+
+     if (isset($this->_buzzword_limit)) {
+        if ($this->_buzzword_limit == -1) {
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' AS l6 ON l6.from_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l6.link_type="buzzword_for"';
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON l6.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
+        } else {
+           $query .= ' INNER JOIN '.$this->addDatabasePrefix('links').' AS l6 ON l6.from_item_id='.$this->addDatabasePrefix('labels').'.item_id AND l6.link_type="buzzword_for"';
+           $query .= ' INNER JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON l6.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
+        }
+     }
+
      if (!isset($this->_attribute_limit) || (isset($this->_attribute_limit) and ('all'==$this->_attribute_limit))){
         if (!empty($this->_material_limit)) {
            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' ON '.$this->addDatabasePrefix('links').'.to_item_id = '.$this->addDatabasePrefix('labels').'.item_id';
@@ -497,6 +512,26 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
          }else{
             $query .= ' AND ((l31.first_item_id = "'.encode(AS_DB,$this->_group_limit).'" OR l31.second_item_id = "'.encode(AS_DB,$this->_group_limit).'")';
             $query .= ' OR (l32.first_item_id = "'.encode(AS_DB,$this->_group_limit).'" OR l32.second_item_id = "'.encode(AS_DB,$this->_group_limit).'"))';
+         }
+      }
+
+      if (isset($this->_tag_limit)) {
+         $tag_id_array = $this->_getTagIDArrayByTagIDArray($this->_tag_limit);
+         $id_string = implode(', ', $tag_id_array);
+         if (isset($tag_id_array[0]) && $tag_id_array[0] == -1) {
+            $query .= ' AND (l41.first_item_id IS NULL AND l41.second_item_id IS NULL)';
+            $query .= ' AND (l42.first_item_id IS NULL AND l42.second_item_id IS NULL)';
+         } else {
+            $query .= ' AND ( (l41.first_item_id IN ('.encode(AS_DB, $id_string).') OR l41.second_item_id IN ('.encode(AS_DB, $id_string).') )';
+            $query .= ' OR (l42.first_item_id IN ('.encode(AS_DB, $id_string).') OR l42.second_item_id IN ('.encode(AS_DB, $id_string).') ))';
+         }
+      }
+
+      if (isset($this->_buzzword_limit)) {
+         if ($this->_buzzword_limit == -1) {
+            $query .= ' AND (l6.to_item_id IS NULL OR l6.deletion_date IS NOT NULL)';
+         } else {
+            $query .= ' AND buzzwords.item_id="'.encode(AS_DB, $this->_buzzword_limit).'"';
          }
       }
 
