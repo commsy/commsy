@@ -259,22 +259,25 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             $datesArray = $datesManager->get()->to_array();
 
             $result = [];
+            $recurringIds = [];
+
             foreach ($datesArray as $dateItem) {
-                $dateTime = new \DateTime($dateItem->getModificationDate());
+                if ($dateItem->getRecurrenceId() == '' || (!in_array($dateItem->getRecurrenceId(), $recurringIds) && ($dateItem->getItemId() == $dateItem->getRecurrenceId()))) {
+                    if ($dateItem->getRecurrenceId() != '') {
+                        $recurringIds[] = $dateItem->getRecurrenceId();
+                    }
 
-                $calendarObjectId = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getItemId();
-                /* if ($dateItem->getRecurrenceId() != '') {
-                    $calendarObjectId = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getRecurrenceId();
-                } */
-
-                $result[] = [
-                    'id' => $calendarObjectId,
-                    'uri' => $calendarObjectId . '.ics',
-                    'lastmodified' => $dateTime->getTimestamp(),
-                    'etag' => '"' . $calendarObjectId . '-' . $dateTime->getTimestamp() . '"',
-                    'size' => $this->getCalendarDataSize($dateItem, $calendarObjectId),
-                    'component' => strtolower('VEVENT'),
-                ];
+                    $dateTime = new \DateTime($dateItem->getModificationDate());
+                    $calendarObjectId = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getItemId();
+                    $result[] = [
+                        'id' => $calendarObjectId,
+                        'uri' => $calendarObjectId . '.ics',
+                        'lastmodified' => $dateTime->getTimestamp(),
+                        'etag' => '"' . $calendarObjectId . '-' . $dateTime->getTimestamp() . '"',
+                        'size' => $this->getCalendarDataSize($dateItem, $calendarObjectId),
+                        'component' => strtolower('VEVENT'),
+                    ];
+                }
             }
 
             /*
@@ -602,25 +605,79 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             $uid = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getRecurrenceId();
         }
 
+        $eventDataArray = [
+            'SUMMARY' => $dateItem->getTitle(),
+            'DTSTART' => new \DateTime($dateItem->getDateTime_start()),
+            'DTEND' => new \DateTime($dateItem->getDateTime_end()),
+            'UID' => $uid,
+            'LOCATION' => $dateItem->getPlace(),
+            'DESCRIPTION' => $dateItem->getDescription(),
+            'CLASS' => ($dateItem->isPublic() ? 'PUBLIC' : 'PRIVATE'),
+        ];
+
+        $recurringSubEvents = [];
+        if ($dateItem->getRecurrenceId() != '') {
+            $recurrencePattern = $this->translateRecurringPattern($dateItem->getRecurrencePattern(), 'CommSy');
+            $eventDataArray['RRULE'] = $recurrencePattern;
+
+            $datesManager = $legacyEnvironment->getDatesManager();
+            $datesManager->setContextArrayLimit([$dateItem->getContextId()]);
+            $datesManager->setWithoutDateModeLimit();
+            $datesManager->setRecurrenceLimit($dateItem->getRecurrenceId());
+            $datesManager->select();
+            $recurringDatesArray = $datesManager->get()->to_array();
+
+            foreach ($recurringDatesArray as $recurringDateItem) {
+                //if ($recurringDateItem->getItemId() != $dateItem->getItemId()) {
+                    $recurringSubEvents[] = [
+                        'SUMMARY' => $recurringDateItem->getTitle(),
+                        'DTSTART' => new \DateTime($recurringDateItem->getDateTime_start()),
+                        'DTEND' => new \DateTime($recurringDateItem->getDateTime_end()),
+                        'UID' => $uid,
+                        'LOCATION' => $recurringDateItem->getPlace(),
+                        'DESCRIPTION' => $recurringDateItem->getDescription(),
+                        'CLASS' => ($recurringDateItem->isPublic() ? 'PUBLIC' : 'PRIVATE'),
+                        'RECURRENCE-ID' => new \DateTime($recurringDateItem->getDateTime_start()),
+                    ];
+                //}
+            }
+        }
+
         $vDateItem = new VObject\Component\VCalendar([
-            'VEVENT' => [
-                'SUMMARY' => $dateItem->getTitle(),
-                'DTSTART' => new \DateTime($dateItem->getDateTime_start()),
-                'DTEND' => new \DateTime($dateItem->getDateTime_end()),
-                'UID' => $uid,
-                'LOCATION' => $dateItem->getPlace(),
-                'DESCRIPTION' => $dateItem->getDescription(),
-                'CLASS' => ($dateItem->isPublic() ? 'PUBLIC' : 'PRIVATE'),
-            ]
+            'VEVENT' => $eventDataArray,
         ]);
+
+        foreach ($recurringSubEvents as $recurringSubEvent) {
+            $vDateItem->add('VEVENT', $recurringSubEvent);
+        }
 
         foreach ($dateItem->getParticipantsItemList()->to_array() as $attendee) {
             $vDateItem->add('ATTENDEE', 'mailto:' . $attendee->getEmail());
         }
 
-        if ($dateItem->getRecurrenceId() != '') {
-            $vDateItem->add('RECURRENCE-ID', new \DateTime($dateItem->getDateTime_start()));
-        }
+        $vtimezone = $vDateItem->add('VTIMEZONE', [
+            'TZID'           => 'Europe/Berlin'
+        ]);
+
+        $standardDateTime = (new \DateTime('1970-10-25 03:00:00', new \DateTimeZone('Europe/Berlin')))->format('Ymd\THis');
+        $standard = $vDateItem->createComponent('STANDARD', [
+            'TZOFFSETFROM' => '+0200',
+            'TZOFFSETTO' => '+0100',
+            'TZNAME' => 'MESZ',
+            'DTSTART' => $standardDateTime,
+            'RRULE' => 'FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU',
+        ]);
+        $vtimezone->add($standard);
+
+        $daylightDateTime = (new \DateTime('1970-03-29 02:00:00', new \DateTimeZone('Europe/Berlin')))->format('Ymd\THis');
+        $daylight = $vDateItem->createComponent('DAYLIGHT', [
+            'TZOFFSETFROM' => '+0100',
+            'TZOFFSETTO' => '+0200',
+            'TZNAME' => 'MESZ',
+            'DTSTART' => $daylightDateTime,
+            'RRULE' => 'FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU',
+        ]);
+        $vtimezone->add($daylight);
 
         return $vDateItem->serialize();
     }
@@ -755,5 +812,45 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         }
 
         return $dateItem;
+    }
+
+
+    // ---- pattern translation for recurring events  ---
+
+    private function translateRecurringPattern ($pattern, $type) {
+        $result = '';
+        if ($type == "CommSy") {
+            /*
+                Array
+                    (
+                        [recurring_select] => RecurringDailyType
+                        [recurring_sub] => Array
+                            (
+                                [recurrenceDay] => 1
+                            )
+
+                        [recurringStartDate] => 2018-07-02
+                        [recurringEndDate] => 2018-07-06
+                    )
+             */
+
+            if ($pattern['recurring_select'] == 'RecurringDailyType') {
+                $result .= 'FREQ=DAILY;';
+
+                if (isset($pattern['recurring_sub']['recurrenceDay'])) {
+                    $result .= 'INTERVAL='.$pattern['recurring_sub']['recurrenceDay'].';';
+                }
+            }
+
+            if (isset($pattern['recurringEndDate'])) {
+                $recurringEndDate = new \DateTime($pattern['recurringEndDate']);
+                $recurringEndDate->add(new \DateInterval('P1D'));
+                $result .= 'UNTIL='.$recurringEndDate->format('Ymd\THis\Z');
+            }
+
+        } else if ($type == 'iCal') {
+
+        }
+        return $result;
     }
 }
