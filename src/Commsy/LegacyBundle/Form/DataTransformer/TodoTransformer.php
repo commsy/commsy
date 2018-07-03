@@ -59,7 +59,7 @@ class TodoTransformer implements DataTransformerInterface
 
                 $todoData['status'] = $todoItem->getInternalStatus();
             } else {
-                $minutes = $todoItem->getMinutes();
+                $minutes = (int) $todoItem->getMinutes();
                 $todoData['time_spend'] = [];
                 $todoData['time_spend']['hour'] = (int) ($minutes / 60);
                 $todoData['time_spend']['minute'] = $minutes % 60;
