@@ -20,10 +20,14 @@ class BiblioChapterType extends AbstractType
         $translationDomain = 'form';
 
         $builder
-            ->add('editor', TextType::class, array(
-                'label' => 'editor',
+            ->add('booktitle', TextType::class, array(
+                'label' => 'booktitle',
                 'translation_domain' => $translationDomain,
-                ))
+            ))
+            ->add('author', TextType::class, array(
+                'label' => 'author',
+                'translation_domain' => $translationDomain,
+            ))
             ->add('publishing_date', TextType::class, array(
                 'label' => 'publishing date',
                 'translation_domain' => $translationDomain,
