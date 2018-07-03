@@ -1995,6 +1995,12 @@ class cs_user_manager extends cs_manager {
      */
     public function getNewestItems($contextIds, $limits, $size, \DateTime $newerThen = null, $excludedIds = [])
     {
+        // return nothing in case of a set buzzword/category limit
+        // (since buzzwords & categories currently can't be assigned to users)
+        if (isset($limits['buzzword']) || isset($limits['categories'])) {
+            return new cs_list();
+        }
+
         parent::setGenericNewestItemsLimits($contextIds, $limits, $newerThen, $excludedIds);
 
         if ($size > 0) {
