@@ -817,6 +817,28 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
 
     // ---- pattern translation for recurring events  ---
 
+    /*
+        VObject supports the following RRULE options:
+
+        UNTIL           for an end date,
+
+        INTERVAL        for for example "every 2 days",
+
+        COUNT           to stop recurring after x items,
+
+        FREQ=DAILY      to recur every day, and BYDAY to limit it to certain days,
+
+        FREQ=WEEKLY     to recur every week, BYDAY to expand this to multiple weekdays
+                        in every week and WKST to specify on which day the week starts,
+
+        FREQ=MONTHLY    to recur every month, BYMONTHDAY to expand this to certain days in a month,
+                        BYDAY to expand it to certain weekdays occuring in a month, and BYSETPOS
+                        to limit the last two expansions,
+
+        FREQ=YEARLY     to recur every year, BYMONTH to expand that to certain months in a year,
+                        and BYDAY and BYWEEKDAY to expand the BYMONTH rule even further.
+    */
+
     private function translateRecurringPattern ($pattern, $type) {
         $result = '';
         if ($type == "CommSy") {
