@@ -16,6 +16,8 @@
                 {{ form_widget(form.validdate) }}
             </div>
         </div>
+
+        {% if announcement.creator.itemId == currentUser.itemId or currentUser.isModerator %}
         <div class="uk-flex">
             <label class="uk-form-label">
                 {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
@@ -36,6 +38,7 @@
                 {{ form_widget(form.hiddendate) }}
             </div>
         </div>
+        {% endif %}
 
         {% if isDraft and (showHashtags or showCategories) %}
             {{ macros.mandatoryLinks(showHashtags, showCategories, form) }}
@@ -49,7 +52,7 @@
                 {{ form_row(form.cancel) }}
             </div>
         </div>
-        
-        {{ form_end(form) }}
+        {{ form_row(form._token) }}
+        {{ form_end(form, {'render_rest': false}) }}
     </div>
 </div>

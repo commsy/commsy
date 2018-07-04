@@ -589,6 +589,7 @@ class TopicController extends Controller
 
         return array(
             'form' => $form->createView(),
+            'topic' => $topicItem,
             'isDraft' => $isDraft,
             'showHashtags' => $hashtagsMandatory,
             'showCategories' => $categoriesMandatory,
