@@ -1011,6 +1011,7 @@ class DiscussionController extends Controller
         }
         return array(
             'form' => $form->createView(),
+            'discussion' => $discussionItem,
             'isDraft' => $isDraft,
             'showHashtags' => $hashtagsMandatory,
             'showCategories' => $categoriesMandatory,

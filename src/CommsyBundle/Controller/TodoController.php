@@ -791,6 +791,7 @@ class TodoController extends Controller
 
         return array(
             'form' => $form->createView(),
+            'todo' => $todoItem,
             'isDraft' => $isDraft,
             'showHashtags' => $hashtagsMandatory,
             'showCategories' => $categoriesMandatory,

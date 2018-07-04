@@ -1028,6 +1028,7 @@ class MaterialController extends Controller
             'showHashtags' => $hashtagsMandatory,
             'showCategories' => $categoriesMandatory,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
+            'material' => $materialItem,
         );
     }
     

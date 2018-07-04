@@ -22,6 +22,8 @@
                         </div>
                     </div>
                 {% endif %}
+
+                {% if material.creator.itemId == currentUser.itemId or currentUser.isModerator %}
                 <div class="uk-form-row">
                     <label class="uk-form-label">
                         {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
@@ -42,6 +44,7 @@
                         {{ form_widget(form.hiddendate) }}
                     </div>
                 </div>
+                {% endif %}
 
                 {% if form.external_viewer is defined %}
                     <div class="uk-form-row">
@@ -82,7 +85,8 @@
                 {{ form_row(form.cancel) }}
             </div>
         </div>
-        {{ form_end(form) }}
+        {{ form_row(form._token) }}
+        {{ form_end(form, {'render_rest': false}) }}
     </div>
 </div>
 
