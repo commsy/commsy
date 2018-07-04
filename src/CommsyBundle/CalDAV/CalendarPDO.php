@@ -627,20 +627,18 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             $datesManager->select();
             $recurringDatesArray = $datesManager->get()->to_array();
 
-            foreach ($recurringDatesArray as $recurringDateItem) {
-                //if ($recurringDateItem->getItemId() != $dateItem->getItemId()) {
-                    $recurringSubEvents[] = [
-                        'SUMMARY' => $recurringDateItem->getTitle(),
-                        'DTSTART' => new \DateTime($recurringDateItem->getDateTime_start()),
-                        'DTEND' => new \DateTime($recurringDateItem->getDateTime_end()),
-                        'UID' => $uid,
-                        'LOCATION' => $recurringDateItem->getPlace(),
-                        'DESCRIPTION' => $recurringDateItem->getDescription(),
-                        'CLASS' => ($recurringDateItem->isPublic() ? 'PUBLIC' : 'PRIVATE'),
-                        'RECURRENCE-ID' => new \DateTime($recurringDateItem->getDateTime_start()),
-                    ];
-                //}
-            }
+            /*foreach ($recurringDatesArray as $recurringDateItem) {
+                $recurringSubEvents[] = [
+                    'SUMMARY' => $recurringDateItem->getTitle(),
+                    'DTSTART' => new \DateTime($recurringDateItem->getDateTime_start()),
+                    'DTEND' => new \DateTime($recurringDateItem->getDateTime_end()),
+                    'UID' => $uid,
+                    'LOCATION' => $recurringDateItem->getPlace(),
+                    'DESCRIPTION' => $recurringDateItem->getDescription(),
+                    'CLASS' => ($recurringDateItem->isPublic() ? 'PUBLIC' : 'PRIVATE'),
+                    'RECURRENCE-ID' => new \DateTime($recurringDateItem->getDateTime_start()),
+                ];
+            }*/
         }
 
         $vDateItem = new VObject\Component\VCalendar([
@@ -842,25 +840,95 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
     private function translateRecurringPattern ($pattern, $type) {
         $result = '';
         if ($type == "CommSy") {
-            /*
-                Array
-                    (
-                        [recurring_select] => RecurringDailyType
-                        [recurring_sub] => Array
-                            (
-                                [recurrenceDay] => 1
-                            )
-
-                        [recurringStartDate] => 2018-07-02
-                        [recurringEndDate] => 2018-07-06
-                    )
-             */
-
             if ($pattern['recurring_select'] == 'RecurringDailyType') {
+                /*
+                [recurring_sub] => Array
+                    (
+                        [recurrenceDay] => 1
+                    )
+                 */
                 $result .= 'FREQ=DAILY;';
-
                 if (isset($pattern['recurring_sub']['recurrenceDay'])) {
                     $result .= 'INTERVAL='.$pattern['recurring_sub']['recurrenceDay'].';';
+                }
+            } else if ($pattern['recurring_select'] == 'RecurringWeeklyType') {
+                /*
+                [recurring_sub] => Array
+                    (
+                        [recurrenceDaysOfWeek] => Array
+                            (
+                                [0] => monday
+                                [1] => tuesday
+                                [2] => thursday
+                            )
+
+                        [recurrenceWeek] => 2
+                    )
+                */
+                $result .= 'FREQ=WEEKLY;';
+
+                if (isset($pattern['recurring_sub']['recurrenceWeek'])) {
+                    $result .= 'INTERVAL='.$pattern['recurring_sub']['recurrenceWeek'].';';
+                }
+
+                $result .= 'WKST=MO;';
+
+                if (isset($pattern['recurring_sub']['recurrenceDaysOfWeek'])) {
+                    $daysOfWeek = [];
+                    foreach ($pattern['recurring_sub']['recurrenceDaysOfWeek'] as $day) {
+                        $daysOfWeek[] = mb_strtoupper(substr($day, 0, 2));
+                    }
+
+                    $result .= 'BYDAY='.implode($daysOfWeek, ',').';';
+                }
+            } else if ($pattern['recurring_select'] == 'RecurringMonthlyType') {
+                /*
+                [recurring_sub] => Array
+                    (
+                        [recurrenceMonth] => 2
+                        [recurrenceDayOfMonth] => tuesday
+                        [recurrenceDayOfMonthInterval] => 3
+                    )
+                */
+                $result .= 'FREQ=MONTHLY;';
+
+                if (isset($pattern['recurring_sub']['recurrenceMonth'])) {
+                    $result .= 'INTERVAL='.$pattern['recurring_sub']['recurrenceMonth'].';';
+                }
+
+                if (isset($pattern['recurring_sub']['recurrenceDayOfMonthInterval']) && isset($pattern['recurring_sub']['recurrenceDayOfMonth'])) {
+                    $result .= 'BYDAY='.$pattern['recurring_sub']['recurrenceDayOfMonthInterval'].mb_strtoupper(substr($pattern['recurring_sub']['recurrenceDayOfMonth'], 0, 2)).';';
+                }
+            } else if ($pattern['recurring_select'] == 'RecurringYearlyType') {
+                /*
+                [recurring_sub] => Array
+                    (
+                        [recurrenceDayOfMonth] => 2
+                        [recurrenceMonthOfYear] => march
+                    )
+                */
+                $result .= 'FREQ=YEARLY;';
+
+                if (isset($pattern['recurring_sub']['recurrenceMonthOfYear'])) {
+                    $months = [
+                        'january'   => '1',
+                        'february'  => '2',
+                        'march'     => '3',
+                        'april'     => '4',
+                        'may'       => '5',
+                        'june'      => '6',
+                        'july'      => '7',
+                        'august'    => '8',
+                        'september' => '9',
+                        'october'   => '10',
+                        'november'  => '11',
+                        'december'  => '12',
+                    ];
+                    $result .= 'BYMONTH='.$months[$pattern['recurring_sub']['recurrenceDayOfMonthInterval']].';';
+                }
+
+                if (isset($pattern['recurring_sub']['recurrenceDayOfMonth'])) {
+                    $result .= 'BYDAY='.$pattern['recurring_sub']['recurrenceDayOfMonth'].';';
                 }
             }
 
