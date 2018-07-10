@@ -465,6 +465,20 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     function updateCalendarObject($calendarId, $objectUri, $calendarData)
     {
+        /*
+        Change in single date
+            -> Update information
+
+        Change in recurring date
+            -> Change time
+                -> Update every date item
+            -> Change Title, ...
+                -> $calendarDatamight just include the main event and the changed event.
+                -> CommSy-item needs to be identified based on recurrence id and starttime of changed event
+            -> Deleted event
+                -> needs to be identified by exluded date in main event and starttime of deleted event
+        */
+
         $result = null;
 
         if ($calendarId[0]) {
@@ -613,6 +627,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             'LOCATION' => $dateItem->getPlace(),
             'DESCRIPTION' => $dateItem->getDescription(),
             'CLASS' => ($dateItem->isPublic() ? 'PUBLIC' : 'PRIVATE'),
+            'X-COMMSY-ITEM-ID' => $dateItem->getItemId(),
         ];
 
         $recurringSubEvents = [];
@@ -627,7 +642,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             $datesManager->select();
             $recurringDatesArray = $datesManager->get()->to_array();
 
-            /*foreach ($recurringDatesArray as $recurringDateItem) {
+            foreach ($recurringDatesArray as $recurringDateItem) {
                 $recurringSubEvents[] = [
                     'SUMMARY' => $recurringDateItem->getTitle(),
                     'DTSTART' => new \DateTime($recurringDateItem->getDateTime_start()),
@@ -637,8 +652,9 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     'DESCRIPTION' => $recurringDateItem->getDescription(),
                     'CLASS' => ($recurringDateItem->isPublic() ? 'PUBLIC' : 'PRIVATE'),
                     'RECURRENCE-ID' => new \DateTime($recurringDateItem->getDateTime_start()),
+                    'X-COMMSY-ITEM-ID' => $recurringDateItem->getItemId(),
                 ];
-            }*/
+            }
         }
 
         $vDateItem = new VObject\Component\VCalendar([
