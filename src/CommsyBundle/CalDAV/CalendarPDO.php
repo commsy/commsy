@@ -924,7 +924,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                         'november'  => '11',
                         'december'  => '12',
                     ];
-                    $result .= 'BYMONTH='.$months[$pattern['recurring_sub']['recurrenceDayOfMonthInterval']].';';
+                    $result .= 'BYMONTH='.$months[$pattern['recurring_sub']['recurrenceMonthOfYear']].';';
                 }
 
                 if (isset($pattern['recurring_sub']['recurrenceDayOfMonth'])) {
