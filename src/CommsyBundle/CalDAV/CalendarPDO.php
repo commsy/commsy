@@ -473,7 +473,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             -> Change time
                 -> Update every date item
             -> Change Title, ...
-                -> $calendarDatamight just include the main event and the changed event.
+                -> $calendarData might just include the main event and the changed event, not the complete list of events.
                 -> CommSy-item needs to be identified based on recurrence id and starttime of changed event
             -> Deleted event
                 -> needs to be identified by exluded date in main event and starttime of deleted event
