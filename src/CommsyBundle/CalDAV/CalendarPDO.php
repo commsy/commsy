@@ -479,13 +479,16 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                 -> needs to be identified by exluded date in main event and starttime of deleted event
         */
 
+
+
+
         $result = null;
 
         if ($calendarId[0]) {
             $calendarId = $calendarId[0];
 
             $dateItem = $this->transformVeventToDateItem($calendarId, $calendarData, $this->getDateItemFromObjectUri($objectUri));
-            $dateItem->save();
+            //$dateItem->save();
 
             $this->addChange($calendarId, $objectUri, 2);
         }
@@ -737,6 +740,18 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         $dateService = $this->container->get('commsy_legacy.date_service');
 
         $calendarRead = VObject\Reader::read($calendarData);
+        // Use expanded calendar, to work with all dates everytime.
+        // CommSy itself does not have to do the calculatinos
+
+        $expandDateTimeStart = new \DateTime('1970-01-01'); // ToDo: decide on fixed start date
+        $expandDateTimeEnd = new \DateTime('2050-12-31');   // ToDo: decide on fixed end date
+        if ($dateItem) {
+            $expandDateTimeStart = new \DateTime($dateItem->getDateTime_start());
+            $expandDateTimeEnd = new \DateTime($dateItem->getDateTime_end());
+        }
+        $calendarReadExpanded = $calendarRead->expand($expandDateTimeStart, $expandDateTimeEnd);
+
+        // ToDo: iterate over children of $calendarReadExpanded
 
         // insert new data into database
         if ($calendarRead->VEVENT) {
