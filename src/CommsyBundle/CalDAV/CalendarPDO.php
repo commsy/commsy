@@ -436,8 +436,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         if ($calendarId[0]) {
             $calendarId = $calendarId[0];
 
-            $dateItem = $this->transformVeventToDateItem($calendarId, $calendarData, null);
-            $dateItem->save();
+            $this->transformVeventToDateItem($calendarId, $calendarData, null);
 
             $this->addChange($calendarId, $objectUri, 1);
         }
@@ -487,8 +486,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         if ($calendarId[0]) {
             $calendarId = $calendarId[0];
 
-            $dateItem = $this->transformVeventToDateItem($calendarId, $calendarData, $this->getDateItemFromObjectUri($objectUri));
-            //$dateItem->save();
+            $this->transformVeventToDateItem($calendarId, $calendarData, $objectUri);
 
             $this->addChange($calendarId, $objectUri, 2);
         }
@@ -734,7 +732,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         return null;
     }
 
-    private function transformVeventToDateItem($calendarId, $calendarData, $dateItem = null)
+    private function transformVeventToDateItem($calendarId, $calendarData, $objectUri = null)
     {
         $calendarsService = $this->container->get('commsy.calendars_service');
         $dateService = $this->container->get('commsy_legacy.date_service');
@@ -751,7 +749,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             $expandDateTimeEnd = new \DateTime($dateItem->getDateTime_end());
         } */
         $calendarReadExpanded = $calendarRead->expand($expandDateTimeStart, $expandDateTimeEnd);
-        
+
         // insert new data into database
         $calendarReadExpandedChildren = $calendarReadExpanded->children();
         foreach ($calendarReadExpandedChildren as $event) {
@@ -759,6 +757,8 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
 
                 if ($event->{'X-COMMSY-ITEM-ID'}) {
                     $dateItem = $dateService->getDate($event->{'X-COMMSY-ITEM-ID'}->getValue());
+                } else {
+                    $dateItem = $this->getDateItemFromObjectUri($objectUri);
                 }
 
                 $title = '';
@@ -840,11 +840,11 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     //$dateItem->setModificationDate($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
                     //$dateItem->setChangeModificationOnSave(false);
                     $dateItem->setExternal(false);
+
+                    $dateItem->save();
                 }
             }
         }
-
-        return $dateItem;
     }
 
 
