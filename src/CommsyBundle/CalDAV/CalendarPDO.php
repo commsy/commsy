@@ -743,19 +743,23 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         // Use expanded calendar, to work with all dates everytime.
         // CommSy itself does not have to do the calculatinos
 
-        $expandDateTimeStart = new \DateTime('1970-01-01'); // ToDo: decide on fixed start date
-        $expandDateTimeEnd = new \DateTime('2050-12-31');   // ToDo: decide on fixed end date
-        if ($dateItem) {
+        $expandDateTimeStart = new \DateTime('1970-01-01');   // ToDo: decide on fixed start date
+        $expandDateTimeEnd = new \DateTime();
+        $expandDateTimeEnd->modify('+50 years');            // ToDo: decide on fixed end date
+        /* if ($dateItem) {
             $expandDateTimeStart = new \DateTime($dateItem->getDateTime_start());
             $expandDateTimeEnd = new \DateTime($dateItem->getDateTime_end());
-        }
+        } */
         $calendarReadExpanded = $calendarRead->expand($expandDateTimeStart, $expandDateTimeEnd);
-
-        // ToDo: iterate over children of $calendarReadExpanded
-
+        
         // insert new data into database
-        if ($calendarRead->VEVENT) {
-            foreach ($calendarRead->VEVENT as $event) {
+        $calendarReadExpandedChildren = $calendarReadExpanded->children();
+        foreach ($calendarReadExpandedChildren as $event) {
+            if ($event->name == 'VEVENT') {
+
+                if ($event->{'X-COMMSY-ITEM-ID'}) {
+                    $dateItem = $dateService->getDate($event->{'X-COMMSY-ITEM-ID'}->getValue());
+                }
 
                 $title = '';
                 if ($event->SUMMARY) {
