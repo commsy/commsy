@@ -613,6 +613,11 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             $recurringDatesArray = $datesManager->get()->to_array();
 
             foreach ($recurringDatesArray as $recurringDateItem) {
+                $dateTimeRecurrence = $recurringDateItem->getDateTime_start();
+                if ($recurringDateItem->getDateTime_recurrence()) {
+                    $dateTimeRecurrence = $recurringDateItem->getDateTime_recurrence();
+                }
+
                 $recurringSubEvents[] = [
                     'SUMMARY' => $recurringDateItem->getTitle(),
                     'DTSTART' => new \DateTime($recurringDateItem->getDateTime_start()),
@@ -621,7 +626,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     'LOCATION' => $recurringDateItem->getPlace(),
                     'DESCRIPTION' => $recurringDateItem->getDescription(),
                     'CLASS' => ($recurringDateItem->isPublic() ? 'PUBLIC' : 'PRIVATE'),
-                    'RECURRENCE-ID' => new \DateTime($recurringDateItem->getDateTime_start()),
+                    'RECURRENCE-ID' => new \DateTime($dateTimeRecurrence),
                     'X-COMMSY-ITEM-ID' => $recurringDateItem->getItemId(),
                 ];
             }

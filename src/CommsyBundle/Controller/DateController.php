@@ -1176,6 +1176,9 @@ class DateController extends Controller
                     $item->saveAsItem();
                 }
             } else if ($saveType == 'saveThisDate') {
+                if (!$dateItem->getDateTime_recurrence()) {
+                    $dateItem->setDateTime_recurrence($dateItem->getDateTime_start());
+                }
                 $dateItem = $transformer->applyTransformation($dateItem, $formData);
                 $dateItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                 $dateItem->save();
