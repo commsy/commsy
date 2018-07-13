@@ -793,6 +793,11 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                         }
                     }
 
+                    // ToDo: set datetime_recurrence on items if recurring date is created or changed in client
+                    // if (!$dateItem->getDateTime_recurrence()) {
+                    //     $dateItem->setDateTime_recurrence($dateItem->getDateTime_start());
+                    // }
+
                     $dateItem->setContextId($calendar->getContextId());
                     $dateItem->setTitle($title);
                     $dateItem->setDateTime_start($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
