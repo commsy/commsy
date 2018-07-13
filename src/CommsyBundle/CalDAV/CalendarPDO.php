@@ -431,17 +431,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     function createCalendarObject($calendarId, $objectUri, $calendarData)
     {
-        $result = null;
-
-        if ($calendarId[0]) {
-            $calendarId = $calendarId[0];
-
-            $this->transformVeventToDateItem($calendarId, $calendarData, null);
-
-            $this->addChange($calendarId, $objectUri, 1);
-        }
-
-        return $result;
+        return $this->updateCalendarObject($calendarId, null, $calendarData);
     }
 
     /**
@@ -464,33 +454,12 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     function updateCalendarObject($calendarId, $objectUri, $calendarData)
     {
-        /*
-        Change in single date
-            -> Update information
-
-        Change in recurring date
-            -> Change time
-                -> Update every date item
-            -> Change Title, ...
-                -> $calendarData might just include the main event and the changed event, not the complete list of events.
-                -> CommSy-item needs to be identified based on recurrence id and starttime of changed event
-            -> Deleted event
-                -> needs to be identified by exluded date in main event and starttime of deleted event
-        */
-
-
-
-
         $result = null;
-
         if ($calendarId[0]) {
             $calendarId = $calendarId[0];
-
             $this->transformVeventToDateItem($calendarId, $calendarData, $objectUri);
-
             $this->addChange($calendarId, $objectUri, 2);
         }
-
         return $result;
     }
 
@@ -738,9 +707,9 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         $dateService = $this->container->get('commsy_legacy.date_service');
 
         $calendarRead = VObject\Reader::read($calendarData);
-        // Use expanded calendar, to work with all dates everytime.
-        // CommSy itself does not have to do the calculatinos
 
+        // Use expanded calendar, to work with all dates.
+        // CommSy itself does not have to do the calculations.
         $expandDateTimeStart = new \DateTime('1970-01-01');   // ToDo: decide on fixed start date
         $expandDateTimeEnd = new \DateTime();
         $expandDateTimeEnd->modify('+50 years');            // ToDo: decide on fixed end date
@@ -757,8 +726,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
 
                 if ($event->{'X-COMMSY-ITEM-ID'}) {
                     $dateItem = $dateService->getDate($event->{'X-COMMSY-ITEM-ID'}->getValue());
-                } else {
+                } else if ($objectUri) {
                     $dateItem = $this->getDateItemFromObjectUri($objectUri);
+                } else {
+                    $dateItem = $dateService->getNewDate();
                 }
 
                 $title = '';
@@ -810,16 +781,13 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
 
                 $calendar = $calendarsService->getCalendar($calendarId)[0];
                 if ($calendar) {
-                    if (!$dateItem) {
-                        $dateItem = $dateService->getNewDate();
-                    } else {
-                        $user = $this->getUserFromPortal($this->userId, $dateItem->getContextId());
-                        if ($user->getContextId() == $dateItem->getContextId()) {
-                            if (!$dateItem->mayEdit($user)) {
-                                throw new Exception\Forbidden('Permission denied to edit date');
-                            }
+                    $user = $this->getUserFromPortal($this->userId, $dateItem->getContextId());
+                    if ($user->getContextId() == $dateItem->getContextId()) {
+                        if (!$dateItem->mayEdit($user)) {
+                            throw new Exception\Forbidden('Permission denied to edit date');
                         }
                     }
+
                     $dateItem->setContextId($calendar->getContextId());
                     $dateItem->setTitle($title);
                     $dateItem->setDateTime_start($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
@@ -840,6 +808,14 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     //$dateItem->setModificationDate($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
                     //$dateItem->setChangeModificationOnSave(false);
                     $dateItem->setExternal(false);
+
+                    // iCal CLASS = 'PUBLIC' is used as default value.
+                    $dateItem->setPublic(1);
+                    if ($event->CLASS) {
+                        if ($event->CLASS->getValue() == 'PRIVATE' || $event->CLASS->getValue() == 'CONFIDENTIAL') {
+                            $dateItem->setPublic(0);
+                        }
+                    }
 
                     $dateItem->save();
                 }
