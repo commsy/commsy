@@ -199,7 +199,10 @@ class cs_item {
          $buzzword = $buzzword_list->getFirst();
          while($buzzword) {
             $name = $buzzword->getName();
-            if ( !empty($name) ) {
+            if (!empty($name)) {
+               if (!is_array($this->_data['buzzword_array'])) {
+                  $this->_data['buzzword_array'] = [];
+               }
                $this->_data['buzzword_array'][] = $name;
             }
             $buzzword = $buzzword_list->getNext();
