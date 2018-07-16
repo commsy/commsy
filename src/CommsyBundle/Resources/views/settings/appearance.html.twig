@@ -30,9 +30,9 @@
                                 {{ form_row(form.theme) }}
                             </div>
                         {% else %}
-                            <input type="hidden" id="appearance_settings_theme">
+                            <div id="appearance_settings_theme" style="display:none;">
                                 {{ pre_definition }}
-                            </input>
+                            </div>
 
                         {% endif %}
 
