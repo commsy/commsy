@@ -197,31 +197,17 @@ class SettingsController extends Controller
         //if theme is pre-decined, do not include it in the form
         // get the configured LiipThemeBundle themes
 
-        if(!empty($preDefinedTheme)){
-            $form = $this->createForm(AppearanceSettingsType::class, $roomData, array(
+        $themeArray = (!empty($preDefinedTheme)) ? null : $this->container->getParameter('liip_theme.themes');
+        $form = $this->createForm(AppearanceSettingsType::class, $roomData, array(
+            'roomId' => $roomId,
+            'themes' => $themeArray,
+            'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
                 'roomId' => $roomId,
-                'themes' => $array = [$preDefinedTheme],
-                'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
-                    'roomId' => $roomId,
-                )),
-                'themeBackgroundPlaceholder' => $this->generateUrl('getThemeBackground', array(
-                    'theme' => 'THEME'
-                )),
-            ));
-        }else{
-            $themeArray = $this->container->getParameter('liip_theme.themes');
-            $form = $this->createForm(AppearanceSettingsType::class, $roomData, array(
-                'roomId' => $roomId,
-                'themes' => $themeArray,
-                'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
-                    'roomId' => $roomId,
-                )),
-                'themeBackgroundPlaceholder' => $this->generateUrl('getThemeBackground', array(
-                    'theme' => 'THEME'
-                )),
-            ));
-        }
-
+            )),
+            'themeBackgroundPlaceholder' => $this->generateUrl('getThemeBackground', array(
+                'theme' => 'THEME'
+            )),
+        ));
 
         
         $form->handleRequest($request);

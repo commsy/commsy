@@ -23,19 +23,19 @@
                         </div>
 
                         <!-- Theme -->
-                        {% if  pre_definition is null or pre_definition is empty %}
+                        {% if form.theme is defined %}
                             <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                                 <h1 class='uk-panel-title'>{{ 'Configure color theme'|trans({}, 'settings') }}</h1>
                                 <div style="margin-bottom: 25px;">{{ 'Configure color theme text'|trans({}, 'settings') }}</div>
                                 {{ form_row(form.theme) }}
                             </div>
                         {% else %}
-                            <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;display:none;">
-                                <h1 class='uk-panel-title'>{{ 'Configure color theme'|trans({}, 'settings') }}</h1>
-                                <div style="margin-bottom: 25px;">{{ 'Configure color theme text'|trans({}, 'settings') }}</div>
-                                {{ form_row(form.theme) }}
-                            </div>
+                            <input type="hidden" id="appearance_settings_theme">
+                                {{ pre_definition }}
+                            </input>
+
                         {% endif %}
+
                         <!-- Room image -->
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
                             <h1 class='uk-panel-title'>{{ 'Room image'|trans({}, 'settings') }}</h1>
