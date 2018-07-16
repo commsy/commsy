@@ -262,7 +262,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             $recurringIds = [];
 
             foreach ($datesArray as $dateItem) {
-                if ($dateItem->getRecurrenceId() == '' || (!in_array($dateItem->getRecurrenceId(), $recurringIds) && ($dateItem->getItemId() == $dateItem->getRecurrenceId()))) {
+                if ($dateItem->getRecurrenceId() == '' || !in_array($dateItem->getRecurrenceId(), $recurringIds)) {
                     if ($dateItem->getRecurrenceId() != '') {
                         $recurringIds[] = $dateItem->getRecurrenceId();
                     }
@@ -476,6 +476,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
     {
         $dateItem = $this->getDateItemFromObjectUri($objectUri);
         if ($dateItem) {
+            // ToDo: handle recurring events. Deleted CommSy items need to be stored to work as exclusions from the series.
             $dateItem->delete();
             $this->addChange($calendarId, $objectUri, 3);
         }
