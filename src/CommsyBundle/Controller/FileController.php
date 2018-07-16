@@ -97,32 +97,34 @@ class FileController extends Controller
 
         $themesDir = $this->getParameter("themes_directory");
 
-        if($imageType == 'theme'){
-            $completePath = $themesDir . "/" . $roomItem->getColorArray()['schema'] . "/bg.jpg";
-            if(!file_exists($completePath)){
+        if ($imageType == 'theme') {
+
+            // is theme pre-defined in config?
+            $preDefinedTheme = $this->container->getParameter('liip_theme_pre_configuration.active_theme');
+            $themeName = $preDefinedTheme ?? $roomItem->getColorArray()['schema'];
+            $completePath = $themesDir . "/" . $themeName . "/bg.jpg";
+
+            if (!file_exists($completePath)) {
                 $completePath = $themesDir . "/" . mb_strtolower($roomItem->getColorArray()['schema']) . "/bg.jpg";
             }
-        }
-        elseif($imageType =='custom'){
-            if($filename != ''){
-                $filepath = $this->getParameter('files_directory') . "/" .  $roomService->getRoomFileDirectory($roomId);
+        } elseif ($imageType == 'custom') {
+            if ($filename != '') {
+                $filepath = $this->getParameter('files_directory') . "/" . $roomService->getRoomFileDirectory($roomId);
                 $completePath = $filepath . "/" . $filename;
-            }
-            else{
+            } else {
                 $completePath = $themesDir . "/customBgPlaceholder.png";
             }
         }
 
-        if(file_exists($completePath)){
+        if (file_exists($completePath)) {
             $content = file_get_contents($completePath);
 
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
             $mimeType = finfo_file($finfo, $completePath);
 
             $response = new Response($content, Response::HTTP_OK, array('content-type' => $mimeType));
-            $response->headers->set('Content-Disposition', $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,$filename));
-        }
-        else{
+            $response->headers->set('Content-Disposition', $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $filename));
+        } else {
             $response = new Response("Background image not found!", Response::HTTP_NOT_FOUND);
         }
 

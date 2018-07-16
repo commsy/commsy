@@ -138,7 +138,7 @@ services:
     # EventListener
     kernel.listener.comsy_request:
         class: CommsyBundle\EventListener\CommsyRequestListener
-        arguments: ['@commsy_legacy.room_service', '@liip_theme.active_theme', '%liip_theme.themes%']
+        arguments: ['@commsy_legacy.room_service', '@liip_theme.active_theme', '%liip_theme.themes%', '%liip_theme_pre_configuration.active_theme%', '@logger']
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
