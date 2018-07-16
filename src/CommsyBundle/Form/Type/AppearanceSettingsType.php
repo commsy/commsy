@@ -3,6 +3,7 @@ namespace CommsyBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -11,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\FormEvents;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
@@ -36,19 +38,24 @@ class AppearanceSettingsType extends AbstractType
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($options['roomId']);
 
-        $themeChoices = array_combine($options['themes'], $options['themes']);
-
         $builder
-            ->add('theme', ChoiceType::class, array(
-                'required' => true,
-                'choices' => $themeChoices,
-                'constraints' => array(
-                    new NotBlank(),
-                ),
-                'attr' => array(
-                    'data-themeurl' => $options['themeBackgroundPlaceholder'],
-                ),
-            ))
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+                $form = $event->getForm();
+                $options = $form->getConfig()->getOptions();
+
+                if (!empty($form->getConfig()->getOptions()['themes'])) {
+                    $form->add('theme', ChoiceType::class, array(
+                        'required' => true,
+                        'choices' => array_combine($options['themes'], $options['themes']),
+                        'constraints' => array(
+                            new NotBlank(),
+                        ),
+                        'attr' => array(
+                            'data-themeurl' => $options['themeBackgroundPlaceholder'],
+                        ),
+                    ));
+                }
+            })
             ->add('dates_status', ChoiceType::class, array(
                 'expanded' => true,
                 'multiple' => false,

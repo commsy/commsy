@@ -191,9 +191,13 @@ class SettingsController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.appearance_settings');
         $roomData = $transformer->transform($roomItem);
 
-        // get the configured LiipThemeBundle themes
-        $themeArray = $this->container->getParameter('liip_theme.themes');
+        // is theme pre-defined in config?
+        $preDefinedTheme = $this->container->getParameter('liip_theme_pre_configuration.active_theme');
 
+        //if theme is pre-decined, do not include it in the form
+        // get the configured LiipThemeBundle themes
+
+        $themeArray = (!empty($preDefinedTheme)) ? null : $this->container->getParameter('liip_theme.themes');
         $form = $this->createForm(AppearanceSettingsType::class, $roomData, array(
             'roomId' => $roomId,
             'themes' => $themeArray,
@@ -204,6 +208,7 @@ class SettingsController extends Controller
                 'theme' => 'THEME'
             )),
         ));
+
         
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

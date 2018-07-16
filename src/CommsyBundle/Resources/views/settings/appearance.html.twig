@@ -23,11 +23,18 @@
                         </div>
 
                         <!-- Theme -->
-                        <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
-                            <h1 class='uk-panel-title'>{{ 'Configure color theme'|trans({}, 'settings') }}</h1>
-                            <div style="margin-bottom: 25px;">{{ 'Configure color theme text'|trans({}, 'settings') }}</div>
-                            {{ form_row(form.theme) }}
-                        </div>
+                        {% if form.theme is defined %}
+                            <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
+                                <h1 class='uk-panel-title'>{{ 'Configure color theme'|trans({}, 'settings') }}</h1>
+                                <div style="margin-bottom: 25px;">{{ 'Configure color theme text'|trans({}, 'settings') }}</div>
+                                {{ form_row(form.theme) }}
+                            </div>
+                        {% else %}
+                            <input type="hidden" id="appearance_settings_theme">
+                                {{ pre_definition }}
+                            </input>
+
+                        {% endif %}
 
                         <!-- Room image -->
                         <div class="uk-panel uk-panel-box" style="margin-bottom: 20px;">
@@ -174,6 +181,7 @@
         // toggleUploadListener(document.getElementById('appearance_settings_room_image_choice'), deleteRow, repeatRow);
         toggleUploadListener(document.getElementById('appearance_settings_room_image_choice'));
         toggleLogoUploadListener(document.getElementById('appearance_settings_room_logo_activate').checked);
+
     };
 
     function setImageData(f, previewImage, dataElementId){
