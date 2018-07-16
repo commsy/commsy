@@ -205,6 +205,7 @@ class DateController extends Controller
             $dateService = $this->get('commsy_legacy.date_service');
   		    foreach ($selectedIds as $id) {
   		        $item = $dateService->getDate($id);
+                $this->get('commsy.calendars_service')->updateSynctoken($item->getCalendarId());
   		        $item->delete();
   		    }
            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> '.$translator->transChoice('%count% deleted entries',count($selectedIds), array('%count%' => count($selectedIds)));

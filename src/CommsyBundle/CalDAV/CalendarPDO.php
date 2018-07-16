@@ -574,6 +574,13 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     protected function addChange($calendarId, $objectUri, $operation)
     {
+        if (is_array($calendarId)) {
+            if (isset($calendarId[0])) {
+                $calendarId = $calendarId[0];
+            } else {
+                return false;
+            }
+        }
         $this->container->get('commsy.calendars_service')->updateSynctoken($calendarId);
     }
 
