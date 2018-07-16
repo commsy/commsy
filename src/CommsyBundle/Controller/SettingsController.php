@@ -191,19 +191,38 @@ class SettingsController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.appearance_settings');
         $roomData = $transformer->transform($roomItem);
 
-        // get the configured LiipThemeBundle themes
-        $themeArray = $this->container->getParameter('liip_theme.themes');
+        // is theme pre-defined in config?
+        $preDefinedTheme = $this->container->getParameter('liip_theme_pre_configuration.active_theme');
 
-        $form = $this->createForm(AppearanceSettingsType::class, $roomData, array(
-            'roomId' => $roomId,
-            'themes' => $themeArray,
-            'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
+        //if theme is pre-decined, do not include it in the form
+        // get the configured LiipThemeBundle themes
+
+        if(!empty($preDefinedTheme)){
+            $form = $this->createForm(AppearanceSettingsType::class, $roomData, array(
                 'roomId' => $roomId,
-            )),
-            'themeBackgroundPlaceholder' => $this->generateUrl('getThemeBackground', array(
-                'theme' => 'THEME'
-            )),
-        ));
+                'themes' => $array = [$preDefinedTheme],
+                'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
+                    'roomId' => $roomId,
+                )),
+                'themeBackgroundPlaceholder' => $this->generateUrl('getThemeBackground', array(
+                    'theme' => 'THEME'
+                )),
+            ));
+        }else{
+            $themeArray = $this->container->getParameter('liip_theme.themes');
+            $form = $this->createForm(AppearanceSettingsType::class, $roomData, array(
+                'roomId' => $roomId,
+                'themes' => $themeArray,
+                'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
+                    'roomId' => $roomId,
+                )),
+                'themeBackgroundPlaceholder' => $this->generateUrl('getThemeBackground', array(
+                    'theme' => 'THEME'
+                )),
+            ));
+        }
+
+
         
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

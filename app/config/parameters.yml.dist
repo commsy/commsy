@@ -63,5 +63,8 @@ parameters:
     extensions.mediawiki.access_token: ~
     extensions.mediawiki.access_secret: ~
 
+    # pre-defined theme
+    liip_theme_pre_configuration.active_theme: ~
+
     # dates
     dates.timezone: ~

@@ -98,7 +98,16 @@ class FileController extends Controller
         $themesDir = $this->getParameter("themes_directory");
 
         if($imageType == 'theme'){
-            $completePath = $themesDir . "/" . $roomItem->getColorArray()['schema'] . "/bg.jpg";
+            //TODO: Hier Switch für Pre-Defined Themes einbauen
+            // is theme pre-defined in config?
+            $preDefinedTheme = $this->container->getParameter('liip_theme_pre_configuration.active_theme');
+            if(!empty($preDefinedTheme)){
+                $completePath = $themesDir . "/" .$preDefinedTheme . "/bg.jpg";
+            }else{
+                $completePath = $themesDir . "/" . $roomItem->getColorArray()['schema'] . "/bg.jpg";
+            }
+
+
             if(!file_exists($completePath)){
                 $completePath = $themesDir . "/" . mb_strtolower($roomItem->getColorArray()['schema']) . "/bg.jpg";
             }
