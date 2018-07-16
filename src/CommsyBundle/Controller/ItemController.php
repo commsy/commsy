@@ -921,6 +921,8 @@ class ItemController extends Controller
         $route = 'commsy_'.$item->getItemType().'_list';
 
         if ($item->getItemType() == 'date') {
+            $this->get('commsy.calendars_service')->updateSynctoken($item->getCalendarId());
+
             $roomService = $this->get('commsy_legacy.room_service');
             $room = $roomService->getRoomItem($roomId);
             if ($room->getDatesPresentationStatus() != 'normal') {
