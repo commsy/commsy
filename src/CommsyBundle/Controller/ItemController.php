@@ -946,6 +946,9 @@ class ItemController extends Controller
                     $temp_date->delete();
                     $temp_date = $dates_list->getNext();
                 }
+            } else {
+                // ToDo: if item is part of a reccuring event, save deleted timestamp (start DateTime) in recurrence pattern of the other events. Data needed for EXDATE.
+
             }
         }
 
