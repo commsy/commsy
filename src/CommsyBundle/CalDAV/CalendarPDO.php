@@ -608,10 +608,13 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             'X-COMMSY-ITEM-ID' => $dateItem->getItemId(),
         ];
 
-        // ToDo: include EXDATE:20161110T130000Z for deleted events of the series.
-
         $recurringSubEvents = [];
         if ($dateItem->getRecurrenceId() != '') {
+            $excludeRecurrencePattern = $dateItem->getRecurrencePattern();
+            if (isset($excludeRecurrencePattern['recurringExclude'])) {
+                $eventDataArray['EXDATE'] = implode(',', $excludeRecurrencePattern['recurringExclude']);
+            }
+
             $recurrencePattern = $this->translateRecurringPattern($dateItem->getRecurrencePattern(), 'CommSy');
             $eventDataArray['RRULE'] = $recurrencePattern;
 

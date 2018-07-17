@@ -947,8 +947,31 @@ class ItemController extends Controller
                     $temp_date = $dates_list->getNext();
                 }
             } else {
-                // ToDo: if item is part of a reccuring event, save deleted timestamp (start DateTime) in recurrence pattern of the other events. Data needed for EXDATE.
+                $dates_manager = $environment->getDatesManager();
+                $dates_manager->resetLimits();
 
+                $date_item = $dates_manager->getItem($itemId);
+                $recurrence_id = $date_item->getRecurrenceId();
+                $dates_manager->setRecurrenceLimit($recurrence_id);
+
+                $dates_manager->setWithoutDateModeLimit();
+                $dates_manager->select();
+                $dates_list = $dates_manager->get();
+
+                $temp_date = $dates_list->getFirst();
+                while($temp_date) {
+                    $recurrencePattern = $temp_date->getRecurrencePattern();
+                    $recurrencePatternExcludeDate = new \DateTime($item->getDateTime_start());
+                    if (!isset($recurrencePattern['recurringExclude'])) {
+                        $recurrencePattern['recurringExclude'] = [$recurrencePatternExcludeDate->format('Ymd\THis')];
+                    } else {
+                        $recurrencePattern['recurringExclude'][] = $recurrencePatternExcludeDate->format('Ymd\THis');
+                    }
+                    $temp_date->setRecurrencePattern($recurrencePattern);
+                    $temp_date->save();
+
+                    $temp_date = $dates_list->getNext();
+                }
             }
         }
 
