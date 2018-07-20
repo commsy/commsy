@@ -737,6 +737,9 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         } */
         $calendarReadExpanded = $calendarRead->expand($expandDateTimeStart, $expandDateTimeEnd);
 
+        $newItem = false;
+        $recurrenceId = null;
+
         // insert new data into database
         $calendarReadExpandedChildren = $calendarReadExpanded->children();
         foreach ($calendarReadExpandedChildren as $event) {
@@ -747,6 +750,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                 } else if ($objectUri) {
                     $dateItem = $this->getDateItemFromObjectUri($objectUri);
                 } else {
+                    $newItem = true;
                     $dateItem = $dateService->getNewDate();
                 }
 
@@ -841,6 +845,14 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     }
 
                     $dateItem->save();
+                    if ($newItem && !$recurrenceId) {
+                        $recurrenceId = $dateItem->getItemId();
+                    }
+
+                    if ($event->RRULE && $recurrenceId) {
+                        $dateItem->setRecurenceId($recurrenceId);
+                        $dateItem->save();
+                    }
                 }
             }
         }
