@@ -853,6 +853,11 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       $query .= ', external="'.encode(AS_DB,$item->isExternal()).'"';
       $query .= ', uid="'.encode(AS_DB,$item->getUid()).'"';
       $query .= ', whole_day="'.encode(AS_DB,$item->isWholeDay()).'"';
+      if ($item->getDateTime_recurrence()) {
+          $query .= ', datetime_recurrence="' . encode(AS_DB, $item->getDateTime_recurrence()) . '"';
+      } else {
+          $query .= ', datetime_recurrence=NULL';
+      }
       $query .= ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
 
       $result = $this->_db_connector->performQuery($query);

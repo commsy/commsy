@@ -921,6 +921,8 @@ class ItemController extends Controller
         $route = 'commsy_'.$item->getItemType().'_list';
 
         if ($item->getItemType() == 'date') {
+            $this->get('commsy.calendars_service')->updateSynctoken($item->getCalendarId());
+
             $roomService = $this->get('commsy_legacy.room_service');
             $room = $roomService->getRoomItem($roomId);
             if ($room->getDatesPresentationStatus() != 'normal') {
@@ -942,6 +944,32 @@ class ItemController extends Controller
                 $temp_date = $dates_list->getFirst();
                 while($temp_date) {
                     $temp_date->delete();
+                    $temp_date = $dates_list->getNext();
+                }
+            } else {
+                $dates_manager = $environment->getDatesManager();
+                $dates_manager->resetLimits();
+
+                $date_item = $dates_manager->getItem($itemId);
+                $recurrence_id = $date_item->getRecurrenceId();
+                $dates_manager->setRecurrenceLimit($recurrence_id);
+
+                $dates_manager->setWithoutDateModeLimit();
+                $dates_manager->select();
+                $dates_list = $dates_manager->get();
+
+                $temp_date = $dates_list->getFirst();
+                while($temp_date) {
+                    $recurrencePattern = $temp_date->getRecurrencePattern();
+                    $recurrencePatternExcludeDate = new \DateTime($item->getDateTime_start());
+                    if (!isset($recurrencePattern['recurringExclude'])) {
+                        $recurrencePattern['recurringExclude'] = [$recurrencePatternExcludeDate->format('Ymd\THis')];
+                    } else {
+                        $recurrencePattern['recurringExclude'][] = $recurrencePatternExcludeDate->format('Ymd\THis');
+                    }
+                    $temp_date->setRecurrencePattern($recurrencePattern);
+                    $temp_date->save();
+
                     $temp_date = $dates_list->getNext();
                 }
             }

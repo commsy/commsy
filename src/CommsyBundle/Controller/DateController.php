@@ -205,6 +205,7 @@ class DateController extends Controller
             $dateService = $this->get('commsy_legacy.date_service');
   		    foreach ($selectedIds as $id) {
   		        $item = $dateService->getDate($id);
+                $this->get('commsy.calendars_service')->updateSynctoken($item->getCalendarId());
   		        $item->delete();
   		    }
            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> '.$translator->transChoice('%count% deleted entries',count($selectedIds), array('%count%' => count($selectedIds)));
@@ -1176,6 +1177,9 @@ class DateController extends Controller
                     $item->saveAsItem();
                 }
             } else if ($saveType == 'saveThisDate') {
+                if (!$dateItem->getDateTime_recurrence()) {
+                    $dateItem->setDateTime_recurrence($dateItem->getDateTime_start());
+                }
                 $dateItem = $transformer->applyTransformation($dateItem, $formData);
                 $dateItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                 $dateItem->save();
