@@ -1068,7 +1068,37 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                 $result['recurring_sub']['recurrenceDayOfMonth'] = $recurrenceDayOfMonth;
                 $result['recurring_sub']['recurrenceDayOfMonthInterval'] = 1;
             } else if ($patternArray['FREQ'] == 'YEARLY') {
-
+                /*
+                $patternArray:
+                Array
+                    (
+                        [FREQ] => YEARLY
+                        [INTERVAL] => 1
+                        [UNTIL] => 20180723T215959Z
+                    )
+                CommSy:
+                Array
+                    (
+                        'recurring_select' => 'RecurringYearlyType',
+                        'recurring_sub' =>
+                        Array
+                            (
+                                'recurrenceDayOfMonth' => '23',
+                                'recurrenceMonthOfYear' => 'july',
+                            ),
+                        'recurringStartDate' => '2018-07-23',
+                        'recurringEndDate' => '2020-09-30',
+                    )
+                */
+                $result['recurring_select'] = 'RecurringYearlyType';
+                $recurrenceDayOfMonth = '';
+                $recurrenceMonthOfYear = '';
+                if ($startDate) {
+                    $recurrenceDayOfMonth = $startDate->format('j');
+                    $recurrenceMonthOfYear = mb_strtolower($startDate->format('F'));
+                }
+                $result['recurring_sub']['recurrenceDayOfMonth'] = $recurrenceDayOfMonth;
+                $result['recurring_sub']['recurrenceMonthOfYear'] = $recurrenceMonthOfYear;
             }
 
             $result['recurringStartDate'] = $startDate->format('Y-m-d');
