@@ -737,6 +737,11 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         } */
         $calendarReadExpanded = $calendarRead->expand($expandDateTimeStart, $expandDateTimeEnd);
 
+        $recurrencePattern = null;
+        if ($calendarRead->VEVENT->RRULE) {
+            $recurrencePattern = $this->translateRecurringPattern($calendarRead->VEVENT->RRULE, 'iCal', $calendarRead->VEVENT->DTSTART->getDateTime());
+        }
+
         $newItem = false;
         $recurrenceId = null;
 
@@ -850,6 +855,9 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     }
 
                     if ($event->{'RECURRENCE-ID'} && $recurrenceId) {
+                        if ($newItem) {
+                            $dateItem->setRecurrencePattern($recurrencePattern);
+                        }
                         $dateItem->setRecurrenceId($recurrenceId);
                         $dateItem->save();
                     }
@@ -883,7 +891,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                         and BYDAY and BYWEEKDAY to expand the BYMONTH rule even further.
     */
 
-    private function translateRecurringPattern ($pattern, $type) {
+    private function translateRecurringPattern ($pattern, $type, $startDate = null) {
         $result = '';
         if ($type == "CommSy") {
             if ($pattern['recurring_select'] == 'RecurringDailyType') {
@@ -983,7 +991,45 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             }
 
         } else if ($type == 'iCal') {
+            $result = [];
 
+            $patternArray = $pattern->getParts();
+            if ($patternArray['FREQ'] == 'DAILY') {
+                /*
+                $patternArray:
+                Array
+                    (
+                        [FREQ] => DAILY
+                        [INTERVAL] => 1
+                        [UNTIL] => 20180727T215959Z
+                    )
+
+                CommSy:
+                Array
+                    (
+                        'recurring_select' => 'RecurringDailyType',
+                        'recurring_sub' =>
+                            array (
+                                'recurrenceDay' => 1,
+                            ),
+                        'recurringStartDate' => '2018-07-16',
+                        'recurringEndDate' => '2018-07-20',
+                    )
+                */
+                $result['recurring_select'] = 'RecurringDailyType';
+                $result['recurring_sub']['recurrenceDay'] = $patternArray['INTERVAL'];
+            } else if ($patternArray['FREQ'] == 'WEEKLY') {
+
+            } else if ($patternArray['FREQ'] == 'MONTHLY') {
+
+            } else if ($patternArray['FREQ'] == 'YEARLY') {
+
+            }
+
+            $result['recurringStartDate'] = $startDate->format('Y-m-d');
+
+            $recurringEndDate = new \DateTime($patternArray['UNTIL']);
+            $result['recurringEndDate'] = $recurringEndDate->format('Y-m-d');
         }
         return $result;
     }
