@@ -1019,7 +1019,23 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                 $result['recurring_select'] = 'RecurringDailyType';
                 $result['recurring_sub']['recurrenceDay'] = $patternArray['INTERVAL'];
             } else if ($patternArray['FREQ'] == 'WEEKLY') {
+                /*
+                 $patternArray:
+                 Array
+                 (
+                     [FREQ] => WEEKLY
+                     [INTERVAL] => 1
+                     [UNTIL] => 20180813T215959Z
+                 )
+                */
+                $result['recurring_select'] = 'RecurringWeeklyType';
+                $result['recurring_sub']['recurrenceWeek'] = $patternArray['INTERVAL'];
 
+                $daysOfWeek = [];
+                if ($startDate) {
+                    $daysOfWeek[] = mb_strtolower($startDate->format('l'));
+                }
+                $result['recurring_sub']['recurrenceDaysOfWeek'] = $daysOfWeek;
             } else if ($patternArray['FREQ'] == 'MONTHLY') {
 
             } else if ($patternArray['FREQ'] == 'YEARLY') {

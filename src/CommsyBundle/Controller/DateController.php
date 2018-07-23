@@ -726,8 +726,10 @@ class DateController extends Controller
                     $recurringDescription = $translator->trans('dailyDescription', array('%day%' => $recurrencePattern['recurring_sub']['recurrenceDay'], '%date%' => $endDate->format('d.m.Y')), 'date');
                 } else if ($recurrencePattern['recurring_select'] == 'RecurringWeeklyType') {
                     $daysOfWeek = array();
-                    foreach ($recurrencePattern['recurring_sub']['recurrenceDaysOfWeek'] as $day) {
-                        $daysOfWeek[] = $translator->trans($day, array(), 'date');
+                    if (isset($recurrencePattern['recurring_sub']['recurrenceDaysOfWeek'])) {
+                        foreach ($recurrencePattern['recurring_sub']['recurrenceDaysOfWeek'] as $day) {
+                            $daysOfWeek[] = $translator->trans($day, array(), 'date');
+                        }
                     }
                     $recurringDescription = $translator->trans('weeklyDescription', array('%week%' => $recurrencePattern['recurring_sub']['recurrenceWeek'], '%daysOfWeek%' => implode(', ', $daysOfWeek), '%date%' => $endDate->format('d.m.Y')), 'date');
                 } else if ($recurrencePattern['recurring_select'] == 'RecurringMonthlyType') {
