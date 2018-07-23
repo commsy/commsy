@@ -728,9 +728,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
 
         // Use expanded calendar, to work with all dates.
         // CommSy itself does not have to do the calculations.
-        $expandDateTimeStart = new \DateTime('1970-01-01');   // ToDo: decide on fixed start date
+        $expandDateTimeStart = new \DateTime();
+        $expandDateTimeStart->modify('-2 years');
         $expandDateTimeEnd = new \DateTime();
-        $expandDateTimeEnd->modify('+50 years');            // ToDo: decide on fixed end date
+        $expandDateTimeEnd->modify('+2 years');
         /* if ($dateItem) {
             $expandDateTimeStart = new \DateTime($dateItem->getDateTime_start());
             $expandDateTimeEnd = new \DateTime($dateItem->getDateTime_end());
@@ -1103,8 +1104,14 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
 
             $result['recurringStartDate'] = $startDate->format('Y-m-d');
 
-            $recurringEndDate = new \DateTime($patternArray['UNTIL']);
-            $result['recurringEndDate'] = $recurringEndDate->format('Y-m-d');
+            if (isset($patternArray['UNTIL'])) {
+                $recurringEndDate = new \DateTime($patternArray['UNTIL']);
+                $result['recurringEndDate'] = $recurringEndDate->format('Y-m-d');
+            } else {
+                $recurringEndDate = new \DateTime();
+                $recurringEndDate->modify('+2 years');
+                $result['recurringEndDate'] = $recurringEndDate->format('Y-m-d');
+            }
         }
         return $result;
     }
