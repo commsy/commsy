@@ -728,14 +728,23 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
 
         // Use expanded calendar, to work with all dates.
         // CommSy itself does not have to do the calculations.
-        $expandDateTimeStart = new \DateTime('1970-01-01');   // ToDo: decide on fixed start date
+        $expandDateTimeStart = new \DateTime();
+        $expandDateTimeStart->modify('-2 years');
         $expandDateTimeEnd = new \DateTime();
-        $expandDateTimeEnd->modify('+50 years');            // ToDo: decide on fixed end date
+        $expandDateTimeEnd->modify('+2 years');
         /* if ($dateItem) {
             $expandDateTimeStart = new \DateTime($dateItem->getDateTime_start());
             $expandDateTimeEnd = new \DateTime($dateItem->getDateTime_end());
         } */
         $calendarReadExpanded = $calendarRead->expand($expandDateTimeStart, $expandDateTimeEnd);
+
+        $recurrencePattern = null;
+        if ($calendarRead->VEVENT->RRULE) {
+            $recurrencePattern = $this->translateRecurringPattern($calendarRead->VEVENT->RRULE, 'iCal', $calendarRead->VEVENT->DTSTART->getDateTime());
+        }
+
+        $newItem = false;
+        $recurrenceId = null;
 
         // insert new data into database
         $calendarReadExpandedChildren = $calendarReadExpanded->children();
@@ -747,6 +756,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                 } else if ($objectUri) {
                     $dateItem = $this->getDateItemFromObjectUri($objectUri);
                 } else {
+                    $newItem = true;
                     $dateItem = $dateService->getNewDate();
                 }
 
@@ -841,6 +851,17 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     }
 
                     $dateItem->save();
+                    if ($newItem && !$recurrenceId) {
+                        $recurrenceId = $dateItem->getItemId();
+                    }
+
+                    if ($event->{'RECURRENCE-ID'} && $recurrenceId) {
+                        if ($newItem) {
+                            $dateItem->setRecurrencePattern($recurrencePattern);
+                        }
+                        $dateItem->setRecurrenceId($recurrenceId);
+                        $dateItem->save();
+                    }
                 }
             }
         }
@@ -871,7 +892,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                         and BYDAY and BYWEEKDAY to expand the BYMONTH rule even further.
     */
 
-    private function translateRecurringPattern ($pattern, $type) {
+    private function translateRecurringPattern ($pattern, $type, $startDate = null) {
         $result = '';
         if ($type == "CommSy") {
             if ($pattern['recurring_select'] == 'RecurringDailyType') {
@@ -971,7 +992,126 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             }
 
         } else if ($type == 'iCal') {
+            $result = [];
 
+            $patternArray = $pattern->getParts();
+            if ($patternArray['FREQ'] == 'DAILY') {
+                /*
+                $patternArray:
+                Array
+                    (
+                        [FREQ] => DAILY
+                        [INTERVAL] => 1
+                        [UNTIL] => 20180727T215959Z
+                    )
+
+                CommSy:
+                Array
+                    (
+                        'recurring_select' => 'RecurringDailyType',
+                        'recurring_sub' =>
+                            Array (
+                                'recurrenceDay' => 1,
+                            ),
+                        'recurringStartDate' => '2018-07-16',
+                        'recurringEndDate' => '2018-07-20',
+                    )
+                */
+                $result['recurring_select'] = 'RecurringDailyType';
+                $result['recurring_sub']['recurrenceDay'] = $patternArray['INTERVAL'];
+            } else if ($patternArray['FREQ'] == 'WEEKLY') {
+                /*
+                 $patternArray:
+                 Array
+                 (
+                     [FREQ] => WEEKLY
+                     [INTERVAL] => 1
+                     [UNTIL] => 20180813T215959Z
+                 )
+                */
+                $result['recurring_select'] = 'RecurringWeeklyType';
+                $result['recurring_sub']['recurrenceWeek'] = $patternArray['INTERVAL'];
+                $daysOfWeek = [];
+                if ($startDate) {
+                    $daysOfWeek[] = mb_strtolower($startDate->format('l'));
+                }
+                $result['recurring_sub']['recurrenceDaysOfWeek'] = $daysOfWeek;
+            } else if ($patternArray['FREQ'] == 'MONTHLY') {
+                /*
+                $patternArray:
+                Array
+                    (
+                        [FREQ] => MONTHLY
+                        [INTERVAL] => 1
+                        [UNTIL] => 20181031T225959Z
+                    )
+                CommSy:
+                Array
+                    (
+                          'recurring_select' => 'RecurringMonthlyType',
+                          'recurring_sub' =>
+                          Array
+                          (
+                                'recurrenceMonth' => '1',
+                                'recurrenceDayOfMonth' => 'monday',
+                                'recurrenceDayOfMonthInterval' => '1',
+                          ),
+                          'recurringStartDate' => '2018-08-30',
+                          'recurringEndDate' => '2018-12-31',
+                    )
+                */
+                $result['recurring_select'] = 'RecurringMonthlyType';
+                $result['recurring_sub']['recurrenceMonth'] = $patternArray['INTERVAL'];
+                $recurrenceDayOfMonth = '';
+                if ($startDate) {
+                    $recurrenceDayOfMonth = mb_strtolower($startDate->format('l'));
+                }
+                $result['recurring_sub']['recurrenceDayOfMonth'] = $recurrenceDayOfMonth;
+                $result['recurring_sub']['recurrenceDayOfMonthInterval'] = 1;
+            } else if ($patternArray['FREQ'] == 'YEARLY') {
+                /*
+                $patternArray:
+                Array
+                    (
+                        [FREQ] => YEARLY
+                        [INTERVAL] => 1
+                        [UNTIL] => 20180723T215959Z
+                    )
+                CommSy:
+                Array
+                    (
+                        'recurring_select' => 'RecurringYearlyType',
+                        'recurring_sub' =>
+                        Array
+                            (
+                                'recurrenceDayOfMonth' => '23',
+                                'recurrenceMonthOfYear' => 'july',
+                            ),
+                        'recurringStartDate' => '2018-07-23',
+                        'recurringEndDate' => '2020-09-30',
+                    )
+                */
+                $result['recurring_select'] = 'RecurringYearlyType';
+                $recurrenceDayOfMonth = '';
+                $recurrenceMonthOfYear = '';
+                if ($startDate) {
+                    $recurrenceDayOfMonth = $startDate->format('j');
+                    $recurrenceMonthOfYear = mb_strtolower($startDate->format('F'));
+                }
+                $result['recurring_sub']['recurrenceDayOfMonth'] = $recurrenceDayOfMonth;
+                $result['recurring_sub']['recurrenceMonthOfYear'] = $recurrenceMonthOfYear;
+            }
+
+            $result['recurringStartDate'] = $startDate->format('Y-m-d');
+
+            if (isset($patternArray['UNTIL'])) {
+                $recurringEndDate = new \DateTime($patternArray['UNTIL']);
+                $result['recurringEndDate'] = $recurringEndDate->format('Y-m-d');
+            } else {
+                $recurringEndDate = new \DateTime();
+                $recurringEndDate->modify('+2 years');
+                $result['recurringEndDate'] = $recurringEndDate->format('Y-m-d');
+            }
         }
         return $result;
     }
