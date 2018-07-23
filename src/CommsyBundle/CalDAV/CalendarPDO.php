@@ -850,7 +850,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     }
 
                     if ($event->{'RECURRENCE-ID'} && $recurrenceId) {
-                        $dateItem->setRecurenceId($recurrenceId);
+                        $dateItem->setRecurrenceId($recurrenceId);
                         $dateItem->save();
                     }
                 }
