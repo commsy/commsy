@@ -303,7 +303,7 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
     *
     * @param integer item_id id of the item
     *
-    * @return object cs_item a label
+    * @return \cs_material_item the material
     */
    function getItem ($item_id) {
       $material = NULL;

@@ -19,9 +19,12 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 abstract class BaseController extends Controller
 {
     /**
+     * @param \cs_room_item $room
+     * @param Request $request
+     * @return array
      * @throws \Exception
      */
-    public function feedActionAction($roomId, Request $request)
+    protected function getItemsForActionRequest(\cs_room_item $room, Request $request) : array
     {
         // input processing
         if (!$request->request->has('action')) {
@@ -34,15 +37,39 @@ abstract class BaseController extends Controller
             $selectAll = $request->request->get('selectAll') === 'true';
         }
 
-        $itemIds = [];
+        $positiveItemIds = [];
+        $negativeItemIds = [];
         if (!$selectAll) {
-            if (!$request->request->has('itemIds')) {
-                throw new \Exception('select all is not set, but no ids were provided');
+            if (!$request->request->has('positiveItemIds')) {
+                throw new \Exception('select all is not set, but no "positiveItemIds" were provided');
             }
 
-            $itemIds = $request->request->get('itemIds');
+            $positiveItemIds = $request->request->get('positiveItemIds');
+        } else {
+            if ($request->request->has('negativeItemIds')) {
+                $negativeItemIds = $request->request->get('negativeItemIds');
+            }
         }
 
+        // determine items to proceed on
+        /** @var \cs_item[] $items */
+        $items = $this->getItemsByFilterConditions($request, $room, $selectAll, $positiveItemIds);
+        if ($selectAll) {
+            $items = array_filter($items, function (\cs_item $item) use ($negativeItemIds) {
+                return !in_array($item->getItemId(), $negativeItemIds);
+            });
+        }
+
+        return $items;
+    }
+
+    /**
+     * @param int $roomId
+     * @return \cs_room_item
+     * @throws \Exception
+     */
+    protected function getRoom(int $roomId): \cs_room_item
+    {
         $roomService = $this->get('commsy_legacy.room_service');
 
         /** @var \cs_room_item $roomItem */
@@ -52,51 +79,7 @@ abstract class BaseController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        // determine items to proceed on
-        /** @var \cs_item[] $items */
-        $items = $this->getItemsByFilterConditions($request, $roomItem, $selectAll, $itemIds);
-
-        $action = $this->get('commsy.action.factory')->make($action);
-        $responsePayload = $action->executeAction($items);
-
-        return new JsonDataResponse($responsePayload);
-
-
-
-
-
-
-
-
-
-
-
-        // handle actions
-        $translator = $this->get('translator');
-
-        switch ($action) {
-
-            case 'delete':
-                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-                $currentUser = $legacyEnvironment->getCurrentUserItem();
-                foreach ($items as $item) {
-                    if ($item->mayEdit($currentUser)) {
-                        $item->delete();
-                    }
-                }
-
-                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> ' . $translator->transChoice('%count% deleted entries', count($items), array('%count%' => count($items)));
-
-                break;
-
-            default:
-                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> ' . $translator->trans('action error');
-                break;
-        }
-
-        return new JsonDataResponse([
-            'message' => $message,
-        ]);
+        return $roomItem;
     }
 
     abstract protected function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = []);

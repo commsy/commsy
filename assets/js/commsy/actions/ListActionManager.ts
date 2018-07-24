@@ -103,7 +103,7 @@ export class ListActionManager {
         // highlight button as active
         this.actionActor.addClass('uk-active');
 
-        let $feed: JQuery = $('.feed ul');
+        let $feed: JQuery = $('.feed ul, .feed div.uk-grid');
 
         // check all visible checkboxes
         $feed.find('input').filter(":visible").each(function() {
@@ -134,7 +134,7 @@ export class ListActionManager {
         // undo select all modifications
         $actor.removeClass('uk-active');
 
-        let $feed: JQuery = $('.feed ul');
+        let $feed: JQuery = $('.feed ul, .feed div.uk-grid');
 
         $feed.find('input').each(function() {
             let element = <HTMLInputElement>this;
@@ -161,7 +161,7 @@ export class ListActionManager {
         this.onStopEdit();
         this.selectMode = true;
 
-        let $feed: JQuery = $('.feed ul');
+        let $feed: JQuery = $('.feed ul:first-child, .feed div.uk-grid');
         if (!$feed.length) {
             return;
         }
@@ -204,7 +204,7 @@ export class ListActionManager {
     private onStopEdit() {
         this.selectMode = false;
 
-        let $feed: JQuery = $('.feed ul');
+        let $feed: JQuery = $('.feed ul, .feed div.uk-grid');
         if (!$feed.length) {
             return;
         }
@@ -243,7 +243,7 @@ export class ListActionManager {
 
     private onClickPerform() {
         // collect values of selected checkboxes
-        let $feed: JQuery = $('.feed ul');
+        let $feed: JQuery = $('.feed ul, .feed div.uk-grid');
 
         // if no entries are selected, present notification
         if (this.numSelected == 0) {
@@ -283,7 +283,7 @@ export class ListActionManager {
     }
 
     private updateSelectables() {
-        let $feed: JQuery = $('.feed ul');
+        let $feed: JQuery = $('.feed ul, .feed div.uk-grid');
         if (!$feed.length) {
             return;
         }
@@ -305,7 +305,7 @@ export class ListActionManager {
     }
 
     private registerArticleEvents() {
-        let $feed: JQuery = $('.feed ul');
+        let $feed: JQuery = $('.feed ul, .feed div.uk-grid');
 
         // handle click on article
         $feed.find('article').off().on('click', (event) => {

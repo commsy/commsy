@@ -415,7 +415,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
     *
     * @param integer item_id id of the item
     *
-    * @return object cs_context a room: project, community, portal, server
+    * @return \cs_context_item cs_context a room: project, community, portal, server
     */
    function getItem ($item_id) {
       $retour = NULL;

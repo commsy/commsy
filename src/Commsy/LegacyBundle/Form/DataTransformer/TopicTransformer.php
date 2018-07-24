@@ -3,6 +3,7 @@ namespace Commsy\LegacyBundle\Form\DataTransformer;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use Commsy\LegacyBundle\Form\DataTransformer\DataTransformerInterface;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class TopicTransformer implements DataTransformerInterface
 {
@@ -48,7 +49,7 @@ class TopicTransformer implements DataTransformerInterface
      *
      * @param object $topicObject
      * @param array $topicData
-     * @return cs_topic_item|null
+     * @return \cs_topic_item|null
      * @throws TransformationFailedException if room item is not found.
      */
     public function applyTransformation($topicObject, $topicData)

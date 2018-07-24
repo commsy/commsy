@@ -4,6 +4,7 @@ namespace Commsy\LegacyBundle\Utils;
 use Symfony\Component\Form\Form;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use Symfony\Component\Form\FormInterface;
 
 class DiscussionService
 {
@@ -24,6 +25,13 @@ class DiscussionService
         $this->discussionArticleManager->reset();
     }
 
+    /**
+     * @param integer $roomId
+     * @param integer $max
+     * @param integer $start
+     * @param string $sort
+     * @return \cs_discussion_item[]
+     */
     public function getListDiscussions($roomId, $max = NULL, $start = NULL, $sort = NULL)
     {
         $this->discussionManager->setContextLimit($roomId);
@@ -42,6 +50,21 @@ class DiscussionService
         
     }
 
+    /**
+     * @param integer $roomId
+     * @param integer[] $ids
+     * @return \cs_discussion_item[]
+     */
+    public function getDiscussionsById($roomId, $ids) {
+        $this->discussionManager->setContextLimit($roomId);
+        $this->discussionManager->setIDArrayLimit($ids);
+
+        $this->discussionManager->select();
+        $discussionList = $this->discussionManager->get();
+
+        return $discussionList->to_array();
+    }
+
     public function getCountArray($roomId)
     {
         $this->discussionManager->setContextLimit($roomId);
@@ -55,7 +78,7 @@ class DiscussionService
         return $countDiscussionArray;
     }
 
-    public function setFilterConditions(Form $filterForm)
+    public function setFilterConditions(FormInterface $filterForm)
     {
         $formData = $filterForm->getData();
 

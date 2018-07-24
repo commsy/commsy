@@ -266,7 +266,7 @@ class cs_section_manager extends cs_manager implements cs_export_import_interfac
    /** build a new material item
     * this method returns a new EMTPY material item
     *
-    * @return object cs_item a new EMPTY material
+    * @return \cs_section_item cs_item a new EMPTY section
     */
    function getNewItem () {
       return new cs_section_item($this->_environment);

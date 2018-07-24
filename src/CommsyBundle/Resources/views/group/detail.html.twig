@@ -136,28 +136,20 @@
 
                                         {# save #}
                                         <li>
-                                            <a href="{{ path('commsy_item_download', {'roomId': roomId, 'itemId': group.itemId}) }}">
-                                                <i class="uk-icon-small uk-icon-save uk-icon-justify uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
-                                            </a>
-                                        </li>
-
-                                        {# copy #}
-                                        <li>
                                             <a href="#" data-cs-action="{{ {
-                                                'url': path('commsy_group_feedaction', {'roomId': roomId}),
-                                                'action': 'copy',
+                                                'url': path('commsy_group_download', {'roomId': roomId}),
+                                                'action': 'save',
                                                 'itemId': group.itemId,
                                                 'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                                 'mode': 'click',
-                                                'successMessage': '<i class="uk-icon-medium uk-icon-copy"></i>' ~ 'Entry stored in clipboard|%count% entries stored in clipboard'|transchoice(1, {}, 'item')
                                             }|json_encode|e('html_attr') }}">
-                                                <i class="uk-icon-small uk-icon-copy uk-icon-justify uk-visible-large"></i> {{ 'copy'|trans({})|capitalize }}
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
                                         {# send #}
                                         <li>
-                                            <a href="{{ path('commsy_item_send', {'roomId': roomId, 'itemId': group.itemId}) }}">
+                                            <a href="{{ path('commsy_group_send', {'roomId': roomId, 'itemId': group.itemId}) }}">
                                                 <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
                                             </a>
                                         </li>
@@ -166,7 +158,7 @@
                                             {# delete #}
                                             <li>
                                                 <a  href="#" data-cs-action="{{ {
-                                                    'url': path('commsy_group_feedaction', {'roomId': roomId, 'itemId': group.itemId}),
+                                                    'url': path('commsy_group_xhrdelete', {'roomId': roomId, 'itemId': group.itemId}),
                                                     'action': 'delete',
                                                     'itemId': group.itemId,
                                                     'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,

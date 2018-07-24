@@ -16,7 +16,7 @@ class DateTransformer implements DataTransformerInterface
     /**
      * Transforms a cs_date_item object to an array
      *
-     * @param cs_date_item $dateItem
+     * @param \cs_dates_item $dateItem
      * @return array
      */
     public function transform($dateItem)

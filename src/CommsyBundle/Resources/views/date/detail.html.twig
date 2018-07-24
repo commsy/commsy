@@ -59,7 +59,13 @@
 
                                         {# save #}
                                         <li>
-                                            <a href="{{ path('commsy_item_download', {'roomId': roomId, 'itemId': date.itemId}) }}" download>
+                                            <a href="#"  data-cs-action="{{ {
+                                                'url': path('commsy_date_download', {'roomId': roomId}),
+                                                'action': 'save',
+                                                'itemId': date.itemId,
+                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                'mode': 'click',
+                                            }|json_encode|e('html_attr') }}">
                                                 <i class="uk-icon-small uk-icon-save uk-icon-justify uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
                                             </a>
                                         </li>
@@ -67,7 +73,7 @@
                                         {# copy #}
                                         <li>
                                             <a href="#" data-cs-action="{{ {
-                                                'url': path('commsy_date_feedaction', {'roomId': roomId}),
+                                                'url': path('commsy_date_xhrcopy', {'roomId': roomId}),
                                                 'action': 'copy',
                                                 'itemId': date.itemId,
                                                 'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
@@ -91,7 +97,7 @@
                                             <li>
                                                 {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                     <a  href="#" data-cs-action="{{ {
-                                                        'url': path('commsy_date_feedaction', {'roomId': roomId, 'itemId': date.itemId}),
+                                                        'url': path('commsy_date_xhrdelete', {'roomId': roomId, 'itemId': date.itemId}),
                                                         'action': 'delete',
                                                         'itemId': date.itemId,
                                                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
@@ -118,7 +124,7 @@
                                             <li>
                                                 {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                     <a  href="#" data-cs-action="{{ {
-                                                        'url': path('commsy_date_feedaction', {'roomId': roomId, 'itemId': date.itemId, 'recurring': 'true'}),
+                                                        'url': path('commsy_date_xhrdelete', {'roomId': roomId, 'itemId': date.itemId, 'recurring': 'true'}),
                                                         'action': 'delete',
                                                         'itemId': date.itemId,
                                                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
@@ -128,7 +134,8 @@
                                                         'confirmQuestion': 'confirm delete'|trans({},'rubric'),
                                                         'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
                                                         'confirmOk': 'confirm delete confirm'|trans({},'rubric'),
-                                                        'returnUrl': path('commsy_date_list', {'roomId': roomId})
+                                                        'returnUrl': path('commsy_date_list', {'roomId': roomId}),
+                                                        'recurring': true
                                                     }|json_encode|e('html_attr') }}">
                                                         <i class="uk-icon-small uk-icon-trash uk-icon-justify uk-visible-large"></i> {{ 'trash recurring'|trans({}) }}
                                                     </a>

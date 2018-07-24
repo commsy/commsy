@@ -16,7 +16,7 @@ class TodoTransformer implements DataTransformerInterface
     /**
      * Transforms a cs_todo_item object to an array
      *
-     * @param cs_todo_item $dateItem
+     * @param \cs_todo_item $dateItem
      * @return array
      */
     public function transform($todoItem)

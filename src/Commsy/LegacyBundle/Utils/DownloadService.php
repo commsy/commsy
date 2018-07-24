@@ -3,6 +3,7 @@ namespace Commsy\LegacyBundle\Utils;
 
 use CommsyBundle\Services\PrintService;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
+use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
@@ -37,7 +38,7 @@ class DownloadService
 
         try {
             $fileSystem->mkdir($exportTempFolder, 0777);
-        } catch (IOExceptionInterface $e) {
+        } catch (IOException $e) {
             echo "An error occurred while creating a directory at " . $e->getPath();
         }
         $directory = $exportTempFolder;
@@ -58,7 +59,7 @@ class DownloadService
             $fileSystem->mkdir($tempDirectory, 0777);
             
             // create PDF-file
-            $htmlView = 'CommsyBundle:' . ucfirst($item->getItemType()) . ':detailPrint.html.twig';
+            $htmlView = 'CommsyBundle:' . $item->getItemType() . ':detail_print.html.twig';
             $htmlOutput = $this->serviceContainer->get('templating')->renderResponse($htmlView, $detailArray);
             file_put_contents($tempDirectory . '/' . $item->getTitle() . '.pdf', $this->printService->getPdfContent($htmlOutput));
 

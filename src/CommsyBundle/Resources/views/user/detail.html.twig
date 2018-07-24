@@ -119,7 +119,7 @@
                                                 {# delete #}
                                                 <li>
                                                     <a  href="#" data-cs-action="{{ {
-                                                        'url': path('commsy_user_feedaction', {'roomId': roomId, 'itemId': user.itemId}),
+                                                        'url': path('commsy_user_xhrdelete', {'roomId': roomId, 'itemId': user.itemId}),
                                                         'action': 'delete',
                                                         'itemId': user.itemId,
                                                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,

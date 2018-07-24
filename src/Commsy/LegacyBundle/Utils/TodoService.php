@@ -4,6 +4,7 @@ namespace Commsy\LegacyBundle\Utils;
 use Symfony\Component\Form\Form;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use Symfony\Component\Form\FormInterface;
 
 class TodoService
 {
@@ -18,6 +19,16 @@ class TodoService
      * @var \cs_step_manager
      */
     private $stepManager;
+
+    /**
+     * @var \cs_noticed_manager
+     */
+    private $noticedManager;
+
+    /**
+     * @var \cs_reader_manager
+     */
+    private $readerManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -85,7 +96,7 @@ class TodoService
         return $countTodoArray;
     }
 
-    public function setFilterConditions(Form $filterForm)
+    public function setFilterConditions(FormInterface $filterForm)
     {
         $formData = $filterForm->getData();
 

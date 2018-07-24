@@ -158,7 +158,7 @@ class cs_hash_manager extends cs_manager {
       $retour = '';
       if ( !empty($user_item_id) ) {
          include_once('functions/date_functions.php');
-         $retour = md5($user_item_id * rand(1,99) . getCurrentDateTimeInMySQL() . time() * rand(100,200));
+         $retour = md5($user_item_id * rand(1,99) . getCurrentDateTimeInMySQL() . time() * rand(100, 200));
       }
       return $retour;
    }

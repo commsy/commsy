@@ -2,20 +2,18 @@
 
 namespace CommsyBundle\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-
+use CommsyBundle\Action\Copy\CopyAction;
+use CommsyBundle\Action\Download\DownloadAction;
+use CommsyBundle\Action\MarkRead\ItemMarkRead;
+use CommsyBundle\Event\CommsyEditEvent;
 use CommsyBundle\Filter\AnnouncementFilterType;
 use CommsyBundle\Form\Type\AnnotationType;
 use CommsyBundle\Form\Type\AnnouncementType;
-
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-
-use CommsyBundle\Event\CommsyEditEvent;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class AnnouncementController
@@ -401,6 +399,307 @@ class AnnouncementController extends BaseController
         return $this->get('commsy.print_service')->buildPdfResponse($html);
     }
 
+    /**
+     * @Route("/room/{roomId}/announcement/create")
+     */
+    public function createAction($roomId)
+    {
+        $announcementService = $this->get('commsy_legacy.announcement_service');
+
+        // create new announcement item
+        $announcementItem = $announcementService->getNewAnnouncement();
+        $dateTime = new \DateTime('now');
+        $announcementItem->setFirstDateTime($dateTime->format('Y-m-d H:i:s'));
+
+        try {
+            $dateTime->add(new \DateInterval('P2W'));
+        } catch (\Exception $e) {
+
+        }
+
+        $announcementItem->setSecondDateTime($dateTime->format('Y-m-d H:i:s'));
+        $announcementItem->setDraftStatus(1);
+        $announcementItem->setPrivateEditing(1);
+        $announcementItem->save();
+
+        return $this->redirectToRoute('commsy_announcement_detail', array('roomId' => $roomId, 'itemId' => $announcementItem->getItemId()));
+    }
+
+    /**
+     * @Route("/room/{roomId}/announcement/{itemId}/edit")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'announcement')")
+     */
+    public function editAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy_legacy.item_service');
+        /** @var \cs_item $item */
+        $item = $itemService->getItem($itemId);
+
+        $announcementService = $this->get('commsy_legacy.announcement_service');
+        $transformer = $this->get('commsy_legacy.transformer.announcement');
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+
+        $announcementItem = NULL;
+
+        $isDraft = $item->isDraft();
+
+        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
+        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
+
+        if ($item->getItemType() == 'announcement') {
+            // get announcement from announcementService
+            /** @var \cs_announcement_item $announcementItem */
+            $announcementItem = $announcementService->getannouncement($itemId);
+            $announcementItem->setDraftStatus($item->isDraft());
+            if (!$announcementItem) {
+                throw $this->createNotFoundException('No announcement found for id ' . $roomId);
+            }
+            $itemController = $this->get('commsy.item_controller');
+            $formData = $transformer->transform($announcementItem);
+            $formData['categoriesMandatory'] = $categoriesMandatory;
+            $formData['hashtagsMandatory'] = $hashtagsMandatory;
+            $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
+            $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+            $translator = $this->get('translator');
+            $form = $this->createForm(AnnouncementType::class, $formData, array(
+                'action' => $this->generateUrl('commsy_announcement_edit', array(
+                    'roomId' => $roomId,
+                    'itemId' => $itemId,
+                )),
+                'placeholderText' => '[' . $translator->trans('insert title') . ']',
+                'categoryMappingOptions' => [
+                    'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service')),
+                ],
+                'hashtagMappingOptions' => [
+                    'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
+                    'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                    'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId]),
+                ],
+            ));
+        }
+
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $saveType = $form->getClickedButton()->getName();
+            if ($saveType == 'save') {
+                $announcementItem = $transformer->applyTransformation($announcementItem, $form->getData());
+
+                // update modifier
+                $announcementItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                // set linked hashtags and categories
+                $formData = $form->getData();
+                if ($categoriesMandatory) {
+                    $announcementItem->setTagListByID($formData['category_mapping']['categories']);
+                }
+                if ($hashtagsMandatory) {
+                    $announcementItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                }
+
+                $announcementItem->save();
+
+                if ($item->isDraft()) {
+                    $item->setDraftStatus(0);
+                    $item->saveAsItem();
+                }
+            }
+
+            return $this->redirectToRoute('commsy_announcement_save', array('roomId' => $roomId, 'itemId' => $itemId));
+        }
+
+        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($announcementItem));
+
+        return array(
+            'form' => $form->createView(),
+            'isDraft' => $isDraft,
+            'showHashtags' => $hashtagsMandatory,
+            'showCategories' => $categoriesMandatory,
+            'currentUser' => $legacyEnvironment->getCurrentUserItem(),
+        );
+    }
+
+
+    /**
+     * @Route("/room/{roomId}/announcement/{itemId}/save")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'announcement')")
+     */
+    public function saveAction($roomId, $itemId)
+    {
+        $itemService = $this->get('commsy_legacy.item_service');
+
+        $announcementService = $this->get('commsy_legacy.announcement_service');
+
+        $tempItem = NULL;
+
+        $tempItem = $announcementService->getannouncement($itemId);
+
+        $itemArray = array($tempItem);
+        $modifierList = array();
+        foreach ($itemArray as $item) {
+            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+        }
+
+        $infoArray = $this->getDetailInfo($roomId, $itemId);
+
+        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($tempItem));
+
+        return array(
+            'roomId' => $roomId,
+            'item' => $tempItem,
+            'modifierList' => $modifierList,
+            'userCount' => $infoArray['userCount'],
+            'readCount' => $infoArray['readCount'],
+            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
+            'showRating' => $infoArray['showRating'],
+        );
+    }
+
+    /**
+     * @Route("/room/{roomId}/announcement/{itemId}/rating/{vote}")
+     * @Template()
+     **/
+    public function ratingAction($roomId, $itemId, $vote)
+    {
+        $announcementService = $this->get('commsy_legacy.announcement_service');
+        $announcement = $announcementService->getAnnouncement($itemId);
+
+        $assessmentService = $this->get('commsy_legacy.assessment_service');
+        if ($vote != 'remove') {
+            $assessmentService->rateItem($announcement, $vote);
+        } else {
+            $assessmentService->removeRating($announcement);
+        }
+
+        $assessmentService = $this->get('commsy_legacy.assessment_service');
+        $ratingDetail = $assessmentService->getRatingDetail($announcement);
+        $ratingAverageDetail = $assessmentService->getAverageRatingDetail($announcement);
+        $ratingOwnDetail = $assessmentService->getOwnRatingDetail($announcement);
+
+        return array(
+            'roomId' => $roomId,
+            'announcement' => $announcement,
+            'ratingArray' => array(
+                'ratingDetail' => $ratingDetail,
+                'ratingAverageDetail' => $ratingAverageDetail,
+                'ratingOwnDetail' => $ratingOwnDetail,
+            ),
+        );
+    }
+
+    /**
+     * @Route("/room/{roomId}/announcement/download")
+     * @throws \Exception
+     */
+    public function downloadAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get(DownloadAction::class);
+        return $action->execute($room, $items);
+    }
+
+    ###################################################################################################
+    ## XHR Action requests
+    ###################################################################################################
+
+    /**
+     * @Route("/room/{roomId}/announcement/xhr/markread", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrMarkReadAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get('commsy.action.mark_read.generic');
+        return $action->execute($room, $items);
+
+    }
+
+    /**
+     * @Route("/room/{roomId}/announcement/xhr/copy", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrCopyAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get(CopyAction::class);
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/announcement/xhr/delete", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrDeleteAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get('commsy.action.delete.generic');
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @param Request $request
+     * @param \cs_room_item $roomItem
+     * @param boolean $selectAll
+     * @param integer[] $itemIds
+     * @return \cs_announcement_item[]
+     */
+    public function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
+    {
+        $announcementService = $this->get('commsy_legacy.announcement_service');
+
+        if ($selectAll) {
+            if ($request->query->has('announcement_filter')) {
+                $currentFilter = $request->query->get('announcement_filter');
+                $filterForm = $this->createFilterForm($roomItem);
+
+                // manually bind values from the request
+                $filterForm->submit($currentFilter);
+
+                // apply filter
+                $announcementService->setFilterConditions($filterForm);
+            } else {
+                $announcementService->hideDeactivatedEntries();
+                $announcementService->hideInvalidEntries();
+            }
+
+            return $announcementService->getListAnnouncements($roomItem->getItemID());
+        } else {
+            return $announcementService->getAnnouncementsById($roomItem->getItemID(), $itemIds);
+        }
+    }
+
+    /**
+     * @param \cs_room_item $room
+     * @return FormInterface
+     */
+    private function createFilterForm($room)
+    {
+        // setup filter form default values
+        $defaultFilterValues = [
+            'hide-deactivated-entries' => true,
+            'hide-invalid-entries' => true,
+        ];
+
+        return $this->createForm(AnnouncementFilterType::class, $defaultFilterValues, [
+            'action' => $this->generateUrl('commsy_announcement_list', [
+                'roomId' => $room->getItemID(),
+            ]),
+            'hasHashtags' => $room->withBuzzwords(),
+            'hasCategories' => $room->withTags(),
+        ]);
+    }
 
     private function getDetailInfo($roomId, $itemId)
     {
@@ -604,278 +903,5 @@ class AnnouncementController extends BaseController
             $addCategory = false;
         }
         return $result;
-    }
-
-    /**
-     * @Route("/room/{roomId}/announcement/create")
-     */
-    public function createAction($roomId)
-    {
-        $announcementService = $this->get('commsy_legacy.announcement_service');
-
-        // create new announcement item
-        $announcementItem = $announcementService->getNewAnnouncement();
-        $dateTime = new \DateTime('now');
-        $announcementItem->setFirstDateTime($dateTime->format('Y-m-d H:i:s'));
-
-        try {
-            $dateTime->add(new \DateInterval('P2W'));
-        } catch (\Exception $e) {
-
-        }
-
-        $announcementItem->setSecondDateTime($dateTime->format('Y-m-d H:i:s'));
-        $announcementItem->setDraftStatus(1);
-        $announcementItem->setPrivateEditing(1);
-        $announcementItem->save();
-
-        return $this->redirectToRoute('commsy_announcement_detail', array('roomId' => $roomId, 'itemId' => $announcementItem->getItemId()));
-    }
-
-    /**
-     * @Route("/room/{roomId}/announcement/{itemId}/edit")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'announcement')")
-     */
-    public function editAction($roomId, $itemId, Request $request)
-    {
-        $itemService = $this->get('commsy_legacy.item_service');
-        /** @var \cs_item $item */
-        $item = $itemService->getItem($itemId);
-
-        $announcementService = $this->get('commsy_legacy.announcement_service');
-        $transformer = $this->get('commsy_legacy.transformer.announcement');
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
-
-        $announcementItem = NULL;
-
-        $isDraft = $item->isDraft();
-
-        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
-        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
-
-        if ($item->getItemType() == 'announcement') {
-            // get announcement from announcementService
-            /** @var \cs_announcement_item $announcementItem */
-            $announcementItem = $announcementService->getannouncement($itemId);
-            $announcementItem->setDraftStatus($item->isDraft());
-            if (!$announcementItem) {
-                throw $this->createNotFoundException('No announcement found for id ' . $roomId);
-            }
-            $itemController = $this->get('commsy.item_controller');
-            $formData = $transformer->transform($announcementItem);
-            $formData['categoriesMandatory'] = $categoriesMandatory;
-            $formData['hashtagsMandatory'] = $hashtagsMandatory;
-            $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
-            $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
-            $translator = $this->get('translator');
-            $form = $this->createForm(AnnouncementType::class, $formData, array(
-                'action' => $this->generateUrl('commsy_announcement_edit', array(
-                    'roomId' => $roomId,
-                    'itemId' => $itemId,
-                )),
-                'placeholderText' => '[' . $translator->trans('insert title') . ']',
-                'categoryMappingOptions' => [
-                    'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service')),
-                ],
-                'hashtagMappingOptions' => [
-                    'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
-                    'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
-                    'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId]),
-                ],
-            ));
-        }
-
-        $form->handleRequest($request);
-        
-        if ($form->isSubmitted() && $form->isValid()) {
-            $saveType = $form->getClickedButton()->getName();
-            if ($saveType == 'save') {
-                $announcementItem = $transformer->applyTransformation($announcementItem, $form->getData());
-
-                // update modifier
-                $announcementItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
-
-                // set linked hashtags and categories
-                $formData = $form->getData();
-                if ($categoriesMandatory) {
-                    $announcementItem->setTagListByID($formData['category_mapping']['categories']);
-                }
-                if ($hashtagsMandatory) {
-                    $announcementItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
-                }
-
-                $announcementItem->save();
-
-                if ($item->isDraft()) {
-                    $item->setDraftStatus(0);
-                    $item->saveAsItem();
-                }
-            }
-
-            return $this->redirectToRoute('commsy_announcement_save', array('roomId' => $roomId, 'itemId' => $itemId));
-        }
-
-        $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($announcementItem));
-
-        return array(
-            'form' => $form->createView(),
-            'isDraft' => $isDraft,
-            'showHashtags' => $hashtagsMandatory,
-            'showCategories' => $categoriesMandatory,
-            'currentUser' => $legacyEnvironment->getCurrentUserItem(),
-        );
-    }
-
-
-    /**
-     * @Route("/room/{roomId}/announcement/{itemId}/save")
-     * @Template()
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'announcement')")
-     */
-    public function saveAction($roomId, $itemId)
-    {
-        $itemService = $this->get('commsy_legacy.item_service');
-
-        $announcementService = $this->get('commsy_legacy.announcement_service');
-
-        $tempItem = NULL;
-
-        $tempItem = $announcementService->getannouncement($itemId);
-
-        $itemArray = array($tempItem);
-        $modifierList = array();
-        foreach ($itemArray as $item) {
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
-        }
-
-        $infoArray = $this->getDetailInfo($roomId, $itemId);
-
-        $this->get('event_dispatcher')->dispatch('commsy.save', new CommsyEditEvent($tempItem));
-
-        return array(
-            'roomId' => $roomId,
-            'item' => $tempItem,
-            'modifierList' => $modifierList,
-            'userCount' => $infoArray['userCount'],
-            'readCount' => $infoArray['readCount'],
-            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
-            'showRating' => $infoArray['showRating'],
-        );
-    }
-
-    /**
-     * @Route("/room/{roomId}/announcement/feedaction")
-     * @throws \Exception
-     */
-    public function feedActionAction($roomId, Request $request)
-    {
-        return parent::feedActionAction($roomId, $request);
-    }
-
-    /**
-     * @Route("/room/{roomId}/announcement/{itemId}/download")
-     */
-    public function downloadAction($roomId, $itemId)
-    {
-        $downloadService = $this->get('commsy_legacy.download_service');
-
-        $zipFile = $downloadService->zipFile($roomId, $itemId);
-
-        $response = new BinaryFileResponse($zipFile);
-        $response->deleteFileAfterSend(true);
-
-        $filename = 'CommSy_Announcement.zip';
-        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename);
-        $response->headers->set('Content-Disposition', $contentDisposition);
-
-        return $response;
-    }
-
-    /**
-     * @Route("/room/{roomId}/announcement/{itemId}/rating/{vote}")
-     * @Template()
-     **/
-    public function ratingAction($roomId, $itemId, $vote)
-    {
-        $announcementService = $this->get('commsy_legacy.announcement_service');
-        $announcement = $announcementService->getAnnouncement($itemId);
-
-        $assessmentService = $this->get('commsy_legacy.assessment_service');
-        if ($vote != 'remove') {
-            $assessmentService->rateItem($announcement, $vote);
-        } else {
-            $assessmentService->removeRating($announcement);
-        }
-
-        $assessmentService = $this->get('commsy_legacy.assessment_service');
-        $ratingDetail = $assessmentService->getRatingDetail($announcement);
-        $ratingAverageDetail = $assessmentService->getAverageRatingDetail($announcement);
-        $ratingOwnDetail = $assessmentService->getOwnRatingDetail($announcement);
-
-        return array(
-            'roomId' => $roomId,
-            'announcement' => $announcement,
-            'ratingArray' => array(
-                'ratingDetail' => $ratingDetail,
-                'ratingAverageDetail' => $ratingAverageDetail,
-                'ratingOwnDetail' => $ratingOwnDetail,
-            ),
-        );
-    }
-
-    /**
-     * @param \cs_room_item $room
-     * @return FormInterface
-     */
-    private function createFilterForm($room)
-    {
-        // setup filter form default values
-        $defaultFilterValues = [
-            'hide-deactivated-entries' => true,
-            'hide-invalid-entries' => true,
-        ];
-
-        return $this->createForm(AnnouncementFilterType::class, $defaultFilterValues, [
-            'action' => $this->generateUrl('commsy_announcement_list', [
-                'roomId' => $room->getItemID(),
-            ]),
-            'hasHashtags' => $room->withBuzzwords(),
-            'hasCategories' => $room->withTags(),
-        ]);
-    }
-
-    /**
-     * @param Request $request
-     * @param \cs_room_item $roomItem
-     * @param boolean $selectAll
-     * @param integer[] $itemIds
-     * @return \cs_announcement_item[]
-     */
-    public function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
-    {
-        $announcementService = $this->get('commsy_legacy.announcement_service');
-
-        if ($selectAll) {
-            if ($request->query->has('announcement_filter')) {
-                $currentFilter = $request->query->get('announcement_filter');
-                $filterForm = $this->createFilterForm($roomItem);
-
-                // manually bind values from the request
-                $filterForm->submit($currentFilter);
-
-                // apply filter
-                $announcementService->setFilterConditions($filterForm);
-            } else {
-                $announcementService->hideDeactivatedEntries();
-                $announcementService->hideInvalidEntries();
-            }
-
-            return $announcementService->getListAnnouncements($roomItem->getItemID());
-        } else {
-            return $announcementService->getAnnouncementsById($roomItem->getItemID(), $itemIds);
-        }
     }
 }

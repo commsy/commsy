@@ -2,19 +2,20 @@
 /**
  * Created by PhpStorm.
  * User: cschoenf
- * Date: 30.04.18
- * Time: 19:18
+ * Date: 03.07.18
+ * Time: 16:01
  */
 
-namespace CommsyBundle\Action;
+namespace CommsyBundle\Action\Copy;
 
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
-use Commsy\LegacyBundle\Utils\ItemService;
+use CommsyBundle\Action\ActionInterface;
 use CommsyBundle\Http\JsonDataResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class SaveAction implements ActionInterface
+class CopyAction implements ActionInterface
 {
     /**
      * @var TranslatorInterface
@@ -32,7 +33,7 @@ class SaveAction implements ActionInterface
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
-    public function execute($items)
+    public function execute(\cs_room_item $roomItem, array $items): Response
     {
         $sessionItem = $this->legacyEnvironment->getSessionItem();
 
@@ -53,37 +54,9 @@ class SaveAction implements ActionInterface
 
         return new JsonDataResponse([
             'message' => '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> ' . $this->translator->transChoice('%count% copied entries', count($items), [
-                    '%count%' => count($items),
-                ]),
+                '%count%' => count($items),
+            ]),
             'count' => count($currentClipboardIds),
         ]);
-
-
-
-
-
-
-
-
-
-
-
-        $downloadService = $this->get('commsy_legacy.download_service');
-
-        $ids = [];
-        foreach ($items as $item) {
-            $ids[] = $item->getItemID();
-        }
-
-        $zipFile = $downloadService->zipFile($roomId, $ids);
-
-        $response = new BinaryFileResponse($zipFile);
-        $response->deleteFileAfterSend(true);
-
-        $filename = 'CommSy_Save.zip';
-        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $filename);
-        $response->headers->set('Content-Disposition', $contentDisposition);
-
-        return $response;
     }
 }

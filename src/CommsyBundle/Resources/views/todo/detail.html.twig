@@ -55,7 +55,13 @@
 
                                         {# save #}
                                         <li>
-                                            <a href="{{ path('commsy_item_download', {'roomId': roomId, 'itemId': todo.itemId}) }}" download>
+                                            <a href="#" data-cs-action="{{ {
+                                                'url': path('commsy_todo_download', {'roomId': roomId}),
+                                                'action': 'save',
+                                                'itemId': todo.itemId,
+                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                'mode': 'click'
+                                            }|json_encode|e('html_attr') }}">
                                                 <i class="uk-icon-small uk-icon-save uk-icon-justify uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
                                             </a>
                                         </li>
@@ -63,7 +69,7 @@
                                         {# copy #}
                                         <li>
                                             <a href="#" data-cs-action="{{ {
-                                                'url': path('commsy_todo_feedaction', {'roomId': roomId}),
+                                                'url': path('commsy_todo_xhrcopy', {'roomId': roomId}),
                                                 'action': 'copy',
                                                 'itemId': todo.itemId,
                                                 'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
@@ -85,7 +91,7 @@
                                             {# delete #}
                                             <li>
                                                 <a  href="#" data-cs-action="{{ {
-                                                    'url': path('commsy_todo_feedaction', {'roomId': roomId, 'itemId': todo.itemId}),
+                                                    'url': path('commsy_todo_xhrdelete', {'roomId': roomId, 'itemId': todo.itemId}),
                                                     'action': 'delete',
                                                     'itemId': todo.itemId,
                                                     'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
@@ -233,7 +239,7 @@
                                                 <li>
                                                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                         <a  href="#" data-cs-action="{{ {
-                                                            'url': path('commsy_todo_feedaction', {'roomId': roomId, 'itemId': step.itemId}),
+                                                            'url': path('commsy_step_xhrdelete', {'roomId': roomId, 'itemId': step.itemId}),
                                                             'action': 'delete',
                                                             'itemId': step.itemId,
                                                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,

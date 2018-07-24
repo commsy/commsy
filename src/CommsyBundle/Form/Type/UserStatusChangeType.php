@@ -38,6 +38,7 @@ class UserStatusChangeType extends AbstractType
                 'entry_type' => HiddenType::class,
                 'label' => false,
                 'required' => true,
+                'allow_add' => true,
             ])
             ->add('status', HiddenType::class, [
                 'label' => false,
@@ -79,6 +80,6 @@ class UserStatusChangeType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'user_send';
+        return 'user_status';
     }
 }

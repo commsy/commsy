@@ -125,7 +125,7 @@ class ItemController extends Controller
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
-    public function saveDescriptionAction($roomId, $itemId, Request $request)
+    public function saveDescriptionAction($roomId, $itemId)
     {
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
@@ -188,16 +188,9 @@ class ItemController extends Controller
                 $tempItem = $transformer->applyTransformation($tempItem, $form->getData());
                 $tempItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
                 $tempItem->save();
-            } else if ($form->get('cancel')->isClicked()) {
-                // ToDo ...
             }
             
             return $this->redirectToRoute('commsy_material_saveworkflow', array('roomId' => $roomId, 'itemId' => $itemId));
-
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
         }
 
         $workflowData['textGreen'] = $room->getWorkflowTrafficLightTextGreen();
@@ -836,133 +829,6 @@ class ItemController extends Controller
             ]
         );
     }
-    
-    /**
-     * @Route("/room/{roomId}/item/{itemId}/download")
-     */
-    public function downloadAction($roomId, $itemId)
-    {
-        $itemService = $this->get('commsy_legacy.item_service');
-        $baseItem = $itemService->getItem($itemId);
-        
-        $downloadService = $this->get('commsy_legacy.download_service');
-        
-        $zipFile = $downloadService->zipFile($roomId, $itemId);
-
-        $response = new BinaryFileResponse($zipFile);
-        $response->deleteFileAfterSend(true);
-
-        $filename = 'CommSy_' . ucfirst($baseItem->getItemType()) . '.zip';
-        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$filename);   
-        $response->headers->set('Content-Disposition', $contentDisposition);
-
-        return $response;
-    }
-    
-//    /**
-//     * @Route("/room/{roomId}/item/delete")
-//     * @throws \Exception
-//     **/
-//    public function deleteAction($roomId, Request $request)
-//    {
-//
-//
-//
-//
-//
-//
-////        $item = $itemService->getTypedItem($itemId);
-////
-//        $noModeratorsError = false;
-//        if ($item->getItemType() == CS_USER_TYPE) {
-//            if (!$this->contextHasModerators($roomId, [$itemId])) {
-//                $noModeratorsError = true;
-//            }
-//        }
-//
-//        if (!$noModeratorsError) {
-//            $item->delete();
-//        }
-//
-//        $this->removeItemFromClipboard($itemId);
-//
-//        $route = 'commsy_'.$item->getItemType().'_list';
-//
-//        if ($item->getItemType() == 'date') {
-//            $roomService = $this->get('commsy_legacy.room_service');
-//            $room = $roomService->getRoomItem($roomId);
-//            if ($room->getDatesPresentationStatus() != 'normal') {
-//                $route = 'commsy_date_calendar';
-//            }
-//            // remove recurring events
-//            if ($request->query->has('recurring') && $item->getRecurrenceId() != '') {
-//                $dates_manager = $environment->getDatesManager();
-//                $dates_manager->resetLimits();
-//
-//                $date_item = $dates_manager->getItem($itemId);
-//                $recurrence_id = $date_item->getRecurrenceId();
-//                $dates_manager->setRecurrenceLimit($recurrence_id);
-//
-//                $dates_manager->setWithoutDateModeLimit();
-//                $dates_manager->select();
-//                $dates_list = $dates_manager->get();
-//
-//                $temp_date = $dates_list->getFirst();
-//                while($temp_date) {
-//                    $temp_date->delete();
-//                    $temp_date = $dates_list->getNext();
-//                }
-//            }
-//        }
-//
-//        if ($item->getItemType() == 'section') {
-//            $route = 'commsy_material_detail';
-//            $materialService = $this->get('commsy_legacy.material_service');
-//            $section = $materialService->getSection($item->getItemID());
-//            $material = $section->getLinkedItem();
-//            $section->delete($material->getVersionID());
-//
-//            return new JsonRedirectResponse($this->generateUrl($route, [
-//                'roomId' => $roomId,
-//                'itemId' => $material->getItemId(),
-//            ]));
-//        }
-//
-//        if ($item->getItemType() == 'step') {
-//            $route = 'commsy_todo_detail';
-//            $todoService = $this->get('commsy_legacy.todo_service');
-//            $step = $todoService->getStep($item->getItemID());
-//
-//            return new JsonRedirectResponse($this->generateUrl($route, [
-//                'roomId' => $roomId,
-//                'itemId' => $step->getTodoID(),
-//            ]));
-//        }
-//
-//        return new JsonRedirectResponse($this->generateUrl($route, [
-//            'roomId' => $roomId,
-//        ]));
-//    }
-
-    private function contextHasModerators($roomId, $selectedIds) {
-        $userService = $this->get('commsy_legacy.user_service');
-        $moderators = $userService->getModeratorsForContext($roomId);
-
-        $moderatorIds = [];
-        foreach ($moderators as $moderator) {
-            $moderatorIds[] = $moderator->getItemId();
-        }
-
-        foreach ($selectedIds as $selectedId) {
-            if (in_array($selectedId, $moderatorIds)) {
-                if(($key = array_search($selectedId, $moderatorIds)) !== false) {
-                    unset($moderatorIds[$key]);
-                }
-            }
-        }
-
-        return !empty($moderatorIds);
-    }
 
     /**
      * @Route("/room/{roomId}/item/{itemId}/get", condition="request.isXmlHttpRequest()")
@@ -981,21 +847,6 @@ class ItemController extends Controller
         return [
             'item' => $item,
         ];
-    }
-
-    private function removeItemFromClipboard($itemId)
-    {
-        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $sessionItem = $environment->getSessionItem();
-        if ($sessionItem->issetValue('clipboard_ids')) {
-            $currentClipboardIds = $sessionItem->getValue('clipboard_ids');
-            if (in_array($itemId, $currentClipboardIds)) {
-                unset($currentClipboardIds[array_search($itemId, $currentClipboardIds)]);
-                $sessionItem->setValue('clipboard_ids', $currentClipboardIds);
-            }
-            $sessionManager = $environment->getSessionManager();
-            $sessionManager->save($sessionItem);
-        }
     }
 
     /**
@@ -1068,9 +919,15 @@ class ItemController extends Controller
         return $this->transformTagArray($categories);
     }
 
-    public function getLinkedCategories($item) {
+    /**
+     * @param \cs_item $item
+     * @return \cs_tag_item[]
+     */
+    public function getLinkedCategories(\cs_item $item) {
         $linkedCategories = [];
         $categoriesList = $item->getTagList();
+
+        /** @var \cs_tag_item $categoryItem */
         $categoryItem = $categoriesList->getFirst();
         while ($categoryItem) {
             $linkedCategories[] = $categoryItem->getItemId();

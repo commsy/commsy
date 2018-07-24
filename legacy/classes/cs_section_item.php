@@ -85,6 +85,9 @@ class cs_section_item extends cs_item {
       return $this->_getValue('material_item_id');
    }
 
+    /**
+     * @return null|\cs_material_item
+     */
    function getLinkedItem () {
      $retour = NULL;
      $item_id = $this->getLinkedItemID();

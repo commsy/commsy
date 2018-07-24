@@ -2,8 +2,13 @@
 
 namespace CommsyBundle\Controller;
 
+use CommsyBundle\Action\Copy\CopyAction;
+use CommsyBundle\Action\Delete\DeleteAction;
+use CommsyBundle\Action\Download\DownloadAction;
+use CommsyBundle\Action\TodoStatus\TodoStatusAction;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -179,104 +184,6 @@ class TodoController extends BaseController
         );
     }
     
-    
-    /**
-     * @Route("/room/{roomId}/todo/feedaction")
-     */
-    public function feedActionAction($roomId, Request $request)
-    {
-        return parent::feedActionAction($roomId, $request);
-
-
-
-
-
-
-
-
-
-
-
-
-        $translator = $this->get('translator');
-        
-        $action = $request->request->get('act');
-        
-        $selectedIds = $request->request->get('data');
-        if (!is_array($selectedIds)) {
-            $selectedIds = json_decode($selectedIds);
-        }
-        
-        $selectAll = $request->request->get('selectAll');
-        $selectAllStart = $request->request->get('selectAllStart');
-        
-        if ($selectAll == 'true') {
-            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, 'duedate_rev', $request);
-            foreach ($entries['todos'] as $key => $value) {
-                /** @noinspection PhpUndefinedMethodInspection */
-                $selectedIds[] = $value->getItemId();
-            }
-        }
-        
-        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
-
-        $result = [];
-        $todoService = $this->get('commsy_legacy.todo_service');
-
-        if ($action == 'markread') {
-            foreach ($selectedIds as $id) {
-                $todoService->markTodoReadAndNoticed($id);
-	        }
-	        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
-        } else if ($action == 'markpending') {
-            foreach ($selectedIds as $id) {
-                $item = $todoService->getTodo($id);
-                $item->setStatus(1);
-                $item->save();
-                $todoService->markTodoReadAndNoticed($id, false, false);
-            }
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('Set status of %count% entries to pending', count($selectedIds), array('%count%' => count($selectedIds)), "messages");
-        } else if ($action == 'markinprogress') {
-            foreach ($selectedIds as $id) {
-                $item = $todoService->getTodo($id);
-                $item->setStatus(2);
-                $item->save();
-                $todoService->markTodoReadAndNoticed($id, false, false);
-            }
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('Set status of %count% entries to in progress', count($selectedIds), array('%count%' => count($selectedIds)), "messages");
-        } else if ($action == 'markdone') {
-            foreach ($selectedIds as $id) {
-                $item = $todoService->getTodo($id);
-                $item->setStatus(3);
-                $item->save();
-                $todoService->markTodoReadAndNoticed($id, false, false);
-            }
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('Set status of %count% entries to done', count($selectedIds), array('%count%' => count($selectedIds)), "messages");
-        } else {
-            $roomService = $this->get('commsy_legacy.room_service');
-            $roomItem = $roomService->getRoomItem($roomId);
-            $statusArray = $roomItem->getExtraToDoStatusArray();
-            
-            $tempAction = str_ireplace('mark', '', $action);
-            if (in_array($tempAction, $statusArray)) {
-                foreach ($selectedIds as $id) {
-                    $item = $todoService->getTodo($id);
-                    $item->setStatus(array_search ($tempAction, $statusArray));
-                    $item->save();
-                    $todoService->markTodoReadAndNoticed($id, false, false);
-                }
-                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('Set status of %count% entries to %status%',count($selectedIds), array('%count%' => count($selectedIds), '%status%' => substr($action, 4)));
-            }
-        }
-
-        return new JsonResponse([
-            'message' => $message,
-            'timeout' => '5550',
-            'layout' => 'cs-notify-message',
-            'data' => $result,
-        ]);
-    }
-    
     /**
      * @Route("/room/{roomId}/todo/{itemId}", requirements={
      *     "itemId": "\d+"
@@ -448,40 +355,6 @@ class TodoController extends BaseController
             'alert' => $alert,
             'pathTopicItem' => $pathTopicItem,
         );
-    }
-    
-    private function getTagDetailArray ($baseCategories, $itemCategories) {
-        $result = array();
-        $tempResult = array();
-        $addCategory = false;
-        foreach ($baseCategories as $baseCategory) {
-            if (!empty($baseCategory['children'])) {
-                $tempResult = $this->getTagDetailArray($baseCategory['children'], $itemCategories);
-            }
-            if (!empty($tempResult)) {
-                $addCategory = true;
-            }
-
-            $foundCategory = false;
-            foreach ($itemCategories as $itemCategory) {
-                if ($baseCategory['item_id'] == $itemCategory['id']) {
-                    if ($addCategory) {
-                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
-                    } else {
-                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
-                    }
-                    $foundCategory = true;
-                }
-            }
-            if (!$foundCategory) {
-                if ($addCategory) {
-                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
-                }
-            }
-            $tempResult = array();
-            $addCategory = false;
-        }
-        return $result;
     }
     
     /**
@@ -952,10 +825,202 @@ class TodoController extends BaseController
         return $this->get('commsy.print_service')->buildPdfResponse($html);
     }
     
+    /**
+     * @Route("/room/{roomId}/todo/{itemId}/participate")
+     */
+    public function participateAction($roomId, $itemId)
+    {
+        $todoService = $this->get('commsy_legacy.todo_service');
+        $todo = $todoService->getTodo($itemId);
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
+        
+        if (!$todo->isProcessor($legacyEnvironment->getCurrentUserItem())) {
+            $todo->addProcessor($currentUser);
+        } else {
+            $todo->removeProcessor($currentUser);
+        }
+
+        return $this->redirectToRoute('commsy_todo_detail', [
+            'roomId' => $roomId,
+            'itemId' => $itemId,
+        ]);
+    }
+
+    /**
+     * @Route("/room/{roomId}/todo/download")
+     * @throws \Exception
+     */
+    public function downloadAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get(DownloadAction::class);
+        return $action->execute($room, $items);
+    }
+
+    ###################################################################################################
+    ## XHR Action requests
+    ###################################################################################################
+
+    /**
+     * @Route("/room/{roomId}/todo/xhr/markread", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrMarkReadAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get('commsy.action.mark_read.generic');
+        return $action->execute($room, $items);
+
+    }
+
+    /**
+     * @Route("/room/{roomId}/todo/xhr/copy", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrCopyAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get(CopyAction::class);
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/todo/xhr/delete", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrDeleteAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get('commsy.action.delete.generic');
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/todo/xhr/status", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrStatusAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        if (!$request->request->has('payload')) {
+            throw new \Exception('payload information not provided');
+        }
+
+        $payload = $request->request->get('payload');
+        if (!isset($payload['status'])) {
+            throw new \Exception('new status string not provided');
+        }
+
+        $newStatus = $payload['status'];
+
+        $action = $this->get(TodoStatusAction::class);
+        $action->setNewStatus($newStatus);
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @param Request $request
+     * @param \cs_room_item $roomItem
+     * @param boolean $selectAll
+     * @param integer[] $itemIds
+     * @return \cs_todo_item[]
+     */
+    protected function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
+    {
+        $todoService = $this->get('commsy_legacy.todo_service');
+
+        if ($selectAll) {
+            if ($request->query->has('todo_filter')) {
+                $currentFilter = $request->query->get('todo_filter');
+                $filterForm = $this->createFilterForm($roomItem);
+
+                // manually bind values from the request
+                $filterForm->submit($currentFilter);
+
+                // apply filter
+                $todoService->setFilterConditions($filterForm);
+            } else {
+                $todoService->showNoNotActivatedEntries();
+                $todoService->hideCompletedEntries();
+            }
+
+            return $todoService->getListTodos($roomItem->getItemID());
+        } else {
+            return $todoService->getTodosById($roomItem->getItemID(), $itemIds);
+        }
+    }
+
+    /**
+     * @param \cs_room_item $room
+     * @return FormInterface
+     */
+    private function createFilterForm($room)
+    {
+        // setup filter form default values
+        $defaultFilterValues = [
+            'hide-deactivated-entries' => true,
+            'hide-completed-entries' => true,
+        ];
+
+        return $this->createForm(TodoFilterType::class, $defaultFilterValues, [
+            'action' => $this->generateUrl('commsy_todo_list', [
+                'roomId' => $room->getItemID(),
+            ]),
+            'hasHashtags' => $room->withBuzzwords(),
+            'hasCategories' => $room->withTags(),
+        ]);
+    }
+
+    private function getTagDetailArray ($baseCategories, $itemCategories) {
+        $result = array();
+        $tempResult = array();
+        $addCategory = false;
+        foreach ($baseCategories as $baseCategory) {
+            if (!empty($baseCategory['children'])) {
+                $tempResult = $this->getTagDetailArray($baseCategory['children'], $itemCategories);
+            }
+            if (!empty($tempResult)) {
+                $addCategory = true;
+            }
+
+            $foundCategory = false;
+            foreach ($itemCategories as $itemCategory) {
+                if ($baseCategory['item_id'] == $itemCategory['id']) {
+                    if ($addCategory) {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                    } else {
+                        $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id']);
+                    }
+                    $foundCategory = true;
+                }
+            }
+            if (!$foundCategory) {
+                if ($addCategory) {
+                    $result[] = array('title' => $baseCategory['title'], 'item_id' => $baseCategory['item_id'], 'children' => $tempResult);
+                }
+            }
+            $tempResult = array();
+            $addCategory = false;
+        }
+        return $result;
+    }
+
     private function getDetailInfo ($roomId, $itemId) {
         $todoService = $this->get('commsy_legacy.todo_service');
         $itemService = $this->get('commsy_legacy.item_service');
-        
+
         $todo = $todoService->getTodo($itemId);
 
         $stepList = $todo->getStepItemList()->to_array();
@@ -993,13 +1058,13 @@ class TodoController extends BaseController
         $current_user = $user_list->getFirst();
         $id_array = array();
         while ( $current_user ) {
-		   $id_array[] = $current_user->getItemID();
-		   $current_user = $user_list->getNext();
-		}
-		$readerManager->getLatestReaderByUserIDArray($id_array,$todo->getItemID());
-		$current_user = $user_list->getFirst();
-		while ( $current_user ) {
-	   	    $current_reader = $readerManager->getLatestReaderForUserByID($todo->getItemID(), $current_user->getItemID());
+            $id_array[] = $current_user->getItemID();
+            $current_user = $user_list->getNext();
+        }
+        $readerManager->getLatestReaderByUserIDArray($id_array,$todo->getItemID());
+        $current_user = $user_list->getFirst();
+        while ( $current_user ) {
+            $current_reader = $readerManager->getLatestReaderForUserByID($todo->getItemID(), $current_user->getItemID());
             if ( !empty($current_reader) ) {
                 if ( $current_reader['read_date'] >= $todo->getModificationDate() ) {
                     $read_count++;
@@ -1008,20 +1073,20 @@ class TodoController extends BaseController
                     $read_count++;
                 }
             }
-		    $current_user = $user_list->getNext();
-		}
+            $current_user = $user_list->getNext();
+        }
         $readerService = $this->get('commsy_legacy.reader_service');
-        
+
         $readerList = array();
         $modifierList = array();
         foreach ($itemArray as $item) {
             $reader = $readerService->getLatestReader($item->getItemId());
             if ( empty($reader) ) {
-               $readerList[$item->getItemId()] = 'new';
+                $readerList[$item->getItemId()] = 'new';
             } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-               $readerList[$item->getItemId()] = 'changed';
+                $readerList[$item->getItemId()] = 'changed';
             }
-            
+
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
 
@@ -1118,81 +1183,5 @@ class TodoController extends BaseController
             'nextItemId' => $nextItemId,
             'lastItemId' => $lastItemId,
         ];
-    }
-    
-    /**
-     * @Route("/room/{roomId}/todo/{itemId}/participate")
-     */
-    public function participateAction($roomId, $itemId)
-    {
-        $todoService = $this->get('commsy_legacy.todo_service');
-        $todo = $todoService->getTodo($itemId);
-
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $currentUser = $legacyEnvironment->getCurrentUserItem();
-        
-        if (!$todo->isProcessor($legacyEnvironment->getCurrentUserItem())) {
-            $todo->addProcessor($currentUser);
-        } else {
-            $todo->removeProcessor($currentUser);
-        }
-
-        return $this->redirectToRoute('commsy_todo_detail', [
-            'roomId' => $roomId,
-            'itemId' => $itemId,
-        ]);
-    }
-
-    /**
-     * @param \cs_room_item $room
-     * @return \Symfony\Component\Form\Form
-     */
-    private function createFilterForm($room)
-    {
-        // setup filter form default values
-        $defaultFilterValues = [
-            'hide-deactivated-entries' => true,
-            'hide-completed-entries' => true,
-        ];
-
-        return $this->createForm(TodoFilterType::class, $defaultFilterValues, [
-            'action' => $this->generateUrl('commsy_todo_list', [
-                'roomId' => $room->getItemID(),
-            ]),
-            'hasHashtags' => $room->withBuzzwords(),
-            'hasCategories' => $room->withTags(),
-        ]);
-    }
-
-    /**
-     * @param Request $request
-     * @param \cs_room_item $roomItem
-     * @param boolean $selectAll
-     * @param integer[] $itemIds
-     * @return \cs_todo_item[]
-     */
-    protected function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
-    {
-        $todoService = $this->get('commsy_legacy.todo_service');
-
-        if ($selectAll) {
-            if ($request->query->has('todo_filter')) {
-                $currentFilter = $request->query->get('todo_filter');
-                $filterForm = $this->createFilterForm($roomItem);
-
-                // manually bind values from the request
-                $filterForm->submit($currentFilter);
-
-                // apply filter
-                $todoService->setFilterConditions($filterForm);
-            } else {
-                $todoService->hideDeactivatedEntries();
-                $todoService->hideInvalidEntries();
-            }
-
-            return $todoService->getListTodos($roomItem->getItemID());
-        } else {
-            return $todoService->getTodosById($roomItem->getItemID(), $itemIds);
-        }
     }
 }

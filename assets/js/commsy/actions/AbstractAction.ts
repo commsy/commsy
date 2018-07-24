@@ -40,7 +40,7 @@ export abstract class BaseAction {
         });
     }
 
-    public onError(backendResponse: ActionResponse) {
+    public onError(error: Error) {
         UIkit.notify(this.errorMessage, 'danger');
     }
 }
@@ -80,7 +80,7 @@ export abstract class XHRAction extends BaseAction {
                     reject(new Error(backendResponse.error));
                 }
 
-                if (    backendResponse.payload == null &&
+                if (backendResponse.payload == null &&
                     backendResponse.html == null &&
                     backendResponse.redirect == null) {
                     reject(new Error('Unexpected response'));

@@ -61,7 +61,7 @@
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('commsy_date_feedaction', {'roomId': roomId}),
+                        'url': path('commsy_date_xhrmarkread', {'roomId': roomId}),
                         'action': 'markread',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
@@ -73,7 +73,7 @@
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('commsy_date_feedaction', {'roomId': roomId}),
+                        'url': path('commsy_date_xhrcopy', {'roomId': roomId}),
                         'action': 'copy',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
@@ -85,7 +85,7 @@
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('commsy_date_feedaction', {'roomId': roomId}),
+                        'url': path('commsy_date_download', {'roomId': roomId}),
                         'action': 'save',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
@@ -138,7 +138,7 @@
                 <li>
                     {% if (user.isUser and not user.isReadOnlyUser) and not isArchived %}
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                            'url': path('commsy_date_feedaction', {'roomId': roomId}),
+                            'url': path('commsy_date_xhrdelete', {'roomId': roomId}),
                             'action': 'delete',
                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                             'mode': 'selection',

@@ -62,7 +62,7 @@
 
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('commsy_todo_feedaction', {'roomId': roomId}),
+                        'url': path('commsy_todo_xhrmarkread', {'roomId': roomId}),
                         'action': 'markread',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
@@ -72,10 +72,9 @@
                     </a>
                 </li>
 
-
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('commsy_todo_feedaction', {'roomId': roomId}),
+                        'url': path('commsy_todo_xhrcopy', {'roomId': roomId}),
                         'action': 'copy',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
@@ -85,10 +84,9 @@
                     </a>
                 </li>
 
-
                 <li>
                     <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                        'url': path('commsy_todo_feedaction', {'roomId': roomId}),
+                        'url': path('commsy_todo_download', {'roomId': roomId}),
                         'action': 'save',
                         'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                         'mode': 'selection',
@@ -102,7 +100,7 @@
                 <li>
                     {% if (user.isUser and not user.isReadOnlyUser) and not isArchived %}
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                            'url': path('commsy_todo_feedaction', {'roomId': roomId}),
+                            'url': path('commsy_todo_xhrdelete', {'roomId': roomId}),
                             'action': 'delete',
                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                             'mode': 'selection',
@@ -125,11 +123,13 @@
                 <li>
                     {% if (user.isUser and not user.isReadOnlyUser) and not isArchived %}
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                            'url': path('commsy_todo_feedaction', {'roomId': roomId}),
+                            'url': path('commsy_todo_xhrstatus', {'roomId': roomId}),
                             'action': 'markpending',
                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                             'mode': 'selection',
-                            'noSelectionMessage': 'no entry selected'|trans({},'item')
+                            'noSelectionMessage': 'no entry selected'|trans({},'item'),
+                            'returnUrl': path('commsy_todo_list', {'roomId': roomId}),
+                            'status': 'pending'
                         }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-circle-o uk-visible-large"></i> {{ 'markpending'|trans({},'rubric') }}
                         </a>
@@ -144,11 +144,13 @@
                 <li>
                     {% if (user.isUser and not user.isReadOnlyUser) and not isArchived %}
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                            'url': path('commsy_todo_feedaction', {'roomId': roomId}),
+                            'url': path('commsy_todo_xhrstatus', {'roomId': roomId}),
                             'action': 'markinprogress',
                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                             'mode': 'selection',
-                            'noSelectionMessage': 'no entry selected'|trans({},'item')
+                            'noSelectionMessage': 'no entry selected'|trans({},'item'),
+                            'returnUrl': path('commsy_todo_list', {'roomId': roomId}),
+                            'status': 'inprogress'
                         }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-dot-circle-o uk-visible-large"></i> {{ 'markinprogress'|trans({},'rubric') }}
                         </a>
@@ -163,11 +165,13 @@
                 <li>
                     {% if (user.isUser and not user.isReadOnlyUser) and not isArchived %}
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                            'url': path('commsy_todo_feedaction', {'roomId': roomId}),
+                            'url': path('commsy_todo_xhrstatus', {'roomId': roomId}),
                             'action': 'markdone',
                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                             'mode': 'selection',
-                            'noSelectionMessage': 'no entry selected'|trans({},'item')
+                            'noSelectionMessage': 'no entry selected'|trans({},'item'),
+                            'returnUrl': path('commsy_todo_list', {'roomId': roomId}),
+                            'status': 'done'
                         }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-check-circle-o uk-visible-large"></i> {{ 'markdone'|trans({},'rubric') }}
                         </a>
@@ -182,11 +186,13 @@
                     <li>
                         {% if (user.isUser and not user.isReadOnlyUser) and not isArchived %}
                             <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                                'url': path('commsy_todo_feedaction', {'roomId': roomId}),
+                                'url': path('commsy_todo_xhrstatus', {'roomId': roomId}),
                                 'action': 'mark' ~ status,
                                 'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                                 'mode': 'selection',
-                                'noSelectionMessage': 'no entry selected'|trans({},'item')
+                                'noSelectionMessage': 'no entry selected'|trans({},'item'),
+                                'returnUrl': path('commsy_todo_list', {'roomId': roomId}),
+                                'status': status
                             }|json_encode|e('html_attr') }}">
                                 <i class="uk-icon-justify uk-icon-small uk-icon-circle uk-visible-large"></i> {{ 'marktodostatus'|trans({'%status%': status}, 'rubric') }}
                             </a>

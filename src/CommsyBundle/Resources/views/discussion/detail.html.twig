@@ -59,15 +59,21 @@
 
                                         {# save #}
                                         <li>
-                                            <a href="{{ path('commsy_item_download', {'roomId': roomId, 'itemId': discussion.itemId}) }}" download>
-                                                <i class="uk-icon-small uk-icon-save uk-icon-justify uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
+                                            <a href="#"  data-cs-action="{{ {
+                                                'url': path('commsy_discussion_download', {'roomId': roomId}),
+                                                'action': 'save',
+                                                'itemId': discussion.itemId,
+                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                'mode': 'click',
+                                            }|json_encode|e('html_attr') }}">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
                                         {# copy #}
                                         <li>
                                             <a href="#" data-cs-action="{{ {
-                                                'url': path('commsy_discussion_feedaction', {'roomId': roomId}),
+                                                'url': path('commsy_discussion_xhrcopy', {'roomId': roomId}),
                                                 'action': 'copy',
                                                 'itemId': discussion.itemId,
                                                 'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
@@ -89,7 +95,7 @@
                                         <li>
                                             {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                 <a  href="#" data-cs-action="{{ {
-                                                    'url': path('commsy_discussion_feedaction', {'roomId': roomId, 'itemId': discussion.itemId}),
+                                                    'url': path('commsy_discussion_xhrdelete', {'roomId': roomId, 'itemId': discussion.itemId}),
                                                     'action': 'delete',
                                                     'itemId': discussion.itemId,
                                                     'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
@@ -258,7 +264,7 @@
                                                         <li>
                                                             {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                                 <a  href="#" data-cs-action="{{ {
-                                                                    'url': path('commsy_discussion_feedaction', {'roomId': roomId, 'itemId': article.itemId}),
+                                                                    'url': path('commsy_discussionarticle_xhrdelete', {'roomId': roomId, 'itemId': article.itemId}),
                                                                     'action': 'delete',
                                                                     'itemId': article.itemId,
                                                                     'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,

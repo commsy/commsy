@@ -718,7 +718,7 @@ services:
         
     commsy.copy_service:
         class: CommsyBundle\Services\CopyService
-        arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.item_service']
+        autowire: true
 
     commsy.invitations_service:
         class: CommsyBundle\Services\InvitationsService
@@ -744,8 +744,92 @@ services:
               - '@commsy_legacy.room_service'
               - '@commsy_legacy.item_service'
 
-    commsy.action.factory:
-            class: CommsyBundle\Action\ActionFactory
+    # actions
+
+    CommsyBundle\Action\MarkRead\MarkReadGeneric:
+        autowire: true
+    CommsyBundle\Action\MarkRead\MarkReadMaterial:
+        autowire: true
+    CommsyBundle\Action\MarkRead\MarkReadTodo:
+        autowire: true
+
+    commsy.action.mark_read.generic:
+        class: CommsyBundle\Action\MarkRead\MarkReadAction
+        autowire: true
+        arguments:
+            $markReadStrategy: '@CommsyBundle\Action\MarkRead\MarkReadGeneric'
+
+    commsy.action.mark_read.material:
+        class: CommsyBundle\Action\MarkRead\MarkReadAction
+        autowire: true
+        arguments:
+            $markReadStrategy: '@CommsyBundle\Action\MarkRead\MarkReadMaterial'
+
+    commsy.action.mark_read.todo:
+        class: CommsyBundle\Action\MarkRead\MarkReadAction
+        autowire: true
+        arguments:
+            $markReadStrategy: '@CommsyBundle\Action\MarkRead\MarkReadTodo'
+
+    CommsyBundle\Action\MarkRead\MarkReadAction: '@commsy.action.mark_read.generic'
+
+    CommsyBundle\Action\Copy\CopyAction:
+        autowire: true
+
+    CommsyBundle\Action\Copy\InsertAction:
+        autowire: true
+
+    CommsyBundle\Action\Copy\RemoveAction:
+        autowire: true
+
+    CommsyBundle\Action\Download\DownloadAction:
+        autowire: true
+
+    CommsyBundle\Action\TodoStatus\TodoStatusAction:
+        autowire: true
+
+    CommsyBundle\Action\UserStatus\UserStatusAction:
+            autowire: true
+
+    CommsyBundle\Action\Delete\DeleteGeneric:
+        autowire: true
+    CommsyBundle\Action\Delete\DeleteStep:
+        autowire: true
+    CommsyBundle\Action\Delete\DeleteSection:
+        autowire: true
+    CommsyBundle\Action\Delete\DeleteDiscussionArticle:
+        autowire: true
+    CommsyBundle\Action\Delete\DeleteDate:
+        autowire: true
+
+    commsy.action.delete.generic:
+        class: CommsyBundle\Action\Delete\DeleteAction
+        autowire: true
+        arguments:
+            $deleteStrategy: '@CommsyBundle\Action\Delete\DeleteGeneric'
+
+    commsy.action.delete.step:
+        class: CommsyBundle\Action\Delete\DeleteAction
+        autowire: true
+        arguments:
+            $deleteStrategy: '@CommsyBundle\Action\Delete\DeleteStep'
+
+    commsy.action.delete.section:
+        class: CommsyBundle\Action\Delete\DeleteAction
+        autowire: true
+        arguments:
+            $deleteStrategy: '@CommsyBundle\Action\Delete\DeleteSection'
+
+    commsy.action.delete.discussion_article:
+        class: CommsyBundle\Action\Delete\DeleteAction
+        autowire: true
+        arguments:
+            $deleteStrategy: '@CommsyBundle\Action\Delete\DeleteDiscussionArticle'
+
+    commsy.action.delete.date:
+            class: CommsyBundle\Action\Delete\DeleteAction
+            autowire: true
             arguments:
-              - '@translator'
-              - '@commsy_legacy.item_service'
+                $deleteStrategy: '@CommsyBundle\Action\Delete\DeleteDate'
+
+    CommsyBundle\Action\Delete\DeleteAction: '@commsy.action.delete.generic'

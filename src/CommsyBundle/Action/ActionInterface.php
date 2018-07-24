@@ -9,7 +9,9 @@
 namespace CommsyBundle\Action;
 
 
+use Symfony\Component\HttpFoundation\Response;
+
 interface ActionInterface
 {
-    public function execute($items);
+    public function execute(\cs_room_item $roomItem, array $items): Response;
 }

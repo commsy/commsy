@@ -60,15 +60,21 @@
 
                                         {# save #}
                                         <li>
-                                            <a href="{{ path('commsy_item_download', {'roomId': roomId, 'itemId': announcement.itemId}) }}" download>
-                                                <i class="uk-icon-small uk-icon-save uk-icon-justify uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
+                                            <a href="#" data-cs-action="{{ {
+                                                'url': path('commsy_announcement_download', {'roomId': roomId}),
+                                                'action': 'save',
+                                                'itemId': announcement.itemId,
+                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                'mode': 'click',
+                                            }|json_encode|e('html_attr') }}">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
                                         {# copy #}
                                         <li>
                                             <a href="#" data-cs-action="{{ {
-                                                'url': path('commsy_announcement_feedaction', {'roomId': roomId}),
+                                                'url': path('commsy_announcement_xhrcopy', {'roomId': roomId}),
                                                 'action': 'copy',
                                                 'itemId': announcement.itemId,
                                                 'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
@@ -90,7 +96,7 @@
                                         <li>
                                             {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                 <a  href="#" data-cs-action="{{ {
-                                                    'url': path('commsy_announcement_feedaction', {'roomId': roomId}),
+                                                    'url': path('commsy_announcement_xhrdelete', {'roomId': roomId}),
                                                     'action': 'delete',
                                                     'itemId': announcement.itemId,
                                                     'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
