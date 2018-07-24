@@ -469,7 +469,7 @@ class MenuBuilder
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-tags uk-icon-small')
             ))
-                ->setExtra('translation_domain', 'portal');;
+                ->setExtra('translation_domain', 'portal');
             $menu->addChild('portal_configuration_announcements', array(
                 'label' => 'announcements',
                 'route' => 'commsy_portal_announcements',
@@ -489,6 +489,13 @@ class MenuBuilder
                 'route' => 'commsy_portal_help',
                 'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-question-circle uk-icon-small')
+            ))
+                ->setExtra('translation_domain', 'portal');
+            $menu->addChild('portal_configuration_translations', array(
+                'label' => 'Translations',
+                'route' => 'commsy_portal_translations',
+                'routeParameters' => array('roomId' => $roomId),
+                'extras' => array('icon' => 'uk-icon-columns uk-icon-small')
             ))
                 ->setExtra('translation_domain', 'portal');
             $menu->addChild('portal_configuration_licenses', array(

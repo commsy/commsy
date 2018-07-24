@@ -74,7 +74,7 @@
                 <source>roomtermstemplates</source>
                 <target>Templates Terms</target>
             </trans-unit>
-            
+
             <trans-unit id="Edit terms">
                 <source>Edit terms</source>
                 <target>Edit terms</target>
@@ -113,6 +113,16 @@
             <trans-unit id="roomcategories">
                 <source>roomcategories</source>
                 <target>Room categories</target>
+            </trans-unit>
+
+            <!-- portal translations -->
+            <trans-unit id="portal_menu_translations_title">
+                <source>Translations</source>
+                <target>Translations</target>
+            </trans-unit>
+            <trans-unit id="portal_breadcrumb_translations_title">
+                <source>translations</source>
+                <target>Translations</target>
             </trans-unit>
 
             <!-- portal licenses configuration -->

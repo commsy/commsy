@@ -9,13 +9,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Form\Type\PortalAnnouncementsType;
 use CommsyBundle\Form\Type\PortalHelpType;
 use CommsyBundle\Form\Type\PortalTermsType;
 use CommsyBundle\Form\Type\RoomCategoriesEditType;
 use CommsyBundle\Form\Type\RoomCategoriesLinkType;
+use CommsyBundle\Form\Type\TranslationType;
 use CommsyBundle\Entity\RoomCategories;
 use CommsyBundle\Entity\License;
 use CommsyBundle\Form\Type\LicenseNewEditType;
@@ -294,6 +294,57 @@ class PortalController extends Controller
     public function legacysettingsAction($roomId, Request $request)
     {
         return $this->redirect('/?cid='.$roomId.'&mod=configuration&fct=index');
+    }
+
+    /**
+     * @Route("/portal/{roomId}/translations/{translationId}")
+     * @Template()
+     * @Security("is_granted('ITEM_MODERATE', roomId)")
+     */
+    public function translationsAction($roomId, $translationId = null, Request $request)
+    {
+        $portalId = $roomId;
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $portalItem = $legacyEnvironment->getCurrentPortalItem();
+
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('CommsyBundle:Translation');
+
+        $form = null;
+
+        if ($translationId) {
+            $translation = $repository->findOneById($translationId);
+
+            $editForm = $this->createForm(TranslationType::class, $translation, []);
+
+            $editForm->handleRequest($request);
+            if ($editForm->isValid()) {
+
+                // tells Doctrine you want to (eventually) save the Product (no queries yet)
+                $em->persist($translation);
+
+                // actually executes the queries (i.e. the INSERT query)
+                $em->flush();
+
+                return $this->redirectToRoute('commsy_portal_translations', [
+                    'roomId' => $roomId,
+                ]);
+            }
+
+            $form = $editForm->createView();
+        }
+
+        $translations = $repository->findBy(array('contextId' => $portalId));
+
+        return [
+            'form' => $form,
+            'roomId' => $portalId,
+            'translations' => $translations,
+            'translationId' => $translationId,
+            'item' => $portalItem,
+        ];
     }
 
 
