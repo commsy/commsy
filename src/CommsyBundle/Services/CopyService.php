@@ -6,6 +6,7 @@ use Symfony\Component\Form\Form;
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use Commsy\LegacyBundle\Utils\RoomService;
 use Commsy\LegacyBundle\Utils\ItemService;
+use Symfony\Component\Form\FormInterface;
 
 class CopyService
 {
@@ -50,7 +51,13 @@ class CopyService
         return $itemsCountArray;
     }
 
-    public function getListEntries($roomId, $max = NULL, $start = NULL,  $sort = NULL)
+    /**
+     * @param integer $roomId
+     * @param integer $max
+     * @param integer $start
+     * @return \cs_item[]
+     */
+    public function getListEntries($roomId, $max = NULL, $start = NULL, $sort = NULL)
     {
         $currentClipboardIds = array();
         if ($this->sessionItem->issetValue('clipboard_ids')) {
@@ -82,7 +89,26 @@ class CopyService
         return $entries;
     }
 
-    public function setFilterConditions(Form $filterForm)
+    /**
+     * @param integer $roomId
+     * @param integer[] $ids
+     * @return \cs_item[]
+     */
+    public function getCopiesById($roomId, $ids)
+    {
+        $allCopies = $this->getListEntries($roomId);
+
+        $filteredCopies = [];
+        foreach ($allCopies as $copy) {
+            if (in_array($copy->getItemID(), $ids)) {
+                $filteredCopies[] = $copy;
+            }
+        }
+
+        return $filteredCopies;
+    }
+
+    public function setFilterConditions(FormInterface $filterForm)
     {
         $formData = $filterForm->getData();
 

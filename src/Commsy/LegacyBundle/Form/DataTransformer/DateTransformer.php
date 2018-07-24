@@ -16,7 +16,7 @@ class DateTransformer implements DataTransformerInterface
     /**
      * Transforms a cs_date_item object to an array
      *
-     * @param cs_date_item $dateItem
+     * @param \cs_dates_item $dateItem
      * @return array
      */
     public function transform($dateItem)
@@ -72,10 +72,9 @@ class DateTransformer implements DataTransformerInterface
     /**
      * Applies an array of data to an existing object
      *
-     * @param object $dateObject
+     * @param \cs_dates_item $dateObject
      * @param array $dateData
-     * @return cs_date_item|null
-     * @throws TransformationFailedException if room item is not found.
+     * @return \cs_dates_item
      */
     public function applyTransformation($dateObject, $dateData)
     {

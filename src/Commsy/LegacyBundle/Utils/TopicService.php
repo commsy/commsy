@@ -5,6 +5,7 @@ namespace Commsy\LegacyBundle\Utils;
 use Symfony\Component\Form\Form;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use Symfony\Component\Form\FormInterface;
 
 class TopicService
 {
@@ -25,7 +26,6 @@ class TopicService
     {
         $this->topicManager->setContextLimit($roomId);
         $this->topicManager->select();
-        $countTopic = array();
         $countTopicArray['count'] = sizeof($this->topicManager->get()->to_array());
         $this->topicManager->resetLimits();
         $this->topicManager->select();
@@ -34,13 +34,23 @@ class TopicService
         return $countTopicArray;
     }
 
-
-    public function getTopic($itemId)
+    /**
+     * @param int $itemId
+     * @return \cs_topic_item
+     */
+    public function getTopic($itemId): \cs_topic_item
     {
+        /** @var \cs_topic_item $topic */
         $topic = $this->topicManager->getItem($itemId);
         return $topic;
     }
-    
+
+    /**
+     * @param integer $roomId
+     * @param integer $max
+     * @param integer $start
+     * @return \cs_topic_item[]
+     */
     public function getListTopics($roomId, $max = NULL, $start = NULL)
     {
         $this->topicManager->setContextLimit($roomId);
@@ -53,8 +63,24 @@ class TopicService
 
         return $topicList->to_array();
     }
+
+    /**
+     * @param integer $roomId
+     * @param integer[] $ids
+     * @return \cs_topic_item[]
+     */
+    public function getTopicsById($roomId, $ids)
+    {
+        $this->topicManager->setContextLimit($roomId);
+        $this->topicManager->setIDArrayLimit($ids);
+
+        $this->topicManager->select();
+        $userList = $this->topicManager->get();
+
+        return $userList->to_array();
+    }
     
-    public function setFilterConditions(Form $filterForm)
+    public function setFilterConditions(FormInterface $filterForm)
     {
         $formData = $filterForm->getData();
         // activated

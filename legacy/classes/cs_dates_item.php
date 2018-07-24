@@ -365,6 +365,10 @@ class cs_dates_item extends cs_item {
         return $this->_getValue('calendar_id');
     }
 
+    /**
+     * @return \CommsyBundle\Entity\Calendars
+     * @throws Exception
+     */
     function getCalendar() {
         global $symfonyContainer;
         $calendarsService = $symfonyContainer->get('commsy.calendars_service');
@@ -407,7 +411,7 @@ class cs_dates_item extends cs_item {
    /** get recurrence_pattern of a date
     * this method returns the recurrence_pattern of the date
     *
-    * @return string recurrence_pattern of a date
+    * @return array recurrence_pattern of a date
     *
     * @author CommSy Development Group
     */

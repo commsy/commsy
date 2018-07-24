@@ -16,7 +16,7 @@ class AnnouncementTransformer implements DataTransformerInterface
     /**
      * Transforms a cs_material_item object to an array
      *
-     * @param cs_material_item $announcementItem
+     * @param \cs_announcement_item $announcementItem
      * @return array
      */
     public function transform($announcementItem)
@@ -51,10 +51,9 @@ class AnnouncementTransformer implements DataTransformerInterface
     /**
      * Applies an array of data to an existing object
      *
-     * @param object $materialObject
+     * @param \cs_announcement_item $announcementObject
      * @param array $announcementData
-     * @return cs_material_item|null
-     * @throws TransformationFailedException if room item is not found.
+     * @return \cs_announcement_item|null
      */
     public function applyTransformation($announcementObject, $announcementData)
     {

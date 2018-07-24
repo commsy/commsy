@@ -68,29 +68,54 @@
                 </li>
 
                 <li>
-                    <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_material_feedaction', {'roomId': roomId}) }}", "action": "markread"}' data-no-selection="{{'no entry selected'|trans({},'item')}}">
+                    <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                        'url': path('commsy_material_xhrmarkread', {'roomId': roomId}),
+                        'action': 'markread',
+                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                        'mode': 'selection',
+                        'noSelectionMessage': 'no entry selected'|trans({},'item')
+                    }|json_encode|e('html_attr') }}">
                         <i class="uk-icon-justify uk-icon-small uk-icon-check-square-o uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_material_feedaction', {'roomId': roomId}) }}", "action": "copy"}' data-no-selection="{{'no entry selected'|trans({},'item')}}">
+                    <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                        'url': path('commsy_material_xhrcopy', {'roomId': roomId}),
+                        'action': 'copy',
+                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                        'mode': 'selection',
+                        'noSelectionMessage': 'no entry selected'|trans({},'item')
+                    }|json_encode|e('html_attr') }}">
                         <i class="uk-icon-justify uk-icon-small uk-icon-copy uk-visible-large"></i> {{ 'copy'|trans({},'rubric')|capitalize }}
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_material_feedaction', {'roomId': roomId}) }}", "action": "save"}' data-no-selection="{{'no entry selected'|trans({},'item')}}">
+                    <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                        'url': path('commsy_material_download', {'roomId': roomId}),
+                        'action': 'save',
+                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                        'mode': 'selection',
+                        'noSelectionMessage': 'no entry selected'|trans({},'item')
+                    }|json_encode|e('html_attr') }}">
                         <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({},'rubric')|capitalize }}
                     </a>
                 </li>
 
-
                 <li>
                     {% if (user.isUser and not user.isReadOnlyUser) and not isArchived %}
-                        <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target":".feed ul", "actionUrl": "{{ path('commsy_material_feedaction', {'roomId': roomId}) }}", "action": "delete"}' data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}" data-no-selection="{{'no entry selected'|trans({},'item')}}">
+                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                            'url': path('commsy_material_xhrdelete', {'roomId': roomId}),
+                            'action': 'delete',
+                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                            'mode': 'selection',
+                            'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
+                            'confirmQuestion': 'confirm delete'|trans({}, 'rubric'),
+                            'confirmCancel': 'confirm delete cancel'|trans({}, 'rubric'),
+                            'confirmOk': 'confirm delete confirm'|trans({}, 'rubric'),
+                            'returnUrl': path('commsy_material_list', {'roomId': roomId})
+                        }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
                         </a>
                     {% else %}

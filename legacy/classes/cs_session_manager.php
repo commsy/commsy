@@ -47,16 +47,17 @@ class cs_session_manager {
     * @param object db_connector connection to the database
     * @param string domain domain for cookie management
     */
-   function __construct($db_conntector, $settings) {
-     $this->reset();
-     $this->_db_conntector = $db_conntector;
-     $this->_settings = (array)$settings;
-     if ( !isset($this->_settings['cookiepath']) ) {
-        $this->_settings['cookiepath'] = '';
-     }
-     if ( !isset($this->_settings['domain']) ) {
-        $this->_settings['domain'] = '';
-     }
+   function __construct($db_conntector, $settings)
+   {
+        $this->reset();
+        $this->_db_conntector = $db_conntector;
+        $this->_settings = (array)$settings;
+        if (!isset($this->_settings['cookiepath'])) {
+            $this->_settings['cookiepath'] = '';
+        }
+        if (!isset($this->_settings['domain'])) {
+            $this->_settings['domain'] = '';
+        }
    }
 
    /** reset limits

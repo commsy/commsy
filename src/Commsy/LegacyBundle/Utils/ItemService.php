@@ -18,6 +18,10 @@ class ItemService
         $this->setItemManager();
     }
 
+    /**
+     * @param integer $itemId
+     * @return \cs_item
+     */
     public function getItem($itemId)
     {
         $this->setItemManager();
@@ -121,6 +125,37 @@ class ItemService
         }
 
         return [];
+    }
+
+    /**
+     * @param \cs_item[] cs_item array
+     * @param bool $withAnnotations Should related annotations also marked read?
+     */
+    public function markRead($items, $withAnnotations = true)
+    {
+        $noticedManager = $this->legacyEnvironment->getNoticedManager();
+        $readerManager = $this->legacyEnvironment->getReaderManager();
+
+        foreach ($items as $item) {
+            $noticedManager->markNoticed($item->getItemID(), $item->getVersionID());
+            $readerManager->markRead($item->getItemID(), $item->getVersionID());
+
+            // annotations
+            if ($withAnnotations) {
+                $annotations = $item->getAnnotationList();
+                if (!empty($annotations)) {
+                    /** @var \cs_annotation_item $annotationItem */
+                    $annotationItem = $annotations->getFirst();
+
+                    while ($annotationItem) {
+                        $noticedManager->markNoticed($annotationItem->getItemID(), '0');
+                        $readerManager->markRead($annotationItem->getItemId(), '0');
+
+                        $annotationItem = $annotations->getNext();
+                    }
+                }
+            }
+        }
     }
 
     private function setItemManager() {

@@ -4,6 +4,7 @@ namespace Commsy\LegacyBundle\Utils;
 use Symfony\Component\Form\Form;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use Symfony\Component\Form\FormInterface;
 
 class DateService
 {
@@ -19,10 +20,17 @@ class DateService
         $this->dateManager->reset();
     }
 
-    public function getListDates($roomId, $max, $start, $sort)
+    /**
+     * @param integer $roomId
+     * @param integer $max
+     * @param integer $start
+     * @param string $sort
+     * @return \cs_dates_item[]
+     */
+    public function getListDates($roomId, $max = null, $start = null, $sort = null)
     {
         $this->dateManager->setContextLimit($roomId);
-        if ($max !== NULL && $start !== NULL) {
+        if ($max !== null && $start !== null) {
             $this->dateManager->setIntervalLimit($start, $max);
         }
 
@@ -38,7 +46,22 @@ class DateService
         return $dateList->to_array();
     }
 
-    public function setFilterConditions(Form $filterForm)
+    /**
+     * @param integer $roomId
+     * @param integer[] $idArray
+     * @return \cs_dates_item[]
+     */
+    public function getDatesById($roomId, $idArray) {
+        $this->dateManager->setContextLimit($roomId);
+        $this->dateManager->setIDArrayLimit($idArray);
+
+        $this->dateManager->select();
+        $dateList = $this->dateManager->get();
+
+        return $dateList->to_array();
+    }
+
+    public function setFilterConditions(FormInterface $filterForm)
     {
         $formData = $filterForm->getData();
 
@@ -138,12 +161,22 @@ class DateService
             $this->dateManager->setFutureLimit();
         }
     }
-    
+
+    /**
+     * @param integer $itemId
+     * @return \cs_dates_item
+     */
     public function getDate($itemId)
     {
         return $this->dateManager->getItem($itemId);
     }
-    
+
+    /**
+     * @param integer $roomId
+     * @param integer $start
+     * @param integer $end
+     * @return \cs_dates_item[]
+     */
     public function getCalendarEvents($roomId, $start, $end)
     {
         $this->dateManager->setContextLimit($roomId);
@@ -174,7 +207,12 @@ class DateService
 
         return $countDatelArray;
     }
-    
+
+    /**
+     * @param integer $roomId
+     * @param integer $recurringId
+     * @return \cs_dates_item[]
+     */
     public function getRecurringDates($roomId, $recurringId)
     {
         $this->dateManager->reset();
@@ -183,6 +221,7 @@ class DateService
         $this->dateManager->setWithoutDateModeLimit();
         $this->dateManager->select();
         $dateList = $this->dateManager->get();
+
         return $dateList->to_array();
     }
     

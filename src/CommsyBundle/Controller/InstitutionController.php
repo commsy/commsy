@@ -2,9 +2,11 @@
 
 namespace CommsyBundle\Controller;
 
+use CommsyBundle\Action\Download\DownloadAction;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -20,12 +22,8 @@ use CommsyBundle\Form\Type\AnnotationType;
  * @package CommsyBundle\Controller
  * @Security("is_granted('ITEM_ENTER', roomId)")
  */
-class InstitutionController extends Controller
+class InstitutionController extends BaseController
 {
-    // setup filter form default values
-    private $defaultFilterValues = array(
-        'hide-deactivated-entries' => true,
-    );
     /**
      * @Route("/room/{roomId}/institution/feed/{start}/{sort}")
      * @Template()
@@ -45,11 +43,7 @@ class InstitutionController extends Controller
         $institutionService = $this->get('commsy_legacy.institution_service');
 
         if ($institutionFilter) {
-            $filterForm = $this->createForm(InstitutionFilterType::class, $this->defaultFilterValues, array(
-                'action' => $this->generateUrl('commsy_institution_list', array('roomId' => $roomId)),
-                'hasHashtags' => $roomItem->withBuzzwords(),
-                'hasCategories' => $roomItem->withTags(),
-            ));
+            $filterForm = $this->createFilterForm($roomItem);
 
             $filterForm->submit($institutionFilter);
             $institutionService->setFilterConditions($filterForm);
@@ -96,13 +90,11 @@ class InstitutionController extends Controller
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $roomManager = $legacyEnvironment->getRoomManager();
+
+        /** @var \cs_community_item $roomItem */
         $roomItem = $roomManager->getItem($roomId);
 
-        $filterForm = $this->createForm(InstitutionFilterType::class, $this->defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_institution_list', array('roomId' => $roomId)),
-            'hasHashtags' => $roomItem->withBuzzwords(),
-            'hasCategories' => $roomItem->withTags(),
-        ));
+        $filterForm = $this->createFilterForm($roomItem);
 
         // get the institution service
         $institutionService = $this->get('commsy_legacy.institution_service');
@@ -140,10 +132,8 @@ class InstitutionController extends Controller
         );
     }
 
-
     /**
      * @Route("/room/{roomId}/institution/create")
-     * @Template()
      */
     public function createAction($roomId, Request $request)
     {
@@ -174,8 +164,6 @@ class InstitutionController extends Controller
 
         // annotation form
         $form = $this->createForm(AnnotationType::class);
-        // dump($infoArray);
-        // die;
 
         $alert = null;
         if ($infoArray['institution']->isLocked()) {
@@ -289,7 +277,6 @@ class InstitutionController extends Controller
         $roomManager = $legacyEnvironment->getRoomManager();
         $readerManager = $legacyEnvironment->getReaderManager();
         $roomItem = $roomManager->getItem($institution->getContextId());
-        $numTotalMember = $roomItem->getAllUsers();
 
         $userManager = $legacyEnvironment->getUserManager();
         $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
@@ -320,8 +307,6 @@ class InstitutionController extends Controller
             }
             $current_user = $user_list->getNext();
         }
-        $read_percentage = round(($read_count/$all_user_count) * 100);
-        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
         $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();
@@ -430,20 +415,27 @@ class InstitutionController extends Controller
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
 
+        $itemController = $this->get('commsy.item_controller');
+
         $institutionService = $this->get('commsy_legacy.institution_service');
         $transformer = $this->get('commsy_legacy.transformer.institution');
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
-        $formData = array();
-        $institutionItem = NULL;
+        $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
+        $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
 
         $institutionItem = $institutionService->getInstitution($itemId);
         if (!$institutionItem) {
             throw $this->createNotFoundException('No institution found for id ' . $itemId);
         }
         $formData = $transformer->transform($institutionItem);
+        $formData['categoriesMandatory'] = $categoriesMandatory;
+        $formData['hashtagsMandatory'] = $hashtagsMandatory;
+        $formData['category_mapping']['categories'] = $itemController->getLinkedCategories($item);
+        $formData['hashtag_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+        $formData['draft'] = $item->isDraft();
         $translator = $this->get('translator');
         $form = $this->createForm(GroupType::class, $formData, array(
             'action' => $this->generateUrl('commsy_institution_edit', array(
@@ -451,6 +443,14 @@ class InstitutionController extends Controller
                 'itemId' => $itemId,
             )),
             'placeholderText' => '['.$translator->trans('insert title').']',
+            'categoryMappingOptions' => [
+                'categories' => $itemController->getCategories($roomId, $this->get('commsy_legacy.category_service'))
+            ],
+            'hashtagMappingOptions' => [
+                'hashtags' => $itemController->getHashtags($roomId, $legacyEnvironment),
+                'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
+                'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId])
+            ],
         ));
 
         $form->handleRequest($request);
@@ -471,11 +471,6 @@ class InstitutionController extends Controller
                 // ToDo ...
             }
             return $this->redirectToRoute('commsy_institution_save', array('roomId' => $roomId, 'itemId' => $itemId));
-
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
         }
 
         return array(
@@ -491,13 +486,11 @@ class InstitutionController extends Controller
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
-    public function saveAction($roomId, $itemId, Request $request)
+    public function saveAction($roomId, $itemId)
     {
         $itemService = $this->get('commsy_legacy.item_service');
-        $item = $itemService->getItem($itemId);
 
         $institutionService = $this->get('commsy_legacy.institution_service');
-        $transformer = $this->get('commsy_legacy.transformer.institution');
 
         $institution = $institutionService->getInstitution($itemId);
 
@@ -539,8 +532,6 @@ class InstitutionController extends Controller
             }
             $current_user = $user_list->getNext();
         }
-        $read_percentage = round(($read_count/$all_user_count) * 100);
-        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
         $readerService = $this->get('commsy_legacy.reader_service');
 
         $readerList = array();
@@ -564,71 +555,6 @@ class InstitutionController extends Controller
             'readCount' => $read_count,
             'readSinceModificationCount' => $read_since_modification_count,
         );
-    }
-
-   /**
-     * @Route("/room/{roomId}/institution/feedaction")
-     */
-    public function feedActionAction($roomId, Request $request)
-    {
-        $translator = $this->get('translator');
-
-        $action = $request->request->get('act');
-
-        $selectedIds = $request->request->get('data');
-        if (!is_array($selectedIds)) {
-            $selectedIds = json_decode($selectedIds);
-        }
-
-        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
-
-        if ($action == 'markread') {
-            $institutionService = $this->get('commsy_legacy.institution_service');
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $noticedManager = $legacyEnvironment->getNoticedManager();
-            $readerManager = $legacyEnvironment->getReaderManager();
-            foreach ($selectedIds as $id) {
-                $item = $institutionService->getInstitution($id);
-                $versionId = $item->getVersionID();
-                $noticedManager->markNoticed($id, $versionId);
-                $readerManager->markRead($id, $versionId);
-                $annotationList =$item->getAnnotationList();
-                if ( !empty($annotationList) ){
-                    $annotationItem = $annotationList->getFirst();
-                    while($annotationItem){
-                       $noticedManager->markNoticed($annotationItem->getItemID(),'0');
-                       $annotationItem = $annotationList->getNext();
-                    }
-                }
-            }
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
-        } else if ($action == 'copy') {
-           $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('%count% copied entries',count($selectedIds), array('%count%' => count($selectedIds)));
-        } else if ($action == 'save') {
-            $zipfile = $this->download($roomId, $selectedIds);
-            $content = file_get_contents($zipfile);
-
-            $response = new Response($content, Response::HTTP_OK, array('content-type' => 'application/zip'));
-            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,'zipfile.zip');
-            $response->headers->set('Content-Disposition', $contentDisposition);
-
-            return $response;
-        } else if ($action == 'delete') {
-            $institutionService = $this->get('commsy_legacy.institution_service');
-            foreach ($selectedIds as $id) {
-                $item = $institutionService->getInstitution($id);
-                $item->delete();
-            }
-           $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> '.$translator->transChoice('%count% deleted entries',count($selectedIds), array('%count%' => count($selectedIds)));
-        }
-
-        $response = new JsonResponse();
-        $response->setData(array(
-            'message' => $message,
-            'timeout' => '5550',
-            'layout'   => 'cs-notify-message'
-        ));
-        return $response;
     }
 
     /**
@@ -675,8 +601,6 @@ class InstitutionController extends Controller
         }
 
         $readerService = $this->get('commsy_legacy.reader_service');
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
 
         $readerList = array();
         foreach ($institutions as $item) {
@@ -701,6 +625,100 @@ class InstitutionController extends Controller
         return $this->get('commsy.print_service')->buildPdfResponse($html);
     }
 
+    /**
+     * @Route("/room/{roomId}/institution/download")
+     * @throws \Exception
+     */
+    public function downloadAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get(DownloadAction::class);
+        return $action->execute($room, $items);
+    }
+
+    ###################################################################################################
+    ## XHR Action requests
+    ###################################################################################################
+
+    /**
+     * @Route("/room/{roomId}/institution/xhr/markread", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrMarkReadAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get('commsy.action.mark_read.generic');
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/institution/xhr/delete", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrDeleteAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get('commsy.action.delete.generic');
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @param Request $request
+     * @param \cs_room_item $roomItem
+     * @param boolean $selectAll
+     * @param integer[] $itemIds
+     * @return \cs_label_item[]
+     */
+    public function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
+    {
+        $institutionService = $this->get('commsy_legacy.institution_service');
+
+        if ($selectAll) {
+            if ($request->query->has('institution_filter')) {
+                $currentFilter = $request->query->get('institution_filter');
+                $filterForm = $this->createFilterForm($roomItem);
+
+                // manually bind values from the request
+                $filterForm->submit($currentFilter);
+
+                // apply filter
+                $institutionService->setFilterConditions($filterForm);
+            } else {
+                $institutionService->showNoNotActivatedEntries();
+            }
+
+            return $institutionService->getListInstitutions($roomItem->getItemID());
+        } else {
+            return $institutionService->getInstitutionsById($roomItem->getItemID(), $itemIds);
+        }
+    }
+
+    /**
+     * @param \cs_room_item $room
+     * @return FormInterface
+     */
+    private function createFilterForm($room)
+    {
+        // setup filter form default values
+        $defaultFilterValues = [
+            'hide-deactivated-entries' => true,
+        ];
+
+        return $this->createForm(InstitutionFilterType::class, $defaultFilterValues, [
+            'action' => $this->generateUrl('commsy_institution_list', [
+                'roomId' => $room->getItemID(),
+            ]),
+            'hasHashtags' => $room->withBuzzwords(),
+            'hasCategories' => $room->withTags(),
+        ]);
+    }
+
     private function getTagDetailArray ($baseCategories, $itemCategories) {
         $result = array();
         $tempResult = array();
@@ -712,7 +730,6 @@ class InstitutionController extends Controller
             if (!empty($tempResult)) {
                 $addCategory = true;
             }
-            $tempArray = array();
             $foundCategory = false;
             foreach ($itemCategories as $itemCategory) {
                 if ($baseCategory['item_id'] == $itemCategory['id']) {

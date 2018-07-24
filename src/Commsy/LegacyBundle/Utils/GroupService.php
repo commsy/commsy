@@ -40,7 +40,14 @@ class GroupService
         $group = $this->groupManager->getItem($itemId);
         return $group;
     }
-    
+
+    /**
+     * @param integer $roomId
+     * @param integer $max
+     * @param integer $start
+     * @param string $sort
+     * @return \cs_group_item[]
+     */
     public function getListGroups($roomId, $max = NULL, $start = NULL, $sort = NULL)
     {
         $this->groupManager->setContextLimit($roomId);
@@ -56,6 +63,21 @@ class GroupService
         $groupList = $this->groupManager->get();
 
         return $groupList->to_array();
+    }
+
+    /**
+     * @param integer $roomId
+     * @param integer[] $ids
+     * @return \cs_group_item[]
+     */
+    public function getGroupsById($roomId, $ids) {
+        $this->groupManager->setContextLimit($roomId);
+        $this->groupManager->setIDArrayLimit($ids);
+
+        $this->groupManager->select();
+        $userList = $this->groupManager->get();
+
+        return $userList->to_array();
     }
     
     public function setFilterConditions(Form $filterForm)

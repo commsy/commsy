@@ -2,9 +2,12 @@
 
 namespace CommsyBundle\Controller;
 
+use CommsyBundle\Action\Copy\CopyAction;
+use CommsyBundle\Http\JsonRedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -24,12 +27,8 @@ use CommsyBundle\Event\CommsyEditEvent;
  * @package CommsyBundle\Controller
  * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'discussion')")
  */
-class DiscussionController extends Controller
+class DiscussionController extends BaseController
 {
-    // setup filter form default values
-    private $defaultFilterValues = array(
-        'hide-deactivated-entries' => true,
-    );
     /**
      * @Route("/room/{roomId}/discussion/feed/{start}/{sort}")
      * @Template()
@@ -42,8 +41,6 @@ class DiscussionController extends Controller
         if (!$discussionFilter) {
             $discussionFilter = $request->query->get('discussion_filter');
         }
-       
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
@@ -51,18 +48,12 @@ class DiscussionController extends Controller
         if (!$roomItem) {
             throw $this->createNotFoundException('The requested room does not exist');
         }
-        
+
         // get the material manager service
         $discussionService = $this->get('commsy_legacy.discussion_service');
         
         if ($discussionFilter) {
-            $filterForm = $this->createForm(DiscussionFilterType::class, $this->defaultFilterValues, array(
-                'action' => $this->generateUrl('commsy_discussion_list', array(
-                    'roomId' => $roomId)
-                ),
-                'hasHashtags' => $roomItem->withBuzzwords(),
-                'hasCategories' => $roomItem->withTags(),
-            ));
+            $filterForm = $this->createFilterForm($roomItem);
             
             // manually bind values from the request
             $filterForm->submit($discussionFilter);
@@ -132,13 +123,7 @@ class DiscussionController extends Controller
 
         // get the discussion manager service
         $discussionService = $this->get('commsy_legacy.discussion_service');
-        $filterForm = $this->createForm(DiscussionFilterType::class, $this->defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_discussion_list', array(
-                'roomId' => $roomId,
-            )),
-            'hasHashtags' => $roomItem->withBuzzwords(),
-            'hasCategories' => $roomItem->withTags(),
-        ));
+        $filterForm = $this->createFilterForm($roomItem);
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -190,13 +175,7 @@ class DiscussionController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
         
-        $filterForm = $this->createForm(DiscussionFilterType::class, $this->defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_discussion_list', array(
-                'roomId' => $roomId)
-            ),
-            'hasHashtags' => $roomItem->withBuzzwords(),
-            'hasCategories' => $roomItem->withTags(),
-        ));
+        $filterForm = $this->createFilterForm($roomItem);
 
         // get the material manager service
         $discussionService = $this->get('commsy_legacy.discussion_service');
@@ -338,6 +317,7 @@ class DiscussionController extends Controller
         }
 
         // mark discussion articles as read / noticed
+        /** @var \cs_discussionarticle_item $article */
         $article = $articleList->getFirst();
         while ($article) {
             $latestReader = $readerManager->getLatestReader($article->getItemID());
@@ -392,8 +372,6 @@ class DiscussionController extends Controller
             }
 		    $current_user = $user_list->getNext();
 		}
-        $read_percentage = round(($read_count/$all_user_count) * 100);
-        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
         $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
@@ -528,7 +506,7 @@ class DiscussionController extends Controller
             if (!empty($tempResult)) {
                 $addCategory = true;
             }
-            $tempArray = array();
+
             $foundCategory = false;
             foreach ($itemCategories as $itemCategory) {
                 if ($baseCategory['item_id'] == $itemCategory['id']) {
@@ -553,7 +531,6 @@ class DiscussionController extends Controller
     
     /**
      * @Route("/room/{roomId}/discussion/create")
-     * @Template()
      */
     public function createAction($roomId, Request $request)
     {
@@ -568,118 +545,6 @@ class DiscussionController extends Controller
         return $this->redirectToRoute('commsy_discussion_detail', [
             'roomId' => $roomId,
             'itemId' => $discussionItem->getItemId(),
-        ]);
-    }
-    
-    /**
-     * @Route("/room/{roomId}/discussion/feedaction")
-     */
-    public function feedActionAction($roomId, Request $request)
-    {
-        $translator = $this->get('translator');
-        
-        $action = $request->request->get('act');
-        
-        $selectedIds = $request->request->get('data');
-        if (!is_array($selectedIds)) {
-            $selectedIds = json_decode($selectedIds);
-        }
-        
-        $selectAll = $request->request->get('selectAll');
-        $selectAllStart = $request->request->get('selectAllStart');
-        
-        if ($selectAll == 'true') {
-            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $sort = 'date', $request);
-            foreach ($entries['discussions'] as $key => $value) {
-                $selectedIds[] = $value->getItemId();
-            }
-        }
-
-        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
-
-        $result = [];
-        
-        if ($action == 'markread') {
-	        $discussionService = $this->get('commsy_legacy.discussion_service');
-	        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $noticedManager = $legacyEnvironment->getNoticedManager();
-            $readerManager = $legacyEnvironment->getReaderManager();
-            foreach ($selectedIds as $id) {
-    	        $item = $discussionService->getDiscussion($id);
-    	        $versionId = $item->getVersionID();
-    	        $noticedManager->markNoticed($id, $versionId);
-    	        $readerManager->markRead($id, $versionId);
-    	        
-    	        $itemList = $item->getAllArticles();
-    	        $articleItem = $itemList->getFirst();
-                while ( $articleItem ) {
-                    $versionId = $articleItem->getVersionID();
-                    $noticedManager->markNoticed($articleItem->getItemId(), $versionId);
-                    $readerManager->markRead($articleItem->getItemId(), $versionId);
-                    $articleItem = $itemList->getNext();
-                }
-	        }
-	        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
-        } else if ($action == 'copy') {
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $sessionItem = $legacyEnvironment->getSessionItem();
-
-            $currentClipboardIds = array();
-            if ($sessionItem->issetValue('clipboard_ids')) {
-                $currentClipboardIds = $sessionItem->getValue('clipboard_ids');
-            }
-
-            foreach ($selectedIds as $itemId) {
-                if (!in_array($itemId, $currentClipboardIds)) {
-                    $currentClipboardIds[] = $itemId;
-                    $sessionItem->setValue('clipboard_ids', $currentClipboardIds);
-                }
-            }
-
-            $result = [
-                'count' => sizeof($currentClipboardIds)
-            ];
-
-            $sessionManager = $legacyEnvironment->getSessionManager();
-            $sessionManager->save($sessionItem);
-
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('%count% copied entries',count($selectedIds), array('%count%' => count($selectedIds)));
-        } else if ($action == 'save') {
-            /* $zipfile = $this->download($roomId, $selectedIds);
-            $content = file_get_contents($zipfile);
-
-            $response = new Response($content, Response::HTTP_OK, array('content-type' => 'application/zip'));
-            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,'zipfile.zip');   
-            $response->headers->set('Content-Disposition', $contentDisposition);
-            
-            return $response; */
-            
-            $downloadService = $this->get('commsy_legacy.download_service');
-        
-            $zipFile = $downloadService->zipFile($roomId, $selectedIds);
-    
-            $response = new BinaryFileResponse($zipFile);
-            $response->deleteFileAfterSend(true);
-    
-            $filename = 'CommSy_Discussion.zip';
-            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$filename);   
-            $response->headers->set('Content-Disposition', $contentDisposition);
-    
-            return $response;
-        } else if ($action == 'delete') {
-            $discussionService = $this->get('commsy_legacy.discussion_service');
-  		    foreach ($selectedIds as $id) {
-  		        $item = $discussionService->getDiscussion($id);
-  		        $item->delete();
-  		    }
-           $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> '.$translator->transChoice('%count% deleted entries',count($selectedIds), array('%count%' => count($selectedIds)));
-        }
-
-        return new JsonResponse([
-            'message' => $message,
-            'timeout' => '5550',
-            'layout' => 'cs-notify-message',
-            'data' => $result,
         ]);
     }
     
@@ -713,53 +578,9 @@ class DiscussionController extends Controller
             'user' => $infoArray['user'],
             'ratingArray' => $infoArray['ratingArray'],
             'roomCategories' => $infoArray['roomCategories'],
-            'userCount' => $infoArray['userCount'],
         ]);
 
         return $this->get('commsy.print_service')->buildPdfResponse($html);
-    }
-    
-    /**
-     * @Route("/room/{roomId}/discussion/{itemId}/download")
-     */
-    public function downloadAction($roomId, $itemId)
-    {
-        $downloadService = $this->get('commsy_legacy.download_service');
-        
-        $zipFile = $downloadService->zipFile($roomId, $itemId);
-
-        $response = new BinaryFileResponse($zipFile);
-        $response->deleteFileAfterSend(true);
-
-        $filename = 'CommSy_Discussion.zip';
-        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$filename);   
-        $response->headers->set('Content-Disposition', $contentDisposition);
-
-        return $response;
-    }
-    
-    /**
-     * @Route("/room/{roomId}/discussion/{itemId}/delete")
-     * @Security("is_granted('ITEM_EDIT', itemId) and is_granted('RUBRIC_SEE', 'discussion')")
-     **/
-    public function deleteAction($roomId, $itemId, Request $request)
-    {
-        $itemService = $this->get('commsy_legacy.item_service');
-        $item = $itemService->getItem($itemId);
-        
-        $discussionService = $this->get('commsy_legacy.discussion_service');
-
-        $tempItem = null;
-        
-        if ($item->getItemType() == 'discussion') {
-            $tempItem = $discussionService->getDiscussion($itemId);
-        } else if ($item->getItemType() == 'discarticle') {
-            $tempItem = $discussionService->getArticle($itemId); 
-        }
-
-        $tempItem->delete();
-
-        return $this->redirectToRoute('commsy_discussion_list', array('roomId' => $roomId));
     }
     
     /**
@@ -1029,7 +850,6 @@ class DiscussionController extends Controller
         $item = $itemService->getItem($itemId);
         
         $discussionService = $this->get('commsy_legacy.discussion_service');
-        $transformer = $this->get('commsy_legacy.transformer.discussion');
         
         if ($item->getItemType() == 'discussion') {
             $typedItem = $discussionService->getDiscussion($itemId);
@@ -1193,6 +1013,115 @@ class DiscussionController extends Controller
                 $article->save();
             }
             return $this->redirectToRoute('commsy_discussion_detail', array('roomId' => $roomId, 'itemId' => $article->getDiscussionID()));
+        }
+    }
+
+    /**
+     * @Route("/room/{roomId}/discussion/download")
+     * @throws \Exception
+     */
+    public function downloadAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get(DownloadAction::class);
+        return $action->execute($room, $items);
+    }
+
+    ###################################################################################################
+    ## XHR Action requests
+    ###################################################################################################
+
+    /**
+     * @Route("/room/{roomId}/discussion/xhr/markread", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrMarkReadAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get('commsy.action.mark_read.generic');
+        return $action->execute($room, $items);
+
+    }
+
+    /**
+     * @Route("/room/{roomId}/discussion/xhr/copy", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrCopyAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get(CopyAction::class);
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/discussion/xhr/delete", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrDeleteAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get('commsy.action.delete.generic');
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @param \cs_room_item $room
+     * @return FormInterface
+     */
+    private function createFilterForm($room)
+    {
+        // setup filter form default values
+        $defaultFilterValues = [
+            'hide-deactivated-entries' => true,
+        ];
+
+        return $this->createForm(DiscussionFilterType::class, $defaultFilterValues, [
+            'action' => $this->generateUrl('commsy_discussion_list', [
+                'roomId' => $room->getItemID(),
+            ]),
+            'hasHashtags' => $room->withBuzzwords(),
+            'hasCategories' => $room->withTags(),
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param \cs_room_item $roomItem
+     * @param boolean $selectAll
+     * @param integer[] $itemIds
+     * @return \cs_discussion_item[]
+     */
+    public function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
+    {
+        // get the discussion manager service
+        $discussionService = $this->get('commsy_legacy.discussion_service');
+
+        if ($selectAll) {
+            if ($request->query->has('discussion_filter')) {
+                $currentFilter = $request->query->get('discussion_filter');
+                $filterForm = $this->createFilterForm($roomItem);
+
+                // manually bind values from the request
+                $filterForm->submit($currentFilter);
+
+                // apply filter
+                $discussionService->setFilterConditions($filterForm);
+            } else {
+                $discussionService->showNoNotActivatedEntries();
+            }
+
+            return $discussionService->getListDiscussions($roomItem->getItemID());
+        } else {
+            return $discussionService->getDiscussionsById($roomItem->getItemID(), $itemIds);
         }
     }
 }

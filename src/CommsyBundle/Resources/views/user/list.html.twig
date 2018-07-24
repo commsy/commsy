@@ -54,13 +54,27 @@
                         <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
                     </a>
                 </li>
+
                 <li>
-                    <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target": ".feed", "actionUrl": "{{ path('commsy_user_feedaction', {'roomId': roomId}) }}", "action": "markread"}'>
+                    <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                        'url': path('commsy_group_xhrmarkread', {'roomId': roomId}),
+                        'action': 'markread',
+                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                        'mode': 'selection',
+                        'noSelectionMessage': 'no entry selected'|trans({},'item')
+                    }|json_encode|e('html_attr') }}">
                         <i class="uk-icon-justify uk-icon-small uk-icon-check-square-o uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
                     </a>
                 </li>
+
                 <li>
-                    <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{"target": ".feed", "actionUrl": "{{ path('commsy_user_feedaction', {'roomId': roomId}) }}", "action": "sendmail"}'>
+                    <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                        'url': path('commsy_user_sendmultiple', {'roomId': roomId}),
+                        'action': 'sendmail',
+                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                        'mode': 'selection',
+                        'noSelectionMessage': 'no entry selected'|trans({},'item')
+                    }|json_encode|e('html_attr') }}">
                         <i class="uk-icon-justify uk-icon-small uk-icon-send-o uk-visible-large"></i> {{ 'send email'|trans({},'user') }}
                     </a>
                 </li>
@@ -76,109 +90,122 @@
                 <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
                     {# delete #}
                     <li>
-                        <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{
-                            "target": ".feed",
-                            "actionUrl": "{{ path('commsy_user_feedaction', {'roomId': roomId}) }}",
-                            "action": "user-delete"
-                        }' data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}">
+                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                            'url': path('commsy_user_xhrdelete', {'roomId': roomId}),
+                            'action': 'delete',
+                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                            'mode': 'selection',
+                            'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
+                            'confirmQuestion': 'confirm delete'|trans({}, 'rubric'),
+                            'confirmCancel': 'confirm delete cancel'|trans({}, 'rubric'),
+                            'confirmOk': 'confirm delete confirm'|trans({}, 'rubric'),
+                            'returnUrl': path('commsy_user_list', {'roomId': roomId})
+                        }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'user') }}
                         </a>
                     </li>
 
                     {# block #}
                     <li>
-                        <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{
-                            "target": ".feed",
-                            "actionUrl": "{{ path('commsy_user_changestatus', {
-                                'roomId': roomId,
-                                'status': 'user-block'
-                            }) }}",
-                            "action": "user-block"
-                        }' data-no-selection="{{'no entry selected'|trans({},'item')}}">
+                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                            'url': path('commsy_user_changestatus', {'roomId': roomId}),
+                            'action': 'user-block',
+                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                            'mode': 'selection',
+                            'noSelectionMessage': 'no entry selected'|trans({},'item'),
+                            'returnUrl': path('commsy_user_list', {'roomId': roomId}),
+                            'status': 'user-block'
+                        }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-ban uk-visible-large"></i> {{ 'block'|trans({},'user') }}
                         </a>
                     </li>
 
                     {# confirm #}
                     <li>
-                        <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{
-                            "target": ".feed",
-                            "actionUrl": "{{ path('commsy_user_changestatus', {
-                                'roomId': roomId,
-                                'status': 'user-confirm'
-                            }) }}",
-                            "action": "user-confirm"
-                        }' data-no-selection="{{'no entry selected'|trans({},'item')}}">
+                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                            'url': path('commsy_user_changestatus', {'roomId': roomId}),
+                            'action': 'user-confirm',
+                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                            'mode': 'selection',
+                            'noSelectionMessage': 'no entry selected'|trans({},'item'),
+                            'returnUrl': path('commsy_user_list', {'roomId': roomId}),
+                            'status': 'user-confirm'
+                        }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-sign-in uk-visible-large"></i> {{ 'confirm'|trans({},'user') }}
                         </a>
                     </li>
 
                     {# reading #}
                     <li>
-                        <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{
-                            "target": ".feed",
-                            "actionUrl": "{{ path('commsy_user_changestatus', {
-                                'roomId': roomId,
-                                'status': 'user-status-reading-user'
-                            }) }}",
-                            "action": "user-status-reading-user"
-                        }' data-no-selection="{{'no entry selected'|trans({},'item')}}">
+                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                            'url': path('commsy_user_changestatus', {'roomId': roomId}),
+                            'action': 'user-status-reading-user',
+                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                            'mode': 'selection',
+                            'noSelectionMessage': 'no entry selected'|trans({},'item'),
+                            'returnUrl': path('commsy_user_list', {'roomId': roomId}),
+                            'status': 'user-status-reading-user'
+                        }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-user-secret uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'reading user'|trans({},'user') }}
                         </a>
                     </li>
 
                     {# user #}
                     <li>
-                        <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{
-                            "target": ".feed",
-                            "actionUrl": "{{ path('commsy_user_changestatus', {
-                                'roomId': roomId,
-                                'status': 'user-status-user'
-                            }) }}",
-                            "action": "user-status-user"
-                        }' data-no-selection="{{'no entry selected'|trans({},'item')}}">
+                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                            'url': path('commsy_user_changestatus', {'roomId': roomId}),
+                            'action': 'user-status-user',
+                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                            'mode': 'selection',
+                            'noSelectionMessage': 'no entry selected'|trans({},'item'),
+                            'returnUrl': path('commsy_user_list', {'roomId': roomId}),
+                            'status': 'user-status-user'
+                        }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-user uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'user'|trans({},'user') }}
                         </a>
                     </li>
 
                     {# moderator #}
                     <li>
-                        <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{
-                            "target": ".feed",
-                            "actionUrl": "{{ path('commsy_user_changestatus', {
-                                'roomId': roomId,
-                                'status': 'user-status-moderator'
-                            }) }}",
-                            "action": "user-status-moderator"
-                        }' data-no-selection="{{'no entry selected'|trans({},'item')}}">
+                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                            'url': path('commsy_user_changestatus', {'roomId': roomId}),
+                            'action': 'user-status-moderator',
+                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                            'mode': 'selection',
+                            'noSelectionMessage': 'no entry selected'|trans({},'item'),
+                            'returnUrl': path('commsy_user_list', {'roomId': roomId}),
+                            'status': 'user-status-moderator'
+                        }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-wrench uk-visible-large"></i> {{ 'status'|trans({},'user') }}: {{ 'moderator'|trans({},'user') }}
                         </a>
                     </li>
 
                     {# contact #}
                     <li>
-                        <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{
-                            "target": ".feed",
-                            "actionUrl": "{{ path('commsy_user_changestatus', {
-                                'roomId': roomId,
-                                'status': 'user-contact'
-                            }) }}",
-                            "action": "user-contact"
-                        }' data-no-selection="{{'no entry selected'|trans({},'item')}}">
+                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                            'url': path('commsy_user_changestatus', {'roomId': roomId}),
+                            'action': 'user-contact',
+                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                            'mode': 'selection',
+                            'noSelectionMessage': 'no entry selected'|trans({},'item'),
+                            'returnUrl': path('commsy_user_list', {'roomId': roomId}),
+                            'status': 'user-contact'
+                        }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-phone uk-visible-large"></i> {{ 'contact'|trans({},'user') }}
                         </a>
                     </li>
 
-                    {# remove contact#}
+                    {# remove contact #}
                     <li>
-                        <a href="#" class="commsy-select-action" data-uk-button data-commsy-list-action='{
-                            "target": ".feed",
-                            "actionUrl": "{{ path('commsy_user_changestatus', {
-                                'roomId': roomId,
-                                'status': 'user-contact-remove'
-                            }) }}",
-                            "action": "user-contact-remove"
-                        }' data-no-selection="{{'no entry selected'|trans({},'item')}}">
+                        <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                            'url': path('commsy_user_changestatus', {'roomId': roomId}),
+                            'action': 'user-contact-remove',
+                            'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                            'mode': 'selection',
+                            'noSelectionMessage': 'no entry selected'|trans({},'item'),
+                            'returnUrl': path('commsy_user_list', {'roomId': roomId}),
+                            'status': 'user-contact-remove'
+                        }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-square-o uk-visible-large"></i> {{ 'contact remove'|trans({},'user') }}
                         </a>
                     </li>

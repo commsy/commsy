@@ -60,8 +60,7 @@ class ItemTransformer implements DataTransformerInterface
      *
      * @param object $materialObject
      * @param array $materialData
-     * @return cs_material_item|null
-     * @throws TransformationFailedException if room item is not found.
+     * @return \cs_item
      */
     public function applyTransformation($item, $itemData)
     {

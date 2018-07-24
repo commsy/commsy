@@ -704,7 +704,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
    *
    * @param integer item_id id of the item
    *
-   * @return object cs_item a label
+   * @return \cs_dates_item a label
    */
    function getItem ($item_id = NULL) {
      $dates = NULL;
