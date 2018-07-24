@@ -64,6 +64,42 @@
                 <target>Bei Änderungen müssen alle Benutzer die Nutzungsbedingungen erneut akzeptieren!</target>
             </trans-unit>
 
+            <!-- portal terms templates -->
+            <trans-unit id="portal_terms_templates_reference">
+                <source>You can set up templates for room terms here</source>
+                <target>Sie können Vorlagen für Nutzungsbedingungen in Räumen hier verwalten</target>
+            </trans-unit>
+
+            <trans-unit id="portal_terms_templates_breadcrumb">
+                <source>roomtermstemplates</source>
+                <target>Vorlagen Nutzungsbedingungen</target>
+            </trans-unit>
+
+            <trans-unit id="Edit terms">
+                <source>Edit terms</source>
+                <target>Nutzungsbedingungen bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="content_de">
+                <source>content_de</source>
+                <target>Inhalt (DE)</target>
+            </trans-unit>
+            <trans-unit id="content_en">
+                <source>content_en</source>
+                <target>Inhalt (EN)</target>
+            </trans-unit>
+            <trans-unit id="Create new term">
+                <source>Create new term</source>
+                <target>Nutzungsbedigungen anlegen</target>
+            </trans-unit>
+            <trans-unit id="Update term">
+                <source>Update term</source>
+                <target>Nutzungsbedigungen speichern</target>
+            </trans-unit>
+            <trans-unit id="Delete term">
+                <source>Delete term</source>
+                <target>Nutzungsbedigungen löschen</target>
+            </trans-unit>
+
             <!-- portal help link -->
             <trans-unit id="support page link">
                 <source>help</source>

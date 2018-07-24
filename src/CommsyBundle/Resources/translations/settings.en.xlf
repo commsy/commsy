@@ -714,6 +714,10 @@
                 <source>rss_disabled</source>
                 <target>switch off</target>
             </trans-unit>
+            <trans-unit id="Portal terms">
+                <source>Portal terms</source>
+                <target>Templates</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

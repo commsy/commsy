@@ -12,6 +12,10 @@
                 </div>
 
                 <div>
+                    <div class="uk-alert">
+                        <a href="{{ path('commsy_portal_roomtermstemplates', { 'roomId': portal.itemId }) }}">{{ 'You can set up templates for room terms here'|trans({}, 'portal') }}</a>
+                    </div>
+
                     <div class="uk-grid">
                         {{ form_start(form) }}
                         {{ form_row(form.status)}}

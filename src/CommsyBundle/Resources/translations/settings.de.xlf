@@ -713,6 +713,10 @@
                 <source>rss_disabled</source>
                 <target>ausschalten (kein RSS-Abo für diesen Raum)</target>
             </trans-unit>
+            <trans-unit id="Portal terms">
+                <source>Portal terms</source>
+                <target>Vorlagen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

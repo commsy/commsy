@@ -19,7 +19,8 @@ use CommsyBundle\Form\Type\RoomCategoriesLinkType;
 use CommsyBundle\Entity\RoomCategories;
 use CommsyBundle\Entity\License;
 use CommsyBundle\Form\Type\LicenseNewEditType;
-
+use CommsyBundle\Entity\Terms;
+use CommsyBundle\Form\Type\TermType;
 
 use CommsyBundle\Event\CommsyEditEvent;
 
@@ -111,7 +112,8 @@ class PortalController extends Controller
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")
      */
-    public function announcementsAction($roomId, Request $request) {
+    public function announcementsAction($roomId, Request $request)
+    {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
@@ -154,6 +156,8 @@ class PortalController extends Controller
     }
 
     /**
+     * Handles portal terms configuration
+     *
      * @Route("/portal/{roomId}/terms")
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")
@@ -184,8 +188,69 @@ class PortalController extends Controller
 
         return [
             'form' => $termsForm->createView(),
+            'portal' => $portalItem,
         ];
 
+    }
+
+    /**
+     * Handles portal terms templates for use inside rooms
+     *
+     * @Route("/portal/{roomId}/roomTermsTemplates/{termId}")
+     * @Template()
+     * @Security("is_granted('ITEM_MODERATE', roomId)")
+     */
+    public function roomTermsTemplatesAction($roomId, $termId = null, Request $request)
+    {
+        $portalId = $roomId;
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository(Terms::class);
+
+        if ($termId) {
+            /** @noinspection PhpUndefinedMethodInspection */
+            $term = $repository->findOneById($termId);
+        } else {
+            $term = new Terms();
+            $term->setContextId($portalId);
+        }
+
+        $form = $this->createForm(TermType::class, $term, []);
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+
+            // tells Doctrine you want to (eventually) save the Product (no queries yet)
+            if ($form->getClickedButton()->getName() == 'delete') {
+                $em->remove($term);
+                $em->flush();
+            } else {
+                $em->persist($term);
+            }
+
+            // actually executes the queries (i.e. the INSERT query)
+            $em->flush();
+
+            return $this->redirectToRoute('commsy_portal_roomtermstemplates', [
+                'roomId' => $roomId,
+            ]);
+        }
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        $terms = $repository->findByContextId($portalId);
+
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->dispatch('commsy.edit', new CommsyEditEvent(null));
+
+        return [
+            'form' => $form->createView(),
+            'roomId' => $portalId,
+            'terms' => $terms,
+            'termId' => $termId,
+            'item' => $legacyEnvironment->getCurrentPortalItem(),
+        ];
     }
 
     /**
@@ -193,7 +258,8 @@ class PortalController extends Controller
      * @Template()
      * @Security("is_granted('ITEM_MODERATE', roomId)")
      */
-    public function helpAction($roomId, Request $request) {
+    public function helpAction($roomId, Request $request)
+    {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $portalItem = $legacyEnvironment->getCurrentPortalItem();

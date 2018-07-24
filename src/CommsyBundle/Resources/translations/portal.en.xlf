@@ -64,6 +64,42 @@
                 <target>If you change and save this text, all users will be forced to reaccept the Terms and Conditions the next time they log in!</target>
             </trans-unit>
 
+            <!-- portal terms templates -->
+            <trans-unit id="portal_terms_templates_reference">
+                <source>You can set up templates for room terms here</source>
+                <target>You can set up templates for room terms here</target>
+            </trans-unit>
+
+            <trans-unit id="portal_terms_templates_breadcrumb">
+                <source>roomtermstemplates</source>
+                <target>Templates Terms</target>
+            </trans-unit>
+            
+            <trans-unit id="Edit terms">
+                <source>Edit terms</source>
+                <target>Edit terms</target>
+            </trans-unit>
+            <trans-unit id="content_de">
+                <source>content_de</source>
+                <target>Content (DE)</target>
+            </trans-unit>
+            <trans-unit id="content_en">
+                <source>content_en</source>
+                <target>Content (EN)</target>
+            </trans-unit>
+            <trans-unit id="Create new term">
+                <source>Create new term</source>
+                <target>Create new term</target>
+            </trans-unit>
+            <trans-unit id="Update term">
+                <source>Update term</source>
+                <target>Update term</target>
+            </trans-unit>
+            <trans-unit id="Delete term">
+                <source>Delete term</source>
+                <target>Delete term</target>
+            </trans-unit>
+
             <!-- portal help link -->
             <trans-unit id="support page link">
                 <source>help</source>
