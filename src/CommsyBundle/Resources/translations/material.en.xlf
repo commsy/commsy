@@ -190,6 +190,10 @@
                 <source>ratingDeleted</source>
                 <target>Rating deleted</target>
             </trans-unit>
+            <trans-unit id="License id">
+                <source>License id</source>
+                <target>License</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

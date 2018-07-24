@@ -5,6 +5,7 @@ namespace CommsyBundle\Controller;
 use CommsyBundle\Action\Copy\CopyAction;
 use CommsyBundle\Action\Download\DownloadAction;
 use CommsyBundle\Http\JsonRedirectResponse;
+use CommsyBundle\Entity\License;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
@@ -925,6 +926,16 @@ class MaterialController extends BaseController
             $formData['hashtagsMandatory'] = $hashtagsMandatory;
             $formData['hashtag_mapping']['categories'] = $itemController->getLinkedCategories($item);
             $formData['category_mapping']['hashtags'] = $itemController->getLinkedHashtags($itemId, $roomId, $legacyEnvironment);
+
+            $licensesRepository = $this->getDoctrine()->getRepository(License::class);
+            $availableLicenses = $licensesRepository->findByContextOrderByPosition($legacyEnvironment->getCurrentPortalId());
+            $licenses = [];
+            $licensesContent = [];
+            foreach ($availableLicenses as $availableLicense) {
+                $licenses[$availableLicense->getTitle()] = $availableLicense->getId();
+                $licensesContent[$availableLicense->getId()] = $availableLicense->getContent();
+            }
+
             $form = $this->createForm(MaterialType::class, $formData, array(
                 'action' => $this->generateUrl('commsy_material_edit', array(
                     'roomId' => $roomId,
@@ -939,6 +950,7 @@ class MaterialController extends BaseController
                     'hashTagPlaceholderText' => $translator->trans('Hashtag', [], 'hashtag'),
                     'hashtagEditUrl' => $this->generateUrl('commsy_hashtag_add', ['roomId' => $roomId])
                 ],
+                'licenses' => $licenses,
             ));
 
             $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($materialItem));
@@ -1001,6 +1013,8 @@ class MaterialController extends BaseController
             'showHashtags' => $hashtagsMandatory,
             'showCategories' => $categoriesMandatory,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
+            'licenses' => $licenses,
+            'licensesContent' => $licensesContent,
         );
     }
     
@@ -1103,7 +1117,7 @@ class MaterialController extends BaseController
 
         return $this->get('commsy.print_service')->buildPdfResponse($html);
     }
-        
+
     /**
      * @Route("/room/{roomId}/material/create")
      * @Template()

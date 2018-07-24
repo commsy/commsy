@@ -1,0 +1,68 @@
+{% extends 'CommsyBundle:Base:portal.html.twig' %}
+
+{% form_theme newEditForm 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
+{% form_theme sortForm 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
+
+{% block content %}
+    <div class="uk-grid" data-uk-grid-margin>
+
+        <div class="uk-width-1-1">
+
+            {# new license #}
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div class="uk-text-large">{{ pageTitle|trans({}, "portal") }}</div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="uk-grid">
+                        {# form column #}
+                        <div>
+                            {{ form_start(newEditForm) }}
+                            <fieldset>
+                                <div id="license_new_edit">
+                                    {{ form_row(newEditForm.title) }}
+                                    {{ form_row(newEditForm.content) }}
+
+                                    {% if newEditForm.new is defined %}
+                                        {{ form_row(newEditForm.new) }}
+                                    {% elseif newEditForm.update is defined and newEditForm.cancel is defined %}
+                                        {{ form_row(newEditForm.update) }}
+                                        {{ form_row(newEditForm.cancel) }}
+                                    {% endif %}
+                                </div>
+                            </fieldset>
+                            {{ form_end(newEditForm) }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="uk-width-1-1">
+            {# sort licenses #}
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div class="uk-text-large">{{ 'Edit Licenses'|trans({}, "portal") }}</div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="uk-grid">
+                        {# form column #}
+                        <div class="uk-width-1-1">
+                            {{ form_start(sortForm) }}
+                            {{ form_widget(sortForm) }}
+                            {{ form_end(sortForm) }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
