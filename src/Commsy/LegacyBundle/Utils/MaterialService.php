@@ -134,7 +134,7 @@ class MaterialService
         }
     }
 
-    public function getMaterial($itemId) : \cs_material_item
+    public function getMaterial($itemId) : ?\cs_material_item
     {
         return $this->materialManager->getItem($itemId);
     }
