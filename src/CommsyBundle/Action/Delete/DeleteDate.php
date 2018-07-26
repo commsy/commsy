@@ -84,7 +84,7 @@ class DeleteDate extends DeleteGeneric
             $recurringDate = $recurringDates->getFirst();
             while ($recurringDate) {
                 $recurrencePattern = $recurringDate->getRecurrencePattern();
-                $recurrencePatternExcludeDate = new \DateTime($item->getDateTime_start());
+                $recurrencePatternExcludeDate = new \DateTime($date->getDateTime_start());
                 if (!isset($recurrencePattern['recurringExclude'])) {
                     $recurrencePattern['recurringExclude'] = [$recurrencePatternExcludeDate->format('Ymd\THis')];
                 } else {
