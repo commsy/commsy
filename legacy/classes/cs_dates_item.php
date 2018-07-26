@@ -962,5 +962,13 @@ class cs_dates_item extends cs_item {
     function setWholeDay ($value) {
         $this->_setValue('whole_day', $value);
     }
+
+    function getDateTime_recurrence() {
+        return $this->_getValue('datetime_recurrence');
+    }
+
+    function setDateTime_recurrence ($value) {
+        $this->_setValue('datetime_recurrence', $value);
+    }
 }
 ?>

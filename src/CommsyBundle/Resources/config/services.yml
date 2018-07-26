@@ -801,6 +801,8 @@ services:
         autowire: true
     CommsyBundle\Action\Delete\DeleteDate:
         autowire: true
+        arguments:
+            $calendarsService: '@commsy.calendars_service'
 
     commsy.action.delete.generic:
         class: CommsyBundle\Action\Delete\DeleteAction

@@ -2,43 +2,40 @@
 
 namespace CommsyBundle\CalDAV;
 
-use Sabre\DAV;
-use Sabre\HTTP\RequestInterface;
-use Sabre\HTTP\ResponseInterface;
-use Sabre\VObject;
 use Sabre\DAV\Exception;
-
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Sabre\VObject;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
-* This is an authentication backend that uses a database to manage passwords.
-*
-* @copyright Copyright (C) fruux GmbH (https://fruux.com/)
-* @author Evert Pot (http://evertpot.com/)
-* @license http://sabre.io/license/ Modified BSD License
-*/
-class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
+ * This is an authentication backend that uses a database to manage passwords.
+ *
+ * @copyright Copyright (C) fruux GmbH (https://fruux.com/)
+ * @author Evert Pot (http://evertpot.com/)
+ * @license http://sabre.io/license/ Modified BSD License
+ */
+class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
+{
 
     private $container;
     private $portalId;
     private $userId;
 
     /**
-    * Reference to PDO connection
-    *
-    * @var AuthPDO
-    */
+     * Reference to PDO connection
+     *
+     * @var AuthPDO
+     */
     protected $pdo;
 
     /**
-    * Creates the backend object.
-    *
-    * If the filename argument is passed in, it will parse out the specified file fist.
-    *
-    * @param \PDO $pdo
-    */
-    function __construct(\PDO $pdo, ContainerInterface $container, $portalId, $userId) {
+     * Creates the backend object.
+     *
+     * If the filename argument is passed in, it will parse out the specified file fist.
+     *
+     * @param \PDO $pdo
+     */
+    function __construct(\PDO $pdo, ContainerInterface $container, $portalId, $userId)
+    {
         $this->pdo = $pdo;
         $this->container = $container;
         $this->portalId = $portalId;
@@ -69,7 +66,8 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
      * @param string $principalUri
      * @return array
      */
-    function getCalendarsForUser($principalUri) {
+    function getCalendarsForUser($principalUri)
+    {
         $userId = str_ireplace('principals/', '', $principalUri);
 
         $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
@@ -84,11 +82,13 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
         $calendarSelection = false;
 
         foreach ($userArray as $user) {
-            $contextTitlesArray[$user->getContextId()] = $user->getContextItem()->getTitle();
-            $calendarsArray = array_merge($calendarsArray, $calendarsService->getListCalendars($user->getContextItem()->getItemId()));
+            if ($user->getContextItem()) {
+                $contextTitlesArray[$user->getContextId()] = $user->getContextItem()->getTitle();
+                $calendarsArray = array_merge($calendarsArray, $calendarsService->getListCalendars($user->getContextItem()->getItemId()));
 
-            if ($calendarSelection === false) {
-                $calendarSelection = $user->getOwnRoom()->getCalendarSelection();
+                if ($calendarSelection === false && $user->getOwnRoom()) {
+                    $calendarSelection = $user->getOwnRoom()->getCalendarSelection();
+                }
             }
         }
 
@@ -186,7 +186,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
 
                     $tempCalendar = [
                         'id' => [(int)$calendar->getId(), (int)$calendar->getId()],
-                        'uri' => urlencode($contextTitlesArray[$calendar->getContextId()] . $calendar->getTitle()),
+                        'uri' => urlencode($calendar->getContextId() . $calendar->getId()),
                         'principaluri' => $principalUri,
                         '{' . \Sabre\CalDAV\Plugin::NS_CALENDARSERVER . '}getctag' => 'http://sabre.io/ns/sync/' . $calendar->getSynctoken(),
                         '{http://sabredav.org/ns}sync-token' => $calendar->getSynctoken(),
@@ -243,7 +243,8 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
      * @param mixed $calendarId
      * @return array
      */
-    function getCalendarObjects($calendarId) {
+    function getCalendarObjects($calendarId)
+    {
         $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
         $calendarsService = $this->container->get('commsy.calendars_service');
 
@@ -252,24 +253,31 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
         if ($calendars[0]) {
             $datesManager = $legacyEnvironment->getDatesManager();
             $datesManager->setContextArrayLimit([$calendars[0]->getcontextId()]);
+            $datesManager->setCalendarArrayLimit([$calendars[0]->getId()]);
             $datesManager->setWithoutDateModeLimit();
             $datesManager->select();
             $datesArray = $datesManager->get()->to_array();
 
             $result = [];
+            $recurringIds = [];
+
             foreach ($datesArray as $dateItem) {
-                $dateTime = new \DateTime($dateItem->getModificationDate());
+                if ($dateItem->getRecurrenceId() == '' || !in_array($dateItem->getRecurrenceId(), $recurringIds)) {
+                    if ($dateItem->getRecurrenceId() != '') {
+                        $recurringIds[] = $dateItem->getRecurrenceId();
+                    }
 
-                $calendarObjectId = $legacyEnvironment->getCurrentPortalId().'-'.$dateItem->getContextId().'-'.$dateItem->getItemId();
-
-                $result[] = [
-                    'id' => $calendarObjectId,
-                    'uri' => $calendarObjectId.'.ics',
-                    'lastmodified' => $dateTime->getTimestamp(),
-                    'etag' => '"' . $calendarObjectId.'-'.$dateTime->getTimestamp() . '"',
-                    'size' => $this->getCalendarDataSize($dateItem, $calendarObjectId),
-                    'component' => strtolower('VEVENT'),
-                ];
+                    $dateTime = new \DateTime($dateItem->getModificationDate());
+                    $calendarObjectId = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getItemId();
+                    $result[] = [
+                        'id' => $calendarObjectId,
+                        'uri' => $calendarObjectId . '.ics',
+                        'lastmodified' => $dateTime->getTimestamp(),
+                        'etag' => '"' . $calendarObjectId . '-' . $dateTime->getTimestamp() . '"',
+                        'size' => $this->getCalendarDataSize($dateItem, $calendarObjectId),
+                        'component' => strtolower('VEVENT'),
+                    ];
+                }
             }
 
             /*
@@ -321,7 +329,8 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
      * @param string $objectUri
      * @return array|null
      */
-    function getCalendarObject($calendarId, $objectUri) {
+    function getCalendarObject($calendarId, $objectUri)
+    {
         if (!is_array($calendarId)) {
             throw new \InvalidArgumentException('The value passed to $calendarId is expected to be an array with a calendarId and an instanceId');
         }
@@ -362,7 +371,8 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
      * @param array $properties
      * @return string
      */
-    function createCalendar($principalUri, $calendarUri, array $properties) {
+    function createCalendar($principalUri, $calendarUri, array $properties)
+    {
 
     }
 
@@ -382,7 +392,8 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
      * @param \Sabre\DAV\PropPatch $propPatch
      * @return void
      */
-    function updateCalendar($calendarId, \Sabre\DAV\PropPatch $propPatch) {
+    function updateCalendar($calendarId, \Sabre\DAV\PropPatch $propPatch)
+    {
 
     }
 
@@ -392,7 +403,8 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
      * @param mixed $calendarId
      * @return void
      */
-    function deleteCalendar($calendarId) {
+    function deleteCalendar($calendarId)
+    {
 
     }
 
@@ -417,19 +429,9 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
      * @param string $calendarData
      * @return string|null
      */
-    function createCalendarObject($calendarId, $objectUri, $calendarData) {
-        $result = null;
-
-        if ($calendarId[0]) {
-            $calendarId = $calendarId[0];
-
-            $dateItem = $this->transformVeventToDateItem($calendarId, $calendarData, null);
-            $dateItem->save();
-
-            $this->addChange($calendarId, $objectUri, 1);
-        }
-
-        return $result;
+    function createCalendarObject($calendarId, $objectUri, $calendarData)
+    {
+        return $this->updateCalendarObject($calendarId, null, $calendarData);
     }
 
     /**
@@ -450,18 +452,14 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
      * @param string $calendarData
      * @return string|null
      */
-    function updateCalendarObject($calendarId, $objectUri, $calendarData) {
+    function updateCalendarObject($calendarId, $objectUri, $calendarData)
+    {
         $result = null;
-
         if ($calendarId[0]) {
             $calendarId = $calendarId[0];
-
-            $dateItem = $this->transformVeventToDateItem($calendarId, $calendarData, $this->getDateItemFromObjectUri($objectUri));
-            $dateItem->save();
-
+            $this->transformVeventToDateItem($calendarId, $calendarData, $objectUri);
             $this->addChange($calendarId, $objectUri, 2);
         }
-
         return $result;
     }
 
@@ -474,9 +472,11 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
      * @param string $objectUri
      * @return void
      */
-    function deleteCalendarObject($calendarId, $objectUri) {
+    function deleteCalendarObject($calendarId, $objectUri)
+    {
         $dateItem = $this->getDateItemFromObjectUri($objectUri);
         if ($dateItem) {
+            // ToDo: handle recurring events. Deleted CommSy items need to be stored to work as exclusions from the series.
             $dateItem->delete();
             $this->addChange($calendarId, $objectUri, 3);
         }
@@ -537,7 +537,8 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
      * @param array $filters
      * @return array
      */
-    function calendarQuery($calendarId, array $filters) {
+    function calendarQuery($calendarId, array $filters)
+    {
         $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
         $calendarsService = $this->container->get('commsy.calendars_service');
 
@@ -552,9 +553,9 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
 
             $result = [];
             foreach ($datesArray as $dateItem) {
-                $calendarObjectId = $legacyEnvironment->getCurrentPortalId().'-'.$dateItem->getContextId().'-'.$dateItem->getItemId();
+                $calendarObjectId = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getItemId();
 
-                $result[] = $calendarObjectId.'.ics';
+                $result[] = $calendarObjectId . '.ics';
             }
 
             return $result;
@@ -572,38 +573,124 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
      * @param int $operation 1 = add, 2 = modify, 3 = delete.
      * @return void
      */
-    protected function addChange($calendarId, $objectUri, $operation) {
+    protected function addChange($calendarId, $objectUri, $operation)
+    {
+        if (is_array($calendarId)) {
+            if (isset($calendarId[0])) {
+                $calendarId = $calendarId[0];
+            } else {
+                return false;
+            }
+        }
         $this->container->get('commsy.calendars_service')->updateSynctoken($calendarId);
     }
 
 
     // ---- helper methods ---
 
-    private function getCalendarData ($dateItem, $objectUri) {
+    private function getCalendarData($dateItem, $objectUri)
+    {
+        $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
+
+        $uid = str_ireplace('.ics', '', $objectUri);
+        if ($dateItem->getRecurrenceId() != '') {
+            $uid = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getRecurrenceId();
+        }
+
+        $eventDataArray = [
+            'SUMMARY' => $dateItem->getTitle(),
+            'DTSTART' => new \DateTime($dateItem->getDateTime_start()),
+            'DTEND' => new \DateTime($dateItem->getDateTime_end()),
+            'UID' => $uid,
+            'LOCATION' => $dateItem->getPlace(),
+            'DESCRIPTION' => $dateItem->getDescription(),
+            'CLASS' => ($dateItem->isPublic() ? 'PUBLIC' : 'PRIVATE'),
+            'X-COMMSY-ITEM-ID' => $dateItem->getItemId(),
+        ];
+
+        $recurringSubEvents = [];
+        if ($dateItem->getRecurrenceId() != '') {
+            $excludeRecurrencePattern = $dateItem->getRecurrencePattern();
+            if (isset($excludeRecurrencePattern['recurringExclude'])) {
+                $eventDataArray['EXDATE'] = implode(',', $excludeRecurrencePattern['recurringExclude']);
+            }
+
+            $recurrencePattern = $this->translateRecurringPattern($dateItem->getRecurrencePattern(), 'CommSy');
+            $eventDataArray['RRULE'] = $recurrencePattern;
+
+            $datesManager = $legacyEnvironment->getDatesManager();
+            $datesManager->setContextArrayLimit([$dateItem->getContextId()]);
+            $datesManager->setWithoutDateModeLimit();
+            $datesManager->setRecurrenceLimit($dateItem->getRecurrenceId());
+            $datesManager->select();
+            $recurringDatesArray = $datesManager->get()->to_array();
+
+            foreach ($recurringDatesArray as $recurringDateItem) {
+                $dateTimeRecurrence = $recurringDateItem->getDateTime_start();
+                if ($recurringDateItem->getDateTime_recurrence()) {
+                    $dateTimeRecurrence = $recurringDateItem->getDateTime_recurrence();
+                }
+
+                $recurringSubEvents[] = [
+                    'SUMMARY' => $recurringDateItem->getTitle(),
+                    'DTSTART' => new \DateTime($recurringDateItem->getDateTime_start()),
+                    'DTEND' => new \DateTime($recurringDateItem->getDateTime_end()),
+                    'UID' => $uid,
+                    'LOCATION' => $recurringDateItem->getPlace(),
+                    'DESCRIPTION' => $recurringDateItem->getDescription(),
+                    'CLASS' => ($recurringDateItem->isPublic() ? 'PUBLIC' : 'PRIVATE'),
+                    'RECURRENCE-ID' => new \DateTime($dateTimeRecurrence),
+                    'X-COMMSY-ITEM-ID' => $recurringDateItem->getItemId(),
+                ];
+            }
+        }
+
         $vDateItem = new VObject\Component\VCalendar([
-            'VEVENT' => [
-                'SUMMARY'     => $dateItem->getTitle(),
-                'DTSTART'     => new \DateTime($dateItem->getDateTime_start()),
-                'DTEND'       => new \DateTime($dateItem->getDateTime_end()),
-                'UID'         => str_ireplace('.ics', '', $objectUri),
-                'LOCATION'    => $dateItem->getPlace(),
-                'DESCRIPTION' => $dateItem->getDescription(),
-                'CLASS'       => ($dateItem->isPublic() ? 'PUBLIC' : 'PRIVATE'),
-            ]
+            'VEVENT' => $eventDataArray,
         ]);
 
-        foreach ($dateItem->getParticipantsItemList()->to_array() as $attendee) {
-            $vDateItem->add('ATTENDEE', 'mailto:'.$attendee->getEmail());
+        foreach ($recurringSubEvents as $recurringSubEvent) {
+            $vDateItem->add('VEVENT', $recurringSubEvent);
         }
+
+        foreach ($dateItem->getParticipantsItemList()->to_array() as $attendee) {
+            $vDateItem->add('ATTENDEE', 'mailto:' . $attendee->getEmail());
+        }
+
+        $vtimezone = $vDateItem->add('VTIMEZONE', [
+            'TZID'           => 'Europe/Berlin'
+        ]);
+
+        $standardDateTime = (new \DateTime('1970-10-25 03:00:00', new \DateTimeZone('Europe/Berlin')))->format('Ymd\THis');
+        $standard = $vDateItem->createComponent('STANDARD', [
+            'TZOFFSETFROM' => '+0200',
+            'TZOFFSETTO' => '+0100',
+            'TZNAME' => 'MESZ',
+            'DTSTART' => $standardDateTime,
+            'RRULE' => 'FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU',
+        ]);
+        $vtimezone->add($standard);
+
+        $daylightDateTime = (new \DateTime('1970-03-29 02:00:00', new \DateTimeZone('Europe/Berlin')))->format('Ymd\THis');
+        $daylight = $vDateItem->createComponent('DAYLIGHT', [
+            'TZOFFSETFROM' => '+0100',
+            'TZOFFSETTO' => '+0200',
+            'TZNAME' => 'MESZ',
+            'DTSTART' => $daylightDateTime,
+            'RRULE' => 'FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU',
+        ]);
+        $vtimezone->add($daylight);
 
         return $vDateItem->serialize();
     }
 
-    private function getCalendarDataSize ($dateItem, $objectUri) {
+    private function getCalendarDataSize($dateItem, $objectUri)
+    {
         return strlen($this->getCalendarData($dateItem, $objectUri));
     }
 
-    private function getUserFromPortal ($userId, $contextId) {
+    private function getUserFromPortal($userId, $contextId)
+    {
         $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
         $legacyEnvironment->setCurrentContextId($contextId);
         $legacyEnvironment->setCurrentPortalId($this->portalId);
@@ -616,28 +703,62 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
         return $userList->getFirst();
     }
 
-    private function getDateItemFromObjectUri ($objectUri) {
+    private function getDateItemFromObjectUri($objectUri)
+    {
         $objectUriArray = explode('-', $objectUri);
 
         $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
         $datesManager = $legacyEnvironment->getDatesManager();
 
-        if ($datesManager->existsItem($objectUriArray[2])) {
-            return $datesManager->getItem($objectUriArray[2]);
+        if (isset($objectUriArray[2])) {
+            if ($datesManager->existsItem($objectUriArray[2])) {
+                return $datesManager->getItem($objectUriArray[2]);
+            }
         }
 
         return null;
     }
 
-    private function transformVeventToDateItem ($calendarId, $calendarData, $dateItem = null) {
+    private function transformVeventToDateItem($calendarId, $calendarData, $objectUri = null)
+    {
         $calendarsService = $this->container->get('commsy.calendars_service');
         $dateService = $this->container->get('commsy_legacy.date_service');
 
         $calendarRead = VObject\Reader::read($calendarData);
 
+        // Use expanded calendar, to work with all dates.
+        // CommSy itself does not have to do the calculations.
+        $expandDateTimeStart = new \DateTime();
+        $expandDateTimeStart->modify('-2 years');
+        $expandDateTimeEnd = new \DateTime();
+        $expandDateTimeEnd->modify('+2 years');
+        /* if ($dateItem) {
+            $expandDateTimeStart = new \DateTime($dateItem->getDateTime_start());
+            $expandDateTimeEnd = new \DateTime($dateItem->getDateTime_end());
+        } */
+        $calendarReadExpanded = $calendarRead->expand($expandDateTimeStart, $expandDateTimeEnd);
+
+        $recurrencePattern = null;
+        if ($calendarRead->VEVENT->RRULE) {
+            $recurrencePattern = $this->translateRecurringPattern($calendarRead->VEVENT->RRULE, 'iCal', $calendarRead->VEVENT->DTSTART->getDateTime());
+        }
+
+        $newItem = false;
+        $recurrenceId = null;
+
         // insert new data into database
-        if ($calendarRead->VEVENT) {
-            foreach ($calendarRead->VEVENT as $event) {
+        $calendarReadExpandedChildren = $calendarReadExpanded->children();
+        foreach ($calendarReadExpandedChildren as $event) {
+            if ($event->name == 'VEVENT') {
+
+                if ($event->{'X-COMMSY-ITEM-ID'}) {
+                    $dateItem = $dateService->getDate($event->{'X-COMMSY-ITEM-ID'}->getValue());
+                } else if ($objectUri) {
+                    $dateItem = $this->getDateItemFromObjectUri($objectUri);
+                } else {
+                    $newItem = true;
+                    $dateItem = $dateService->getNewDate();
+                }
 
                 $title = '';
                 if ($event->SUMMARY) {
@@ -688,16 +809,18 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
 
                 $calendar = $calendarsService->getCalendar($calendarId)[0];
                 if ($calendar) {
-                    if (!$dateItem) {
-                        $dateItem = $dateService->getNewDate();
-                    } else {
-                        $user = $this->getUserFromPortal($this->userId, $dateItem->getContextId());
-                        if ($user->getContextId() == $dateItem->getContextId()) {
-                            if (!$dateItem->mayEdit($user)) {
-                                throw new Exception\Forbidden('Permission denied to edit date');
-                            }
+                    $user = $this->getUserFromPortal($this->userId, $dateItem->getContextId());
+                    if ($user->getContextId() == $dateItem->getContextId()) {
+                        if (!$dateItem->mayEdit($user)) {
+                            throw new Exception\Forbidden('Permission denied to edit date');
                         }
                     }
+
+                    // ToDo: set datetime_recurrence on items if recurring date is created or changed in client
+                    // if (!$dateItem->getDateTime_recurrence()) {
+                    //     $dateItem->setDateTime_recurrence($dateItem->getDateTime_start());
+                    // }
+
                     $dateItem->setContextId($calendar->getContextId());
                     $dateItem->setTitle($title);
                     $dateItem->setDateTime_start($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
@@ -718,12 +841,278 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend {
                     //$dateItem->setModificationDate($startDatetime->format('Ymd') . 'T' . $startDatetime->format('His'));
                     //$dateItem->setChangeModificationOnSave(false);
                     $dateItem->setExternal(false);
+
+                    // iCal CLASS = 'PUBLIC' is used as default value.
+                    $dateItem->setPublic(1);
+                    if ($event->CLASS) {
+                        if ($event->CLASS->getValue() == 'PRIVATE' || $event->CLASS->getValue() == 'CONFIDENTIAL') {
+                            $dateItem->setPublic(0);
+                        }
+                    }
+
+                    $dateItem->save();
+                    if ($newItem && !$recurrenceId) {
+                        $recurrenceId = $dateItem->getItemId();
+                    }
+
+                    if ($event->{'RECURRENCE-ID'} && $recurrenceId) {
+                        if ($newItem) {
+                            $dateItem->setRecurrencePattern($recurrencePattern);
+                        }
+                        $dateItem->setRecurrenceId($recurrenceId);
+                        $dateItem->save();
+                    }
                 }
             }
         }
-
-        return $dateItem;
     }
 
 
+    // ---- pattern translation for recurring events  ---
+
+    /*
+        VObject supports the following RRULE options:
+
+        UNTIL           for an end date,
+
+        INTERVAL        for for example "every 2 days",
+
+        COUNT           to stop recurring after x items,
+
+        FREQ=DAILY      to recur every day, and BYDAY to limit it to certain days,
+
+        FREQ=WEEKLY     to recur every week, BYDAY to expand this to multiple weekdays
+                        in every week and WKST to specify on which day the week starts,
+
+        FREQ=MONTHLY    to recur every month, BYMONTHDAY to expand this to certain days in a month,
+                        BYDAY to expand it to certain weekdays occuring in a month, and BYSETPOS
+                        to limit the last two expansions,
+
+        FREQ=YEARLY     to recur every year, BYMONTH to expand that to certain months in a year,
+                        and BYDAY and BYWEEKDAY to expand the BYMONTH rule even further.
+    */
+
+    private function translateRecurringPattern ($pattern, $type, $startDate = null) {
+        $result = '';
+        if ($type == "CommSy") {
+            if ($pattern['recurring_select'] == 'RecurringDailyType') {
+                /*
+                CommSy:
+                [recurring_sub] => Array
+                    (
+                        [recurrenceDay] => 1
+                    )
+                 */
+                $result .= 'FREQ=DAILY;';
+                if (isset($pattern['recurring_sub']['recurrenceDay'])) {
+                    $result .= 'INTERVAL='.$pattern['recurring_sub']['recurrenceDay'].';';
+                }
+            } else if ($pattern['recurring_select'] == 'RecurringWeeklyType') {
+                /*
+                CommSy:
+                [recurring_sub] => Array
+                    (
+                        [recurrenceDaysOfWeek] => Array
+                            (
+                                [0] => monday
+                                [1] => tuesday
+                                [2] => thursday
+                            )
+
+                        [recurrenceWeek] => 2
+                    )
+                */
+                $result .= 'FREQ=WEEKLY;';
+                if (isset($pattern['recurring_sub']['recurrenceWeek'])) {
+                    $result .= 'INTERVAL='.$pattern['recurring_sub']['recurrenceWeek'].';';
+                }
+
+                $result .= 'WKST=MO;';
+                if (isset($pattern['recurring_sub']['recurrenceDaysOfWeek'])) {
+                    $daysOfWeek = [];
+                    foreach ($pattern['recurring_sub']['recurrenceDaysOfWeek'] as $day) {
+                        $daysOfWeek[] = mb_strtoupper(substr($day, 0, 2));
+                    }
+
+                    $result .= 'BYDAY='.implode($daysOfWeek, ',').';';
+                }
+            } else if ($pattern['recurring_select'] == 'RecurringMonthlyType') {
+                /*
+                CommSy:
+                [recurring_sub] => Array
+                    (
+                        [recurrenceMonth] => 2
+                        [recurrenceDayOfMonth] => tuesday
+                        [recurrenceDayOfMonthInterval] => 3
+                    )
+                */
+                $result .= 'FREQ=MONTHLY;';
+                if (isset($pattern['recurring_sub']['recurrenceMonth'])) {
+                    $result .= 'INTERVAL='.$pattern['recurring_sub']['recurrenceMonth'].';';
+                }
+                if (isset($pattern['recurring_sub']['recurrenceDayOfMonthInterval']) && isset($pattern['recurring_sub']['recurrenceDayOfMonth'])) {
+                    $result .= 'BYDAY='.$pattern['recurring_sub']['recurrenceDayOfMonthInterval'].mb_strtoupper(substr($pattern['recurring_sub']['recurrenceDayOfMonth'], 0, 2)).';';
+                }
+            } else if ($pattern['recurring_select'] == 'RecurringYearlyType') {
+                /*
+                CommSy:
+                [recurring_sub] => Array
+                    (
+                        [recurrenceDayOfMonth] => 2
+                        [recurrenceMonthOfYear] => march
+                    )
+                */
+                $result .= 'FREQ=YEARLY;';
+                if (isset($pattern['recurring_sub']['recurrenceMonthOfYear'])) {
+                    $months = [
+                        'january'   => '1',
+                        'february'  => '2',
+                        'march'     => '3',
+                        'april'     => '4',
+                        'may'       => '5',
+                        'june'      => '6',
+                        'july'      => '7',
+                        'august'    => '8',
+                        'september' => '9',
+                        'october'   => '10',
+                        'november'  => '11',
+                        'december'  => '12',
+                    ];
+                    $result .= 'BYMONTH='.$months[$pattern['recurring_sub']['recurrenceMonthOfYear']].';';
+                }
+                if (isset($pattern['recurring_sub']['recurrenceDayOfMonth'])) {
+                    $result .= 'BYDAY='.$pattern['recurring_sub']['recurrenceDayOfMonth'].';';
+                }
+            }
+
+            if (isset($pattern['recurringEndDate'])) {
+                $recurringEndDate = new \DateTime($pattern['recurringEndDate']);
+                $recurringEndDate->add(new \DateInterval('P1D'));
+                $result .= 'UNTIL='.$recurringEndDate->format('Ymd\THis\Z');
+            }
+
+        } else if ($type == 'iCal') {
+            $result = [];
+
+            $patternArray = $pattern->getParts();
+            if ($patternArray['FREQ'] == 'DAILY') {
+                /*
+                $patternArray:
+                Array
+                    (
+                        [FREQ] => DAILY
+                        [INTERVAL] => 1
+                        [UNTIL] => 20180727T215959Z
+                    )
+
+                CommSy:
+                Array
+                    (
+                        'recurring_select' => 'RecurringDailyType',
+                        'recurring_sub' =>
+                            Array (
+                                'recurrenceDay' => 1,
+                            ),
+                        'recurringStartDate' => '2018-07-16',
+                        'recurringEndDate' => '2018-07-20',
+                    )
+                */
+                $result['recurring_select'] = 'RecurringDailyType';
+                $result['recurring_sub']['recurrenceDay'] = $patternArray['INTERVAL'];
+            } else if ($patternArray['FREQ'] == 'WEEKLY') {
+                /*
+                 $patternArray:
+                 Array
+                 (
+                     [FREQ] => WEEKLY
+                     [INTERVAL] => 1
+                     [UNTIL] => 20180813T215959Z
+                 )
+                */
+                $result['recurring_select'] = 'RecurringWeeklyType';
+                $result['recurring_sub']['recurrenceWeek'] = $patternArray['INTERVAL'];
+                $daysOfWeek = [];
+                if ($startDate) {
+                    $daysOfWeek[] = mb_strtolower($startDate->format('l'));
+                }
+                $result['recurring_sub']['recurrenceDaysOfWeek'] = $daysOfWeek;
+            } else if ($patternArray['FREQ'] == 'MONTHLY') {
+                /*
+                $patternArray:
+                Array
+                    (
+                        [FREQ] => MONTHLY
+                        [INTERVAL] => 1
+                        [UNTIL] => 20181031T225959Z
+                    )
+                CommSy:
+                Array
+                    (
+                          'recurring_select' => 'RecurringMonthlyType',
+                          'recurring_sub' =>
+                          Array
+                          (
+                                'recurrenceMonth' => '1',
+                                'recurrenceDayOfMonth' => 'monday',
+                                'recurrenceDayOfMonthInterval' => '1',
+                          ),
+                          'recurringStartDate' => '2018-08-30',
+                          'recurringEndDate' => '2018-12-31',
+                    )
+                */
+                $result['recurring_select'] = 'RecurringMonthlyType';
+                $result['recurring_sub']['recurrenceMonth'] = $patternArray['INTERVAL'];
+                $recurrenceDayOfMonth = '';
+                if ($startDate) {
+                    $recurrenceDayOfMonth = mb_strtolower($startDate->format('l'));
+                }
+                $result['recurring_sub']['recurrenceDayOfMonth'] = $recurrenceDayOfMonth;
+                $result['recurring_sub']['recurrenceDayOfMonthInterval'] = 1;
+            } else if ($patternArray['FREQ'] == 'YEARLY') {
+                /*
+                $patternArray:
+                Array
+                    (
+                        [FREQ] => YEARLY
+                        [INTERVAL] => 1
+                        [UNTIL] => 20180723T215959Z
+                    )
+                CommSy:
+                Array
+                    (
+                        'recurring_select' => 'RecurringYearlyType',
+                        'recurring_sub' =>
+                        Array
+                            (
+                                'recurrenceDayOfMonth' => '23',
+                                'recurrenceMonthOfYear' => 'july',
+                            ),
+                        'recurringStartDate' => '2018-07-23',
+                        'recurringEndDate' => '2020-09-30',
+                    )
+                */
+                $result['recurring_select'] = 'RecurringYearlyType';
+                $recurrenceDayOfMonth = '';
+                $recurrenceMonthOfYear = '';
+                if ($startDate) {
+                    $recurrenceDayOfMonth = $startDate->format('j');
+                    $recurrenceMonthOfYear = mb_strtolower($startDate->format('F'));
+                }
+                $result['recurring_sub']['recurrenceDayOfMonth'] = $recurrenceDayOfMonth;
+                $result['recurring_sub']['recurrenceMonthOfYear'] = $recurrenceMonthOfYear;
+            }
+
+            $result['recurringStartDate'] = $startDate->format('Y-m-d');
+
+            if (isset($patternArray['UNTIL'])) {
+                $recurringEndDate = new \DateTime($patternArray['UNTIL']);
+                $result['recurringEndDate'] = $recurringEndDate->format('Y-m-d');
+            } else {
+                $recurringEndDate = new \DateTime();
+                $recurringEndDate->modify('+2 years');
+                $result['recurringEndDate'] = $recurringEndDate->format('Y-m-d');
+            }
+        }
+        return $result;
+    }
 }

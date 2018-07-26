@@ -10,6 +10,7 @@ namespace CommsyBundle\Action\Delete;
 
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use CommsyBundle\Services\CalendarsService;
 use Symfony\Component\Routing\RouterInterface;
 
 class DeleteDate extends DeleteGeneric
@@ -29,11 +30,17 @@ class DeleteDate extends DeleteGeneric
      */
     private $dateMode = 'normal';
 
-    public function __construct(RouterInterface $router, LegacyEnvironment $legacyEnvironment)
+    /**
+     * @var CalendarsService
+     */
+    private $calendarsService;
+
+    public function __construct(RouterInterface $router, LegacyEnvironment $legacyEnvironment, CalendarsService $calendarsService)
     {
         parent::__construct($legacyEnvironment);
 
         $this->router = $router;
+        $this->calendarsService = $calendarsService;
     }
 
     public function setRecurring(bool $recurring): void
@@ -56,18 +63,36 @@ class DeleteDate extends DeleteGeneric
         /** @var \cs_dates_item $date */
         $date = $item;
 
-        if ($this->recurring && $date->getRecurrenceId() != '') {
-            $datesManager = $this->legacyEnvironment->getDatesManager();
-            $datesManager->resetLimits();
-            $datesManager->setRecurrenceLimit($date->getRecurrenceId());
-            $datesManager->setWithoutDateModeLimit();
-            $datesManager->select();
+        $this->calendarsService->updateSynctoken($date->getCalendarId());
 
-            /** @var \cs_list $recurringDates */
-            $recurringDates = $datesManager->get();
+        $datesManager = $this->legacyEnvironment->getDatesManager();
+        $datesManager->resetLimits();
+        $datesManager->setRecurrenceLimit($date->getRecurrenceId());
+        $datesManager->setWithoutDateModeLimit();
+        $datesManager->select();
+
+        /** @var \cs_list $recurringDates */
+        $recurringDates = $datesManager->get();
+
+        if ($this->recurring && $date->getRecurrenceId() != '') {
             $recurringDate = $recurringDates->getFirst();
             while ($recurringDate) {
                 $recurringDate->delete();
+                $recurringDate = $recurringDates->getNext();
+            }
+        } else {
+            $recurringDate = $recurringDates->getFirst();
+            while ($recurringDate) {
+                $recurrencePattern = $recurringDate->getRecurrencePattern();
+                $recurrencePatternExcludeDate = new \DateTime($item->getDateTime_start());
+                if (!isset($recurrencePattern['recurringExclude'])) {
+                    $recurrencePattern['recurringExclude'] = [$recurrencePatternExcludeDate->format('Ymd\THis')];
+                } else {
+                    $recurrencePattern['recurringExclude'][] = $recurrencePatternExcludeDate->format('Ymd\THis');
+                }
+                $recurringDate->setRecurrencePattern($recurrencePattern);
+                $recurringDate->save();
+
                 $recurringDate = $recurringDates->getNext();
             }
         }
