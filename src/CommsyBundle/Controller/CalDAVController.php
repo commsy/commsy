@@ -47,7 +47,7 @@ class CalDAVController extends Controller
     }
 
     /**
-     * @Route("/{portalId}/calendars/{userId}/{calendarId}/{objectId}/")
+     * @Route("/{portalId}/calendars/{userId}/{calendarId}/{objectId}")
      */
     public function caldavCalendarObjectAction($portalId, $userId, $calendarId, $objectId)
     {
