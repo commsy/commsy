@@ -425,7 +425,7 @@
 
                 {# edit action #}
                 {% if edit and is_granted('ITEM_EDIT', item.itemId) %}
-                    <div class="uk-display-inline cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
+                    <div class="uk-display-inline cs-edit" data-edit-title="{{ "edit"|trans({}) }}">
                         <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                     </div>
                 {% endif %}

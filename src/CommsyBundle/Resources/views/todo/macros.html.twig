@@ -462,20 +462,18 @@
 
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">
-            <div class="uk-width-9-10">
+            <div class="uk-width-8-10">
                 <h4 class="cs-detail-section-header">
                     {{- "steps"|trans({}) }}
                     ({{ stepList|length }})
                 </h4>
             </div>
 
-            <div class="uk-width-1-10 uk-flex uk-text-right">
+            <div class="uk-width-2-10 uk-flex uk-flex-right">
                 {# toggle action #}
-                {% if not stepList is empty %}
-                    <div class="cs-toggle-icon uk-margin-left uk-width-1-1 uk-invisible" data-cs-unhide-collapsed="{src: '.toggle-sections-{{ item.itemId }}'}">
-                        <a class="cs-toggle" data-uk-toggle="{target:'.toggle-sections-{{ item.itemId }}', cls: 'cs-toggle-full'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
-                    </div>
-                {% endif %}
+                <div class="uk-display-inline cs-toggle-icon uk-margin-left" data-cs-unhide-collapsed="{src: '.toggle-sections-{{ item.itemId }}'}">
+                    <a class="cs-toggle" data-uk-toggle="{target:'.toggle-sections-{{ item.itemId }}', cls: 'cs-toggle-full'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+                </div>
            </div>
         </div>
 
