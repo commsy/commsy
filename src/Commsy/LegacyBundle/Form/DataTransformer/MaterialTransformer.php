@@ -74,9 +74,9 @@ class MaterialTransformer implements DataTransformerInterface
                 } else {
                     $materialData['external_viewer_enabled'] = false;
                 }
-            }
 
-            $materialData['license_id'] = $materialItem->getLicenseId();
+                $materialData['license_id'] = $materialItem->getLicenseId();
+            }
 
             if ($materialItem->isNotActivated()) {
                 $materialData['hidden'] = true;
