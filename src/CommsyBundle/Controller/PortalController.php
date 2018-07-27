@@ -448,4 +448,14 @@ class PortalController extends Controller
             'pageTitle' => $pageTitle,
         ];
     }
+
+    /**
+     * @Route("/portal/{roomId}/csvimport")
+     * @Template()
+     * @Security("is_granted('ITEM_MODERATE', roomId)")
+     */
+    public function csvImportAction($roomId, Request $request)
+    {
+        return [];
+    }
 }

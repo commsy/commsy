@@ -158,6 +158,20 @@
                 <source>Delete license</source>
                 <target>Lizenz löschen</target>
             </trans-unit>
-       </body>
+
+            <!-- portal csv import -->
+            <trans-unit id="portal_csv_import_menu_title">
+                <source>CSV-Import</source>
+                <target>CSV-Import</target>
+            </trans-unit>
+            <trans-unit id="portal_csv_import_breadcrumb_title">
+                <source>csvimport</source>
+                <target>CSV-Import</target>
+            </trans-unit>
+            <trans-unit id="portal_csv_import_heading">
+                <source>Import users from csv file</source>
+                <target>Benutzer aus CSV-Datei importieren</target>
+            </trans-unit>
+        </body>
     </file>
 </xliff>
