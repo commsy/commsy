@@ -42,7 +42,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         }
 
         if (isset($fields['files'])) {
-//            $this->addFilesContent($event);
+            $this->addFilesContent($event);
         }
 
         if (isset($fields['discussionarticles'])) {
