@@ -597,10 +597,20 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             $uid = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getRecurrenceId();
         }
 
+        $dateTimeStart = new \DateTime($dateItem->getDateTime_start());
+        $dateTimeStartString = $dateTimeStart->format('Ymd') . 'T' . $dateTimeStart->format('His');
+        if ($dateItem->isWholeDay()) {
+            $dateTimeStartString = $dateTimeStart->format('Ymd');
+        }
+        $dateTimeEnd = new \DateTime($dateItem->getDateTime_end());
+        $dateTimeEndString = $dateTimeEnd->format('Ymd') . 'T' . $dateTimeEnd->format('His');
+        if ($dateItem->isWholeDay()) {
+            $dateTimeEndString = $dateTimeEnd->format('Ymd');
+        }
         $eventDataArray = [
             'SUMMARY' => $dateItem->getTitle(),
-            'DTSTART' => new \DateTime($dateItem->getDateTime_start()),
-            'DTEND' => new \DateTime($dateItem->getDateTime_end()),
+            'DTSTART' => $dateTimeStartString,
+            'DTEND' => $dateTimeEndString,
             'UID' => $uid,
             'LOCATION' => $dateItem->getPlace(),
             'DESCRIPTION' => $dateItem->getDescription(),
@@ -631,10 +641,20 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     $dateTimeRecurrence = $recurringDateItem->getDateTime_recurrence();
                 }
 
+                $dateTimeStart = new \DateTime($recurringDateItem->getDateTime_start());
+                $dateTimeStartString = $dateTimeStart->format('Ymd') . 'T' . $dateTimeStart->format('His');
+                if ($recurringDateItem->isWholeDay()) {
+                    $dateTimeStartString = $dateTimeStart->format('Ymd');
+                }
+                $dateTimeEnd = new \DateTime($recurringDateItem->getDateTime_end());
+                $dateTimeEndString = $dateTimeEnd->format('Ymd') . 'T' . $dateTimeEnd->format('His');
+                if ($recurringDateItem->isWholeDay()) {
+                    $dateTimeEndString = $dateTimeEnd->format('Ymd');
+                }
                 $recurringSubEvents[] = [
                     'SUMMARY' => $recurringDateItem->getTitle(),
-                    'DTSTART' => new \DateTime($recurringDateItem->getDateTime_start()),
-                    'DTEND' => new \DateTime($recurringDateItem->getDateTime_end()),
+                    'DTSTART' => $dateTimeStartString,
+                    'DTEND' => $dateTimeEndString,
                     'UID' => $uid,
                     'LOCATION' => $recurringDateItem->getPlace(),
                     'DESCRIPTION' => $recurringDateItem->getDescription(),
@@ -724,6 +744,8 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         $calendarsService = $this->container->get('commsy.calendars_service');
         $dateService = $this->container->get('commsy_legacy.date_service');
 
+        $calendar = $calendarsService->getCalendar($calendarId)[0];
+
         $calendarRead = VObject\Reader::read($calendarData);
 
         // Use expanded calendar, to work with all dates.
@@ -758,6 +780,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                 } else {
                     $newItem = true;
                     $dateItem = $dateService->getNewDate();
+                    $dateItem->setContextId($calendar->getContextId());
                 }
 
                 $title = '';
@@ -765,14 +788,25 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     $title = $event->SUMMARY->getValue();
                 }
 
+                $wholeday = 0;
                 $startDatetime = '';
                 if ($event->DTSTART) {
                     $startDatetime = $event->DTSTART->getDateTime();
+                    if (strlen($event->DTSTART->getValue()) == 8) {
+                        $wholeday = 1;
+                    }
                 }
 
                 $endDatetime = '';
                 if ($event->DTEND) {
-                    $endDatetime = $event->DTEND->getDateTime();
+                    if (!$wholeday) {
+                        $endDatetime = $event->DTEND->getDateTime();
+                    } else {
+                        $endDatetime = $event->DTSTART->getDateTime();
+                        $endDatetime = $endDatetime->modify('+23 hours');   // use returned object, as this is of class DateTimeImmutable.
+                        $endDatetime = $endDatetime->modify('+59 minutes');
+                        $endDatetime = $endDatetime->modify('+59 seconds');
+                    }
                 }
 
                 $location = '';
@@ -807,7 +841,6 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     $attendee = implode(", ", array_unique($attendeeArray));
                 }
 
-                $calendar = $calendarsService->getCalendar($calendarId)[0];
                 if ($calendar) {
                     $user = $this->getUserFromPortal($this->userId, $dateItem->getContextId());
                     if ($user->getContextId() == $dateItem->getContextId()) {
@@ -832,6 +865,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     $dateItem->setCalendarId($calendar->getId());
                     $dateItem->setPlace($location);
                     $dateItem->setDescription($description);
+                    $dateItem->setWholeDay($wholeday);
 
                     $userItem = $this->getUserFromPortal($this->userId, $calendar->getContextId());
                     $dateItem->setCreatorId($userItem->getItemId());
