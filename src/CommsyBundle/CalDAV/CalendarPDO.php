@@ -724,6 +724,8 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         $calendarsService = $this->container->get('commsy.calendars_service');
         $dateService = $this->container->get('commsy_legacy.date_service');
 
+        $calendar = $calendarsService->getCalendar($calendarId)[0];
+
         $calendarRead = VObject\Reader::read($calendarData);
 
         // Use expanded calendar, to work with all dates.
@@ -758,6 +760,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                 } else {
                     $newItem = true;
                     $dateItem = $dateService->getNewDate();
+                    $dateItem->setContextId($calendar->getContextId());
                 }
 
                 $title = '';
@@ -807,7 +810,6 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     $attendee = implode(", ", array_unique($attendeeArray));
                 }
 
-                $calendar = $calendarsService->getCalendar($calendarId)[0];
                 if ($calendar) {
                     $user = $this->getUserFromPortal($this->userId, $dateItem->getContextId());
                     if ($user->getContextId() == $dateItem->getContextId()) {
