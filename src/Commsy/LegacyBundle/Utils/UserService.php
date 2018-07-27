@@ -5,6 +5,7 @@ namespace Commsy\LegacyBundle\Utils;
 use Symfony\Component\Form\Form;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use Symfony\Component\Form\FormInterface;
 
 
 class UserService
@@ -51,6 +52,13 @@ class UserService
         $this->userManager->resetLimits();
     }
 
+    /**
+     * @param integer $roomId
+     * @param integer $max
+     * @param integer $start
+     * @param string $sort
+     * @return \cs_user_item[]
+     */
     public function getListUsers($roomId, $max = NULL, $start = NULL, $moderation = false, $sort = NULL)
     {
         $this->userManager->setContextLimit($roomId);
@@ -74,7 +82,22 @@ class UserService
         return $user_array;
     }
 
-    public function setFilterConditions(Form $filterForm)
+    /**
+     * @param integer $roomId
+     * @param integer[] $ids
+     * @return \cs_user_item[]
+     */
+    public function getUsersById($roomId, $ids) {
+        $this->userManager->setContextLimit($roomId);
+        $this->userManager->setIDArrayLimit($ids);
+
+        $this->userManager->select();
+        $userList = $this->userManager->get();
+
+        return $userList->to_array();
+    }
+
+    public function setFilterConditions(FormInterface $filterForm)
     {
         $formData = $filterForm->getData();
 
@@ -225,7 +248,7 @@ class UserService
     /**
      * Get the current user item
      * 
-     * @return cs_user_item The current user object
+     * @return \cs_user_item The current user object
      */
     public function getCurrentUserItem()
     {
@@ -256,6 +279,10 @@ class UserService
         return $searchableRoomList->to_array();
     }
 
+    /**
+     * @param int $contextId
+     * @return \cs_user_item[]
+     */
     public function getModeratorsForContext($contextId)
     {
         $this->userManager->setContextLimit($contextId);

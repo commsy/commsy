@@ -538,6 +538,9 @@ class cs_configuration_authentication_form extends cs_rubric_form {
            $this->_form->addTextfield('email_regex','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_EMAIL_REGEX'),'',250,30,false,'','','','','','',$disabled);
            $this->_form->combine();
            $this->_form->addText('Info E-Mail Regex', $translator->getMessage('CONFIGURATION_AUTHENTICATION_EMAIL_REGEX_INFO'), $translator->getMessage('CONFIGURATION_AUTHENTICATION_EMAIL_REGEX_INFO'));
+
+           $this->_form->addEmptyLine();
+           $this->_form->addText('', $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_EMAIL_ERROR_MESSAGE_LINK'), '<a href="/portal/'.$this->_environment->getCurrentPortalId().'/translations">'.$this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_EMAIL_ERROR_MESSAGE_LINK_INFO').'</a>');
        }
 
        if(!$disabled) {

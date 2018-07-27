@@ -217,7 +217,16 @@ class cs_home_member_form extends cs_rubric_form {
              $auth_source_item = $auth_source_manager->getItem($this->_form_post['auth_source']);
              if($auth_source_item->getEmailRegex() != ''){
                  if (!preg_match($auth_source_item->getEmailRegex(), $this->_form_post['email'])) {
-                     $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_EMAIL_REGEX_ERROR');
+                     global $symfonyContainer;
+                     try {
+                         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
+                         $translation = $em->getRepository(\CommsyBundle\Entity\Translation::class)
+                             ->findOneByContextAndKey($this->_environment->getCurrentPortalId(), 'EMAIL_REGEX_ERROR');
+
+                         $this->_error_array[] = $translation->getTranslationForLocale($this->_environment->getUserLanguage());
+                     } catch (Exception $e) {
+
+                     }
                  }
              }
          }

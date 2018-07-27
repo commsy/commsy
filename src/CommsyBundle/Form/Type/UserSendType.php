@@ -2,6 +2,8 @@
 namespace CommsyBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -52,6 +54,11 @@ class UserSendType extends AbstractType
                 'expanded' => true,
                 'translation_domain' => 'mail',
                 'choice_translation_domain' => 'form',
+                'required' => true,
+            ])
+            ->add('users', CollectionType::class, [
+                'entry_type' => HiddenType::class,
+                'label' => false,
                 'required' => true,
             ])
             ->add('save', SubmitType::class, [

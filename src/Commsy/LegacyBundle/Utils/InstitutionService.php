@@ -5,6 +5,7 @@ namespace Commsy\LegacyBundle\Utils;
 use Symfony\Component\Form\Form;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use Symfony\Component\Form\FormInterface;
 
 class InstitutionService
 {
@@ -24,7 +25,6 @@ class InstitutionService
     {
         $this->institutionManager->setContextLimit($roomId);
         $this->institutionManager->select();
-        $countInstitution = array();
         $countInstitutionArray['count'] = sizeof($this->institutionManager->get()->to_array());
         $this->institutionManager->resetLimits();
         $this->institutionManager->select();
@@ -33,12 +33,23 @@ class InstitutionService
         return $countInstitutionArray;
     }
 
-    public function getInstitution($itemId)
+    /**
+     * @param int $itemId
+     * @return \cs_label_item
+     */
+    public function getInstitution($itemId): \cs_label_item
     {
+        /** @var \cs_label_item $institution */
         $institution = $this->institutionManager->getItem($itemId);
         return $institution;
     }
 
+    /**
+     * @param integer $roomId
+     * @param integer $max
+     * @param integer $start
+     * @return \cs_label_item[]
+     */
     public function getListInstitutions($roomId, $max = NULL, $start = NULL, $sort = NULL)
     {
         $this->institutionManager->setContextLimit($roomId);
@@ -56,7 +67,22 @@ class InstitutionService
         return $institutionList->to_array();
     }
 
-    public function setFilterConditions(Form $filterForm)
+    /**
+     * @param integer $roomId
+     * @param integer[] $ids
+     * @return \cs_label_item[]
+     */
+    public function getInstitutionsById($roomId, $ids) {
+        $this->institutionManager->setContextLimit($roomId);
+        $this->institutionManager->setIDArrayLimit($ids);
+
+        $this->institutionManager->select();
+        $userList = $this->institutionManager->get();
+
+        return $userList->to_array();
+    }
+
+    public function setFilterConditions(FormInterface $filterForm)
     {
         $formData = $filterForm->getData();
 

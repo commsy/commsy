@@ -639,3 +639,9 @@
         </a>
     </li>
 {% endmacro %}
+
+{% macro license(material) %}
+    {% if not material.getLicenseTitle == "" %}
+        <i class="uk-icon-copyright" data-uk-tooltip title="{{ material.getLicenseTitle }}"></i>
+    {% endif %}
+{% endmacro %}

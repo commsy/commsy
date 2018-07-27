@@ -141,15 +141,19 @@ class cs_discussionarticle_item extends cs_item {
       return $this->_getValue('discussion_id');
    }
 
-   function getLinkedItem () {
-     $retour = NULL;
-     $item_id = $this->getDiscussionID();
-     if (!empty($item_id)) {
-       $type_manager = $this->_environment->getManager(CS_DISCUSSION_TYPE);
-       $retour = $type_manager->getItem($item_id);
-     }
-     return $retour;
-   }
+    /**
+     * @return null|\cs_discussion_item
+     */
+    public function getLinkedItem()
+    {
+        $retour = NULL;
+        $item_id = $this->getDiscussionID();
+        if (!empty($item_id)) {
+            $type_manager = $this->_environment->getManager(CS_DISCUSSION_TYPE);
+            $retour = $type_manager->getItem($item_id);
+        }
+        return $retour;
+    }
 
    /** set discussion id
     * this method sets the discussion id of the article

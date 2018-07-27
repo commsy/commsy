@@ -5,8 +5,6 @@ namespace CommsyBundle\Services;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
-require_once('../legacy/classes/cs_session_item.php');
-
 class SoapService
 {
     private $legacyEnvironment;

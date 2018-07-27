@@ -16,7 +16,7 @@ class TodoTransformer implements DataTransformerInterface
     /**
      * Transforms a cs_todo_item object to an array
      *
-     * @param cs_todo_item $dateItem
+     * @param \cs_todo_item $dateItem
      * @return array
      */
     public function transform($todoItem)
@@ -80,10 +80,9 @@ class TodoTransformer implements DataTransformerInterface
     /**
      * Applies an array of data to an existing object
      *
-     * @param object $todoObject
+     * @param \cs_todo_item $todoObject
      * @param array $todoData
-     * @return cs_todo_item|null
-     * @throws TransformationFailedException if room item is not found.
+     * @return \cs_todo_item
      */
     public function applyTransformation($todoObject, $todoData)
     {

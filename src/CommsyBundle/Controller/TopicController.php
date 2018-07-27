@@ -2,35 +2,28 @@
 
 namespace CommsyBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-
-use Symfony\Component\HttpFoundation\JsonResponse;
-
+use CommsyBundle\Action\Download\DownloadAction;
+use CommsyBundle\Event\CommsyEditEvent;
 use CommsyBundle\Filter\TopicFilterType;
-use CommsyBundle\Form\Type\TopicType;
 use CommsyBundle\Form\Type\AnnotationType;
 use CommsyBundle\Form\Type\TopicPathType;
-
+use CommsyBundle\Form\Type\TopicType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-
-use CommsyBundle\Event\CommsyEditEvent;
 
 /**
  * Class TopicController
  * @package CommsyBundle\Controller
  * @Security("is_granted('ITEM_ENTER', roomId) and is_granted('RUBRIC_SEE', 'topic')")
  */
-class TopicController extends Controller
+class TopicController extends BaseController
 {
-    // setup filter form default values
-    private $defaultFilterValues = array(
-        'hide-deactivated-entries' => true,
-    );
     /**
      * @Route("/room/{roomId}/topic")
      * @Template()
@@ -40,6 +33,7 @@ class TopicController extends Controller
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $roomService = $this->get('commsy_legacy.room_service');
+        /** @var \cs_project_item $roomItem */
         $roomItem = $roomService->getRoomItem($roomId);
 
         if (!$roomItem) {
@@ -48,13 +42,7 @@ class TopicController extends Controller
 
         // get the topic manager service
         $topicService = $this->get('commsy_legacy.topic_service');
-        $filterForm = $this->createForm(TopicFilterType::class, $this->defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_topic_list', array(
-                'roomId' => $roomId,
-            )),
-            'hasHashtags' => false,
-            'hasCategories' => false,
-        ));
+        $filterForm = $this->createFilterForm($roomItem);
 
         // apply filter
         $filterForm->handleRequest($request);
@@ -102,8 +90,6 @@ class TopicController extends Controller
             $topicFilter = $request->query->get('topic_filter');
         }
 
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
         $roomService = $this->get('commsy_legacy.room_service');
         $roomItem = $roomService->getRoomItem($roomId);
 
@@ -115,13 +101,7 @@ class TopicController extends Controller
         $topicService = $this->get('commsy_legacy.topic_service');
 
         if ($topicFilter) {
-            $filterForm = $this->createForm(TopicFilterType::class, $this->defaultFilterValues, array(
-                'action' => $this->generateUrl('commsy_topic_list', array(
-                    'roomId' => $roomId,
-                )),
-                'hasHashtags' => false,
-                'hasCategories' => false,
-            ));
+            $filterForm = $this->createFilterForm($roomItem);
 
             // manually bind values from the request
             $filterForm->submit($topicFilter);
@@ -138,7 +118,6 @@ class TopicController extends Controller
 
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
 
         $readerList = array();
         $allowedActions = array();
@@ -159,78 +138,6 @@ class TopicController extends Controller
             'allowedActions' => $allowedActions,
        );
     }
-
-
-    /**
-     * @Route("/room/{roomId}/topic/feedaction")
-     */
-    public function feedActionAction($roomId, Request $request)
-    {
-        $translator = $this->get('translator');
-        
-        $action = $request->request->get('act');
-        
-        $selectedIds = $request->request->get('data');
-        if (!is_array($selectedIds)) {
-            $selectedIds = json_decode($selectedIds);
-        }
-        
-        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
-        
-        if ($action == 'markread') {
-            $topicService = $this->get('commsy_legacy.topic_service');
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $noticedManager = $legacyEnvironment->getNoticedManager();
-            $readerManager = $legacyEnvironment->getReaderManager();
-            foreach ($selectedIds as $id) {
-                $item = $topicService->getTopic($id);
-                $versionId = $item->getVersionID();
-                $noticedManager->markNoticed($id, $versionId);
-                $readerManager->markRead($id, $versionId);
-                $annotationList =$item->getAnnotationList();
-                if ( !empty($annotationList) ){
-                    $annotationItem = $annotationList->getFirst();
-                    while($annotationItem){
-                       $noticedManager->markNoticed($annotationItem->getItemID(),'0');
-                       $annotationItem = $annotationList->getNext();
-                    }
-                }
-            }
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
-        } else if ($action == 'copy') {
-           $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('%count% copied entries',count($selectedIds), array('%count%' => count($selectedIds)));
-        } else if ($action == 'save') {
-            $zipfile = $this->download($roomId, $selectedIds);
-            $content = file_get_contents($zipfile);
-
-            $response = new Response($content, Response::HTTP_OK, array('content-type' => 'application/zip'));
-            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,'zipfile.zip');   
-            $response->headers->set('Content-Disposition', $contentDisposition);
-            
-            return $response;
-        } else if ($action == 'delete') {
-            $topicService = $this->get('commsy_legacy.topic_service');
-            foreach ($selectedIds as $id) {
-                $item = $topicService->getTopic($id);
-                $item->delete();
-            }
-           $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> '.$translator->transChoice('%count% deleted entries',count($selectedIds), array('%count%' => count($selectedIds)));
-        }
-        
-        $response = new JsonResponse();
- /*       $response->setData(array(
-            'message' => $message,
-            'status' => $status
-        ));
-  */      
-        $response->setData(array(
-            'message' => $message,
-            'timeout' => '5550',
-            'layout'   => 'cs-notify-message'
-        ));
-        return $response;
-    }
- 
 
     /**
      * @Route("/room/{roomId}/topic/{itemId}", requirements={
@@ -346,7 +253,6 @@ class TopicController extends Controller
         $roomService = $this->get('commsy_legacy.room_service');
         $readerManager = $legacyEnvironment->getReaderManager();
         $roomItem = $roomService->getRoomItem($topic->getContextId());
-        $numTotalMember = $roomItem->getAllUsers();
 
         $userManager = $legacyEnvironment->getUserManager();
         $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
@@ -357,6 +263,7 @@ class TopicController extends Controller
         $read_count = 0;
         $read_since_modification_count = 0;
 
+        /** @var \cs_user_item $current_user */
         $current_user = $user_list->getFirst();
         $id_array = array();
         while ( $current_user ) {
@@ -377,8 +284,6 @@ class TopicController extends Controller
             }
             $current_user = $user_list->getNext();
         }
-        $read_percentage = round(($read_count/$all_user_count) * 100);
-        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
         $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
@@ -469,19 +374,13 @@ class TopicController extends Controller
 
     /**
      * @Route("/room/{roomId}/topic/create")
-     * @Template()
      */
     public function createAction($roomId, Request $request)
     {
-        $translator = $this->get('translator');
-        
-        $topicData = array();
         $topicService = $this->get('commsy_legacy.topic_service');
-        $transformer = $this->get('commsy_legacy.transformer.topic');
         
         // create new topic item
         $topicItem = $topicService->getNewtopic();
-        // $topicItem->setTitle('['.$translator->trans('insert title').']');
         $topicItem->setDraftStatus(1);
         $topicItem->save();
 
@@ -514,8 +413,6 @@ class TopicController extends Controller
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
-        
-        $formData = array();
 
         $isDraft = $item->isDraft();
 
@@ -578,11 +475,6 @@ class TopicController extends Controller
                 // ToDo ...
             }
             return $this->redirectToRoute('commsy_topic_save', array('roomId' => $roomId, 'itemId' => $itemId));
-            
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
         }
 
         $this->get('event_dispatcher')->dispatch('commsy.edit', new CommsyEditEvent($topicItem));
@@ -605,10 +497,8 @@ class TopicController extends Controller
     public function saveAction($roomId, $itemId, Request $request)
     {
         $itemService = $this->get('commsy_legacy.item_service');
-        $item = $itemService->getItem($itemId);
         
         $topicService = $this->get('commsy_legacy.topic_service');
-        $transformer = $this->get('commsy_legacy.transformer.date');
         
         $topic = $topicService->getTopic($itemId);
         
@@ -650,8 +540,6 @@ class TopicController extends Controller
             }
 		    $current_user = $user_list->getNext();
 		}
-        $read_percentage = round(($read_count/$all_user_count) * 100);
-        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
         $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
@@ -730,13 +618,7 @@ class TopicController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        $filterForm = $this->createForm(TopicFilterType::class, $this->defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_topic_list', array(
-                'roomId' => $roomId,
-            )),
-            'hasHashtags' => $roomItem->withBuzzwords(),
-            'hasCategories' => $roomItem->withTags(),
-        ));
+        $filterForm = $this->createFilterForm($roomItem);
 
         // get the announcement manager service
         $topicService = $this->get('commsy_legacy.topic_service');
@@ -797,12 +679,10 @@ class TopicController extends Controller
     public function editPathAction($roomId, $itemId, Request $request)
     {
         $itemService = $this->get('commsy_legacy.item_service');
+        /** @var \cs_topic_item $item */
         $item = $itemService->getTypedItem($itemId);
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $roomService = $this->get('commsy_legacy.room_service');
-
-        $rubricInformation = $roomService->getRubricInformation($roomId);
 
         $formData = array();
 
@@ -812,7 +692,6 @@ class TopicController extends Controller
         $itemManager = $legacyEnvironment->getItemManager();
         $itemManager->reset();
         $itemManager->setContextLimit($roomId);
-        //$itemManager->setTypeArrayLimit($rubricInformation);
 
         // get all linked items
         $linkedItemArray = [];
@@ -927,6 +806,100 @@ class TopicController extends Controller
         ];
     }
 
+    /**
+     * @Route("/room/{roomId}/topic/download")
+     * @throws \Exception
+     */
+    public function downloadAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get(DownloadAction::class);
+        return $action->execute($room, $items);
+    }
+
+    ###################################################################################################
+    ## XHR Action requests
+    ###################################################################################################
+
+    /**
+     * @Route("/room/{roomId}/topic/xhr/markread", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrMarkReadAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get('commsy.action.mark_read.generic');
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/topic/xhr/delete", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrDeleteAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get('commsy.action.delete.generic');
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @param Request $request
+     * @param \cs_room_item $roomItem
+     * @param boolean $selectAll
+     * @param integer[] $itemIds
+     * @return \cs_topic_item[]
+     */
+    public function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
+    {
+        $topicService = $this->get('commsy_legacy.topic_service');
+
+        if ($selectAll) {
+            if ($request->query->has('topic_filter')) {
+                $currentFilter = $request->query->get('topic_filter');
+                $filterForm = $this->createFilterForm($roomItem);
+
+                // manually bind values from the request
+                $filterForm->submit($currentFilter);
+
+                // apply filter
+                $topicService->setFilterConditions($filterForm);
+            } else {
+                $topicService->showNoNotActivatedEntries();
+            }
+
+            return $topicService->getListTopics($roomItem->getItemID());
+        } else {
+            return $topicService->getTopicsById($roomItem->getItemID(), $itemIds);
+        }
+    }
+
+    /**
+     * @param \cs_room_item $room
+     * @return FormInterface
+     */
+    private function createFilterForm($room)
+    {
+        // setup filter form default values
+        $defaultFilterValues = [
+            'hide-deactivated-entries' => true,
+        ];
+
+        return $this->createForm(TopicFilterType::class, $defaultFilterValues, [
+            'action' => $this->generateUrl('commsy_topic_list', [
+                'roomId' => $room->getItemID(),
+            ]),
+            'hasHashtags' => $room->withBuzzwords(),
+            'hasCategories' => $room->withTags(),
+        ]);
+    }
+
     private function getTagDetailArray ($baseCategories, $itemCategories) {
         $result = array();
         $tempResult = array();
@@ -938,7 +911,6 @@ class TopicController extends Controller
             if (!empty($tempResult)) {
                 $addCategory = true;
             }
-            $tempArray = array();
             $foundCategory = false;
             foreach ($itemCategories as $itemCategory) {
                 if ($baseCategory['item_id'] == $itemCategory['id']) {

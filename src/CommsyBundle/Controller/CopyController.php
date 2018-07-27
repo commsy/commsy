@@ -2,9 +2,12 @@
 
 namespace CommsyBundle\Controller;
 
+use CommsyBundle\Action\Copy\InsertAction;
+use CommsyBundle\Action\Copy\RemoveAction;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,7 +21,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
  * @package CommsyBundle\Controller
  * @Security("is_granted('ITEM_ENTER', roomId)")
  */
-class CopyController extends Controller
+class CopyController extends BaseController
 {
     /**
      * @Route("/room/{roomId}/copy/feed/{start}/{sort}")
@@ -65,13 +68,7 @@ class CopyController extends Controller
 
         if ($copyFilter) {
             // setup filter form
-            $defaultFilterValues = [];
-            $filterForm = $this->createForm(CopyFilterType::class, $defaultFilterValues, array(
-                'action' => $this->generateUrl('commsy_copy_list', array(
-                    'roomId' => $roomId,
-                )),
-                'rubrics' => $rubrics,
-            ));
+            $filterForm = $this->createFilterForm($roomItem);
     
             // manually bind values from the request
             $filterForm->submit($copyFilter);
@@ -123,27 +120,7 @@ class CopyController extends Controller
             }
         }
 
-        if ($roomItem->isPrivateRoom()) {
-            $rubrics = [
-                "announcement" => "announcement",
-                "material" => "material",
-                "discussion" => "discussion",
-                "date" => "date",
-                "todo" => "todo",
-            ];
-        } else {
-            $roomService = $this->get('commsy_legacy.room_service');
-            $rubrics = $roomService->getRubricInformation($roomId);
-            $rubrics = array_combine($rubrics, $rubrics);
-        }
-
-        $defaultFilterValues = [];
-        $filterForm = $this->createForm(CopyFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_copy_list', array(
-                'roomId' => $roomId,
-            )),
-            'rubrics' => $rubrics,
-        ));
+        $filterForm = $this->createFilterForm($roomItem);
 
         // get the copy service
         $copyService = $this->get('commsy.copy_service');
@@ -168,142 +145,137 @@ class CopyController extends Controller
         ];
     }
 
+    ###################################################################################################
+    ## XHR Action requests
+    ###################################################################################################
+
     /**
-     * @Route("/room/{roomId}/copy/feedaction")
+     * @Route("/room/{roomId}/copy/xhr/insert", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
      */
-    public function feedActionAction($roomId, Request $request)
+    public function xhrInsertAction($roomId, Request $request)
     {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        
-        $translator = $this->get('translator');
-        $itemService = $this->get('commsy_legacy.item_service');
-        
-        $action = $request->request->get('act');
-        
-        $selectedIds = $request->request->get('data');
-        if (!is_array($selectedIds)) {
-            $selectedIds = json_decode($selectedIds);
-        }
-        
-        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
-        
-        $result = [];
-        
-        if ($action == 'insert') {
-            $errorArray = [];
-            
-            // archive
-            if ($legacyEnvironment->isArchiveMode()) {
-                $errorArray[] = $translator->trans('copy items in archived workspaces is not allowed');
-            }
-                
-            // archive
-            elseif ($legacyEnvironment->inPortal()) {
-                $error_array[] = $translator->trans('copy items in portal is not allowed');
-            } else if ($legacyEnvironment->getCurrentUserItem()->isOnlyReadUser()) {
-                $error_array[] = $translator->trans('copy items as read only user is not allowed');
-            } elseif (!empty($selectedIds)) {
-                foreach ($selectedIds as $id) {
-                    
-                    // get item to copy
-                    $item = $itemService->getItem($id);
-                    
-                    // archive
-                    $toggleArchive = false;
-                    if ($item->isArchived() and !$legacyEnvironment->isArchiveMode()) {
-                        $toggleArchive = true;
-                        $legacyEnvironment->toggleArchiveMode();
-                    }
-                    
-                    // archive
-                    $importItem = $itemService->getTypedItem($id);
-                    
-                    // archive
-                    if ($toggleArchive) {
-                        $legacyEnvironment->toggleArchiveMode();
-                    }
-                    
-                    // archive
-                    $copy = $importItem->copy();
-                    
-                    $err = $copy->getErrorArray();
-                    if (!empty($err)) {
-                        $errorArray[$copy->getItemID()] = $err;
-                    } else {
-                       $readerManager = $legacyEnvironment->getReaderManager();
-                       $readerManager->markRead($copy->getItemID(), $copy->getVersionID());
-                       $noticedManager = $legacyEnvironment->getNoticedManager();
-                       $noticedManager->markNoticed($copy->getItemID(), $copy->getVersionID());
-                    }
-                }
-            }
-            
-            if (!empty($errorArray)) {
-                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-bolt\'></i> '.implode(', ', $errorArray);
-            } else {
-                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('inserted %count% entries in this room',count($selectedIds), array('%count%' => count($selectedIds)), 'messages');
-            }
-        } else if ($action == 'insertStack') {
-            $privateRoomItem = $legacyEnvironment->getCurrentUser()->getOwnRoom();
-            $legacyEnvironment->changeContextToPrivateRoom($privateRoomItem->getItemID());
-                
-            $errorArray = [];
-            if (!empty($selectedIds)) {
-                foreach ($selectedIds as $id) {
-                    
-                    // get item to copy
-                    $item = $itemService->getItem($id);
-                    
-                    // for now, we only copy materials, dates, discussions and todos
-                    if (in_array($item->getItemType(), array(CS_MATERIAL_TYPE, CS_DATE_TYPE, CS_DISCUSSION_TYPE, CS_TODO_TYPE))) {
-                        
-                        // archive
-                        $toggleArchive = false;
-                        if ($item->isArchived() and !$legacyEnvironment->isArchiveMode()) {
-                            $toggleArchive = true;
-                            $legacyEnvironment->toggleArchiveMode();
-                        }
-                        
-                        // archive
-                        $importItem = $itemService->getTypedItem($id);
-                        
-                        // archive
-                        if ($toggleArchive) {
-                            $legacyEnvironment->toggleArchiveMode();
-                        }
-                        
-                        // archive
-                        $copy = $importItem->copy();
-                        
-                        $err = $copy->getErrorArray();
-                        if (!empty($err)) {
-                            $errorArray[$copy->getItemID() ] = $err;
-                        }
-                    }
-                }
-            }
-            
-            if (!empty($errorArray)) {
-                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-bolt\'></i> '.implode(', ', $errorArray);
-            } else {
-                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('inserted %count% entries in my stack',count($selectedIds), array('%count%' => count($selectedIds)));
-            }
-        } else if ($action == 'remove') {
-            $copyService = $this->get('commsy.copy_service');
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
 
-            $countArray = $copyService->removeEntries($roomId, $selectedIds);
-            $result['count'] = $countArray['countAll'];
-            $result['countSelected'] = $countArray['count'];
-
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('removed %count% entries from list',count($selectedIds), array('%count%' => count($selectedIds)), 'messages');
-        } 
-        
-        return new JsonResponse([
-            'message' => $message,
-            'timeout' => '5550',
-            'layout' => 'cs-notify-message',
-            'data' => $result,
-        ]);
+        $action = $this->get(InsertAction::class);
+        return $action->execute($room, $items);
     }
 
+//    public function xhrInsertStackAction($roomId, Request $request)
+//    {
+//        $privateRoomItem = $legacyEnvironment->getCurrentUser()->getOwnRoom();
+//        $legacyEnvironment->changeContextToPrivateRoom($privateRoomItem->getItemID());
+//
+//        $errorArray = [];
+//        if (!empty($selectedIds)) {
+//            foreach ($selectedIds as $id) {
+//
+//                // get item to copy
+//                $item = $itemService->getItem($id);
+//
+//                // for now, we only copy materials, dates, discussions and todos
+//                if (in_array($item->getItemType(), array(CS_MATERIAL_TYPE, CS_DATE_TYPE, CS_DISCUSSION_TYPE, CS_TODO_TYPE))) {
+//
+//                    // archive
+//                    $toggleArchive = false;
+//                    if ($item->isArchived() and !$legacyEnvironment->isArchiveMode()) {
+//                        $toggleArchive = true;
+//                        $legacyEnvironment->toggleArchiveMode();
+//                    }
+//
+//                    // archive
+//                    $importItem = $itemService->getTypedItem($id);
+//
+//                    // archive
+//                    if ($toggleArchive) {
+//                        $legacyEnvironment->toggleArchiveMode();
+//                    }
+//
+//                    // archive
+//                    $copy = $importItem->copy();
+//
+//                    $err = $copy->getErrorArray();
+//                    if (!empty($err)) {
+//                        $errorArray[$copy->getItemID() ] = $err;
+//                    }
+//                }
+//            }
+//        }
+//
+//        if (!empty($errorArray)) {
+//            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-bolt\'></i> '.implode(', ', $errorArray);
+//        } else {
+//            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('inserted %count% entries in my stack',count($selectedIds), array('%count%' => count($selectedIds)));
+//        }
+//    }
+
+    /**
+     * @Route("/room/{roomId}/copy/xhr/remove", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrRemoveAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get(RemoveAction::class);
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @param Request $request
+     * @param \cs_room_item $roomItem
+     * @param boolean $selectAll
+     * @param integer[] $itemIds
+     * @return \cs_item[]
+     */
+    public function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
+    {
+        $copyService = $this->get('commsy.copy_service');
+
+        if ($selectAll) {
+            if ($request->query->has('copy_filter')) {
+                $currentFilter = $request->query->get('copy_filter');
+                $filterForm = $this->createFilterForm($roomItem);
+
+                // manually bind values from the request
+                $filterForm->submit($currentFilter);
+
+                // apply filter
+                $copyService->setFilterConditions($filterForm);
+            }
+
+            return $copyService->getListEntries($roomItem->getItemID());
+        } else {
+            return $copyService->getCopiesById($roomItem->getItemID(), $itemIds);
+        }
+    }
+
+    /**
+     * @param \cs_room_item $room
+     * @return FormInterface
+     */
+    private function createFilterForm($room)
+    {
+        if ($room->isPrivateRoom()) {
+            $rubrics = [
+                "material" => "material",
+                "discussion" => "discussion",
+                "date" => "date",
+                "todo" => "todo",
+            ];
+        } else {
+            $roomService = $this->get('commsy_legacy.room_service');
+            $rubrics = $roomService->getRubricInformation($room->getItemID());
+            $rubrics = array_combine($rubrics, $rubrics);
+        }
+
+        return $this->createForm(CopyFilterType::class, [], [
+            'action' => $this->generateUrl('commsy_copy_list', [
+                'roomId' => $room->getItemID(),
+            ]),
+            'rubrics' => $rubrics,
+        ]);
+    }
 }

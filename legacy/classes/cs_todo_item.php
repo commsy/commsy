@@ -222,6 +222,9 @@ class cs_todo_item extends cs_item {
       return $members;
    }
 
+    /**
+     * @return \cs_list
+     */
    function getStepItemList(){
       $step_manager = $this->_environment->getStepManager();
       $step_manager->setTodoItemIDLimit($this->getItemID());

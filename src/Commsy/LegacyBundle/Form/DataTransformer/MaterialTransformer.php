@@ -74,8 +74,10 @@ class MaterialTransformer implements DataTransformerInterface
                 } else {
                     $materialData['external_viewer_enabled'] = false;
                 }
+
+                $materialData['license_id'] = $materialItem->getLicenseId();
             }
-            
+
             if ($materialItem->isNotActivated()) {
                 $materialData['hidden'] = true;
                 
@@ -173,6 +175,12 @@ class MaterialTransformer implements DataTransformerInterface
             if($materialObject->isNotActivated()){
 	            $materialObject->setModificationDate(getCurrentDateTimeInMySQL());
 	        }
+        }
+
+        if (array_key_exists('license_id', $materialData)) {
+            $materialObject->setLicenseId($materialData['license_id']);
+        } else {
+            $materialObject->setLicenseId(null);
         }
 
         // sections

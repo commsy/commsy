@@ -2,26 +2,19 @@
 
 namespace CommsyBundle\Controller;
 
+use CommsyBundle\Entity\User;
+use CommsyBundle\Filter\UserFilterType;
+use CommsyBundle\Form\Type\UserSendType;
 use CommsyBundle\Form\Type\UserStatusChangeType;
-use CommsyBundle\Utils\AccountMail;
+use CommsyBundle\Form\Type\UserType;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-
-use CommsyBundle\Entity\User;
-
-use Symfony\Component\HttpFoundation\JsonResponse;
-
-use CommsyBundle\Filter\UserFilterType;
-
-use CommsyBundle\Form\Type\UserType;
-use CommsyBundle\Form\Type\UserSendType;
-
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
@@ -29,7 +22,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
  * Class UserController
  * @package CommsyBundle\Controller
  */
-class UserController extends Controller
+class UserController extends BaseController
 {
 
     /**
@@ -72,19 +65,7 @@ class UserController extends Controller
         }
 
         // setup filter form
-        $defaultFilterValues = [
-            'activated' => true,
-            'user_status' => 8,
-        ];
-        $filterForm = $this->createForm(UserFilterType::class, $defaultFilterValues, [
-            'action' => $this->generateUrl('commsy_user_list', [
-                'roomId' => $roomId,
-                'view' => $view,
-            ]),
-            'hasHashtags' => false,
-            'hasCategories' => false,
-            'isModerator' => $currentUser->isModerator(),
-        ]);
+        $filterForm = $this->createFilterForm($roomItem, $view);
 
         // get the user manager service
         $userService = $this->get('commsy_legacy.user_service');
@@ -171,7 +152,6 @@ class UserController extends Controller
     public function printlistAction($roomId, Request $request, $sort)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $currentUser = $legacyEnvironment->getCurrentUserItem();
 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
@@ -181,17 +161,7 @@ class UserController extends Controller
         }
 
         // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true,
-        );
-        $filterForm = $this->createForm(UserFilterType::class, $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_user_list', array(
-                'roomId' => $roomId,
-            )),
-            'hasHashtags' => false,
-            'hasCategories' => false,
-            'isModerator' => $currentUser->isModerator(),
-        ));
+        $filterForm = $this->createFilterForm($roomItem);
 
         // get the user manager service
         $userService = $this->get('commsy_legacy.user_service');
@@ -220,8 +190,6 @@ class UserController extends Controller
 
         $readerService = $this->get('commsy_legacy.reader_service');
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
-
 
         $readerList = array();
         foreach ($users as $item) {
@@ -253,15 +221,27 @@ class UserController extends Controller
      */
     public function changeStatusAction($roomId, Request $request)
     {
+        $room = $this->getRoom($roomId);
+
         $formData = [];
 
-        // first call will pass query parameter
-        if ($request->query->has('status')) {
+        if ($request->query->has('userDetail')) {
             $formData['status'] = $request->query->get('status');
-        }
-
-        if ($request->query->has('userIds')) {
             $formData['userIds'] = $request->query->get('userIds');
+        } else {
+            if (!$request->request->has('user_status')) {
+                $formData['status'] = $request->request->get('status');
+
+                $users = $this->getItemsForActionRequest($room, $request);
+                foreach ($users as $user) {
+                    $userIds[] = $user->getItemId();
+                }
+
+                $formData['userIds'] = $userIds;
+            } else {
+                $postData = $request->request->get('user_status');
+                $formData['userIds'] = $postData['userIds'];
+            }
         }
 
         $form = $this->createForm(UserStatusChangeType::class, $formData);
@@ -270,10 +250,12 @@ class UserController extends Controller
         // get all affected user
         $userService = $this->get('commsy_legacy.user_service');
         $users = [];
-        foreach ($formData['userIds'] as $userId) {
-            $user = $userService->getUser($userId);
-            if ($user) {
-                $users[] = $user;
+        if (isset($formData['userIds'])) {
+            foreach ($formData['userIds'] as $userId) {
+                $user = $userService->getUser($userId);
+                if ($user) {
+                    $users[] = $user;
+                }
             }
         }
 
@@ -394,128 +376,6 @@ class UserController extends Controller
         ];
     }
 
-    /**
-     * @Route("/room/{roomId}/user/feedaction")
-     */
-    public function feedActionAction($roomId, Request $request)
-    {
-        $translator = $this->get('translator');
-        
-        $action = $request->request->get('act');
-        
-        $selectedIds = $request->request->get('data');
-        if (!is_array($selectedIds)) {
-            $selectedIds = json_decode($selectedIds);
-        }
-        
-        $selectAll = $request->request->get('selectAll');
-        $selectAllStart = $request->request->get('selectAllStart');
-        $sort = $request->request->get('sort');
-        
-        if ($selectAll == 'true') {
-            $entries = $this->feedAction($roomId, $max = 1000, $start = $selectAllStart, $sort, $request);
-            foreach ($entries['users'] as $key => $value) {
-                $selectedIds[] = $value->getItemId();
-            }
-        }
-        
-        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
-        
-        $result = [];
-        
-        $noModeratorsError = false;
-        
-        $userService = $this->get('commsy_legacy.user_service');
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $noticedManager = $legacyEnvironment->getNoticedManager();
-        $readerManager = $legacyEnvironment->getReaderManager();
-
-        if ($action == 'markread') {
-            foreach ($selectedIds as $id) {
-                $item = $userService->getUser($id);
-                $versionId = $item->getVersionID();
-                $noticedManager->markNoticed($id, $versionId);
-                $readerManager->markRead($id, $versionId);
-                $annotationList =$item->getAnnotationList();
-                if ( !empty($annotationList) ){
-                    $annotationItem = $annotationList->getFirst();
-                    while($annotationItem){
-                       $noticedManager->markNoticed($annotationItem->getItemID(),'0');
-                       $annotationItem = $annotationList->getNext();
-                    }
-                }
-            }
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
-
-        } else if ($action == 'user-send-mail') {
-            return $this->redirectToRoute('commsy_user_sendmail', array('roomId' => $roomId, 'userIds' => $selectedIds));
-        } else if ($action == 'sendmail') {
-            return new JsonResponse([
-                'redirect' => $this->generateUrl('commsy_user_sendmultiple', array('roomId' => $roomId, 'userIds' => $selectedIds)),
-            ]);
-        } else if ($action == 'user-delete') {
-            if ($this->contextHasModerators($roomId, $selectedIds)) {
-                foreach ($selectedIds as $id) {
-                    $item = $userService->getUser($id);
-                    $item->delete();
-                }
-                $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('%count% deleted entries',count($selectedIds), array('%count%' => count($selectedIds)));
-            } else {
-                $noModeratorsError = true;
-            }
-        } else {
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ToDo: '.$action;
-        }
-        
-        if ($noModeratorsError) {
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('no moderators left', array(), 'user');
-        }
-
-        // inform user about account action
-        if (in_array($action, ['user-delete'])) {
-
-            if (!$noModeratorsError) {
-                $this->sendUserInfoMail($selectedIds, $action);
-            }
-        }
-        
-        return new JsonResponse([
-            'message' => $message,
-            'timeout' => '5550',
-            'layout' => 'cs-notify-message',
-            'data' => $result,
-        ]);
-    }
-
-
-    /**
-     * @Route("/room/{roomId}/user/{itemId}/delete", requirements={
-     *     "itemId": "\d+"
-     * }))
-     * @Security("is_granted('MODERATOR')")
-     */
-    public function deleteAction($roomId, $itemId, Request $request) {
-        // FIXME: popup confirm-cancel dialog does not work, yet!
-        $translator = $this->get('translator');
-        if ($this->contextHasModerators($roomId, [$itemId])) {
-            $userService = $this->get('commsy_legacy.user_service');
-            $user = $userService->getUser($itemId);
-            //$user->delete();
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->trans('1 deleted entries');
-            $this->sendUserInfoMail([$itemId], 'user-delete');
-        } else {
-            $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('no moderators left', array(), 'user');
-        }
-
-        return new JsonResponse([
-            'message' => $message,
-            'timeout' => '5550',
-            'layout' => 'cs-notify-message',
-            'data' => [],
-        ]);
-        //return $this->redirectToRoute('commsy_user_list', array('roomId' => $roomId));
-    }
-
     private function contextHasModerators($roomId, $selectedIds) {
         $userService = $this->get('commsy_legacy.user_service');
         $moderators = $userService->getModeratorsForContext($roomId);
@@ -606,7 +466,8 @@ class UserController extends Controller
     }
 
 
-    private function getDetailInfo ($roomId, $itemId) {
+    private function getDetailInfo($roomId, $itemId)
+    {
         $infoArray = array();
         
         $userService = $this->get('commsy_legacy.user_service');
@@ -634,8 +495,7 @@ class UserController extends Controller
  
         $roomManager = $legacyEnvironment->getRoomManager();
         $readerManager = $legacyEnvironment->getReaderManager();
-        $roomItem = $roomManager->getItem($user->getContextId());        
-        $numTotalMember = $roomItem->getAllUsers();
+        $roomItem = $roomManager->getItem($user->getContextId());
 
         $userManager = $legacyEnvironment->getUserManager();
         $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
@@ -666,8 +526,6 @@ class UserController extends Controller
             }
             $current_user = $user_list->getNext();
         }
-        $read_percentage = round(($read_count/$all_user_count) * 100);
-        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
         $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
@@ -756,15 +614,12 @@ class UserController extends Controller
 
     /**
      * @Route("/room/{roomId}/user/create")
-     * @Template()
      */
-    public function createAction($roomId, Request $request)
+    public function createAction($roomId)
     {
         $translator = $this->get('translator');
-        
-        $userData = array();
+
         $userService = $this->get('commsy_legacy.user_service');
-        $transformer = $this->get('commsy_legacy.transformer.user');
         
         // create new user item
         $userItem = $userService->getNewuser();
@@ -775,7 +630,6 @@ class UserController extends Controller
 
  
         return $this->redirectToRoute('commsy_user_detail', array('roomId' => $roomId, 'itemId' => $userItem->getItemId()));
-
     }
 
 
@@ -865,8 +719,6 @@ class UserController extends Controller
         
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $readerManager = $legacyEnvironment->getReaderManager();
-        //$roomItem = $roomManager->getItem($material->getContextId());        
-        //$numTotalMember = $roomItem->getAllUsers();
         
         $userManager = $legacyEnvironment->getUserManager();
         $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
@@ -897,8 +749,6 @@ class UserController extends Controller
             }
 		    $current_user = $user_list->getNext();
 		}
-        $read_percentage = round(($read_count/$all_user_count) * 100);
-        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
         $readerService = $this->get('commsy_legacy.reader_service');
         
         $readerList = array();
@@ -922,139 +772,6 @@ class UserController extends Controller
             'readCount' => $read_count,
             'readSinceModificationCount' => $read_since_modification_count,
         );
-    }
-
-    /**
-     * @Route("/room/{roomId}/user/sendMultiple")
-     * @Template()
-     */
-    public function sendMultipleAction($roomId, Request $request)
-    {
-        if (!$request->query->has('userIds')) {
-            throw $this->createNotFoundException('no user ids found');
-        }
-
-        $userIds = $request->query->get('userIds');
-
-        $userService = $this->get('commsy_legacy.user_service');
-
-        $formData = [
-            'message' => '',
-            'copy_to_sender' => false,
-        ];
-
-        $form = $this->createForm(UserSendType::class, $formData, []);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $saveType = $form->getClickedButton()->getName();
-
-            if ($saveType == 'save') {
-                $formData = $form->getData();
-                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-                $portalItem = $legacyEnvironment->getCurrentPortalItem();
-                $currentUser = $legacyEnvironment->getCurrentUserItem();
-
-                $from = $this->getParameter('commsy.email.from');
-
-                $to = [];
-                $toBCC = [];
-                $validator = new EmailValidator();
-                $users = [];
-                $failedUsers = [];
-                foreach ($userIds as $userId) {
-                    $user = $userService->getUser($userId);
-                    $users[] = $user;
-                    if ($validator->isValid($user->getEmail(), new RFCValidation())) {
-                        if ($user->isEmailVisible()) {
-                            $to[$user->getEmail()] = $user->getFullName();
-                        } else {
-                            $toBCC[$user->getEmail()] = $user->getFullName();
-                        }
-                    } else {
-                        $failedUsers[] = $user;
-                    }
-                }
-
-                $replyTo = [];
-                $toCC = [];
-                if ($validator->isValid($currentUser->getEmail(), new RFCValidation())) {
-                    if ($currentUser->isEmailVisible()) {
-                        $replyTo[$currentUser->getEmail()] = $currentUser->getFullName();
-                    }
-
-                    // form option: copy_to_sender
-                    if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-                        if ($currentUser->isEmailVisible()) {
-                            $toCC[$currentUser->getEmail()] = $currentUser->getFullName();
-                        } else {
-                            $toBCC[$currentUser->getEmail()] = $currentUser->getFullName();
-                        }
-                    }
-                }
-
-                $message = \Swift_Message::newInstance()
-                    ->setSubject($formData['subject'])
-                    ->setBody($formData['message'], 'text/html')
-                    ->setFrom([$from => $portalItem->getTitle()])
-                    ->setReplyTo($replyTo)
-                    ->setTo($to);
-
-                if (!empty($toCC)) {
-                    $message->setCc($toCC);
-                }
-
-                if (!empty($toBCC)) {
-                    $message->setBcc($toBCC);
-                }
-
-                // send mail
-                $failedRecipients = [];
-                $this->get('mailer')->send($message, $failedRecipients);
-
-                foreach ($failedUsers as $failedUser) {
-                    $this->addFlash('failedRecipients', $failedUser->getUserId());
-                }
-
-                foreach ($failedRecipients as $failedRecipient) {
-                    $failedUser = array_filter($users, function($user) use ($failedRecipient) {
-                        return $user->getEmail() == $failedRecipient;
-                    });
-
-                    if ($failedUser) {
-                        $this->addFlash('failedRecipients', $failedUser[0]->getUserId());
-                    }
-                }
-
-                // redirect to success page
-                return $this->redirectToRoute('commsy_user_sendmultiplesuccess', [
-                    'roomId' => $roomId,
-                ]);
-            } else {
-                // redirect to user feed
-                return $this->redirectToRoute('commsy_user_list', [
-                    'roomId' => $roomId,
-                ]);
-            }
-        }
-
-        return [
-            'form' => $form->createView()
-        ];
-    }
-
-    /**
-     * @Route("/room/{roomId}/user/sendMultiple/success")
-     * @Template()
-     **/
-    public function sendMultipleSuccessAction($roomId)
-    {
-        return [
-            'link' => $this->generateUrl('commsy_user_list', [
-                'roomId' => $roomId,
-            ]),
-        ];
     }
 
     /**
@@ -1246,8 +963,6 @@ class UserController extends Controller
             'roomId' => $roomId,
             'roomList' => $rooms,
         ];
-
-
     }
 
     /**
@@ -1257,7 +972,6 @@ class UserController extends Controller
      * @Template()
      * 
      * @param  int $roomId The current room id
-     * @return Response The HTML response
      */
     public function globalNavbarAction($roomId)
     {
@@ -1303,8 +1017,6 @@ class UserController extends Controller
      * This is an embedded controller action.
      *
      * @Template()
-     *
-     * @return Response The HTML response
      */
     public function allRoomsNavbarAction()
     {
@@ -1449,20 +1161,7 @@ class UserController extends Controller
 
         if ($userFilter) {
             // setup filter form
-            $defaultFilterValues = [
-                'activated' => true,
-                'user_status' => 8,
-            ];
-
-            $filterForm = $this->createForm(UserFilterType::class, $defaultFilterValues, [
-                'action' => $this->generateUrl('commsy_user_list', [
-                    'roomId' => $roomId,
-                    'view' => $view,
-                ]),
-                'hasHashtags' => false,
-                'hasCategories' => false,
-                'isModerator' => $currentUser->isModerator(),
-            ]);
+            $filterForm = $this->createFilterForm($roomItem, $view);
 
             // manually bind values from the request
             $filterForm->submit($userFilter);
@@ -1499,5 +1198,233 @@ class UserController extends Controller
             'showRating' => false,
             'allowedActions' => $allowedActions,
         ];
+    }
+
+    /**
+     * @Route("/room/{roomId}/user/sendMultiple")
+     * @Template()
+     */
+    public function sendMultipleAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+
+        $userIds = [];
+        if (!$request->request->has('user_send')) {
+            $users = $this->getItemsForActionRequest($room, $request);
+
+            foreach ($users as $user) {
+                $userIds[] = $user->getItemId();
+            }
+        } else {
+            $postData = $request->request->get('user_send');
+            $userIds = $postData['users'];
+        }
+
+        $formData = [
+            'message' => '',
+            'copy_to_sender' => false,
+            'users' => $userIds,
+        ];
+
+        $form = $this->createForm(UserSendType::class, $formData, []);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $saveType = $form->getClickedButton()->getName();
+
+            if ($saveType == 'save') {
+                $formData = $form->getData();
+                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+                $portalItem = $legacyEnvironment->getCurrentPortalItem();
+                $currentUser = $legacyEnvironment->getCurrentUserItem();
+
+                $from = $this->getParameter('commsy.email.from');
+
+                $to = [];
+                $toBCC = [];
+                $validator = new EmailValidator();
+                $failedUsers = [];
+                foreach ($users as $user) {
+                    $users[] = $user;
+                    if ($validator->isValid($user->getEmail(), new RFCValidation())) {
+                        if ($user->isEmailVisible()) {
+                            $to[$user->getEmail()] = $user->getFullName();
+                        } else {
+                            $toBCC[$user->getEmail()] = $user->getFullName();
+                        }
+                    } else {
+                        $failedUsers[] = $user;
+                    }
+                }
+
+                $replyTo = [];
+                $toCC = [];
+                if ($validator->isValid($currentUser->getEmail(), new RFCValidation())) {
+                    if ($currentUser->isEmailVisible()) {
+                        $replyTo[$currentUser->getEmail()] = $currentUser->getFullName();
+                    }
+
+                    // form option: copy_to_sender
+                    if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
+                        if ($currentUser->isEmailVisible()) {
+                            $toCC[$currentUser->getEmail()] = $currentUser->getFullName();
+                        } else {
+                            $toBCC[$currentUser->getEmail()] = $currentUser->getFullName();
+                        }
+                    }
+                }
+
+                $message = \Swift_Message::newInstance()
+                    ->setSubject($formData['subject'])
+                    ->setBody($formData['message'], 'text/html')
+                    ->setFrom([$from => $portalItem->getTitle()])
+                    ->setReplyTo($replyTo)
+                    ->setTo($to);
+
+                if (!empty($toCC)) {
+                    $message->setCc($toCC);
+                }
+
+                if (!empty($toBCC)) {
+                    $message->setBcc($toBCC);
+                }
+
+                // send mail
+                $failedRecipients = [];
+                $this->get('mailer')->send($message, $failedRecipients);
+
+                foreach ($failedUsers as $failedUser) {
+                    $this->addFlash('failedRecipients', $failedUser->getUserId());
+                }
+
+                foreach ($failedRecipients as $failedRecipient) {
+                    $failedUser = array_filter($users, function($user) use ($failedRecipient) {
+                        return $user->getEmail() == $failedRecipient;
+                    });
+
+                    if ($failedUser) {
+                        $this->addFlash('failedRecipients', $failedUser[0]->getUserId());
+                    }
+                }
+
+                // redirect to success page
+                return $this->redirectToRoute('commsy_user_sendmultiplesuccess', [
+                    'roomId' => $roomId,
+                ]);
+            } else {
+                // redirect to user feed
+                return $this->redirectToRoute('commsy_user_list', [
+                    'roomId' => $roomId,
+                ]);
+            }
+        }
+
+        return [
+            'form' => $form->createView()
+        ];
+    }
+
+    /**
+     * @Route("/room/{roomId}/user/sendMultiple/success")
+     * @Template()
+     **/
+    public function sendMultipleSuccessAction($roomId)
+    {
+        return [
+            'link' => $this->generateUrl('commsy_user_list', [
+                'roomId' => $roomId,
+            ]),
+        ];
+    }
+
+    ###################################################################################################
+    ## XHR Action requests
+    ###################################################################################################
+
+    /**
+     * @Route("/room/{roomId}/user/xhr/markread", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrMarkReadAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get('commsy.action.mark_read.generic');
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/user/xhr/delete", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrDeleteAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get('commsy.action.delete.generic');
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @param \cs_room_item $room
+     * @param string $view
+     * @return FormInterface
+     */
+    private function createFilterForm($room, $view = null)
+    {
+        // setup filter form default values
+        $defaultFilterValues = [
+            'activated' => true,
+            'user_status' => 8,
+        ];
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
+
+        return $this->createForm(UserFilterType::class, $defaultFilterValues, [
+            'action' => $this->generateUrl('commsy_user_list', [
+                'roomId' => $room->getItemID(),
+                'view' => $view,
+            ]),
+            'hasHashtags' => false,
+            'hasCategories' => false,
+            'isModerator' => $currentUser->isModerator(),
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param \cs_room_item $roomItem
+     * @param boolean $selectAll
+     * @param integer[] $itemIds
+     * @return \cs_user_item[]
+     */
+    public function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
+    {
+        // get the user service
+        $userService = $this->get('commsy_legacy.user_service');
+
+        if ($selectAll) {
+            if ($request->query->has('user_filter')) {
+                $currentFilter = $request->query->get('user_filter');
+                $filterForm = $this->createFilterForm($roomItem);
+
+                // manually bind values from the request
+                $filterForm->submit($currentFilter);
+
+                // apply filter
+                $userService->setFilterConditions($filterForm);
+            } else {
+                $userService->showNoNotActivatedEntries();
+                $userService->showUserStatus(8);
+            }
+
+            return $userService->getListUsers($roomItem->getItemID());
+        } else {
+            return $userService->getUsersById($roomItem->getItemID(), $itemIds);
+        }
     }
 }

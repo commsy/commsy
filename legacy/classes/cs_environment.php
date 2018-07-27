@@ -959,20 +959,22 @@ class cs_environment {
       return $this->instance['zzz_topic_manager'];
    }
 
-   function getGroupManager() {
-      if ( !$this->isArchiveMode() ) {
-         if (!isset($this->instance['group_manager'])) {
-            $group_manager = $this->_getInstance('cs_group_manager');
-            $group_manager->resetLimits();
-            $this->instance['group_manager'] = $group_manager;
-         } else {
-            #$this->instance['group_manager']->resetLimits();
-         }
-         return $this->instance['group_manager'];
-      } else {
-         return $this->getZzzGroupManager();
-      }
-   }
+    /**
+     * @return \cs_group_manager
+     */
+    public function getGroupManager() : \cs_group_manager
+    {
+        if (!$this->isArchiveMode()) {
+            if (!isset($this->instance['group_manager'])) {
+                $group_manager = $this->_getInstance('cs_group_manager');
+                $group_manager->resetLimits();
+                $this->instance['group_manager'] = $group_manager;
+            }
+            return $this->instance['group_manager'];
+        } else {
+            return $this->getZzzGroupManager();
+        }
+    }
 
    function getZzzGroupManager() {
       if (!isset($this->instance['zzz_group_manager'])) {

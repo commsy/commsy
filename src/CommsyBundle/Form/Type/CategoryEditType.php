@@ -5,11 +5,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type as Types;
-use Symfony\Component\Validator\Constraints;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-
-use CommsyBundle\Form\Type\CategoryType;
 
 class CategoryEditType extends AbstractType
 {
@@ -43,40 +38,6 @@ class CategoryEditType extends AbstractType
                 'label' => 'save',
                 'translation_domain' => 'form',
             ])
-
-            ->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
-                $hashtag = $event->getData();
-                $form = $event->getForm();
-
-                // check if this is a "new" object
-                // if (!$hashtag->getItemId()) {
-                //     $form->add('new', Types\SubmitType::class, [
-                //         'attr' => array(
-                //             'class' => 'uk-button-primary',
-                //         ),
-                //         'label' => 'Create new hashtag',
-                //         'translation_domain' => 'hashtag',
-                //     ]);
-                // } else {
-                //     $form
-                //         ->add('update', Types\SubmitType::class, [
-                //             'attr' => array(
-                //                 'class' => 'uk-button-primary',
-                //             ),
-                //             'label' => 'Update hashtag',
-                //             'translation_domain' => 'hashtag',
-                //         ])
-                //         ->add('delete', Types\SubmitType::class, [
-                //             'attr' => array(
-                //                 'class' => 'uk-button-danger',
-                //             ),
-                //             'label' => 'Delete hashtag',
-                //             'translation_domain' => 'hashtag',
-                //             'validation_groups' => false,   // disable validation
-                //         ])
-                //     ;
-                // }
-            });
         ;
     }
 

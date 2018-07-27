@@ -2,9 +2,10 @@
 
 namespace CommsyBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,20 +33,20 @@ class AnnotationController extends Controller
 
         $readerService = $this->get('commsy_legacy.reader_service');
 
-        $readerList = array();
+        $readerList = [];
         foreach ($annotations as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
         }
 
 
-        return array(
+        return [
             'roomId' => $roomId,
             'annotations' => $annotations,
-            'readerList' => $readerList
-        );
+            'readerList' => $readerList,
+        ];
     }
 
-        /**
+    /**
      * @Route("/room/{roomId}/annotation/feed/{linkedItemId}/{start}")
      * @Template()
      */
@@ -59,21 +60,21 @@ class AnnotationController extends Controller
 
         $readerService = $this->get('commsy_legacy.reader_service');
 
-        $readerList = array();
+        $readerList = [];
         foreach ($annotations as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
         }
 
-
-        return array(
+        return [
             'roomId' => $roomId,
             'annotations' => $annotations,
-            'readerList' => $readerList
-        );
+            'readerList' => $readerList,
+        ];
     }
 
     /**
      * @Route("/room/{roomId}/annotation/{itemId}/edit")
+     * @Method({"GET", "POST"})
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
@@ -115,6 +116,7 @@ class AnnotationController extends Controller
 
     /**
      * @Route("/room/{roomId}/annotation/{itemId}/success")
+     * @Method({"GET"})
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
@@ -123,11 +125,14 @@ class AnnotationController extends Controller
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
 
-        return array('annotation' => $item);
+        return [
+            'annotation' => $item,
+        ];
     }
 
     /**
      * @Route("/room/{roomId}/annotation/{itemId}/create")
+     * @Method({"POST"})
      * @Template()
      * @Security("is_granted('ITEM_ANNOTATE', itemId)")
      */
@@ -154,37 +159,9 @@ class AnnotationController extends Controller
         return $this->redirectToRoute('commsy_'.$itemType.'_detail', array('roomId' => $roomId, 'itemId' => $itemId));
     }
 
-    // /**
-    //  * @Route("/room/{roomId}/annotation/{itemId}/save")
-    //  * @Template()
-    //  * @Security("is_granted('ITEM_EDIT', itemId)")
-    //  */
-    // public function saveAction($roomId, $itemId, Request $request)
-    // {
-    //     $itemService = $this->get('commsy_legacy.item_service');
-    //     $item = $itemService->getTypedItem($itemId);
-
-    //     $annotationService = $this->get('commsy_legacy.annotation_service');
-
-    //     $linkedItem = $item->getLinkedItem();
-    //     $itemType = $linkedItem->getItemType();
-
-    //     $form = $this->createForm(AnnotationType::class);
-    //     $form->handleRequest($request);
-    //     if ($form->isValid()) {
-    //         if ($form->get('save')->isClicked()) {
-    //             $data = $form->getData();
-
-    //             // create new annotation
-    //             $annotationService->addAnnotation($roomId, $itemId, $data['description']);
-    //         }
-    //     }
-
-    //     return $this->redirectToRoute('commsy_'.$itemType.'_detail', array('roomId' => $roomId, 'itemId' => $linkedItem->getItemId()));
-    // }
-
     /**
      * @Route("/room/{roomId}/annotation/{itemId}/delete")
+     * @Method({"GET"})
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
     public function deleteAction($roomId, $itemId, Request $request)

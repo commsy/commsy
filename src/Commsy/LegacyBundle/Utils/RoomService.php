@@ -64,6 +64,10 @@ class RoomService
         return $this->getRoomItem($currentContextId);
     }
 
+    /**
+     * @param integer $roomId
+     * @return \cs_room_item
+     */
     public function getRoomItem($roomId)
     {
         /**
@@ -74,6 +78,7 @@ class RoomService
 
         // get room item
         $roomManager = $this->legacyEnvironment->getRoomManager();
+        /** @var \cs_room_item $roomItem */
         $roomItem = $roomManager->getItem($roomId);
 
         if (!$roomItem) {

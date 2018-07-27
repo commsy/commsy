@@ -636,6 +636,9 @@ class cs_material_item extends cs_item {
    }
 
 
+    /**
+     * @return \cs_list
+     */
    function getSectionList() {
       $section_list = $this->_getValue('section_for');
       if (empty($section_list) ) {
@@ -645,32 +648,20 @@ class cs_material_item extends cs_item {
       return $section_list;
    }
 
-
-##########################
-##########################
-#########TESTING##########
-##########################
-##########BEGIN###########
-
-#   function _getLinkedItems($item_manager, $link_type, $order='', $ignore_version = FALSE ) {
-#       if ( $link_type != 'annotation_of' )  {
-#          return parent::_getLinkedItems($item_manager, $link_type, $order='');
-#       }
-#    }
-
-
    function _getSectionListForCurrentVersion(){
       $section_manager = $this->_environment->getSectionManager();
       $this->_data['section_for'] = $section_manager->getSectionForCurrentVersion($this);
       return $this->_data['section_for'];
    }
 
+    /**
+     * @return \cs_list
+     */
     public function getAnnotationList()
     {
         $annotation_manager = $this->_environment->getAnnotationManager();
         $annotation_manager->reset();
         $annotation_manager->setLinkedItemID($this->getItemID());
-#       $annotation_manager->setLinkedVersionID($this->getVersionID());
         $annotation_manager->setContextLimit($this->getContextID());
         $annotation_manager->select();
         return $annotation_manager->get();
@@ -1740,5 +1731,26 @@ function _copySectionList ($copy_id) {
        }
        return parent::isLocked();
    }
+
+    public function setLicenseId($licenseId)
+    {
+        $this->_setValue('license_id', $licenseId);
+    }
+
+    public function getLicenseId()
+    {
+        return $this->_getValue('license_id');
+    }
+
+    public function getLicenseTitle()
+    {
+        if ($this->getLicenseId() && $this->getLicenseId() > 0) {
+            global $symfonyContainer;
+            $licensesRepository = $symfonyContainer->get('doctrine.orm.entity_manager')->getRepository(\CommsyBundle\Entity\License::class);
+            $license = $licensesRepository->findOneById($this->getLicenseId());
+
+            return $license->getTitle();
+        }
+        return '';
+    }
 }
-?>

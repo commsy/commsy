@@ -74,6 +74,16 @@
                         </div>
                     </div>
                 {% endif %}
+
+                <div class="uk-form-row">
+                    {{ form_label(form.license_id) }}
+                    {{ form_widget(form.license_id) }}
+                    <div id="licensesContents" class="uk-hidden">
+                        {% for id, content in licensesContent %}
+                            <span id="licensesContents_{{ id }}" class="uk-hidden">{{ content|raw }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
         {% endif %}
 
@@ -131,5 +141,25 @@ $biblio.change(function() {
             // Position field now displays the appropriate positions.
         }
     });
+});
+
+if ($('#material_license_id').val() !== '') {
+    $('#licensesContents').removeClass('uk-hidden');
+    $('#licensesContents_'+$('#material_license_id').val()).removeClass('uk-hidden');
+}
+
+$('#material_license_id').on('change', function(){
+    var $this = $(this);
+
+    if ($this.val() === '') {
+        $('#licensesContents').addClass('uk-hidden');
+    } else {
+        $('#licensesContents').removeClass('uk-hidden');
+    }
+
+    $('#licensesContents').find('span').each(function() {
+        $(this).addClass('uk-hidden');
+    });
+    $('#licensesContents_'+$this.val()).removeClass('uk-hidden');
 });
 </script>

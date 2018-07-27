@@ -121,6 +121,8 @@
         newStatusTextField.oninput = function(){
             newStatusButton.disabled = newStatusTextField.value.length < 1;
         }
+
+        initChangeTerms();
     }
 
     function toggleFieldsetState(fieldSet) {
@@ -177,28 +179,57 @@
         }
     }
 
-    var languageSelection = document.getElementById('additional_settings_terms_language');
-    var ckeditor = CKEDITOR.instances['additional_settings_terms_agb_text_editor'];
+    initLanguageSelection();
 
-    // similar ckeditor events: 'loaded', 'instanceCreated'
-    ckeditor.on('instanceReady', function(e){
- 
-        this.on('blur', function(e){
-            document.getElementById('additional_settings_terms_agb_text_' + languageSelection.value).value = this.getData();
+    function initLanguageSelection () {
+        var languageSelection = document.getElementById('additional_settings_terms_language');
+        var ckeditor = CKEDITOR.instances['additional_settings_terms_agb_text_editor'];
+
+        // similar ckeditor events: 'loaded', 'instanceCreated'
+        ckeditor.on('instanceReady', function(e){
+
+            this.on('blur', function(e){
+                document.getElementById('additional_settings_terms_agb_text_' + languageSelection.value).value = this.getData();
+            });
+
+            // This is just a workaround needed because the blur event above apparently does not fire when directly clicking the submit button after typing text into the CKEdtor
+            document.getElementsByClassName('uk-form-horizontal')[0].onsubmit=function(){
+                document.getElementById('additional_settings_terms_agb_text_' + languageSelection.value).value = ckeditor.getData();
+            }
+
+            languageSelection.onchange=function(e){
+                ckeditor.setData(document.getElementById('additional_settings_terms_agb_text_' + this.value).value);
+            };
+
+            // initially display data from DB once the CKEditor is ready
+            ckeditor.setData(document.getElementById('additional_settings_terms_agb_text_' + languageSelection.value).value);
+
         });
+    }
 
-        // This is just a workaround needed because the blur event above apparently does not fire when directly clicking the submit button after typing text into the CKEdtor
-        document.getElementsByClassName('uk-form-horizontal')[0].onsubmit=function(){           
-            document.getElementById('additional_settings_terms_agb_text_' + languageSelection.value).value = ckeditor.getData();
-        }        
+    function initChangeTerms () {
+        $('#additional_settings_terms_portalTerms').on('change', function(){
+            // ... retrieve the corresponding form.
+            var $form = $(this).closest('form');
+            // Simulate form data, but only include the selected sport value.
+            var data = {};
 
-        languageSelection.onchange=function(e){
-            ckeditor.setData(document.getElementById('additional_settings_terms_agb_text_' + this.value).value);         
-        };
+            data['terms'] = $(this).val();
+            // Submit data via AJAX to the form's action path.
+            $.ajax({
+                url : $form.attr('action'),
+                type: $form.attr('method'),
+                data : data,
+                success: function(html) {
+                    $('#additional_settings_terms').replaceWith(
+                        $(html).find('#additional_settings_terms')
+                    );
+                    initChangeTerms();
+                    initLanguageSelection();
+                }
+            });
+        });
+    }
 
-        // initially display data from DB once the CKEditor is ready
-        ckeditor.setData(document.getElementById('additional_settings_terms_agb_text_' + languageSelection.value).value);  
-      
-    });
     </script>
 {% endblock content %}

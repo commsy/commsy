@@ -32,6 +32,7 @@
                             {% if showWorkflow %}
                                 {{  macros.workflowTrafficLight(material, workflowTitles) }}
                             {% endif %}
+                            {{  macros.license(material) }}
                             </div>
                         {% endif %}
                     {% else %}
@@ -198,10 +199,11 @@
                             <div class="uk-width-2-10  uk-text-right uk-padding-remove">
                              {%if showRating%}
                                 {{  macros.ratingStatus(material) }}
-                            {% endif %}
-                            {%if showWorkflow%}
+                             {% endif %}
+                             {%if showWorkflow%}
                                 {{  macros.workflowTrafficLight(material, workflowTitles) }}
-                            {% endif %}
+                             {% endif %}
+                             {{  macros.license(material) }}
                             </div>
                         {% endif %}
                     {% else %}

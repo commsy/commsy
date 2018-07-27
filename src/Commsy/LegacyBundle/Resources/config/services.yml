@@ -31,6 +31,7 @@ services:
     commsy_legacy.environment:
         class: Commsy\LegacyBundle\Services\LegacyEnvironment
         public: true
+        autowire: true
         arguments: ['%legacy.site_index%', '@service_container']
 
     commsy_legacy.category_service:
@@ -39,11 +40,11 @@ services:
 
     commsy_legacy.material_service:
         class: Commsy\LegacyBundle\Utils\MaterialService
-        arguments: ['@commsy_legacy.environment']
+        autowire: true
 
     commsy_legacy.room_service:
         class: Commsy\LegacyBundle\Utils\RoomService
-        arguments: ['@commsy_legacy.environment']
+        autowire: true
 
     commsy_legacy.file_service:
         class: Commsy\LegacyBundle\Utils\FileService
@@ -51,11 +52,11 @@ services:
 
     commsy_legacy.user_service:
         class: Commsy\LegacyBundle\Utils\UserService
-        arguments: ['@commsy_legacy.environment']
+        autowire: true
 
     commsy_legacy.item_service:
         class: Commsy\LegacyBundle\Utils\ItemService
-        arguments: ['@commsy_legacy.environment']
+        autowire: true
 
     commsy_legacy.label_service:
         class: Commsy\LegacyBundle\Utils\LabelService
@@ -91,7 +92,8 @@ services:
         
     commsy_legacy.announcement_service:
         class: Commsy\LegacyBundle\Utils\AnnouncementService
-        arguments: ['@commsy_legacy.environment']
+        arguments:
+          - '@commsy_legacy.environment'
         
     commsy_legacy.discussion_service:
         class: Commsy\LegacyBundle\Utils\DiscussionService
@@ -99,7 +101,7 @@ services:
         
     commsy_legacy.todo_service:
         class: Commsy\LegacyBundle\Utils\TodoService
-        arguments: ['@commsy_legacy.environment']
+        autowire: true
         
     commsy_legacy.disc_service:
         class: Commsy\LegacyBundle\Utils\DiscService
@@ -111,11 +113,9 @@ services:
         
     commsy_legacy.download_service:
         class: Commsy\LegacyBundle\Utils\DownloadService
+        autowire: true
         arguments:
-          - '@commsy_legacy.environment'
-          - '@service_container'
-          - '@commsy.print_service'
-          - '@commsy_legacy.item_service'
+            $printService: '@commsy.print_service'
         
     commsy_legacy.project_service:
         class: Commsy\LegacyBundle\Utils\ProjectService

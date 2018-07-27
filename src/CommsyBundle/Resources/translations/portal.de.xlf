@@ -64,6 +64,42 @@
                 <target>Bei Änderungen müssen alle Benutzer die Nutzungsbedingungen erneut akzeptieren!</target>
             </trans-unit>
 
+            <!-- portal terms templates -->
+            <trans-unit id="portal_terms_templates_reference">
+                <source>You can set up templates for room terms here</source>
+                <target>Sie können Vorlagen für Nutzungsbedingungen in Räumen hier verwalten</target>
+            </trans-unit>
+
+            <trans-unit id="portal_terms_templates_breadcrumb">
+                <source>roomtermstemplates</source>
+                <target>Vorlagen Nutzungsbedingungen</target>
+            </trans-unit>
+
+            <trans-unit id="Edit terms">
+                <source>Edit terms</source>
+                <target>Nutzungsbedingungen bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="content_de">
+                <source>content_de</source>
+                <target>Inhalt (DE)</target>
+            </trans-unit>
+            <trans-unit id="content_en">
+                <source>content_en</source>
+                <target>Inhalt (EN)</target>
+            </trans-unit>
+            <trans-unit id="Create new term">
+                <source>Create new term</source>
+                <target>Nutzungsbedigungen anlegen</target>
+            </trans-unit>
+            <trans-unit id="Update term">
+                <source>Update term</source>
+                <target>Nutzungsbedigungen speichern</target>
+            </trans-unit>
+            <trans-unit id="Delete term">
+                <source>Delete term</source>
+                <target>Nutzungsbedigungen löschen</target>
+            </trans-unit>
+
             <!-- portal help link -->
             <trans-unit id="support page link">
                 <source>help</source>
@@ -77,6 +113,50 @@
             <trans-unit id="roomcategories">
                 <source>roomcategories</source>
                 <target>Raumkategorien</target>
+            </trans-unit>
+
+            <!-- portal translations -->
+            <trans-unit id="portal_menu_translations_title">
+                <source>Translations</source>
+                <target>Übersetzungen</target>
+            </trans-unit>
+            <trans-unit id="portal_breadcrumb_translations_title">
+                <source>translations</source>
+                <target>Übersetzungen</target>
+            </trans-unit>
+
+            <!-- portal licenses configuration -->
+            <trans-unit id="portal_licenses_menu_title">
+                <source>Licenses</source>
+                <target>Lizenzen</target>
+            </trans-unit>
+            <trans-unit id="portal_licenses_breadcrumb_title">
+                <source>licenses</source>
+                <target>Lizenzen</target>
+            </trans-unit>
+            <trans-unit id="Edit license">
+                <source>Edit license</source>
+                <target>Lizenz bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="Edit Licenses">
+                <source>Edit Licenses</source>
+                <target>Lizenzen bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="Content">
+                <source>Content</source>
+                <target>Inhalt</target>
+            </trans-unit>
+            <trans-unit id="Create new license">
+                <source>Create new license</source>
+                <target>Neue Lizenz anlegen</target>
+            </trans-unit>
+            <trans-unit id="Update license">
+                <source>Update license</source>
+                <target>Lizenz speichern</target>
+            </trans-unit>
+            <trans-unit id="Delete license">
+                <source>Delete license</source>
+                <target>Lizenz löschen</target>
             </trans-unit>
        </body>
     </file>

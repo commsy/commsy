@@ -59,19 +59,27 @@
 
                                         {# save #}
                                         <li>
-                                            <a href="{{ path('commsy_item_download', {'roomId': roomId, 'itemId': discussion.itemId}) }}" download>
-                                                <i class="uk-icon-small uk-icon-save uk-icon-justify uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
+                                            <a href="#"  data-cs-action="{{ {
+                                                'url': path('commsy_discussion_download', {'roomId': roomId}),
+                                                'action': 'save',
+                                                'itemId': discussion.itemId,
+                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                'mode': 'click',
+                                            }|json_encode|e('html_attr') }}">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
                                         {# copy #}
                                         <li>
-                                            <a href="#" data-cs-action-copy="{
-                                                'url': '{{ path('commsy_item_copy', {'roomId': roomId}) }}',
-                                                'successMessage': '<i class=\'uk-icon-medium uk-icon-copy\'></i> {{ 'Entry stored in clipboard|%count% entries stored in clipboard'|transchoice(1, {}, 'item') }}',
-                                                'errorMessage': '<i class=\'uk-icon-medium uk-icon-info\'></i> {{ 'action error'|trans }}',
-                                                'itemIds': [ {{ discussion.itemId}} ]
-                                            }">
+                                            <a href="#" data-cs-action="{{ {
+                                                'url': path('commsy_discussion_xhrcopy', {'roomId': roomId}),
+                                                'action': 'copy',
+                                                'itemId': discussion.itemId,
+                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                'mode': 'click',
+                                                'successMessage': '<i class="uk-icon-medium uk-icon-copy"></i>' ~ 'Entry stored in clipboard|%count% entries stored in clipboard'|transchoice(1, {}, 'item')
+                                            }|json_encode|e('html_attr') }}">
                                                 <i class="uk-icon-small uk-icon-copy uk-icon-justify uk-visible-large"></i> {{ 'copy'|trans({})|capitalize }}
                                             </a>
                                         </li>
@@ -86,7 +94,19 @@
                                         {# delete #}
                                         <li>
                                             {% if is_granted('ITEM_EDIT', item.itemId) %}
-                                                <a class="commsy-action-delete" id="" href="#" data-delete-url="{{ path('commsy_item_delete', {'roomId': roomId, 'itemId': discussion.itemId}) }}" data-item-type="{{discussion.itemType}}" data-title="{{ 'list choice'|trans({},'rubric')|capitalize }}" data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}" data-return-url="{{ path('commsy_discussion_list', {'roomId': roomId}) }}">
+                                                <a  href="#" data-cs-action="{{ {
+                                                    'url': path('commsy_discussion_xhrdelete', {'roomId': roomId, 'itemId': discussion.itemId}),
+                                                    'action': 'delete',
+                                                    'itemId': discussion.itemId,
+                                                    'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                    'mode': 'click',
+                                                    'itemType': discussion.itemType,
+                                                    'title': 'list choice'|trans({},'rubric')|capitalize,
+                                                    'confirmQuestion': 'confirm delete'|trans({},'rubric'),
+                                                    'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
+                                                    'confirmOk': 'confirm delete confirm'|trans({},'rubric'),
+                                                    'returnUrl': path('commsy_discussion_list', {'roomId': roomId})
+                                                }|json_encode|e('html_attr') }}">
                                                     <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                 </a>
                                             {% else %}
@@ -243,7 +263,18 @@
                                                         {# delete #}
                                                         <li>
                                                             {% if is_granted('ITEM_EDIT', item.itemId) %}
-                                                                <a class="commsy-action-delete" id="" href="#" data-delete-url="{{ path('commsy_discussion_delete', {'roomId': roomId, 'itemId': article.itemId}) }}" data-item-type="{{article.itemType}}" data-title="{{ 'list choice'|trans({},'rubric')|capitalize }}" data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}">
+                                                                <a  href="#" data-cs-action="{{ {
+                                                                    'url': path('commsy_discussionarticle_xhrdelete', {'roomId': roomId, 'itemId': article.itemId}),
+                                                                    'action': 'delete',
+                                                                    'itemId': article.itemId,
+                                                                    'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                                    'mode': 'click',
+                                                                    'itemType': article.itemType,
+                                                                    'title': 'list choice'|trans({},'rubric')|capitalize,
+                                                                    'confirmQuestion': 'confirm delete'|trans({},'rubric'),
+                                                                    'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
+                                                                    'confirmOk': 'confirm delete confirm'|trans({},'rubric')
+                                                                }|json_encode|e('html_attr') }}">
                                                                     <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                                 </a>
                                                             {% else %}

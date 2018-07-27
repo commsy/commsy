@@ -121,15 +121,14 @@ web/css/external_portal_styles/[0-9]*
 !.bowerrc
 !.gitlab-ci.yml
 !.travis.yml
+!.babelrc
 
 wikis/*
 web/commsy
 
 web/js/build/*
 web/css/build/*
-web/fonts
-web/img
-app/Resources/assets/manifests/rev-manifest.json
+web/build
 
 node_modules
 src/CommsyBundle/Resources/public/components

@@ -2,6 +2,7 @@
 
 namespace CommsyBundle\Controller;
 
+use CommsyBundle\Entity\Terms;
 use CommsyBundle\Form\Type\Room\DeleteType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -148,11 +149,28 @@ class SettingsController extends Controller
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
 
+        $termsRepository = $this->getDoctrine()->getRepository(Terms::class);
+        $availableTerms = $termsRepository->findByContextId($roomItem->getContextId());
+        $portalTerms = ['' => false];
+        foreach ($availableTerms as $availableTerm) {
+            $portalTerms[$availableTerm->getTitle()] = $availableTerm->getId();
+        }
+
         $transformer = $this->get('commsy_legacy.transformer.additional_settings');
         $roomData = $transformer->transform($roomItem);
+
+        if ($selectedTerms = $request->get('terms')) {
+            $termsRepository = $this->getDoctrine()->getRepository(Terms::class);
+            $currentTerms = $termsRepository->findOneById($selectedTerms);
+
+            $roomData['terms']['agb_text_de'] = $currentTerms->getContentDe();
+            $roomData['terms']['agb_text_en'] = $currentTerms->getContentEn();
+        }
+
         $form = $this->createForm(AdditionalSettingsType::class, $roomData, array(
             'roomId' => $roomId,
             'newStatus' => $roomData['tasks']['additional_status'],
+            'portalTerms' => $portalTerms,
         ));
 
         $form->handleRequest($request);

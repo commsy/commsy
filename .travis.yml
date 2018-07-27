@@ -7,6 +7,8 @@ matrix:
   include:
     - php: 7.1
     - php: 7.2
+  allow_failures:
+    - php: 7.2
 
 cache:
   yarn: true
@@ -57,8 +59,7 @@ before_install:
 install:
   - php composer.phar install
   - yarn install
-  - npm install gulp-cli -g
-  - gulp
+  - yarn run encore dev
 
 before_script:
   - "sudo chown root /opt/google/chrome/chrome-sandbox"

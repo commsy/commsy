@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="de" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="Translation german">
+                <source>Translation german</source>
+                <target>Deutsch</target>
+            </trans-unit>
+            <trans-unit id="Translation english">
+                <source>Translation english</source>
+                <target>Englisch</target>
+            </trans-unit>
+            <trans-unit id="Update translation">
+                <source>Update translation</source>
+                <target>Übersetzung aktualisieren</target>
+            </trans-unit>
+            <trans-unit id="Cancel">
+                <source>Cancel</source>
+                <target>Abbrechen</target>
+            </trans-unit>
+            <trans-unit id="EMAIL_REGEX_ERROR">
+                <source>EMAIL_REGEX_ERROR</source>
+                <target>Fehlermeldung E-Mail Validierung</target>
+            </trans-unit>
+            <trans-unit id="EMAIL_REGEX_ERROR_DESC">
+                <source>no EMAIL_REGEX_ERROR_DESC</source>
+                <target>Kein Pfad vorhanden.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

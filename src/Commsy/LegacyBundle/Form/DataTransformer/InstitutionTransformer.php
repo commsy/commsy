@@ -3,6 +3,7 @@ namespace Commsy\LegacyBundle\Form\DataTransformer;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use Commsy\LegacyBundle\Form\DataTransformer\DataTransformerInterface;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class InstitutionTransformer implements DataTransformerInterface
 {
@@ -16,76 +17,76 @@ class InstitutionTransformer implements DataTransformerInterface
     /**
      * Transforms a cs_group_item object to an array
      *
-     * @param cs_group_item $groupItem
+     * @param \cs_label_item $labelItem
      * @return array
      */
-    public function transform($groupItem)
+    public function transform($labelItem)
     {
-        $groupData = array();
+        $labelData = array();
 
-        if ($groupItem) {
-            $groupData['title'] = html_entity_decode($groupItem->getTitle());
-            $groupData['description'] = $groupItem->getDescription();
-            $groupData['permission'] = $groupItem->isPrivateEditing();
+        if ($labelItem) {
+            $labelData['title'] = html_entity_decode($labelItem->getTitle());
+            $labelData['description'] = $labelItem->getDescription();
+            $labelData['permission'] = $labelItem->isPrivateEditing();
 
-            if ($groupItem->isNotActivated()) {
-                $groupData['hidden'] = true;
+            if ($labelItem->isNotActivated()) {
+                $labelData['hidden'] = true;
 
-                $activating_date = $groupItem->getActivatingDate();
+                $activating_date = $labelItem->getActivatingDate();
                 if (!stristr($activating_date,'9999')){
                     $datetime = new \DateTime($activating_date);
-                    $groupData['hiddendate']['date'] = $datetime;
-                    $groupData['hiddendate']['time'] = $datetime;
+                    $labelData['hiddendate']['date'] = $datetime;
+                    $labelData['hiddendate']['time'] = $datetime;
                 }
             }
         }
 
-        return $groupData;
+        return $labelData;
     }
 
     /**
      * Applies an array of data to an existing object
      *
-     * @param object $groupObject
-     * @param array $groupData
-     * @return cs_group_item|null
+     * @param \cs_label_item $labelObject
+     * @param array $labelData
+     * @return \cs_label_item|null
      * @throws TransformationFailedException if room item is not found.
      */
-    public function applyTransformation($groupObject, $groupData)
+    public function applyTransformation($labelObject, $labelData)
     {
-        $groupObject->setTitle($groupData['title']);
-        $groupObject->setDescription($groupData['description']);
+        $labelObject->setTitle($labelData['title']);
+        $labelObject->setDescription($labelData['description']);
 
-        if ($groupData['permission']) {
-            $groupObject->setPrivateEditing('0');
+        if ($labelData['permission']) {
+            $labelObject->setPrivateEditing('0');
         } else {
-            $groupObject->setPrivateEditing('1');
+            $labelObject->setPrivateEditing('1');
         }
 
-        if (isset($groupData['hidden'])) {
-            if ($groupData['hidden']) {
-                if ($groupData['hiddendate']['date']) {
+        if (isset($labelData['hidden'])) {
+            if ($labelData['hidden']) {
+                if ($labelData['hiddendate']['date']) {
                     // add validdate to validdate
-                    $datetime = $groupData['hiddendate']['date'];
-                    if ($groupData['hiddendate']['time']) {
-                        $time = explode(":", $groupData['hiddendate']['time']->format('H:i'));
+                    $datetime = $labelData['hiddendate']['date'];
+                    if ($labelData['hiddendate']['time']) {
+                        $time = explode(":", $labelData['hiddendate']['time']->format('H:i'));
                         $datetime->setTime($time[0], $time[1]);
                     }
-                    $groupObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
+                    $labelObject->setModificationDate($datetime->format('Y-m-d H:i:s'));
                 } else {
-                    $groupObject->setModificationDate('9999-00-00 00:00:00');
+                    $labelObject->setModificationDate('9999-00-00 00:00:00');
                 }
             } else {
-                if($groupObject->isNotActivated()){
-                    $groupObject->setModificationDate(getCurrentDateTimeInMySQL());
+                if($labelObject->isNotActivated()){
+                    $labelObject->setModificationDate(getCurrentDateTimeInMySQL());
                 }
             }
         } else {
-            if($groupObject->isNotActivated()){
-	            $groupObject->setModificationDate(getCurrentDateTimeInMySQL());
+            if($labelObject->isNotActivated()){
+	            $labelObject->setModificationDate(getCurrentDateTimeInMySQL());
 	        }
         }
 
-        return $groupObject;
+        return $labelObject;
     }
 }

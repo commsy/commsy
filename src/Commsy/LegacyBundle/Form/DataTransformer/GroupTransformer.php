@@ -3,6 +3,7 @@ namespace Commsy\LegacyBundle\Form\DataTransformer;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use Commsy\LegacyBundle\Form\DataTransformer\DataTransformerInterface;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class GroupTransformer implements DataTransformerInterface
 {
@@ -16,7 +17,7 @@ class GroupTransformer implements DataTransformerInterface
     /**
      * Transforms a cs_group_item object to an array
      *
-     * @param cs_group_item $groupItem
+     * @param \cs_group_item $groupItem
      * @return array
      */
     public function transform($groupItem)
@@ -49,7 +50,7 @@ class GroupTransformer implements DataTransformerInterface
      *
      * @param object $groupObject
      * @param array $groupData
-     * @return cs_group_item|null
+     * @return \cs_group_item|null
      * @throws TransformationFailedException if room item is not found.
      */
     public function applyTransformation($groupObject, $groupData)
