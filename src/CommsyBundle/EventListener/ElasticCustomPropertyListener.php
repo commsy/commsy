@@ -42,7 +42,7 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         }
 
         if (isset($fields['files'])) {
-//            $this->addFilesContent($event);
+            $this->addFilesContent($event);
         }
 
         if (isset($fields['discussionarticles'])) {
@@ -142,10 +142,10 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
         $item = $this->getItemCached($event->getObject()->getItemId());
 
         if ($item) {
+            $fileContents = [];
+
             $files = $item->getFileList();
             if ($files->isNotEmpty()) {
-                $fileContents = [];
-
                 $file = $files->getFirst();
                 while ($file) {
                     if (!$file->isDeleted()) {
@@ -161,11 +161,9 @@ class ElasticCustomPropertyListener implements EventSubscriberInterface
 
                     $file = $files->getNext();
                 }
-
-                if (!empty($fileContents)) {
-                    $event->getDocument()->set('files', $fileContents);
-                }
             }
+
+            $event->getDocument()->set('files', $fileContents);
         }
     }
 
