@@ -26,13 +26,19 @@ class CommsyEditSubscriber implements EventSubscriberInterface {
 
     public function onCommsySave(CommsyEditEvent $event) {
         if ($event->getItem()) {
-            if ($event->getItem()->hasLocking()) {
-                $event->getItem()->unlock();
+            $item = $event->getItem();
+
+            if ($item->hasLocking()) {
+                $item->unlock();
             }
-            if ($event->getItem()->getItemType() == CS_DATE_TYPE) {
-                if (!$event->getItem()->isDraft()) {
-                    $this->container->get('commsy.calendars_service')->updateSynctoken($event->getItem()->getCalendarId());
+            if ($item->getItemType() == CS_DATE_TYPE) {
+                if (!$item->isDraft()) {
+                    $this->container->get('commsy.calendars_service')->updateSynctoken($item->getCalendarId());
                 }
+            }
+
+            if (method_exists($item, 'updateElastic')) {
+                $item->updateElastic();
             }
         }
     }
