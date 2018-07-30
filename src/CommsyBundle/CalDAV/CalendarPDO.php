@@ -605,6 +605,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         $dateTimeEnd = new \DateTime($dateItem->getDateTime_end());
         $dateTimeEndString = $dateTimeEnd->format('Ymd') . 'T' . $dateTimeEnd->format('His');
         if ($dateItem->isWholeDay()) {
+            $diff = $dateTimeStart->diff($dateTimeEnd);
+            if ($diff->d > 0) {
+                $dateTimeEnd->modify('+1 days');
+            }
             $dateTimeEndString = $dateTimeEnd->format('Ymd');
         }
         $eventDataArray = [
