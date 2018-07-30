@@ -760,6 +760,17 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         } */
         $calendarReadExpanded = $calendarRead->expand($expandDateTimeStart, $expandDateTimeEnd);
 
+        global $symfonyContainer;
+        $commsyTimeZone = new \DateTimeZone($symfonyContainer->getParameter('commsy.dates.timezone'));
+        $utcTimeZone = new \DateTimeZone('UTC');
+
+        $commsyDateTime = new \DateTime('now', $commsyTimeZone);
+        $utcDateTime = new \DateTime('now', $utcTimeZone);
+
+        $commsyDateTime = new \DateTime($commsyDateTime->format('Y-m-d H:i:s'));
+        $utcDateTime = new \DateTime($utcDateTime->format('Y-m-d H:i:s'));
+        $timeZoneDiff = $commsyDateTime->diff($utcDateTime);
+
         $recurrencePattern = null;
         if ($calendarRead->VEVENT->RRULE) {
             $recurrencePattern = $this->translateRecurringPattern($calendarRead->VEVENT->RRULE, 'iCal', $calendarRead->VEVENT->DTSTART->getDateTime());
@@ -792,6 +803,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                 $startDatetime = '';
                 if ($event->DTSTART) {
                     $startDatetime = $event->DTSTART->getDateTime();
+                    $startDatetime = $startDatetime->modify('+'.$timeZoneDiff->h.' hours');
                     if (strlen($event->DTSTART->getValue()) == 8) {
                         $wholeday = 1;
                     }
@@ -801,6 +813,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                 if ($event->DTEND) {
                     if (!$wholeday) {
                         $endDatetime = $event->DTEND->getDateTime();
+                        $endDatetime = $endDatetime->modify('+'.$timeZoneDiff->h.' hours');
                     } else {
                         $endDatetime = $event->DTSTART->getDateTime();
                         $endDatetime = $endDatetime->modify('+23 hours');   // use returned object, as this is of class DateTimeImmutable.
