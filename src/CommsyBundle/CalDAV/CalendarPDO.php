@@ -803,20 +803,21 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                 $startDatetime = '';
                 if ($event->DTSTART) {
                     $startDatetime = $event->DTSTART->getDateTime();
-                    $startDatetime = $startDatetime->modify('+'.$timeZoneDiff->h.' hours');
                     if (strlen($event->DTSTART->getValue()) == 8) {
                         $wholeday = 1;
+                    } else {
+                        $startDatetime = $startDatetime->modify('+'.$timeZoneDiff->h.' hours');
                     }
                 }
 
                 $endDatetime = '';
                 if ($event->DTEND) {
+                    $endDatetime = $event->DTEND->getDateTime();
                     if (!$wholeday) {
-                        $endDatetime = $event->DTEND->getDateTime();
                         $endDatetime = $endDatetime->modify('+'.$timeZoneDiff->h.' hours');
                     } else {
-                        $endDatetime = $event->DTSTART->getDateTime();
-                        $endDatetime = $endDatetime->modify('+23 hours');   // use returned object, as this is of class DateTimeImmutable.
+                        $endDatetime = $endDatetime->modify('-1 days');     // use returned object, as this is of class DateTimeImmutable.
+                        $endDatetime = $endDatetime->modify('+23 hours');
                         $endDatetime = $endDatetime->modify('+59 minutes');
                         $endDatetime = $endDatetime->modify('+59 seconds');
                     }
