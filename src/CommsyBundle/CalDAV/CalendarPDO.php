@@ -605,6 +605,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         $dateTimeEnd = new \DateTime($dateItem->getDateTime_end());
         $dateTimeEndString = $dateTimeEnd->format('Ymd') . 'T' . $dateTimeEnd->format('His');
         if ($dateItem->isWholeDay()) {
+            $diff = $dateTimeStart->diff($dateTimeEnd);
+            if ($diff->d > 0) {
+                $dateTimeEnd->modify('+1 days');
+            }
             $dateTimeEndString = $dateTimeEnd->format('Ymd');
         }
         $eventDataArray = [
@@ -760,6 +764,17 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         } */
         $calendarReadExpanded = $calendarRead->expand($expandDateTimeStart, $expandDateTimeEnd);
 
+        global $symfonyContainer;
+        $commsyTimeZone = new \DateTimeZone($symfonyContainer->getParameter('commsy.dates.timezone'));
+        $utcTimeZone = new \DateTimeZone('UTC');
+
+        $commsyDateTime = new \DateTime('now', $commsyTimeZone);
+        $utcDateTime = new \DateTime('now', $utcTimeZone);
+
+        $commsyDateTime = new \DateTime($commsyDateTime->format('Y-m-d H:i:s'));
+        $utcDateTime = new \DateTime($utcDateTime->format('Y-m-d H:i:s'));
+        $timeZoneDiff = $commsyDateTime->diff($utcDateTime);
+
         $recurrencePattern = null;
         if ($calendarRead->VEVENT->RRULE) {
             $recurrencePattern = $this->translateRecurringPattern($calendarRead->VEVENT->RRULE, 'iCal', $calendarRead->VEVENT->DTSTART->getDateTime());
@@ -794,16 +809,19 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     $startDatetime = $event->DTSTART->getDateTime();
                     if (strlen($event->DTSTART->getValue()) == 8) {
                         $wholeday = 1;
+                    } else {
+                        $startDatetime = $startDatetime->modify('+'.$timeZoneDiff->h.' hours');
                     }
                 }
 
                 $endDatetime = '';
                 if ($event->DTEND) {
+                    $endDatetime = $event->DTEND->getDateTime();
                     if (!$wholeday) {
-                        $endDatetime = $event->DTEND->getDateTime();
+                        $endDatetime = $endDatetime->modify('+'.$timeZoneDiff->h.' hours');
                     } else {
-                        $endDatetime = $event->DTSTART->getDateTime();
-                        $endDatetime = $endDatetime->modify('+23 hours');   // use returned object, as this is of class DateTimeImmutable.
+                        $endDatetime = $endDatetime->modify('-1 days');     // use returned object, as this is of class DateTimeImmutable.
+                        $endDatetime = $endDatetime->modify('+23 hours');
                         $endDatetime = $endDatetime->modify('+59 minutes');
                         $endDatetime = $endDatetime->modify('+59 seconds');
                     }
