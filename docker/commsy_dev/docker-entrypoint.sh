@@ -17,6 +17,6 @@ sudo -H -u www-data bash -c 'php bin/console --no-interaction doctrine:migration
 sudo -H -u www-data bash -c 'php bin/console fos:elastica:populate'
 sudo -H -u www-data bash -c 'npm install'
 sudo -H -u www-data bash -c 'bower --config.analytics=false install'
-sudo -H -u www-data bash -c 'gulp --prod'
+sudo -H -u www-data bash -c 'yarn run encore production'
 
 exec "$@"

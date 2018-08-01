@@ -8,5 +8,5 @@ sudo -H -u www-data bash -c 'php bin/console doctrine:fixtures:load --append'
 sudo -H -u www-data bash -c 'php bin/console --no-interaction doctrine:migrations:migrate'
 sudo -H -u www-data bash -c 'php bin/console fos:elastica:populate'
 sudo -H -u www-data bash -c 'yarn install'
-sudo -H -u www-data bash -c 'gulp'
+sudo -H -u www-data bash -c 'yarn run encore dev'
 rm -r var/cache/dev/

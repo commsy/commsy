@@ -50,7 +50,7 @@ before_script:
   - apt-get update -yqq && apt-get install -yqq yarn
 
   # Install global Node.js packages
-  - yarn global add gulp
+  # (none yet)
 
 services:
   - mariadb:latest
@@ -79,7 +79,7 @@ build:
     - 'sed -i "s/database_host:     127.0.0.1/database_host:     mariadb/" app/config/parameters.yml'
     - php composer.phar install --no-interaction
     - yarn install
-    - gulp --prod
+    - yarn run encore production
   artifacts:
     expire_in: 1 week
     paths:
