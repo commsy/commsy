@@ -44,6 +44,15 @@ class CommsyLoginListener
             $user = $this->legacyEnvironment->getEnvironment()->getCurrentUser();
             if ($user->isUser() and !$user->isRoot()) {
                 $user->updateLastLogin();
+
+                $portalUser = $user->getRelatedCommSyUserItem();
+                if ($portalUser) {
+                    $portalUser->updateLastLogin();
+
+                    if ($portalUser->getMailSendNextLock() || $portalUser->getMailSendBeforeLock() || $portalUser->getNotifyLockDate()) {
+                        $portalUser->resetInactivity();
+                    }
+                }
             }
         }
     }
