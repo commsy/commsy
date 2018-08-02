@@ -1,0 +1,55 @@
+<div class="${baseClass}" data-dojo-attach-point="widgetNode">
+
+	<div id="e-portfolio" data-dojo-attach-point="portfolioNode">
+        
+        <div id="ep_left_col">
+            <div id="ep_title">
+                <div class="float-right" data-dojo-attach-point="portfolioEditDivNode">
+                	<a href="#" class="ep_edit_head" data-dojo-attach-event="click: onClickEditPortfolio"><img src="${templatePath}img/ep_icon_editdarkgrey.gif" alt="" /></a>
+                </div>
+                <div class="float-right" style="display: none;" data-dojo-attach-point="portfolioUnsubscribeDivNode">
+                    <a href="#" class="ep_edit_head dijitDisabled" title="${popupTranslations.unsubscribe}" data-dojo-attach-event="click: onClickUnsubscribePortfolio">
+                        <span class="dijitInline dijitIcon dijitIconUsers" style="cursor: pointer;"></span>
+                    </a>
+                </div>
+                <div id="ep_tides">
+                    <strong data-dojo-attach-point="titleNode"></strong>
+                    <p data-dojo-attach-point="creatorNode"></p>
+                </div>
+                
+                <div class="clear"></div>
+                
+                <p data-dojo-attach-point="descriptionNode" id="ep_description"></p>
+            </div>
+            
+            <div>
+            	<!-- add row -->
+            	<div id="epRowAdd" class="ep_vert_col_cell" data-dojo-attach-point="lastVerticalTag">
+	                <div class="ep_vert_col_title">
+	                    <a href="#"><strong data-dojo-attach-event="onclick: onInsertNewTag" data-custom="position: 'row'">+</strong></a>
+	                </div>
+	                
+	                <div class="clear"></div>
+	            </div>
+            </div>
+            
+        </div>
+        
+        <div>
+        	<!-- add column -->
+	    	<div id="epColumnAdd" class="float-right" data-dojo-attach-point="portfolioEditColumnNode" style="height: 34px"> <!-- <- only until ep_hor_edit.jpg is reactivated -->
+	            <!--<a href=""><img src="${templatePath}img/ep_hor_edit.jpg" alt="" /></a>-->
+	            <a class="ep_edit_head" href="#"><strong data-dojo-attach-event="onclick: onInsertNewTag" data-custom="position: 'column'">+</strong></a>
+	            <strong>&nbsp;</strong>
+	        </div>
+        </div>
+        
+        <div id="ep_table">
+            <table cellspacing="0" cellpadding="0" border="0" class="float-left" data-dojo-attach-point="tableNode">
+            </table>
+        </div>
+        
+        <div class="clear"></div>
+    </div>
+	
+</div>

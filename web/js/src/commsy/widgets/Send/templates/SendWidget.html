@@ -1,0 +1,77 @@
+<div class="${baseClass}" data-dojo-attach-point="widgetNode">
+
+	<div id="popup_wrapper">
+		<div id="popup_edit">
+			<div id="popup_frame">
+				<div id="popup_inner">
+				
+					<div id="popup_pagetitle">
+						<a id="popup_close" title="${popupTranslations.close}" href="#" data-dojo-attach-event="onclick:Close">
+							<img alt="${popupTranslations.close}" src="${templatePath}img/popup_close.gif"/>
+						</a>
+						<h2 data-dojo-attach-point="titleNode"></h2>
+						<div class="clear"></div>
+					</div>
+					<div id="popup_content_wrapper">
+						<div id="popup_content">
+							<form data-dojo-type="dojox/form/Manager" id="sendForm" data-dojo-attach-point="formNode">
+							
+		    					<div id="mandatory_missing" class="input_row hidden">
+									___COMMON_MANDATORY_FIELDS_CONTENT___
+								</div>
+								<div class="input_row">
+									<span class="input_label_150">${popupTranslations.subject}<span class="required">*</span></span>
+									<div class="input_container_180" id="reciever">
+										<input type="text" name="subject" class="size_400" required="true"
+											data-dojo-type="dijit/form/ValidationTextBox"
+											data-dojo-props="
+												validator:dojox.validate.isText,
+												invalidMessage: '${popupTranslations.errorMissing}'" />
+									</div>
+								</div>
+								<div class="editor_content">
+									<br/>
+									<textarea name="body" rows="20" cols="100" data-dojo-attach-point="bodyNode"></textarea>
+									<br/>
+									<br/>
+								</div>
+		
+								<div class="input_row" data-dojo-attach-point="lastFormRow">
+									<span class="input_label_150">${popupTranslations.copyToSender}:</span>
+									<div class="input_container_180">
+										<input type="radio" name="copyToSender" value="true" />${popupTranslations.yes}
+										<input type="radio" name="copyToSender" value="false" checked="checked" />${popupTranslations.no}
+									</div>
+									<div class="clear"></div>
+								</div>
+								
+								<div data-dojo-attach-point="addAdditionalWrapperNode">
+									<div class="input_row">
+										<div style="float: left; width: 180px;">${popupTranslations.additionalLabel}</div>
+										<div class="column_585">${popupTranslations.additionalDescription}</div>
+										
+										<div class="clear"></div>
+									</div>
+									
+									<div class="input_row">
+										<a href="#" title="${popupTranslations.additionalAdd}" data-dojo-attach-point="addAdditionalNode">${popupTranslations.additionalAdd}</a>
+									</div>
+								</div>
+								
+								<div class="input_row">
+								    <input class="popup_button" type="submit" value="${popupTranslations.buttonSend}" data-dojo-attach-point="submitNode" />
+								</div>
+							
+							</form>
+							
+	    				</div>
+					</div>
+				
+				</div>
+				
+				<div class="clear"></div>
+			</div>
+		</div>
+	</div>
+	
+</div>

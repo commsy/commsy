@@ -1,0 +1,64 @@
+<div class="${baseClass}" data-dojo-attach-point="widgetNode">
+
+	<div id="popup_wrapper">
+		<div id="popup_edit_stack">
+			<div id="popup_frame">
+				<div id="popup_inner" class="scrollPopup">
+	
+					<div id="popup_pagetitle">
+						<a id="popup_close" title="${popupTranslations.close}" href="#" data-dojo-attach-event="onclick:Close">
+							<img alt="${popupTranslations.close}" src="${templatePath}img/popup_close.gif"/>
+						</a>
+						<h2 data-dojo-attach-point="titleNode"></h2>
+						<div class="clear"></div>
+					</div>
+					
+					<div id="popup_content_wrapper">
+					
+						<div id="popup_content">
+							<form data-dojo-type="dojox/form/Manager" id="limesurveyCreateForm" data-dojo-attach-point="formNode">
+								<div class="input_row">
+									${popupTranslations.createIntro} <a href="${from_php.limesurvey.newSurveyPath}" target="_blank">${popupTranslations.newSurveyLink}</a>
+								</div>
+								
+								<div class="input_row">
+									<label for="lsCreateTemplate">${popupTranslations.templates}<span class="required">*</span></label>
+									<div data-dojo-attach-point="loadingTemplatesNode">
+										<span>${popupTranslations.templatesLoading}</span>
+										<img src="${templatePath}img/ajax_loader.gif"/>
+									</div>
+									
+			                        <select id="lsCreateTemplate" class="size_200 hidden" name="template" data-dojo-attach-point="templateSelectNode">
+			                        	<option disabled="disabled" value="none">${popupTranslations.noTemplates}</option>
+			                        </select>
+								</div>
+								
+								<div class="input_row">
+									<label for="lsTitle">${popupTranslations.lsTitle}<span class="required">*</span></label>
+									<input id="lsTitle" class="size_200" name="title"
+										data-dojo-type="dijit/form/ValidationTextBox"
+										data-dojo-props="validator:dojox.validate.isText,
+											invalidMessage:'Bitte geben Sie einen Titel für die Umfrage ein'" />- ${from_php.limesurvey.roomName}
+								</div>
+								
+								<div class="input_row">${popupTranslations.introExpires}</div>
+								
+								<div class="input_row">
+									<label for="lsExpires">${popupTranslations.expirationDate}</label>
+									<input id="lsExpires" type="text" name="expires"
+										data-dojo-attach-point="expiresInputNode" />
+								</div>
+								
+								<div class="input_row">
+									<input class="popup_button" type="submit" disabled="disabled" value="${popupTranslations.buttonSubmit}" data-dojo-attach-point="submitNode" />
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+	</div>
+	
+</div>
