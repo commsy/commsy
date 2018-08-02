@@ -23,7 +23,7 @@ class AppKernel extends Kernel
             new Lexik\Bundle\FormFilterBundle\LexikFormFilterBundle(),
             new FOS\ElasticaBundle\FOSElasticaBundle(),
             new Ivory\OrderedFormBundle\IvoryOrderedFormBundle(),
-            new Ivory\CKEditorBundle\IvoryCKEditorBundle(),
+            new FOS\CKEditorBundle\FOSCKEditorBundle(),
             new Craue\TwigExtensionsBundle\CraueTwigExtensionsBundle(),
             new Knp\Bundle\SnappyBundle\KnpSnappyBundle(),
             new Debril\RssAtomBundle\DebrilRssAtomBundle(),
