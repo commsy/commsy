@@ -1070,7 +1070,9 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     )
                 */
                 $result['recurring_select'] = 'RecurringDailyType';
-                $result['recurring_sub']['recurrenceDay'] = $patternArray['INTERVAL'];
+                if (isset($patternArray['INTERVAL'])) {
+                    $result['recurring_sub']['recurrenceDay'] = $patternArray['INTERVAL'];
+                }
             } else if ($patternArray['FREQ'] == 'WEEKLY') {
                 /*
                  $patternArray:
@@ -1082,7 +1084,9 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                  )
                 */
                 $result['recurring_select'] = 'RecurringWeeklyType';
-                $result['recurring_sub']['recurrenceWeek'] = $patternArray['INTERVAL'];
+                if (isset($patternArray['INTERVAL'])) {
+                    $result['recurring_sub']['recurrenceWeek'] = $patternArray['INTERVAL'];
+                }
                 $daysOfWeek = [];
                 if ($startDate) {
                     $daysOfWeek[] = mb_strtolower($startDate->format('l'));
@@ -1113,7 +1117,9 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     )
                 */
                 $result['recurring_select'] = 'RecurringMonthlyType';
-                $result['recurring_sub']['recurrenceMonth'] = $patternArray['INTERVAL'];
+                if (isset($patternArray['INTERVAL'])) {
+                    $result['recurring_sub']['recurrenceMonth'] = $patternArray['INTERVAL'];
+                }
                 $recurrenceDayOfMonth = '';
                 if ($startDate) {
                     $recurrenceDayOfMonth = mb_strtolower($startDate->format('l'));
