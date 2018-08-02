@@ -1,0 +1,70 @@
+<div class="${baseClass}">
+
+	<div id="popup_wrapper">
+		<div id="popup_edit">
+			<div id="popup_frame">
+				<div id="popup_inner">
+				
+					<div id="popup_pagetitle">
+						<a id="popup_close" title="${popupTranslations.close}" href="#" data-dojo-attach-event="onclick:Close">
+							<img alt="${popupTranslations.close}" src="${templatePath}img/popup_close.gif"/>
+						</a>
+						<h2 data-dojo-attach-point="titleNode"></h2>
+						<div class="clear"></div>
+					</div>
+					<div id="popup_content_wrapper">
+						<div id="popup_content">
+							
+							<!-- BEGIN OF MAIL VIEW -->
+							<div>
+								<div class="mailMeta">
+									<h3>${popupTranslations.introText}</h3>
+									
+									<div class="metaField">
+										<div class="metaTitle">${popupTranslations.sender}</div>
+										<div class="metaContent" >${mail.from}</div>
+										<div class="clear"></div>
+									</div>
+									
+									<div class="metaField">
+										<div class="metaTitle">An</div>
+										<div class="metaContent">
+											<ul data-dojo-attach-point="recieverListNode"></ul>
+										</div>
+										<div class="clear"></div>
+									</div>
+									
+									<div class="metaField">
+										<div class="metaTitle">BCC An</div>
+										<div class="metaContent" data-dojo-attach-point="toBccNode"></div>
+										<div class="clear"></div>
+									</div>
+									
+									copytoSender
+								</div>
+								
+								<div class="mailHeadline">
+									<h2 class="mailTitle">${mail.subject}</h2>
+								</div>
+								<div class="mailContent">${mail.body}</div>
+							</div>
+							<!-- END OF MAIL VIEW -->
+							
+						</div>
+						<div id="popup_tabs">
+							<div id="content_buttons">
+								<div id="crt_actions_area">
+									<input class="popup_button" type="button" value="${popupTranslations.buttonClose}" name="" data-custom="" data-dojo-attach-event="onclick:Close">
+								</div>
+							</div>
+						</div>
+					</div>
+				
+				</div>
+				
+				<div class="clear"></div>
+			</div>
+		</div>
+	</div>
+	
+</div>
