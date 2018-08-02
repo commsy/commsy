@@ -88,9 +88,6 @@ class GeneralSettingsType extends AbstractType
                     'class' => 'uk-form-width-large',
                     'style' => 'width: 90%',
                 ),
-                'position' => array(
-                    'before' => 'save',
-                ),
                 'required' => false,
             ))
             ->add('rubrics', CollectionType::class, array(
@@ -112,7 +109,6 @@ class GeneralSettingsType extends AbstractType
 
             ))
             ->add('save', SubmitType::class, array(
-                'position' => 'last',
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 )

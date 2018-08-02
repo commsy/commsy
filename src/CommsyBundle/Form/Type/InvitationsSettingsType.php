@@ -48,7 +48,6 @@ class InvitationsSettingsType extends AbstractType
                 'expanded' => true
             ))
             ->add('send', SubmitType::class, array(
-                'position' => 'last',
                 'label' => 'Send',
                 'attr' => array(
                     'class' => 'uk-button-primary',
