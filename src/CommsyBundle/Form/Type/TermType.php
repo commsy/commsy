@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type as Types;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Ivory\CKEditorBundle\Form\Type\CKEditorType;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 class TermType extends AbstractType
 {

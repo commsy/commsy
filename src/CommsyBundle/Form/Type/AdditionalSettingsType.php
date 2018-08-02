@@ -19,7 +19,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
-use Ivory\CKEditorBundle\Form\Type\CKEditorType;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
@@ -221,7 +221,6 @@ class AdditionalSettingsType extends AbstractType
                 ->add('agb_text_en', HiddenType::class, array())
             )
             ->add('save', SubmitType::class, array(
-                'position' => 'last',
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 )                

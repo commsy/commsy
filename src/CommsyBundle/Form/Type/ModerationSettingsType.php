@@ -16,7 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
-use Ivory\CKEditorBundle\Form\Type\CKEditorType;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use CommsyBundle\Validator\Constraints\HomeNoticeConstraint;
@@ -193,7 +193,6 @@ class ModerationSettingsType extends AbstractType
                 ->add('mail_body_user_account_merge_en', HiddenType::class, array())
             )
             ->add('save', SubmitType::class, array(
-                'position' => 'last',
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 )                

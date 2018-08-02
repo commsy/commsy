@@ -3,24 +3,16 @@
 namespace CommsyBundle\Controller;
 
 use CommsyBundle\Action\Copy\CopyAction;
-use CommsyBundle\Http\JsonRedirectResponse;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use CommsyBundle\Action\Download\DownloadAction;
+use CommsyBundle\Event\CommsyEditEvent;
+use CommsyBundle\Filter\DiscussionFilterType;
+use CommsyBundle\Form\Type\DiscussionArticleType;
+use CommsyBundle\Form\Type\DiscussionType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-
-use Symfony\Component\HttpFoundation\JsonResponse;
-
-use CommsyBundle\Filter\DiscussionFilterType;
-use CommsyBundle\Form\Type\DiscussionType;
-use CommsyBundle\Form\Type\DiscussionArticleType;
-
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-
-use CommsyBundle\Event\CommsyEditEvent;
 
 /**
  * Class DiscussionController

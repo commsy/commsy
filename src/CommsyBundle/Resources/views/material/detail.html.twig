@@ -59,7 +59,13 @@
 
                                         {# save #}
                                         <li>
-                                            <a href="{{ path('commsy_material_download', {'roomId': roomId, 'itemId': material.itemId}) }}" download>
+                                            <a href="#"  data-cs-action="{{ {
+                                                'url': path('commsy_material_download', {'roomId': roomId}),
+                                                'action': 'save',
+                                                'itemId': material.itemId,
+                                                'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                'mode': 'click',
+                                            }|json_encode|e('html_attr') }}">
                                                 <i class="uk-icon-small uk-icon-save uk-icon-justify uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
                                             </a>
                                         </li>

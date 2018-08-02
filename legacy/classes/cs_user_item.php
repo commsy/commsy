@@ -1879,7 +1879,7 @@ class cs_user_item extends cs_item
     }
 
     /**
-     * @return object user_item User-Item from the community room
+     * @return \cs_user_item|null User-Item from the community room
      */
     function getRelatedCommSyUserItem()
     {
