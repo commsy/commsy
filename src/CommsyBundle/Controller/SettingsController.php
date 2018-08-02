@@ -20,7 +20,7 @@ use CommsyBundle\Form\Type\AppearanceSettingsType;
 use CommsyBundle\Form\Type\ExtensionSettingsType;
 use CommsyBundle\Form\Type\InvitationsSettingsType;
 
-use Ivory\CKEditorBundle\Form\Type\CKEditorType;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 /**
  * Class SettingsController

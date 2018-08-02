@@ -37,7 +37,6 @@
         "craue/twigextensions-bundle": "^2.1",
         "knplabs/knp-snappy-bundle": "^1.4",
         "tomnomnom/etherpad-lite-client": "^0.1.2",
-        "egeloen/ckeditor-bundle": "^5.0",
         "zendframework/zend-soap": "^2.6",
         "debril/rss-atom-bundle": "^3.0",
         "idci/color-scheme-bundle": "dev-master",
@@ -54,7 +53,8 @@
         "sabre/dav": "^3.2.2",
         "mediawiki/oauthclient": "^0.1.2",
         "nategood/httpful": "^0.2.20",
-        "egulias/email-validator": "^2.1"
+        "egulias/email-validator": "^2.1",
+        "friendsofsymfony/ckeditor-bundle": "^1.1"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
@@ -67,6 +67,7 @@
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "FOS\\CKEditorBundle\\Composer\\CKEditorScriptHandler::install",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
@@ -91,6 +92,8 @@
         "incenteev-parameters": {
             "file": "app/config/parameters.yml"
         },
-        "branch-alias": null
+        "branch-alias": null,
+        "ckeditor-tag": "4.6.2",
+        "ckeditor-clear": "drop"
     }
 }
