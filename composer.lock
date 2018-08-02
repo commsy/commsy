@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bdd8ecb14e970b5d8cc6ade7b8d294a0",
+    "content-hash": "43196ab39f29e521e721eca2f1876cb6",
     "packages": [
         {
             "name": "ci/restclientbundle",
@@ -1231,110 +1231,6 @@
                 "orm"
             ],
             "time": "2018-02-27T07:30:56+00:00"
-        },
-        {
-            "name": "egeloen/ordered-form",
-            "version": "2.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/egeloen/ivory-ordered-form.git",
-                "reference": "a978c7a4065db659e8380c24f4cbd98eae82438e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/egeloen/ivory-ordered-form/zipball/a978c7a4065db659e8380c24f4cbd98eae82438e",
-                "reference": "a978c7a4065db659e8380c24f4cbd98eae82438e",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3",
-                "symfony/form": "^2.3|^3.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.0",
-                "satooshi/php-coveralls": "^0.6",
-                "symfony/phpunit-bridge": "^2.7|^3.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Ivory\\OrderedForm\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Eric GELOEN",
-                    "email": "geloen.eric@gmail.com"
-                }
-            ],
-            "description": "Provides a form ordering support with the Symfony2 form component.",
-            "keywords": [
-                "Symfony2",
-                "form",
-                "order"
-            ],
-            "time": "2015-12-12T18:18:22+00:00"
-        },
-        {
-            "name": "egeloen/ordered-form-bundle",
-            "version": "2.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/egeloen/IvoryOrderedFormBundle.git",
-                "reference": "cb70c8b75dfc582f655424c80427f3bafeea9a66"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/egeloen/IvoryOrderedFormBundle/zipball/cb70c8b75dfc582f655424c80427f3bafeea9a66",
-                "reference": "cb70c8b75dfc582f655424c80427f3bafeea9a66",
-                "shasum": ""
-            },
-            "require": {
-                "egeloen/ordered-form": "^2.0",
-                "php": ">=5.3.3",
-                "symfony/framework-bundle": "^2.3|^3.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.0",
-                "satooshi/php-coveralls": "^0.6",
-                "symfony/phpunit-bridge": "^2.7|~3.0"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Ivory\\OrderedFormBundle\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Eric GELOEN",
-                    "email": "geloen.eric@gmail.com"
-                }
-            ],
-            "description": "Provides a form ordering support for your Symfony2 project.",
-            "keywords": [
-                "form",
-                "order"
-            ],
-            "time": "2015-12-12T19:39:40+00:00"
         },
         {
             "name": "egulias/email-validator",

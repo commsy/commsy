@@ -193,7 +193,6 @@ class ModerationSettingsType extends AbstractType
                 ->add('mail_body_user_account_merge_en', HiddenType::class, array())
             )
             ->add('save', SubmitType::class, array(
-                'position' => 'last',
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 )                

@@ -33,7 +33,6 @@
         "liip/theme-bundle": "^1.4",
         "knplabs/knp-menu-bundle":"^2.1",
         "lexik/form-filter-bundle": "^5.0",
-        "egeloen/ordered-form-bundle": "^2.0",
         "craue/twigextensions-bundle": "^2.1",
         "knplabs/knp-snappy-bundle": "^1.4",
         "tomnomnom/etherpad-lite-client": "^0.1.2",

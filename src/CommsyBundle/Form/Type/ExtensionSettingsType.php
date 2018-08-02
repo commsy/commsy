@@ -103,7 +103,6 @@ class ExtensionSettingsType extends AbstractType
                 ))
             )
             ->add('save', SubmitType::class, array(
-                'position' => 'last',
                 'label' => 'Save',
                 'attr' => array(
                     'class' => 'uk-button-primary',
