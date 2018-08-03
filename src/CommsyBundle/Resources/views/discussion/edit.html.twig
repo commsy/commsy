@@ -10,6 +10,8 @@
                     {{ form_widget(form.title) }}
             </div>
         </div>
+
+        {% if discussion.creator.itemId == currentUser.itemId or currentUser.isModerator %}
         <div class="uk-flex uk-margin-bottom uk-margin-small-top">
             <div>
                 <label class="">
@@ -20,7 +22,10 @@
                 {{ form_widget(form.permission) }}
             </div>
         </div>
+        {% endif %}
+
         {% if form.vars.name == "discussion"  %}
+            {% if discussion.creator.itemId == currentUser.itemId or currentUser.isModerator %}
             <div class="uk-flex">
                 <label class="uk-form-label">{{ 'hidden'|trans({}, "form") }}</label>
                 <div class="uk-flex uk-margin-small-top">
@@ -33,6 +38,7 @@
                     {{ form_widget(form.hiddendate) }}
                 </div>
             </div>
+            {% endif %}
 
             {% if isDraft and (showHashtags or showCategories) %}
                 {{ macros.mandatoryLinks(showHashtags, showCategories, form) }}
@@ -53,6 +59,7 @@
                 {{ form_row(form.cancel) }}
             </div>
         </div>
-        {{ form_end(form) }}
+        {{ form_row(form._token) }}
+        {{ form_end(form, {'render_rest': false}) }}
     </div>
 </div>

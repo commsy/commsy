@@ -8,6 +8,8 @@
                     {{ form_widget(form.title) }}
             </div>
         </div>
+
+            {% if institution.creator.itemId == currentUser.itemId or currentUser.isModerator %}
             <div class="uk-flex uk-margin-bottom uk-margin-small-top">
                 <div>
                     <label class="">
@@ -30,6 +32,8 @@
                     {{ form_widget(form.hiddendate) }}
                 </div>
             </div>
+            {% endif %}
+
             <div class="uk-flex uk-margin-small-top">
                 <div class="uk-margin-small-left">
                     {{ form_row(form.save) }}
@@ -38,6 +42,7 @@
                     {{ form_row(form.cancel) }}
                 </div>
             </div>
-        {{ form_end(form) }}
+        {{ form_row(form._token) }}
+        {{ form_end(form, {'render_rest': false}) }}
     </div>
 </div>

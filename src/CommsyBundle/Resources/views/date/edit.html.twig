@@ -124,6 +124,8 @@
                     </div>
                 </div>
                 {% endif %}
+
+                {% if date.creator.itemId == currentUser.itemId or currentUser.isModerator %}
                 <div class="uk-form-row">
                     <label class="uk-form-label">
                         {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
@@ -144,6 +146,7 @@
                         {{ form_widget(form.hiddendate) }}
                     </div>
                 </div>
+                {% endif %}
 
                 {% if form.external_viewer is defined %}
                     <div class="uk-form-row">
