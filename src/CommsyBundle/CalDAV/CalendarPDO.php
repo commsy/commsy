@@ -775,8 +775,14 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         $utcDateTime = new \DateTime($utcDateTime->format('Y-m-d H:i:s'));
         $timeZoneDiff = $commsyDateTime->diff($utcDateTime);
 
+        $recurrenceCount = null;
         $recurrencePattern = null;
         if ($calendarRead->VEVENT->RRULE) {
+            $rrule = $calendarRead->VEVENT->RRULE;
+            $rrulePartsArray = $rrule->getParts();
+            if (isset($rrulePartsArray['COUNT'])) {
+                $recurrenceCount = $rrulePartsArray['COUNT'];
+            }
             $recurrencePattern = $this->translateRecurringPattern($calendarRead->VEVENT->RRULE, 'iCal', $calendarRead->VEVENT->DTSTART->getDateTime());
         }
 
@@ -785,8 +791,12 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
 
         // insert new data into database
         $calendarReadExpandedChildren = $calendarReadExpanded->children();
+        $counter = 0;
         foreach ($calendarReadExpandedChildren as $event) {
-            if ($event->name == 'VEVENT') {
+            if ($event->name == 'VEVENT' && (!$recurrenceCount || $counter < $recurrenceCount)) {
+                if ($recurrenceCount) {
+
+                }
 
                 if ($event->{'X-COMMSY-ITEM-ID'}) {
                     $dateItem = $dateService->getDate($event->{'X-COMMSY-ITEM-ID'}->getValue());
@@ -915,6 +925,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                         $dateItem->save();
                     }
                 }
+                $counter++;
             }
         }
     }
