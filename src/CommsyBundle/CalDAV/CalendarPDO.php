@@ -777,13 +777,41 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
 
         $recurrenceCount = null;
         $recurrencePattern = null;
+        $recurrenceEndDateTime = null;
         if ($calendarRead->VEVENT->RRULE) {
             $rrule = $calendarRead->VEVENT->RRULE;
             $rrulePartsArray = $rrule->getParts();
             if (isset($rrulePartsArray['COUNT'])) {
                 $recurrenceCount = $rrulePartsArray['COUNT'];
+
+                $calendarReadExpandedChildren = $calendarReadExpanded->children();
+                $counter = 0;
+                foreach ($calendarReadExpandedChildren as $event) {
+                    if ($event->name == 'VEVENT' && (!$recurrenceCount || $counter < $recurrenceCount)) {
+                        $wholeday = 0;
+                        if ($event->DTSTART) {
+                            if (strlen($event->DTSTART->getValue()) == 8) {
+                                $wholeday = 1;
+                            }
+                        }
+
+                        if ($event->DTEND) {
+                            $recurrenceEndDateTime = $event->DTEND->getDateTime();
+                            if (!$wholeday) {
+                                $recurrenceEndDateTime = $recurrenceEndDateTime->modify('+'.$timeZoneDiff->h.' hours');
+                            } else {
+                                $recurrenceEndDateTime = $recurrenceEndDateTime->modify('-1 days');     // use returned object, as this is of class DateTimeImmutable.
+                                $recurrenceEndDateTime = $recurrenceEndDateTime->modify('+23 hours');
+                                $recurrenceEndDateTime = $recurrenceEndDateTime->modify('+59 minutes');
+                                $recurrenceEndDateTime = $recurrenceEndDateTime->modify('+59 seconds');
+                            }
+                        }
+                        $counter++;
+                    }
+                }
+
             }
-            $recurrencePattern = $this->translateRecurringPattern($calendarRead->VEVENT->RRULE, 'iCal', $calendarRead->VEVENT->DTSTART->getDateTime());
+            $recurrencePattern = $this->translateRecurringPattern($calendarRead->VEVENT->RRULE, 'iCal', $calendarRead->VEVENT->DTSTART->getDateTime(), $recurrenceEndDateTime);
         }
 
         $newItem = false;
@@ -794,10 +822,6 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         $counter = 0;
         foreach ($calendarReadExpandedChildren as $event) {
             if ($event->name == 'VEVENT' && (!$recurrenceCount || $counter < $recurrenceCount)) {
-                if ($recurrenceCount) {
-
-                }
-
                 if ($event->{'X-COMMSY-ITEM-ID'}) {
                     $dateItem = $dateService->getDate($event->{'X-COMMSY-ITEM-ID'}->getValue());
                 } else if ($objectUri) {
@@ -955,7 +979,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                         and BYDAY and BYWEEKDAY to expand the BYMONTH rule even further.
     */
 
-    private function translateRecurringPattern ($pattern, $type, $startDate = null) {
+    private function translateRecurringPattern ($pattern, $type, $startDate = null, $endDate = null) {
         $result = '';
         if ($type == "CommSy") {
             if ($pattern['recurring_select'] == 'RecurringDailyType') {
@@ -1050,7 +1074,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
 
             if (isset($pattern['recurringEndDate'])) {
                 $recurringEndDate = new \DateTime($pattern['recurringEndDate']);
-                $recurringEndDate->add(new \DateInterval('P1D'));
+                //$recurringEndDate->add(new \DateInterval('P1D'));
                 $result .= 'UNTIL='.$recurringEndDate->format('Ymd\THis\Z');
             }
 
@@ -1176,6 +1200,8 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             if (isset($patternArray['UNTIL'])) {
                 $recurringEndDate = new \DateTime($patternArray['UNTIL']);
                 $result['recurringEndDate'] = $recurringEndDate->format('Y-m-d');
+            } else if (isset($patternArray['COUNT']) && $endDate) {
+                $result['recurringEndDate'] = $endDate->format('Y-m-d');
             } else {
                 $recurringEndDate = new \DateTime();
                 $recurringEndDate->modify('+2 years');
