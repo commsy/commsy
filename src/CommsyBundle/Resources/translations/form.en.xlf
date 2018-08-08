@@ -264,7 +264,7 @@
             </trans-unit>
             <trans-unit id="form-permission">
                 <source>permission</source>
-                <target>Only editable by %name% </target>
+                <target>Only editable by creator</target>
             </trans-unit>
             <trans-unit id="form-no-restrictions">
                 <source>no restrictions</source>
