@@ -12,7 +12,7 @@
             </div>
         </div>
         {% if form.vars.name != "section"  %}
-            <div class="uk-margin-top">
+            <div class="uk-margin-small-left uk-margin-small-top">
                 {% if form.editor_switch is defined %}
                     <div class="uk-form-row">
                         {{ form_label(form.editor_switch) }}
@@ -26,21 +26,21 @@
                 {% if material.creator.itemId == currentUser.itemId or currentUser.isModerator %}
                 <div class="uk-form-row">
                     <label class="uk-form-label">
-                        {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
+                        <span data-uk-tooltip title="{{ material.creator.fullname }}">{{ 'permission'|trans({}, "form") }}</span>
                     </label>
-                    <div class="uk-margin-left">
+                    <div>
                         {{ form_widget(form.permission) }}
                     </div>
                 </div>
                 <div class="uk-form-row">
                     <label class="uk-form-label">{{ 'hidden'|trans({}, "form")|capitalize }}</label>
-                    <div class="uk-margin-left">
+                    <div>
                         {{ form_widget(form.hidden) }}
                     </div>
                 </div>
                 <div class="uk-form-row">
                     <label class="uk-form-label">{{ 'hidden until'|trans({}, "form")|capitalize }}</label>
-                    <div class="uk-margin-left">
+                    <div class="uk-margin-small-top">
                         {{ form_widget(form.hiddendate) }}
                     </div>
                 </div>
@@ -62,7 +62,7 @@
                     {{ form_widget(form.biblio_select) }}
                 </div>
                 {% if form.biblio_sub is defined %}
-                    <div class="uk-flex uk-margin-small-top">
+                    <div class="uk-margin-small-top">
                         <div id="material_biblio_sub">
                             {% for subField in form.biblio_sub %}
                                 <div class="uk-flex uk-margin-small-top">
