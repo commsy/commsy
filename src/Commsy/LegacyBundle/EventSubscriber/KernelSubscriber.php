@@ -144,21 +144,14 @@ class KernelSubscriber implements EventSubscriberInterface
                     $baseURL = $currentRequest->getSchemeAndHttpHost() . $currentRequest->getBaseUrl();
                     $url = $baseURL . '?cid=' . $portalID;
 
-                    // if this is a room url, send us to room detail view
-                    if (preg_match('/room\/([0-9]+)/', $requestUri, $roomIdMatch)) {
-                        $roomContextID = $portalID;
-                        if ($userSessionItem->issetValue('user_id') && $userSessionItem->issetValue('auth_source')) {
-                            $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
-                            $roomContextID = $privateRoomManager->getItemIDOfRelatedOwnRoomForUser(
-                                $userSessionItem->getValue('user_id'),
-                                $userSessionItem->getValue('auth_source'),
-                                $portalID);
-                        }
-
-                        $url = $this->urlGenerator->generate('commsy_room_detail', [
-                            'roomId' => $roomContextID,
-                            'itemId' => $roomIdMatch[1],
-                        ]);
+                    // if this is a room url, send us to room detail view on portal
+                    $roomID = null;
+                    if (preg_match('/room\/[0-9]+\/all\/([0-9]+)/', $requestUri, $roomIdMatch) ||
+                        preg_match('/room\/([0-9]+)/', $requestUri, $roomIdMatch)) {
+                        $roomID = $roomIdMatch;
+                    }
+                    if ($roomID) {
+                        $url .= '&mod=home&fct=index&room_id=' . $roomIdMatch[1];
                     }
 
                     $response = new RedirectResponse($url);
