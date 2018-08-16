@@ -300,7 +300,10 @@ class cs_group_item extends cs_label_item {
             return false;
         }
 
-        return ($user_item->getStatus() == '3' || $user_item->getItemId() == $this->getModificatorID());
+        // NOTE: the logic here overrides superclass implementations of this method which effectively treats the
+        // "Only editable by creator" (aka \cs_item::isPublic) option as always being checked; this prevents regular
+        // group or room members from messing with the group or its group room; see #391(activity-3)
+        return ($user_item->isModerator() || $user_item->getItemId() == $this->getCreatorID());
     }
 }
 ?>
