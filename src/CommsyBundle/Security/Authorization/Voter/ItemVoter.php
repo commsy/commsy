@@ -120,10 +120,6 @@ class ItemVoter extends Voter
             }
         }
 
-        if ($item->mayEdit($currentUser)) {
-            return true;
-        }
-
         if ($item->getItemType() == CS_DISCUSSION_TYPE) {
             $request = $this->requestStack->getCurrentRequest();
             if ($request->get('_route') == 'commsy_discussion_createarticle') {
@@ -135,6 +131,10 @@ class ItemVoter extends Voter
             if ($currentUser->getItemId() == $item->getItemId()) {
                 return true;
             }
+        }
+
+        if ($item->mayEdit($currentUser)) {
+            return true;
         }
 
         return false;
