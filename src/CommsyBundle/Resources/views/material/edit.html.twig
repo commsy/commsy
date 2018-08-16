@@ -18,7 +18,7 @@
                         {{ form_label(form.editor_switch) }}
                         <div class="uk-margin-left">
                             {{ form_widget(form.editor_switch) }}
-                            <i class="uk-icon-question-circle uk-icon-justify uk-icon-small uk-icon-bottom" data-uk-tooltip="{pos:'right'}" title="{{ 'etherpadText' | trans({}, 'form') }}"></i>
+                            <i class="uk-icon-question-circle uk-icon-justify uk-icon-small uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'etherpadText' | trans({}, 'form') }}"></i>
                         </div>
                     </div>
                 {% endif %}
@@ -30,6 +30,7 @@
                     </label>
                     <div>
                         {{ form_widget(form.permission) }}
+                        <i class="uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'permission-info'|trans({'%name%': material.creator.fullname}, 'form') }}"></i>
                     </div>
                 </div>
                 <div class="uk-form-row">

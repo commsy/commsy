@@ -17,7 +17,8 @@
                     <span data-uk-tooltip title="{{ topic.creator.fullname }}">{{ 'permission'|trans({}, "form") }}</span>
                 </label>
                 <div>
-                    {{ form_widget(form.permission) }}  
+                    {{ form_widget(form.permission) }}
+                    <i class="uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'permission-info'|trans({'%name%': topic.creator.fullname}, 'form') }}"></i>
                 </div>
             </div>
             <div class="uk-margin-small-left uk-flex">
