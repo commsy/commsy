@@ -636,6 +636,14 @@ class cs_label_item extends cs_item {
    
    function mayEdit (cs_user_item $user_item) {
       $may_edit_item = parent::mayEdit($user_item);
+      if (!$may_edit_item) {
+          return false;
+      }
+
+      if ($this->isSystemLabel()) {
+          return false;
+      }
+
       if ($may_edit_item) {
          if ($this->getLabelType() == 'group') {
             if ($user_item->getStatus() == '3') {

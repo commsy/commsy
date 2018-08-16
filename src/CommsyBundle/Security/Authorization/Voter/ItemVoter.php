@@ -110,10 +110,6 @@ class ItemVoter extends Voter
             }
         }
 
-        if ($item instanceof \cs_group_item && $item->isSystemLabel()) {
-            return false;
-        }
-
         if ($item->getItemType() == CS_DATE_TYPE) {
             if ($item->isExternal()) {
                 return false;

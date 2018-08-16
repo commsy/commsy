@@ -295,7 +295,8 @@ class cs_group_item extends cs_label_item {
      */
     public function mayEdit(cs_user_item $user_item)
     {
-        if ($this->isSystemLabel()) {
+        $mayEditItem = parent::mayEdit($user_item);
+        if (!$mayEditItem) {
             return false;
         }
 
