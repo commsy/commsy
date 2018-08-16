@@ -266,6 +266,10 @@
                 <source>permission</source>
                 <target>Nur von ErstellerIn bearbeitbar</target>
             </trans-unit>
+            <trans-unit id="form-permission-info">
+                <source>permission-info</source>
+                <target>Durch Setzen dieser Funktion kann der Eintrag nur durch den/die ErstellerIn (%name%) sowie durch RaummoderatorInnen verändert werden.</target>
+            </trans-unit>
             <trans-unit id="form-no-restrictions">
                 <source>no restrictions</source>
                 <target>Keine Einschränkungen</target>
