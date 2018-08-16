@@ -633,51 +633,19 @@ class cs_label_item extends cs_item {
 
       return $retour;
    }
-   
-   function mayEdit (cs_user_item $user_item) {
-      $may_edit_item = parent::mayEdit($user_item);
-      if (!$may_edit_item) {
-          return false;
-      }
 
-      if ($this->isSystemLabel()) {
-          return false;
-      }
+    /** returns whether the given user may edit the label item or not,
+     * but will always prevent editing if the label item is a system label
+     */
+    function mayEdit(cs_user_item $user_item)
+    {
+        if ($this->isSystemLabel()) {
+            return false;
+        }
 
-      if ($may_edit_item) {
-         if ($this->getLabelType() == 'group') {
-            if ($user_item->getStatus() == '3') {
-               return true;
-            }
-            $group_manager = $this->_environment->getGroupManager();
-            $group_item = $group_manager->getItem($this->getItemID());
-            if ($group_item->isGroupRoomActivated()) {
-               $may_edit = false;
-               if ($this->isMember($user_item)) {
-                  $group_room_item = $group_item->getGroupRoomItem();
-                  $user_list = $user_item->getRelatedUserList();
-                  $temp_user_item = $user_list->getFirst();
-                  while ($temp_user_item) {
-                    if ($group_room_item) {
-                       if ($temp_user_item->getContextID() == $group_room_item->getItemID()) {
-                          if ($temp_user_item->getStatus() == '3') {
-                             $may_edit = true;
-                          }
-                       }
-                    }
-                    $temp_user_item = $user_list->getNext();   
-                  }
-               }
-               return $may_edit;
-            } else {
-               return $may_edit_item;
-            }
-         } else {
-            return $may_edit_item;
-         }
-      } else {
-         return $may_edit_item;
-      }
-   }
+        $mayEditItem = parent::mayEdit($user_item);
+
+        return $mayEditItem;
+    }
 }
 ?>
