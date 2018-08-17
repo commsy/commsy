@@ -1016,6 +1016,7 @@ class MaterialController extends BaseController
             'material' => $materialItem,
             'licenses' => $licenses,
             'licensesContent' => $licensesContent,
+            'material' => $materialItem,
         );
     }
     

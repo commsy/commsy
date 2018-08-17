@@ -10,25 +10,24 @@
         </div>
 
             {% if institution.creator.itemId == currentUser.itemId or currentUser.isModerator %}
-            <div class="uk-flex uk-margin-bottom uk-margin-small-top">
+            <div class="uk-margin-small-left uk-flex">
+                <label class="uk-form-label">
+                    <span data-uk-tooltip title="{{ institution.creator.fullname }}">{{ 'permission'|trans({}, "form") }}</span>
+                </label>
                 <div>
-                    <label class="">
-                        {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
-                    </label>
-                </div>
-                <div class="uk-margin-left">
                     {{ form_widget(form.permission) }}
+                    <i class="uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'permission-info'|trans({'%name%': institution.creator.fullname}, 'form') }}"></i>
                 </div>
             </div>
-            <div class="uk-flex">
-                <label class="uk-form-label">{{ 'hidden'|trans({}, "form") }}</label>
-                <div class="uk-flex uk-margin-small-top">
+            <div class="uk-margin-small-left uk-flex">
+                <label class="uk-form-label">{{ 'hidden'|trans({}, "form")|capitalize }}</label>
+                <div>
                     {{ form_widget(form.hidden) }}
                 </div>
             </div>
-            <div class="uk-flex">
-                <label class="uk-form-label">{{ 'hidden until'|trans({}, "form") }}</label>
-                <div class="uk-flex uk-margin-small-top">
+            <div class="uk-margin-small-left uk-flex">
+                <label class="uk-form-label">{{ 'hidden until'|trans({}, "form")|capitalize }}</label>
+                <div class="uk-margin-small-top">
                     {{ form_widget(form.hiddendate) }}
                 </div>
             </div>
