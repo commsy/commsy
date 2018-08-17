@@ -126,6 +126,7 @@ class KernelSubscriber implements EventSubscriberInterface
                 if ($portalItem) {
                     $portalID = $portalItem->getItemID();
                     $sessionManager = $this->legacyEnvironment->getSessionManager();
+                    $portalID = $portalItem->getItemID();
 
                     $userSessionItem = $this->legacyEnvironment->getSessionItem();
                     if (!$userSessionItem) {
@@ -144,14 +145,33 @@ class KernelSubscriber implements EventSubscriberInterface
                     $baseURL = $currentRequest->getSchemeAndHttpHost() . $currentRequest->getBaseUrl();
                     $url = $baseURL . '?cid=' . $portalID;
 
-                    // if this is a room url, send us to room detail view on portal
+                    // if this is a room url (and since the user isn't authenticated), redirect to the room detail view
                     $roomID = null;
                     if (preg_match('/room\/[0-9]+\/all\/([0-9]+)/', $requestUri, $roomIdMatch) ||
                         preg_match('/room\/([0-9]+)/', $requestUri, $roomIdMatch)) {
                         $roomID = $roomIdMatch;
                     }
                     if ($roomID) {
-                        $url .= '&mod=home&fct=index&room_id=' . $roomIdMatch[1];
+                        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+                        $loggedIn = !empty($currentUser) && $currentUser->getUserID() !== 'guest';
+
+                        // allow guest users to login via the portal first, otherwise directly redirect to the modern room detail view
+                        if (!$loggedIn) {
+                            $url .= '&mod=home&fct=index&room_id=' . $roomIdMatch[1];
+                        } else {
+                            if ($userSessionItem->issetValue('user_id') && $userSessionItem->issetValue('auth_source')) {
+                                $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
+                                $roomContextID = $privateRoomManager->getItemIDOfRelatedOwnRoomForUser(
+                                    $userSessionItem->getValue('user_id'),
+                                    $userSessionItem->getValue('auth_source'),
+                                    $portalID);
+                            }
+
+                            $url = $this->urlGenerator->generate('commsy_room_detail', [
+                                'roomId' => $roomContextID,
+                                'itemId' => $roomIdMatch[1],
+                            ]);
+                        }
                     }
 
                     $response = new RedirectResponse($url);
