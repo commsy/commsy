@@ -1,6 +1,7 @@
 import {ActionData, ActionRequest, ActionResponse} from "./Actions";
 import {XHRAction} from "./AbstractAction";
 import * as $ from "jquery";
+import * as URI from 'urijs';
 
 export class UserStatusAction extends XHRAction {
 
@@ -15,12 +16,18 @@ export class UserStatusAction extends XHRAction {
 
     public execute(actionPayload: ActionRequest, requestURI: string): Promise<ActionResponse> {
         return new Promise((resolve) => {
+            let currentURI = new URI(location.href);
+            let requestURI = new URI(this.url);
+            requestURI.search(function() {
+                return currentURI.search(true);
+            });
+
             let $form = $(document.createElement('form'))
                 .css({
                     display: 'none'
                 })
                 .attr('method', 'POST')
-                .attr('action', this.url);
+                .attr('action', requestURI.toString());
 
             for (let i = 0; i < actionPayload.positiveItemIds.length; i++) {
                 $form.append($('<input>').attr('name','positiveItemIds[]').val(actionPayload.positiveItemIds[i]));
