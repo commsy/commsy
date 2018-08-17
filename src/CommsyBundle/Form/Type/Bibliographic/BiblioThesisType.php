@@ -21,15 +21,15 @@ class BiblioThesisType extends AbstractType
         $translationDomain = 'form';
 
         $builder
-            ->add('editor', TextType, array(
+            ->add('editor', TextType::class, array(
                 'label' => 'editor',
                 'translation_domain' => $translationDomain,
             ))
-            ->add('publishing_date', TextType, array(
+            ->add('publishing_date', TextType::class, array(
                 'label' => 'publishing date',
                 'translation_domain' => $translationDomain,
             ))
-            ->add('thesis_select', ChoiceType::class, array(
+            ->add('thesis_kind', ChoiceType::class, array(
                 'label' => 'thesis kind',
                 'translation_domain' => $translationDomain,
                 'choices'  => array(
@@ -43,25 +43,25 @@ class BiblioThesisType extends AbstractType
                 ),
                 'choice_translation_domain' => true,
             ))
-            ->add('address', TextType, array(
+            ->add('address', TextType::class, array(
                 'label' => 'address',
                 'translation_domain' => $translationDomain,
             ))
-            ->add('university', TextType, array(
+            ->add('university', TextType::class, array(
                 'label' => 'university',
                 'translation_domain' => $translationDomain,
             ))
-            ->add('faculty', TextType, array(
+            ->add('faculty', TextType::class, array(
                 'label' => 'faculty',
                 'translation_domain' => $translationDomain,
                 'required' => false,
             ))
-            ->add('url', TextType, array(
+            ->add('url', TextType::class, array(
                 'label' => 'url',
                 'translation_domain' => $translationDomain,
                 'required' => false,
             ))
-            ->add('url_date', TextType, array(
+            ->add('url_date', TextType::class, array(
                 'label' => 'url date',
                 'translation_domain' => $translationDomain,
                 'required' => false,

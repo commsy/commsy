@@ -8,6 +8,8 @@
     {% elseif material.bibKind == 'website' %}
         {% set biblio = biblio ~ material.author ~ ", " %}
     {% elseif material.bibKind == 'document' %}
+    {% elseif material.bibKind == 'thesis' %}
+        {% set biblio = biblio ~ material.editor ~ " (" ~ material.publishingDate ~ "). " %}
     {% else %}
         {% set biblio = biblio ~ material.author ~ " (" ~ material.publishingDate ~ "). " %}
     {% endif %}
@@ -230,7 +232,6 @@
             {% if material.pages %}
                 {% set biblio = biblio ~ ", " ~ "#{'p: %pages%'|trans({'%pages%': material.pages}) }" ~ "." %}
             {% endif %}
-
         {% elseif material.bibKind == 'none' %}
         {% else %}
             {% set biblio = biblio ~ material.bibliographicValues %}
