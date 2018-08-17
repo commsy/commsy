@@ -125,6 +125,7 @@ class KernelSubscriber implements EventSubscriberInterface
 
                 if ($portalItem) {
                     $sessionManager = $this->legacyEnvironment->getSessionManager();
+                    $portalID = $portalItem->getItemID();
 
                     $userSessionItem = $this->legacyEnvironment->getSessionItem();
                     if (!$userSessionItem) {
@@ -132,7 +133,7 @@ class KernelSubscriber implements EventSubscriberInterface
                         require_once('classes/cs_session_item.php');
                         $userSessionItem = new \cs_session_item();
                         $userSessionItem->createSessionID('guest');
-                        $userSessionItem->setValue('commsy_id', $portalItem->getItemID());
+                        $userSessionItem->setValue('commsy_id', $portalID);
                     }
 
                     // persist the requested url in session, so we can redirect the user after login
@@ -141,7 +142,7 @@ class KernelSubscriber implements EventSubscriberInterface
                     $sessionManager->save($userSessionItem);
 
                     $baseURL = $currentRequest->getSchemeAndHttpHost() . $currentRequest->getBaseUrl();
-                    $url = $baseURL . '?cid=' . $portalItem->getItemID();
+                    $url = $baseURL . '?cid=' . $portalID;
 
                     // if this is a room url (and since the user isn't authenticated), redirect to the room detail view
                     $roomID = null;
