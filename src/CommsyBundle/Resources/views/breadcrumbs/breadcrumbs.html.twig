@@ -6,7 +6,7 @@
                     {% if b.url and not loop.last %}
                         <a href="{{ b.url }}" itemprop="item"{% if linkRel is defined and linkRel|length %} rel="{{ linkRel }}"{% endif %}>
                     {% endif %}
-                            <span itemprop="name">{{- b.text | trans(b.translationParameters, translation_domain, locale) -}}</span>
+                            <span itemprop="name">{{- b.text | decodeHtmlEntity | trans(b.translationParameters, translation_domain, locale) -}}</span>
                     {% if b.url and not loop.last %}
                         </a>
                     {% endif %}
