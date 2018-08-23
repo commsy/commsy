@@ -224,9 +224,11 @@ class MaterialTransformer implements DataTransformerInterface
                             'foto_copyright',
                             'foto_reason',
                             'foto_date');
-        
+
+        $converter = $this->legacyEnvironment->getTextConverter();
+
         foreach ($bibFields as $key => $value) {
-            $form_data[$value] = isset($form_data[$value]) ? $form_data[$value] : '';
+            $form_data[$value] = isset($form_data[$value]) ? $converter->sanitizeFullHTML($form_data[$value]) : '';
             if($value == 'url_date' && $form_data[$value] != '') {
                 // $form_data[$value] = new \DateTime($form_data[$value]);
                 // $form_data[$value] = $form_data[$value]->format('Y-m-d');
