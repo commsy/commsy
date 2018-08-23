@@ -72,11 +72,16 @@
                                                         </div>
                                                     </div>
                                                 </a>
-                                            {% else %} 
+                                            {% else %}
+                                                {% set disposition = 'attachment' %}
+                                                {% if file.extension|lower == 'pdf' %}
+                                                    {% set disposition = 'inline' %}
+                                                {% endif %}
+
                                                 <div class="uk-clearfix">
                                                     <div class="cs-align-center" data-uk-tooltip="{pos:'top-left'}" title="{{ file.filename}} ({{ file.fileSize }} kb)">
                                                         <div class="cs-align-center uk-vertical-align-middle">                        
-                                                            <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" ><i class="cs-icon-medium  cs-slider {{ macrosUtils.iconClassForFileType(file.extension) }}"></i></a>
+                                                            <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId, 'disposition': disposition }) }}" target="_blank"><i class="cs-icon-medium  cs-slider {{ macrosUtils.iconClassForFileType(file.extension) }}"></i></a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -123,7 +128,7 @@
                                         </div>
                                     {% endif %}
                                     <div class="uk-vertical-align-middle" data-uk-tooltip="{pos:'top-left'}" title="{{ file.filename }}">
-                                        <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}">{{ file.filename|truncate(20) }}</a><br/>
+                                        <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" target="_blank">{{ file.filename|truncate(20) }}</a><br/>
                                         ({{ file.fileSize }} kb)
                                     </div>
                                 </div>

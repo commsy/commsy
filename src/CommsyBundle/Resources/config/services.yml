@@ -528,6 +528,10 @@ services:
         tags:
             - { name: twig.extension }
 
+    CommsyBundle\Twig\Extension\PageTitleExtension:
+        autowire: true
+        autoconfigure: true
+
     twig.extension.log:
         class: CommsyBundle\Twig\Extension\LogarithmExtension
         public: false
