@@ -515,6 +515,7 @@ class AnnouncementController extends BaseController
 
         return array(
             'form' => $form->createView(),
+            'announcement' => $announcementItem,
             'isDraft' => $isDraft,
             'showHashtags' => $hashtagsMandatory,
             'showCategories' => $categoriesMandatory,

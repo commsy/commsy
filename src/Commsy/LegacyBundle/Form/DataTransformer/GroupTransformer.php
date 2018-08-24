@@ -27,7 +27,6 @@ class GroupTransformer implements DataTransformerInterface
         if ($groupItem) {
             $groupData['title'] = html_entity_decode($groupItem->getTitle());
             $groupData['description'] = $groupItem->getDescription();
-            $groupData['permission'] = $groupItem->isPrivateEditing();
             $groupData['activate'] = $groupItem->isGroupRoomActivated();
             
             if ($groupItem->isNotActivated()) {
@@ -58,12 +57,6 @@ class GroupTransformer implements DataTransformerInterface
         $groupObject->setTitle($groupData['title']);
         $groupObject->setDescription($groupData['description']);
         
-        if ($groupData['permission']) {
-            $groupObject->setPrivateEditing('0');
-        } else {
-            $groupObject->setPrivateEditing('1');
-        }
-
         if (isset($groupData['hidden']) && !empty($groupData['hidden'])) {
             if (isset($groupData['hiddendate']) && isset($groupData['hiddendate']['date'])) {
                 $datetime = $groupData['hiddendate']['date'];

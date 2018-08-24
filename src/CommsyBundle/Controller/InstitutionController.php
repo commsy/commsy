@@ -475,6 +475,7 @@ class InstitutionController extends BaseController
 
         return array(
             'form' => $form->createView(),
+            'institution' => $institutionItem,
             'showHashtags' => $current_context->withBuzzwords(),
             'showCategories' => $current_context->withTags(),
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
