@@ -1030,7 +1030,7 @@ class cs_project_item extends cs_room_item {
          if ( $room_item->isCommunityRoom() or $room_item->isPortal() ){
           $subject .= $room_item->getTitle().': ';
          }
-         $title = str_ireplace('&amp;', '&', $this->getTitle());
+         $title = html_entity_decode($this->getTitle());
          if ( $room_change == 'open' ) {
             $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_OPEN',$title);
          } elseif ( $room_change == 'reopen' ) {
@@ -1076,7 +1076,7 @@ class cs_project_item extends cs_room_item {
             $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_UNLOCK');
          }
          $body .= LF.LF;
-         $body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION',str_ireplace('&amp;', '&', $this->getTitle()),$current_user->getFullname(),$room_change_action);
+         $body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION',$title,$current_user->getFullname(),$room_change_action);
          if ( $room_change != 'delete' ) {
 
              global $symfonyContainer;
@@ -1153,11 +1153,11 @@ class cs_project_item extends cs_room_item {
          $body .= $translator->getMessage('MAIL_SEND_TO',implode(LF,$moderator_name_array));
          $body .= LF.LF;
          if ( $room_item->isPortal() ) {
-            $body .= $translator->getMessage('MAIL_SEND_WHY_PORTAL',$room_item->getTitle());
+            $body .= $translator->getMessage('MAIL_SEND_WHY_PORTAL',html_entity_decode($room_item->getTitle()));
          } elseif ( $room_item->isCommunityRoom() ) {
-            $body .= $translator->getMessage('MAIL_SEND_WHY_COMMUNITY',$room_item->getTitle());
+            $body .= $translator->getMessage('MAIL_SEND_WHY_COMMUNITY',html_entity_decode($room_item->getTitle()));
          } else {
-            $body .= $translator->getMessage('MAIL_SEND_WHY_PROJECT',$room_item->getTitle());
+            $body .= $translator->getMessage('MAIL_SEND_WHY_PROJECT',html_entity_decode($room_item->getTitle()));
          }
 
          // send email
