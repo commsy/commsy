@@ -229,7 +229,7 @@
     <div class="uk-flex uk-flex-right">
         {% if edit %}
             {% if is_granted('ITEM_EDIT', item.itemId) %}
-                <div class="uk-display-inline cs-edit uk-invisible {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
+                <div class="uk-display-inline cs-edit {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
                     <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                 </div>
             {% endif %}        
