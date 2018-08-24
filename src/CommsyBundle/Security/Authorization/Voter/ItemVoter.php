@@ -110,18 +110,10 @@ class ItemVoter extends Voter
             }
         }
 
-        if ($item instanceof \cs_group_item && $item->isSystemLabel()) {
-            return false;
-        }
-
         if ($item->getItemType() == CS_DATE_TYPE) {
             if ($item->isExternal()) {
                 return false;
             }
-        }
-
-        if ($item->mayEdit($currentUser)) {
-            return true;
         }
 
         if ($item->getItemType() == CS_DISCUSSION_TYPE) {
@@ -135,6 +127,10 @@ class ItemVoter extends Voter
             if ($currentUser->getItemId() == $item->getItemId()) {
                 return true;
             }
+        }
+
+        if ($item->mayEdit($currentUser)) {
+            return true;
         }
 
         return false;

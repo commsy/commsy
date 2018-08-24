@@ -696,6 +696,7 @@ class GroupController extends BaseController
 
         return array(
             'form' => $form->createView(),
+            'group' => $groupItem,
             'isDraft' => $isDraft,
             'showHashtags' => $hashtagsMandatory,
             'showCategories' => $categoriesMandatory,

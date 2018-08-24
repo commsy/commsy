@@ -10,32 +10,36 @@
                     {{ form_widget(form.title) }}
             </div>
         </div>
-        <div class="uk-flex">
+        <div class="uk-margin-small-left uk-margin-small-top uk-flex">
             <label class="uk-form-label">{{ 'valid until'|trans }}</label>
-            <div class="uk-flex uk-margin-small-top">
+            <div>
                 {{ form_widget(form.validdate) }}
             </div>
         </div>
-        <div class="uk-flex">
+
+        {% if announcement.creator.itemId == currentUser.itemId or currentUser.isModerator %}
+        <div class="uk-margin-small-left uk-flex">
             <label class="uk-form-label">
-                {{ 'permission'|trans({'%name%': currentUser.fullname}, "form") }}
+                <span data-uk-tooltip title="{{ announcement.creator.fullname }}">{{ 'permission'|trans({}, "form") }}</span>
             </label>
-            <div class="uk-flex uk-margin-small-top">
-                {{ form_widget(form.permission) }}  
+            <div>
+                {{ form_widget(form.permission) }}
+                <i class="uk-icon-question-circle uk-icon-small uk-icon-justify uk-icon-bottom uk-margin-small-top" data-uk-tooltip="{pos:'right'}" title="{{ 'permission-info'|trans({'%name%': announcement.creator.fullname}, 'form') }}"></i>
             </div>
         </div>
-        <div class="uk-flex">
-            <label class="uk-form-label">{{ 'hidden'|trans({}, "form") }}</label>
-            <div class="uk-flex uk-margin-small-top">
+        <div class="uk-margin-small-left uk-flex">
+            <label class="uk-form-label">{{ 'hidden'|trans({}, "form")|capitalize }}</label>
+            <div>
                 {{ form_widget(form.hidden) }}
             </div>
         </div>
-        <div class="uk-flex">
-            <label class="uk-form-label">{{ 'hidden until'|trans({}, "form") }}</label>
-            <div class="uk-flex uk-margin-small-top">
+        <div class="uk-margin-small-left uk-flex">
+            <label class="uk-form-label">{{ 'hidden until'|trans({}, "form")|capitalize }}</label>
+            <div class="uk-margin-small-top">
                 {{ form_widget(form.hiddendate) }}
             </div>
         </div>
+        {% endif %}
 
         {% if isDraft and (showHashtags or showCategories) %}
             {{ macros.mandatoryLinks(showHashtags, showCategories, form) }}
@@ -49,7 +53,7 @@
                 {{ form_row(form.cancel) }}
             </div>
         </div>
-        
-        {{ form_end(form) }}
+        {{ form_row(form._token) }}
+        {{ form_end(form, {'render_rest': false}) }}
     </div>
 </div>

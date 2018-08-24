@@ -36,7 +36,7 @@
             </trans-unit>
             <trans-unit id="todo-time-spend">
                 <source>time spend</source>
-                <target>Aufgewändete Zeit</target>
+                <target>Aufgewandte Zeit</target>
             </trans-unit>
             <trans-unit id="status">
                 <source>status</source>

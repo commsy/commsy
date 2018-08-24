@@ -264,7 +264,11 @@
             </trans-unit>
             <trans-unit id="form-permission">
                 <source>permission</source>
-                <target>Only editable by %name% </target>
+                <target>Only editable by creator</target>
+            </trans-unit>
+            <trans-unit id="form-permission-info">
+                <source>permission-info</source>
+                <target>By checking this option, this entry can only be edited by its creator (%name%) or the moderator.</target>
             </trans-unit>
             <trans-unit id="form-no-restrictions">
                 <source>no restrictions</source>

@@ -16,7 +16,7 @@
                     let element = UI.$(this);
 
                     if (!element.data("unhideCollapsed")) {
-                        let obj = UI.unhideCollapsed(element, UI.Utils.options(element.attr("data-cs-unhide-collapsed")));
+                        UI.unhideCollapsed(element, UI.Utils.options(element.attr("data-cs-unhide-collapsed")));
                     }
                 });
             });
@@ -37,9 +37,6 @@
                         .removeClass('uk-invisible');
                     $this.element.siblings(".fade-preview:first").removeClass('uk-hidden');
                 }
-            } else {
-                console.log('missing source:');
-                console.dir(source);
             }
         }
     });

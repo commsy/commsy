@@ -1015,6 +1015,7 @@ class MaterialController extends BaseController
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
             'licenses' => $licenses,
             'licensesContent' => $licensesContent,
+            'material' => $materialItem,
         );
     }
     
