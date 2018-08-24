@@ -254,7 +254,7 @@ class SearchController extends Controller
             }
 
             $results[] = [
-                'title' => $room->getTitle(),
+                'title' => html_entity_decode($room->getTitle()),
                 'text' => $room->getType(),
                 'url' => $url,
             ];
