@@ -95,8 +95,8 @@
                 <target>Eingrenzen nach z.B. Name, Beschreibung, ModeratorIn, ... </target>
             </trans-unit>           
              <trans-unit id="23">
-                <source>Dashboard</source>
-                <target>Dashboard </target>
+                <source>dashboard</source>
+                <target>Dashboard</target>
             </trans-unit>           
              <trans-unit id="24">
                 <source>Home</source>
