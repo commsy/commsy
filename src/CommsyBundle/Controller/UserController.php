@@ -1232,8 +1232,8 @@ class UserController extends BaseController
         // get all affected user
         $userService = $this->get('commsy_legacy.user_service');
         $users = [];
-        if (isset($formData['userIds'])) {
-            foreach ($formData['userIds'] as $userId) {
+        if (isset($formData['users'])) {
+            foreach ($formData['users'] as $userId) {
                 $user = $userService->getUser($userId);
                 if ($user) {
                     $users[] = $user;
