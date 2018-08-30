@@ -1229,6 +1229,18 @@ class UserController extends BaseController
         $form = $this->createForm(UserSendType::class, $formData, []);
         $form->handleRequest($request);
 
+        // get all affected user
+        $userService = $this->get('commsy_legacy.user_service');
+        $users = [];
+        if (isset($formData['userIds'])) {
+            foreach ($formData['userIds'] as $userId) {
+                $user = $userService->getUser($userId);
+                if ($user) {
+                    $users[] = $user;
+                }
+            }
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
 
