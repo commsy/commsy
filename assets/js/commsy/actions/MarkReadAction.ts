@@ -14,6 +14,8 @@ export class MarkReadAction extends XHRAction {
 
             UIkit.notify(payload.message, 'success');
 
+            window.location.href = window.location.href;
+
             resolve(backendResponse);
         });
     }
