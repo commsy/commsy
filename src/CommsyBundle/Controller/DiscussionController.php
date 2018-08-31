@@ -824,6 +824,7 @@ class DiscussionController extends BaseController
         }
         return array(
             'form' => $form->createView(),
+            'discussion' => $discussionItem,
             'isDraft' => $isDraft,
             'showHashtags' => $hashtagsMandatory,
             'showCategories' => $categoriesMandatory,

@@ -76,13 +76,13 @@ class ProfileAdditionalType extends AbstractType
             }
 
         $builder
-            ->add('autoSaveStatus', CheckboxType::class, array(
-                'label'    => 'autoSaveStatus',
-                'required' => false,
-                'label_attr' => array(
-                    'class' => 'uk-form-label',
-                ),
-            ))
+//            ->add('autoSaveStatus', CheckboxType::class, array(
+//                'label'    => 'autoSaveStatus',
+//                'required' => false,
+//                'label_attr' => array(
+//                    'class' => 'uk-form-label',
+//                ),
+//            ))
             ->add('save', SubmitType::class, [
                 'label' => 'save',
                 'translation_domain' => 'form',

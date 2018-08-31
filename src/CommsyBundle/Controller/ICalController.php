@@ -262,7 +262,7 @@ class ICalController extends Controller
                     ->setDescription(html_entity_decode(strip_tags($item->getDescription()), ENT_NOQUOTES, 'UTF-8'))
                     ->setStatus(Event::STATUS_CONFIRMED)
                     ->setUseTimezone(true)
-                    ->setUseUtc(true);
+                    ->setUseUtc(false);
             }
 
             $event->setNoTime($item->isWholeDay());

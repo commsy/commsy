@@ -13,10 +13,19 @@ class SoapService
 
     private $sessionIdArray = [];
 
-    public function __construct(LegacyEnvironment $legacyEnvironment,  Container $container)
+    public function __construct(LegacyEnvironment $legacyEnvironment, Container $container)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->serviceContainer = $container;
+
+        /**
+         * The require statement is necessary to import the legacy class. Otherwise the class cannot be found
+         * in a productive server environment. The problem does not arise in the development stack, even when using
+         * the production environment. There must be some side effects in relation to the server configuration, which
+         * are not obvious yet.
+         */
+        $projectDir = $this->serviceContainer->getParameter('kernel.project_dir');
+        require_once($projectDir . '/legacy/classes/cs_session_item.php');
     }
 
     /**

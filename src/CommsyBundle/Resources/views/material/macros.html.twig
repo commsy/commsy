@@ -368,17 +368,15 @@
             <div class="uk-width-2-10 uk-flex uk-flex-right">
                 {# edit action #}
                 {% if is_granted('ITEM_EDIT', item.itemId) %}
-                    <div class="uk-display-inline cs-edit uk-invisible" data-edit-title="{{ "edit"|trans({}) }}">
+                    <div class="uk-display-inline cs-edit" data-edit-title="{{ "edit"|trans({}) }}">
                         <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                     </div>
                 {% endif %}
 
                 {# toggle action #}
-                {% if not sectionList is empty %}
-                    <div class="uk-display-inline cs-toggle-icon uk-margin-left uk-invisible" data-cs-unhide-collapsed="{src: '.toggle-sections-{{ item.itemId }}'}">
+                    <div class="uk-display-inline uk-margin-left uk-invisible{% if sectionList is empty %} cs-always-invisible{% else  %} cs-toggle-icon{% endif %}" data-cs-unhide-collapsed="{src: '.toggle-sections-{{ item.itemId }}'}">
                         <a class="cs-toggle" data-uk-toggle="{target:'.toggle-sections-{{ item.itemId }}', cls: 'cs-toggle-full'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
                     </div>
-                {% endif %}
            </div>
         </div>
 

@@ -55,6 +55,7 @@ class CopyController extends BaseController
 
         if ($roomItem->isPrivateRoom()) {
             $rubrics = [
+                "announcement" => "announcement",
                 "material" => "material",
                 "discussion" => "discussion",
                 "date" => "date",
@@ -260,6 +261,7 @@ class CopyController extends BaseController
     {
         if ($room->isPrivateRoom()) {
             $rubrics = [
+                "announcement" => "announcement",
                 "material" => "material",
                 "discussion" => "discussion",
                 "date" => "date",

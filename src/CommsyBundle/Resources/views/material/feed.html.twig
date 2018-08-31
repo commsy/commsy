@@ -63,6 +63,11 @@
                     {% if material.publishingdate != '0' %}
                         ({{material.publishingdate}})
                     {% endif %}
+                {% elseif material.editor != '' %}
+                    {{ 'editor'|trans({}, 'form') }}: {{material.editor}}
+                    {% if material.publishingdate != '0' %}
+                        ({{material.publishingdate}})
+                    {% endif %}
                 {% endif %}
             </div>
 

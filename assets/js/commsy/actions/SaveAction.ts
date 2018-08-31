@@ -4,17 +4,24 @@ import * as $ from 'jquery';
 
 import {ActionRequest, ActionResponse} from "./Actions";
 import {BaseAction} from "./AbstractAction";
+import * as URI from "urijs";
 
 export class SaveAction extends BaseAction {
 
     public execute(actionPayload: ActionRequest, requestURI: string): Promise<ActionResponse> {
         return new Promise((resolve) => {
+            let currentURI = new URI(location.href);
+            let requestURI = new URI(this.url);
+            requestURI.search(function() {
+                return currentURI.search(true);
+            });
+
             let $form = $(document.createElement('form'))
                 .css({
                     display: 'none'
                 })
                 .attr('method', 'POST')
-                .attr('action', this.url)
+                .attr('action', requestURI.toString())
                 .attr('target', '_blank');
 
             for (let i = 0; i < actionPayload.positiveItemIds.length; i++) {

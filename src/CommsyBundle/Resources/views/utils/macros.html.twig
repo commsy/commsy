@@ -193,7 +193,12 @@
     {% if not fileArray is empty %}
         {% if is_granted('ITEM_SEE', item.itemId) %}
             {% for file in fileArray %}
-                <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}"><i class="{{ macros.iconClassForFileType(file.extension) }}"></i></a>
+                {% set disposition = 'attachment' %}
+                {% if file.extension|lower == 'pdf' %}
+                    {% set disposition = 'inline' %}
+                {% endif %}
+
+                <a href="{{ path('commsy_file_getfile', { 'fileId': file.fileId, 'disposition': disposition }) }}" target="_blank" data-uk-tooltip title="{{ file.filename }}"><i class="{{ macros.iconClassForFileType(file.extension) }}"></i></a>
             {% endfor %}
         {% else %}
             {% for file in fileArray %}
@@ -229,7 +234,7 @@
     <div class="uk-flex uk-flex-right">
         {% if edit %}
             {% if is_granted('ITEM_EDIT', item.itemId) %}
-                <div class="uk-display-inline cs-edit uk-invisible {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
+                <div class="uk-display-inline cs-edit {% if draft %}cs-edit-draft{% endif %}" data-edit-title="{{ "edit"|trans({}) }}">
                     <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
                 </div>
             {% endif %}        
