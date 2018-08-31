@@ -803,22 +803,22 @@ class DateController extends BaseController
 
         return $this->redirectToRoute('commsy_date_detail', array('roomId' => $roomId, 'itemId' => $dateItem->getItemId()));
     }
-    
+
     /**
      * @Route("/room/{roomId}/date/{itemId}/calendaredit")
      */
     public function calendareditAction($roomId, $itemId, Request $request)
     {
         $translator = $this->get('translator');
-        
+
         $dateService = $this->get('commsy_legacy.date_service');
         $date = $dateService->getDate($itemId);
-        
+
         $requestContent = json_decode($request->getContent());
-        
-        $startTimeArray = explode('T', $requestContent->event->start);
-        $endTimeArray = explode('T', $requestContent->event->end);
-        
+
+        $startTimeArray = explode('T', $requestContent->start);
+        $endTimeArray = explode('T', $requestContent->end);
+
         $date->setStartingDay($startTimeArray[0]);
 
         if (isset($startTimeArray[1])) {
@@ -827,9 +827,9 @@ class DateController extends BaseController
             $date->setStartingTime('');
         }
 
-        $date->setDateTime_start(str_ireplace('T', ' ', $requestContent->event->start));
+        $date->setDateTime_start(str_ireplace('T', ' ', $requestContent->start));
 
-        if (!$requestContent->event->allDay) {
+        if (!$requestContent->allDay) {
             if (isset($endTimeArray[0])) {
                 $date->setEndingDay($endTimeArray[0]);
             } else {
@@ -842,52 +842,54 @@ class DateController extends BaseController
                 $date->setEndingTime('');
             }
 
-            if ($requestContent->event->end != '') {
-                $date->setDateTime_end(str_ireplace('T', ' ', $requestContent->event->end));
+            if ($requestContent->end != '') {
+                $date->setDateTime_end(str_ireplace('T', ' ', $requestContent->end));
             }
         } else {
-            $endDateTime = new \DateTime($requestContent->event->end);
+            $endDateTime = new \DateTime($requestContent->end);
             $endDateTime->modify('-1 day');
 
             $date->setEndingDay($endDateTime->format('Y-m-d'));
 
             $date->setEndingTime($endDateTime->format('23:59:59'));
 
-            if ($requestContent->event->end != '') {
+            if ($requestContent->end != '') {
                 $date->setDateTime_end($endDateTime->format('Y-m-d 23:59:59'));
             }
         }
-        
+
         $date->save();
-        
-        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->trans('date changed', [], 'date');
-        
+
+        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> ' . $translator->trans('date changed', [], 'date');
+
         $start = $date->getStartingDay();
         if ($date->getStartingTime() != '') {
-            $start .= 'T'.$date->getStartingTime().'Z';
+            $start .= 'T' . $date->getStartingTime() . 'Z';
         }
         $end = $date->getEndingDay();
         if ($end == '') {
             $end = $date->getStartingDay();
         }
         if ($date->getEndingTime() != '') {
-            $end .= 'T'.$date->getEndingTime().'Z';
+            $end .= 'T' . $date->getEndingTime() . 'Z';
         }
-        
-        return new JsonResponse(array('message' => $message,
-                                      'timeout' => '5550',
-                                      'layout' => 'cs-notify-message',
-                                      'data' => array('itemId' => $date->getItemId(),
-                                          'title' => $date->getTitle(),
-                                          'start' => $start,
-                                          'end' => $end,
-                                          'color' => $date->getColor(),
-                                          'editable' => $date->isPublic(),
-                                          'description' => $date->getDateDescription(),
-                                          'place' => $date->getPlace(),
-                                          'participants' => ''
-                                      ),
-                                    ));
+
+        return new JsonResponse([
+            'message' => $message,
+            'timeout' => '5550',
+            'layout' => 'cs-notify-message',
+            'data' => [
+                'itemId' => $date->getItemId(),
+                'title' => $date->getTitle(),
+                'start' => $start,
+                'end' => $end,
+                'color' => $date->getColor(),
+                'editable' => $date->isPublic(),
+                'description' => $date->getDateDescription(),
+                'place' => $date->getPlace(),
+                'participants' => '',
+            ],
+        ]);
     }
     
     /**
