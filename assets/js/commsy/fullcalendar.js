@@ -65,7 +65,7 @@
         $('.fc-nextYear-button').tooltipster({
             content: $('#calendar').data('translations').nextYear,
         });
-    };
+    }
 
     if ($("#calendarDashboard").length) {
         $('#calendarDashboard').fullCalendar({
@@ -127,7 +127,7 @@
         $('.fc-nextYear-button').tooltipster({
             content: $('#calendarDashboard').data('translations').nextYear,
         });
-    };
+    }
 
     function editEvent (event, revertFunc) {
         UIkit.modal.confirm($('#calendar').data('confirm-change'), function() {
@@ -138,7 +138,9 @@
                 url: $('#calendar').data('events').dateUrl+'/'+event.itemId+'/calendaredit',
                 type: 'POST',
                 data: JSON.stringify({
-                    event,
+                    start: event.start,
+                    end: event.end,
+                    allDay: event.allDay
                 })
             }).done(function(data, textStatus, jqXHR) {
                 event.description = data.data.description;
