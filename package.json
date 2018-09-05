@@ -43,5 +43,8 @@
     "urijs": "^1.18.10",
     "video.js": "^5.19.2",
     "webpack-notifier": "^1.5.1"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.0.0"
   }
 }

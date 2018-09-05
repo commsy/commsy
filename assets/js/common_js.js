@@ -1,3 +1,5 @@
+import "@babel/polyfill";
+
 // load third party packages
 require('expose-loader?$!jquery');
 
