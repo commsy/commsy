@@ -6,7 +6,14 @@
                     {% if b.url and not loop.last %}
                         <a href="{{ b.url }}" itemprop="item"{% if linkRel is defined and linkRel|length %} rel="{{ linkRel }}"{% endif %}>
                     {% endif %}
-                            <span itemprop="name">{{- b.text | trans(b.translationParameters, translation_domain, locale) -}}</span>
+                        {# replace any "Archived room: " prefix with a matching icon #}
+                        {% set roomTitle = b.text %}
+                        {% set roomPrefix = 'Archived room'|trans({}, "room") ~ ": " %}
+                        {% if b.text starts with roomPrefix %}
+                            {% set roomTitle = roomTitle|split(roomPrefix)|last %}
+                            <i class="uk-icon-archive uk-icon-small uk-display-inline uk-margin-small-right"></i>
+                        {% endif %}
+                            <span itemprop="name">{{- roomTitle | trans(b.translationParameters, translation_domain, locale) -}}</span>
                     {% if b.url and not loop.last %}
                         </a>
                     {% endif %}
