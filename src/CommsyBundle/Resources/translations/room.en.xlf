@@ -272,7 +272,15 @@
             </trans-unit>
             <trans-unit id="Archived room">
                 <source>Archived room</source>
-                <target>Archivierter Raum</target>
+                <target>Archived room</target>
+            </trans-unit>
+            <trans-unit id="Archived room info">
+                <source>Archived room info</source>
+                <target>This room has been archived and is in read-only mode. I.e., you can view items in this room but cannot edit them or create new ones.</target>
+            </trans-unit>
+            <trans-unit id="Archived room removal warning">
+                <source>Archived room removal warning</source>
+                <target>Please note that this room will be deleted if it hasn't been used for %days% days.</target>
             </trans-unit>
             <trans-unit id="room_template">
                 <source>Template</source>
