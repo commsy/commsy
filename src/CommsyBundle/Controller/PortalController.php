@@ -2,8 +2,14 @@
 
 namespace CommsyBundle\Controller;
 
+use CommsyBundle\Entity\Portal;
+use CommsyBundle\Form\Model\Base64File;
+use CommsyBundle\Form\Model\CsvImport;
+use CommsyBundle\Form\Type\CsvImportType;
 use CommsyBundle\Form\Type\LicenseSortType;
+use CommsyBundle\User\UserBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -23,6 +29,7 @@ use CommsyBundle\Entity\Terms;
 use CommsyBundle\Form\Type\TermType;
 
 use CommsyBundle\Event\CommsyEditEvent;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class PortalController
@@ -456,6 +463,53 @@ class PortalController extends Controller
      */
     public function csvImportAction($roomId, Request $request)
     {
-        return [];
+        $portal = null;
+        try {
+            $portal = $this->getDoctrine()->getRepository(Portal::class)
+                ->findActivePortal($roomId);
+        } catch (NonUniqueResultException $e) {
+        }
+
+        if (!$portal) {
+            throw $this->createNotFoundException();
+        }
+
+        $importForm = $this->createForm(CsvImportType::class, [], [
+            'uploadUrl' => $this->generateUrl('commsy_upload_base64upload', [
+                'roomId' => $roomId,
+            ]),
+            'portal' => $portal,
+            'translator' => $this->get('translator'),
+        ]);
+
+        $importForm->handleRequest($request);
+        if ($importForm->isSubmitted() && $importForm->isValid()) {
+            $data = $importForm->getData();
+            /** @var Base64File[] $base64FilesContent */
+            $base64FilesContent = $data['base64'];
+
+            $userDatasets = [];
+            if ($base64FilesContent) {
+                foreach ($base64FilesContent as $base64FileContent) {
+                    if ($base64FileContent->getChecked()) {
+                        $rows = $base64FileContent->getBase64Content();
+                        foreach ($rows as $row) {
+                            $userDatasets[] = $row;
+                        }
+                    }
+                }
+
+                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                $authSourceManager = $legacyEnvironment->getAuthSourceManager();
+                $authSourceItem = $authSourceManager->getItem($data['auth_sources']->getItemId());
+
+                $userBuilder = $this->get(UserBuilder::class);
+                $userBuilder->createFromCsvDataset($authSourceItem, $userDatasets);
+            }
+        }
+
+        return [
+            'form' => $importForm->createView(),
+        ];
     }
 }

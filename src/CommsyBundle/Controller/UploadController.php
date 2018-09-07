@@ -5,6 +5,8 @@ use CommsyBundle\Form\Model\File;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -265,6 +267,41 @@ class UploadController extends Controller
             'roomId' => $roomId,
             'item' => $tempItem
         );
+    }
+
+    /**
+     * @Route("/room/{roomId}/base64upload/")
+     */
+    public function base64UploadAction($roomId, Request $request)
+    {
+        $files = $request->files->all();
+
+        $base64Content = [];
+
+        $fileSystem = new Filesystem();
+
+        /** @var UploadedFile $file */
+        foreach ($files['files'] as $file) {
+            $tempUploadDir = $this->getParameter('kernel.project_dir') . '/files/temp/';
+            $fileName = md5(uniqid()) . '.' . $file->guessExtension();
+
+            $file->move($tempUploadDir, $fileName);
+            $fileAsBase64 = base64_encode(file_get_contents($tempUploadDir . $fileName));
+
+            $base64Content[] = [
+                'filename' => $file->getClientOriginalName(),
+                'content' => $fileAsBase64,
+            ];
+
+            $fileSystem->remove($tempUploadDir . $fileName);
+        }
+
+        $response = new JsonResponse();
+        $response->setData([
+            'base64' => $base64Content,
+        ]);
+
+        return $response;
     }
 
     /**

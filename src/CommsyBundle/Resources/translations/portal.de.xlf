@@ -172,6 +172,12 @@
                 <source>Import users from csv file</source>
                 <target>Benutzer aus CSV-Datei importieren</target>
             </trans-unit>
+
+            <!-- auth -->
+            <trans-unit id="portal_auth_default_source">
+                <source>Default Source</source>
+                <target>Standard-Quelle</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

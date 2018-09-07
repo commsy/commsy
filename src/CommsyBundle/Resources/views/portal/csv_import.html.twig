@@ -1,5 +1,5 @@
 {% extends 'CommsyBundle:Base:portal.html.twig' %}
-{#{% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}#}
+{% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
 
 {% block content %}
     <div class="uk-grid" data-uk-grid-margin>
@@ -13,28 +13,17 @@
 
                 <div>
                     <div class="uk-grid">
-     {#                   #}{# form column #}{#
+                        {# form column #}
                         <div class="uk-width-3-4">
                             {{ form_start(form) }}
                             {{ form_widget(form) }}
                             {{ form_end(form) }}
                         </div>
 
-                        #}{# show existing categories #}{#
-                        <div id="categories" class="uk-width-1-4">
-                            {% for term in terms %}
-                                <span>
-                                     <a class="uk-button uk-margin-small-bottom uk-margin-small-right{% if termId == term.id %} uk-button-primary{% endif %}" href="{{ path('commsy_portal_roomtermstemplates', {
-                                         'roomId': roomId,
-                                         'termId': term.id
-                                     }) }}">
-                                         <span class="uk-vertical-align-middle">
-                                            {{- term.title|trans({},'portal') -}}
-                                        </span>
-                                    </a>
-                                </span>
-                            {% endfor %}
-                        </div>#}
+                        {# show existing categories #}
+                        <div class="uk-width-1-4">
+                            info
+                        </div>
                     </div>
                 </div>
             </div>

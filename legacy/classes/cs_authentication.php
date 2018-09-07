@@ -145,9 +145,10 @@ class cs_authentication {
     *
     * @author CommSy Development Group
     */
-   function getUserItem () {
-      return $this->_user_item;
-   }
+    function getUserItem(): \cs_user_item
+    {
+        return $this->_user_item;
+    }
 
    /** set module limit
     * this method sets a module limit
@@ -832,15 +833,16 @@ class cs_authentication {
       }
    }
 
-   /** get empty auth item
-    * this method returns an empty auth item
-    *
-    * @return object auth_item of the user
-    */
-   function getNewItem () {
-      include_once('classes/cs_auth_item.php');
-      return new cs_auth_item();
-   }
+    /** get empty auth item
+     * this method returns an empty auth item
+     *
+     * @return object auth_item of the user
+     */
+    public function getNewItem(): \cs_auth_item
+    {
+        include_once('classes/cs_auth_item.php');
+        return new cs_auth_item();
+    }
 
    function getPortalUserItem ($uid, $auth_source) {
       return $this->_getPortalUserItem($uid,$auth_source);
