@@ -6,6 +6,9 @@
         "browsers": [
           "last 2 versions"
         ],
+        "targets": {
+          "ie": "11"
+        },
         "uglify": true
       },
       "useBuiltIns": true

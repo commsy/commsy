@@ -505,6 +505,20 @@ class MenuBuilder
                 'extras' => array('icon' => 'uk-icon-copyright uk-icon-small')
             ))
                 ->setExtra('translation_domain', 'portal');
+
+            // CSV-Import
+            $menu->addChild('portal_configuration_csv_import', [
+                'label' => 'CSV-Import',
+                'route' => 'commsy_portal_csvimport',
+                'routeParameters' => [
+                    'roomId' => $roomId,
+                ],
+                'extras' => [
+                    'icon' => 'uk-icon-user-plus uk-icon-small',
+                ],
+            ])
+                ->setExtra('translation_domain', 'portal');
+
             $menu->addChild(' ', ['uri' => '#']);
             $menu->addChild('room', array(
                 'label' => 'settings',
