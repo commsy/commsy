@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Portal
  *
  * @ORM\Table(name="portal", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="creator_id", columns={"creator_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="CommsyBundle\Repository\PortalRepository")
  */
 class Portal
 {
@@ -89,7 +89,7 @@ class Portal
     /**
      * @var string
      *
-     * @ORM\Column(name="extras", type="text", length=16777215, nullable=true)
+     * @ORM\Column(name="extras", type="array", nullable=true)
      */
     private $extras;
 
@@ -335,11 +335,11 @@ class Portal
     /**
      * Set extras
      *
-     * @param string $extras
+     * @param array $extras
      *
      * @return Portal
      */
-    public function setExtras($extras)
+    public function setExtras(array $extras): Portal
     {
         $this->extras = $extras;
 
@@ -349,9 +349,9 @@ class Portal
     /**
      * Get extras
      *
-     * @return string
+     * @return array
      */
-    public function getExtras()
+    public function getExtras(): array
     {
         return $this->extras;
     }

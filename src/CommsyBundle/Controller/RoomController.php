@@ -188,6 +188,8 @@ class RoomController extends Controller
             'header' => $header,
             'isModerator' => $legacyEnvironment->getCurrentUserItem()->isModerator(),
             'userTasks' => $userTasks,
+            'deletesRoomIfUnused' => $portalItem->isActivatedDeletingUnusedRooms(),
+            'daysUnusedBeforeRoomDeletion' => $portalItem->getDaysUnusedBeforeDeletingRooms(),
         ];
     }
 

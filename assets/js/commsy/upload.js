@@ -60,6 +60,40 @@
 
                         if (responseData['userImage']) {
                             $('#profile_form_user_image').attr('src', responseData['userImage'] + '?' + Math.random());
+                        } else if (responseData['base64']) {
+                            let $form = $($this.element).closest('form');
+
+                            let prototypeNode = $form.find('div[data-prototype]');
+                            let prototype = prototypeNode.data('prototype');
+
+                            let index = prototypeNode.find(':input[type="checkbox"]').length;
+
+                            for (let key in responseData['base64']) {
+
+                                let indexedPrototype = prototype.replace(/__name__/g, index);
+
+                                let prototypeInputNode = $(indexedPrototype).find(':input');
+                                prototypeInputNode.attr('checked', 'checked');
+                                prototypeInputNode.val(responseData['base64'][key]['content']);
+
+                                let labelNode = $('<label class="uk-form-label"></label>')
+                                    .attr('for', $form.attr('name') + '_base64' + index + '_checked')
+                                    .html(responseData['base64'][key]['filename']);
+
+                                index++;
+
+                                let formControlNode = $('<div class="uk-form-controls"></div>')
+                                    .append(prototypeInputNode);
+
+                                prototypeNode
+                                    .append(formControlNode)
+                                    .append(labelNode);
+                            }
+
+                            if (responseData['base64'].length == 0) {
+                                UIkit.notify($this.options.noFileIdsMessage, 'danger');
+                            }
+
                         } else if (responseData['fileIds']) {
                             let prototypeNode = $('form[name="upload"] div[data-prototype]');
                             let prototype = prototypeNode.data('prototype');

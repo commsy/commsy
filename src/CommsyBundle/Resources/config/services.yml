@@ -515,6 +515,10 @@ services:
         tags:
             - { name: form.type }
 
+    CommsyBundle\Form\Type\CheckedBase64CsvUserImportFileType:
+        autowire: true
+        autoconfigure: true
+
     # Form type extension
     commsy.form.extension.image_type:
         class: CommsyBundle\Form\Extension\ImageTypeExtension
@@ -833,9 +837,17 @@ services:
             $deleteStrategy: '@CommsyBundle\Action\Delete\DeleteDiscussionArticle'
 
     commsy.action.delete.date:
-            class: CommsyBundle\Action\Delete\DeleteAction
-            autowire: true
-            arguments:
-                $deleteStrategy: '@CommsyBundle\Action\Delete\DeleteDate'
+        class: CommsyBundle\Action\Delete\DeleteAction
+        autowire: true
+        arguments:
+            $deleteStrategy: '@CommsyBundle\Action\Delete\DeleteDate'
 
     CommsyBundle\Action\Delete\DeleteAction: '@commsy.action.delete.generic'
+
+    # DataTransformer
+    CommsyBundle\Form\DataTransformer\Base64ToCsvDatasetTransformer:
+        autowire: true
+
+    # User
+    CommsyBundle\User\UserBuilder:
+        autowire: true

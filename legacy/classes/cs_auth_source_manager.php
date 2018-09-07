@@ -105,7 +105,7 @@ class cs_auth_source_manager extends cs_manager {
     *
     * @param integer item_id id of the item
     *
-    * @return object cs_item a label
+    * @return \cs_auth_source_item
     */
   function getItem ($item_id) {
      $retour = NULL;

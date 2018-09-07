@@ -300,7 +300,15 @@
             </trans-unit>
             <trans-unit id="archive_text">
                 <source>Archive text</source>
-                <target>In archivierten Räumen können keine Änderungen mehr vorgenommen werden. Der Zugriff auf alle Inhalte bleibt aber weiterhin bestehen.</target>
+                <target>In archivierten Räumen können keine Änderungen mehr vorgenommen werden.</target>
+            </trans-unit>
+            <trans-unit id="archive_text_permanently_archived">
+                <source>Archive text permanently archived</source>
+                <target>Der Zugriff auf alle Inhalte bleibt aber weiterhin bestehen.</target>
+            </trans-unit>
+            <trans-unit id="archive_text_deletion_warning">
+                <source>Archive text deletion warning</source>
+                <target>Bei Archivierung dieses Raumes wird dieser nach %days% Tagen Nichtnutzung gelöscht.</target>
             </trans-unit>
             <trans-unit id="terms_text">
                 <source>Terms text</source>

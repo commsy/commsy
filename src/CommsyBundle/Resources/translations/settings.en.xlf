@@ -300,7 +300,15 @@
             </trans-unit>
             <trans-unit id="archive_text">
                 <source>Archive text</source>
-                <target>Archived rooms will be persisted in their current state, content can not be changed. The reading access to all entries will still remain.</target>
+                <target>Archived rooms will be persisted in their current state, content can not be changed.</target>
+            </trans-unit>
+            <trans-unit id="archive_text_permanently_archived">
+                <source>Archive text permanently archived</source>
+                <target>Read-only access to all entries will still remain.</target>
+            </trans-unit>
+            <trans-unit id="archive_text_deletion_warning">
+                <source>Archive text deletion warning</source>
+                <target>When archived, this room will be deleted if it hasn't been used for %days% days.</target>
             </trans-unit>
             <trans-unit id="terms_text">
                 <source>Terms text</source>

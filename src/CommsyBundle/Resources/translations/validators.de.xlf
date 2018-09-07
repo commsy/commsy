@@ -54,6 +54,48 @@
                 <source>The id is invalid.</source>
                 <target>Die Referenznummer ist ungültig.</target>
             </trans-unit>
+            <trans-unit id="violation_missing_fields">
+                <source>The field {{ field }} is missing.</source>
+                <target>Das Feld {{ field }} fehlt.</target>
+            </trans-unit>
+            <trans-unit id="violation_extra_fields">
+                <source>The field {{ field }} was not expected.</source>
+                <target>Das Feld {{ field }} wurde nicht erwartet.</target>
+            </trans-unit>
+            <trans-unit id="violation_not_blank">
+                <source>The value {{ value }} should not be blank.</source>
+                <target>Der Wert {{ value }} sollte nicht leer sein.</target>
+            </trans-unit>
+
+            <!-- csv user import -->
+            <trans-unit id="violation_csv_user_import_firstname_not_blank">
+                <source>The field firstname must not be blank.</source>
+                <target>Das Feld "firstname" darf nicht leer sein.</target>
+            </trans-unit>
+            <trans-unit id="violation_csv_user_import_lastname_not_blank">
+                <source>The field lastname must not be blank.</source>
+                <target>Das Feld "lastname" darf nicht leer sein.</target>
+            </trans-unit>
+            <trans-unit id="violation_csv_user_import_identifier_not_blank">
+                <source>The field identifier must not be blank.</source>
+                <target>Das Feld "identifier" darf nicht leer sein.</target>
+            </trans-unit>
+            <trans-unit id="violation_csv_user_import_password_not_blank">
+                <source>The field password must not be blank.</source>
+                <target>Das Feld "password" darf nicht leer sein.</target>
+            </trans-unit>
+            <trans-unit id="violation_csv_user_import_email_not_blank">
+                <source>The field email must not be blank.</source>
+                <target>Das Feld "email" darf nicht leer sein.</target>
+            </trans-unit>
+            <trans-unit id="violation_csv_user_import_email_valid">
+                <source>The field email must be a valid email address.</source>
+                <target>Das Feld "email" muss eine gültige E-Mailadresse sein.</target>
+            </trans-unit>
+            <trans-unit id="violation_csv_user_import_room_valid">
+                <source>The field rooms must be empty or a list of room ids.</source>
+                <target>Das Feld "rooms" muss leer oder eine Liste von Raum Id's sein.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
