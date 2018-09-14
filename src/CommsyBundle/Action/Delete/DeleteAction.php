@@ -93,7 +93,7 @@ class DeleteAction implements ActionInterface
     private function isDeletionAllowed(\cs_room_item $room, \cs_item $item): bool
     {
         $currentUser = $this->legacyEnvironment->getCurrentUser();
-        if (!$room->mayEdit($currentUser)) {
+        if (!$item->mayEdit($currentUser)) {
             return false;
         }
 
