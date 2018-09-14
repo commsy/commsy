@@ -183,7 +183,7 @@ class ICalController extends Controller
             }
 
             // title
-            $summary = $item->getTitle();
+            $summary = html_entity_decode($item->getTitle());
             if ($item->issetPrivatDate()) {
                 $summary .= ' [' . $translator->getMessage('DATE_PRIVATE_ENTRY') . ']';
             }
