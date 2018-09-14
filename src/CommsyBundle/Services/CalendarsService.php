@@ -125,18 +125,39 @@ class CalendarsService
                         $title = $event->SUMMARY->getValue();
                     }
 
+                    // is the event an all-day event? (potentially spanning multiple days)
+                    $wholeDay = $this->isAllDayEvent($event);
+
                     $currentTimeZone = new \DateTimeZone(date_default_timezone_get());
 
                     $startDatetime = '';
                     if ($event->DTSTART) {
                         $startDatetime = $event->DTSTART->getDateTime();
                         $startDatetime = $startDatetime->setTimezone($currentTimeZone);
+                        if ($wholeDay) {
+                            $startDatetime = $startDatetime->setTime(0, 0); // all-day events always start at midnight
+                        }
                     }
 
                     $endDatetime = '';
                     if ($event->DTEND) {
                         $endDatetime = $event->DTEND->getDateTime();
                         $endDatetime = $endDatetime->setTimezone($currentTimeZone);
+                    } else {
+                        if ($event->DURATION) {
+                            $dateInterval = $event->DURATION->getDateInterval();
+                            $endDatetime = $startDatetime->add($dateInterval);
+                        }
+                    }
+
+                    if (!empty($endDatetime)) {
+                        if ($wholeDay) {
+                            // NOTE: for all-day events, we substract 1 day from the end day; this is since
+                            // DTEND is exclusive, not inclusive, so the given end day isn't part of the event
+                            $endDatetime = $endDatetime->sub(new \DateInterval('P1D'));
+
+                            $endDatetime = $endDatetime->setTime(0, 0); // 23:59 might be more appropriate?
+                        }
                     } else {
                         $endDatetime = $startDatetime;
                     }
@@ -155,13 +176,6 @@ class CalendarsService
                     if ($event->UID) {
                         $uid = $event->UID->getValue();
                         $uids[] = $uid;
-                    }
-
-                    $wholeDay = false;
-                    if ($event->{'X-MICROSOFT-CDO-ALLDAYEVENT'}) {
-                        if($event->{'X-MICROSOFT-CDO-ALLDAYEVENT'}->getValue() == 'TRUE') {
-                            $wholeDay = true;
-                        }
                     }
 
                     $attendee = '';
@@ -308,6 +322,73 @@ class CalendarsService
         }
 
         return true;
+    }
+
+    /**
+     * Returns true if the given ICALENDAR VEVENT is an all-day event (which may span multiple days),
+     * otherwise returns false.
+     * @var Sabre\VObject\Component\VEvent $event
+     * @return bool
+     */
+    public function isAllDayEvent($event)
+    {
+        // 1. proprietary value defined
+        if ($event->{'X-MICROSOFT-CDO-ALLDAYEVENT'}) {
+            if ($event->{'X-MICROSOFT-CDO-ALLDAYEVENT'}->getValue() == 'TRUE') {
+                return true;
+            }
+        }
+
+        // alternatively, check for all of these cases:
+
+        // 2. date-only DTSTART & DTEND defined
+        // NOTE: DTEND is exclusive, not inclusive, so this would be an all-day event for 03-Dec-2018:
+        //   DTSTART;VALUE=DATE:20181203
+        //   DTEND;VALUE=DATE:20181204
+
+        // 3. date-only DTSTART & DURATION of 1 (or more) full day(s) defined
+        //   DTSTART;VALUE=DATE:20181203
+        //   DURATION:P1D
+
+        // 4. just date-only DTSTART defined (in ICALENDAR, the default duration is one day)
+        //   DTSTART;VALUE=DATE:20181203
+
+        $startDateTime = NULL;
+        $formattedStartTime = '';
+        if ($event->DTSTART) {
+            $startDateTime = $event->DTSTART->getDateTime();
+            $formattedStartTime = $startDateTime->format('H:i:s');
+        }
+        if (empty($startDateTime) || $formattedStartTime !== "00:00:00") {
+            return false;
+        }
+
+        $dateInterval = new \DateInterval('P1D'); // ICALENDAR default
+        $endDateTime = NULL;
+        $formattedEndTime = '';
+        if ($event->DTEND) {
+            $endDateTime = $event->DTEND->getDateTime();
+            $formattedEndTime = $endDateTime->format('H:i:s');
+        }
+
+        if (!empty($endDateTime)) {
+            if ($formattedEndTime !== "00:00:00") {
+                return false;
+            }
+
+            $dateInterval = $startDateTime->diff($endDateTime);
+
+        } else {
+            if ($event->DURATION) {
+                $dateInterval = $event->DURATION->getDateInterval();
+            }
+        }
+
+        return ($dateInterval->d >= 1 &&
+                $dateInterval->h === 0 &&
+                $dateInterval->i === 0 &&
+                $dateInterval->s === 0 &&
+                $dateInterval->f === 0.0);
     }
 
     public function createCalendar($roomItem, $title = null, $color = null, $default = null) {
