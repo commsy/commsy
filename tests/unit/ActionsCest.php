@@ -27,10 +27,9 @@ class ActionsCest
         $roomUser1 = $user1->cloneData();
         $roomUser2 = $user2->cloneData();
 
+        $roomModerator->setContextID($projectRoom->getItemID());
         $roomUser1->setContextID($projectRoom->getItemID());
         $roomUser2->setContextID($projectRoom->getItemID());
-
-        $roomModerator->setStatus(3);
 
         $roomModerator->makeModerator();
         $roomUser1->makeUser();
