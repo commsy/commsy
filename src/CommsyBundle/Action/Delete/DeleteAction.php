@@ -109,6 +109,7 @@ class DeleteAction implements ActionInterface
 
     private function contextHasModerators(\cs_room_item $room, $selectedIds)
     {
+        $this->userService->resetLimits();
         $moderators = $this->userService->getModeratorsForContext($room->getItemId());
 
         $moderatorIds = [];

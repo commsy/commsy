@@ -45,7 +45,7 @@ class DeleteGeneric implements DeleteInterface
     private function removeItemFromClipboard(int $itemId)
     {
         $sessionItem = $this->legacyEnvironment->getSessionItem();
-        if ($sessionItem->issetValue('clipboard_ids')) {
+        if ($sessionItem && $sessionItem->issetValue('clipboard_ids')) {
             $currentClipboardIds = $sessionItem->getValue('clipboard_ids');
             if (in_array($itemId, $currentClipboardIds)) {
                 unset($currentClipboardIds[array_search($itemId, $currentClipboardIds)]);
