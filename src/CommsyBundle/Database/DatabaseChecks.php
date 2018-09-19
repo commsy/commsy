@@ -52,7 +52,7 @@ class DatabaseChecks
                 $class = new \ReflectionClass($check);
                 $io->section('Running check: ' . $class->getShortName());
 
-                $problems = $check->findProblems($io);
+                $problems = $check->findProblems($io, $input->getOption('limit'));
 
                 // check is ok
                 if (sizeof($problems) === 0) {

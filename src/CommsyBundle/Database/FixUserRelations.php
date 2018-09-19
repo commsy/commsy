@@ -36,7 +36,7 @@ class FixUserRelations implements DatabaseCheck
         return 100;
     }
 
-    public function findProblems(SymfonyStyle $io)
+    public function findProblems(SymfonyStyle $io, int $limit)
     {
         $io->text('Inspecting tables with user relations');
 
@@ -85,6 +85,11 @@ class FixUserRelations implements DatabaseCheck
                             'column' => $column->getName(),
                             'id' => $missingRelation['missingId'],
                         ]);
+
+                        if ($limit > 0 && sizeof($problems) === $limit) {
+                            $io->warning('Number of problems found reached limit -> early return. Please rerun the command.');
+                            return $problems;
+                        }
                     }
                 }
             }

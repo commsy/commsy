@@ -26,7 +26,7 @@ interface DatabaseCheck
      * @param SymfonyStyle $io
      * @return DatabaseProblem[]
      */
-    public function findProblems(SymfonyStyle $io);
+    public function findProblems(SymfonyStyle $io, int $limit);
 
 
     /**

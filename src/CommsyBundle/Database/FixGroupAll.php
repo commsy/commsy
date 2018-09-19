@@ -38,7 +38,7 @@ class FixGroupAll implements DatabaseCheck
         return 200;
     }
 
-    public function findProblems(SymfonyStyle $io)
+    public function findProblems(SymfonyStyle $io, int $limit)
     {
         $groupManager = $this->legacyEnvironment->getGroupManager();
 
@@ -72,6 +72,11 @@ class FixGroupAll implements DatabaseCheck
                 $io->warning('Missing group found');
 
                 $problems[] = new DatabaseProblem($projectRoom);
+
+                if ($limit > 0 && sizeof($problems) === $limit) {
+                    $io->warning('Number of problems found reached limit -> early return. Please rerun the command.');
+                    return $problems;
+                }
             }
         }
 

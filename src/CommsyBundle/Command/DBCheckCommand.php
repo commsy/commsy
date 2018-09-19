@@ -23,6 +23,13 @@ class DBCheckCommand extends Command
         $this
             ->setName('commsy:db:check')
             ->setDescription('Checks the database tables')
+            ->addOption(
+                'limit',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Resolve problems after after number of problems found',
+                0
+            );
         ;
     }
 

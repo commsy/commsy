@@ -39,7 +39,7 @@ class FixGroupAllUserRelation implements DatabaseCheck
         return 199;
     }
 
-    public function findProblems(SymfonyStyle $io)
+    public function findProblems(SymfonyStyle $io, int $limit)
     {
         // find all active portals
         $qb = $this->em->createQueryBuilder()
@@ -105,6 +105,11 @@ class FixGroupAllUserRelation implements DatabaseCheck
                                     'user' => $userItem,
                                     'group' => $groupAll,
                                 ]);
+
+                                if ($limit > 0 && sizeof($problems) === $limit) {
+                                    $io->warning('Number of problems found reached limit -> early return. Please rerun the command.');
+                                    return $problems;
+                                }
                             }
                         }
 
