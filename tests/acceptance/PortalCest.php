@@ -3,22 +3,23 @@
 
 class PortalCest
 {
-    public function _before(AcceptanceTester $I)
-    {
-    }
-
-    public function _after(AcceptanceTester $I)
-    {
-    }
-
-    public function createPortal(AcceptanceTester $I, \Page\Login $loginPage)
+    public function login(AcceptanceTester $I, \Page\Login $loginPage)
     {
         $loginPage->login('root', 'root');
 
         $I->amOnPage('/');
-        $I->click('Portal initialisieren');
-        $I->fillField('//input[@name="title"]', 'Portal');
-        $I->click('input[value="Einstellungen speichern"]');
+        $I->see('Portal initialisieren');
+    }
+
+    public function createPortal(AcceptanceTester $I, \Page\Login $loginPage, \Page\PortalCreate $portalCreatePage)
+    {
+        $loginPage->login('root', 'root');
+        $portalCreatePage->create('Mein Portal', 'Meine Beschreibung');
+
         $I->see('Raumübersicht');
+        $I->see('Mein Portal');
+
+        // TODO: This will fail, cause the description is not saved
+//        $I->see('Meine Beschreibung');
     }
 }
