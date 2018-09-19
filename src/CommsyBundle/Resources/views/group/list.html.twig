@@ -70,7 +70,7 @@
                 <li>
                     {% if (user.isUser and not user.isReadOnlyUser) and not isArchived %}
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                            'url': path('commsy_user_xhrdelete', {'roomId': roomId}),
+                            'url': path('commsy_group_xhrdelete', {'roomId': roomId}),
                             'action': 'delete',
                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                             'mode': 'selection',
