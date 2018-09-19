@@ -5,6 +5,7 @@ modules:
         - WebDriver
         - Db
         - \Helper\Acceptance
+        - Asserts
     config:
         WebDriver:
             url: http://commsy_nginx/app_testsuite.php
