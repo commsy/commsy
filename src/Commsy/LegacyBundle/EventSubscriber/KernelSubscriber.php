@@ -148,15 +148,15 @@ class KernelSubscriber implements EventSubscriberInterface
                     $roomID = null;
                     if (preg_match('/room\/[0-9]+\/all\/([0-9]+)/', $requestUri, $roomIdMatch) ||
                         preg_match('/room\/([0-9]+)/', $requestUri, $roomIdMatch)) {
-                        $roomID = $roomIdMatch;
+                        $roomID = $roomIdMatch[1];
                     }
-                    if ($roomID) {
+                    if (!empty($roomID)) {
                         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
                         $loggedIn = !empty($currentUser) && $currentUser->getUserID() !== 'guest';
 
                         // allow guest users to login via the portal first, otherwise directly redirect to the modern room detail view
                         if (!$loggedIn) {
-                            $url .= '&mod=home&fct=index&room_id=' . $roomIdMatch[1];
+                            $url .= '&mod=home&fct=index&room_id=' . $roomID;
                         } else {
                             if ($userSessionItem->issetValue('user_id') && $userSessionItem->issetValue('auth_source')) {
                                 $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
@@ -166,9 +166,18 @@ class KernelSubscriber implements EventSubscriberInterface
                                     $portalID);
                             }
 
+                            // for a group room where the logged-in user has no access, display its parent room's detail page instead
+                            $item = $this->itemService->getTypedItem($roomID);
+                            if ($item instanceof \cs_grouproom_item) {
+                                $parentRoomID = $item->getLinkedProjectItemID();
+                                if ($parentRoomID) {
+                                    $roomID = $parentRoomID;
+                                }
+                            }
+
                             $url = $this->urlGenerator->generate('commsy_room_detail', [
                                 'roomId' => $roomContextID,
-                                'itemId' => $roomIdMatch[1],
+                                'itemId' => $roomID,
                             ]);
                         }
                     }
