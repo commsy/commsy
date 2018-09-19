@@ -63,8 +63,6 @@ class DeleteAction implements ActionInterface
     {
         $numDeletedItems = 0;
 
-        $firstItem = $items[0];
-
         foreach ($items as $item) {
 
             if ($this->isDeletionAllowed($roomItem, $item)) {
@@ -74,8 +72,12 @@ class DeleteAction implements ActionInterface
             }
         }
 
-        if ($this->deleteStrategy->getRedirectRoute($firstItem)) {
-            return new JsonRedirectResponse($this->deleteStrategy->getRedirectRoute($firstItem));
+        if ($items) {
+            $firstItem = $items[0];
+
+            if ($this->deleteStrategy->getRedirectRoute($firstItem)) {
+                return new JsonRedirectResponse($this->deleteStrategy->getRedirectRoute($firstItem));
+            }
         }
 
         return new JsonDataResponse([
