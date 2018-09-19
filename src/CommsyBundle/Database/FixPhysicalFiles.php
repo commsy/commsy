@@ -37,7 +37,7 @@ class FixPhysicalFiles implements DatabaseCheck
         return 100;
     }
 
-    public function findProblems(SymfonyStyle $io)
+    public function findProblems(SymfonyStyle $io, int $limit)
     {
         $io->text('Inspecting physical files');
 

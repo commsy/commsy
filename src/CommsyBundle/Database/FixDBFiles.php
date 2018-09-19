@@ -38,7 +38,7 @@ class FixDBFiles implements DatabaseCheck
         return 100;
     }
 
-    public function findProblems(SymfonyStyle $io)
+    public function findProblems(SymfonyStyle $io, int $limit)
     {
         $io->text('Inspecting files');
 
@@ -67,6 +67,11 @@ class FixDBFiles implements DatabaseCheck
                 $io->warning('Missing physical file - "' . $file['files_id'] . '" - " was expected to be found in "' . $filePath);
 
                 $problems[] = new DatabaseProblem($file['files_id']);
+
+                if ($limit > 0 && sizeof($problems) === $limit) {
+                    $io->warning('Number of problems found reached limit -> early return. Please rerun the command.');
+                    return $problems;
+                }
             }
         }
 
