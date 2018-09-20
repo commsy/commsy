@@ -153,32 +153,43 @@ class KernelSubscriber implements EventSubscriberInterface
                     if (!empty($roomID)) {
                         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
                         $loggedIn = !empty($currentUser) && $currentUser->getUserID() !== 'guest';
+                        $userID = $userSessionItem->issetValue('user_id') ? $userSessionItem->getValue('user_id') : null;
+                        $authSource = $userSessionItem->issetValue('auth_source') ? $userSessionItem->getValue('auth_source') : null;
 
                         // allow guest users to login via the portal first, otherwise directly redirect to the modern room detail view
-                        if (!$loggedIn) {
+                        if (!$loggedIn || empty($userID) || empty($authSource)) {
                             $url .= '&mod=home&fct=index&room_id=' . $roomID;
                         } else {
-                            if ($userSessionItem->issetValue('user_id') && $userSessionItem->issetValue('auth_source')) {
-                                $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
-                                $roomContextID = $privateRoomManager->getItemIDOfRelatedOwnRoomForUser(
-                                    $userSessionItem->getValue('user_id'),
-                                    $userSessionItem->getValue('auth_source'),
-                                    $portalID);
-                            }
+                            $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
+                            $roomContextID = $privateRoomManager->getItemIDOfRelatedOwnRoomForUser($userID, $authSource, $portalID);
 
-                            // for a group room where the logged-in user has no access, display its parent room's detail page instead
+                            // for a group room where the logged-in user has no access, display its parent room's (or group's) detail page instead
+                            $groupID = null;
                             $item = $this->itemService->getTypedItem($roomID);
                             if ($item instanceof \cs_grouproom_item) {
-                                $parentRoomID = $item->getLinkedProjectItemID();
-                                if ($parentRoomID) {
-                                    $roomID = $parentRoomID;
+                                $parentRoom = $item->getLinkedProjectItem();
+                                if ($parentRoom) {
+                                    $roomID = $parentRoom->getItemID();
+
+                                    // if the user has access to the parent room, display the group's (instead of the parent room's) detail page
+                                    if ($parentRoom->mayEnterByUserID($userID, $authSource)) {
+                                        $roomContextID = $roomID;
+                                        $groupID = $item->getLinkedGroupItemID();
+                                    }
                                 }
                             }
 
-                            $url = $this->urlGenerator->generate('commsy_room_detail', [
-                                'roomId' => $roomContextID,
-                                'itemId' => $roomID,
-                            ]);
+                            if ($groupID) {
+                                $url = $this->urlGenerator->generate('commsy_group_detail', [
+                                    'roomId' => $roomContextID,
+                                    'itemId' => $groupID,
+                                ]);
+                            } else {
+                                $url = $this->urlGenerator->generate('commsy_room_detail', [
+                                    'roomId' => $roomContextID,
+                                    'itemId' => $roomID,
+                                ]);
+                            }
                         }
                     }
 
