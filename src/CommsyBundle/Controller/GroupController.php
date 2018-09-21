@@ -4,6 +4,7 @@ namespace CommsyBundle\Controller;
 
 use CommsyBundle\Action\Copy\CopyAction;
 use CommsyBundle\Action\Download\DownloadAction;
+use CommsyBundle\Http\JsonDataResponse;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -961,9 +962,8 @@ class GroupController extends BaseController
 
     /**
      * @Route("/room/{roomId}/group/{itemId}/join/{joinRoom}", defaults={"joinRoom"=false})
-     * @Template()
      */
-    public function joinAction($roomId, $itemId, $joinRoom, Request $request)
+    public function joinAction($roomId, $itemId, $joinRoom)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $roomManager = $legacyEnvironment->getRoomManager();
@@ -1006,18 +1006,17 @@ class GroupController extends BaseController
             }
         }
 
-        return new JsonResponse(array(
+        return new JsonDataResponse([
             'title' => $groupItem->getTitle(),
             'groupId' => $itemId,
             'memberId' => $current_user->getItemId(),
-        ));
+        ]);
     }
 
     /**
      * @Route("/room/{roomId}/group/{itemId}/leave")
-     * @Template()
      */
-    public function leaveAction($roomId, $itemId, Request $request)
+    public function leaveAction($roomId, $itemId)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -1036,26 +1035,12 @@ class GroupController extends BaseController
         $current_user = $legacyEnvironment->getCurrentUser();
 
         $groupItem->removeMember($current_user);
-        /*
-                if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() === '1') {
-                    $wiki_manager = $this->_environment->getWikiManager();
-                    $wiki_manager->updateNotification();
-                }
 
-                if($groupItem->isGroupRoomActivated()) {
-                    $grouproom_item = $this->_item->getGroupRoomItem();
-                    if(isset($grouproom_item) && !empty($grouproom_item)) {
-                        $group_room_user_item = $grouproom_item->getUserByUserID($current_user->getUserID(), $current_user->getAuthSource());
-                        $group_room_user_item->reject();
-                        $group_room_user_item->save();
-                    }
-                }
-        */
-        return new JsonResponse(array(
+        return new JsonDataResponse([
             'title' => $groupItem->getTitle(),
             'groupId' => $itemId,
             'memberId' => $current_user->getItemId(),
-        ));
+        ]);
     }
 
     /**

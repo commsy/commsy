@@ -26,6 +26,8 @@ export class JoinAction extends XHRAction {
         return new Promise((resolve) => {
             UIkit.notify(this.successMessage, 'success');
 
+            window.location.href = window.location.href;
+
             // update 'additional actions' list
             $('#leave-group-link').removeClass('uk-text-muted').css('pointer-events', 'auto');
             $('#join-group-link, #join-group-and-room-link').addClass('uk-text-muted').css('pointer-events', 'none');
