@@ -76,7 +76,7 @@
                     {% elseif feedItem.itemType == 'material' %}
                         <div class="uk-comment-meta">
                             {% if feedItem.author != '' %}
-                                    {{ 'by'|trans({})|capitalize }}: {{feedItem.author}} ({{feedItem.publishingdate}})
+                                    {{ 'by'|trans({})|capitalize }}: {{feedItem.author|decodeHtmlEntity|raw}} ({{feedItem.publishingdate|decodeHtmlEntity|raw}})
                                 {% else %}
                                     {{ 'by'|trans({})|capitalize }}: {{feedItem.creator.fullname}} ({{feedItem.getCreationDate|date("d.m.Y")}})
                             {% endif %}                        

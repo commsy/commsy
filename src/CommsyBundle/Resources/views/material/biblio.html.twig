@@ -249,5 +249,5 @@
     {% endif %}
 {% endif %}
 {% if not biblio is empty %}
-    {{ biblio|decodeHtmlEntity }}
+    {{ biblio|decodeHtmlEntity|raw }}
 {% endif %}
