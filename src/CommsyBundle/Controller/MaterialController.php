@@ -888,6 +888,9 @@ class MaterialController extends BaseController
      */
     public function editAction($roomId, $itemId, Request $request)
     {
+        // NOTE: this method currently gets used for both, material & section items
+        // TODO: move handling of sections into a dedicated `editSectionAction()`
+
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getItem($itemId);
         
@@ -899,13 +902,16 @@ class MaterialController extends BaseController
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $current_context = $legacyEnvironment->getCurrentContextItem();
 
-        $materialItem = null;
+        $typedItem = null;
         $isMaterial = false;
         $isDraft = false;
         $isSaved = false;
         
         $categoriesMandatory = $current_context->withTags() && $current_context->isTagMandatory();
         $hashtagsMandatory = $current_context->withBuzzwords() && $current_context->isBuzzwordMandatory();
+
+        $licenses = [];
+        $licensesContent = [];
 
         if ($item->getItemType() == 'material') {
             $isMaterial = true;
@@ -915,6 +921,7 @@ class MaterialController extends BaseController
 
             // get material from MaterialService
             $materialItem = $materialService->getMaterial($itemId);
+            $typedItem = $materialItem;
             $materialItem->setDraftStatus($item->isDraft());
             if (!$materialItem) {
                 throw $this->createNotFoundException('No material found for id ' . $roomId);
@@ -929,8 +936,6 @@ class MaterialController extends BaseController
 
             $licensesRepository = $this->getDoctrine()->getRepository(License::class);
             $availableLicenses = $licensesRepository->findByContextOrderByPosition($legacyEnvironment->getCurrentPortalId());
-            $licenses = [];
-            $licensesContent = [];
             foreach ($availableLicenses as $availableLicense) {
                 $licenses[$availableLicense->getTitle()] = $availableLicense->getId();
                 $licensesContent[$availableLicense->getId()] = $availableLicense->getContent();
@@ -954,9 +959,11 @@ class MaterialController extends BaseController
             ));
 
             $this->get('event_dispatcher')->dispatch(CommsyEditEvent::EDIT, new CommsyEditEvent($materialItem));
+
         } else if ($item->getItemType() == 'section') {
             // get section from MaterialService
             $section = $materialService->getSection($itemId);
+            $typedItem = $section;
             if (!$section) {
                 throw $this->createNotFoundException('No section found for id ' . $roomId);
             }
@@ -971,33 +978,33 @@ class MaterialController extends BaseController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                $materialItem = $transformer->applyTransformation($materialItem, $form->getData());
+                $typedItem = $transformer->applyTransformation($typedItem, $form->getData());
 
                 // update modifier
-                $materialItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+                $typedItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
 
                 // set linked hashtags and categories
                 $formData = $form->getData();
                 if ($categoriesMandatory) {
                     if (isset($formData['category_mapping']['categories'])) {
-                        $materialItem->setTagListByID($formData['category_mapping']['categories']);
+                        $typedItem->setTagListByID($formData['category_mapping']['categories']);
                     }
                 }
                 if ($hashtagsMandatory) {
                     if (isset($formData['hashtag_mapping']['hashtags'])) {
-                        $materialItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
+                        $typedItem->setBuzzwordListByID($formData['hashtag_mapping']['hashtags']);
                     }
                 }
 
-                $materialItem->save();
+                $typedItem->save();
                 
                 if ($item->isDraft()) {
                     $item->setDraftStatus(0);
                     $item->saveAsItem();
                 }
 
-                if ($materialItem->getItemType() == CS_SECTION_TYPE) {
-                    $linkedMaterialItem = $materialService->getMaterial($materialItem->getlinkedItemID());
+                if ($typedItem->getItemType() == CS_SECTION_TYPE) {
+                    $linkedMaterialItem = $materialService->getMaterial($typedItem->getlinkedItemID());
                     $linkedMaterialItem->save();
                 }
 
@@ -1013,9 +1020,9 @@ class MaterialController extends BaseController
             'showHashtags' => $hashtagsMandatory,
             'showCategories' => $categoriesMandatory,
             'currentUser' => $legacyEnvironment->getCurrentUserItem(),
+            'material' => $typedItem,
             'licenses' => $licenses,
             'licensesContent' => $licensesContent,
-            'material' => $materialItem,
         );
     }
     
