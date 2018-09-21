@@ -26,6 +26,8 @@ export class LeaveAction extends XHRAction {
         return new Promise((resolve) => {
             UIkit.notify(this.successMessage, 'success');
 
+            window.location.href = window.location.href;
+
             // update 'additional actions' list
             $('#join-group-link').removeClass('uk-text-muted').css('pointer-events', 'auto');
             $('#leave-group-link').addClass('uk-text-muted').css('pointer-events', 'none');

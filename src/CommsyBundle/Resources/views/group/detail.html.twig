@@ -105,7 +105,7 @@
                                                 </li>
                                             {% endif %}
                                             <li id="leave-group-link" {% if not userIsMember %} class="uk-hidden" {% elseif memberStatus == 'enter' %} data-uk-tooltip title="{{ 'leave grouproom before group'|trans({},'group') }}" {% endif %}>
-                                                <a id="leave-group-link" href="#" data-cs-action="{{ {
+                                                <a id="leave-group-link" {% if memberStatus == 'enter'%} class="uk-text-muted" style="pointer-events: none;" {% endif%} href="#" data-cs-action="{{ {
                                                     'url': path('commsy_group_leave', {'roomId': roomId, 'itemId': group.itemId}),
                                                     'action': 'leave',
                                                     'itemId': group.itemId,
