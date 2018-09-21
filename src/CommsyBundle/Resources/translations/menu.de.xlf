@@ -9,7 +9,7 @@
             </trans-unit>
             <trans-unit id="my_home">
                 <source>my home</source>
-                <target>Meine Einstiegsseite</target>
+                <target>Dashboard</target>
             </trans-unit>
             <trans-unit id="announcement">
                 <source>announcement</source>
@@ -155,7 +155,7 @@
 
             <trans-unit id="dashboard_overview">
                 <source>overview</source>
-                <target>Übersicht</target>
+                <target>Dashboard</target>
             </trans-unit>
             <trans-unit id="invitations">
                 <source>invitations</source>

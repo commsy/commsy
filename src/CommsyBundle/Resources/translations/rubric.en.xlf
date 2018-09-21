@@ -96,11 +96,11 @@
             </trans-unit>           
              <trans-unit id="23">
                 <source>dashboard</source>
-                <target>Dashboard </target>
+                <target>Dashboard</target>
             </trans-unit>           
              <trans-unit id="24">
                 <source>Home</source>
-                <target>Home </target>
+                <target>Home</target>
             </trans-unit>           
              <trans-unit id="25">
                 <source>settings</source>

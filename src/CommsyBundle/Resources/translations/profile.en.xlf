@@ -156,7 +156,7 @@
             </trans-unit>
             <trans-unit id="stackStatus">
                 <source>stackStatus</source>
-                <target>stack</target>
+                <target>My stack</target>
             </trans-unit>
             <trans-unit id="portfolioStatus">
                 <source>portfolioStatus</source>

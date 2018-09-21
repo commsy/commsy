@@ -5,7 +5,7 @@ $message["PROFILE_NEWSLETTER_DATA"]["de"] = "Newsletter";
 $message["PROFILE_ROOMLIST_CUSTOMIZING_DESCRIPTION"]["de"] = "Durch Drag & Drop und Markierung per Haken können Sie die Räume in eine selbstbestimmte Reihenfolge bringen. Die markierten Räume erscheinen
 - in der Auswahl &quot;Raum wechseln&quot;
 - im Newsletter
-- auf der Einstiegsseite des persönlichen Raumes.";
+- im Dashboard.";
 $message["PROFILE_ROOMLIST_DELETE_OPTION"]["de"] = "selbst erstellte Raumliste löschen und System-Raumliste verwenden";
 $message["PROFILE_ROOM_LIST_DATA"]["de"] = "Raumliste";
 $message["PROFILE_USER_DATA"]["de"] = "Personendaten";
