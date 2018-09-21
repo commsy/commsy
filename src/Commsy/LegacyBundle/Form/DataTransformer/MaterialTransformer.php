@@ -177,10 +177,12 @@ class MaterialTransformer implements DataTransformerInterface
 	        }
         }
 
-        if (array_key_exists('license_id', $materialData)) {
-            $materialObject->setLicenseId($materialData['license_id']);
-        } else {
-            $materialObject->setLicenseId(null);
+        if (get_class($materialObject) != 'cs_section_item') {
+            if (array_key_exists('license_id', $materialData)) {
+                $materialObject->setLicenseId($materialData['license_id']);
+            } else {
+                $materialObject->setLicenseId(null);
+            }
         }
 
         // sections
