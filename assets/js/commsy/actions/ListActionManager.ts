@@ -44,7 +44,7 @@ export class ListActionManager {
             this.registerArticleEvents();
 
             if (this.selectAll) {
-                this.onSelectAll();
+                this.onSelectAll(true);
             }
         }
     }
@@ -99,7 +99,9 @@ export class ListActionManager {
         });
     }
 
-    private onSelectAll() {
+    private onSelectAll(isLoadMore: boolean = false) {
+        let self = this;
+
         // highlight button as active
         this.actionActor.addClass('uk-active');
 
@@ -109,18 +111,30 @@ export class ListActionManager {
         $feed.find('input').filter(":visible").each(function() {
             let element = <HTMLInputElement>this;
             if (element.type == 'checkbox') {
-                $(element).prop('checked', true);
-            }
-        });
+                let selectElement: boolean = true;
+                if (isLoadMore) {
+                    // when loading more entries in the feed, make sure we do not recheck items previously deselected
+                    let checkboxValue: Number = Number($(element).val());
 
-        // highlight checked articles
-        $feed.find('article').filter(":visible").each(function() {
-            $(this).addClass('uk-comment-primary');
+                    if (self.negativeSelection.indexOf(checkboxValue.valueOf()) !== -1) {
+                        selectElement = false;
+                    }
+                }
+
+                if (selectElement) {
+                    $(element).prop('checked', true);
+
+                    // highlight the enclosing article
+                    $(element).closest('article').addClass('uk-comment-primary');
+                }
+            }
         });
 
         // update selection
         this.positiveSelection = [];
-        this.negativeSelection = [];
+        if (!isLoadMore) {
+            this.negativeSelection = [];
+        }
 
         let $listCountAll: JQuery = $('#commsy-list-count-all');
         this.numSelected = parseInt($listCountAll.html());
