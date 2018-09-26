@@ -30,7 +30,7 @@ class GeneralSettingsTransformer implements DataTransformerInterface
         $defaultRubrics = $roomItem->getAvailableDefaultRubricArray();
 
         if ($roomItem) {
-            $roomData['title'] = $roomItem->getTitle();
+            $roomData['title'] = html_entity_decode($roomItem->getTitle());
             $roomData['language'] = $roomItem->getLanguage();
 
             if ($roomItem->checkNewMembersAlways()) {
