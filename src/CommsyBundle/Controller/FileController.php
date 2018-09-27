@@ -35,11 +35,19 @@ class FileController extends Controller
             throw $this->createNotFoundException('The requested file does not exist');   
         }
         $response = new Response($content, Response::HTTP_OK, array('content-type' => $file->getMime()));
-        
+
+        $fileName = $file->getFileName();
+
+        // NOTE: makeDisposition() (which generates the HTTP header's Content-Disposition field-value) requires a fallback filename
+        // (for legacy user agents that do not support the "filename*" form); the fallback filename must be ASCII-only and must not
+        // contain any percent characters or path separators, thus we strip these characters here
+        $fallbackFileName = str_replace(array('%', '/', '\\'), '', $fileName);
+        $fallbackFileName = mb_convert_encoding ($fallbackFileName, 'US-ASCII', 'UTF-8');
+
         if ($disposition == 'inline') {
-            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,$file->getFileName(), mb_convert_encoding ($file->getFileName(), 'US-ASCII', 'UTF-8'));
+            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $fileName, $fallbackFileName);
         } else {
-            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$file->getFileName(), mb_convert_encoding ($file->getFileName(), 'US-ASCII', 'UTF-8'));
+            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $fileName, $fallbackFileName);
         }
         $response->headers->set('Content-Disposition', $contentDisposition);
         
