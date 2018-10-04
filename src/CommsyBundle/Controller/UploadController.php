@@ -145,7 +145,7 @@ class UploadController extends Controller
         $responseData = array();
         foreach ($fileIds as $fileId) {
             $tempFile = $fileService->getFile($fileId);
-            $responseData[$fileId] = $tempFile->getFilename().' ('.$tempFile->getCreationDate().')';
+            $responseData[$fileId] = htmlentities($tempFile->getFilename()) . ' ('.$tempFile->getCreationDate().')';
         }
         
         return $response->setData([
