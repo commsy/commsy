@@ -702,7 +702,7 @@
                 <target>Wählen Sie die Zeittakte für Ihren Raum aus.</target>
             </trans-unit>
             <trans-unit id="settings_time_context_cont">
-                <source>continous</source>
+                <source>continuous</source>
                 <target>kontinuierlich</target>
             </trans-unit>
             <trans-unit id="users_can_edit_calendars">
