@@ -1105,14 +1105,13 @@ class RoomController extends Controller
                 $legacyRoom->setDescription($context['room_description']);
                 $legacyRoom->setLanguage($context['language']);
 
-                if (isset($context['type_sub']['time_interval'])) {
-                    if (in_array('cont', $context['type_sub']['time_interval'])) {
-                        $legacyRoom->setContinuous();
-                        $legacyRoom->setTimeListByID([]);
-                    } else {
-                        $legacyRoom->setNotContinuous();
-                        $legacyRoom->setTimeListByID($context['type_sub']['time_interval']);
-                    }
+                $timeIntervals = (isset($context['type_sub']['time_interval'])) ? $context['type_sub']['time_interval'] : [];
+                if (empty($timeIntervals) || in_array('cont', $timeIntervals)) {
+                    $legacyRoom->setContinuous();
+                    $legacyRoom->setTimeListByID([]);
+                } else {
+                    $legacyRoom->setNotContinuous();
+                    $legacyRoom->setTimeListByID($timeIntervals);
                 }
 
                 // persist with legacy code
