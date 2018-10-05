@@ -1005,7 +1005,7 @@ class RoomController extends Controller
         foreach ($legacyEnvironment->getCurrentPortalItem()->getTimeList()->to_array() as $timeItem) {
             $times[$legacyTranslator->getTimeMessage($timeItem->getName())] = $timeItem->getItemId();
         }
-        $times[$translator->trans('continous', [], 'settings')] = 'cont';
+        $times[$translator->trans('continuous', [], 'settings')] = 'cont';
 
         $current_user = $legacyEnvironment->getCurrentUserItem();
         $community_list = $current_portal->getCommunityList();
