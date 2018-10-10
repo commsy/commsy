@@ -7,3 +7,34 @@
 {% block breadcrumb %}
     {{ wo_render_breadcrumbs({ viewTemplate: "CommsyBundle:breadcrumbs:breadcrumbs.html.twig" }) }}
 {% endblock %}
+
+{% block content %}
+    {% block alert %}
+        {% if roomItem.isArchived() %}
+            <div class="uk-width-expand">
+                <div class="uk-alert uk-alert-warning" style="border: 1px solid rgba(226,131,39,.3)" data-uk-alert>
+                    {# <a class="uk-alert-close uk-close uk-align-top uk-align-right" href=""></a> #}
+                    <h2><i class="uk-icon-archive uk-icon-justify uk-margin-small-right"></i>{{ 'Archived room'|trans({}, "room") }}</h2>
+                    <p>{{ 'Archived room info'|trans({}, "room") }}</p>
+                </div>
+                {% if deletesRoomIfUnused %}
+                <div class="uk-alert uk-alert-danger" style="border: 1px solid rgba(226,131,39,.3)" data-uk-alert>
+                    <p><strong>{{ 'warning'|trans({}, "menu") }}</strong> {{ 'Archived room removal warning'|trans({'%days%': daysUnusedBeforeRoomDeletion}, "room") }}</p>
+                </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    <div class="uk-grid" data-uk-grid-margin>
+
+        <div class="uk-width-medium-1-3 uk-push-2-3">
+            {% block sidebar %}{% endblock %}
+        </div>
+
+        <div class="uk-width-medium-2-3 uk-pull-1-3">
+            {% block main_content %}{% endblock %}
+        </div>
+
+    </div>
+{% endblock %}

@@ -199,13 +199,19 @@ class CommsyBreadcrumbListener
 
     private function addRoomCrumb($roomItem, $asZelda)
     {
+        // NOTE: the "Archived room: " room title prefix may be replaced by the template with a matching icon
+        $title = $roomItem->getTitle();
+        if ($roomItem->isArchived()) {
+            $title = $this->translator->trans('Archived room', [], 'room') . ": " .  $title;
+        }
+
         if ($asZelda == true) {
-            $this->breadcrumbs->addRouteItem($roomItem->getTitle(), "commsy_room_home", [
+            $this->breadcrumbs->addRouteItem($title, "commsy_room_home", [
                 'roomId' => $roomItem->getItemID(),
             ]);
         }
         else {
-            $this->breadcrumbs->addItem($roomItem->getTitle());
+            $this->breadcrumbs->addItem($title);
         }
     }
 

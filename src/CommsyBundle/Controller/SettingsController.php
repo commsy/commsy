@@ -186,8 +186,12 @@ class SettingsController extends Controller
             // $em->flush();
         }
 
+        $portalItem = $roomItem->getContextItem();
+
         return array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'deletesRoomIfUnused' => $portalItem->isActivatedDeletingUnusedRooms(),
+            'daysUnusedBeforeRoomDeletion' => $portalItem->getDaysUnusedBeforeDeletingRooms(),
         );
     }
 
