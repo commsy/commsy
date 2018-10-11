@@ -13,11 +13,12 @@
                 </div>
 
                 {% set failedRecipients = app.flashes('failedRecipients') %}
+                {% set recipientCount = app.flashes('recipientCount')|first %}
 
                 {% if failedRecipients is empty %}
                     <div class="uk-alert uk-alert-success">
                         <i class="uk-icon-check-square-o uk-icon-medium"></i>
-                        {{ 'Your email has been successfully sent.'|trans({}, "mail") }}
+                        {{ 'Your email has been successfully sent to multiple users'|trans({'%user_count%': recipientCount}, "mail") }}
                     </div>
                 {% else %}
                     <div class="uk-alert uk-alert-warning">

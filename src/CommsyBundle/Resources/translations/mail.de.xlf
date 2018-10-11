@@ -66,6 +66,10 @@
                 <source>Your email has been successfully sent.</source>
                 <target>Ihre E-Mail wurde erfolgreich versendet.</target>
             </trans-unit>
+            <trans-unit id="mailSendMultipleSuccess">
+                <source>Your email has been successfully sent to multiple users</source>
+                <target>Ihre E-Mail wurde erfolgreich an %user_count% EmpfängerInnen versendet.</target>
+            </trans-unit>
             <trans-unit id="mailSendWarning">
                 <source>Your email may only have been partially sent.</source>
                 <target>Ihre E-Mail wurde möglicherweise nur teilweise versendet. Es gab Probleme bei der Zustellung an:</target>

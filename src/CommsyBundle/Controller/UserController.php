@@ -1294,13 +1294,19 @@ class UserController extends BaseController
                     ->setReplyTo($replyTo)
                     ->setTo($to);
 
+                $recipientCount = count($to);
+
                 if (!empty($toCC)) {
                     $message->setCc($toCC);
+                    $recipientCount += count($toCC);
                 }
 
                 if (!empty($toBCC)) {
                     $message->setBcc($toBCC);
+                    $recipientCount += count($toBCC);
                 }
+
+                $this->addFlash('recipientCount', $recipientCount);
 
                 // send mail
                 $failedRecipients = [];
