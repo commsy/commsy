@@ -22,7 +22,7 @@
                 {% else %}
                     <div class="uk-alert uk-alert-warning">
                         <i class="uk-icon-exclamation-triangle uk-icon-medium"></i>
-                        {{ 'Your mail might has been partially sent.'|trans({}, "mail") }}
+                        {{ 'Your email may only have been partially sent.'|trans({}, "mail") }}
 
                         <ul class="uk-list">
                             {% for message in failedRecipients %}
