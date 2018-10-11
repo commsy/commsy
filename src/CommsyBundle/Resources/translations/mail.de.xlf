@@ -63,11 +63,11 @@
                 <target>Eintrag versenden</target>
             </trans-unit>
             <trans-unit id="mailSendSuccess">
-                <source>Your mail has been successfully send.</source>
+                <source>Your mail has been successfully sent.</source>
                 <target>Ihre Mail wurde erfolgreich versendet.</target>
             </trans-unit>
             <trans-unit id="mailSendWarning">
-                <source>Your mail might has been partially send.</source>
+                <source>Your mail might has been partially sent.</source>
                 <target>Ihre Mail wurde möglicherweise nur teilweise versendet. Es gab Probleme bei der Zustellung an:</target>
             </trans-unit>
             <trans-unit id="mailBackToEntry">
