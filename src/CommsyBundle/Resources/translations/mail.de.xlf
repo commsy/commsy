@@ -8,15 +8,15 @@
             </trans-unit>
             <trans-unit id="mailFromProjectRoom">
                 <source>This email was sent from project room...</source>
-                <target>Diese Email wurde über den Projektraum "%room_name%" versendet.</target>
+                <target>Diese E-Mail wurde über den Projektraum "%room_name%" versendet.</target>
             </trans-unit>
             <trans-unit id="mailFromGroupRoom">
                 <source>This email was sent from group room...</source>
-                <target>Diese Email wurde über den Gruppenraum "%room_name%" versendet.</target>
+                <target>Diese E-Mail wurde über den Gruppenraum "%room_name%" versendet.</target>
             </trans-unit>
             <trans-unit id="mailFromCommunityRoom">
                 <source>This email was sent from community room...</source>
-                <target>Diese Email wurde über den Gemeinschaftsraum "%room_name%" versendet.</target>
+                <target>Diese E-Mail wurde über den Gemeinschaftsraum "%room_name%" versendet.</target>
             </trans-unit>
             <trans-unit id="mailCopyToSender">
                 <source>Copy to sender</source>
@@ -63,12 +63,12 @@
                 <target>Eintrag versenden</target>
             </trans-unit>
             <trans-unit id="mailSendSuccess">
-                <source>Your mail has been successfully sent.</source>
-                <target>Ihre Mail wurde erfolgreich versendet.</target>
+                <source>Your email has been successfully sent.</source>
+                <target>Ihre E-Mail wurde erfolgreich versendet.</target>
             </trans-unit>
             <trans-unit id="mailSendWarning">
                 <source>Your email may only have been partially sent.</source>
-                <target>Ihre Mail wurde möglicherweise nur teilweise versendet. Es gab Probleme bei der Zustellung an:</target>
+                <target>Ihre E-Mail wurde möglicherweise nur teilweise versendet. Es gab Probleme bei der Zustellung an:</target>
             </trans-unit>
             <trans-unit id="mailBackToEntry">
                 <source>Back to</source>

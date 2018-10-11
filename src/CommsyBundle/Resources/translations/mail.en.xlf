@@ -63,8 +63,8 @@
                 <target>Send item</target>
             </trans-unit>
             <trans-unit id="mailSendSuccess">
-                <source>Your mail has been successfully sent.</source>
-                <target>Your mail has been successfully sent.</target>
+                <source>Your email has been successfully sent.</source>
+                <target>Your email has been successfully sent.</target>
             </trans-unit>
             <trans-unit id="mailSendWarning">
                 <source>Your email may only have been partially sent.</source>
@@ -76,7 +76,7 @@
             </trans-unit>
             <trans-unit id="mailSendMail">
                 <source>Send mail</source>
-                <target>Send mail</target>
+                <target>Send email</target>
             </trans-unit>
         </body>
     </file>
