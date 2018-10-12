@@ -9,7 +9,7 @@
                         {# replace any "Archived room: " prefix with a matching icon #}
                         {% set roomTitle = b.text %}
                         {% set roomPrefix = 'Archived room'|trans({}, "room") ~ ": " %}
-                        {% if b.text starts with roomPrefix %}
+                        {% if roomTitle starts with roomPrefix %}
                             {% set roomTitle = roomTitle|split(roomPrefix)|last %}
                             <i class="uk-icon-archive uk-icon-small uk-display-inline uk-margin-small-right"></i>
                         {% endif %}
