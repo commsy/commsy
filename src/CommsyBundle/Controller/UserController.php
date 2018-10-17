@@ -1220,8 +1220,18 @@ class UserController extends BaseController
             $userIds = $postData['users'];
         }
 
+        $defaultBodyMessage = '';
+        if (count($userIds) > 1) {
+            $translator = $this->get('translator');
+            $defaultBodyMessage = '<br/><br/><br/>' . '--' . '<br/>' . $translator->trans(
+                    'This email has been sent to multiple users of this room',
+                    ['%user_count%' => count($userIds), '%room_name%' => $room->getTitle()],
+                    'mail'
+                );
+        }
+
         $formData = [
-            'message' => '',
+            'message' => $defaultBodyMessage,
             'copy_to_sender' => false,
             'users' => $userIds,
         ];
