@@ -1230,8 +1230,18 @@ class UserController extends BaseController
             $userIds = $postData['users'];
         }
 
+        $defaultBodyMessage = '';
+        if (count($userIds) > 1) {
+            $translator = $this->get('translator');
+            $defaultBodyMessage = '<br/><br/><br/>' . '--' . '<br/>' . $translator->trans(
+                    'This email has been sent to multiple users of this room',
+                    ['%user_count%' => count($userIds), '%room_name%' => $room->getTitle()],
+                    'mail'
+                );
+        }
+
         $formData = [
-            'message' => '',
+            'message' => $defaultBodyMessage,
             'copy_to_sender' => false,
             'users' => $userIds,
         ];
@@ -1304,13 +1314,19 @@ class UserController extends BaseController
                     ->setReplyTo($replyTo)
                     ->setTo($to);
 
+                $recipientCount = count($to);
+
                 if (!empty($toCC)) {
                     $message->setCc($toCC);
+                    $recipientCount += count($toCC);
                 }
 
                 if (!empty($toBCC)) {
                     $message->setBcc($toBCC);
+                    $recipientCount += count($toBCC);
                 }
+
+                $this->addFlash('recipientCount', $recipientCount);
 
                 // send mail
                 $failedRecipients = [];

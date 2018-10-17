@@ -63,12 +63,20 @@
                 <target>Send item</target>
             </trans-unit>
             <trans-unit id="mailSendSuccess">
-                <source>Your mail has been successfully send.</source>
-                <target>Your mail has been successfully send.</target>
+                <source>Your email has been successfully sent.</source>
+                <target>Your email has been successfully sent.</target>
+            </trans-unit>
+            <trans-unit id="mailSendMultipleSuccess">
+                <source>Your email has been successfully sent to multiple users</source>
+                <target>Your email has been successfully sent to %user_count% user(s).</target>
+            </trans-unit>
+            <trans-unit id="mailSendMultipleBody">
+                <source>This email has been sent to multiple users of this room</source>
+                <target>This email has been sent to %user_count% members of room "%room_name%".</target>
             </trans-unit>
             <trans-unit id="mailSendWarning">
-                <source>Your mail might has been partially send.</source>
-                <target>Your mail might has been partially send. We encountered some problems while sending to:</target>
+                <source>Your email may only have been partially sent.</source>
+                <target>Your email may only have been partially sent. We encountered some problems while sending to:</target>
             </trans-unit>
             <trans-unit id="mailBackToEntry">
                 <source>Back to</source>
@@ -76,7 +84,7 @@
             </trans-unit>
             <trans-unit id="mailSendMail">
                 <source>Send mail</source>
-                <target>Send mail</target>
+                <target>Send email</target>
             </trans-unit>
         </body>
     </file>
