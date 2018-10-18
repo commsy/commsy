@@ -809,16 +809,32 @@ class UserController extends BaseController
 
                 $from = $this->getParameter('commsy.email.from');
 
+                // TODO: validate sender & recipient email addresses (similar to sendMultipleAction())
+                $sender = [$currentUser->getEmail() => $currentUser->getFullName()];
+                $recipient = [$item->getEmail() => $item->getFullName()];
+
                 $message = \Swift_Message::newInstance()
                     ->setSubject($formData['subject'])
                     ->setBody($formData['message'], 'text/html')
-                    ->setFrom([$from => $portalItem->getTitle()])
-                    ->setReplyTo([$currentUser->getEmail() => $currentUser->getFullName()])
-                    ->setTo([$item->getEmail() => $item->getFullName()]);
+                    ->setFrom([$from => $portalItem->getTitle()]);
+
+                if ($currentUser->isEmailVisible()) {
+                    $message->setReplyTo($sender);
+                }
 
                 // form option: copy_to_sender
                 if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-                    $message->setCc($message->getReplyTo());
+                    if ($currentUser->isEmailVisible()) {
+                        $message->setCc($sender);
+                    } else {
+                        $message->addBcc(key($sender), current($sender));
+                    }
+                }
+
+                if ($item->isEmailVisible()) {
+                    $message->setTo($recipient);
+                } else {
+                    $message->addBcc(key($recipient), current($recipient));
                 }
 
                 // send mail
