@@ -789,8 +789,18 @@ class UserController extends BaseController
             throw $this->createNotFoundException('no item found for id ' . $itemId);
         }
 
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
+
+        $translator = $this->get('translator');
+        $defaultBodyMessage = '<br/><br/><br/>' . '--' . '<br/>' . $translator->trans(
+                'This email has been sent by sender to recipient',
+                ['%sender_name%' => $currentUser->getFullName(), '%recipient_name%' => $item->getFullName()],
+                'mail'
+            );
+
         $formData = [
-            'message' => '',
+            'message' => $defaultBodyMessage,
             'copy_to_sender' => false,
         ];
 
@@ -802,10 +812,8 @@ class UserController extends BaseController
 
             if ($saveType == 'save') {
                 $formData = $form->getData();
-                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
                 $portalItem = $legacyEnvironment->getCurrentPortalItem();
-                $currentUser = $legacyEnvironment->getCurrentUserItem();
 
                 $from = $this->getParameter('commsy.email.from');
 
