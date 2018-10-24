@@ -62,6 +62,10 @@
                 <source>Send item</source>
                 <target>Send item</target>
             </trans-unit>
+            <trans-unit id="mailSendBody">
+                <source>This email has been sent by sender to recipient</source>
+                <target>This email has been sent by %sender_name% to %recipient_name%.</target>
+            </trans-unit>
             <trans-unit id="mailSendSuccess">
                 <source>Your email has been successfully sent.</source>
                 <target>Your email has been successfully sent.</target>
