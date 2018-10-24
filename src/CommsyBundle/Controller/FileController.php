@@ -6,11 +6,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class FileController extends Controller
 {
     /**
      * @Route("/file/{fileId}/{disposition}")
+     * @Security("is_granted('FILE_DOWNLOAD', fileId)")
      */
     public function getFileAction($fileId, $disposition = 'attachment')
     {

@@ -2,6 +2,7 @@
 
 namespace Commsy\LegacyBundle\EventSubscriber;
 
+use Commsy\LegacyBundle\Utils\FileService;
 use Commsy\LegacyBundle\Utils\ItemService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -37,6 +38,8 @@ class KernelSubscriber implements EventSubscriberInterface
 
     private $itemService;
 
+    private $fileService;
+
     private $urlGenerator;
 
     /**
@@ -46,12 +49,14 @@ class KernelSubscriber implements EventSubscriberInterface
         HttpKernelInterface $legacyKernel,
         LegacyAuthentication $legacyAuthentication,
         ItemService $itemService,
+        FileService $fileService,
         UrlGeneratorInterface $urlGenerator,
         LegacyEnvironment $legacyEnvironment
     ) {
         $this->legacyKernel = $legacyKernel;
         $this->legacyAuthentication = $legacyAuthentication;
         $this->itemService = $itemService;
+        $this->fileService = $fileService;
         $this->urlGenerator = $urlGenerator;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
@@ -112,9 +117,21 @@ class KernelSubscriber implements EventSubscriberInterface
             $currentRequest = $event->getRequest();
             $requestUri = $currentRequest->getRequestUri();
 
+            // NOTE: since it's so early in the process, we need to resort to regex matching
             if (preg_match('/(soap|rss|_profiler|_wdt|room\/\d+\/user\/\d+\/image)/', $requestUri, $matches)) {
                 $isAuthenticated = true;
             } else {
+                // for file URLs, we need to set the current context explicitly to prevent `cs_authentication->check()`
+                // from thinking we're in server context, otherwise `FileVoter` won't be able to get the current user item
+                if (preg_match('/file\/(\d+)/', $requestUri, $fileIdMatch)) {
+                    $fileId = $fileIdMatch[1];
+                    $file = $this->fileService->getFile($fileId);
+                    if ($file) {
+                        $fileContextId = $file->getContextID();
+                        $this->legacyEnvironment->setCurrentContextID($fileContextId);
+                    }
+                }
+
                 $isAuthenticated = $this->legacyAuthentication->authenticate();
             }
 
