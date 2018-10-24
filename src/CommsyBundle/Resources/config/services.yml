@@ -126,6 +126,10 @@ services:
         tags:
             - { name: security.voter }
 
+    CommsyBundle\Security\Authorization\Voter\FileVoter:
+        autowire: true
+        autoconfigure: true
+
     # Exporter
     commsy.export.wordpress:
         class: CommsyBundle\Export\WordpressExporter
