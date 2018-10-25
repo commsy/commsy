@@ -72,7 +72,7 @@
             </trans-unit>
             <trans-unit id="mailSendMultipleBody">
                 <source>This email has been sent to multiple users of this room</source>
-                <target>Diese E-Mail wurde an %user_count% MitgliederInnen des Raumes "%room_name%" versendet.</target>
+                <target>Diese E-Mail wurde von %sender_name% an %user_count% Mitglieder des Raumes "%room_name%" versendet.</target>
             </trans-unit>
             <trans-unit id="mailSendWarning">
                 <source>Your email may only have been partially sent.</source>

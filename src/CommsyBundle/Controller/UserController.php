@@ -1230,14 +1230,32 @@ class UserController extends BaseController
             $userIds = $postData['users'];
         }
 
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
+        $userService = $this->get('commsy_legacy.user_service');
+
+        // include a footer message in the email body (which may be esp. useful if some emails are sent via BCC mail)
+        $userCount = count($userIds);
         $defaultBodyMessage = '';
-        if (count($userIds) > 1) {
+        if ($userCount) {
+            $defaultBodyMessage .= '<br/><br/><br/>' . '--' . '<br/>';
             $translator = $this->get('translator');
-            $defaultBodyMessage = '<br/><br/><br/>' . '--' . '<br/>' . $translator->trans(
+            if ($userCount == 1) {
+                $user = $userService->getUser(reset($userIds));
+                if ($user) {
+                    $defaultBodyMessage .= $translator->trans(
+                        'This email has been sent by sender to recipient',
+                        ['%sender_name%' => $currentUser->getFullName(), '%recipient_name%' => $user->getFullName()],
+                        'mail'
+                    );
+                }
+            } elseif ($userCount > 1) {
+                $defaultBodyMessage .= $translator->trans(
                     'This email has been sent to multiple users of this room',
-                    ['%user_count%' => count($userIds), '%room_name%' => $room->getTitle()],
+                    ['%sender_name%' => $currentUser->getFullName(), '%user_count%' => count($userIds), '%room_name%' => $room->getTitle()],
                     'mail'
                 );
+            }
         }
 
         $formData = [
@@ -1250,7 +1268,6 @@ class UserController extends BaseController
         $form->handleRequest($request);
 
         // get all affected user
-        $userService = $this->get('commsy_legacy.user_service');
         $users = [];
         if (isset($formData['users'])) {
             foreach ($formData['users'] as $userId) {
@@ -1266,10 +1283,8 @@ class UserController extends BaseController
 
             if ($saveType == 'save') {
                 $formData = $form->getData();
-                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
                 $portalItem = $legacyEnvironment->getCurrentPortalItem();
-                $currentUser = $legacyEnvironment->getCurrentUserItem();
 
                 $from = $this->getParameter('commsy.email.from');
 
