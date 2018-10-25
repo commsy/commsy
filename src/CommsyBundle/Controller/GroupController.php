@@ -1262,8 +1262,20 @@ class GroupController extends BaseController
             throw $this->createNotFoundException('no item found for id ' . $itemId);
         }
 
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        $translator = $this->get('translator');
+        $defaultBodyMessage = '<br/><br/><br/>' . '--' . '<br/>' . $translator->trans(
+                'This email has been sent to all users of this group',
+                ['%sender_name%' => $currentUser->getFullName(), '%group_name%' => $item->getName(), '%room_name%' => $roomItem->getTitle()],
+                'mail'
+            );
+
         $formData = [
-            'message' => '',
+            'message' => $defaultBodyMessage,
             'copy_to_sender' => false,
         ];
 
@@ -1277,10 +1289,8 @@ class GroupController extends BaseController
 
             if ($saveType == 'save') {
                 $formData = $form->getData();
-                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
                 $portalItem = $legacyEnvironment->getCurrentPortalItem();
-                $currentUser = $legacyEnvironment->getCurrentUserItem();
 
                 $from = $this->getParameter('commsy.email.from');
 

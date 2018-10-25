@@ -78,6 +78,10 @@
                 <source>This email has been sent to multiple users of this room</source>
                 <target>This email has been sent by %sender_name% to %user_count% members of room "%room_name%".</target>
             </trans-unit>
+            <trans-unit id="mailSendMultipleBodyGroup">
+                <source>This email has been sent to all users of this group</source>
+                <target>This email has been sent by %sender_name% to members of group "%group_name%" (room "%room_name%").</target>
+            </trans-unit>
             <trans-unit id="mailSendWarning">
                 <source>Your email may only have been partially sent.</source>
                 <target>Your email may only have been partially sent. We encountered some problems while sending to:</target>
