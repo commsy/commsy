@@ -127,6 +127,8 @@ class KernelSubscriber implements EventSubscriberInterface
                     $fileId = $fileIdMatch[1];
                     $file = $this->fileService->getFile($fileId);
                     if ($file) {
+                        // while file routes ("/file/{fileId}/{disposition}") don't feature a contextId, file items do;
+                        // but since this currently isn't honored by the legacy environment, we set it explicitly here
                         $fileContextId = $file->getContextID();
                         $this->legacyEnvironment->setCurrentContextID($fileContextId);
                     }
