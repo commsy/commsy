@@ -97,7 +97,7 @@ class MailAssistant
         return false;
     }
 
-    public function getSwiftMessage($formData, $item)
+    public function getSwiftMessage($formData, $item): \Swift_Message
     {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();

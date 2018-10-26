@@ -472,6 +472,9 @@ class ItemController extends Controller
             $message = $mailAssistant->getSwiftMessage($form->getData(), $item);
             $this->get('mailer')->send($message);
 
+            $recipientCount = count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
+            $this->addFlash('recipientCount', $recipientCount);
+
             // redirect to success page
             return $this->redirectToRoute('commsy_item_sendsuccess', [
                 'roomId' => $roomId,
