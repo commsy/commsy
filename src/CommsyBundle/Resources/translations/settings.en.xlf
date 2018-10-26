@@ -703,8 +703,8 @@
                 <target>Choose the time context for your room.</target>
             </trans-unit>
             <trans-unit id="settings_time_context_cont">
-                <source>continous</source>
-                <target>continous</target>
+                <source>continuous</source>
+                <target>continuous</target>
             </trans-unit>
             <trans-unit id="users_can_edit_calendars">
                 <source>users_can_edit_calendars</source>
