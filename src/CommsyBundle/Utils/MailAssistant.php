@@ -26,9 +26,11 @@ class MailAssistant
     public function prepareMessage($item)
     {
         $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         return $this->twig->render('CommsyBundle:mail:send.html.twig', [
             'contextItem' => $currentContextItem,
+            'currentUser' => $currentUser,
             'item' => $item,
             'content' => $this->generateMessageData($item),
         ]);
@@ -95,7 +97,7 @@ class MailAssistant
         return false;
     }
 
-    public function getSwiftMessage($formData, $item)
+    public function getSwiftMessage($formData, $item): \Swift_Message
     {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();

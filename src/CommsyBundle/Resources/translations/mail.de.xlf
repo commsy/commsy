@@ -7,16 +7,16 @@
                 <target>Betreff</target>
             </trans-unit>
             <trans-unit id="mailFromProjectRoom">
-                <source>This email was sent from project room...</source>
-                <target>Diese E-Mail wurde über den Projektraum "%room_name%" versendet.</target>
+                <source>This email has been sent by ... from project room ...</source>
+                <target>Diese E-Mail wurde von %sender_name% über den Projektraum "%room_name%" versendet.</target>
             </trans-unit>
             <trans-unit id="mailFromGroupRoom">
-                <source>This email was sent from group room...</source>
-                <target>Diese E-Mail wurde über den Gruppenraum "%room_name%" versendet.</target>
+                <source>This email has been sent by ... from group room ...</source>
+                <target>Diese E-Mail wurde von %sender_name% über den Gruppenraum "%room_name%" versendet.</target>
             </trans-unit>
             <trans-unit id="mailFromCommunityRoom">
-                <source>This email was sent from community room...</source>
-                <target>Diese E-Mail wurde über den Gemeinschaftsraum "%room_name%" versendet.</target>
+                <source>This email has been sent by ... from community room ...</source>
+                <target>Diese E-Mail wurde von %sender_name% über den Gemeinschaftsraum "%room_name%" versendet.</target>
             </trans-unit>
             <trans-unit id="mailCopyToSender">
                 <source>Copy to sender</source>
@@ -76,7 +76,11 @@
             </trans-unit>
             <trans-unit id="mailSendMultipleBody">
                 <source>This email has been sent to multiple users of this room</source>
-                <target>Diese E-Mail wurde an %user_count% MitgliederInnen des Raumes "%room_name%" versendet.</target>
+                <target>Diese E-Mail wurde von %sender_name% an %user_count% Mitglieder des Raumes "%room_name%" versendet.</target>
+            </trans-unit>
+            <trans-unit id="mailSendMultipleBodyGroup">
+                <source>This email has been sent to all users of this group</source>
+                <target>Diese E-Mail wurde von %sender_name% an die Mitglieder der Gruppe "%group_name%" (Raum "%room_name%") versendet.</target>
             </trans-unit>
             <trans-unit id="mailSendWarning">
                 <source>Your email may only have been partially sent.</source>

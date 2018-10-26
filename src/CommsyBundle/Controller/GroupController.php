@@ -1117,13 +1117,43 @@ class GroupController extends BaseController
             $groupIds = $postData['groups'];
         }
 
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
+        $userService = $this->get('commsy_legacy.user_service');
+        $groupService = $this->get('commsy_legacy.group_service');
+
+        // TODO: filter out any locked users (#2368)
+        $users = $userService->getUsersByGroupIds($roomId, $groupIds);
+
+        // include a footer message in the email body
+        $groupCount = count($groupIds);
+        $defaultBodyMessage = '';
+        if ($groupCount) {
+            $defaultBodyMessage .= '<br/><br/><br/>' . '--' . '<br/>';
+            $translator = $this->get('translator');
+            if ($groupCount == 1) {
+                $group = $groupService->getGroup(reset($groupIds));
+                if ($group) {
+                    $defaultBodyMessage .= $translator->trans(
+                        'This email has been sent to all users of this group',
+                        ['%sender_name%' => $currentUser->getFullName(), '%group_name%' => $group->getName(), '%room_name%' => $room->getTitle()],
+                        'mail'
+                    );
+                }
+            } elseif ($groupCount > 1) {
+                $defaultBodyMessage .= $translator->trans(
+                    'This email has been sent to multiple users of this room',
+                    ['%sender_name%' => $currentUser->getFullName(), '%user_count%' => count($users), '%room_name%' => $room->getTitle()],
+                    'mail'
+                );
+            }
+        }
+
         $formData = [
-            'message' => '',
+            'message' => $defaultBodyMessage,
             'copy_to_sender' => false,
             'groups' => $groupIds,
         ];
-
-        $userService = $this->get('commsy_legacy.user_service');
 
         $form = $this->createForm(GroupSendType::class, $formData, []);
         $form->handleRequest($request);
@@ -1133,14 +1163,10 @@ class GroupController extends BaseController
 
             if ($saveType == 'save') {
                 $formData = $form->getData();
-                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
                 $portalItem = $legacyEnvironment->getCurrentPortalItem();
-                $currentUser = $legacyEnvironment->getCurrentUserItem();
 
                 $from = $this->getParameter('commsy.email.from');
-
-                $users = $userService->getUsersByGroupIds($roomId, $groupIds);
 
                 $to = [];
                 $toBCC = [];
@@ -1186,13 +1212,19 @@ class GroupController extends BaseController
                     ->setReplyTo($replyTo)
                     ->setTo($to);
 
+                $recipientCount = count($to);
+
                 if (!empty($toCC)) {
                     $message->setCc($toCC);
+                    $recipientCount += count($toCC);
                 }
 
                 if (!empty($toBCC)) {
                     $message->setBcc($toBCC);
+                    $recipientCount += count($toBCC);
                 }
+
+                $this->addFlash('recipientCount', $recipientCount);
 
                 // send mail
                 $failedRecipients = [];
@@ -1256,8 +1288,19 @@ class GroupController extends BaseController
             throw $this->createNotFoundException('no item found for id ' . $itemId);
         }
 
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
+        $room = $this->getRoom($roomId);
+
+        $translator = $this->get('translator');
+        $defaultBodyMessage = '<br/><br/><br/>' . '--' . '<br/>' . $translator->trans(
+                'This email has been sent to all users of this group',
+                ['%sender_name%' => $currentUser->getFullName(), '%group_name%' => $item->getName(), '%room_name%' => $room->getTitle()],
+                'mail'
+            );
+
         $formData = [
-            'message' => '',
+            'message' => $defaultBodyMessage,
             'copy_to_sender' => false,
         ];
 
@@ -1271,13 +1314,12 @@ class GroupController extends BaseController
 
             if ($saveType == 'save') {
                 $formData = $form->getData();
-                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
                 $portalItem = $legacyEnvironment->getCurrentPortalItem();
-                $currentUser = $legacyEnvironment->getCurrentUserItem();
 
                 $from = $this->getParameter('commsy.email.from');
 
+                // TODO: filter out any locked users (#2368)
                 $users = $userService->getUsersByGroupIds($roomId, $item->getItemID());
 
                 $to = [];
@@ -1324,13 +1366,19 @@ class GroupController extends BaseController
                     ->setReplyTo($replyTo)
                     ->setTo($to);
 
+                $recipientCount = count($to);
+
                 if (!empty($toCC)) {
                     $message->setCc($toCC);
+                    $recipientCount += count($toCC);
                 }
 
                 if (!empty($toBCC)) {
                     $message->setBcc($toBCC);
+                    $recipientCount += count($toBCC);
                 }
+
+                $this->addFlash('recipientCount', $recipientCount);
 
                 // send mail
                 $failedRecipients = [];
