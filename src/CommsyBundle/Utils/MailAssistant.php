@@ -26,9 +26,11 @@ class MailAssistant
     public function prepareMessage($item)
     {
         $currentContextItem = $this->legacyEnvironment->getCurrentContextItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         return $this->twig->render('CommsyBundle:mail:send.html.twig', [
             'contextItem' => $currentContextItem,
+            'currentUser' => $currentUser,
             'item' => $item,
             'content' => $this->generateMessageData($item),
         ]);

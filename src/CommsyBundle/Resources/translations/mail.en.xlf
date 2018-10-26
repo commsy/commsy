@@ -7,16 +7,16 @@
                 <target>Subject</target>
             </trans-unit>
             <trans-unit id="mailFromProjectRoom">
-                <source>This email was sent from project room...</source>
-                <target>This email was sent from project room "%room_name%".</target>
+                <source>This email has been sent by ... from project room ...</source>
+                <target>This email has been sent by %sender_name% from project room "%room_name%".</target>
             </trans-unit>
             <trans-unit id="mailFromGroupRoom">
-                <source>This email was sent from group room...</source>
-                <target>This email was sent from group room "%room_name%".</target>
+                <source>This email has been sent by ... from group room ...</source>
+                <target>This email has been sent by %sender_name% from group room "%room_name%".</target>
             </trans-unit>
             <trans-unit id="mailFromCommunityRoom">
-                <source>This email was sent from community room...</source>
-                <target>This email was sent from community room "%room_name%".</target>
+                <source>This email has been sent by ... from community room ...</source>
+                <target>This email has been sent by %sender_name% from community room "%room_name%".</target>
             </trans-unit>
             <trans-unit id="mailCopyToSender">
                 <source>Copy to sender</source>

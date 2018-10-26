@@ -5,16 +5,17 @@
 
 {% set link = url('commsy_' ~ type ~ '_detail', {'roomId': app.request.attributes.get('roomId'), 'itemId': item.itemId}) %}
 
+<br><br>--<br>
+
 {% if contextItem.isProjectRoom %}
-    {{ 'This email was sent from project room...'|trans({'%room_name%': contextItem.title|decodeHtmlEntity}, 'mail') }}
+    {{ 'This email has been sent by ... from project room ...'|trans({'%sender_name%': currentUser.getFullName, '%room_name%': contextItem.title|decodeHtmlEntity}, 'mail') }}
 {% elseif contextItem.isGroupRoom %}
-    {{ 'This email was sent from group room...'|trans({'%room_name%': contextItem.title|decodeHtmlEntity}, 'mail') }}
+    {{ 'This email has been sent by ... from group room ...'|trans({'%sender_name%': currentUser.getFullName, '%room_name%': contextItem.title|decodeHtmlEntity}, 'mail') }}
 {% else %}
-    {{ 'This email was sent from community room...'|trans({'%room_name%': contextItem.title|decodeHtmlEntity}, 'mail') }}
+    {{ 'This email has been sent by ... from community room ...'|trans({'%sender_name%': currentUser.getFullName, '%room_name%': contextItem.title|decodeHtmlEntity}, 'mail') }}
 {% endif %}
 
 <br>
----<br>
 
 {# content #}
 {% if item.type == 'material' or item.type == 'materials' %}
@@ -43,6 +44,6 @@
     {{ item.endingTime }}
 {% endif %}
 
-<br>---<br>
+<br>
 
 <a href="{{ link }}">{{ link }}</a>
