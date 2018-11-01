@@ -245,7 +245,7 @@ class GeneralSettingsType extends AbstractType
             }
         }
 
-        $timeChoices['continous'] = 'cont';
+        $timeChoices['continuous'] = 'cont';
 
         return $timeChoices;
     }

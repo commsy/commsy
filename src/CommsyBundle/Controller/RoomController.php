@@ -1002,9 +1002,13 @@ class RoomController extends Controller
         }
 
         $times = [];
-        $translator = $legacyEnvironment->getTranslationObject();
-        foreach ($legacyEnvironment->getCurrentPortalItem()->getTimeList()->to_array() as $timeItem) {
-            $times[$translator->getTimeMessage($timeItem->getName())] = $timeItem->getItemId();
+        if ($current_portal->showTime()) {
+            $translator = $this->get('translator');
+            $legacyTranslator = $legacyEnvironment->getTranslationObject();
+            foreach ($legacyEnvironment->getCurrentPortalItem()->getTimeList()->to_array() as $timeItem) {
+                $times[$legacyTranslator->getTimeMessage($timeItem->getName())] = $timeItem->getItemId();
+            }
+            $times[$translator->trans('continuous', [], 'settings')] = 'cont';
         }
 
         $current_user = $legacyEnvironment->getCurrentUserItem();
@@ -1103,12 +1107,13 @@ class RoomController extends Controller
                 $legacyRoom->setDescription($context['room_description']);
                 $legacyRoom->setLanguage($context['language']);
 
-                if (!isset($context['type_sub']['time_interval'])) {
+                $timeIntervals = (isset($context['type_sub']['time_interval'])) ? $context['type_sub']['time_interval'] : [];
+                if (empty($timeIntervals) || in_array('cont', $timeIntervals)) {
                     $legacyRoom->setContinuous();
                     $legacyRoom->setTimeListByID([]);
                 } else {
                     $legacyRoom->setNotContinuous();
-                    $legacyRoom->setTimeListByID($context['type_sub']['time_interval']);
+                    $legacyRoom->setTimeListByID($timeIntervals);
                 }
 
                 // persist with legacy code
