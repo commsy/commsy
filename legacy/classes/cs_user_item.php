@@ -1786,7 +1786,7 @@ class cs_user_item extends cs_item
     /**
      * @return object cs_list list of User-Items connected to this item
      */
-    function getRelatedUserList()
+    function getRelatedUserList(): \cs_list
     {
 
         $current_context_id = $this->getContextID();
@@ -1981,7 +1981,7 @@ class cs_user_item extends cs_item
         return $retour;
     }
 
-    function getRelatedPortalUserItem()
+    function getRelatedPortalUserItem():? \cs_user_item
     {
         $retour = NULL;
 
