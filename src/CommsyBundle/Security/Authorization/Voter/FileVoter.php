@@ -48,9 +48,7 @@ class FileVoter extends Voter
 
     private function canDownload(\cs_file_item $fileItem, \cs_user_item $currentUser)
     {
-        // TODO: better get the file's related item and call maySee() on it?
-
-         if ($fileItem->mayEdit($currentUser)) {
+         if ($fileItem->maySee($currentUser)) {
              return true;
          }
 

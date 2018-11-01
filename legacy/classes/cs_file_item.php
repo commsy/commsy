@@ -724,6 +724,45 @@ class cs_file_item extends cs_item {
       return false;
    }
 
+   public function maySee($userItem)
+   {
+      if ($userItem->isRoot()) {
+         return true;
+      }
+
+      if ($userItem->getContextID() != $this->getContextID()) {
+         return false;
+      }
+
+      if ($userItem->isModerator()) {
+         return true;
+
+      } else if ($userItem->isUser()) {
+         $isCreator = ($userItem->getItemID() == $this->getCreatorID());
+         if ($isCreator or $this->maySeeLinkedItem($userItem)) {
+            return true;
+         }
+      }
+
+      return false;
+   }
+
+   public function maySeeLinkedItem(\cs_user_item $userItem)
+   {
+      $itemCollection = $this->getLinkedItems();
+      if (!isset($itemCollection) or $itemCollection->isEmpty()) {
+         return false;
+      }
+
+      foreach ($itemCollection as $item) {
+         if ($item->maySee($userItem)) {
+            return true;
+         }
+      }
+
+      return false;
+   }
+
    public function isImage () {
       $retour = false;
       $mime = $this->getMime();
