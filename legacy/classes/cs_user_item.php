@@ -1984,6 +1984,15 @@ class cs_user_item extends cs_item
     function getRelatedPortalUserItem()
     {
         $retour = NULL;
+
+        // archive
+        $toggle_archive = false;
+        if ($this->_environment->isArchiveMode()) {
+            $toggle_archive = true;
+            $this->_environment->deactivateArchiveMode();
+        }
+        // archive
+
         $user_manager = $this->_environment->getUserManager();
         $user_manager->resetLimits();
         $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
@@ -1996,6 +2005,13 @@ class cs_user_item extends cs_item
             $retour = $user_list->getFirst();
         }
         unset($user_list);
+
+        // archive
+        if ($toggle_archive) {
+            $this->_environment->activateArchiveMode();
+        }
+        // archive
+
         return $retour;
     }
 
