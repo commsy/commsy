@@ -789,8 +789,18 @@ class UserController extends BaseController
             throw $this->createNotFoundException('no item found for id ' . $itemId);
         }
 
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentUser = $legacyEnvironment->getCurrentUserItem();
+
+        $translator = $this->get('translator');
+        $defaultBodyMessage = '<br/><br/><br/>' . '--' . '<br/>' . $translator->trans(
+                'This email has been sent by sender to recipient',
+                ['%sender_name%' => $currentUser->getFullName(), '%recipient_name%' => $item->getFullName()],
+                'mail'
+            );
+
         $formData = [
-            'message' => '',
+            'message' => $defaultBodyMessage,
             'copy_to_sender' => false,
         ];
 
@@ -802,23 +812,37 @@ class UserController extends BaseController
 
             if ($saveType == 'save') {
                 $formData = $form->getData();
-                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
                 $portalItem = $legacyEnvironment->getCurrentPortalItem();
-                $currentUser = $legacyEnvironment->getCurrentUserItem();
 
                 $from = $this->getParameter('commsy.email.from');
+
+                // TODO: validate sender & recipient email addresses (similar to sendMultipleAction())
+                $sender = [$currentUser->getEmail() => $currentUser->getFullName()];
+                $recipient = [$item->getEmail() => $item->getFullName()];
 
                 $message = \Swift_Message::newInstance()
                     ->setSubject($formData['subject'])
                     ->setBody($formData['message'], 'text/html')
-                    ->setFrom([$from => $portalItem->getTitle()])
-                    ->setReplyTo([$currentUser->getEmail() => $currentUser->getFullName()])
-                    ->setTo([$item->getEmail() => $item->getFullName()]);
+                    ->setFrom([$from => $portalItem->getTitle()]);
+
+                if ($currentUser->isEmailVisible()) {
+                    $message->setReplyTo($sender);
+                }
 
                 // form option: copy_to_sender
                 if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-                    $message->setCc($message->getReplyTo());
+                    if ($currentUser->isEmailVisible()) {
+                        $message->setCc($sender);
+                    } else {
+                        $message->addBcc(key($sender), current($sender));
+                    }
+                }
+
+                if ($item->isEmailVisible()) {
+                    $message->setTo($recipient);
+                } else {
+                    $message->addBcc(key($recipient), current($recipient));
                 }
 
                 // send mail

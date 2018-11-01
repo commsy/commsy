@@ -62,6 +62,10 @@
                 <source>Send item</source>
                 <target>Eintrag versenden</target>
             </trans-unit>
+            <trans-unit id="mailSendBody">
+                <source>This email has been sent by sender to recipient</source>
+                <target>Diese E-Mail wurde von %sender_name% an %recipient_name% versendet.</target>
+            </trans-unit>
             <trans-unit id="mailSendSuccess">
                 <source>Your mail has been successfully send.</source>
                 <target>Ihre Mail wurde erfolgreich versendet.</target>
