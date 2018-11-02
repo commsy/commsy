@@ -2,6 +2,8 @@
 
 namespace CommsyBundle\Controller;
 
+use CommsyBundle\Entity\Calendars;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -766,15 +768,31 @@ class ProfileController extends Controller
 
         $request->setLocale($userItem->getLanguage());
 
-        $userList = $userItem->getRelatedUserList()->to_array();
-        $contextIds = array();
-        foreach ($userList as $user) {
-            $contextIds[] = $user->getContextId();
+        /**
+         * Workaround:
+         * Instead of calling getRelatedUserList directly on the current (room) user, we use the portal user.
+         * getRelatedUserList will exclude the current context and the list remains incomplete. As a portal
+         * cannot contain calenders, we make sure all relevant rooms are included.
+         */
+        $portalUser = $userItem->getRelatedPortalUserItem();
+        $relatedUsers = $portalUser->getRelatedUserList()->to_array();
+
+        $userContextIds = [];
+        foreach ($relatedUsers as $relatedUser) {
+            /** @var \cs_user_item $relatedUser */
+            $userContextIds[] = $relatedUser->getContextID();
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $repository = $em->getRepository('CommsyBundle:Calendars');
-        $calendars = $repository->findBy(array('context_id' => $contextIds, 'external_url' => array('', NULL)));
+        /** @noinspection PhpUndefinedMethodInspection */
+        $repository = $this->getDoctrine()->getRepository(Calendars::class);
+        /** @noinspection PhpUndefinedMethodInspection */
+        $calendars = $repository->findBy([
+            'context_id' => $userContextIds,
+            'external_url' => [
+                '',
+                null,
+            ],
+        ]);
 
         $dashboard = [];
         $caldav = [];
