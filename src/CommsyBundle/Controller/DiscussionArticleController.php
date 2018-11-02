@@ -19,7 +19,7 @@ class DiscussionArticleController extends BaseController
     ###################################################################################################
 
     /**
-     * @Route("/room/{roomId}/step/xhr/delete", condition="request.isXmlHttpRequest()")
+     * @Route("/room/{roomId}/discussion_article/xhr/delete", condition="request.isXmlHttpRequest()")
      * @throws \Exception
      */
     public function xhrDeleteAction($roomId, Request $request)
