@@ -22,6 +22,8 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+use Doctrine\Common\Collections;
+
 include_once('functions/text_functions.php');
 include_once('classes/cs_item.php');
 
@@ -579,6 +581,36 @@ class cs_file_item extends cs_item {
       $this->_data['has_html'] = (int)$value;
    }
 
+   /** Get the linked items of the file.
+    *
+    * @return Collections\ArrayCollection an array collection of \cs_item objects that are linked to this file
+    */
+   public function getLinkedItems(): Collections\ArrayCollection
+   {
+      // get a list of \cs_link_item_file objects
+      $linkItemManager = $this->_environment->getLinkItemFileManager();
+      $linkItemManager->resetLimits();
+      $linkItemManager->setFileIDLimit($this->getFileID());
+      $linkItemManager->select();
+      /** @var \cs_list $linkItemList */
+      $linkItemList = $linkItemManager->get();
+
+      // assemble array collection of corresponding \cs_item objects
+      $itemCollection = new Collections\ArrayCollection();
+      if (isset($linkItemList) and $linkItemList->isNotEmpty()) {
+         $linkItem = $linkItemList->getFirst();
+         while ($linkItem) {
+            $linkedItem = $linkItem->getLinkedItem();
+            if ($linkedItem) {
+               $itemCollection->add($linkedItem);
+               $linkItem = $linkItemList->getNext();
+            }
+         }
+      }
+
+      return $itemCollection;
+   }
+
    function _delete($manager) {
       $manager->delete($this->getFileID());
    }
@@ -656,7 +688,14 @@ class cs_file_item extends cs_item {
       return (string) $this->_getExtra('SCRIBD_ACCESS_KEY');
    }
 
-   public function mayEdit (cs_user_item $user_item) {
+   /**
+    * Returns true if the user represented by the given user item is allowed to edit the file,
+    * otherwise returns false.
+    *
+    * @param \cs_user_item $user_item
+    * @return bool
+    */
+   public function mayEdit(\cs_user_item $user_item) {
       $access = false;
       if ( !$user_item->isOnlyReadUser() ) {
          if ( $user_item->isRoot() or
@@ -676,24 +715,63 @@ class cs_file_item extends cs_item {
       return $access;
    }
 
-   public function mayEditLinkedItem ($user_item) {
-      $retour = false;
-      $manager = $this->_environment->getLinkItemFileManager();
-      $manager->setFileIDLimit($this->getFileID());
-      $manager->select();
-      $list = $manager->get();
-      if ( isset($list) and  $list->isNotEmpty() ) {
-         $link_item = $list->getFirst();
-         while ( $link_item ) {
-            $item = $link_item->getLinkedItem();
-            if ( $item->mayEdit($user_item) ) {
-               $retour = true;
-               break;
-            }
-            $link_item = $list->getNext();
+   /**
+    * Returns true if the user represented by the given user item is allowed to edit any of 
+    * the file's linked items, otherwise returns false.
+    *
+    * @param \cs_user_item $userItem
+    * @return bool
+    */
+   public function mayEditLinkedItem(\cs_user_item $userItem): bool
+   {
+      $itemCollection = $this->getLinkedItems();
+      if (!isset($itemCollection) or $itemCollection->isEmpty()) {
+         return false;
+      }
+
+      foreach ($itemCollection as $item) {
+         if ($item->mayEdit($userItem)) {
+            return true;
          }
       }
-      return $retour;
+
+      return false;
+   }
+
+   /**
+    * Returns true if the user represented by the given user item is allowed to see the file,
+    * otherwise returns false.
+    *
+    * @param \cs_user_item $userItem
+    * @return bool
+    */
+   public function maySee($userItem)
+   {
+      // a user who's allowed to see any of this file's linked items may also see this file
+      return $this->maySeeLinkedItem($userItem);
+   }
+
+   /**
+    * Returns true if the user represented by the given user item is allowed to see any of 
+    * the file's linked items, otherwise returns false.
+    *
+    * @param \cs_user_item $userItem
+    * @return bool
+    */
+   public function maySeeLinkedItem(\cs_user_item $userItem): bool
+   {
+      $itemCollection = $this->getLinkedItems();
+      if (!isset($itemCollection) or $itemCollection->isEmpty()) {
+         return false;
+      }
+
+      foreach ($itemCollection as $item) {
+         if ($item->maySee($userItem)) {
+            return true;
+         }
+      }
+
+      return false;
    }
 
    public function isImage () {

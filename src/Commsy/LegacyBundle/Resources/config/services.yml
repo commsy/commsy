@@ -22,6 +22,7 @@ services:
             - '@commsy_legacy.legacy_kernel'
             - '@commsy_legacy.legacy_authentication'
             - '@commsy_legacy.item_service'
+            - '@commsy_legacy.file_service'
             - '@router'
             - '@commsy_legacy.environment'
         tags:

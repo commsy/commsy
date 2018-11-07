@@ -212,7 +212,7 @@
             </trans-unit>
             <trans-unit id="room_time_pulses">
                 <source>time pulses</source>
-                <target>Zeitakte</target>
+                <target>Zeittakte</target>
             </trans-unit>
             <trans-unit id="room_time_pulses_continuous">
                 <source>continuous</source>

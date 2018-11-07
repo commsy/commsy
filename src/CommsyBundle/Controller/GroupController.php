@@ -1172,7 +1172,11 @@ class GroupController extends BaseController
                 $toBCC = [];
                 $validator = new EmailValidator();
                 $failedUsers = [];
+                /** @var \cs_user_item $user */
                 foreach ($users as $user) {
+                    if ($user->isRejected()) {
+                        continue; // ignore locked users
+                    }
                     $userEmail = $user->getEmail();
                     $userName = $user->getFullName();
                     if ($validator->isValid($userEmail, new RFCValidation())) {
@@ -1326,7 +1330,11 @@ class GroupController extends BaseController
                 $toBCC = [];
                 $validator = new EmailValidator();
                 $failedUsers = [];
+                /** @var \cs_user_item $user */
                 foreach ($users as $user) {
+                    if ($user->isRejected()) {
+                        continue; // ignore locked users
+                    }
                     $userEmail = $user->getEmail();
                     $userName = $user->getFullName();
                     if ($validator->isValid($userEmail, new RFCValidation())) {
