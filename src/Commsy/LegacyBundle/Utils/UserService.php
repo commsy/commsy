@@ -341,14 +341,32 @@ class UserService
         return 'join';
     }
 
-    public function getUsersByGroupIds($roomId, $groupIds)
+    /**
+     * Returns all users belonging to the group(s) with the given group ID(s).
+     *
+     * @param int $roomId The ID of the containing context
+     * @param mixed $groupIds The ID (or array of IDs) for the group(s) whose users shall be returned
+     * @param bool $excludeRejectedAndRegisteredUsers Whether to exclude any rejected and/or registered users
+     * @return \cs_user_item[] An array of users belonging to the group(s) with the given group ID(s)
+     */
+    public function getUsersByGroupIds($roomId, $groupIds, $excludeRejectedAndRegisteredUsers = false)
     {
+        $this->userManager->resetLimits();
+
         $this->userManager->setContextLimit($roomId);
+
         if (!is_array($groupIds)) {
             $this->userManager->setGroupArrayLimit([$groupIds]);
         } else {
             $this->userManager->setGroupArrayLimit($groupIds);
         }
+
+        if ($excludeRejectedAndRegisteredUsers) {
+            // NOTE: a status limit of `8` will cause `cs_user_manager->_performQuery()` to exclude
+            // any locked/rejected users (status = 0) and registered users (status = 1)
+            $this->userManager->setStatusLimit(8);
+        }
+
         $this->userManager->setOrder('name');
         $this->userManager->select();
         $userList = $this->userManager->get();

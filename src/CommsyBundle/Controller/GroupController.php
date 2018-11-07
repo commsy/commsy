@@ -1122,8 +1122,8 @@ class GroupController extends BaseController
         $userService = $this->get('commsy_legacy.user_service');
         $groupService = $this->get('commsy_legacy.group_service');
 
-        // TODO: filter out any locked users (#2368)
-        $users = $userService->getUsersByGroupIds($roomId, $groupIds);
+        // we exclude any locked/rejected or registered users here since these shouldn't receive any group mails
+        $users = $userService->getUsersByGroupIds($roomId, $groupIds, true);
 
         // include a footer message in the email body
         $groupCount = count($groupIds);
@@ -1172,11 +1172,7 @@ class GroupController extends BaseController
                 $toBCC = [];
                 $validator = new EmailValidator();
                 $failedUsers = [];
-                /** @var \cs_user_item $user */
                 foreach ($users as $user) {
-                    if ($user->isRejected()) {
-                        continue; // ignore locked users
-                    }
                     $userEmail = $user->getEmail();
                     $userName = $user->getFullName();
                     if ($validator->isValid($userEmail, new RFCValidation())) {
@@ -1323,18 +1319,14 @@ class GroupController extends BaseController
 
                 $from = $this->getParameter('commsy.email.from');
 
-                // TODO: filter out any locked users (#2368)
-                $users = $userService->getUsersByGroupIds($roomId, $item->getItemID());
+		        // we exclude any locked/rejected or registered users here since these shouldn't receive any group mails
+                $users = $userService->getUsersByGroupIds($roomId, $item->getItemID(), true);
 
                 $to = [];
                 $toBCC = [];
                 $validator = new EmailValidator();
                 $failedUsers = [];
-                /** @var \cs_user_item $user */
                 foreach ($users as $user) {
-                    if ($user->isRejected()) {
-                        continue; // ignore locked users
-                    }
                     $userEmail = $user->getEmail();
                     $userName = $user->getFullName();
                     if ($validator->isValid($userEmail, new RFCValidation())) {
