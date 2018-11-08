@@ -153,6 +153,7 @@ class cs_file_item extends cs_item {
       // Missing MIME-type for Flash Video File (TBD) ij 14.07.06
 
       // Vendor-specific
+      // MIME types for Microsoft Office formats according to https://blogs.msdn.microsoft.com/vsofficedeveloper/2008/05/08/office-2007-file-format-mime-types-for-http-content-streaming-2/
       $this->_icon['pdf']     = "pdf.png";
       $this->_mime['pdf']     = 'application/pdf';
       $this->_icon['fdf']     = "pdf.png";
@@ -160,26 +161,26 @@ class cs_file_item extends cs_item {
       $this->_icon['doc']     = "doc.png";
       $this->_mime['doc']     = 'application/msword';
       $this->_icon['docx']    = "doc.png";
-      $this->_mime['docx']    = 'application/msword';
+      $this->_mime['docx']    = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
       $this->_icon['dot']     = "doc.png";
       $this->_mime['dot']     = 'application/msword';
+      $this->_icon['dotx']    = "doc.png";
+      $this->_mime['dotx']    = 'application/vnd.openxmlformats-officedocument.wordprocessingml.template';
       $this->_icon['rtf']     = "doc.png";
       $this->_mime['rtf']     = 'application/rtf';
-      $this->_icon['ppt']     = "ppt.png";
-      $this->_icon['pot']     = "ppt.png";
-      $this->_icon['pptx']    = "ppt.png";
+
       //Lassi-Dateien
       $this->_icon['lsi']     = "lassi_commsy.png";
 
       //smartboard
       $this->_icon['notebook']     = "notebook.png";
-      $this->_mime['notebook']     = 'aapplication/x-smarttech-notebook';
+      $this->_mime['notebook']     = 'application/x-smarttech-notebook';
 
       $this->_icon['gallery']      = "notebook.png";
 
       //promethean
       $this->_icon['flp']     = "flipchart.png";
-      $this->_mime['flp']     = 'aapplication/application/x-asstudio';
+      $this->_mime['flp']     = 'application/x-asstudio';
 
 
       // open office
@@ -196,10 +197,27 @@ class cs_file_item extends cs_item {
       $this->_mime['odt']     = 'application/swriter';
       $this->_icon['odt']     = "ooo_writer_commsy.png";
 
-      // Missing MIME-type for PowerPoint (TBD) mj 20.03.03
+      $this->_icon['pot']     = "ppt.png";
+      $this->_mime['pot']     = 'application/vnd.ms-powerpoint';
+      $this->_icon['potx']    = "ppt.png";
+      $this->_mime['potx']    = 'application/vnd.openxmlformats-officedocument.presentationml.template';
+      $this->_icon['pps']     = "ppt.png";
+      $this->_mime['pps']     = 'application/vnd.ms-powerpoint';
+      $this->_icon['ppsx']    = "ppt.png";
+      $this->_mime['ppsx']    = 'application/vnd.openxmlformats-officedocument.presentationml.slideshow';
+      $this->_icon['ppt']     = "ppt.png";
+      $this->_mime['ppt']     = 'application/vnd.ms-powerpoint';
+      $this->_icon['pptx']    = "ppt.png";
+      $this->_mime['pptx']    = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+
       $this->_icon['xls']     = "xls.png";
-      $this->_icon['xlsx']     = "xls.png";
-      // Missing MIME-type for Excel (TBD) mj 20.03.03
+      $this->_mime['xls']     = 'application/vnd.ms-excel';
+      $this->_icon['xlsx']    = "xls.png";
+      $this->_mime['xlsx']    = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+      $this->_icon['xlt']     = "xls.png";
+      $this->_mime['xlt']     = 'application/vnd.ms-excel';
+      $this->_icon['xltx']    = "xls.png";
+      $this->_mime['xltx']    = 'application/vnd.openxmlformats-officedocument.spreadsheetml.template';
 
       $this->_icon['vsd']      = "visio.png";
       $this->_mime['vsd']      = 'application/x-visio';
