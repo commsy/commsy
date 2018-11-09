@@ -279,7 +279,6 @@ HTML;
         $corporationURL = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_CORPORATION_URL');
         $corporationShortTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_CORPORATION_ABBREVIATION');
         $corporationTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_CORPORATION_TITLE');
-        $loginTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LOGIN_TITLE');
         $altPageTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_ALT_PAGE_TITLE');
 
         $portalID = $this->_environment->getCurrentPortalID();
@@ -300,9 +299,6 @@ HTML;
         <ul class="nav d-flex">
           <li class="nav-item p-1 first d-block d-md-none">
             <a class="nav-link" href="$corporationURL" title="$corporationTitle">$corporationShortTitle</a>
-          </li>
-          <li class="nav-item p-1 second">
-            <a class="nav-link active" href="$loginURL">$loginTitle</a>
           </li>
           <li class="nav-item ml-auto p-1 last">
             <a class="nav-link" href="$altPageURL">$altPageTitle</a>
