@@ -297,10 +297,10 @@ HTML;
       <div class="container">
         <!-- Top Navigation -->
         <ul class="nav d-flex">
-          <li class="nav-item p-1 first d-block d-md-none">
+          <li class="nav-item first d-md-none">
             <a class="nav-link" href="$corporationURL" title="$corporationTitle">$corporationShortTitle</a>
           </li>
-          <li class="nav-item ml-auto p-1 last">
+          <li class="nav-item ml-auto last">
             <a class="nav-link" href="$altPageURL">$altPageTitle</a>
           </li>
         </ul>
