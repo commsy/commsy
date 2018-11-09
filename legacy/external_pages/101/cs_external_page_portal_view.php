@@ -277,7 +277,6 @@ HTML;
     public function _getHeaderAsHTML()
     {
         $corporationURL = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_CORPORATION_URL');
-        $corporationShortTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_CORPORATION_ABBREVIATION');
         $corporationTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_CORPORATION_TITLE');
         $altPageTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_ALT_PAGE_TITLE');
 
@@ -298,7 +297,7 @@ HTML;
         <!-- Top Navigation -->
         <ul class="nav d-flex">
           <li class="nav-item first d-md-none">
-            <a class="nav-link" href="$corporationURL" title="$corporationTitle">$corporationShortTitle</a>
+            <a class="nav-link" href="$corporationURL">$corporationTitle</a>
           </li>
           <li class="nav-item ml-auto last">
             <a class="nav-link" href="$altPageURL">$altPageTitle</a>
