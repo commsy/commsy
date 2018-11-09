@@ -322,7 +322,6 @@ HTML;
         $corporationTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_CORPORATION_SHORT_TITLE');
         $corporationLogoFileName = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_CORPORATION_LOGO_FILE_NAME');
         $corporationLogoURL = "css/external_portal_styles/" . $portalID . "/img/" . $corporationLogoFileName;
-        $sitePageTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_PAGE_TITLE');
         $siteShortTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_SHORT_TITLE');
         $siteTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_TITLE');
         $siteURL = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_URL');
@@ -330,14 +329,8 @@ HTML;
         $siteLogoURL = "css/external_portal_styles/" . $portalID . "/img/" . $siteLogoFileName;
 
         $html = <<<HTML
-    <!-- Site name + Slogan -->
-    <div class="container container-sitename d-block d-md-none">
-      <h1><a href="$siteURL" title="$siteShortTitle $sitePageTitle">$siteShortTitle</a></h1>
-      <p>$siteTitle</p>
-    </div>
-
     <!-- Logos -->
-    <div class="container container-logos d-none d-md-block">
+    <div class="container container-logos d-md-block">
       <div class="d-flex justify-content-between">
         <span class="logo-uhh"><img src="$corporationLogoURL" alt="Logo $corporationTitle" /></span>
         <span class="logo-agora"><img src="$siteLogoURL" alt="$siteShortTitle-Logo" /></span>
