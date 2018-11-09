@@ -116,7 +116,7 @@ files/temp
 
 external_pages/[0-9]*
 htdocs/css/external_portal_styles/[0-9]*
-web/css/external_portal_styles/[0-9]*
+# web/css/external_portal_styles/[0-9]*
 
 !.bowerrc
 !.gitlab-ci.yml

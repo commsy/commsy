@@ -1,0 +1,35 @@
+<?php
+$message["EXTERNALMESSAGES_PORTAL_CORPORATION_ABBREVIATION"]["de"] = "UHH";
+$message["EXTERNALMESSAGES_PORTAL_CORPORATION_SHORT_TITLE"]["de"] = "Uni Hamburg";
+$message["EXTERNALMESSAGES_PORTAL_CORPORATION_TITLE"]["de"] = "Universität Hamburg";
+$message["EXTERNALMESSAGES_PORTAL_CORPORATION_URL"]["de"] = "https://www.uni-hamburg.de/";
+$message["EXTERNALMESSAGES_PORTAL_CORPORATION_LOGO_FILE_NAME"]["de"] = "logo-uhh.svg";
+$message["EXTERNALMESSAGES_PORTAL_LOGIN_TITLE"]["de"] = "Login";
+$message["EXTERNALMESSAGES_PORTAL_ALT_PAGE_TITLE"]["de"] = "English";
+$message["EXTERNALMESSAGES_PORTAL_SITE_PAGE_SHORT_TITLE"]["de"] = "Start";
+$message["EXTERNALMESSAGES_PORTAL_SITE_PAGE_TITLE"]["de"] = "Startseite";
+$message["EXTERNALMESSAGES_PORTAL_SITE_SHORT_TITLE"]["de"] = "AGORA";
+$message["EXTERNALMESSAGES_PORTAL_SITE_TITLE"]["de"] = "ePlattform der Fakultät für Geisteswissenschaften";
+$message["EXTERNALMESSAGES_PORTAL_SITE_URL"]["de"] = "https://www.agora.uni-hamburg.de/";
+$message["EXTERNALMESSAGES_PORTAL_SITE_LOGO_FILE_NAME"]["de"] = "logo-agora--de.png";
+$message["EXTERNALMESSAGES_PORTAL_SITE_EMAIL"]["de"] = "agora@uni-hamburg.de";
+$message["EXTERNALMESSAGES_PORTAL_NAV_LINK_SHORT_TITLE_HELP"]["de"] = "Hilfe";
+$message["EXTERNALMESSAGES_PORTAL_NAV_LINK_TITLE_HELP"]["de"] = "Hilfe bei der Nutzung";
+$message["EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_HELP"]["de"] = "https://www.agora.uni-hamburg.de/hilfe-bei-der-nutzung";
+$message["EXTERNALMESSAGES_PORTAL_NAV_LINK_SHORT_TITLE_ABOUT"]["de"] = "Über";
+$message["EXTERNALMESSAGES_PORTAL_NAV_LINK_TITLE_ABOUT"]["de"] = "Über AGORA";
+$message["EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_ABOUT"]["de"] = "https://www.agora.uni-hamburg.de/ueber-agora";
+$message["EXTERNALMESSAGES_PORTAL_NAV_LINK_TITLE_CONTACT"]["de"] = "Kontakt";
+$message["EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_CONTACT"]["de"] = "https://www.agora.uni-hamburg.de/kontakt";
+$message["EXTERNALMESSAGES_PORTAL_ACCOUNT_LABEL"]["de"] = "Kennung";
+$message["EXTERNALMESSAGES_PORTAL_ACCOUNT_STATUS"]["de"] = "Angemeldet";
+$message["EXTERNALMESSAGES_PORTAL_ACCOUNT_LINK_TITLE_FORGOT"]["de"] = "Kennung vergessen?";
+$message["EXTERNALMESSAGES_PORTAL_PASSWORD_LABEL"]["de"] = "Passwort";
+$message["EXTERNALMESSAGES_PORTAL_PASSWORD_LINK_TITLE_FORGOT"]["de"] = "Passwort vergessen?";
+$message["EXTERNALMESSAGES_PORTAL_PASSWORD_LINK_TITLE_SHOW"]["de"] = "Passwort anzeigen";
+$message["EXTERNALMESSAGES_PORTAL_SUBMIT_BUTTON_TITLE"]["de"] = "Anmelden";
+$message["EXTERNALMESSAGES_PORTAL_LOGGEDIN_SUBMIT_BUTTON_TITLE"]["de"] = "Persönlicher Bereich";
+$message["EXTERNALMESSAGES_PORTAL_INDICATIONS_TITLE"]["de"] = "Hinweise";
+$message["EXTERNALMESSAGES_PORTAL_SOURCE_LABEL"]["de"] = "Quelle";
+$message["EXTERNALMESSAGES_PORTAL_GUEST_ACCESS_LINK_TITLE"]["de"] = "Weiter ohne Login";
+?>

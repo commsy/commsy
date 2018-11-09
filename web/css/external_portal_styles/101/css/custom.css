@@ -1,0 +1,196 @@
+/* General */
+body {
+  font-family: 'Open Sans',Arial,Helvetica,sans-serif;
+  color: #444;
+}
+a {
+  color: #c40017;
+}
+h2 {
+  color: #4e4e4e;
+  font-size: 1.5rem;
+  font-weight: normal;
+}
+.btn-primary {
+  background-color: #027bcb;
+  border-color: #027bcb;
+}
+
+/* Top Navigation */
+.container-topnav {
+  background: #027bcb;
+  line-height: 1;
+}
+.container-topnav .first,
+.container-topnav .second {
+  padding-left: 0!important;
+}
+.container-topnav .first .nav-link,
+.container-topnav .second .nav-link {
+  padding-left: 0;
+}
+.container-topnav .last {
+  padding-right: 0!important;
+}
+.container-topnav .last .nav-link {
+  padding-right: 0;
+}
+.container-topnav .nav-link {
+  color: #fff;
+}
+.container-topnav .nav-link:focus,
+.container-topnav .nav-link:hover,
+.container-topnav .nav-link.active {
+  text-decoration: underline;
+}
+@media (min-width: 768px) {
+  .container-topnav {
+    text-transform: uppercase;
+  }
+}
+
+/* Site name + Slogan */
+.container-sitename {
+    padding-top: 1rem;
+}
+.container-sitename h1 {
+    margin-bottom: 0;
+    font-size: 1.375rem;
+    font-weight: bold;
+}
+.container-sitename a {
+  color: #ad6b20;
+}
+.container-sitename p {
+  font-size: 0.75rem;
+}
+
+/* Logos */
+.container-logos {
+  padding-top: 4rem;
+  padding-bottom: 3rem;
+}
+.container-logos img {
+  max-width: 100%;
+  height: auto;
+}
+.logo-uhh {
+  max-width: 160px;
+}
+.logo-agora {
+  max-width: 150px;
+}
+@media (min-width: 992px) {
+  .logo-uhh {
+    max-width: 220px;
+  }
+  .logo-agora {
+    max-width: 210px;
+  }
+}
+@media (min-width: 1200px) {
+  .logo-uhh {
+    max-width: 270px;
+  }
+  .logo-agora {
+    max-width: 260px;
+  }
+}
+
+/* Main Navigation */
+.container-mainnav {
+  margin-bottom: 1.5rem;
+  background: #ddd;
+  font-size: 1rem;
+}
+.container-mainnav .nav-link {
+  padding: .625rem;
+  color: #333;
+}
+.container-mainnav .nav-link:focus,
+.container-mainnav .nav-link:hover,
+.container-mainnav .nav-link.active {
+  color: #027bcb;
+}
+.container-mainnav .first .nav-link {
+  padding-left: 0;
+}
+.container-mainnav .last .nav-link {
+  padding-right: 0;
+}
+@media (min-width: 576px) {
+  .container-mainnav {
+  }
+  .container-mainnav .nav-link {
+    padding: .5rem 1rem;
+  }
+}
+@media (min-width: 768px) {
+  .container-mainnav {
+    padding: 1rem;
+    background: none;
+    font-size: 1.125rem;
+  }
+}
+@media (min-width: 992px) {
+  .container-mainnav {
+    font-size: 1.25rem;
+  }
+}
+@media (min-width: 1200px) {
+  .container-mainnav {
+    font-size: 1.5rem;
+  }
+}
+
+/* Content */
+form#login {
+  margin: 1rem 0 3rem;
+}
+@media (min-width: 768px) {
+  form#login {
+    margin-top: 2rem;
+  }
+}
+
+form .required {
+  display: none;
+}
+
+/* Password Form Field */
+.password-background {
+  position: relative;
+  top: -37px;
+  margin-bottom: -37px;
+  height: 37px;
+  width: 0;
+  border-radius: 4px;
+  z-index: -1;
+  /* CSS Transitions */
+  -webkit-transition: all .3s ease-in-out;
+  -moz-transition: all .3s ease-in-out;
+  -o-transition: all .3s ease-in-out;
+  -ms-transition: all .3s ease-in-out;
+  transition: all .3s ease-in-out;
+}
+
+/* Error Box */
+.container-errorbox {
+}
+
+
+/* Footer */
+footer {
+  margin-top: 1rem;
+  padding-top: 1.25rem;
+  padding-bottom: 1.75rem;
+  background: #027bcb;
+  color: #fff;
+  text-align: center;
+}
+footer .nav {
+  padding: 0.75rem 0;
+}
+footer .nav-link {
+  color: #fff;
+}
