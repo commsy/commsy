@@ -782,13 +782,10 @@ HTML;
             return '';
         }
 
-        $indicationsTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_INDICATIONS_TITLE');
-
         $html = LF . <<<HTML
 
         <!-- Secondary Content -->
         <div class="col-md-4 offset-md-1 order-1 order-md-2">
-          <h2 class="text-uppercase">$indicationsTitle</h2>
 {$this->_getServerAndPortalNewsAsHTML()}
         </div>
 HTML;
@@ -873,14 +870,14 @@ HTML;
         $html = '';
 
         $html .= <<<HTML
-            <div class="row bg-light mt-3">
+            <div class="row mb-3">
 HTML;
 
         if (!empty($newsTitle)) {
             $newsTitle = $this->_text_as_html_short($newsTitle);
             $html .= LF . <<<HTML
-              <div class="col-sm-12 p-2">
-                <span class="font-weight-bold">
+              <div>
+                <h2 class="text-uppercase">
 HTML;
 
             if (!empty($newsLinkURL)) {
@@ -893,7 +890,7 @@ HTML;
             }
 
             $html .= <<<HTML
-</span>
+</h2>
               </div>
 HTML;
         }
@@ -901,7 +898,7 @@ HTML;
         if (!empty($newsText)) {
             $newsText = $this->_cleanDataFromTextArea($newsText);
             $html .= LF . <<<HTML
-              <div class="col-sm-12 p-2">
+              <div>
                 $newsText
               </div>
 HTML;
