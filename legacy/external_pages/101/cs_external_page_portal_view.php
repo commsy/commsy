@@ -403,12 +403,15 @@ HTML;
         $loginTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LOGIN_TITLE');
         $contentTitle = ($loggedIn) ? $siteShortTitle : $siteShortTitle . "-" . $loginTitle;
 
+        $secondaryContent = $this->_getSecondaryContentAsHTML();
+        $additionalCSSClasses = (!empty($secondaryContent)) ? ' order-2 order-md-1' : '';
+
         $html = <<<HTML
     <!-- Content -->
     <div class="container container-content">
       <div class="row">
         <!-- Main Content -->
-        <div class="col-md-7">
+        <div class="col-md-7$additionalCSSClasses">
           <h2 class="text-uppercase">$contentTitle</h2>
 HTML;
 
@@ -429,8 +432,6 @@ HTML;
                 $html .= LF . $this->_getChangePasswordFormAsHTML();
             }
         }
-
-        $secondaryContent = $this->_getSecondaryContentAsHTML();
 
         $html .= LF . <<<HTML
         </div>$secondaryContent
@@ -786,7 +787,7 @@ HTML;
         $html = LF . <<<HTML
 
         <!-- Secondary Content -->
-        <div class="col-md-4 offset-md-1">
+        <div class="col-md-4 offset-md-1 order-1 order-md-2">
           <h2 class="text-uppercase">$indicationsTitle</h2>
 {$this->_getServerAndPortalNewsAsHTML()}
         </div>
