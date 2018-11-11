@@ -518,7 +518,7 @@ HTML;
             <div class="form-group row">
               <label for="inputUsername" class="col-sm-2 col-form-label sr-only">$accountLabel</label>
               <div class="col-sm-10">
-                <input type="text" class="form-control" id="inputUsername" name="user_id" placeholder="$accountLabel" required />
+                <input type="text" class="form-control" id="inputUsername" name="user_id" placeholder="$accountLabel" autofocus="autofocus" required />
                 <div class="d-flex justify-content-between">
                   <small id="usernameHelpBlock" class="form-text text-muted">$forgotAccountLink</small>
                   <small id="newuserHelpBlock" class="form-text text-muted">$createAccountLink</small>
