@@ -349,14 +349,11 @@ HTML;
     public function _getMainNavigationAsHTML()
     {
         $sitePageShortTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_PAGE_SHORT_TITLE');
-        $sitePageTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_PAGE_TITLE');
         $siteURL = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_URL');
         $loginTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LOGIN_TITLE');
         $navLinkShortTitleHelp = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_SHORT_TITLE_HELP');
-        $navLinkTitleHelp = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_TITLE_HELP');
         $navLinkURLHelp = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_HELP');
         $navLinkShortTitleAbout = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_SHORT_TITLE_ABOUT');
-        $navLinkTitleAbout = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_TITLE_ABOUT');
         $navLinkURLAbout = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_ABOUT');
         $navLinkTitleContact = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_TITLE_CONTACT');
         $navLinkURLContact = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_CONTACT');
@@ -369,25 +366,16 @@ HTML;
     <div class="container container-mainnav">
       <ul class="nav">
         <li class="nav-item first">
-          <a class="nav-link" href="$siteURL">
-            <span class="d-inline d-sm-none">$sitePageShortTitle</span>
-            <span class="d-none d-sm-inline">$sitePageTitle</span>
-          </a>
+          <a class="nav-link" href="$siteURL">$sitePageShortTitle</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" href="$loginURL">$loginTitle</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="$navLinkURLHelp">
-            <span class="d-inline d-md-none">$navLinkShortTitleHelp</span>
-            <span class="d-none d-md-inline">$navLinkTitleHelp</span>
-          </a>
+          <a class="nav-link" href="$navLinkURLHelp">$navLinkShortTitleHelp</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="$navLinkURLAbout">
-            <span class="d-inline d-sm-none">$navLinkShortTitleAbout</span>
-            <span class="d-none d-sm-inline">$navLinkTitleAbout</span>
-          </a>
+          <a class="nav-link" href="$navLinkURLAbout">$navLinkShortTitleAbout</a>
         </li>
         <li class="nav-item last">
           <a class="nav-link" href="$navLinkURLContact">$navLinkTitleContact</a>
