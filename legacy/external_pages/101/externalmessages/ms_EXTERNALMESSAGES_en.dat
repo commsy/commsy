@@ -1,7 +1,7 @@
 <?php
 $message["EXTERNALMESSAGES_PORTAL_CORPORATION_ABBREVIATION"]["en"] = "UHH";
 $message["EXTERNALMESSAGES_PORTAL_CORPORATION_SHORT_TITLE"]["en"] = "Uni Hamburg";
-$message["EXTERNALMESSAGES_PORTAL_CORPORATION_TITLE"]["en"] = "University of Hamburg";
+$message["EXTERNALMESSAGES_PORTAL_CORPORATION_TITLE"]["en"] = "Universität Hamburg";
 $message["EXTERNALMESSAGES_PORTAL_CORPORATION_URL"]["en"] = "https://www.uni-hamburg.de/en.html";
 $message["EXTERNALMESSAGES_PORTAL_CORPORATION_LOGO_FILE_NAME"]["en"] = "logo-uhh.svg";
 $message["EXTERNALMESSAGES_PORTAL_LOGIN_TITLE"]["en"] = "Login";
