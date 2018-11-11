@@ -1025,15 +1025,25 @@ HTML;
      */
     public function _getFooterAsHTML()
     {
-        $sitePageTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_PAGE_TITLE');
-        $siteShortTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_SHORT_TITLE');
-        $siteTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_TITLE');
+        $html = $this->_getSiteFooterAsHTML();
+        $html .= LF . LF . $this->_getCorporateFooterAsHTML();
+
+        return $html;
+    }
+
+
+    /** Get the site-specific part of the visible page footer as HTML.
+     * @return string site-specific page footer as HTML
+     * @author CommSy Development Group
+     */
+    public function _getSiteFooterAsHTML()
+    {
+        $sitePageShortTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_PAGE_SHORT_TITLE');
         $siteURL = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_URL');
-        $siteEmail = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_EMAIL');
         $loginTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LOGIN_TITLE');
-        $navLinkTitleHelp = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_TITLE_HELP');
+        $navLinkShortTitleHelp = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_SHORT_TITLE_HELP');
         $navLinkURLHelp = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_HELP');
-        $navLinkTitleAbout = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_TITLE_ABOUT');
+        $navLinkShortTitleAbout = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_SHORT_TITLE_ABOUT');
         $navLinkURLAbout = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_ABOUT');
         $navLinkTitleContact = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_TITLE_CONTACT');
         $navLinkURLContact = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_CONTACT');
@@ -1042,32 +1052,82 @@ HTML;
         $loginURL = curl($portalID, 'context', 'login', '');
 
         $html = <<<HTML
-    <!-- Footer -->
+    <!-- Footer AGORA -->
     <footer class="container-fluid">
       <div class="container">
-        <!-- Footer Navigation -->
-        <ul class="nav justify-content-center">
-          <li class="nav-item">
-            <a class="nav-link active" href="$siteURL">$sitePageTitle</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="$loginURL">$loginTitle</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="$navLinkURLHelp">$navLinkTitleHelp</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="$navLinkURLAbout">$navLinkTitleAbout</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="$navLinkURLContact">$navLinkTitleContact</a>
-          </li>
-        </ul>
-        <div class="text-center">
-          <p>$siteShortTitle · $siteTitle · $siteEmail</p>
-        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <!-- Footer Navigation -->
+            <ul class="nav flex-column flex-sm-row">
+              <li class="nav-item">
+                <a class="nav-link" href="$siteURL">$sitePageShortTitle</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="$loginURL">$loginTitle</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="$navLinkURLHelp">$navLinkShortTitleHelp</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="$navLinkURLAbout">$navLinkShortTitleAbout</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="$navLinkURLContact">$navLinkTitleContact</a>
+              </li>
+            </ul>
+          </div>
+        </div> 
       </div>
     </footer>
+HTML;
+
+        return $html;
+    }
+
+
+    /** Get the corporate-specific part of the visible page footer as HTML.
+     * @return string corporate-specific page footer as HTML
+     * @author CommSy Development Group
+     */
+    public function _getCorporateFooterAsHTML()
+    {
+        // NOTE: ATM, we don't display the year as part of the copyright string
+        $currentYear = ''; // date('Y');
+        $corporationTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_CORPORATION_TITLE');
+        $copyrightNotice = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_COPYRIGHT_NOTICE');
+
+        $html = <<<HTML
+    <!-- Footer UHH -->
+    <div class="container-fluid footer-uhh">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <p>&copy; $currentYear $corporationTitle. $copyrightNotice</p>
+          </div>
+HTML;
+
+// TODO: include any sponsors or credits?
+/*
+        $html .= LF . <<<HTML
+          <!-- 
+          <div class="col-md-3">
+            <p>Platzhalter<br />
+            Sponsoren-Logo</p>
+          </div>
+          -->
+          <!-- 
+          <div class="col-md-3">
+            <p>Platzhalter<br />
+            Danksagung</p>
+          </div>
+          -->
+HTML;
+*/
+
+        $html .= LF . <<<HTML
+        </div>
+      </div>
+    </div>
 HTML;
 
         return $html;

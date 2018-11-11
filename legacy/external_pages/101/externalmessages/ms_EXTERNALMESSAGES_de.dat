@@ -32,4 +32,5 @@ $message["EXTERNALMESSAGES_PORTAL_LOGGEDIN_SUBMIT_BUTTON_TITLE"]["de"] = "Persö
 $message["EXTERNALMESSAGES_PORTAL_INDICATIONS_TITLE"]["de"] = "Hinweise";
 $message["EXTERNALMESSAGES_PORTAL_SOURCE_LABEL"]["de"] = "Quelle";
 $message["EXTERNALMESSAGES_PORTAL_GUEST_ACCESS_LINK_TITLE"]["de"] = "Weiter ohne Login";
+$message["EXTERNALMESSAGES_PORTAL_COPYRIGHT_NOTICE"]["de"] = "Alle Rechte vorbehalten";
 ?>

@@ -32,4 +32,5 @@ $message["EXTERNALMESSAGES_PORTAL_LOGGEDIN_SUBMIT_BUTTON_TITLE"]["en"] = "Dashbo
 $message["EXTERNALMESSAGES_PORTAL_INDICATIONS_TITLE"]["en"] = "Indications";
 $message["EXTERNALMESSAGES_PORTAL_SOURCE_LABEL"]["en"] = "Source";
 $message["EXTERNALMESSAGES_PORTAL_GUEST_ACCESS_LINK_TITLE"]["en"] = "Continue without Login";
+$message["EXTERNALMESSAGES_PORTAL_COPYRIGHT_NOTICE"]["en"] = "All rights reserved";
 ?>
