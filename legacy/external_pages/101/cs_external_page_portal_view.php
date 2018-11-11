@@ -515,6 +515,7 @@ HTML;
         $html .= LF . <<<HTML
           <!-- Login -->
           <form id="login" method="post" action="$formActionURL" name="login">
+{$this->_getAuthSourcesAsHTML()}{$this->_getLoginRedirectAsHTML()}
             <div class="form-group row">
               <label for="inputUsername" class="col-sm-2 col-form-label sr-only">$accountLabel</label>
               <div class="col-sm-10">
@@ -532,7 +533,6 @@ HTML;
                 <small id="passwordHelpBlock" class="form-text text-muted">$forgotPasswordLink</small>
               </div>
             </div>
-{$this->_getAuthSourcesAsHTML()}{$this->_getLoginRedirectAsHTML()}
             <div class="form-group row">
               <div class="col-sm-12">
                 <button type="submit" class="btn btn-primary" name="option" value="$submitButtonTitle">$submitButtonTitle</button>
