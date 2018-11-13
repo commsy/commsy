@@ -436,6 +436,7 @@ HTML;
         $html .= LF . <<<HTML
         </div>$secondaryContent
       </div>
+{$this->_getSiteLinklistAsHTML()}
     </div>
 HTML;
         return $html;
@@ -906,6 +907,48 @@ HTML;
 
         $html .= LF . <<<HTML
             </div>
+HTML;
+
+        return $html;
+    }
+
+
+    /** Get the site's link list as HTML.
+     * @return string site link list as HTML
+     * @author CommSy Development Group
+     */
+    public function _getSiteLinklistAsHTML()
+    {
+        $linkTitlePrivacyStatement = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_PRIVACY_STATEMENT');
+        $linkURLPrivacyStatement = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_PRIVACY_STATEMENT_URL');
+        $linkTitleLegalNotice = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LEGAL_NOTICE');
+        $linkURLLegalNotice = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LEGAL_NOTICE_URL');
+        $linkTitleTermsOfUse = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_TERMS_OF_USE');
+        $linkURLTermsOfUse = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_TERMS_OF_USE_URL');
+        $linkTitleSupport = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SUPPORT');
+        $linkURLSupport = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SUPPORT_URL');
+
+// TODO: include the correct URLs for "Terms of use" & "Support"
+        $html = LF . <<<HTML
+
+      <div class="row linklist">
+          <div class="col-md-12 d-flex">
+            <ul class="nav ml-auto">
+              <li class="nav-item">
+                <a class="nav-link first" href="$linkURLPrivacyStatement">$linkTitlePrivacyStatement</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="$linkURLLegalNotice">$linkTitleLegalNotice</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="$linkURLTermsOfUse">$linkTitleTermsOfUse</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link last" href="$linkURLSupport">$linkTitleSupport</a>
+              </li>
+            </ul>
+          </div>
+      </div>
 HTML;
 
         return $html;

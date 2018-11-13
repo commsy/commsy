@@ -32,5 +32,13 @@ $message["EXTERNALMESSAGES_PORTAL_LOGGEDIN_SUBMIT_BUTTON_TITLE"]["de"] = "Persö
 $message["EXTERNALMESSAGES_PORTAL_INDICATIONS_TITLE"]["de"] = "Hinweise";
 $message["EXTERNALMESSAGES_PORTAL_SOURCE_LABEL"]["de"] = "Quelle";
 $message["EXTERNALMESSAGES_PORTAL_GUEST_ACCESS_LINK_TITLE"]["de"] = "Weiter ohne Login";
+$message["EXTERNALMESSAGES_PORTAL_PRIVACY_STATEMENT"]["de"] = "Datenschutzerklärung";
+$message["EXTERNALMESSAGES_PORTAL_PRIVACY_STATEMENT_URL"]["de"] = "http://www.agora.uni-hamburg.de/datenschutz";
+$message["EXTERNALMESSAGES_PORTAL_LEGAL_NOTICE"]["de"] = "Impressum";
+$message["EXTERNALMESSAGES_PORTAL_LEGAL_NOTICE_URL"]["de"] = "http://www.agora.uni-hamburg.de/impressum";
+$message["EXTERNALMESSAGES_PORTAL_TERMS_OF_USE"]["de"] = "Nutzungsbedingungen";
+$message["EXTERNALMESSAGES_PORTAL_TERMS_OF_USE_URL"]["de"] = "http://www.agora.uni-hamburg.de/ueber-agora/rechtliche-fragen";
+$message["EXTERNALMESSAGES_PORTAL_SUPPORT"]["de"] = "Support";
+$message["EXTERNALMESSAGES_PORTAL_SUPPORT_URL"]["de"] = "http://www.agora.uni-hamburg.de/hilfe-bei-der-nutzung";
 $message["EXTERNALMESSAGES_PORTAL_COPYRIGHT_NOTICE"]["de"] = "Alle Rechte vorbehalten";
 ?>
