@@ -889,10 +889,11 @@ HTML;
                 <h2 class="text-uppercase">
 HTML;
 
+// TODO: instead of using `text-dark`, color the link title identical to the news text (w/ no link styling)
             if (!empty($newsLinkURL)) {
                 $newsLinkURL = $this->_text_as_html_short($newsLinkURL);
                 $html .= <<<HTML
-<a href="$newsLinkURL" class="text-muted">$newsTitle</a>
+<a href="$newsLinkURL" class="text-dark">$newsTitle</a>
 HTML;
             } else {
                 $html .= $newsTitle;
