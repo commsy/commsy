@@ -483,9 +483,11 @@ HTML;
     public function _getLoginFormAsHTML()
     {
         $accountLabel = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_ACCOUNT_LABEL');
+        $accountInputPlaceholder = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_ACCOUNT_INPUT_PLACEHOLDER');
         $forgotAccountLinkTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_ACCOUNT_LINK_TITLE_FORGOT');
         $createAccountLinkTitle = $this->_translator->getMessage('MYAREA_LOGIN_ACCOUNT_WANT_LINK');
         $passwordLabel = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_PASSWORD_LABEL');
+        $passwordInputPlaceholder = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_PASSWORD_INPUT_PLACEHOLDER');
         $forgotPasswordLinkTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_PASSWORD_LINK_TITLE_FORGOT');
         $submitButtonTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SUBMIT_BUTTON_TITLE');
         $guestAccessLinkTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_GUEST_ACCESS_LINK_TITLE');
@@ -520,7 +522,7 @@ HTML;
             <div class="form-group row">
               <label for="inputUsername" class="col-sm-2 col-form-label sr-only">$accountLabel</label>
               <div class="col-sm-10">
-                <input type="text" class="form-control" id="inputUsername" name="user_id" placeholder="$accountLabel" autofocus="autofocus" required />
+                <input type="text" class="form-control" id="inputUsername" name="user_id" placeholder="$accountInputPlaceholder" autofocus="autofocus" required />
                 <div class="d-flex justify-content-between">
                   <small id="usernameHelpBlock" class="form-text text-muted">$forgotAccountLink</small>
                   <small id="newuserHelpBlock" class="form-text text-muted">$createAccountLink</small>
@@ -530,7 +532,7 @@ HTML;
             <div class="form-group row">
               <label for="inputPassword" class="col-sm-2 col-form-label sr-only">$passwordLabel</label>
               <div class="col-sm-10">
-                <input type="password" class="form-control" id="inputPassword" name="password" placeholder="$passwordLabel" required />
+                <input type="password" class="form-control" id="inputPassword" name="password" placeholder="$passwordInputPlaceholder" required />
                 <small id="passwordHelpBlock" class="form-text text-muted">$forgotPasswordLink</small>
               </div>
             </div>
