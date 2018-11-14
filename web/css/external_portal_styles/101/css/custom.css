@@ -1,10 +1,65 @@
+/* Fonts */
+@font-face {
+  font-family: 'TheSansUHH';
+  src:  url('../fonts/TheSansUHHRegular.woff2') format('woff2'),
+        url('../fonts/TheSansUHHRegular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'TheSansUHHBold';
+  src:  url('../fonts/TheSansUHHBold.woff2') format('woff2'),
+        url('../fonts/TheSansUHHBold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'TheSansUHHSemiLightCaps';
+  src:  url('../fonts/TheSansUHHSemiLightCaps.woff2') format('woff2'),
+        url('../fonts/TheSansUHHSemiLightCaps.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'TheSansUHHRegularCaps';
+  src:  url('../fonts/TheSansUHHRegularCaps.woff2') format('woff2'),
+        url('../fonts/TheSansUHHRegularCaps.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'TheSansUHHBoldCaps';
+  src:  url('../fonts/TheSansUHHBoldCaps.woff2') format('woff2'),
+        url('../fonts/TheSansUHHBoldCaps.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
 /* General */
 body {
-  font-family: 'Open Sans',Arial,Helvetica,sans-serif;
-  color: #444;
+  font-family: 'TheSansUHH', sans-serif;
+  color: #4e4e4e;
 }
 a {
   color: #c40017;
+}
+a.tooltip-info {
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: #212121;
+  color: #fff;
+  background: #ddd;
+  color: #212121;
+  font-family: serif;
+  font-style: italic;
+  font-weight: bold;
+  line-height: 1.5rem;
+}
+a.tooltip-info:focus,
+a.tooltip-info:hover {
+  text-decoration: none;
 }
 h2 {
   color: #4e4e4e;
@@ -19,14 +74,14 @@ h2 {
 /* Top Navigation */
 .container-topnav {
   background: #027bcb;
+  font-family: 'TheSansUHHSemiLightCaps',sans-serif;
   line-height: 1;
 }
-.container-topnav .first,
-.container-topnav .second {
-  padding-left: 0!important;
+.container-topnav .container,
+.container-topnav .first {
+  padding-left: 0;
 }
-.container-topnav .first .nav-link,
-.container-topnav .second .nav-link {
+.container-topnav .first .nav-link {
   padding-left: 0;
 }
 .container-topnav .last {
@@ -37,15 +92,17 @@ h2 {
 }
 .container-topnav .nav-link {
   color: #fff;
+  padding: .4375rem 1rem;
+}
 }
 .container-topnav .nav-link:focus,
 .container-topnav .nav-link:hover,
 .container-topnav .nav-link.active {
   text-decoration: underline;
 }
-@media (min-width: 768px) {
-  .container-topnav {
-    text-transform: uppercase;
+@media (min-width: 576px) {
+  .container-topnav .container {
+    padding-left: 15px;
   }
 }
 
@@ -67,20 +124,38 @@ h2 {
 
 /* Logos */
 .container-logos {
-  padding-top: 4rem;
-  padding-bottom: 3rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 .container-logos img {
   max-width: 100%;
   height: auto;
 }
 .logo-uhh {
-  max-width: 160px;
+  max-width: 140px;
 }
 .logo-agora {
-  max-width: 150px;
+  max-width: 130px;
+  padding-top: .25rem;
+}
+@media (min-width: 360px) {
+  .logo-uhh {
+    max-width: 160px;
+  }
+  .logo-agora {
+    max-width: 150px;
+  }
+}
+@media (min-width: 576px) {
+  .container-logos {
+    padding-top: 2rem;
+    padding-bottom: 1.5rem;
+  }
 }
 @media (min-width: 992px) {
+  .container-logos {
+    padding-top: 2.5rem;
+  }
   .logo-uhh {
     max-width: 220px;
   }
@@ -94,6 +169,7 @@ h2 {
   }
   .logo-agora {
     max-width: 260px;
+    padding-top: .3125rem;
   }
 }
 
@@ -101,6 +177,7 @@ h2 {
 .container-mainnav {
   margin-bottom: 1.5rem;
   background: #ddd;
+  font-family: TheSansUHHBold;
   font-size: 1rem;
 }
 .container-mainnav .nav-link {
@@ -120,6 +197,7 @@ h2 {
 }
 @media (min-width: 576px) {
   .container-mainnav {
+    background: none;
   }
   .container-mainnav .nav-link {
     padding: .5rem 1rem;
@@ -128,7 +206,6 @@ h2 {
 @media (min-width: 768px) {
   .container-mainnav {
     padding: 1rem;
-    background: none;
     font-size: 1.125rem;
   }
 }
@@ -139,13 +216,22 @@ h2 {
 }
 @media (min-width: 1200px) {
   .container-mainnav {
-    font-size: 1.5rem;
+    font-size: 1.5625rem;
   }
 }
 
 /* Content */
 form#login {
   margin: 1rem 0 3rem;
+}
+/* 
+#login .form-control {
+  display: inline-block;
+  max-width: 80%;
+}
+ */
+#login a.tooltip-info {
+  margin-left: .5rem;
 }
 @media (min-width: 768px) {
   form#login {
@@ -178,19 +264,48 @@ form .required {
 .container-errorbox {
 }
 
+/* Linklist */
+.linklist .nav-link {
+  padding: 0 .75rem;
+  color: #4e4e4e;
+  font-family: TheSansUHHBold;
+  font-size: 14px;
+}
+.linklist .nav-link:before {
+  content: ">";
+  margin-right: .25rem;
+}
+.linklist .nav-link.first {
+  padding-left: 0;
+}
+.linklist .nav-link.last {
+  padding-right: 0;
+}
 
 /* Footer */
 footer {
-  margin-top: 1rem;
-  padding-top: 1.25rem;
-  padding-bottom: 1.75rem;
+  margin-top: .5rem;
+  padding: 2rem 1rem 1.25rem;
   background: #027bcb;
   color: #fff;
-  text-align: center;
-}
-footer .nav {
-  padding: 0.75rem 0;
 }
 footer .nav-link {
+  padding-left: 0;
+  color: #fff;
+}
+footer .nav-link:first-of-type {
+  padding-top: 0;
+}
+@media (min-width: 1200px) {
+	footer {
+		padding: 4.25rem 1.25rem 9.125rem;
+	}
+}
+
+
+/* Footer UHH */
+.footer-uhh {
+  padding: 4.25rem 1.25rem 9.125rem;
+  background: #3b515c;
   color: #fff;
 }
