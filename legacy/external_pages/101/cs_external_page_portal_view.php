@@ -192,7 +192,10 @@ HTML;
      */
     public function _getHTMLHeadAsHTML()
     {
-        $siteShortTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_SHORT_TITLE');
+        $currentPortal = $this->_environment->getCurrentPortalItem();
+        $portalName = $currentPortal->getTitle();
+
+        $siteShortTitle = (!empty($portalName)) ? $portalName : $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_SHORT_TITLE');
         $loginTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LOGIN_TITLE');
 
         $html = <<<HTML
@@ -203,7 +206,7 @@ HTML;
 
 {$this->_getJavaScriptAsHTML()}
 
-    <title>$siteShortTitle - CommSy $loginTitle</title>
+    <title>$siteShortTitle-$loginTitle</title>
   </head>
 HTML;
 
@@ -399,7 +402,10 @@ HTML;
         $loggedIn = $this->_isUserLoggedIn(); // `true` if user is logged in on current portal
         $csModus = $this->_getCommSyModus();
 
-        $siteShortTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_SHORT_TITLE');
+        $currentPortal = $this->_environment->getCurrentPortalItem();
+        $portalName = $currentPortal->getTitle();
+
+        $siteShortTitle = (!empty($portalName)) ? $portalName : $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SITE_SHORT_TITLE');
         $loginTitle = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_LOGIN_TITLE');
         $contentTitle = ($loggedIn) ? $siteShortTitle : $siteShortTitle . "-" . $loginTitle;
 
