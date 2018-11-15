@@ -288,8 +288,6 @@ HTML;
         $currentFunction = $this->_environment->getCurrentFunction();
         $getVars = $this->_environment->getCurrentParameterArray();
 
-        $loginURL = curl($portalID, 'context', 'login', '');
-
         $getVars['external_language'] = $this->_getAlternateDisplayLanguage();
         $altPageURL = curl($portalID, $currentModule, $currentFunction, $getVars);
 
@@ -362,7 +360,7 @@ HTML;
         $navLinkURLContact = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_CONTACT');
 
         $portalID = $this->_environment->getCurrentPortalID();
-        $loginURL = curl($portalID, 'context', 'login', '');
+        $loginURL = curl($portalID, 'home', 'index', '');
 
         $html = <<<HTML
     <!-- Main Navigation -->
@@ -1117,7 +1115,7 @@ HTML;
         $navLinkURLContact = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_NAV_LINK_URL_CONTACT');
 
         $portalID = $this->_environment->getCurrentPortalID();
-        $loginURL = curl($portalID, 'context', 'login', '');
+        $loginURL = curl($portalID, 'home', 'index', '');
 
         $html = <<<HTML
     <!-- Footer AGORA -->
