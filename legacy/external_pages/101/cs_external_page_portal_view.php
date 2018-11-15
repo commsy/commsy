@@ -939,7 +939,6 @@ HTML;
 
 // TODO: include the correct URLs for "Terms of use" & "Support"
         $html = LF . <<<HTML
-
       <div class="row linklist">
           <div class="col-md-12 d-flex">
             <ul class="nav ml-auto">
@@ -1006,14 +1005,31 @@ HTML;
         while ($authSourceItem) {
             ++$i;
             $authSourceID = $authSourceItem->getItemID();
+            $authSourceType = $authSourceItem->getSourceType();
             $authSourceName = $authSourceItem->getTitle();
             $authSourceDefault = ($authSourceID == $defaultAuthSourceID ? ' checked' : '');
+
+            // NOTE: any auth source whose source type is "LDAP" is regarded as the corporate auth source and associated
+            // with the corresponding tooltip; an auth source with the default "MYSQL" type gets the "site" tooltip instead
+            $authSourceTooltip = '';
+            if ($authSourceType === "MYSQL") {
+                $authSourceTooltip = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SOURCE_TOOLTIP_SITE');
+            } elseif ($authSourceType === "LDAP") {
+                $authSourceTooltip = $this->_translator->getMessage('EXTERNALMESSAGES_PORTAL_SOURCE_TOOLTIP_CORPORATE');
+            }
+            if (!empty($authSourceTooltip)) {
+                $tooltipHTML = LF . <<<HTML
+                    <a class="tooltip-info text-center align-middle" href="#" data-toggle="tooltip" title="$authSourceTooltip">i</a>
+HTML;
+            }
+
             $html .= LF . <<<HTML
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="auth_source" id="radioSource{$i}" value="$authSourceID"$authSourceDefault />
-                    <label class="form-check-label" for="radioSource{$i}">$authSourceName</label>
+                    <label class="form-check-label" for="radioSource{$i}">$authSourceName</label>$tooltipHTML
                   </div>
 HTML;
+
             $authSourceItem = $authSourceList->getNext();
         }
 
@@ -1201,6 +1217,11 @@ HTML;
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="css/external_portal_styles/$portalID/js/strength.js"></script> 
+    <script>
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+    </script>
 HTML;
 
         return $html;
