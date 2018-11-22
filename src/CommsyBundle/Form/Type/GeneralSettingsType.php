@@ -189,7 +189,7 @@ class GeneralSettingsType extends AbstractType
             {
                 $form
                     ->add('time_pulses', ChoiceType::class, [
-                        'label' => 'Time context',
+                        'label' => $this->getTimeIntervalsDisplayName(),
                         'required' => false,
                         'choices' => $this->getTimeChoices(),
                         'multiple' => true,
@@ -222,6 +222,21 @@ class GeneralSettingsType extends AbstractType
     public function getBlockPrefix()
     {
         return 'general_settings';
+    }
+
+    /**
+     * Returns the display name for time intervals as specified in the current portal configuration
+     * for the currently selected language.
+     */
+    private function getTimeIntervalsDisplayName()
+    {
+        $currentPortal = $this->legacyEnvironment->getCurrentPortalItem();
+        $displayName = $currentPortal->getCurrentTimeName();
+        if (empty($displayName)) {
+            $displayName = 'Time context';
+        }
+
+        return $displayName;
     }
 
     private function getTimeChoices()
