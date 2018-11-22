@@ -994,12 +994,7 @@ class RoomController extends Controller
 
         $current_portal = $legacyEnvironment->getCurrentPortalItem();
 
-        $timesDisplay = '';
-        if ($current_portal->getTimeNameArray() && !empty($current_portal->getTimeNameArray())) {
-            if (isset($current_portal->getTimeNameArray()[strtoupper($legacyEnvironment->getSelectedLanguage())])) {
-                $timesDisplay = $current_portal->getTimeNameArray()[strtoupper($legacyEnvironment->getSelectedLanguage())];
-            }
-        }
+        $timesDisplay = $current_portal->getCurrentTimeName();
 
         $times = [];
         if ($current_portal->showTime()) {

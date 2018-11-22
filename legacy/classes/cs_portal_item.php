@@ -720,6 +720,24 @@ class cs_portal_item extends cs_guide_item {
      $this->setRubricArray(CS_TIME_TYPE, $value2);
    }
 
+   /** return the current display string for time intervals as specified in
+    * the current portal configuration for the currently selected language
+    */
+   function getCurrentTimeName()
+   {
+      $timeNamesByLanguage = $this->getTimeNameArray();
+      $lang = strtoupper($this->_environment->getSelectedLanguage());
+
+      $timeName = '';
+      if ($timeNamesByLanguage && !empty($timeNamesByLanguage)) {
+         if (isset($timeNamesByLanguage[$lang])) {
+            $timeName = $timeNamesByLanguage[$lang];
+         }
+      }
+
+      return $timeName;
+   }
+
    function _getShowTime () {
       $retour = '';
       if ($this->_issetExtra('TIME_SHOW')) {
