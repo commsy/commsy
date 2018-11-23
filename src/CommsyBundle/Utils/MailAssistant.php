@@ -97,12 +97,14 @@ class MailAssistant
         return false;
     }
 
-    public function getSwiftMessage($formData, $item): \Swift_Message
+    public function getSwiftMessage($formData, $item, $forceBCCMail = false): \Swift_Message
     {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         $recipients = $this->getRecipients($formData, $item);
+        $to = $recipients['to'];
+        $toBCC = $recipients['bcc'];
 
         $replyTo = [];
         if ($currentUser->isEmailVisible()) {
@@ -113,9 +115,20 @@ class MailAssistant
             ->setSubject($formData['subject'])
             ->setBody($formData['message'], 'text/html')
             ->setFrom([$this->from => $portalItem->getTitle()])
-            ->setReplyTo($replyTo)
-            ->setTo($recipients['to'])
-            ->setBcc($recipients['bcc']);
+            ->setReplyTo($replyTo);
+
+        if ($forceBCCMail) {
+            $allRecipients = array_merge($to, $toBCC);
+            $message->setBcc($allRecipients);
+        } else {
+            if (!empty($to)) {
+                $message->setTo($to);
+            }
+
+            if (!empty($toBCC)) {
+                $message->setBcc($toBCC);
+            }
+        }
 
         // form option: copy_to_sender
         if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
