@@ -304,7 +304,7 @@
             </trans-unit>
             <trans-unit id="new version">
                 <source>new version</source>
-                <target>New Version</target>
+                <target>New version</target>
             </trans-unit>
             <trans-unit id="edit">
                 <source>edit</source>
