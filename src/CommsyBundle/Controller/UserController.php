@@ -1029,6 +1029,10 @@ class UserController extends BaseController
             if ($currentPortalUserItem->isModerator()) {
                 $showPortalConfigurationLink = true;
             }
+        } else {
+            if ($currentUserItem->isRoot()) {
+                $showPortalConfigurationLink = true;
+            }
         }
 
         // NOTE: getRelatedPortalUserItem() sets some limits which need to get reset again before feedAction gets called
