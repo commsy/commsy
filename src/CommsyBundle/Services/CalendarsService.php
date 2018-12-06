@@ -80,18 +80,46 @@ class CalendarsService
         return $calendars = $query->getResult();
     }
 
-    public function removeCalendar ($calendar) {
-        $dateService = $this->serviceContainer->get('commsy_legacy.date_service');
-        $dates = $dateService->getDatesByCalendarId($calendar->getId());
-
-        foreach ($dates as $date) {
-            $date->setCalendarId($this->getDefaultCalendar($date->getContextId())[0]->getId());
-            $date->save();
-        }
+    /**
+     * Deletes the given calendar and all of its contained date entries.
+     * @var Calendars $calendar
+     */
+    public function removeCalendar($calendar)
+    {
+        $this->removeAllCalendarDates($calendar);
 
         $this->em->remove($calendar);
 
         $this->em->flush();
+    }
+
+
+    /**
+     * Deletes all date entries from the given calendar.
+     * @var Calendars $calendar
+     */
+    public function removeAllCalendarDates($calendar)
+    {
+        $dateService = $this->serviceContainer->get('commsy_legacy.date_service');
+        $dates = $dateService->getDatesByCalendarId($calendar->getId());
+        if (empty($dates)) {
+            return;
+        }
+
+        $roomService = $this->serviceContainer->get('commsy_legacy.room_service');
+        $roomId = $calendar->getContextId();
+        $roomItem = $roomService->getRoomItem($roomId);
+
+        // NOTE: we execute the DeleteDate action (and not just \cs_item->delete()) since
+        // this performs additional cleanup like removing any date items from the clipboard
+        $action = $this->serviceContainer->get('commsy.action.delete.date');
+        $strategy = $action->getStrategy();
+
+        if ($strategy instanceof DeleteDate) {
+            $strategy->setDateMode($roomItem->getDatesPresentationStatus());
+        }
+
+        return $action->execute($roomItem, $dates);
     }
 
 
