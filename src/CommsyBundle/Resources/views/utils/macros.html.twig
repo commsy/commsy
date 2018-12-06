@@ -494,6 +494,8 @@
                 {{ 'Your request has been rejected.'|trans({}, 'room') }}
             {% elseif contextMemberStatus == 'archived' %}
                 {{ 'Archived room'|trans({}, 'room') }}
+            {% elseif contextMemberStatus == 'forbidden' %}
+                {{ 'Guests are not allowed to request for membership.'|trans({}, 'room') }}
             {% else %}
                 <a class='uk-button uk-button-primary uk-text-bold uk-text-contrast' href="{{ path('commsy_context_request', {'roomId': roomId, 'itemId': context.itemId}) }}"><i class="uk-icon uk-icon-plus-square"></i> {{ 'become member'|trans({}, 'room') }}</a>
             {% endif %}
