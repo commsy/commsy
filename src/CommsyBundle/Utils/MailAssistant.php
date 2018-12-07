@@ -117,19 +117,6 @@ class MailAssistant
             ->setFrom([$this->from => $portalItem->getTitle()])
             ->setReplyTo($replyTo);
 
-        if ($forceBCCMail) {
-            $allRecipients = array_merge($to, $toBCC);
-            $message->setBcc($allRecipients);
-        } else {
-            if (!empty($to)) {
-                $message->setTo($to);
-            }
-
-            if (!empty($toBCC)) {
-                $message->setBcc($toBCC);
-            }
-        }
-
         // form option: copy_to_sender
         if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
             $message->setCc($message->getReplyTo());
@@ -140,9 +127,20 @@ class MailAssistant
             $additionalRecipients = array_filter($formData['additional_recipients']);
 
             if (!empty($additionalRecipients)) {
-                array_walk($additionalRecipients, function($additionalRecipient) use ($message) {
-                    $message->addTo($additionalRecipient);
-                });
+                $to = array_merge($to, $additionalRecipients);
+            }
+        }
+
+        if ($forceBCCMail) {
+            $allRecipients = array_merge($to, $toBCC);
+            $message->setBcc($allRecipients);
+        } else {
+            if (!empty($to)) {
+                $message->setTo($to);
+            }
+
+            if (!empty($toBCC)) {
+                $message->setBcc($toBCC);
             }
         }
 
