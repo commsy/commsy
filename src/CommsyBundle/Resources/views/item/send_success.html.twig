@@ -20,7 +20,7 @@
                 </div>
 
                 <div>
-                    {{ 'Back to'|trans({}, "mail") }} <a href="{{ link }}">{{ title }}</a>
+                    {{ 'Back to'|trans({}, "mail") }} <a href="{{ link }}">{{ title | decodeHtmlEntity }}</a>
                 </div>
             </div>
 
