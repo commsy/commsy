@@ -1637,8 +1637,16 @@ class DateController extends BaseController
                 }
 
                 $kernelRootDir = $this->getParameter('kernel.root_dir');
+                $fileData = array();
                 foreach ($files as $file) {
-                    $calendarsService->importEvents(fopen($kernelRootDir . '/../var/temp/' . $file->getFileId(), 'r'), $calendar);
+                    $fileHandle = fopen($kernelRootDir . '/../var/temp/' . $file->getFileId(), 'r');
+                    if ($fileHandle) {
+                        $fileData[] = $fileHandle;
+                    }
+                }
+
+                if (!empty($fileData)) {
+                    $calendarsService->importEvents($fileData, $calendar);
                 }
 
                 return $this->redirectToRoute('commsy_date_list', array('roomId' => $roomId));
