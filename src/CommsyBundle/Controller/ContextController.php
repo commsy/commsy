@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Class ContextController
@@ -72,6 +73,11 @@ class ContextController extends Controller
     public function requestAction($roomId, $itemId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+        if ($currentUserItem->isReallyGuest()) {
+            throw new AccessDeniedException();
+        }
                 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($itemId);

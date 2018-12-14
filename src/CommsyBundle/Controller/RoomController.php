@@ -1255,6 +1255,11 @@ class RoomController extends Controller
                 $mayEnter = true;
             } elseif (!empty($roomUser)) {
                 $mayEnter = $item->mayEnter($roomUser);
+            } else {
+                // in case of the guest user, $roomUser is null
+                if ($currentUser->isReallyGuest()) {
+                    $mayEnter = $item->mayEnter($currentUser);
+                }
             }
 
             if ($mayEnter) {
@@ -1269,6 +1274,10 @@ class RoomController extends Controller
                 $status = 'requested';
             } elseif (!empty($roomUser) and $roomUser->isRejected()) {
                 $status = 'rejected';
+            } else {
+                if ($currentUser->isReallyGuest()) {
+                    return 'forbidden';
+                }
             }
         } else {
 

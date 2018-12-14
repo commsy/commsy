@@ -198,6 +198,10 @@
                 <source>Request membership</source>
                 <target>Mitgliedschaft beantragen</target>
             </trans-unit>
+            <trans-unit id="room_request_forbidden">
+                <source>Guests are not allowed to request for membership.</source>
+                <target>Gäste können keine Teilnahmeanfrage stellen.</target>
+            </trans-unit>
             <trans-unit id="room_agb">
                 <source>AGB</source>
                 <target>Nutzungsbedingungen</target>
