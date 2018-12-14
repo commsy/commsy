@@ -489,8 +489,13 @@ class ProjectController extends Controller
         $mayEnter = false;
         if ($currentUser->isRoot()) {
             $mayEnter = true;
-        } elseif ( !empty($roomUser) ) {
+        } elseif (!empty($roomUser)) {
             $mayEnter = $item->mayEnter($roomUser);
+        } else {
+            // in case of the guest user, $roomUser is null
+            if ($currentUser->isReallyGuest()) {
+                $mayEnter = $item->mayEnter($currentUser);
+            }
         }
         
         if ($mayEnter) {
@@ -505,7 +510,12 @@ class ProjectController extends Controller
             $status = 'requested';
         } elseif(!empty($roomUser) and $roomUser->isRejected()) {
             $status = 'rejected';
+        } else {
+            if ($currentUser->isReallyGuest()) {
+                return 'forbidden';
+            }
         }
+        
         return $status;
     }
 }
