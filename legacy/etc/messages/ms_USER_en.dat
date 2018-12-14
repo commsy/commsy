@@ -200,9 +200,9 @@ $message["USER_PASSWORD_MAIL_BODY_SORRY3"]["en"] = "---
 
 If you have not followed the link &quot;password forget?&quot;, please delete this email. Your password has not changed und nobody capter your account.";
 $message["USER_PASSWORD_MAIL_SUBJECT"]["en"] = "%1: Change password";
-$message["USER_PASSWORD_NEW"]["en"] = "new password";
-$message["USER_PASSWORD_NEW2"]["en"] = "repeat new password";
-$message["USER_PASSWORD_OLD"]["en"] = "current password";
+$message["USER_PASSWORD_NEW"]["en"] = "New password";
+$message["USER_PASSWORD_NEW2"]["en"] = "Repeat new password";
+$message["USER_PASSWORD_OLD"]["en"] = "Current password";
 $message["USER_PICTURE_FILE_DESC"]["en"] = "Add a picture of yourself.";
 $message["USER_PICTURE_NO_PICTURE"]["en"] = "%1 has not uploaded yet a picture in the profile.";
 $message["USER_PICTURE_UPLOADFILE"]["en"] = "Picture";

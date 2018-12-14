@@ -61,6 +61,33 @@
                     $('input[id*="itemLinks_categories"]').each(selectNode);
 
                     /**
+                     * Register handler for select and deselect events, recursively selecting or deselecting
+                     * all child nodes. We could use the "cascade" configuration for this, but it's "down" mode
+                     * always selects all child nodes, even if the parent was the only selected one. In this case
+                     * propergation is also done when syncing the checkbox states with the tree after submitting the
+                     * filter form.
+                     */
+                    $(element)
+                        .on('select_node.jstree', function(event, data) {
+                            let node = data.node;
+                            let instance = data.instance;
+
+                            $.each(node.children, function() {
+                                instance.select_node(this, true);
+                            });
+                        });
+
+                    $(element)
+                        .on('deselect_node.jstree', function(event, data) {
+                            let node = data.node;
+                            let instance = data.instance;
+
+                            $.each(instance.get_children_dom(node), function() {
+                                instance.deselect_node(this, true);
+                            });
+                        });
+
+                    /**
                      * the following event handler are registered, after checkbox sync
                      * to prevent triggering the form submit (select_node can supress events,
                      * but this would prevent the tree from highlighting selected nodes)
