@@ -107,8 +107,10 @@ class MailAssistant
         $toBCC = $recipients['bcc'];
 
         $replyTo = [];
+        $currentUserEmail = $currentUser->getEmail();
+        $currentUserName = $currentUser->getFullName();
         if ($currentUser->isEmailVisible()) {
-            $replyTo[$currentUser->getEmail()] = $currentUser->getFullName();
+            $replyTo[$currentUserEmail] = $currentUserName;
         }
 
         $message = \Swift_Message::newInstance()
@@ -118,8 +120,9 @@ class MailAssistant
             ->setReplyTo($replyTo);
 
         // form option: copy_to_sender
+        $toCC = [];
         if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-            $message->setCc($message->getReplyTo());
+            $toCC[$currentUserEmail] = $currentUserName;
         }
 
         // form option: additional_recipients
@@ -132,11 +135,15 @@ class MailAssistant
         }
 
         if ($forceBCCMail) {
-            $allRecipients = array_merge($to, $toBCC);
+            $allRecipients = array_merge($to, $toCC, $toBCC);
             $message->setBcc($allRecipients);
         } else {
             if (!empty($to)) {
                 $message->setTo($to);
+            }
+
+            if (!empty($toCC)) {
+                $message->setCC($toCC);
             }
 
             if (!empty($toBCC)) {
