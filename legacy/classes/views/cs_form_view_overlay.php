@@ -75,11 +75,12 @@ class cs_form_view_overlay extends cs_form_view {
    /** get form element as HTML and in commsy-style- internal, do not use
     * this method returns a string contains a form element in commsy-style in HMTL-Code
     *
-    * @param array value form element: form element, see class cs_form
+    * @param array $form_element form element, see class cs_form
+    * @param bool $without_description whether the description shall be hidden (true) or not (false); defaults to false
     *
     * @return string form element in commsy-style as HMTL
     */
-   function _getFormElementAsHTML ($form_element) {
+   function _getFormElementAsHTML ($form_element, $without_description = false) {
 
       // prepare form element array for combined form elements
       $form_element_array = array();
