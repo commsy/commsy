@@ -56,6 +56,7 @@ class RoomProfileAddressType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
    
             ->add('street', TextType::class, array(
@@ -68,6 +69,7 @@ class RoomProfileAddressType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('zipcode', TextType::class, array(
@@ -80,6 +82,7 @@ class RoomProfileAddressType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('city', TextType::class, array(
@@ -92,6 +95,7 @@ class RoomProfileAddressType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('room', TextType::class, array(
@@ -104,6 +108,7 @@ class RoomProfileAddressType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('organisation', TextType::class, array(
@@ -116,6 +121,7 @@ class RoomProfileAddressType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('position', TextType::class, array(
@@ -128,6 +134,7 @@ class RoomProfileAddressType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('save', SubmitType::class, array(
