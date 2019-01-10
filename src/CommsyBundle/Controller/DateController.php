@@ -1279,8 +1279,8 @@ class DateController extends BaseController
                         $temp->add(new \DateInterval('P' . $index . 'D'));
 
                         // if the actual day is a correct week day, add it to possible dates
-                        $weekDay = $temp->format('w');
-                        if($weekDay == $formData['recurring_sub']['recurrenceDayOfMonth']) {
+                        $weekDay = $temp->format('l'); // 'l' returns the full textual representation of the date's day of week (e.g. "Tuesday")
+                        if(strtolower($weekDay) === $formData['recurring_sub']['recurrenceDayOfMonth']) {
                             $datesOccurenceArray[] = $temp;
                         }
 
@@ -1347,6 +1347,11 @@ class DateController extends BaseController
             $recurringPatternArray['recurringEndDate'] = $formData['recurring_sub']['untilDate']->format('Y-m-d');
 
             foreach($recurringDateArray as $date) {
+                // prevent duplicate date entry
+                if (date('Y-m-d', $date->getTimestamp()) === $dateItem->getStartingDay()) {
+                    continue;
+                }
+
                 $tempDate = clone $dateItem;
                 $tempDate->setItemID('');
                 $tempDate->setStartingDay(date('Y-m-d', $date->getTimestamp()));
