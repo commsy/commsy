@@ -1347,6 +1347,11 @@ class DateController extends BaseController
             $recurringPatternArray['recurringEndDate'] = $formData['recurring_sub']['untilDate']->format('Y-m-d');
 
             foreach($recurringDateArray as $date) {
+                // prevent duplicate date entry
+                if (date('Y-m-d', $date->getTimestamp()) === $dateItem->getStartingDay()) {
+                    continue;
+                }
+
                 $tempDate = clone $dateItem;
                 $tempDate->setItemID('');
                 $tempDate->setStartingDay(date('Y-m-d', $date->getTimestamp()));
