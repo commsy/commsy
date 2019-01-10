@@ -1279,8 +1279,8 @@ class DateController extends BaseController
                         $temp->add(new \DateInterval('P' . $index . 'D'));
 
                         // if the actual day is a correct week day, add it to possible dates
-                        $weekDay = $temp->format('w');
-                        if($weekDay == $formData['recurring_sub']['recurrenceDayOfMonth']) {
+                        $weekDay = $temp->format('l'); // 'l' returns the full textual representation of the date's day of week (e.g. "Tuesday")
+                        if(strtolower($weekDay) === $formData['recurring_sub']['recurrenceDayOfMonth']) {
                             $datesOccurenceArray[] = $temp;
                         }
 
