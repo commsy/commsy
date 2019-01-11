@@ -1280,6 +1280,9 @@ class DateController extends BaseController
 
                         // if the actual day is a correct week day, add it to possible dates
                         $weekDay = $temp->format('l'); // 'l' returns the full textual representation of the date's day of week (e.g. "Tuesday")
+
+                        // NOTE: for monthly recurring dates, `recurrenceDayOfMonth` contains the day of week (e.g. "tuesday")
+                        // instead of the numeric day number (like "26") as is the case for yearly recurring dates
                         if(strtolower($weekDay) === $formData['recurring_sub']['recurrenceDayOfMonth']) {
                             $datesOccurenceArray[] = $temp;
                         }
@@ -1399,6 +1402,7 @@ class DateController extends BaseController
             $dateItem->setRecurrencePattern($recurringPatternArray);
             $dateItem->save();
         } else {
+            // TODO: remove this else block if (as suspected) it is dead code that doesn't get executed anymore
             $datesManager = $legacyEnvironment->getDatesManager();
             $datesManager->resetLimits();
             $datesManager->setRecurrenceLimit($dateItem->getRecurrenceId());
