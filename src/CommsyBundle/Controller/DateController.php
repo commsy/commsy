@@ -1402,6 +1402,7 @@ class DateController extends BaseController
             $dateItem->setRecurrencePattern($recurringPatternArray);
             $dateItem->save();
         } else {
+            // TODO: remove this else block if (as suspected) it is dead code that doesn't get executed anymore
             $datesManager = $legacyEnvironment->getDatesManager();
             $datesManager->resetLimits();
             $datesManager->setRecurrenceLimit($dateItem->getRecurrenceId());
