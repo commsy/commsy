@@ -122,6 +122,10 @@ services:
         class: Commsy\LegacyBundle\Utils\ProjectService
         arguments: ['@commsy_legacy.environment']
 
+    commsy_legacy.portfolio_service:
+        class: Commsy\LegacyBundle\Utils\PortfolioService
+        arguments: ['@commsy_legacy.environment']
+
     # Markup
     commsy_legacy.markup:
         class: Commsy\LegacyBundle\Services\LegacyMarkup
@@ -218,4 +222,8 @@ services:
 
     commsy_legacy.transformer.project:
         class: Commsy\LegacyBundle\Form\DataTransformer\ProjectTransformer
+        arguments: ['@commsy_legacy.environment']
+
+    commsy_legacy.transformer.portfolio:
+        class: Commsy\LegacyBundle\Form\DataTransformer\PortfolioTransformer
         arguments: ['@commsy_legacy.environment']

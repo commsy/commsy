@@ -1190,9 +1190,12 @@ class DateController extends BaseController
         );
     }
     
-    function saveRecurringDates(\cs_dates_item $dateItem, $isNewRecurring, $valuesToChange, $formData){
+    function saveRecurringDates($dateItem, $isNewRecurring, $valuesToChange, $formData)
+    {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-       
+
+        /** @var \cs_dates_item $dateItem */
+
         if($isNewRecurring) {
             $recurringDateArray = array();
             $recurringPatternArray = array();

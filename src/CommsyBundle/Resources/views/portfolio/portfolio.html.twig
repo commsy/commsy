@@ -1,0 +1,158 @@
+<div data-uk-sticky="{boundary: '#portfolio-table'}">
+    <span class="uk-text-small"><b>{{ user.fullname }}</b></span>
+    <span id="portfolio-edit" class="uk-align-right">
+            {% if not external %}
+                <a href="{{ path('commsy_portfolio_edit', {'roomId': roomId, 'portfolioId': portfolioId}) }}" data-uk-tooltip title="{{ 'Edit Portfolio'|trans({}, 'portfolio') }}" data-uk-tooltip title="{{ 'Edit Portfolio'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
+            {% else %}
+                <a id="portfolio-stop-activation" data-portfolio-id="{{ portfolioId }}" href="" data-uk-tooltip title="{{ 'Cancel sharing'|trans({}, 'portfolio') }}"><i class="uk-icon-remove"></i></a>
+            {% endif %}
+        </span>
+    <br/>
+    <div id="portfolio-description">
+        <i>{{ portfolio.description }}</i>
+    </div>
+</div>
+
+<div class="uk-overflow-container">
+    <table id="commsy-portfolio" class="uk-table" border="0">
+        <!-- table header row - first cell is empty and sticky, the other cells show the categories-->
+        <tr>
+            <th class="portfolio-header-column-row">
+            </th>
+            {% for firstTag in portfolio.tags %}
+                {% if firstTag.row == 0 %}
+                    <th class="portfolio-header-column">
+                        <div class="uk-panel uk-panel-box uk-panel-box-secondary uk-panel-box-portfolio">
+                            <div class="uk-panel-badge">
+                            </div>
+                            <h3 class="uk-panel-title uk-text-right">
+                                {% if not external %}
+                                    <a href="{{ path('commsy_portfolio_editcategory', {'roomId': roomId, 'portfolioId': portfolioId, 'position': 'column', 'categoryId': firstTag.t_id}) }}" data-uk-tooltip title="{{ 'Edit category'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
+                                {% endif %}
+                            </h3>
+                            <div class="portfolio-content">
+                                <span data-uk-tooltip title="{{ firstTag.description }}">
+                                    {{ firstTag.title }}
+                                </span>
+                            </div>
+                        </div>
+                    </th>
+                {% endif %}
+            {% endfor %}
+            <th id="portfolio-add-column" class="uk-text-top">
+                {% if not external %}
+                    <a href="{{ path('commsy_portfolio_editcategory', {'roomId': roomId, 'portfolioId': portfolioId, 'position': 'column', 'categoryId': 'add'}) }}" data-uk-tooltip title="{{ 'Add column'|trans({}, 'portfolio') }}"><i class="uk-icon-plus uk-icon-small"></i></a>
+                {% endif %}
+            </th>
+        </tr>
+
+        <!-- rows with categories column (first column; sticky) and content -->
+        {% set column = -1 %} <!-- offset of -1 to compensate header column -->
+        {% for firstTag in portfolio.tags %}
+            {% if firstTag.row != 0 %}
+                <tr>
+                    {% if firstTag.column == 0 %}
+                        <th class="portfolio-header-row">
+                            <div class="uk-panel uk-panel-box uk-panel-box-secondary uk-panel-box-portfolio">
+                                <div class="uk-panel-badge">
+                                </div>
+                                <h3 class="uk-panel-title uk-text-right">
+                                    {% if not external %}
+                                        <a href="{{ path('commsy_portfolio_editcategory', {'roomId': roomId, 'portfolioId': portfolioId, 'position': 'row', 'categoryId': firstTag.t_id}) }}" data-uk-tooltip title="{{ 'Edit category'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
+                                    {% endif %}
+                                </h3>
+                                <div class="portfolio-content">
+                                    <span data-uk-tooltip title="{{ firstTag.description }}">
+                                    {{ firstTag.title }}
+                                </span>
+                                </div>
+                            </div>
+                        </th>
+                        {% set row = 0 %}
+                        {% for secondTag in portfolio.tags %}
+                            {% if secondTag.row == 0 %}
+                                {% set foundContent = false %}
+                                {% set content = '<ul class="uk-list uk-list-line">' %}
+                                {% set firstTagId = '' %}
+                                {% set secondTagId = '' %}
+                                {% set contentCount = 0 %}
+                                {% for link in linkPositions %}
+                                    {% for linkData in link %}
+                                        {% if (linkData[0] == firstTag.t_id and linkData[1] == secondTag.t_id) or (linkData[1] == firstTag.t_id and linkData[0] == secondTag.t_id) %}
+                                            {% set foundContent = true %}
+                                            {% set firstTagId = firstTag.t_id %}
+                                            {% set secondTagId = secondTag.t_id %}
+                                            {% for firstLink in portfolio.links|keys %}
+                                                {% for secondLink in portfolio.links|keys %}
+                                                    {% if (firstLink == firstTag.t_id and secondLink == secondTag.t_id) %}
+                                                        {% for firstLinkEntry in portfolio.links[firstLink] %}
+                                                            {% for secondLinkEntry in portfolio.links[secondLink] %}
+                                                                {% if (firstLinkEntry.itemId == secondLinkEntry.itemId) %}
+                                                                    {% set content = content ~ '<li><a href=' ~ path('commsy_' ~ firstLinkEntry.itemType ~ '_detail', {'roomId': roomId, 'itemId': firstLinkEntry.itemId}) ~ '>' ~ firstLinkEntry.title|decodeHtmlEntity ~ '</a></li>' %}
+                                                                    {% set contentCount = contentCount + 1 %}
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                                {% set content = content ~ '</ul>' %}
+                                <td>
+                                    <div class="uk-panel uk-panel-box uk-panel-box-secondary">
+                                        <div class="uk-panel-badge">
+                                        </div>
+                                        <h3 class="uk-panel-title uk-text-right">
+                                            {% if foundContent %}
+                                                <a href="{{ path('commsy_portfolio_detail', {'roomId': roomId, 'portfolioId': portfolioId, 'firstTagId': firstTagId, 'secondTagId': secondTagId}) }}" data-uk-tooltip title="{{ 'Details'|trans({}, 'portfolio') }}"><i class="uk-icon-list"></i></a>
+                                            {% else %}
+                                                <a href="{{ path('commsy_portfolio_detail', {'roomId': roomId, 'portfolioId': portfolioId, 'firstTagId': firstTag.t_id, 'secondTagId': secondTag.t_id}) }}" data-uk-tooltip title="{{ 'Details'|trans({}, 'portfolio') }}"><i class="uk-icon-list"></i></a>
+                                            {% endif %}
+                                        </h3>
+                                        {% if foundContent %}
+                                            <div class="portfolio-content">
+                                                {{ content|raw }}
+                                            </div>
+                                            {% set annotationCount = 0 %}
+                                            {% if portfolio.numAnnotations[column][row] is defined %}
+                                                {% set annotationCount = portfolio.numAnnotations[column][row] %}
+                                            {% endif %}
+                                            <i class="uk-icon-file-o uk-text-muted"></i> <span class="uk-text-muted uk-margin-right">({{ contentCount }})</span>
+                                            <i class="uk-icon-comments-o uk-text-muted"></i> <span class="uk-text-muted">({{ annotationCount }})</span>
+                                        {% else %}
+                                            <div class="portfolio-content">
+                                            </div>
+                                            <i class="uk-icon-file-o uk-text-muted"></i> <span class="uk-text-muted uk-margin-right">(0)</span>
+                                            <i class="uk-icon-comments-o uk-text-muted"></i> <span class="uk-text-muted">(0)</span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            {% endif %}
+                            {% set row = row + 1 %}
+                        {% endfor %}
+                    {% endif %}
+                </tr>
+            {% endif %}
+            {% set column = column + 1 %}
+        {% endfor %}
+        <tr>
+            <td id="portfolio-add-row">
+                {% if not external %}
+                    <a href="{{ path('commsy_portfolio_editcategory', {'roomId': roomId, 'portfolioId': portfolioId, 'position': 'row', 'categoryId': 'add'}) }}" data-uk-tooltip title="{{ 'Add row'|trans({}, 'portfolio') }}"><i class="uk-icon-plus uk-icon-small"></i></a>
+                {% endif %}
+            </td>
+            {% if portfolio.tags is empty %}
+                <td>
+                    {{ 'This portfolio is empty. Add rows and columns via the "+"-icons.'|trans({}, 'portfolio') }}
+                </td>
+            {% endif %}
+        </tr>
+    </table>
+</div>
+<script>
+    $('#portfolio-stop-activation').on('click', function(event) {
+        event.preventDefault();
+    })
+</script>

@@ -91,5 +91,9 @@ class cs_portfolio_item extends cs_item {
    	return $this->_getValue("externalTemplate");
    	
    }
+
+   public function updateElastic()
+   {
+   }
 }
 ?>
