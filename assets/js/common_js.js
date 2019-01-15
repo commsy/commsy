@@ -44,3 +44,7 @@ detailActionManager.registerActors();
 import {ListActionManager} from "./commsy/actions/ListActionManager";
 let listActionManager = new ListActionManager();
 listActionManager.bootstrap();
+
+import {Portfolio} from "./commsy/Portfolio";
+let portfolio = new Portfolio();
+portfolio.bootstrap();
