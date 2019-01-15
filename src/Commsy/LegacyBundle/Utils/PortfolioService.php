@@ -20,6 +20,10 @@ class PortfolioService
         $this->portfolioManager->reset();
     }
 
+    public function getPortfolioTags($portfolioId)
+    {
+        return $this->portfolioManager->getPortfolioTags($portfolioId);
+    }
 
     public function getPortfolio($itemId)
     {
@@ -83,11 +87,7 @@ class PortfolioService
         $translator = $this->legacyEnvironment->getEnvironment()->getTranslationObject();
         $creatorItem = $portfolioItem->getCreatorItem();
         if (isset($creatorItem) && !$creatorItem->isDeleted()) {
-            if ($creatorItem->isGuest() && $modificator->isVisibleForLoggedIn()) {
-                $fullname = $translator->getMessage("COMMON_USER_NOT_VISIBLE");
-            } else {
-                $fullname = $creatorItem->getFullName();
-            }
+            $fullname = $creatorItem->getFullName();
         } else {
             $fullname = $translator->GetMessage("COMMON_DELETED_USER");
         }

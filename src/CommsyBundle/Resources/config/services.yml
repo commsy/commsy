@@ -260,6 +260,10 @@ services:
         tags:
             - { name: validator.constraint_validator, alias: alias_name }
 
+    CommsyBundle\Validator\Constraints\UniquePortfolioCategoryValidator:
+        autowire: true
+        autoconfigure: true
+
     # Form types
     commsy.form.type.general_settings:
         class: CommsyBundle\Form\Type\GeneralSettingsType
@@ -523,15 +527,13 @@ services:
         autowire: true
         autoconfigure: true
 
-    commsy.form.type.portfolio:
-        class: CommsyBundle\Form\Type\PortfolioType
-        tags:
-            - { name: form.type }
+    CommsyBundle\Form\Type\PortfolioType:
+        autowire: true
+        autoconfigure: true
 
-    commsy.form.type.portfolioeditcategory:
-        class: CommsyBundle\Form\Type\PortfolioEditCategoryType
-        tags:
-            - { name: form.type }
+    CommsyBundle\Form\Type\PortfolioEditCategoryType:
+        autowire: true
+        autoconfigure: true
 
     # Form type extension
     commsy.form.extension.image_type:

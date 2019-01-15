@@ -2,21 +2,14 @@
 
 namespace CommsyBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\HttpFoundation\Request;
-
-use CommsyBundle\Form\Type\CalendarEditType;
-use CommsyBundle\Entity\Calendars;
-
-use CommsyBundle\Event\CommsyEditEvent;
-
 use CommsyBundle\Form\Type\AnnotationType;
-use CommsyBundle\Form\Type\PortfolioType;
 use CommsyBundle\Form\Type\PortfolioEditCategoryType;
+use CommsyBundle\Form\Type\PortfolioType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class CalendarController
@@ -31,13 +24,15 @@ class PortfolioController extends Controller
      */
     public function indexAction($roomId, Request $request)
     {
-        if ($portfolioId = $request->get('portfolioId')) {
-            return [
-                'portfolioId' => $portfolioId,
-            ];
+        $portfolioId = 'none';
+        if ($request->query->has('portfolioId')) {
+            $portfolioId = $request->query->get('portfolioId');
         }
 
-        return [];
+        return [
+            'portfolioId' => $portfolioId,
+            'roomId' => $roomId,
+        ];
     }
 
     /**
@@ -200,19 +195,23 @@ class PortfolioController extends Controller
     }
 
     /**
+     * Create new portfolios and edit existing ones
+     *
      * @Route("/room/{roomId}/portfolio/{portfolioId}/edit")
      * @Template()
      */
     public function editAction($roomId, $portfolioId, Request $request)
     {
-        $translator = $this->get('translator');
-
         $portfolioService = $this->get('commsy_legacy.portfolio_service');
 
-        if ($portfolioId == 'new') {
+        // when creating a new item, return a redirect to the edit form (portfolio draft)
+        if ($portfolioId === 'new') {
             $portfolioItem = $portfolioService->getNewItem();
             $portfolioItem->save();
-            return $this->redirectToRoute('commsy_portfolio_edit', array('roomId' => $roomId, 'portfolioId' => $portfolioItem->getItemId()));
+            return $this->redirectToRoute('commsy_portfolio_edit', [
+                'roomId' => $roomId,
+                'portfolioId' => $portfolioItem->getItemId(),
+            ]);
         }
 
         $itemService = $this->get('commsy_legacy.item_service');
@@ -224,30 +223,42 @@ class PortfolioController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.portfolio');
         $formData = $transformer->transform($portfolioItem);
 
-        $form = $this->createForm(PortfolioType::class, $formData, array(
-            'placeholderText' => '['.$translator->trans('insert title').']',
-            'placeholderDescription' => '['.$translator->trans('insert description').']',
-        ));
+        $form = $this->createForm(PortfolioType::class, $formData, [
+            'item' => $item,
+        ]);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $portfolioItem = $transformer->applyTransformation($portfolioItem, $form->getData());
                 $portfolioItem->save();
 
+                // ensure portfolio is now longer in draft state after saving
                 if ($item->isDraft()) {
                     $item->setDraftStatus(0);
                     $item->saveAsItem();
                 }
 
-                return $this->redirectToRoute('commsy_portfolio_index', array('roomId' => $roomId, 'portfolioId' => $portfolioId));
-            } else if ($form->get('cancel')->isClicked()) {
-                return $this->redirectToRoute('commsy_portfolio_index', array('roomId' => $roomId));
+                return $this->redirectToRoute('commsy_portfolio_index', [
+                    'roomId' => $roomId,
+                    'portfolioId' => $portfolioId,
+                ]);
+            }  else if ($form->get('cancel')->isClicked()) {
+                return $this->redirectToRoute('commsy_portfolio_index', [
+                    'roomId' => $roomId,
+                ]);
+            } else if ($form->has('delete') && $form->get('delete')->isClicked()) {
+                $portfolioManager->delete($portfolioId);
+                return $this->redirectToRoute('commsy_portfolio_index', [
+                    'roomId' => $roomId,
+                ]);
             }
         }
 
         return [
             'form' => $form->createView(),
+            'item' => $item,
+            'portfolio' => $portfolioItem,
         ];
     }
 
@@ -257,33 +268,35 @@ class PortfolioController extends Controller
      */
     public function editcategoryAction($roomId, $portfolioId, $position, $categoryId, Request $request)
     {
-        $translator = $this->get('translator');
-
         $portfolioService = $this->get('commsy_legacy.portfolio_service');
         $portfolio = $portfolioService->getPortfolio($portfolioId);
 
         $formData = [
-            'category' => $categoryId,
             'delete-category' => $categoryId,
         ];
 
+        if (is_numeric($categoryId)) {
+            $formData['categories'] = [$categoryId];
+        }
+
         $categoryService = $this->get('commsy_legacy.category_service');
         $roomTags = $categoryService->getTags($roomId);
-        $disabledCategories = $this->getDisabledTags($roomTags, $categoryId, $portfolio);
+//        $disabledCategories = $this->getDisabledTags($roomTags, $categoryId, $portfolio);
 
         $form = $this->createForm(PortfolioEditCategoryType::class, $formData, array(
             'categories' => $roomTags,
-            'placeholderDescription' => '['.$translator->trans('insert description').']',
-            'disabledCategories' => $disabledCategories,
+            'categoryId' => $categoryId,
+            'portfolioId' => $portfolioId,
+//            'disabledCategories' => $disabledCategories,
         ));
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
 
             if ($form->get('save')->isClicked()) {
 
-                $tagId = $formData['category'];
+                $tagId = $formData['categories'][0];
 
                 if ($categoryId == 'add') {
                     // add new row or column
@@ -308,8 +321,8 @@ class PortfolioController extends Controller
                     $portfolioService->replaceTagForPortfolio($portfolioId, $tagId, $categoryId, $formData['description']);
                 }
 
-            } else if ($form->get('delete')->isClicked()) {
-                $tagId = $formData['delete-category'];
+            } else if ($form->has('delete') && $form->get('delete')->isClicked()) {
+                $tagId = $categoryId;
 
                 $portfolioTags = $portfolioService->getPortfolioTags($portfolioId);
 
@@ -341,14 +354,14 @@ class PortfolioController extends Controller
                         }
                     }
                 }
-            } else if ($form->get('cancel')->isClicked()) {
-                // ToDo ...
             }
+
             return $this->redirectToRoute('commsy_portfolio_index', array('roomId' => $roomId, 'portfolioId' => $portfolioId));
         }
 
         return [
             'form' => $form->createView(),
+            'categoryId' => $categoryId,
         ];
     }
 

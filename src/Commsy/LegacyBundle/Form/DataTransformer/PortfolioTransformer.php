@@ -3,6 +3,7 @@ namespace Commsy\LegacyBundle\Form\DataTransformer;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use Commsy\LegacyBundle\Form\DataTransformer\DataTransformerInterface;
+use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class PortfolioTransformer implements DataTransformerInterface
 {
@@ -19,7 +20,7 @@ class PortfolioTransformer implements DataTransformerInterface
     /**
      * Transforms a cs_portfolio_item object to an array
      *
-     * @param cs_portfolio_item $groupItem
+     * @param \cs_portfolio_item $groupItem
      * @return array
      */
     public function transform($portfolioItem)
@@ -46,7 +47,7 @@ class PortfolioTransformer implements DataTransformerInterface
      *
      * @param object $portfolioObject
      * @param array $portfolioData
-     * @return cs_portfolio_item|null
+     * @return \cs_portfolio_item|null
      * @throws TransformationFailedException if room item is not found.
      */
     public function applyTransformation($portfolioObject, $portfolioData)

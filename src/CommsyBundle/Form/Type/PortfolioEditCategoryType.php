@@ -1,81 +1,99 @@
 <?php
 namespace CommsyBundle\Form\Type;
 
+use CommsyBundle\Validator\Constraints\UniquePortfolioCategory;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-
-use CommsyBundle\Form\Type\Custom\DateTimeSelectType;
-
-use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
-use CommsyBundle\Form\Type\Custom\MandatoryCategoryMappingType;
-use CommsyBundle\Form\Type\Custom\MandatoryHashtagMappingType;
+use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class PortfolioEditCategoryType extends AbstractType
 {
+    /**
+     * @var TranslatorInterface $translator
+     */
+    private $translator;
+
+    /**
+     * PortfolioType constructor.
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $choices = $this->buildChoices($options['categories']);
-        $disabledCategories = $this->buildChoices($options['disabledCategories']);
 
         $builder
-            ->add('category', ChoiceType::class, array(
+            ->add('categories', TreeChoiceType::class, [
+                'placeholder' => false,
                 'choices' => $choices,
-                'label' => 'category',
                 'translation_domain' => 'portfolio',
                 'required' => false,
                 'expanded' => true,
-                'multiple' => false,
-                'choice_attr' => function($key, $val, $index) use ($disabledCategories) {
-                    $result = [];
-                    if (isset($disabledCategories[$key])) {
-                        $result[$key] ? ['disabled' => 'disabled'] : [];
-                    }
-                    return $result;
-                },
-            ))
+                'multiple' => true,
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Count([
+                        'min' => 1,
+                        'max' => 1,
+                    ]),
+                    new UniquePortfolioCategory([
+                        'portfolioId' => $options['portfolioId'],
+                    ])
+                ],
+            ])
             ->add('description', TextareaType::class, [
                 'attr' => [
                     'rows' => 10,
                     'cols' => 100,
-                    'placeholder' => $options['placeholderDescription'],
+                    'placeholder' => $this->translator->trans('Insert description here', [], 'portfolio'),
                 ],
                 'required' => false,
+                'translation_domain' => 'portfolio',
             ])
             ->add('delete-category', HiddenType::class, [
                 'label' => false,
                 'required' => true,
             ])
-            ->add('save', SubmitType::class, array(
-                'attr' => array(
+            ->add('save', SubmitType::class, [
+                'attr' => [
                     'class' => 'uk-button-primary',
-                ),
+                ],
                 'label' => 'save',
-            ))
-            ->add('delete', SubmitType::class, array(
-                'attr' => array(
-                    'class' => 'uk-button-primary',
-                ),
-                'label' => 'delete',
-            ))
-            ->add('cancel', SubmitType::class, array(
-                'attr' => array(
+            ])
+            ->add('cancel', SubmitType::class, [
+                'attr' => [
                     'formnovalidate' => '',
-                ),
+                ],
                 'label' => 'cancel',
-            ))
+                'validation_groups' => false,
+            ])
         ;
 
+        // Event listener for modifications based on the underlying data
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+            $form = $event->getForm();
+
+            if (is_numeric($options['categoryId'])) {
+                $form
+                    ->add('delete', SubmitType::class, [
+                        'attr' => [
+                            'class' => 'uk-button-danger',
+                        ],
+                    ])
+                ;
+            }
+        });
     }
 
     /**
@@ -86,8 +104,8 @@ class PortfolioEditCategoryType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['categories', 'placeholderDescription', 'disabledCategories'])
-            ->setDefaults(array('translation_domain' => 'form'))
+            ->setRequired(['categories', 'categoryId', 'portfolioId'])
+            ->setDefaults(['translation_domain' => 'form'])
         ;
     }
 

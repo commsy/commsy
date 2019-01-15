@@ -93,8 +93,12 @@ class cs_portfolio_manager extends cs_manager implements cs_export_import_interf
       }
    }
 
-
-   function getItem ($item_id) {
+    /**
+     * @param $item_id
+     * @return cs_portfolio_item|null
+     */
+   public function getItem($item_id):? cs_portfolio_item
+   {
       $portfolio_item = NULL;
       if ( !empty($item_id) ) {
          if ( !empty($this->_cache_object[$item_id]) ) {
@@ -359,10 +363,6 @@ function getPortfolioTags($portfolioId) {
   			" . $this->addDatabasePrefix("tag") . " AS tag
   		ON
   			tag_portfolio.t_id = tag.item_id
-  		LEFT JOIN
-  			" . $this->addDatabasePrefix("tag2tag") . " AS tag2tag
-  	    ON
-  			tag.item_id = tag2tag.to_item_id
   		WHERE
   			tag_portfolio.p_id = '" . encode(AS_DB, $portfolioId) . "'
   		ORDER BY
