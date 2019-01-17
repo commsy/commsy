@@ -1291,18 +1291,15 @@ class DateController extends BaseController
                     }
 
                     // add only days, that match the right week
-                    if($formData['recurring_sub']['recurrenceDayOfMonthInterval'] != 'last') {
-                        if($formData['recurring_sub']['recurrenceDayOfMonthInterval'] <= count($datesOccurenceArray)) {
-                            if( $datesOccurenceArray[$formData['recurring_sub']['recurrenceDayOfMonthInterval']-1] >= $startDate &&
-                                $datesOccurenceArray[$formData['recurring_sub']['recurrenceDayOfMonthInterval']-1] <= $endDate) {
-                                $recurringDateArray[] = $datesOccurenceArray[$formData['recurring_sub']['recurrenceDayOfMonthInterval']-1];
-                            }
-                        }
-                    } else {
-                        if( $datesOccurenceArray[count($formData['recurring_sub']['recurrenceDayOfMonthInterval'])-1] >= $startDate &&
-                            $datesOccurenceArray[count($formData['recurring_sub']['recurrenceDayOfMonthInterval'])-1] <= $endDate) {
-                            $recurringDateArray[] = $datesOccurenceArray[count($formData['recurring_sub']['recurrenceDayOfMonthInterval'])-1];
-                        }
+                    $date = null;
+                    $dayOfMonthInterval = $formData['recurring_sub']['recurrenceDayOfMonthInterval'];
+                    if ($dayOfMonthInterval === 'last') {
+                        $date = end($datesOccurenceArray);
+                    } else if (isset($datesOccurenceArray[$dayOfMonthInterval - 1])) {
+                        $date = $datesOccurenceArray[$dayOfMonthInterval - 1];
+                    }
+                    if (isset($date) && $date >= $startDate && $date <= $endDate) {
+                        $recurringDateArray[] = $date;
                     }
 
                     // go to next month
@@ -1319,7 +1316,7 @@ class DateController extends BaseController
 
                 $recurringPatternArray['recurring_sub']['recurrenceMonth'] = $formData['recurring_sub']['recurrenceMonth'];
                 $recurringPatternArray['recurring_sub']['recurrenceDayOfMonth'] = $formData['recurring_sub']['recurrenceDayOfMonth'];
-                $recurringPatternArray['recurring_sub']['recurrenceDayOfMonthInterval'] = $formData['recurring_sub']['recurrenceDayOfMonthInterval'];
+                $recurringPatternArray['recurring_sub']['recurrenceDayOfMonthInterval'] = $dayOfMonthInterval;
 
                 unset($month);
 
