@@ -611,6 +611,13 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             }
             $dateTimeEndString = $dateTimeEnd->format('Ymd');
         }
+
+        $class = $dateItem->isPublic() ? 'PUBLIC' : 'PRIVATE';
+        $user = $this->getUserFromPortal($this->userId, $dateItem->getContextId());
+        if ($dateItem->mayEdit($user)) {
+            $class = 'PUBLIC';
+        }
+
         $eventDataArray = [
             'SUMMARY' => $dateItem->getTitle(),
             'DTSTART' => $dateTimeStartString,
@@ -618,7 +625,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             'UID' => $uid,
             'LOCATION' => $dateItem->getPlace(),
             'DESCRIPTION' => $dateItem->getDescription(),
-            'CLASS' => ($dateItem->isPublic() ? 'PUBLIC' : 'PRIVATE'),
+            'CLASS' => $class,
             'X-COMMSY-ITEM-ID' => $dateItem->getItemId(),
         ];
 
