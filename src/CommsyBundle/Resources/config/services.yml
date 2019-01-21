@@ -719,6 +719,7 @@ services:
     commsy.avatar_service:
         class: CommsyBundle\Services\AvatarService
         arguments: ['@commsy_legacy.user_service', '%kernel.root_dir%']
+        public: true
         
     commsy.print_service:
         class: CommsyBundle\Services\PrintService
