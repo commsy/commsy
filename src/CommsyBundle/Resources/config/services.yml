@@ -739,6 +739,7 @@ services:
     commsy.calendars_service:
         class: CommsyBundle\Services\CalendarsService
         arguments: ['@doctrine.orm.entity_manager', '@service_container']
+        public: true
 
     commsy.caldav_service:
         class: CommsyBundle\Services\CalDAVService
