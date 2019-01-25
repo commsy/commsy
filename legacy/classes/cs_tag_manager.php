@@ -777,8 +777,9 @@ class cs_tag_manager extends cs_manager implements cs_export_import_interface {
    }
 
     public function deleteTagsOfUser ($uid) {
-        $disableOverwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
-       
+        global $symfonyContainer;
+        $disableOverwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
+
         if ($disableOverwrite !== null && $disableOverwrite !== true) {
             // create backup of item
             $this->backupItem($uid, array(
@@ -803,7 +804,7 @@ class cs_tag_manager extends cs_manager implements cs_export_import_interface {
                     /* disabled */
                     if ($disableOverwrite === false) {
                         $updateQuery .= ' modification_date = "'.$current_datetime.'",';
-                        $updateQuery .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'"';
+                        $updateQuery .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
                         $updateQuery .= ' public = "1"';
                     }
                     
