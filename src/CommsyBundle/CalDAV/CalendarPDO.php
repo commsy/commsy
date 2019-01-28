@@ -431,7 +431,11 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     function createCalendarObject($calendarId, $objectUri, $calendarData)
     {
-        return $this->updateCalendarObject($calendarId, null, $calendarData);
+        error_log(print_r($calendarData, true));
+        error_log(print_r($objectUri, true));
+        error_log(print_r('*********************', true));
+
+        return $this->updateCalendarObject($calendarId, $objectUri, $calendarData);
     }
 
     /**
@@ -744,6 +748,8 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         if (isset($objectUriArray[2])) {
             if ($datesManager->existsItem($objectUriArray[2])) {
                 return $datesManager->getItem($objectUriArray[2]);
+            } else if ($date = $datesManager->getDateByUid($objectUri)) {
+                return $date;
             }
         }
 
@@ -833,6 +839,11 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     $dateItem = $dateService->getDate($event->{'X-COMMSY-ITEM-ID'}->getValue());
                 } else if ($objectUri) {
                     $dateItem = $this->getDateItemFromObjectUri($objectUri);
+                    if (!$dateItem) {
+                        $dateItem = $dateService->getNewDate();
+                        $dateItem->setContextId($calendar->getContextId());
+                        $dateItem->setUid(str_ireplace('.isc', '', $objectUri));
+                    }
                 } else {
                     $newItem = true;
                     $dateItem = $dateService->getNewDate();
