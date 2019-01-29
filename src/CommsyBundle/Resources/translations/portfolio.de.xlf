@@ -28,11 +28,11 @@
             </trans-unit>
             <trans-unit id="portfolio_form_label_external_template">
                 <source>Unlock template for users</source>
-                <target>Als Vorlage für Benutzer freigeben</target>
+                <target>Als Vorlage für Benutzer freigeben (";"-getrennt)</target>
             </trans-unit>
             <trans-unit id="portfolio_form_label_external_viewer">
                 <source>Give access to users</source>
-                <target>Benutzern Zugriff erlauben</target>
+                <target>Benutzern Zugriff erlauben (";"-getrennt)</target>
             </trans-unit>
             <trans-unit id="portfolio_my_portfolios">
                 <source>my portfolios</source>
