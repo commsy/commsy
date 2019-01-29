@@ -107,7 +107,7 @@ class PortfolioController extends Controller
             'portfolioId' => $portfolioId,
             'portfolio' => $portfolio,
             'linkPositions' => $linkPositions,
-            'user' => $user,
+            'creator_fullname' => $portfolio['creator'],
             'external' => $external
         );
     }

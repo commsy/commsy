@@ -1,5 +1,5 @@
 <div data-uk-sticky="{boundary: '#portfolio-table'}">
-    <span class="uk-text-small"><b>{{ user.fullname }}</b></span>
+    <span class="uk-text-small"><b>{{ creator_fullname }}</b></span>
     <span id="portfolio-edit" class="uk-align-right">
             {% if not external %}
                 <a href="{{ path('commsy_portfolio_edit', {'roomId': roomId, 'portfolioId': portfolioId}) }}" data-uk-tooltip title="{{ 'Edit Portfolio'|trans({}, 'portfolio') }}" data-uk-tooltip title="{{ 'Edit Portfolio'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
