@@ -268,7 +268,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     }
 
                     $dateTime = new \DateTime($dateItem->getModificationDate());
-                    $calendarObjectId = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getItemId();
+                    $calendarObjectId = $dateItem->getUid();
+                    if ($calendarObjectId == '') {
+                        $calendarObjectId = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getItemId();
+                    }
                     $result[] = [
                         'id' => $calendarObjectId,
                         'uri' => $calendarObjectId . '.ics',
@@ -335,13 +338,16 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             throw new \InvalidArgumentException('The value passed to $calendarId is expected to be an array with a calendarId and an instanceId');
         }
 
-        $dateItem = $this->getDateItemFromObjectUri($objectUri);
+        $dateItem = $this->getDateItemFromObjectUri(str_ireplace('.ics', '', $objectUri));
 
         if ($dateItem) {
             $dateTime = new \DateTime($dateItem->getModificationDate());
 
             $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
-            $calendarObjectId = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getItemId();
+            $calendarObjectId = $dateItem->getUid();
+            if ($calendarObjectId == '') {
+                $calendarObjectId = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getItemId();
+            }
 
             return [
                 'id' => $calendarObjectId,
@@ -458,6 +464,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     function updateCalendarObject($calendarId, $objectUri, $calendarData)
     {
+        error_log(print_r($calendarData, true));
+        error_log(print_r($objectUri, true));
+        error_log(print_r('*********************2', true));
+
         $result = null;
         if ($calendarId[0]) {
             $calendarId = $calendarId[0];
@@ -557,7 +567,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
 
             $result = [];
             foreach ($datesArray as $dateItem) {
-                $calendarObjectId = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getItemId();
+                $calendarObjectId = $dateItem->getUid();
+                if ($calendarObjectId == '') {
+                    $calendarObjectId = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getItemId();
+                }
 
                 $result[] = $calendarObjectId . '.ics';
             }
@@ -598,7 +611,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
 
         $uid = str_ireplace('.ics', '', $objectUri);
         if ($dateItem->getRecurrenceId() != '') {
-            $uid = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getRecurrenceId();
+            $uid = $dateItem->getUid();
+            if ($uid == '') {
+                $uid = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getItemId();
+            }
         }
 
         $dateTimeStart = new \DateTime($dateItem->getDateTime_start());
@@ -738,8 +754,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         return $userList->getFirst();
     }
 
-    private function getDateItemFromObjectUri($objectUri)
+    private function getDateItemFromObjectUri($objectUri, $calendarId = null, $roomId = null)
     {
+        $dateService = $this->container->get('commsy_legacy.date_service');
+
         $objectUriArray = explode('-', $objectUri);
 
         $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
@@ -748,7 +766,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         if (isset($objectUriArray[2])) {
             if ($datesManager->existsItem($objectUriArray[2])) {
                 return $datesManager->getItem($objectUriArray[2]);
-            } else if ($date = $datesManager->getDateByUid($objectUri)) {
+            } else if ($date = $dateService->getDateByUid($objectUri, $calendarId, $roomId)) {
                 return $date;
             }
         }
@@ -838,11 +856,11 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                 if ($event->{'X-COMMSY-ITEM-ID'}) {
                     $dateItem = $dateService->getDate($event->{'X-COMMSY-ITEM-ID'}->getValue());
                 } else if ($objectUri) {
-                    $dateItem = $this->getDateItemFromObjectUri($objectUri);
+                    $dateItem = $this->getDateItemFromObjectUri($objectUri, $calendarId, $calendar->getContextId());
                     if (!$dateItem) {
                         $dateItem = $dateService->getNewDate();
                         $dateItem->setContextId($calendar->getContextId());
-                        $dateItem->setUid(str_ireplace('.isc', '', $objectUri));
+                        $dateItem->setUid(str_ireplace('.ics', '', $objectUri));
                     }
                 } else {
                     $newItem = true;

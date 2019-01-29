@@ -45,6 +45,6 @@
     "webpack-notifier": "^1.5.1"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.0.0"
+    "@babel/polyfill": "^7.2.5"
   }
 }

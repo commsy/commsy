@@ -239,9 +239,9 @@ class DateService
     public function getDateByUid($uid, $calendarId, $roomId)
     {
         $this->dateManager->reset();
-        $this->dateManager->setContextLimit($roomId);
+        //$this->dateManager->setContextLimit($roomId);
         $this->dateManager->setUidArrayLimit(['"'.$uid.'"']);
-        $this->dateManager->setCalendarArrayLimit(['"'.$calendarId.'"']);
+        //$this->dateManager->setCalendarArrayLimit(['"'.$calendarId.'"']);
         $this->dateManager->setWithoutDateModeLimit();
         $this->dateManager->select();
         $dateList = $this->dateManager->get();
