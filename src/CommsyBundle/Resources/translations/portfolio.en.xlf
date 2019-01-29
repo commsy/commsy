@@ -70,6 +70,10 @@
                 <source>Edit category</source>
                 <target>Edit category</target>
             </trans-unit>
+            <trans-unit id="portfolio_details_comments">
+                <source>Comments</source>
+                <target>Comments</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
