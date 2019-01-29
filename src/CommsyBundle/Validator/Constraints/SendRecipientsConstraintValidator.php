@@ -35,6 +35,9 @@ class SendRecipientsConstraintValidator extends ConstraintValidator
         if ($values['copy_to_sender']) {
             $foundRecipient = true;
         }
+        if ($values['send_to_attendees']) {
+            $foundRecipient = true;
+        }
 
         if (!$foundRecipient) {
             $this->context->buildViolation($constraint->message)->setParameter('parameter', 'value')->addViolation();

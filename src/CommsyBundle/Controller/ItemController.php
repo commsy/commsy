@@ -470,7 +470,7 @@ class ItemController extends Controller
             }
 
             // send mail
-            $message = $mailAssistant->getSwiftMessage($form->getData(), $item);
+            $message = $mailAssistant->getSwiftMessage($form->getData(), $item, true);
             $this->get('mailer')->send($message);
 
             $recipientCount = count($message->getTo()) + count($message->getCc()) + count($message->getBcc());

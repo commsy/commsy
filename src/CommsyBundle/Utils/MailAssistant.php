@@ -97,29 +97,32 @@ class MailAssistant
         return false;
     }
 
-    public function getSwiftMessage($formData, $item): \Swift_Message
+    public function getSwiftMessage($formData, $item, $forceBCCMail = false): \Swift_Message
     {
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
         $currentUser = $this->legacyEnvironment->getCurrentUserItem();
 
         $recipients = $this->getRecipients($formData, $item);
+        $to = $recipients['to'];
+        $toBCC = $recipients['bcc'];
 
         $replyTo = [];
+        $currentUserEmail = $currentUser->getEmail();
+        $currentUserName = $currentUser->getFullName();
         if ($currentUser->isEmailVisible()) {
-            $replyTo[$currentUser->getEmail()] = $currentUser->getFullName();
+            $replyTo[$currentUserEmail] = $currentUserName;
         }
 
         $message = \Swift_Message::newInstance()
             ->setSubject($formData['subject'])
             ->setBody($formData['message'], 'text/html')
             ->setFrom([$this->from => $portalItem->getTitle()])
-            ->setReplyTo($replyTo)
-            ->setTo($recipients['to'])
-            ->setBcc($recipients['bcc']);
+            ->setReplyTo($replyTo);
 
         // form option: copy_to_sender
+        $toCC = [];
         if (isset($formData['copy_to_sender']) && $formData['copy_to_sender']) {
-            $message->setCc($message->getReplyTo());
+            $toCC[$currentUserEmail] = $currentUserName;
         }
 
         // form option: additional_recipients
@@ -127,9 +130,24 @@ class MailAssistant
             $additionalRecipients = array_filter($formData['additional_recipients']);
 
             if (!empty($additionalRecipients)) {
-                array_walk($additionalRecipients, function($additionalRecipient) use ($message) {
-                    $message->addTo($additionalRecipient);
-                });
+                $to = array_merge($to, $additionalRecipients);
+            }
+        }
+
+        if ($forceBCCMail) {
+            $allRecipients = array_merge($to, $toCC, $toBCC);
+            $message->setBcc($allRecipients);
+        } else {
+            if (!empty($to)) {
+                $message->setTo($to);
+            }
+
+            if (!empty($toCC)) {
+                $message->setCC($toCC);
+            }
+
+            if (!empty($toBCC)) {
+                $message->setBcc($toBCC);
             }
         }
 

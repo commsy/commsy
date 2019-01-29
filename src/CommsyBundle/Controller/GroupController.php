@@ -1168,6 +1168,10 @@ class GroupController extends BaseController
 
                 $from = $this->getParameter('commsy.email.from');
 
+                // NOTE: as of #2461 all mail should be sent as BCC mail; but, for now, we keep the original logic here
+                // TODO: refactor all mail sending code so that it is handled by a central class (like `MailAssistant.php`)
+                $forceBCCMail = true;
+
                 $to = [];
                 $toBCC = [];
                 $validator = new EmailValidator();
@@ -1209,19 +1213,29 @@ class GroupController extends BaseController
                     ->setSubject($formData['subject'])
                     ->setBody($formData['message'], 'text/html')
                     ->setFrom([$from => $portalItem->getTitle()])
-                    ->setReplyTo($replyTo)
-                    ->setTo($to);
+                    ->setReplyTo($replyTo);
 
-                $recipientCount = count($to);
+                $recipientCount = 0;
 
-                if (!empty($toCC)) {
-                    $message->setCc($toCC);
-                    $recipientCount += count($toCC);
-                }
+                if ($forceBCCMail) {
+                    $allRecipients = array_merge($to, $toCC, $toBCC);
+                    $message->setBcc($allRecipients);
+                    $recipientCount += count($allRecipients);
+                } else {
+                    if (!empty($to)) {
+                        $message->setTo($to);
+                        $recipientCount += count($to);
+                    }
 
-                if (!empty($toBCC)) {
-                    $message->setBcc($toBCC);
-                    $recipientCount += count($toBCC);
+                    if (!empty($toCC)) {
+                        $message->setCc($toCC);
+                        $recipientCount += count($toCC);
+                    }
+
+                    if (!empty($toBCC)) {
+                        $message->setBcc($toBCC);
+                        $recipientCount += count($toBCC);
+                    }
                 }
 
                 $this->addFlash('recipientCount', $recipientCount);
@@ -1322,6 +1336,10 @@ class GroupController extends BaseController
 		        // we exclude any locked/rejected or registered users here since these shouldn't receive any group mails
                 $users = $userService->getUsersByGroupIds($roomId, $item->getItemID(), true);
 
+                // NOTE: as of #2461 all mail should be sent as BCC mail; but, for now, we keep the original logic here
+                // TODO: refactor all mail sending code so that it is handled by a central class (like `MailAssistant.php`)
+                $forceBCCMail = true;
+
                 $to = [];
                 $toBCC = [];
                 $validator = new EmailValidator();
@@ -1363,19 +1381,29 @@ class GroupController extends BaseController
                     ->setSubject($formData['subject'])
                     ->setBody($formData['message'], 'text/html')
                     ->setFrom([$from => $portalItem->getTitle()])
-                    ->setReplyTo($replyTo)
-                    ->setTo($to);
+                    ->setReplyTo($replyTo);
 
-                $recipientCount = count($to);
+                $recipientCount = 0;
 
-                if (!empty($toCC)) {
-                    $message->setCc($toCC);
-                    $recipientCount += count($toCC);
-                }
+                if ($forceBCCMail) {
+                    $allRecipients = array_merge($to, $toCC, $toBCC);
+                    $message->setBcc($allRecipients);
+                    $recipientCount += count($allRecipients);
+                } else {
+                    if (!empty($to)) {
+                        $message->setTo($to);
+                        $recipientCount += count($to);
+                    }
 
-                if (!empty($toBCC)) {
-                    $message->setBcc($toBCC);
-                    $recipientCount += count($toBCC);
+                    if (!empty($toCC)) {
+                        $message->setCc($toCC);
+                        $recipientCount += count($toCC);
+                    }
+
+                    if (!empty($toBCC)) {
+                        $message->setBcc($toBCC);
+                        $recipientCount += count($toBCC);
+                    }
                 }
 
                 $this->addFlash('recipientCount', $recipientCount);
