@@ -577,7 +577,11 @@ class cs_environment {
       }
    }
 
-   function getPortfolioManager() {
+    /**
+     * @return cs_portfolio_manager
+     */
+   public function getPortfolioManager(): cs_portfolio_manager
+   {
       return $this->_getInstance('cs_portfolio_manager');
    }
 
