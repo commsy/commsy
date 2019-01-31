@@ -1,5 +1,5 @@
 <div data-uk-sticky="{boundary: '#portfolio-table'}">
-    <span class="uk-text-small"><b>{{ user.fullname }}</b></span>
+    <span class="uk-text-small"><b>{{ creator_fullname }}</b></span>
     <span id="portfolio-edit" class="uk-align-right">
             {% if not external %}
                 <a href="{{ path('commsy_portfolio_edit', {'roomId': roomId, 'portfolioId': portfolioId}) }}" data-uk-tooltip title="{{ 'Edit Portfolio'|trans({}, 'portfolio') }}" data-uk-tooltip title="{{ 'Edit Portfolio'|trans({}, 'portfolio') }}"><i class="uk-icon-edit"></i></a>
@@ -88,7 +88,7 @@
                                                         {% for firstLinkEntry in portfolio.links[firstLink] %}
                                                             {% for secondLinkEntry in portfolio.links[secondLink] %}
                                                                 {% if (firstLinkEntry.itemId == secondLinkEntry.itemId) %}
-                                                                    {% set content = content ~ '<li><a href=' ~ path('commsy_' ~ firstLinkEntry.itemType ~ '_detail', {'roomId': roomId, 'itemId': firstLinkEntry.itemId}) ~ '>' ~ firstLinkEntry.title|decodeHtmlEntity ~ '</a></li>' %}
+                                                                    {% set content = content ~ '<li><a href=' ~ path('commsy_' ~ firstLinkEntry.itemType ~ '_detail', {'roomId': roomId, 'itemId': firstLinkEntry.itemId}) ~ ' target="_blank">' ~ firstLinkEntry.title|decodeHtmlEntity ~ '</a></li>' %}
                                                                     {% set contentCount = contentCount + 1 %}
                                                                 {% endif %}
                                                             {% endfor %}
@@ -106,9 +106,9 @@
                                         </div>
                                         <h3 class="uk-panel-title uk-text-right">
                                             {% if foundContent %}
-                                                <a href="{{ path('commsy_portfolio_detail', {'roomId': roomId, 'portfolioId': portfolioId, 'firstTagId': firstTagId, 'secondTagId': secondTagId}) }}" data-uk-tooltip title="{{ 'Details'|trans({}, 'portfolio') }}"><i class="uk-icon-list"></i></a>
+                                                <a href="{{ path('commsy_portfolio_detail', {'roomId': roomId, 'portfolioId': portfolioId, 'firstTagId': firstTagId, 'secondTagId': secondTagId}) }}" data-uk-tooltip target="_blank" title="{{ 'Details'|trans({}, 'portfolio') }}"><i class="uk-icon-list"></i></a>
                                             {% else %}
-                                                <a href="{{ path('commsy_portfolio_detail', {'roomId': roomId, 'portfolioId': portfolioId, 'firstTagId': firstTag.t_id, 'secondTagId': secondTag.t_id}) }}" data-uk-tooltip title="{{ 'Details'|trans({}, 'portfolio') }}"><i class="uk-icon-list"></i></a>
+                                                <a href="{{ path('commsy_portfolio_detail', {'roomId': roomId, 'portfolioId': portfolioId, 'firstTagId': firstTag.t_id, 'secondTagId': secondTag.t_id}) }}" data-uk-tooltip target="_blank" title="{{ 'Details'|trans({}, 'portfolio') }}"><i class="uk-icon-list"></i></a>
                                             {% endif %}
                                         </h3>
                                         {% if foundContent %}

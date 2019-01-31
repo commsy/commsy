@@ -196,15 +196,19 @@ class DashboardController extends Controller
         $releasedItems = array();
         foreach ($releasedIds as $releasedId) {
             $tempItem = $itemManager->getItem($releasedId);
-            $tempManager = $legacyEnvironment->getManager($tempItem->getItemType());
-            $releasedItems[] = $tempManager->getItem($releasedId);
+            if ($tempItem) {
+                $tempManager = $legacyEnvironment->getManager($tempItem->getItemType());
+                $releasedItems[] = $tempManager->getItem($releasedId);
+            }
         }
         
         $viewableItems = array();
         foreach ($viewableIds as $viewableId) {
             $tempItem = $itemManager->getItem($viewableId);
-            $tempManager = $legacyEnvironment->getManager($tempItem->getItemType());
-            $viewableItems[] = $tempManager->getItem($viewableId);
+            if ($tempItem) {
+                $tempManager = $legacyEnvironment->getManager($tempItem->getItemType());
+                $viewableItems[] = $tempManager->getItem($viewableId);
+            }
         }
         
         return array(
