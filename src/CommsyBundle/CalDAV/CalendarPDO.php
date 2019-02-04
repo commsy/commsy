@@ -437,10 +437,6 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     function createCalendarObject($calendarId, $objectUri, $calendarData)
     {
-        error_log(print_r($calendarData, true));
-        error_log(print_r($objectUri, true));
-        error_log(print_r('*********************', true));
-
         return $this->updateCalendarObject($calendarId, $objectUri, $calendarData);
     }
 
@@ -464,10 +460,6 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     function updateCalendarObject($calendarId, $objectUri, $calendarData)
     {
-        error_log(print_r($calendarData, true));
-        error_log(print_r($objectUri, true));
-        error_log(print_r('*********************2', true));
-
         $result = null;
         if ($calendarId[0]) {
             $calendarId = $calendarId[0];
@@ -785,15 +777,15 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
 
         // Use expanded calendar, to work with all dates.
         // CommSy itself does not have to do the calculations.
-        $expandDateTimeStart = new \DateTime();
-        $expandDateTimeStart->modify('-2 years');
-        $expandDateTimeEnd = new \DateTime();
-        $expandDateTimeEnd->modify('+2 years');
+        //$expandDateTimeStart = new \DateTime();
+        //$expandDateTimeStart->modify('-2 years');
+        //$expandDateTimeEnd = new \DateTime();
+        //$expandDateTimeEnd->modify('+2 years');
         /* if ($dateItem) {
             $expandDateTimeStart = new \DateTime($dateItem->getDateTime_start());
             $expandDateTimeEnd = new \DateTime($dateItem->getDateTime_end());
         } */
-        $calendarReadExpanded = $calendarRead->expand($expandDateTimeStart, $expandDateTimeEnd);
+        //$calendarReadExpanded = $calendarRead->expand($expandDateTimeStart, $expandDateTimeEnd);
 
         global $symfonyContainer;
         $commsyTimeZone = new \DateTimeZone($symfonyContainer->getParameter('commsy.dates.timezone'));
@@ -806,7 +798,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         $utcDateTime = new \DateTime($utcDateTime->format('Y-m-d H:i:s'));
         $timeZoneDiff = $commsyDateTime->diff($utcDateTime);
 
-        $recurrenceCount = null;
+        /* $recurrenceCount = null;
         $recurrencePattern = null;
         $recurrenceEndDateTime = null;
         if ($calendarRead->VEVENT->RRULE) {
@@ -843,20 +835,20 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
 
             }
             $recurrencePattern = $this->translateRecurringPattern($calendarRead->VEVENT->RRULE, 'iCal', $calendarRead->VEVENT->DTSTART->getDateTime(), $recurrenceEndDateTime);
-        }
+        } */
 
         $newItem = false;
         $recurrenceId = null;
 
         // insert new data into database
-        $calendarReadExpandedChildren = $calendarReadExpanded->children();
+        //$calendarReadExpandedChildren = $calendarReadExpanded->children();
         $counter = 0;
-        foreach ($calendarReadExpandedChildren as $event) {
-            if ($event->name == 'VEVENT' && (!$recurrenceCount || $counter < $recurrenceCount)) {
+        foreach ($calendarRead->children() as $event) {
+            if ($event->name == 'VEVENT') { // && (!$recurrenceCount || $counter < $recurrenceCount)) {
                 if ($event->{'X-COMMSY-ITEM-ID'}) {
                     $dateItem = $dateService->getDate($event->{'X-COMMSY-ITEM-ID'}->getValue());
                 } else if ($objectUri) {
-                    $dateItem = $this->getDateItemFromObjectUri($objectUri, $calendarId, $calendar->getContextId());
+                    $dateItem = $this->getDateItemFromObjectUri(str_ireplace('.ics', '', $objectUri), $calendarId, $calendar->getContextId());
                     if (!$dateItem) {
                         $dateItem = $dateService->getNewDate();
                         $dateItem->setContextId($calendar->getContextId());
@@ -973,19 +965,20 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     }
 
                     $dateItem->save();
-                    if ($newItem && !$recurrenceId) {
-                        $recurrenceId = $dateItem->getItemId();
-                    }
 
-                    if ($event->{'RECURRENCE-ID'} && $recurrenceId) {
+                    /* if ($newItem && !$recurrenceId) {
+                        $recurrenceId = $dateItem->getItemId();
+                    } */
+
+                    /* if ($event->{'RECURRENCE-ID'} && $recurrenceId) {
                         if ($newItem) {
                             $dateItem->setRecurrencePattern($recurrencePattern);
                         }
                         $dateItem->setRecurrenceId($recurrenceId);
                         $dateItem->save();
-                    }
+                    } */
                 }
-                $counter++;
+                //$counter++;
             }
         }
     }
