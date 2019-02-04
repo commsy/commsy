@@ -44,8 +44,8 @@ class BiblioJournalType extends AbstractType
                 'label' => 'pages',
                 'translation_domain' => $translationDomain,
                 ))
-            ->add('number', TextType::class, array(
-                'label' => 'number',
+            ->add('issue', TextType::class, array(
+                'label' => 'issue',
                 'translation_domain' => $translationDomain,
                 'required' => false,
                 ))

@@ -274,6 +274,7 @@ class ItemController extends Controller
         $itemList = $itemManager->get();
         
         // get all items except linked items
+        $optionsData['items'] = [];
         $tempItem = $itemList->getFirst();
         while ($tempItem) {
             $tempTypedItem = $itemService->getTypedItem($tempItem->getItemId());
@@ -926,7 +927,9 @@ class ItemController extends Controller
      * @param \cs_item $item
      * @return \cs_tag_item[]
      */
-    public function getLinkedCategories(\cs_item $item) {
+    public function getLinkedCategories($item) {
+        /** @var \cs_item $item */
+
         $linkedCategories = [];
         $categoriesList = $item->getTagList();
 

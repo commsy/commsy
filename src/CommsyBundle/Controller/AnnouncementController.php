@@ -482,7 +482,7 @@ class AnnouncementController extends BaseController
         }
 
         $form->handleRequest($request);
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
             $saveType = $form->getClickedButton()->getName();
             if ($saveType == 'save') {

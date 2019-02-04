@@ -4,6 +4,18 @@ parameters:
 #    parameter_name: value
 
 services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    # makes classes in src/CommsyBundle/Controller available to be used as services
+    CommsyBundle\Controller\:
+        resource: '../../src/CommsyBundle/Controller/*'
+        #exclude: '../../src/CommsyBundle/{CalDAV,Database,Entity}'
+
+
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]

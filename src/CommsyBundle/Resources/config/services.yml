@@ -260,6 +260,10 @@ services:
         tags:
             - { name: validator.constraint_validator, alias: alias_name }
 
+    CommsyBundle\Validator\Constraints\UniquePortfolioCategoryValidator:
+        autowire: true
+        autoconfigure: true
+
     # Form types
     commsy.form.type.general_settings:
         class: CommsyBundle\Form\Type\GeneralSettingsType
@@ -520,6 +524,14 @@ services:
             - { name: form.type }
 
     CommsyBundle\Form\Type\CheckedBase64CsvUserImportFileType:
+        autowire: true
+        autoconfigure: true
+
+    CommsyBundle\Form\Type\PortfolioType:
+        autowire: true
+        autoconfigure: true
+
+    CommsyBundle\Form\Type\PortfolioEditCategoryType:
         autowire: true
         autoconfigure: true
 

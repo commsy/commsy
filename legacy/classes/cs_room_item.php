@@ -1586,8 +1586,12 @@ class cs_room_item extends cs_context_item {
                             $language = $default_language;
                         }
                     }
-                    $receiver_array[$language][] = $mod_item->getEmail();
-                    $moderator_name_array[] = $mod_item->getFullname();
+
+                    $modEmail = $mod_item->getEmail();
+                    if (filter_var($modEmail, FILTER_VALIDATE_EMAIL)) {
+                        $receiver_array[$language][] = $modEmail;
+                        $moderator_name_array[] = $mod_item->getFullname();
+                    }
                 }
                 $mod_item = $moderator_list->getNext();
             }
@@ -1615,18 +1619,12 @@ class cs_room_item extends cs_context_item {
             // set new commsy url
             global $symfonyContainer;
 
-            $url = $symfonyContainer->get('router')->generate(
-                'commsy_room_home',
-                array('roomId' => $this->getItemID()),
-                true
-            );
+            /** @var \Symfony\Component\Routing\RouterInterface $router */
+            $router = $symfonyContainer->get('router');
+            $url = $router->generate('commsy_room_home', [
+                'roomId' => $this->getItemID(),
+            ], \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_PATH);
 
-            $requestStack = $symfonyContainer->get('request_stack');
-            $currentRequest = $requestStack->getCurrentRequest();
-            if ($currentRequest) {
-                $url = $currentRequest->getSchemeAndHttpHost() . $url;
-            }
-            
             $body .= LF . $url;
 
             if ($this->isProjectRoom()) {

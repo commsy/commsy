@@ -51,6 +51,10 @@ class BiblioArticleType extends AbstractType
                 'label' => 'edition',
                 'translation_domain' => $translationDomain,
             ))
+            ->add('pages', TextType::class, array(
+                'label' => 'pages',
+                'translation_domain' => $translationDomain,
+            ))
             ->add('series', TextType::class, array(
                 'label' => 'series',
                 'translation_domain' => $translationDomain,

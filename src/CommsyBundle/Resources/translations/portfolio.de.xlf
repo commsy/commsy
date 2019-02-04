@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="portfolio_title_general">
+                <source>Portfolios</source>
+                <target>Portfolios</target>
+            </trans-unit>
+            <trans-unit id="portfolio_form_title_new">
+                <source>Create new portfolio</source>
+                <target>Neues Portfolio erstellen</target>
+            </trans-unit>
+            <trans-unit id="portfolio_form_title_edit">
+                <source>Edit Portfolio</source>
+                <target>Portfolio bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="portfolio_form_label_description">
+                <source>Description</source>
+                <target>Beschreibung</target>
+            </trans-unit>
+            <trans-unit id="portfolio_form_label_placeholder">
+                <source>Insert description here</source>
+                <target>Bitte geben Sie eine Beschreibung an</target>
+            </trans-unit>
+            <trans-unit id="portfolio_form_label_template">
+                <source>Template</source>
+                <target>Vorlage</target>
+            </trans-unit>
+            <trans-unit id="portfolio_form_label_external_template">
+                <source>Unlock template for users</source>
+                <target>Als Vorlage für Benutzer freigeben (";"-getrennt)</target>
+            </trans-unit>
+            <trans-unit id="portfolio_form_label_external_viewer">
+                <source>Give access to users</source>
+                <target>Benutzern Zugriff erlauben (";"-getrennt)</target>
+            </trans-unit>
+            <trans-unit id="portfolio_my_portfolios">
+                <source>my portfolios</source>
+                <target>Meine Portfolios</target>
+            </trans-unit>
+            <trans-unit id="portfolio_activated portfolios">
+                <source>activated portfolios</source>
+                <target>Für mich freigegebene Portfolios</target>
+            </trans-unit>
+            <trans-unit id="portfolio_cancel_sharing">
+                <source>Cancel sharing</source>
+                <target>Freigabe beenden</target>
+            </trans-unit>
+            <trans-unit id="portfolio_add_column">
+                <source>Add column</source>
+                <target>Spalte hinzufügen</target>
+            </trans-unit>
+            <trans-unit id="portfolio_add_row">
+                <source>Add row</source>
+                <target>Zeile hinzufügen</target>
+            </trans-unit>
+            <trans-unit id="portfolio_empty_description">
+                <source>This portfolio is empty. Add rows and columns via the "+"-icons.</source>
+                <target>Dieses Portfolio ist leer. Füge Zeilen und Spalten über die "+"-Icons hinzu.</target>
+            </trans-unit>
+            <trans-unit id="portfolio_details">
+                <source>Details</source>
+                <target>Details</target>
+            </trans-unit>
+            <trans-unit id="portfolio_form_title_new_category">
+                <source>New category</source>
+                <target>Neue Kategorie</target>
+            </trans-unit>
+            <trans-unit id="portfolio_form_title_edit_category">
+                <source>Edit category</source>
+                <target>Kategorie editieren</target>
+            </trans-unit>
+            <trans-unit id="portfolio_details_comments">
+                <source>Comments</source>
+                <target>Kommentare</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

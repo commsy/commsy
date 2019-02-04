@@ -96,6 +96,10 @@
                 <source>The field rooms must be empty or a list of room ids.</source>
                 <target>Das Feld "rooms" muss leer oder eine Liste von Raum Id's sein.</target>
             </trans-unit>
+            <trans-unit id="violation_unique_category">
+                <source>A category can only be used once per portfolio.</source>
+                <target>Innerhalb eines Portfolios kan eine Kategorie nur ein mal verwendet werden.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
