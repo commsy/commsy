@@ -36,7 +36,7 @@ class MaterialTransformer implements DataTransformerInterface
 
                 if ($materialItem->getBibKind() != 'none') {
                     $bibKind = $materialItem->getBibKind();
-                    // Bugfix: Add backwards compatibility to databases migrated from CommSy < 9
+                    // Bugfix: add backwards compatibility for entries from databases migrated from CommSy < 9
                     if ($bibKind == 'document') {
                         $bibKind = 'DocManagement';
                     }
