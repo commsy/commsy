@@ -73,19 +73,22 @@ final class Version20160718213927 extends AbstractMigration implements Container
             if ($fileContextId) {
                 $portalId = $file['portal_id'];
 
-                $fileExtension = substr(strrchr($file['filename'], '.'), 1);
+                $lastSubstringBeginningWithDot = strrchr($file['filename'], '.');
+                if ($lastSubstringBeginningWithDot) {
+                    $fileExtension = substr($lastSubstringBeginningWithDot, 1);
 
-                $filePath = $discManager->getFilePath($portalId, $fileContextId);
-                $filePath .= $file['files_id'];
-                $filePath .= '.' . $fileExtension;
+                    $filePath = $discManager->getFilePath($portalId, $fileContextId);
+                    $filePath .= $file['files_id'];
+                    $filePath .= '.' . $fileExtension;
 
-                $filePath = stristr($filePath, 'files');
+                    $filePath = stristr($filePath, 'files');
 
-                $this->connection->update($table, [
-                    'filepath' => $filePath,
-                ], [
-                    'files_id' => $file['files_id'],
-                ]);
+                    $this->connection->update($table, [
+                        'filepath' => $filePath,
+                    ], [
+                        'files_id' => $file['files_id'],
+                    ]);
+                }
             }
         }
     }
