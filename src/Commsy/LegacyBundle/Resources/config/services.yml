@@ -122,9 +122,9 @@ services:
         class: Commsy\LegacyBundle\Utils\ProjectService
         arguments: ['@commsy_legacy.environment']
 
-    commsy_legacy.portfolio_service:
-        class: Commsy\LegacyBundle\Utils\PortfolioService
-        arguments: ['@commsy_legacy.environment']
+    Commsy\LegacyBundle\Utils\PortfolioService:
+        autowire: true
+        autoconfigure: true
 
     # Markup
     commsy_legacy.markup:

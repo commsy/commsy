@@ -2,6 +2,7 @@
 
 namespace CommsyBundle\Controller;
 
+use Commsy\LegacyBundle\Utils\PortfolioService;
 use CommsyBundle\Form\Type\AnnotationType;
 use CommsyBundle\Form\Type\PortfolioEditCategoryType;
 use CommsyBundle\Form\Type\PortfolioType;
@@ -43,7 +44,7 @@ class PortfolioController extends Controller
      */
     public function portfolioAction($roomId, $portfolioId = null, Request $request)
     {
-        $portfolioService = $this->get('commsy_legacy.portfolio_service');
+        $portfolioService = $this->get(PortfolioService::class);
         $portfolio = $portfolioService->getPortfolio($portfolioId);
 
         $linkItemIds = [];
@@ -118,7 +119,7 @@ class PortfolioController extends Controller
      */
     public function tabsAction($roomId, $source = null, Request $request)
     {
-        $portfolioService = $this->get('commsy_legacy.portfolio_service');
+        $portfolioService = $this->get(PortfolioService::class);
         $portfolioList = $portfolioService->getPortfolioList();
 
         $portfolios = [];
@@ -144,7 +145,7 @@ class PortfolioController extends Controller
     public function detailAction($roomId, $portfolioId, $firstTagId, $secondTagId, Request $request)
     {
         $itemService = $this->get('commsy_legacy.item_service');
-        $portfolioService = $this->get('commsy_legacy.portfolio_service');
+        $portfolioService = $this->get(PortfolioService::class);
         $portfolio = $portfolioService->getPortfolio($portfolioId);
 
         $items = [];
@@ -202,7 +203,7 @@ class PortfolioController extends Controller
      */
     public function editAction($roomId, $portfolioId, Request $request)
     {
-        $portfolioService = $this->get('commsy_legacy.portfolio_service');
+        $portfolioService = $this->get(PortfolioService::class);
 
         // when creating a new item, return a redirect to the edit form (portfolio draft)
         if ($portfolioId === 'new') {
@@ -237,6 +238,13 @@ class PortfolioController extends Controller
                 if ($item->isDraft()) {
                     $item->setDraftStatus(0);
                     $item->saveAsItem();
+
+                    $formData = $form->getData();
+                    if (isset($formData['from_template'])) {
+                        if ($formData['from_template'] != 'none') {
+                            $portfolioService->prepareFromTemplate((int) $formData['from_template'], $portfolioItem);
+                        }
+                    }
                 }
 
                 return $this->redirectToRoute('commsy_portfolio_index', [
@@ -268,7 +276,7 @@ class PortfolioController extends Controller
      */
     public function editcategoryAction($roomId, $portfolioId, $position, $categoryId, Request $request)
     {
-        $portfolioService = $this->get('commsy_legacy.portfolio_service');
+        $portfolioService = $this->get(PortfolioService::class);
         $portfolio = $portfolioService->getPortfolio($portfolioId);
 
         $formData = [

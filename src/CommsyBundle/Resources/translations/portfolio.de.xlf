@@ -14,6 +14,14 @@
                 <source>Edit Portfolio</source>
                 <target>Portfolio bearbeiten</target>
             </trans-unit>
+            <trans-unit id="portfolio_form_label_from_template">
+                <source>From template</source>
+                <target>Aus Vorlage</target>
+            </trans-unit>
+            <trans-unit id="portfolio_form_choice_none">
+                <source>None</source>
+                <target>Keine</target>
+            </trans-unit>
             <trans-unit id="portfolio_form_label_description">
                 <source>Description</source>
                 <target>Beschreibung</target>

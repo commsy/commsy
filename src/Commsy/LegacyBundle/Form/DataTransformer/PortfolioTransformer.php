@@ -54,6 +54,7 @@ class PortfolioTransformer implements DataTransformerInterface
     {
         $portfolioObject->setTitle($portfolioData['title']);
         $portfolioObject->setDescription($portfolioData['description']);
+
         if ($portfolioData['is_template']) {
             $portfolioObject->setTemplate();
         } else {

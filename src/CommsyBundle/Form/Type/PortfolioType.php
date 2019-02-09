@@ -1,8 +1,10 @@
 <?php
 namespace CommsyBundle\Form\Type;
 
+use Commsy\LegacyBundle\Utils\PortfolioService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -21,12 +23,19 @@ class PortfolioType extends AbstractType
     private $translator;
 
     /**
+     * @var PortfolioService $portfolioService
+     */
+    private $portfolioService;
+
+    /**
      * PortfolioType constructor.
      * @param TranslatorInterface $translator
+     * @param PortfolioService $portfolioService
      */
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(TranslatorInterface $translator, PortfolioService $portfolioService)
     {
         $this->translator = $translator;
+        $this->portfolioService = $portfolioService;
     }
 
     /**
@@ -100,6 +109,22 @@ class PortfolioType extends AbstractType
                         'attr' => [
                             'class' => 'uk-button-danger',
                         ],
+                    ])
+                ;
+            } else {
+                $templates = $this->portfolioService->getPortfolioTemplates();
+                $choices = [
+                    'None' => 'none',
+                ];
+
+                foreach ($templates as $template) {
+                    $choices[$template['title']] = $template['id'];
+                }
+
+                $form
+                    ->add('from_template', ChoiceType::class, [
+                        'choices' => $choices,
+                        'translation_domain' => 'portfolio',
                     ])
                 ;
             }
