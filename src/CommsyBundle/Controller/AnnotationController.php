@@ -2,6 +2,7 @@
 
 namespace CommsyBundle\Controller;
 
+use Commsy\LegacyBundle\Utils\PortfolioService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -32,7 +33,7 @@ class AnnotationController extends Controller
         $annotations = $annotationService->getListAnnotations($roomId, $linkedItemId, $max, $start);
 
         if ($firstTagId && $secondTagId) {
-            $portfolioService = $this->get('commsy_legacy.portfolio_service');
+            $portfolioService = $this->get(PortfolioService::class);
             $cellCoordinates = $portfolioService->getCellCoordinatesForTagIds($linkedItemId, $firstTagId, $secondTagId);
             if (!empty($cellCoordinates)) {
                 $itemService = $this->get('commsy_legacy.item_service');
@@ -183,7 +184,7 @@ class AnnotationController extends Controller
                     $routeArray['firstTagId'] = $firstTagId;
                     $routeArray['secondTagId'] = $secondTagId;
 
-                    $portfolioService = $this->get('commsy_legacy.portfolio_service');
+                    $portfolioService = $this->get(PortfolioService::class);
                     $cellCoordinates = $portfolioService->getCellCoordinatesForTagIds($itemId, $firstTagId, $secondTagId);
                     if (!empty($cellCoordinates)) {
                         $portfolioService->setPortfolioAnnotation($itemId, $annotationId, $cellCoordinates[0], $cellCoordinates[1]);

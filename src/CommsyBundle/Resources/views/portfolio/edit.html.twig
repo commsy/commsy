@@ -24,6 +24,17 @@
                     </div>
 
                     <div class="uk-margin-top">
+                        {% if form.from_template is defined %}
+                            <div class="uk-form-row">
+                                <label class="uk-form-label">
+                                    {{ form_label(form.from_template) }}
+                                </label>
+                                <div class="uk-margin-left">
+                                    {{ form_widget(form.from_template) }}
+                                </div>
+                            </div>
+                        {% endif %}
+
                         <div class="uk-form-row">
                             <label class="uk-form-label">
                                 {{ form_label(form.description) }}
