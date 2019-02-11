@@ -850,6 +850,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                 } else if ($objectUri) {
                     $dateItem = $this->getDateItemFromObjectUri(str_ireplace('.ics', '', $objectUri), $calendarId, $calendar->getContextId());
                     if (!$dateItem) {
+                        $newItem = true;
                         $dateItem = $dateService->getNewDate();
                         $dateItem->setContextId($calendar->getContextId());
                         $dateItem->setUid(str_ireplace('.ics', '', $objectUri));
@@ -924,7 +925,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                 if ($calendar) {
                     $user = $this->getUserFromPortal($this->userId, $dateItem->getContextId());
                     if ($user->getContextId() == $dateItem->getContextId()) {
-                        if (!$dateItem->mayEdit($user)) {
+                        if (!$dateItem->mayEdit($user) && !$newItem) {
                             throw new Exception\Forbidden('Permission denied to edit date');
                         }
                     }
