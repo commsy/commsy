@@ -106,6 +106,10 @@
                 <source>quit</source>
                 <target>Gelöschte Kennung</target>
             </trans-unit>
+            <trans-unit id="deleted person">
+                <source>deleted person</source>
+                <target>Gelöschte Person</target>
+            </trans-unit>
             <trans-unit id="request">
                 <source>request</source>
                 <target>In Beantragung</target>

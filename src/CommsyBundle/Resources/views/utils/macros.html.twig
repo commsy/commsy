@@ -210,16 +210,23 @@
 
 {% macro userIcon(user, size, showTooltip) %}
     {% set showTooltip = showTooltip ?? true %}
-    {% if user.itemId != "" %}
-        {% if size == 'small' %}
-            <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
-        {% elseif size matches '/^\\d+$/' %}
-            <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:{{ size }}px; width:{{ size }}px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
-        {% else %}
-            <img class="uk-comment-avatar uk-thumbnail uk-border-circle cs-comment-thumbnail" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
-        {% endif %}
+    {% set styleAttribute = '' %}
+    {% set additionalClasses = '' %}
+
+    {% if size == 'small' %}
+        {% set styleAttribute = ' style="height:30px; width:30px;"' %}
+    {% elseif size matches '/^\\d+$/' %}
+        {% set styleAttribute = ' style="height:' ~ size ~ 'px; width:' ~ size ~ 'px;"' %}
     {% else %}
-        <img class="uk-comment-avatar uk-thumbnail uk-border-circle cs-comment-thumbnail" src="{{ path('commsy_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "guest"|trans({}, 'messages')}}" style="width: 30px; height: 30px;">
+        {% set additionalClasses = ' cs-comment-thumbnail' %}
+    {% endif %}
+
+    {% if user.isDeleted %}
+        <img class="uk-comment-avatar uk-thumbnail uk-border-circle{{ additionalClasses }}"{{ styleAttribute | raw }} src="{{ path('commsy_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "deleted person"|trans({}, 'user')}}">
+    {% elseif user.itemId != "" %}
+        <img class="uk-comment-avatar uk-thumbnail uk-border-circle{{ additionalClasses }}"{{ styleAttribute | raw }} src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
+    {% else %}
+        <img class="uk-comment-avatar uk-thumbnail uk-border-circle cs-comment-thumbnail{{ additionalClasses }}"{{ styleAttribute | raw }} src="{{ path('commsy_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "guest"|trans({}, 'messages')}}" style="width: 30px; height: 30px;">
     {% endif %}
 {% endmacro %}
 
@@ -228,6 +235,14 @@
     <a href="{{ path('commsy_user_detail', {'roomId': user.contextId, 'itemId': user.itemId}) }}">
         {{  macros.userIcon(user, size) }}
     </a>
+{% endmacro %}
+
+{% macro userFullname(user) %}
+    {% if not user.isDeleted %}
+        {{user.Fullname}}
+    {% else %}
+        {{ "deleted person"|trans({}, 'user')}}
+    {% endif %}
 {% endmacro %}
 
 {% macro actionIcons(title, item, edit, draft) %}
