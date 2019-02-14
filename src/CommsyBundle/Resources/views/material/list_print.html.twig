@@ -1,5 +1,6 @@
 </!DOCTYPE html>
 {% import 'CommsyBundle:base:printmacro.html.twig' as macros %}
+{% import 'CommsyBundle:utils:macros.html.twig' as utilsMacros %}
 
 <html lang="de">
     <head>
@@ -46,7 +47,7 @@
                             
                             {# user icon and modification time #}
                             <div class="uk-width-1-10">
-                                {% if material.modificatorItem.isUser %}
+                                {% if not material.modificatorItem.isDeleted and material.modificatorItem.isUser %}
                                     {{  macros.userIconLink(material.modificatorItem) }}
                                 {% else %}
                                     {{  macros.userIcon(material.modificatorItem) }}
@@ -70,7 +71,7 @@
                                     {% if material.author != '' %}
                                         {{ 'by'|trans({})|capitalize }}: {{material.author}} ({{material.publishingdate}})
                                     {% else %}
-                                        {{ 'by'|trans({})|capitalize }}: {{material.modificatorItem.fullname}} ({{material.getCreationDate|date("d.m.Y")}})
+                                        {{ 'by'|trans({})|capitalize }}: {{ utilsMacros.userFullname(material.modificatorItem) }} ({{material.getCreationDate|date("d.m.Y")}})
                                     {% endif %}
                                 </div>
                                

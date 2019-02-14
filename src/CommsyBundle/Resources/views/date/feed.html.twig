@@ -19,10 +19,10 @@
             </div>
             <div class="uk-margin-right uk-flex-item-none">
                     {% if not date.isExternal %}
-                        {% if date.modificatorItem.isUser %}
-                            {{  macros.userIconLink(date.modificatorItem) }}
+                        {% if not date.modificatorItem.isDeleted and date.modificatorItem.isUser %}
+                            {{ macros.userIconLink(date.modificatorItem) }}
                         {% else %}
-                            {{  macros.userIcon(date.modificatorItem) }}
+                            {{ macros.userIcon(date.modificatorItem) }}
                         {% endif %}
                     {% else %}
                         <div class="uk-comment-avatar uk-thumbnail uk-border-circle cs-comment-thumbnail" style="height:42px; width:42px;" data-uk-tooltip title="{{ date.calendar.title }}">

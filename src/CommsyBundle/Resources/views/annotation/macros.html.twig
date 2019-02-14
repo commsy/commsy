@@ -1,9 +1,10 @@
 {% macro editAnnotationContent(title, item, content) %}
+    {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
     <div class="uk-grid uk-margin-top-remove">
 
         <div class="cs-comment-head">
             <div class="uk-comment-meta">
-                {{ 'by'|trans({})|capitalize }}: {{item.creator.getFullName}}
+                {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(item.creator) }}
             </div>
             <div class="uk-comment-meta uk-margin-bottom">
                 {{ 'last changed'|trans({})|capitalize }}: {{item.getModificationDate|date("d.m.Y H:i")}}

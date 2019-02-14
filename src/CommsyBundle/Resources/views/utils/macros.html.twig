@@ -226,7 +226,7 @@
     {% elseif user.itemId != "" %}
         <img class="uk-comment-avatar uk-thumbnail uk-border-circle{{ additionalClasses }}"{{ styleAttribute | raw }} src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ user.fullname }}">
     {% else %}
-        <img class="uk-comment-avatar uk-thumbnail uk-border-circle cs-comment-thumbnail{{ additionalClasses }}"{{ styleAttribute | raw }} src="{{ path('commsy_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "guest"|trans({}, 'messages')}}" style="width: 30px; height: 30px;">
+        <img class="uk-comment-avatar uk-thumbnail uk-border-circle{{ additionalClasses }}"{{ styleAttribute | raw }} src="{{ path('commsy_user_guestimage') }}"{% if showTooltip %} data-uk-tooltip{% endif %} title="{{ "guest"|trans({}, 'messages')}}">
     {% endif %}
 {% endmacro %}
 

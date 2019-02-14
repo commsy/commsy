@@ -19,7 +19,7 @@
             
             {# user icon and modification time #}
             <div class="uk-margin-right uk-flex-item-none">
-                {% if discussion.modificatorItem.isUser %}
+                {% if not discussion.modificatorItem.isDeleted and discussion.modificatorItem.isUser %}
                     {{  macros.userIconLink(discussion.modificatorItem) }}
                 {% else %}
                     {{  macros.userIcon(discussion.modificatorItem) }}
@@ -48,7 +48,7 @@
                 </h4>
 
                 <div class="uk-comment-meta">
-                    {{ 'by'|trans({})|capitalize }}: {{discussion.modificatorItem.fullname}} ({{discussion.getCreationDate|date("d.m.Y")}})
+                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(discussion.modificatorItem) }} ({{discussion.getCreationDate|date("d.m.Y")}})
                 </div>
                
                 <div class="uk-comment-meta">

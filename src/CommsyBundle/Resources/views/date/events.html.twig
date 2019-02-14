@@ -17,7 +17,7 @@
                 
             </div>
             <div class="uk-margin-right uk-flex-item-none">
-                    {% if date.creator.isUser %}
+                    {% if not date.creator.isDeleted and date.creator.isUser %}
                         {{  macros.userIconLink(date.creator) }}
                     {% else %}
                         {{  macros.userIcon(date.creator) }}

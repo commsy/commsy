@@ -21,7 +21,7 @@
 
             {# user icon #}
             <div >
-                {% if annotation.creator.isUser %}
+                {% if not annotation.creator.isDeleted and annotation.creator.isUser %}
                     {{  utilMacros.userIconLink(annotation.creator) }}
                 {% else %}
                     {{  utilMacros.userIcon(annotation.creator) }}
