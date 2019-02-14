@@ -1551,6 +1551,7 @@ class cs_room_item extends cs_context_item {
         global $symfonyContainer;
         $default_sender_address = $symfonyContainer->getParameter('commsy.email.from');
 
+        /** @var \cs_portal_item $current_portal */
         $current_portal = $this->getContextItem();
         $current_user = $this->_environment->getCurrentUserItem();
         $fullname = $current_user->getFullname();
@@ -1598,9 +1599,9 @@ class cs_room_item extends cs_context_item {
         }
 
         // now email information
-        foreach ($receiver_array as $key => $value) {
+        foreach ($receiver_array as $language => $emailArray) {
             $save_language = $translator->getSelectedLanguage();
-            $translator->setSelectedLanguage($key);
+            $translator->setSelectedLanguage($language);
             $subject = '';
             $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_ARCHIVE_INFO', str_ireplace('&amp;', '&', $this->getTitle()), $current_portal->getDaysSendMailBeforeArchivingRooms());
 
@@ -1658,7 +1659,7 @@ class cs_room_item extends cs_context_item {
             // send email
             include_once('classes/cs_mail.php');
             $mail = new cs_mail();
-            $mail->set_to(implode(',', $value));
+            $mail->set_to(implode(',', $emailArray));
             $mail->set_from_email($default_sender_address);
             if (isset($current_portal)) {
                 $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $current_portal->getTitle()));
@@ -1751,9 +1752,9 @@ class cs_room_item extends cs_context_item {
         }
 
         // now email information
-        foreach ($receiver_array as $key => $value) {
+        foreach ($receiver_array as $language => $emailArray) {
             $save_language = $translator->getSelectedLanguage();
-            $translator->setSelectedLanguage($key);
+            $translator->setSelectedLanguage($language);
             $subject = '';
             $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_DELETE_INFO', str_ireplace('&amp;', '&', $this->getTitle()), $current_portal->getDaysSendMailBeforeDeletingRooms());
 
@@ -1830,7 +1831,7 @@ class cs_room_item extends cs_context_item {
             // send email
             include_once('classes/cs_mail.php');
             $mail = new cs_mail();
-            $mail->set_to(implode(',', $value));
+            $mail->set_to(implode(',', $emailArray));
             $mail->set_from_email($default_sender_address);
             if (isset($current_portal)) {
                 $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $current_portal->getTitle()));
