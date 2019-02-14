@@ -1589,7 +1589,9 @@ class cs_room_item extends cs_context_item {
                     }
 
                     $modEmail = $mod_item->getEmail();
-                    if (filter_var($modEmail, FILTER_VALIDATE_EMAIL)) {
+                    $validator = new \Egulias\EmailValidator\EmailValidator();
+
+                    if ($validator->isValid($modEmail, new \Egulias\EmailValidator\Validation\RFCValidation())) {
                         $receiver_array[$language][] = $modEmail;
                         $moderator_name_array[] = $mod_item->getFullname();
                     }
@@ -1750,8 +1752,14 @@ class cs_room_item extends cs_context_item {
                             $language = $default_language;
                         }
                     }
-                    $receiver_array[$language][] = $mod_item->getEmail();
-                    $moderator_name_array[] = $mod_item->getFullname();
+
+                    $modEmail = $mod_item->getEmail();
+                    $validator = new \Egulias\EmailValidator\EmailValidator();
+
+                    if ($validator->isValid($modEmail, new \Egulias\EmailValidator\Validation\RFCValidation())) {
+                        $receiver_array[$language][] = $modEmail;
+                        $moderator_name_array[] = $mod_item->getFullname();
+                    }
                 }
                 $mod_item = $moderator_list->getNext();
             }
