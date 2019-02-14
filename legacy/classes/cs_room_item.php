@@ -1551,6 +1551,7 @@ class cs_room_item extends cs_context_item {
         global $symfonyContainer;
         $default_sender_address = $symfonyContainer->getParameter('commsy.email.from');
 
+        /** @var \cs_portal_item $current_portal */
         $current_portal = $this->getContextItem();
         $current_user = $this->_environment->getCurrentUserItem();
         $fullname = $current_user->getFullname();
