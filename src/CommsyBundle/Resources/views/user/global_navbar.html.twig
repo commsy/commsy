@@ -13,10 +13,10 @@
                 <div class="uk-dropdown uk-dropdown-small uk-dropdown-navbar">
                     <ul class="uk-nav uk-nav-navbar">
                         <li>
-                            <a href="{{ path('commsy_portal_legacysettings', {'roomId': portal.itemId}) }}"><i class="uk-icon-justify uk-icon-wrench"></i> {{ 'Legacy configuration'|trans({}, 'portal') }}</a>
+                            <a href="{{ path('commsy_portal_roomcategories', {'roomId': portal.itemId}) }}"><i class="uk-icon-justify uk-icon-wrench"></i> {{ 'Portal configuration'|trans({}, 'portal') }}</a>
                         </li>
                         <li>
-                            <a href="{{ path('commsy_portal_roomcategories', { 'roomId': portal.itemId }) }}"><i class="uk-icon-justify uk-icon-history"></i> {{ 'Portal configuration'|trans({}, 'portal') }}</a>
+                            <a href="{{ path('commsy_portal_legacysettings', { 'roomId': portal.itemId }) }}"><i class="uk-icon-justify uk-icon-history"></i> {{ 'Legacy configuration'|trans({}, 'portal') }}</a>
                         </li>
                     </ul>
                 </div>
