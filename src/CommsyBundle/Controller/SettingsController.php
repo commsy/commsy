@@ -59,7 +59,7 @@ class SettingsController extends Controller
             $roomCategories[$roomCategory->getTitle()] = $roomCategory->getId();
         }
         foreach ($roomCategoriesService->getRoomCategoriesLinkedToContext($roomId) as $roomCategory) {
-            $roomData['categories'][] = $roomCategory->getId();
+            $roomData['categories'][] = $roomCategory->getCategoryId();
         }
 
         $form = $this->createForm(GeneralSettingsType::class, $roomData, array(
