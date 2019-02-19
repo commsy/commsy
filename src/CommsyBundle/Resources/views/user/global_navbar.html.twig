@@ -5,8 +5,21 @@
         {#</li>#}
 
         {% if showPortalConfigurationLink %}
-            <li>
-                <a href="{{ path('commsy_portal_legacysettings', {'roomId': portal.itemId}) }}"><i class="uk-icon-wrench"></i></a>
+            <li id="navbar_portal_settings_icon" class="uk-parent" data-uk-dropdown>
+                <a href="#">
+                    <i class="uk-icon-wrench"></i>
+                </a>
+
+                <div class="uk-dropdown uk-dropdown-small uk-dropdown-navbar">
+                    <ul class="uk-nav uk-nav-navbar">
+                        <li>
+                            <a href="{{ path('commsy_portal_legacysettings', {'roomId': portal.itemId}) }}"><i class="uk-icon-justify uk-icon-wrench"></i> {{ 'Portal configuration'|trans({}, 'portal') }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('commsy_portal_roomcategories', { 'roomId': portal.itemId }) }}"><i class="uk-icon-justify uk-icon-history"></i> {{ 'Legacy configuration'|trans({}, 'portal') }}</a>
+                        </li>
+                    </ul>
+                </div>
             </li>
         {% endif %}
 
