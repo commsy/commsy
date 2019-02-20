@@ -351,10 +351,10 @@
                                 {% if showRating or showWorkflow%}
                                 
                                     {% if showRating%}
-                                        {{  macros.ratingStatusDetail(material, ratingArray) }}
+                                        {{ macros.ratingStatusDetail(material, ratingArray) }}
                                     {% endif %}
                                     {% if showWorkflow%}
-                                        {{  macros.workflowTrafficLight(material) }}
+                                        {{ macros.workflowTrafficLight(material) }}
                                     {% endif %}
                                 {% endif %}
                             </div>
@@ -390,9 +390,9 @@
                                             {{ 'last changed'|trans({})|capitalize }}
                                             <div>
                                                 {% if not item.modificatorItem.isDeleted and item.modificatorItem.isUser %}
-                                                    {{  macros.userIconLink(item.modificatorItem) }}
+                                                    {{ macros.userIconLink(item.modificatorItem) }}
                                                 {% else %}
-                                                    {{  macros.userIcon(item.modificatorItem) }}
+                                                    {{ macros.userIcon(item.modificatorItem) }}
                                                 {% endif %}
                                             </div>
                                             <div>
@@ -896,6 +896,7 @@
 
 {% macro members(item,members) %}
     {% import _self as macros %}
+    {% import 'CommsyBundle:utils:macros.html.twig' as utilsMacros %}
 
     {% set preview = '' %}
     {% set content = '' %}
@@ -912,9 +913,9 @@
             <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
  
                 <div class="uk-panel-teaser cs-panel-teaser-user">
-                   <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ absolute_url(path('commsy_user_image', {'roomId': member.contextId, 'itemId': member.itemId})) }}" data-uk-tooltip title="{{ member.fullname }}">
+                   <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ absolute_url(path('commsy_user_image', {'roomId': member.contextId, 'itemId': member.itemId})) }}" data-uk-tooltip title="{{ utilsMacros.userFullname(member) }}">
                     <span class="uk-text-large uk-text-middle">
-                        <a>{{ member.title }} {{member.fullname}}</a>
+                        <a>{{ member.title }} {{ utilsMacros.userFullname(member) }}</a>
                     </span>
                 </div>
                 <span>

@@ -20,9 +20,9 @@
             {# user icon and modification time #}
             <div class="uk-margin-right uk-flex-item-none">
                 {% if not discussion.modificatorItem.isDeleted and discussion.modificatorItem.isUser %}
-                    {{  macros.userIconLink(discussion.modificatorItem) }}
+                    {{ macros.userIconLink(discussion.modificatorItem) }}
                 {% else %}
-                    {{  macros.userIcon(discussion.modificatorItem) }}
+                    {{ macros.userIcon(discussion.modificatorItem) }}
                 {% endif %}
                 <div class="uk-comment-meta">
                     {% if discussion.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
@@ -52,13 +52,13 @@
                 </div>
                
                 <div class="uk-comment-meta">
-                    {{  macros.fileListShort(discussion) }}
+                    {{ macros.fileListShort(discussion) }}
                 </div>
             </div>
             {%if showRating or showWorkflow%}
                 <div class="uk-width-2-10 uk-text-right">
                 {% if showRating%}
-                    {{  macros.ratingStatus(discussion, ratingList) }}
+                    {{ macros.ratingStatus(discussion, ratingList) }}
                 {% endif %}
             </div>
             {% endif %}
