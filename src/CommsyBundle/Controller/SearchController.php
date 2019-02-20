@@ -2,6 +2,7 @@
 
 namespace CommsyBundle\Controller;
 
+use Commsy\LegacyBundle\Utils\ItemService;
 use CommsyBundle\Form\Type\SearchItemType;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -272,6 +273,8 @@ class SearchController extends Controller
 
     private function prepareResults(TransformedPaginatorAdapter $searchResults, $currentRoomId, $offset = 0, $json = false)
     {
+        $itemService = $this->get('commsy_legacy.item_service');
+        
         $results = [];
         foreach ($searchResults->getResults($offset, 10)->toArray() as $searchResult) {
 
@@ -324,6 +327,8 @@ class SearchController extends Controller
                 $results[] = [
                     'entity' => $searchResult,
                     'routeName' => 'commsy_' . $type . '_detail',
+                    'files' => $itemService->getItemFileList($searchResult->getItemId()),
+                    'type' => $type,
                 ];
             }
         }
