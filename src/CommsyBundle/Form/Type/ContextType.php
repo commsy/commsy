@@ -43,11 +43,10 @@ class ContextType extends AbstractType
                     'German' => 'de',
                     'English' => 'en',
                 ),
-                'label' => 'language',
                 'required' => true,
                 'expanded' => false,
                 'multiple' => false,
-                'translation_domain' => 'room',
+                'translation_domain' => 'settings',
                 'choice_translation_domain' => 'settings',
             ))
             ->add('room_description', TextareaType::class, [
