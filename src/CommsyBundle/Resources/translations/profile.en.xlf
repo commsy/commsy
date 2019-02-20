@@ -44,7 +44,7 @@
             </trans-unit>
             <trans-unit id="language">
                 <source>language</source>
-                <target>language</target>
+                <target>Personal system language</target>
             </trans-unit>
             <trans-unit id="autoSaveStatus">
                 <source>autoSaveStatus</source>
@@ -290,7 +290,7 @@
             </trans-unit>
             <trans-unit id="language_description">
                 <source>languageDescription</source>
-                <target>With this option you can set the language in which the menus in this room will be displayed, given the moderator of this room has activated this option. Choosing the option "Browser" will configure the language according to your browser settings.</target>
+                <target>With this option you can set the language in which the menus, settings and explanations in CommSy will be displayed. Choosing the option "Browser" will configure the language according to your browser settings. If a rooms moderation explicitly set a specfic system language it will be used instead of your personal one.</target>
             </trans-unit>
             <trans-unit id="auto_save_description">
                 <source>autoSaveDescription</source>
