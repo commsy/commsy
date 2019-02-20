@@ -15,10 +15,10 @@
                 </form>
             </div>
             <div class="uk-margin-right uk-flex-item-none">
-                    {% if institution.creator.isUser %}
-                        {{  macros.userIconLink(institution.creator) }}
+                    {% if not institution.creator.isDeleted and institution.creator.isUser %}
+                        {{ macros.userIconLink(institution.creator) }}
                     {% else %}
-                        {{  macros.userIcon(institution.creator) }}
+                        {{ macros.userIcon(institution.creator) }}
                     {% endif %}
                     <div class="uk-comment-meta">
                         {% if institution.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
@@ -38,7 +38,7 @@
                 </h4>
 
                 <div class="uk-comment-meta">
-                    {{  macros.fileListShort(institution) }}
+                    {{ macros.fileListShort(institution) }}
                 </div>
             </div>
         </header>

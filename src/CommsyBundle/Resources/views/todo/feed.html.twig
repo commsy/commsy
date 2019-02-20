@@ -19,10 +19,10 @@
 
             {# user icon and modification time #}
             <div class="uk-margin-right uk-flex-item-none">
-                {% if todo.modificatorItem.isUser %}
-                    {{  macros.userIconLink(todo.modificatorItem) }}
+                {% if not todo.modificatorItem.isDeleted and todo.modificatorItem.isUser %}
+                    {{ macros.userIconLink(todo.modificatorItem) }}
                 {% else %}
-                    {{  macros.userIcon(todo.modificatorItem) }}
+                    {{ macros.userIcon(todo.modificatorItem) }}
                 {% endif %}
                 <div class="uk-comment-meta">
                     {% if todo.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
@@ -48,11 +48,11 @@
                 </h4>
 
                 <div class="uk-comment-meta">
-                    {{ 'by'|trans({})|capitalize }}: {{todo.getCreator.fullname}} ({{todo.getCreationDate|date("d.m.Y")}})
+                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(todo.getCreator) }} ({{todo.getCreationDate|date("d.m.Y")}})
                 </div>
                
                 <div class="uk-comment-meta">
-                    {{  macros.fileListShort(todo) }}
+                    {{ macros.fileListShort(todo) }}
                 </div>
             </div>
 
@@ -79,7 +79,7 @@
             {% if showRating %}
                 <div class="uk-width-2-10 uk-text-right">
                     {%if showRating%}
-                        {{  macros.ratingStatus(todo, ratingList) }}
+                        {{ macros.ratingStatus(todo, ratingList) }}
                     {% endif %}
                 </div>
             {% endif %}

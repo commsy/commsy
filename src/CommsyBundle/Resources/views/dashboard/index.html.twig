@@ -1,4 +1,5 @@
 {% extends 'CommsyBundle:base:room.html.twig' %}
+{% import 'CommsyBundle:utils:macros.html.twig' as macros %}
 
 {% block cover %}
     <div id="cover" class="uk-cover-background">
@@ -14,7 +15,7 @@
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div>Neueste Aktivitäten(TODO) {{ user.fullname }}</div>
+                        <div>Neueste Aktivitäten(TODO) {{ macros.userFullname(user) }}</div>
                         <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
                             <button class="uk-button">{{ 'filter'|trans({})|capitalize }} <i class="uk-icon-caret-down"></i></button>
                             <div class="uk-dropdown uk-dropdown-small">

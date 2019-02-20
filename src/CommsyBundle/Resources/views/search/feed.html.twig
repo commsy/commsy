@@ -10,14 +10,16 @@
             {# user icon and modification time #}
             <div class="uk-margin-right uk-flex-item-none">
                 {% if entity.modifier is defined and entity.modifier is not empty %}
-                    {% if entity.modifier.status >= 2 %}
+                    {# NOTE: `status >= 2` is used here since, opposed to the legacy model classes,
+                             the Doctrine entity User.php doesn't offer an `isUser()` function #}
+                    {% if not entity.modifier.isDeleted and entity.modifier.status >= 2 %}
                         {{ macros.userIconLink(entity.modifier) }}
                     {% else %}
                         {{ macros.userIcon(entity.modifier) }}
                     {% endif %}
                 {% else %}
                     {# if modifier is undefined, show creator #}
-                    {% if entity.creator.status >= 2 %}
+                    {% if not entity.creator.isDeleted and entity.creator.status >= 2 %}
                         {{ macros.userIconLink(entity.creator) }}
                     {% else %}
                         {{ macros.userIcon(entity.creator) }}
@@ -51,7 +53,7 @@
                         {{ 'by'|trans({})|capitalize }}: {{ entity.author }} ({{ entity.publishingDate }})
                     {% else %}
                         {% if entity.modifier is defined and entity.modifier is not empty %}
-                            {{ 'by'|trans({})|capitalize }}: {{ entity.modifier.fullname }} ({{ entity.getCreationDate|date("d.m.Y") }})
+                            {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(entity.modifier) }} ({{ entity.getCreationDate|date("d.m.Y") }})
                         {% endif %}
                     {% endif %}
                 </div>
