@@ -1612,7 +1612,7 @@ class cs_room_item extends cs_context_item {
             if ($this->isCommunityRoom()) {
                 $body .= $translator->getMessage('COMMUNITY_MAIL_BODY_ARCHIVE_INFO', $this->getTitle(), $current_portal->getDaysSendMailBeforeArchivingRooms(), ($current_portal->getDaysUnusedBeforeArchivingRooms() - $current_portal->getDaysSendMailBeforeArchivingRooms()));
             } else {
-                $body .= $translator->getMessage('PROJECT_MAIL_BODY_ARCHIVE_INFO', $this->getTitle(), $current_portal->getDaysSendMailBeforeArchivingRooms(), ($current_portal->getDaysUnusedBeforeArchivingRooms() - $current_portal->getDaysSendMailBeforeArchivingRooms()));
+                $body .= $translator->getEmailMessage('PROJECT_MAIL_BODY_ARCHIVE_INFO', $this->getTitle(), $current_portal->getDaysSendMailBeforeArchivingRooms(), ($current_portal->getDaysUnusedBeforeArchivingRooms() - $current_portal->getDaysSendMailBeforeArchivingRooms()));
             }
             $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_ARCHIVE_INFO');
 
@@ -1771,7 +1771,7 @@ class cs_room_item extends cs_context_item {
             if ($this->isCommunityRoom()) {
                 $body .= $translator->getMessage('COMMUNITY_MAIL_BODY_DELETE_INFO', $this->getTitle(), $current_portal->getDaysSendMailBeforeDeletingRooms(), ($current_portal->getDaysUnusedBeforeDeletingRooms() - $current_portal->getDaysSendMailBeforeDeletingRooms()));
             } else {
-                $body .= $translator->getMessage('PROJECT_MAIL_BODY_DELETE_INFO', $this->getTitle(), $current_portal->getDaysSendMailBeforeDeletingRooms(), ($current_portal->getDaysUnusedBeforeDeletingRooms() - $current_portal->getDaysSendMailBeforeDeletingRooms()));
+                $body .= $translator->getEmailMessage('PROJECT_MAIL_BODY_DELETE_INFO', $this->getTitle(), $current_portal->getDaysSendMailBeforeDeletingRooms(), ($current_portal->getDaysUnusedBeforeDeletingRooms() - $current_portal->getDaysSendMailBeforeDeletingRooms()));
             }
             $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_DELETE_INFO');
 
