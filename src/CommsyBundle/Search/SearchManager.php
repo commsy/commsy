@@ -167,7 +167,7 @@ class SearchManager
     /**
      * Creats a Terms Filter to restrict the search to contexts, the
      * user is allowed to access
-     * 
+     *
      * @return Queries\BoolQuery
      */
     private function createContextFilter()
@@ -209,17 +209,40 @@ class SearchManager
         $matchQuery->setType('most_fields');
 //        $matchQuery->setTieBreaker(0.3);
 //        $matchQuery->setMinimumShouldMatch('80%');
-        $matchQuery->setFields([
-            'title^2',
-            'title.raw^5',
-            'discussionarticles.subject',
+        $fields = [
+            // first level title
+            'title^5',
+            'title.raw^20',
+
+            // description
+            'description^1.7',
+
+            // date
+//            'modificationDate',
+
+            // files
+            'files.content^1.6',
+//            'discussionarticles.files.content',
+//            'steps.files.content',
+//            'sections.files.content',
+
+            // creator, sections
+            'creator.fullName^1.5',
+
+            // tags
+            'tags^1.4',
+
+            // discussion articles
+            'discussionarticles.subject^1.3',
+            'discussionarticles.description^1.3',
+
+            // others
             'steps.title',
             'sections.title',
-            'description',
-            'discussionarticles.description',
+
             'steps.description',
             'sections.description',
-            'fullName^1.5',
+
             'userId',
 //            'creationDate',
 //            'endDate',
@@ -227,16 +250,35 @@ class SearchManager
 //            'datetimeEnd',
 //            'date',
             'hashtags',
-            'tags',
+
             'annotations',
-            'files.content',
-//            'discussionarticles.files.content',
-//            'steps.files.content',
-//            'sections.files.content',
+
             'contactPersons',
             'roomDescription',
-        ]);
+        ];
 
-        return $matchQuery;
+        /**
+         * In order to search in datetime fields we must ensure to send only search strings that are already in
+         * a valid format.
+         */
+        if ($queryAsDate = \DateTime::createFromFormat('d.m.Y', $this->query)) {
+            $fields[] = 'modificationDate';
+            $matchQuery->setQuery($queryAsDate->format('Y-m-d'));
+        }
+        if ($queryAsDate = \DateTime::createFromFormat('Y-m-d', $this->query)) {
+            $fields[] = 'modificationDate';
+            $matchQuery->setQuery($queryAsDate->format('Y-m-d'));
+        }
+
+        $matchQuery->setFields($fields);
+
+        $functionScoreQuery = new Queries\FunctionScore();
+        $functionScoreQuery->setQuery($matchQuery);
+        $functionScoreQuery->setScoreMode(Queries\FunctionScore::SCORE_MODE_SUM);
+        $functionScoreQuery->setBoostMode(Queries\FunctionScore::BOOST_MODE_SUM);
+
+        $functionScoreQuery->addDecayFunction(Queries\FunctionScore::DECAY_GAUSS, 'modificationDate', 'now', '30d', null, 0.1, 15);
+
+        return $functionScoreQuery;
     }
 }
