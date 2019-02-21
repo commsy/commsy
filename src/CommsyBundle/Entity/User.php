@@ -260,6 +260,16 @@ class User
     }
 
     /**
+     * isDeleted
+     *
+     * @return boolean
+     */
+    public function isDeleted(): bool
+    {
+        return ($this->deleterId !== null && $this->deletionDate !== null);
+    }
+
+    /**
      * Set creationDate
      *
      * @param \DateTime $creationDate
