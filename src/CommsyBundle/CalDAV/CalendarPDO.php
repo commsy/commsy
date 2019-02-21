@@ -639,6 +639,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             'DESCRIPTION' => $dateItem->getDescription(),
             'CLASS' => $class,
             'X-COMMSY-ITEM-ID' => $dateItem->getItemId(),
+            'X-COMMSY-CALENDAR-ID' => $dateItem->getCalendarId(),
         ];
 
         $recurringSubEvents = [];
