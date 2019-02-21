@@ -1,6 +1,7 @@
 <?php
 namespace CommsyBundle\Form\Type;
 
+use CommsyBundle\Form\Type\Custom\Select2ChoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -170,7 +171,7 @@ class GeneralSettingsType extends AbstractType
                         //     'multiple' => true,
                         //     'required' => false,
                         // ))
-                        ->add('community_rooms', ChoiceType::class, array(
+                        ->add('community_rooms', Select2ChoiceType::class, array(
                             'choices' => $choices,
                             'multiple' => true,
                             'required' => false,
@@ -188,7 +189,7 @@ class GeneralSettingsType extends AbstractType
                 ($this->roomItem->isProjectRoom() || $this->roomItem->isGroupRoom()))
             {
                 $form
-                    ->add('time_pulses', ChoiceType::class, [
+                    ->add('time_pulses', Select2ChoiceType::class, [
                         'label' => $this->getTimeIntervalsDisplayName(),
                         'required' => false,
                         'choices' => $this->getTimeChoices(),

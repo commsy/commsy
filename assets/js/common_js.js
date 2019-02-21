@@ -12,6 +12,7 @@ require('tooltipster/dist/js/tooltipster.bundle');
 require('expose-loader?URI!urijs/src/URI');
 require('video.js/dist/video');
 require('jscolor-picker/jscolor');
+require('select2/dist/js/select2');
 
 require('expose-loader?UIkit!uikit/dist/js/uikit');
 require('uikit/dist/js/components/autocomplete');
