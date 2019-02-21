@@ -440,6 +440,10 @@
                 <source>note</source>
                 <target>Hinweis:</target>
             </trans-unit>
+            <trans-unit id="select_placeholder">
+                <source>Select some options</source>
+                <target>Treffen Sie eine Auswahl</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
