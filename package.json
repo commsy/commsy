@@ -29,6 +29,7 @@
     "@types/urijs": "^1.15.34",
     "expose-loader": "^0.7.4",
     "fullcalendar": "^3.4.0",
+    "hard-source-webpack-plugin": "^0.13.1",
     "jquery": "^3.2.1",
     "jscolor-picker": "^2.0.4",
     "jstree": "^3.3.4",

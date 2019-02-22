@@ -35,7 +35,12 @@ class MaterialTransformer implements DataTransformerInterface
                 $materialData['editor_switch'] = $materialItem->getEtherpadEditor() > 0;
 
                 if ($materialItem->getBibKind() != 'none') {
-                    $materialData['biblio_select'] = 'Biblio'.ucfirst($materialItem->getBibKind()).'Type';
+                    $bibKind = $materialItem->getBibKind();
+                    // Bugfix: add backwards compatibility for entries from databases migrated from CommSy < 9
+                    if ($bibKind == 'document' || $bibKind == 'docmanagement') {
+                        $bibKind = 'DocManagement';
+                    }
+                    $materialData['biblio_select'] = 'Biblio'.ucfirst($bibKind).'Type';
                 }
 
                 $materialData['biblio_sub']['author'] = $materialItem->getAuthor();

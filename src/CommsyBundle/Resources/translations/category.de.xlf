@@ -35,7 +35,7 @@
                 <target>Kategorie aktualisieren</target>
             </trans-unit>
             <trans-unit id="category-empty">
-                <source>No categories has been created yet.</source>
+                <source>No categories have been created yet.</source>
                 <target>Bisher wurden keine Kategorien angelegt.</target>
             </trans-unit>
             <trans-unit id="category-combine">
