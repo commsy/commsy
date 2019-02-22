@@ -74,6 +74,7 @@ class RoomProfileType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             ->add('image', FileType::class, array(
                 'attr' => array(
@@ -90,6 +91,7 @@ class RoomProfileType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('email', TextType::class, array(
@@ -102,6 +104,7 @@ class RoomProfileType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('hideEmailInThisRoom', CheckboxType::class, array(
@@ -117,6 +120,7 @@ class RoomProfileType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('phone', TextType::class, array(
@@ -129,6 +133,7 @@ class RoomProfileType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('mobile', TextType::class, array(
@@ -141,6 +146,7 @@ class RoomProfileType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('street', TextType::class, array(
@@ -153,6 +159,7 @@ class RoomProfileType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('zipcode', TextType::class, array(
@@ -165,6 +172,7 @@ class RoomProfileType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('city', TextType::class, array(
@@ -177,6 +185,7 @@ class RoomProfileType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('room', TextType::class, array(
@@ -189,6 +198,7 @@ class RoomProfileType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('organisation', TextType::class, array(
@@ -201,6 +211,7 @@ class RoomProfileType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('position', TextType::class, array(
@@ -213,6 +224,7 @@ class RoomProfileType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('skype', TextType::class, array(
@@ -225,6 +237,7 @@ class RoomProfileType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('homepage', TextType::class, array(
@@ -237,6 +250,7 @@ class RoomProfileType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('description', TextareaType::class, array(
@@ -250,6 +264,7 @@ class RoomProfileType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('save', SubmitType::class, array(

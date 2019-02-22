@@ -36,6 +36,7 @@ class cs_context_item extends cs_item {
 
   /**
    * a list of the moderators
+   * @var \cs_list $_moderator_list
    */
   var $_moderator_list = NULL;
 
@@ -1728,10 +1729,11 @@ class cs_context_item extends cs_item {
   /** get moderators of the context
    * this method returns a list of moderators of the context
    *
-   * @return object cs_list a list of moderator (cs_user_item)
+   * @return \cs_list a list of moderator (cs_user_item)
    */
-  function getModeratorList () {
-    if ( empty($this->_moderator_list) ) {
+  public function getModeratorList()
+  {
+    if (empty($this->_moderator_list)) {
       $userManager = $this->_environment->getUserManager();
       $userManager->resetLimits();
       $userManager->setContextLimit($this->getItemID());
@@ -1739,10 +1741,9 @@ class cs_context_item extends cs_item {
       $userManager->select();
       $this->_moderator_list = $userManager->get();
       unset($userManager);
-      if ( $this->_moderator_list->isEmpty() ) {
-        if ( $this->isClosed()
-                and !$this->_environment->isArchiveMode()
-        ) {
+
+      if ($this->_moderator_list->isEmpty()) {
+        if ($this->isClosed() && !$this->_environment->isArchiveMode()) {
           $userManager = $this->_environment->getZzzUserManager();
           $userManager->resetLimits();
           $userManager->setContextLimit($this->getItemID());

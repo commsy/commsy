@@ -1,6 +1,7 @@
 // webpack.config.js
 let Encore = require('@symfony/webpack-encore');
 let webpack = require('webpack');
+let HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 Encore
     // the project directory where all compiled assets will be stored
@@ -45,6 +46,8 @@ Encore
     //     test: /\.(eot|woff|woff2|ttf|svg|png|jpg)$/,
     //     loader: 'url-loader'
     // })
+
+    .addPlugin(new HardSourceWebpackPlugin())
 
     // allow legacy applications to use $/jQuery as a global variable
     .autoProvidejQuery()

@@ -67,6 +67,7 @@ class RoomProfileContactType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('hideEmailInThisRoom', CheckboxType::class, array(
@@ -82,6 +83,7 @@ class RoomProfileContactType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('phone', TextType::class, array(
@@ -94,6 +96,7 @@ class RoomProfileContactType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('mobile', TextType::class, array(
@@ -106,6 +109,7 @@ class RoomProfileContactType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             ->add('skype', TextType::class, array(
                 'label'    => 'skype',
@@ -117,6 +121,7 @@ class RoomProfileContactType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('homepage', TextType::class, array(
@@ -129,6 +134,7 @@ class RoomProfileContactType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('description', TextareaType::class, array(
@@ -142,6 +148,7 @@ class RoomProfileContactType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('save', SubmitType::class, array(

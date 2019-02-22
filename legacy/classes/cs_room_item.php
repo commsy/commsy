@@ -1551,6 +1551,7 @@ class cs_room_item extends cs_context_item {
         global $symfonyContainer;
         $default_sender_address = $symfonyContainer->getParameter('commsy.email.from');
 
+        /** @var \cs_portal_item $current_portal */
         $current_portal = $this->getContextItem();
         $current_user = $this->_environment->getCurrentUserItem();
         $fullname = $current_user->getFullname();
@@ -1586,17 +1587,23 @@ class cs_room_item extends cs_context_item {
                             $language = $default_language;
                         }
                     }
-                    $receiver_array[$language][] = $mod_item->getEmail();
-                    $moderator_name_array[] = $mod_item->getFullname();
+
+                    $modEmail = $mod_item->getEmail();
+                    $validator = new \Egulias\EmailValidator\EmailValidator();
+
+                    if ($validator->isValid($modEmail, new \Egulias\EmailValidator\Validation\RFCValidation())) {
+                        $receiver_array[$language][] = $modEmail;
+                        $moderator_name_array[] = $mod_item->getFullname();
+                    }
                 }
                 $mod_item = $moderator_list->getNext();
             }
         }
 
         // now email information
-        foreach ($receiver_array as $key => $value) {
+        foreach ($receiver_array as $language => $emailArray) {
             $save_language = $translator->getSelectedLanguage();
-            $translator->setSelectedLanguage($key);
+            $translator->setSelectedLanguage($language);
             $subject = '';
             $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_ARCHIVE_INFO', str_ireplace('&amp;', '&', $this->getTitle()), $current_portal->getDaysSendMailBeforeArchivingRooms());
 
@@ -1615,18 +1622,12 @@ class cs_room_item extends cs_context_item {
             // set new commsy url
             global $symfonyContainer;
 
-            $url = $symfonyContainer->get('router')->generate(
-                'commsy_room_home',
-                array('roomId' => $this->getItemID()),
-                true
-            );
+            /** @var \Symfony\Component\Routing\RouterInterface $router */
+            $router = $symfonyContainer->get('router');
+            $url = $router->generate('commsy_room_home', [
+                'roomId' => $this->getItemID(),
+            ], \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_PATH);
 
-            $requestStack = $symfonyContainer->get('request_stack');
-            $currentRequest = $requestStack->getCurrentRequest();
-            if ($currentRequest) {
-                $url = $currentRequest->getSchemeAndHttpHost() . $url;
-            }
-            
             $body .= LF . $url;
 
             if ($this->isProjectRoom()) {
@@ -1660,7 +1661,7 @@ class cs_room_item extends cs_context_item {
             // send email
             include_once('classes/cs_mail.php');
             $mail = new cs_mail();
-            $mail->set_to(implode(',', $value));
+            $mail->set_to(implode(',', $emailArray));
             $mail->set_from_email($default_sender_address);
             if (isset($current_portal)) {
                 $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $current_portal->getTitle()));
@@ -1745,17 +1746,23 @@ class cs_room_item extends cs_context_item {
                             $language = $default_language;
                         }
                     }
-                    $receiver_array[$language][] = $mod_item->getEmail();
-                    $moderator_name_array[] = $mod_item->getFullname();
+
+                    $modEmail = $mod_item->getEmail();
+                    $validator = new \Egulias\EmailValidator\EmailValidator();
+
+                    if ($validator->isValid($modEmail, new \Egulias\EmailValidator\Validation\RFCValidation())) {
+                        $receiver_array[$language][] = $modEmail;
+                        $moderator_name_array[] = $mod_item->getFullname();
+                    }
                 }
                 $mod_item = $moderator_list->getNext();
             }
         }
 
         // now email information
-        foreach ($receiver_array as $key => $value) {
+        foreach ($receiver_array as $language => $emailArray) {
             $save_language = $translator->getSelectedLanguage();
-            $translator->setSelectedLanguage($key);
+            $translator->setSelectedLanguage($language);
             $subject = '';
             $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_DELETE_INFO', str_ireplace('&amp;', '&', $this->getTitle()), $current_portal->getDaysSendMailBeforeDeletingRooms());
 
@@ -1832,7 +1839,7 @@ class cs_room_item extends cs_context_item {
             // send email
             include_once('classes/cs_mail.php');
             $mail = new cs_mail();
-            $mail->set_to(implode(',', $value));
+            $mail->set_to(implode(',', $emailArray));
             $mail->set_from_email($default_sender_address);
             if (isset($current_portal)) {
                 $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $current_portal->getTitle()));

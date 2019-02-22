@@ -2,6 +2,7 @@
 
 namespace CommsyBundle\Controller;
 
+use Commsy\LegacyBundle\Utils\PortfolioService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -20,16 +21,36 @@ use CommsyBundle\Form\Type\AnnotationType;
 class AnnotationController extends Controller
 {
     /**
-     * @Route("/room/{roomId}/annotation/feed/{linkedItemId}/{start}")
+     * @Route("/room/{roomId}/annotation/feed/{linkedItemId}/{start}/{firstTagId}/{secondTagId}")
      * @Template()
      */
-    public function feedAction($roomId, $linkedItemId, $max = 10, $start = 0, Request $request)
+    public function feedAction($roomId, $linkedItemId, $max = 10, $start = 0, $firstTagId = null, $secondTagId = null, Request $request)
     {
         // get the annotation manager service
         $annotationService = $this->get('commsy_legacy.annotation_service');
 
         // get annotation list from manager service 
         $annotations = $annotationService->getListAnnotations($roomId, $linkedItemId, $max, $start);
+
+        if ($firstTagId && $secondTagId) {
+            $portfolioService = $this->get(PortfolioService::class);
+            $cellCoordinates = $portfolioService->getCellCoordinatesForTagIds($linkedItemId, $firstTagId, $secondTagId);
+            if (!empty($cellCoordinates)) {
+                $itemService = $this->get('commsy_legacy.item_service');
+
+                $annotationIds = $portfolioService->getAnnotationIdsForPortfolioCell($linkedItemId, $cellCoordinates[0], $cellCoordinates[1]);
+
+                $portfolioAnnotations = [];
+
+                if ($annotationIds) {
+                    foreach ($annotationIds as $annotationId) {
+                        $portfolioAnnotations[] = $itemService->getTypedItem($annotationId);
+                    }
+                }
+
+                $annotations = $portfolioAnnotations;
+            }
+        }
 
         $readerService = $this->get('commsy_legacy.reader_service');
 
@@ -131,12 +152,12 @@ class AnnotationController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/annotation/{itemId}/create")
+     * @Route("/room/{roomId}/annotation/{itemId}/create/{firstTagId}/{secondTagId}")
      * @Method({"POST"})
      * @Template()
      * @Security("is_granted('ITEM_ANNOTATE', itemId)")
      */
-    public function createAction($roomId, $itemId, Request $request)
+    public function createAction($roomId, $itemId, $firstTagId = null, $secondTagId = null, Request $request)
     {
         $itemService = $this->get('commsy_legacy.item_service');
         $item = $itemService->getTypedItem($itemId);
@@ -153,7 +174,24 @@ class AnnotationController extends Controller
 
                 // create new annotation
                 $annotationId = $annotationService->addAnnotation($roomId, $itemId, $data['description']);
-                return $this->redirectToRoute('commsy_'.$itemType.'_detail', array('roomId' => $roomId, 'itemId' => $itemId, '_fragment' => 'description' . $annotationId));
+
+                $routeArray = [];
+                $routeArray['roomId'] = $roomId;
+                $routeArray['itemId'] = $itemId;
+                $routeArray['_fragment'] = 'description' . $annotationId;
+                if ($itemType == 'portfolio') {
+                    $routeArray['portfolioId'] = $itemId;
+                    $routeArray['firstTagId'] = $firstTagId;
+                    $routeArray['secondTagId'] = $secondTagId;
+
+                    $portfolioService = $this->get(PortfolioService::class);
+                    $cellCoordinates = $portfolioService->getCellCoordinatesForTagIds($itemId, $firstTagId, $secondTagId);
+                    if (!empty($cellCoordinates)) {
+                        $portfolioService->setPortfolioAnnotation($itemId, $annotationId, $cellCoordinates[0], $cellCoordinates[1]);
+                    }
+                }
+
+                return $this->redirectToRoute('commsy_'.$itemType.'_detail', $routeArray);
             }
         }
         return $this->redirectToRoute('commsy_'.$itemType.'_detail', array('roomId' => $roomId, 'itemId' => $itemId));
