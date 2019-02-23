@@ -98,6 +98,9 @@ fos_elastica:
                         creationDate:
                             type: date
                             format: date_optional_time
+                        modificationDate:
+                            type: date
+                            format: date_optional_time
                         title:
                             type: text
                             analyzer: commsy_analyzer
@@ -169,6 +172,9 @@ fos_elastica:
                                 fullName:
                                     type: text
                         creationDate:
+                            type: date
+                            format: date_optional_time
+                        modificationDate:
                             type: date
                             format: date_optional_time
                         title:
@@ -245,6 +251,9 @@ fos_elastica:
                                 fullName:
                                     type: text
                         creationDate:
+                            type: date
+                            format: date_optional_time
+                        modificationDate:
                             type: date
                             format: date_optional_time
                         title:
@@ -328,6 +337,9 @@ fos_elastica:
                         creationDate:
                             type: date
                             format: date_optional_time
+                        modificationDate:
+                            type: date
+                            format: date_optional_time
                         name:
                             type: text
                             copy_to: title
@@ -369,6 +381,12 @@ fos_elastica:
                                     copy_to: fullName
                                 fullName:
                                     type: text
+                        creationDate:
+                            type: date
+                            format: date_optional_time
+                        modificationDate:
+                            type: date
+                            format: date_optional_time
                         title:
                             type: text
                             analyzer: commsy_analyzer
@@ -420,6 +438,12 @@ fos_elastica:
                                     copy_to: fullName
                                 fullName:
                                     type: text
+                        creationDate:
+                            type: date
+                            format: date_optional_time
+                        modificationDate:
+                            type: date
+                            format: date_optional_time
                         title:
                             type: text
                             analyzer: commsy_analyzer
@@ -539,6 +563,9 @@ fos_elastica:
                                 fullName:
                                     type: text
                         creationDate:
+                            type: date
+                            format: date_optional_time
+                        modificationDate:
                             type: date
                             format: date_optional_time
                         title:
