@@ -337,6 +337,8 @@ class SearchController extends BaseController
 
     private function prepareResults(TransformedPaginatorAdapter $searchResults, $currentRoomId, $offset = 0, $json = false)
     {
+        $itemService = $this->get('commsy_legacy.item_service');
+
         $results = [];
         foreach ($searchResults->getResults($offset, 10)->toArray() as $searchResult) {
 
@@ -396,6 +398,8 @@ class SearchController extends BaseController
                     'allowedActions' => $allowedActions,
                     'entity' => $searchResult,
                     'routeName' => 'commsy_' . $type . '_detail',
+                    'files' => $itemService->getItemFileList($searchResult->getItemId()),
+                    'type' => $type,
                 ];
             }
         }
