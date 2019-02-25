@@ -483,8 +483,14 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         $dateItem = $this->getDateItemFromObjectUri($objectUri);
         if ($dateItem) {
             // ToDo: handle recurring events. Deleted CommSy items need to be stored to work as exclusions from the series.
-            $dateItem->delete();
-            $this->addChange($calendarId, $objectUri, 3);
+            $user = $this->getUserFromPortal($this->userId, $dateItem->getContextId());
+            if (!$dateItem->mayEdit($user)) {
+                $this->addChange($calendarId, $objectUri, 3);
+                throw new Exception\Forbidden('Permission denied to edit date');
+            } else {
+                $dateItem->delete();
+                $this->addChange($calendarId, $objectUri, 3);
+            }
         }
     }
 
@@ -927,6 +933,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     $user = $this->getUserFromPortal($this->userId, $dateItem->getContextId());
                     if ($user->getContextId() == $dateItem->getContextId()) {
                         if (!$dateItem->mayEdit($user) && !$newItem) {
+                            $this->addChange($calendarId, $objectUri, 3);
                             throw new Exception\Forbidden('Permission denied to edit date');
                         }
                     }
