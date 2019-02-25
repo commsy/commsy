@@ -106,6 +106,10 @@
                 <source>quit</source>
                 <target>Deleted Account</target>
             </trans-unit>
+            <trans-unit id="deleted person">
+                <source>deleted person</source>
+                <target>Deleted Person</target>
+            </trans-unit>
             <trans-unit id="request">
                 <source>request</source>
                 <target>Requesting</target>

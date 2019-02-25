@@ -72,10 +72,10 @@
                                                                 {{ form_widget(form.itemsLatest[key]) }}
                                                             </div>
                                                             <div class="uk-margin-right uk-flex-item-none">
-                                                                {% if currentItem.modificatorItem.isUser %}
-                                                                    {{  macros.userIconLink(currentItem.modificatorItem) }}
+                                                                {% if not currentItem.modificatorItem.isDeleted and currentItem.modificatorItem.isUser %}
+                                                                    {{ macros.userIconLink(currentItem.modificatorItem) }}
                                                                 {% else %}
-                                                                    {{  macros.userIcon(currentItem.modificatorItem) }}
+                                                                    {{ macros.userIcon(currentItem.modificatorItem) }}
                                                                 {% endif %}
                                                                 <div class="uk-comment-meta">
                                                                     {% if currentItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
@@ -90,7 +90,7 @@
                                                                     <a href="">{{ form_label(form.itemsLatest[key]) }}</a>
                                                                 </h4>
                                                                 <div class="uk-comment-meta">
-                                                                    {{ 'by'|trans({})|capitalize }}: {{currentItem.modificatorItem.fullname}} ({{currentItem.getCreationDate|date("d.m.Y")}})
+                                                                    {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(currentItem.modificatorItem) }} ({{currentItem.getCreationDate|date("d.m.Y")}})
                                                                 </div>
                                                             </div>
                                                             <div class="uk-width-2-10 uk-text-right">
@@ -120,10 +120,10 @@
                                                         {{ form_widget(entry) }}
                                                     </div>
                                                     <div class="uk-margin-right uk-flex-item-none">
-                                                        {% if currentItem.modificatorItem.isUser %}
-                                                            {{  macros.userIconLink(currentItem.modificatorItem) }}
+                                                        {% if not currentItem.modificatorItem.isDeleted and currentItem.modificatorItem.isUser %}
+                                                            {{ macros.userIconLink(currentItem.modificatorItem) }}
                                                         {% else %}
-                                                            {{  macros.userIcon(currentItem.modificatorItem) }}
+                                                            {{ macros.userIcon(currentItem.modificatorItem) }}
                                                         {% endif %}
                                                         <div class="uk-comment-meta">
                                                             {% if currentItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
@@ -141,11 +141,11 @@
                                                             {% if currentItem.author is defined and currentItem.author != '' %}
                                                                 {{ 'by'|trans({})|capitalize }}: {{currentItem.author}} ({{currentItem.publishingdate}})
                                                             {% else %}
-                                                                {{ 'by'|trans({})|capitalize }}: {{currentItem.modificatorItem.fullname}} ({{currentItem.getCreationDate|date("d.m.Y")}})
+                                                                {{ 'by'|trans({})|capitalize }}: {{ macros.userFullname(currentItem.modificatorItem) }} ({{currentItem.getCreationDate|date("d.m.Y")}})
                                                             {% endif %}
                                                         </div>
                                                         <div class="uk-comment-meta">
-                                                            {{  macros.fileListShort(currentItem) }}
+                                                            {{ macros.fileListShort(currentItem) }}
                                                         </div>
                                                     </div>
                                                     <div class="uk-width-2-10 uk-text-right">
