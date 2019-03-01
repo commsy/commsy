@@ -107,7 +107,8 @@ final class Version20170616103508 extends AbstractMigration implements Container
         ');
     }
 
-    public function postUp(Schema $schema) {
+    public function postUp(Schema $schema) : void
+    {
         $this->migrateColorsToCalendars('room');
 
         $this->migrateColorsToCalendars('zzz_room');
