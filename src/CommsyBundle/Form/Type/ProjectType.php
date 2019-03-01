@@ -29,6 +29,7 @@ class ProjectType extends AbstractType
                 'required' => false,
                 'mapped' => false,
                 'label' => 'Template',
+                'data' => (!empty($options['preferredChoices'])) ? $options['preferredChoices'][0] : '',
                 'attr' => [
                     'data-description' => json_encode($options['descriptions']),
                 ]
