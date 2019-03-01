@@ -457,7 +457,7 @@ class SoapService
 
                                             $mailer =  $this->serviceContainer->get('mailer');
 
-                                            $mailMessage = \Swift_Message::newInstance()
+                                            $mailMessage = (new \Swift_Message())
                                                 ->setSubject($translator->getMessage('USER_GET_MAIL_SUBJECT',$portal_user->getFullname()))
                                                 ->setBody($body, 'text/plain')
                                                 ->setFrom([$senderAddress => $translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle())])
@@ -551,7 +551,7 @@ class SoapService
 
                                         $mailer =  $this->serviceContainer->get('mailer');
 
-                                        $mailMessage = \Swift_Message::newInstance()
+                                        $mailMessage = (new \Swift_Message())
                                             ->setSubject($translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_FREE',$portal_item->getTitle()))
                                             ->setBody($body, 'text/plain')
                                             ->setFrom([$senderAddress => $translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle())])

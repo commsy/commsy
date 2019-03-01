@@ -828,7 +828,7 @@ class UserController extends BaseController
                 $sender = [$currentUser->getEmail() => $currentUser->getFullName()];
                 $recipient = [$item->getEmail() => $item->getFullName()];
 
-                $message = \Swift_Message::newInstance()
+                $message = (new \Swift_Message())
                     ->setSubject($formData['subject'])
                     ->setBody($formData['message'], 'text/html')
                     ->setFrom([$from => $portalItem->getTitle()]);
@@ -1148,7 +1148,7 @@ class UserController extends BaseController
                 $subject = $accountMail->generateSubject($action);
                 $body = $accountMail->generateBody($user, $action);
 
-                $mailMessage = \Swift_Message::newInstance()
+                $mailMessage = (new \Swift_Message())
                     ->setSubject($subject)
                     ->setBody($body, 'text/plain')
                     ->setFrom([$fromAddress => $fromSender])
@@ -1361,7 +1361,7 @@ class UserController extends BaseController
                     }
                 }
 
-                $message = \Swift_Message::newInstance()
+                $message = (new \Swift_Message())
                     ->setSubject($formData['subject'])
                     ->setBody($formData['message'], 'text/html')
                     ->setFrom([$from => $portalItem->getTitle()])
