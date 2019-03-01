@@ -44,6 +44,73 @@
                                 '%totalHits%': totalHits
                             }, 'search') }}
                         </div>
+
+                        <div>
+                            {% block editbox %}
+
+                                <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+                                    <button class="uk-button uk-button-mini cs-button-list">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
+                                    <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
+                                        <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+
+                                            <li>
+                                                <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                                                    'url': path('commsy_search_xhrcopy', {'roomId': roomId}),
+                                                    'action': 'copy',
+                                                    'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                    'mode': 'selection',
+                                                    'noSelectionMessage': 'no entry selected'|trans({},'item')
+                                                }|json_encode|e('html_attr') }}">
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-copy uk-visible-large"></i> {{ 'copy'|trans({},'rubric')|capitalize }}
+                                                </a>
+                                            </li>
+
+                                            <li>
+                                                {% if (user.isUser and not user.isReadOnlyUser) and not isArchived %}
+                                                    <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
+                                                        'url': path('commsy_search_xhrdelete', {'roomId': roomId}),
+                                                        'action': 'delete',
+                                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
+                                                        'mode': 'selection',
+                                                        'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
+                                                        'confirmQuestion': 'confirm delete'|trans({}, 'rubric'),
+                                                        'confirmCancel': 'confirm delete cancel'|trans({}, 'rubric'),
+                                                        'confirmOk': 'confirm delete confirm'|trans({}, 'rubric'),
+                                                        'returnUrl': path('commsy_search_results', {'roomId': roomId, 'search_filter[query]=': query})
+                                                    }|json_encode|e('html_attr') }}">
+                                                        <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
+                                                    </a>
+                                                {% else %}
+                                                    <span class="uk-text-muted">
+                                                        <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
+                                                    </span>
+                                                {% endif %}
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% endblock%}
+                        </div>
+                    </div>
+                </div>
+
+                {# will be displayed when selection mode is active #}
+                <div id="commsy-select-actions" class="uk-hidden" data-uk-sticky>
+                    <div class="uk-grid uk-margin-remove">
+
+                        {# change selection #}
+                        <div class="cs-list-select-buttons uk-width-2-4 uk-margin-remove uk-margin-top uk-padding-bottom uk-padding-top">
+                            <button id="commsy-select-actions-select-all" class="uk-button uk-hidden" type="button" data-uk-button>{{ 'select all entries'|trans({},'rubric')}}</button>
+                            <button id="commsy-select-actions-unselect" class="uk-button" type="button" data-uk-button>{{ 'unselect entries'|trans({},'rubric')}}</button>
+                        </div>
+
+                        {# selection actions old code #}
+                        <div class="cs-list-select-buttons uk-text-right uk-width-2-4 uk-margin-remove uk-margin-top uk-padding-bottom">
+                            <button id="commsy-select-actions-ok" class="uk-button">{{ 'execute'|trans({},'rubric')}}</button>
+                            <button id="commsy-select-actions-cancel" class="uk-button" type="button" data-uk-button>{{ 'cancel'|trans({},'rubric')}}</button>
+                        </div>
+
                     </div>
                 </div>
 

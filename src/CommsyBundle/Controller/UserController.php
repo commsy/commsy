@@ -264,7 +264,7 @@ class UserController extends BaseController
                 $formData = $form->getData();
 
                 // manual validation - moderator count check
-                if (in_array($formData['status'], ['user-block', 'user-status-reading-user', 'user-status-user', 'user-confirm'])) {
+                if (in_array($formData['status'], ['user-delete', 'user-block', 'user-status-reading-user', 'user-status-user', 'user-confirm'])) {
                     if (!$this->contextHasModerators($roomId, $formData['userIds'])) {
                         $translator = $this->get('translator');
                         $form->addError(new FormError($translator->trans('no moderators left', [], 'user')));
@@ -273,6 +273,13 @@ class UserController extends BaseController
 
                 if ($form->isSubmitted() && $form->isValid()) {
                     switch ($formData['status']) {
+                        case 'user-delete':
+                            foreach ($users as $user) {
+                                $user->delete();
+                                $user->save();
+                            }
+                            break;
+
                         case 'user-block':
                             foreach ($users as $user) {
                                 $user->setStatus(0);
@@ -341,7 +348,7 @@ class UserController extends BaseController
                     if ($formData['inform_user']) {
                         $this->sendUserInfoMail($formData['userIds'], $formData['status']);
                     }
-                    if($request->query->has('userDetail')) {
+                    if ($request->query->has('userDetail') && $formData['status'] !== 'user-delete') {
                         return $this->redirectToRoute('commsy_user_detail', [
                             'roomId' => $roomId,
                             'itemId' => array_values($request->query->get('userIds'))[0],
@@ -1223,7 +1230,7 @@ class UserController extends BaseController
         foreach ($users as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
             if ($currentUser->isModerator()) {
-                $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'copy', 'save', 'delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
+                $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'copy', 'save', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
             } else {
                 $allowedActions[$item->getItemID()] = ['markread', 'sendmail'];
             }
@@ -1450,18 +1457,19 @@ class UserController extends BaseController
         return $action->execute($room, $items);
     }
 
-    /**
-     * @Route("/room/{roomId}/user/xhr/delete", condition="request.isXmlHttpRequest()")
-     * @throws \Exception
-     */
-    public function xhrDeleteAction($roomId, Request $request)
-    {
-        $room = $this->getRoom($roomId);
-        $items = $this->getItemsForActionRequest($room, $request);
-
-        $action = $this->get('commsy.action.delete.generic');
-        return $action->execute($room, $items);
-    }
+    // NOTE: to allow for email notifications on delete, the 'user-delete' action is used instead of the 'delete' action
+//    /**
+//     * @Route("/room/{roomId}/user/xhr/delete", condition="request.isXmlHttpRequest()")
+//     * @throws \Exception
+//     */
+//    public function xhrDeleteAction($roomId, Request $request)
+//    {
+//        $room = $this->getRoom($roomId);
+//        $items = $this->getItemsForActionRequest($room, $request);
+//
+//        $action = $this->get('commsy.action.delete.generic');
+//        return $action->execute($room, $items);
+//    }
 
     /**
      * @param \cs_room_item $room

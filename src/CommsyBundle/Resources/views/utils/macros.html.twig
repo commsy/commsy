@@ -208,6 +208,26 @@
     {% endif %}
 {% endmacro %}
 
+{% macro fileListShortSearch(entity, fileArray) %}
+    {% import _self as macros %}
+    {% if not fileArray is empty %}
+        {% if is_granted('ITEM_SEE', entity.itemId) %}
+            {% for file in fileArray %}
+                {% set disposition = 'attachment' %}
+                {% if file.extension|lower == 'pdf' %}
+                    {% set disposition = 'inline' %}
+                {% endif %}
+
+                <a href="{{ path('commsy_file_getfile', { 'fileId': file.fileId, 'disposition': disposition }) }}" target="_blank" data-uk-tooltip title="{{ file.filename }}"><i class="{{ macros.iconClassForFileType(file.extension) }}"></i></a>
+            {% endfor %}
+        {% else %}
+            {% for file in fileArray %}
+                <i data-uk-tooltip title="{{ file.filename }}" class="{{ macros.iconClassForFileType(file.extension) }}"></i>
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+{% endmacro %}
+
 {% macro userIcon(user, size, showTooltip) %}
     {% set showTooltip = showTooltip ?? true %}
     {% if user.itemId != "" %}

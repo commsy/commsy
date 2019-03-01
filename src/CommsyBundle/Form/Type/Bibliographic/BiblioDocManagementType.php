@@ -20,19 +20,19 @@ class BiblioDocManagementType extends AbstractType
         $translationDomain = 'form';
 
         $builder
-            ->add('editor', TextType::class, array(
+            ->add('document_editor', TextType::class, array(
                 'label' => 'editor',
                 'translation_domain' => $translationDomain,
                 ))
-            ->add('maintainer', TextType::class, array(
+            ->add('document_maintainer', TextType::class, array(
                 'label' => 'maintainer',
                 'translation_domain' => $translationDomain,
                 ))
-            ->add('version', TextType::class, array(
-                'label' => 'version',
+            ->add('document_release_number', TextType::class, array(
+                'label' => 'release number',
                 'translation_domain' => $translationDomain,
                 ))
-            ->add('url_date', TextType::class, array(
+            ->add('document_release_date', TextType::class, array(
                 'label' => 'url date',
                 'translation_domain' => $translationDomain,
                 'attr' => array(
