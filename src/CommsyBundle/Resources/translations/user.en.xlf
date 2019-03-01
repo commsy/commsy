@@ -246,6 +246,10 @@
                 <source>Reject</source>
                 <target>Reject</target>
             </trans-unit>
+            <trans-unit id="manage_user">
+                <source>Manage user</source>
+                <target>Manage user</target>
+            </trans-unit>
             <trans-unit id="manage_users">
                 <source>Manage users</source>
                 <target>Manage users</target>
