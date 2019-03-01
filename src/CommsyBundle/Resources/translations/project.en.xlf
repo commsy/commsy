@@ -20,7 +20,7 @@
             </trans-unit>
             <trans-unit id="project-form-template-placeholder-no-template">
                 <source>No template</source>
-                <target>No template</target>
+                <target>*No template</target>
             </trans-unit>
             <trans-unit id="project-form-description-label">
                 <source>Room description</source>
