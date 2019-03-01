@@ -654,7 +654,7 @@ class ItemController extends Controller
                 }
             }
 
-            $message = \Swift_Message::newInstance()
+            $message = (new \Swift_Message())
                 ->setSubject($data['subject'])
                 ->setFrom(array($currentUser->getEmail() => $currentUser->getFullname()))
                 ->setTo($toArray)
