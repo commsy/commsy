@@ -386,7 +386,7 @@ class ProjectController extends Controller
         return $targetRoom;
     }
 
-    private function getAvailableTemplates()
+    private function getAvailableTemplates($type = 'project')
     {
         $templates = [];
 
@@ -456,6 +456,10 @@ class ProjectController extends Controller
                     if ($template->isModeratorByUserID($currentUserItem->getUserID(), $currentUserItem->getAuthSource())) {
                         $add = true;
                     }
+                }
+
+                if ($type != $template->getItemType()) {
+                    $add = false;
                 }
 
                 if ($add) {
