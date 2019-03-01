@@ -6,6 +6,7 @@ use Debril\RssAtomBundle\Provider\FeedContentProviderInterface;
 use Debril\RssAtomBundle\Exception\FeedException\FeedNotFoundException;
 
 use FeedIo\Feed;
+use FeedIo\FeedInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -33,7 +34,7 @@ class CommsyFeedContentProvider implements FeedContentProviderInterface
      *
      * @return FeedOutInterface
      */
-    public function getFeedContent(array $options)
+    public function getFeedContent(array $options): FeedInterface
     {
         $contextId = $options['contextId'];
         $this->legacyEnvironment->setCurrentContextID($contextId);
