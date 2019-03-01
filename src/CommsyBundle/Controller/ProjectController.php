@@ -172,14 +172,14 @@ class ProjectController extends Controller
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $defaultId = $legacyEnvironment->getCurrentPortalItem()->getDefaultProjectTemplateID();
-        $defaultId = ($defaultId === '-1') ? [] : $defaultId;
+        $defaultTemplateIDs = ($defaultId === '-1') ? [] : [ $defaultId ];
 
         $room = new Room();
         $templates = $this->getAvailableTemplates();
         $form = $this->createForm(ProjectType::class, $room, [
             'templates' => array_flip($templates['titles']),
             'descriptions' => $templates['descriptions'],
-            'preferredChoices' => $defaultId,
+            'preferredChoices' => $defaultTemplateIDs,
         ]);
 
         $form->handleRequest($request);
