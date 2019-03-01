@@ -25,7 +25,7 @@ class ProjectType extends AbstractType
             ->add('master_template', ChoiceType::class, [
                 'choices' => $options['templates'],
                 'preferred_choices' => $options['preferredChoices'],
-                'placeholder' => 'Choose a template',
+                'placeholder' => 'No template',
                 'required' => false,
                 'mapped' => false,
                 'label' => 'Template',
