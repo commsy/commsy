@@ -227,7 +227,8 @@ services:
 
     commsy.search.indexable_checker:
         class: CommsyBundle\Search\IndexableChecker
-        arguments: ['@commsy_legacy.environment']
+        autowire: true
+        autoconfigure: true
 
     # Validator
     commsy.validator.unique_label_name:
