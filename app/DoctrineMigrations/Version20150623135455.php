@@ -115,7 +115,7 @@ final class Version20150623135455 extends AbstractMigration implements Container
         }
     }
 
-    public function postUp(Schema $schema)
+    public function postUp(Schema $schema) : void
     {
         $this->write('updating room configuration in room');
         $this->updateRoomConfiguration("room");
