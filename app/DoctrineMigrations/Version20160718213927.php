@@ -32,7 +32,7 @@ final class Version20160718213927 extends AbstractMigration implements Container
         $this->addSql('ALTER TABLE zzz_files ADD filepath VARCHAR(255) NOT NULL AFTER filename');
     }
 
-    public function postUp(Schema $schema)
+    public function postUp(Schema $schema) : void
     {
         $this->write('updating file paths in files');
         $this->updateFilePath('files');

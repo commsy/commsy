@@ -288,7 +288,7 @@ class RoomController extends Controller
                 $moderatorUserItem = $moderatorList->getNext();
             }
             
-            $message = \Swift_Message::newInstance()
+            $message = (new \Swift_Message())
                 ->setSubject($data['subject'])
                 ->setFrom(array($currentUser->getEmail() => $currentUser->getFullname()))
                 ->setTo($moderatorEmailAdresses)
@@ -793,7 +793,7 @@ class RoomController extends Controller
                     }
 
                     // mail to moderators
-                    $message = \Swift_Message::newInstance()
+                    $message = (new \Swift_Message())
                         ->setFrom([$this->getParameter('commsy.email.from') => $roomItem->getContextItem()->getTitle()])
                         ->setReplyTo([$newUser->getEmail() => $newUser->getFullName()]);
 
@@ -931,7 +931,7 @@ class RoomController extends Controller
                         'roomId' => $roomItem->getItemID(),
                     ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-                    $message = \Swift_Message::newInstance()
+                    $message = (new \Swift_Message())
                         ->setSubject($subject)
                         ->setBody($body, 'text/plain')
                         ->setFrom([$this->getParameter('commsy.email.from') => $roomItem->getContextItem()->getTitle()])

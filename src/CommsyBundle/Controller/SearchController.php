@@ -2,9 +2,11 @@
 
 namespace CommsyBundle\Controller;
 
+use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use Commsy\LegacyBundle\Utils\RoomService;
+use CommsyBundle\Action\Copy\CopyAction;
 use CommsyBundle\Form\Type\SearchItemType;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +24,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
  * @package CommsyBundle\Controller
  * @Security("is_granted('ITEM_ENTER', roomId)")
  */
-class SearchController extends Controller
+class SearchController extends BaseController
 {
     /**
      * Generates the search form and search field for embedding them into
@@ -123,8 +125,14 @@ class SearchController extends Controller
      * @Route("/room/{roomId}/search/results")
      * @Template
      */
-    public function resultsAction($roomId, Request $request)
+    public function resultsAction($roomId, Request $request, LegacyEnvironment $legacyEnvironment, RoomService $roomService)
     {
+        $roomItem = $roomService->getRoomItem($roomId);
+
+        if (!$roomItem) {
+            throw $this->createNotFoundException('The requested room does not exist');
+        }
+
         $globalSearch = new GlobalSearch();
 
         $filterData = [
@@ -161,6 +169,8 @@ class SearchController extends Controller
             'totalHits' => $totalHits,
             'results' => $results,
             'query' => $filterData['query'],
+            'isArchived' => $roomItem->isArchived(),
+            'user' => $legacyEnvironment->getEnvironment()->getCurrentUserItem(),
         ];
     }
 
@@ -270,8 +280,65 @@ class SearchController extends Controller
         return $response;
     }
 
+    ###################################################################################################
+    ## XHR Action requests
+    ###################################################################################################
+
+    /**
+     * @Route("/room/{roomId}/search/xhr/copy", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrCopyAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get(CopyAction::class);
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @Route("/room/{roomId}/search/xhr/delete", condition="request.isXmlHttpRequest()")
+     * @throws \Exception
+     */
+    public function xhrDeleteAction($roomId, Request $request)
+    {
+        $room = $this->getRoom($roomId);
+        $items = $this->getItemsForActionRequest($room, $request);
+
+        $action = $this->get('commsy.action.delete.generic');
+        return $action->execute($room, $items);
+    }
+
+    /**
+     * @param Request $request
+     * @param \cs_room_item $roomItem
+     * @param boolean $selectAll
+     * @param integer[] $itemIds
+     * @return \cs_item[]
+     */
+    public function getItemsByFilterConditions(Request $request, $roomItem, $selectAll, $itemIds = [])
+    {
+        if ($selectAll) {
+            // TODO: This is currently a limitation
+            return [];
+        } else {
+            // TODO: This should be optimized
+            $itemService = $this->get('commsy_legacy.item_service');
+
+            $items = [];
+            foreach ($itemIds as $itemId) {
+                $items[] = $itemService->getTypedItem($itemId);
+            }
+
+            return $items;
+        }
+    }
+
     private function prepareResults(TransformedPaginatorAdapter $searchResults, $currentRoomId, $offset = 0, $json = false)
     {
+        $itemService = $this->get('commsy_legacy.item_service');
+
         $results = [];
         foreach ($searchResults->getResults($offset, 10)->toArray() as $searchResult) {
 
@@ -321,9 +388,18 @@ class SearchController extends Controller
                     'value' => $searchResult->getItemId(),
                 ];
             } else {
+                $allowedActions = ['copy'];
+                if (method_exists($searchResult, 'getItemId')) {
+                    if ($this->isGranted('ITEM_EDIT', $searchResult->getItemId())) {
+                        $allowedActions[] = 'delete';
+                    }
+                }
                 $results[] = [
+                    'allowedActions' => $allowedActions,
                     'entity' => $searchResult,
                     'routeName' => 'commsy_' . $type . '_detail',
+                    'files' => $itemService->getItemFileList($searchResult->getItemId()),
+                    'type' => $type,
                 ];
             }
         }

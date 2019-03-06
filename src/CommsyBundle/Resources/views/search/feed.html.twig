@@ -3,9 +3,15 @@
 {% for result in results %}
     {% set entity = result.entity %}
 
-    <article class="uk-comment">
+    <article class="uk-comment" data-allowed-actions="{{ result.allowedActions|json_encode() }}">
 
         <header class="uk-comment-header uk-flex">
+
+            <div class="items-checkbox uk-margin-right uk-margin-top uk-hidden">
+                <form class="uk-form">
+                    <input type="checkbox" value="{{ entity.itemId }}">
+                </form>
+            </div>
 
             {# user icon and modification time #}
             <div class="uk-margin-right uk-flex-item-none">
@@ -57,6 +63,14 @@
                         {% endif %}
                     {% endif %}
                 </div>
+
+                <div class="uk-comment-meta">
+                    {{  macros.fileListShortSearch(entity, result.files) }}
+                </div>
+            </div>
+
+            <div class="uk-width-2-10 uk-text-right">
+                <i class="{{ macros.iconClassForItemType(result.type) }} uk-icon-small"></i>
             </div>
         </header>
     </article>

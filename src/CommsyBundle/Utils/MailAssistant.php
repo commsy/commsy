@@ -113,7 +113,7 @@ class MailAssistant
             $replyTo[$currentUserEmail] = $currentUserName;
         }
 
-        $message = \Swift_Message::newInstance()
+        $message = (new \Swift_Message())
             ->setSubject($formData['subject'])
             ->setBody($formData['message'], 'text/html')
             ->setFrom([$this->from => $portalItem->getTitle()])

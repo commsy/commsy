@@ -18,15 +18,22 @@ final class Version20190125123633 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('
-            ALTER TABLE tag
-            ADD public TINYINT NOT NULL DEFAULT 0;
-        ');
+        $schemaManager = $this->connection->getSchemaManager();
 
-        $this->addSql('
-            ALTER TABLE zzz_tag
-            ADD public TINYINT NOT NULL DEFAULT 0;
-        ');
+        $tables = [
+            'tag',
+            'zzz_tag',
+        ];
+
+        foreach ($tables as $table) {
+            $columns = $schemaManager->listTableColumns($table);
+
+            if (empty(array_filter($columns, function ($column) {
+                return $column->getName() === 'public';
+            }))) {
+                $this->addSql('ALTER TABLE ' . $table . ' ADD public TINYINT NOT NULL DEFAULT 0;');
+            }
+        }
     }
 
     /**

@@ -1176,7 +1176,7 @@ class cs_grouproom_item extends cs_room_item {
          $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
          $fromName = $translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_portal->getTitle());
 
-         $message = \Swift_Message::newInstance()
+         $message = (new \Swift_Message())
             ->setSubject($subject)
             ->setBody($body, 'text/plain')
             ->setFrom([$emailFrom => $fromName])

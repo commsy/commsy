@@ -196,7 +196,7 @@
             </trans-unit>
             <trans-unit id="change_status_intro">
                 <source>change_status_intro</source>
-                <target>Änderung des Status für folgende Nutzer:</target>
+                <target>Änderung des Status für folgende Personen:</target>
             </trans-unit>
             <trans-unit id="change_status_inform">
                 <source>Inform user</source>
@@ -246,9 +246,13 @@
                 <source>Reject</source>
                 <target>Ablehnen</target>
             </trans-unit>
+            <trans-unit id="manage_user">
+                <source>Manage user</source>
+                <target>Person verwalten</target>
+            </trans-unit>
             <trans-unit id="manage_users">
                 <source>Manage users</source>
-                <target>Nutzer verwalten</target>
+                <target>Personen verwalten</target>
             </trans-unit>
         </body>
     </file>

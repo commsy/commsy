@@ -43,6 +43,7 @@ class MaterialTransformer implements DataTransformerInterface
                     $materialData['biblio_select'] = 'Biblio'.ucfirst($bibKind).'Type';
                 }
 
+                /** @var \cs_material_item $materialItem */
                 $materialData['biblio_sub']['author'] = $materialItem->getAuthor();
                 $materialData['biblio_sub']['publishing_date'] = $materialItem->getPublishingDate();
                 $materialData['biblio_sub']['common'] = $materialItem->getBibliographicValues();
@@ -66,6 +67,10 @@ class MaterialTransformer implements DataTransformerInterface
                 $materialData['biblio_sub']['foto_copyright'] = $materialItem->getFotoCopyright();
                 $materialData['biblio_sub']['foto_reason'] = $materialItem->getFotoReason();
                 $materialData['biblio_sub']['foto_date'] = $materialItem->getFotoDate();
+                $materialData['biblio_sub']['document_editor'] = $materialItem->getDocumentEditor();
+                $materialData['biblio_sub']['document_maintainer'] = $materialItem->getDocumentMaintainer();
+                $materialData['biblio_sub']['document_release_number'] = $materialItem->getDocumentReleaseNumber();
+                $materialData['biblio_sub']['document_release_date'] = $materialItem->getDocumentReleaseDate();
 
                 $materialData['sections'] = array();
                 foreach($materialItem->getSectionList()->to_array() as $id => $item){
@@ -207,30 +212,36 @@ class MaterialTransformer implements DataTransformerInterface
     }
 
     private function setBibliographic($form_data, $item) {
-        $bibFields = array( 'author',
-                            'publishing_date',
-                            'common',
-                            'bib_kind',
-                            'publisher',
-                            'address',
-                            'edition',
-                            'series',
-                            'volume',
-                            'isbn',
-                            'url',
-                            'url_date',
-                            'editor',
-                            'booktitle',
-                            'issn',
-                            'pages',
-                            'journal',
-                            'issue',
-                            'thesis_kind',
-                            'university',
-                            'faculty',
-                            'foto_copyright',
-                            'foto_reason',
-                            'foto_date');
+        $bibFields = [
+            'author',
+            'publishing_date',
+            'common',
+            'bib_kind',
+            'publisher',
+            'address',
+            'edition',
+            'series',
+            'volume',
+            'isbn',
+            'url',
+            'url_date',
+            'editor',
+            'booktitle',
+            'issn',
+            'pages',
+            'journal',
+            'issue',
+            'thesis_kind',
+            'university',
+            'faculty',
+            'foto_copyright',
+            'foto_reason',
+            'foto_date',
+            'document_editor',
+            'document_maintainer',
+            'document_release_number',
+            'document_release_date'
+]       ;
 
         $converter = $this->legacyEnvironment->getTextConverter();
 
@@ -243,7 +254,7 @@ class MaterialTransformer implements DataTransformerInterface
         }
 
         isset($form_data['value']) ? $form_data['value'] : '';
-        $config = array(
+        $config = [
             array(  'get'       => 'getAuthor',
                     'set'       => 'setAuthor',
                     'value'     => $form_data['author']),
@@ -315,8 +326,20 @@ class MaterialTransformer implements DataTransformerInterface
                     'value'     => $form_data['foto_reason']),
             array(  'get'       => 'getFotoDate',
                     'set'       => 'setFotoDate',
-                    'value'     => $form_data['foto_date'])
-        );
+                    'value'     => $form_data['foto_date']),
+            array(  'get'       => 'getDocumentEditor',
+                    'set'       => 'setDocumentEditor',
+                    'value'     => $form_data['document_editor']),
+            array(  'get'       => 'getDocumentMaintainer',
+                    'set'       => 'setDocumentMaintainer',
+                    'value'     => $form_data['document_maintainer']),
+            array(  'get'       => 'getDocumentReleaseNumber',
+                    'set'       => 'setDocumentReleaseNumber',
+                    'value'     => $form_data['document_release_number']),
+            array(  'get'       => 'getDocumentReleaseDate',
+                    'set'       => 'setDocumentReleaseDate',
+                    'value'     => $form_data['document_release_date']),
+        ];
 
         foreach($config as $method => $detail) {
             if($detail['value'] != call_user_func_array(array($item, $detail['get']), array())) {

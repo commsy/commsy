@@ -46,7 +46,7 @@
 
 {% block editbox %}
     <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-        <button class="uk-button uk-button-mini cs-button-list">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
+        <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
         <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
             <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
                 <li>
@@ -85,21 +85,19 @@
 
     {% if is_granted('MODERATOR') and not isArchived %}
         <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-            <button class="uk-button uk-button-mini cs-button-list">{{ 'Manage users'|trans({},'user') }} <i class="uk-icon-caret-down"></i></button>
+            <button class="uk-button uk-button-mini">{{ 'Manage users'|trans({},'user') }} <i class="uk-icon-caret-down"></i></button>
             <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
                 <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
                     {# delete #}
                     <li>
                         <a href="#" class="commsy-select-action" data-uk-button data-cs-action="{{ {
-                            'url': path('commsy_user_xhrdelete', {'roomId': roomId}),
-                            'action': 'delete',
+                            'url': path('commsy_user_changestatus', {'roomId': roomId}),
+                            'action': 'user-delete',
                             'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
                             'mode': 'selection',
                             'noSelectionMessage': 'no entry selected'|trans({}, 'item'),
-                            'confirmQuestion': 'confirm delete'|trans({}, 'rubric'),
-                            'confirmCancel': 'confirm delete cancel'|trans({}, 'rubric'),
-                            'confirmOk': 'confirm delete confirm'|trans({}, 'rubric'),
-                            'returnUrl': path('commsy_user_list', {'roomId': roomId})
+                            'returnUrl': path('commsy_user_list', {'roomId': roomId}),
+                            'status': 'user-delete'
                         }|json_encode|e('html_attr') }}">
                             <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'user') }}
                         </a>
@@ -219,7 +217,7 @@
 {% block sortbox %}
         {# sort dropdown #}
         <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-            <button class="uk-button uk-button-mini cs-button-list">{{ 'list sort'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
+            <button class="uk-button uk-button-mini">{{ 'list sort'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
             <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
                 <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
                     {# sorting options #}
