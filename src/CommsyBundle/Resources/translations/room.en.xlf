@@ -254,6 +254,10 @@
                 <source>Time interval</source>
                 <target>Time interval</target>
             </trans-unit>
+            <trans-unit id="New room">
+                <source>New room</source>
+                <target>New room</target>
+            </trans-unit>
             <trans-unit id="Create new context">
                 <source>Create new context</source>
                 <target>Create new room</target>
