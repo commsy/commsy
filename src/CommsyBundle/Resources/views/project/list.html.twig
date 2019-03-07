@@ -41,7 +41,7 @@
                 {% if is_granted('ITEM_EDIT', 'NEW') %}
                 <li>
                      <a href="{{ path('commsy_project_create', {'roomId': roomId}) }}">
-                        <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
+                        <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'New project room'|trans([], 'project') }}
                     </a>
                 </li>
                 {% endif %}
