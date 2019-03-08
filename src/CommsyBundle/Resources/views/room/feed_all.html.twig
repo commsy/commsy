@@ -57,7 +57,7 @@
                             {% else %}
                                 <span class="uk-text-muted">{{ room.title|decodeHtmlEntity }}</span>
                             {% endif %}
-                            {% if room.template == 1 %}<span class="uk-text-muted"> - {{ 'Template'|trans({}, 'room') }}</span>{% endif %}
+                            {% if room.template == 1 %}<span class="uk-text-muted"> &ndash; {{ 'Template'|trans({}, 'room') }}</span>{% endif %}
                         </h4>
 
                         <div class="uk-comment-meta">
