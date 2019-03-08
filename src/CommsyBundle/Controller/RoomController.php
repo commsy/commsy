@@ -588,21 +588,15 @@ class RoomController extends Controller
 
         $memberStatus = $userService->getMemberStatus($roomItem, $currentUser);
 
-        $userMayCreateContext = false;
-        $currentUser = $legacyEnvironment->getCurrentUser();
-        $portalItem = $legacyEnvironment->getCurrentPortalItem();
-        if (!$currentUser->isRoot()) {
-            $portalUser = $currentUser->getRelatedPortalUserItem();
-
-            if ($portalUser) {
-                if ($portalUser->isModerator()) {
-                    $userMayCreateContext = true;
-                } else if ($portalItem->getCommunityRoomCreationStatus() == 'all' || $portalItem->getProjectRoomCreationStatus() == 'portal') {
-                    $userMayCreateContext = $currentUser->isAllowedToCreateContext();
-                }
-            }
+        $showRoomModerationActions = false;
+        $roomUser = $currentUser->getRelatedUserItemInContext($itemId);
+        if ($currentUser->isRoot() || $roomUser->isModerator()) {
+            $showRoomModerationActions = true;
         } else {
-            $userMayCreateContext = true;
+            $portalUser = $currentUser->getRelatedPortalUserItem();
+            if ($portalUser && $portalUser->isModerator()) {
+                $showRoomModerationActions = true;
+            }
         }
 
         $markupService = $this->get('commsy_legacy.markup');
@@ -618,7 +612,7 @@ class RoomController extends Controller
             'readCount' => $infoArray['readCount'],
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'memberStatus' => $memberStatus,
-            'userMayCreateContext' => $userMayCreateContext,
+            'showRoomModerationActions' => $showRoomModerationActions,
             'portalId' => $legacyEnvironment->getCurrentPortalItem()->getItemId(),
         ];
     }
