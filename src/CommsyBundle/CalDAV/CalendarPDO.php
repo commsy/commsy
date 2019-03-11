@@ -82,7 +82,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         $calendarSelection = false;
 
         foreach ($userArray as $user) {
-            if ($user->getContextItem()) {
+            if ($user->getContextItem() && $user->isModerator()) {
                 $contextTitlesArray[$user->getContextId()] = $user->getContextItem()->getTitle();
                 $calendarsArray = array_merge($calendarsArray, $calendarsService->getListCalendars($user->getContextItem()->getItemId()));
 
@@ -245,6 +245,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     function getCalendarObjects($calendarId)
     {
+        if (!$this->userIsModerator($calendarId[0])) {
+            throw new Exception\Forbidden('Permission denied. User does not have moderator status.');
+        }
+
         $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
         $calendarsService = $this->container->get('commsy.calendars_service');
 
@@ -334,6 +338,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     function getCalendarObject($calendarId, $objectUri)
     {
+        if (!$this->userIsModerator($calendarId[0])) {
+            throw new Exception\Forbidden('Permission denied. User does not have moderator status.');
+        }
+
         if (!is_array($calendarId)) {
             throw new \InvalidArgumentException('The value passed to $calendarId is expected to be an array with a calendarId and an instanceId');
         }
@@ -437,6 +445,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     function createCalendarObject($calendarId, $objectUri, $calendarData)
     {
+        if (!$this->userIsModerator($calendarId[0])) {
+            throw new Exception\Forbidden('Permission denied. User does not have moderator status.');
+        }
+
         return $this->updateCalendarObject($calendarId, $objectUri, $calendarData);
     }
 
@@ -460,6 +472,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     function updateCalendarObject($calendarId, $objectUri, $calendarData)
     {
+        if (!$this->userIsModerator($calendarId[0])) {
+            throw new Exception\Forbidden('Permission denied. User does not have moderator status.');
+        }
+
         $result = null;
         if ($calendarId[0]) {
             $calendarId = $calendarId[0];
@@ -480,6 +496,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     function deleteCalendarObject($calendarId, $objectUri)
     {
+        if (!$this->userIsModerator($calendarId[0])) {
+            throw new Exception\Forbidden('Permission denied. User does not have moderator status.');
+        }
+
         $dateItem = $this->getDateItemFromObjectUri($objectUri);
         if ($dateItem) {
             // ToDo: handle recurring events. Deleted CommSy items need to be stored to work as exclusions from the series.
@@ -551,6 +571,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     function calendarQuery($calendarId, array $filters)
     {
+        if (!$this->userIsModerator($calendarId[0])) {
+            throw new Exception\Forbidden('Permission denied. User does not have moderator status.');
+        }
+
         $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
         $calendarsService = $this->container->get('commsy.calendars_service');
 
@@ -590,6 +614,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     protected function addChange($calendarId, $objectUri, $operation)
     {
+        if (!$this->userIsModerator($calendarId[0])) {
+            throw new Exception\Forbidden('Permission denied. User does not have moderator status.');
+        }
+
         if (is_array($calendarId)) {
             if (isset($calendarId[0])) {
                 $calendarId = $calendarId[0];
@@ -1247,5 +1275,12 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             }
         }
         return $result;
+    }
+
+    private function userIsModerator ($calendarId) {
+        $calendarsService = $this->container->get('commsy.calendars_service');
+        $calendars = $calendarsService->getCalendar($calendarId);
+        $user = $this->getUserFromPortal($this->userId, $calendars[0]->getContextId());
+        return $user->isModerator();
     }
 }
