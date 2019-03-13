@@ -4,7 +4,7 @@
         <body>
             <trans-unit id="grouproom_description_text">
                 <source>grouproom description text</source>
-                <target>This room is can be used as a workspace for this group.</target>
+                <target>This room can be used as a workspace for this group.</target>
             </trans-unit>
             <trans-unit id="grouproom_access">
                 <source>grouproom access</source>
@@ -12,35 +12,35 @@
             </trans-unit>
            <trans-unit id="2">
                 <source>grouproom</source>
-                <target>Group workspaces</target>
+                <target>Group room</target>
             </trans-unit>
            <trans-unit id="3">
                 <source>grouproom information</source>
-                <target>Workspace information</target>
+                <target>Room information</target>
             </trans-unit>
            <trans-unit id="4">
                 <source>grouproom moderators</source>
-                <target>Group workspace moderators</target>
+                <target>Group room moderators</target>
             </trans-unit>
            <trans-unit id="5">
                 <source>no grouproom</source>
-                <target>No group workspace</target>
+                <target>No group room</target>
             </trans-unit>
            <trans-unit id="6">
                 <source>no grouproom description text</source>
-                <target>There is no active workspace for this group.</target>
+                <target>There is no active room for this group.</target>
             </trans-unit>
             <trans-unit id="7">
                 <source>edit grouproom</source>
-                <target>Edit grouproom</target>
+                <target>Edit group room</target>
             </trans-unit>
             <trans-unit id="8">
                 <source>activate grouproom</source>
-                <target>Activate grouproom</target>
+                <target>Activate group room</target>
             </trans-unit>
             <trans-unit id="getGroupRoomAccess">
                 <source>get grouproom access</source>
-                <target>Get grouproom access</target>
+                <target>Get group room access</target>
             </trans-unit>
             <trans-unit id="restrictedToGroupMembers">
                 <source>access restricted to group members</source>
@@ -60,7 +60,7 @@
             </trans-unit>
             <trans-unit id="leaveGrouproomBeforeGroup">
                 <source>leave grouproom before group</source>
-                <target>Please cancel your grouproom membership before leaving the group.</target>
+                <target>Please cancel your group room membership before leaving the group.</target>
             </trans-unit>
         </body>
     </file>

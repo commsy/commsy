@@ -63,7 +63,7 @@
 
 {% block sidebar %}
 
-            {# usernotice #}
+            {# usage notes #}
             {% if roomItem.usageInfoTextForRubric('home') is not empty %}
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
@@ -77,7 +77,7 @@
                             {% if roomItem.getUsageInfoHeaderForRubric('home') is not empty %}
                                 {{ roomItem.getUsageInfoHeaderForRubric('home') }}
                             {% else %}
-                                {{ 'Usernotice'|trans({}, "room") }}
+                                {{ 'Usage notes'|trans({}, "room") }}
                             {% endif %}
                         </div>
                     </div>

@@ -300,11 +300,11 @@
             </trans-unit>
             <trans-unit id="date_action_export">
                 <source>export dates</source>
-                <target>export dates</target>
+                <target>Export dates</target>
             </trans-unit>
             <trans-unit id="date_action_abo">
                 <source>abo dates</source>
-                <target>abo dates</target>
+                <target>Subscribe to dates</target>
             </trans-unit>
             <trans-unit id="calendars">
                 <source>calendars</source>
