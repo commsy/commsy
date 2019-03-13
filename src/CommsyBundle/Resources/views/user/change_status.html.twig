@@ -15,7 +15,9 @@
                 </div>
 
                 <div>
-                    {% if status == 'user-block' %}
+                    {% if status == 'user-delete' %}
+                        {% set newStatusTrans = 'quit'|trans([], 'user') %}
+                    {% elseif status == 'user-block' %}
                         {% set newStatusTrans = 'is blocked'|trans([], 'user') %}
                     {% elseif status == 'user-confirm' %}
                         {% set newStatusTrans = 'user'|trans([], 'user') %}

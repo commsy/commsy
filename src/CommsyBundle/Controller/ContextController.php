@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Class ContextController
@@ -72,6 +73,11 @@ class ContextController extends Controller
     public function requestAction($roomId, $itemId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $currentUserItem = $legacyEnvironment->getCurrentUserItem();
+        if ($currentUserItem->isReallyGuest()) {
+            throw new AccessDeniedException();
+        }
                 
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($itemId);
@@ -191,7 +197,7 @@ class ContextController extends Controller
                     }
 
                     // mail to moderators
-                    $message = \Swift_Message::newInstance()
+                    $message = (new \Swift_Message())
                         ->setFrom([$this->getParameter('commsy.email.from') => $roomItem->getContextItem()->getTitle()])
                         ->setReplyTo([$newUser->getEmail() => $newUser->getFullName()]);
 
@@ -343,7 +349,7 @@ class ContextController extends Controller
                         'roomId' => $roomItem->getItemID(),
                     ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-                    $message = \Swift_Message::newInstance()
+                    $message = (new \Swift_Message())
                         ->setSubject($subject)
                         ->setBody($body, 'text/plain')
                         ->setFrom([$this->getParameter('commsy.email.from') => $roomItem->getContextItem()->getTitle()])

@@ -761,7 +761,7 @@ class cs_privateroom_item extends cs_room_item
                 }
 
                 if ($emailHasCorrectFormat) {
-                    $message = \Swift_Message::newInstance()
+                    $message = (new \Swift_Message())
                         ->setSubject($subject)
                         ->setBody($body, 'text/html')
                         ->setFrom([$emailFrom => $from])

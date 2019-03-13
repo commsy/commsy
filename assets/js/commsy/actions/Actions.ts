@@ -144,6 +144,7 @@ export function createAction(actionData: ActionData): BaseAction {
             return new SaveAction(actionData);
         case 'sendmail':
             return new SendMailAction(actionData);
+        case 'user-delete':
         case 'user-block':
         case 'user-confirm':
         case 'user-status-reading-user':

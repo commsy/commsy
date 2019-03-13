@@ -164,7 +164,7 @@ class cs_password_forget_page extends cs_left_page
                         $body .= LF . LF;
                     }
 
-                    $message = \Swift_Message::newInstance()
+                    $message = (new \Swift_Message())
                         ->setSubject($translator->getMessage('USER_PASSWORD_MAIL_SUBJECT', $context_item->getTitle()))
                         ->setBody($body, 'text/plain')
                         ->setFrom([$emailFrom => $this->_translator->getMessage('SYSTEM_MAIL_MESSAGE', $context_item->getTitle())])

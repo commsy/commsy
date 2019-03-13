@@ -178,19 +178,19 @@
         		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate}) }" ~ ")." %}
         		{% endif %}
     		{% endif %}
-        {% elseif material.bibKind == 'document' %}
-            {% set biblio = biblio ~ "#{'Information for document administration'|trans({}) }" ~ ": <br/>" %}
+        {% elseif material.bibKind == 'document' or material.bibKind == 'docmanagement' %}
+            {% set biblio = biblio ~ "#{'Information for document administration'|trans({}, 'material') }" ~ ": <br/>" %}
             {% if material.documentEditor %}
-    		    {% set biblio = biblio ~ "#{'Document editor'|trans({}) }" ~ ": " ~ material.documentEditor ~ "<br/>" %}
+    		    {% set biblio = biblio ~ "#{'Document editor'|trans({}, 'material') }" ~ ": " ~ material.documentEditor ~ "<br/>" %}
     		{% endif %}
     		{% if material.documentMaintainer %}
-    		    {% set biblio = biblio ~ "#{'Maintainer'|trans({}) }" ~ ": " ~ material.documentMaintainer ~ "<br/>" %}
+    		    {% set biblio = biblio ~ "#{'Maintainer'|trans({}, 'material') }" ~ ": " ~ material.documentMaintainer ~ "<br/>" %}
     		{% endif %}
     		{% if material.documentReleaseNumber %}
-    		    {% set biblio = biblio ~ "#{'Version'|trans({}) }" ~ ": " ~ material.documentReleaseNumber ~ "<br/>" %}
+    		    {% set biblio = biblio ~ "#{'Version'|trans({}, 'material') }" ~ ": " ~ material.documentReleaseNumber ~ "<br/>" %}
     		{% endif %}
     		{% if material.documentReleaseDate %}
-    		    {% set biblio = biblio ~ "#{'Version date'|trans({}) }" ~ ": " ~ material.documentReleaseDate ~ "<br/>" %}
+    		    {% set biblio = biblio ~ "#{'Version date'|trans({}, 'material') }" ~ ": " ~ material.documentReleaseDate ~ "<br/>" %}
     		{% endif %}
         {% elseif material.bibKind == 'foto' %}
             {% set biblio = biblio ~ "<br/>" %}

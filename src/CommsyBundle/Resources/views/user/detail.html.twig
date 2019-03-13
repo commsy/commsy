@@ -99,8 +99,8 @@
 
                             {% if is_granted('MODERATOR') and is_granted('ITEM_EDIT', item.itemId) %}
                                 <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-                                    <button class="uk-button uk-button-mini cs-button-list">
-                                        {{ 'Manage users'|trans({},'user') }}
+                                    <button class="uk-button uk-button-mini">
+                                        {{ 'Manage user'|trans({},'user') }}
                                         <i class="uk-icon-caret-down"></i>
                                     </button>
                                     <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
@@ -118,20 +118,8 @@
 
                                                 {# delete #}
                                                 <li>
-                                                    <a  href="#" data-cs-action="{{ {
-                                                        'url': path('commsy_user_xhrdelete', {'roomId': roomId, 'itemId': user.itemId}),
-                                                        'action': 'delete',
-                                                        'itemId': user.itemId,
-                                                        'errorMessage': '<i class="uk-icon-medium uk-icon-info"></i>' ~ 'action error'|trans,
-                                                        'mode': 'click',
-                                                        'itemType': user.itemType,
-                                                        'title': 'list choice'|trans({},'rubric')|capitalize,
-                                                        'confirmQuestion': 'confirm delete'|trans({},'rubric'),
-                                                        'confirmCancel': 'confirm delete cancel'|trans({},'rubric'),
-                                                        'confirmOk': 'confirm delete confirm'|trans({},'rubric'),
-                                                        'returnUrl': path('commsy_user_list', {'roomId': roomId})
-                                                    }|json_encode|e('html_attr') }}">
-                                                        <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
+                                                    <a href="{{ path('commsy_user_changestatus', {'roomId': roomId, 'userIds[]': user.itemId, 'status': 'user-delete', 'userDetail': 1}) }}" id="status-delete">
+                                                        <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                     </a>
                                                 </li>
 

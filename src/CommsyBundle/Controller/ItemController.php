@@ -274,6 +274,7 @@ class ItemController extends Controller
         $itemList = $itemManager->get();
         
         // get all items except linked items
+        $optionsData['items'] = [];
         $tempItem = $itemList->getFirst();
         while ($tempItem) {
             $tempTypedItem = $itemService->getTypedItem($tempItem->getItemId());
@@ -302,7 +303,7 @@ class ItemController extends Controller
         while ($latestItem && $i < 5) {
             $tempTypedItem = $itemService->getTypedItem($latestItem->getItemId());
             if ($tempTypedItem && (!array_key_exists($tempTypedItem->getItemId(), $optionsData['itemsLinked'])) && ($tempTypedItem->getItemId() != $itemId)) {
-                if ($tempTypedItem->getType() != "discarticle" && $tempTypedItem->getType() != "task") {
+                if ($tempTypedItem->getType() != "discarticle" && $tempTypedItem->getType() != "task" && $tempTypedItem->getType() != 'link_item' && $tempTypedItem->getType() != 'tag') {
                     $optionsData['itemsLatest'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
                     $i++;
                 }
@@ -469,7 +470,7 @@ class ItemController extends Controller
             }
 
             // send mail
-            $message = $mailAssistant->getSwiftMessage($form->getData(), $item);
+            $message = $mailAssistant->getSwiftMessage($form->getData(), $item, true);
             $this->get('mailer')->send($message);
 
             $recipientCount = count($message->getTo()) + count($message->getCc()) + count($message->getBcc());
@@ -653,7 +654,7 @@ class ItemController extends Controller
                 }
             }
 
-            $message = \Swift_Message::newInstance()
+            $message = (new \Swift_Message())
                 ->setSubject($data['subject'])
                 ->setFrom(array($currentUser->getEmail() => $currentUser->getFullname()))
                 ->setTo($toArray)
@@ -926,7 +927,9 @@ class ItemController extends Controller
      * @param \cs_item $item
      * @return \cs_tag_item[]
      */
-    public function getLinkedCategories(\cs_item $item) {
+    public function getLinkedCategories($item) {
+        /** @var \cs_item $item */
+
         $linkedCategories = [];
         $categoriesList = $item->getTagList();
 

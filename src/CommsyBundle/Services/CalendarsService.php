@@ -80,18 +80,46 @@ class CalendarsService
         return $calendars = $query->getResult();
     }
 
-    public function removeCalendar ($calendar) {
-        $dateService = $this->serviceContainer->get('commsy_legacy.date_service');
-        $dates = $dateService->getDatesByCalendarId($calendar->getId());
-
-        foreach ($dates as $date) {
-            $date->setCalendarId($this->getDefaultCalendar($date->getContextId())[0]->getId());
-            $date->save();
-        }
+    /**
+     * Deletes the given calendar and all of its contained date entries.
+     * @var Calendars $calendar
+     */
+    public function removeCalendar($calendar)
+    {
+        $this->removeAllCalendarDates($calendar);
 
         $this->em->remove($calendar);
 
         $this->em->flush();
+    }
+
+
+    /**
+     * Deletes all date entries from the given calendar.
+     * @var Calendars $calendar
+     */
+    public function removeAllCalendarDates($calendar)
+    {
+        $dateService = $this->serviceContainer->get('commsy_legacy.date_service');
+        $dates = $dateService->getDatesByCalendarId($calendar->getId());
+        if (empty($dates)) {
+            return;
+        }
+
+        $roomService = $this->serviceContainer->get('commsy_legacy.room_service');
+        $roomId = $calendar->getContextId();
+        $roomItem = $roomService->getRoomItem($roomId);
+
+        // NOTE: we execute the DeleteDate action (and not just \cs_item->delete()) since
+        // this performs additional cleanup like removing any date items from the clipboard
+        $action = $this->serviceContainer->get('commsy.action.delete.date');
+        $strategy = $action->getStrategy();
+
+        if ($strategy instanceof DeleteDate) {
+            $strategy->setDateMode($roomItem->getDatesPresentationStatus());
+        }
+
+        return $action->execute($roomItem, $dates);
     }
 
 
@@ -110,11 +138,36 @@ class CalendarsService
         }
     }
 
+    /**
+     * Imports all events from the given iCalendar file(s) into the given CommSy calendar.
+     * Note that if the given CommSy calendar already contains date items with the same UID, these date items will be
+     * updated with the data from the imported iCalendar events. Any other date items in the given CommSy calendar (which
+     * don't have a corresponding event with a matching UID in the given iCalendar data) will be deleted.
+     * @param mixed $icalData The iCalendar file (or array of iCalendar files) containing VEVENT objects that shall be imported.
+     * @param Calendars $calendar The CommSy calendar object that will contain the imported iCalendar events.
+     * @param bool $external True if the given iCalendar data are from an external calendar source, otherwise false;
+     * defaults to false.
+     * @return bool|string Returns true if the events from the given iCalendar file(s) could be imported successfully,
+     * otherwise returns the error message.
+     */
     public function importEvents ($icalData, $calendar, $external = false) {
         $dateService = $this->serviceContainer->get('commsy_legacy.date_service');
 
         try {
-            $ical = VObject\Reader::read($icalData);
+            if (is_array($icalData)) {
+                // merge multiple iCalendar files into a single iCalendar
+                $ical = new VObject\Component\VCalendar();
+                foreach ($icalData as $icalFile) {
+                    $tempIcal = VObject\Reader::read($icalFile);
+                    foreach ($tempIcal->VEVENT as $event) {
+                        $ical->add($event);
+                    }
+                }
+            }
+            else {
+                $ical = VObject\Reader::read($icalData);
+            }
+
             $roomId = $calendar->getContextId();
 
             $uids = [];

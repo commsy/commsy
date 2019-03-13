@@ -205,9 +205,9 @@ $message["USER_PASSWORD_MAIL_BODY_SORRY3"]["de"] = "---
 
 Sofern Sie nicht gerade auf &quot;Passwort vergessen?&quot; geklickt haben, löschen Sie diese E-Mail einfach. Ihr Passwort hat sich nicht verändert und niemand hat Zugriff auf Ihren CommSy-Account erhalten.";
 $message["USER_PASSWORD_MAIL_SUBJECT"]["de"] = "%1: Passwortänderung";
-$message["USER_PASSWORD_NEW"]["de"] = "neues Passwort";
-$message["USER_PASSWORD_NEW2"]["de"] = "neues Passwort wiederholen";
-$message["USER_PASSWORD_OLD"]["de"] = "aktuelles Passwort";
+$message["USER_PASSWORD_NEW"]["de"] = "Neues Passwort";
+$message["USER_PASSWORD_NEW2"]["de"] = "Neues Passwort wiederholen";
+$message["USER_PASSWORD_OLD"]["de"] = "Aktuelles Passwort";
 $message["USER_PICTURE_FILE_DESC"]["de"] = "Hier können Sie ein persönliches Bild hinzufügen.";
 $message["USER_PICTURE_NO_PICTURE"]["de"] = "%1 hat leider kein Bild im persönlichen Profil hinterlegt.";
 $message["USER_PICTURE_UPLOADFILE"]["de"] = "Bild";
@@ -261,7 +261,7 @@ $message["USER_ZIPCODE"]["de"] = "Postleitzahl";
 $message["USER_IS_ALLOWED_TO_CREATE_CONTEXT"]["de"] = "Darf neue Räume anlegen";
 $message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_AUTH_SOURCE_SETTING"]["de"] = "Standardeinstellung der Authentifizierungsquelle";
 $message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_AUTH_SOURCE_SETTING_SHORT"]["de"] = "Standardeinstellung";
-$message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_IS_PORTAL_MODERATOR"]["de"] = "Nutzer ist Portalmoderator";
+$message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_IS_PORTAL_MODERATOR"]["de"] = "Person ist PortalmoderatorIn";
 $message["USER_IS_ALLOWED_TO_CREATE_CONTEXT_FORM_ERROR"]["de"] = "Sie haben nicht die Berechtigung, neue Räume anzulegen.";
 $message["USER_IS_ALLOWED_TO_USE_CALDAV"]["de"] = "Darf CalDAV nutzen";
 $message["USER_IS_ALLOWED_TO_USE_CALDAV_PORTAL_SETTING"]["de"] = "Standardeinstellung des Portals";

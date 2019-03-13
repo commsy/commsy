@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="portfolio_title_general">
+                <source>Portfolios</source>
+                <target>Portfolios</target>
+            </trans-unit>
+            <trans-unit id="portfolio_form_title_new">
+                <source>Create new portfolio</source>
+                <target>Create new portfolio</target>
+            </trans-unit>
+            <trans-unit id="portfolio_form_title_edit">
+                <source>Edit Portfolio</source>
+                <target>Edit Portfolio</target>
+            </trans-unit>
+            <trans-unit id="portfolio_form_label_from_template">
+                <source>From template</source>
+                <target>From template</target>
+            </trans-unit>
+            <trans-unit id="portfolio_form_choice_none">
+                <source>None</source>
+                <target>None</target>
+            </trans-unit>
+            <trans-unit id="portfolio_form_label_description">
+                <source>Description</source>
+                <target>Description</target>
+            </trans-unit>
+            <trans-unit id="portfolio_form_label_placeholder">
+                <source>Insert description here</source>
+                <target>Insert description here</target>
+            </trans-unit>
+            <trans-unit id="portfolio_form_label_template">
+                <source>Template</source>
+                <target>Template</target>
+            </trans-unit>
+            <trans-unit id="portfolio_form_label_external_template">
+                <source>Unlock template for users</source>
+                <target>Unlock template for users (";"-separated)</target>
+            </trans-unit>
+            <trans-unit id="portfolio_form_label_external_viewer">
+                <source>Give access to users</source>
+                <target>Give access to users (";"-separated)</target>
+            </trans-unit>
+            <trans-unit id="portfolio_my_portfolios">
+                <source>my portfolios</source>
+                <target>My Portfolios</target>
+            </trans-unit>
+            <trans-unit id="portfolio_activated portfolios">
+                <source>activated portfolios</source>
+                <target>Portfolios shared with me</target>
+            </trans-unit>
+            <trans-unit id="portfolio_cancel_sharing">
+                <source>Cancel sharing</source>
+                <target>Cancel sharing</target>
+            </trans-unit>
+            <trans-unit id="portfolio_add_column">
+                <source>Add column</source>
+                <target>Add column</target>
+            </trans-unit>
+            <trans-unit id="portfolio_add_row">
+                <source>Add row</source>
+                <target>Add row</target>
+            </trans-unit>
+            <trans-unit id="portfolio_empty_description">
+                <source>This portfolio is empty. Add rows and columns via the "+"-icons.</source>
+                <target>This portfolio is empty. Add rows and columns via the "+"-icons.</target>
+            </trans-unit>
+            <trans-unit id="portfolio_details">
+                <source>Details</source>
+                <target>Details</target>
+            </trans-unit>
+            <trans-unit id="portfolio_form_title_new_category">
+                <source>New category</source>
+                <target>New category</target>
+            </trans-unit>
+            <trans-unit id="portfolio_form_title_edit_category">
+                <source>Edit category</source>
+                <target>Edit category</target>
+            </trans-unit>
+            <trans-unit id="portfolio_details_comments">
+                <source>Comments</source>
+                <target>Comments</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

@@ -165,7 +165,7 @@ class EmailUploadCommand extends ContainerAwareCommand
                 if ($privateRoom->getEmailToCommSy()) {
                     $privateSecret = $privateRoom->getEmailToCommSySecret();
 
-                    $message = \Swift_Message::newInstance()
+                    $message = (new \Swift_Message())
                         ->setTo([$mail->fromAddress => $mail->fromName])
                         ->setFrom([$container->getParameter('commsy.email.from') => $legacyEnvironment->getCurrentPortalItem()->getTitle()]);
 

@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Application\Migrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
+use Doctrine\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20160718213927 extends AbstractMigration implements ContainerAwareInterface
+final class Version20160718213927 extends AbstractMigration implements ContainerAwareInterface
 {
     private $container;
 
@@ -23,7 +23,7 @@ class Version20160718213927 extends AbstractMigration implements ContainerAwareI
     /**
      * @param Schema $schema
      */
-    public function up(Schema $schema)
+    public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
@@ -32,7 +32,7 @@ class Version20160718213927 extends AbstractMigration implements ContainerAwareI
         $this->addSql('ALTER TABLE zzz_files ADD filepath VARCHAR(255) NOT NULL AFTER filename');
     }
 
-    public function postUp(Schema $schema)
+    public function postUp(Schema $schema) : void
     {
         $this->write('updating file paths in files');
         $this->updateFilePath('files');
@@ -44,7 +44,7 @@ class Version20160718213927 extends AbstractMigration implements ContainerAwareI
     /**
      * @param Schema $schema
      */
-    public function down(Schema $schema)
+    public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
@@ -73,19 +73,22 @@ class Version20160718213927 extends AbstractMigration implements ContainerAwareI
             if ($fileContextId) {
                 $portalId = $file['portal_id'];
 
-                $fileExtension = substr(strrchr($file['filename'], '.'), 1);
+                $lastSubstringBeginningWithDot = strrchr($file['filename'], '.');
+                if ($lastSubstringBeginningWithDot) {
+                    $fileExtension = substr($lastSubstringBeginningWithDot, 1);
 
-                $filePath = $discManager->getFilePath($portalId, $fileContextId);
-                $filePath .= $file['files_id'];
-                $filePath .= '.' . $fileExtension;
+                    $filePath = $discManager->getFilePath($portalId, $fileContextId);
+                    $filePath .= $file['files_id'];
+                    $filePath .= '.' . $fileExtension;
 
-                $filePath = stristr($filePath, 'files');
+                    $filePath = stristr($filePath, 'files');
 
-                $this->connection->update($table, [
-                    'filepath' => $filePath,
-                ], [
-                    'files_id' => $file['files_id'],
-                ]);
+                    $this->connection->update($table, [
+                        'filepath' => $filePath,
+                    ], [
+                        'files_id' => $file['files_id'],
+                    ]);
+                }
             }
         }
     }

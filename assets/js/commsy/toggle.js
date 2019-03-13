@@ -34,6 +34,15 @@
                 $($(this.element).data('cs-toggle-link-moreless')).find('.cs-readmoreless').toggleClass('uk-hidden');
             }
 
+            this.getToggles();
+            if (this.totoggle.length) {
+                // check if the target has the "uk-hidden-small" class and is currently not visible
+                if (this.totoggle.hasClass('uk-hidden-small') && !this.totoggle.is(':visible')) {
+                    // remove the uk-hidden-small class so that toggling the uk-hidden class has an effect
+                    this.totoggle.removeClass('uk-hidden-small');
+                }
+            }
+
             return ret;
         };
 
@@ -41,17 +50,30 @@
         UI.components.toggle.prototype.init = function() {
             var ret = initRef.apply(this, arguments);
 
-            this.getToggles();
+            this.getToggles(); // populates the `totoggle` variable
+            let self = this;
 
             if(!this.totoggle.length) return;
 
-            // check if the target has the "uk-hidden-small" class and is currently not visible
-            if (this.totoggle.hasClass('uk-hidden-small') && !this.totoggle.is(':visible')) {
-                // On small devices we initially hide some content like sidebar panels.
-                // To reflect the correct state, we need to toggle once and remove the uk-hidden-small class
-                this.toggle();
-                this.totoggle.removeClass('uk-hidden-small');
-            }
+            // NOTE: We register an event handler which, on page load, orientation change or window resize, ensures that togglable
+            // panels (which are hidden on small viewport sizes) are in fact togglable and have the correct toggle button state.
+            // Also, we wrap our function within `debounce` and use a large wait parameter to avoid excessive execution.
+            UI.$win.on('load orientationchange resize', UI.Utils.debounce((function(){
+
+                var fn = function() {
+                    // check if the target has the "uk-hidden-small" class and is currently not visible
+                    if (self.totoggle.hasClass('uk-hidden-small') && !self.totoggle.is(':visible')) {
+                        // on small devices, we initially hide some content like sidebar panels;
+                        // to reflect the correct state, we need to toggle once and remove the "uk-hidden-small" class
+                        self.toggle();
+                        self.totoggle.removeClass('uk-hidden-small');
+                    }
+                    return fn;
+                };
+
+                return fn();
+
+            })(), 500));
 
             return ret;
         };

@@ -59,6 +59,7 @@ class cs_portfolio_manager extends cs_manager implements cs_export_import_interf
          $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.*';
       }
       $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
+      $query .= ' INNER JOIN ' . $this->addDatabasePrefix('items') . ' ON '.$this->addDatabasePrefix('items').'.item_id = '.$this->addDatabasePrefix('portfolio').'.item_id AND '.$this->addDatabasePrefix('items').'.draft != "1"';
       
       $query .= ' WHERE 1';
       if ( isset($this->_user_limit) ) {
@@ -92,8 +93,12 @@ class cs_portfolio_manager extends cs_manager implements cs_export_import_interf
       }
    }
 
-
-   function getItem ($item_id) {
+    /**
+     * @param $item_id
+     * @return cs_portfolio_item|null
+     */
+   public function getItem($item_id):? cs_portfolio_item
+   {
       $portfolio_item = NULL;
       if ( !empty($item_id) ) {
          if ( !empty($this->_cache_object[$item_id]) ) {
@@ -176,10 +181,12 @@ class cs_portfolio_manager extends cs_manager implements cs_export_import_interf
   		include_once('functions/error_functions.php');
   		trigger_error('Problems updating portfolio.',E_USER_WARNING);
   	}
-  	 
-  	foreach ($portfolio_item->getExternalTemplate() as $viewer) {
-  		if (!empty($viewer)) {
-  			$query = "
+
+    $externalTemplateArray = $portfolio_item->getExternalTemplate();
+  	if ($externalTemplateArray and is_array($externalTemplateArray)) {
+        foreach ($portfolio_item->getExternalTemplate() as $viewer) {
+            if (!empty($viewer)) {
+                $query = "
 		  		INSERT INTO
 		  			" . $this->addDatabasePrefix("template_portfolio") . "
 		  		(
@@ -190,13 +197,14 @@ class cs_portfolio_manager extends cs_manager implements cs_export_import_interf
 		  			'" . encode(AS_DB, $viewer) . "'
 		  		);
 	  		";
-  			$result = $this->_db_connector->performQuery($query);
-  			if ( !isset($result) ) {
-  				include_once('functions/error_functions.php');
-  				trigger_error('Problems updating portfolio.',E_USER_WARNING);
-  			}
-  		}
-  	}
+                $result = $this->_db_connector->performQuery($query);
+                if (!isset($result)) {
+                    include_once('functions/error_functions.php');
+                    trigger_error('Problems updating portfolio.', E_USER_WARNING);
+                }
+            }
+        }
+    }
   }
   
   function _updateExternalViewer($portfolio_item) {
@@ -211,10 +219,12 @@ class cs_portfolio_manager extends cs_manager implements cs_export_import_interf
   		include_once('functions/error_functions.php');
   		trigger_error('Problems updating portfolio.',E_USER_WARNING);
   	}
-  	
-  	foreach ($portfolio_item->getExternalViewer() as $viewer) {
-  		if (!empty($viewer)) {
-  			$query = "
+
+  	$externalViewerArray = $portfolio_item->getExternalViewer();
+  	if ($externalViewerArray and is_array($externalViewerArray)) {
+        foreach ($portfolio_item->getExternalViewer() as $viewer) {
+            if (!empty($viewer)) {
+                $query = "
 		  		INSERT INTO
 		  			" . $this->addDatabasePrefix("user_portfolio") . "
 		  		(
@@ -225,13 +235,14 @@ class cs_portfolio_manager extends cs_manager implements cs_export_import_interf
 		  			'" . encode(AS_DB, $viewer) . "'
 		  		);
 	  		";
-  			$result = $this->_db_connector->performQuery($query);
-  			if ( !isset($result) ) {
-  				include_once('functions/error_functions.php');
-  				trigger_error('Problems updating portfolio.',E_USER_WARNING);
-  			}
-  		}
-  	}
+                $result = $this->_db_connector->performQuery($query);
+                if (!isset($result)) {
+                    include_once('functions/error_functions.php');
+                    trigger_error('Problems updating portfolio.', E_USER_WARNING);
+                }
+            }
+        }
+    }
   }
 
   function _create ($portfolio_item) {
@@ -241,7 +252,8 @@ class cs_portfolio_manager extends cs_manager implements cs_export_import_interf
      $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.
               'context_id="'.encode(AS_DB,$portal_id).'",'.
               'modification_date="'.$modification_date.'",'.
-              'type="portfolio"';
+              'type="portfolio",'.
+              'draft="'.encode(AS_DB,1).'"';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
         include_once('functions/error_functions.php');
@@ -250,6 +262,7 @@ class cs_portfolio_manager extends cs_manager implements cs_export_import_interf
      } else {
         $this->_create_id = $result;
         $portfolio_item->setItemID($this->getCreateID());
+        $portfolio_item->setDraftStatus(1);
         $this->_newPortfolio($portfolio_item);
         unset($result);
      }
@@ -350,14 +363,10 @@ function getPortfolioTags($portfolioId) {
   			" . $this->addDatabasePrefix("tag") . " AS tag
   		ON
   			tag_portfolio.t_id = tag.item_id
-  		LEFT JOIN
-  			" . $this->addDatabasePrefix("tag2tag") . " AS tag2tag
-  	    ON
-  			tag.item_id = tag2tag.to_item_id
   		WHERE
   			tag_portfolio.p_id = '" . encode(AS_DB, $portfolioId) . "'
   		ORDER BY
-  			tag2tag.sorting_place
+  			tag_portfolio.row, tag_portfolio.column
   	";
   	$result = $this->_db_connector->performQuery($query);
   	 
