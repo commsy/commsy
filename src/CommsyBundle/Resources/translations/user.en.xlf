@@ -168,7 +168,7 @@
             </trans-unit>
             <trans-unit id="is applying">
                 <source>is applying</source>
-                <target>is applying</target>
+                <target>Is applying</target>
             </trans-unit>
             <trans-unit id="is blocked">
                 <source>is blocked</source>

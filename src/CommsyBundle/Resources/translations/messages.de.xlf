@@ -274,6 +274,10 @@
                 <source>topic path not activated</source>
                 <target>nicht aktiviert</target>
             </trans-unit>
+            <trans-unit id="Entries">
+                <source>Entries</source>
+                <target>Einträge</target>
+            </trans-unit>
             <trans-unit id="linkedEntries">
                 <source>linkedEntries</source>
                 <target>Zugeordnete Einträge</target>

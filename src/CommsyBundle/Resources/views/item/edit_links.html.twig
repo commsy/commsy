@@ -30,7 +30,7 @@
             </ul>
 
             <ul id="linksFormTabs" class="uk-tab" data-uk-tab="{connect:'#linksForm'}">
-                <li><a href="">{{ 'linkedEntries'|trans({}) }}</a></li>
+                <li><a href="">{{ 'Entries'|trans({}) }}</a></li>
                 {% if showCategories %}
                     <li><a href="">{{ 'categories'|trans({})|capitalize }}</a></li>
                 {% endif %}
@@ -45,8 +45,8 @@
                         <div class="uk-width-1-1">
 
                             <ul class="uk-tab uk-tab-bottom" data-uk-switcher="{connect:'#linked-entry-switcher'}">
-                                <li><a href="">Suche</a></li>
-                                <li><a href="">Zuletzt bearbeitet</a></li>
+                                <li><a href="">{{ 'Search'|trans({}) }}</a></li>
+                                <li><a href="">{{ 'lastModifiedEntries'|trans({}) }}</a></li>
                             </ul>
 
                             <ul id="linked-entry-switcher" class="uk-switcher uk-margin-bottom uk-margin-top">

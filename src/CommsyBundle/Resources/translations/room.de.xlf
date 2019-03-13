@@ -74,6 +74,10 @@
                 <source>moderation support</source>
                 <target>E-Mail an die Moderation</target>
             </trans-unit>
+            <trans-unit id="usage-notes">
+                <source>Usage notes</source>
+                <target>Nutzungshinweise</target>
+            </trans-unit>
             <trans-unit id="room-filter-label-membership">
                 <source>Membership</source>
                 <target>Mitgliedschaft</target>
