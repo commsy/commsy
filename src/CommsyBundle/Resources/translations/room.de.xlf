@@ -310,6 +310,10 @@
                 <source>Name</source>
                 <target>Name</target>
             </trans-unit>
+            <trans-unit id="contact persons">
+                <source>Contact persons:</source>
+                <target>AnsprechpartnerInnen:</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
