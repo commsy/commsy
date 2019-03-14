@@ -34,9 +34,11 @@
                 </h4>
                 
                 <div class="uk-comment-meta">
-                    {% for roomModerator in project.moderatorList.to_array %}
-                        {{ roomModerator.fullName }}{% if not loop.last %}, {% endif %}
-                    {% endfor %}
+                    {% if project.contactPersonString is not empty %}
+                        {{ project.contactPersonString }}
+                    {% else %}
+                        {{ project.getContactModeratorListString }}
+                    {% endif %}
                 </div>
                 
                 <div class="uk-comment-meta">
