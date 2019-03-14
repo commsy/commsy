@@ -694,10 +694,9 @@
     {# given an array of \cs_user_item, outputs the user names linked with their emal addresses (if not hidden) #}
 
     {% set suffix = ', ' %}
-    {% set lastUser = userItems|last %}
 
     {% for user in userItems %}
-        {% if user.itemID == lastUser.itemID %}
+        {% if loop.last %}
             {% set suffix = '' %}
         {% endif %}
 
