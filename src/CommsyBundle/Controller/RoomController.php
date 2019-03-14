@@ -599,6 +599,9 @@ class RoomController extends Controller
             }
         }
 
+        $roomService = $this->get('commsy_legacy.room_service');
+        $contactModeratorItems = $roomService->getContactModeratorItems($itemId);
+
         $markupService = $this->get('commsy_legacy.markup');
         $itemService = $this->get('commsy_legacy.item_service');
         $markupService->addFiles($itemService->getItemFileList($itemId));
@@ -612,6 +615,7 @@ class RoomController extends Controller
             'readCount' => $infoArray['readCount'],
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'memberStatus' => $memberStatus,
+            'contactModeratorItems' => $contactModeratorItems,
             'showRoomModerationActions' => $showRoomModerationActions,
             'portalId' => $legacyEnvironment->getCurrentPortalItem()->getItemId(),
         ];
