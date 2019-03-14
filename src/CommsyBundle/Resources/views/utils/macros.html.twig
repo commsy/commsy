@@ -672,3 +672,22 @@
         <i class="uk-icon-copyright" data-uk-tooltip title="{{ material.getLicenseTitle }}"></i>
     {% endif %}
 {% endmacro %}
+
+{% macro userNamesWithMailLinks(userItems) %}
+    {# given an array of \cs_user_item, outputs the user names linked with their emal addresses (if not hidden) #}
+
+    {% set suffix = ', ' %}
+    {% set lastUser = userItems|last %}
+
+    {% for user in userItems %}
+        {% if user.itemID == lastUser.itemID %}
+            {% set suffix = '' %}
+        {% endif %}
+
+        {% if not user.email is empty and user.isEmailVisible %}
+            <a href="mailto:{{ user.email }}">{{ user.fullname }}</a>{{ suffix }}
+        {% else %}
+           {{ user.fullname ~ suffix }}
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
