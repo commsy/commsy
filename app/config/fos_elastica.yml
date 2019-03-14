@@ -51,7 +51,7 @@ fos_elastica:
                         ngrams_filter:
                             type: ngram
                             min_gram: 3
-                            max_gram: 20
+                            max_gram: 25
                             token_chars:
                                 - letter
                                 - digit

@@ -11,7 +11,10 @@
                 <div class="uk-width-9-10 uk-margin-small-bottom" >
                     <div class="uk-grid">
                         <div class="uk-width-8-10">
-                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
+                            <h1 class="uk-article-title">
+                                {{ item.title|decodeHtmlEntity }}
+                                {% if item.template == 1 %}<span class="uk-text-muted"> &ndash; {{ 'Template'|trans({}, 'room') }}</span>{% endif %}
+                            </h1>
                         </div>
                     </div>
                 </div>
