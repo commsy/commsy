@@ -74,6 +74,10 @@
                 <source>moderation support</source>
                 <target>E-Mail an die Moderation</target>
             </trans-unit>
+            <trans-unit id="usage-notes">
+                <source>Usage notes</source>
+                <target>Nutzungshinweise</target>
+            </trans-unit>
             <trans-unit id="room-filter-label-membership">
                 <source>Membership</source>
                 <target>Mitgliedschaft</target>
@@ -309,6 +313,10 @@
             <trans-unit id="name">
                 <source>Name</source>
                 <target>Name</target>
+            </trans-unit>
+            <trans-unit id="contact persons">
+                <source>Contact persons:</source>
+                <target>AnsprechpartnerInnen:</target>
             </trans-unit>
         </body>
     </file>

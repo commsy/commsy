@@ -384,7 +384,7 @@ $message["CONFIGURATION_SPONSOR_DESC"]["en"] = "Configure the sponsoring notices
 $message["CONFIGURATION_SPONSOR_LINK"]["en"] = "Sponsoring and adverteisement";
 $message["CONFIGURATION_STATISTIC_CHAT"]["en"] = "Chat";
 $message["CONFIGURATION_STRUCTURE_OPTIONS_DESC"]["en"] = "Use <span class=&quot;bold&quot;>tags</span>, <span class=&quot;bold&quot;>categories</span> or the <span class=&quot;bold&quot;>netnavigation</span> (with <span class=&quot;bold&quot;>paths</span>) for structuring entries.";
-$message["CONFIGURATION_STRUCTURE_OPTIONS_TITLE"]["en"] = "Structural auxilaries";
+$message["CONFIGURATION_STRUCTURE_OPTIONS_TITLE"]["en"] = "Structural auxiliaries";
 $message["CONFIGURATION_TAGS_FORM_TITLE"]["en"] = "Configure categories and tags";
 $message["CONFIGURATION_TAG_EDIT"]["en"] = "Permissions";
 $message["CONFIGURATION_TAG_EDIT_BY_ALL"]["en"] = "Access to categories management for all users";

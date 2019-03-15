@@ -254,9 +254,9 @@
                 <source>Edit</source>
                 <target>Access to categories management for moderator/s only</target>
             </trans-unit>
-            <trans-unit id="structuralauxilaries">
-                <source>Structural auxilaries</source>
-                <target>Structural auxilaries</target>
+            <trans-unit id="structural-auxiliaries">
+                <source>Structural auxiliaries</source>
+                <target>Structural auxiliaries</target>
             </trans-unit>
             <trans-unit id="archiveroom">
                 <source>Archive room</source>
@@ -466,9 +466,9 @@
                 <source>Homenotice</source>
                 <target>Notice on home / notice board</target>
             </trans-unit>
-            <trans-unit id="usernotice">
-                <source>Usernotice</source>
-                <target>User notice</target>
+            <trans-unit id="usage-notes">
+                <source>Usage notes</source>
+                <target>Usage notes</target>
             </trans-unit>
             <trans-unit id="email_configuration">
                 <source>Email configuration</source>
@@ -479,8 +479,8 @@
                 <target>By entering the correct content ID number above, you can highlight a material, a task, an event or an announcement on top of the Home / noticeboard with an abbreviated feature text. To get the refering content ID number, view the piece of content you want to highlight in your browser, and click on the arrow icon toggling information about the date of the "Last edit" and versioning. You can simply copy and paste the content ID number here.</target>
             </trans-unit>
             <trans-unit id="usernotice_text">
-                <source>Usernotice text</source>
-                <target>Define user notices for each workspace rubric.</target>
+                <source>Usage notes text</source>
+                <target>Define usage notes for each workspace rubric.</target>
             </trans-unit>
             <trans-unit id="email_configuration_text">
                 <source>Email configuration text</source>
@@ -595,7 +595,7 @@
             </trans-unit> 
             <trans-unit id="wiki_enabled">
                 <source>Wiki enabled</source>
-                <target>enable Wiki</target>
+                <target>Enable Wiki</target>
             </trans-unit>
             <trans-unit id="assessment_text">
                 <source>Assessment text</source>
@@ -607,7 +607,7 @@
             </trans-unit> 
             <trans-unit id="wiki_Text">
                 <source>wiki text</source>
-                <target>Checkt this checkbox to enable the Wiki.</target>
+                <target>Check this checkbox to enable the Wiki.</target>
             </trans-unit>
             <trans-unit id="default_state">
                 <source>Default status</source>

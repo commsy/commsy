@@ -236,7 +236,7 @@
             </trans-unit>
             <trans-unit id="57">
                 <source>enter grouproom</source>
-                <target>Enter grouproom</target>
+                <target>Enter group room</target>
             </trans-unit>
             <trans-unit id="58">
                 <source>show all</source>
@@ -274,9 +274,13 @@
                 <source>topic path not activated</source>
                 <target>not activated</target>
             </trans-unit>
+            <trans-unit id="Entries">
+                <source>Entries</source>
+                <target>Entries</target>
+            </trans-unit>
             <trans-unit id="linkedEntries">
                 <source>linkedEntries</source>
-                <target>Referenced entries</target>
+                <target>Linked entries</target>
             </trans-unit>
             <trans-unit id="categories">
                 <source>categories</source>
@@ -304,7 +308,7 @@
             </trans-unit>
             <trans-unit id="new version">
                 <source>new version</source>
-                <target>New Version</target>
+                <target>New version</target>
             </trans-unit>
             <trans-unit id="edit">
                 <source>edit</source>
@@ -397,7 +401,7 @@
             </trans-unit>
             <trans-unit id="withGrouproom">
                 <source>withGrouproom</source>
-                <target>(incl. grouproom)</target>
+                <target>(incl. group room)</target>
             </trans-unit>
             <trans-unit id="groupJoined">
                 <source>Joined group %s</source>
