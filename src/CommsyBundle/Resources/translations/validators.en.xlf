@@ -18,6 +18,10 @@
                 <source>Your access code is invalid.</source>
                 <target>Your access code is invalid.</target>
             </trans-unit>
+            <trans-unit id="validators_room_code_filled">
+                <source>Please enter an access code.</source>
+                <target>Please enter an access code.</target>
+            </trans-unit>
             <trans-unit id="validators_password_criteria">
                 <source>The password does not fulfill the following criteria: {{ criteria }}.</source>
                 <target>The password does not fulfill the following criteria: {{ criteria }}.</target>
