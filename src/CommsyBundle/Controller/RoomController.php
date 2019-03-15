@@ -590,7 +590,7 @@ class RoomController extends Controller
 
         $showRoomModerationActions = false;
         $roomUser = $currentUser->getRelatedUserItemInContext($itemId);
-        if ($currentUser->isRoot() || $roomUser->isModerator()) {
+        if ($currentUser->isRoot() || (isset($roomUser) && $roomUser->isModerator())) {
             $showRoomModerationActions = true;
         } else {
             $portalUser = $currentUser->getRelatedPortalUserItem();
