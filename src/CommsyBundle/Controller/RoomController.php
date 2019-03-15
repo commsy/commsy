@@ -1167,7 +1167,10 @@ class RoomController extends Controller
         if ($templateList->isNotEmpty()) {
             $template = $templateList->getFirst();
             while ($template) {
-                $availability = $template->getTemplateAvailability();
+                $availability = $template->getTemplateAvailability(); // $type === 'project'
+                if ($type === 'community') {
+                    $availability = $template->getCommunityTemplateAvailability();
+                }
 
                 $add = false;
 
