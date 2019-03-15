@@ -707,11 +707,11 @@
             </trans-unit>
             <trans-unit id="users_can_edit_calendars">
                 <source>users_can_edit_calendars</source>
-                <target>Nutzer können Kalender bearbeiten</target>
+                <target>BenutzerInnen können Kalender bearbeiten</target>
             </trans-unit>
             <trans-unit id="users_can_set_external_calendars_url">
                 <source>users_can_set_external_calendars_url</source>
-                <target>Nutzer können Adressen für externe Kalender bearbeiten</target>
+                <target>BenutzerInnen können Adressen für externe Kalender bearbeiten</target>
             </trans-unit>
             <trans-unit id="rss_enabled">
                 <source>rss_enabled</source>

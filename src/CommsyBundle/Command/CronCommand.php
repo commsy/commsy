@@ -223,7 +223,7 @@ class CronCommand extends ContainerAwareCommand
 
                     $body = $translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_RESUBMISSION', $room->getTitle(), $material->getTitle(), $link);
 
-                    $message = \Swift_Message::newInstance()
+                    $message = (new \Swift_Message())
                         ->setSubject($translator->getMessage('COMMON_WORKFLOW_EMAIL_SUBJECT_RESUBMISSION', $portalItem->getTitle()))
                         ->setBody($body, 'text/html')
                         ->setFrom([$container->getParameter('commsy.email.from') => $portalItem->getTitle()])
@@ -287,7 +287,7 @@ class CronCommand extends ContainerAwareCommand
 
                     $body = $translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_VALIDITY', $room->getTitle(), $material->getTitle(), $link);
 
-                    $message = \Swift_Message::newInstance()
+                    $message = (new \Swift_Message())
                         ->setSubject($translator->getMessage('COMMON_WORKFLOW_EMAIL_SUBJECT_VALIDITY', $portalItem->getTitle()))
                         ->setBody($body, 'text/html')
                         ->setFrom([$container->getParameter('commsy.email.from') => $portalItem->getTitle()])

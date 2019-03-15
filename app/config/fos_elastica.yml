@@ -51,7 +51,7 @@ fos_elastica:
                         ngrams_filter:
                             type: ngram
                             min_gram: 3
-                            max_gram: 20
+                            max_gram: 25
                             token_chars:
                                 - letter
                                 - digit
@@ -622,5 +622,8 @@ fos_elastica:
                         model: CommsyBundle\Entity\Materials
                         identifier: itemId
                         finder: ~
-                        provider: ~
+                        provider:
+                            query_builder_method: createSearchQueryBuilder
                         listener: ~
+                        elastica_to_model_transformer:
+                            query_builder_method: createSearchHydrationQueryBuilder

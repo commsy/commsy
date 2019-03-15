@@ -1209,7 +1209,7 @@ class GroupController extends BaseController
                     }
                 }
 
-                $message = \Swift_Message::newInstance()
+                $message = (new \Swift_Message())
                     ->setSubject($formData['subject'])
                     ->setBody($formData['message'], 'text/html')
                     ->setFrom([$from => $portalItem->getTitle()])
@@ -1377,7 +1377,7 @@ class GroupController extends BaseController
                     }
                 }
 
-                $message = \Swift_Message::newInstance()
+                $message = (new \Swift_Message())
                     ->setSubject($formData['subject'])
                     ->setBody($formData['message'], 'text/html')
                     ->setFrom([$from => $portalItem->getTitle()])

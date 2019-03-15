@@ -166,7 +166,7 @@ class cs_mail
      */
     public function send($recipients = '', $headers = '', $body = '', $return = '')
     {
-        $message = \Swift_Message::newInstance();
+        $message = new \Swift_Message();
 
         // body
         if ($this->asHTML) {

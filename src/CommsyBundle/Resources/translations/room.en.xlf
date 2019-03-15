@@ -238,6 +238,10 @@
                 <source>community</source>
                 <target>Communityroom</target>
             </trans-unit>
+            <trans-unit id="Group room">
+                <source>Group room</source>
+                <target>Group room</target>
+            </trans-unit>
             <trans-unit id="language">
                 <source>language</source>
                 <target>Language</target>
@@ -253,6 +257,10 @@
             <trans-unit id="Time interval">
                 <source>Time interval</source>
                 <target>Time interval</target>
+            </trans-unit>
+            <trans-unit id="New room">
+                <source>New room</source>
+                <target>New room</target>
             </trans-unit>
             <trans-unit id="Create new context">
                 <source>Create new context</source>

@@ -288,7 +288,7 @@ class RoomController extends Controller
                 $moderatorUserItem = $moderatorList->getNext();
             }
             
-            $message = \Swift_Message::newInstance()
+            $message = (new \Swift_Message())
                 ->setSubject($data['subject'])
                 ->setFrom(array($currentUser->getEmail() => $currentUser->getFullname()))
                 ->setTo($moderatorEmailAdresses)
@@ -588,21 +588,15 @@ class RoomController extends Controller
 
         $memberStatus = $userService->getMemberStatus($roomItem, $currentUser);
 
-        $userMayCreateContext = false;
-        $currentUser = $legacyEnvironment->getCurrentUser();
-        $portalItem = $legacyEnvironment->getCurrentPortalItem();
-        if (!$currentUser->isRoot()) {
-            $portalUser = $currentUser->getRelatedPortalUserItem();
-
-            if ($portalUser) {
-                if ($portalUser->isModerator()) {
-                    $userMayCreateContext = true;
-                } else if ($portalItem->getCommunityRoomCreationStatus() == 'all' || $portalItem->getProjectRoomCreationStatus() == 'portal') {
-                    $userMayCreateContext = $currentUser->isAllowedToCreateContext();
-                }
-            }
+        $showRoomModerationActions = false;
+        $roomUser = $currentUser->getRelatedUserItemInContext($itemId);
+        if ($currentUser->isRoot() || (isset($roomUser) && $roomUser->isModerator())) {
+            $showRoomModerationActions = true;
         } else {
-            $userMayCreateContext = true;
+            $portalUser = $currentUser->getRelatedPortalUserItem();
+            if ($portalUser && $portalUser->isModerator()) {
+                $showRoomModerationActions = true;
+            }
         }
 
         $markupService = $this->get('commsy_legacy.markup');
@@ -618,7 +612,7 @@ class RoomController extends Controller
             'readCount' => $infoArray['readCount'],
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'memberStatus' => $memberStatus,
-            'userMayCreateContext' => $userMayCreateContext,
+            'showRoomModerationActions' => $showRoomModerationActions,
             'portalId' => $legacyEnvironment->getCurrentPortalItem()->getItemId(),
         ];
     }
@@ -793,7 +787,7 @@ class RoomController extends Controller
                     }
 
                     // mail to moderators
-                    $message = \Swift_Message::newInstance()
+                    $message = (new \Swift_Message())
                         ->setFrom([$this->getParameter('commsy.email.from') => $roomItem->getContextItem()->getTitle()])
                         ->setReplyTo([$newUser->getEmail() => $newUser->getFullName()]);
 
@@ -931,7 +925,7 @@ class RoomController extends Controller
                         'roomId' => $roomItem->getItemID(),
                     ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-                    $message = \Swift_Message::newInstance()
+                    $message = (new \Swift_Message())
                         ->setSubject($subject)
                         ->setBody($body, 'text/plain')
                         ->setFrom([$this->getParameter('commsy.email.from') => $roomItem->getContextItem()->getTitle()])
