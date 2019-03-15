@@ -11,10 +11,10 @@ modules:
               chromeOptions:
                   args: ["--headless", "--disable-gpu"]
         Db:
-            dsn: 'mysql:host=127.0.0.1;db_name=commsy'
+            dsn: 'mysql:host=127.0.0.1;dbname=commsy'
             user: 'root'
             password: 'root'
             dump: tests/_data/bootstrap.sql
             cleanup: true # reload dump between tests
             populate: true # load dump before all tests
-            populator: 'mysql -u $user -p$password -h $host $db_name < $dump'
+            populator: 'mysql -u $user -p$password -h $host $dbname < $dump'
