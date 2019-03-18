@@ -20,13 +20,17 @@ class ProjectType extends AbstractType
     {
         $translationDomain = 'form';
 
+        // NOTE: opposed to the Type/ProjectType.php form, the `data` option somehow won't preselect
+        // any default template that's defined in `preferredChoices`, maybe due to this form being
+        // added as 'type_sub' in `AddContextFieldListener`? However, `empty_data` will work here.
         $builder->add('master_template', ChoiceType::class, [
                 'choices' => $options['templates'],
                 'preferred_choices' => $options['preferredChoices'],
-                'placeholder' => 'Choose a template',
+                'placeholder' => 'No template',
                 'required' => false,
                 'mapped' => false,
                 'label' => 'Template',
+                'empty_data' => (!empty($options['preferredChoices'])) ? $options['preferredChoices'][0] : '',
             ]);
         if (!empty($options['times'])) {
             $builder->add('time_interval', ChoiceType::class, [

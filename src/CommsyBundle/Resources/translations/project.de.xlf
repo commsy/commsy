@@ -22,6 +22,10 @@
                 <source>Choose a template</source>
                 <target>Vorlage auswählen</target>
             </trans-unit>
+            <trans-unit id="project-form-template-placeholder-no-template">
+                <source>No template</source>
+                <target>*Keine Vorlage</target>
+            </trans-unit>
             <trans-unit id="project-form-description-label">
                 <source>Room description</source>
                 <target>Raumbeschreibung</target>
