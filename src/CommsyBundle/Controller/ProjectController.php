@@ -142,6 +142,9 @@ class ProjectController extends Controller
 
         $memberStatus = $userService->getMemberStatus($roomItem, $currentUser);
 
+        $roomService = $this->get('commsy_legacy.room_service');
+        $contactModeratorItems = $roomService->getContactModeratorItems($itemId);
+
         $markupService = $this->get('commsy_legacy.markup');
         $itemService = $this->get('commsy_legacy.item_service');
         $markupService->addFiles($itemService->getItemFileList($itemId));
@@ -155,6 +158,7 @@ class ProjectController extends Controller
             'readCount' => $infoArray['readCount'],
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'memberStatus' => $memberStatus,
+            'contactModeratorItems' => $contactModeratorItems,
         ];
     }
 

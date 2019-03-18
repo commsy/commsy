@@ -15,7 +15,7 @@ class RoomService
 
     /**
      * returns the rubrics for the room with the $roomId
-     * @param  Integer $roomId  room id
+     * @param  Integer $roomId room id
      * @param  Boolean $includeModifier include or remove "_show" and "_hide" modifier
      * @return array            Array with rubric strings
      */
@@ -55,6 +55,22 @@ class RoomService
         $personList = $roomItem->getUserList();
 
         return $personList->to_array();
+    }
+
+    /**
+     * For the room with the given room ID, returns all users who have the status of a contact person or moderator.
+     * Note that if some contact person(s) have been defined for the room, only these will be returned. Otherwise,
+     * the room moderators will be returned.
+     *
+     * @param int $roomId The ID of the containing context
+     * @return \cs_user_item[] An array of users who are contact persons or moderators of the room with the given room ID
+     */
+    public function getContactModeratorItems($roomId)
+    {
+        $roomItem = $this->getRoomItem($roomId);
+        $contactModeratorList = $roomItem->getContactModeratorList();
+
+        return $contactModeratorList->to_array();
     }
 
     public function getCurrentRoomItem()
