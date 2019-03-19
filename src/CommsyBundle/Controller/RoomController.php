@@ -590,7 +590,7 @@ class RoomController extends Controller
 
         $showRoomModerationActions = false;
         $roomUser = $currentUser->getRelatedUserItemInContext($itemId);
-        if ($currentUser->isRoot() || $roomUser->isModerator()) {
+        if ($currentUser->isRoot() || (isset($roomUser) && $roomUser->isModerator())) {
             $showRoomModerationActions = true;
         } else {
             $portalUser = $currentUser->getRelatedPortalUserItem();
@@ -1171,7 +1171,10 @@ class RoomController extends Controller
         if ($templateList->isNotEmpty()) {
             $template = $templateList->getFirst();
             while ($template) {
-                $availability = $template->getTemplateAvailability();
+                $availability = $template->getTemplateAvailability(); // $type === 'project'
+                if ($type === 'community') {
+                    $availability = $template->getCommunityTemplateAvailability();
+                }
 
                 $add = false;
 
