@@ -1,6 +1,7 @@
 <?php
 namespace CommsyBundle\Form\Type\Context;
 
+use CommsyBundle\Form\Type\Custom\Select2ChoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -33,17 +34,17 @@ class ProjectType extends AbstractType
                 'empty_data' => (!empty($options['preferredChoices'])) ? $options['preferredChoices'][0] : '',
             ]);
         if (!empty($options['times'])) {
-            $builder->add('time_interval', ChoiceType::class, [
+            $builder->add('time_interval', Select2ChoiceType::class, [
                 'choices' => $options['times'],
                 'required' => false,
                 'mapped' => false,
-                'expanded' => true,
+                'expanded' => false,
                 'multiple' => true,
                 'label' => $options['timesDisplay'],
                 'translation_domain' => 'room',
             ]);
         }
-        $builder->add('community_rooms', ChoiceType::class, [
+        $builder->add('community_rooms', Select2ChoiceType::class, [
                 'choices' => $options['communities'],
                 'required' => $options['linkCommunitiesMandantory'],
                 'mapped' => false,

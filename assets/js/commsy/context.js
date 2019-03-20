@@ -32,8 +32,8 @@
                         // html
                     );
                 }
-                console.log($(html).find('#context_type_sub'));
-                // Position field now displays the appropriate positions.
+
+                $('.js-select2-choice').select2();
             }
         });
     });
