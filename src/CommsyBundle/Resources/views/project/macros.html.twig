@@ -317,6 +317,8 @@
                                     <div class="uk-width-1-5 uk-text-left">
                                         {% if memberStatus == 'enter' %}
                                             <a href="{{ path('commsy_room_home', {'roomId': project.itemId}) }}" class="uk-icon-large uk-icon-button uk-icon-sign-in" data-uk-tooltip title="{{'enter room'|trans({}, 'room') }}"></a>
+                                        {% elseif memberStatus == 'forbidden' %}
+                                            {{ 'Guests are not allowed to request for membership.'|trans({}, 'room') }}
                                         {% else %}
                                             <span class="uk-icon-large uk-icon-button uk-icon-remove" data-uk-tooltip title="{{'no access'|trans({}, 'room') }}"> </span>
                                         {% endif %}
