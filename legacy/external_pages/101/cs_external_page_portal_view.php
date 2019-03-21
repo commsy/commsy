@@ -78,6 +78,15 @@ class cs_external_page_portal_view extends cs_page_view
     }
 
 
+    /** Adds an AGB view.
+     * @param object cs_view a commsy view
+     */
+    function addAGBView($view)
+    {
+        $this->_agb_view = $view;
+    }
+
+
     /** Honors the language specified by the current request in the `external_language` parameter,
      * and updates the selected language of the current user (or session) accordingly.
      * @author CommSy Development Group
