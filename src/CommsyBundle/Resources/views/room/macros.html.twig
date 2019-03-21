@@ -11,7 +11,10 @@
                 <div class="uk-width-9-10 uk-margin-small-bottom" >
                     <div class="uk-grid">
                         <div class="uk-width-8-10">
-                            <h1 class="uk-article-title">{{ item.title|decodeHtmlEntity }}</h1>
+                            <h1 class="uk-article-title">
+                                {{ item.title|decodeHtmlEntity }}
+                                {% if item.template == 1 %}<span class="uk-text-muted"> &ndash; {{ 'Template'|trans({}, 'room') }}</span>{% endif %}
+                            </h1>
                         </div>
                     </div>
                 </div>
@@ -292,7 +295,7 @@
         </div>
 {% endmacro %}
 
-{% macro access(project, roomId, memberStatus) %}
+{% macro access(project, roomId, memberStatus, contactModeratorItems) %}
     {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
 
     <div id="project{{ project.itemId }}" class="cs-edit-section cs-toggle">
@@ -325,7 +328,13 @@
                                     <div class="uk-width-2-5 uk-text-left">
                                         <span class="uk-text-bold">{{'Room-Information'|trans({}, 'room') }}</span><br/>
                                         <p>
-                                            {{'Moderation:'|trans({}, 'room') }} {{ project.contactModeratorListString }}
+                                            {# display an appropriate label if contact persons have been defined for this room: #}
+                                            {% if project.contactModeratorListString is not same as(project.moderatorListString) %}
+                                                {{ 'Contact persons:'|trans({}, 'room') }}
+                                            {% else %}
+                                                {{ 'Moderation:'|trans({}, 'room') }}
+                                            {% endif %}
+                                            {{ macros.userNamesWithMailLinks(contactModeratorItems) }}
                                         </p>
                                         <p>
                                             {{ macros.contextLink(roomId, project, memberStatus) }}

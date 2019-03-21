@@ -66,6 +66,7 @@ class RoomProfileGeneralType extends AbstractType
                 'label_attr' => array(
                     'class' => 'uk-form-label',
                 ),
+                'data' => true,
             ))
             
             ->add('save', SubmitType::class, array(

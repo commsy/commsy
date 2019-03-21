@@ -1,0 +1,58 @@
+{% extends 'CommsyBundle:base:room.html.twig' %}
+
+{% block content %}
+    <div class="uk-grid">
+        <div class="uk-width-medium-3-3">
+            <div class="uk-panel uk-panel-box uk-margin-bottom">
+
+                {# panel title bar #}
+                <div class="uk-panel-teaser cs-panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div>{% if categoryId == 'add' %}{{ 'New category'|trans({}, 'portfolio') }}{% else %}{{ 'Edit category'|trans({}, 'portfolio') }}{% endif %}</div>
+                    </div>
+                </div>
+
+                <div class="uk-form-horizontal">
+                    {{ form_start(form) }}
+                    {{ form_errors(form) }}
+
+                    <div class="uk-flex">
+                        <div class="uk-width-9-10">
+                            {{ form_widget(form.categories) }}
+                            {{ form_errors(form.categories) }}
+                        </div>
+                    </div>
+
+                    <div class="uk-margin-top">
+                        <div class="uk-form-row">
+                            <label class="uk-form-label">
+                                {{ form_label(form.description) }}
+                            </label>
+                            <div class="uk-margin-left">
+                                {{ form_widget(form.description) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="uk-flex uk-flex-space-between uk-margin-top">
+                        <div class="uk-flex">
+                            <div class="uk-margin-small-left">
+                                {{ form_row(form.save) }}
+                            </div>
+                            <div class="uk-margin-small-left">
+                                {{ form_row(form.cancel) }}
+                            </div>
+                        </div>
+
+                        {% if form.delete is defined %}
+                            <div>
+                                {{ form_row(form.delete) }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

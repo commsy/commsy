@@ -227,7 +227,8 @@ services:
 
     commsy.search.indexable_checker:
         class: CommsyBundle\Search\IndexableChecker
-        arguments: ['@commsy_legacy.environment']
+        autowire: true
+        autoconfigure: true
 
     # Validator
     commsy.validator.unique_label_name:
@@ -259,6 +260,10 @@ services:
         arguments: ['@service_container', '@translator']
         tags:
             - { name: validator.constraint_validator, alias: alias_name }
+
+    CommsyBundle\Validator\Constraints\UniquePortfolioCategoryValidator:
+        autowire: true
+        autoconfigure: true
 
     # Form types
     commsy.form.type.general_settings:
@@ -520,6 +525,14 @@ services:
             - { name: form.type }
 
     CommsyBundle\Form\Type\CheckedBase64CsvUserImportFileType:
+        autowire: true
+        autoconfigure: true
+
+    CommsyBundle\Form\Type\PortfolioType:
+        autowire: true
+        autoconfigure: true
+
+    CommsyBundle\Form\Type\PortfolioEditCategoryType:
         autowire: true
         autoconfigure: true
 

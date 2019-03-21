@@ -1190,9 +1190,12 @@ class DateController extends BaseController
         );
     }
     
-    function saveRecurringDates(\cs_dates_item $dateItem, $isNewRecurring, $valuesToChange, $formData){
+    function saveRecurringDates($dateItem, $isNewRecurring, $valuesToChange, $formData)
+    {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-       
+
+        /** @var \cs_dates_item $dateItem */
+
         if($isNewRecurring) {
             $recurringDateArray = array();
             $recurringPatternArray = array();
@@ -1279,8 +1282,11 @@ class DateController extends BaseController
                         $temp->add(new \DateInterval('P' . $index . 'D'));
 
                         // if the actual day is a correct week day, add it to possible dates
-                        $weekDay = $temp->format('w');
-                        if($weekDay == $formData['recurring_sub']['recurrenceDayOfMonth']) {
+                        $weekDay = $temp->format('l'); // 'l' returns the full textual representation of the date's day of week (e.g. "Tuesday")
+
+                        // NOTE: for monthly recurring dates, `recurrenceDayOfMonth` contains the day of week (e.g. "tuesday")
+                        // instead of the numeric day number (like "26") as is the case for yearly recurring dates
+                        if(strtolower($weekDay) === $formData['recurring_sub']['recurrenceDayOfMonth']) {
                             $datesOccurenceArray[] = $temp;
                         }
 
@@ -1288,18 +1294,15 @@ class DateController extends BaseController
                     }
 
                     // add only days, that match the right week
-                    if($formData['recurring_sub']['recurrenceDayOfMonthInterval'] != 'last') {
-                        if($formData['recurring_sub']['recurrenceDayOfMonthInterval'] <= count($datesOccurenceArray)) {
-                            if( $datesOccurenceArray[$formData['recurring_sub']['recurrenceDayOfMonthInterval']-1] >= $startDate &&
-                                $datesOccurenceArray[$formData['recurring_sub']['recurrenceDayOfMonthInterval']-1] <= $endDate) {
-                                $recurringDateArray[] = $datesOccurenceArray[$formData['recurring_sub']['recurrenceDayOfMonthInterval']-1];
-                            }
-                        }
-                    } else {
-                        if( $datesOccurenceArray[count($formData['recurring_sub']['recurrenceDayOfMonthInterval'])-1] >= $startDate &&
-                            $datesOccurenceArray[count($formData['recurring_sub']['recurrenceDayOfMonthInterval'])-1] <= $endDate) {
-                            $recurringDateArray[] = $datesOccurenceArray[count($formData['recurring_sub']['recurrenceDayOfMonthInterval'])-1];
-                        }
+                    $date = null;
+                    $dayOfMonthInterval = $formData['recurring_sub']['recurrenceDayOfMonthInterval'];
+                    if ($dayOfMonthInterval === 'last') {
+                        $date = end($datesOccurenceArray);
+                    } else if (isset($datesOccurenceArray[$dayOfMonthInterval - 1])) {
+                        $date = $datesOccurenceArray[$dayOfMonthInterval - 1];
+                    }
+                    if (isset($date) && $date >= $startDate && $date <= $endDate) {
+                        $recurringDateArray[] = $date;
                     }
 
                     // go to next month
@@ -1316,7 +1319,7 @@ class DateController extends BaseController
 
                 $recurringPatternArray['recurring_sub']['recurrenceMonth'] = $formData['recurring_sub']['recurrenceMonth'];
                 $recurringPatternArray['recurring_sub']['recurrenceDayOfMonth'] = $formData['recurring_sub']['recurrenceDayOfMonth'];
-                $recurringPatternArray['recurring_sub']['recurrenceDayOfMonthInterval'] = $formData['recurring_sub']['recurrenceDayOfMonthInterval'];
+                $recurringPatternArray['recurring_sub']['recurrenceDayOfMonthInterval'] = $dayOfMonthInterval;
 
                 unset($month);
 
@@ -1347,6 +1350,11 @@ class DateController extends BaseController
             $recurringPatternArray['recurringEndDate'] = $formData['recurring_sub']['untilDate']->format('Y-m-d');
 
             foreach($recurringDateArray as $date) {
+                // prevent duplicate date entry
+                if (date('Y-m-d', $date->getTimestamp()) === $dateItem->getStartingDay()) {
+                    continue;
+                }
+
                 $tempDate = clone $dateItem;
                 $tempDate->setItemID('');
                 $tempDate->setStartingDay(date('Y-m-d', $date->getTimestamp()));
@@ -1394,6 +1402,7 @@ class DateController extends BaseController
             $dateItem->setRecurrencePattern($recurringPatternArray);
             $dateItem->save();
         } else {
+            // TODO: remove this else block if (as suspected) it is dead code that doesn't get executed anymore
             $datesManager = $legacyEnvironment->getDatesManager();
             $datesManager->resetLimits();
             $datesManager->setRecurrenceLimit($dateItem->getRecurrenceId());
@@ -1637,8 +1646,16 @@ class DateController extends BaseController
                 }
 
                 $kernelRootDir = $this->getParameter('kernel.root_dir');
+                $fileData = array();
                 foreach ($files as $file) {
-                    $calendarsService->importEvents(fopen($kernelRootDir . '/../var/temp/' . $file->getFileId(), 'r'), $calendar);
+                    $fileHandle = fopen($kernelRootDir . '/../var/temp/' . $file->getFileId(), 'r');
+                    if ($fileHandle) {
+                        $fileData[] = $fileHandle;
+                    }
+                }
+
+                if (!empty($fileData)) {
+                    $calendarsService->importEvents($fileData, $calendar);
                 }
 
                 return $this->redirectToRoute('commsy_date_list', array('roomId' => $roomId));

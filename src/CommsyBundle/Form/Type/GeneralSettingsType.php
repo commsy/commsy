@@ -1,6 +1,7 @@
 <?php
 namespace CommsyBundle\Form\Type;
 
+use CommsyBundle\Form\Type\Custom\Select2ChoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -170,7 +171,7 @@ class GeneralSettingsType extends AbstractType
                         //     'multiple' => true,
                         //     'required' => false,
                         // ))
-                        ->add('community_rooms', ChoiceType::class, array(
+                        ->add('community_rooms', Select2ChoiceType::class, array(
                             'choices' => $choices,
                             'multiple' => true,
                             'required' => false,
@@ -188,8 +189,8 @@ class GeneralSettingsType extends AbstractType
                 ($this->roomItem->isProjectRoom() || $this->roomItem->isGroupRoom()))
             {
                 $form
-                    ->add('time_pulses', ChoiceType::class, [
-                        'label' => 'Time context',
+                    ->add('time_pulses', Select2ChoiceType::class, [
+                        'label' => $this->getTimeIntervalsDisplayName(),
                         'required' => false,
                         'choices' => $this->getTimeChoices(),
                         'multiple' => true,
@@ -222,6 +223,21 @@ class GeneralSettingsType extends AbstractType
     public function getBlockPrefix()
     {
         return 'general_settings';
+    }
+
+    /**
+     * Returns the display name for time intervals as specified in the current portal configuration
+     * for the currently selected language.
+     */
+    private function getTimeIntervalsDisplayName()
+    {
+        $currentPortal = $this->legacyEnvironment->getCurrentPortalItem();
+        $displayName = $currentPortal->getCurrentTimeName();
+        if (empty($displayName)) {
+            $displayName = 'Time context';
+        }
+
+        return $displayName;
     }
 
     private function getTimeChoices()

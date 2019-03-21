@@ -21,10 +21,10 @@ settings:
 modules:
     config:
         Db:
-            dsn: 'mysql:host=commsy_test_db;db_name=commsy'
+            dsn: 'mysql:host=commsy_test_db;dbname=commsy'
             user: 'root'
             password: 'root'
             dump: tests/_data/bootstrap.sql
             cleanup: true # reload dump between tests
             populate: true # load dump before all tests
-            populator: 'mysql -u $user -p$password -h $host $db_name < $dump'
+            populator: 'mysql -u $user -p$password -h $host $dbname < $dump'

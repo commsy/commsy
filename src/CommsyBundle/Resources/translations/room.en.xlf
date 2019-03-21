@@ -16,7 +16,7 @@
             </trans-unit>
             <trans-unit id="4">
                 <source>Room-Information</source>
-                <target>Room-Information</target>
+                <target>Room information</target>
             </trans-unit>
             <trans-unit id="6">
                 <source>Entries:</source>
@@ -74,6 +74,10 @@
                 <source>moderation support</source>
                 <target>E-mail to moderator/s</target>
             </trans-unit>
+            <trans-unit id="usage-notes">
+                <source>Usage notes</source>
+                <target>Usage notes</target>
+            </trans-unit>
             <trans-unit id="room-nav-title">
                 <source>All rooms</source>
                 <target>All rooms</target>
@@ -116,11 +120,11 @@
             </trans-unit>
             <trans-unit id="room-grouprooms">
                 <source>Group Rooms</source>
-                <target>Grouprooms</target>
+                <target>Group rooms</target>
             </trans-unit>
             <trans-unit id="enter room">
                 <source>enter room</source>
-                <target>Enter rooom</target>
+                <target>Enter room</target>
             </trans-unit>
             <trans-unit id="room_no_access">
                 <source>no access</source>
@@ -198,6 +202,10 @@
                 <source>Request membership</source>
                 <target>Request membership</target>
             </trans-unit>
+            <trans-unit id="room_request_forbidden">
+                <source>Guests are not allowed to request for membership.</source>
+                <target>Guests are not allowed to request for membership.</target>
+            </trans-unit>
             <trans-unit id="room_agb">
                 <source>AGB</source>
                 <target>Terms of use</target>
@@ -232,7 +240,11 @@
             </trans-unit>
             <trans-unit id="community">
                 <source>community</source>
-                <target>Communityroom</target>
+                <target>Community room</target>
+            </trans-unit>
+            <trans-unit id="Group room">
+                <source>Group room</source>
+                <target>Group room</target>
             </trans-unit>
             <trans-unit id="language">
                 <source>language</source>
@@ -249,6 +261,10 @@
             <trans-unit id="Time interval">
                 <source>Time interval</source>
                 <target>Time interval</target>
+            </trans-unit>
+            <trans-unit id="New room">
+                <source>New room</source>
+                <target>New room</target>
             </trans-unit>
             <trans-unit id="Create new context">
                 <source>Create new context</source>
@@ -297,6 +313,10 @@
             <trans-unit id="name">
                 <source>Name</source>
                 <target>Name</target>
+            </trans-unit>
+            <trans-unit id="contact persons">
+                <source>Contact persons:</source>
+                <target>Contact persons:</target>
             </trans-unit>
         </body>
     </file>

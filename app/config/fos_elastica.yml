@@ -51,7 +51,7 @@ fos_elastica:
                         ngrams_filter:
                             type: ngram
                             min_gram: 3
-                            max_gram: 20
+                            max_gram: 25
                             token_chars:
                                 - letter
                                 - digit
@@ -96,6 +96,9 @@ fos_elastica:
                                 fullName:
                                     type: text
                         creationDate:
+                            type: date
+                            format: date_optional_time
+                        modificationDate:
                             type: date
                             format: date_optional_time
                         title:
@@ -169,6 +172,9 @@ fos_elastica:
                                 fullName:
                                     type: text
                         creationDate:
+                            type: date
+                            format: date_optional_time
+                        modificationDate:
                             type: date
                             format: date_optional_time
                         title:
@@ -245,6 +251,9 @@ fos_elastica:
                                 fullName:
                                     type: text
                         creationDate:
+                            type: date
+                            format: date_optional_time
+                        modificationDate:
                             type: date
                             format: date_optional_time
                         title:
@@ -328,6 +337,9 @@ fos_elastica:
                         creationDate:
                             type: date
                             format: date_optional_time
+                        modificationDate:
+                            type: date
+                            format: date_optional_time
                         name:
                             type: text
                             copy_to: title
@@ -369,6 +381,12 @@ fos_elastica:
                                     copy_to: fullName
                                 fullName:
                                     type: text
+                        creationDate:
+                            type: date
+                            format: date_optional_time
+                        modificationDate:
+                            type: date
+                            format: date_optional_time
                         title:
                             type: text
                             analyzer: commsy_analyzer
@@ -420,6 +438,12 @@ fos_elastica:
                                     copy_to: fullName
                                 fullName:
                                     type: text
+                        creationDate:
+                            type: date
+                            format: date_optional_time
+                        modificationDate:
+                            type: date
+                            format: date_optional_time
                         title:
                             type: text
                             analyzer: commsy_analyzer
@@ -541,6 +565,9 @@ fos_elastica:
                         creationDate:
                             type: date
                             format: date_optional_time
+                        modificationDate:
+                            type: date
+                            format: date_optional_time
                         title:
                             type: text
                             analyzer: commsy_analyzer
@@ -595,5 +622,8 @@ fos_elastica:
                         model: CommsyBundle\Entity\Materials
                         identifier: itemId
                         finder: ~
-                        provider: ~
+                        provider:
+                            query_builder_method: createSearchQueryBuilder
                         listener: ~
+                        elastica_to_model_transformer:
+                            query_builder_method: createSearchHydrationQueryBuilder

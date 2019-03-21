@@ -2,6 +2,10 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
+            <trans-unit id="new-project-room">
+                <source>New project room</source>
+                <target>New project room</target>
+            </trans-unit>
             <trans-unit id="project-create-title">
                 <source>Create new project room</source>
                 <target>Create new project room</target>
@@ -17,6 +21,10 @@
             <trans-unit id="project-form-template-placeholder">
                 <source>Choose a template</source>
                 <target>Choose a template</target>
+            </trans-unit>
+            <trans-unit id="project-form-template-placeholder-no-template">
+                <source>No template</source>
+                <target>*No template</target>
             </trans-unit>
             <trans-unit id="project-form-description-label">
                 <source>Room description</source>

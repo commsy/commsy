@@ -25,10 +25,11 @@ class ProjectType extends AbstractType
             ->add('master_template', ChoiceType::class, [
                 'choices' => $options['templates'],
                 'preferred_choices' => $options['preferredChoices'],
-                'placeholder' => 'Choose a template',
+                'placeholder' => 'No template',
                 'required' => false,
                 'mapped' => false,
                 'label' => 'Template',
+                'data' => (!empty($options['preferredChoices'])) ? $options['preferredChoices'][0] : '',
                 'attr' => [
                     'data-description' => json_encode($options['descriptions']),
                 ]

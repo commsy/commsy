@@ -18,6 +18,10 @@
                 <source>Your access code is invalid.</source>
                 <target>Your access code is invalid.</target>
             </trans-unit>
+            <trans-unit id="validators_room_code_filled">
+                <source>Please enter an access code.</source>
+                <target>Please enter an access code.</target>
+            </trans-unit>
             <trans-unit id="validators_password_criteria">
                 <source>The password does not fulfill the following criteria: {{ criteria }}.</source>
                 <target>The password does not fulfill the following criteria: {{ criteria }}.</target>
@@ -95,6 +99,10 @@
             <trans-unit id="violation_csv_user_import_room_valid">
                 <source>The field rooms must be empty or a list of room ids.</source>
                 <target>The field "rooms" must be empty or a list of room ids.</target>
+            </trans-unit>
+            <trans-unit id="violation_unique_category">
+                <source>A category can only be used once per portfolio.</source>
+                <target>A category can only be used once per portfolio.</target>
             </trans-unit>
         </body>
     </file>

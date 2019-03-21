@@ -178,6 +178,16 @@
                 <source>Default Source</source>
                 <target>Standard-Quelle</target>
             </trans-unit>
+
+            <!-- general -->
+            <trans-unit id="portal_settings">
+                <source>Portal configuration</source>
+                <target>Portalkonfiguration</target>
+            </trans-unit>
+            <trans-unit id="portal_settings_legacy">
+                <source>Legacy configuration</source>
+                <target>Alte Portalkonfiguration</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

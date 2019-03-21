@@ -149,7 +149,7 @@ class cs_account_forget_page extends cs_left_page
                     $body .= $currentRequest->getSchemeAndHttpHost() . '/?cid=' . $this->_environment->getCurrentContextID();
                 }
 
-                $message = \Swift_Message::newInstance()
+                $message = (new \Swift_Message())
                     ->setSubject($translator->getMessage('USER_ACCOUNT_FORGET_MAIL_SUBJECT', $context_item->getTitle()))
                     ->setBody($body, 'text/plain')
                     ->setFrom([$emailFrom => $this->_translator->getMessage('SYSTEM_MAIL_MESSAGE', $context_item->getTitle())])

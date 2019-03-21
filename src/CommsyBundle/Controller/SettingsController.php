@@ -59,7 +59,7 @@ class SettingsController extends Controller
             $roomCategories[$roomCategory->getTitle()] = $roomCategory->getId();
         }
         foreach ($roomCategoriesService->getRoomCategoriesLinkedToContext($roomId) as $roomCategory) {
-            $roomData['categories'][] = $roomCategory->getId();
+            $roomData['categories'][] = $roomCategory->getCategoryId();
         }
 
         $form = $this->createForm(GeneralSettingsType::class, $roomData, array(
@@ -464,7 +464,7 @@ class SettingsController extends Controller
 
                 $subject = $translator->trans('invitation subject %portal%', array('%portal%' => $portal->getTitle()));
                 $body = $translator->trans('invitation body %portal% %link% %sender%', array('%portal%' => $portal->getTitle(), '%link%' => $invitationLink, '%sender%' => $user->getFullName()));
-                $mailMessage = \Swift_Message::newInstance()
+                $mailMessage = (new \Swift_Message())
                     ->setSubject($subject)
                     ->setBody($body, 'text/plain')
                     ->setFrom([$fromAddress => $fromSender])

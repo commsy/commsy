@@ -63,13 +63,13 @@
 
 {% block sidebar %}
 
-            {# usernotice #}
+            {# usage notes #}
             {% if roomItem.usageInfoTextForRubric('home') is not empty %}
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-clearfix">
                         <div class="uk-float-right">
-                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-notice', animation: 'uk-animation-fade'}">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-notice'}">
                                 <i class="uk-icon-chevron-up"></i>
                             </a>
                         </div>
@@ -77,7 +77,7 @@
                             {% if roomItem.getUsageInfoHeaderForRubric('home') is not empty %}
                                 {{ roomItem.getUsageInfoHeaderForRubric('home') }}
                             {% else %}
-                                {{ 'Usernotice'|trans({}, "room") }}
+                                {{ 'Usage notes'|trans({}, "room") }}
                             {% endif %}
                         </div>
                     </div>
@@ -93,7 +93,7 @@
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-clearfix">
                         <div class="uk-float-right">
-                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#room-info', animation: 'uk-animation-fade'}">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#room-info'}">
                                 <i class="uk-icon-chevron-up"></i>
                             </a>
                         </div>
@@ -182,7 +182,7 @@
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-clearfix">
                         <div class="uk-float-right">
-                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#list-filter', animation: 'uk-animation-fade'}">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#list-filter'}">
                                 <i class="uk-icon-chevron-up"></i>
                             </a>
                         </div>

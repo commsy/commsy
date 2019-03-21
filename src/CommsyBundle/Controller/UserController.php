@@ -264,7 +264,7 @@ class UserController extends BaseController
                 $formData = $form->getData();
 
                 // manual validation - moderator count check
-                if (in_array($formData['status'], ['user-block', 'user-status-reading-user', 'user-status-user', 'user-confirm'])) {
+                if (in_array($formData['status'], ['user-delete', 'user-block', 'user-status-reading-user', 'user-status-user', 'user-confirm'])) {
                     if (!$this->contextHasModerators($roomId, $formData['userIds'])) {
                         $translator = $this->get('translator');
                         $form->addError(new FormError($translator->trans('no moderators left', [], 'user')));
@@ -273,6 +273,13 @@ class UserController extends BaseController
 
                 if ($form->isSubmitted() && $form->isValid()) {
                     switch ($formData['status']) {
+                        case 'user-delete':
+                            foreach ($users as $user) {
+                                $user->delete();
+                                $user->save();
+                            }
+                            break;
+
                         case 'user-block':
                             foreach ($users as $user) {
                                 $user->setStatus(0);
@@ -341,7 +348,7 @@ class UserController extends BaseController
                     if ($formData['inform_user']) {
                         $this->sendUserInfoMail($formData['userIds'], $formData['status']);
                     }
-                    if($request->query->has('userDetail')) {
+                    if ($request->query->has('userDetail') && $formData['status'] !== 'user-delete') {
                         return $this->redirectToRoute('commsy_user_detail', [
                             'roomId' => $roomId,
                             'itemId' => array_values($request->query->get('userIds'))[0],
@@ -821,7 +828,7 @@ class UserController extends BaseController
                 $sender = [$currentUser->getEmail() => $currentUser->getFullName()];
                 $recipient = [$item->getEmail() => $item->getFullName()];
 
-                $message = \Swift_Message::newInstance()
+                $message = (new \Swift_Message())
                     ->setSubject($formData['subject'])
                     ->setBody($formData['message'], 'text/html')
                     ->setFrom([$from => $portalItem->getTitle()]);
@@ -1029,6 +1036,10 @@ class UserController extends BaseController
             if ($currentPortalUserItem->isModerator()) {
                 $showPortalConfigurationLink = true;
             }
+        } else {
+            if ($currentUserItem->isRoot()) {
+                $showPortalConfigurationLink = true;
+            }
         }
 
         // NOTE: getRelatedPortalUserItem() sets some limits which need to get reset again before feedAction gets called
@@ -1137,7 +1148,7 @@ class UserController extends BaseController
                 $subject = $accountMail->generateSubject($action);
                 $body = $accountMail->generateBody($user, $action);
 
-                $mailMessage = \Swift_Message::newInstance()
+                $mailMessage = (new \Swift_Message())
                     ->setSubject($subject)
                     ->setBody($body, 'text/plain')
                     ->setFrom([$fromAddress => $fromSender])
@@ -1219,7 +1230,7 @@ class UserController extends BaseController
         foreach ($users as $item) {
             $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
             if ($currentUser->isModerator()) {
-                $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'copy', 'save', 'delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
+                $allowedActions[$item->getItemID()] = ['markread', 'sendmail', 'copy', 'save', 'user-delete', 'user-block', 'user-confirm', 'user-status-reading-user', 'user-status-user', 'user-status-moderator', 'user-contact', 'user-contact-remove'];
             } else {
                 $allowedActions[$item->getItemID()] = ['markread', 'sendmail'];
             }
@@ -1312,6 +1323,10 @@ class UserController extends BaseController
 
                 $from = $this->getParameter('commsy.email.from');
 
+                // NOTE: as of #2461 all mail should be sent as BCC mail; but, for now, we keep the original logic here
+                // TODO: refactor all mail sending code so that it is handled by a central class (like `MailAssistant.php`)
+                $forceBCCMail = true;
+
                 $to = [];
                 $toBCC = [];
                 $validator = new EmailValidator();
@@ -1346,23 +1361,33 @@ class UserController extends BaseController
                     }
                 }
 
-                $message = \Swift_Message::newInstance()
+                $message = (new \Swift_Message())
                     ->setSubject($formData['subject'])
                     ->setBody($formData['message'], 'text/html')
                     ->setFrom([$from => $portalItem->getTitle()])
-                    ->setReplyTo($replyTo)
-                    ->setTo($to);
+                    ->setReplyTo($replyTo);
 
-                $recipientCount = count($to);
+                $recipientCount = 0;
 
-                if (!empty($toCC)) {
-                    $message->setCc($toCC);
-                    $recipientCount += count($toCC);
-                }
+                if ($forceBCCMail) {
+                    $allRecipients = array_merge($to, $toCC, $toBCC);
+                    $message->setBcc($allRecipients);
+                    $recipientCount += count($allRecipients);
+                } else {
+                    if (!empty($to)) {
+                        $message->setTo($to);
+                        $recipientCount += count($to);
+                    }
 
-                if (!empty($toBCC)) {
-                    $message->setBcc($toBCC);
-                    $recipientCount += count($toBCC);
+                    if (!empty($toCC)) {
+                        $message->setCc($toCC);
+                        $recipientCount += count($toCC);
+                    }
+
+                    if (!empty($toBCC)) {
+                        $message->setBcc($toBCC);
+                        $recipientCount += count($toBCC);
+                    }
                 }
 
                 $this->addFlash('recipientCount', $recipientCount);
@@ -1432,18 +1457,19 @@ class UserController extends BaseController
         return $action->execute($room, $items);
     }
 
-    /**
-     * @Route("/room/{roomId}/user/xhr/delete", condition="request.isXmlHttpRequest()")
-     * @throws \Exception
-     */
-    public function xhrDeleteAction($roomId, Request $request)
-    {
-        $room = $this->getRoom($roomId);
-        $items = $this->getItemsForActionRequest($room, $request);
-
-        $action = $this->get('commsy.action.delete.generic');
-        return $action->execute($room, $items);
-    }
+    // NOTE: to allow for email notifications on delete, the 'user-delete' action is used instead of the 'delete' action
+//    /**
+//     * @Route("/room/{roomId}/user/xhr/delete", condition="request.isXmlHttpRequest()")
+//     * @throws \Exception
+//     */
+//    public function xhrDeleteAction($roomId, Request $request)
+//    {
+//        $room = $this->getRoom($roomId);
+//        $items = $this->getItemsForActionRequest($room, $request);
+//
+//        $action = $this->get('commsy.action.delete.generic');
+//        return $action->execute($room, $items);
+//    }
 
     /**
      * @param \cs_room_item $room
