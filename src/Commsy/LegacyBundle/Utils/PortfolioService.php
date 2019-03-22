@@ -274,7 +274,7 @@ class PortfolioService
         foreach ($links as $link) {
             if ($link["first_item_type"] === CS_TAG_TYPE) {
                 if (!isset($rubricArray[$link["second_item_type"]])) {
-                    continue;
+                    $rubricArray[$link["second_item_type"]] = [];
                 }
 
                 if (in_array($link["second_item_id"], $rubricArray[$link["second_item_type"]])) {
@@ -284,7 +284,7 @@ class PortfolioService
                 $rubricArray[$link["second_item_type"]][] = $link["second_item_id"];
             } else if($link["second_item_type"] === CS_TAG_TYPE) {
                 if (!isset($rubricArray[$link["first_item_type"]])) {
-                    continue;
+                    $rubricArray[$link["first_item_type"]] = [];
                 }
 
                 if (in_array($link["first_item_id"], $rubricArray[$link["first_item_type"]])) {
