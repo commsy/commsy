@@ -559,7 +559,7 @@ class LegacyMarkup
             $args = $this->parseArgs($array[2]);
         }
 
-        $lecture2GoHTML = '<div class="ckeditor-commsy-video" data-type="l2g"><iframe frameborder="0" src="' . $src . '"';
+        $lecture2GoHTML = '<div class="ckeditor-commsy-video" data-type="l2g"><iframe frameborder="0" allowfullscreen src="' . $src . '"';
 
         if (isset($args['width']) && is_numeric($args['width'])) {
             $lecture2GoHTML .= ' width="' . $args['width'] . '"';
