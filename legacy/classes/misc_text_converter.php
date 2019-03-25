@@ -3545,7 +3545,7 @@ class misc_text_converter {
         $def->addAttribute('object', 'standby', 'Text');
         $def->addAttribute('object', 'commsytype', 'Text');
 
-
+        // Attribute for enlarging iFrames
         $def->addAttribute('iframe', 'allowfullscreen', 'Text');
 
         // Attribute for param
