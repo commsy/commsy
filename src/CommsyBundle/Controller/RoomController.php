@@ -1004,10 +1004,10 @@ class RoomController extends Controller
         if ($currentPortalItem->showTime()) {
             $translator = $this->get('translator');
             $legacyTranslator = $legacyEnvironment->getTranslationObject();
-            foreach ($currentPortalItem->getTimeList()->to_array() as $timeItem) {
+            $times[$translator->trans('continuous', [], 'settings')] = 'cont';
+            foreach ($currentPortalItem->getTimeListRev()->to_array() as $timeItem) {
                 $times[$legacyTranslator->getTimeMessage($timeItem->getName())] = $timeItem->getItemId();
             }
-            $times[$translator->trans('continuous', [], 'settings')] = 'cont';
         }
 
         $current_user = $legacyEnvironment->getCurrentUserItem();
