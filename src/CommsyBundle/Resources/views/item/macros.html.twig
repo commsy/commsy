@@ -48,7 +48,7 @@
             <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
 
                 {# preview #}
-                <div class="toggle-files-{{ item.itemId }} cs-toggle-preview-small">
+                <div class="toggle-files-{{ item.itemId }} cs-toggle-full">
                     {% if fileArray|length > 10 %}
                         <div class="uk-slidenav-position uk-margin-top uk-margin-bottom" data-uk-slider="{infinite: true}">
                             <div class="uk-slider-container">
@@ -77,7 +77,7 @@
 
                                                 <div class="uk-clearfix">
                                                     <div class="cs-align-center" data-uk-tooltip="{pos:'top-left'}" title="{{ file.filename}} ({{ file.fileSize }} kb)">
-                                                        <div class="cs-align-center uk-vertical-align-middle">                        
+                                                        <div class="cs-align-center uk-vertical-align-middle">
                                                             <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId, 'disposition': disposition }) }}" target="_blank"><i class="cs-icon-medium  cs-slider {{ macrosUtils.iconClassForFileType(file.extension) }}"></i></a>
                                                         </div>
                                                     </div>
@@ -367,10 +367,8 @@
                 {% endif %}
 
                 {# toggle action #}
-                <div class="uk-display-inline uk-margin-left uk-invisible{% if content is empty %} cs-always-invisible{% else  %} cs-toggle-icon{% endif %}" data-cs-unhide-collapsed="{src: '.toggle-{{ title }}-{{ item.itemId }}'}">
-                    <a class="cs-toggle" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}', cls: 'cs-toggle-full'}" data-uk-tooltip title="{{ "unhide"|trans({}) }}" data-hide-title="{{ "hide"|trans({}) }}" data-unhide-title="{{ "unhide"|trans({}) }}">
-                        <i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i>
-                    </a>
+                <div class="uk-display-inline uk-margin-left uk-invisible{% if content is empty %} cs-always-invisible {% endif %}">
+                    <div style="height:18px; width:18px;"></div>
                 </div>
             </div>
         </div>
@@ -380,14 +378,9 @@
             <div class="uk-width-9-10">
 
                 {# preview #}
-                <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-preview">
+                <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-full">
                     {{ content|commsyMarkup|raw }}
                 </div>
-
-                <a class="uk-invisible" href="#" data-cs-unhide-collapsed="{src: '.toggle-{{ title }}-{{ item.itemId }}'}" data-cs-readmore>
-                    <span class="cs-readmoreless">{{- "read more"|trans({}) -}}</span>
-                    <span class="cs-readmoreless uk-hidden">{{- "read less"|trans({}) -}}</span>
-                </a>
 
             </div>
         {% endif %}
