@@ -81,7 +81,7 @@ class cs_external_page_portal_view extends cs_page_view
     /** Adds an AGB view.
      * @param object cs_view a commsy view
      */
-    function addAGBView($view)
+    public function addAGBView($view)
     {
         $this->_agb_view = $view;
     }
@@ -430,7 +430,11 @@ HTML;
 
         if (empty($csModus)) {
             if ($loggedIn) {
-                $html .= LF . $this->_getLoggedInContentAsHTML();
+                if (isset($this->_agb_view)) {
+                    $html .= LF . $this->_getAGBViewAsHTML();
+                } else {
+                    $html .= LF . $this->_getLoggedInContentAsHTML();
+                }
             } else {
                 $html .= LF . $this->_getLoginFormAsHTML();
             }
@@ -781,6 +785,24 @@ HTML;
 
         include_once($externalIncludePath . '/cs_password_change_page_agora.php');
         $leftPage = new cs_password_change_page_agora($this->_environment);
+        $html = $leftPage->execute();
+        unset($leftPage);
+
+        return $html;
+    }
+
+
+    /** Get the CommSy "Terms and Conditions" form as HTML.
+     * @return string "Terms and Conditions" form as HTML
+     * @author CommSy Development Group
+     */
+    public function _getAGBViewAsHTML()
+    {
+        $portalID = $this->_environment->getCurrentPortalID();
+        $externalIncludePath = 'external_pages/' . $portalID . '/classes';
+
+        include_once($externalIncludePath . '/cs_terms_and_conditions_page_agora.php');
+        $leftPage = new cs_terms_and_conditions_page_agora($this->_environment);
         $html = $leftPage->execute();
         unset($leftPage);
 
