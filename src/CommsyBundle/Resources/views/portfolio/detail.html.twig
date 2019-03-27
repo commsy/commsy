@@ -137,7 +137,7 @@
                                     {#{  macros.userIconLink(user) }#}
                                 </div>
                                 <div class="uk-width-8-10">
-                                    {{ form_start(annotationForm, {'action': path('commsy_annotation_create', {'roomId': portfolio.contextId, 'itemId': portfolioId, 'firstTagId': firstTag.itemId, 'secondTagId': secondTag.itemId}), 'method': 'POST'}) }}
+                                    {{ form_start(annotationForm, {'action': path('commsy_annotation_create', {'roomId': app.request.attributes.get('roomId'), 'itemId': portfolioId, 'firstTagId': firstTag.itemId, 'secondTagId': secondTag.itemId}), 'method': 'POST'}) }}
                                     <p>
                                         {{ form_label(annotationForm.description) }}
                                     </p>

@@ -82,7 +82,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         $calendarSelection = false;
 
         foreach ($userArray as $user) {
-            if ($user->getContextItem()) {
+            if ($user->getContextItem() && $user->isModerator()) {
                 $contextTitlesArray[$user->getContextId()] = $user->getContextItem()->getTitle();
                 $calendarsArray = array_merge($calendarsArray, $calendarsService->getListCalendars($user->getContextItem()->getItemId()));
 
@@ -245,6 +245,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     function getCalendarObjects($calendarId)
     {
+        if (!$this->userIsModerator($calendarId[0])) {
+            throw new Exception\Forbidden('Permission denied. User does not have moderator status.');
+        }
+
         $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
         $calendarsService = $this->container->get('commsy.calendars_service');
 
@@ -268,7 +272,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     }
 
                     $dateTime = new \DateTime($dateItem->getModificationDate());
-                    $calendarObjectId = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getItemId();
+                    $calendarObjectId = $dateItem->getUid();
+                    if ($calendarObjectId == '') {
+                        $calendarObjectId = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getItemId();
+                    }
                     $result[] = [
                         'id' => $calendarObjectId,
                         'uri' => $calendarObjectId . '.ics',
@@ -331,17 +338,24 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     function getCalendarObject($calendarId, $objectUri)
     {
+        if (!$this->userIsModerator($calendarId[0])) {
+            throw new Exception\Forbidden('Permission denied. User does not have moderator status.');
+        }
+
         if (!is_array($calendarId)) {
             throw new \InvalidArgumentException('The value passed to $calendarId is expected to be an array with a calendarId and an instanceId');
         }
 
-        $dateItem = $this->getDateItemFromObjectUri($objectUri);
+        $dateItem = $this->getDateItemFromObjectUri(str_ireplace('.ics', '', $objectUri));
 
         if ($dateItem) {
             $dateTime = new \DateTime($dateItem->getModificationDate());
 
             $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
-            $calendarObjectId = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getItemId();
+            $calendarObjectId = $dateItem->getUid();
+            if ($calendarObjectId == '') {
+                $calendarObjectId = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getItemId();
+            }
 
             return [
                 'id' => $calendarObjectId,
@@ -431,7 +445,11 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     function createCalendarObject($calendarId, $objectUri, $calendarData)
     {
-        return $this->updateCalendarObject($calendarId, null, $calendarData);
+        if (!$this->userIsModerator($calendarId[0])) {
+            throw new Exception\Forbidden('Permission denied. User does not have moderator status.');
+        }
+
+        return $this->updateCalendarObject($calendarId, $objectUri, $calendarData);
     }
 
     /**
@@ -454,6 +472,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     function updateCalendarObject($calendarId, $objectUri, $calendarData)
     {
+        if (!$this->userIsModerator($calendarId[0])) {
+            throw new Exception\Forbidden('Permission denied. User does not have moderator status.');
+        }
+
         $result = null;
         if ($calendarId[0]) {
             $calendarId = $calendarId[0];
@@ -474,11 +496,21 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     function deleteCalendarObject($calendarId, $objectUri)
     {
+        if (!$this->userIsModerator($calendarId[0])) {
+            throw new Exception\Forbidden('Permission denied. User does not have moderator status.');
+        }
+
         $dateItem = $this->getDateItemFromObjectUri($objectUri);
         if ($dateItem) {
             // ToDo: handle recurring events. Deleted CommSy items need to be stored to work as exclusions from the series.
-            $dateItem->delete();
-            $this->addChange($calendarId, $objectUri, 3);
+            $user = $this->getUserFromPortal($this->userId, $dateItem->getContextId());
+            if (!$dateItem->mayEdit($user)) {
+                $this->addChange($calendarId, $objectUri, 3);
+                throw new Exception\Forbidden('Permission denied to edit date');
+            } else {
+                $dateItem->delete();
+                $this->addChange($calendarId, $objectUri, 3);
+            }
         }
     }
 
@@ -539,6 +571,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     function calendarQuery($calendarId, array $filters)
     {
+        if (!$this->userIsModerator($calendarId[0])) {
+            throw new Exception\Forbidden('Permission denied. User does not have moderator status.');
+        }
+
         $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
         $calendarsService = $this->container->get('commsy.calendars_service');
 
@@ -553,7 +589,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
 
             $result = [];
             foreach ($datesArray as $dateItem) {
-                $calendarObjectId = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getItemId();
+                $calendarObjectId = $dateItem->getUid();
+                if ($calendarObjectId == '') {
+                    $calendarObjectId = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getItemId();
+                }
 
                 $result[] = $calendarObjectId . '.ics';
             }
@@ -575,6 +614,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
      */
     protected function addChange($calendarId, $objectUri, $operation)
     {
+        if (!$this->userIsModerator($calendarId[0])) {
+            throw new Exception\Forbidden('Permission denied. User does not have moderator status.');
+        }
+
         if (is_array($calendarId)) {
             if (isset($calendarId[0])) {
                 $calendarId = $calendarId[0];
@@ -594,7 +637,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
 
         $uid = str_ireplace('.ics', '', $objectUri);
         if ($dateItem->getRecurrenceId() != '') {
-            $uid = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getRecurrenceId();
+            $uid = $dateItem->getUid();
+            if ($uid == '') {
+                $uid = $legacyEnvironment->getCurrentPortalId() . '-' . $dateItem->getContextId() . '-' . $dateItem->getItemId();
+            }
         }
 
         $dateTimeStart = new \DateTime($dateItem->getDateTime_start());
@@ -611,6 +657,13 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             }
             $dateTimeEndString = $dateTimeEnd->format('Ymd');
         }
+
+        $class = $dateItem->isPublic() ? 'PUBLIC' : 'PRIVATE';
+        $user = $this->getUserFromPortal($this->userId, $dateItem->getContextId());
+        if ($dateItem->mayEdit($user)) {
+            $class = 'PUBLIC';
+        }
+
         $eventDataArray = [
             'SUMMARY' => $dateItem->getTitle(),
             'DTSTART' => $dateTimeStartString,
@@ -618,8 +671,9 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             'UID' => $uid,
             'LOCATION' => $dateItem->getPlace(),
             'DESCRIPTION' => $dateItem->getDescription(),
-            'CLASS' => ($dateItem->isPublic() ? 'PUBLIC' : 'PRIVATE'),
+            'CLASS' => $class,
             'X-COMMSY-ITEM-ID' => $dateItem->getItemId(),
+            'X-COMMSY-CALENDAR-ID' => $dateItem->getCalendarId(),
         ];
 
         $recurringSubEvents = [];
@@ -727,8 +781,10 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         return $userList->getFirst();
     }
 
-    private function getDateItemFromObjectUri($objectUri)
+    private function getDateItemFromObjectUri($objectUri, $calendarId = null, $roomId = null)
     {
+        $dateService = $this->container->get('commsy_legacy.date_service');
+
         $objectUriArray = explode('-', $objectUri);
 
         $legacyEnvironment = $this->container->get('commsy_legacy.environment')->getEnvironment();
@@ -737,6 +793,8 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         if (isset($objectUriArray[2])) {
             if ($datesManager->existsItem($objectUriArray[2])) {
                 return $datesManager->getItem($objectUriArray[2]);
+            } else if ($date = $dateService->getDateByUid($objectUri, $calendarId, $roomId)) {
+                return $date;
             }
         }
 
@@ -754,15 +812,15 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
 
         // Use expanded calendar, to work with all dates.
         // CommSy itself does not have to do the calculations.
-        $expandDateTimeStart = new \DateTime();
-        $expandDateTimeStart->modify('-2 years');
-        $expandDateTimeEnd = new \DateTime();
-        $expandDateTimeEnd->modify('+2 years');
+        //$expandDateTimeStart = new \DateTime();
+        //$expandDateTimeStart->modify('-2 years');
+        //$expandDateTimeEnd = new \DateTime();
+        //$expandDateTimeEnd->modify('+2 years');
         /* if ($dateItem) {
             $expandDateTimeStart = new \DateTime($dateItem->getDateTime_start());
             $expandDateTimeEnd = new \DateTime($dateItem->getDateTime_end());
         } */
-        $calendarReadExpanded = $calendarRead->expand($expandDateTimeStart, $expandDateTimeEnd);
+        //$calendarReadExpanded = $calendarRead->expand($expandDateTimeStart, $expandDateTimeEnd);
 
         global $symfonyContainer;
         $commsyTimeZone = new \DateTimeZone($symfonyContainer->getParameter('commsy.dates.timezone'));
@@ -775,7 +833,7 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
         $utcDateTime = new \DateTime($utcDateTime->format('Y-m-d H:i:s'));
         $timeZoneDiff = $commsyDateTime->diff($utcDateTime);
 
-        $recurrenceCount = null;
+        /* $recurrenceCount = null;
         $recurrencePattern = null;
         $recurrenceEndDateTime = null;
         if ($calendarRead->VEVENT->RRULE) {
@@ -812,20 +870,26 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
 
             }
             $recurrencePattern = $this->translateRecurringPattern($calendarRead->VEVENT->RRULE, 'iCal', $calendarRead->VEVENT->DTSTART->getDateTime(), $recurrenceEndDateTime);
-        }
+        } */
 
         $newItem = false;
         $recurrenceId = null;
 
         // insert new data into database
-        $calendarReadExpandedChildren = $calendarReadExpanded->children();
+        //$calendarReadExpandedChildren = $calendarReadExpanded->children();
         $counter = 0;
-        foreach ($calendarReadExpandedChildren as $event) {
-            if ($event->name == 'VEVENT' && (!$recurrenceCount || $counter < $recurrenceCount)) {
+        foreach ($calendarRead->children() as $event) {
+            if ($event->name == 'VEVENT') { // && (!$recurrenceCount || $counter < $recurrenceCount)) {
                 if ($event->{'X-COMMSY-ITEM-ID'}) {
                     $dateItem = $dateService->getDate($event->{'X-COMMSY-ITEM-ID'}->getValue());
                 } else if ($objectUri) {
-                    $dateItem = $this->getDateItemFromObjectUri($objectUri);
+                    $dateItem = $this->getDateItemFromObjectUri(str_ireplace('.ics', '', $objectUri), $calendarId, $calendar->getContextId());
+                    if (!$dateItem) {
+                        $newItem = true;
+                        $dateItem = $dateService->getNewDate();
+                        $dateItem->setContextId($calendar->getContextId());
+                        $dateItem->setUid(str_ireplace('.ics', '', $objectUri));
+                    }
                 } else {
                     $newItem = true;
                     $dateItem = $dateService->getNewDate();
@@ -896,7 +960,8 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                 if ($calendar) {
                     $user = $this->getUserFromPortal($this->userId, $dateItem->getContextId());
                     if ($user->getContextId() == $dateItem->getContextId()) {
-                        if (!$dateItem->mayEdit($user)) {
+                        if (!$dateItem->mayEdit($user) && !$newItem) {
+                            $this->addChange($calendarId, $objectUri, 3);
                             throw new Exception\Forbidden('Permission denied to edit date');
                         }
                     }
@@ -937,19 +1002,20 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
                     }
 
                     $dateItem->save();
-                    if ($newItem && !$recurrenceId) {
-                        $recurrenceId = $dateItem->getItemId();
-                    }
 
-                    if ($event->{'RECURRENCE-ID'} && $recurrenceId) {
+                    /* if ($newItem && !$recurrenceId) {
+                        $recurrenceId = $dateItem->getItemId();
+                    } */
+
+                    /* if ($event->{'RECURRENCE-ID'} && $recurrenceId) {
                         if ($newItem) {
                             $dateItem->setRecurrencePattern($recurrencePattern);
                         }
                         $dateItem->setRecurrenceId($recurrenceId);
                         $dateItem->save();
-                    }
+                    } */
                 }
-                $counter++;
+                //$counter++;
             }
         }
     }
@@ -1209,5 +1275,12 @@ class CalendarPDO extends \Sabre\CalDAV\Backend\AbstractBackend
             }
         }
         return $result;
+    }
+
+    private function userIsModerator ($calendarId) {
+        $calendarsService = $this->container->get('commsy.calendars_service');
+        $calendars = $calendarsService->getCalendar($calendarId);
+        $user = $this->getUserFromPortal($this->userId, $calendars[0]->getContextId());
+        return $user->isModerator();
     }
 }

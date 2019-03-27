@@ -87,6 +87,7 @@ class ContextType extends AbstractType
                 ),
                 'label' => 'cancel',
                 'translation_domain' => 'form',
+                'validation_groups' => false,
             ));
     }
 
