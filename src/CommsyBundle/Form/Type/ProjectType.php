@@ -54,6 +54,7 @@ class ProjectType extends AbstractType
                     'placeholder' => 'Room description...',
                 ],
                 'required' => false,
+                'translation_domain' => 'room',
             ])
             ->add('save', SubmitType::class, [
                 'attr' => [
