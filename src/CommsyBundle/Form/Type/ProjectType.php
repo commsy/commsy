@@ -47,6 +47,15 @@ class ProjectType extends AbstractType
                     'style' => 'display: none;',
                 ]
             ])
+            ->add('language', ChoiceType::class, array(
+                'placeholder' => false,
+                'choices' => ['de' => 'de', 'en' => 'en'],
+                'label' => 'language',
+                'required' => true,
+                'expanded' => false,
+                'multiple' => false,
+                'translation_domain' => 'room',
+            ))
             ->add('room_description', TextareaType::class, [
                 'attr' => [
                     'rows' => 10,

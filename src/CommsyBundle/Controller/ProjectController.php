@@ -209,6 +209,7 @@ class ProjectController extends Controller
                 // fill in form values from the new entity object
                 $legacyRoom->setTitle($room->getTitle());
                 $legacyRoom->setDescription($room->getRoomDescription());
+                $legacyRoom->setLanguage($room->getLanguage());
 
                 // persist with legacy code
                 $legacyRoom->save();
