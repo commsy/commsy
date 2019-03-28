@@ -61,7 +61,15 @@ class ProjectType extends AbstractType
                 ],
                 'label' => 'save',
                 'translation_domain' => 'form',
-            ]);
+            ])
+            ->add('cancel', SubmitType::class, array(
+                'attr' => array(
+                    'formnovalidate' => '',
+                ),
+                'label' => 'cancel',
+                'translation_domain' => 'form',
+                'validation_groups' => false,
+            ));
     }
 
     /**

@@ -189,51 +189,57 @@ class ProjectController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // create a new room using the legacy code
-            $roomService = $this->get('commsy_legacy.room_service');
-            $communityRoom = $roomService->getRoomItem($roomId);
+            if ($form->get('save')->isClicked()) {
+                // create a new room using the legacy code
+                $roomService = $this->get('commsy_legacy.room_service');
+                $communityRoom = $roomService->getRoomItem($roomId);
 
-            $projectManager = $legacyEnvironment->getProjectManager();
-            $legacyRoom = $projectManager->getNewItem();
+                $projectManager = $legacyEnvironment->getProjectManager();
+                $legacyRoom = $projectManager->getNewItem();
 
-            $currentUser = $legacyEnvironment->getCurrentUserItem();
-            $legacyRoom->setCreatorItem($currentUser);
-            $legacyRoom->setCreationDate(getCurrentDateTimeInMySQL());
-            $legacyRoom->setModificatorItem($currentUser);
-            $legacyRoom->setContextID($legacyEnvironment->getCurrentPortalID());
-            $legacyRoom->open();
-            $legacyRoom->setRoomContext($communityRoom->getRoomContext());
-            $legacyRoom->setCommunityListByID([$roomId]);
+                $currentUser = $legacyEnvironment->getCurrentUserItem();
+                $legacyRoom->setCreatorItem($currentUser);
+                $legacyRoom->setCreationDate(getCurrentDateTimeInMySQL());
+                $legacyRoom->setModificatorItem($currentUser);
+                $legacyRoom->setContextID($legacyEnvironment->getCurrentPortalID());
+                $legacyRoom->open();
+                $legacyRoom->setRoomContext($communityRoom->getRoomContext());
+                $legacyRoom->setCommunityListByID([$roomId]);
 
-            // fill in form values from the new entity object
-            $legacyRoom->setTitle($room->getTitle());
-            $legacyRoom->setDescription($room->getRoomDescription());
+                // fill in form values from the new entity object
+                $legacyRoom->setTitle($room->getTitle());
+                $legacyRoom->setDescription($room->getRoomDescription());
 
-            // persist with legacy code
-            $legacyRoom->save();
+                // persist with legacy code
+                $legacyRoom->save();
 
-            $calendarsService = $this->get('commsy.calendars_service');
-            $calendarsService->createCalendar($legacyRoom, null, null, true);
+                $calendarsService = $this->get('commsy.calendars_service');
+                $calendarsService->createCalendar($legacyRoom, null, null, true);
 
-            // take values from a template?
-            if ($form->has('master_template')) {
-                $masterTemplate = $form->get('master_template')->getData();
+                // take values from a template?
+                if ($form->has('master_template')) {
+                    $masterTemplate = $form->get('master_template')->getData();
 
-                $masterRoom = $this->get('commsy_legacy.room_service')->getRoomItem($masterTemplate);
-                if ($masterRoom) {
-                    $legacyRoom = $this->copySettings($masterRoom, $legacyRoom);
+                    $masterRoom = $this->get('commsy_legacy.room_service')->getRoomItem($masterTemplate);
+                    if ($masterRoom) {
+                        $legacyRoom = $this->copySettings($masterRoom, $legacyRoom);
+                    }
                 }
+
+                // mark the room as edited
+                $linkModifierItemManager = $legacyEnvironment->getLinkModifierItemManager();
+                $linkModifierItemManager->markEdited($legacyRoom->getItemID());
+
+                // redirect to the project detail page
+                return $this->redirectToRoute('commsy_project_detail', [
+                    'roomId' => $roomId,
+                    'itemId' => $legacyRoom->getItemId(),
+                ]);
+            } else {
+                return $this->redirectToRoute('commsy_project_list', [
+                    'roomId' => $roomId,
+                ]);
             }
-
-            // mark the room as edited
-            $linkModifierItemManager = $legacyEnvironment->getLinkModifierItemManager();
-            $linkModifierItemManager->markEdited($legacyRoom->getItemID());
-
-            // redirect to the project detail page
-            return $this->redirectToRoute('commsy_project_detail', [
-                'roomId' => $roomId,
-                'itemId' => $legacyRoom->getItemId(),
-            ]);
         }
 
         return [
