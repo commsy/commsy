@@ -164,7 +164,7 @@
             </trans-unit>
             <trans-unit id="is applying">
                 <source>is applying</source>
-                <target>is applying</target>
+                <target>Is applying</target>
             </trans-unit>
             <trans-unit id="is blocked">
                 <source>is blocked</source>
@@ -241,6 +241,10 @@
             <trans-unit id="quick_action_reject">
                 <source>Reject</source>
                 <target>Reject</target>
+            </trans-unit>
+            <trans-unit id="manage_user">
+                <source>Manage user</source>
+                <target>Manage user</target>
             </trans-unit>
             <trans-unit id="manage_users">
                 <source>Manage users</source>

@@ -254,8 +254,8 @@
                 <source>Edit</source>
                 <target>Nur durch ModeratorInnen bearbeitbar</target>
             </trans-unit>
-            <trans-unit id="structuralauxilaries">
-                <source>Structural auxilaries</source>
+            <trans-unit id="structural-auxiliaries">
+                <source>Structural auxiliaries</source>
                 <target>Strukturierungshilfen</target>
             </trans-unit>
             <trans-unit id="archiveroom">
@@ -466,8 +466,8 @@
                 <source>Homenotice</source>
                 <target>Hinweistext auf der Einstiegsseite</target>
             </trans-unit>
-            <trans-unit id="usernotice">
-                <source>Usernotice</source>
+            <trans-unit id="usage-notes">
+                <source>Usage notes</source>
                 <target>Nutzungshinweise</target>
             </trans-unit>
             <trans-unit id="email_configuration">
@@ -479,7 +479,7 @@
                 <target>Sie können ein Material, eine Aufgabe, einen Termin oder eine Ankündigung als prominenten Hinweistext auf der Einstiegsseite anzeigen. Bitte geben Sie die Referenznummer des gewünschten Eintrags ein. Die Referenznummer finden Sie unterhalb eines Titels eines Eintrags, indem Sie auf das Pfeil-Icon (rechts neben "Bearbeiten") klicken.</target>
             </trans-unit>
             <trans-unit id="usernotice_text">
-                <source>Usernotice text</source>
+                <source>Usage notes text</source>
                 <target>Wählen Sie die Rubriken, in denen Sie Hinweise platzieren möchten.</target>
             </trans-unit>
             <trans-unit id="email_configuration_text">
@@ -711,11 +711,11 @@
             </trans-unit>
             <trans-unit id="users_can_edit_calendars">
                 <source>users_can_edit_calendars</source>
-                <target>Nutzer können Kalender bearbeiten</target>
+                <target>BenutzerInnen können Kalender bearbeiten</target>
             </trans-unit>
             <trans-unit id="users_can_set_external_calendars_url">
                 <source>users_can_set_external_calendars_url</source>
-                <target>Nutzer können Adressen für externe Kalender bearbeiten</target>
+                <target>BenutzerInnen können Adressen für externe Kalender bearbeiten</target>
             </trans-unit>
             <trans-unit id="rss_enabled">
                 <source>rss_enabled</source>

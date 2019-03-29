@@ -18,36 +18,34 @@
     <div class="uk-grid uk-grid-match" data-uk-grid-margin>
 
         {# announcements #}
-        {% if portal.showServerNews or server.showServerNews %}
-            {% if portal.showServerNews %}
-                <div class="{% if portal.showServerNews and server.showServerNews %}uk-width-1-2{% else %}uk-width-1-1{% endif %}">
-                    <div class="uk-alert uk-alert-warning" style="border: 1px solid rgba(226,131,39,.3)" data-uk-alert>
-                        {#<a class="uk-alert-close uk-close" href=""></a>#}
-                        <h2 class="uk-article-title">{{ portal.serverNewsTitle }}</h2>
-                        <p>
-                            {{ portal.serverNewsText|raw }}
-                        </p>
-                        <p>
-                            <a href="{{ portal.serverNewsLink }}">{{ portal.serverNewsLink }}</a>
-                        </p>
-                    </div>
+        {% if portal.showServerNews %}
+            <div class="{% if portal.showServerNews and portal.showNewsFromServer %}uk-width-1-2{% else %}uk-width-1-1{% endif %}">
+                <div class="uk-alert uk-alert-warning" style="border: 1px solid rgba(226,131,39,.3)" data-uk-alert>
+                    {#<a class="uk-alert-close uk-close" href=""></a>#}
+                    <h2 class="uk-article-title">{{ portal.serverNewsTitle }}</h2>
+                    <p>
+                        {{ portal.serverNewsText|raw }}
+                    </p>
+                    <p>
+                        <a href="{{ portal.serverNewsLink }}">{{ portal.serverNewsLink }}</a>
+                    </p>
                 </div>
-            {% endif %}
+            </div>
+        {% endif %}
 
-            {% if server.showServerNews %}
-                <div class="{% if portal.showServerNews and server.showServerNews %}uk-width-1-2{% else %}uk-width-1-1{% endif %}">
-                    <div class="uk-alert uk-alert-warning" style="border: 1px solid rgba(226,131,39,.3)" data-uk-alert>
-                        {#<a class="uk-alert-close uk-close" href=""></a>#}
-                        <h2 class="uk-article-title">{{ server.serverNewsTitle }}</h2>
-                        <p>
-                            {{ server.serverNewsText|raw }}
-                        </p>
-                        <p>
-                            <a href="{{ server.serverNewsLink }}">{{ server.serverNewsLink }}</a>
-                        </p>
-                    </div>
+        {% if portal.showNewsFromServer %}
+            <div class="{% if portal.showServerNews and portal.showNewsFromServer %}uk-width-1-2{% else %}uk-width-1-1{% endif %}">
+                <div class="uk-alert uk-alert-warning" style="border: 1px solid rgba(226,131,39,.3)" data-uk-alert>
+                    {#<a class="uk-alert-close uk-close" href=""></a>#}
+                    <h2 class="uk-article-title">{{ server.serverNewsTitle }}</h2>
+                    <p>
+                        {{ server.serverNewsText|raw }}
+                    </p>
+                    <p>
+                        <a href="{{ server.serverNewsLink }}">{{ server.serverNewsLink }}</a>
+                    </p>
                 </div>
-            {% endif %}
+            </div>
         {% endif %}
 
         {# right column #}
@@ -58,7 +56,7 @@
 
         {# left column #}
         <div class="uk-width-medium-1-2 uk-pull-1-2 uk-row-first">
-            {{ macros.dashboardAllRooms(roomItem) }}
+            {{ macros.dashboardAllRooms(roomItem, userMayCreateContext) }}
             {{ macros.dashboardFeed(roomItem) }}
         </div>
     </div>

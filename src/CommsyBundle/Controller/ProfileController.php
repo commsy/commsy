@@ -780,7 +780,9 @@ class ProfileController extends Controller
         $userContextIds = [];
         foreach ($relatedUsers as $relatedUser) {
             /** @var \cs_user_item $relatedUser */
-            $userContextIds[] = $relatedUser->getContextID();
+            if ($relatedUser->isModerator()) {
+                $userContextIds[] = $relatedUser->getContextID();
+            }
         }
 
         /** @noinspection PhpUndefinedMethodInspection */

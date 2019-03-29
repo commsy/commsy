@@ -17,7 +17,7 @@
             </trans-unit>
             <trans-unit id="todo">
                 <source>todo</source>
-                <target>Todo</target>
+                <target>Todos</target>
             </trans-unit>
             <trans-unit id="date">
                 <source>date</source>
@@ -29,7 +29,7 @@
             </trans-unit>
             <trans-unit id="user">
                 <source>user</source>
-                <target>User</target>
+                <target>Users</target>
             </trans-unit>
             <trans-unit id="group">
                 <source>group</source>

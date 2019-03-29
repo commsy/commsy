@@ -197,7 +197,7 @@ class ContextController extends Controller
                     }
 
                     // mail to moderators
-                    $message = \Swift_Message::newInstance()
+                    $message = (new \Swift_Message())
                         ->setFrom([$this->getParameter('commsy.email.from') => $roomItem->getContextItem()->getTitle()])
                         ->setReplyTo([$newUser->getEmail() => $newUser->getFullName()]);
 
@@ -349,7 +349,7 @@ class ContextController extends Controller
                         'roomId' => $roomItem->getItemID(),
                     ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-                    $message = \Swift_Message::newInstance()
+                    $message = (new \Swift_Message())
                         ->setSubject($subject)
                         ->setBody($body, 'text/plain')
                         ->setFrom([$this->getParameter('commsy.email.from') => $roomItem->getContextItem()->getTitle()])

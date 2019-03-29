@@ -17,31 +17,35 @@
                 <div class="uk-panel-teaser cs-panel-teaser-primary cs-remove-overflow">
                     <div class="uk-grid">
                         <div class="uk-flex-inline uk-width-2-5 ">
+                            <div class="uk-text-large">
+                                {% if item.isProjectRoom %}
+                                    {{ 'project'|trans([], 'room') }}
+                                {% elseif item.isGroupRoom %}
+                                    {{ 'Group room'|trans([], 'room') }}
+                                {% else %}
+                                    {{ 'community'|trans([], 'room') }}
+                                {% endif %}
+                            </div>
                         </div>
                         
                         {# actions #}
                         <div class="uk-width-3-5 uk-text-right">
-                            <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-                                <button class="uk-button uk-button-mini cs-button-list">{{ 'selected entries'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
-                                <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
-                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
-                                        {% if is_granted('ITEM_EDIT', 'NEW') %}
-                                            <li>
-                                                <a href="{{ path('commsy_room_create', {'roomId': roomId}) }}">
-                                                    <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
-                                                </a>
-                                            </li>
-                                        {% endif %}
-                                        {% if userMayCreateContext %}
+                            {% if showRoomModerationActions %}
+                                <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+                                    <button class="uk-button uk-button-mini">{{ 'selected entries'|trans({},'rubric')|capitalize }}
+                                        <i class="uk-icon-caret-down"></i></button>
+                                    <div id="cs-entry-navigation"
+                                         class="uk-padding-remove uk-dropdown uk-dropdown-small">
+                                        <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
                                             <li>
                                                 <a href="/?cid={{ portalId }}&mod=home&fct=index&room_id={{ item.itemId }}">
-                                                    <i class="uk-icon-justify uk-icon-small uk-icon-wrench"></i> {{ 'moderation actions'|trans({}, 'room')}}
+                                                    <i class="uk-icon-justify uk-icon-small uk-icon-wrench"></i> {{ 'moderation actions'|trans({}, 'room') }}
                                                 </a>
                                             </li>
-                                        {% endif %}
-                                    </ul>
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -62,7 +66,7 @@
                     <div id="description{{ project.itemId }}" class="cs-toggle" data-uk-observe>
                         <hr class="uk-width-9-10"/>
 
-                        {{ macrosRoom.access(project, roomId, memberStatus) }}
+                        {{ macrosRoom.access(project, roomId, memberStatus, contactModeratorItems) }}
                     </div>
                 </article>
             </div>

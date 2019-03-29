@@ -302,10 +302,15 @@ class UserService
         $this->userManager->setStatusLimit($status);
     }
 
+    /**
+     * @param $room
+     * @param \cs_user_item $currentUser
+     * @return string
+     */
     public function getMemberStatus($room, $currentUser)
     {
         /**
-         * States: enter, join, locked, request, requested, rejected
+         * States: enter, join, locked, request, requested, rejected, forbidden
          */
 
         if ($currentUser->isRoot()) {
@@ -320,6 +325,7 @@ class UserService
             $roomUser = $roomUserList->getFirst();
 
             if ($roomUser) {
+
                 if ($room->mayEnter($roomUser)) {
                     return 'enter';
                 }
@@ -334,6 +340,11 @@ class UserService
 
                 if ($roomUser->isRejected()) {
                     return 'rejected';
+                }
+            } else {
+                // in case of the guest user, $roomUser is null
+                if ($currentUser->isReallyGuest()) {
+                    return 'forbidden';
                 }
             }
         }

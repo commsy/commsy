@@ -142,6 +142,9 @@ class ProjectController extends Controller
 
         $memberStatus = $userService->getMemberStatus($roomItem, $currentUser);
 
+        $roomService = $this->get('commsy_legacy.room_service');
+        $contactModeratorItems = $roomService->getContactModeratorItems($itemId);
+
         $markupService = $this->get('commsy_legacy.markup');
         $itemService = $this->get('commsy_legacy.item_service');
         $markupService->addFiles($itemService->getItemFileList($itemId));
@@ -155,6 +158,7 @@ class ProjectController extends Controller
             'readCount' => $infoArray['readCount'],
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'memberStatus' => $memberStatus,
+            'contactModeratorItems' => $contactModeratorItems,
         ];
     }
 
@@ -172,14 +176,14 @@ class ProjectController extends Controller
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
         $defaultId = $legacyEnvironment->getCurrentPortalItem()->getDefaultProjectTemplateID();
-        $defaultId = ($defaultId === '-1') ? [] : $defaultId;
+        $defaultTemplateIDs = ($defaultId === '-1') ? [] : [ $defaultId ];
 
         $room = new Room();
         $templates = $this->getAvailableTemplates();
         $form = $this->createForm(ProjectType::class, $room, [
             'templates' => array_flip($templates['titles']),
             'descriptions' => $templates['descriptions'],
-            'preferredChoices' => $defaultId,
+            'preferredChoices' => $defaultTemplateIDs,
         ]);
 
         $form->handleRequest($request);
@@ -386,7 +390,7 @@ class ProjectController extends Controller
         return $targetRoom;
     }
 
-    private function getAvailableTemplates()
+    private function getAvailableTemplates($type = 'project')
     {
         $templates = [];
 
@@ -456,6 +460,10 @@ class ProjectController extends Controller
                     if ($template->isModeratorByUserID($currentUserItem->getUserID(), $currentUserItem->getAuthSource())) {
                         $add = true;
                     }
+                }
+
+                if ($type != $template->getItemType()) {
+                    $add = false;
                 }
 
                 if ($add) {

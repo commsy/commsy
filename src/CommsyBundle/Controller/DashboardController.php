@@ -93,6 +93,23 @@ class DashboardController extends Controller
         $portalItem = $legacyEnvironment->getCurrentPortalItem();
         $serverItem = $legacyEnvironment->getServerItem();
 
+        // given the current portal configuration, is the current user allowed to create new rooms?
+        $userMayCreateContext = false;
+        $currentUser = $legacyEnvironment->getCurrentUser();
+        if (!$currentUser->isRoot()) {
+            $portalUser = $currentUser->getRelatedPortalUserItem();
+
+            if ($portalUser) {
+                if ($portalUser->isModerator()) {
+                    $userMayCreateContext = true;
+                } else if ($portalItem->getCommunityRoomCreationStatus() == 'all' || $portalItem->getProjectRoomCreationStatus() == 'portal') {
+                    $userMayCreateContext = $currentUser->isAllowedToCreateContext();
+                }
+            }
+        } else {
+            $userMayCreateContext = true;
+        }
+
         return array(
             'roomItem' => $roomItem,
             'dashboardLayout' => $roomItem->getDashboardLayout(),
@@ -101,6 +118,7 @@ class DashboardController extends Controller
             'contextArray' => $contextArray,
             'portal' => $portalItem,
             'server' => $serverItem,
+            'userMayCreateContext' => $userMayCreateContext,
         );
     }
 

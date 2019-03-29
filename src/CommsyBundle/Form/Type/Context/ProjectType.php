@@ -1,6 +1,7 @@
 <?php
 namespace CommsyBundle\Form\Type\Context;
 
+use CommsyBundle\Form\Type\Custom\Select2ChoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -20,26 +21,30 @@ class ProjectType extends AbstractType
     {
         $translationDomain = 'form';
 
+        // NOTE: opposed to the Type/ProjectType.php form, the `data` option somehow won't preselect
+        // any default template that's defined in `preferredChoices`, maybe due to this form being
+        // added as 'type_sub' in `AddContextFieldListener`? However, `empty_data` will work here.
         $builder->add('master_template', ChoiceType::class, [
                 'choices' => $options['templates'],
                 'preferred_choices' => $options['preferredChoices'],
-                'placeholder' => 'Choose a template',
+                'placeholder' => 'No template',
                 'required' => false,
                 'mapped' => false,
                 'label' => 'Template',
+                'empty_data' => (!empty($options['preferredChoices'])) ? $options['preferredChoices'][0] : '',
             ]);
         if (!empty($options['times'])) {
-            $builder->add('time_interval', ChoiceType::class, [
+            $builder->add('time_interval', Select2ChoiceType::class, [
                 'choices' => $options['times'],
                 'required' => false,
                 'mapped' => false,
-                'expanded' => true,
+                'expanded' => false,
                 'multiple' => true,
                 'label' => $options['timesDisplay'],
                 'translation_domain' => 'room',
             ]);
         }
-        $builder->add('community_rooms', ChoiceType::class, [
+        $builder->add('community_rooms', Select2ChoiceType::class, [
                 'choices' => $options['communities'],
                 'required' => $options['linkCommunitiesMandantory'],
                 'mapped' => false,

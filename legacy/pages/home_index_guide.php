@@ -511,7 +511,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
 
                 $emailFrom = $symfonyContainer->getParameter('commsy.email.from');
 
-                $message = \Swift_Message::newInstance()
+                $message = (new \Swift_Message())
                     ->setSubject($subject)
                     ->setBody($body, 'text/plain')
                     ->setFrom([$emailFrom => $room_item->getTitle()])
@@ -564,7 +564,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
 
                 $fromName = $translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle());
 
-                $message = \Swift_Message::newInstance()
+                $message = (new \Swift_Message())
                     ->setSubject($subject)
                     ->setBody($body, 'text/plain')
                     ->setFrom([$emailFrom => $fromName])

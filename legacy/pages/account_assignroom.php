@@ -279,7 +279,7 @@ if ( empty($command)) {
 
    						$emailFrom = $symfonyContainer->getParameter('commsy.email.from');
 
-   						$message = \Swift_Message::newInstance()
+   						$message = (new \Swift_Message())
    							->setSubject($subject)
    							->setBody($body, 'text/plain')
    							->setFrom([$emailFrom => $environment->getCurrentPortalItem()->getTitle()])

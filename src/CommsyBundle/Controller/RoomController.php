@@ -288,7 +288,7 @@ class RoomController extends Controller
                 $moderatorUserItem = $moderatorList->getNext();
             }
             
-            $message = \Swift_Message::newInstance()
+            $message = (new \Swift_Message())
                 ->setSubject($data['subject'])
                 ->setFrom(array($currentUser->getEmail() => $currentUser->getFullname()))
                 ->setTo($moderatorEmailAdresses)
@@ -588,22 +588,19 @@ class RoomController extends Controller
 
         $memberStatus = $userService->getMemberStatus($roomItem, $currentUser);
 
-        $userMayCreateContext = false;
-        $currentUser = $legacyEnvironment->getCurrentUser();
-        $portalItem = $legacyEnvironment->getCurrentPortalItem();
-        if (!$currentUser->isRoot()) {
-            $portalUser = $currentUser->getRelatedPortalUserItem();
-
-            if ($portalUser) {
-                if ($portalUser->isModerator()) {
-                    $userMayCreateContext = true;
-                } else if ($portalItem->getCommunityRoomCreationStatus() == 'all' || $portalItem->getProjectRoomCreationStatus() == 'portal') {
-                    $userMayCreateContext = $currentUser->isAllowedToCreateContext();
-                }
-            }
+        $showRoomModerationActions = false;
+        $roomUser = $currentUser->getRelatedUserItemInContext($itemId);
+        if ($currentUser->isRoot() || (isset($roomUser) && $roomUser->isModerator())) {
+            $showRoomModerationActions = true;
         } else {
-            $userMayCreateContext = true;
+            $portalUser = $currentUser->getRelatedPortalUserItem();
+            if ($portalUser && $portalUser->isModerator()) {
+                $showRoomModerationActions = true;
+            }
         }
+
+        $roomService = $this->get('commsy_legacy.room_service');
+        $contactModeratorItems = $roomService->getContactModeratorItems($itemId);
 
         $markupService = $this->get('commsy_legacy.markup');
         $itemService = $this->get('commsy_legacy.item_service');
@@ -618,7 +615,8 @@ class RoomController extends Controller
             'readCount' => $infoArray['readCount'],
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
             'memberStatus' => $memberStatus,
-            'userMayCreateContext' => $userMayCreateContext,
+            'contactModeratorItems' => $contactModeratorItems,
+            'showRoomModerationActions' => $showRoomModerationActions,
             'portalId' => $legacyEnvironment->getCurrentPortalItem()->getItemId(),
         ];
     }
@@ -793,7 +791,7 @@ class RoomController extends Controller
                     }
 
                     // mail to moderators
-                    $message = \Swift_Message::newInstance()
+                    $message = (new \Swift_Message())
                         ->setFrom([$this->getParameter('commsy.email.from') => $roomItem->getContextItem()->getTitle()])
                         ->setReplyTo([$newUser->getEmail() => $newUser->getFullName()]);
 
@@ -931,7 +929,7 @@ class RoomController extends Controller
                         'roomId' => $roomItem->getItemID(),
                     ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-                    $message = \Swift_Message::newInstance()
+                    $message = (new \Swift_Message())
                         ->setSubject($subject)
                         ->setBody($body, 'text/plain')
                         ->setFrom([$this->getParameter('commsy.email.from') => $roomItem->getContextItem()->getTitle()])
@@ -980,9 +978,7 @@ class RoomController extends Controller
     public function createAction($roomId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
-        $defaultId = $legacyEnvironment->getCurrentPortalItem()->getDefaultProjectTemplateID();
-        $defaultId = ($defaultId === '-1') ? [] : $defaultId;
+        $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
 
         $type = null;
         $context = $request->get('context');
@@ -992,22 +988,30 @@ class RoomController extends Controller
             }
         }
 
-        $current_portal = $legacyEnvironment->getCurrentPortalItem();
+        // NOTE: `getDefault...TemplateID()` may also return '-1' (if no default template is defined)
+        $defaultId = '-1';
+        if ($type === 'project') {
+            $defaultId = $currentPortalItem->getDefaultProjectTemplateID();
+        }
+        elseif ($type === 'community') {
+            $defaultId = $currentPortalItem->getDefaultCommunityTemplateID();
+        }
+        $defaultTemplateIDs = ($defaultId === '-1') ? [] : [ $defaultId ];
 
-        $timesDisplay = $current_portal->getCurrentTimeName();
+        $timesDisplay = $currentPortalItem->getCurrentTimeName();
 
         $times = [];
-        if ($current_portal->showTime()) {
+        if ($currentPortalItem->showTime()) {
             $translator = $this->get('translator');
             $legacyTranslator = $legacyEnvironment->getTranslationObject();
-            foreach ($legacyEnvironment->getCurrentPortalItem()->getTimeList()->to_array() as $timeItem) {
+            $times[$translator->trans('continuous', [], 'settings')] = 'cont';
+            foreach ($currentPortalItem->getTimeListRev()->to_array() as $timeItem) {
                 $times[$legacyTranslator->getTimeMessage($timeItem->getName())] = $timeItem->getItemId();
             }
-            $times[$translator->trans('continuous', [], 'settings')] = 'cont';
         }
 
         $current_user = $legacyEnvironment->getCurrentUserItem();
-        $community_list = $current_portal->getCommunityList();
+        $community_list = $currentPortalItem->getCommunityList();
         $community_room_array = array();
         unset($temp_array);
         if ($community_list->isNotEmpty()) {
@@ -1033,35 +1037,35 @@ class RoomController extends Controller
             $roomService = $this->get('commsy_legacy.room_service');
             $roomItem = $roomService->getRoomItem($roomId);
 
-            if ($current_portal->getProjectRoomCreationStatus() == 'portal') {
+            if ($currentPortalItem->getProjectRoomCreationStatus() == 'portal') {
                 $types['project'] = 'project';
             } else if ($roomItem->getType() == CS_COMMUNITY_TYPE) {
                 $types['project'] = 'project';
             }
 
-            if ($current_portal->getCommunityRoomCreationStatus() == 'all') {
+            if ($currentPortalItem->getCommunityRoomCreationStatus() == 'all') {
                 $types['community'] = 'community';
             }
         }
 
         $linkCommunitiesMandantory = true;
-        if ($current_portal->getProjectRoomLinkStatus() == 'optional') {
+        if ($currentPortalItem->getProjectRoomLinkStatus() == 'optional') {
             $linkCommunitiesMandantory = false;
         }
 
         $roomCategoriesService = $this->get('commsy.roomcategories_service');
         $roomCategories = [];
-        foreach ($roomCategoriesService->getListRoomCategories($current_portal->getItemId()) as $roomCategory) {
+        foreach ($roomCategoriesService->getListRoomCategories($currentPortalItem->getItemId()) as $roomCategory) {
             $roomCategories[$roomCategory->getTitle()] = $roomCategory->getId();
         }
 
-        $linkRoomCategoriesMandatory = $current_portal->isTagMandatory() && count($roomCategories) > 0;
+        $linkRoomCategoriesMandatory = $currentPortalItem->isTagMandatory() && count($roomCategories) > 0;
 
         $formData = [];
         $form = $this->createForm(ContextType::class, $formData, [
             'types' => $types,
             'templates' => $this->getAvailableTemplates($type),
-            'preferredChoices' => $defaultId,
+            'preferredChoices' => $defaultTemplateIDs,
             'timesDisplay' => $timesDisplay,
             'times' => $times,
             'communities' => $community_room_array,
@@ -1167,7 +1171,10 @@ class RoomController extends Controller
         if ($templateList->isNotEmpty()) {
             $template = $templateList->getFirst();
             while ($template) {
-                $availability = $template->getTemplateAvailability();
+                $availability = $template->getTemplateAvailability(); // $type === 'project'
+                if ($type === 'community') {
+                    $availability = $template->getCommunityTemplateAvailability();
+                }
 
                 $add = false;
 

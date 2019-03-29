@@ -1,7 +1,7 @@
 <?php
 $message["USAGE_INFO_COMING_SOON"]["en"] = "No special tips provided.";
 $message["USAGE_INFO_FORM_COMING_SOON"]["en"] = "No special tips provided.";
-$message["USAGE_INFO_HEADER"]["en"] = "Notice";
+$message["USAGE_INFO_HEADER"]["en"] = "Usage notes";
 $message["USAGE_INFO_TEXT_LANGUAGE_UNUSED_FORM"]["en"] = "This message tags are defined but not used in the CommSy source code.";
 $message["USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_AUTOACCOUNTS_FORM"]["en"] = "No usage info available";
 $message["USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_MAIL_FORM"]["en"] = "tbd";
