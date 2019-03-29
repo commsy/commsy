@@ -50,7 +50,7 @@
             </trans-unit>
             <trans-unit id="7">
                 <source>User preferences</source>
-                <target>Benutzerereinstellungen</target>
+                <target>Persönliche Systemsprache</target>
             </trans-unit>
             <trans-unit id="8">
                 <source>German</source>
@@ -178,7 +178,7 @@
             </trans-unit>
             <trans-unit id="room_language_tip">
                 <source>Room language tip</source>
-                <target>Wählen Sie, ob eine raumspezifische Systemsprache oder die persönliche Spracheinstellung der einzelnen Raummitglieder genutzt werden soll.</target>
+                <target>Wählen Sie, ob eine raumspezifische Systemsprache oder die persönliche Systemsprache der einzelnen Raummitglieder genutzt werden soll.</target>
             </trans-unit>
             <trans-unit id="room_description_text">
                 <source>Room description text</source>
