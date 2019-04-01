@@ -1,0 +1,4 @@
+white_october_breadcrumbs:
+    separator:      ''
+    listClass:      'uk-breadcrumb'
+    itemClass:      'uk-display-inline'

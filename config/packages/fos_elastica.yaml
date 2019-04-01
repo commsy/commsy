@@ -1,3 +1,5 @@
+# Read the documentation: https://github.com/FriendsOfSymfony/FOSElasticaBundle/blob/master/Resources/doc/setup.md
+#
 # Note on how hashtags and tags properties are generated:
 # Setting the property path to false will disable transformation of that value.
 # In this case the mapping will be created but no value will be populated while indexing.
@@ -129,10 +131,10 @@ fos_elastica:
                             type: text
                             analyzer: html_strip_analyzer
                             search_analyzer: html_strip_analyzer
-#                        files:
-#                            # resolved by FOSElastica using POST_TRANSFORM
-#                            property_path: false
-#                            type: 'attachment'
+                    #                        files:
+                    #                            # resolved by FOSElastica using POST_TRANSFORM
+                    #                            property_path: false
+                    #                            type: 'attachment'
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Announcement
@@ -208,10 +210,10 @@ fos_elastica:
                             type: text
                             analyzer: html_strip_analyzer
                             search_analyzer: html_strip_analyzer
-#                        files:
-#                            # resolved by FOSElastica using POST_TRANSFORM
-#                            property_path: false
-#                            type: 'attachment'
+                    #                        files:
+                    #                            # resolved by FOSElastica using POST_TRANSFORM
+                    #                            property_path: false
+                    #                            type: 'attachment'
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Dates
@@ -273,10 +275,10 @@ fos_elastica:
                                     type: text
                                     analyzer: html_strip_analyzer
                                     search_analyzer: html_strip_analyzer
-#                                files:
-#                                    # resolved by FOSElastica using POST_TRANSFORM
-#                                    property_path: false
-#                                    type: 'attachment'
+                        #                                files:
+                        #                                    # resolved by FOSElastica using POST_TRANSFORM
+                        #                                    property_path: false
+                        #                                    type: 'attachment'
                         hashtags:
                             # resolved by FOSElastica using POST_TRANSFORM
                             property_path: false
@@ -291,10 +293,10 @@ fos_elastica:
                             type: text
                             analyzer: html_strip_analyzer
                             search_analyzer: html_strip_analyzer
-#                        files:
-#                            # resolved by FOSElastica using POST_TRANSFORM
-#                            property_path: false
-#                            type: 'attachment'
+                    #                        files:
+                    #                            # resolved by FOSElastica using POST_TRANSFORM
+                    #                            property_path: false
+                    #                            type: 'attachment'
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Discussions
@@ -474,10 +476,10 @@ fos_elastica:
                                     type: text
                                     analyzer: html_strip_analyzer
                                     search_analyzer: html_strip_analyzer
-#                                files:
-#                                    # resolved by FOSElastica using POST_TRANSFORM
-#                                    property_path: false
-#                                    type: 'attachment'
+                        #                                files:
+                        #                                    # resolved by FOSElastica using POST_TRANSFORM
+                        #                                    property_path: false
+                        #                                    type: 'attachment'
                         hashtags:
                             # resolved by FOSElastica using POST_TRANSFORM
                             property_path: false
@@ -492,10 +494,10 @@ fos_elastica:
                             type: text
                             analyzer: html_strip_analyzer
                             search_analyzer: html_strip_analyzer
-#                        files:
-#                            # resolved by FOSElastica using POST_TRANSFORM
-#                            property_path: false
-#                            type: 'attachment'
+                    #                        files:
+                    #                            # resolved by FOSElastica using POST_TRANSFORM
+                    #                            property_path: false
+                    #                            type: 'attachment'
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Todos
@@ -595,10 +597,10 @@ fos_elastica:
                                     type: text
                                     analyzer: html_strip_analyzer
                                     search_analyzer: html_strip_analyzer
-#                                files:
-#                                    # resolved by FOSElastica using POST_TRANSFORM
-#                                    property_path: false
-#                                    type: 'attachment'
+                        #                                files:
+                        #                                    # resolved by FOSElastica using POST_TRANSFORM
+                        #                                    property_path: false
+                        #                                    type: 'attachment'
                         hashtags:
                             # resolved by FOSElastica using POST_TRANSFORM
                             property_path: false

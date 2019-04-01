@@ -1,0 +1,16 @@
+liip_theme:
+    themes:
+        - default
+        - football
+        - stars
+        - sun
+        - ocean
+        - schulcommsyhh
+        - confetti
+        - grey
+        - darkblue
+        - red
+        - redgrey
+        - uhh
+    active_theme: 'default'
+    assetic_integration: false
