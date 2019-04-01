@@ -1,3 +1,9 @@
+# Read the documentation: https://symfony.com/doc/current/bundles/FOSCKEditorBundle/index.html
+
+twig:
+    form_themes:
+        - '@FOSCKEditor/Form/ckeditor_widget.html.twig'
+
 fos_ck_editor:
     inline: true
     default_config: cs_item_config
@@ -5,46 +11,46 @@ fos_ck_editor:
 
     plugins:
         menubutton:
-            path:     "/bundles/commsy/menubutton/"
+            path:     "/ckeditor/menubutton/"
             filename: "plugin.js"
         language:
-            path:     "/bundles/commsy/language/"
+            path:     "/ckeditor/language/"
             filename: "plugin.js"
         bidi:
-            path:     "/bundles/commsy/bidi/"
+            path:     "/ckeditor/bidi/"
             filename: "plugin.js"
         commsyhelp:
-            path:     "/bundles/commsy/commsyhelp/"
+            path:     "/ckeditor/commsyhelp/"
             filename: "plugin.js"
         commsyimage:
-            path:     "/bundles/commsy/commsyimage/"
+            path:     "/ckeditor/commsyimage/"
             filename: "plugin.js"
         commsyaudio:
-            path:     "/bundles/commsy/commsyaudio/"
+            path:     "/ckeditor/commsyaudio/"
             filename: "plugin.js"
         commsyvideo:
-            path:     "/bundles/commsy/commsyvideo/"
+            path:     "/ckeditor/commsyvideo/"
             filename: "plugin.js"
         commsydocument:
-            path:     "/bundles/commsy/commsydocument/"
+            path:     "/ckeditor/commsydocument/"
             filename: "plugin.js"
         tableresize:
-            path:     "/bundles/commsy/tableresize/"
+            path:     "/ckeditor/tableresize/"
             filename: "plugin.js"
         sharedspace:
-            path:     "/bundles/commsy/sharedspace/"
+            path:     "/ckeditor/sharedspace/"
             filename: "plugin.js"
         widget:
-            path:     "/bundles/commsy/widget/"
+            path:     "/ckeditor/widget/"
             filename: "plugin.js"
         lineutils:
-            path:     "/bundles/commsy/lineutils/"
+            path:     "/ckeditor/lineutils/"
             filename: "plugin.js"
         widgetselection:
-            path:     "/bundles/commsy/widgetselection/"
+            path:     "/ckeditor/widgetselection/"
             filename: "plugin.js"
         sourcedialog:
-            path:     "/bundles/commsy/sourcedialog/"
+            path:     "/ckeditor/sourcedialog/"
             filename: "plugin.js"
 
     toolbars:
@@ -75,4 +81,3 @@ fos_ck_editor:
 
         cs_annotation_config:
             toolbar: "simpleToolbar"
-                

@@ -44,7 +44,6 @@
         "sabre/dav": "^3.2.2",
         "mediawiki/oauthclient": "^0.1.2",
         "nategood/httpful": "^0.2.20",
-        "friendsofsymfony/ckeditor-bundle": "^1.2",
         "symfony/flex": "^1.2",
         "symfony/asset": "^4.2",
         "symfony/orm-pack": "^1.0",
@@ -52,7 +51,8 @@
         "symfony/form": "^4.2",
         "symfony/security-bundle": "^4.2",
         "symfony/translation": "^4.2",
-        "symfony/validator": "^4.2"
+        "symfony/validator": "^4.2",
+        "friendsofsymfony/ckeditor-bundle": "^2.0"
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^4.2",
@@ -64,8 +64,7 @@
     },
     "scripts": {
         "symfony-scripts": [
-            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
-            "FOS\\CKEditorBundle\\Composer\\CKEditorScriptHandler::install"
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters"
         ],
         "post-install-cmd": [
             "@symfony-scripts"
