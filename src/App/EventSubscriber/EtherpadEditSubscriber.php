@@ -1,5 +1,5 @@
 <?php
-namespace EtherpadBundle\EventSubscriber;
+namespace App\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;

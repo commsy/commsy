@@ -1,6 +1,6 @@
 <?php
 
-namespace EtherpadBundle\Services;
+namespace App\Services;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace EtherpadBundle\Controller;
+namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
