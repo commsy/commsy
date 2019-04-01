@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% import 'CommsyBundle:base:printmacro.html.twig' as macros %}
+{% import 'App:base:printmacro.html.twig' as macros %}
 
 {% if todo is defined %}
     {% set item = todo %}
@@ -89,7 +89,7 @@
                 {# annotations #}             
                     
                         {{ render(controller(
-                            'CommsyBundle:Annotation:feedPrint',
+                            'App:Annotation:feedPrint',
                             { 'roomId': roomId, 'linkedItemId': item.itemId }
                         ))}}
 

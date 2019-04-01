@@ -1259,7 +1259,7 @@ class cs_room_item extends cs_context_item {
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.room');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('CommsyBundle:Room');
+        $repository = $em->getRepository('App:Room');
 
         $this->deleteElasticItem($objectPersister, $repository);
 
@@ -1508,7 +1508,7 @@ class cs_room_item extends cs_context_item {
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.room');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('CommsyBundle:Room');
+        $repository = $em->getRepository('App:Room');
 
         $this->replaceElasticItem($objectPersister, $repository);
     }

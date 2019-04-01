@@ -1,4 +1,4 @@
-{% extends 'CommsyBundle:base:list.html.twig' %}
+{% extends 'App:base:list.html.twig' %}
 
 {% block listTitle %}
     {{ 'Rooms'|trans([], 'room') }}
@@ -7,7 +7,7 @@
 {% block feed %}
     <ul id="room-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
-            'CommsyBundle:Room:feedAll', {
+            'App:Room:feedAll', {
                 'roomId': roomId,
                 'roomFilter': app.request.query.get('room_filter')
             }

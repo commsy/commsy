@@ -1,5 +1,5 @@
-{% import 'CommsyBundle:utils:macros.html.twig' as macros %}
-{% import 'CommsyBundle:material:macros.html.twig' as macrosMaterial %}
+{% import 'App:utils:macros.html.twig' as macros %}
+{% import 'App:material:macros.html.twig' as macrosMaterial %}
 
 {# sections #}
 <div id="sections{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editsections', {'roomId': material.contextId, 'itemId': material.itemId}) }}', cancelEditUrl: '{{ path('commsy_item_canceledit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">

@@ -1,8 +1,8 @@
-{% import 'CommsyBundle:date:macros.html.twig' as macrosDate %}
-{% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+{% import 'App:date:macros.html.twig' as macrosDate %}
+{% import 'App:utils:macros.html.twig' as macros %}
 
 <div class="uk-margin-right uk-margin-bottom uk-position-relative uk-padding-remove">
-    {% include 'CommsyBundle:utils:save_spinner.html.twig' %}
+    {% include 'App:utils:save_spinner.html.twig' %}
     <div class="uk-form-horizontal">
         {{ form_start(form) }}
         {{ form_errors(form) }}

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% import 'CommsyBundle:base:printmacro.html.twig' as macros %}
+{% import 'App:base:printmacro.html.twig' as macros %}
 
 {% if group is defined %}
     {% set item = group %}
@@ -112,7 +112,7 @@
                             </div>
  
             {{ render(controller(
-                'CommsyBundle:Link:showDetailLong',
+                'App:Link:showDetailLong',
                 { 'roomId': item.contextId, 'itemId': item.itemId }
             ))}}            
                         </article>

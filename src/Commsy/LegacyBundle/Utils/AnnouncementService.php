@@ -1,7 +1,7 @@
 <?php
 namespace Commsy\LegacyBundle\Utils;
 
-use CommsyBundle\Filter\AnnouncementFilterType;
+use App\Filter\AnnouncementFilterType;
 use Symfony\Component\Form\Form;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;

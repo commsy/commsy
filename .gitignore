@@ -131,7 +131,7 @@ web/css/build/*
 web/build
 
 node_modules
-src/CommsyBundle/Resources/public/components
+src/App/Resources/public/components
 
 legacy/var/temp
 

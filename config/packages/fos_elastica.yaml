@@ -5,7 +5,7 @@
 # In this case the mapping will be created but no value will be populated while indexing.
 # The value is populated by listening to the POST_TRANSFORM event.
 #
-# This is done in CommsyBundle\EventListener\ElasticCustomPropertyListener
+# This is done in App\EventListener\ElasticCustomPropertyListener
 #
 #
 
@@ -137,7 +137,7 @@ fos_elastica:
                     #                            type: 'attachment'
                     persistence:
                         driver: orm
-                        model: CommsyBundle\Entity\Announcement
+                        model: App\Entity\Announcement
                         identifier: itemId
                         finder: ~
                         provider: ~
@@ -216,7 +216,7 @@ fos_elastica:
                     #                            type: 'attachment'
                     persistence:
                         driver: orm
-                        model: CommsyBundle\Entity\Dates
+                        model: App\Entity\Dates
                         identifier: itemId
                         finder: ~
                         provider: ~
@@ -299,7 +299,7 @@ fos_elastica:
                     #                            type: 'attachment'
                     persistence:
                         driver: orm
-                        model: CommsyBundle\Entity\Discussions
+                        model: App\Entity\Discussions
                         identifier: itemId
                         finder: ~
                         provider: ~
@@ -354,7 +354,7 @@ fos_elastica:
                                     type: keyword
                     persistence:
                         driver: orm
-                        model: CommsyBundle\Entity\Labels
+                        model: App\Entity\Labels
                         identifier: itemId
                         finder: ~
                         provider: ~
@@ -404,7 +404,7 @@ fos_elastica:
                             type: integer
                     persistence:
                         driver: orm
-                        model: CommsyBundle\Entity\Room
+                        model: App\Entity\Room
                         identifier: itemId
                         finder: ~
                         provider: ~
@@ -500,7 +500,7 @@ fos_elastica:
                     #                            type: 'attachment'
                     persistence:
                         driver: orm
-                        model: CommsyBundle\Entity\Todos
+                        model: App\Entity\Todos
                         identifier: itemId
                         finder: ~
                         provider: ~
@@ -526,7 +526,7 @@ fos_elastica:
                             type: text
                     persistence:
                         driver: orm
-                        model: CommsyBundle\Entity\User
+                        model: App\Entity\User
                         identifier: itemId
                         finder: ~
                         provider: ~
@@ -621,7 +621,7 @@ fos_elastica:
                             type: 'attachment'
                     persistence:
                         driver: orm
-                        model: CommsyBundle\Entity\Materials
+                        model: App\Entity\Materials
                         identifier: itemId
                         finder: ~
                         provider:

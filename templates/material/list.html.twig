@@ -1,11 +1,11 @@
-{% extends 'CommsyBundle:base:list.html.twig' %}
+{% extends 'App:base:list.html.twig' %}
 
-{% import 'CommsyBundle:utils:macros.html.twig' as utilsMacros %}
+{% import 'App:utils:macros.html.twig' as utilsMacros %}
 
 {% block feed %}
     <ul id="materials-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
-            'CommsyBundle:Material:feed', {
+            'App:Material:feed', {
                 'roomId': roomId,
                 'materialFilter': app.request.query.get('material_filter')
             }

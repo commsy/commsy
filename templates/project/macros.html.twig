@@ -1,5 +1,5 @@
 {% macro title(item, modifierList, userCount, readCount, readSinceModificationCount) %}
-    {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+    {% import 'App:utils:macros.html.twig' as macros %}
 
     {% if userCount == 0 %}
         {% set userCount = 1 %}
@@ -148,7 +148,7 @@
 {% endmacro %}
 
 {% macro titleSave(item, modifierList, userCount, readCount, readSinceModificationCount) %}
-    {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+    {% import 'App:utils:macros.html.twig' as macros %}
     <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
             <div class="uk-grid uk-margin-small-bottom">
                 <div class="uk-width-8-10 uk-margin-small-bottom" >
@@ -162,7 +162,7 @@
                     {# edit #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                         {{ macros.actionIcons('title', item, true) }}
-                        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
+                        {% include 'App:utils:edit_spinner.html.twig' %}
                     {% else %}
                         {{ macros.actionIcons('title', item, false) }}
                     {% endif %}
@@ -293,7 +293,7 @@
 {% endmacro %}
 
 {% macro access(project, roomId, memberStatus, contactModeratorItems) %}
-    {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+    {% import 'App:utils:macros.html.twig' as macros %}
 
     <div id="project{{ project.itemId }}" class="cs-edit-section cs-toggle">
         <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">

@@ -1,5 +1,5 @@
 {% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, ratingArray) %}
-    {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+    {% import 'App:utils:macros.html.twig' as macros %}
     {% set pathName = '' %}
     {% if item.itemType == 'announcement' %}
         {% set pathName = 'commsy_announcement_edit' %}
@@ -30,7 +30,7 @@
                     {# edit #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                         {{ macros.actionIcons('title', item, true) }}
-                        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
+                        {% include 'App:utils:edit_spinner.html.twig' %}
                     {% else %}
                         {{ macros.actionIcons('title', item, false) }}
                     {% endif %}
@@ -168,7 +168,7 @@
 {% endmacro %}
 
 {% macro titleSave(item, modifierList, userCount, readCount, readSinceModificationCount, showRating) %}
-    {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+    {% import 'App:utils:macros.html.twig' as macros %}
     <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
             <div class="uk-grid uk-margin-small-bottom">
                 <div class="uk-width-8-10 uk-margin-small-bottom" >
@@ -190,7 +190,7 @@
                     {# edit #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                         {{ macros.actionIcons('title', item, true) }}
-                        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
+                        {% include 'App:utils:edit_spinner.html.twig' %}
                     {% else %}
                         {{ macros.actionIcons('title', item, false) }}
                     {% endif %}

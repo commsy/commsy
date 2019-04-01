@@ -1,6 +1,6 @@
-{% extends 'CommsyBundle:base:room.html.twig' %}
+{% extends 'App:base:room.html.twig' %}
 
-{% form_theme form 'CommsyBundle:form:uikit_horizontal_dynamic_layout.html.twig' %}
+{% form_theme form 'App:form:uikit_horizontal_dynamic_layout.html.twig' %}
 
 {% block cover %}
     <div id="cover" class="uk-cover-background uk-position-relative cs-cover-background" aria-hidden="false">
@@ -37,7 +37,7 @@
                         <div class="uk-panel uk-panel-box cs-cover-grid-opacity" data-uk-parallax="{opacity: '0.5'}" style="padding-bottom: 0px; padding-top: 0px;">
                             <ul id="announcements-feed" class="uk-comment-list" data-uk-observe>
                                 {{ render(controller(
-                                    'CommsyBundle:Announcement:shortfeed',
+                                    'App:Announcement:shortfeed',
                                     { 'roomId': roomItem.itemId }
                                 ))}}
                             </ul>
@@ -48,7 +48,7 @@
                         <div class="uk-panel uk-panel-box cs-cover-grid-opacity" data-uk-parallax="{opacity: '0.5'}">
                             <ul id="announcements-feed" class="uk-comment-list" data-uk-observe>
                                 {{ render(controller(
-                                    'CommsyBundle:Announcement:shortfeed',
+                                    'App:Announcement:shortfeed',
                                     { 'roomId': roomItem.itemId }
                                 ))}}
                             </ul>
@@ -219,7 +219,7 @@
                 <div class="feed">
                     <ul id="room-feed" class="uk-comment-list">
                         {{ render(controller(
-                            'CommsyBundle:Room:feed',
+                            'App:Room:feed',
                             { 'roomId': roomItem.itemId }
                         ))}}
                     </ul>

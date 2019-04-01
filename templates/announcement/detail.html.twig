@@ -1,8 +1,8 @@
-{% extends 'CommsyBundle:base:room.html.twig' %}
+{% extends 'App:base:room.html.twig' %}
 
-{% import 'CommsyBundle:item:macros.html.twig' as macrosItem %}
-{% import 'CommsyBundle:announcement:macros.html.twig' as macrosAnnouncement %}
-{% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+{% import 'App:item:macros.html.twig' as macrosItem %}
+{% import 'App:announcement:macros.html.twig' as macrosAnnouncement %}
+{% import 'App:utils:macros.html.twig' as macros %}
 
 {% set item = announcement %}
 
@@ -20,7 +20,7 @@
 
                         {# quick item navigation #}
                         {{ render(controller(
-                            'CommsyBundle:Item:stepper',
+                            'App:Item:stepper',
                             { 'roomId': roomId, 'itemId': item.itemId }
                         ))}}
 
@@ -200,7 +200,7 @@
                     {% endif %}
 
                     {{ render(controller(
-                        'CommsyBundle:Annotation:feed',
+                        'App:Annotation:feed',
                         { 'roomId': roomId, 'linkedItemId': item.itemId }
                     ))}}
 

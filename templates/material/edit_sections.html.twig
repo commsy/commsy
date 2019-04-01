@@ -1,9 +1,9 @@
-{% import 'CommsyBundle:utils:macros.html.twig' as macros %}
-{% import 'CommsyBundle:material:macros.html.twig' as macrosMaterial %}
+{% import 'App:utils:macros.html.twig' as macros %}
+{% import 'App:material:macros.html.twig' as macrosMaterial %}
 
 <hr class="uk-width-9-10  cs-detail-divider"/>
 <article class="uk-article uk-margin-left uk-margin-right">
-    {% include 'CommsyBundle:utils:save_spinner.html.twig' %}
+    {% include 'App:utils:save_spinner.html.twig' %}
     <div class="uk-form-horizontal">
         {{ form_start(form) }}
         {{ form_errors(form) }}

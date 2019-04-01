@@ -220,7 +220,7 @@ class cs_home_member_form extends cs_rubric_form {
                      global $symfonyContainer;
                      try {
                          $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-                         $translation = $em->getRepository(\CommsyBundle\Entity\Translation::class)
+                         $translation = $em->getRepository(\App\Entity\Translation::class)
                              ->findOneByContextAndKey($this->_environment->getCurrentPortalId(), 'EMAIL_REGEX_ERROR');
 
                          $this->_error_array[] = $translation->getTranslationForLocale($this->_environment->getUserLanguage());

@@ -1320,10 +1320,10 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
     /**
      * Resets license links to null
      * 
-     * @param \CommsyBundle\Entity\License $license
+     * @param \App\Entity\License $license
      * @return mixed
      */
-	public function unsetLicenses(\CommsyBundle\Entity\License $license)
+	public function unsetLicenses(\App\Entity\License $license)
     {
         $query = '
             UPDATE

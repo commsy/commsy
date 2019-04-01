@@ -1,13 +1,13 @@
-{% extends 'CommsyBundle:base:list.html.twig' %}
-{% form_theme form 'CommsyBundle:form:uikit_horizontal_layout.html.twig' %}
+{% extends 'App:base:list.html.twig' %}
+{% form_theme form 'App:form:uikit_horizontal_layout.html.twig' %}
 
-{% import 'CommsyBundle:utils:macros.html.twig' as utilsMacros %}
+{% import 'App:utils:macros.html.twig' as utilsMacros %}
 
 {% block feed %}
     {% if view == 'feedView' %}
         <ul id="user-feed" class="uk-comment-list">
             {{ render(controller(
-                'CommsyBundle:User:feed', {
+                'App:User:feed', {
                     'roomId': roomId,
                     'userFilter': app.request.query.get('user_filter')
                 }
@@ -20,7 +20,7 @@
     {% elseif view == 'gridView' %}
         <div id="user-feed" class="uk-grid">
             {{ render(controller(
-                'CommsyBundle:User:grid', {
+                'App:User:grid', {
                     'roomId': roomId,
                     'userFilter': app.request.query.get('user_filter')
                 }

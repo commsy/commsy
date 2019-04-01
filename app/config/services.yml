@@ -10,10 +10,10 @@ services:
         autoconfigure: true
         public: true
 
-    # makes classes in src/CommsyBundle/Controller available to be used as services
+    # makes classes in src/App/Controller available to be used as services
     CommsyBundle\Controller\:
-        resource: '../../src/CommsyBundle/Controller/*'
-        #exclude: '../../src/CommsyBundle/{CalDAV,Database,Entity}'
+        resource: '../../src/App/Controller/*'
+        #exclude: '../../src/App/{CalDAV,Database,Entity}'
 
 
 #    service_name:

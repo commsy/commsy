@@ -1,10 +1,10 @@
-{% extends 'CommsyBundle:base:list.html.twig' %}
-{% form_theme form 'CommsyBundle:form:uikit_horizontal_layout.html.twig' %}
+{% extends 'App:base:list.html.twig' %}
+{% form_theme form 'App:form:uikit_horizontal_layout.html.twig' %}
 
 {% block feed %}
     <ul id="copies-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
-            'CommsyBundle:Copy:feed', {
+            'App:Copy:feed', {
                 'roomId': roomId,
                 'copyFilter': app.request.query.get('copy_filter')
             }

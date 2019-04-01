@@ -1,5 +1,5 @@
 {% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft) %}
-    {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+    {% import 'App:utils:macros.html.twig' as macros %}
     {% import _self as dateMacros %}
 
     {% set pathName = 'commsy_date_edit' %}
@@ -21,7 +21,7 @@
                     {# edit #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                         {{ macros.actionIcons('title', item, true) }}
-                        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
+                        {% include 'App:utils:edit_spinner.html.twig' %}
                     {% else %}
                         {{ macros.actionIcons('title', item, false) }}
                     {% endif %}
@@ -211,7 +211,7 @@
 {% endmacro %}
 
 {% macro titleSave(item, modifierList, userCount, readCount, readSinceModificationCount) %}
-    {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+    {% import 'App:utils:macros.html.twig' as macros %}
     {% import _self as dateMacros %}
 
     <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
@@ -227,7 +227,7 @@
                     {# edit #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                         {{ macros.actionIcons('title', item, true) }}
-                        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
+                        {% include 'App:utils:edit_spinner.html.twig' %}
                     {% else %}
                         {{ macros.actionIcons('title', item, false) }}
                     {% endif %}
@@ -411,13 +411,13 @@
 {% endmacro %}
 
 {% macro sections(item, sectionList) %}
-    {% import 'CommsyBundle:utils:macros.html.twig' as macrosUtils %}
+    {% import 'App:utils:macros.html.twig' as macrosUtils %}
 
     <hr class="uk-width-9-10"/>
 
     <article class="uk-article uk-margin-left uk-margin-right">
         <a name="description"></a>
-        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
+        {% include 'App:utils:edit_spinner.html.twig' %}
 
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">
@@ -489,7 +489,7 @@
 
     <article class="uk-article uk-margin-left uk-margin-right">
         <a name="details"></a>
-        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
+        {% include 'App:utils:edit_spinner.html.twig' %}
 
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">
@@ -567,7 +567,7 @@
 
 
 {% macro participants(item,participants) %}
-    {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+    {% import 'App:utils:macros.html.twig' as macros %}
     {% if not participants is empty %}
         {% for participant in participants %}
                     {% if participant.isUser %}

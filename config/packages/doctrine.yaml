@@ -17,7 +17,7 @@ doctrine:
 
         url: '%env(resolve:DATABASE_URL)%'
         types:
-            mbarray: CommsyBundle\DBAL\Types\ArrayType
+            mbarray: App\DBAL\Types\ArrayType
         mapping_types:
             enum: string
     orm:

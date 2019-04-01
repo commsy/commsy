@@ -1,12 +1,12 @@
-{% extends 'CommsyBundle:base:list.html.twig' %}
-{% form_theme form 'CommsyBundle:form:uikit_horizontal_layout.html.twig' %}
+{% extends 'App:base:list.html.twig' %}
+{% form_theme form 'App:form:uikit_horizontal_layout.html.twig' %}
 
-{% import 'CommsyBundle:utils:macros.html.twig' as utilsMacros %}
+{% import 'App:utils:macros.html.twig' as utilsMacros %}
 
 {% block feed %}
     <ul id="discussions-feed" class="uk-comment-list" data-uk-observe>
         {{ render(controller(
-            'CommsyBundle:Discussion:feed', {
+            'App:Discussion:feed', {
                 'roomId': roomId,
                 'discussionFilter': app.request.query.get('discussion_filter')
             }

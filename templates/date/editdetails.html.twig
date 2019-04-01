@@ -1,5 +1,5 @@
-{% form_theme form 'CommsyBundle:form:uikit_stacked_layout_date.html.twig' %}
-{% import 'CommsyBundle:date:macros.html.twig' as macrosDate %}
+{% form_theme form 'App:form:uikit_stacked_layout_date.html.twig' %}
+{% import 'App:date:macros.html.twig' as macrosDate %}
 
 <hr class="uk-width-9-10  cs-detail-divider"/>
 <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
@@ -15,7 +15,7 @@
 <div>
 
 <div class="uk-margin-left uk-margin-bottom uk-position-relative uk-padding-remove cs-description-inline">
-    {% include 'CommsyBundle:utils:save_spinner.html.twig' %}
+    {% include 'App:utils:save_spinner.html.twig' %}
     <div class="uk-form-horizontal">
         {{ form_start(form) }}
         {{ form_errors(form) }}

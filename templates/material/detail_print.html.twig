@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% import 'CommsyBundle:base:printmacro.html.twig' as macros %}
+{% import 'App:base:printmacro.html.twig' as macros %}
 
 {% if material is defined %}
     {% set item = material %}
@@ -95,7 +95,7 @@
                              
                     
                         {{ render(controller(
-                            'CommsyBundle:Annotation:feedPrint',
+                            'App:Annotation:feedPrint',
                             { 'roomId': roomId, 'linkedItemId': item.itemId }
                         ))}}
 

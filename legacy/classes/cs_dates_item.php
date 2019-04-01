@@ -366,7 +366,7 @@ class cs_dates_item extends cs_item {
     }
 
     /**
-     * @return \CommsyBundle\Entity\Calendars
+     * @return \App\Entity\Calendars
      * @throws Exception
      */
     function getCalendar() {
@@ -501,7 +501,7 @@ class cs_dates_item extends cs_item {
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.date');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('CommsyBundle:Dates');
+        $repository = $em->getRepository('App:Dates');
 
         $this->replaceElasticItem($objectPersister, $repository);
     }
@@ -517,7 +517,7 @@ class cs_dates_item extends cs_item {
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.date');
       $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('CommsyBundle:Dates');
+      $repository = $em->getRepository('App:Dates');
 
       $this->deleteElasticItem($objectPersister, $repository);
    }

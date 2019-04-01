@@ -194,7 +194,7 @@ class cs_grouproom_item extends cs_room_item {
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.room');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('CommsyBundle:Room');
+        $repository = $em->getRepository('App:Room');
 
         $this->replaceElasticItem($objectPersister, $repository);
     }
@@ -241,11 +241,11 @@ class cs_grouproom_item extends cs_room_item {
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.room');
       $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('CommsyBundle:Room');
+      $repository = $em->getRepository('App:Room');
 
        // use zzz repository if room is archived
        if ($this->isArchived()) {
-           $repository = $em->getRepository('CommsyBundle:ZzzRoom');
+           $repository = $em->getRepository('App:ZzzRoom');
        }
        $this->deleteElasticItem($objectPersister, $repository);
    }

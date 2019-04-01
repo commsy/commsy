@@ -128,7 +128,7 @@ class ActionsCest
         /** @var \cs_environment $legacyEnvironment */
         $legacyEnvironment = $I->grabService('commsy_legacy.environment')->getEnvironment();
 
-        /** @var \CommsyBundle\Action\Delete\DeleteAction $action */
+        /** @var \App\Action\Delete\DeleteAction $action */
         $action = $I->grabService('commsy.action.delete.generic');
         $response = $action->execute(new \cs_room_item($legacyEnvironment), []);
 

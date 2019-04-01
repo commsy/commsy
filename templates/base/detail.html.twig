@@ -1,6 +1,6 @@
-{% extends 'CommsyBundle:base:room.html.twig' %}
+{% extends 'App:base:room.html.twig' %}
 
-{% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+{% import 'App:utils:macros.html.twig' as macros %}
 
 {% block content %}
     <div class="uk-grid">
@@ -25,7 +25,7 @@
                                 <h3 class="uk-panel-title">{{ 'annotations'|trans({})|capitalize }}</h3>
                             </div>
                             {{ render(controller(
-                                'CommsyBundle:Annotation:feed',
+                                'App:Annotation:feed',
                                 { 'roomId': roomId, 'linkedItemId': item.itemId }
                             ))}}
                         </div>

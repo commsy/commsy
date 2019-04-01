@@ -1,12 +1,12 @@
-{% extends 'CommsyBundle:base:list.html.twig' %}
-{% form_theme form 'CommsyBundle:form:uikit_horizontal_layout.html.twig' %}
+{% extends 'App:base:list.html.twig' %}
+{% form_theme form 'App:form:uikit_horizontal_layout.html.twig' %}
 
-{% import 'CommsyBundle:utils:macros.html.twig' as utilsMacros %}
+{% import 'App:utils:macros.html.twig' as utilsMacros %}
 
 {% block feed %}
     <div id="group-feed" class="uk-grid">
         {{ render(controller(
-            'CommsyBundle:Group:feed', {
+            'App:Group:feed', {
                 'roomId': roomId,
                 'groupFilter': app.request.query.get('group_filter')
              }

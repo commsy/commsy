@@ -1,14 +1,14 @@
 <?php
 namespace Commsy\LegacyBundle\Utils;
 
-use CommsyBundle\Services\PrintService;
+use App\Services\PrintService;
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
-use CommsyBundle\Form\Type\AnnotationType;
+use App\Form\Type\AnnotationType;
 
 class DownloadService
 {
@@ -59,7 +59,7 @@ class DownloadService
             $fileSystem->mkdir($tempDirectory, 0777);
             
             // create PDF-file
-            $htmlView = 'CommsyBundle:' . $item->getItemType() . ':detail_print.html.twig';
+            $htmlView = 'App:' . $item->getItemType() . ':detail_print.html.twig';
             $htmlOutput = $this->serviceContainer->get('templating')->renderResponse($htmlView, $detailArray);
             file_put_contents($tempDirectory . '/' . $item->getTitle() . '.pdf', $this->printService->getPdfContent($htmlOutput));
 

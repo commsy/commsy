@@ -1,8 +1,8 @@
-{% extends 'CommsyBundle:base:room.html.twig' %}
+{% extends 'App:base:room.html.twig' %}
 
-{% import 'CommsyBundle:item:macros.html.twig' as macrosItem %}
-{% import 'CommsyBundle:discussion:macros.html.twig' as macrosDiscussion %}
-{% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+{% import 'App:item:macros.html.twig' as macrosItem %}
+{% import 'App:discussion:macros.html.twig' as macrosDiscussion %}
+{% import 'App:utils:macros.html.twig' as macros %}
 
 {% set item = discussion %}
 
@@ -20,7 +20,7 @@
 
                         {# quick item navigation #}
                         {{ render(controller(
-                            'CommsyBundle:Item:stepper',
+                            'App:Item:stepper',
                             { 'roomId': roomId, 'itemId': item.itemId }
                         ))}}
 

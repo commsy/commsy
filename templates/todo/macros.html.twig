@@ -1,5 +1,5 @@
 {% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, ratingArray, timeSpendSum) %}
-    {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+    {% import 'App:utils:macros.html.twig' as macros %}
     {% import _self as todoMacros %}
 
     {% if item.type == 'todo' %}
@@ -31,7 +31,7 @@
                     {# edit #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                         {{ macros.actionIcons('title', item, true) }}
-                        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
+                        {% include 'App:utils:edit_spinner.html.twig' %}
                     {% else %}
                         {{ macros.actionIcons('title', item, false) }}
                     {% endif %}
@@ -236,7 +236,7 @@
 {% endmacro %}
 
 {% macro titleSave(item, modifierList, userCount, readCount, readSinceModificationCount, showRating, ratingArray) %}
-    {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+    {% import 'App:utils:macros.html.twig' as macros %}
     {% import _self as todoMacros %}
 
     <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
@@ -257,7 +257,7 @@
                     {# edit #}
                     {% if is_granted('ITEM_EDIT', item.itemId) %}
                         {{ macros.actionIcons('title', item, true) }}
-                        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
+                        {% include 'App:utils:edit_spinner.html.twig' %}
                     {% else %}
                         {{ macros.actionIcons('title', item, false) }}
                     {% endif %}
@@ -439,7 +439,7 @@
 {% endmacro %}
 
 {% macro responsibility(item,participants) %}
-    {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+    {% import 'App:utils:macros.html.twig' as macros %}
     {% if not participants is empty %}
         {% for participant in participants %}
                     {% if participant.isUser %}
@@ -452,13 +452,13 @@
 {% endmacro %}
 
 {% macro steps(item, stepList) %}
-    {% import 'CommsyBundle:utils:macros.html.twig' as macrosUtils %}
+    {% import 'App:utils:macros.html.twig' as macrosUtils %}
 
     <hr class="uk-width-9-10"/>
 
     <article class="uk-article uk-margin-left uk-margin-right">
         <a name="description"></a>
-        {% include 'CommsyBundle:utils:edit_spinner.html.twig' %}
+        {% include 'App:utils:edit_spinner.html.twig' %}
 
         {# title row #}
         <div class="uk-grid uk-margin-small-bottom">

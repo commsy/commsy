@@ -734,7 +734,7 @@ class cs_material_item extends cs_item {
         global $symfonyContainer;
         $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.material');
         $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-        $repository = $em->getRepository('CommsyBundle:Materials');
+        $repository = $em->getRepository('App:Materials');
 
         $this->replaceElasticItem($objectPersister, $repository);
     }
@@ -922,7 +922,7 @@ class cs_material_item extends cs_item {
       global $symfonyContainer;
       $objectPersister = $symfonyContainer->get('fos_elastica.object_persister.commsy.material');
       $em = $symfonyContainer->get('doctrine.orm.entity_manager');
-      $repository = $em->getRepository('CommsyBundle:Materials');
+      $repository = $em->getRepository('App:Materials');
 
       $this->deleteElasticItem($objectPersister, $repository);
    }
@@ -1746,7 +1746,7 @@ function _copySectionList ($copy_id) {
     {
         if ($this->getLicenseId() && $this->getLicenseId() > 0) {
             global $symfonyContainer;
-            $licensesRepository = $symfonyContainer->get('doctrine.orm.entity_manager')->getRepository(\CommsyBundle\Entity\License::class);
+            $licensesRepository = $symfonyContainer->get('doctrine.orm.entity_manager')->getRepository(\App\Entity\License::class);
             $license = $licensesRepository->findOneById($this->getLicenseId());
 
             return $license->getTitle();

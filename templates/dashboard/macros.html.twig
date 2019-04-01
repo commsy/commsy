@@ -37,7 +37,7 @@
             <div class="feed">
                 <ul id="dashboard-feed" class="uk-comment-list">
                     {{ render(controller(
-                        'CommsyBundle:Dashboard:feed',
+                        'App:Dashboard:feed',
                         { 'roomId': roomItem.itemId }
                     ))}}
                 </ul>
@@ -52,7 +52,7 @@
 {% endmacro %}
 
 {% macro dashboardCalendar(roomItem, calendars, iCal, contextArray) %}
-    {% import 'CommsyBundle:utils:macros.html.twig' as macros %}
+    {% import 'App:utils:macros.html.twig' as macros %}
 
     {#<li id="dashboard-calendar" class="uk-grid-margin">#}
         <div class="uk-panel uk-panel-box uk-panel-box-primary">
@@ -128,7 +128,7 @@
             </div>
 
             {{ render(controller(
-            'CommsyBundle:Date:calendardashboard',
+            'App:Date:calendardashboard',
             { 'roomId': roomItem.itemId }
             ))}}
         </div>
@@ -145,7 +145,7 @@
             </div>
 
             {{ render(controller(
-            'CommsyBundle:Dashboard:rss',
+            'App:Dashboard:rss',
             { 'roomId': roomItem.itemId }
             ))}}
         </div>
@@ -162,7 +162,7 @@
             </div>
 
             {{ render(controller(
-            'CommsyBundle:Dashboard:externalaccess',
+            'App:Dashboard:externalaccess',
             { 'roomId': roomItem.itemId }
             ))}}
         </div>

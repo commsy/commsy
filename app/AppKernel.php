@@ -30,7 +30,7 @@ class AppKernel extends Kernel
             new Circle\RestClientBundle\CircleRestClientBundle(),
             new WhiteOctober\BreadcrumbsBundle\WhiteOctoberBreadcrumbsBundle(),
 
-            new CommsyBundle\CommsyBundle(),
+            new App\CommsyBundle(),
             new Commsy\LegacyBundle\CommsyLegacyBundle(),
             new EtherpadBundle\EtherpadBundle(),
             new CommsyMediawikiBundle\CommsyMediawikiBundle(),
