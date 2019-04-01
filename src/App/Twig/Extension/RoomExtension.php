@@ -1,7 +1,7 @@
 <?php
 namespace App\Twig\Extension;
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 
 class RoomExtension extends \Twig_Extension
 {

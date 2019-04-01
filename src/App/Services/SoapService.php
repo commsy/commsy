@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use Symfony\Component\DependencyInjection\ContainerInterface as Container;
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 
 class SoapService
 {

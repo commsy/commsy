@@ -7,17 +7,17 @@ services:
 
     # Legacy kernel
     commsy_legacy.legacy_kernel:
-        class: Commsy\LegacyBundle\Kernel\LegacyKernel
+        class: App\Kernel\LegacyKernel
         arguments: ['%legacy.site_index%', '@service_container']
 
     # Legacy authentication
     commsy_legacy.legacy_authentication:
-        class: Commsy\LegacyBundle\Authentication\LegacyAuthentication
+        class: App\Authentication\LegacyAuthentication
         arguments: ['@commsy_legacy.environment']
 
     # Event subscriber
     commsy_legacy.subscriber.KernelSubscriber:
-        class: Commsy\LegacyBundle\EventSubscriber\KernelSubscriber
+        class: App\EventSubscriber\KernelSubscriber
         arguments:
             - '@commsy_legacy.legacy_kernel'
             - '@commsy_legacy.legacy_authentication'
@@ -30,7 +30,7 @@ services:
 
     # Legacy Environment
     commsy_legacy.environment:
-        alias: Commsy\LegacyBundle\Services\LegacyEnvironment
+        alias: App\Services\LegacyEnvironment
 
     Commsy\LegacyBundle\Services\LegacyEnvironment:
         public: true
@@ -38,96 +38,96 @@ services:
         arguments: ['%legacy.site_index%', '@service_container']
 
     commsy_legacy.category_service:
-        class: Commsy\LegacyBundle\Utils\CategoryService
+        class: App\Utils\CategoryService
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.material_service:
-        alias: Commsy\LegacyBundle\Utils\MaterialService
+        alias: App\Utils\MaterialService
 
     Commsy\LegacyBundle\Utils\MaterialService:
         autowire: true
 
     commsy_legacy.room_service:
-        alias: Commsy\LegacyBundle\Utils\RoomService
+        alias: App\Utils\RoomService
 
     Commsy\LegacyBundle\Utils\RoomService:
         autowire: true
 
     commsy_legacy.file_service:
-        alias: Commsy\LegacyBundle\Utils\FileService
+        alias: App\Utils\FileService
 
     Commsy\LegacyBundle\Utils\FileService:
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.user_service:
-        alias: Commsy\LegacyBundle\Utils\UserService
+        alias: App\Utils\UserService
 
     Commsy\LegacyBundle\Utils\UserService:
         autowire: true
 
     commsy_legacy.item_service:
-        alias: Commsy\LegacyBundle\Utils\ItemService
+        alias: App\Utils\ItemService
 
     Commsy\LegacyBundle\Utils\ItemService:
         autowire: true
 
     commsy_legacy.label_service:
-        class: Commsy\LegacyBundle\Utils\LabelService
+        class: App\Utils\LabelService
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.group_service:
-        class: Commsy\LegacyBundle\Utils\GroupService
+        class: App\Utils\GroupService
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.institution_service:
-        class: Commsy\LegacyBundle\Utils\InstitutionService
+        class: App\Utils\InstitutionService
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.topic_service:
-        class: Commsy\LegacyBundle\Utils\TopicService
+        class: App\Utils\TopicService
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.noticed_service:
-        class: Commsy\LegacyBundle\Utils\NoticedService
+        class: App\Utils\NoticedService
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.reader_service:
-        class: Commsy\LegacyBundle\Utils\ReaderService
+        class: App\Utils\ReaderService
         arguments: ['@commsy_legacy.environment', '@commsy_legacy.item_service']
 
     commsy_legacy.date_service:
-        class: Commsy\LegacyBundle\Utils\DateService
+        class: App\Utils\DateService
         arguments: ['@commsy_legacy.environment']
     
     commsy_legacy.annotation_service:
-        class: Commsy\LegacyBundle\Utils\AnnotationService
+        class: App\Utils\AnnotationService
         arguments: ['@commsy_legacy.environment']
         
     commsy_legacy.announcement_service:
-        class: Commsy\LegacyBundle\Utils\AnnouncementService
+        class: App\Utils\AnnouncementService
         arguments:
           - '@commsy_legacy.environment'
         
     commsy_legacy.discussion_service:
-        class: Commsy\LegacyBundle\Utils\DiscussionService
+        class: App\Utils\DiscussionService
         arguments: ['@commsy_legacy.environment']
         
     commsy_legacy.todo_service:
-        alias: Commsy\LegacyBundle\Utils\TodoService
+        alias: App\Utils\TodoService
 
     Commsy\LegacyBundle\Utils\TodoService:
         autowire: true
         
     commsy_legacy.disc_service:
-        class: Commsy\LegacyBundle\Utils\DiscService
+        class: App\Utils\DiscService
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.assessment_service:
-        class: Commsy\LegacyBundle\Utils\AssessmentService
+        class: App\Utils\AssessmentService
         arguments: ['@commsy_legacy.environment']
         
     commsy_legacy.download_service:
-        alias: Commsy\LegacyBundle\Utils\DownloadService
+        alias: App\Utils\DownloadService
 
     Commsy\LegacyBundle\Utils\DownloadService:
         autowire: true
@@ -135,7 +135,7 @@ services:
             $printService: '@commsy.print_service'
         
     commsy_legacy.project_service:
-        class: Commsy\LegacyBundle\Utils\ProjectService
+        class: App\Utils\ProjectService
         arguments: ['@commsy_legacy.environment']
 
     Commsy\LegacyBundle\Utils\PortfolioService:
@@ -144,7 +144,7 @@ services:
 
     # Markup
     commsy_legacy.markup:
-        class: Commsy\LegacyBundle\Services\LegacyMarkup
+        class: App\Services\LegacyMarkup
         arguments:
             - '@commsy_legacy.environment'
             - '@router'
@@ -152,23 +152,23 @@ services:
 
     # Transformer
     commsy_legacy.transformer.general_settings:
-        class: Commsy\LegacyBundle\Form\DataTransformer\GeneralSettingsTransformer
+        class: App\Form\DataTransformer\GeneralSettingsTransformer
         arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
 
     commsy_legacy.transformer.moderation_settings:
-        class: Commsy\LegacyBundle\Form\DataTransformer\ModerationSettingsTransformer
+        class: App\Form\DataTransformer\ModerationSettingsTransformer
         arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
 
     commsy_legacy.transformer.additional_settings:
-        class: Commsy\LegacyBundle\Form\DataTransformer\AdditionalSettingsTransformer
+        class: App\Form\DataTransformer\AdditionalSettingsTransformer
         arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
 
     commsy_legacy.transformer.appearance_settings:
-        class: Commsy\LegacyBundle\Form\DataTransformer\AppearanceSettingsTransformer
+        class: App\Form\DataTransformer\AppearanceSettingsTransformer
         arguments: ['@commsy_legacy.environment', '@commsy_legacy.room_service', '@commsy_legacy.user_service']
 
     commsy_legacy.transformer.extension_settings:
-        class: Commsy\LegacyBundle\Form\DataTransformer\ExtensionSettingsTransformer
+        class: App\Form\DataTransformer\ExtensionSettingsTransformer
         arguments:
           - '@commsy_legacy.environment'
           - '@commsy_legacy.room_service'
@@ -176,70 +176,70 @@ services:
           - '%commsy.mediawiki.enabled%'
 
     commsy_legacy.transformer.material:
-        class: Commsy\LegacyBundle\Form\DataTransformer\MaterialTransformer
+        class: App\Form\DataTransformer\MaterialTransformer
         arguments:
             - '@commsy_legacy.environment'
         
     commsy_legacy.transformer.section:
-        class: Commsy\LegacyBundle\Form\DataTransformer\SectionTransformer
+        class: App\Form\DataTransformer\SectionTransformer
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.transformer.user:
-        class: Commsy\LegacyBundle\Form\DataTransformer\UserTransformer
+        class: App\Form\DataTransformer\UserTransformer
         arguments: ['@commsy_legacy.environment']
         
     commsy_legacy.transformer.privateroom:
-        class: Commsy\LegacyBundle\Form\DataTransformer\PrivateRoomTransformer
+        class: App\Form\DataTransformer\PrivateRoomTransformer
         arguments: ['@commsy_legacy.environment']
         
     commsy_legacy.transformer.item:
-        class: Commsy\LegacyBundle\Form\DataTransformer\ItemTransformer
+        class: App\Form\DataTransformer\ItemTransformer
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.transformer.annotation:
-        class: Commsy\LegacyBundle\Form\DataTransformer\AnnotationTransformer
+        class: App\Form\DataTransformer\AnnotationTransformer
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.transformer.announcement:
-        class: Commsy\LegacyBundle\Form\DataTransformer\AnnouncementTransformer
+        class: App\Form\DataTransformer\AnnouncementTransformer
         arguments: ['@commsy_legacy.environment']
        
     commsy_legacy.transformer.date:
-        class: Commsy\LegacyBundle\Form\DataTransformer\DateTransformer
+        class: App\Form\DataTransformer\DateTransformer
         arguments: ['@commsy_legacy.environment']
         
     commsy_legacy.transformer.todo:
-        class: Commsy\LegacyBundle\Form\DataTransformer\TodoTransformer
+        class: App\Form\DataTransformer\TodoTransformer
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.transformer.step:
-        class: Commsy\LegacyBundle\Form\DataTransformer\StepTransformer
+        class: App\Form\DataTransformer\StepTransformer
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.transformer.discussion:
-        class: Commsy\LegacyBundle\Form\DataTransformer\DiscussionTransformer
+        class: App\Form\DataTransformer\DiscussionTransformer
         arguments: ['@commsy_legacy.environment']
         
     commsy_legacy.transformer.discarticle:
-        class: Commsy\LegacyBundle\Form\DataTransformer\DiscussionarticleTransformer
+        class: App\Form\DataTransformer\DiscussionarticleTransformer
         arguments: ['@commsy_legacy.environment']
         
     commsy_legacy.transformer.group:
-        class: Commsy\LegacyBundle\Form\DataTransformer\GroupTransformer
+        class: App\Form\DataTransformer\GroupTransformer
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.transformer.institution:
-        class: Commsy\LegacyBundle\Form\DataTransformer\InstitutionTransformer
+        class: App\Form\DataTransformer\InstitutionTransformer
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.transformer.topic:
-        class: Commsy\LegacyBundle\Form\DataTransformer\TopicTransformer
+        class: App\Form\DataTransformer\TopicTransformer
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.transformer.project:
-        class: Commsy\LegacyBundle\Form\DataTransformer\ProjectTransformer
+        class: App\Form\DataTransformer\ProjectTransformer
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.transformer.portfolio:
-        class: Commsy\LegacyBundle\Form\DataTransformer\PortfolioTransformer
+        class: App\Form\DataTransformer\PortfolioTransformer
         arguments: ['@commsy_legacy.environment']

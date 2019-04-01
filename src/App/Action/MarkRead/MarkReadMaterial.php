@@ -9,7 +9,7 @@
 namespace App\Action\MarkRead;
 
 
-use Commsy\LegacyBundle\Utils\MaterialService;
+use App\Utils\MaterialService;
 
 class MarkReadMaterial implements MarkReadInterface
 {

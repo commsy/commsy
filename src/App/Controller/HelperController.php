@@ -9,7 +9,7 @@
 namespace App\Controller;
 
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 

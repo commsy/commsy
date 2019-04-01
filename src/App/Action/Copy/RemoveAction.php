@@ -9,7 +9,7 @@
 namespace App\Action\Copy;
 
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
 use App\Services\CopyService;

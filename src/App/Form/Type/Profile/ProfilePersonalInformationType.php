@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 use Doctrine\ORM\EntityManager;
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 use Symfony\Component\Validator\Constraints\NotEqualTo;
 
 class ProfilePersonalInformationType extends AbstractType

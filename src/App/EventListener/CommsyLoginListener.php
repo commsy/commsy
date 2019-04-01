@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Liip\ThemeBundle\ActiveTheme;
 
 use Commsy\LegacyBundle\Utils\RoomService;
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 
 class CommsyLoginListener
 {

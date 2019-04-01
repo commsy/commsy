@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use Commsy\LegacyBundle\Utils\PortfolioService;
+use App\Utils\PortfolioService;
 use App\Form\Type\AnnotationType;
 use App\Form\Type\PortfolioEditCategoryType;
 use App\Form\Type\PortfolioType;

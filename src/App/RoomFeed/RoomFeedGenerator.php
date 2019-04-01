@@ -9,9 +9,9 @@
 namespace App\RoomFeed;
 
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
-use Commsy\LegacyBundle\Utils\ItemService;
-use Commsy\LegacyBundle\Utils\RoomService;
+use App\Services\LegacyEnvironment;
+use App\Utils\ItemService;
+use App\Utils\RoomService;
 use Symfony\Component\Form\Form;
 
 class RoomFeedGenerator

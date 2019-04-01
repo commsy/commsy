@@ -9,7 +9,7 @@
 namespace App\Validator\Constraints;
 
 
-use Commsy\LegacyBundle\Utils\PortfolioService;
+use App\Utils\PortfolioService;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;

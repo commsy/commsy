@@ -10,9 +10,9 @@ use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 use WhiteOctober\BreadcrumbsBundle\Model\Breadcrumbs;
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
-use Commsy\LegacyBundle\Utils\RoomService;
-use Commsy\LegacyBundle\Utils\ItemService;
+use App\Services\LegacyEnvironment;
+use App\Utils\RoomService;
+use App\Utils\ItemService;
 
 class CommsyBreadcrumbListener
 {

@@ -3,9 +3,9 @@ namespace App\Services;
 
 use Symfony\Component\Form\Form;
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
-use Commsy\LegacyBundle\Utils\RoomService;
-use Commsy\LegacyBundle\Utils\ItemService;
+use App\Services\LegacyEnvironment;
+use App\Utils\RoomService;
+use App\Utils\ItemService;
 use Symfony\Component\Form\FormInterface;
 
 class CopyService

@@ -2,8 +2,8 @@
 
 namespace App\Twig\Extension;
 
-use Commsy\LegacyBundle\Services\LegacyMarkup;
-use Commsy\LegacyBundle\Utils\ItemService;
+use App\Services\LegacyMarkup;
+use App\Utils\ItemService;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 class MarkupExtension extends \Twig_Extension

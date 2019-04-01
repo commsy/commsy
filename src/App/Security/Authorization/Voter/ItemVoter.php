@@ -6,8 +6,8 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
-use Commsy\LegacyBundle\Utils\ItemService;
+use App\Services\LegacyEnvironment;
+use App\Utils\ItemService;
 
 class ItemVoter extends Voter
 {

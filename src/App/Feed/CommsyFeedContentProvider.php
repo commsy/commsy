@@ -10,7 +10,7 @@ use FeedIo\FeedInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Translation\TranslatorInterface;
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 
 class CommsyFeedContentProvider implements FeedContentProviderInterface
 {

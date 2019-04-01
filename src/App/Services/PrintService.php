@@ -4,7 +4,7 @@ namespace App\Services;
 
 use Knp\Snappy\Pdf;
 use Symfony\Component\HttpFoundation\Response;
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 
 /**
  * Class PrintService

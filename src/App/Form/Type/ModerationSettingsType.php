@@ -18,7 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 use App\Validator\Constraints\HomeNoticeConstraint;
 
 class ModerationSettingsType extends AbstractType

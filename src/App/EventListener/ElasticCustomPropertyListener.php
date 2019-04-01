@@ -2,7 +2,7 @@
 
 namespace App\EventListener;
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 use FOS\ElasticaBundle\Event\TransformEvent;

@@ -9,7 +9,7 @@
 namespace App\Twig\Extension;
 
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 use Twig\Extension\AbstractExtension;
 
 class PageTitleExtension extends AbstractExtension

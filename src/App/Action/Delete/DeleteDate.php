@@ -9,7 +9,7 @@
 namespace App\Action\Delete;
 
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 use CommsyBundle\Services\CalendarsService;
 use Symfony\Component\Routing\RouterInterface;
 

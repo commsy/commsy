@@ -5,9 +5,9 @@ namespace App\Security\Authorization\Voter;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
-use Commsy\LegacyBundle\Utils\ItemService;
-use Commsy\LegacyBundle\Utils\FileService;
+use App\Services\LegacyEnvironment;
+use App\Utils\ItemService;
+use App\Utils\FileService;
 
 class FileVoter extends Voter
 {

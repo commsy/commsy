@@ -2,7 +2,7 @@
 
 namespace App\Utils;
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 
 use Symfony\Component\Translation\TranslatorInterface;
 

@@ -9,7 +9,7 @@
 namespace App\Database;
 
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 use App\Database\Resolve\DeleteDatabaseFilesResolution;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;

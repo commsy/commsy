@@ -54,7 +54,7 @@ class ActionsCest
             $roomUser2->getItemID(),
         ];
 
-        /** @var \Commsy\LegacyBundle\Utils\UserService $userService */
+        /** @var \App\Utils\UserService $userService */
         $userService = $I->grabService('commsy_legacy.user_service');
         $users = $userService->getUsersById($projectRoom->getItemID(), $itemIds);
 
@@ -98,7 +98,7 @@ class ActionsCest
         $legacyEnvironment->setCurrentContextID($projectRoom->getItemID());
         $legacyEnvironment->setCurrentUser($roomModerator);
 
-        /** @var \Commsy\LegacyBundle\Utils\GroupService $groupService */
+        /** @var \App\Utils\GroupService $groupService */
         $groupService = $I->grabService('commsy_legacy.group_service');
         $group = $groupService->getNewGroup();
         $group->save();

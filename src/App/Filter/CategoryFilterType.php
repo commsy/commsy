@@ -8,8 +8,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
 
-use Commsy\LegacyBundle\Utils\CategoryService;
-use Commsy\LegacyBundle\Utils\RoomService;
+use App\Utils\CategoryService;
+use App\Utils\RoomService;
 
 use App\Form\Type\CategoryType;
 

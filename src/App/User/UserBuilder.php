@@ -9,7 +9,7 @@
 namespace App\User;
 
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 use App\Form\Model\Csv\CsvUserDataset;
 
 class UserBuilder

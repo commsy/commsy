@@ -31,7 +31,7 @@ class AppKernel extends Kernel
             new WhiteOctober\BreadcrumbsBundle\WhiteOctoberBreadcrumbsBundle(),
 
             new App\CommsyBundle(),
-            new Commsy\LegacyBundle\CommsyLegacyBundle(),
+            new App\CommsyLegacyBundle(),
             new EtherpadBundle\EtherpadBundle(),
             new CommsyMediawikiBundle\CommsyMediawikiBundle(),
         ];

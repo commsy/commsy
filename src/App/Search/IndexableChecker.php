@@ -2,7 +2,7 @@
 
 namespace App\Search;
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 
 class IndexableChecker
 {

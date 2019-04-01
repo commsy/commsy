@@ -16,7 +16,7 @@ use App\Form\Type\Custom\DateSelectType;
 
 use Doctrine\ORM\EntityManager;
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 
 class RoomProfileGeneralType extends AbstractType
 {

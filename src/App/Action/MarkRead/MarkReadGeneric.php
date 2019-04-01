@@ -9,7 +9,7 @@
 namespace App\Action\MarkRead;
 
 
-use Commsy\LegacyBundle\Utils\ItemService;
+use App\Utils\ItemService;
 
 class MarkReadGeneric implements MarkReadInterface
 {

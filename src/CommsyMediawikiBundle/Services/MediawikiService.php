@@ -2,7 +2,7 @@
 
 namespace CommsyMediawikiBundle\Services;
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 use MediaWiki\OAuthClient\Consumer;
 use MediaWiki\OAuthClient\Request;
 use MediaWiki\OAuthClient\SignatureMethod\HmacSha1;

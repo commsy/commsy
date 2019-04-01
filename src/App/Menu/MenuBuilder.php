@@ -4,10 +4,10 @@ namespace App\Menu;
 
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Commsy\LegacyBundle\Utils\RoomService;
+use App\Utils\RoomService;
 use Symfony\Component\Translation\Translator;
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
-use Commsy\LegacyBundle\Utils\UserService;
+use App\Services\LegacyEnvironment;
+use App\Utils\UserService;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use App\Services\InvitationsService;
 

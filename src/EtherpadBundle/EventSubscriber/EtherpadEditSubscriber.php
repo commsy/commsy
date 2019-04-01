@@ -6,7 +6,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use Commsy\LegacyBundle\Utils\MaterialService;
+use App\Utils\MaterialService;
 
 class EtherpadEditSubscriber implements EventSubscriberInterface
 {

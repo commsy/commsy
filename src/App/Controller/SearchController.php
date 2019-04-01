@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
-use Commsy\LegacyBundle\Utils\RoomService;
+use App\Services\LegacyEnvironment;
+use App\Utils\RoomService;
 use App\Action\Copy\CopyAction;
 use App\Form\Type\SearchItemType;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;

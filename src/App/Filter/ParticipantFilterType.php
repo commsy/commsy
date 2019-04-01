@@ -6,7 +6,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-use Commsy\LegacyBundle\Utils\UserService;
+use App\Utils\UserService;
 
 use App\Form\Type\ParticipantType;
 

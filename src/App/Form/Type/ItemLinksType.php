@@ -11,9 +11,9 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
-use Commsy\LegacyBundle\Utils\RoomService;
-use Commsy\LegacyBundle\Utils\ItemService;
+use App\Services\LegacyEnvironment;
+use App\Utils\RoomService;
+use App\Utils\ItemService;
 
 class ItemLinksType extends AbstractType
 {

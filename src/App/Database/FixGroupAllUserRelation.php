@@ -9,7 +9,7 @@
 namespace App\Database;
 
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 use App\Database\Resolve\AddMemberToGroupResolution;
 use App\Entity\Portal;
 use App\Entity\Room;

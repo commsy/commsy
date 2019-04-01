@@ -9,7 +9,7 @@
 namespace App\Action\Download;
 
 
-use Commsy\LegacyBundle\Utils\DownloadService;
+use App\Utils\DownloadService;
 use App\Action\ActionInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;

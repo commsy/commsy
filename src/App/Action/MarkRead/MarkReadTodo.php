@@ -9,7 +9,7 @@
 namespace App\Action\MarkRead;
 
 
-use Commsy\LegacyBundle\Utils\TodoService;
+use App\Utils\TodoService;
 
 class MarkReadTodo implements MarkReadInterface
 {

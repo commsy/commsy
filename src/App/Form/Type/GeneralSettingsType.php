@@ -21,7 +21,7 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 
 class GeneralSettingsType extends AbstractType
 {

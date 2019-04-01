@@ -4,8 +4,8 @@ namespace App\Feed;
 
 use App\Feed\Creators\Creator;
 
-use Commsy\LegacyBundle\Utils\ItemService;
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Utils\ItemService;
+use App\Services\LegacyEnvironment;
 
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;

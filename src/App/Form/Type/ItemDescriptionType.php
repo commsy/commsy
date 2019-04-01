@@ -10,7 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 use App\Entity\Materials;
 
 class ItemDescriptionType extends AbstractType

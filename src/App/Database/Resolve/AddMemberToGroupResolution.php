@@ -9,7 +9,7 @@
 namespace App\Database\Resolve;
 
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 
 class AddMemberToGroupResolution implements ResolutionInterface
 {

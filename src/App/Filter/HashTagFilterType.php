@@ -10,7 +10,7 @@ use Symfony\Component\Form\FormInterface;
 
 use Doctrine\ORM\EntityRepository;
 
-use Commsy\LegacyBundle\Utils\RoomService;
+use App\Utils\RoomService;
 
 use App\Form\Type\HashtagType;
 

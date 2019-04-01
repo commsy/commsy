@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use Commsy\LegacyBundle\Services\ReaderService;
-use Commsy\LegacyBundle\Services\UserService;
+use App\Services\ReaderService;
+use App\Services\UserService;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;

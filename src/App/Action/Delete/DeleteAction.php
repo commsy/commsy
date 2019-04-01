@@ -9,9 +9,9 @@
 namespace App\Action\Delete;
 
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 use Commsy\LegacyBundle\Utils\ItemService;
-use Commsy\LegacyBundle\Utils\UserService;
+use App\Utils\UserService;
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
 use App\Http\JsonRedirectResponse;

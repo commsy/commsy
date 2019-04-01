@@ -9,8 +9,8 @@
 namespace App\Action\Copy;
 
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
-use Commsy\LegacyBundle\Utils\ItemService;
+use App\Services\LegacyEnvironment;
+use App\Utils\ItemService;
 use App\Http\JsonDataResponse;
 use App\Http\JsonErrorResponse;
 use Symfony\Component\HttpFoundation\Response;

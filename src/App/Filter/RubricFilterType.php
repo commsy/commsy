@@ -5,7 +5,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-use Commsy\LegacyBundle\Utils\RoomService;
+use App\Utils\RoomService;
 use App\Repository\LabelRepository;
 
 use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;

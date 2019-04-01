@@ -4,7 +4,7 @@ namespace App\Services;
 
 use IDCI\Bundle\ColorSchemeBundle\Model\Color;
 
-use Commsy\LegacyBundle\Utils\UserService;
+use App\Utils\UserService;
 
 class AvatarService
 {    

@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use App\Validator\Constraints\UserPasswordConstraint;
 use App\Validator\Constraints\PasswordCriteriaConstraint;
 
-use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use App\Services\LegacyEnvironment;
 
 class ProfileChangePasswordType extends AbstractType
 {

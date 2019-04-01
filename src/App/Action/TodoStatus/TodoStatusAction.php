@@ -9,7 +9,7 @@
 namespace App\Action\TodoStatus;
 
 
-use Commsy\LegacyBundle\Utils\TodoService;
+use App\Utils\TodoService;
 use App\Action\ActionInterface;
 use App\Http\JsonDataResponse;
 use Symfony\Component\HttpFoundation\Response;

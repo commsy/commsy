@@ -4,7 +4,7 @@ namespace App\EventListener;
 
 use Lexik\Bundle\FormFilterBundle\Event\GetFilterConditionEvent;
 
-use Commsy\LegacyBundle\Utils\RoomService;
+use App\Utils\RoomService;
 
 /**
  * EventListener for use with LexikFormFilterBundle, which customizes

@@ -3,8 +3,8 @@ namespace App\Search;
 
 use FOS\ElasticaBundle\Finder\TransformedFinder;
 
-use Commsy\LegacyBundle\Utils\UserService;
-use Commsy\LegacyBundle\Utils\ItemService;
+use App\Utils\UserService;
+use App\Utils\ItemService;
 
 use Elastica\Query as Queries;
 use Elastica\Aggregation as Aggregations;
