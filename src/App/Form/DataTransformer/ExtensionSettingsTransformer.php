@@ -6,7 +6,7 @@ use App\Utils\UserService;
 use App\Services\LegacyEnvironment;
 use App\Form\DataTransformer\DataTransformerInterface;
 
-use CommsyMediawikiBundle\Services\MediawikiService;
+use App\Services\MediawikiService;
 
 class ExtensionSettingsTransformer implements DataTransformerInterface
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace CommsyMediawikiBundle\Services;
+namespace App\Services;
 
 use App\Services\LegacyEnvironment;
 use MediaWiki\OAuthClient\Consumer;
