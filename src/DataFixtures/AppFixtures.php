@@ -1,6 +1,6 @@
 <?php
 
-namespace CommsyBundle\DataFixtures\ORM;
+namespace App\DataFixtures;
 
 use Symfony\Component\Finder\Finder;
 
@@ -13,7 +13,7 @@ class LoadInitialData extends AbstractFixture implements OrderedFixtureInterface
     public function load(ObjectManager $manager)
     {
         $finder = new Finder();
-        $finder->files()->in('app/DoctrineFixtures');
+        $finder->files()->in('src/Resources/fixtures');
 
         foreach ($finder as $file) {
             $sql = $file->getContents();
