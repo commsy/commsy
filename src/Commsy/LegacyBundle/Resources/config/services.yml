@@ -30,7 +30,9 @@ services:
 
     # Legacy Environment
     commsy_legacy.environment:
-        class: Commsy\LegacyBundle\Services\LegacyEnvironment
+        alias: Commsy\LegacyBundle\Services\LegacyEnvironment
+
+    Commsy\LegacyBundle\Services\LegacyEnvironment:
         public: true
         autowire: true
         arguments: ['%legacy.site_index%', '@service_container']
@@ -40,23 +42,33 @@ services:
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.material_service:
-        class: Commsy\LegacyBundle\Utils\MaterialService
+        alias: Commsy\LegacyBundle\Utils\MaterialService
+
+    Commsy\LegacyBundle\Utils\MaterialService:
         autowire: true
 
     commsy_legacy.room_service:
-        class: Commsy\LegacyBundle\Utils\RoomService
+        alias: Commsy\LegacyBundle\Utils\RoomService
+
+    Commsy\LegacyBundle\Utils\RoomService:
         autowire: true
 
     commsy_legacy.file_service:
-        class: Commsy\LegacyBundle\Utils\FileService
+        alias: Commsy\LegacyBundle\Utils\FileService
+
+    Commsy\LegacyBundle\Utils\FileService:
         arguments: ['@commsy_legacy.environment']
 
     commsy_legacy.user_service:
-        class: Commsy\LegacyBundle\Utils\UserService
+        alias: Commsy\LegacyBundle\Utils\UserService
+
+    Commsy\LegacyBundle\Utils\UserService:
         autowire: true
 
     commsy_legacy.item_service:
-        class: Commsy\LegacyBundle\Utils\ItemService
+        alias: Commsy\LegacyBundle\Utils\ItemService
+
+    Commsy\LegacyBundle\Utils\ItemService:
         autowire: true
 
     commsy_legacy.label_service:
@@ -101,7 +113,9 @@ services:
         arguments: ['@commsy_legacy.environment']
         
     commsy_legacy.todo_service:
-        class: Commsy\LegacyBundle\Utils\TodoService
+        alias: Commsy\LegacyBundle\Utils\TodoService
+
+    Commsy\LegacyBundle\Utils\TodoService:
         autowire: true
         
     commsy_legacy.disc_service:
@@ -113,7 +127,9 @@ services:
         arguments: ['@commsy_legacy.environment']
         
     commsy_legacy.download_service:
-        class: Commsy\LegacyBundle\Utils\DownloadService
+        alias: Commsy\LegacyBundle\Utils\DownloadService
+
+    Commsy\LegacyBundle\Utils\DownloadService:
         autowire: true
         arguments:
             $printService: '@commsy.print_service'

@@ -226,7 +226,9 @@ services:
         arguments: ['@fos_elastica.finder.commsy', '@commsy_legacy.user_service', '@commsy_legacy.item_service']
 
     commsy.search.indexable_checker:
-        class: CommsyBundle\Search\IndexableChecker
+        alias: CommsyBundle\Search\IndexableChecker
+
+    CommsyBundle\Search\IndexableChecker:
         autowire: true
         autoconfigure: true
 
@@ -742,7 +744,9 @@ services:
           - '%commsy.settings.proxy_port%'
         
     commsy.copy_service:
-        class: CommsyBundle\Services\CopyService
+        alias: CommsyBundle\Services\CopyService
+
+    CommsyBundle\Services\CopyService:
         autowire: true
 
     commsy.invitations_service:
@@ -814,7 +818,7 @@ services:
         autowire: true
 
     CommsyBundle\Action\UserStatus\UserStatusAction:
-            autowire: true
+        autowire: true
 
     CommsyBundle\Action\Delete\DeleteGeneric:
         autowire: true
