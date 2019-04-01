@@ -9,7 +9,7 @@ use CommsyBundle\CalDAV\Server;
 use Sabre\CalDAV;
 use Sabre\DAV;
 use Sabre\DAVACL;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class CalDAVController extends Controller

@@ -8,7 +8,7 @@ use CommsyBundle\Event\CommsyEditEvent;
 use CommsyBundle\Filter\DiscussionFilterType;
 use CommsyBundle\Form\Type\DiscussionArticleType;
 use CommsyBundle\Form\Type\DiscussionType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;

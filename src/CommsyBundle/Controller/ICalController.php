@@ -8,7 +8,7 @@ use Eluceo\iCal\Component\Timezone;
 use Eluceo\iCal\Component\TimezoneRule;
 use Eluceo\iCal\Property\Event\Organizer;
 use Eluceo\iCal\Property\Event\RecurrenceRule;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

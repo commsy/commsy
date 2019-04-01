@@ -6,7 +6,7 @@ use CommsyBundle\Action\Copy\CopyAction;
 use CommsyBundle\Action\Delete\DeleteAction;
 use CommsyBundle\Action\Download\DownloadAction;
 use CommsyBundle\Action\TodoStatus\TodoStatusAction;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;

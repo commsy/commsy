@@ -9,7 +9,7 @@ use CommsyBundle\Event\CommsyEditEvent;
 use CommsyBundle\Filter\AnnouncementFilterType;
 use CommsyBundle\Form\Type\AnnotationType;
 use CommsyBundle\Form\Type\AnnouncementType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;

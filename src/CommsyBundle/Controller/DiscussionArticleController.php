@@ -9,7 +9,7 @@
 namespace CommsyBundle\Controller;
 
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 
 class DiscussionArticleController extends BaseController

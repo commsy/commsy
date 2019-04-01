@@ -6,7 +6,7 @@ use CommsyBundle\Action\Copy\CopyAction;
 use CommsyBundle\Action\Download\DownloadAction;
 use CommsyBundle\Http\JsonRedirectResponse;
 use CommsyBundle\Entity\License;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;

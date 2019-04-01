@@ -5,7 +5,7 @@ namespace CommsyBundle\Controller;
 use CommsyBundle\Action\Copy\InsertAction;
 use CommsyBundle\Action\Copy\RemoveAction;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;

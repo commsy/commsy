@@ -7,7 +7,7 @@ use Commsy\LegacyBundle\Utils\RoomService;
 use CommsyBundle\Action\Copy\CopyAction;
 use CommsyBundle\Form\Type\SearchItemType;
 use FOS\ElasticaBundle\Paginator\TransformedPaginatorAdapter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;

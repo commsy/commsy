@@ -4,7 +4,7 @@ namespace CommsyBundle\Controller;
 
 use Commsy\LegacyBundle\Services\ReaderService;
 use Commsy\LegacyBundle\Services\UserService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

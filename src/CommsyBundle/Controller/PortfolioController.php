@@ -6,7 +6,7 @@ use Commsy\LegacyBundle\Utils\PortfolioService;
 use CommsyBundle\Form\Type\AnnotationType;
 use CommsyBundle\Form\Type\PortfolioEditCategoryType;
 use CommsyBundle\Form\Type\PortfolioType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

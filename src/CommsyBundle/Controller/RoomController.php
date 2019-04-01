@@ -7,7 +7,7 @@ use CommsyBundle\Filter\HomeFilterType;
 use CommsyBundle\Filter\RoomFilterType;
 use CommsyBundle\Form\Type\ContextType;
 use CommsyBundle\Form\Type\ModerationSupportType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
