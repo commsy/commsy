@@ -49,12 +49,17 @@ class ProjectType extends AbstractType
             ])
             ->add('language', ChoiceType::class, array(
                 'placeholder' => false,
-                'choices' => ['de' => 'de', 'en' => 'en'],
+                'choices' => array(
+                    'User preferences' => 'user',
+                    'German' => 'de',
+                    'English' => 'en',
+                ),
                 'label' => 'language',
                 'required' => true,
                 'expanded' => false,
                 'multiple' => false,
                 'translation_domain' => 'room',
+                'choice_translation_domain' => 'settings',
             ))
             ->add('room_description', TextareaType::class, [
                 'attr' => [
