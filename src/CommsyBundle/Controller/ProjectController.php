@@ -174,9 +174,21 @@ class ProjectController extends Controller
     public function createAction($roomId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
 
         $defaultId = $legacyEnvironment->getCurrentPortalItem()->getDefaultProjectTemplateID();
         $defaultTemplateIDs = ($defaultId === '-1') ? [] : [ $defaultId ];
+
+        $timesDisplay = $currentPortalItem->getCurrentTimeName();
+        $times = [];
+        if ($currentPortalItem->showTime()) {
+            $translator = $this->get('translator');
+            $legacyTranslator = $legacyEnvironment->getTranslationObject();
+            $times[$translator->trans('continuous', [], 'settings')] = 'cont';
+            foreach ($currentPortalItem->getTimeListRev()->to_array() as $timeItem) {
+                $times[$legacyTranslator->getTimeMessage($timeItem->getName())] = $timeItem->getItemId();
+            }
+        }
 
         $room = new Room();
         $templates = $this->getAvailableTemplates();
@@ -184,6 +196,8 @@ class ProjectController extends Controller
             'templates' => array_flip($templates['titles']),
             'descriptions' => $templates['descriptions'],
             'preferredChoices' => $defaultTemplateIDs,
+            'timesDisplay' => $timesDisplay,
+            'times' => $times,
         ]);
 
         $form->handleRequest($request);
@@ -210,6 +224,16 @@ class ProjectController extends Controller
                 $legacyRoom->setTitle($room->getTitle());
                 $legacyRoom->setDescription($room->getRoomDescription());
                 $legacyRoom->setLanguage($room->getLanguage());
+
+                $context = $request->get('project');
+                $timeIntervals = $context['time_interval'] ?? [];
+                if (empty($timeIntervals) || in_array('cont', $timeIntervals)) {
+                    $legacyRoom->setContinuous();
+                    $legacyRoom->setTimeListByID([]);
+                } else {
+                    $legacyRoom->setNotContinuous();
+                    $legacyRoom->setTimeListByID($timeIntervals);
+                }
 
                 // persist with legacy code
                 $legacyRoom->save();
