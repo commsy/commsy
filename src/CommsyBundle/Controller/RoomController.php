@@ -1095,7 +1095,6 @@ class RoomController extends Controller
                 // fill in form values from the new entity object
                 $legacyRoom->setTitle($context['title']);
                 $legacyRoom->setDescription($context['room_description']);
-                $legacyRoom->setLanguage($context['language']);
 
                 $timeIntervals = (isset($context['type_sub']['time_interval'])) ? $context['type_sub']['time_interval'] : [];
                 if (empty($timeIntervals) || in_array('cont', $timeIntervals)) {
@@ -1114,11 +1113,16 @@ class RoomController extends Controller
 
                 // take values from a template?
                 if (isset($context['type_sub']['master_template'])) {
-                    $masterRoom = $this->get('commsy_legacy.room_service')->getRoomItem($context['type_sub']['master_template']);
+                    $masterRoom = $roomService->getRoomItem($context['type_sub']['master_template']);
                     if ($masterRoom) {
                         $legacyRoom = $this->copySettings($masterRoom, $legacyRoom);
                     }
                 }
+
+                // NOTE: we can only set the language after copying settings from any room template, otherwise the language
+                // would get overwritten by the room template's language setting
+                $legacyRoom->setLanguage($context['language']);
+                $legacyRoom->save();
 
                 // mark the room as edited
                 $linkModifierItemManager = $legacyEnvironment->getLinkModifierItemManager();

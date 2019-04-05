@@ -215,7 +215,6 @@ class ProjectController extends Controller
                 // fill in form values from the new entity object
                 $legacyRoom->setTitle($room->getTitle());
                 $legacyRoom->setDescription($room->getRoomDescription());
-                $legacyRoom->setLanguage($room->getLanguage());
 
                 $context = $request->get('project');
                 $timeIntervals = $context['time_interval'] ?? [];
@@ -242,6 +241,11 @@ class ProjectController extends Controller
                         $legacyRoom = $this->copySettings($masterRoom, $legacyRoom);
                     }
                 }
+
+                // NOTE: we can only set the language after copying settings from any room template, otherwise the language
+                // would get overwritten by the room template's language setting
+                $legacyRoom->setLanguage($room->getLanguage());
+                $legacyRoom->save();
 
                 // mark the room as edited
                 $linkModifierItemManager = $legacyEnvironment->getLinkModifierItemManager();
