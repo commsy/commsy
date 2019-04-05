@@ -174,21 +174,14 @@ class ProjectController extends Controller
     public function createAction($roomId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomService = $this->get('commsy_legacy.room_service');
         $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
 
         $defaultId = $legacyEnvironment->getCurrentPortalItem()->getDefaultProjectTemplateID();
         $defaultTemplateIDs = ($defaultId === '-1') ? [] : [ $defaultId ];
 
         $timesDisplay = $currentPortalItem->getCurrentTimeName();
-        $times = [];
-        if ($currentPortalItem->showTime()) {
-            $translator = $this->get('translator');
-            $legacyTranslator = $legacyEnvironment->getTranslationObject();
-            $times[$translator->trans('continuous', [], 'settings')] = 'cont';
-            foreach ($currentPortalItem->getTimeListRev()->to_array() as $timeItem) {
-                $times[$legacyTranslator->getTimeMessage($timeItem->getName())] = $timeItem->getItemId();
-            }
-        }
+        $times = $roomService->getTimePulses(true);
 
         $room = new Room();
         $templates = $this->getAvailableTemplates();
@@ -205,7 +198,6 @@ class ProjectController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 // create a new room using the legacy code
-                $roomService = $this->get('commsy_legacy.room_service');
                 $communityRoom = $roomService->getRoomItem($roomId);
 
                 $projectManager = $legacyEnvironment->getProjectManager();
@@ -245,7 +237,7 @@ class ProjectController extends Controller
                 if ($form->has('master_template')) {
                     $masterTemplate = $form->get('master_template')->getData();
 
-                    $masterRoom = $this->get('commsy_legacy.room_service')->getRoomItem($masterTemplate);
+                    $masterRoom = $roomService->getRoomItem($masterTemplate);
                     if ($masterRoom) {
                         $legacyRoom = $this->copySettings($masterRoom, $legacyRoom);
                     }

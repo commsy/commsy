@@ -152,24 +152,37 @@ class RoomService
 
     }
 
-    public function getTimePulses()
+    /**
+     * Returns the array of time pulses specified for the current portal
+     * @param bool $reverseOrder whether the list of time pulses shall be returned in reverse
+     * order (true) or not (false); defaults to false
+     * @return array list of time pulses
+     */
+    public function getTimePulses($reverseOrder = false)
     {
-        $timePulses = [];
-
         $portalItem = $this->legacyEnvironment->getCurrentPortalItem();
-        $translator = $this->legacyEnvironment->getTranslationObject();
+        if (!$portalItem->showTime()) {
+            return [];
+        }
 
-        if ($portalItem->showTime()) {
-            $timeList = $portalItem->getTimeList();
+        $legacyTranslator = $this->legacyEnvironment->getTranslationObject();
 
-            $timeItem = $timeList->getFirst();
-            while ($timeItem) {
-                $translatedTitle = $translator->getTimeMessage($timeItem->getTitle());
-                $timePulses[$translatedTitle] = $timeItem->getItemID();
+        $timePulses = [];
+        if ($reverseOrder) {
+            $timePulses['continuous'] = 'cont';
+        }
 
-                $timeItem = $timeList->getNext();
-            }
+        $timeList = ($reverseOrder) ? $portalItem->getTimeListRev() : $portalItem->getTimeList();
 
+        $timeItem = $timeList->getFirst();
+        while ($timeItem) {
+            $translatedTitle = $legacyTranslator->getTimeMessage($timeItem->getName());
+            $timePulses[$translatedTitle] = $timeItem->getItemID();
+
+            $timeItem = $timeList->getNext();
+        }
+
+        if (!$reverseOrder) {
             $timePulses['continuous'] = 'cont';
         }
 

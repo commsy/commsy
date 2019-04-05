@@ -978,6 +978,7 @@ class RoomController extends Controller
     public function createAction($roomId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomService = $this->get('commsy_legacy.room_service');
         $currentPortalItem = $legacyEnvironment->getCurrentPortalItem();
 
         $type = null;
@@ -999,16 +1000,7 @@ class RoomController extends Controller
         $defaultTemplateIDs = ($defaultId === '-1') ? [] : [ $defaultId ];
 
         $timesDisplay = $currentPortalItem->getCurrentTimeName();
-
-        $times = [];
-        if ($currentPortalItem->showTime()) {
-            $translator = $this->get('translator');
-            $legacyTranslator = $legacyEnvironment->getTranslationObject();
-            $times[$translator->trans('continuous', [], 'settings')] = 'cont';
-            foreach ($currentPortalItem->getTimeListRev()->to_array() as $timeItem) {
-                $times[$legacyTranslator->getTimeMessage($timeItem->getName())] = $timeItem->getItemId();
-            }
-        }
+        $times = $roomService->getTimePulses(true);
 
         $current_user = $legacyEnvironment->getCurrentUserItem();
         $community_list = $currentPortalItem->getCommunityList();
@@ -1034,7 +1026,6 @@ class RoomController extends Controller
         if ($portalUser->isModerator()) {
             $types = ['project' => 'project', 'community' => 'community'];
         } else {
-            $roomService = $this->get('commsy_legacy.room_service');
             $roomItem = $roomService->getRoomItem($roomId);
 
             if ($currentPortalItem->getProjectRoomCreationStatus() == 'portal') {
