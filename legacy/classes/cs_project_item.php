@@ -1082,7 +1082,7 @@ class cs_project_item extends cs_room_item {
              global $symfonyContainer;
 
              $url = $symfonyContainer->get('router')->generate(
-                 'commsy_room_home',
+                 'app_room_home',
                  array('roomId' => $this->getItemID()),
                  true
              );

@@ -1624,7 +1624,7 @@ class cs_room_item extends cs_context_item {
 
             /** @var \Symfony\Component\Routing\RouterInterface $router */
             $router = $symfonyContainer->get('router');
-            $url = $router->generate('commsy_room_home', [
+            $url = $router->generate('app_room_home', [
                 'roomId' => $this->getItemID(),
             ], \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_PATH);
 

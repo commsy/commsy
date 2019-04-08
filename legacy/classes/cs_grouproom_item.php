@@ -1130,19 +1130,19 @@ class cs_grouproom_item extends cs_room_item {
             if ( isset($project_room) and !empty($project_room) and !$room_item->isPortal() ) {
                if ( isset($group_item) and !empty($group_item) ) {
                   $url = $router->generate(
-                     'commsy_group_detail', [
+                     'app_group_detail', [
                         'roomId' => $project_room->getItemID(),
                         'itemId' => $group_item->getItemID()
                      ], UrlGeneratorInterface::ABSOLUTE_URL);
                } else {
                   $url = $router->generate(
-                     'commsy_room_home', [
+                     'app_room_home', [
                         'roomId' => $project_room->getItemID()
                      ], UrlGeneratorInterface::ABSOLUTE_URL);
                }
             } else {
                   $url = $router->generate(
-                     'commsy_room_home', [
+                     'app_room_home', [
                         'roomId' => $this->getItemID(),
                      ], UrlGeneratorInterface::ABSOLUTE_URL);
             }

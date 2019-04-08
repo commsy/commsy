@@ -71,7 +71,7 @@ if ( !isset($translator) and isset($this->_translator) ) {
       $link_item->setModule('configuration');
       $link_item->setFunction('agb');
       $link_item->setParameter('');
-      $link_item->setLink($router->generate('commsy_portal_terms', ['roomId' => $environment->getCurrentContextID()]));
+      $link_item->setLink($router->generate('app_portal_terms', ['roomId' => $environment->getCurrentContextID()]));
       $admin_link_list->add($link_item);
    }
 
@@ -148,7 +148,7 @@ if ( !isset($translator) and isset($this->_translator) ) {
       $link_item->setModule('configuration');
       $link_item->setFunction('news');
       $link_item->setParameter(array());
-      $link_item->setLink($router->generate('commsy_portal_announcements', ['roomId' => $environment->getCurrentContextID()]));
+      $link_item->setLink($router->generate('app_portal_announcements', ['roomId' => $environment->getCurrentContextID()]));
       $admin_link_list->add($link_item);
    }
 
@@ -157,7 +157,7 @@ if ( !isset($translator) and isset($this->_translator) ) {
       $link_item->setTitle($translator->getMessage('PORTAL_HELP_LINK'));
       $link_item->setIconPath('images/cs_config/PORTAL_HELP_LINK.gif');
       $link_item->setDescription($translator->getMessage('PORTAL_HELP_LINK_DESC'));
-      $link_item->setLink($router->generate('commsy_portal_help', ['roomId' => $environment->getCurrentContextID()]));
+      $link_item->setLink($router->generate('app_portal_help', ['roomId' => $environment->getCurrentContextID()]));
       $admin_link_list->add($link_item);
    }
 

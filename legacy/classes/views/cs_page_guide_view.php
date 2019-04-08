@@ -674,7 +674,7 @@ class cs_page_guide_view extends cs_page_view {
                 $router = $symfonyContainer->get('router');
 
                 $actionCurl = $router->generate(
-                    'commsy_room_home',
+                    'app_room_home',
                     array('roomId' => $item->getItemID())
                 );
 
@@ -692,7 +692,7 @@ class cs_page_guide_view extends cs_page_view {
                 $router = $symfonyContainer->get('router');
 
                 $actionCurl = $router->generate(
-                    'commsy_room_home',
+                    'app_room_home',
                     array('roomId' => $item->getItemID())
                 );
 
@@ -762,7 +762,7 @@ class cs_page_guide_view extends cs_page_view {
 
                 $privateRoom = $current_user->getOwnRoom();
                 if ($privateRoom) {
-                    $actionCurl = $router->generate('commsy_context_request', [
+                    $actionCurl = $router->generate('app_context_request', [
                         'roomId' => $privateRoom->getItemID(),
                         'itemId' => $item->getItemID(),
                     ]);
