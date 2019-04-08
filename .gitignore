@@ -126,9 +126,7 @@ web/css/external_portal_styles/[0-9]*
 wikis/*
 web/commsy
 
-web/js/build/*
-web/css/build/*
-web/build
+public/build
 
 node_modules
 src/App/Resources/public/components
